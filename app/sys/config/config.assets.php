@@ -71,7 +71,7 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/tmpl.min.js',
 
-		'app/bower_components/underscore/underscore-min.js',
+		'bower_components/underscore/underscore-min.js',
 
 		'vendor/jquery/jquery.localscroll.js',
 		'vendor/jquery/jquery.mousewheel.js',
@@ -106,8 +106,8 @@ $CONFIG['agent_vendors'] = array(
 		'vendor/twig/twig.js',
 		'vendor/momentjs/moment.min.js',
 
-		'app/bower_components/notify.js/notify.js',
-		'app/bower_components/intl-tel-input/build/js/intlTelInput.min.js',
+		'bower_components/notify.js/notify.js',
+		'bower_components/intl-tel-input/build/js/intlTelInput.min.js',
 
 		'vendor/bootstrap-datetimepicker-master/js/bootstrap-datetimepicker.min.js',
 	)

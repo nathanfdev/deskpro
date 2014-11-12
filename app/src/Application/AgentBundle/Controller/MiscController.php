@@ -968,17 +968,17 @@ JS;
 
 		$rjs->addPath('AppPlatform', 'javascripts/DeskPRO/App/Platform');
 		$rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
-		$rjs->addPath('DeskPRO', 'app/build/DeskPRO/js');
+		$rjs->addPath('DeskPRO', 'app-build/DeskPRO');
 		$rjs->addPath('DeskPRO/App', 'javascripts/DeskPRO/App');
 		$rjs->addPath('AgentApp', 'javascripts/DeskPRO/App/AgentApp');
-		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/app/bower_components/angular/angular.min"');
-		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/app/bower_components/angular-animate/angular-animate.min"');
-		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
-		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap"');
+		$rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/bower_components/angular/angular.min"');
+		$rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/bower_components/angular-animate/angular-animate.min"');
+		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/bower_components/angular-sanitize/angular-sanitize"');
+		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/bower_components/angular-bootstrap/ui-bootstrap"');
 
-		$rjs->addPathExpr('angularUISortable', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-sortable/src/sortable"');
+		$rjs->addPathExpr('angularUISortable', 'ASSETS_BASE_URL+"/bower_components/angular-ui-sortable/src/sortable"');
 		$rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/vendor/ng-context-menu/src/ng-context-menu"');
-		$rjs->addPathExpr('angularSelect2', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-select2/src/select2"');
+		$rjs->addPathExpr('angularSelect2', 'ASSETS_BASE_URL+"/bower_components/angular-ui-select2/src/select2"');
 
 		$rjs->addShim('angular', array('exports' => 'angular'));
 		$rjs->addShim('angularAnimate', array('angular'));

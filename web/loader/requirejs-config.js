@@ -3,12 +3,8 @@
 		"baseUrl": DP_ASSET_URL,
 		"waitSeconds": 60,
 		"urlArgs": (DP_IS_DEBUG ? "bust=" + (new Date()).getTime() : "v=" + (DP_BUILD_TIME || "0")),
-		"paths": {
-			//@@include('paths')
-		},
-		"shims": {
-			//@@include('shims')
-		},
+		"paths": !!include('paths.json'),
+		"shim": !!include('shims.json'),
 		"priority": [
 			"jquery",
 			"angular"
@@ -24,4 +20,10 @@
 	}
 
 	requirejs.config(config);
+
+	if (window.DP_INTERFACE_LOADER) {
+		requirejs([window.DP_INTERFACE_LOADER], function(Loader) {
+			Loader.start();
+		});
+	}
 })();

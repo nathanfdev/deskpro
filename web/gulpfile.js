@@ -29,6 +29,26 @@ deskpro.watches = [
 ];
 
 //------------------------------
+// Util
+//------------------------------
+
+deskpro.util.sourceMapRoot = function(file) {
+	var path  = file.path.replace(/\\/g, '/')
+	var rel   = path.replace(/^.*?\/web\/app\//, '');
+
+	// Counts slashes the relative path to decide how many levels up we need to go
+	var depth = (rel.match(/(\/|\\)/g) || []).length + 1;
+
+	// The sub-dir that the file is under
+	var ns    = rel.split('/')[0];
+
+	var up = "";
+	for (var i = 0; i < depth; i++) up += "../";
+
+	return up + 'app/' + ns;
+};
+
+//------------------------------
 // Coffeescript
 //------------------------------
 
@@ -48,7 +68,7 @@ gulp.task('coffee-admin', function() {
 		.pipe(sourcemaps.init())
 		.pipe(using({prefix: '<< Build --'}))
 		.pipe(coffee().on('error', deskpro.util.coffeeError))
-		.pipe(sourcemaps.write('/', { includeContent: false }))
+		.pipe(sourcemaps.write('/', { includeContent: false, sourceRoot: deskpro.util.sourceMapRoot }))
 		.pipe(gulp.dest('./app-build/'))
 		.pipe(using({prefix: '>> Wrote --'}));
 });
@@ -60,7 +80,7 @@ gulp.task('coffee-reports', function() {
 		.pipe(sourcemaps.init())
 		.pipe(using({prefix: '<< Build --'}))
 		.pipe(coffee().on('error', deskpro.util.coffeeError))
-		.pipe(sourcemaps.write('/', { includeContent: false }))
+		.pipe(sourcemaps.write('/', { includeContent: false, sourceRoot: deskpro.util.sourceMapRoot }))
 		.pipe(gulp.dest('./app-build/Reports'))
 		.pipe(using({prefix: '>> Wrote --'}));
 });
@@ -72,7 +92,7 @@ gulp.task('coffee-deskpro', function() {
 		.pipe(sourcemaps.init())
 		.pipe(using({prefix: '<< Build --'}))
 		.pipe(coffee().on('error', deskpro.util.coffeeError))
-		.pipe(sourcemaps.write('/', { includeContent: false }))
+		.pipe(sourcemaps.write('/', { includeContent: false, sourceRoot: deskpro.util.sourceMapRoot }))
 		.pipe(gulp.dest('./app-build/DeskPRO'))
 		.pipe(using({prefix: '>> Wrote --'}));
 });
@@ -90,7 +110,7 @@ gulp.task('less', function() {
 		.pipe(sourcemaps.init())
 		.pipe(using({prefix: '<< Build --'}))
 		.pipe(less())
-		.pipe(sourcemaps.write('/', { includeContent: false }))
+		.pipe(sourcemaps.write('/', { includeContent: false, sourceRoot: deskpro.util.sourceMapRoot }))
 		.pipe(gulp.dest('./app-build/'))
 		.pipe(using({prefix: '>> Wrote --'}));
 });
@@ -100,10 +120,10 @@ gulp.task('less', function() {
 //------------------------------
 
 gulp.task('loader', function() {
-	return gulp.src(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.json'])
+	return gulp.src(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js'])
 		.pipe(using({prefix: '<< Build --'}))
 		.pipe(finclude({
-			prefix: '//@@'
+			prefix: '!!'
 		}))
 		.pipe(gulp.dest('./loader-build/'))
 		.pipe(using({prefix: '>> Wrote --'}));
@@ -122,11 +142,11 @@ gulp.task('rjs', ['coffee', 'loader'], function() {
 		'./app/Reports/ReportsLoad.js'
 	];
 
-	var rjsConfig = require('./loader-build/rjs-optimizer-config.json');
+	var rjsConfig = require('./loader-build/rjs-optimizer-config.js');
 
 	return gulp.src(loadFiles, { base: './' })
 		.pipe(using({prefix: '<< Build --'}))
-		.pipe(rjs(rjsConfig))
+		.pipe(rjs(rjsConfig.config))
 		.pipe(rename(function(path) {
 			switch (path.basename) {
 				case 'AdminLoad.js':        path.dirname = 'Admin'; break;

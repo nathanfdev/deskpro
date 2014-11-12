@@ -12,7 +12,6 @@ define [
 		'ui.sortable',
 		'angularMoment',
 		'blueimp.fileupload',
-		'uiSlider',
 		'deskpro.option_builder',
 		'deskpro.category_builder'
 	])

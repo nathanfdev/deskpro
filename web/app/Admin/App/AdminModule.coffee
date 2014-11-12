@@ -49,10 +49,10 @@ define [
 
 	# Set path for ace editor
 	if ace
-		ace.config.set("basePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict")
-		ace.config.set("modePath",   DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict")
-		ace.config.set("themePath",  DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict")
-		ace.config.set("workerPath", DP_ASSET_URL + "/app/bower_components/ace-builds/src-min-noconflict")
+		ace.config.set("basePath",   DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict")
+		ace.config.set("modePath",   DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict")
+		ace.config.set("themePath",  DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict")
+		ace.config.set("workerPath", DP_ASSET_URL + "/bower_components/ace-builds/src-min-noconflict")
 
 	AdminModule = angular.module('Admin_App', [
 		'ngAnimate',

@@ -1,11 +1,7 @@
-{
+exports.config = {
 	"baseUrl": ".",
-	"paths": {
-		//@@include('paths')
-	},
-	"shims": {
-		//@@include('shims')
-	},
+	"paths": !!include('paths.json'),
+	"shim": !!include('shims.json'),
 	"priority": [
 		"jquery",
 		"angular"
@@ -16,4 +12,4 @@
 	"uglify2": {
 		"mangle": false
 	}
-}
+};
