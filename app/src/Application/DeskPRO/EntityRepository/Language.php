@@ -47,12 +47,17 @@ class Language extends AbstractEntityRepository
 
 	public function countPortalLanguages()
 	{
-		return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true')->getSingleScalarResult();
+		return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true ORDER BY l.title ASC')->getSingleScalarResult();
+	}
+
+	public function getPortalLanguages()
+	{
+		return $this->_em->createQuery('SELECT l FROM DeskPRO:Language l WHERE l.has_user = true ORDER BY l.title ASC')->getResult();
 	}
 
 	public function getDefaultPortalLanguage()
 	{
-		return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true')->getSingleScalarResult();
+		return $this->_em->createQuery('SELECT COUNT(l) FROM DeskPRO:Language l WHERE l.has_user = true ORDER BY l.title ASC')->getSingleScalarResult();
 	}
 
 	/**

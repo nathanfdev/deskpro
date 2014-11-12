@@ -60,13 +60,14 @@ class PortalController extends AbstractController
 
 	public function topBarAction()
 	{
-		$available = $this->get('language_repository')->findAll();
-		$current = $this->get('language_stack')->getActive();
+		/** @var \Application\LanguageBundle\Language\LanguageManager $language_manager */
+		$language_manager = $this->get('language_manager');
 
 		return $this->render('Theme:Portal:top_bar.html.twig',
 			array(
-				'enabled_languages' => $available,
-				'current_language' => $current
+				'enabled_languages' => $language_manager->getEnabledLanguages(),
+				'current_language' => $language_manager->getLanguageStack()->getActive(),
+				'is_multi_language' => $language_manager->isMultiLanguagePortal()
 			)
 		);
 	}

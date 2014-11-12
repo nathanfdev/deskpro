@@ -16,6 +16,7 @@
 			<a href="{{ path('portal_user_profile') }}" class="button">Log In</a>
 		</li>
 
+		{% if is_multi_language %}
 		<li>
 			<select onchange="location.href='/'+this.value" class="button button-dropdown button-dropdown-language">
 				{% for language in enabled_languages %}
@@ -26,6 +27,7 @@
 				{% endfor %}
 			</select>
 		</li>
+		{% endif %}
 
 	</ul>
 </header>

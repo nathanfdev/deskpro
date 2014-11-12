@@ -116,5 +116,11 @@ class LanguageManager
 	{
 		return $this->language_stack;
 	}
+
+
+	public function getEnabledLanguages() 
+	{
+		return $this->language_repo->getPortalLanguages();
+	}
 }
  
