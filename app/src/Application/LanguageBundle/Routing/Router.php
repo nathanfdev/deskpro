@@ -69,7 +69,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	 */
 	public function matchRequest(Request $request)
 	{
-		// TODO: perhaps limit this sort of things to GET only? Almost sure yes?
+		// TODO: clean this up a bit, and if it is not a GET then don't redirect
 		$language_stack = $this->language_manager->getLanguageStack();
 		$extractor      = new UrlMatcher();
 		$split          = $extractor->extractLanguageCode($request->getPathInfo());
@@ -86,13 +86,13 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 			}
 
 			$language_stack->push($url_language);
-			return $this->match($split['remaining_pathinfo']);
+			return $this->router->match($split['remaining_pathinfo']);
 		}
 
 		if (!$this->language_manager->isMultiLanguagePortal()) {
 			// since there is no language code and it is not multi portal, we will proceed as normal here...
 			// should we push the default language onto the stack here anyway? right now its a null stack.
-			return $this->match($split['remaining_pathinfo']);
+			return $this->router->match($split['remaining_pathinfo']);
 		}
 
 		// now we know its a multi lang desk and there was no long code, so we need to decide about where to redirect:
@@ -105,7 +105,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 		$language_stack->push($language);
 		$this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
-
 	}
 
 
@@ -153,9 +152,8 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	protected function throwRedirectExceptionTo(Language $language = null, $url)
 	{
 		$pre = $language ? '/' . $language->getTwoLetterLanguageCode() : '';
-		throw new RedirectToUrlException(
-			$pre . $url
-		);
+		$url = $pre . $url;
+		throw new RedirectToUrlException($url);
 	}
 
 
