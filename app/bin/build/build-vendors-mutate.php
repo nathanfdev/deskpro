@@ -71,7 +71,7 @@ class VendorMutate
 			$unp->enableStripComments();
 
 			$source = $unp->getCode();
-			$source = preg_replace('#<\?php#', "$0\n\n/* This file has been auto-generated (" . date('Y-m-d') . "). See build-vendors-mutate.php */\n\n", $source, 1);
+			$source = preg_replace('#<\?php#', "$0\n\n/* This file has been auto-generated. See build-vendors-mutate.php */\n\n", $source, 1);
 
 			if ($unprivate_class['custom_pre']) {
 				$unprivate_class['custom_pre'] = "\n" . implode("\n", $unprivate_class['custom_pre']) . "\n";
