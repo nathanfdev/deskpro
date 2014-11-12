@@ -1,4 +1,4 @@
-({
+{
 	"baseUrl": ".",
 	"paths": {
 		//@@include('paths')
@@ -14,6 +14,6 @@
 	"generateSourceMaps": true,
 	"optimize": "uglify2",
 	"uglify2": {
-		mangle: false
+		"mangle": false
 	}
-})
+}

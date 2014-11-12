@@ -1,7 +1,7 @@
 requirejs.config({
 	"baseUrl":     DP_ASSET_URL,
 	"waitSeconds": 60,
-	"urlArgs":    ((DP_IS_DEBUG && !DP_USE_RJS_BUILD) ? "bust=" + (new Date()).getTime() : "v=" + (DP_BUILD_TIME || "0")),
+	"urlArgs":    (DP_IS_DEBUG ? "bust=" + (new Date()).getTime() : "v=" + (DP_BUILD_TIME || "0")),
 	"paths": {
 		"angular":                         "bower_components/angular/angular.min",
 "angularRoute":                    "bower_components/angular-route/angular-route.min",
@@ -56,19 +56,19 @@ requirejs.config({
 "ZeroClipboard":                   "bower_components/zeroclipboard/dist/ZeroClipboard",
 "ngClip":                          "bower_components/ng-clip/src/ngClip",
 
-"AdminLoad":                       "app-build/Admin/AdminLoad",
-"CloudAdminLoad":                  "app-build/Admin/Cloud/CloudAdminLoad",
-"AdminUpgradeLoad":                "app-build/AdminUpgrade/AdminUpgradeLoad",
-"AdminStartLoad":                  "app-build/AdminStart/AdminStartLoad",
-"ReportsLoad":                     "app-build/Reports/ReportsLoad",
+"AdminLoad":                       "app/Admin/AdminLoad",
+"CloudAdminLoad":                  "app/Admin/Cloud/CloudAdminLoad",
+"AdminUpgradeLoad":                "app/AdminUpgrade/AdminUpgradeLoad",
+"AdminStartLoad":                  "app/AdminStart/AdminStartLoad",
+"ReportsLoad":                     "app/Reports/ReportsLoad",
 
-"DeskPRO":                         "app-build/DeskPRO/js",
-"Admin":                           "app-build/Admin/js",
-"AdminRouting":                    "app-build/Resources/config/routing",
-"AdminUpgrade":                    "app-build/AdminUpgrade/js",
-"AdminStart":                      "app-build/AdminStart/js",
-"Reports":                         "app-build/Reports/js",
-"ReportsRouting":                  "app-build/Reports/Resources/config/routing"
+"DeskPRO":                         "app-build/DeskPRO",
+"Admin":                           "app-build/Admin",
+"AdminRouting":                    "app/Admin/Resources/config/routing",
+"AdminUpgrade":                    "app-build/AdminUpgrade",
+"AdminStart":                      "app-build/AdminStart",
+"Reports":                         "app-build/Reports",
+"ReportsRouting":                  "app/Reports/Resources/config/routing"
 	},
 	"shims": {
 		"angular":                         {"exports" : "angular", "deps": ["jquery"]},
