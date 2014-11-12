@@ -9,7 +9,7 @@ echo " .. done"
 echo
 
 echo ">> installing bower deps"
-bower install
+bower install --allow-root
 echo ".. done"
 echo
 
