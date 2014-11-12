@@ -28,6 +28,6 @@ bower install --allow-root
 echo ".. done"
 
 echo ">> Building web assets"
-gulp
+gulp prod
 echo ".. done"
 echo
