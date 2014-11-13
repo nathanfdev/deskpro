@@ -51,8 +51,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 		switch ($context->getAction()) {
 			case 'get-meta':
 				return $this->getMetaAction($context);
-			case 'set-meta':
-				return $this->setMetaAction($context);
 			default:
 				throw $context->createNotFoundException();
 		}
@@ -106,23 +104,12 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 			return $context->createJsonResponse(array('errors' => $errors));
 		}
 
-		/** @var JIRA $js */
-		$js = $context->getContainer()->get('dp.jira');
+        /** @var JIRA $js */
+        $js = $context->getContainer()->get('dp.jira');
+        $data = (array) $context->getIn()->getAll('req');
+        $meta = $js->updateMeta($data);
 
-		return $context->createJsonResponse(array('meta' => $js->getMeta()->toArray()));
-	}
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function setMetaAction(ApiPackageRequestContext $context)
-	{
-		/** @var JIRA $js */
-		$js = $context->getContainer()->get('dp.jira');
-		$data = (array) $context->getIn()->getAll('req');
-		$meta = $js->updateMeta($data);
-
-		return $context->createJsonResponse($meta->toArray());
+        return $context->createJsonResponse($meta->toArray());
 	}
 }

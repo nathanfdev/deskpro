@@ -8,7 +8,6 @@ define(function(){
 			var self = this;
 
 			this.loading = false;
-			this.names = {};
 
 			// todo? add map to ids
 
@@ -27,7 +26,6 @@ define(function(){
 
 						if (data) {
 							data.issues && data.issues.each(function(issue){ self.push(issue); });
-							self.names = data.names;
 						}
 
 						// todo sort
@@ -57,7 +55,6 @@ define(function(){
 						console.info(data);
 
 						if (data) {
-							if (data.names) self.names = data.names;
 							data.issues && data.issues.each(function(issue){ self.push(issue); data = issue; });
 						}
 
@@ -118,7 +115,6 @@ define(function(){
 					.success(function (data, status, headers, config) {
 						console.info(data);
 						if (data) {
-							if (data.names) self.names = data.names;
 							data.issues && data.issues.each(function(issue){ data = issue; });
 						}
 						d.resolve(data);
@@ -143,7 +139,6 @@ define(function(){
 					.success(function (data, status, headers, config) {
 						console.info(data);
 						if (data) {
-							if (data.names) self.names = data.names;
 							data.issues && data.issues.each(function(issue){ self.push(issue); data = issue; });
 						}
 						d.resolve(data);

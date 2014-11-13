@@ -1,7 +1,7 @@
 define([
 	'deskpro_jira2/Ticket/ListCtrl',
 	'deskpro_jira2/Service/Meta',
-	'deskpro_jira2/Collection/Issues'
+	'deskpro_jira2/Collection/Issues',
 	], function(ListCtrl, Meta, IssuesCollection) {
 	return {
 		init: function() {

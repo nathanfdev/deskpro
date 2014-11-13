@@ -4,7 +4,6 @@ define(function(){
 		var meta = {
 			default_fields_list: [],
 			default_fields_summary: [],
-			system_fields: [],
 			default_issuetype: null,
 			default_project: null,
 
@@ -88,7 +87,6 @@ define(function(){
 
 				data.default_fields_list.each(function(id) { meta.default_fields_list.push(id); });
 				data.default_fields_summary.each(function(id) { meta.default_fields_summary.push(id); });
-                data.system_fields.each(function(id) { meta.system_fields.push(id); });
 				meta.default_issuetype = data.default_issuetype;
 				meta.default_project = data.default_project;
 

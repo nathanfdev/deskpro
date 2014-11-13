@@ -48,14 +48,6 @@ class Meta
 	protected $default_fields_summary = array();
 	protected $default_fields_list = array();
 
-	protected $system_fields = array(
-		'project',
-		'issuetype',
-		'summary',
-		'comment',
-		'description',
-	);
-
 	/**
 	 * @return array
 	 */
@@ -93,6 +85,6 @@ class Meta
 	 */
 	public function getAllFields()
 	{
-		return array_values(array_unique(array_merge($this->system_fields, $this->default_fields_summary, $this->default_fields_list)));
+		return array_values(array_unique(array_merge($this->default_fields_summary, $this->default_fields_list)));
 	}
 } 

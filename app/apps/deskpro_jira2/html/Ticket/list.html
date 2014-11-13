@@ -20,7 +20,7 @@
         <div ng-show="issues.loading">-> spinner <-</div>
         <ul ng-show="!issues.loading">
             <li ng-repeat="issue in issues" ng-click="issueModal(issue)">
-                <div ng-if="meta.isEnabled('list', 'issuekey')">Key: {{ issue.key }}</div>
+                <div>Key: {{ issue.key }}</div>
                 <div ng-repeat="field in meta.default_fields_list">{{ meta.fieldName(field) }}: {{ meta.fieldValue(field, issue.fields[field]) }}</div>
                 <button ng-click="$event.stopPropagation(); unlink(issue);" type="button">Unlink</button>
                 <hr>

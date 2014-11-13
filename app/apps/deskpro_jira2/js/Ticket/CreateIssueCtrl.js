@@ -5,75 +5,63 @@ define(function() {
 		console.info($meta);
 		console.info($ticket);
 
-		$scope.meta = $meta;
-		$scope.issue = {
-			project: null,
-			issuetype: null,
-			summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject
-		};
+        var staticFields = {
+            project: 1,
+            issuetype: 1,
+            summary: 1,
+            reporter: 1
+        }, issue;
 
-/**** init defaults ****/
-		if ($meta.default_project) {
-			for (var i = 0; i < $meta.projects.length; i++) {
-				var project = $meta.projects[i];
-				if (project.id == $meta.default_project) {
-					$scope.issue.project = project;
-					break;
-				}
-			}
-		}
+		$scope.$watch('issue.project.id', function(val) {
+            $meta.projects.each(function(project){
+                if (val != project.id) return;
+                $scope.project = project;
+            });
 
-		if (!$scope.issue.project && $meta.projects.length) {
-			$scope.issue.project = $meta.projects[0];
-		}
-/**** end of init defaults ****/
-
-
-
-
-
-		$scope.$watch('issue.project', function (project) {
-			$scope.issue.issuetype = null;
-			if (!project) return;
-
-			var types = project.issuetypes || [];
-			for (var i = 0; i < types.length; i++) {
-				var type = types[i];
-				if (type.id == $meta.default_issuetype) {
-					$scope.issue.issuetype = type;
-					break;
-				}
-			}
-
-			if (!$scope.issue.issuetype && $scope.issue.project.issuetypes.length) {
-				$scope.issue.issuetype = $scope.issue.project.issuetypes[0];
-			}
+            if (!$scope.project && $meta.projects.length) {
+                issue.project.id = $meta.projects[0].id;
+            }
 		});
 
-		$scope.$watch('issue.issuetype', function (type) {
-			if (!type) return;
-			if (type.filtered_fields) return;
+        var refreshFields = function() {
+            if (!$scope.project) return;
 
-			type.filtered_fields = [];
-			$.each(type.fields, function (id, field) {
-				if ($meta.system_fields.indexOf(id) > -1) return;
-				if (!field.required && $meta.default_fields_summary.indexOf(id) === -1) return;
-				type.filtered_fields.push(field);
-			});
-		});
+            var fields = [];
+            $scope.project.issuetypes.each(function(type) {
+                if (issue.issuetype.id != type.id) return;
 
-		$scope.confirm = function () {
+                $.each(type.fields, function(id, field) {
+                    if (staticFields[id]) return;
+                    if (!field.required && $meta.default_fields_summary.indexOf(id) === -1) return;
 
+                    field.id = field.id || id;
+                    fields.push(field);
+                });
+            });
+            $scope.fields = fields;
+        };
+
+        $scope.$watch('project.id', refreshFields);
+        $scope.$watch('issue.issuetype.id', refreshFields);
+
+		$scope.confirm = function() {
 			$scope.sending = true;
 
-			var fields = angular.copy($scope.issue);
-			fields.project = {id: fields.project.id};
-			fields.issuetype = {id: fields.issuetype.id};
-
+            var fields = angular.copy($scope.issue);
+            console.info(fields);
 			issues.create({fields: fields}).then(
 				function(){ $scope.sending = false; $modalInstance.dismiss(); },
 				function(){ $scope.sending = false; /* todo show errors */ }
 			);
 		};
+
+
+        $scope.meta = $meta;
+        $scope.fields = [];
+        $scope.issue = issue = {
+            project: {id: $meta.default_project},
+            issuetype: {id: $meta.default_issuetype},
+            summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject
+        };
 	};
 });

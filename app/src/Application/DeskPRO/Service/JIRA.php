@@ -44,7 +44,6 @@ class JIRA
 
     protected $allowed = array(
         'project',
-        'issuekey',
         'issuetype',
         'summary',
         'description',
@@ -183,6 +182,11 @@ class JIRA
 
 		try {
 
+            unset($properties['projects'], $properties['fields']);
+            if ($metadata = $app->getSetting(self::PARAM_META)) {
+                $properties = array_merge($metadata, $properties);
+            }
+
 			$res = $this->getApi()->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
 			$priority = $this->getApi()->get('/priority');
 			$fields = $this->getApi()->get('/field');
@@ -242,7 +246,6 @@ class JIRA
 			$result = $this->getApi()->post('/search', array(
 				'jql' => $jql,
 				'fields' => $this->getMeta()->getAllFields(),
-				'expand' => array('names', 'renderedFields'),
 			));
 		} catch (\Exception $e) {
 			// todo

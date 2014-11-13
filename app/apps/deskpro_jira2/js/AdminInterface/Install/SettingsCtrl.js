@@ -11,7 +11,7 @@ define(function() {
 		}
 
         $scope.$watch('meta_defaults.default_project', function(val){
-            if (!val || !val[1]) return;
+            if (!val) return;
             for (var i = 0; i < $scope.meta.projects.length; i++) {
                 var project = $scope.meta.projects[i];
                 if ($scope.meta_defaults.default_project === project.id) {
@@ -20,45 +20,33 @@ define(function() {
             }
         });
 
-		var loadMeta = function(){
+		var updateMeta = function(){
+            var data = $scope.meta_defaults || {};
 			$scope.loading_meta = true;
 			$scope.meta_errors = null;
-            $scope.meta_defaults = null;
+            $scope.meta_defaults = {};
 			$scope.Ctrl.startSpinner('saving_settings');
 
-			return Api.sendGet('/apps/packages/deskpro_jira2/get-meta').then(
+			return Api.sendPostJson('/apps/packages/deskpro_jira2/get-meta', data).then(
 				function(res) {
 					$scope.loading_meta = false;
 					$scope.Ctrl.stopSpinner('saving_settings');
-					$scope.meta = res.data.meta;
+					$scope.meta_errors = res.errors;
 
-					$scope.meta_defaults = {
+                    $scope.meta = res.data;
+
+                    $scope.meta_defaults = {
                         default_fields_list: $scope.meta.default_fields_list,
                         default_fields_summary: $scope.meta.default_fields_summary,
                         default_project: $scope.meta.default_project,
                         default_issuetype: $scope.meta.default_issuetype
                     };
-					$scope.meta_errors = res.data.errors;
 				},
 				function() {
 					$scope.loading_meta = false;
 					$scope.Ctrl.stopSpinner('saving_settings');
 				}
 			);
-		};
-
-		var updateMeta = function() {
-			var d = $q.defer();
-			$scope.loading_meta = true;
-			$scope.Ctrl.startSpinner('saving_settings');
-
-			if ($scope.meta && !$scope.meta_errors) {
-				Api.sendPostJson('/apps/packages/deskpro_jira2/set-meta', $scope.meta_defaults).then(d.resolve, d.resolve);
-			} else {
-				d.resolve();
-			}
-
-			return d.promise;
 		};
 
 		$scope.getAccessToken = function() {
@@ -82,19 +70,20 @@ define(function() {
 		$scope.saveSettings = function(){
 			$scope.meta_errors = null;
 			$scope.Ctrl.saveSettings().then(
-				function(){ updateMeta().then(loadMeta); },
-				function(){ updateMeta().then(loadMeta); }
+				function(){ updateMeta(); },
+				function(){ updateMeta(); }
 			);
 		};
 
 		$scope.toggleField = function(field, isSummary) {
 			var arr = $scope.meta_defaults['default_fields_' + (isSummary ? 'summary' : 'list')];
+            console.info(arr);
 			var idx = arr.indexOf(field.id);
 			idx > -1
 				? arr.splice(idx, 1)
 				: arr.push(field.id);
 		};
 
-		loadMeta();
+		updateMeta();
 	}];
 });
