@@ -34,9 +34,9 @@
 
 namespace Application\PortalBundle\Theme;
 
+use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
-use Symfony\Component\HttpKernel\Fragment\EsiFragmentRenderer;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 class ThemeResolver
@@ -56,13 +56,19 @@ class ThemeResolver
 	 */
 	private $themeTemplateMap;
 
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
-	public function __construct(ContainerInterface $container, ThemeRepository $theme_repo)
+
+    public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, LoggerInterface $logger)
 	{
 		$this->container  = $container;
 		$this->theme_repo = $theme_repo;
 		$this->themeTemplateMap = null;
-	}
+        $this->logger = $logger;
+    }
 
 	/**
 	 * @param ThemeInterface $theme
@@ -84,6 +90,7 @@ class ThemeResolver
 			if (class_exists($try)) {
 				$callable = $try . '::' . $action . 'Action';
 				if (is_callable($callable)) {
+                    $this->logger->debug(sprintf('theme resolver: resolved "%s" controller into %s', $input_controller, $callable));
 					return $callable;
 				}
 			}
@@ -135,6 +142,8 @@ class ThemeResolver
 			return $this->themeTemplateMap;
 		}
 
+        $this->logger->debug('theme resolver: creating template map');
+
 		// get the cache
 		$mapCache = $this->container->get('portal_cache.template_map');
 
@@ -181,6 +190,8 @@ class ThemeResolver
 	{
 		$tag = $this->resolveTag($theme, $tag_name);
 
+        $this->logger->debug(sprintf('theme resolver: resolving tag "%s" with controller "%s"', $tag->getName(), $tag->getControllerName()));
+
 		// theme can't process a tag it's being asked to resolve; just silently ignore the tag by return a blank string.
 		if (!$tag instanceof Tag) {
 			return '';
@@ -192,17 +203,21 @@ class ThemeResolver
 		// construct and return the proper ESI tag content
 		if ($tag->isEsi()) {
 			$esi = $this->container->get('fragment.renderer.esi')->render(
-				new ControllerReference($tag->getControllerName(), array(), $query), $current_request
+				new ControllerReference($tag->getControllerName(), $current_request->attributes->all(), $query), $current_request
 			);
 
-			return $esi->getContent();
+            $esi_content = $esi->getContent();
+
+            $this->logger->info(sprintf('theme resolver: created ESI for "%s" (%s)', $tag->getName(), $esi_content));
+
+			return $esi_content;
 		}
 
 		// construct and return the actual tag response content
 		$tag_request = $current_request->duplicate(
 			$query,
 			null,
-			array('_controller' => $tag->getControllerName())
+			array_merge($current_request->attributes->all(), array('_controller' => $tag->getControllerName()))
 		);
 
 		return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();

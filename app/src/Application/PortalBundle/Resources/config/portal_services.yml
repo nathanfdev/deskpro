@@ -15,7 +15,7 @@ services:
 
   theme_resolver:
     class: Application\PortalBundle\Theme\ThemeResolver
-    arguments: [@service_container, @theme_repository]
+    arguments: [@service_container, @theme_repository, @logger]
 
   theme_repository:
     class: Application\PortalBundle\Theme\ThemeRepository
