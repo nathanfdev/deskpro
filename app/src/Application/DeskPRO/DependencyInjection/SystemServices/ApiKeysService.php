@@ -39,9 +39,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class ApiKeysService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new ApiKeys($container->getEm());
+
         return $x;
-	}
+    }
 }

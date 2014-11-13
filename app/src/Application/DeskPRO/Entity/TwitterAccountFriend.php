@@ -45,85 +45,85 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var integer
-	 */
-	protected $id;
+    /**
+     * @var integer
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 */
-	protected $account;
+    /**
+     * @var \Application\DeskPRO\Entity\TwitterAccount
+     */
+    protected $account;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 */
-	protected $user;
+    /**
+     * @var \Application\DeskPRO\Entity\TwitterUser
+     */
+    protected $user;
 
-	/**
-	 * @return integer
-	 */
-	public function getAccountId()
-	{
-		if (null !== $this->account) {
-			return $this->account->getId();
-		}
+    /**
+     * @return integer
+     */
+    public function getAccountId()
+    {
+        if (null !== $this->account) {
+            return $this->account->getId();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	/**
-	 * @param integer $id
-	 */
-	public function setAccountId($id)
-	{
-		if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
-			$this->account = $account;
-		} else {
-			$this->account = null;
-		}
-	}
+    /**
+     * @param integer $id
+     */
+    public function setAccountId($id)
+    {
+        if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
+            $this->account = $account;
+        } else {
+            $this->account = null;
+        }
+    }
 
-	/**
-	 * @return integer
-	 */
-	public function getUserId()
-	{
-		if (null !== $this->user) {
-			return $this->user->getId();
-		}
+    /**
+     * @return integer
+     */
+    public function getUserId()
+    {
+        if (null !== $this->user) {
+            return $this->user->getId();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	/**
-	 * @param integer $id
-	 */
-	public function setUserId($id)
-	{
-		if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-			$this->user = $user;
-		} else {
-			$this->user = null;
-		}
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * @param integer $id
+     */
+    public function setUserId($id)
+    {
+        if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
+            $this->user = $user;
+        } else {
+            $this->user = null;
+        }
+    }
 
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFriend';
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_friends', 'uniqueConstraints' => array( 'account_user_idx' => array( 'columns' => array( 0 => 'account_id', 1 => 'user_id', ), ), ), ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterAccountFriend';
+        $metadata->setPrimaryTable(array( 'name' => 'twitter_accounts_friends', 'uniqueConstraints' => array( 'account_user_idx' => array( 'columns' => array( 0 => 'account_id', 1 => 'user_id', ), ), ), ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterAccount', 'mappedBy' => NULL, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'account_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

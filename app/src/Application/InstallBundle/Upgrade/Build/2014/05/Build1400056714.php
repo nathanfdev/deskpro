@@ -38,19 +38,19 @@ use Application\DeskPRO\DBAL\Connection;
 
 class Build1400056714 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Set tickets.email_account_id");
-		$valid_account_ids = $db->fetchAllKeyValue("SELECT id FROM email_accounts", array(), array(), 0, 0);
+        $this->out("Set tickets.email_account_id");
+        $valid_account_ids = $db->fetchAllKeyValue("SELECT id FROM email_accounts", array(), array(), 0, 0);
 
-		if ($valid_account_ids) {
-			$db->executeUpdate("
-				UPDATE tickets
-				SET email_account_id = email_gateway_id
-				WHERE email_gateway_id IN (?)
-			", array($valid_account_ids), array(Connection::PARAM_INT_ARRAY));
-		}
-	}
+        if ($valid_account_ids) {
+            $db->executeUpdate("
+                UPDATE tickets
+                SET email_account_id = email_gateway_id
+                WHERE email_gateway_id IN (?)
+            ", array($valid_account_ids), array(Connection::PARAM_INT_ARRAY));
+        }
+    }
 }

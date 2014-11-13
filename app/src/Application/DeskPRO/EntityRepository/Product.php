@@ -34,18 +34,16 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-
 class Product extends AbstractCategoryRepository
 {
-	public function getAll()
-	{
-		$products = $this->getEntityManager()->createQuery("
-			SELECT p
-			FROM DeskPRO:Product p
-			ORDER BY p.display_order ASC
-		")->execute();
+    public function getAll()
+    {
+        $products = $this->getEntityManager()->createQuery("
+            SELECT p
+            FROM DeskPRO:Product p
+            ORDER BY p.display_order ASC
+        ")->execute();
 
-		return $products;
-	}
+        return $products;
+    }
 }

@@ -44,27 +44,28 @@ use \Orb\Log\LogItem;
  */
 class PriorityFilter extends \Orb\Filter\AbstractFilter
 {
-	/** @var int */
-	protected $min_level = Logger::WARN;
+    /** @var int */
+    protected $min_level = Logger::WARN;
 
-	public function __construct($min_level)
-	{
-		$this->min_level = $min_level;
-	}
+    public function __construct($min_level)
+    {
+        $this->min_level = $min_level;
+    }
 
-	public function filter($log_item)
-	{
-		if (!$log_item) return null;
+    public function filter($log_item)
+    {
+        if (!$log_item) return null;
 
-		if (isset($log_item['ignore_pri_filter'])) {
-			unset($log_item['ignore_pri_filter']);
-			return $log_item;
-		}
+        if (isset($log_item['ignore_pri_filter'])) {
+            unset($log_item['ignore_pri_filter']);
 
-		if ($log_item[LogItem::PRIORITY] > $this->min_level) {
-			return null;
-		}
+            return $log_item;
+        }
 
-		return $log_item;
-	}
+        if ($log_item[LogItem::PRIORITY] > $this->min_level) {
+            return null;
+        }
+
+        return $log_item;
+    }
 }

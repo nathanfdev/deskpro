@@ -39,28 +39,28 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class SmtpAccountType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('user',        'text',     array('required' => false));
-		$builder->add('password',    'password', array('required' => false));
-		$builder->add('host',        'text',    array('required' => true));
-		$builder->add('port',        'text',    array('required' => true));
-		$builder->add('secure_mode', 'choice',  array(
-			'required'      => false,
-			'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
-			'empty_value'   => true,
-		));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('user',        'text',     array('required' => false));
+        $builder->add('password',    'password', array('required' => false));
+        $builder->add('host',        'text',    array('required' => true));
+        $builder->add('port',        'text',    array('required' => true));
+        $builder->add('secure_mode', 'choice',  array(
+            'required'      => false,
+            'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
+            'empty_value'   => true,
+        ));
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\SmtpConfig',
-		));
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\OutgoingAccount\\SmtpConfig',
+        ));
+    }
 
-	public function getName()
-	{
-		return 'out_smtp_account';
-	}
+    public function getName()
+    {
+        return 'out_smtp_account';
+    }
 }

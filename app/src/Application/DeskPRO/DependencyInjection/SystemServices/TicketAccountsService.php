@@ -39,9 +39,10 @@ use Application\DeskPRO\TicketAccounts\TicketAccounts;
 
 class TicketAccountsService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$x = new TicketAccounts($container->getEm());
-		return $x;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $x = new TicketAccounts($container->getEm());
+
+        return $x;
+    }
 }

@@ -39,17 +39,17 @@ use Assetic\Asset\AssetInterface;
 
 class Null implements FilterInterface
 {
-	public function __construct()
-	{
-	}
+    public function __construct()
+    {
+    }
 
-	public function filterDump(AssetInterface $asset)
+    public function filterDump(AssetInterface $asset)
     {
 
     }
 
-	public function filterLoad(AssetInterface $asset)
-	{
+    public function filterLoad(AssetInterface $asset)
+    {
 
-	}
+    }
 }

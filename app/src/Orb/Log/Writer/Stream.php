@@ -42,136 +42,135 @@ use \Orb\Log\LogItem;
 class Stream extends AbstractWriter
 {
  /**
-	 * Holds the PHP stream to log to.
-	 * @var null|stream
-	 */
-	protected $_stream = null;
+     * Holds the PHP stream to log to.
+     * @var null|stream
+     */
+    protected $_stream = null;
 
-	/**
-	 * If we opened the stream ourselves
-	 * @var bool
-	 */
-	protected $_did_open_stream = false;
+    /**
+     * If we opened the stream ourselves
+     * @var bool
+     */
+    protected $_did_open_stream = false;
 
-	/**
-	 * Chmod the file if we created it
-	 *
-	 * @var null
-	 */
-	protected $chmod_mode = 0777;
+    /**
+     * Chmod the file if we created it
+     *
+     * @var null
+     */
+    protected $chmod_mode = 0777;
 
-	/**
-	 * @var string|null
-	 */
-	protected $stream_url = null;
-	/**
-	 * @var null|string
-	 */
-	protected $stream_mode = 'a';
-	/**
-	 * @var bool
-	 */
-	protected $close_after_write = false;
+    /**
+     * @var string|null
+     */
+    protected $stream_url = null;
+    /**
+     * @var null|string
+     */
+    protected $stream_mode = 'a';
+    /**
+     * @var bool
+     */
+    protected $close_after_write = false;
 
-	public function enableNewStreamPerWrite()
-	{
-		$this->close_after_write = true;
-	}
+    public function enableNewStreamPerWrite()
+    {
+        $this->close_after_write = true;
+    }
 
-	/**
-	 * If we created a new file, chmod it to this mode. Set to null
-	 * to not chmod the file (in which case the default mask is used, typically 0755).
-	 *
-	 * @param $chmod
-	 */
-	public function setChmod($chmod)
-	{
-		$this->chmod_mode = $chmod;
-	}
+    /**
+     * If we created a new file, chmod it to this mode. Set to null
+     * to not chmod the file (in which case the default mask is used, typically 0755).
+     *
+     * @param $chmod
+     */
+    public function setChmod($chmod)
+    {
+        $this->chmod_mode = $chmod;
+    }
 
-	/**
-	 * @param  mixed  streamOrUrl     Stream or URL to open as a stream
-	 * @param  string mode            Mode, only applicable if a URL is given
-	 */
-	public function __construct($stream_or_url, $mode = null, $add_lineformatter = true)
-	{
-		// Setting the default
-		if ($mode === null) {
-			$mode = 'a';
-		}
+    /**
+     * @param  mixed  streamOrUrl     Stream or URL to open as a stream
+     * @param  string mode            Mode, only applicable if a URL is given
+     */
+    public function __construct($stream_or_url, $mode = null, $add_lineformatter = true)
+    {
+        // Setting the default
+        if ($mode === null) {
+            $mode = 'a';
+        }
 
-		if (is_resource($stream_or_url)) {
-			if (get_resource_type($stream_or_url) != 'stream') {
-				throw new \InvalidArgumentException('Resource is not a stream');
-			}
+        if (is_resource($stream_or_url)) {
+            if (get_resource_type($stream_or_url) != 'stream') {
+                throw new \InvalidArgumentException('Resource is not a stream');
+            }
 
-			if ($mode != 'a') {
-				throw new \InvalidArgumentException('Mode cannot be changed on existing streams');
-			}
+            if ($mode != 'a') {
+                throw new \InvalidArgumentException('Mode cannot be changed on existing streams');
+            }
 
-			$this->_stream = $stream_or_url;
-		} else {
-			$this->stream_url = $stream_or_url;
-			$this->stream_mode = $mode;
-		}
+            $this->_stream = $stream_or_url;
+        } else {
+            $this->stream_url = $stream_or_url;
+            $this->stream_mode = $mode;
+        }
 
-		if ($add_lineformatter) {
-			$this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
-		}
-	}
+        if ($add_lineformatter) {
+            $this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
+        }
+    }
 
-	public function getStream()
-	{
-		if (!$this->_stream) {
-			$mode = $this->stream_mode;
-			$stream_or_url = $this->stream_url;
-			$is_made = false;
-			if (!file_exists($stream_or_url)) {
-				$is_made = true;
-			}
-			if (!($this->_stream = @fopen($stream_or_url, $mode, false))) {
-				$msg = "\"$stream_or_url\" cannot be opened with mode \"$mode\"";
-				throw new \RuntimeException($msg);
-			}
+    public function getStream()
+    {
+        if (!$this->_stream) {
+            $mode = $this->stream_mode;
+            $stream_or_url = $this->stream_url;
+            $is_made = false;
+            if (!file_exists($stream_or_url)) {
+                $is_made = true;
+            }
+            if (!($this->_stream = @fopen($stream_or_url, $mode, false))) {
+                $msg = "\"$stream_or_url\" cannot be opened with mode \"$mode\"";
+                throw new \RuntimeException($msg);
+            }
 
-			if ($is_made && $this->chmod_mode !== null) {
-				@chmod($stream_or_url, $this->chmod_mode);
-			}
+            if ($is_made && $this->chmod_mode !== null) {
+                @chmod($stream_or_url, $this->chmod_mode);
+            }
 
-			$this->_did_open_stream = true;
-		}
+            $this->_did_open_stream = true;
+        }
 
-		return $this->_stream;
-	}
+        return $this->_stream;
+    }
 
-	public function closeStream()
-	{
-		if ($this->_did_open_stream AND is_resource($this->_stream)) {
-			fclose($this->_stream);
-			$this->_stream = null;
-			$this->_did_open_stream = false;
-		}
-	}
+    public function closeStream()
+    {
+        if ($this->_did_open_stream AND is_resource($this->_stream)) {
+            fclose($this->_stream);
+            $this->_stream = null;
+            $this->_did_open_stream = false;
+        }
+    }
 
+    public function shutdown()
+    {
+        $this->closeStream();
+    }
 
-	public function shutdown()
-	{
-		$this->closeStream();
-	}
+    /**
+     * Write a message to the log.
+     */
+    public function _write(LogItem $log_item)
+    {
+        $stream = $this->getStream();
 
-	/**
-	 * Write a message to the log.
-	 */
-	public function _write(LogItem $log_item)
-	{
-		$stream = $this->getStream();
+        if (false === @fwrite($stream, $log_item[LogItem::MESSAGE_LINE] . "\n")) {
+            throw new \RuntimeException("Unable to write to stream");
+        }
 
-		if (false === @fwrite($stream, $log_item[LogItem::MESSAGE_LINE] . "\n")) {
-			throw new \RuntimeException("Unable to write to stream");
-		}
-
-		if ($this->close_after_write) {
-			$this->closeStream();
-		}
-	}
+        if ($this->close_after_write) {
+            $this->closeStream();
+        }
+    }
 }

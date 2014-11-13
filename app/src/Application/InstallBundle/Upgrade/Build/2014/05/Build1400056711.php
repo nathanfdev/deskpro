@@ -36,17 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056711 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("New email_accounts table");
-		$db->exec("CREATE TABLE email_accounts (id INT AUTO_INCREMENT NOT NULL, account_type VARCHAR(255) NOT NULL, incoming_account LONGTEXT DEFAULT NULL COMMENT '(DC2Type:dp_json_obj)', outgoing_account LONGTEXT DEFAULT NULL COMMENT '(DC2Type:dp_json_obj)', is_enabled TINYINT(1) NOT NULL, address VARCHAR(255) NOT NULL, other_addresses LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', options LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', date_created DATETIME NOT NULL, date_read_start DATETIME DEFAULT NULL, date_last_incoming DATETIME DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->out("New email_accounts table");
+        $db->exec("CREATE TABLE email_accounts (id INT AUTO_INCREMENT NOT NULL, account_type VARCHAR(255) NOT NULL, incoming_account LONGTEXT DEFAULT NULL COMMENT '(DC2Type:dp_json_obj)', outgoing_account LONGTEXT DEFAULT NULL COMMENT '(DC2Type:dp_json_obj)', is_enabled TINYINT(1) NOT NULL, address VARCHAR(255) NOT NULL, other_addresses LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', options LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', date_created DATETIME NOT NULL, date_read_start DATETIME DEFAULT NULL, date_last_incoming DATETIME DEFAULT NULL, PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
 
-		$this->out("Drop field departments.email_gateway_id");
-		try { $db->exec("ALTER TABLE departments DROP INDEX IDX_16AEB8D4FBCC7CDF"); } catch (\Exception $e) {}
-		try { $db->exec("ALTER TABLE departments DROP INDEX FK_16AEB8D4FBCC7CDF"); } catch (\Exception $e) {}
-		$db->exec("ALTER TABLE departments DROP FOREIGN KEY FK_16AEB8D4FBCC7CDF");
-		$db->exec("ALTER TABLE departments DROP email_gateway_id");
-	}
+        $this->out("Drop field departments.email_gateway_id");
+        try { $db->exec("ALTER TABLE departments DROP INDEX IDX_16AEB8D4FBCC7CDF"); } catch (\Exception $e) {}
+        try { $db->exec("ALTER TABLE departments DROP INDEX FK_16AEB8D4FBCC7CDF"); } catch (\Exception $e) {}
+        $db->exec("ALTER TABLE departments DROP FOREIGN KEY FK_16AEB8D4FBCC7CDF");
+        $db->exec("ALTER TABLE departments DROP email_gateway_id");
+    }
 }

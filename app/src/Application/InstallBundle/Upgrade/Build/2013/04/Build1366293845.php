@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366293845 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets_logs.parent_id");
-		$this->execMutateSql("ALTER TABLE tickets_logs ADD parent_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE tickets_logs ADD CONSTRAINT FK_F5F41081727ACA70 FOREIGN KEY (parent_id) REFERENCES tickets_logs (id) ON DELETE CASCADE");
-		$this->execMutateSql("CREATE INDEX IDX_F5F41081727ACA70 ON tickets_logs (parent_id)");
-	}
+    public function run()
+    {
+        $this->out("Add tickets_logs.parent_id");
+        $this->execMutateSql("ALTER TABLE tickets_logs ADD parent_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE tickets_logs ADD CONSTRAINT FK_F5F41081727ACA70 FOREIGN KEY (parent_id) REFERENCES tickets_logs (id) ON DELETE CASCADE");
+        $this->execMutateSql("CREATE INDEX IDX_F5F41081727ACA70 ON tickets_logs (parent_id)");
+    }
 }

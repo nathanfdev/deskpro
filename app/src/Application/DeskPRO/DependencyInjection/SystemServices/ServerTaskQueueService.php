@@ -39,9 +39,10 @@ use Application\DeskPRO\ServerTaskQueue\ServerTaskQueue;
 
 class ServerTaskQueueService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new ServerTaskQueue($container->getEm());
+
         return $x;
-	}
+    }
 }

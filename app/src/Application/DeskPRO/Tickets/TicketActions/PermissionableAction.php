@@ -39,10 +39,10 @@ use Application\DeskPRO\Entity\Ticket;
 
 interface PermissionableAction
 {
-	/**
-	 * True to stop processing actions after this one
-	 *
-	 * @return bool
-	 */
-	public function checkPermission(Ticket $ticket, Person $person);
+    /**
+     * True to stop processing actions after this one
+     *
+     * @return bool
+     */
+    public function checkPermission(Ticket $ticket, Person $person);
 }

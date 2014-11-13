@@ -37,23 +37,23 @@ use Application\DeskPRO\App;
 
 class TicketContextData implements DataInterface
 {
-	public function getData()
-	{
-		$deps = App::getDb()->fetchAll("SELECT * FROM departments ORDER BY id ASC");
-		$teams = App::getDb()->fetchAll("SELECT * FROM agent_teams ORDER BY id ASC");
-		$groups = App::getDb()->fetchAll("SELECT * FROM usergroups ORDER BY id ASC");
-		$agents = array();
-		foreach (App::$container->getAgentData()->getAgents() as $a) {
-			$agents[] = $a->toBasicApiData();
-		}
+    public function getData()
+    {
+        $deps = App::getDb()->fetchAll("SELECT * FROM departments ORDER BY id ASC");
+        $teams = App::getDb()->fetchAll("SELECT * FROM agent_teams ORDER BY id ASC");
+        $groups = App::getDb()->fetchAll("SELECT * FROM usergroups ORDER BY id ASC");
+        $agents = array();
+        foreach (App::$container->getAgentData()->getAgents() as $a) {
+            $agents[] = $a->toBasicApiData();
+        }
 
-		$data = array();
-		$data['departments'] = $deps;
-		$data['agents']      = $agents;
-		$data['agent_teams'] = $teams;
-		$data['usergroups']  = $groups;
-		$data['usergroups']  = $groups;
+        $data = array();
+        $data['departments'] = $deps;
+        $data['agents']      = $agents;
+        $data['agent_teams'] = $teams;
+        $data['usergroups']  = $groups;
+        $data['usergroups']  = $groups;
 
-		return $data;
-	}
+        return $data;
+    }
 }

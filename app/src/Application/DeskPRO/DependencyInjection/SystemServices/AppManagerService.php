@@ -41,47 +41,48 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class AppManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$em = $container->getEm();
+    public static function create(DeskproContainer $container)
+    {
+        $em = $container->getEm();
 
-		$packages = $em->createQuery("
-			SELECT package, asset
-			FROM DeskPRO:AppPackage package
-			LEFT JOIN package.assets asset
-			ORDER BY package.title
-		")->execute();
+        $packages = $em->createQuery("
+            SELECT package, asset
+            FROM DeskPRO:AppPackage package
+            LEFT JOIN package.assets asset
+            ORDER BY package.title
+        ")->execute();
 
-		$apps = $em->createQuery("
-			SELECT app, package, asset
-			FROM DeskPRO:AppInstance app
-			LEFT JOIN app.package package
-			LEFT JOIN package.assets asset
-		")->execute();
+        $apps = $em->createQuery("
+            SELECT app, package, asset
+            FROM DeskPRO:AppInstance app
+            LEFT JOIN app.package package
+            LEFT JOIN package.assets asset
+        ")->execute();
 
-		$usersources = $em->createQuery("
-			SELECT usersource
-			FROM DeskPRO:Usersource usersource
-			LEFT JOIN usersource.app app
-		")->execute();
+        $usersources = $em->createQuery("
+            SELECT usersource
+            FROM DeskPRO:Usersource usersource
+            LEFT JOIN usersource.app app
+        ")->execute();
 
-		if ($apps instanceof ArrayCollection) $apps = $apps->toArray();
-		if ($packages instanceof ArrayCollection) $packages = $packages->toArray();
-		if ($usersources instanceof ArrayCollection) $usersources = $usersources->toArray();
+        if ($apps instanceof ArrayCollection) $apps = $apps->toArray();
+        if ($packages instanceof ArrayCollection) $packages = $packages->toArray();
+        if ($usersources instanceof ArrayCollection) $usersources = $usersources->toArray();
 
-		$app_service_container = new AppServiceContainer($container);
+        $app_service_container = new AppServiceContainer($container);
 
-		$app_paths = array(
-			'default' => DP_ROOT.'/apps'
-		);
+        $app_paths = array(
+            'default' => DP_ROOT.'/apps'
+        );
 
-		if (dp_get_config('app_paths')) {
-			foreach (dp_get_config('app_paths') as $prefix => $path) {
-				$app_paths[$prefix] = $path;
-			}
-		}
+        if (dp_get_config('app_paths')) {
+            foreach (dp_get_config('app_paths') as $prefix => $path) {
+                $app_paths[$prefix] = $path;
+            }
+        }
 
-		$app_manager = new AppManager($packages, $apps, $app_paths, $app_service_container, $usersources);
-		return $app_manager;
-	}
+        $app_manager = new AppManager($packages, $apps, $app_paths, $app_service_container, $usersources);
+
+        return $app_manager;
+    }
 }

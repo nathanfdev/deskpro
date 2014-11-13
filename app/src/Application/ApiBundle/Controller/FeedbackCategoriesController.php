@@ -41,24 +41,25 @@ use Application\DeskPRO\Exception\ValidationException;
 
 class FeedbackCategoriesController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
+    public function listAction()
+    {
         /**
          * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
          */
@@ -70,174 +71,174 @@ class FeedbackCategoriesController extends AbstractController implements Protect
                  'feedback_categories' => $feedback_categories->getAll()
             )
         );
-	}
+    }
 
-	####################################################################################################################
-	# get
-	####################################################################################################################
+    ####################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
-	     */
+    public function getAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+         */
 
-		$feedback_categories = $this->container->getSystemService('feedback_categories');
-		$feedback_category = $feedback_categories->getById($id);
+        $feedback_categories = $this->container->getSystemService('feedback_categories');
+        $feedback_category = $feedback_categories->getById($id);
 
-		if (!$feedback_category) {
+        if (!$feedback_category) {
 
-			throw $this->createNotFoundException();
-		}
+            throw $this->createNotFoundException();
+        }
 
-		$returnedData = $this->getApiData($feedback_category);
+        $returnedData = $this->getApiData($feedback_category);
 
-		return $this->createApiResponse(
-			array(
-				 'feedback_category' => $returnedData
-			)
-		);
-	}
+        return $this->createApiResponse(
+            array(
+                 'feedback_category' => $returnedData
+            )
+        );
+    }
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-	public function saveAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
-		 */
+    public function saveAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+         */
 
-		$feedback_categories = $this->container->getSystemService('feedback_categories');
+        $feedback_categories = $this->container->getSystemService('feedback_categories');
 
-		if ($id) {
+        if ($id) {
 
-			$feedback_category = $feedback_categories->getById($id);
+            $feedback_category = $feedback_categories->getById($id);
 
-			if (!$feedback_category) {
+            if (!$feedback_category) {
 
-				throw $this->createNotFoundException();
-			}
-		} else {
+                throw $this->createNotFoundException();
+            }
+        } else {
 
-			$feedback_category = $feedback_categories->createNew();
-		}
+            $feedback_category = $feedback_categories->createNew();
+        }
 
-		$this->em->getConnection()->beginTransaction();
+        $this->em->getConnection()->beginTransaction();
 
-		try {
+        try {
 
-			$postData  = $this->in->getAll('post');
+            $postData  = $this->in->getAll('post');
 
-			// @TODO should be refactored to usage of symfony form mechanism later, this one is quite ugly
+            // @TODO should be refactored to usage of symfony form mechanism later, this one is quite ugly
 
-			$parent_id =
-				isset($postData['feedback_category']['options']) ?
-				$postData['feedback_category']['options']['parent_id'] : '';
+            $parent_id =
+                isset($postData['feedback_category']['options']) ?
+                $postData['feedback_category']['options']['parent_id'] : '';
 
-			$feedback_category->title  = $postData['feedback_category']['title'];
-			$feedback_category->parent = $feedback_categories->getParentCategory();
-			$feedback_category->setOption('parent_id', $parent_id);
+            $feedback_category->title  = $postData['feedback_category']['title'];
+            $feedback_category->parent = $feedback_categories->getParentCategory();
+            $feedback_category->setOption('parent_id', $parent_id);
 
-			$this->em->persist($feedback_category);
-			$this->em->flush();
+            $this->em->persist($feedback_category);
+            $this->em->flush();
 
-			$this->em->getConnection()->commit();
+            $this->em->getConnection()->commit();
 
-		} catch (\Exception $e) {
+        } catch (\Exception $e) {
 
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $feedback_category->getId(),
-			)
-		);
-	}
+        return $this->createApiResponse(
+            array(
+                 'success' => true,
+                 'id'      => $feedback_category->getId(),
+            )
+        );
+    }
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-	public function removeAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
-		 */
+    public function removeAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+         */
 
-		$feedback_categories = $this->container->getSystemService('feedback_categories');
-		$feedback_category   = $feedback_categories->getById($id);
+        $feedback_categories = $this->container->getSystemService('feedback_categories');
+        $feedback_category   = $feedback_categories->getById($id);
 
-		if (!$feedback_category) {
+        if (!$feedback_category) {
 
-			throw $this->createNotFoundException();
-		}
+            throw $this->createNotFoundException();
+        }
 
-		$move_to                   = $this->in->getUint('move_to');
-		$move_to_feedback_category = $feedback_categories->getById($move_to);
+        $move_to                   = $this->in->getUint('move_to');
+        $move_to_feedback_category = $feedback_categories->getById($move_to);
 
-		$skip_moving = false;
+        $skip_moving = false;
 
-		if (!$move_to_feedback_category) {
+        if (!$move_to_feedback_category) {
 
-			$skip_moving = true;
-		}
+            $skip_moving = true;
+        }
 
-		if (!$skip_moving && $move_to_feedback_category->getId() == $feedback_category->getId()) {
+        if (!$skip_moving && $move_to_feedback_category->getId() == $feedback_category->getId()) {
 
-			throw ValidationException::create(
-				"feedback_type.remove.move_feedback_categories",
-				"You must choose a different feedback category"
-			);
-		}
+            throw ValidationException::create(
+                "feedback_type.remove.move_feedback_categories",
+                "You must choose a different feedback category"
+            );
+        }
 
-		$old_id = $feedback_category->getId();
+        $old_id = $feedback_category->getId();
 
-		$this->db->beginTransaction();
+        $this->db->beginTransaction();
 
-		try {
+        try {
 
-			if(!$skip_moving) {
+            if(!$skip_moving) {
 
-				$this->db->executeUpdate(
-					"UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?",
-					array($move_to, $old_id)
-				);
-			}
+                $this->db->executeUpdate(
+                    "UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?",
+                    array($move_to, $old_id)
+                );
+            }
 
-			$this->em->remove($feedback_category);
-			$this->em->flush();
+            $this->em->remove($feedback_category);
+            $this->em->flush();
 
-			$this->db->commit();
+            $this->db->commit();
 
-		} catch(\Exception $e) {
+        } catch(\Exception $e) {
 
-			$this->db->rollback();
-			throw $e;
-		}
+            $this->db->rollback();
+            throw $e;
+        }
 
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
+    ####################################################################################################################
+    # save-display-order
+    ####################################################################################################################
 
-	public function saveDisplayOrderAction()
-	{
-		$display_orders = $this->in->getArrayOfUInts('display_orders');
+    public function saveDisplayOrderAction()
+    {
+        $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-		/**
-		 * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
-		 */
+        /**
+         * @var \Application\DeskPRO\FeedbackCategories\FeedbackCategories $feedback_categories
+         */
 
-		$feedback_categories = $this->container->getSystemService('feedback_categories');
-		$feedback_categories->updateDisplayOrders($display_orders);
+        $feedback_categories = $this->container->getSystemService('feedback_categories');
+        $feedback_categories->updateDisplayOrders($display_orders);
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

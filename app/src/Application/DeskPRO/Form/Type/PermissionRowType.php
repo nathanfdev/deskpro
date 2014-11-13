@@ -38,25 +38,25 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class PermissionRowType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('name', 'text', array(
-			'required' => false
-		));
-		$builder->add('usergroup_id', 'integer', array(
-			'required' => false
-		));
-		$builder->add('person_id', 'integer', array(
-			'required' => false
-		));
-		$builder->add('value', 'integer', array(
-			'required' => false,
-			'data'     => '1'
-		));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('name', 'text', array(
+            'required' => false
+        ));
+        $builder->add('usergroup_id', 'integer', array(
+            'required' => false
+        ));
+        $builder->add('person_id', 'integer', array(
+            'required' => false
+        ));
+        $builder->add('value', 'integer', array(
+            'required' => false,
+            'data'     => '1'
+        ));
+    }
 
-	public function getName()
-	{
-		return 'permission';
-	}
+    public function getName()
+    {
+        return 'permission';
+    }
 }

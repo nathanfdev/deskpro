@@ -36,30 +36,30 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1395063357 extends AbstractBuild
 {
-	public function run()
-	{
-		$filters = $this->container->getDb()->fetchAllKeyValue("
-			SELECT id, terms
-			FROM ticket_filters
-			WHERE sys_name IN ('unassigned', 'unassigned_w_hold')
-		");
+    public function run()
+    {
+        $filters = $this->container->getDb()->fetchAllKeyValue("
+            SELECT id, terms
+            FROM ticket_filters
+            WHERE sys_name IN ('unassigned', 'unassigned_w_hold')
+        ");
 
-		foreach ($filters as $fid => $terms) {
-			$terms = unserialize($terms);
-			$do_add = true;
-			foreach ($terms as $t) {
-				if ($t['type'] == 'agent_team') {
-					$do_add = false;
-					break;
-				}
-			}
+        foreach ($filters as $fid => $terms) {
+            $terms = unserialize($terms);
+            $do_add = true;
+            foreach ($terms as $t) {
+                if ($t['type'] == 'agent_team') {
+                    $do_add = false;
+                    break;
+                }
+            }
 
-			if ($do_add) {
-				$terms[] = array('type' => 'agent_team', 'op' => 'is', 'options' => array('agent_team' => '0'));
+            if ($do_add) {
+                $terms[] = array('type' => 'agent_team', 'op' => 'is', 'options' => array('agent_team' => '0'));
 
-				$terms = serialize($terms);
-				$this->container->getDb()->update('ticket_filters', array('terms' => $terms), array('id' => $fid));
-			}
-		}
-	}
+                $terms = serialize($terms);
+                $this->container->getDb()->update('ticket_filters', array('terms' => $terms), array('id' => $fid));
+            }
+        }
+    }
 }

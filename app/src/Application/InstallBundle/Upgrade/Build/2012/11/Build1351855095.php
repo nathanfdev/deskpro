@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351855095 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Allow editing of snippets with the RTE");
-		$this->execMutateSql("ALTER TABLE ticket_snippets ADD snippet_html LONGTEXT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Allow editing of snippets with the RTE");
+        $this->execMutateSql("ALTER TABLE ticket_snippets ADD snippet_html LONGTEXT NOT NULL");
+    }
 }

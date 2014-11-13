@@ -40,66 +40,66 @@ use Application\DeskPRO\Entity\Person;
 
 class NewOrganization
 {
-	/** @var string */
-	public $name;
-	/** @var array */
-	public $labels = array();
-	/** @var array */
-	public $usergroup_ids = array();
-	/** @var array */
-	public $custom_fields = array();
-	/** @var Organization */
-	protected $_org;
+    /** @var string */
+    public $name;
+    /** @var array */
+    public $labels = array();
+    /** @var array */
+    public $usergroup_ids = array();
+    /** @var array */
+    public $custom_fields = array();
+    /** @var Organization */
+    protected $_org;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $_em;
 
-	public function __construct(Person $person_context)
-	{
-		$this->_person_context = $person_context;
+    public function __construct(Person $person_context)
+    {
+        $this->_person_context = $person_context;
 
-		$this->_em = App::getOrm();
-	}
+        $this->_em = App::getOrm();
+    }
 
-	public function setCustomFieldForm(array $form)
-	{
-		$this->custom_fields = isset($form['org_custom_fields']) ? $form['org_custom_fields'] : array();
-	}
+    public function setCustomFieldForm(array $form)
+    {
+        $this->custom_fields = isset($form['org_custom_fields']) ? $form['org_custom_fields'] : array();
+    }
 
-	public function save()
-	{
-		$this->_em->beginTransaction();
+    public function save()
+    {
+        $this->_em->beginTransaction();
 
-		$org = new Organization();
-		$org->getLabelManager()->setLabelsArray($this->labels);
+        $org = new Organization();
+        $org->getLabelManager()->setLabelsArray($this->labels);
 
-		$org->name = $this->name;
+        $org->name = $this->name;
 
-		foreach ($this->usergroup_ids as $ug_id) {
-			$ug = $this->_em->find('DeskPRO:Usergroup', $ug_id);
-			if ($ug_id) {
-				$org->usergroups->add($ug);
-			}
-		}
+        foreach ($this->usergroup_ids as $ug_id) {
+            $ug = $this->_em->find('DeskPRO:Usergroup', $ug_id);
+            if ($ug_id) {
+                $org->usergroups->add($ug);
+            }
+        }
 
-		$this->_em->persist($org);
-		$this->_em->flush();
+        $this->_em->persist($org);
+        $this->_em->flush();
 
-		if ($this->custom_fields) {
-			$field_manager = App::getSystemService('org_fields_manager');
-			$field_manager->saveFormToObject($this->custom_fields, $org);
-		}
+        if ($this->custom_fields) {
+            $field_manager = App::getSystemService('org_fields_manager');
+            $field_manager->saveFormToObject($this->custom_fields, $org);
+        }
 
-		$this->_em->flush();
-		$this->_em->commit();
+        $this->_em->flush();
+        $this->_em->commit();
 
-		$this->_org = $org;
-	}
+        $this->_org = $org;
+    }
 
-	public function getOrganization()
-	{
-		return $this->_org;
-	}
+    public function getOrganization()
+    {
+        return $this->_org;
+    }
 }

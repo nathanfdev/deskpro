@@ -38,118 +38,122 @@ use Doctrine\ORM\EntityManager;
 
 class GenerateSchema
 {
-	/**
-	 * @var array
-	 */
-	protected $creates;
+    /**
+     * @var array
+     */
+    protected $creates;
 
-	/**
-	 * @var array
-	 */
-	protected $alters;
+    /**
+     * @var array
+     */
+    protected $alters;
 
-	/**
-	 * @var array
-	 */
-	protected $triggers;
+    /**
+     * @var array
+     */
+    protected $triggers;
 
-	/**
-	 * @var array
-	 */
-	protected $indexes;
+    /**
+     * @var array
+     */
+    protected $indexes;
 
-	/**
-	 * @var array
-	 */
-	protected $fks;
+    /**
+     * @var array
+     */
+    protected $fks;
 
-	/**
-	 * @var string
-	 */
-	protected $php_file;
+    /**
+     * @var string
+     */
+    protected $php_file;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @param \Doctrine\ORM\EntityManager $em
-	 */
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getCreates()
-	{
-		$this->load();
-		return $this->creates;
-	}
+    /**
+     * @param \Doctrine\ORM\EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getAlters()
-	{
-		$this->load();
-		return $this->alters;
-	}
+    /**
+     * @return array
+     */
+    public function getCreates()
+    {
+        $this->load();
+
+        return $this->creates;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getTriggers()
-	{
-		$this->load();
-		return $this->triggers;
-	}
+    /**
+     * @return array
+     */
+    public function getAlters()
+    {
+        $this->load();
+
+        return $this->alters;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getPhpFile()
-	{
-		$this->load();
-		return $this->php_file;
-	}
+    /**
+     * @return array
+     */
+    public function getTriggers()
+    {
+        $this->load();
+
+        return $this->triggers;
+    }
 
 
-	/**
-	 * Loads the schema
-	 */
-	protected function load()
-	{
-		if ($this->creates !== null) {
-			return;
-		}
+    /**
+     * @return string
+     */
+    public function getPhpFile()
+    {
+        $this->load();
 
-		$this->creates = array();
-		$this->alters = array();
+        return $this->php_file;
+    }
 
-		#------------------------------
-		# Load SQL
-		#------------------------------
 
-		$em = $this->em;
-		/** @var $metadata \Doctrine\ORM\Mapping\ClassMetadata[] */
-		$metadata = $em->getMetadataFactory()->getAllMetadata();
-		$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
-		$sm = $this->em->getConnection()->getSchemaManager();
-		$all_sql = $tool->getCreateSchemaSql($metadata);
+    /**
+     * Loads the schema
+     */
+    protected function load()
+    {
+        if ($this->creates !== null) {
+            return;
+        }
 
-		#------------------------------
-		# Non-entity tables
-		#------------------------------
+        $this->creates = array();
+        $this->alters = array();
 
-		$all_sql[] = <<<SQL
+        #------------------------------
+        # Load SQL
+        #------------------------------
+
+        $em = $this->em;
+        /** @var $metadata \Doctrine\ORM\Mapping\ClassMetadata[] */
+        $metadata = $em->getMetadataFactory()->getAllMetadata();
+        $tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+        $sm = $this->em->getConnection()->getSchemaManager();
+        $all_sql = $tool->getCreateSchemaSql($metadata);
+
+        #------------------------------
+        # Non-entity tables
+        #------------------------------
+
+        $all_sql[] = <<<SQL
 CREATE TABLE `content_search` (
   `object_type` varchar(15) NOT NULL DEFAULT '',
   `object_id` int(11) NOT NULL,
@@ -159,177 +163,177 @@ CREATE TABLE `content_search` (
 ) ENGINE=MyISAM
 SQL;
 
-		#------------------------------
-		# Organise it
-		#------------------------------
+        #------------------------------
+        # Organise it
+        #------------------------------
 
-		$xa = 0;
-		$xc = 0;
-		$xt = 0;
+        $xa = 0;
+        $xc = 0;
+        $xt = 0;
 
-		$php_creates  = array();
-		$php_alters   = array();
-		$php_triggers = array();
-
-
-
-		foreach ($all_sql as $s) {
-			$s = trim($s);
-
-			// Trigger
-			if (preg_match('#^CREATE TRIGGER#', $s)) {
-
-				$s_ex = var_export($s, true);
-
-				$this->triggers[] = $s;
-				$php_triggers[] = "\$queries['trigger'][$xt] = $s_ex;";
-				$xt++;
-
-			// Alter
-			} elseif (preg_match('#^ALTER#', $s)) {
-				$s = str_replace(array("\r\n", "\n"), ' ', $s);
-				$this->alters[] = $s;
-
-			// Create
-			} else {
-
-				$s = str_replace(array("\r\n", "\n"), ' ', $s);
-				$s .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
-
-				if (strpos($s, 'CREATE TABLE person2usergroups') !== false) {
-					$s = str_replace('INDEX IDX_356C969E217BBB47 (person_id), ', '', $s);
-				}
-
-				$s_ex = var_export($s, true);
-
-				$this->creates[] = $s;
-				$php_creates[] = "\$queries['create'][$xc] = $s_ex;";
-				$xc++;
-			}
-		}
-
-		$this->alters = self::combineAlters($this->alters);
-
-		foreach ($this->alters as $s) {
-			$s_ex = var_export($s, true);
-			$php_alters[] = "\$queries['alter'][$xa] = $s_ex;";
-			$xa++;
-		}
-
-		#------------------------------
-		# Indexes and keys
-		#------------------------------
-
-		$this->indexes = array();
-		$this->fks = array();
-		$php_indexes = array();
-		$php_fks = array();
-
-		$schema = $tool->getSchemaFromMetadata($metadata);
-		/** @var $tables \Doctrine\DBAL\Schema\Table[] */
-		$tables = $schema->getTables();
-		foreach ($tables as $table) {
-			$t = $table->getName();
-
-			$this->indexes[$t] = array();
-			$this->fks[$t] = array();
-
-			$indexes = $table->getIndexes();
-			$fkeys = $table->getForeignKeys();
-
-			if (count($indexes) > 0) {
-				$php_indexes[] = "\$queries['index']['$t'] = array(";
-			}
-			if (count($fkeys) > 0) {
-				$php_fks[] = "\$queries['fk']['$t'] = array(";
-			}
-
-			foreach ($indexes as $idx) {
-				$sql = $sm->getDatabasePlatform()->getCreateIndexSQL($idx, $t);
-				$this->indexes[$t][$idx->getName()] = $sql;
-
-				$php_indexes[] = "\t'{$idx->getName()}' => '" . addslashes($sql) . "',";
-			}
-			foreach ($fkeys as $fk) {
-				$sql = $sm->getDatabasePlatform()->getCreateForeignKeySQL($fk, $t);
-				$this->fks[$t][$fk->getName()] = $sql;
-
-				$php_fks[] = "\t'{$fk->getName()}' => '" . addslashes($sql) . "',";
-			}
-
-			if (count($indexes) > 0) {
-				$php_indexes[] = ");";
-			}
-			if (count($fkeys) > 0) {
-				$php_fks[] = ");";
-			}
-		}
+        $php_creates  = array();
+        $php_alters   = array();
+        $php_triggers = array();
 
 
-		#------------------------------
-		# Create the PHP file
-		#------------------------------
 
-		$php = "<?php\n\n\$queries = array('create' => array(), 'alter' => array(), 'index' => array(), 'fk' => array(), 'trigger' => array());\n\n";
-		$php .= implode("\n", $php_creates);
-		$php .= "\n\n\n\n\n";
-		$php .= implode("\n", $php_alters);
-		$php .= "\n\n\n\n\n";
-		$php .= implode("\n", $php_triggers);
-		$php .= "\n\n\n\n\n";
-		$php .= implode("\n", $php_indexes);
-		$php .= "\n\n\n\n\n";
-		$php .= implode("\n", $php_fks);
-		$php .= "\n\n\n\n\nreturn \$queries;\n";
+        foreach ($all_sql as $s) {
+            $s = trim($s);
 
-		$pos = strpos($php, 'CREATE TABLE client_messages');
-		if ($pos) {
-			$pos = strpos($php, 'ENGINE = InnoDB', $pos);
-			if ($pos) {
-				$php = str_split($php, $pos);
-				$php[0] .= ' AUTO_INCREMENT=2 ';
-				$php = implode('', $php);
-			}
-		}
+            // Trigger
+            if (preg_match('#^CREATE TRIGGER#', $s)) {
 
-		$this->php_file = $php;
-	}
+                $s_ex = var_export($s, true);
+
+                $this->triggers[] = $s;
+                $php_triggers[] = "\$queries['trigger'][$xt] = $s_ex;";
+                $xt++;
+
+            // Alter
+            } elseif (preg_match('#^ALTER#', $s)) {
+                $s = str_replace(array("\r\n", "\n"), ' ', $s);
+                $this->alters[] = $s;
+
+            // Create
+            } else {
+
+                $s = str_replace(array("\r\n", "\n"), ' ', $s);
+                $s .= ' DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci';
+
+                if (strpos($s, 'CREATE TABLE person2usergroups') !== false) {
+                    $s = str_replace('INDEX IDX_356C969E217BBB47 (person_id), ', '', $s);
+                }
+
+                $s_ex = var_export($s, true);
+
+                $this->creates[] = $s;
+                $php_creates[] = "\$queries['create'][$xc] = $s_ex;";
+                $xc++;
+            }
+        }
+
+        $this->alters = self::combineAlters($this->alters);
+
+        foreach ($this->alters as $s) {
+            $s_ex = var_export($s, true);
+            $php_alters[] = "\$queries['alter'][$xa] = $s_ex;";
+            $xa++;
+        }
+
+        #------------------------------
+        # Indexes and keys
+        #------------------------------
+
+        $this->indexes = array();
+        $this->fks = array();
+        $php_indexes = array();
+        $php_fks = array();
+
+        $schema = $tool->getSchemaFromMetadata($metadata);
+        /** @var $tables \Doctrine\DBAL\Schema\Table[] */
+        $tables = $schema->getTables();
+        foreach ($tables as $table) {
+            $t = $table->getName();
+
+            $this->indexes[$t] = array();
+            $this->fks[$t] = array();
+
+            $indexes = $table->getIndexes();
+            $fkeys = $table->getForeignKeys();
+
+            if (count($indexes) > 0) {
+                $php_indexes[] = "\$queries['index']['$t'] = array(";
+            }
+            if (count($fkeys) > 0) {
+                $php_fks[] = "\$queries['fk']['$t'] = array(";
+            }
+
+            foreach ($indexes as $idx) {
+                $sql = $sm->getDatabasePlatform()->getCreateIndexSQL($idx, $t);
+                $this->indexes[$t][$idx->getName()] = $sql;
+
+                $php_indexes[] = "\t'{$idx->getName()}' => '" . addslashes($sql) . "',";
+            }
+            foreach ($fkeys as $fk) {
+                $sql = $sm->getDatabasePlatform()->getCreateForeignKeySQL($fk, $t);
+                $this->fks[$t][$fk->getName()] = $sql;
+
+                $php_fks[] = "\t'{$fk->getName()}' => '" . addslashes($sql) . "',";
+            }
+
+            if (count($indexes) > 0) {
+                $php_indexes[] = ");";
+            }
+            if (count($fkeys) > 0) {
+                $php_fks[] = ");";
+            }
+        }
 
 
-	/**
-	 * Takes an array of ALTER queries and combines any alters that alter the same table.
-	 * For example, instead of 10 separate ALTER TABLE queries that add 10 separate FK's, there's only one.
-	 *
-	 * @param array $alters
-	 */
-	public static function combineAlters(array $alters)
-	{
-		$segments = array();
+        #------------------------------
+        # Create the PHP file
+        #------------------------------
 
-		foreach ($alters as $sql) {
-			$sql = str_replace(array("\r\n", "\n", ' '), ' ', $sql);
-			$sql = trim($sql, ' ;');
+        $php = "<?php\n\n\$queries = array('create' => array(), 'alter' => array(), 'index' => array(), 'fk' => array(), 'trigger' => array());\n\n";
+        $php .= implode("\n", $php_creates);
+        $php .= "\n\n\n\n\n";
+        $php .= implode("\n", $php_alters);
+        $php .= "\n\n\n\n\n";
+        $php .= implode("\n", $php_triggers);
+        $php .= "\n\n\n\n\n";
+        $php .= implode("\n", $php_indexes);
+        $php .= "\n\n\n\n\n";
+        $php .= implode("\n", $php_fks);
+        $php .= "\n\n\n\n\nreturn \$queries;\n";
 
-			$m = null;
-			if (!preg_match('#^ALTER +TABLE +`?(.*?)`? (.*?)$#', $sql, $m)) {
-				throw new \InvalidArgumentException("Invalid ALTER query: $sql");
-			}
+        $pos = strpos($php, 'CREATE TABLE client_messages');
+        if ($pos) {
+            $pos = strpos($php, 'ENGINE = InnoDB', $pos);
+            if ($pos) {
+                $php = str_split($php, $pos);
+                $php[0] .= ' AUTO_INCREMENT=2 ';
+                $php = implode('', $php);
+            }
+        }
 
-			$table = $m[1];
-			$alter_seg = trim($m[2], ' ,');
+        $this->php_file = $php;
+    }
 
-			if (!isset($segments[$table])) {
-				$segments[$table] = array();
-			}
 
-			$segments[$table][] = $alter_seg;
-		}
+    /**
+     * Takes an array of ALTER queries and combines any alters that alter the same table.
+     * For example, instead of 10 separate ALTER TABLE queries that add 10 separate FK's, there's only one.
+     *
+     * @param array $alters
+     */
+    public static function combineAlters(array $alters)
+    {
+        $segments = array();
 
-		$return = array();
-		foreach ($segments as $table => $segs) {
-			$return[] = "ALTER TABLE " . $table . " " . implode(', ', $segs);
-		}
+        foreach ($alters as $sql) {
+            $sql = str_replace(array("\r\n", "\n", ' '), ' ', $sql);
+            $sql = trim($sql, ' ;');
 
-		return $return;
-	}
+            $m = null;
+            if (!preg_match('#^ALTER +TABLE +`?(.*?)`? (.*?)$#', $sql, $m)) {
+                throw new \InvalidArgumentException("Invalid ALTER query: $sql");
+            }
+
+            $table = $m[1];
+            $alter_seg = trim($m[2], ' ,');
+
+            if (!isset($segments[$table])) {
+                $segments[$table] = array();
+            }
+
+            $segments[$table][] = $alter_seg;
+        }
+
+        $return = array();
+        foreach ($segments as $table => $segs) {
+            $return[] = "ALTER TABLE " . $table . " " . implode(', ', $segs);
+        }
+
+        return $return;
+    }
 }

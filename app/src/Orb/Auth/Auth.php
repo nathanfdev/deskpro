@@ -47,40 +47,40 @@ use \Symfony\Component\EventDispatcher\EventDispatcher;
  */
 class Auth
 {
-	/**
-	 * @var \Symfony\Component\EventDispatcher\EventDispatcher
-	 */
-	protected $dispatcher;
-	
-	public function __construct(EventDispatcher $dispatcher = null)
-	{
-		$this->dispatcher = $dispatcher;
-	}
+    /**
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $dispatcher;
 
-	/**
-	 * Run auth on the adapter.
-	 *
-	 * The returned Result object is success, failure or requires a redirect.
-	 * Success results will have an identity object.
-	 * Results that require redirects you should redirect using the URL you get from the object
-	 * Failures may be exceptions, check for the FAILURE_EXCEPTION code and the 'exception' message in the messages.
-	 * 
-	 * @param \Orb\Auth\Adapter\AdapterInterface $adapter
-	 * @return \Orb\Auth\Result
-	 */
-	public function authenticate(\Orb\Auth\Adapter\AdapterInterface $adapter)
-	{
-		try {
-			$result = $adapter->authenticate();
-		} catch (Exception $e) {
-			$result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
-		}
+    public function __construct(EventDispatcher $dispatcher = null)
+    {
+        $this->dispatcher = $dispatcher;
+    }
 
-		if ($this->dispatcher) {
-			$event = $this->dispatcher->filter(new Event($this, 'orb.auth.result', array('adapter' => $adapter)), $result);
-			$result = $event->getReturnValue();
-		}
+    /**
+     * Run auth on the adapter.
+     *
+     * The returned Result object is success, failure or requires a redirect.
+     * Success results will have an identity object.
+     * Results that require redirects you should redirect using the URL you get from the object
+     * Failures may be exceptions, check for the FAILURE_EXCEPTION code and the 'exception' message in the messages.
+     *
+     * @param  \Orb\Auth\Adapter\AdapterInterface $adapter
+     * @return \Orb\Auth\Result
+     */
+    public function authenticate(\Orb\Auth\Adapter\AdapterInterface $adapter)
+    {
+        try {
+            $result = $adapter->authenticate();
+        } catch (Exception $e) {
+            $result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
+        }
 
-		return $result;
-	}
+        if ($this->dispatcher) {
+            $event = $this->dispatcher->filter(new Event($this, 'orb.auth.result', array('adapter' => $adapter)), $result);
+            $result = $event->getReturnValue();
+        }
+
+        return $result;
+    }
 }

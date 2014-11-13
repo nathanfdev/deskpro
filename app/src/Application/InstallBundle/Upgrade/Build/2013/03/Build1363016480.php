@@ -36,32 +36,32 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1363016480 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Insert default value for tickets.reopen_resolved_createnew permission");
+    public function run()
+    {
+        $this->out("Insert default value for tickets.reopen_resolved_createnew permission");
 
-		$ug_ids = $this->container->getDb()->fetchAllCol("
-			SELECT usergroups.id
-			FROM usergroups
-			WHERE usergroups.is_agent_group = 0
-		");
+        $ug_ids = $this->container->getDb()->fetchAllCol("
+            SELECT usergroups.id
+            FROM usergroups
+            WHERE usergroups.is_agent_group = 0
+        ");
 
-		$can_reopen_map = $this->container->getDb()->fetchAllKeyValue("
-			SELECT usergroup_id, value
-			FROM permissions
-			WHERE name = 'tickets.reopen_resolved' AND value = '1'
-		");
+        $can_reopen_map = $this->container->getDb()->fetchAllKeyValue("
+            SELECT usergroup_id, value
+            FROM permissions
+            WHERE name = 'tickets.reopen_resolved' AND value = '1'
+        ");
 
-		foreach ($ug_ids as $ug_id) {
-			if (isset($can_reopen_map[$ug_id])) {
-				continue;
-			}
+        foreach ($ug_ids as $ug_id) {
+            if (isset($can_reopen_map[$ug_id])) {
+                continue;
+            }
 
-			$this->container->getDb()->replace('permissions', array(
-				'usergroup_id' => $ug_id,
-				'name'         => 'tickets.reopen_resolved_createnew',
-				'value'        => 1
-			));
-		}
-	}
+            $this->container->getDb()->replace('permissions', array(
+                'usergroup_id' => $ug_id,
+                'name'         => 'tickets.reopen_resolved_createnew',
+                'value'        => 1
+            ));
+        }
+    }
 }

@@ -36,30 +36,30 @@ namespace Application\DeskPRO\PageDisplay\Item;
 
 class ItemGroup extends ItemAbstract
 {
-	/**
-	 * @var \Application\DeskPRO\PageDisplay\Item\ItemGroup[]
-	 */
-	protected $items = array();
+    /**
+     * @var \Application\DeskPRO\PageDisplay\Item\ItemGroup[]
+     */
+    protected $items = array();
 
-	public function getType()
-	{
-		return 'item_group';
-	}
+    public function getType()
+    {
+        return 'item_group';
+    }
 
-	public function addItem(ItemInterface $item)
-	{
-		$this->items[] = $item;
-	}
+    public function addItem(ItemInterface $item)
+    {
+        $this->items[] = $item;
+    }
 
-	public function addItems(array $items)
-	{
-		foreach ($items as $item) {
-			$this->addItem($item);
-		}
-	}
+    public function addItems(array $items)
+    {
+        foreach ($items as $item) {
+            $this->addItem($item);
+        }
+    }
 
-	public function getItems()
-	{
-		return $this->items;
-	}
+    public function getItems()
+    {
+        return $this->items;
+    }
 }

@@ -36,15 +36,15 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
 interface CacheableItem
 {
-	/**
-	 * If the section is cacheable (ie given options etc), return true or an array of
-	 * options:
-	 * - tags
-	 * - lifetime
-	 * - user_indifferent: When true, this signifies the cache doesnt change for usergroups,
-	 *                     so a generic cache will be used for everyone (saves space etc).
-	 * 
-	 * @return mixed
-	 */
-	public function getCacheOptions();
+    /**
+     * If the section is cacheable (ie given options etc), return true or an array of
+     * options:
+     * - tags
+     * - lifetime
+     * - user_indifferent: When true, this signifies the cache doesnt change for usergroups,
+     *                     so a generic cache will be used for everyone (saves space etc).
+     *
+     * @return mixed
+     */
+    public function getCacheOptions();
 }

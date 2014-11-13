@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1354276814 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add HTML cleaned vs raw distinction to drafts");
-		$this->execMutateSql("ALTER TABLE drafts ADD message_html LONGTEXT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add HTML cleaned vs raw distinction to drafts");
+        $this->execMutateSql("ALTER TABLE drafts ADD message_html LONGTEXT NOT NULL");
+    }
 }

@@ -36,58 +36,57 @@ namespace Application\DeskPRO\ORM\Persisters;
 
 use Doctrine\ORM\PersistentCollection;
 use Doctrine\ORM\Persisters\BasicEntityPersister;
-use Doctrine\ORM\Query;
 
 class LookupBasicEntityPersister extends BasicEntityPersister
 {
-	public function xload(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null, array $orderBy = null)
-	{
-		$uof = $this->em->getUnitOfWork();
-		$classname = $this->class->getName();
-
-		// Look for ID-based entities
-		if (count($criteria) == 1 && isset($criteria['id']) && $criteria['id']) {
-			if ($uof->isAddedPreloadedEntity($classname)) {
-				$uof->preloadEntitySet($classname);
-			}
-			$hit = $uof->tryGetById($criteria['id'], $classname);
-			if ($hit && $hit->__hasRunLoad__() && $hit->getId()) {
-				return $hit;
-			}
-		}
-
-		// Search through the identity map for parent_id
-		if (count($criteria) == 1 && isset($criteria['parent_id']) && $criteria['parent_id']) {
-			if ($uof->isAddedPreloadedEntity($classname)) {
-				$uof->preloadEntitySet($classname);
-			}
-
-			$idmap = $uof->getIdentityMap();
-			if (isset($idmap[$classname])) {
-				foreach ($idmap[$classname] as $ent) {
-					if ($ent->__hasRunLoad__() && $ent->getId() == $criteria['parent_id']) {
-						return $ent;
-					}
-				}
-			}
-		}
-
-		return parent::load($criteria, $entity, $assoc, $hints, $lockMode, $limit, $orderBy);
-	}
-
-	public function xloadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
+    public function xload(array $criteria, $entity = null, $assoc = null, array $hints = array(), $lockMode = 0, $limit = null, array $orderBy = null)
     {
-		if ($sourceEntity->__dp_is_preloaded_repos && isset($assoc['fieldName']) && $assoc['fieldName'] == 'children') {
-			$repos = $sourceEntity->__dp_is_preloaded_repos;
-			$children = $repos->getChildren($sourceEntity);
+        $uof = $this->em->getUnitOfWork();
+        $classname = $this->class->getName();
 
-			if ($children) {
-				foreach ($children as $c) {
-					$coll->hydrateAdd($c);
-				}
-			}
-		} else {
-			return parent::loadOneToManyCollection($assoc, $sourceEntity, $coll);
-		}
+        // Look for ID-based entities
+        if (count($criteria) == 1 && isset($criteria['id']) && $criteria['id']) {
+            if ($uof->isAddedPreloadedEntity($classname)) {
+                $uof->preloadEntitySet($classname);
+            }
+            $hit = $uof->tryGetById($criteria['id'], $classname);
+            if ($hit && $hit->__hasRunLoad__() && $hit->getId()) {
+                return $hit;
+            }
+        }
+
+        // Search through the identity map for parent_id
+        if (count($criteria) == 1 && isset($criteria['parent_id']) && $criteria['parent_id']) {
+            if ($uof->isAddedPreloadedEntity($classname)) {
+                $uof->preloadEntitySet($classname);
+            }
+
+            $idmap = $uof->getIdentityMap();
+            if (isset($idmap[$classname])) {
+                foreach ($idmap[$classname] as $ent) {
+                    if ($ent->__hasRunLoad__() && $ent->getId() == $criteria['parent_id']) {
+                        return $ent;
+                    }
+                }
+            }
+        }
+
+        return parent::load($criteria, $entity, $assoc, $hints, $lockMode, $limit, $orderBy);
+    }
+
+    public function xloadOneToManyCollection(array $assoc, $sourceEntity, PersistentCollection $coll)
+    {
+        if ($sourceEntity->__dp_is_preloaded_repos && isset($assoc['fieldName']) && $assoc['fieldName'] == 'children') {
+            $repos = $sourceEntity->__dp_is_preloaded_repos;
+            $children = $repos->getChildren($sourceEntity);
+
+            if ($children) {
+                foreach ($children as $c) {
+                    $coll->hydrateAdd($c);
+                }
+            }
+        } else {
+            return parent::loadOneToManyCollection($assoc, $sourceEntity, $coll);
+        }
     }
 }

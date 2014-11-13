@@ -36,14 +36,14 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358330844 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adjust Twitter user storage for people/organizations");
-		$this->execMutateSql("ALTER TABLE organizations_twitter_users DROP FOREIGN KEY FK_26894816B1F2707");
-		$this->execMutateSql("DROP INDEX IDX_26894816B1F2707 ON organizations_twitter_users");
-		$this->execMutateSql("ALTER TABLE organizations_twitter_users CHANGE twitter_user_id twitter_user_id BIGINT NOT NULL");
-		$this->execMutateSql("ALTER TABLE people_twitter_users DROP FOREIGN KEY FK_E13A49D06B1F2707");
-		$this->execMutateSql("DROP INDEX IDX_E13A49D06B1F2707 ON people_twitter_users");
-		$this->execMutateSql("ALTER TABLE people_twitter_users CHANGE twitter_user_id twitter_user_id BIGINT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Adjust Twitter user storage for people/organizations");
+        $this->execMutateSql("ALTER TABLE organizations_twitter_users DROP FOREIGN KEY FK_26894816B1F2707");
+        $this->execMutateSql("DROP INDEX IDX_26894816B1F2707 ON organizations_twitter_users");
+        $this->execMutateSql("ALTER TABLE organizations_twitter_users CHANGE twitter_user_id twitter_user_id BIGINT NOT NULL");
+        $this->execMutateSql("ALTER TABLE people_twitter_users DROP FOREIGN KEY FK_E13A49D06B1F2707");
+        $this->execMutateSql("DROP INDEX IDX_E13A49D06B1F2707 ON people_twitter_users");
+        $this->execMutateSql("ALTER TABLE people_twitter_users CHANGE twitter_user_id twitter_user_id BIGINT NOT NULL");
+    }
 }

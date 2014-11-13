@@ -43,123 +43,123 @@ use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 
 class SpecialTriggerEdit
 {
-	const TYPE_DEPARTMENT = 'Department';
-	const TYPE_EMAIL_ACCOUNT = 'EmailAccount';
+    const TYPE_DEPARTMENT = 'Department';
+    const TYPE_EMAIL_ACCOUNT = 'EmailAccount';
 
-	/**
-	 * @var string
-	 */
-	private $type;
+    /**
+     * @var string
+     */
+    private $type;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Department|\Application\DeskPRO\Entity\EmailAccount
-	 */
-	private $obj;
+    /**
+     * @var \Application\DeskPRO\Entity\Department|\Application\DeskPRO\Entity\EmailAccount
+     */
+    private $obj;
 
-	/**
-	 * @var string
-	 */
-	private $event;
-
-
-	/**
-	 * @param Department $department
-	 * @return SpecialTriggerEdit
-	 */
-	public static function createWithDepartment(Department $department, $event)
-	{
-		return new self(self::TYPE_DEPARTMENT, $department, $event);
-	}
+    /**
+     * @var string
+     */
+    private $event;
 
 
-	/**
-	 * @param EmailAccount $account
-	 * @return SpecialTriggerEdit
-	 */
-	public static function createWithEmailAccount(EmailAccount $account)
-	{
-		return new self(self::TYPE_EMAIL_ACCOUNT, $account, TicketTrigger::EVENT_TYPE_NEWTICKET);
-	}
+    /**
+     * @param  Department         $department
+     * @return SpecialTriggerEdit
+     */
+    public static function createWithDepartment(Department $department, $event)
+    {
+        return new self(self::TYPE_DEPARTMENT, $department, $event);
+    }
 
 
-	/**
-	 * @param string $type
-	 * @param Department|EmailAccount $obj
-	 */
-	private function __construct($type, $obj, $event)
-	{
-		$this->type  = $type;
-		$this->obj   = $obj;
-		$this->event = $event;
-	}
+    /**
+     * @param  EmailAccount       $account
+     * @return SpecialTriggerEdit
+     */
+    public static function createWithEmailAccount(EmailAccount $account)
+    {
+        return new self(self::TYPE_EMAIL_ACCOUNT, $account, TicketTrigger::EVENT_TYPE_NEWTICKET);
+    }
 
 
-	/**
-	 * @param TicketTrigger $trigger
-	 */
-	public function applyToTrigger(TicketTrigger $trigger)
-	{
-		switch ($this->type) {
-			case self::TYPE_DEPARTMENT:
-				$this->applyDepartmentToTrigger($trigger);
-				break;
-
-			case self::TYPE_EMAIL_ACCOUNT:
-				$this->applyEmailAccountToTrigger($trigger);
-				break;
-		}
-	}
+    /**
+     * @param string                  $type
+     * @param Department|EmailAccount $obj
+     */
+    private function __construct($type, $obj, $event)
+    {
+        $this->type  = $type;
+        $this->obj   = $obj;
+        $this->event = $event;
+    }
 
 
-	/**
-	 * @param TicketTrigger $trigger
-	 */
-	private function applyDepartmentToTrigger(TicketTrigger $trigger)
-	{
-		$trigger->title         = "Trigger for Department: {$this->obj->title}";
-		$trigger->department    = $this->obj;
-		$trigger->email_account = null;
+    /**
+     * @param TicketTrigger $trigger
+     */
+    public function applyToTrigger(TicketTrigger $trigger)
+    {
+        switch ($this->type) {
+            case self::TYPE_DEPARTMENT:
+                $this->applyDepartmentToTrigger($trigger);
+                break;
 
-		$terms = new TriggerTerms();
-		$terms_set = new TriggerTermComposite();
-
-		if ($this->event == TicketTrigger::EVENT_TYPE_UPDATE) {
-			$trigger->event_trigger = 'update';
-			$trigger->by_agent_mode = array('api', 'email', 'web');
-			$trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
-
-			$terms_set->add(new CheckDepartment('changed_to', array('department_ids' => array($this->obj->id))));
-		} else {
-			$trigger->event_trigger = 'newticket';
-			$trigger->by_agent_mode = array('api', 'web');
-			$trigger->by_user_mode  = array('form', 'portal', 'widget');
-
-			$terms_set->add(new CheckDepartment('is', array('department_ids' => array($this->obj->id))));
-		}
-
-		$terms->addTerm($terms_set);
-		$trigger->terms = $terms;
-	}
+            case self::TYPE_EMAIL_ACCOUNT:
+                $this->applyEmailAccountToTrigger($trigger);
+                break;
+        }
+    }
 
 
-	/**
-	 * @param TicketTrigger $trigger
-	 */
-	private function applyEmailAccountToTrigger(TicketTrigger $trigger)
-	{
-		$trigger->title         = "Trigger for Email Account: {$this->obj->address}";
-		$trigger->email_account = $this->obj;
-		$trigger->department    = null;
+    /**
+     * @param TicketTrigger $trigger
+     */
+    private function applyDepartmentToTrigger(TicketTrigger $trigger)
+    {
+        $trigger->title         = "Trigger for Department: {$this->obj->title}";
+        $trigger->department    = $this->obj;
+        $trigger->email_account = null;
 
-		$terms = new TriggerTerms();
-		$terms_set = new TriggerTermComposite();
-		$terms_set->add(new CheckEmailAccount('is', array('email_account_ids' => array($this->obj->id))));
-		$terms->addTerm($terms_set);
+        $terms = new TriggerTerms();
+        $terms_set = new TriggerTermComposite();
 
-		$trigger->terms = $terms;
+        if ($this->event == TicketTrigger::EVENT_TYPE_UPDATE) {
+            $trigger->event_trigger = 'update';
+            $trigger->by_agent_mode = array('api', 'email', 'web');
+            $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
 
-		$trigger->event_trigger = 'newticket';
-		$trigger->by_agent_mode = array('email');
-		$trigger->by_user_mode  = array('email');
-	}
+            $terms_set->add(new CheckDepartment('changed_to', array('department_ids' => array($this->obj->id))));
+        } else {
+            $trigger->event_trigger = 'newticket';
+            $trigger->by_agent_mode = array('api', 'web');
+            $trigger->by_user_mode  = array('form', 'portal', 'widget');
+
+            $terms_set->add(new CheckDepartment('is', array('department_ids' => array($this->obj->id))));
+        }
+
+        $terms->addTerm($terms_set);
+        $trigger->terms = $terms;
+    }
+
+
+    /**
+     * @param TicketTrigger $trigger
+     */
+    private function applyEmailAccountToTrigger(TicketTrigger $trigger)
+    {
+        $trigger->title         = "Trigger for Email Account: {$this->obj->address}";
+        $trigger->email_account = $this->obj;
+        $trigger->department    = null;
+
+        $terms = new TriggerTerms();
+        $terms_set = new TriggerTermComposite();
+        $terms_set->add(new CheckEmailAccount('is', array('email_account_ids' => array($this->obj->id))));
+        $terms->addTerm($terms_set);
+
+        $trigger->terms = $terms;
+
+        $trigger->event_trigger = 'newticket';
+        $trigger->by_agent_mode = array('email');
+        $trigger->by_user_mode  = array('email');
+    }
 }

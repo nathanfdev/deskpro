@@ -33,23 +33,20 @@
 
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
 class Noop extends AbstractFetcher
 {
-	protected function _initConnection()
-	{
-		// noop
-	}
+    protected function _initConnection()
+    {
+        // noop
+    }
 
-	protected function _readNext()
-	{
-		return null;
-	}
+    protected function _readNext()
+    {
+        return null;
+    }
 
-	protected function _doneRead($id)
-	{
-		// noop
-	}
+    protected function _doneRead($id)
+    {
+        // noop
+    }
 }

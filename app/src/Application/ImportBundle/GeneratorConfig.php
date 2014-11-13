@@ -33,31 +33,31 @@ namespace Application\ImportBundle;
 
 class GeneratorConfig
 {
-	/**
-	 * @var string
-	 */
-	public $script;
-	
-	/**
-	 * @var string
-	 */
-	public $output_path;
+    /**
+     * @var string
+     */
+    public $script;
 
-	/**
-	 * @var string
-	 */
-	public $log_path;
+    /**
+     * @var string
+     */
+    public $output_path;
 
-	/**
-	 * 'test' or 'live'
-	 * @var string
-	 */
-	public $mode = 'test';
+    /**
+     * @var string
+     */
+    public $log_path;
 
-	/**
-	 * Mark files as done when they are finished importing?
-	 *
-	 * @var bool
-	 */
-	public $mark_done = true;
+    /**
+     * 'test' or 'live'
+     * @var string
+     */
+    public $mode = 'test';
+
+    /**
+     * Mark files as done when they are finished importing?
+     *
+     * @var bool
+     */
+    public $mark_done = true;
 }

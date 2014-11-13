@@ -39,24 +39,24 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class EmailBanType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('email_ban', new EmailBanPropsType());
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('email_ban', new EmailBanPropsType());
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class'         => 'Application\\DeskPRO\\Banning\\EmailBanEdit',
-				 'cascade_validation' => true
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class'         => 'Application\\DeskPRO\\Banning\\EmailBanEdit',
+                 'cascade_validation' => true
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'email_ban_edit';
-	}
+    public function getName()
+    {
+        return 'email_ban_edit';
+    }
 
 }

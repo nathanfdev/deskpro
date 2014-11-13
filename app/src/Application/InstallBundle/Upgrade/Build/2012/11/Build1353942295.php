@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1353942295 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets.properties");
-		$this->execMutateSql("ALTER TABLE tickets ADD properties LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)'");
-	}
+    public function run()
+    {
+        $this->out("Add tickets.properties");
+        $this->execMutateSql("ALTER TABLE tickets ADD properties LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)'");
+    }
 }

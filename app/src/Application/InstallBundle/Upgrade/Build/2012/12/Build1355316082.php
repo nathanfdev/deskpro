@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355316082 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Support for Twitter users that are filled out on demand");
-		$this->execMutateSql("ALTER TABLE twitter_users ADD is_stub TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Support for Twitter users that are filled out on demand");
+        $this->execMutateSql("ALTER TABLE twitter_users ADD is_stub TINYINT(1) NOT NULL");
+    }
 }

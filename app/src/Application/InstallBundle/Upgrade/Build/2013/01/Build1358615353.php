@@ -36,14 +36,14 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358615353 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Support using API tokens to access the API");
-		$this->execMutateSql("DROP TABLE api_auth_codes", true);
-		$this->execMutateSql("DROP TABLE api_auth_tokens", true);
-		$this->execMutateSql("CREATE TABLE api_token (person_id INT NOT NULL, token VARCHAR(25) NOT NULL, date_expires DATETIME DEFAULT NULL, PRIMARY KEY(person_id)) ENGINE = InnoDB", true);
-		$this->execMutateSql("CREATE TABLE api_token_rate_limit (person_id INT NOT NULL, hits INT DEFAULT NULL, created_stamp INT DEFAULT NULL, reset_stamp INT DEFAULT NULL, PRIMARY KEY(person_id)) ENGINE = InnoDB", true);
-		$this->execMutateSql("ALTER TABLE api_token ADD CONSTRAINT FK_7BA2F5EB217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE", true);
-		$this->execMutateSql("ALTER TABLE api_token_rate_limit ADD CONSTRAINT FK_458445A9217BBB47 FOREIGN KEY (person_id) REFERENCES api_token (person_id) ON DELETE CASCADE", true);
-	}
+    public function run()
+    {
+        $this->out("Support using API tokens to access the API");
+        $this->execMutateSql("DROP TABLE api_auth_codes", true);
+        $this->execMutateSql("DROP TABLE api_auth_tokens", true);
+        $this->execMutateSql("CREATE TABLE api_token (person_id INT NOT NULL, token VARCHAR(25) NOT NULL, date_expires DATETIME DEFAULT NULL, PRIMARY KEY(person_id)) ENGINE = InnoDB", true);
+        $this->execMutateSql("CREATE TABLE api_token_rate_limit (person_id INT NOT NULL, hits INT DEFAULT NULL, created_stamp INT DEFAULT NULL, reset_stamp INT DEFAULT NULL, PRIMARY KEY(person_id)) ENGINE = InnoDB", true);
+        $this->execMutateSql("ALTER TABLE api_token ADD CONSTRAINT FK_7BA2F5EB217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE", true);
+        $this->execMutateSql("ALTER TABLE api_token_rate_limit ADD CONSTRAINT FK_458445A9217BBB47 FOREIGN KEY (person_id) REFERENCES api_token (person_id) ON DELETE CASCADE", true);
+    }
 }

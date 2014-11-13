@@ -44,33 +44,34 @@ use Application\DeskPRO\Tickets\Slas\SlaProcessor;
  */
 class TicketSlas extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 60;
+    const DEFAULT_INTERVAL = 60;
 
-	public function run()
-	{
-		$GLOBALS['DP_ESCALATION_RUNNING'] = true;
+    public function run()
+    {
+        $GLOBALS['DP_ESCALATION_RUNNING'] = true;
 
-		$proc = new SlaProcessor(
-			App::$container->getEm(),
-			new ActionApplicator(App::$container),
-			new SlaClientMessageSender(App::$container->getDb())
-		);
+        $proc = new SlaProcessor(
+            App::$container->getEm(),
+            new ActionApplicator(App::$container),
+            new SlaClientMessageSender(App::$container->getDb())
+        );
 
-		$context_factory = function() {
-			$context = App::$container->getTicketManager()->createSystemExecutorContext('slas');
-			return $context;
-		};
+        $context_factory = function () {
+            $context = App::$container->getTicketManager()->createSystemExecutorContext('slas');
 
-		$count_failed = $proc->processAllFailed($context_factory);
-		$count_warning = $proc->processAllWarning($context_factory);
+            return $context;
+        };
 
-		if ($count_warning || $count_failed) {
-			$this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
-		}
+        $count_failed = $proc->processAllFailed($context_factory);
+        $count_warning = $proc->processAllWarning($context_factory);
 
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
-		App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
+        if ($count_warning || $count_failed) {
+            $this->getLogger()->logInfo("SLA statuses updated. Failed: $count_failed, warning: $count_warning");
+        }
 
-		unset($GLOBALS['DP_ESCALATION_RUNNING']);
-	}
+        App::getOrm()->clear('Application\\DeskPRO\\Entity\\Ticket');
+        App::getOrm()->clear('Application\\DeskPRO\\Entity\\TicketSla');
+
+        unset($GLOBALS['DP_ESCALATION_RUNNING']);
+    }
 }

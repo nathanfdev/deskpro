@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355247294 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Ensure that Twitter followers are ordered");
-		$this->execMutateSql("ALTER TABLE twitter_accounts_followers ADD follow_order INT NOT NULL, ADD is_archived TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Ensure that Twitter followers are ordered");
+        $this->execMutateSql("ALTER TABLE twitter_accounts_followers ADD follow_order INT NOT NULL, ADD is_archived TINYINT(1) NOT NULL");
+    }
 }

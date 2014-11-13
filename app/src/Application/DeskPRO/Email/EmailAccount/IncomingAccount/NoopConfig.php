@@ -38,30 +38,31 @@ use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 
 class NoopConfig implements AccountConfigInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function serializeJsonArray()
-	{
-		return array();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
+    {
+        return array();
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		return $obj;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+
+        return $obj;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType()
-	{
-		return 'noop';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+        return 'noop';
+    }
 }

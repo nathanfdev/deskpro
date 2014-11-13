@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352307081 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Drop backup transport options");
-		$this->execMutateSql("ALTER TABLE email_transports DROP backup_transport_type, DROP backup_transport_options");
-	}
+    public function run()
+    {
+        $this->out("Drop backup transport options");
+        $this->execMutateSql("ALTER TABLE email_transports DROP backup_transport_type, DROP backup_transport_options");
+    }
 }

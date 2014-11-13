@@ -7,14 +7,14 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class ModStopTriggersTest extends \DpUnitTestCase
 {
-	public function testAdd()
-	{
-		$ticket = new Ticket();
-		$exec   = new ExecutorContext();
+    public function testAdd()
+    {
+        $ticket = new Ticket();
+        $exec   = new ExecutorContext();
 
-		$action = new ModStopTriggers();
-		$action->applyAction($ticket, $exec);
+        $action = new ModStopTriggers();
+        $action->applyAction($ticket, $exec);
 
-		$this->assertTrue($exec->getVars()->get('stop_triggers'));
-	}
+        $this->assertTrue($exec->getVars()->get('stop_triggers'));
+    }
 }

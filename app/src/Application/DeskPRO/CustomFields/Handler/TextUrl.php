@@ -34,19 +34,19 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use Application\DeskPRO\Entity;
 
 /**
  * Handles the text field
  */
 class TextUrl extends Text
 {
-	public function renderHtml($data = null, array $template_vars = array())
-	{
-		if ($data === null) return '';
+    public function renderHtml($data = null, array $template_vars = array())
+    {
+        if ($data === null) return '';
 
-		$snipped = preg_replace('#^https?://#', '', $data['value']);
-		$html = '<a href="' . htmlspecialchars($data['value']) . '" target="_blank">' . htmlspecialchars($snipped) . '</a>';
-		return $html;
-	}
+        $snipped = preg_replace('#^https?://#', '', $data['value']);
+        $html = '<a href="' . htmlspecialchars($data['value']) . '" target="_blank">' . htmlspecialchars($snipped) . '</a>';
+
+        return $html;
+    }
 }

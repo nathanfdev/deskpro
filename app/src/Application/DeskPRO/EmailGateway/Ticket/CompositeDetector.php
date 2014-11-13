@@ -40,191 +40,182 @@ use Orb\Util\Util;
 
 class CompositeDetector implements TicketDetectorInterface, BounceAwareInterface, TacPersonDetectorInterface
 {
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface[]
-	 */
-	private $detectors = array();
+    /**
+     * @var \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface[]
+     */
+    private $detectors = array();
 
-	/**
-	 * @var bool
-	 */
-	private $is_bounce_mode = false;
+    /**
+     * @var bool
+     */
+    private $is_bounce_mode = false;
 
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface[]
-	 */
-	private $matched_detectors = array();
+    /**
+     * @var \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface[]
+     */
+    private $matched_detectors = array();
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket[]
-	 */
-	private $matched_tickets = array();
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket[]
+     */
+    private $matched_tickets = array();
 
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	private $logger;
-
-
-	/**
-	 * @param TicketDetectorInterface $detector
-	 */
-	public function addDetector(TicketDetectorInterface $detector)
-	{
-		$this->detectors[] = $detector;
-		if (method_exists($detector, 'setLogger')) {
-			$detector->setLogger($this->getLogger());
-		}
-	}
+    /**
+     * @var \Orb\Log\Logger
+     */
+    private $logger;
 
 
-	/**
-	 * Runs detectors against a reader
-	 *
-	 * @param AbstractReader $reader
-	 */
-	private function runDetectors(AbstractReader $reader)
-	{
-		$reader_id = spl_object_hash($reader);
+    /**
+     * @param TicketDetectorInterface $detector
+     */
+    public function addDetector(TicketDetectorInterface $detector)
+    {
+        $this->detectors[] = $detector;
+        if (method_exists($detector, 'setLogger')) {
+            $detector->setLogger($this->getLogger());
+        }
+    }
 
-		foreach ($this->detectors as $detector) {
-			if ($this->is_bounce_mode && $detector instanceof BounceAwareInterface) {
-				$detector->enableBouncedMode();
-			}
+    /**
+     * Runs detectors against a reader
+     *
+     * @param AbstractReader $reader
+     */
+    private function runDetectors(AbstractReader $reader)
+    {
+        $reader_id = spl_object_hash($reader);
 
-			$t = $detector->findExistingTicket($reader);
-			if ($t) {
-				$this->matched_detectors[$reader_id] = $detector;
-				$this->matched_tickets[$reader_id]   = $t;
-				$this->getLogger()->logInfo(sprintf("[CompositeDetector] %s: Found Ticket #%d", Util::getBaseClassname($detector), $t->id));
-				return;
-			} else {
-				$this->getLogger()->logInfo(sprintf("[CompositeDetector] %s: No match", Util::getBaseClassname($detector)));
-			}
-		}
+        foreach ($this->detectors as $detector) {
+            if ($this->is_bounce_mode && $detector instanceof BounceAwareInterface) {
+                $detector->enableBouncedMode();
+            }
 
-		$this->matched_detectors[$reader_id] = false;
-		$this->matched_tickets[$reader_id]   = false;
-	}
+            $t = $detector->findExistingTicket($reader);
+            if ($t) {
+                $this->matched_detectors[$reader_id] = $detector;
+                $this->matched_tickets[$reader_id]   = $t;
+                $this->getLogger()->logInfo(sprintf("[CompositeDetector] %s: Found Ticket #%d", Util::getBaseClassname($detector), $t->id));
 
+                return;
+            } else {
+                $this->getLogger()->logInfo(sprintf("[CompositeDetector] %s: No match", Util::getBaseClassname($detector)));
+            }
+        }
 
-	/**
-	 * Reset the saved detector state
-	 */
-	public function reset()
-	{
-		$this->matched_detectors = array();
-		$this->matched_tickets   = array();
-		$this->is_bounce_mode    = false;
-	}
+        $this->matched_detectors[$reader_id] = false;
+        $this->matched_tickets[$reader_id]   = false;
+    }
 
+    /**
+     * Reset the saved detector state
+     */
+    public function reset()
+    {
+        $this->matched_detectors = array();
+        $this->matched_tickets   = array();
+        $this->is_bounce_mode    = false;
+    }
 
-	/**
-	 * @param AbstractReader $reader
-	 * @return \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface|null
-	 */
-	public function getMatchedDetector(AbstractReader $reader)
-	{
-		$reader_id = spl_object_hash($reader);
-		if (!isset($this->matched_detectors[$reader_id])) {
-			$this->runDetectors($reader);
-		}
+    /**
+     * @param  AbstractReader                                                        $reader
+     * @return \Application\DeskPRO\EmailGateway\Ticket\TicketDetectorInterface|null
+     */
+    public function getMatchedDetector(AbstractReader $reader)
+    {
+        $reader_id = spl_object_hash($reader);
+        if (!isset($this->matched_detectors[$reader_id])) {
+            $this->runDetectors($reader);
+        }
 
-		if ($this->matched_detectors[$reader_id] === false) {
-			return null;
-		}
+        if ($this->matched_detectors[$reader_id] === false) {
+            return null;
+        }
 
-		return $this->matched_detectors[$reader_id];
-	}
+        return $this->matched_detectors[$reader_id];
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function enableBouncedMode()
+    {
+        $this->is_bounce_mode = true;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function enableBouncedMode()
-	{
-		$this->is_bounce_mode = true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function findExistingTicket(AbstractReader $reader)
+    {
+        $this->getMatchedDetector($reader);
 
+        $reader_id = spl_object_hash($reader);
+        if ($this->matched_tickets[$reader_id] === false) {
+            return null;
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findExistingTicket(AbstractReader $reader)
-	{
-		$this->getMatchedDetector($reader);
+        return $this->matched_tickets[$reader_id];
+    }
 
-		$reader_id = spl_object_hash($reader);
-		if ($this->matched_tickets[$reader_id] === false) {
-			return null;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
+    {
+        $detector = $this->getMatchedDetector($reader);
 
-		return $this->matched_tickets[$reader_id];
-	}
+        if (!$detector) {
+            return null;
+        }
 
+        return $detector->findExistingPerson($ticket, $reader);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		$detector = $this->getMatchedDetector($reader);
+    /**
+     * {@inheritDoc}
+     */
+    public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
+    {
+        $detector = $this->getMatchedDetector($reader);
+        if (!$detector) {
+            return false;
+        }
 
-		if (!$detector) {
-			return null;
-		}
+        return $detector->canAddUnknownPerson($ticket, $reader);
+    }
 
-		return $detector->findExistingPerson($ticket, $reader);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function findTacPerson(AbstractReader $reader)
+    {
+        $detector = $this->getMatchedDetector($reader);
+        if (!$detector || !($detector instanceof TacPersonDetectorInterface)) {
+            return null;
+        }
 
+        return $detector->findTacPerson($reader);
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		$detector = $this->getMatchedDetector($reader);
-		if (!$detector) {
-			return false;
-		}
+    /**
+     * Set the logger
+     * @param \Orb\Log\Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
-		return $detector->canAddUnknownPerson($ticket, $reader);
-	}
+    /**
+     * @return \Orb\Log\Logger
+     */
+    public function getLogger()
+    {
+        if (!$this->logger) {
+            $this->logger = new Logger();
+        }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function findTacPerson(AbstractReader $reader)
-	{
-		$detector = $this->getMatchedDetector($reader);
-		if (!$detector || !($detector instanceof TacPersonDetectorInterface)) {
-			return null;
-		}
-
-		return $detector->findTacPerson($reader);
-	}
-
-
-	/**
-	 * Set the logger
-	 * @param \Orb\Log\Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
-
-
-	/**
-	 * @return \Orb\Log\Logger
-	 */
-	public function getLogger()
-	{
-		if (!$this->logger) {
-			$this->logger = new Logger();
-		}
-
-		return $this->logger;
-	}
+        return $this->logger;
+    }
 }

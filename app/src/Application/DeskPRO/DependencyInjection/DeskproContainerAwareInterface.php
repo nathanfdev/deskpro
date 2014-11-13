@@ -36,9 +36,9 @@ namespace Application\DeskPRO\DependencyInjection;
 
 interface DeskproContainerAwareInterface
 {
-	/**
-	 * @param DeskproContainer $container
-	 * @return void
-	 */
-	public function setContainer(DeskproContainer $container);
+    /**
+     * @param  DeskproContainer $container
+     * @return void
+     */
+    public function setContainer(DeskproContainer $container);
 }

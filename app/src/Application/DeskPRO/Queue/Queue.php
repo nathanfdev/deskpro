@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Queue;
 
-use ZendQueue\Exception as QueueException;
 use ZendQueue\Message as ZendMessage;
 use ZendQueue\Queue as ZendQueue;
 
@@ -45,88 +44,88 @@ use ZendQueue\Queue as ZendQueue;
  */
 class Queue extends ZendQueue
 {
-	/** @var string */
-	protected $_messageClass = 'Application\DeskPRO\Queue\Message';
+    /** @var string */
+    protected $_messageClass = 'Application\DeskPRO\Queue\Message';
 
-	public function send($message)
-	{
-		$max_size = $this->getOption('queueitem_threshold');
-		if (!$max_size) {
-			$max_size = 500;
-		}
+    public function send($message)
+    {
+        $max_size = $this->getOption('queueitem_threshold');
+        if (!$max_size) {
+            $max_size = 500;
+        }
 
-		#------------------------------
-		# If the message is not too big, we can just store it in the queue store
-		#------------------------------
+        #------------------------------
+        # If the message is not too big, we can just store it in the queue store
+        #------------------------------
 
-		if ((is_string($message) && strlen($message) < $max_size) OR $this->getAdapter() instanceof \Application\DeskPRO\Queue\Adapter\QueueItemEntity) {
-			return $this->getAdapter()->send($message);
-		}
-
-
-		#------------------------------
-		# Otherwise we'll go and create a QueueItem, and change the message
-		# to point to it.
-		# - The Message item will correctly decode these and load the real data later
-		#------------------------------
-
-		// Note: important NOT to use the Em for creating QueueItems!
-		// Sometimes the queue is used onFlush event, which means
-		// persisting isn't so simple
-
-		$db = $this->getOption('em')->getConnection();
-
-		$item = array();
-		$item['created_at'] = date('Y-m-d H:i:s');
-		$item['is_dataonly'] = true;
-		$item['data'] = $message;
-
-		try {
-			$db->insert('queue_items', $item);
-			$item['id'] = $db->lastInsertId();
-
-			$message = '<QueueItem:' . $item['id'] . '>';
-
-			$success = $this->getAdapter()->send($message);
-			$e = null;
-		} catch (\Exception $e) {
-			$success = false;
-		}
-
-		if (!$success) {
-			try {
-				$db->delete('queue_items', array('id' => $item['id']));
-			} catch (\Exception $e) {}
-
-			if ($e) {
-				throw $e;
-			}
-		}
-
-		return $success;
-	}
+        if ((is_string($message) && strlen($message) < $max_size) OR $this->getAdapter() instanceof \Application\DeskPRO\Queue\Adapter\QueueItemEntity) {
+            return $this->getAdapter()->send($message);
+        }
 
 
-	public function deleteMessage(ZendMessage $message)
-	{
-		if ($this->getAdapter() instanceof \Application\DeskPRO\Queue\Adapter\QueueItemEntity) {
-			return $this->getAdapter()->deleteMessage($message);
-		}
+        #------------------------------
+        # Otherwise we'll go and create a QueueItem, and change the message
+        # to point to it.
+        # - The Message item will correctly decode these and load the real data later
+        #------------------------------
 
-		if (isset($message->qi_id)) {
-			$db = \Application\DeskPRO\App::getDb();
-			$db->beginTransaction();
-			try {
-				$db = $this->getOption('em')->getConnection();
-				$db->delete('queue_items', array('id' => $message->qi_id));
-				$this->getAdapter()->deleteMessage($message);
-				$db->commit();
-			} catch (\Exception $e) {
-				$db->rollback();
-				throw $e;
-			}
-		}
+        // Note: important NOT to use the Em for creating QueueItems!
+        // Sometimes the queue is used onFlush event, which means
+        // persisting isn't so simple
 
-		return true;
-	}
+        $db = $this->getOption('em')->getConnection();
+
+        $item = array();
+        $item['created_at'] = date('Y-m-d H:i:s');
+        $item['is_dataonly'] = true;
+        $item['data'] = $message;
+
+        try {
+            $db->insert('queue_items', $item);
+            $item['id'] = $db->lastInsertId();
+
+            $message = '<QueueItem:' . $item['id'] . '>';
+
+            $success = $this->getAdapter()->send($message);
+            $e = null;
+        } catch (\Exception $e) {
+            $success = false;
+        }
+
+        if (!$success) {
+            try {
+                $db->delete('queue_items', array('id' => $item['id']));
+            } catch (\Exception $e) {}
+
+            if ($e) {
+                throw $e;
+            }
+        }
+
+        return $success;
+    }
+
+
+    public function deleteMessage(ZendMessage $message)
+    {
+        if ($this->getAdapter() instanceof \Application\DeskPRO\Queue\Adapter\QueueItemEntity) {
+            return $this->getAdapter()->deleteMessage($message);
+        }
+
+        if (isset($message->qi_id)) {
+            $db = \Application\DeskPRO\App::getDb();
+            $db->beginTransaction();
+            try {
+                $db = $this->getOption('em')->getConnection();
+                $db->delete('queue_items', array('id' => $message->qi_id));
+                $this->getAdapter()->deleteMessage($message);
+                $db->commit();
+            } catch (\Exception $e) {
+                $db->rollback();
+                throw $e;
+            }
+        }
+
+        return true;
+    }
 }

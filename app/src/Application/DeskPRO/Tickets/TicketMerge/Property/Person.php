@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
 
-use Application\DeskPRO\App;
 
 /**
  * This adds the ability to change the user owner of the ticket. But also
@@ -43,19 +42,19 @@ use Application\DeskPRO\App;
  */
 class Person extends PropertyAbstract
 {
-	public function merge()
-	{
-		if ($this->strategy == self::STRATEGY_RIGHT AND $this->ticket->person != $this->other_ticket->person) {
+    public function merge()
+    {
+        if ($this->strategy == self::STRATEGY_RIGHT AND $this->ticket->person != $this->other_ticket->person) {
 
-			$old_person = $this->ticket->person;
+            $old_person = $this->ticket->person;
 
-			$this->ticket->person = $this->other_ticket->person;
-			$this->ticket->person_email = $this->other_ticket->person_email;
-			$this->ticket->organization = $this->other_ticket->organization;
+            $this->ticket->person = $this->other_ticket->person;
+            $this->ticket->person_email = $this->other_ticket->person_email;
+            $this->ticket->organization = $this->other_ticket->organization;
 
-			if ($this->getStrategyOption('add_follower') and $old_person != $this->ticket->person) {
-				$this->ticket->addParticipantPerson($old_person);
-			}
-		}
-	}
+            if ($this->getStrategyOption('add_follower') and $old_person != $this->ticket->person) {
+                $this->ticket->addParticipantPerson($old_person);
+            }
+        }
+    }
 }

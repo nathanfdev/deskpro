@@ -15,4 +15,4 @@ class DownloadRepository extends AbstractRepository
     protected $highlightFields = array(
         'title' => array('fragment_size' => 100)
     );
-} 
+}

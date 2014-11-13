@@ -46,78 +46,78 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetWorkflow extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('workflow_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('workflow_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_work_id = $this->getActionOption('workflow_id');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_work_id = $this->getActionOption('workflow_id');
 
-		if ($set_work_id) {
-			$work = $this->getContainer()->getTicketWorkflows()->getById($set_work_id);
-			if (!$work) {
-				return;
-			}
-		} else {
-			$work = null;
-		}
+        if ($set_work_id) {
+            $work = $this->getContainer()->getTicketWorkflows()->getById($set_work_id);
+            if (!$work) {
+                return;
+            }
+        } else {
+            $work = null;
+        }
 
-		$ticket->workflow = $work;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_work_id    = $this->getActionOption('workflow_id');
-		$ticket_work_id = $ticket->workflow ? $ticket->workflow->id : 0;
-
-		if ($ticket_work_id == $set_work_id) {
-			return true;
-		}
-
-		if ($set_work_id) {
-			$work = $this->getContainer()->getTicketWorkflows()->getById($set_work_id);
-			if (!$work) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+        $ticket->workflow = $work;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return array('fields');
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_work_id    = $this->getActionOption('workflow_id');
+        $ticket_work_id = $ticket->workflow ? $ticket->workflow->id : 0;
 
-		return null;
-	}
+        if ($ticket_work_id == $set_work_id) {
+            return true;
+        }
+
+        if ($set_work_id) {
+            $work = $this->getContainer()->getTicketWorkflows()->getById($set_work_id);
+            if (!$work) {
+                return true;
+            }
+        }
+
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return array('fields');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

@@ -37,52 +37,52 @@ use Orb\Log\LogItem;
 
 class MessageLogWriter extends \Orb\Log\Writer\AbstractWriter
 {
-	/**
-	 * @var int
-	 */
-	protected $max_line_length = 10000;
+    /**
+     * @var int
+     */
+    protected $max_line_length = 10000;
 
-	/**
-	 * @var \Application\DeskPRO\Mail\Message
-	 */
-	protected $on_message = null;
+    /**
+     * @var \Application\DeskPRO\Mail\Message
+     */
+    protected $on_message = null;
 
-	public function setMaxMessageLength($max_line_length = 5000)
-	{
-		$this->max_line_length = $max_line_length;
-	}
+    public function setMaxMessageLength($max_line_length = 5000)
+    {
+        $this->max_line_length = $max_line_length;
+    }
 
-	public function clearCurrentMessage()
-	{
-		$this->on_message = null;
-	}
+    public function clearCurrentMessage()
+    {
+        $this->on_message = null;
+    }
 
-	public function setCurrentMessageIfValid($on_message)
-	{
-		$this->clearCurrentMessage();
+    public function setCurrentMessageIfValid($on_message)
+    {
+        $this->clearCurrentMessage();
 
-		if ($on_message instanceof \Application\DeskPRO\Mail\Message) {
-			$this->setCurrentMessage($on_message);
-		}
-	}
+        if ($on_message instanceof \Application\DeskPRO\Mail\Message) {
+            $this->setCurrentMessage($on_message);
+        }
+    }
 
-	public function setCurrentMessage(\Application\DeskPRO\Mail\Message $on_message)
-	{
-		$this->on_message = $on_message;
-	}
+    public function setCurrentMessage(\Application\DeskPRO\Mail\Message $on_message)
+    {
+        $this->on_message = $on_message;
+    }
 
-	public function _write(LogItem $log_item)
-	{
-		if (!$this->on_message) {
-			return;
-		}
+    public function _write(LogItem $log_item)
+    {
+        if (!$this->on_message) {
+            return;
+        }
 
-		$msg = trim($log_item[LogItem::MESSAGE_LINE]);
+        $msg = trim($log_item[LogItem::MESSAGE_LINE]);
 
-		if (strlen($msg) > $this->max_line_length) {
-			$msg = substr($msg, 0, $this->max_line_length);
-		}
+        if (strlen($msg) > $this->max_line_length) {
+            $msg = substr($msg, 0, $this->max_line_length);
+        }
 
-		$this->on_message->addLogMessage($msg);
-	}
+        $this->on_message->addLogMessage($msg);
+    }
 }

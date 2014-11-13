@@ -41,56 +41,52 @@ use Application\DeskPRO\Entity\Ticket;
  */
 abstract class AbstractPropertyAction extends AbstractAction
 {
-	/** @var mixed */
-	protected $value;
+    /** @var mixed */
+    protected $value;
 
-	public function __construct($value = 0)
-	{
-		$this->value = $value;
-	}
+    public function __construct($value = 0)
+    {
+        $this->value = $value;
+    }
 
+    /**
+     * Get the property name on the ticket object
+     *
+     * @return string
+     */
+    abstract public function getPropertyName();
 
-	/**
-	 * Get the property name on the ticket object
-	 *
-	 * @return string
-	 */
-	abstract public function getPropertyName();
+    /**
+     * Get the property value
+     *
+     * @return mixed
+     */
+    public function getPropertyValue()
+    {
+        return $this->value;
+    }
 
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $prop = $this->getPropertyName();
+        $val = $this->getPropertyValue();
 
-	/**
-	 * Get the property value
-	 *
-	 * @return mixed
-	 */
-	public function getPropertyValue()
-	{
-		return $this->value;
-	}
+        $ticket[$prop] = $val;
+    }
 
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$prop = $this->getPropertyName();
-		$val = $this->getPropertyValue();
-
-		$ticket[$prop] = $val;
-	}
-
-
-	/**
-	 * With properties, the other action always overwrites the previous action.
-	 *
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * With properties, the other action always overwrites the previous action.
+     *
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
 }

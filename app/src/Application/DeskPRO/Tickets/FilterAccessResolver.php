@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\TicketFilter;
 use Doctrine\ORM\EntityManager;
@@ -44,151 +43,152 @@ use Doctrine\ORM\EntityManager;
  */
 class FilterAccessResolver
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @var array
-	 */
-	protected $hidden_prefs;
+    /**
+     * @var array
+     */
+    protected $hidden_prefs;
 
-	/**
-	 * @var array
-	 */
-	protected $team_members;
+    /**
+     * @var array
+     */
+    protected $team_members;
 
-	/**
-	 * @param \Doctrine\ORM\EntityManager $em
-	 */
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-		$this->db = $em->getConnection();
+    /**
+     * @param \Doctrine\ORM\EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+        $this->db = $em->getConnection();
 
-		#------------------------------
-		# Fetch agent team membership data
-		#------------------------------
+        #------------------------------
+        # Fetch agent team membership data
+        #------------------------------
 
-		$this->team_members = $this->em->getRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
-
-
-		#------------------------------
-		# Fetch data about who has hidden filters
-		#------------------------------
-
-		$hidden_filters_data = $this->db->fetchAll("
-			SELECT person_id, name
-			FROM people_prefs
-			WHERE name LIKE 'agent.ui.filter-visibility.%' AND (value_str = '0')
-		");
-
-		$hidden_prefs = array();
-		foreach ($hidden_filters_data as $d) {
-			$filter_id = str_replace('agent.ui.filter-visibility.', '', $d['name']);
-
-			if (!isset($hidden_filters[$filter_id])) {
-				$hidden_filters[$filter_id] = array();
-			}
-
-			$hidden_prefs[$filter_id][$d['person_id']] = true;
-		}
-
-		$this->hidden_prefs = $hidden_prefs;
-	}
+        $this->team_members = $this->em->getRepository('DeskPRO:AgentTeam')->getSortedMemberIds();
 
 
-	/**
-	 * Can a person use a particular filter/
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
-	 * @return bool
-	 */
-	public function canUse(Person $person, TicketFilter $filter)
-	{
-		if ($filter->is_global) {
-			return true;
-		}
+        #------------------------------
+        # Fetch data about who has hidden filters
+        #------------------------------
 
-		if ($filter->agent_team) {
-			if (!isset($this->team_members[$filter->agent_team->id])) {
-				return false;
-			}
-			return in_array($person->id, $this->team_members[$filter->agent_team->id]);
-		}
+        $hidden_filters_data = $this->db->fetchAll("
+            SELECT person_id, name
+            FROM people_prefs
+            WHERE name LIKE 'agent.ui.filter-visibility.%' AND (value_str = '0')
+        ");
 
-		if ($filter->person && $filter->person->id == $person->id) {
-			return true;
-		}
+        $hidden_prefs = array();
+        foreach ($hidden_filters_data as $d) {
+            $filter_id = str_replace('agent.ui.filter-visibility.', '', $d['name']);
 
-		return false;
-	}
+            if (!isset($hidden_filters[$filter_id])) {
+                $hidden_filters[$filter_id] = array();
+            }
+
+            $hidden_prefs[$filter_id][$d['person_id']] = true;
+        }
+
+        $this->hidden_prefs = $hidden_prefs;
+    }
 
 
-	/**
-	 * Does a person ignore a filter?
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
-	 * @return bool
-	 */
-	public function isIgnored(Person $person, TicketFilter $filter)
-	{
-		return isset($this->hidden_prefs[$filter->id][$person->id]);
-	}
+    /**
+     * Can a person use a particular filter/
+     *
+     * @param  \Application\DeskPRO\Entity\Person       $person
+     * @param  \Application\DeskPRO\Entity\TicketFilter $filter
+     * @return bool
+     */
+    public function canUse(Person $person, TicketFilter $filter)
+    {
+        if ($filter->is_global) {
+            return true;
+        }
+
+        if ($filter->agent_team) {
+            if (!isset($this->team_members[$filter->agent_team->id])) {
+                return false;
+            }
+
+            return in_array($person->id, $this->team_members[$filter->agent_team->id]);
+        }
+
+        if ($filter->person && $filter->person->id == $person->id) {
+            return true;
+        }
+
+        return false;
+    }
 
 
-	/**
-	 * Get all users who use a filter
-	 *
-	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
-	 * @return array
-	 */
-	public function getUsers(TicketFilter $filter, array $available_agents = null)
-	{
-		if ($available_agents === null) {
-			$available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-		}
-
-		$agents = array();
-
-		foreach ($available_agents as $agent) {
-			if (!$this->isIgnored($agent, $filter) and $this->canUse($agent, $filter)) {
-				$agents[] = $agent;
-			}
-		}
-
-		return $agents;
-	}
+    /**
+     * Does a person ignore a filter?
+     *
+     * @param  \Application\DeskPRO\Entity\Person       $person
+     * @param  \Application\DeskPRO\Entity\TicketFilter $filter
+     * @return bool
+     */
+    public function isIgnored(Person $person, TicketFilter $filter)
+    {
+        return isset($this->hidden_prefs[$filter->id][$person->id]);
+    }
 
 
-	/**
-	 * Get all users who use ignore filter
-	 *
-	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
-	 * @return array
-	 */
-	public function getIgnoreUsers(TicketFilter $filter, array $available_agents = null)
-	{
-		if ($available_agents === null) {
-			$available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
-		}
+    /**
+     * Get all users who use a filter
+     *
+     * @param  \Application\DeskPRO\Entity\TicketFilter $filter
+     * @return array
+     */
+    public function getUsers(TicketFilter $filter, array $available_agents = null)
+    {
+        if ($available_agents === null) {
+            $available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        }
 
-		$agents = array();
+        $agents = array();
 
-		foreach ($available_agents as $agent) {
-			if ($this->isIgnored($agent, $filter) and $this->canUse($agent, $filter)) {
-				$agents[] = $agent;
-			}
-		}
+        foreach ($available_agents as $agent) {
+            if (!$this->isIgnored($agent, $filter) and $this->canUse($agent, $filter)) {
+                $agents[] = $agent;
+            }
+        }
 
-		return $agents;
-	}
+        return $agents;
+    }
+
+
+    /**
+     * Get all users who use ignore filter
+     *
+     * @param  \Application\DeskPRO\Entity\TicketFilter $filter
+     * @return array
+     */
+    public function getIgnoreUsers(TicketFilter $filter, array $available_agents = null)
+    {
+        if ($available_agents === null) {
+            $available_agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+        }
+
+        $agents = array();
+
+        foreach ($available_agents as $agent) {
+            if ($this->isIgnored($agent, $filter) and $this->canUse($agent, $filter)) {
+                $agents[] = $agent;
+            }
+        }
+
+        return $agents;
+    }
 }

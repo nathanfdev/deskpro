@@ -39,40 +39,40 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NewArticle extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		#------------------------------
-		# Basic fields
-		#------------------------------
+        #------------------------------
+        # Basic fields
+        #------------------------------
 
-		$builder->add('title', 'text');
-		$builder->add('content', 'textarea');
+        $builder->add('title', 'text');
+        $builder->add('content', 'textarea');
 
-		$builder->add('category_id', 'text');
-		$builder->add('status', 'text');
-		$builder->add('slug', 'text');
+        $builder->add('category_id', 'text');
+        $builder->add('status', 'text');
+        $builder->add('slug', 'text');
 
-		$builder->add('labels', 'collection', array(
-			'type' => 'hidden',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $builder->add('labels', 'collection', array(
+            'type' => 'hidden',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
 
-		$builder->add('attach', 'collection', array(
-			'type' => 'hidden',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $builder->add('attach', 'collection', array(
+            'type' => 'hidden',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
     }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewArticle',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewArticle',
+        );
+    }
 
     public function getName()
     {

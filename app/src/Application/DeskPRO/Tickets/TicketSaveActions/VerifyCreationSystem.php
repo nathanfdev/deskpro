@@ -39,52 +39,52 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class VerifyCreationSystem implements TicketSaveActionInterface
 {
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$ticket->creation_system) {
-			if ($context->getEventMethod() == 'email') {
-				$creation_system = 'gateway.';
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$ticket->creation_system) {
+            if ($context->getEventMethod() == 'email') {
+                $creation_system = 'gateway.';
 
-				if ($context->getEventPerformer() == 'agent') {
-					$creation_system .= 'agent';
-				} else {
-					$creation_system .= 'person';
-				}
-			} else if ($context->getEventMethod() == 'api') {
-				$creation_system = 'web.api.';
+                if ($context->getEventPerformer() == 'agent') {
+                    $creation_system .= 'agent';
+                } else {
+                    $creation_system .= 'person';
+                }
+            } elseif ($context->getEventMethod() == 'api') {
+                $creation_system = 'web.api.';
 
-				if ($context->getEventPerformer() == 'agent') {
-					$creation_system .= 'agent';
-				} else {
-					$creation_system .= 'person';
-				}
-			} else {
-				$creation_system = 'web.';
+                if ($context->getEventPerformer() == 'agent') {
+                    $creation_system .= 'agent';
+                } else {
+                    $creation_system .= 'person';
+                }
+            } else {
+                $creation_system = 'web.';
 
-				if ($context->getEventPerformer() == 'agent') {
-					$creation_system .= 'agent.portal';
-				} else {
-					if ($context->getEventMethodOption('is_widget')) {
-						$creation_system .= 'person.widget';
-					} else if ($context->getEventMethodOption('is_embedded')) {
-						$creation_system .= 'person.embed';
-					} else {
-						$creation_system .= 'person.portal';
-					}
-				}
-			}
+                if ($context->getEventPerformer() == 'agent') {
+                    $creation_system .= 'agent.portal';
+                } else {
+                    if ($context->getEventMethodOption('is_widget')) {
+                        $creation_system .= 'person.widget';
+                    } elseif ($context->getEventMethodOption('is_embedded')) {
+                        $creation_system .= 'person.embed';
+                    } else {
+                        $creation_system .= 'person.portal';
+                    }
+                }
+            }
 
-			$ticket->creation_system = $creation_system;
+            $ticket->creation_system = $creation_system;
 
-			if ($context->getEventMethodOption('origin_url')) {
-				$ticket->creation_system_option = $context->getEventMethodOption('origin_url');
-			}
-		}
-	}
+            if ($context->getEventMethodOption('origin_url')) {
+                $ticket->creation_system_option = $context->getEventMethodOption('origin_url');
+            }
+        }
+    }
 
 }

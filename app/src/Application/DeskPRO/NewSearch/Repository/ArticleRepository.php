@@ -2,8 +2,6 @@
 
 namespace Application\DeskPRO\NewSearch\Repository;
 
-use Elastica\Query;
-
 /**
  * Article Repository
  */

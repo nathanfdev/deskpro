@@ -39,24 +39,24 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class UsergroupPropsType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('title', 'text');
-		$builder->add('note', 'text', array('required' => true));
-		$builder->add('is_enabled', 'checkbox');
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('title', 'text');
+        $builder->add('note', 'text', array('required' => true));
+        $builder->add('is_enabled', 'checkbox');
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\Usergroup',
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class' => 'Application\\DeskPRO\\Entity\\Usergroup',
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'usergroup';
-	}
+    public function getName()
+    {
+        return 'usergroup';
+    }
 }

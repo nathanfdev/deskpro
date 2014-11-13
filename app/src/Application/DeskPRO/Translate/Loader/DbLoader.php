@@ -43,96 +43,96 @@ namespace Application\DeskPRO\Translate\Loader;
  */
 class DbLoader implements LoaderInterface
 {
-	/**
-	 * Plain database connection for raw queries
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $dbconn;
+    /**
+     * Plain database connection for raw queries
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $dbconn;
 
-	/**
-	 * @var array
-	 */
-	protected $loaded = null;
+    /**
+     * @var array
+     */
+    protected $loaded = null;
 
-	/**
-	 * @var int
-	 */
-	protected $default_lang_id = 1;
+    /**
+     * @var int
+     */
+    protected $default_lang_id = 1;
 
-	/**
-	 * @param \Application\DeskPRO\DBAL\Connection $dbconn
-	 */
-	public function __construct(\Application\DeskPRO\DBAL\Connection $dbconn)
-	{
-		$this->dbconn = $dbconn;
-	}
+    /**
+     * @param \Application\DeskPRO\DBAL\Connection $dbconn
+     */
+    public function __construct(\Application\DeskPRO\DBAL\Connection $dbconn)
+    {
+        $this->dbconn = $dbconn;
+    }
 
-	private function returnPhrases($groups, $language, array $loaded_phrases = null)
-	{
-		$phrases = array();
+    private function returnPhrases($groups, $language, array $loaded_phrases = null)
+    {
+        $phrases = array();
 
-		// Langs to fetch in order of pri
-		$langs = array();
-		if ($language) {
-			$langs[] = $language->getId(); // the chosen lang
-		}
-		$langs[] = $this->default_lang_id; // default deskpro lang
-		$langs[] = 0; // system use
+        // Langs to fetch in order of pri
+        $langs = array();
+        if ($language) {
+            $langs[] = $language->getId(); // the chosen lang
+        }
+        $langs[] = $this->default_lang_id; // default deskpro lang
+        $langs[] = 0; // system use
 
-		foreach ($langs as $lid) {
-			foreach ($groups as $g) {
-				if (empty($this->loaded[$lid][$g])) continue;
+        foreach ($langs as $lid) {
+            foreach ($groups as $g) {
+                if (empty($this->loaded[$lid][$g])) continue;
 
-				// obj_ translations only apply for specific language
-				// being reuqested (e.g., no english fallthrough)
-				if ($language && $lid != $language->id && substr($g, 0, 4) === 'obj_') {
-					continue;
-				}
+                // obj_ translations only apply for specific language
+                // being reuqested (e.g., no english fallthrough)
+                if ($language && $lid != $language->id && substr($g, 0, 4) === 'obj_') {
+                    continue;
+                }
 
-				if ($lid != $this->default_lang_id || ($language && $language->getId() == $lid)) {
-					$phrases = array_merge($phrases, $this->loaded[$lid][$g]);
-				} else {
-					// For default custom phrases, we need to make sure
-					// we arent overriding a language with a custom english.
-					// Case: An English phrase is overriden, user is using German,
-					//       we DONT want overriden English phrase to overwrite default German
-					foreach ($this->loaded[$lid][$g] as $phr_id => $phr) {
-						if ($loaded_phrases !== null && isset($loaded_phrases[$phr_id])) {
-							continue;
-						}
+                if ($lid != $this->default_lang_id || ($language && $language->getId() == $lid)) {
+                    $phrases = array_merge($phrases, $this->loaded[$lid][$g]);
+                } else {
+                    // For default custom phrases, we need to make sure
+                    // we arent overriding a language with a custom english.
+                    // Case: An English phrase is overriden, user is using German,
+                    //       we DONT want overriden English phrase to overwrite default German
+                    foreach ($this->loaded[$lid][$g] as $phr_id => $phr) {
+                        if ($loaded_phrases !== null && isset($loaded_phrases[$phr_id])) {
+                            continue;
+                        }
 
-						$phrases[$phr_id] = $phr;
-					}
-				}
-			}
-		}
+                        $phrases[$phr_id] = $phr;
+                    }
+                }
+            }
+        }
 
-		return $phrases;
-	}
+        return $phrases;
+    }
 
-	public function load($groups, $language, array $loaded_phrases = null)
-	{
-		if ($this->loaded !== null) {
-			return $this->returnPhrases($groups, $language, $loaded_phrases);
-		}
+    public function load($groups, $language, array $loaded_phrases = null)
+    {
+        if ($this->loaded !== null) {
+            return $this->returnPhrases($groups, $language, $loaded_phrases);
+        }
 
-		$q = $this->dbconn->query("
-			SELECT language_id, groupname, name, COALESCE(NULLIF(phrase, ''), original_phrase) AS phrase
-			FROM phrases
-		");
+        $q = $this->dbconn->query("
+            SELECT language_id, groupname, name, COALESCE(NULLIF(phrase, ''), original_phrase) AS phrase
+            FROM phrases
+        ");
 
-		$this->loaded = array();
-		while ($r = $q->fetch()) {
-			if (!isset($this->loaded[$r['language_id']])) {
-				$this->loaded[$r['language_id']] = array();
-			}
-			if (!isset($this->loaded[$r['language_id']][$r['groupname']])) {
-				$this->loaded[$r['language_id']][$r['groupname']] = array();
-			}
+        $this->loaded = array();
+        while ($r = $q->fetch()) {
+            if (!isset($this->loaded[$r['language_id']])) {
+                $this->loaded[$r['language_id']] = array();
+            }
+            if (!isset($this->loaded[$r['language_id']][$r['groupname']])) {
+                $this->loaded[$r['language_id']][$r['groupname']] = array();
+            }
 
-			$this->loaded[$r['language_id']][$r['groupname']][$r['name']] = $r['phrase'];
-		}
+            $this->loaded[$r['language_id']][$r['groupname']][$r['name']] = $r['phrase'];
+        }
 
-		return $this->returnPhrases($groups, $language, $loaded_phrases);
-	}
+        return $this->returnPhrases($groups, $language, $loaded_phrases);
+    }
 }

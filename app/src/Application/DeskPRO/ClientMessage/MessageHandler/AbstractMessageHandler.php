@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\ClientMessage\MessageHandler;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 /**
@@ -44,21 +43,21 @@ use Application\DeskPRO\Entity;
  */
 abstract class AbstractMessageHandler
 {
-	/**
-	 * @var Application\DeskPRO\Entity\ClientMessage
-	 */
-	protected $message;
+    /**
+     * @var Application\DeskPRO\Entity\ClientMessage
+     */
+    protected $message;
 
-	public function __construct(Entity\ClientMessage $message)
-	{
-		$this->message = $message;
-	}
+    public function __construct(Entity\ClientMessage $message)
+    {
+        $this->message = $message;
+    }
 
-	/**
-	 * Get the message to give the client.
-	 *
-	 * @param  $context
-	 * @return mixed
-	 */
-	abstract function getMessage($context);
+    /**
+     * Get the message to give the client.
+     *
+     * @param  $context
+     * @return mixed
+     */
+    abstract public function getMessage($context);
 }

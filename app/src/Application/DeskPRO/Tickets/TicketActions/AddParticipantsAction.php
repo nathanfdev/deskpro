@@ -42,106 +42,107 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class AddParticipantsAction extends AbstractAction
 {
-	/** @var array */
-	protected $add_people_ids;
+    /** @var array */
+    protected $add_people_ids;
 
-	public function __construct(array $add_participants)
-	{
-		$this->add_people_ids = $add_participants;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
-		foreach ($people as $person) {
-			$ticket->addParticipantPerson($person);
-		}
-	}
+    public function __construct(array $add_participants)
+    {
+        $this->add_people_ids = $add_participants;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		$actions = array();
-
-		foreach ($this->add_people_ids as $pid) {
-			$actions[] = array(
-				'action' => 'add_participant',
-				'person_id' => $pid
-			);
-		}
-
-		return $actions;
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
+        foreach ($people as $person) {
+            $ticket->addParticipantPerson($person);
+        }
+    }
 
 
-	/**
-	 * Get the agent id
-	 *
-	 * @return int
-	 */
-	public function getPersonIds()
-	{
-		return $this->add_people_ids;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        $actions = array();
+
+        foreach ($this->add_people_ids as $pid) {
+            $actions[] = array(
+                'action' => 'add_participant',
+                'person_id' => $pid
+            );
+        }
+
+        return $actions;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		$ids = $this->getPersonIds();
-		$ids = array_merge($ids, $other_action->getPersonIds());
-		$ids = array_unique($ids);
-
-		return new self($ids);
-	}
+    /**
+     * Get the agent id
+     *
+     * @return int
+     */
+    public function getPersonIds()
+    {
+        return $this->add_people_ids;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$agents = array();
-		$users = array();
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        $ids = $this->getPersonIds();
+        $ids = array_merge($ids, $other_action->getPersonIds());
+        $ids = array_unique($ids);
+
+        return new self($ids);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $agents = array();
+        $users = array();
 
         $people = App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($this->add_people_ids);
 
-		foreach ($people as $p) {
-			$n = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
-			if ($p->is_agent) {
-				$agents[$p->id] = $n;
-			} else {
-				$users[$p->id] = $n;
-			}
-		}
+        foreach ($people as $p) {
+            $n = $as_html ? htmlspecialchars($p->getDisplayName()) : $p->getDisplayName();
+            if ($p->is_agent) {
+                $agents[$p->id] = $n;
+            } else {
+                $users[$p->id] = $n;
+            }
+        }
 
-		$parts = array();
-		if ($agents) {
-			$parts[] = "Add agent followers: " . implode(', ', $agents);
-		}
-		if ($users) {
-			$parts[] = "CC users " . implode(', ', $users);
-		}
+        $parts = array();
+        if ($agents) {
+            $parts[] = "Add agent followers: " . implode(', ', $agents);
+        }
+        if ($users) {
+            $parts[] = "CC users " . implode(', ', $users);
+        }
 
-		if (!$parts) {
-			return '';
-		}
+        if (!$parts) {
+            return '';
+        }
 
-		$parts = implode(' and ', $parts);
-		return $parts;
-	}
+        $parts = implode(' and ', $parts);
+
+        return $parts;
+    }
 }

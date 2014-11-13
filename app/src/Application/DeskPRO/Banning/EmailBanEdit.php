@@ -39,68 +39,68 @@ use Doctrine\ORM\EntityManager;
 
 class EmailBanEdit
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\BanEmail
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\BanEmail
+     */
 
-	public $email_ban;
+    public $email_ban;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
 
-	public $db;
+    public $db;
 
-	/**
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
 
-	protected $old_email;
+    protected $old_email;
 
-	public function __construct(BanEmail $email_ban)
-	{
-		$this->email_ban = $email_ban;
-		$this->db        = App::getDb();
+    public function __construct(BanEmail $email_ban)
+    {
+        $this->email_ban = $email_ban;
+        $this->db        = App::getDb();
 
-		$this->old_email = $this->email_ban->banned_email;
-	}
+        $this->old_email = $this->email_ban->banned_email;
+    }
 
-	/**
-	 * @param EntityManager $em
-	 *
-	 * @throws \Exception
-	 */
+    /**
+     * @param EntityManager $em
+     *
+     * @throws \Exception
+     */
 
-	public function save(EntityManager $em)
-	{
-		$new_email = $this->email_ban->banned_email;
+    public function save(EntityManager $em)
+    {
+        $new_email = $this->email_ban->banned_email;
 
-		$this->db->beginTransaction();
+        $this->db->beginTransaction();
 
-		try {
+        try {
 
-			$this->db->executeUpdate(
-				"DELETE FROM ban_emails WHERE banned_email = ?",
-				array($this->old_email)
-			);
+            $this->db->executeUpdate(
+                "DELETE FROM ban_emails WHERE banned_email = ?",
+                array($this->old_email)
+            );
 
-			$this->db->executeUpdate(
-				"DELETE FROM ban_emails WHERE banned_email = ?",
-				array($new_email)
-			);
+            $this->db->executeUpdate(
+                "DELETE FROM ban_emails WHERE banned_email = ?",
+                array($new_email)
+            );
 
-			$email_ban               = new BanEmail();
-			$email_ban->banned_email = $new_email;
+            $email_ban               = new BanEmail();
+            $email_ban->banned_email = $new_email;
 
-			$em->persist($email_ban);
-			$em->flush();
+            $em->persist($email_ban);
+            $em->flush();
 
-			$this->db->commit();
+            $this->db->commit();
 
-		} catch(\Exception $e) {
+        } catch(\Exception $e) {
 
-			$this->db->rollback();
-			throw $e;
-		}
-	}
+            $this->db->rollback();
+            throw $e;
+        }
+    }
 }

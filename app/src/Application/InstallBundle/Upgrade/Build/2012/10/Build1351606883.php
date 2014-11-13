@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351606883 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Record a result type when caching search results");
-		$this->execMutateSql("ALTER TABLE result_cache ADD results_type VARCHAR(50) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Record a result type when caching search results");
+        $this->execMutateSql("ALTER TABLE result_cache ADD results_type VARCHAR(50) DEFAULT NULL");
+    }
 }

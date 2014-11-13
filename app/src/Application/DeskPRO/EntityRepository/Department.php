@@ -39,165 +39,165 @@ use Application\DeskPRO\Entity\Department as DepartmentEntity;
 
 class Department extends AbstractCategoryRepository
 {
-	public function getAll()
-	{
-		return $this->getRootNodes();
-	}
+    public function getAll()
+    {
+        return $this->getRootNodes();
+    }
 
-	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
-	 */
+    /**
+     * @return \Application\DeskPRO\Entity\Department[]
+     */
 
-	public function getTicketDepartments()
-	{
-		return $this->_em->createQuery("
-			SELECT d
-			FROM DeskPRO:Department d
-			WHERE d.is_tickets_enabled = true
-			ORDER BY d.display_order ASC
-		")->execute();
-	}
+    public function getTicketDepartments()
+    {
+        return $this->_em->createQuery("
+            SELECT d
+            FROM DeskPRO:Department d
+            WHERE d.is_tickets_enabled = true
+            ORDER BY d.display_order ASC
+        ")->execute();
+    }
 
-	/**
-	 * @return \Application\DeskPRO\Entity\Department[]
-	 */
+    /**
+     * @return \Application\DeskPRO\Entity\Department[]
+     */
 
-	public function getChatDepartments()
-	{
-		return $this->_em->createQuery(
-			"
-			SELECT d
-			FROM DeskPRO:Department d
-			WHERE d.is_chat_enabled = true
-			ORDER BY d.display_order ASC
-			"
-		)->execute();
-	}
+    public function getChatDepartments()
+    {
+        return $this->_em->createQuery(
+            "
+            SELECT d
+            FROM DeskPRO:Department d
+            WHERE d.is_chat_enabled = true
+            ORDER BY d.display_order ASC
+            "
+        )->execute();
+    }
 
-	/**
-	 * @param DepartmentEntity $dep
-	 *
-	 * @return array
-	 */
+    /**
+     * @param DepartmentEntity $dep
+     *
+     * @return array
+     */
 
-	public function getPermissionsInfo(DepartmentEntity $dep)
-	{
-		$perms = App::getDb()->fetchAll(
-			"SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?",
-			array($dep->id)
-		);
+    public function getPermissionsInfo(DepartmentEntity $dep)
+    {
+        $perms = App::getDb()->fetchAll(
+            "SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?",
+            array($dep->id)
+        );
 
-		$data = array(
-			'usergroups'  => array(),
-			'agentgroups' => array(),
-			'agents'      => array()
-		);
+        $data = array(
+            'usergroups'  => array(),
+            'agentgroups' => array(),
+            'agents'      => array()
+        );
 
-		foreach ($perms as $perm) {
+        foreach ($perms as $perm) {
 
-			if ($perm['usergroup_id']) {
+            if ($perm['usergroup_id']) {
 
-				if (App::getContainer()->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
+                if (App::getContainer()->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
 
-					$data['agentgroups'][] = array(
-						'usergroup_id' => (int)$perm['usergroup_id'],
-						'perm_name'    => $perm['name'],
-					);
+                    $data['agentgroups'][] = array(
+                        'usergroup_id' => (int)$perm['usergroup_id'],
+                        'perm_name'    => $perm['name'],
+                    );
 
-				} else {
+                } else {
 
-					$data['usergroups'][] = array(
-						'usergroup_id' => (int)$perm['usergroup_id'],
-						'perm_name'    => $perm['name'],
-					);
-				}
-			} elseif ($perm['person_id']) {
+                    $data['usergroups'][] = array(
+                        'usergroup_id' => (int)$perm['usergroup_id'],
+                        'perm_name'    => $perm['name'],
+                    );
+                }
+            } elseif ($perm['person_id']) {
 
-				$data['agents'][] = array(
-					'agent_id'  => (int)$perm['person_id'],
-					'perm_name' => $perm['name']
-				);
-			}
-		}
+                $data['agents'][] = array(
+                    'agent_id'  => (int)$perm['person_id'],
+                    'perm_name' => $perm['name']
+                );
+            }
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
 
-	/**
-	 * Get the default ticket department for a given context (ticket, chat)
-	 *
-	 * @param string $context
-	 * @return \Application\DeskPRO\Entity\Department	 *
-	 * @throws \InvalidArgumentException
-	 */
+    /**
+     * Get the default ticket department for a given context (ticket, chat)
+     *
+     * @param  string                                 $context
+     * @return \Application\DeskPRO\Entity\Department *
+     * @throws \InvalidArgumentException
+     */
 
-	public function getDefaultDepartment($context)
-	{
-		switch ($context) {
-			case 'ticket':
-				$opt = 'core.tickets.default_department';
-				$check_field = 'is_tickets_enabled';
-				break;
-			case 'chat':
-				$opt = 'core.chat.default_department';
-				$check_field = 'is_chat_enabled';
-				break;
-			default:
-				throw new \InvalidArgumentException("Unknown context `$context`");
-		}
+    public function getDefaultDepartment($context)
+    {
+        switch ($context) {
+            case 'ticket':
+                $opt = 'core.tickets.default_department';
+                $check_field = 'is_tickets_enabled';
+                break;
+            case 'chat':
+                $opt = 'core.chat.default_department';
+                $check_field = 'is_chat_enabled';
+                break;
+            default:
+                throw new \InvalidArgumentException("Unknown context `$context`");
+        }
 
-		$dep_id = App::getSetting($opt);
-		$dep = null;
-		if ($dep_id) {
-			$dep = $this->find($dep_id);
-		}
+        $dep_id = App::getSetting($opt);
+        $dep = null;
+        if ($dep_id) {
+            $dep = $this->find($dep_id);
+        }
 
-		if (!$dep) {
-			// There should always be a correct default set, but this is
-			// error handling in case
-			$dep_id = App::getDb()->fetchColumn("
-				SELECT d.id
-				FROM departments d
-				LEFT JOIN departments AS subdep ON (subdep.parent_id = d.id)
-				WHERE subdep.id IS NULL AND d.$check_field = 1
-				ORDER BY d.display_order ASC
-				LIMIT 1
-			");
+        if (!$dep) {
+            // There should always be a correct default set, but this is
+            // error handling in case
+            $dep_id = App::getDb()->fetchColumn("
+                SELECT d.id
+                FROM departments d
+                LEFT JOIN departments AS subdep ON (subdep.parent_id = d.id)
+                WHERE subdep.id IS NULL AND d.$check_field = 1
+                ORDER BY d.display_order ASC
+                LIMIT 1
+            ");
 
-			if ($dep_id) {
-				$dep = $this->find($dep_id);
-			}
-		}
+            if ($dep_id) {
+                $dep = $this->find($dep_id);
+            }
+        }
 
-		return $dep;
-	}
+        return $dep;
+    }
 
-	/**
-	 * @param $context
-	 *
-	 * @return \Application\DeskPRO\Entity\Department
-	 * @throws \InvalidArgumentException
-	 */
+    /**
+     * @param $context
+     *
+     * @return \Application\DeskPRO\Entity\Department
+     * @throws \InvalidArgumentException
+     */
 
-	public function getChildDepartments($context)
-	{
-		switch ($context) {
-			case 'ticket':
-				$check_field = 'is_tickets_enabled';
-				break;
-			case 'chat':
-				$check_field = 'is_chat_enabled';
-				break;
-			default:
-				throw new \InvalidArgumentException("Unknown context `$context`");
-		}
+    public function getChildDepartments($context)
+    {
+        switch ($context) {
+            case 'ticket':
+                $check_field = 'is_tickets_enabled';
+                break;
+            case 'chat':
+                $check_field = 'is_chat_enabled';
+                break;
+            default:
+                throw new \InvalidArgumentException("Unknown context `$context`");
+        }
 
-		return $this->getEntityManager()->createQuery("
-			SELECT d
-			FROM DeskPRO:Department d
-			WHERE d.parent IS NOT NULL
-				AND d.$check_field = 1
-		")->execute();
-	}
+        return $this->getEntityManager()->createQuery("
+            SELECT d
+            FROM DeskPRO:Department d
+            WHERE d.parent IS NOT NULL
+                AND d.$check_field = 1
+        ")->execute();
+    }
 }

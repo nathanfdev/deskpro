@@ -39,41 +39,41 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class ImportBundle extends Bundle
 {
-	public function __construct()
-	{
-		$this->name = 'Import';
-	}
+    public function __construct()
+    {
+        $this->name = 'Import';
+    }
 
-	public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container)
     {
         parent::build($container);
     }
 
-	/**
+    /**
      * @param Application $application An Application instance
      */
     public function registerCommands(Application $application)
     {
-		$commands = array(
-			'Application\\ImportBundle\\Command\\CheckImportCommand',
-			'Application\\ImportBundle\\Command\\CheckExportCommand',
-			'Application\\ImportBundle\\Command\\ExportCommand',
-			'Application\\ImportBundle\\Command\\ImportCommand',
-			'Application\\ImportBundle\\Command\\ResetCommand',
-		);
+        $commands = array(
+            'Application\\ImportBundle\\Command\\CheckImportCommand',
+            'Application\\ImportBundle\\Command\\CheckExportCommand',
+            'Application\\ImportBundle\\Command\\ExportCommand',
+            'Application\\ImportBundle\\Command\\ImportCommand',
+            'Application\\ImportBundle\\Command\\ResetCommand',
+        );
 
-		foreach ($commands as $cmd) {
-			$application->add(new $cmd);
-		}
+        foreach ($commands as $cmd) {
+            $application->add(new $cmd);
+        }
     }
 
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
 
-	public function getPath()
-	{
-		return __DIR__;
-	}
+    public function getPath()
+    {
+        return __DIR__;
+    }
 }

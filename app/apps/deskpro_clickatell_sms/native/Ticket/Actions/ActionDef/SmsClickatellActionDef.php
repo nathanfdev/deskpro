@@ -37,27 +37,27 @@ use Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef;
 
 class SmsClickatellActionDef extends AbstractActionDef
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTitle()
-	{
-		return 'Send a Clickatell SMS message';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getTitle()
+    {
+        return 'Send a Clickatell SMS message';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTriggerActionClass()
-	{
-		return 'deskpro_clickatell_sms\\Ticket\\Actions\\SmsClickatellAction';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getTriggerActionClass()
+    {
+        return 'deskpro_clickatell_sms\\Ticket\\Actions\\SmsClickatellAction';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function processActionBuilderOptions(array $options)
-	{
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function processActionBuilderOptions(array $options)
+    {
+        return $options;
+    }
 }

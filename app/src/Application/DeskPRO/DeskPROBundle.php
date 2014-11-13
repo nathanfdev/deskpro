@@ -42,87 +42,87 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	public function __construct()
-	{
-		$this->name = 'DeskPRO';
-	}
+    public function __construct()
+    {
+        $this->name = 'DeskPRO';
+    }
 
-	public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container)
     {
         // register the extension(s) found in DependencyInjection/ directory
         parent::build($container);
 
         $container->registerExtension(new CoreExtension());
         $container->registerExtension(new SearchExtension());
-		$container->addCompilerPass(new ElasticaClientPass());
-	    $container->addCompilerPass(new DoctrineEntityListenerPass());
+        $container->addCompilerPass(new ElasticaClientPass());
+        $container->addCompilerPass(new DoctrineEntityListenerPass());
     }
 
-	/**
+    /**
      * @param Application $application An Application instance
      */
     public function registerCommands(Application $application)
     {
-		$commands = array(
-			'Application\\DeskPRO\\Command\\AgentsCommand',
-			'Application\\DeskPRO\\Command\\AsseticCommand',
-			'Application\\DeskPRO\\Command\\DbCollationChangeCommand',
-			'Application\\DeskPRO\\Command\\DecodeTacCommand',
-			'Application\\DeskPRO\\Command\\DefaultDataCommand',
-			'Application\\DeskPRO\\Command\\DevBuildLangCommand',
-			'Application\\DeskPRO\\Command\\DevCheckReservedWordsCommand',
-			'Application\\DeskPRO\\Command\\DevCommand',
-			'Application\\DeskPRO\\Command\\DevExportLangCommand',
-			'Application\\DeskPRO\\Command\\DevGenChangelogDocCommand',
-			'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
-			'Application\\DeskPRO\\Command\\DevJobCreateIncomingSmsCommand',
-			'Application\\DeskPRO\\Command\\DevLangCheckPhraseIdsCommand',
-			'Application\\DeskPRO\\Command\\DevLangCheckVarsCommand',
-			'Application\\DeskPRO\\Command\\DevLangOneSkyInitCommand',
-			'Application\\DeskPRO\\Command\\DevLoadDataCommand',
-			'Application\\DeskPRO\\Command\\DevPagelogCommand',
-			'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
-			'Application\\DeskPRO\\Command\\DevTestApiCommand',
-			'Application\\DeskPRO\\Command\\GenBuildClassCommand',
-			'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
-			'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
-			'Application\\DeskPRO\\Command\\InstallCommand',
-			'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
-			'Application\\DeskPRO\\Command\\InternalUpgradeRunnerCommand',
-			'Application\\DeskPRO\\Command\\JobExecuteCommand',
-			'Application\\DeskPRO\\Command\\JobSupervisorCommand',
-			'Application\\DeskPRO\\Command\\LanguageToPOCommand',
-			'Application\\DeskPRO\\Command\\LicenseInfoCommand',
-			'Application\\DeskPRO\\Command\\LoginTokenCommand',
-			'Application\\DeskPRO\\Command\\MoveBlobsCommand',
-			'Application\\DeskPRO\\Command\\PhraseCheckCommand',
-			'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
-			'Application\\DeskPRO\\Command\\ProcessEmailCommand',
-			'Application\\DeskPRO\\Command\\RecountRatingsCommand',
-			'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
-			'Application\\DeskPRO\\Command\\SchemaCommand',
-			'Application\\DeskPRO\\Command\\SearchReindexCommand',
-			'Application\\DeskPRO\\Command\\SyncDataCommand',
-			'Application\\DeskPRO\\Command\\TestCommand',
-			'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
-			'Application\\DeskPRO\\Command\\UpgradeCommand',
-			'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
-			'Application\\DeskPRO\\Command\\VerifySearchTablesCommand',
-			'Application\\DeskPRO\\Command\\WorkerJobCommand',
-		);
+        $commands = array(
+            'Application\\DeskPRO\\Command\\AgentsCommand',
+            'Application\\DeskPRO\\Command\\AsseticCommand',
+            'Application\\DeskPRO\\Command\\DbCollationChangeCommand',
+            'Application\\DeskPRO\\Command\\DecodeTacCommand',
+            'Application\\DeskPRO\\Command\\DefaultDataCommand',
+            'Application\\DeskPRO\\Command\\DevBuildLangCommand',
+            'Application\\DeskPRO\\Command\\DevCheckReservedWordsCommand',
+            'Application\\DeskPRO\\Command\\DevCommand',
+            'Application\\DeskPRO\\Command\\DevExportLangCommand',
+            'Application\\DeskPRO\\Command\\DevGenChangelogDocCommand',
+            'Application\\DeskPRO\\Command\\DevGenDpqlDocsCommand',
+            'Application\\DeskPRO\\Command\\DevJobCreateIncomingSmsCommand',
+            'Application\\DeskPRO\\Command\\DevLangCheckPhraseIdsCommand',
+            'Application\\DeskPRO\\Command\\DevLangCheckVarsCommand',
+            'Application\\DeskPRO\\Command\\DevLangOneSkyInitCommand',
+            'Application\\DeskPRO\\Command\\DevLoadDataCommand',
+            'Application\\DeskPRO\\Command\\DevPagelogCommand',
+            'Application\\DeskPRO\\Command\\DevRebuildSyncDataCommand',
+            'Application\\DeskPRO\\Command\\DevTestApiCommand',
+            'Application\\DeskPRO\\Command\\GenBuildClassCommand',
+            'Application\\DeskPRO\\Command\\GenerateSchemaFileCommand',
+            'Application\\DeskPRO\\Command\\GenRandomEmailCommand',
+            'Application\\DeskPRO\\Command\\InstallCommand',
+            'Application\\DeskPRO\\Command\\IndexElasticsearchCommand',
+            'Application\\DeskPRO\\Command\\InternalUpgradeRunnerCommand',
+            'Application\\DeskPRO\\Command\\JobExecuteCommand',
+            'Application\\DeskPRO\\Command\\JobSupervisorCommand',
+            'Application\\DeskPRO\\Command\\LanguageToPOCommand',
+            'Application\\DeskPRO\\Command\\LicenseInfoCommand',
+            'Application\\DeskPRO\\Command\\LoginTokenCommand',
+            'Application\\DeskPRO\\Command\\MoveBlobsCommand',
+            'Application\\DeskPRO\\Command\\PhraseCheckCommand',
+            'Application\\DeskPRO\\Command\\PopulateElasticsearchCommand',
+            'Application\\DeskPRO\\Command\\ProcessEmailCommand',
+            'Application\\DeskPRO\\Command\\RecountRatingsCommand',
+            'Application\\DeskPRO\\Command\\RefillTicketActiveCommand',
+            'Application\\DeskPRO\\Command\\SchemaCommand',
+            'Application\\DeskPRO\\Command\\SearchReindexCommand',
+            'Application\\DeskPRO\\Command\\SyncDataCommand',
+            'Application\\DeskPRO\\Command\\TestCommand',
+            'Application\\DeskPRO\\Command\\TestEmailDecodeCommand',
+            'Application\\DeskPRO\\Command\\UpgradeCommand',
+            'Application\\DeskPRO\\Command\\VerifyBlobsCommand',
+            'Application\\DeskPRO\\Command\\VerifySearchTablesCommand',
+            'Application\\DeskPRO\\Command\\WorkerJobCommand',
+        );
 
-		foreach ($commands as $cmd) {
-			$application->add(new $cmd);
-		}
+        foreach ($commands as $cmd) {
+            $application->add(new $cmd);
+        }
     }
 
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
 
-	public function getPath()
-	{
-		return __DIR__;
-	}
+    public function getPath()
+    {
+        return __DIR__;
+    }
 }

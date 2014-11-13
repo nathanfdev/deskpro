@@ -39,17 +39,17 @@ use Application\DeskPRO\Languages\LangPackInfo;
 
 class Language extends AbstractEntityRepository
 {
-	/** @var string|null */
-	protected $lang_titles = null;
-	/** @var \Application\DeskPRO\Entity\Language|null */
-	protected $default_lang = null;
+    /** @var string|null */
+    protected $lang_titles = null;
+    /** @var \Application\DeskPRO\Entity\Language|null */
+    protected $default_lang = null;
 
-	/**
-	 * @return array
-	 */
-	public function getTitles($for_ids = null)
-	{
-		if ($this->lang_titles === null) {
+    /**
+     * @return array
+     */
+    public function getTitles($for_ids = null)
+    {
+        if ($this->lang_titles === null) {
             $db = $this->getEntityManager()->getConnection();
             $this->lang_titles = $db->fetchAllKeyValue("
                 SELECT id, title
@@ -68,64 +68,63 @@ class Language extends AbstractEntityRepository
         }
 
         return $ret;
-	}
+    }
 
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\Language
-	 */
-	public function getDefault()
-	{
-		if ($this->default_lang !== null) {
-			return $this->default_lang;
-		}
+    /**
+     * @return \Application\DeskPRO\Entity\Language
+     */
+    public function getDefault()
+    {
+        if ($this->default_lang !== null) {
+            return $this->default_lang;
+        }
 
-		$lang_id = App::getSetting('core.default_language_id');
-		if (!$lang_id) {
-			$lang_id = 1;
-		}
+        $lang_id = App::getSetting('core.default_language_id');
+        if (!$lang_id) {
+            $lang_id = 1;
+        }
 
-		$this->default_lang = $this->find($lang_id);
+        $this->default_lang = $this->find($lang_id);
 
-		return $this->default_lang;
-	}
+        return $this->default_lang;
+    }
 
+    /**
+     * Install all lang packs form $langpacks that arent already installed.
+     *
+     * @param  \Application\DeskPRO\Languages\LangPackInfo $langpacks
+     * @throws \Exception
+     */
+    public function installAll(LangPackInfo $langpacks)
+    {
+        $em = $this->_em;
+        $db = $em->getConnection();
 
-	/**
-	 * Install all lang packs form $langpacks that arent already installed.
-	 *
-	 * @param \Application\DeskPRO\Languages\LangPackInfo $langpacks
-	 * @throws \Exception
-	 */
-	public function installAll(LangPackInfo $langpacks)
-	{
-		$em = $this->_em;
-		$db = $em->getConnection();
+        $installed = $db->fetchAllCol("
+            SELECT sys_name
+            FROM languages
+        ");
 
-		$installed = $db->fetchAllCol("
-			SELECT sys_name
-			FROM languages
-		");
+        $installed = array_flip($installed);
 
-		$installed = array_flip($installed);
+        foreach ($langpacks->getLangIds() as $id) {
+            if (isset($installed[$id])) {
+                continue;
+            }
 
-		foreach ($langpacks->getLangIds() as $id) {
-			if (isset($installed[$id])) {
-				continue;
-			}
+            $lang = $langpacks->newLanguageEntity($id);
+            $em->persist($lang);
+        }
 
-			$lang = $langpacks->newLanguageEntity($id);
-			$em->persist($lang);
-		}
-
-		$db->beginTransaction();
-		try {
-			$em->flush();
-			$db->commit();
-		} catch (\Exception $e) {
-			$db->rollback();
-			throw $e;
-		}
-	}
+        $db->beginTransaction();
+        try {
+            $em->flush();
+            $db->commit();
+        } catch (\Exception $e) {
+            $db->rollback();
+            throw $e;
+        }
+    }
 }

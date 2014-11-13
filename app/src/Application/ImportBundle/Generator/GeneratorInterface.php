@@ -9,5 +9,5 @@ namespace Application\ImportBundle\Generator;
  */
 interface GeneratorInterface
 {
-	public function generateJson();
+    public function generateJson();
 }

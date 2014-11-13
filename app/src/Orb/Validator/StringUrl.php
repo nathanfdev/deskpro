@@ -36,37 +36,40 @@ namespace Orb\Validator;
 
 class StringUrl extends AbstractValidator implements StaticValidator
 {
-	/** @var array  */
-	protected $_protocols = array('http', 'https');
+    /** @var array  */
+    protected $_protocols = array('http', 'https');
 
-	/**
-	 * @param $value
-	 * @return bool
-	 */
-	public static function isValueValid($value)
-	{
-		$validator = new self();
-		return $validator->isValid($value);
-	}
+    /**
+     * @param $value
+     * @return bool
+     */
+    public static function isValueValid($value)
+    {
+        $validator = new self();
+
+        return $validator->isValid($value);
+    }
 
 
-	/**
-	 * Check $value to see if its valid.
-	 *
-	 * @return bool
-	 */
-	protected function checkIsValid($value)
-	{
-		if (!preg_match('#^([a-zA-Z0-9_-]+)://#', $value, $match)) {
-			$this->addError('no_protocol');
-			return false;
-		}
+    /**
+     * Check $value to see if its valid.
+     *
+     * @return bool
+     */
+    protected function checkIsValid($value)
+    {
+        if (!preg_match('#^([a-zA-Z0-9_-]+)://#', $value, $match)) {
+            $this->addError('no_protocol');
 
-		if (!in_array(strtolower($match[1]), $this->_protocols)) {
-			$this->addError('invalid_protocol');
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
+        if (!in_array(strtolower($match[1]), $this->_protocols)) {
+            $this->addError('invalid_protocol');
+
+            return false;
+        }
+
+        return true;
+    }
 }

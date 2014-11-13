@@ -39,129 +39,130 @@ use Application\DeskPRO\Entity\AppPackage;
 
 class AppManagerFiltered implements AppManagerInterface
 {
-	/**
-	 * @var AppManagerInterface
-	 */
-	private $app_manager;
+    /**
+     * @var AppManagerInterface
+     */
+    private $app_manager;
 
-	/**
-	 * @var callable
-	 */
-	private $filter;
+    /**
+     * @var callable
+     */
+    private $filter;
 
+    /**
+     * $filter mus take an AppPackage and return truthy if it passes the filter or falsey if not.
+     *
+     * @param AppManagerInterface $app_manager
+     * @param callable            $filter      The filter to filter app packages by
+     */
+    public function __construct(AppManagerInterface $app_manager, $filter)
+    {
+        $this->app_manager = $app_manager;
+        $this->filter = $filter;
+    }
 
-	/**
-	 * $filter mus take an AppPackage and return truthy if it passes the filter or falsey if not.
-	 *
-	 * @param AppManagerInterface $app_manager
-	 * @param callable $filter The filter to filter app packages by
-	 */
-	public function __construct(AppManagerInterface $app_manager, $filter)
-	{
-		$this->app_manager = $app_manager;
-		$this->filter = $filter;
-	}
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    public function hasPackage($name)
+    {
+        if (!$this->app_manager->hasPackage($name)) {
+            return false;
+        }
 
-	/**
-	 * @param string $name
-	 * @return bool
-	 */
-	public function hasPackage($name)
-	{
-		if (!$this->app_manager->hasPackage($name)) {
-			return false;
-		}
+        $package = $this->app_manager->getPackage($name);
 
-		$package = $this->app_manager->getPackage($name);
-		return call_user_func($this->filter, $package) ? true : false;
-	}
+        return call_user_func($this->filter, $package) ? true : false;
+    }
 
-	/**
-	 * @param string $name
-	 * @return AppPackage
-	 * @throws \InvalidArgumentException
-	 */
-	public function getPackage($name)
-	{
-		$package = $this->app_manager->getPackage($name);
-		if (!call_user_func($this->filter, $package)) {
-			throw new \InvalidArgumentException();
-		}
+    /**
+     * @param  string                    $name
+     * @return AppPackage
+     * @throws \InvalidArgumentException
+     */
+    public function getPackage($name)
+    {
+        $package = $this->app_manager->getPackage($name);
+        if (!call_user_func($this->filter, $package)) {
+            throw new \InvalidArgumentException();
+        }
 
-		return $package;
-	}
+        return $package;
+    }
 
-	/**
-	 * @return AppPackage[]
-	 */
-	public function getAllPackages()
-	{
-		$packages = array();
+    /**
+     * @return AppPackage[]
+     */
+    public function getAllPackages()
+    {
+        $packages = array();
 
-		foreach ($this->app_manager->getAllPackages() as $p) {
-			if (call_user_func($this->filter, $p)) {
-				$packages[] = $p;
-			}
-		}
+        foreach ($this->app_manager->getAllPackages() as $p) {
+            if (call_user_func($this->filter, $p)) {
+                $packages[] = $p;
+            }
+        }
 
-		return $packages;
-	}
+        return $packages;
+    }
 
-	/**
-	 * @param int $id
-	 * @return bool
-	 */
-	public function hasApp($id)
-	{
-		if (!$this->app_manager->hasApp($id)) {
-			return false;
-		}
+    /**
+     * @param  int  $id
+     * @return bool
+     */
+    public function hasApp($id)
+    {
+        if (!$this->app_manager->hasApp($id)) {
+            return false;
+        }
 
-		$app = $this->app_manager->getApp($id);
-		return call_user_func($this->filter, $app->package) ? true : false;
-	}
+        $app = $this->app_manager->getApp($id);
 
-	/**
-	 * @param int $id
-	 * @return AppInstance
-	 * @throws \InvalidArgumentException
-	 */
-	public function getApp($id)
-	{
-		$app = $this->app_manager->getApp($id);
-		if (!call_user_func($this->filter, $app->package)) {
-			throw new \InvalidArgumentException();
-		}
+        return call_user_func($this->filter, $app->package) ? true : false;
+    }
 
-		return $app;
-	}
+    /**
+     * @param  int                       $id
+     * @return AppInstance
+     * @throws \InvalidArgumentException
+     */
+    public function getApp($id)
+    {
+        $app = $this->app_manager->getApp($id);
+        if (!call_user_func($this->filter, $app->package)) {
+            throw new \InvalidArgumentException();
+        }
 
-	/**
-	 * @return AppInstance[]
-	 */
-	public function getAllApps()
-	{
-		$apps = array();
+        return $app;
+    }
 
-		foreach ($this->app_manager->getAllApps() as $app) {
-			if (call_user_func($this->filter, $app->package)) {
-				$apps[] = $app;
-			}
-		}
+    /**
+     * @return AppInstance[]
+     */
+    public function getAllApps()
+    {
+        $apps = array();
 
-		return $apps;
-	}
+        foreach ($this->app_manager->getAllApps() as $app) {
+            if (call_user_func($this->filter, $app->package)) {
+                $apps[] = $app;
+            }
+        }
 
-	/**
-	 * @param string $name The package name
-	 * @return AppInstance[]
-	 */
-	public function getPackageApps($name)
-	{
-		if (!$this->hasPackage($name)) {
-			return array();
-		}
+        return $apps;
+    }
 
-		return $this->app_manager->getPackageApps($name);
-	}
+    /**
+     * @param  string        $name The package name
+     * @return AppInstance[]
+     */
+    public function getPackageApps($name)
+    {
+        if (!$this->hasPackage($name)) {
+            return array();
+        }
+
+        return $this->app_manager->getPackageApps($name);
+    }
 }

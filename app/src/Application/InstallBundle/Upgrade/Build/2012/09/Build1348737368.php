@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1348737368 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add support for user source plugins");
-		$this->execMutateSql("CREATE TABLE usersource_plugins (id INT AUTO_INCREMENT NOT NULL, plugin_id VARCHAR(255) DEFAULT NULL, unique_key VARCHAR(50) NOT NULL, title VARCHAR(255) NOT NULL, form_model_class VARCHAR(255) NOT NULL, form_type_class VARCHAR(255) NOT NULL, form_template VARCHAR(255) NOT NULL, adapter_class VARCHAR(255) NOT NULL, INDEX IDX_E484A367EC942BCF (plugin_id), UNIQUE INDEX unique_key_idx (unique_key), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE usersource_plugins ADD CONSTRAINT FK_E484A367EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE usersources ADD usersource_plugin_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994CEB0D3362 FOREIGN KEY (usersource_plugin_id) REFERENCES usersource_plugins (id) ON DELETE CASCADE");
-		$this->execMutateSql("CREATE INDEX IDX_4E3C994CEB0D3362 ON usersources (usersource_plugin_id)");
-	}
+    public function run()
+    {
+        $this->out("Add support for user source plugins");
+        $this->execMutateSql("CREATE TABLE usersource_plugins (id INT AUTO_INCREMENT NOT NULL, plugin_id VARCHAR(255) DEFAULT NULL, unique_key VARCHAR(50) NOT NULL, title VARCHAR(255) NOT NULL, form_model_class VARCHAR(255) NOT NULL, form_type_class VARCHAR(255) NOT NULL, form_template VARCHAR(255) NOT NULL, adapter_class VARCHAR(255) NOT NULL, INDEX IDX_E484A367EC942BCF (plugin_id), UNIQUE INDEX unique_key_idx (unique_key), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE usersource_plugins ADD CONSTRAINT FK_E484A367EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE usersources ADD usersource_plugin_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994CEB0D3362 FOREIGN KEY (usersource_plugin_id) REFERENCES usersource_plugins (id) ON DELETE CASCADE");
+        $this->execMutateSql("CREATE INDEX IDX_4E3C994CEB0D3362 ON usersources (usersource_plugin_id)");
+    }
 }

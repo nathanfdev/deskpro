@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1380701493 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Increase max length of ticket ref field");
-		$this->execMutateSql("ALTER TABLE tickets CHANGE ref ref VARCHAR(100) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Increase max length of ticket ref field");
+        $this->execMutateSql("ALTER TABLE tickets CHANGE ref ref VARCHAR(100) NOT NULL");
+    }
 }

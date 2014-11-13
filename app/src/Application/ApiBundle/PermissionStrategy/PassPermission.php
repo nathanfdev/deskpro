@@ -38,15 +38,15 @@ use Application\ApiBundle\ApiUser;
 
 class PassPermission implements PermissionStrategyInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function userHasPermission(ApiUser $api_user, $context_info = null)
-	{
-		if ($api_user->api_key || $api_user->api_token) {
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    {
+        if ($api_user->api_key || $api_user->api_token) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

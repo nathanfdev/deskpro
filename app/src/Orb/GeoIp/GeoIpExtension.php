@@ -36,75 +36,75 @@ namespace Orb\GeoIp;
 
 class GeoIpExtension extends AbstractGeoIp
 {
-	/** @var array|null  */
-	private $last = null;
+    /** @var array|null  */
+    private $last = null;
 
-	/**
-	 * @param string $host
-	 * @param array $what
-	 * @return array
-	 */
-	public function lookup($host, array $what = null)
-	{
-		if (!function_exists('geoip_db_avail')) {
-			return $this->getEmptyRecord();
-		}
+    /**
+     * @param  string $host
+     * @param  array  $what
+     * @return array
+     */
+    public function lookup($host, array $what = null)
+    {
+        if (!function_exists('geoip_db_avail')) {
+            return $this->getEmptyRecord();
+        }
 
-		if ($this->last && $this->last[0] == $host) {
-			$rec = $this->last[1];
-		} else {
-			if (geoip_db_avail(\GEOIP_CITY_EDITION_REV0) || geoip_db_avail(\GEOIP_CITY_EDITION_REV1)) {
-				$rec = @geoip_record_by_name($host);
-			} elseif (geoip_db_avail(\GEOIP_COUNTRY_EDITION)) {
-				$continent = @geoip_continent_code_by_name($host);
-				$country   = @geoip_country_code_by_name($host);
+        if ($this->last && $this->last[0] == $host) {
+            $rec = $this->last[1];
+        } else {
+            if (geoip_db_avail(\GEOIP_CITY_EDITION_REV0) || geoip_db_avail(\GEOIP_CITY_EDITION_REV1)) {
+                $rec = @geoip_record_by_name($host);
+            } elseif (geoip_db_avail(\GEOIP_COUNTRY_EDITION)) {
+                $continent = @geoip_continent_code_by_name($host);
+                $country   = @geoip_country_code_by_name($host);
 
-				$rec = array(
-					self::CONTINENT => $continent,
-					self::COUNTRY   => $country,
-				);
-			} else {
-				$rec = array();
-			}
-		}
+                $rec = array(
+                    self::CONTINENT => $continent,
+                    self::COUNTRY   => $country,
+                );
+            } else {
+                $rec = array();
+            }
+        }
 
-		$this->last = array(
-			$host,
-			$rec
-		);
+        $this->last = array(
+            $host,
+            $rec
+        );
 
-		if ($what === null) {
-			$what = array_keys($this->getEmptyRecord());
-		}
+        if ($what === null) {
+            $what = array_keys($this->getEmptyRecord());
+        }
 
-		foreach ($what as $w) {
-			switch ($w) {
-				case self::CONTINENT:
-					$return[self::CONTINENT] = !empty($rec['continent_code']) ? $rec['continent_code'] : null;
-					break;
+        foreach ($what as $w) {
+            switch ($w) {
+                case self::CONTINENT:
+                    $return[self::CONTINENT] = !empty($rec['continent_code']) ? $rec['continent_code'] : null;
+                    break;
 
-				case self::COUNTRY:
-					$return[self::COUNTRY] = !empty($rec['country_code']) ? $rec['country_code'] : null;
-					break;
+                case self::COUNTRY:
+                    $return[self::COUNTRY] = !empty($rec['country_code']) ? $rec['country_code'] : null;
+                    break;
 
-				case self::REGION:
-					$return[self::REGION] = !empty($rec['region']) ? $rec['region'] : null;
-					break;
+                case self::REGION:
+                    $return[self::REGION] = !empty($rec['region']) ? $rec['region'] : null;
+                    break;
 
-				case self::CITY:
-					$return[self::CITY] = !empty($rec['city']) ? $rec['city'] : null;
-					break;
+                case self::CITY:
+                    $return[self::CITY] = !empty($rec['city']) ? $rec['city'] : null;
+                    break;
 
-				case self::LATITUDE:
-					$return[self::LATITUDE] = !empty($rec['latitude']) ? $rec['latitude'] : null;
-					break;
+                case self::LATITUDE:
+                    $return[self::LATITUDE] = !empty($rec['latitude']) ? $rec['latitude'] : null;
+                    break;
 
-				case self::LONGITUDE:
-					$return[self::LATITUDE] = !empty($rec['longitude']) ? $rec['longitude'] : null;
-					break;
-			}
-		}
+                case self::LONGITUDE:
+                    $return[self::LATITUDE] = !empty($rec['longitude']) ? $rec['longitude'] : null;
+                    break;
+            }
+        }
 
-		return $return;
-	}
+        return $return;
+    }
 }

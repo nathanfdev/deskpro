@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1359453401 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct tickets.locked_by_agent constraint");
-		$this->execMutateSql("ALTER TABLE tickets DROP FOREIGN KEY FK_54469DF4428359E2");
-		$this->execMutateSql("ALTER TABLE tickets ADD CONSTRAINT FK_54469DF4428359E2 FOREIGN KEY (locked_by_agent) REFERENCES people (id) ON DELETE SET NULL");
-	}
+    public function run()
+    {
+        $this->out("Correct tickets.locked_by_agent constraint");
+        $this->execMutateSql("ALTER TABLE tickets DROP FOREIGN KEY FK_54469DF4428359E2");
+        $this->execMutateSql("ALTER TABLE tickets ADD CONSTRAINT FK_54469DF4428359E2 FOREIGN KEY (locked_by_agent) REFERENCES people (id) ON DELETE SET NULL");
+    }
 }

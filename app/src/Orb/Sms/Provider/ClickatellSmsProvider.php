@@ -41,100 +41,100 @@ use Orb\Sms\SmsResult;
 
 class ClickatellSmsProvider implements SmsProviderInterface
 {
-	/**
-	 * @var ClickatellClient
-	 */
-	private $client;
+    /**
+     * @var ClickatellClient
+     */
+    private $client;
 
-	/**
-	 * @var string
-	 */
-	private $user;
+    /**
+     * @var string
+     */
+    private $user;
 
-	/**
-	 * @var string
-	 */
-	private $apiId;
+    /**
+     * @var string
+     */
+    private $apiId;
 
-	/**
-	 * @var string
-	 */
-	private $password;
-
-
-	/**
-	 * @param $user The Clickatell User
-	 * @param $apiId The Clickatell API ID
-	 * @param $password The Clickatell password
-	 */
-	public function __construct($user, $password, $apiId)
-	{
-		$this->client = ClickatellClient::factory(array( 'api_id'   => $apiId, 'user' => $user,
-		                                                 'password' => $password ));
-		$this->user = $user;
-		$this->apiId = $apiId;
-		$this->password = $password;
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function sendMessage($toPhoneNumber, SmsMessageChunk $chunk, $fromPhoneNumber)
-	{
-		$textMessage = $chunk->getText();
-
-		try {
-			$result = $this->client->getCommand('SendMsg',
-				array( 'to' => $toPhoneNumber, 'text' => $textMessage, ))->execute();
-		} catch (\Exception $e) {
-			$smsResult = new SmsResult(SmsResult::SMS_FAIL,
-				$fromPhoneNumber,
-				$toPhoneNumber,
-				$textMessage,
-				$this->getName(),
-				array( 'status' => $e->getCode(), 'message' => $e->getMessage() ));
-
-			return $smsResult;
-		}
-
-		if ($result->isSuccessful()) {
-			$smsResult = new SmsResult(SmsResult::SMS_SENT,
-				$fromPhoneNumber,
-				$toPhoneNumber,
-				$textMessage,
-				$this->getName(),
-				$result->getMessageIds());
-		} else {
-			$smsResult = new SmsResult(SmsResult::SMS_FAIL,
-				$fromPhoneNumber,
-				$toPhoneNumber,
-				$textMessage,
-				$this->getName(),
-				$result->getMessageIds());
-		}
-
-		return $smsResult;
-	}
+    /**
+     * @var string
+     */
+    private $password;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getName()
-	{
-		return 'clickatell';
-	}
+    /**
+     * @param $user The Clickatell User
+     * @param $apiId The Clickatell API ID
+     * @param $password The Clickatell password
+     */
+    public function __construct($user, $password, $apiId)
+    {
+        $this->client = ClickatellClient::factory(array( 'api_id'   => $apiId, 'user' => $user,
+                                                         'password' => $password ));
+        $this->user = $user;
+        $this->apiId = $apiId;
+        $this->password = $password;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function sendMessage($toPhoneNumber, SmsMessageChunk $chunk, $fromPhoneNumber)
+    {
+        $textMessage = $chunk->getText();
+
+        try {
+            $result = $this->client->getCommand('SendMsg',
+                array( 'to' => $toPhoneNumber, 'text' => $textMessage, ))->execute();
+        } catch (\Exception $e) {
+            $smsResult = new SmsResult(SmsResult::SMS_FAIL,
+                $fromPhoneNumber,
+                $toPhoneNumber,
+                $textMessage,
+                $this->getName(),
+                array( 'status' => $e->getCode(), 'message' => $e->getMessage() ));
+
+            return $smsResult;
+        }
+
+        if ($result->isSuccessful()) {
+            $smsResult = new SmsResult(SmsResult::SMS_SENT,
+                $fromPhoneNumber,
+                $toPhoneNumber,
+                $textMessage,
+                $this->getName(),
+                $result->getMessageIds());
+        } else {
+            $smsResult = new SmsResult(SmsResult::SMS_FAIL,
+                $fromPhoneNumber,
+                $toPhoneNumber,
+                $textMessage,
+                $this->getName(),
+                $result->getMessageIds());
+        }
+
+        return $smsResult;
+    }
 
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getParams()
-	{
-		return array(
-			'user' => $this->user,
-			'password' => $this->password,
-			'api_id' => $this->apiId
-		);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getName()
+    {
+        return 'clickatell';
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getParams()
+    {
+        return array(
+            'user' => $this->user,
+            'password' => $this->password,
+            'api_id' => $this->apiId
+        );
+    }
 }

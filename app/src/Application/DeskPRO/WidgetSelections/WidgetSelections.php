@@ -39,103 +39,103 @@ use Doctrine\ORM\EntityManager;
 
 class WidgetSelections
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	public function getWidgetSelections()
-	{
-		$articles  = App::getDb()->fetchAllKeyValue("SELECT id, title FROM articles WHERE status = 'published'");
-		$downloads = App::getDb()->fetchAllKeyValue("SELECT id, title FROM downloads WHERE status = 'published'");
-		$news      = App::getDb()->fetchAllKeyValue("SELECT id, title FROM news WHERE status = 'published'");
+    public function getWidgetSelections()
+    {
+        $articles  = App::getDb()->fetchAllKeyValue("SELECT id, title FROM articles WHERE status = 'published'");
+        $downloads = App::getDb()->fetchAllKeyValue("SELECT id, title FROM downloads WHERE status = 'published'");
+        $news      = App::getDb()->fetchAllKeyValue("SELECT id, title FROM news WHERE status = 'published'");
 
-		$article_cat_map  = App::getDb()->fetchAllGrouped(
-			"SELECT category_id, article_id FROM article_to_categories",
-			array(),
-			'category_id',
-			null,
-			'article_id'
-		);
+        $article_cat_map  = App::getDb()->fetchAllGrouped(
+            "SELECT category_id, article_id FROM article_to_categories",
+            array(),
+            'category_id',
+            null,
+            'article_id'
+        );
 
-		$download_cat_map = App::getDb()->fetchAllGrouped(
-			"SELECT category_id, id FROM downloads",
-			array(),
-			'category_id',
-			null,
-			'id'
-		);
+        $download_cat_map = App::getDb()->fetchAllGrouped(
+            "SELECT category_id, id FROM downloads",
+            array(),
+            'category_id',
+            null,
+            'id'
+        );
 
-		$news_cat_map     = App::getDb()->fetchAllGrouped(
-			"SELECT category_id, id FROM news",
-			array(),
-			'category_id',
-			null,
-			'id'
-		);
+        $news_cat_map     = App::getDb()->fetchAllGrouped(
+            "SELECT category_id, id FROM news",
+            array(),
+            'category_id',
+            null,
+            'id'
+        );
 
-		$selections = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links');
+        $selections = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links');
 
-		if ($selections) {
+        if ($selections) {
 
-			$selections = $selections->getData('selections');
+            $selections = $selections->getData('selections');
 
-		} else {
+        } else {
 
-			$selections = array();
-		}
+            $selections = array();
+        }
 
-		function buildTree($categories) {
+        function buildTree($categories)
+        {
+            $result = array();
 
-			$result = array();
+            foreach($categories as $category) {
 
-			foreach($categories as $category) {
+                $data = array();
 
-				$data = array();
+                $data['id']       = $category->id;
+                $data['title']    = $category->title;
+                $data['depth']    = $category->depth;
+                $data['children'] = buildTree($category->children);
 
-				$data['id']       = $category->id;
-				$data['title']    = $category->title;
-				$data['depth']    = $category->depth;
-				$data['children'] = buildTree($category->children);
+                $result[] = $data;
+            }
 
-				$result[] = $data;
-			}
+            return $result;
+        }
 
-			return $result;
-		}
+        return array(
+            'selections'          => $selections,
 
-		return array(
-			'selections'          => $selections,
+            'article_categories'  => buildTree(App::getDataService('ArticleCategory')->getRootNodes()),
+            'download_categories' => buildTree(App::getDataService('DownloadCategory')->getRootNodes()),
+            'news_categories'     => buildTree(App::getDataService('NewsCategory')->getRootNodes()),
 
-			'article_categories'  => buildTree(App::getDataService('ArticleCategory')->getRootNodes()),
-			'download_categories' => buildTree(App::getDataService('DownloadCategory')->getRootNodes()),
-			'news_categories'     => buildTree(App::getDataService('NewsCategory')->getRootNodes()),
+            'articles'            => $articles,
+            'downloads'           => $downloads,
+            'news'                => $news,
 
-			'articles'            => $articles,
-			'downloads'           => $downloads,
-			'news'                => $news,
+            'article_cat_map'     => $article_cat_map,
+            'download_cat_map'    => $download_cat_map,
+            'news_cat_map'        => $news_cat_map
+        );
+    }
 
-			'article_cat_map'     => $article_cat_map,
-			'download_cat_map'    => $download_cat_map,
-			'news_cat_map'        => $news_cat_map
-		);
-	}
+    public function saveSelections($selections)
+    {
+        $ds = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links', true);
+        $ds->setData('selections', $selections);
 
-	public function saveSelections($selections)
-	{
-		$ds = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links', true);
-		$ds->setData('selections', $selections);
+        $this->em->persist($ds);
+        $this->em->flush();
 
-		$this->em->persist($ds);
-		$this->em->flush();
-
-		$cache = new UserPageCache();
-		$cache->invalidateAll();
-	}
+        $cache = new UserPageCache();
+        $cache->invalidateAll();
+    }
 }

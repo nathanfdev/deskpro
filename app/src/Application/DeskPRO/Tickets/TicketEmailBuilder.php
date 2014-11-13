@@ -50,283 +50,303 @@ use Orb\Util\OptionsArray;
 
 class TicketEmailBuilder
 {
-	/**
-	 * @var \Orb\Util\OptionsArray
-	 */
-	private $options;
+    /**
+     * @var \Orb\Util\OptionsArray
+     */
+    private $options;
 
-	private function __construct()
-	{
-		$this->options = new OptionsArray();
-	}
+    private function __construct()
+    {
+        $this->options = new OptionsArray();
+    }
 
-	/**
-	 * @return TicketEmailBuilder
-	 */
-	public static function create()
-	{
-		return new self();
-	}
+    /**
+     * @return TicketEmailBuilder
+     */
+    public static function create()
+    {
+        return new self();
+    }
 
-	/**
-	 * @param DeskproContainer $container
-	 * @return TicketEmailBuilder
-	 */
-	public static function createFromContainer(DeskproContainer $container)
-	{
-		$build = new self();
-		$build->setEm($container->getEm())
-			->setSettings($container->getSettingsHandler())
-			->setMailer($container->getMailer())
-			->setTranslate($container->getTranslator())
-			->setTicketFieldManager($container->getTicketFieldManager())
-			->setUserFieldManager($container->getPersonFieldManager())
-			->setTicketLayoutManager($container->getTicketLayoutManager());
+    /**
+     * @param  DeskproContainer   $container
+     * @return TicketEmailBuilder
+     */
+    public static function createFromContainer(DeskproContainer $container)
+    {
+        $build = new self();
+        $build->setEm($container->getEm())
+            ->setSettings($container->getSettingsHandler())
+            ->setMailer($container->getMailer())
+            ->setTranslate($container->getTranslator())
+            ->setTicketFieldManager($container->getTicketFieldManager())
+            ->setUserFieldManager($container->getPersonFieldManager())
+            ->setTicketLayoutManager($container->getTicketLayoutManager());
 
-		return $build;
-	}
+        return $build;
+    }
 
-	/**
-	 * @return TicketEmail
-	 */
-	public function buildTicketEmail()
-	{
-		return new TicketEmail($this->options->all());
-	}
+    /**
+     * @return TicketEmail
+     */
+    public function buildTicketEmail()
+    {
+        return new TicketEmail($this->options->all());
+    }
 
-	/**
-	 * @param Settings $settings
-	 * @return $this
-	 */
-	public function setSettings(Settings $settings)
-	{
-		$this->options->set('settings', $settings);
-		return $this;
-	}
+    /**
+     * @param  Settings $settings
+     * @return $this
+     */
+    public function setSettings(Settings $settings)
+    {
+        $this->options->set('settings', $settings);
 
-	/**
-	 * @param Mailer $mailer
-	 * @return TicketEmailBuilder
-	 */
-	public function setMailer(Mailer $mailer)
-	{
-		$this->options->set('mailer', $mailer);
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param Translate $tr
-	 * @return TicketEmailBuilder
-	 */
-	public function setTranslate(Translate $tr)
-	{
-		$this->options->set('translate', $tr);
-		return $this;
-	}
+    /**
+     * @param  Mailer             $mailer
+     * @return TicketEmailBuilder
+     */
+    public function setMailer(Mailer $mailer)
+    {
+        $this->options->set('mailer', $mailer);
 
-	/**
-	 * @param EntityManager $em
-	 * @return TicketEmailBuilder
-	 */
-	public function setEm(EntityManager $em)
-	{
-		$this->options->set('em', $em);
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param TicketFieldManager $field_manager
-	 * @return TicketEmailBuilder
-	 */
-	public function setTicketFieldManager(TicketFieldManager $field_manager)
-	{
-		$this->options->set('ticket_field_manager', $field_manager);
-		return $this;
-	}
+    /**
+     * @param  Translate          $tr
+     * @return TicketEmailBuilder
+     */
+    public function setTranslate(Translate $tr)
+    {
+        $this->options->set('translate', $tr);
 
-	/**
-	 * @param PersonFieldManager $field_manager
-	 * @return TicketEmailBuilder
-	 */
-	public function setUserFieldManager(PersonFieldManager $field_manager)
-	{
-		$this->options->set('user_field_manager', $field_manager);
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param TicketLayoutManager $ticket_layout_manager
-	 * @return TicketEmailBuilder
-	 */
-	public function setTicketLayoutManager(TicketLayoutManager $ticket_layout_manager)
-	{
-		$this->options->set('ticket_layout_manager', $ticket_layout_manager);
-		return $this;
-	}
+    /**
+     * @param  EntityManager      $em
+     * @return TicketEmailBuilder
+     */
+    public function setEm(EntityManager $em)
+    {
+        $this->options->set('em', $em);
 
-	/**
-	 * @param Ticket $ticket
-	 * @return TicketEmailBuilder
-	 */
-	public function setTicket(Ticket $ticket)
-	{
-		$this->options->set('ticket', $ticket);
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param Person $person
-	 * @return TicketEmailBuilder
-	 */
-	public function setToPerson(Person $person)
-	{
-		$this->options->set('to_person', $person);
-		return $this;
-	}
+    /**
+     * @param  TicketFieldManager $field_manager
+     * @return TicketEmailBuilder
+     */
+    public function setTicketFieldManager(TicketFieldManager $field_manager)
+    {
+        $this->options->set('ticket_field_manager', $field_manager);
 
-	/**
-	 * @param Person[] $people
-	 * @return $this
-	 */
-	public function setToPeople(array $people)
-	{
-		throw new \RuntimeException();
-	}
+        return $this;
+    }
 
-	/**
-	 * What type of user the email is intended for. This is a safety feature.
-	 * For examlpe, if it's an agent email but the user isn't an agent, we can catch
-	 * an error.
-	 *
-	 * @return TicketEmailBuilder
-	 */
-	public function setUserMode()
-	{
-		$this->options->set('user_mode', 'user');
-		return $this;
-	}
+    /**
+     * @param  PersonFieldManager $field_manager
+     * @return TicketEmailBuilder
+     */
+    public function setUserFieldManager(PersonFieldManager $field_manager)
+    {
+        $this->options->set('user_field_manager', $field_manager);
 
-	/**
-	 * @see setUserMode
-	 * @return TicketEmailBuilder
-	 */
-	public function setAgentMode()
-	{
-		$this->options->set('user_mode', 'agent');
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $template_name
-	 * @return TicketEmailBuilder
-	 */
-	public function setTemplateName($template_name)
-	{
-		$this->options->set('template_name', $template_name);
-		return $this;
-	}
+    /**
+     * @param  TicketLayoutManager $ticket_layout_manager
+     * @return TicketEmailBuilder
+     */
+    public function setTicketLayoutManager(TicketLayoutManager $ticket_layout_manager)
+    {
+        $this->options->set('ticket_layout_manager', $ticket_layout_manager);
 
-	/**
-	 * @param $from_name
-	 * @return TicketEmailBuilder
-	 */
-	public function setFromName($from_name)
-	{
-		$this->options->set('from_name', $from_name);
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param EmailAccount $account
-	 * @return TicketEmailBuilder
-	 */
-	public function setFromEmailAccount(EmailAccount $account = null)
-	{
-		$this->options->set('from_email_account', $account);
-		return $this;
-	}
+    /**
+     * @param  Ticket             $ticket
+     * @return TicketEmailBuilder
+     */
+    public function setTicket(Ticket $ticket)
+    {
+        $this->options->set('ticket', $ticket);
 
-	/**
-	 * On user emails, this will CC in other user participants on the email.
-	 *
-	 * @return TicketEmailBuilder
-	 */
-	public function enableUserCc()
-	{
-		$this->options->set('cc_users', true);
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @see enableUserCc
-	 * @return TicketEmailBuilder
-	 */
-	public function disableUserCc()
-	{
-		$this->options->set('cc_users', false);
-	}
+    /**
+     * @param  Person             $person
+     * @return TicketEmailBuilder
+     */
+    public function setToPerson(Person $person)
+    {
+        $this->options->set('to_person', $person);
 
-	/**
-	 * If this is an automatic email (e.g., auto-reply), then this will add 'auto' headers
-	 * to the email. These special headers prevent other automated systems from sending their
-	 * own auto-replies.
-	 *
-	 * @return TicketEmailBuilder
-	 */
-	public function setIsAuto()
-	{
-		$this->options->set('is_auto', true);
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @see setIsAuto
-	 * @return TicketEmailBuilder
-	 */
-	public function setIsNotAuto()
-	{
-		$this->options->set('is_auto', true);
-		return $this;
-	}
+    /**
+     * @param  Person[] $people
+     * @return $this
+     */
+    public function setToPeople(array $people)
+    {
+        throw new \RuntimeException();
+    }
+
+    /**
+     * What type of user the email is intended for. This is a safety feature.
+     * For examlpe, if it's an agent email but the user isn't an agent, we can catch
+     * an error.
+     *
+     * @return TicketEmailBuilder
+     */
+    public function setUserMode()
+    {
+        $this->options->set('user_mode', 'user');
+
+        return $this;
+    }
+
+    /**
+     * @see setUserMode
+     * @return TicketEmailBuilder
+     */
+    public function setAgentMode()
+    {
+        $this->options->set('user_mode', 'agent');
+
+        return $this;
+    }
+
+    /**
+     * @param  string             $template_name
+     * @return TicketEmailBuilder
+     */
+    public function setTemplateName($template_name)
+    {
+        $this->options->set('template_name', $template_name);
+
+        return $this;
+    }
+
+    /**
+     * @param $from_name
+     * @return TicketEmailBuilder
+     */
+    public function setFromName($from_name)
+    {
+        $this->options->set('from_name', $from_name);
+
+        return $this;
+    }
+
+    /**
+     * @param  EmailAccount       $account
+     * @return TicketEmailBuilder
+     */
+    public function setFromEmailAccount(EmailAccount $account = null)
+    {
+        $this->options->set('from_email_account', $account);
+
+        return $this;
+    }
+
+    /**
+     * On user emails, this will CC in other user participants on the email.
+     *
+     * @return TicketEmailBuilder
+     */
+    public function enableUserCc()
+    {
+        $this->options->set('cc_users', true);
+
+        return $this;
+    }
+
+    /**
+     * @see enableUserCc
+     * @return TicketEmailBuilder
+     */
+    public function disableUserCc()
+    {
+        $this->options->set('cc_users', false);
+    }
+
+    /**
+     * If this is an automatic email (e.g., auto-reply), then this will add 'auto' headers
+     * to the email. These special headers prevent other automated systems from sending their
+     * own auto-replies.
+     *
+     * @return TicketEmailBuilder
+     */
+    public function setIsAuto()
+    {
+        $this->options->set('is_auto', true);
+
+        return $this;
+    }
+
+    /**
+     * @see setIsAuto
+     * @return TicketEmailBuilder
+     */
+    public function setIsNotAuto()
+    {
+        $this->options->set('is_auto', true);
+
+        return $this;
+    }
 
 
-	/**
-	 * Sets the maximum size of attachments that will be sent with the message.
-	 *
-	 * @param int $size
-	 * @return TicketEmailBuilder
-	 */
-	public function setMaxAttachSize($size)
-	{
-		$this->options->set('max_attach_size', (int)$size);
-		return $this;
-	}
+    /**
+     * Sets the maximum size of attachments that will be sent with the message.
+     *
+     * @param  int                $size
+     * @return TicketEmailBuilder
+     */
+    public function setMaxAttachSize($size)
+    {
+        $this->options->set('max_attach_size', (int)$size);
 
-	/**
-	 * @param Logger $logger
-	 * @return TicketEmailBuilder
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->options->set('logger', $logger);
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param array $headers
-	 * @return TicketEmailBuilder
-	 */
-	public function setHeaders($headers = array())
-	{
-		$this->options->set('headers', $headers);
-		return $this;
-	}
+    /**
+     * @param  Logger             $logger
+     * @return TicketEmailBuilder
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->options->set('logger', $logger);
 
-	/**
-	 * @return array
-	 */
-	public function getOptions()
-	{
-		return $this->options->all();
-	}
+        return $this;
+    }
+
+    /**
+     * @param  array              $headers
+     * @return TicketEmailBuilder
+     */
+    public function setHeaders($headers = array())
+    {
+        $this->options->set('headers', $headers);
+
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getOptions()
+    {
+        return $this->options->all();
+    }
 }

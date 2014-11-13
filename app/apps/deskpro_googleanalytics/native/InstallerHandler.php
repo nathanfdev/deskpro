@@ -39,63 +39,63 @@ use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function install(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$handler = $context->getContainer()->getSettingsHandler();
-		if (!is_array($this->settingsDef)) {
-			throw new \Exception('Wrong Package settings definition');
-		}
-		foreach ($this->settingsDef as $set) {
-			if (isset($set['name'])) {
-				$handler->setSetting('core.' . $set['name'], null);
-			}
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function uninstall(InstallerContext $context)
+    {
+        $handler = $context->getContainer()->getSettingsHandler();
+        if (!is_array($this->settingsDef)) {
+            throw new \Exception('Wrong Package settings definition');
+        }
+        foreach ($this->settingsDef as $set) {
+            if (isset($set['name'])) {
+                $handler->setSetting('core.' . $set['name'], null);
+            }
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updateSettings(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		$this->_doInstall($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updatePackage(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
 
 
-	/**
-	 * @param InstallerContext $context
-	 */
-	private function _doInstall(InstallerContext $context)
-	{
-		$handler = $context->getContainer()->getSettingsHandler();
-		if (!is_array($this->settingsDef)) {
-			throw new \Exception('Wrong Package settings definition');
-		}
-		foreach ($this->settingsDef as $set) {
-			if (isset($set['name'])) {
-				$handler->setSetting('core.' . $set['name'], $context->getApp()->getSetting($set['name']));
-			}
-		}
-	}
+    /**
+     * @param InstallerContext $context
+     */
+    private function _doInstall(InstallerContext $context)
+    {
+        $handler = $context->getContainer()->getSettingsHandler();
+        if (!is_array($this->settingsDef)) {
+            throw new \Exception('Wrong Package settings definition');
+        }
+        foreach ($this->settingsDef as $set) {
+            if (isset($set['name'])) {
+                $handler->setSetting('core.' . $set['name'], $context->getApp()->getSetting($set['name']));
+            }
+        }
+    }
 }

@@ -36,19 +36,19 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1340053454 extends AbstractBuild
 {
-	public function run()
-	{
-		$style_ids = $this->container->getDb()->fetchAllCol("SELECT id FROM styles");
+    public function run()
+    {
+        $style_ids = $this->container->getDb()->fetchAllCol("SELECT id FROM styles");
 
-		if (count($style_ids) != 1 || !in_array(1, $style_ids)) {
-			$this->out("Resetting styles");
-			$this->execMutateSql("DELETE FROM styles");
-			$this->execMutateSql("
-				INSERT INTO `styles` (`id`, `parent_id`, `logo_blob_id`, `css_blob_id`, `title`, `note`, `css_dir`, `css_updated`, `options`, `created_at`)
-				VALUES (1, NULL, NULL, NULL, 'Default Style', 'Default Style', 'stylesheets/user', '2012-06-18 20:20:20', X'613A303A7B7D', '2012-06-18 20:20:20');
-			");
-		} else {
-			$this->out("Style record okay: " . implode(',', $style_ids));
-		}
-	}
+        if (count($style_ids) != 1 || !in_array(1, $style_ids)) {
+            $this->out("Resetting styles");
+            $this->execMutateSql("DELETE FROM styles");
+            $this->execMutateSql("
+                INSERT INTO `styles` (`id`, `parent_id`, `logo_blob_id`, `css_blob_id`, `title`, `note`, `css_dir`, `css_updated`, `options`, `created_at`)
+                VALUES (1, NULL, NULL, NULL, 'Default Style', 'Default Style', 'stylesheets/user', '2012-06-18 20:20:20', X'613A303A7B7D', '2012-06-18 20:20:20');
+            ");
+        } else {
+            $this->out("Style record okay: " . implode(',', $style_ids));
+        }
+    }
 }

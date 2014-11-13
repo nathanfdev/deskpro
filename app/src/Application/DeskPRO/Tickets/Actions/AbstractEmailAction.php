@@ -46,247 +46,250 @@ use Orb\Util\Strings;
 
 abstract class AbstractEmailAction extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
-	/**
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return \Application\DeskPRO\Entity\EmailAccount
-	 * @throws \InvalidArgumentException
-	 */
-	protected function getFromEmailAccountOption(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$from_account = $this->getActionOption('from_account') ?: null;
-		if ($from_account) {
+    /**
+     * @param  Ticket                                   $ticket
+     * @param  ExecutorContextInterface                 $context
+     * @return \Application\DeskPRO\Entity\EmailAccount
+     * @throws \InvalidArgumentException
+     */
+    protected function getFromEmailAccountOption(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $from_account = $this->getActionOption('from_account') ?: null;
+        if ($from_account) {
 
-			if (Numbers::isInteger($from_account)) {
-				$from_account_id = $from_account;
-				try {
-					$from_account = $this->getContainer()->getEmailAccountManager()->getAccount($from_account_id);
-				} catch (\OutOfBoundsException $e) {
-					$context->getLogger()->debug("[AbstractEmailAction] Invalid account: $from_account_id");
-					throw new \InvalidArgumentException('invalid_account');
-				}
-			}
+            if (Numbers::isInteger($from_account)) {
+                $from_account_id = $from_account;
+                try {
+                    $from_account = $this->getContainer()->getEmailAccountManager()->getAccount($from_account_id);
+                } catch (\OutOfBoundsException $e) {
+                    $context->getLogger()->debug("[AbstractEmailAction] Invalid account: $from_account_id");
+                    throw new \InvalidArgumentException('invalid_account');
+                }
+            }
 
-			$context->getLogger()->debug("[AbstractEmailAction] Sending with email account: $from_account");
+            $context->getLogger()->debug("[AbstractEmailAction] Sending with email account: $from_account");
 
-			if (!$from_account->is_enabled) {
-				$context->getLogger()->warn("[AbstractEmailAction] Email account is not enabled");
-				throw new \InvalidArgumentException('account_disabled');
-			}
+            if (!$from_account->is_enabled) {
+                $context->getLogger()->warn("[AbstractEmailAction] Email account is not enabled");
+                throw new \InvalidArgumentException('account_disabled');
+            }
 
-			if (!$from_account->outgoing_account) {
-				$context->getLogger()->warn("[AbstractEmailAction] Email account is not an outgoing account");
-				throw new \InvalidArgumentException('account_not_outgoing');
-			}
-		}
+            if (!$from_account->outgoing_account) {
+                $context->getLogger()->warn("[AbstractEmailAction] Email account is not an outgoing account");
+                throw new \InvalidArgumentException('account_not_outgoing');
+            }
+        }
 
-		return $from_account;
-	}
-
-
-	/**
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @param bool $allow_blank
-	 * @return string|null
-	 * @throws \InvalidArgumentException
-	 */
-	protected function getEmailTemplateOption(Ticket $ticket, ExecutorContextInterface $context, $allow_blank = false)
-	{
-		$template = $this->getActionOption('template');
-		if (!$template) {
-			if ($allow_blank) {
-				return null;
-			}
-
-			$context->getLogger()->warn("[AbstractEmailAction] No template specified");
-			throw new \InvalidArgumentException('no_template_specified');
-		}
-
-		$context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
-		if (!$this->getContainer()->getTemplating()->exists($template)) {
-			$context->getLogger()->warn("[AbstractEmailAction] Template does not exist");
-			throw new \InvalidArgumentException('invalid_templte');
-		}
-
-		return $template;
-	}
+        return $from_account;
+    }
 
 
-	/**
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @param string $mode 'user' or 'agent'
-	 * @return array
-	 */
-	protected function getStandardEmailVars(Ticket $ticket, ExecutorContextInterface $context, $mode)
-	{
-		#------------------------------
-		# Build up some type flags
-		#------------------------------
+    /**
+     * @param  Ticket                    $ticket
+     * @param  ExecutorContextInterface  $context
+     * @param  bool                      $allow_blank
+     * @return string|null
+     * @throws \InvalidArgumentException
+     */
+    protected function getEmailTemplateOption(Ticket $ticket, ExecutorContextInterface $context, $allow_blank = false)
+    {
+        $template = $this->getActionOption('template');
+        if (!$template) {
+            if ($allow_blank) {
+                return null;
+            }
 
-		$state = $ticket->getStateChangeRecorder();
-		if ($state->isNewTicket()) {
-			$type = 'newticket';
-		} else if ($state->hasChangedField('message')) {
-			$type = 'newreply';
-		} else {
-			$type = 'updated';
-		}
+            $context->getLogger()->warn("[AbstractEmailAction] No template specified");
+            throw new \InvalidArgumentException('no_template_specified');
+        }
 
-		$context->getLogger()->info("[AbstractEmailAction] Type: $type");
-		$context->getLogger()->info(sprintf("[AbstractEmailAction] Performer: %s", $context->getEventPerformer()));
+        $context->getLogger()->debug("[AbstractEmailAction] Using template: $template");
+        if (!$this->getContainer()->getTemplating()->exists($template)) {
+            $context->getLogger()->warn("[AbstractEmailAction] Template does not exist");
+            throw new \InvalidArgumentException('invalid_templte');
+        }
 
-		#------------------------------
-		# Set reply flags
-		#------------------------------
-
-		$new_replies = $state->getNewReplies();
-		$is_new_ticket      = $state->isNewTicket();
-		$is_new_agent_reply = false;
-		$is_new_agent_note  = false;
-		$is_new_user_reply  = false;
-
-		foreach ($new_replies as $message) {
-			if ($message->is_agent_note) {
-				$is_new_agent_note = true;
-			} else if ($message->person->is_agent) {
-				$is_new_agent_reply = true;
-			} else {
-				$is_new_user_reply = true;
-			}
-		}
-
-		// In user mode, never show notes
-		if ($mode == 'user') {
-			$new_replies = array_filter($new_replies, function($r) { return !$r->is_agent_note; });
-			$ticket_logs = null;
-
-		// Agent mode - include ticket logs
-		} else {
-			$ticketlog_generator = new TicketLogGenerator($ticket, $context);
-			$ticket_logs = $ticketlog_generator->getLogEntries();
-		}
-
-		#------------------------------
-		# Build map of mentions
-		#------------------------------
-
-		$vars = array(
-			'type'               => $type,
-			'performer_type'     => $context->getEventPerformer(),
-			'is_new_ticket'      => $is_new_ticket,
-			'is_new_agent_reply' => $is_new_agent_reply,
-			'is_new_agent_note'  => $is_new_agent_note,
-			'is_new_user_reply'  => $is_new_user_reply,
-			'is_status_change'   => $state->hasChangedField('status'),
-			'action_performer'   => $context->getPersonContext(),
-			'new_message'        => Arrays::getLastItem($new_replies),
-			'new_messages'       => $new_replies,
-			'ticket_logs'        => $ticket_logs,
-			'user_vars'          => $context->getUserVars(),
-		);
-
-		return $vars;
-	}
+        return $template;
+    }
 
 
-	/**
-	 * @param TicketEmail $ticket_email
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 */
-	protected function recordEmailTicketLog(TicketEmail $ticket_email, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$state = $ticket->getStateChangeRecorder();
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @param  string                   $mode    'user' or 'agent'
+     * @return array
+     */
+    protected function getStandardEmailVars(Ticket $ticket, ExecutorContextInterface $context, $mode)
+    {
+        #------------------------------
+        # Build up some type flags
+        #------------------------------
 
-		$change = new ChangeEmailLog(
-			'ticket_email',
-			$ticket_email->getUserMode(),
-			$ticket_email->getSentToName(),
-			$ticket_email->getSentToEmail(),
-			$ticket_email->getSentWithCcs(),
-			$ticket_email->getFromName(),
-			$ticket_email->getFromEmailAccount()->getUseEmailAddress(),
-			$ticket_email->getTemplateName()
-		);
+        $state = $ticket->getStateChangeRecorder();
+        if ($state->isNewTicket()) {
+            $type = 'newticket';
+        } elseif ($state->hasChangedField('message')) {
+            $type = 'newreply';
+        } else {
+            $type = 'updated';
+        }
 
-		$state->recordChange($change);
-	}
+        $context->getLogger()->info("[AbstractEmailAction] Type: $type");
+        $context->getLogger()->info(sprintf("[AbstractEmailAction] Performer: %s", $context->getEventPerformer()));
+
+        #------------------------------
+        # Set reply flags
+        #------------------------------
+
+        $new_replies = $state->getNewReplies();
+        $is_new_ticket      = $state->isNewTicket();
+        $is_new_agent_reply = false;
+        $is_new_agent_note  = false;
+        $is_new_user_reply  = false;
+
+        foreach ($new_replies as $message) {
+            if ($message->is_agent_note) {
+                $is_new_agent_note = true;
+            } elseif ($message->person->is_agent) {
+                $is_new_agent_reply = true;
+            } else {
+                $is_new_user_reply = true;
+            }
+        }
+
+        // In user mode, never show notes
+        if ($mode == 'user') {
+            $new_replies = array_filter($new_replies, function ($r) { return !$r->is_agent_note; });
+            $ticket_logs = null;
+
+        // Agent mode - include ticket logs
+        } else {
+            $ticketlog_generator = new TicketLogGenerator($ticket, $context);
+            $ticket_logs = $ticketlog_generator->getLogEntries();
+        }
+
+        #------------------------------
+        # Build map of mentions
+        #------------------------------
+
+        $vars = array(
+            'type'               => $type,
+            'performer_type'     => $context->getEventPerformer(),
+            'is_new_ticket'      => $is_new_ticket,
+            'is_new_agent_reply' => $is_new_agent_reply,
+            'is_new_agent_note'  => $is_new_agent_note,
+            'is_new_user_reply'  => $is_new_user_reply,
+            'is_status_change'   => $state->hasChangedField('status'),
+            'action_performer'   => $context->getPersonContext(),
+            'new_message'        => Arrays::getLastItem($new_replies),
+            'new_messages'       => $new_replies,
+            'ticket_logs'        => $ticket_logs,
+            'user_vars'          => $context->getUserVars(),
+        );
+
+        return $vars;
+    }
 
 
-	/**
-	 * @param string $name
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @param string $email_mode 'user' or 'agent'
-	 * @return string
-	 */
-	protected function renderFromName($name, Ticket $ticket, ExecutorContextInterface $context, $email_mode)
-	{
-		if (!$name) {
-			return '';
-		}
+    /**
+     * @param TicketEmail              $ticket_email
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     */
+    protected function recordEmailTicketLog(TicketEmail $ticket_email, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $state = $ticket->getStateChangeRecorder();
 
-		switch ($name) {
-			case 'performer':
-				$person = $context->getPersonContext();
-				if (!$person) {
-					return '';
-				}
+        $change = new ChangeEmailLog(
+            'ticket_email',
+            $ticket_email->getUserMode(),
+            $ticket_email->getSentToName(),
+            $ticket_email->getSentToEmail(),
+            $ticket_email->getSentWithCcs(),
+            $ticket_email->getFromName(),
+            $ticket_email->getFromEmailAccount()->getUseEmailAddress(),
+            $ticket_email->getTemplateName()
+        );
 
-				if ($email_mode == 'agent') {
-					return $person->getDisplayName();
-				} else {
-					return $person->getDisplayNameUser();
-				}
-			case 'helpdesk_name':
-				return $this->getContainer()->getSetting('core.deskpro_name');
-			case 'site_name':
-				return $this->getContainer()->getSetting('core.site_name');
-			default:
-				try {
-					$name = $this->renderStringTemplate($name, $ticket, $context);
-					return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
-				} catch (\Exception $e) {
-					$context->getLogger()->warn('Invalid name pattern syntax: ' . $name . '. Exception: ' . $e->getMessage(), array('exception' => $e));
-					return '';
-				}
-		}
-	}
+        $state->recordChange($change);
+    }
 
 
-	/**
-	 * @param string                   $string
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @param array                    $extra_vars
-	 * @return string
-	 */
-	protected function renderStringTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
-	{
+    /**
+     * @param  string                   $name
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @param  string                   $email_mode 'user' or 'agent'
+     * @return string
+     */
+    protected function renderFromName($name, Ticket $ticket, ExecutorContextInterface $context, $email_mode)
+    {
+        if (!$name) {
+            return '';
+        }
+
+        switch ($name) {
+            case 'performer':
+                $person = $context->getPersonContext();
+                if (!$person) {
+                    return '';
+                }
+
+                if ($email_mode == 'agent') {
+                    return $person->getDisplayName();
+                } else {
+                    return $person->getDisplayNameUser();
+                }
+            case 'helpdesk_name':
+                return $this->getContainer()->getSetting('core.deskpro_name');
+            case 'site_name':
+                return $this->getContainer()->getSetting('core.site_name');
+            default:
+                try {
+                    $name = $this->renderStringTemplate($name, $ticket, $context);
+
+                    return trim(Strings::collapseWhitespace(Strings::removeLineBreaks($name)));
+                } catch (\Exception $e) {
+                    $context->getLogger()->warn('Invalid name pattern syntax: ' . $name . '. Exception: ' . $e->getMessage(), array('exception' => $e));
+
+                    return '';
+                }
+        }
+    }
+
+
+    /**
+     * @param  string                   $string
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @param  array                    $extra_vars
+     * @return string
+     */
+    protected function renderStringTemplate($string, Ticket $ticket, ExecutorContextInterface $context, array $extra_vars = null)
+    {
         /** @var TemplatingExtension $renderer */
         $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
+
         return $renderer->renderTicketTemplate($string, $ticket, $context, $extra_vars);
-	}
+    }
 
 
-	/**
-	 * @param array                    $raw_headers
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return array
-	 */
-	protected function processHeaders(array $raw_headers, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$headers = array();
-		foreach ($raw_headers as $h) {
-			$headers[] = array(
-				'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
-				'value' => $this->renderStringTemplate($h['value'], $ticket, $context)
-			);
-		}
+    /**
+     * @param  array                    $raw_headers
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return array
+     */
+    protected function processHeaders(array $raw_headers, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $headers = array();
+        foreach ($raw_headers as $h) {
+            $headers[] = array(
+                'name'  => $this->renderStringTemplate($h['name'], $ticket, $context),
+                'value' => $this->renderStringTemplate($h['value'], $ticket, $context)
+            );
+        }
 
-		return $headers;
-	}
+        return $headers;
+    }
 }

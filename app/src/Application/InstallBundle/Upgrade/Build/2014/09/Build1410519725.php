@@ -38,32 +38,32 @@ use Orb\Util\Strings;
 
 class Build1410519725 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix multiple sys.install.default_data records");
+    public function run()
+    {
+        $this->out("Fix multiple sys.install.default_data records");
 
-		$recs = $this->container->getDb()->fetchAllCol("SELECT data FROM datastore WHERE name = 'sys.install.default_data'");
-		if ($recs) {
-			$installed_list = array();
+        $recs = $this->container->getDb()->fetchAllCol("SELECT data FROM datastore WHERE name = 'sys.install.default_data'");
+        if ($recs) {
+            $installed_list = array();
 
-			foreach ($recs as $r) {
-				$r = @unserialize($r);
-				if (!$r || !is_array($r['installed']) || empty($r['installed'])) {
-					continue;
-				}
+            foreach ($recs as $r) {
+                $r = @unserialize($r);
+                if (!$r || !is_array($r['installed']) || empty($r['installed'])) {
+                    continue;
+                }
 
-				$installed_list = array_merge($installed_list, $r['installed']);
-			}
+                $installed_list = array_merge($installed_list, $r['installed']);
+            }
 
-			$installed_list = array_unique($installed_list);
-			$installed_list = array_values($installed_list);
+            $installed_list = array_unique($installed_list);
+            $installed_list = array_values($installed_list);
 
-			$this->container->getDb()->delete('datastore', array('name' => 'sys.install.default_data'));
-			$this->container->getDb()->insert('datastore', array(
-				'name' => 'sys.install.default_data',
-				'auth' => Strings::random(15),
-				'data' => serialize(array('installed' => $installed_list))
-			));
-		}
-	}
+            $this->container->getDb()->delete('datastore', array('name' => 'sys.install.default_data'));
+            $this->container->getDb()->insert('datastore', array(
+                'name' => 'sys.install.default_data',
+                'auth' => Strings::random(15),
+                'data' => serialize(array('installed' => $installed_list))
+            ));
+        }
+    }
 }

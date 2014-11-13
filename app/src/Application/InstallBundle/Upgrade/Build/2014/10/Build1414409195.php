@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1414409195 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Upgrade Change Log");
-		$this->execMutateSql("ALTER TABLE log_event ADD api_key VARCHAR(255) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Upgrade Change Log");
+        $this->execMutateSql("ALTER TABLE log_event ADD api_key VARCHAR(255) DEFAULT NULL");
+    }
 }

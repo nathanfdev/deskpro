@@ -40,163 +40,153 @@ use Orb\Util\Arrays;
 
 class ChangeCollection implements ChangeInterface
 {
-	/**
-	 * @var string
-	 */
-	private $field_id;
+    /**
+     * @var string
+     */
+    private $field_id;
 
-	/**
-	 * @var array
-	 */
-	private $old;
+    /**
+     * @var array
+     */
+    private $old;
 
-	/**
-	 * @var array
-	 */
-	private $new;
+    /**
+     * @var array
+     */
+    private $new;
 
-	/**
-	 * @var bool
-	 */
-	private $is_same = false;
+    /**
+     * @var bool
+     */
+    private $is_same = false;
 
-	/**
-	 * @var array
-	 */
-	private $add_elements = array();
+    /**
+     * @var array
+     */
+    private $add_elements = array();
 
-	/**
-	 * @var array
-	 */
-	private $del_elements = array();
+    /**
+     * @var array
+     */
+    private $del_elements = array();
 
+    /**
+     * @param  string           $field_id
+     * @param  Collection       $coll
+     * @return ChangeCollection
+     */
+    public static function newFromPersistedCollection($field_id, Collection $coll, $old = array())
+    {
+        if ($coll instanceof PersistentCollection) {
+            $new = $coll->toArray();
+        } else {
+            $new = $coll->toArray();
+        }
 
-	/**
-	 * @param string     $field_id
-	 * @param Collection $coll
-	 * @return ChangeCollection
-	 */
-	public static function newFromPersistedCollection($field_id, Collection $coll, $old = array())
-	{
-		if ($coll instanceof PersistentCollection) {
-			$new = $coll->toArray();
-		} else {
-			$new = $coll->toArray();
-		}
+        return new self($field_id, $old, $new);
+    }
 
-		return new self($field_id, $old, $new);
-	}
+    /**
+     * @param string $field_id
+     * @param mixed  $old
+     * @param mixed  $new
+     */
+    public function __construct($field_id, array $old = null, array $new = null)
+    {
+        $this->field_id = $field_id;
+        $this->old      = $old;
+        $this->new      = $new;
 
+        // Check for null
+        if ($old === $new) {
+            $this->is_same = true;
+        } else {
+            if ($this->old && $this->new) {
+                $this->del_elements = Arrays::arrayDiffAssocIdentity($this->old, $this->new);
+                $this->add_elements = Arrays::arrayDiffAssocIdentity($this->new, $this->old);
+            } elseif ($this->old && !$this->new) {
+                $this->del_elements = $this->old;
+            } elseif ($this->new && !$this->old) {
+                $this->add_elements = $this->new;
+            }
 
-	/**
-	 * @param string $field_id
-	 * @param mixed  $old
-	 * @param mixed  $new
-	 */
-	public function __construct($field_id, array $old = null, array $new = null)
-	{
-		$this->field_id = $field_id;
-		$this->old      = $old;
-		$this->new      = $new;
+            if (!$this->del_elements && !$this->add_elements) {
+                $this->is_same = true;
+            }
+        }
+    }
 
-		// Check for null
-		if ($old === $new) {
-			$this->is_same = true;
-		} else {
-			if ($this->old && $this->new) {
-				$this->del_elements = Arrays::arrayDiffAssocIdentity($this->old, $this->new);
-				$this->add_elements = Arrays::arrayDiffAssocIdentity($this->new, $this->old);
-			} else if ($this->old && !$this->new) {
-				$this->del_elements = $this->old;
-			} else if ($this->new && !$this->old) {
-				$this->add_elements = $this->new;
-			}
+    /**
+     * @return string
+     */
+    public function getField()
+    {
+        return $this->field_id;
+    }
 
-			if (!$this->del_elements && !$this->add_elements) {
-				$this->is_same = true;
-			}
-		}
-	}
+    /**
+     * @return array
+     */
+    public function getOld()
+    {
+        return $this->old;
+    }
 
+    /**
+     * @return array
+     */
+    public function getNew()
+    {
+        return $this->new;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getField()
-	{
-		return $this->field_id;
-	}
+    /**
+     * @return bool
+     */
+    public function isSame()
+    {
+        return $this->is_same;
+    }
 
+    /**
+     * @return bool
+     */
+    public function isCollection()
+    {
+        return true;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getOld()
-	{
-		return $this->old;
-	}
+    /**
+     * @return bool
+     */
+    public function isEntity()
+    {
+        return false;
+    }
 
+    /**
+     * @return array
+     */
+    public function getAddedElements()
+    {
+        return $this->add_elements;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getNew()
-	{
-		return $this->new;
-	}
+    /**
+     * @return array
+     */
+    public function getRemovedElements()
+    {
+        return $this->del_elements;
+    }
 
+    public function setAddedElements(array $added)
+    {
+        $this->add_elements = $added;
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isSame()
-	{
-		return $this->is_same;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isCollection()
-	{
-		return true;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function isEntity()
-	{
-		return false;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getAddedElements()
-	{
-		return $this->add_elements;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getRemovedElements()
-	{
-		return $this->del_elements;
-	}
-
-	public function setAddedElements(array $added)
-	{
-		$this->add_elements = $added;
-	}
-
-	public function setRemovedElements(array $removed)
-	{
-		$this->del_elements = $removed;
-	}
+    public function setRemovedElements(array $removed)
+    {
+        $this->del_elements = $removed;
+    }
 }

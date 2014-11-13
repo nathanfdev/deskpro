@@ -32,31 +32,31 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ContextualChoiceDefinitionType extends ChoiceDefinitionType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		parent::buildForm($builder, $options);
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildForm($builder, $options);
 
-		// if we need to define all properties, not only children
-		if (!$options['children_only']) {
-			$builder->get('options')
-				->add('allow_edit', 'checkbox')
-			;
-		}
-	}
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		parent::setDefaultOptions($resolver);
-		$resolver->setRequired(array('context'));
-	}
+        // if we need to define all properties, not only children
+        if (!$options['children_only']) {
+            $builder->get('options')
+                ->add('allow_edit', 'checkbox')
+            ;
+        }
+    }
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        parent::setDefaultOptions($resolver);
+        $resolver->setRequired(array('context'));
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'cf_definition_contextual_choice';
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'cf_definition_contextual_choice';
+    }
 }

@@ -41,60 +41,61 @@ use Orb\Auth\Identity;
 
 class Magento extends AbstractAdapter
 {
-	public function getFieldsFromIdentity(Identity $identity)
-	{
-		$info = $identity->getRawData();
-		return array(
-			'name'             => isset($info['name']) ? $info['name'] : '',
-			'first_name'       => isset($info['first_name']) ? $info['first_name'] : '',
-			'last_name'        => isset($info['last_name']) ? $info['last_name'] : '',
-			'email'            => isset($info['email_address']) ? $info['email_address'] : '',
-			'email_confirmed'  => true,
-		);
-	}
+    public function getFieldsFromIdentity(Identity $identity)
+    {
+        $info = $identity->getRawData();
 
-	/**
-	 * @return \deskpro_magento\Usersource\Auth\Magento
-	 */
-	protected function _createAuthAdapterObject()
-	{
-		$options = $this->usersource->options;
-		$options['url'] = App::getSetting("Magento.url");
-		$options['api_user'] = App::getSetting("Magento.api_user");
-		$options['api_key'] = App::getSetting("Magento.api_key");
+        return array(
+            'name'             => isset($info['name']) ? $info['name'] : '',
+            'first_name'       => isset($info['first_name']) ? $info['first_name'] : '',
+            'last_name'        => isset($info['last_name']) ? $info['last_name'] : '',
+            'email'            => isset($info['email_address']) ? $info['email_address'] : '',
+            'email_confirmed'  => true,
+        );
+    }
 
-		return new \deskpro_magento\Usersource\Auth\Magento($options);
-	}
+    /**
+     * @return \deskpro_magento\Usersource\Auth\Magento
+     */
+    protected function _createAuthAdapterObject()
+    {
+        $options = $this->usersource->options;
+        $options['url'] = App::getSetting("Magento.url");
+        $options['api_user'] = App::getSetting("Magento.api_user");
+        $options['api_key'] = App::getSetting("Magento.api_key");
 
-	/**
-	 * Find a user identity just by an email address.
-	 *
-	 * @param $id_input
-	 * @return \Orb\Auth\Identity|null
-	 */
-	public function findIdentityByInput($id_input)
-	{
-		$adapter = $this->getAuthAdapter();
+        return new \deskpro_magento\Usersource\Auth\Magento($options);
+    }
 
-		$userinfo = $adapter->getUserInfoForEmail($id_input);
-		if (!$userinfo) {
-			return null;
-		}
+    /**
+     * Find a user identity just by an email address.
+     *
+     * @param $id_input
+     * @return \Orb\Auth\Identity|null
+     */
+    public function findIdentityByInput($id_input)
+    {
+        $adapter = $this->getAuthAdapter();
 
-		return $adapter->getIdentityFromUserInfo($userinfo);
-	}
+        $userinfo = $adapter->getUserInfoForEmail($id_input);
+        if (!$userinfo) {
+            return null;
+        }
 
-	/**
-	 * @return array
-	 */
-	public function getCapabilities()
-	{
-		return array(
-			UsersourceInfo::CAPABILITY_FORM_LOGIN,
-			UsersourceInfo::CAPABILITY_GET_USER_INFO,
-			UsersourceInfo::CAPABILITY_FIND_IDENTITY,
-			UsersourceInfo::CAPABILITY_COOKIE_LOGIN,
-			UsersourceInfo::CAPABILITY_SSO_JS
-		);
-	}
+        return $adapter->getIdentityFromUserInfo($userinfo);
+    }
+
+    /**
+     * @return array
+     */
+    public function getCapabilities()
+    {
+        return array(
+            UsersourceInfo::CAPABILITY_FORM_LOGIN,
+            UsersourceInfo::CAPABILITY_GET_USER_INFO,
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY,
+            UsersourceInfo::CAPABILITY_COOKIE_LOGIN,
+            UsersourceInfo::CAPABILITY_SSO_JS
+        );
+    }
 }

@@ -33,88 +33,88 @@ namespace Application\ImportBundle\Value;
 
 class PersonValue
 {
-	/**
-	 * @var int
-	 */
-	public $oid;
+    /**
+     * @var int
+     */
+    public $oid;
 
-	/**
-	 * @var \DateTime
-	 */
-	public $date_created;
+    /**
+     * @var \DateTime
+     */
+    public $date_created;
 
-	/**
-	 * @var string
-	 */
-	public $first_name;
+    /**
+     * @var string
+     */
+    public $first_name;
 
-	/**
-	 * @var string
-	 */
-	public $last_name;
+    /**
+     * @var string
+     */
+    public $last_name;
 
-	/**
-	 * @var string
-	 */
-	public $name;
+    /**
+     * @var string
+     */
+    public $name;
 
-	/**
-	 * @var string
-	 */
-	public $override_display_name;
+    /**
+     * @var string
+     */
+    public $override_display_name;
 
-	/**
-	 * @var bool
-	 */
-	public $is_agent = false;
+    /**
+     * @var bool
+     */
+    public $is_agent = false;
 
-	/**
-	 * @var bool
-	 */
-	public $is_admin = false;
+    /**
+     * @var bool
+     */
+    public $is_admin = false;
 
-	/**
-	 * @var string[]
-	 */
-	public $emails = array();
+    /**
+     * @var string[]
+     */
+    public $emails = array();
 
-	/**
-	 * @var string[]
-	 */
-	public $labels = array();
+    /**
+     * @var string[]
+     */
+    public $labels = array();
 
-	/**
-	 * @var string
-	 */
-	public $timezone;
+    /**
+     * @var string
+     */
+    public $timezone;
 
-	/**
-	 * @var string[]
-	 */
-	public $usergroups = array();
+    /**
+     * @var string[]
+     */
+    public $usergroups = array();
 
-	/**
-	 * @var string
-	 */
-	public $language;
+    /**
+     * @var string
+     */
+    public $language;
 
-	/**
-	 * @var string
-	 */
-	public $organization;
+    /**
+     * @var string
+     */
+    public $organization;
 
-	/**
-	 * @var string
-	 */
-	public $organization_position;
+    /**
+     * @var string
+     */
+    public $organization_position;
 
-	/**
-	 * @var string
-	 */
-	public $password;
+    /**
+     * @var string
+     */
+    public $password;
 
-	/**
-	 * @var string
-	 */
-	public $password_scheme = 'plain';
+    /**
+     * @var string
+     */
+    public $password_scheme = 'plain';
 }

@@ -40,36 +40,37 @@ use Application\DeskPRO\Search\Indexer\Document;
 
 class Download extends AbstractContentType
 {
-	const ENTITY_NAME = 'DeskPRO:Download';
+    const ENTITY_NAME = 'DeskPRO:Download';
 
-	public function objectToDocument($download)
-	{
-		if ($download->status != 'published') {
-			$data = array();
-			$data['id'] = $download['id'];
-			$data['content_type'] = 'download';
-			$data['remove'] = true;
+    public function objectToDocument($download)
+    {
+        if ($download->status != 'published') {
+            $data = array();
+            $data['id'] = $download['id'];
+            $data['content_type'] = 'download';
+            $data['remove'] = true;
 
-			$doc = Document::newFromArray($data);
-			return $doc;
-		}
+            $doc = Document::newFromArray($data);
 
-		$data = array();
-		$data['id'] = $download['id'];
-		$data['content_type'] = 'download';
-		$data['content'] = $download['title'] . "\n" . $download['content'] . "\n";
+            return $doc;
+        }
 
-		foreach ($download->getLabelManager()->getLabelsArray() as $label) {
-			$label = MysqlAdapter::encodeLabel($label);
-			$data['content'] .= " $label ";
-		}
+        $data = array();
+        $data['id'] = $download['id'];
+        $data['content_type'] = 'download';
+        $data['content'] = $download['title'] . "\n" . $download['content'] . "\n";
 
-		if ($download->category) {
-			$data['category_id'] = $download->category->id;
-		}
+        foreach ($download->getLabelManager()->getLabelsArray() as $label) {
+            $label = MysqlAdapter::encodeLabel($label);
+            $data['content'] .= " $label ";
+        }
 
-		$doc = Document::newFromArray($data);
+        if ($download->category) {
+            $data['category_id'] = $download->category->id;
+        }
 
-		return $doc;
-	}
+        $doc = Document::newFromArray($data);
+
+        return $doc;
+    }
 }

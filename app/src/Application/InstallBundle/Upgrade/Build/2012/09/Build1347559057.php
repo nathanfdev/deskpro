@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1347559057 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Update report builder structure");
-		$this->execMutateSql("DROP TABLE report_builder_favorite");
-		$this->execMutateSql("CREATE TABLE report_builder_favorite (id INT AUTO_INCREMENT NOT NULL, report_builder_id INT DEFAULT NULL, person_id INT DEFAULT NULL, params VARCHAR(100) NOT NULL, INDEX IDX_70A94B3486DD4ADF (report_builder_id), INDEX IDX_70A94B34217BBB47 (person_id), UNIQUE INDEX unique_key_idx (report_builder_id, person_id, params), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE report_builder_favorite ADD CONSTRAINT FK_70A94B3486DD4ADF FOREIGN KEY (report_builder_id) REFERENCES report_builder (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE report_builder_favorite ADD CONSTRAINT FK_70A94B34217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Update report builder structure");
+        $this->execMutateSql("DROP TABLE report_builder_favorite");
+        $this->execMutateSql("CREATE TABLE report_builder_favorite (id INT AUTO_INCREMENT NOT NULL, report_builder_id INT DEFAULT NULL, person_id INT DEFAULT NULL, params VARCHAR(100) NOT NULL, INDEX IDX_70A94B3486DD4ADF (report_builder_id), INDEX IDX_70A94B34217BBB47 (person_id), UNIQUE INDEX unique_key_idx (report_builder_id, person_id, params), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE report_builder_favorite ADD CONSTRAINT FK_70A94B3486DD4ADF FOREIGN KEY (report_builder_id) REFERENCES report_builder (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE report_builder_favorite ADD CONSTRAINT FK_70A94B34217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+    }
 }

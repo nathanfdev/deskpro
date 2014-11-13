@@ -37,19 +37,19 @@ namespace Orb\Service\Zendesk;
 
 class ApiException extends \Exception
 {
-	const REQUEST_FAILED   = 1;
-	const INVALID_RESPONSE = 2;
-	const API_ERROR        = 3;
+    const REQUEST_FAILED   = 1;
+    const INVALID_RESPONSE = 2;
+    const API_ERROR        = 3;
 
-	/** @var string|null */
-	public $api_error_code;
-	/** @var string|null */
-	public $output;
+    /** @var string|null */
+    public $api_error_code;
+    /** @var string|null */
+    public $output;
 
-	public function __construct($message = "", $code = 0, $api_error_code = null, $output = null, \Exception $previous = null)
-	{
-		parent::__construct($message, $code, $previous);
-		$this->output = $output;
-		$this->api_error_code = $api_error_code;
-	}
+    public function __construct($message = "", $code = 0, $api_error_code = null, $output = null, \Exception $previous = null)
+    {
+        parent::__construct($message, $code, $previous);
+        $this->output = $output;
+        $this->api_error_code = $api_error_code;
+    }
 }

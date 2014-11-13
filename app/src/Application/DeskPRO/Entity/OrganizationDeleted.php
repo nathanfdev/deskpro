@@ -45,75 +45,75 @@ use Application\DeskPRO\App;
  */
 class OrganizationDeleted extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $organization_id;
+    /**
+     * @var int
+     */
+    protected $organization_id;
 
-	/**
-	 * @var int
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $by_person;
+    /**
+     * @var int
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $by_person;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * @var string
-	 */
-	protected $reason = '';
+    /**
+     * @var string
+     */
+    protected $reason = '';
 
-	public function __construct()
-	{
-		$this['date_created'] = new \DateTime();
-	}
+    public function __construct()
+    {
+        $this['date_created'] = new \DateTime();
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-	public function getByPersonId()
-	{
-		if ($this->by_person) {
-			return $this->by_person['id'];
-		}
-
-		return 0;
-	}
-
-	public function setByPersonId($id)
-	{
-		if ($id) {
-			$this['by_person'] = App::getEntityRepository('DeskPRO:Person')->find($id);
-		} else {
-			$this['by_person'] = null;
-		}
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
+    public function getByPersonId()
+    {
+        if ($this->by_person) {
+            return $this->by_person['id'];
+        }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+        return 0;
+    }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array(
-			'name' => 'organizations_deleted',
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'organization_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'reason', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'reason', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'by_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'by_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public function setByPersonId($id)
+    {
+        if ($id) {
+            $this['by_person'] = App::getEntityRepository('DeskPRO:Person')->find($id);
+        } else {
+            $this['by_person'] = null;
+        }
+    }
+
+
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(array(
+            'name' => 'organizations_deleted',
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'organization_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'organization_id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'reason', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'reason', ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'by_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'by_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

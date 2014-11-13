@@ -166,87 +166,87 @@
 
 	<article>
 		<section>
-		
+
 				<p>Triggers have <strong>criteria</strong> they check before they run their defined <strong>actions</strong>.</p>
-		
+
 				<p>The triggers are checked in order from the top down. You can drag them to change the order.</p>
-			
-		
-<h2>Simple triggers</h2>		
+
+
+<h2>Simple triggers</h2>
 
 				<p>DeskPRO automatically creates <strong>Department Triggers</strong> for each of your departments. They run when a user creates a ticket in the matching department via the web.</p>
-			
-				
-				
+
+
+
 				<p>There are also <strong>Email Account Triggers</strong> that run when a user submits a ticket via the matching email account.</p>
-				
+
 				<p>You can change the actions on these triggers to quickly carry out simple configuration changes like:</p>
-				
+
 					<ul>
 						<li>assigning all tickets from an email account to a particular agent</li>
 						<li>sending different acknowledgement emails based on department</li>
-										
+
 					</ul>
-								
+
 				<p>You can also view and edit these triggers from <strong>Tickets > Departments</strong> and <strong>Tickets > Email Accounts</strong>.</p>
-	
-	
+
+
 	<h2> Advanced triggers</h2>
-			
-			
-		
+
+
+
 			<p>For advanced triggers, you can use the <strong>Event</strong> section to refine when the trigger is checked. You can choose to have the trigger respond only to user actions or only to agent actions; or to respond only to certain interfaces (email, web, the API etc.).</p>
-			
+
 			<p>If you are using an advanced trigger to send a response email, don't forget to disable the corresponding simple triggers to avoid sending the same email twice.</p>
-	
-		
+
+
 			<p><strong>Actions</strong> can automatically do most of the things you would do to a ticket in the agent interface.</p>
-			
-			
+
+
 			<p>Special <strong>Trigger Control</strong> actions can affect any following triggers lower in the list. The <em>Stop Processing Triggers</em> action prevents following triggers running. You can also use <em>Prevent Emails to User</em> or <em>Prevent Emails to Agents</em> to stop any email notifications that lower triggers try to send. These only prevent triggers that are running immediately afterwards - i.e. that are being checked due to the same event.
-				
+
 			</p>
-			
-			
+
+
 	<h2> SMS triggers </h2>
 	<p> Note that to send SMS alerts, you must have an account with an SMS delivery provider, and install the corresponding app in the <strong>Apps</strong> section.</p>
-	
+
 	<p>For SMS delivery to work, ensure that the receiving agent's cell/mobile number has been entered in their profile in the <strong>Agents</strong> section of this interface (not the CRM section in the agent interface).</p>
-				
-		
-							
+
+
+
 		</section>
-		
+
 		<section>
-			
+
 			<h2><span>FAQ</span></h2>
-		
+
 			<dl>
 				<dt><em>Q:</em>My triggers aren't behaving as I expect. How do I troubleshoot them?</dt>
 				<dd><em>A:</em>
 				You can see which triggers ran and in what order using the ticket <strong>Full Log</strong> tab in the agent interface.
 				</dd>
-				
+
 				<dt><em>Q:</em>What does Check Current Agent do in trigger criteria?</dt>
 				<dd><em>A:</em>
 				This checks if the agent or agents selected caused the event, whether through the agent interface, while logged in to the portal or via email.
 				</dd>
-				
-				
+
+
 				<dt><em>Q:</em>What does Check Performer Email do in trigger criteria?</dt>
 				<dd><em>A:</em>
 				This checks the email address of the person who caused the event, whether they are a user or an agent.
 				</dd>
-				
+
 				<dt><em>Q:</em>When using a Set Assigned Team action, what does "the Current Agent's team" do if the agent has multiple teams?</dt>
 				<dd><em>A:</em>
 				It uses the agent's <strong>primary team</strong>, as set in their profile under <strong>Agents</strong>.
 				</dd>
 
 			</dl>
-			
 
-		
+
+
 		</section>
 
 		<section class="related-content">

@@ -55,141 +55,138 @@ use Orb\Util\PhoneNumbers;
  */
 class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * The number, stored in E.164 string format, ie. +19021111111
-	 *
-	 * @var string
-	 */
-	protected $number;
+    /**
+     * The number, stored in E.164 string format, ie. +19021111111
+     *
+     * @var string
+     */
+    protected $number;
 
-	/**
-	 * The ISO 3166-1 country/region code of the phone number (2 char)
-	 *
-	 * @var string
-	 */
-	protected $region;
+    /**
+     * The ISO 3166-1 country/region code of the phone number (2 char)
+     *
+     * @var string
+     */
+    protected $region;
 
-	/**
-	 * @var int see Orb\Utils\PhoneNumbers constants for the meanings of the ints stored here
-	 */
-	protected $guessed_type;
+    /**
+     * @var int see Orb\Utils\PhoneNumbers constants for the meanings of the ints stored here
+     */
+    protected $guessed_type;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public function __construct($number = null)
-	{
-		if ($number) {
-			$this->setNumber($number);
-		}
-		$this->setModelField('date_created', new \DateTime());
-	}
+    public function __construct($number = null)
+    {
+        if ($number) {
+            $this->setNumber($number);
+        }
+        $this->setModelField('date_created', new \DateTime());
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-	/**
-	 * We do logic here (with the help of Google's libphonenumber) to
-	 * get the region code, and validate/format the number.
-	 *
-	 * @param string $number
-	 */
-	public function setNumber($number)
-	{
-		if (!PhoneNumbers::isValid($number)) {
-			throw new \InvalidArgumentException("Phone number is invalid");
-		}
-
-		$region = PhoneNumbers::getRegionForNumber($number);
-		$formatted = PhoneNumbers::toE164Format($number);
-		if ($region && $formatted) {
-			$guessed_type = PhoneNumbers::getTypeCode($formatted);
-			$this->setRegion($region);
-			$this->setModelField('number', $formatted);
-			$this->setModelField('guessed_type', $guessed_type);
-		} else {
-			throw new \InvalidArgumentException("Phone number is invalid - couldn't extract region information");
-		}
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * @return \libphonenumber\PhoneNumber|null
-	 */
-	public function getPhoneNumber()
-	{
-		$phone_util = PhoneNumberUtil::getInstance();
-		try {
-			return $phone_util->parse($this->number, null);
-		} catch (\Exception $e) {
-			return null;
-		}
-	}
+    /**
+     * We do logic here (with the help of Google's libphonenumber) to
+     * get the region code, and validate/format the number.
+     *
+     * @param string $number
+     */
+    public function setNumber($number)
+    {
+        if (!PhoneNumbers::isValid($number)) {
+            throw new \InvalidArgumentException("Phone number is invalid");
+        }
 
+        $region = PhoneNumbers::getRegionForNumber($number);
+        $formatted = PhoneNumbers::toE164Format($number);
+        if ($region && $formatted) {
+            $guessed_type = PhoneNumbers::getTypeCode($formatted);
+            $this->setRegion($region);
+            $this->setModelField('number', $formatted);
+            $this->setModelField('guessed_type', $guessed_type);
+        } else {
+            throw new \InvalidArgumentException("Phone number is invalid - couldn't extract region information");
+        }
+    }
 
-	public function setRegion($region)
-	{
-		$region = strtoupper($region);
-		$this->setModelField('region', $region);
-	}
+    /**
+     * @return \libphonenumber\PhoneNumber|null
+     */
+    public function getPhoneNumber()
+    {
+        $phone_util = PhoneNumberUtil::getInstance();
+        try {
+            return $phone_util->parse($this->number, null);
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 
+    public function setRegion($region)
+    {
+        $region = strtoupper($region);
+        $this->setModelField('region', $region);
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PhoneNumber';
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PhoneNumber';
 
-		$metadata->setPrimaryTable(array( 'name'    => 'phone_numbers',
-		                                  'indexes' => array( 'phone_number_idx' => array( 'columns' => array( 'number' ) ), ), ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->setPrimaryTable(array( 'name'    => 'phone_numbers',
+                                          'indexes' => array( 'phone_number_idx' => array( 'columns' => array( 'number' ) ), ), ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
-		                           'nullable'  => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
+                                   'nullable'  => false, 'columnName' => 'id', 'id' => true, ));
 
-		$metadata->mapField(array( 'fieldName' => 'number', 'type' => 'string', 'length' => 30, 'precision' => 0,
-		                           'scale'     => 0, 'nullable' => false, 'columnName' => 'number', ));
+        $metadata->mapField(array( 'fieldName' => 'number', 'type' => 'string', 'length' => 30, 'precision' => 0,
+                                   'scale'     => 0, 'nullable' => false, 'columnName' => 'number', ));
 
-		$metadata->mapField(array( 'fieldName' => 'region', 'type' => 'string', 'length' => 2, 'precision' => 0,
-		                           'scale'     => 0, 'nullable' => false, 'columnName' => 'region', ));
+        $metadata->mapField(array( 'fieldName' => 'region', 'type' => 'string', 'length' => 2, 'precision' => 0,
+                                   'scale'     => 0, 'nullable' => false, 'columnName' => 'region', ));
 
-		$metadata->mapField(array( 'fieldName' => 'guessed_type', 'type' => 'integer', 'precision' => 10,
-		                           'scale'     => 0, 'nullable' => false, 'columnName' => 'guessed_type', ));
+        $metadata->mapField(array( 'fieldName' => 'guessed_type', 'type' => 'integer', 'precision' => 10,
+                                   'scale'     => 0, 'nullable' => false, 'columnName' => 'guessed_type', ));
 
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
-		                           'nullable'  => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0,
+                                   'nullable'  => false, 'columnName' => 'date_created', ));
 
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName'    => 'person',
-		                               'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
-		                               'inversedBy'   => 'phone_numbers',
-		                               'joinColumns'  => array( 0 => array( 'name'                 => 'person_id',
-		                                                                    'referencedColumnName' => 'id',
-		                                                                    'nullable'             => true,
-		                                                                    'onDelete'             => 'cascade',
-		                                                                    'columnDefinition'     => null, ), ), ));
-	}
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName'    => 'person',
+                                       'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => null,
+                                       'inversedBy'   => 'phone_numbers',
+                                       'joinColumns'  => array( 0 => array( 'name'                 => 'person_id',
+                                                                            'referencedColumnName' => 'id',
+                                                                            'nullable'             => true,
+                                                                            'onDelete'             => 'cascade',
+                                                                            'columnDefinition'     => null, ), ), ));
+    }
 }

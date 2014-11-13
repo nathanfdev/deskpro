@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1376384938 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add email_gateways.start_date_limit");
-		$this->execMutateSql("ALTER TABLE email_gateways ADD start_date_limit DATETIME DEFAULT NULL");
+    public function run()
+    {
+        $this->out("Add email_gateways.start_date_limit");
+        $this->execMutateSql("ALTER TABLE email_gateways ADD start_date_limit DATETIME DEFAULT NULL");
 
-		$date_str = date('Y-m-d H:i:s', strtotime("-10 days"));
-		$this->execMutateSql("UPDATE email_gateways SET start_date_limit = '$date_str'");
-	}
+        $date_str = date('Y-m-d H:i:s', strtotime("-10 days"));
+        $this->execMutateSql("UPDATE email_gateways SET start_date_limit = '$date_str'");
+    }
 }

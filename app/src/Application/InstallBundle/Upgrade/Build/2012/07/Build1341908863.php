@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1341908863 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Make sure stat.generate_stats = 1");
-		$this->execMutateSql("UPDATE stat SET generate_stats = 1");
-	}
+    public function run()
+    {
+        $this->out("Make sure stat.generate_stats = 1");
+        $this->execMutateSql("UPDATE stat SET generate_stats = 1");
+    }
 }

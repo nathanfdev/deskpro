@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run from the CLI.\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run from the CLI.\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 chdir(__DIR__);
@@ -15,17 +15,17 @@ define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
 require DP_ROOT . '/bin/build/php-path.php';
 require DP_ROOT . '/sys/autoload.php';
 
-$output_realtime = function($type, $buffer) {
-	if ($type === 'err') {
-		echo 'ERR: '.$buffer;
-	} else {
-		echo $buffer;
-	}
+$output_realtime = function ($type, $buffer) {
+    if ($type === 'err') {
+        echo 'ERR: '.$buffer;
+    } else {
+        echo $buffer;
+    }
 };
 
 $quick = false;
 if (in_array('--quick', $_SERVER['argv'])) {
-	$quick = true;
+    $quick = true;
 }
 
 #####################################################################
@@ -38,8 +38,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -55,8 +55,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -72,8 +72,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -85,16 +85,16 @@ $time = microtime(true);
 echo "build-assetic ... ";
 
 if (in_array('--skip-assetic', $_SERVER['argv'])) {
-	echo " SKIPPED (--skip-assetic) ";
+    echo " SKIPPED (--skip-assetic) ";
 } else {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-assetic.php', DP_ROOT.'/bin/build');
-	$proc->setTimeout(600);
-	$proc->run($output_realtime);
+    $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-assetic.php', DP_ROOT.'/bin/build');
+    $proc->setTimeout(600);
+    $proc->run($output_realtime);
 
-	if (!$proc->isSuccessful()) {
-		echo ("\nDetected error. Quitting.\n");
-		exit($proc->getExitCode());
-	}
+    if (!$proc->isSuccessful()) {
+        echo ("\nDetected error. Quitting.\n");
+        exit($proc->getExitCode());
+    }
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -110,8 +110,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -123,16 +123,16 @@ $time = microtime(true);
 echo "build-template-map ... ";
 
 if ($quick) {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-template-map.php --bogus', DP_ROOT.'/bin/build');
+    $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-template-map.php --bogus', DP_ROOT.'/bin/build');
 } else {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-template-map.php', DP_ROOT.'/bin/build');
+    $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-template-map.php', DP_ROOT.'/bin/build');
 }
 $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -148,8 +148,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -165,8 +165,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -182,8 +182,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -201,8 +201,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE ";
@@ -218,8 +218,8 @@ $proc->setTimeout(600);
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
-	echo ("\nDetected error. Quitting.\n");
-	exit($proc->getExitCode());
+    echo ("\nDetected error. Quitting.\n");
+    exit($proc->getExitCode());
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -231,16 +231,16 @@ $time = microtime(true);
 echo "build-checkphp ... ";
 
 if ($quick) {
-	echo "SKIPPED (--quick)";
+    echo "SKIPPED (--quick)";
 } else {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphp.php --only-changed', DP_ROOT.'/bin/build');
-	$proc->setTimeout(600);
-	$proc->run($output_realtime);
+    $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphp.php --only-changed', DP_ROOT.'/bin/build');
+    $proc->setTimeout(600);
+    $proc->run($output_realtime);
 
-	if (!$proc->isSuccessful()) {
-		echo ("\nDetected error. Quitting.\n");
-		exit($proc->getExitCode());
-	}
+    if (!$proc->isSuccessful()) {
+        echo ("\nDetected error. Quitting.\n");
+        exit($proc->getExitCode());
+    }
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -253,16 +253,16 @@ $time = microtime(true);
 echo "build-checkphrases ... ";
 
 if ($quick) {
-	echo "SKIPPED (--quick)";
+    echo "SKIPPED (--quick)";
 } else {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphrases.php', DP_ROOT.'/bin/build');
-	$proc->setTimeout(600);
-	$proc->run($output_realtime);
+    $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphrases.php', DP_ROOT.'/bin/build');
+    $proc->setTimeout(600);
+    $proc->run($output_realtime);
 
-	if (!$proc->isSuccessful()) {
-		echo ("\nDetected error. Quitting.\n");
-		exit($proc->getExitCode());
-	}
+    if (!$proc->isSuccessful()) {
+        echo ("\nDetected error. Quitting.\n");
+        exit($proc->getExitCode());
+    }
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -276,16 +276,16 @@ $time = microtime(true);
 echo "build-checkphrases-vars ... ";
 
 if ($quick) {
-	echo "SKIPPED (--quick)";
+    echo "SKIPPED (--quick)";
 } else {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphrases-vars.php', DP_ROOT.'/bin/build');
-	$proc->setTimeout(600);
-	$proc->run($output_realtime);
+    $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checkphrases-vars.php', DP_ROOT.'/bin/build');
+    $proc->setTimeout(600);
+    $proc->run($output_realtime);
 
-	if (!$proc->isSuccessful()) {
-		echo ("\nDetected error. Quitting.\n");
-		exit($proc->getExitCode());
-	}
+    if (!$proc->isSuccessful()) {
+        echo ("\nDetected error. Quitting.\n");
+        exit($proc->getExitCode());
+    }
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);
@@ -298,17 +298,17 @@ $time = microtime(true);
 echo "build-checksum-file ... ";
 
 if ($quick) {
-	echo "SKIPPED (--quick)";
-	@unlink(DP_ROOT.'/sys/Resources/distro-checksums.php');
+    echo "SKIPPED (--quick)";
+    @unlink(DP_ROOT.'/sys/Resources/distro-checksums.php');
 } else {
-	$proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checksum-file.php', DP_ROOT.'/bin/build');
-	$proc->setTimeout(600);
-	$proc->run($output_realtime);
+    $proc = new \Symfony\Component\Process\Process(DP_PHP_PATH . ' ./build-checksum-file.php', DP_ROOT.'/bin/build');
+    $proc->setTimeout(600);
+    $proc->run($output_realtime);
 
-	if (!$proc->isSuccessful()) {
-		echo ("\nDetected error. Quitting.\n");
-		exit($proc->getExitCode());
-	}
+    if (!$proc->isSuccessful()) {
+        echo ("\nDetected error. Quitting.\n");
+        exit($proc->getExitCode());
+    }
 }
 
 echo " DONE " . sprintf("%.f", microtime(true)-$time);

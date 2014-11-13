@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350549997 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add ability to disable users");
-		$this->execMutateSql("ALTER TABLE people ADD is_disabled TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add ability to disable users");
+        $this->execMutateSql("ALTER TABLE people ADD is_disabled TINYINT(1) NOT NULL");
+    }
 }

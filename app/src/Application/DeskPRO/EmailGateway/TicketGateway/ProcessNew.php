@@ -48,324 +48,325 @@ use \Application\DeskPRO\Translate\Translate;
 
 class ProcessNew extends ProcessAbstract
 {
-	/**
-	 * @var TicketIncomingEmail
-	 */
-	protected $ticket_email;
+    /**
+     * @var TicketIncomingEmail
+     */
+    protected $ticket_email;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\EmailAccount
-	 */
-	protected $account;
+    /**
+     * @var \Application\DeskPRO\Entity\EmailAccount
+     */
+    protected $account;
 
-	/**
-	 * @var \Orb\Input\Cleaner\Cleaner
-	 */
-	protected $cleaner;
-
-
-	/**
-	 * @param EmailAccount $account
-	 * @param Person $person
-	 * @param TicketIncomingEmail $ticket_email
-	 */
-	public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email,
-		Translate $translator
-	)
-	{
-		$this->account       = $account;
-		$this->person        = $person;
-		$this->ticket_email  = $ticket_email;
-		$this->reader        = $ticket_email->reader;
-		$this->cleaner       = App::get('deskpro.core.input_cleaner');
-		$this->translator    = $translator;
-	}
+    /**
+     * @var \Orb\Input\Cleaner\Cleaner
+     */
+    protected $cleaner;
 
 
-	/**
-	 * @return Ticket|mixed
-	 * @throws \Exception
-	 */
-	public function run()
-	{
-		$this->person = $this->person;
+    /**
+     * @param EmailAccount        $account
+     * @param Person              $person
+     * @param TicketIncomingEmail $ticket_email
+     */
+    public function __construct(EmailAccount $account, Person $person, TicketIncomingEmail $ticket_email,
+        Translate $translator
+    )
+    {
+        $this->account       = $account;
+        $this->person        = $person;
+        $this->ticket_email  = $ticket_email;
+        $this->reader        = $ticket_email->reader;
+        $this->cleaner       = App::get('deskpro.core.input_cleaner');
+        $this->translator    = $translator;
+    }
 
-		#------------------------------
-		# Read email body/subject
-		#------------------------------
 
-		$this->processBlobs();
-		$inline_images = new InlineImageTokens($this->reader);
+    /**
+     * @return Ticket|mixed
+     * @throws \Exception
+     */
+    public function run()
+    {
+        $this->person = $this->person;
 
-		$email_info = new TicketIncomingEmailMessage(
-			TicketIncomingEmailMessage::MODE_NEWTICKET,
-			null,
-			$this->ticket_email,
-			$this->cleaner,
-			App::$container->getEmailAccountManager(),
-			array($this, 'replaceInlineAttachTokens'),
-			$this->getLogger()
-		);
+        #------------------------------
+        # Read email body/subject
+        #------------------------------
 
-		$run_reply_cutter = $this->ticket_email->force_reply_cutter;
+        $this->processBlobs();
+        $inline_images = new InlineImageTokens($this->reader);
 
-		if (!$run_reply_cutter) {
-			// Auto-detect if we should run the cutter anyway to catch large
-			// emails that weren't caught as replies
-			if (
-				strpos($this->ticket_email->email_body_html, 'DP_TOP_MARK') !== false
-				|| strpos($this->ticket_email->email_body_html, '<!-- DP_MESSAGE_BEGIN -->') !== false
-				|| substr_count($this->ticket_email->email_body_html, '>') > 15000
-			) {
-				$run_reply_cutter = true;
-			}
-		}
+        $email_info = new TicketIncomingEmailMessage(
+            TicketIncomingEmailMessage::MODE_NEWTICKET,
+            null,
+            $this->ticket_email,
+            $this->cleaner,
+            App::$container->getEmailAccountManager(),
+            array($this, 'replaceInlineAttachTokens'),
+            $this->getLogger()
+        );
 
-		if ($run_reply_cutter) {
-			$this->logMessage('[TicketGatewayProcessor] runNewTicket running reply cutter (new ticket from reply)');
-		} else {
-			if ($this->ticket_email->email_body_html) {
-				$this->logMessage('[TicketGatewayProcessor] runNewTicket read HTML email');
-				$email_info->body = $this->ticket_email->email_body_html;
+        $run_reply_cutter = $this->ticket_email->force_reply_cutter;
 
-				// Sent from a DeskPRO instance, we should get the specific message by looking for our delims
-				// But dont do this cut if its an auto-reply, we want the real message in those cases. The actual notifs we sent
-				// are silenced in those cases anyway so the auto-replies are handled like other robot replies
-				if (
-					$this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()
-					&& !($this->reader->getHeader('X-DeskPRO-Auto') && $this->reader->getHeader('X-DeskPRO-Auto')->getHeader())
-				) {
-					$body = trim(Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info->body, 1));
-					if ($body) {
-						$email_info->body = $body;
-					}
-				}
+        if (!$run_reply_cutter) {
+            // Auto-detect if we should run the cutter anyway to catch large
+            // emails that weren't caught as replies
+            if (
+                strpos($this->ticket_email->email_body_html, 'DP_TOP_MARK') !== false
+                || strpos($this->ticket_email->email_body_html, '<!-- DP_MESSAGE_BEGIN -->') !== false
+                || substr_count($this->ticket_email->email_body_html, '>') > 15000
+            ) {
+                $run_reply_cutter = true;
+            }
+        }
 
-				$email_info->body_is_html = true;
-			} else {
-				$this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
-				$txt = $this->ticket_email->email_body_text;
-				if (!$txt && $this->ticket_email->email_body_text) {
-					$txt = $this->ticket_email->email_body_text;
-					$email_info->charset_error = $this->reader->getBodyText()->getOriginalCharset();
-				}
+        if ($run_reply_cutter) {
+            $this->logMessage('[TicketGatewayProcessor] runNewTicket running reply cutter (new ticket from reply)');
+        } else {
+            if ($this->ticket_email->email_body_html) {
+                $this->logMessage('[TicketGatewayProcessor] runNewTicket read HTML email');
+                $email_info->body = $this->ticket_email->email_body_html;
 
-				if (strlen($txt) > 25000) {
-					$this->logMessage('[TicketGatewayProcessor] Message too long, trimming');
-					$txt = substr($txt, 0, 25000);
-				}
+                // Sent from a DeskPRO instance, we should get the specific message by looking for our delims
+                // But dont do this cut if its an auto-reply, we want the real message in those cases. The actual notifs we sent
+                // are silenced in those cases anyway so the auto-replies are handled like other robot replies
+                if (
+                    $this->reader->getHeader('X-DeskPRO-Build') && $this->reader->getHeader('X-DeskPRO-Build')->getHeader()
+                    && !($this->reader->getHeader('X-DeskPRO-Auto') && $this->reader->getHeader('X-DeskPRO-Auto')->getHeader())
+                ) {
+                    $body = trim(Strings::extractRegexMatch('#<!\-\- DP_MESSAGE_BEGIN \-\->(.*?)<!\-\- DP_MESSAGE_END \-\->#s', $email_info->body, 1));
+                    if ($body) {
+                        $email_info->body = $body;
+                    }
+                }
 
-				$email_info->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
-				$email_info->body_is_html = false;
-			}
+                $email_info->body_is_html = true;
+            } else {
+                $this->logMessage('[TicketGatewayProcessor] runNewTicket read text email');
+                $txt = $this->ticket_email->email_body_text;
+                if (!$txt && $this->ticket_email->email_body_text) {
+                    $txt = $this->ticket_email->email_body_text;
+                    $email_info->charset_error = $this->reader->getBodyText()->getOriginalCharset();
+                }
 
-			// Replace inline image tags with tokens
-			$email_info->body_raw = $email_info->body;
-			$email_info->body = $inline_images->processTokens($email_info->body);
-			$email_info->body_full = '';
+                if (strlen($txt) > 25000) {
+                    $this->logMessage('[TicketGatewayProcessor] Message too long, trimming');
+                    $txt = substr($txt, 0, 25000);
+                }
 
-			if ($email_info->body_is_html) {
-				// The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
-				$email_info->body = $this->cleaner->clean($email_info->body, 'html_email_preclean');
-				$email_info->body = $this->cleaner->clean($email_info->body, 'html_email_basicclean');
-				$email_info->body = $this->cleaner->clean($email_info->body, 'html_email');
-			}
+                $email_info->body = str_replace(array("\n", "\r"), '', nl2br(@htmlspecialchars($txt, \ENT_QUOTES, 'UTF-8')));
+                $email_info->body_is_html = false;
+            }
 
-			$email_info->body = Strings::trimHtml($email_info->body);
-		}
+            // Replace inline image tags with tokens
+            $email_info->body_raw = $email_info->body;
+            $email_info->body = $inline_images->processTokens($email_info->body);
+            $email_info->body_full = '';
 
-		$email_info->body = $this->cleaner->clean($email_info->body, 'html_email_postclean');
-		$email_info->body = $this->replaceInlineAttachTokens($email_info->body, $inline_images);
+            if ($email_info->body_is_html) {
+                // The basic cleaner cleans out outlook type stuff like empty <p>'s that cause whitespace
+                $email_info->body = $this->cleaner->clean($email_info->body, 'html_email_preclean');
+                $email_info->body = $this->cleaner->clean($email_info->body, 'html_email_basicclean');
+                $email_info->body = $this->cleaner->clean($email_info->body, 'html_email');
+            }
 
-		#------------------------------
-		# Try to guess lang based off the email
-		#------------------------------
+            $email_info->body = Strings::trimHtml($email_info->body);
+        }
 
-		$use_lang = null;
+        $email_info->body = $this->cleaner->clean($email_info->body, 'html_email_postclean');
+        $email_info->body = $this->replaceInlineAttachTokens($email_info->body, $inline_images);
 
-		if (!App::getDataService('Language')->isLangSystemEnabled()) {
-			$this->logMessage("Helpdesk is in single-language mode");
-		} else if ($this->person->getRealLanguage()) {
-			$this->logMessage("Person has language set: " . $this->person->getRealLanguage()->id . " " . $this->person->getRealLanguage()->title);
-		} else {
-			$detect_body = strip_tags($email_info->body);
-			if (strlen($detect_body) < 300) {
-				$this->logMessage('Message too short to attempt lang detection');
-			} else {
-				/** @var $lang_detect \Application\DeskPRO\Languages\Detect */
-				$lang_detect = App::getSystemService('language_detect');
-				$this->logMessage("Detectable languages: " . implode(', ', $lang_detect->getDetectableLanguages()));
+        #------------------------------
+        # Try to guess lang based off the email
+        #------------------------------
 
-				$lang = $lang_detect->detectLanguage($detect_body);
-				if ($lang) {
-					$this->logMessage("Detected language {$lang->title} (#{$lang->id})");
-					$use_lang = $lang;
-				}
-			}
+        $use_lang = null;
 
-			if (!$use_lang) {
-				$this->logMessage('No language detected, no language will be set');
-			}
-		}
+        if (!App::getDataService('Language')->isLangSystemEnabled()) {
+            $this->logMessage("Helpdesk is in single-language mode");
+        } elseif ($this->person->getRealLanguage()) {
+            $this->logMessage("Person has language set: " . $this->person->getRealLanguage()->id . " " . $this->person->getRealLanguage()->title);
+        } else {
+            $detect_body = strip_tags($email_info->body);
+            if (strlen($detect_body) < 300) {
+                $this->logMessage('Message too short to attempt lang detection');
+            } else {
+                /** @var $lang_detect \Application\DeskPRO\Languages\Detect */
+                $lang_detect = App::getSystemService('language_detect');
+                $this->logMessage("Detectable languages: " . implode(', ', $lang_detect->getDetectableLanguages()));
 
-		#------------------------------
-		# Create user account
-		#------------------------------
+                $lang = $lang_detect->detectLanguage($detect_body);
+                if ($lang) {
+                    $this->logMessage("Detected language {$lang->title} (#{$lang->id})");
+                    $use_lang = $lang;
+                }
+            }
 
-		if (!$this->person) {
-			$this->person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
-		}
+            if (!$use_lang) {
+                $this->logMessage('No language detected, no language will be set');
+            }
+        }
 
-		// But we'll create them now if they dont
-		if (!$this->person) {
-			$this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
-			$person = Person::newContactPerson(array(
-				'email' => $this->reader->getFromAddress()->getEmail(),
-				'name'  => $this->reader->getFromAddress()->getNameUtf8() ?: ''
-			));
+        #------------------------------
+        # Create user account
+        #------------------------------
 
-			App::getDb()->beginTransaction();
-			try {
-				App::getOrm()->persist($person);
-				App::getOrm()->flush();
-				App::getDb()->commit();
-			} catch (\Exception $e) {
-				App::getDb()->rollback();
-				throw $e;
-			}
-		}
+        if (!$this->person) {
+            $this->person = App::getOrm()->getRepository('DeskPRO:Person')->findOneByEmail($this->reader->getFromAddress()->getEmail());
+        }
 
-		$executor_context = $this->getTicketManager()->createUserExecutorContext(
-			$this->person,
-			'newticket',
-			'email'
-		);
+        // But we'll create them now if they dont
+        if (!$this->person) {
+            $this->logMessage('[TicketGatewayProcessor] No existing person found, will try and create it');
+            $person = Person::newContactPerson(array(
+                'email' => $this->reader->getFromAddress()->getEmail(),
+                'name'  => $this->reader->getFromAddress()->getNameUtf8() ?: ''
+            ));
 
-		$executor_context->setEmailContext($this->reader);
-		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
+            App::getDb()->beginTransaction();
+            try {
+                App::getOrm()->persist($person);
+                App::getOrm()->flush();
+                App::getDb()->commit();
+            } catch (\Exception $e) {
+                App::getDb()->rollback();
+                throw $e;
+            }
+        }
 
-		if ($this->logger) {
-			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
-			$executor_context->getLogger()->pushHandler($orb_logger_adapter);
-		}
+        $executor_context = $this->getTicketManager()->createUserExecutorContext(
+            $this->person,
+            'newticket',
+            'email'
+        );
 
-		#------------------------------
-		# Create the ticket
-		#------------------------------
+        $executor_context->setEmailContext($this->reader);
+        $executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
-		if ($email_info->is_no_subject) {
-			$subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', array(), $use_lang);
-		} else {
-			$subject = $email_info->subject;
-		}
+        if ($this->logger) {
+            $orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
+            $executor_context->getLogger()->pushHandler($orb_logger_adapter);
+        }
 
-		$subject = trim($subject);
-		if (!$subject) {
-			$subject = '(No Subject)';
-		}
+        #------------------------------
+        # Create the ticket
+        #------------------------------
 
-		$ticket = $this->getTicketManager()->createTicket();
-		$ticket->subject         = $subject;
-		$ticket->person          = $this->person;
-		$ticket->status          = 'awaiting_agent';
-		$ticket->email_account   = $this->account;
-		$ticket->creation_system = 'gateway.person';
+        if ($email_info->is_no_subject) {
+            $subject = App::$container->getTranslator()->phrase('user.tickets.no_subject', array(), $use_lang);
+        } else {
+            $subject = $email_info->subject;
+        }
 
-		if ($use_lang) {
-			$ticket->language = $use_lang;
-		}
+        $subject = trim($subject);
+        if (!$subject) {
+            $subject = '(No Subject)';
+        }
 
-		// Set the proper email address on the ticket from the users account
-		if (strtolower($this->reader->getFromAddress()->email) != $this->person->getPrimaryEmailAddress()) {
-			$email_rec = $this->person->findEmailAddress($this->reader->getFromAddress()->getEmail());
-			if ($email_rec) {
-				$ticket->person_email = $email_rec;
-			}
-		}
+        $ticket = $this->getTicketManager()->createTicket();
+        $ticket->subject         = $subject;
+        $ticket->person          = $this->person;
+        $ticket->status          = 'awaiting_agent';
+        $ticket->email_account   = $this->account;
+        $ticket->creation_system = 'gateway.person';
 
-		$ticket_message = new TicketMessage();
-		$ticket_message->person = $this->person;
-		$ticket_message->message_raw = $email_info->body_raw;
-		$ticket_message->setMessageHtml($email_info->body);
-		$ticket_message->withNewSubject = $subject;
-		$ticket_message->creation_system = 'gateway.person';
+        if ($use_lang) {
+            $ticket->language = $use_lang;
+        }
 
-		if ($this->reader->getProperty('email_source')) {
-			$ticket_message->email_source = $this->reader->getProperty('email_source');
-		}
+        // Set the proper email address on the ticket from the users account
+        if (strtolower($this->reader->getFromAddress()->email) != $this->person->getPrimaryEmailAddress()) {
+            $email_rec = $this->person->findEmailAddress($this->reader->getFromAddress()->getEmail());
+            if ($email_rec) {
+                $ticket->person_email = $email_rec;
+            }
+        }
 
-		$ticket->addMessage($ticket_message);
+        $ticket_message = new TicketMessage();
+        $ticket_message->person = $this->person;
+        $ticket_message->message_raw = $email_info->body_raw;
+        $ticket_message->setMessageHtml($email_info->body);
+        $ticket_message->withNewSubject = $subject;
+        $ticket_message->creation_system = 'gateway.person';
 
-		foreach ($this->processBlobs() as $blob) {
-			$attach = new TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->person;
+        if ($this->reader->getProperty('email_source')) {
+            $ticket_message->email_source = $this->reader->getProperty('email_source');
+        }
 
-			if (isset($this->inline_blobs[$blob->id])) {
-				$attach->is_inline = true;
-			}
+        $ticket->addMessage($ticket_message);
 
-			$ticket_message->addAttachment($attach);
+        foreach ($this->processBlobs() as $blob) {
+            $attach = new TicketAttachment();
+            $attach['blob'] = $blob;
+            $attach['person'] = $this->person;
 
-			$blob->is_temp = false;
-			App::getOrm()->persist($blob);
-		}
+            if (isset($this->inline_blobs[$blob->id])) {
+                $attach->is_inline = true;
+            }
 
-		#------------------------------
-		# Check for dupe first
-		#------------------------------
+            $ticket_message->addAttachment($attach);
 
-		if ($this->person && !$this->person->isNewPerson()) {
-			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
-				$this->setError(EmailSource::ERR_DUPE);
-				$this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
-				return $dupe_message;
-			}
-		}
+            $blob->is_temp = false;
+            App::getOrm()->persist($blob);
+        }
 
-		#------------------------------
-		# Reply actions
-		#------------------------------
+        #------------------------------
+        # Check for dupe first
+        #------------------------------
 
-		if ($this->ticket_email->reply_actions) {
-			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-			$reply_actions_context = new ReplyActionsContext();
-			$reply_actions_context->ticket = $ticket;
-			$reply_actions_context->message = $ticket_message;
-			$reply_actions_apply->apply($reply_actions_context);
-		}
+        if ($this->person && !$this->person->isNewPerson()) {
+            if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
+                $this->setError(EmailSource::ERR_DUPE);
+                $this->logMessage('[TicketGatewayProcessor] Duplicate message ' . $dupe_message->getId());
 
-		#------------------------------
-		# Process new ticket
-		#------------------------------
+                return $dupe_message;
+            }
+        }
 
-		App::getDb()->beginTransaction();
+        #------------------------------
+        # Reply actions
+        #------------------------------
 
-		try {
+        if ($this->ticket_email->reply_actions) {
+            $reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+            $reply_actions_context = new ReplyActionsContext();
+            $reply_actions_context->ticket = $ticket;
+            $reply_actions_context->message = $ticket_message;
+            $reply_actions_apply->apply($reply_actions_context);
+        }
 
-			if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
-				$this->logMessage('[TicketGatewayProcessor] Has CC');
-				$this->handleCc($ticket, $this->reader->getDeliveredAddresses());
-			}
+        #------------------------------
+        # Process new ticket
+        #------------------------------
 
-			$this->getTicketManager()->saveTicket($ticket, $executor_context);
+        App::getDb()->beginTransaction();
 
-			if ($email_info->charset_error) {
-				App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
-					'message_id' => $ticket_message->id,
-					'raw'        => $email_info->body,
-					'charset'    => $this->charset_error,
-				));
-			}
+        try {
 
-			$this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
+            if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
+                $this->logMessage('[TicketGatewayProcessor] Has CC');
+                $this->handleCc($ticket, $this->reader->getDeliveredAddresses());
+            }
 
-			App::getDb()->commit();
-		} catch (\Exception $e) {
-			App::getDb()->rollback();
-			throw $e;
-		}
+            $this->getTicketManager()->saveTicket($ticket, $executor_context);
 
-		return $ticket;
-	}
+            if ($email_info->charset_error) {
+                App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
+                    'message_id' => $ticket_message->id,
+                    'raw'        => $email_info->body,
+                    'charset'    => $this->charset_error,
+                ));
+            }
+
+            $this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
+
+            App::getDb()->commit();
+        } catch (\Exception $e) {
+            App::getDb()->rollback();
+            throw $e;
+        }
+
+        return $ticket;
+    }
 }

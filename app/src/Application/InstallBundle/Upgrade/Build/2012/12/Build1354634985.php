@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1354634985 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add rate limiting support to the API");
-		$default_collation = $this->getDefaultCollation();
-		$this->execMutateSql("CREATE TABLE api_key_rate_limit (api_key_id INT NOT NULL, hits INT DEFAULT NULL, created_stamp INT DEFAULT NULL, reset_stamp INT DEFAULT NULL, PRIMARY KEY(api_key_id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=$default_collation");
-		$this->execMutateSql("ALTER TABLE api_key_rate_limit ADD CONSTRAINT FK_BBDD0D428BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Add rate limiting support to the API");
+        $default_collation = $this->getDefaultCollation();
+        $this->execMutateSql("CREATE TABLE api_key_rate_limit (api_key_id INT NOT NULL, hits INT DEFAULT NULL, created_stamp INT DEFAULT NULL, reset_stamp INT DEFAULT NULL, PRIMARY KEY(api_key_id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=$default_collation");
+        $this->execMutateSql("ALTER TABLE api_key_rate_limit ADD CONSTRAINT FK_BBDD0D428BE312B3 FOREIGN KEY (api_key_id) REFERENCES api_keys (id) ON DELETE CASCADE");
+    }
 }

@@ -33,22 +33,22 @@ namespace Application\ImportBundle\RecordMapper;
 
 class TicketStatusRecordMapper implements RecordMapperInterface
 {
-	/** @var array  */
-	protected $validStatuses = array(
-		'awaiting_agent',
-		'awaiting_user',
-		'resolved',
-		'archived',
-		'hidden',
-	);
-	
-	public function findIdFromValue($value)
-	{
-		return false;
-	}
-	
-	public function isValidStatus($status)
-	{
-		return in_array($status, $this->validStatuses);
-	}
+    /** @var array  */
+    protected $validStatuses = array(
+        'awaiting_agent',
+        'awaiting_user',
+        'resolved',
+        'archived',
+        'hidden',
+    );
+
+    public function findIdFromValue($value)
+    {
+        return false;
+    }
+
+    public function isValidStatus($status)
+    {
+        return in_array($status, $this->validStatuses);
+    }
 }

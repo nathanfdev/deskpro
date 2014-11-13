@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1354724754 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add general option support to email gateways");
-		$this->execMutateSql("ALTER TABLE email_gateways ADD processor_extras LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)'");
-	}
+    public function run()
+    {
+        $this->out("Add general option support to email gateways");
+        $this->execMutateSql("ALTER TABLE email_gateways ADD processor_extras LONGBLOB DEFAULT NULL COMMENT '(DC2Type:array)'");
+    }
 }

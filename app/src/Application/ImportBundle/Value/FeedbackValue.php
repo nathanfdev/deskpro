@@ -33,84 +33,84 @@ namespace Application\ImportBundle\Value;
 
 class FeedbackValue
 {
-	/**
-	 * @var int
-	 */
-	public $oid;
-	
-	/**
-	 * @var string
-	 */
-	public $category;
-	
-	/**
-	 *
-	 * @var string
-	 */
-	public $person;
+    /**
+     * @var int
+     */
+    public $oid;
 
-	/**
-	 * @var string
-	 */
-	public $language;
-	
-	/**
-	 * @var int
-	 */
-	public $popularity = 0;
-	
-	/**
-	 * @var string
-	 */
-	public $slug;
-	
-	/**
-	 * @var string
-	 */
-	public $title;
-	
-	/**
-	 * @var string
-	 */
-	public $content;
-	
-	/**
-	 * @var int
-	 */
-	public $view_count = 0;
-	
-	/**
-	 * @var int
-	 */
-	public $total_rating = 0;
-	
-	/**
-	 * @var int 
-	 */
-	public $num_comments = 0;
-	
-	/**
-	 * @var int
-	 */
-	public $num_ratings = 0;
-	
-	/**
-	 * @var string
-	 */
-	public $status;
-	
-	/**
-	 * @var \DateTime
-	 */
-	public $date_created;
-	
-	/**
-	 * @var \DateTime
-	 */
-	public $date_published;
-	
-	/**
-	 * @var array
-	 */
-	public $labels = array();
+    /**
+     * @var string
+     */
+    public $category;
+
+    /**
+     *
+     * @var string
+     */
+    public $person;
+
+    /**
+     * @var string
+     */
+    public $language;
+
+    /**
+     * @var int
+     */
+    public $popularity = 0;
+
+    /**
+     * @var string
+     */
+    public $slug;
+
+    /**
+     * @var string
+     */
+    public $title;
+
+    /**
+     * @var string
+     */
+    public $content;
+
+    /**
+     * @var int
+     */
+    public $view_count = 0;
+
+    /**
+     * @var int
+     */
+    public $total_rating = 0;
+
+    /**
+     * @var int
+     */
+    public $num_comments = 0;
+
+    /**
+     * @var int
+     */
+    public $num_ratings = 0;
+
+    /**
+     * @var string
+     */
+    public $status;
+
+    /**
+     * @var \DateTime
+     */
+    public $date_created;
+
+    /**
+     * @var \DateTime
+     */
+    public $date_published;
+
+    /**
+     * @var array
+     */
+    public $labels = array();
 }

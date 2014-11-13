@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Settings;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 
 
@@ -43,328 +42,328 @@ use Application\DeskPRO\DBAL\Connection;
  */
 class Settings implements \ArrayAccess, \IteratorAggregate, \Countable
 {
-	/**
-	 * File to fetch defaults from
-	 * @var array
-	 */
-	private $default_settings_file = array();
+    /**
+     * File to fetch defaults from
+     * @var array
+     */
+    private $default_settings_file = array();
 
-	/**
-	 * Array of array(group => array(settings)) for default settings read in with getDefault()
-	 * @var array
-	 */
-	private $default_settings = null;
+    /**
+     * Array of array(group => array(settings)) for default settings read in with getDefault()
+     * @var array
+     */
+    private $default_settings = null;
 
-	/**
-	 * Plain database connection for raw queries
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * Plain database connection for raw queries
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * Settings we've loaded so far
-	 * @var array
-	 */
-	private $settings = null;
+    /**
+     * Settings we've loaded so far
+     * @var array
+     */
+    private $settings = null;
 
-	/**
-	 * @var \DateTimeZone
-	 */
-	private $default_timezone;
+    /**
+     * @var \DateTimeZone
+     */
+    private $default_timezone;
 
-	/**
-	 * Virtual settings are not real settings, but depend on other states. For example,
-	 * 'core.interact_require_login' isn't a real setting, it is true depending on the registration mode.
-	 *
-	 * This is a map of varname => callback
-	 *
-	 * @var array
-	 */
-	private $virtual_settings = array();
-
-
-	/**
-	 * @param string     $default_settings_file
-	 * @param Connection $db
-	 */
-	public function __construct($default_settings_file, Connection $db = null)
-	{
-		$this->default_settings_file = $default_settings_file;
-		$this->db = $db;
-
-		$this->virtual_settings['core.interact_require_login'] = function($settings) {
-			return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
-		};
-
-		$this->virtual_settings['default_timezone'] = function($settings) {
-			return $settings->getDefaultTimezone();
-		};
-	}
+    /**
+     * Virtual settings are not real settings, but depend on other states. For example,
+     * 'core.interact_require_login' isn't a real setting, it is true depending on the registration mode.
+     *
+     * This is a map of varname => callback
+     *
+     * @var array
+     */
+    private $virtual_settings = array();
 
 
-	/**
-	 * Loads settings
-	 *
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
-	 */
-	private function _loadSettings()
-	{
-		$this->settings = array();
-		$this->default_settings = array();
+    /**
+     * @param string     $default_settings_file
+     * @param Connection $db
+     */
+    public function __construct($default_settings_file, Connection $db = null)
+    {
+        $this->default_settings_file = $default_settings_file;
+        $this->db = $db;
 
-		if ($this->default_settings_file) {
-			$this->default_settings = require($this->default_settings_file);
-		}
+        $this->virtual_settings['core.interact_require_login'] = function ($settings) {
+            return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
+        };
 
-		$this->settings = $this->default_settings;
-
-		if ($this->db) {
-			$this->settings = array_merge($this->settings, $this->db->fetchAllKeyValue("
-				SELECT name, value
-				FROM settings
-			"));
-		}
-
-		if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
-			$this->settings = array_merge($this->settings, $GLOBALS['DP_CONFIG']['SETTINGS']);
-		}
-	}
+        $this->virtual_settings['default_timezone'] = function ($settings) {
+            return $settings->getDefaultTimezone();
+        };
+    }
 
 
-	/**
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
-	 */
-	public function reloadSettings()
-	{
-		$this->_loadSettings();
-	}
+    /**
+     * Loads settings
+     *
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     */
+    private function _loadSettings()
+    {
+        $this->settings = array();
+        $this->default_settings = array();
+
+        if ($this->default_settings_file) {
+            $this->default_settings = require($this->default_settings_file);
+        }
+
+        $this->settings = $this->default_settings;
+
+        if ($this->db) {
+            $this->settings = array_merge($this->settings, $this->db->fetchAllKeyValue("
+                SELECT name, value
+                FROM settings
+            "));
+        }
+
+        if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
+            $this->settings = array_merge($this->settings, $GLOBALS['DP_CONFIG']['SETTINGS']);
+        }
+    }
 
 
-	/**
-	 * Get the value of a setting
-	 *
-	 * @param $name
-	 * @param null $default
-	 * @return mixed|null
-	 */
-	public function get($name, $default = null)
-	{
-		if (!$name) return $default;
-
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
-		if (isset($this->virtual_settings[$name])) {
-			return call_user_func($this->virtual_settings[$name], $this);
-		}
-
-		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
-	}
+    /**
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     */
+    public function reloadSettings()
+    {
+        $this->_loadSettings();
+    }
 
 
-	/**
-	 * This loads the default for a value as defined in the setting file
-	 *
-	 * @param string $name
-	 * @return null
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
-	 */
-	public function getDefault($name)
-	{
-		if (!$name) return null;
+    /**
+     * Get the value of a setting
+     *
+     * @param $name
+     * @param  null       $default
+     * @return mixed|null
+     */
+    public function get($name, $default = null)
+    {
+        if (!$name) return $default;
 
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
+        if ($this->settings === null) {
+            $this->_loadSettings();
+        }
 
-		return isset($this->default_settings[$name]) ? $this->default_settings[$name] : null;
-	}
+        if (isset($this->virtual_settings[$name])) {
+            return call_user_func($this->virtual_settings[$name], $this);
+        }
 
-
-	/**
-	 * Get the default values for an entire group
-	 *
-	 * @param string $group
-	 * @param bool $short  True to strip off the group name, false to include the group name in the key
-	 * @return array
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
-	 */
-	public function getDefaultGroup($group, $short = true)
-	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
-		$group_dot = $group.".";
-		$len = strlen($group_dot);
-
-		$ret = array();
-		foreach ($this->default_settings as $k => $v) {
-			if (substr($k, 0, $len) === $group_dot) {
-				if ($short) {
-					$k_short = substr($k, $len);
-					$ret[$k_short] = $v;
-				} else {
-					$ret[$k] = $v;
-				}
-			}
-		}
-
-		return $ret;
-	}
+        return isset($this->settings[$name]) ? $this->settings[$name] : $default;
+    }
 
 
-	/**
-	 * Get all settings in a group
-	 *
-	 * @param string $group
-	 * @return array
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
-	 */
-	public function getGroup($group)
-	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
+    /**
+     * This loads the default for a value as defined in the setting file
+     *
+     * @param  string                       $name
+     * @return null
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     */
+    public function getDefault($name)
+    {
+        if (!$name) return null;
 
-		$group_dot = $group.".";
-		$len = strlen($group_dot);
+        if ($this->settings === null) {
+            $this->_loadSettings();
+        }
 
-		$ret = array();
-		foreach ($this->settings as $k => $v) {
-			if (substr($k, 0, $len) === $group_dot) {
-				$k_short = substr($k, $len);
-				$ret[$k_short] = $v;
-			}
-		}
-
-		return $ret;
-	}
+        return isset($this->default_settings[$name]) ? $this->default_settings[$name] : null;
+    }
 
 
+    /**
+     * Get the default values for an entire group
+     *
+     * @param  string                       $group
+     * @param  bool                         $short True to strip off the group name, false to include the group name in the key
+     * @return array
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     */
+    public function getDefaultGroup($group, $short = true)
+    {
+        if ($this->settings === null) {
+            $this->_loadSettings();
+        }
 
-	/**
-	 * Manually set the value for one or more settings. Note that these values are
-	 * temporary, they are NOT persisted. This is mainly useful for code overrides
-	 * or the like.
-	 *
-	 * @param array $settings
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
-	 */
-	public function setTemporarySettingValues(array $settings)
-	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
+        $group_dot = $group.".";
+        $len = strlen($group_dot);
 
-		$this->settings = array_merge($this->settings, $settings);
-	}
+        $ret = array();
+        foreach ($this->default_settings as $k => $v) {
+            if (substr($k, 0, $len) === $group_dot) {
+                if ($short) {
+                    $k_short = substr($k, $len);
+                    $ret[$k_short] = $v;
+                } else {
+                    $ret[$k] = $v;
+                }
+            }
+        }
 
-
-	/**
-	 * Persist a new value for a setting, and update this as well
-	 *
-	 * @param string $setting
-	 * @param string $value
-	 * @throws \Doctrine\DBAL\DBALException
-	 * @throws \Exception
-	 */
-	public function setSetting($setting, $value)
-	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
-
-		$this->db->beginTransaction();
-		try {
-
-			if ($value !== null) {
-				if ($value === true) $value = '1';
-				else if ($value === false) $value = '0';
-
-				$this->db->executeUpdate("
-					INSERT INTO settings
-						(name, value)
-					VALUES
-						(?, ?)
-					ON DUPLICATE KEY UPDATE
-						value = VALUES(value)
-				", array($setting, $value));
-			} else {
-				$this->db->delete('settings', array('name' => $setting));
-			}
-
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
-		}
-
-		$this->settings[$setting] = $value;
-	}
+        return $ret;
+    }
 
 
-	/**
-	 * @return \DateTimeZone
-	 */
-	public function getDefaultTimezone()
-	{
-		if ($this->default_timezone !== null) {
-			return $this->default_timezone;
-		}
+    /**
+     * Get all settings in a group
+     *
+     * @param  string                       $group
+     * @return array
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     */
+    public function getGroup($group)
+    {
+        if ($this->settings === null) {
+            $this->_loadSettings();
+        }
 
-		try {
-			$this->default_timezone = new \DateTimeZone($this->get('core.default_timezone'));
-		} catch (\Exception $e) {
-			$this->default_timezone = new \DateTimeZone('UTC');
-		}
+        $group_dot = $group.".";
+        $len = strlen($group_dot);
 
-		return $this->default_timezone;
-	}
+        $ret = array();
+        foreach ($this->settings as $k => $v) {
+            if (substr($k, 0, $len) === $group_dot) {
+                $k_short = substr($k, $len);
+                $ret[$k_short] = $v;
+            }
+        }
+
+        return $ret;
+    }
 
 
-	public function offsetExists($offset)
-	{
-		return $this->get($offset) !== null;
-	}
 
-	public function offsetSet($offset, $value)
-	{
-		throw new \BadMethodCallException('You cannot set settings');
-	}
+    /**
+     * Manually set the value for one or more settings. Note that these values are
+     * temporary, they are NOT persisted. This is mainly useful for code overrides
+     * or the like.
+     *
+     * @param  array                        $settings
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     */
+    public function setTemporarySettingValues(array $settings)
+    {
+        if ($this->settings === null) {
+            $this->_loadSettings();
+        }
 
-	public function offsetGet($offset)
-	{
-		return $this->get($offset);
-	}
+        $this->settings = array_merge($this->settings, $settings);
+    }
 
-	public function offsetUnset($offset)
-	{
-		throw new \BadMethodCallException('You cannot unset settings');
-	}
 
-	public function count()
-	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
+    /**
+     * Persist a new value for a setting, and update this as well
+     *
+     * @param  string                       $setting
+     * @param  string                       $value
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     */
+    public function setSetting($setting, $value)
+    {
+        if ($this->settings === null) {
+            $this->_loadSettings();
+        }
 
-		return count($this->settings);
-	}
+        $this->db->beginTransaction();
+        try {
 
-	public function getIterator()
-	{
-		if ($this->settings === null) {
-			$this->_loadSettings();
-		}
+            if ($value !== null) {
+                if ($value === true) $value = '1';
+                else if ($value === false) $value = '0';
 
-		return new \ArrayIterator($this->settings);
-	}
+                $this->db->executeUpdate("
+                    INSERT INTO settings
+                        (name, value)
+                    VALUES
+                        (?, ?)
+                    ON DUPLICATE KEY UPDATE
+                        value = VALUES(value)
+                ", array($setting, $value));
+            } else {
+                $this->db->delete('settings', array('name' => $setting));
+            }
+
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
+
+        $this->settings[$setting] = $value;
+    }
+
+
+    /**
+     * @return \DateTimeZone
+     */
+    public function getDefaultTimezone()
+    {
+        if ($this->default_timezone !== null) {
+            return $this->default_timezone;
+        }
+
+        try {
+            $this->default_timezone = new \DateTimeZone($this->get('core.default_timezone'));
+        } catch (\Exception $e) {
+            $this->default_timezone = new \DateTimeZone('UTC');
+        }
+
+        return $this->default_timezone;
+    }
+
+
+    public function offsetExists($offset)
+    {
+        return $this->get($offset) !== null;
+    }
+
+    public function offsetSet($offset, $value)
+    {
+        throw new \BadMethodCallException('You cannot set settings');
+    }
+
+    public function offsetGet($offset)
+    {
+        return $this->get($offset);
+    }
+
+    public function offsetUnset($offset)
+    {
+        throw new \BadMethodCallException('You cannot unset settings');
+    }
+
+    public function count()
+    {
+        if ($this->settings === null) {
+            $this->_loadSettings();
+        }
+
+        return count($this->settings);
+    }
+
+    public function getIterator()
+    {
+        if ($this->settings === null) {
+            $this->_loadSettings();
+        }
+
+        return new \ArrayIterator($this->settings);
+    }
 }

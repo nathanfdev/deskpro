@@ -8,72 +8,73 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetWorkflowTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private function getMockContainer()
-	{
-		if ($this->container) return $this->container;
-		$this->container = ContainerMock::create()->withTicketWorkflows()->get();
-		return $this->container;
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private function getMockContainer()
+    {
+        if ($this->container) return $this->container;
+        $this->container = ContainerMock::create()->withTicketWorkflows()->get();
 
-	public function testSet()
-	{
-		$ticket = new Ticket();
-		$ticket->workflow = $this->getMockContainer()->getTicketWorkflows()->getById(1);
-		$exec   = new ExecutorContext();
+        return $this->container;
+    }
 
-		$action = new SetWorkflow(array('workflow_id' => 55));
-		$action->setContainer($this->getMockContainer());
+    public function testSet()
+    {
+        $ticket = new Ticket();
+        $ticket->workflow = $this->getMockContainer()->getTicketWorkflows()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetWorkflow(array('workflow_id' => 55));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\TicketWorkflow', $ticket->workflow);
-		$this->assertEquals(55, $ticket->workflow->id);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testSetNull()
-	{
-		$ticket = new Ticket();
-		$ticket->workflow = $this->getMockContainer()->getTicketWorkflows()->getById(1);
-		$exec   = new ExecutorContext();
+        $this->assertInstanceOf('Application\\DeskPRO\\Entity\\TicketWorkflow', $ticket->workflow);
+        $this->assertEquals(55, $ticket->workflow->id);
+    }
 
-		$action = new SetWorkflow(array('workflow_id' => 0));
-		$action->setContainer($this->getMockContainer());
+    public function testSetNull()
+    {
+        $ticket = new Ticket();
+        $ticket->workflow = $this->getMockContainer()->getTicketWorkflows()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetWorkflow(array('workflow_id' => 0));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertNull($ticket->workflow);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testNoop()
-	{
-		$ticket = new Ticket();
-		$ticket->workflow = $this->getMockContainer()->getTicketWorkflows()->getById(55);
+        $this->assertNull($ticket->workflow);
+    }
 
-		$exec = new ExecutorContext();
+    public function testNoop()
+    {
+        $ticket = new Ticket();
+        $ticket->workflow = $this->getMockContainer()->getTicketWorkflows()->getById(55);
 
-		$action = new SetWorkflow(array('workflow_id' => 55));
-		$action->setContainer($this->container);
+        $exec = new ExecutorContext();
 
-		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
+        $action = new SetWorkflow(array('workflow_id' => 55));
+        $action->setContainer($this->container);
 
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$exec = new ExecutorContext();
+        $this->assertTrue($action->isNoop($ticket, $exec));
+    }
 
-		$action = new SetWorkflow(array('workflow_id' => 200));
-		$action->setContainer($this->getMockContainer());
-		$action->applyAction($ticket, $exec);
+    public function testInvalid()
+    {
+        $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-		$this->assertNull($ticket->workflow);
-	}
+        $action = new SetWorkflow(array('workflow_id' => 200));
+        $action->setContainer($this->getMockContainer());
+        $action->applyAction($ticket, $exec);
+
+        $this->assertNull($ticket->workflow);
+    }
 }

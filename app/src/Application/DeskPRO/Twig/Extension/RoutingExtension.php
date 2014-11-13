@@ -38,27 +38,28 @@ use Symfony\Bridge\Twig\Extension\RoutingExtension as BaseRoutingExtension;
 
 class RoutingExtension extends BaseRoutingExtension
 {
-	/**
-	 * Custom getPath to eat exception when not in debug mode.
-	 *
-	 * This is because people can screw up their site if they edit templates and then try to render
-	 * a malformed link. In that scenario, better to not fatal error.
-	 *
-	 * @param string $name
-	 * @param array $parameters
-	 * @param bool  $relative
-	 * @return string
-	 * @throws \Exception
-	 */
-	public function getPath($name, $parameters = array(), $relative = false)
-	{
-		try {
-			return parent::getPath($name, $parameters, $relative);
-		} catch (\Exception $e) {
-			if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
-				throw $e;
-			}
-			return '';
-		}
-	}
+    /**
+     * Custom getPath to eat exception when not in debug mode.
+     *
+     * This is because people can screw up their site if they edit templates and then try to render
+     * a malformed link. In that scenario, better to not fatal error.
+     *
+     * @param  string     $name
+     * @param  array      $parameters
+     * @param  bool       $relative
+     * @return string
+     * @throws \Exception
+     */
+    public function getPath($name, $parameters = array(), $relative = false)
+    {
+        try {
+            return parent::getPath($name, $parameters, $relative);
+        } catch (\Exception $e) {
+            if (isset($GLOBALS['DP_CONFIG']['debug']['dev']) && $GLOBALS['DP_CONFIG']['debug']['dev']) {
+                throw $e;
+            }
+
+            return '';
+        }
+    }
 }

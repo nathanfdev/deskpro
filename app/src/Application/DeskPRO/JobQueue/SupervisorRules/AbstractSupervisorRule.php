@@ -39,13 +39,13 @@ use Application\DeskPRO\JobQueue\JobSupervisorRuleInterface;
 
 abstract class AbstractSupervisorRule implements JobSupervisorRuleInterface
 {
-	/**
-	 * @var Connection
-	 */
-	protected $connection;
+    /**
+     * @var Connection
+     */
+    protected $connection;
 
-	public function __construct(Connection $connection)
-	{
-		$this->connection = $connection;
-	}
+    public function __construct(Connection $connection)
+    {
+        $this->connection = $connection;
+    }
 }

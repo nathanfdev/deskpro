@@ -48,356 +48,357 @@ use Orb\Util\Arrays;
 
 class Build1400056735 extends AbstractBuild
 {
-	/**
-	 * @var TriggerTermConverter
-	 */
-	private $term_converter;
+    /**
+     * @var TriggerTermConverter
+     */
+    private $term_converter;
 
-	/**
-	 * @var TriggerActionConverter
-	 */
-	private $action_converter;
+    /**
+     * @var TriggerActionConverter
+     */
+    private $action_converter;
 
-	public function run()
-	{
-		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
-		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerTermConverter.php';
+    public function run()
+    {
+        require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
+        require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerTermConverter.php';
 
-		$this->out("Upgrading SLAs");
+        $this->out("Upgrading SLAs");
 
-		#------------------------------
-		# Init helpers
-		#------------------------------
+        #------------------------------
+        # Init helpers
+        #------------------------------
 
-		$gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
+        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
 
-		$mappings = array(
-			'gateway_address_to_email_account' => $gateway_addr_map
-		);
+        $mappings = array(
+            'gateway_address_to_email_account' => $gateway_addr_map
+        );
 
-		$this->action_converter = new TriggerActionConverter($mappings);
-		$this->term_converter   = new TriggerTermConverter($mappings);
+        $this->action_converter = new TriggerActionConverter($mappings);
+        $this->term_converter   = new TriggerTermConverter($mappings);
 
-		#------------------------------
-		# Load old data
-		#------------------------------
+        #------------------------------
+        # Load old data
+        #------------------------------
 
-		$slas = $this->getUpgradeData('201404', 'slas') ?: array();
+        $slas = $this->getUpgradeData('201404', 'slas') ?: array();
 
-		$old_triggers = array();
-		foreach (($this->getUpgradeData('201404', 'ticket_triggers') ?: array()) as $rec) {
-			$old_triggers[$rec['id']] = $rec;
-		}
+        $old_triggers = array();
+        foreach (($this->getUpgradeData('201404', 'ticket_triggers') ?: array()) as $rec) {
+            $old_triggers[$rec['id']] = $rec;
+        }
 
-		$sla_people = array();
-		foreach (($this->getUpgradeData('201404', 'sla_people') ?: array()) as $rec) {
-			if (!isset($sla_people[$rec['sla_id']])) $sla_people[$rec['sla_id']] = array();
-			$sla_people[$rec['sla_id']][] = $rec['person_id'];
-		}
+        $sla_people = array();
+        foreach (($this->getUpgradeData('201404', 'sla_people') ?: array()) as $rec) {
+            if (!isset($sla_people[$rec['sla_id']])) $sla_people[$rec['sla_id']] = array();
+            $sla_people[$rec['sla_id']][] = $rec['person_id'];
+        }
 
-		$sla_orgs = array();
-		foreach (($this->getUpgradeData('201404', 'sla_organizations') ?: array()) as $rec) {
-			if (!isset($sla_orgs[$rec['sla_id']])) $sla_orgs[$rec['sla_id']] = array();
-			$sla_orgs[$rec['sla_id']][] = $rec['organization_id'];
-		}
+        $sla_orgs = array();
+        foreach (($this->getUpgradeData('201404', 'sla_organizations') ?: array()) as $rec) {
+            if (!isset($sla_orgs[$rec['sla_id']])) $sla_orgs[$rec['sla_id']] = array();
+            $sla_orgs[$rec['sla_id']][] = $rec['organization_id'];
+        }
 
-		foreach ($slas as $sla) {
-			$sla['@people']          = isset($sla_people[$sla['id']]) ? $sla_people[$sla['id']] : array();
-			$sla['@orgs']            = isset($sla_orgs[$sla['id']]) ? $sla_orgs[$sla['id']] : array();
-			$sla['@apply_trigger']   = $sla['apply_trigger_id'] && isset($old_triggers[$sla['apply_trigger_id']]) ? $old_triggers[$sla['apply_trigger_id']] : null;
-			$sla['@warn_trigger']    = $sla['warning_trigger_id'] && isset($old_triggers[$sla['warning_trigger_id']]) ? $old_triggers[$sla['warning_trigger_id']] : null;
-			$sla['@fail_trigger']    = $sla['fail_trigger_id'] && isset($old_triggers[$sla['fail_trigger_id']]) ? $old_triggers[$sla['fail_trigger_id']] : null;
+        foreach ($slas as $sla) {
+            $sla['@people']          = isset($sla_people[$sla['id']]) ? $sla_people[$sla['id']] : array();
+            $sla['@orgs']            = isset($sla_orgs[$sla['id']]) ? $sla_orgs[$sla['id']] : array();
+            $sla['@apply_trigger']   = $sla['apply_trigger_id'] && isset($old_triggers[$sla['apply_trigger_id']]) ? $old_triggers[$sla['apply_trigger_id']] : null;
+            $sla['@warn_trigger']    = $sla['warning_trigger_id'] && isset($old_triggers[$sla['warning_trigger_id']]) ? $old_triggers[$sla['warning_trigger_id']] : null;
+            $sla['@fail_trigger']    = $sla['fail_trigger_id'] && isset($old_triggers[$sla['fail_trigger_id']]) ? $old_triggers[$sla['fail_trigger_id']] : null;
 
-			if ($sla['@apply_trigger']) {
-				$sla['@apply_trigger']['terms']     = @unserialize($sla['@apply_trigger']['terms']);
-				$sla['@apply_trigger']['terms_any'] = @unserialize($sla['@apply_trigger']['terms_any']);
-			}
+            if ($sla['@apply_trigger']) {
+                $sla['@apply_trigger']['terms']     = @unserialize($sla['@apply_trigger']['terms']);
+                $sla['@apply_trigger']['terms_any'] = @unserialize($sla['@apply_trigger']['terms_any']);
+            }
 
-			if ($sla['@warn_trigger']) {
-				$sla['@warn_trigger']['actions'] = unserialize($sla['@warn_trigger']['actions']);
-				$sla['@warn_trigger']['event_trigger_options'] = unserialize($sla['@warn_trigger']['event_trigger_options']);
-			}
-			if ($sla['@fail_trigger']) {
-				$sla['@fail_trigger']['actions'] = unserialize($sla['@fail_trigger']['actions']);
-				$sla['@fail_trigger']['event_trigger_options'] = unserialize($sla['@fail_trigger']['event_trigger_options']);
-			}
+            if ($sla['@warn_trigger']) {
+                $sla['@warn_trigger']['actions'] = unserialize($sla['@warn_trigger']['actions']);
+                $sla['@warn_trigger']['event_trigger_options'] = unserialize($sla['@warn_trigger']['event_trigger_options']);
+            }
+            if ($sla['@fail_trigger']) {
+                $sla['@fail_trigger']['actions'] = unserialize($sla['@fail_trigger']['actions']);
+                $sla['@fail_trigger']['event_trigger_options'] = unserialize($sla['@fail_trigger']['event_trigger_options']);
+            }
 
-			$new_sla = $this->processSla($sla);
-			if ($new_sla) {
-				$this->out("-- Saved");
-				$this->container->getEm()->persist($new_sla);
-				$this->container->getEm()->flush();
-			} else {
-				$this->out("-- Skipped");
-				$this->container->getDb()->delete('slas', array('id' => $sla['id']));
-			}
-		}
+            $new_sla = $this->processSla($sla);
+            if ($new_sla) {
+                $this->out("-- Saved");
+                $this->container->getEm()->persist($new_sla);
+                $this->container->getEm()->flush();
+            } else {
+                $this->out("-- Skipped");
+                $this->container->getDb()->delete('slas', array('id' => $sla['id']));
+            }
+        }
 
-		$this->container->getEm()->flush();
-	}
-
-
-	/**
-	 * @param array $old_sla
-	 * @return Sla
-	 */
-	private function processSla(array $old_sla)
-	{
-		/** @var Sla $sla */
-		$sla = $this->container->getEm()->find('DeskPRO:Sla', $old_sla['id']);
-		if (!$sla) {
-			return null;
-		}
-
-		$is_incomplete = false;
-
-		#------------------------------
-		# Sort out apply type
-		#------------------------------
-
-		$sla->apply_terms = new TriggerTerms();
-
-		switch ($old_sla['apply_type']) {
-			case 'all':
-				$sla->apply_type = 'all';
-				break;
-
-			case 'manual':
-				$sla->apply_type = 'manual';
-				break;
-
-			case 'people_orgs':
-				$sla->apply_type = 'terms';
-
-				if ($old_sla['@people']) {
-					$ids = Arrays::castToType($old_sla['@people'], 'int');
-					$email_addresses = $this->container->getDb()->fetchAllCol("
-						SELECT email
-						FROM people_emails
-						WHERE person_id IN (?)
-						GROUP BY person_id
-					", array($ids), array(Connection::PARAM_INT_ARRAY));
-					if ($email_addresses) {
-						$set = new TriggerTermComposite();
-						$set->add(new CheckUserEmail('is', array('email' => $email_addresses)));
-						$sla->apply_terms->addTerm($set);
-					}
-				} else if ($old_sla['@orgs']) {
-					$ids = Arrays::castToType($old_sla['@orgs'], 'int');
-					$names = $this->container->getDb()->fetchAllCol("
-						SELECT name
-						FROM organizations
-						WHERE id IN (?)
-					", array($ids), array(Connection::PARAM_INT_ARRAY));
-					if ($names) {
-						$set = new TriggerTermComposite();
-						$set->add(new CheckOrgName('is', array('name' => $names)));
-						$sla->apply_terms->addTerm($set);
-					}
-				} else {
-					$sla->apply_type = 'manual';
-					$is_incomplete = true;
-				}
-				break;
-
-			case 'priority':
-				if ($old_sla['apply_priority_id']) {
-					$sla->apply_type = 'terms';
-					$set = new TriggerTermComposite();
-					$set->add(new CheckPriority('is', array('priority_ids' => $old_sla['apply_priority_id'])));
-					$sla->apply_terms->addTerm($set);
-				} else {
-					$sla->apply_type = 'manual';
-					$is_incomplete = true;
-				}
-				break;
-
-			case 'criteria':
-				if ($old_sla['@apply_trigger']) {
-					$sets = $this->convertTriggerTerms($old_sla['@apply_trigger'], $is_incomplete);
-					if ($sets and count($sets)) {
-						$sla->apply_terms = $sets;
-					}
-					$sla->apply_type = 'terms';
-				} else {
-					$sla->apply_type = 'manual';
-					$is_incomplete = true;
-				}
-				break;
-
-			default:
-				$sla->apply_type = 'manual';
-				$is_incomplete = true;
-				break;
-		}
-
-		#------------------------------
-		# Update active_time
-		#------------------------------
-
-		switch ($old_sla['active_time']) {
-			case 'work_hours': $sla->active_time = 'custom';  break;
-			case 'all':        $sla->active_time = 'all';     break;
-			default:           $sla->active_time = 'default'; break;
-		}
-
-		#------------------------------
-		# Sort out warn and failure times
-		#------------------------------
-
-		if (!empty($old_sla['@warn_trigger']['event_trigger_options'])) {
-			list ($time, $unit) = explode(' ', $old_sla['@warn_trigger']['event_trigger_options']['time']);
-			$sla->warn_time = $time ?: 1;
-			$sla->warn_time_unit = $unit ?: 'hours';
-		} else {
-			$sla->warn_time = 1;
-			$sla->warn_time_unit = 'hours';
-		}
-
-		if (!empty($old_sla['@fail_trigger']['event_trigger_options'])) {
-			list ($time, $unit) = explode(' ', $old_sla['@fail_trigger']['event_trigger_options']['time']);
-			$sla->fail_time = $time ?: 1;
-			$sla->fail_time_unit = $unit ?: 'hours';
-		} else {
-			$sla->fail_time = 1;
-			$sla->fail_time_unit = 'hours';
-		}
-
-		#------------------------------
-		# Sort out warn and fail actions
-		#------------------------------
-
-		if (!empty($old_sla['@warn_trigger']['actions'])) {
-			$actions = $this->convertTriggerActions($old_sla['@warn_trigger'], $is_incomplete);
-			if ($actions) {
-				$sla->warn_actions = $actions;
-			} else {
-				$sla->warn_actions = new TriggerActions();
-			}
-		} else {
-			$sla->warn_actions = new TriggerActions();
-		}
-
-		if (!empty($old_sla['@fail_trigger']['actions'])) {
-			$actions = $this->convertTriggerActions($old_sla['@fail_trigger'], $is_incomplete);
-			if ($actions) {
-				$sla->fail_actions = $actions;
-			} else {
-				$sla->fail_actions = new TriggerActions();
-			}
-		} else {
-			$sla->fail_actions = new TriggerActions();
-		}
-
-		#------------------------------
-		# Finish
-		#------------------------------
-
-		if ($is_incomplete) {
-			$sla->title .= ' (REQUIRES REVIEW)';
-		}
-
-		return $sla;
-	}
+        $this->container->getEm()->flush();
+    }
 
 
-	/**
-	 * @param array $old_trigger
-	 * @param bool $is_incomplete
-	 * @return TriggerActions|null
-	 */
-	private function convertTriggerActions($old_trigger, &$is_incomplete)
-	{
-		$actions_set = new TriggerActions();
+    /**
+     * @param  array $old_sla
+     * @return Sla
+     */
+    private function processSla(array $old_sla)
+    {
+        /** @var Sla $sla */
+        $sla = $this->container->getEm()->find('DeskPRO:Sla', $old_sla['id']);
+        if (!$sla) {
+            return null;
+        }
 
-		foreach ($old_trigger['actions'] as $act) {
-			$new_act = $this->action_converter->getTriggerAction($act);
-			if ($new_act) {
-				if (is_array($new_act)) {
-					foreach ($new_act as $a) {
-						$actions_set->addAction($a);
-					}
-				} else {
-					$actions_set->addAction($new_act);
-				}
-			} else {
-				$this->out("-- Skipping action {$act['type']}");
-				if ($act['type'] != 'recalculate_sla_status') {
-					$is_incomplete = true;
-				}
-			}
-		}
+        $is_incomplete = false;
 
-		if (!count($actions_set)) {
-			$this->out("-- empty action set");
-			return null;
-		}
+        #------------------------------
+        # Sort out apply type
+        #------------------------------
 
-		return $actions_set;
-	}
+        $sla->apply_terms = new TriggerTerms();
+
+        switch ($old_sla['apply_type']) {
+            case 'all':
+                $sla->apply_type = 'all';
+                break;
+
+            case 'manual':
+                $sla->apply_type = 'manual';
+                break;
+
+            case 'people_orgs':
+                $sla->apply_type = 'terms';
+
+                if ($old_sla['@people']) {
+                    $ids = Arrays::castToType($old_sla['@people'], 'int');
+                    $email_addresses = $this->container->getDb()->fetchAllCol("
+                        SELECT email
+                        FROM people_emails
+                        WHERE person_id IN (?)
+                        GROUP BY person_id
+                    ", array($ids), array(Connection::PARAM_INT_ARRAY));
+                    if ($email_addresses) {
+                        $set = new TriggerTermComposite();
+                        $set->add(new CheckUserEmail('is', array('email' => $email_addresses)));
+                        $sla->apply_terms->addTerm($set);
+                    }
+                } elseif ($old_sla['@orgs']) {
+                    $ids = Arrays::castToType($old_sla['@orgs'], 'int');
+                    $names = $this->container->getDb()->fetchAllCol("
+                        SELECT name
+                        FROM organizations
+                        WHERE id IN (?)
+                    ", array($ids), array(Connection::PARAM_INT_ARRAY));
+                    if ($names) {
+                        $set = new TriggerTermComposite();
+                        $set->add(new CheckOrgName('is', array('name' => $names)));
+                        $sla->apply_terms->addTerm($set);
+                    }
+                } else {
+                    $sla->apply_type = 'manual';
+                    $is_incomplete = true;
+                }
+                break;
+
+            case 'priority':
+                if ($old_sla['apply_priority_id']) {
+                    $sla->apply_type = 'terms';
+                    $set = new TriggerTermComposite();
+                    $set->add(new CheckPriority('is', array('priority_ids' => $old_sla['apply_priority_id'])));
+                    $sla->apply_terms->addTerm($set);
+                } else {
+                    $sla->apply_type = 'manual';
+                    $is_incomplete = true;
+                }
+                break;
+
+            case 'criteria':
+                if ($old_sla['@apply_trigger']) {
+                    $sets = $this->convertTriggerTerms($old_sla['@apply_trigger'], $is_incomplete);
+                    if ($sets and count($sets)) {
+                        $sla->apply_terms = $sets;
+                    }
+                    $sla->apply_type = 'terms';
+                } else {
+                    $sla->apply_type = 'manual';
+                    $is_incomplete = true;
+                }
+                break;
+
+            default:
+                $sla->apply_type = 'manual';
+                $is_incomplete = true;
+                break;
+        }
+
+        #------------------------------
+        # Update active_time
+        #------------------------------
+
+        switch ($old_sla['active_time']) {
+            case 'work_hours': $sla->active_time = 'custom';  break;
+            case 'all':        $sla->active_time = 'all';     break;
+            default:           $sla->active_time = 'default'; break;
+        }
+
+        #------------------------------
+        # Sort out warn and failure times
+        #------------------------------
+
+        if (!empty($old_sla['@warn_trigger']['event_trigger_options'])) {
+            list ($time, $unit) = explode(' ', $old_sla['@warn_trigger']['event_trigger_options']['time']);
+            $sla->warn_time = $time ?: 1;
+            $sla->warn_time_unit = $unit ?: 'hours';
+        } else {
+            $sla->warn_time = 1;
+            $sla->warn_time_unit = 'hours';
+        }
+
+        if (!empty($old_sla['@fail_trigger']['event_trigger_options'])) {
+            list ($time, $unit) = explode(' ', $old_sla['@fail_trigger']['event_trigger_options']['time']);
+            $sla->fail_time = $time ?: 1;
+            $sla->fail_time_unit = $unit ?: 'hours';
+        } else {
+            $sla->fail_time = 1;
+            $sla->fail_time_unit = 'hours';
+        }
+
+        #------------------------------
+        # Sort out warn and fail actions
+        #------------------------------
+
+        if (!empty($old_sla['@warn_trigger']['actions'])) {
+            $actions = $this->convertTriggerActions($old_sla['@warn_trigger'], $is_incomplete);
+            if ($actions) {
+                $sla->warn_actions = $actions;
+            } else {
+                $sla->warn_actions = new TriggerActions();
+            }
+        } else {
+            $sla->warn_actions = new TriggerActions();
+        }
+
+        if (!empty($old_sla['@fail_trigger']['actions'])) {
+            $actions = $this->convertTriggerActions($old_sla['@fail_trigger'], $is_incomplete);
+            if ($actions) {
+                $sla->fail_actions = $actions;
+            } else {
+                $sla->fail_actions = new TriggerActions();
+            }
+        } else {
+            $sla->fail_actions = new TriggerActions();
+        }
+
+        #------------------------------
+        # Finish
+        #------------------------------
+
+        if ($is_incomplete) {
+            $sla->title .= ' (REQUIRES REVIEW)';
+        }
+
+        return $sla;
+    }
 
 
-	/**
-	 * @param array $old_trigger
-	 * @param bool $is_incomplete
-	 * @return TriggerTerms
-	 */
-	private function convertTriggerTerms($old_trigger, &$is_incomplete)
-	{
-		/*
-		 * Before we had "When ALL of these match: <set> AND ANY of these match: <set>"
-		 * That is: (a and b and c) AND (x or y or z)
-		 *
-		 * Now we have: "When <set> or <set>"
-		 * That is: (a and b and c) OR (x and y and z)
-		 *
-		 * This means that if there's an 'any' set, we have to combine it with multiple
-		 * permutations of the old 'all' set:
-		 * (a and b and c and x) or (a and b and c and y) or (a and b and c and z)
-		 */
+    /**
+     * @param  array               $old_trigger
+     * @param  bool                $is_incomplete
+     * @return TriggerActions|null
+     */
+    private function convertTriggerActions($old_trigger, &$is_incomplete)
+    {
+        $actions_set = new TriggerActions();
 
-		$term_sets = new TriggerTerms();
+        foreach ($old_trigger['actions'] as $act) {
+            $new_act = $this->action_converter->getTriggerAction($act);
+            if ($new_act) {
+                if (is_array($new_act)) {
+                    foreach ($new_act as $a) {
+                        $actions_set->addAction($a);
+                    }
+                } else {
+                    $actions_set->addAction($new_act);
+                }
+            } else {
+                $this->out("-- Skipping action {$act['type']}");
+                if ($act['type'] != 'recalculate_sla_status') {
+                    $is_incomplete = true;
+                }
+            }
+        }
 
-		$terms_all = new TriggerTermComposite();
-		if (!empty($old_trigger['terms'])) {
-			foreach ($old_trigger['terms'] as $term) {
-				$new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
-				if ($new_term) {
-					$terms_all->add($new_term);
-				} else {
-					$this->out("-- Skipping all term {$term['type']}");
-					$is_incomplete = true;
-				}
-			}
-		}
+        if (!count($actions_set)) {
+            $this->out("-- empty action set");
 
-		if (!empty($old_trigger['terms_any'])) {
-			foreach ($old_trigger['terms_any'] as $term) {
-				$new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
-				if ($new_term) {
-					$set = new TriggerTermComposite();
-					$set->setOperator(TriggerTermComposite::OP_AND);
-					$set->add($new_term);
+            return null;
+        }
 
-					if (count($terms_all)) {
-						foreach ($terms_all->getAll() as $t) {
-							$set->add($t);
-						}
-					}
+        return $actions_set;
+    }
 
-					$term_sets->addTerm($set);
-				} else {
-					$this->out("-- Skipping any term {$term['type']}");
-					$is_incomplete = true;
-				}
-			}
-		}
 
-		// no any terms, so we can just use the normal all terms
-		if (!count($term_sets)) {
-			$term_sets->addTerm($terms_all);
-		}
+    /**
+     * @param  array        $old_trigger
+     * @param  bool         $is_incomplete
+     * @return TriggerTerms
+     */
+    private function convertTriggerTerms($old_trigger, &$is_incomplete)
+    {
+        /*
+         * Before we had "When ALL of these match: <set> AND ANY of these match: <set>"
+         * That is: (a and b and c) AND (x or y or z)
+         *
+         * Now we have: "When <set> or <set>"
+         * That is: (a and b and c) OR (x and y and z)
+         *
+         * This means that if there's an 'any' set, we have to combine it with multiple
+         * permutations of the old 'all' set:
+         * (a and b and c and x) or (a and b and c and y) or (a and b and c and z)
+         */
 
-		return $term_sets;
-	}
+        $term_sets = new TriggerTerms();
+
+        $terms_all = new TriggerTermComposite();
+        if (!empty($old_trigger['terms'])) {
+            foreach ($old_trigger['terms'] as $term) {
+                $new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
+                if ($new_term) {
+                    $terms_all->add($new_term);
+                } else {
+                    $this->out("-- Skipping all term {$term['type']}");
+                    $is_incomplete = true;
+                }
+            }
+        }
+
+        if (!empty($old_trigger['terms_any'])) {
+            foreach ($old_trigger['terms_any'] as $term) {
+                $new_term = $this->term_converter->getTriggerTerm($old_trigger['event_trigger'], $term);
+                if ($new_term) {
+                    $set = new TriggerTermComposite();
+                    $set->setOperator(TriggerTermComposite::OP_AND);
+                    $set->add($new_term);
+
+                    if (count($terms_all)) {
+                        foreach ($terms_all->getAll() as $t) {
+                            $set->add($t);
+                        }
+                    }
+
+                    $term_sets->addTerm($set);
+                } else {
+                    $this->out("-- Skipping any term {$term['type']}");
+                    $is_incomplete = true;
+                }
+            }
+        }
+
+        // no any terms, so we can just use the normal all terms
+        if (!count($term_sets)) {
+            $term_sets->addTerm($terms_all);
+        }
+
+        return $term_sets;
+    }
 }

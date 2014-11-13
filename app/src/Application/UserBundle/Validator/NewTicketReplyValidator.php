@@ -34,54 +34,52 @@
 
 namespace Application\UserBundle\Validator;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Orb\Validator\AbstractValidator;
 
 class NewTicketReplyValidator extends AbstractValidator
 {
-	/** @var array */
-	protected $run_validators = array();
+    /** @var array */
+    protected $run_validators = array();
 
-	/**
-	 * @var \Application\UserBundle\Tickets\NewReply
-	 */
-	protected $newreply;
+    /**
+     * @var \Application\UserBundle\Tickets\NewReply
+     */
+    protected $newreply;
 
-	/**
-	 * Check $value to see if its valid.
-	 *
-	 * @param \Application\UserBundle\Tickets\NewReply $newreply
-	 * @return bool
-	 */
-	protected function checkIsValid($newreply)
-	{
-		$this->newreply = $newreply;
+    /**
+     * Check $value to see if its valid.
+     *
+     * @param  \Application\UserBundle\Tickets\NewReply $newreply
+     * @return bool
+     */
+    protected function checkIsValid($newreply)
+    {
+        $this->newreply = $newreply;
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 5));
-		if (!$validator->isValid($this->newreply->message)) {
-			$this->addError('message.short');
-		}
+        $validator = new \Orb\Validator\StringLength(array('min' => 5));
+        if (!$validator->isValid($this->newreply->message)) {
+            $this->addError('message.short');
+        }
 
-		if ($this->errors) {
-			return false;
-		}
+        if ($this->errors) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	protected function _traverseItems(array $items)
-	{
-		foreach ($items as $item) {
-			if ($item['item_type'] == 'group') {
-				if (empty($item['items'])) {
-					continue;
-				}
+    protected function _traverseItems(array $items)
+    {
+        foreach ($items as $item) {
+            if ($item['item_type'] == 'group') {
+                if (empty($item['items'])) {
+                    continue;
+                }
 
-				$this->_traverseItems($item['items']);
-			} else {
-				$this->_validateItem($item);
-			}
-		}
-	}
+                $this->_traverseItems($item['items']);
+            } else {
+                $this->_validateItem($item);
+            }
+        }
+    }
 }

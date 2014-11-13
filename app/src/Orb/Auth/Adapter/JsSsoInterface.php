@@ -45,18 +45,18 @@ namespace Orb\Auth\Adapter;
  */
 interface JsSsoInterface extends SsoLoginActionInterface
 {
-	/**
-	 * @param \Application\DeskPRO\Entity\Usersource                  $source
-	 * @param \Application\DeskPRO\Twig\Extension\TemplatingExtension $extension
-	 * @param \Application\DeskPRO\Entity\Person                      $person
-	 * @param                                                         $is_first_page
-	 * @return mixed
-	 * @deprecated requiring an auth app to render HTML should be avoided going forward
-	 */
-	public function getSsoHtmlLoaderOutput(
-		\Application\DeskPRO\Entity\Usersource $source,
-		\Application\DeskPRO\Twig\Extension\TemplatingExtension $extension,
-		\Application\DeskPRO\Entity\Person $person,
-		$is_first_page
-	);
+    /**
+     * @param  \Application\DeskPRO\Entity\Usersource                  $source
+     * @param  \Application\DeskPRO\Twig\Extension\TemplatingExtension $extension
+     * @param  \Application\DeskPRO\Entity\Person                      $person
+     * @param                                                          $is_first_page
+     * @return mixed
+     * @deprecated requiring an auth app to render HTML should be avoided going forward
+     */
+    public function getSsoHtmlLoaderOutput(
+        \Application\DeskPRO\Entity\Usersource $source,
+        \Application\DeskPRO\Twig\Extension\TemplatingExtension $extension,
+        \Application\DeskPRO\Entity\Person $person,
+        $is_first_page
+    );
 }

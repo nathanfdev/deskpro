@@ -38,28 +38,28 @@ use Orb\Log\Logger;
 
 class OrbLogger implements \Swift_Plugins_Logger
 {
-	/**
-	 * @var \Orb\Log\Logger $logger
-	 */
-	protected $logger;
+    /**
+     * @var \Orb\Log\Logger $logger
+     */
+    protected $logger;
 
-	public function __construct(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+    public function __construct(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
-	public function add($entry)
-	{
-		$this->logger->logDebug($entry);
-	}
+    public function add($entry)
+    {
+        $this->logger->logDebug($entry);
+    }
 
-	public function clear()
-	{
+    public function clear()
+    {
 
-	}
+    }
 
-	public function dump()
-	{
+    public function dump()
+    {
 
-	}
+    }
 }

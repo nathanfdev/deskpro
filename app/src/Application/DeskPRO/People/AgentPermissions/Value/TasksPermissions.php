@@ -35,16 +35,16 @@ namespace Application\DeskPRO\People\AgentPermissions\Value;
 
 class TasksPermissions implements PermissionValueInterface
 {
-	/** @var bool  */
-	public $use = false;
+    /** @var bool  */
+    public $use = false;
 
-	public function getNames()
-	{
-		return array('use');
-	}
+    public function getNames()
+    {
+        return array('use');
+    }
 
-	public function getDestructiveNames()
-	{
-		return array();
-	}
+    public function getDestructiveNames()
+    {
+        return array();
+    }
 }

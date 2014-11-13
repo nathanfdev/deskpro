@@ -39,132 +39,131 @@ use Application\DeskPRO\ORM\Unprivate\UnprivateUnitOfWork as DoctrineUnitOfWork;
 
 class UnitOfWork extends DoctrineUnitOfWork
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\Persisters\LookupBasicEntityPersister[]
-	 */
-	private $_persisters;
+    /**
+     * @var \Application\DeskPRO\ORM\Persisters\LookupBasicEntityPersister[]
+     */
+    private $_persisters;
 
-	/**
-	 * Sets that have already been loaded in full
-	 *
-	 * @var array
-	 */
-	protected $loaded_sets = array();
+    /**
+     * Sets that have already been loaded in full
+     *
+     * @var array
+     */
+    protected $loaded_sets = array();
 
-	/**
-	 * These are types of entities where when one is fetched, the whole set
-	 * should be fetched.
-	 *
-	 * @var array
-	 */
-	protected $enable_preload_set = array(
-		'Application\\DeskPRO\\Entity\\Department'                     => 1,
-		'Application\\DeskPRO\\Entity\\TicketCategory'                 => 1,
-		'Application\\DeskPRO\\Entity\\ArticleCategory'                => 1,
-		'Application\\DeskPRO\\Entity\\DownloadCategory'               => 1,
-		'Application\\DeskPRO\\Entity\\FeedbackCategory'               => 1,
-		'Application\\DeskPRO\\Entity\\NewsCategory'                   => 1,
-		'Application\\DeskPRO\\Entity\\Product'                        => 1,
-		'Application\\DeskPRO\\Entity\\CustomDefArticle'               => 1,
-		'Application\\DeskPRO\\Entity\\CustomDefFeedback'              => 1,
-		'Application\\DeskPRO\\Entity\\CustomDefOrganization'          => 1,
-		'Application\\DeskPRO\\Entity\\CustomDefPerson'                => 1,
-		'Application\\DeskPRO\\Entity\\CustomDefTicket'                => 1,
-		'Application\\DeskPRO\\Entity\\Languages'                      => 1,
-		'Application\\DeskPRO\\Entity\\AgentTeam'                      => 1,
-	);
+    /**
+     * These are types of entities where when one is fetched, the whole set
+     * should be fetched.
+     *
+     * @var array
+     */
+    protected $enable_preload_set = array(
+        'Application\\DeskPRO\\Entity\\Department'                     => 1,
+        'Application\\DeskPRO\\Entity\\TicketCategory'                 => 1,
+        'Application\\DeskPRO\\Entity\\ArticleCategory'                => 1,
+        'Application\\DeskPRO\\Entity\\DownloadCategory'               => 1,
+        'Application\\DeskPRO\\Entity\\FeedbackCategory'               => 1,
+        'Application\\DeskPRO\\Entity\\NewsCategory'                   => 1,
+        'Application\\DeskPRO\\Entity\\Product'                        => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefArticle'               => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefFeedback'              => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefOrganization'          => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefPerson'                => 1,
+        'Application\\DeskPRO\\Entity\\CustomDefTicket'                => 1,
+        'Application\\DeskPRO\\Entity\\Languages'                      => 1,
+        'Application\\DeskPRO\\Entity\\AgentTeam'                      => 1,
+    );
 
-	/**
-	 * Add a type of entity that sholud be pre-fetched
-	 *
-	 * @param $entity_class
-	 */
-	public function addPreloadedEntity($entityName)
-	{
-		$class = $this->em->getClassMetadata($entityName);
-		$classname = $class->getName();
+    /**
+     * Add a type of entity that sholud be pre-fetched
+     *
+     * @param $entity_class
+     */
+    public function addPreloadedEntity($entityName)
+    {
+        $class = $this->em->getClassMetadata($entityName);
+        $classname = $class->getName();
 
-		$this->enable_preload_set[$classname] = 1;
-	}
-
-
-	/**
-	 * Marks a repository as prelaoded
-	 *
-	 * @param $entityName
-	 */
-	public function markAsPreloaded($entityName)
-	{
-		$class = $this->em->getClassMetadata($entityName);
-		$classname = $class->getName();
-
-		$this->loaded_sets[$classname] = true;
-	}
+        $this->enable_preload_set[$classname] = 1;
+    }
 
 
-	/**
-	 * Load the full set of a particular entity
-	 *
-	 * @param $entity_name
-	 */
-	public function preloadEntitySet($entityName)
-	{
-		$class = $this->em->getClassMetadata($entityName);
-		$classname = $class->getName();
+    /**
+     * Marks a repository as prelaoded
+     *
+     * @param $entityName
+     */
+    public function markAsPreloaded($entityName)
+    {
+        $class = $this->em->getClassMetadata($entityName);
+        $classname = $class->getName();
 
-		if (isset($this->loaded_sets[$classname])) {
-			return;
-		}
-
-		// Important to set this before executing the query,
-		// or else we'll get recursion with doctrine trying to
-		// getEntityPersister() which fires this preload etc
-		$this->loaded_sets[$classname] = true;
-
-		$repos = $this->em->getRepository($classname);
-
-		if ($repos instanceof Preloadable) {
-			$repos->preload();
-		} else {
-			foreach ($repos->findAll() as $e) {
-				if ($e instanceof \Doctrine\ORM\Proxy\Proxy) {
-					$e->__load();
-				}
-			}
-		}
-	}
+        $this->loaded_sets[$classname] = true;
+    }
 
 
-	/**
-	 * Check if an entity is set to be preloaded
-	 *
-	 * @param $entityName
-	 * @return bool
-	 */
-	public function isAddedPreloadedEntity($entityName)
-	{
-		$class = $this->em->getClassMetadata($entityName);
-		$classname = $class->getName();
+    /**
+     * Load the full set of a particular entity
+     *
+     * @param $entity_name
+     */
+    public function preloadEntitySet($entityName)
+    {
+        $class = $this->em->getClassMetadata($entityName);
+        $classname = $class->getName();
 
-		return isset($this->enable_preload_set[$classname]);
-	}
+        if (isset($this->loaded_sets[$classname])) {
+            return;
+        }
 
+        // Important to set this before executing the query,
+        // or else we'll get recursion with doctrine trying to
+        // getEntityPersister() which fires this preload etc
+        $this->loaded_sets[$classname] = true;
 
-	public function getEntityPersister($entityName)
-	{
-		$class = $this->em->getClassMetadata($entityName);
-		$classname = $class->getName();
+        $repos = $this->em->getRepository($classname);
 
-		if (isset($this->_persisters[$classname])) {
-			return $this->_persisters[$classname];
-		}
+        if ($repos instanceof Preloadable) {
+            $repos->preload();
+        } else {
+            foreach ($repos->findAll() as $e) {
+                if ($e instanceof \Doctrine\ORM\Proxy\Proxy) {
+                    $e->__load();
+                }
+            }
+        }
+    }
 
-		if ($class->isInheritanceTypeNone()) {
-			$persister = new Persisters\LookupBasicEntityPersister($this->em, $class);
-			$this->_persisters[$classname] = $persister;
-			return $persister;
-		}
+    /**
+     * Check if an entity is set to be preloaded
+     *
+     * @param $entityName
+     * @return bool
+     */
+    public function isAddedPreloadedEntity($entityName)
+    {
+        $class = $this->em->getClassMetadata($entityName);
+        $classname = $class->getName();
 
-		return parent::getEntityPersister($entityName);
-	}
+        return isset($this->enable_preload_set[$classname]);
+    }
+
+    public function getEntityPersister($entityName)
+    {
+        $class = $this->em->getClassMetadata($entityName);
+        $classname = $class->getName();
+
+        if (isset($this->_persisters[$classname])) {
+            return $this->_persisters[$classname];
+        }
+
+        if ($class->isInheritanceTypeNone()) {
+            $persister = new Persisters\LookupBasicEntityPersister($this->em, $class);
+            $this->_persisters[$classname] = $persister;
+
+            return $persister;
+        }
+
+        return parent::getEntityPersister($entityName);
+    }
 }

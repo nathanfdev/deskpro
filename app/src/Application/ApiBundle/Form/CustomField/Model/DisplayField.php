@@ -36,18 +36,18 @@ namespace Application\ApiBundle\Form\CustomField\Model;
 
 class DisplayField extends TextField
 {
-	/** @var string  */
-	public $html = '';
+    /** @var string  */
+    public $html = '';
 
-	public function init()
-	{
-		$this->html = $this->_field->getOption('html');
-	}
+    public function init()
+    {
+        $this->html = $this->_field->getOption('html');
+    }
 
-	protected function setFieldProperties()
-	{
-		$field = $this->_field;
+    protected function setFieldProperties()
+    {
+        $field = $this->_field;
 
-		$field->setOption('html', $this->html);
-	}
+        $field->setOption('html', $this->html);
+    }
 }

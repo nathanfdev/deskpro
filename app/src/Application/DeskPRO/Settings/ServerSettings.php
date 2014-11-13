@@ -32,86 +32,86 @@
  */
 
 namespace Application\DeskPRO\Settings;
-use Orb\Util\Numbers;
 use Orb\Util\Util;
 
 class ServerSettings
 {
-	/**
-	 * @var Settings
-	 */
-	private $settings;
+    /**
+     * @var Settings
+     */
+    private $settings;
 
-	/** @var bool */
-	public $rewrite_urls = false;
-	/** @var string */
-	public $cookie_path = '/';
-	/** @var string */
-	public $cookie_domain = '';
+    /** @var bool */
+    public $rewrite_urls = false;
+    /** @var string */
+    public $cookie_path = '/';
+    /** @var string */
+    public $cookie_domain = '';
 
-	/**
-	 * @param Settings $settings
-	 */
-	public function __construct(Settings $settings)
-	{
-		$this->settings = $settings;
-		$this->resetSettings();
-	}
-
-
-	/**
-	 * Resets settings based on stored values.
-	 */
-	public function resetSettings()
-	{
-		$this->rewrite_urls         = (bool)$this->settings->get('core.rewrite_urls');
-
-		$this->cookie_path = $this->settings->get('core.cookie_path');
-		if ($this->cookie_path === null) {
-			$this->cookie_path = '/';
-		}
-
-		$this->cookie_domain = $this->settings->get('core.cookie_domain');
-		if ($this->cookie_domain === null) {
-			$this->cookie_domain = '';
-		}
-	}
+    /**
+     * @param Settings $settings
+     */
+    public function __construct(Settings $settings)
+    {
+        $this->settings = $settings;
+        $this->resetSettings();
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function toArray()
-	{
-		$export_settings = array(
-			'rewrite_urls'                    => $this->rewrite_urls,
-			'cookie_path'                     => $this->cookie_path,
-			'cookie_domain'                   => $this->cookie_domain,
-		);
-		return $export_settings;
-	}
+    /**
+     * Resets settings based on stored values.
+     */
+    public function resetSettings()
+    {
+        $this->rewrite_urls         = (bool)$this->settings->get('core.rewrite_urls');
+
+        $this->cookie_path = $this->settings->get('core.cookie_path');
+        if ($this->cookie_path === null) {
+            $this->cookie_path = '/';
+        }
+
+        $this->cookie_domain = $this->settings->get('core.cookie_domain');
+        if ($this->cookie_domain === null) {
+            $this->cookie_domain = '';
+        }
+    }
 
 
-	/**
-	 * @param array $set_settings
-	 */
-	public function setArray(array $set_settings)
-	{
-		foreach ($set_settings as $s => $val) {
-			if (property_exists($this, $s)) {
-				$this->$s = $val;
-			}
-		}
-	}
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $export_settings = array(
+            'rewrite_urls'                    => $this->rewrite_urls,
+            'cookie_path'                     => $this->cookie_path,
+            'cookie_domain'                   => $this->cookie_domain,
+        );
+
+        return $export_settings;
+    }
 
 
-	/**
-	 * Persists settings
-	 */
-	public function saveSettings()
-	{
-		$this->settings->setSetting('core.rewrite_urls', Util::boolInt($this->rewrite_urls));
-		$this->settings->setSetting('core.cookie_path', $this->cookie_path);
-		$this->settings->setSetting('core.cookie_domain', $this->cookie_domain);
-	}
+    /**
+     * @param array $set_settings
+     */
+    public function setArray(array $set_settings)
+    {
+        foreach ($set_settings as $s => $val) {
+            if (property_exists($this, $s)) {
+                $this->$s = $val;
+            }
+        }
+    }
+
+
+    /**
+     * Persists settings
+     */
+    public function saveSettings()
+    {
+        $this->settings->setSetting('core.rewrite_urls', Util::boolInt($this->rewrite_urls));
+        $this->settings->setSetting('core.cookie_path', $this->cookie_path);
+        $this->settings->setSetting('core.cookie_domain', $this->cookie_domain);
+    }
 }

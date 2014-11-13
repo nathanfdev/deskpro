@@ -39,121 +39,128 @@ use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterf
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
-	{
-		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-				break;
-			default:
-				throw $context->createNotFoundException();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function handleApiPackageRequest(ApiPackageRequestContext $context)
+    {
+        switch ($context->getAction()) {
+            case 'test-settings':
+                return $this->testSettingsAction($context);
+                break;
+            default:
+                throw $context->createNotFoundException();
+        }
+    }
 
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
-	{
-		$url  = $context->getIn()->getString('url');
-		$user = $context->getIn()->getString('api_user');
-		$key  = $context->getIn()->getString('api_key');
+    /**
+     * @param  ApiPackageRequestContext                   $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function testSettingsAction(ApiPackageRequestContext $context)
+    {
+        $url  = $context->getIn()->getString('url');
+        $user = $context->getIn()->getString('api_user');
+        $key  = $context->getIn()->getString('api_key');
 
-		$error = false;
-		$client = null;
+        $error = false;
+        $client = null;
 
-		$log = array();
-		$log[] = "url: $url";
-		$log[] = "user: $user";
-		$log[] = "key: $key";
+        $log = array();
+        $log[] = "url: $url";
+        $log[] = "user: $user";
+        $log[] = "key: $key";
 
-		$tests = array();
-		$tests[] = function() use (&$log) {
-			$log[] = "Verifying SoapClient is available...";
-			if (!class_exists('\SoapClient')) {
-				$log[] = "SOAP support is not enabled in PHP";
-				return array('missing_soap', "SOAP support is not enabled in PHP");
-			}
-			$log[] = "SoapClient is ok";
-			return null;
-		};
+        $tests = array();
+        $tests[] = function () use (&$log) {
+            $log[] = "Verifying SoapClient is available...";
+            if (!class_exists('\SoapClient')) {
+                $log[] = "SOAP support is not enabled in PHP";
 
-		$tests[] = function() use (&$log) {
-			$log[] = "Verifying curl is available...";
-			if (!function_exists('curl_init')) {
-				$log[] = "curl is not enabled in PHP";
-				return array('missing_soap', "curl support is not enabled in PHP");
-			}
-			$log[] = "curl is ok";
-			return null;
-		};
+                return array('missing_soap', "SOAP support is not enabled in PHP");
+            }
+            $log[] = "SoapClient is ok";
 
-		$get_client = function($url) {
-			$url .= '/api?wsdl';
-			$handle = @curl_init($url);
-			@curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+            return null;
+        };
 
-			$response = @curl_exec($handle);
-			$httpCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);
-			@curl_close($handle);
-			if($httpCode != 200) {
-				return null;
-			}
+        $tests[] = function () use (&$log) {
+            $log[] = "Verifying curl is available...";
+            if (!function_exists('curl_init')) {
+                $log[] = "curl is not enabled in PHP";
 
-			return new \SoapClient($url . '/api?wsdl');
-		};
+                return array('missing_soap', "curl support is not enabled in PHP");
+            }
+            $log[] = "curl is ok";
 
-		$tests[] = function() use (&$log, &$client, $url, $get_client) {
-			$log[] = "Connecting to SOAP service...";
-			try {
-				$error = error_reporting();
-				error_reporting($error & ~E_WARNING);
-				$client = $get_client($url);
-				error_reporting($error);
+            return null;
+        };
 
-				if ($client) {
-					$log[] = "Successfully connected to SOAP service";
-				} else {
-					$log[] = "Failed: Invalid URL or connection was refused";
-					return array('failed_connection', "Invalid URL or the service refused the connection");
-				}
-			} catch (\SoapFault $e) {
-				$log[] = "Failed: Invalid URL or connection was refused";
-				$log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
-				return array('failed_connection', "Invalid URL or the service refused the connection");
-			}
-		};
+        $get_client = function ($url) {
+            $url .= '/api?wsdl';
+            $handle = @curl_init($url);
+            @curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
 
-		$tests[] = function() use (&$log, &$client, $user, $key) {
-			$log[] = "Testing API user and key...";
-			try {
-				$session = $client->login($user, $key);
-				$log[] = "API user and key are correct";
-			} catch (\SoapFault $e) {
-				$log[] = "API user and/or key is incorrect";
-				$log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
-				return array('invalid_api_credentials', "API user and/or key is incorrect");
-			}
-		};
+            $response = @curl_exec($handle);
+            $httpCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);
+            @curl_close($handle);
+            if($httpCode != 200) {
+                return null;
+            }
 
-		foreach ($tests as $t) {
-			$error = $t();
-			if ($error) {
-				break;
-			}
-		}
+            return new \SoapClient($url . '/api?wsdl');
+        };
 
-		$result_data = array(
-			'log'        => implode("\n", $log),
-			'error'      => $error ? $error[1] : false,
-			'error_code' => $error ? $error[0] : false
-		);
+        $tests[] = function () use (&$log, &$client, $url, $get_client) {
+            $log[] = "Connecting to SOAP service...";
+            try {
+                $error = error_reporting();
+                error_reporting($error & ~E_WARNING);
+                $client = $get_client($url);
+                error_reporting($error);
 
-		return $context->createJsonResponse($result_data);
-	}
+                if ($client) {
+                    $log[] = "Successfully connected to SOAP service";
+                } else {
+                    $log[] = "Failed: Invalid URL or connection was refused";
+
+                    return array('failed_connection', "Invalid URL or the service refused the connection");
+                }
+            } catch (\SoapFault $e) {
+                $log[] = "Failed: Invalid URL or connection was refused";
+                $log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
+
+                return array('failed_connection', "Invalid URL or the service refused the connection");
+            }
+        };
+
+        $tests[] = function () use (&$log, &$client, $user, $key) {
+            $log[] = "Testing API user and key...";
+            try {
+                $session = $client->login($user, $key);
+                $log[] = "API user and key are correct";
+            } catch (\SoapFault $e) {
+                $log[] = "API user and/or key is incorrect";
+                $log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
+
+                return array('invalid_api_credentials', "API user and/or key is incorrect");
+            }
+        };
+
+        foreach ($tests as $t) {
+            $error = $t();
+            if ($error) {
+                break;
+            }
+        }
+
+        $result_data = array(
+            'log'        => implode("\n", $log),
+            'error'      => $error ? $error[1] : false,
+            'error_code' => $error ? $error[0] : false
+        );
+
+        return $context->createJsonResponse($result_data);
+    }
 }

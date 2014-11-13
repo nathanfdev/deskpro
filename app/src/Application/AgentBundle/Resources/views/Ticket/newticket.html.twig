@@ -412,7 +412,7 @@ pageMeta.baseId = '{{ baseId }}';
 									{% for attachment in attachments %}
 										<li class="in" style="height: 18px;">
 											<input type="hidden" name="newticket[attach][]" value="{{ attachment.blob.id }}">
-											<em class="remove-attach-trigger"></em>		
+											<em class="remove-attach-trigger"></em>
 											<label><a href="{{ attachment.url }}" target="_blank">{{ attachment.blob.filename }}</a><span>{{ attachment.blob.filesize }} KB</span></label>
 										</li>
 									{% endfor %}

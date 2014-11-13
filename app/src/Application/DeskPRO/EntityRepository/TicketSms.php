@@ -34,9 +34,6 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-
 class TicketSms extends AbstractEntityRepository
 {
 }

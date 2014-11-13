@@ -36,18 +36,18 @@ namespace Application\DeskPRO\PageDisplay\Item;
 
 class TicketPriority extends TicketItemAbstract
 {
-	public function getType()
-	{
-		return 'ticket_priority';
-	}
+    public function getType()
+    {
+        return 'ticket_priority';
+    }
 
-	public function compileJsCheck()
-	{
-		$js_ids = Arrays::castToType($this->data['priority'], 'int');
-		$js_ids = "[" . implode(',', $js_ids) . "]";
+    public function compileJsCheck()
+    {
+        $js_ids = Arrays::castToType($this->data['priority'], 'int');
+        $js_ids = "[" . implode(',', $js_ids) . "]";
 
-		$js = "if ($js_ids.indexOf(reader.getPriorityVal() !== -1) return true; else return false;";
+        $js = "if ($js_ids.indexOf(reader.getPriorityVal() !== -1) return true; else return false;";
 
-		return $js;
-	}
+        return $js;
+    }
 }

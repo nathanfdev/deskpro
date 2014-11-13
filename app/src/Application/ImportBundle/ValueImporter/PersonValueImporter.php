@@ -39,275 +39,274 @@ use Orb\Validator\StringEmail;
 
 class PersonValueImporter extends AbstractValueImporter
 {
-	/** @var array */
-	protected $custom_fields_array = array();
-	/** @var array */
-	protected $supported_custom_field_types = array(
-		'Application\DeskPRO\CustomFields\Handler\Text'
-	);
-	
-	/**
-	 * @param mixed $pval
-	 * @throws \Application\ImportBundle\Exception\BadDataException
-	 */
-	public function importValue($pval)
-	{
-		if (!($pval instanceof PersonValue)) {
-			throw new \InvalidArgumentException("This importer can only import PersonValue");
-		}
+    /** @var array */
+    protected $custom_fields_array = array();
+    /** @var array */
+    protected $supported_custom_field_types = array(
+        'Application\DeskPRO\CustomFields\Handler\Text'
+    );
 
-		#------------------------------
-		# Validate emails
-		#------------------------------
+    /**
+     * @param  mixed                                                $pval
+     * @throws \Application\ImportBundle\Exception\BadDataException
+     */
+    public function importValue($pval)
+    {
+        if (!($pval instanceof PersonValue)) {
+            throw new \InvalidArgumentException("This importer can only import PersonValue");
+        }
 
-		if ($pval->emails) {
-			$pval->emails = array_filter($pval->emails, function($eml) {
-				return StringEmail::isValueValid($eml);
-			});
-		}
+        #------------------------------
+        # Validate emails
+        #------------------------------
 
-		if (!$pval->emails) {
-			throw new BadDataException("PersonValue must have at least one valid email");
-		}
+        if ($pval->emails) {
+            $pval->emails = array_filter($pval->emails, function ($eml) {
+                return StringEmail::isValueValid($eml);
+            });
+        }
 
-		$log_id = "Person :: " . Arrays::getFirstItem($pval->emails) . "";
+        if (!$pval->emails) {
+            throw new BadDataException("PersonValue must have at least one valid email");
+        }
 
-		#------------------------------
-		# Normalise name
-		#------------------------------
+        $log_id = "Person :: " . Arrays::getFirstItem($pval->emails) . "";
 
-		if ($pval->name) {
-			$name = preg_replace('# {2,}#', ' ', $pval->name);
-			if (!$pval->first_name) {
-				$pval->first_name = $name[0];
-			}
-			if (!$pval->last_name) {
-				$pval->last_name = $name[1];
-			}
-		}
-		if (!$pval->name && ($pval->first_name || $pval->last_name)) {
-			$pval->name = trim(($pval->first_name ?: '') . ($pval->last_name ?: ''));
-		}
+        #------------------------------
+        # Normalise name
+        #------------------------------
 
-		#------------------------------
-		# Find existing user
-		#------------------------------
-		
-		$exist_emails = $this->getExistingUserMap($pval->emails);
-		
-		if ($exist_emails) {
-			$existing_person_id = Arrays::getFirstItem($exist_emails);
-			$this->getLogger()->notice(sprintf("[%s] Found existing user %d", $log_id, $existing_person_id));
-		}
-		
-		#------------------------------
-		# Create data array
-		#------------------------------
+        if ($pval->name) {
+            $name = preg_replace('# {2,}#', ' ', $pval->name);
+            if (!$pval->first_name) {
+                $pval->first_name = $name[0];
+            }
+            if (!$pval->last_name) {
+                $pval->last_name = $name[1];
+            }
+        }
+        if (!$pval->name && ($pval->first_name || $pval->last_name)) {
+            $pval->name = trim(($pval->first_name ?: '') . ($pval->last_name ?: ''));
+        }
 
-		$add_labels = $pval->labels;
+        #------------------------------
+        # Find existing user
+        #------------------------------
 
-		$record = array();
-		$record['name']               = $pval->name ?: '';
-		$record['first_name']         = $pval->first_name ?: '';
-		$record['last_name']          = $pval->last_name ?: '';
-		$record['date_created']       = $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-		$record['timezone']           = $pval->timezone ?: 'UTC';
-		$record['is_user']            = 1;
-		$record['is_contact']         = 1;
-		$record['is_confirmed']       = 1;
-		$record['is_agent_confirmed'] = 1;
-		$record['secret_string']      = Strings::random(40);
-		$record['secret_string']      = Strings::random(40);
+        $exist_emails = $this->getExistingUserMap($pval->emails);
 
-		// Admin/agent flag
-		if ($pval->is_agent) {
-			$record['is_agent'] = 1;
-			if ($pval->is_admin) {
-				$record['is_admin'] = 1;
-			}
-		}
+        if ($exist_emails) {
+            $existing_person_id = Arrays::getFirstItem($exist_emails);
+            $this->getLogger()->notice(sprintf("[%s] Found existing user %d", $log_id, $existing_person_id));
+        }
 
-		// Lang
-		if ($pval->language) {
-			$v = $this->getMappers()->findIdFromMappedValue('language', $pval->language);
-			if ($v) {
-				$this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $pval->language));
-				$record['language_id'] = $v;
-			} else {
-				$this->getLogger()->notice(sprintf("[%s] Could not map language value: %s (skipping)", $log_id, $pval->language));
-			}
-		}
+        #------------------------------
+        # Create data array
+        #------------------------------
 
-		// Usergroups
-		$add_ugs = array();
-		if ($pval->usergroups) {
-			foreach ($pval->usergroups as $ug) {
-				$v = $this->getMappers()->findIdFromMappedValue('usergroup', $ug);
-				if ($v) {
-					$this->getLogger()->notice(sprintf("[%s] Found existing usergroup %s", $log_id, $ug));
-					$add_ugs[] = $v;
-				} else {
-					$this->getLogger()->notice(sprintf("[%s] Could not map usergroup value: %s (skipping)", $log_id, $ug));
-				}
-			}
-		}
+        $add_labels = $pval->labels;
 
-		// Org
-		if ($pval->organization) {
-			$v = $this->getMappers()->findIdFromMappedValue('organization', $pval->organization);
-			if ($v) {
-				$record['organization_id'] = $v;
-			} else {
-				$this->getLogger()->notice(sprintf("[%s] New organization %s", $log_id, $pval->organization));
-				if ($this->isTestMode()) {
-					$record['organization_id'] = -1;
-				} else {
-					$this->getDb()->insert('organizations', array(
-						'name'         => $pval->organization,
-						'date_created' => date('Y-m-d H:i:s')
-					));
-					$record['organization_id'] = $this->getDb()->lastInsertId();
-				}
+        $record = array();
+        $record['name']               = $pval->name ?: '';
+        $record['first_name']         = $pval->first_name ?: '';
+        $record['last_name']          = $pval->last_name ?: '';
+        $record['date_created']       = $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['timezone']           = $pval->timezone ?: 'UTC';
+        $record['is_user']            = 1;
+        $record['is_contact']         = 1;
+        $record['is_confirmed']       = 1;
+        $record['is_agent_confirmed'] = 1;
+        $record['secret_string']      = Strings::random(40);
+        $record['secret_string']      = Strings::random(40);
 
-				$this->getMappers()->learnMapping('organization', $record['organization_id']);
-			}
+        // Admin/agent flag
+        if ($pval->is_agent) {
+            $record['is_agent'] = 1;
+            if ($pval->is_admin) {
+                $record['is_admin'] = 1;
+            }
+        }
 
-			if ($pval->organization_position) {
-				$record['organization_position'] = $pval->organization_position;
-			}
-		}
+        // Lang
+        if ($pval->language) {
+            $v = $this->getMappers()->findIdFromMappedValue('language', $pval->language);
+            if ($v) {
+                $this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $pval->language));
+                $record['language_id'] = $v;
+            } else {
+                $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s (skipping)", $log_id, $pval->language));
+            }
+        }
 
-		// Password
-		if ($pval->password && $pval->password_scheme == 'plain') {
-			$record['password_scheme'] = 'bcrypt';
+        // Usergroups
+        $add_ugs = array();
+        if ($pval->usergroups) {
+            foreach ($pval->usergroups as $ug) {
+                $v = $this->getMappers()->findIdFromMappedValue('usergroup', $ug);
+                if ($v) {
+                    $this->getLogger()->notice(sprintf("[%s] Found existing usergroup %s", $log_id, $ug));
+                    $add_ugs[] = $v;
+                } else {
+                    $this->getLogger()->notice(sprintf("[%s] Could not map usergroup value: %s (skipping)", $log_id, $ug));
+                }
+            }
+        }
 
-			$hasher = new \PasswordHash(11, false);
-			$record['password'] = $hasher->HashPassword($pval->password);
-		}
+        // Org
+        if ($pval->organization) {
+            $v = $this->getMappers()->findIdFromMappedValue('organization', $pval->organization);
+            if ($v) {
+                $record['organization_id'] = $v;
+            } else {
+                $this->getLogger()->notice(sprintf("[%s] New organization %s", $log_id, $pval->organization));
+                if ($this->isTestMode()) {
+                    $record['organization_id'] = -1;
+                } else {
+                    $this->getDb()->insert('organizations', array(
+                        'name'         => $pval->organization,
+                        'date_created' => date('Y-m-d H:i:s')
+                    ));
+                    $record['organization_id'] = $this->getDb()->lastInsertId();
+                }
 
-		// Additional emails
-		$add_emails_str = array_diff($pval->emails, array_keys($exist_emails));
-		if ($add_emails_str) {
-			$this->getLogger()->info(sprintf("[%s] New emails: %s", $log_id, implode(', ', $add_emails_str)));
-		}
-		
-		#------------------------------
-		# Save data
-		#------------------------------
+                $this->getMappers()->learnMapping('organization', $record['organization_id']);
+            }
 
-		if (!$this->isTestMode()) {
-			$update_rec = array();
+            if ($pval->organization_position) {
+                $record['organization_position'] = $pval->organization_position;
+            }
+        }
 
-			if (isset($existing_person_id)) {
-				$exist_id = $this->getMappers()->findIdFromMappedValue('person', $existing_person_id);
-				$is_new = false;
-				$this->getDb()->update('people', $record, array('id' => $exist_id));
-				$this->getLogger()->info(sprintf("[%s] Updated %d", $log_id, $exist_id));
-			} else {
-				$this->getDb()->insert('people', $record);
-				$exist_id = $this->getDb()->lastInsertId();
-				$is_new = true;
+        // Password
+        if ($pval->password && $pval->password_scheme == 'plain') {
+            $record['password_scheme'] = 'bcrypt';
 
-				$this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $exist_id));
-			}
+            $hasher = new \PasswordHash(11, false);
+            $record['password'] = $hasher->HashPassword($pval->password);
+        }
 
-			if ($exist_id && $add_emails_str) {
-				$first_email_id = null;
-				foreach ($add_emails_str as $eml) {
-					list (, $eml_domain) = explode('@', $eml, 2);
-					$this->getDb()->insert('people_emails', array(
-						'person_id'      => $exist_id,
-						'email'          => $eml,
-						'email_domain'   => $eml_domain,
-						'is_validated'   => true,
-						'date_created'   => date('Y-m-d H:i:s'),
-						'date_validated' => date('Y-m-d H:i:s'),
-					));
-					if ($is_new && !$first_email_id) {
-						$first_email_id = $this->getDb()->lastInsertId();
-					}
-				}
+        // Additional emails
+        $add_emails_str = array_diff($pval->emails, array_keys($exist_emails));
+        if ($add_emails_str) {
+            $this->getLogger()->info(sprintf("[%s] New emails: %s", $log_id, implode(', ', $add_emails_str)));
+        }
 
-				if ($is_new && $first_email_id) {
-					$update_rec['primary_email_id'] = $first_email_id;
-				}
-			}
+        #------------------------------
+        # Save data
+        #------------------------------
 
-			if ($exist_id && $add_ugs) {
-				$batch = array_map(function($ug) use ($exist_id) {
-					return array(
-						'person_id'    => $exist_id,
-						'usergroup_id' => $ug
-					);
-				}, $add_ugs);
+        if (!$this->isTestMode()) {
+            $update_rec = array();
 
-				$this->getDb()->batchInsert('person2usergroups', $batch, true);
-			}
+            if (isset($existing_person_id)) {
+                $exist_id = $this->getMappers()->findIdFromMappedValue('person', $existing_person_id);
+                $is_new = false;
+                $this->getDb()->update('people', $record, array('id' => $exist_id));
+                $this->getLogger()->info(sprintf("[%s] Updated %d", $log_id, $exist_id));
+            } else {
+                $this->getDb()->insert('people', $record);
+                $exist_id = $this->getDb()->lastInsertId();
+                $is_new = true;
 
-			if ($exist_id && $add_labels) {
-				$batch = array_map(function($l) use ($exist_id) {
-					return array(
-						'person_id' => $exist_id,
-						'label'     => $l
-					);
-				}, $add_labels);
+                $this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $exist_id));
+            }
 
-				$this->getDb()->batchInsert('labels_people', $batch, true);
-			}
-			
-			#------------------------------
-			# Custom Fields
-			#------------------------------
-			if ($exist_id && !empty($pval->custom_def)) {
-				$custom_field_importer = new CustomDefPersonValueImporter(
-					$this->getMode(),
-					$this->getContainer(),
-					$this->getLogger(),
-					$this->getMappers(),
-					$exist_id
-				);
+            if ($exist_id && $add_emails_str) {
+                $first_email_id = null;
+                foreach ($add_emails_str as $eml) {
+                    list (, $eml_domain) = explode('@', $eml, 2);
+                    $this->getDb()->insert('people_emails', array(
+                        'person_id'      => $exist_id,
+                        'email'          => $eml,
+                        'email_domain'   => $eml_domain,
+                        'is_validated'   => true,
+                        'date_created'   => date('Y-m-d H:i:s'),
+                        'date_validated' => date('Y-m-d H:i:s'),
+                    ));
+                    if ($is_new && !$first_email_id) {
+                        $first_email_id = $this->getDb()->lastInsertId();
+                    }
+                }
 
-				foreach ($pval->custom_def as $custom_value) {
-					$custom_field_importer->importValue($custom_value);
-				}
-			}
-		}
-	}
+                if ($is_new && $first_email_id) {
+                    $update_rec['primary_email_id'] = $first_email_id;
+                }
+            }
+
+            if ($exist_id && $add_ugs) {
+                $batch = array_map(function ($ug) use ($exist_id) {
+                    return array(
+                        'person_id'    => $exist_id,
+                        'usergroup_id' => $ug
+                    );
+                }, $add_ugs);
+
+                $this->getDb()->batchInsert('person2usergroups', $batch, true);
+            }
+
+            if ($exist_id && $add_labels) {
+                $batch = array_map(function ($l) use ($exist_id) {
+                    return array(
+                        'person_id' => $exist_id,
+                        'label'     => $l
+                    );
+                }, $add_labels);
+
+                $this->getDb()->batchInsert('labels_people', $batch, true);
+            }
+
+            #------------------------------
+            # Custom Fields
+            #------------------------------
+            if ($exist_id && !empty($pval->custom_def)) {
+                $custom_field_importer = new CustomDefPersonValueImporter(
+                    $this->getMode(),
+                    $this->getContainer(),
+                    $this->getLogger(),
+                    $this->getMappers(),
+                    $exist_id
+                );
+
+                foreach ($pval->custom_def as $custom_value) {
+                    $custom_field_importer->importValue($custom_value);
+                }
+            }
+        }
+    }
 
 
-	/**
-	 * @param array $emails
-	 * @return array
-	 */
-	private function getExistingUserMap(array $emails)
-	{
-		$qs = implode(',', array_fill(0, count($emails), '?'));
-		$ret = $this->getDb()->fetchAll("SELECT email, person_id FROM people_emails WHERE email IN ($qs)", $emails);
+    /**
+     * @param  array $emails
+     * @return array
+     */
+    private function getExistingUserMap(array $emails)
+    {
+        $qs = implode(',', array_fill(0, count($emails), '?'));
+        $ret = $this->getDb()->fetchAll("SELECT email, person_id FROM people_emails WHERE email IN ($qs)", $emails);
 
-		$map = array();
-		foreach ($ret as $r) {
-			$map[$r['email']] = $r['person_id'];
-		}
+        $map = array();
+        foreach ($ret as $r) {
+            $map[$r['email']] = $r['person_id'];
+        }
 
-		return $map;
-	}
-	
-	private function customFieldExists($title)
-	{
-		$query = 'SELECT id, handler_class FROM custom_def_people WHERE title = ? AND is_enabled = 1';
-		
-		$result = $this->getDb()->fetchAll($query, array($title));
-		
-		if (count($result)) {
-			return $result[0];
-		}
-		
-		return $result;
-	}
-	
-	private function isCustomFieldTypeSupported($field_type)
-	{
-		return in_array($field_type, $this->supported_custom_field_types);
-	}
+        return $map;
+    }
+
+    private function customFieldExists($title)
+    {
+        $query = 'SELECT id, handler_class FROM custom_def_people WHERE title = ? AND is_enabled = 1';
+
+        $result = $this->getDb()->fetchAll($query, array($title));
+
+        if (count($result)) {
+            return $result[0];
+        }
+
+        return $result;
+    }
+
+    private function isCustomFieldTypeSupported($field_type)
+    {
+        return in_array($field_type, $this->supported_custom_field_types);
+    }
 }
-

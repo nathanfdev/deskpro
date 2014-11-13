@@ -39,9 +39,10 @@ use Application\DeskPRO\FeedbackStatuses\FeedbackStatuses;
 
 class FeedbackStatusesService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new FeedbackStatuses($container->getEm());
+
         return $x;
-	}
+    }
 }

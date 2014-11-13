@@ -39,120 +39,118 @@ use Orb\Log\Logger;
 
 class Pop3Storage implements FetcherStorageInterface
 {
-	/**
-	 * @var string
-	 */
-	private $host;
+    /**
+     * @var string
+     */
+    private $host;
 
-	/**
-	 * @var int
-	 */
-	private $port;
+    /**
+     * @var int
+     */
+    private $port;
 
-	/**
-	 * @var string|null
-	 */
-	private $user;
+    /**
+     * @var string|null
+     */
+    private $user;
 
-	/**
-	 * @var string|null
-	 */
-	private $password;
+    /**
+     * @var string|null
+     */
+    private $password;
 
-	/**
-	 * @var string|null
-	 */
-	private $secure;
+    /**
+     * @var string|null
+     */
+    private $secure;
 
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Storage\Pop3
-	 */
-	private $storage = null;
+    /**
+     * @var \Application\DeskPRO\EmailGateway\Storage\Pop3
+     */
+    private $storage = null;
 
-	/**
-	 * @var
-	 */
-	private $logger;
-
-
-	/**
-	 * @param string $host
-	 * @param string $port
-	 * @param string|null $user
-	 * @param string|null $password
-	 * @param string|null $secure
-	 */
-	public function __construct($host, $port, $user, $password, $secure = null)
-	{
-		$this->host = $host;
-		$this->port = $port;
-
-		if ($user !== null) {
-			$this->user = $user;
-		}
-		if ($password !== null) {
-			$this->password = $password;
-		}
-
-		if ($secure == 'ssl') {
-			$this->secure = 'ssl';
-		} elseif ($secure == 'tls') {
-			$this->secure = 'tls';
-		}
-	}
+    /**
+     * @var
+     */
+    private $logger;
 
 
-	/**
-	 * @return \Application\DeskPRO\EmailGateway\Storage\Pop3
-	 */
-	public function getStorage()
-	{
-		if ($this->storage !== null) {
-			return $this->storage;
-		}
+    /**
+     * @param string      $host
+     * @param string      $port
+     * @param string|null $user
+     * @param string|null $password
+     * @param string|null $secure
+     */
+    public function __construct($host, $port, $user, $password, $secure = null)
+    {
+        $this->host = $host;
+        $this->port = $port;
 
-		$options = array();
-		$options['host']     = $this->host;
-		$options['port']     = $this->port;
-		$options['user']     = $this->user ?: '';
-		$options['password'] = $this->password ?: '';
-		$options['ssl']      = $this->secure;
+        if ($user !== null) {
+            $this->user = $user;
+        }
+        if ($password !== null) {
+            $this->password = $password;
+        }
 
-		if ($this->logger) {
-			$options['logger'] = $this->logger;
-		}
-
-		$storage = new Pop3($options);
-		return $storage;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function closeStorage()
-	{
-		if ($this->storage !== null) {
-			$this->storage->close();
-			$this->storage = null;
-		}
-	}
+        if ($secure == 'ssl') {
+            $this->secure = 'ssl';
+        } elseif ($secure == 'tls') {
+            $this->secure = 'tls';
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+    /**
+     * @return \Application\DeskPRO\EmailGateway\Storage\Pop3
+     */
+    public function getStorage()
+    {
+        if ($this->storage !== null) {
+            return $this->storage;
+        }
 
+        $options = array();
+        $options['host']     = $this->host;
+        $options['port']     = $this->port;
+        $options['user']     = $this->user ?: '';
+        $options['password'] = $this->password ?: '';
+        $options['ssl']      = $this->secure;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
+        if ($this->logger) {
+            $options['logger'] = $this->logger;
+        }
+
+        $storage = new Pop3($options);
+
+        return $storage;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function closeStorage()
+    {
+        if ($this->storage !== null) {
+            $this->storage->close();
+            $this->storage = null;
+        }
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 }

@@ -36,14 +36,14 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1346674128 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Extend widgets with plugin support");
+    public function run()
+    {
+        $this->out("Extend widgets with plugin support");
 
-		$this->execMutateSql("ALTER TABLE widgets ADD plugin_id VARCHAR(255) DEFAULT NULL, ADD unique_key VARCHAR(50) DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE widgets ADD CONSTRAINT FK_9D58E4C1EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE widgets ADD plugin_id VARCHAR(255) DEFAULT NULL, ADD unique_key VARCHAR(50) DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE widgets ADD CONSTRAINT FK_9D58E4C1EC942BCF FOREIGN KEY (plugin_id) REFERENCES plugins (id) ON DELETE CASCADE");
 
-		$this->execMutateSql("CREATE INDEX IDX_9D58E4C1EC942BCF ON widgets (plugin_id)");
-		$this->execMutateSql("CREATE UNIQUE INDEX unique_key_idx ON widgets (unique_key)");
-	}
+        $this->execMutateSql("CREATE INDEX IDX_9D58E4C1EC942BCF ON widgets (plugin_id)");
+        $this->execMutateSql("CREATE UNIQUE INDEX unique_key_idx ON widgets (unique_key)");
+    }
 }

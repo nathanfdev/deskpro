@@ -34,55 +34,54 @@
 
 namespace Application\DeskPRO\TaskQueueJob;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\TaskQueue;
 use Application\DeskPRO\Log\Logger;
 
 abstract class AbstractJob
 {
-	const TASK_COMPLETED = 1;
-	const TASK_CONTINUING = 2;
+    const TASK_COMPLETED = 1;
+    const TASK_CONTINUING = 2;
 
-	/**
-	 * @var array
-	 */
-	protected $_data;
+    /**
+     * @var array
+     */
+    protected $_data;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TaskQueue
-	 */
-	protected $_task;
+    /**
+     * @var \Application\DeskPRO\Entity\TaskQueue
+     */
+    protected $_task;
 
-	/**
-	 * @var \Application\DeskPRO\Log\Logger|null
-	 */
-	protected $_logger;
+    /**
+     * @var \Application\DeskPRO\Log\Logger|null
+     */
+    protected $_logger;
 
-	public function __construct(array $data = array(), TaskQueue $task, Logger $logger = null)
-	{
-		$this->_data = array_merge($this->_getDefaultData(), $data);
-		$this->_task = $task;
-		$this->_logger = $logger;
-	}
+    public function __construct(array $data = array(), TaskQueue $task, Logger $logger = null)
+    {
+        $this->_data = array_merge($this->_getDefaultData(), $data);
+        $this->_task = $task;
+        $this->_logger = $logger;
+    }
 
-	public function getData()
-	{
-		return $this->_data;
-	}
+    public function getData()
+    {
+        return $this->_data;
+    }
 
-	public function getLogger()
-	{
-		return $this->_logger;
-	}
+    public function getLogger()
+    {
+        return $this->_logger;
+    }
 
-	public function getTask()
-	{
-		return $this->_task;
-	}
+    public function getTask()
+    {
+        return $this->_task;
+    }
 
-	abstract protected function _getDefaultData();
+    abstract protected function _getDefaultData();
 
-	abstract public function run($max_time);
+    abstract public function run($max_time);
 
-	abstract public function getTitle();
+    abstract public function getTitle();
 }

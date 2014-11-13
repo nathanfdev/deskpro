@@ -40,12 +40,12 @@ namespace Orb\Validator;
  */
 interface StaticValidator
 {
-	/**
-	 * Checks a value for validity. It just returns a true/false. If you need error codes
-	 * or error info, you must instantiate the object normally.
-	 *
-	 * @param $value
-	 * @return bool
-	 */
-	public static function isValueValid($value);
+    /**
+     * Checks a value for validity. It just returns a true/false. If you need error codes
+     * or error info, you must instantiate the object normally.
+     *
+     * @param $value
+     * @return bool
+     */
+    public static function isValueValid($value);
 }

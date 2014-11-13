@@ -38,18 +38,18 @@ use Application\InstallBundle\Upgrade\Build\Helper201405\UsersourceUpgrader;
 
 class Build1400056731 extends AbstractBuild
 {
-	public function run()
-	{
-		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/UsersourceUpgrader.php';
+    public function run()
+    {
+        require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/UsersourceUpgrader.php';
 
-		$db = $this->container->getDb();
-		$this->out("Upgrade usersources");
+        $db = $this->container->getDb();
+        $this->out("Upgrade usersources");
 
-		$usersources = $db->fetchAll("SELECT * FROM usersources");
-		foreach ($usersources as $us) {
-			$this->out("Upgrading {$us['id']} -- {$us['source_type']}");
-			$up = new UsersourceUpgrader($this->container, $us);
-			$up->upgrade();
-		}
-	}
+        $usersources = $db->fetchAll("SELECT * FROM usersources");
+        foreach ($usersources as $us) {
+            $this->out("Upgrading {$us['id']} -- {$us['source_type']}");
+            $up = new UsersourceUpgrader($this->container, $us);
+            $up->upgrade();
+        }
+    }
 }

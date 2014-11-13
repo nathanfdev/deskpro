@@ -39,10 +39,10 @@ use Application\DeskPRO\Search\SearchIndexer;
 
 class SearchIndexerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$ind = new SearchIndexer($container);
+    public static function create(DeskproContainer $container)
+    {
+        $ind = new SearchIndexer($container);
 
-		return $ind;
-	}
+        return $ind;
+    }
 }

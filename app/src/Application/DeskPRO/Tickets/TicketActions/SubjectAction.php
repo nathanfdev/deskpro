@@ -40,77 +40,77 @@ use Application\DeskPRO\Tickets\SnippetFormatter;
 
 class SubjectAction extends AbstractAction
 {
-	/** @var string */
-	protected $subject;
+    /** @var string */
+    protected $subject;
 
-	public function __construct($subject)
-	{
-		if (!$subject) {
-			$subject = '(untitled)';
-		}
-		$this->subject = $subject;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$subject_text = $this->subject;
-
-		$formatter = new SnippetFormatter(App::getContainer()->get('twig'));
-		$subject_text = $formatter->formatText($subject_text, $ticket);
-
-		$ticket['subject'] = $subject_text;
-	}
+    public function __construct($subject)
+    {
+        if (!$subject) {
+            $subject = '(untitled)';
+        }
+        $this->subject = $subject;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array(
-			array('action' => 'subject', 'subject' => $this->subject)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $subject_text = $this->subject;
+
+        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+        $subject_text = $formatter->formatText($subject_text, $ticket);
+
+        $ticket['subject'] = $subject_text;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getSuject()
-	{
-		return $this->subject;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array(
+            array('action' => 'subject', 'subject' => $this->subject)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * @return string
+     */
+    public function getSuject()
+    {
+        return $this->subject;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		if ($as_html) {
-			$html = htmlspecialchars($this->subject, \ENT_QUOTES);
-			$ret = 'Set subject: <span class="with-set-subject">' . $html .'</span>';
-		} else {
-			$ret = 'Set subject: ' . $this->subject;
-		}
 
-		return $ret;
-	}
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        if ($as_html) {
+            $html = htmlspecialchars($this->subject, \ENT_QUOTES);
+            $ret = 'Set subject: <span class="with-set-subject">' . $html .'</span>';
+        } else {
+            $ret = 'Set subject: ' . $this->subject;
+        }
+
+        return $ret;
+    }
 }

@@ -36,20 +36,20 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1362674702 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set 'merge people' permission on default usergroup");
+    public function run()
+    {
+        $this->out("Set 'merge people' permission on default usergroup");
 
-		$ug = $this->container->getDb()->fetchColumn("
-			SELECT id
-			FROM usergroups
-			WHERE id = 3 AND title = 'All Permissions'
-		");
-		if ($ug) {
-			$this->execMutateSql("
-				REPLACE INTO permissions (usergroup_id, name, value)
-				VALUES (3, 'agent_people.merge', 1)
-			");
-		}
-	}
+        $ug = $this->container->getDb()->fetchColumn("
+            SELECT id
+            FROM usergroups
+            WHERE id = 3 AND title = 'All Permissions'
+        ");
+        if ($ug) {
+            $this->execMutateSql("
+                REPLACE INTO permissions (usergroup_id, name, value)
+                VALUES (3, 'agent_people.merge', 1)
+            ");
+        }
+    }
 }

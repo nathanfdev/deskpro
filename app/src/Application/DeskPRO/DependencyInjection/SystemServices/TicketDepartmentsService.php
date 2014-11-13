@@ -39,9 +39,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class TicketDepartmentsService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$x = new TicketDepartments($container->getEm());
-		return $x;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $x = new TicketDepartments($container->getEm());
+
+        return $x;
+    }
 }

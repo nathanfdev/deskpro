@@ -27,32 +27,31 @@
 
 namespace Application\ApiBundle\HttpFoundation;
 
-
 use Application\DeskPRO\Util;
 use Symfony\Component\HttpFoundation\Response;
 
 class JsonResponse extends Response
 {
-	/** @var array|null */
-	protected $data;
+    /** @var array|null */
+    protected $data;
 
-	public function __toString()
-	{
-		return Util::jsonEncode($this->data);
-	}
+    public function __toString()
+    {
+        return Util::jsonEncode($this->data);
+    }
 
-	public function getData()
-	{
-		return $this->data;
-	}
+    public function getData()
+    {
+        return $this->data;
+    }
 
-	public function setContent($content)
-	{
-		if (is_array($content)) {
-			$this->data = $content;
-			$content = $this->__toString();
-		}
+    public function setContent($content)
+    {
+        if (is_array($content)) {
+            $this->data = $content;
+            $content = $this->__toString();
+        }
 
-		parent::setContent($content);
-	}
-} 
+        parent::setContent($content);
+    }
+}

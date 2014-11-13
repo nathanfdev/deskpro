@@ -44,95 +44,94 @@ use Orb\Util\Util;
  */
 abstract class AbstractAction implements ActionDefinitionInterface
 {
-	/**
-	 * @var \Orb\Util\OptionsArray
-	 */
-	private $options;
+    /**
+     * @var \Orb\Util\OptionsArray
+     */
+    private $options;
 
-	/**
-	 * @var \Orb\Util\OptionsArray
-	 */
-	private $meta;
-
-
-	/**
-	 * @param array  $options
-	 */
-	public function __construct(array $options = array())
-	{
-		$this->meta = new OptionsArray();
-		$this->_initOptions($options);
-	}
+    /**
+     * @var \Orb\Util\OptionsArray
+     */
+    private $meta;
 
 
-	/**
-	 * @return OptionsArray
-	 */
-	public function getMetaData()
-	{
-		return $this->meta;
-	}
+    /**
+     * @param array $options
+     */
+    public function __construct(array $options = array())
+    {
+        $this->meta = new OptionsArray();
+        $this->_initOptions($options);
+    }
 
 
-	/**
-	 * @param array $options
-	 */
-	private function _initOptions(array $options)
-	{
-		$this->options = $this->getOptionsDef();
-		$this->options->setAll($options);
-		$this->options->setArrayDefault($this->getDefaultOptions());
-		$this->options->ensureRequired();
-	}
+    /**
+     * @return OptionsArray
+     */
+    public function getMetaData()
+    {
+        return $this->meta;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	protected function getDefaultOptions()
-	{
-		return array();
-	}
+    /**
+     * @param array $options
+     */
+    private function _initOptions(array $options)
+    {
+        $this->options = $this->getOptionsDef();
+        $this->options->setAll($options);
+        $this->options->setArrayDefault($this->getDefaultOptions());
+        $this->options->ensureRequired();
+    }
 
 
-	/**
-	 * @return CheckedOptionsArray
-	 */
-	protected function getOptionsDef()
-	{
-		return new CheckedOptionsArray();
-	}
+    /**
+     * @return array
+     */
+    protected function getDefaultOptions()
+    {
+        return array();
+    }
 
 
-	/**
-	 * Gets the type name of the criteria
-	 *
-	 * @return string
-	 */
-	public function getActionType()
-	{
-		return Util::getBaseClassname($this);
-	}
+    /**
+     * @return CheckedOptionsArray
+     */
+    protected function getOptionsDef()
+    {
+        return new CheckedOptionsArray();
+    }
 
 
-	/**
-	 * Get's an array of options
-	 *
-	 * @return array
-	 */
-	public function getActionOptions()
-	{
-		return $this->options;
-	}
+    /**
+     * Gets the type name of the criteria
+     *
+     * @return string
+     */
+    public function getActionType()
+    {
+        return Util::getBaseClassname($this);
+    }
 
 
-	/**
-	 * @param string $name
-	 * @param mixed $default
-	 * @return mixed
-	 */
-	public function getActionOption($name, $default = null)
-	{
-		return isset($this->options[$name]) ? $this->options[$name] : $default;
-	}
+    /**
+     * Get's an array of options
+     *
+     * @return array
+     */
+    public function getActionOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @param  string $name
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function getActionOption($name, $default = null)
+    {
+        return isset($this->options[$name]) ? $this->options[$name] : $default;
+    }
 }

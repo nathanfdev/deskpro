@@ -38,31 +38,31 @@ use Doctrine\DBAL\Connection;
 
 class TicketPurger
 {
-	/** @var \Doctrine\DBAL\Connection  */
-	private $db;
+    /** @var \Doctrine\DBAL\Connection  */
+    private $db;
 
-	public function __construct(Connection $db)
-	{
-		$this->db = $db;
-	}
+    public function __construct(Connection $db)
+    {
+        $this->db = $db;
+    }
 
-	public function purgeSpamAction()
-	{
-		$count = $this->db->delete(
-			'tickets',
-			array('status' => 'hidden', 'hidden_status' => 'spam')
-		);
+    public function purgeSpamAction()
+    {
+        $count = $this->db->delete(
+            'tickets',
+            array('status' => 'hidden', 'hidden_status' => 'spam')
+        );
 
-		return $count;
-	}
+        return $count;
+    }
 
-	public function purgeDeletedAction()
-	{
-		$count = $this->db->delete(
-			'tickets',
-			array('status' => 'hidden', 'hidden_status' => 'deleted')
-		);
+    public function purgeDeletedAction()
+    {
+        $count = $this->db->delete(
+            'tickets',
+            array('status' => 'hidden', 'hidden_status' => 'deleted')
+        );
 
-		return $count;
-	}
+        return $count;
+    }
 }

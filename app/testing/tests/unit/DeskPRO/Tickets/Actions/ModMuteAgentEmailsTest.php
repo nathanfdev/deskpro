@@ -7,14 +7,14 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class ModMuteAgentEmailsTest extends \DpUnitTestCase
 {
-	public function testAdd()
-	{
-		$ticket = new Ticket();
-		$exec   = new ExecutorContext();
+    public function testAdd()
+    {
+        $ticket = new Ticket();
+        $exec   = new ExecutorContext();
 
-		$action = new ModMuteAgentEmails();
-		$action->applyAction($ticket, $exec);
+        $action = new ModMuteAgentEmails();
+        $action->applyAction($ticket, $exec);
 
-		$this->assertTrue($exec->getVars()->get('mute_agent_emails'));
-	}
+        $this->assertTrue($exec->getVars()->get('mute_agent_emails'));
+    }
 }

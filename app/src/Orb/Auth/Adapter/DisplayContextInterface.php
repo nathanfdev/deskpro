@@ -40,8 +40,8 @@ namespace Orb\Auth\Adapter;
  */
 interface DisplayContextInterface extends AdapterInterface
 {
-	/**
-	 * @param mixed $context Context information
-	 */
-	public function setDisplayContext($context);
+    /**
+     * @param mixed $context Context information
+     */
+    public function setDisplayContext($context);
 }

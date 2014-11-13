@@ -35,104 +35,103 @@
 namespace Application\UserBundle\Validator;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Form\Captcha\CaptchaAbstract;
 use Orb\Validator\AbstractValidator;
 
 class NewFeedbackValidator extends AbstractValidator
 {
-	/**
-	 * @var \Application\DeskPRO\Feedback\NewFeedback
-	 */
-	protected $newfeedback;
+    /**
+     * @var \Application\DeskPRO\Feedback\NewFeedback
+     */
+    protected $newfeedback;
 
-	/**
-	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
-	 */
-	protected $captca;
+    /**
+     * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
+     */
+    protected $captca;
 
-	/**
-	 * @param CaptchaAbstract $captcha
-	 */
-	public function setCaptcha(CaptchaAbstract $captcha)
-	{
-		$this->captca = $captcha;
-	}
+    /**
+     * @param CaptchaAbstract $captcha
+     */
+    public function setCaptcha(CaptchaAbstract $captcha)
+    {
+        $this->captca = $captcha;
+    }
 
-	/**
-	 * Check $value to see if its valid.
-	 *
-	 * @param \Application\DeskPRO\Feedback\NewFeedback $newfeedback
-	 * @return bool
-	 */
-	protected function checkIsValid($newfeedback)
-	{
-		$this->newfeedback = $newfeedback;
+    /**
+     * Check $value to see if its valid.
+     *
+     * @param  \Application\DeskPRO\Feedback\NewFeedback $newfeedback
+     * @return bool
+     */
+    protected function checkIsValid($newfeedback)
+    {
+        $this->newfeedback = $newfeedback;
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 3));
-		if (!$validator->isValid($this->newfeedback->title)) {
-			$this->addError('title.short');
-		}
+        $validator = new \Orb\Validator\StringLength(array('min' => 3));
+        if (!$validator->isValid($this->newfeedback->title)) {
+            $this->addError('title.short');
+        }
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 5));
-		if (!$validator->isValid($this->newfeedback->content)) {
-			$this->addError('content.short');
-		}
+        $validator = new \Orb\Validator\StringLength(array('min' => 5));
+        if (!$validator->isValid($this->newfeedback->content)) {
+            $this->addError('content.short');
+        }
 
-		$cat = null;
-		if ($this->newfeedback->category_id) {
-			$cat = App::getEntityRepository('DeskPRO:FeedbackCategory')
-				->find($this->newfeedback->category_id);
-		}
-		if (!$cat) {
-			$this->addError('category_id.invalid');
-		}
+        $cat = null;
+        if ($this->newfeedback->category_id) {
+            $cat = App::getEntityRepository('DeskPRO:FeedbackCategory')
+                ->find($this->newfeedback->category_id);
+        }
+        if (!$cat) {
+            $this->addError('category_id.invalid');
+        }
 
-		$cf_man = App::getSystemService('FeedbackFieldsManager');
-		$newfeedback_cat_field = $cf_man->getSystemField('cat');
-		if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
-			$newfeedback_cat_field = null;
-		}
+        $cf_man = App::getSystemService('FeedbackFieldsManager');
+        $newfeedback_cat_field = $cf_man->getSystemField('cat');
+        if (!$newfeedback_cat_field || !$cf_man->getFieldChildren($newfeedback_cat_field)) {
+            $newfeedback_cat_field = null;
+        }
 
-		if ($newfeedback_cat_field) {
-			// Not specified in the form
-			if (!isset($newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()])) {
-				$this->addError('usercat.invalid');
+        if ($newfeedback_cat_field) {
+            // Not specified in the form
+            if (!isset($newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()])) {
+                $this->addError('usercat.invalid');
 
-			// Specifid but may be invalid option
-			} else {
-				$children = $cf_man->getFieldChildren($newfeedback_cat_field);
-				$selected_id = $newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()];
+            // Specifid but may be invalid option
+            } else {
+                $children = $cf_man->getFieldChildren($newfeedback_cat_field);
+                $selected_id = $newfeedback->custom_fields['field_' . $newfeedback_cat_field->getId()];
 
-				if (!isset($children[$selected_id])) {
-					$this->addError('usercat.invalid');
-				}
-			}
-		}
+                if (!isset($children[$selected_id])) {
+                    $this->addError('usercat.invalid');
+                }
+            }
+        }
 
-		$person_context = $this->newfeedback->getPersonContext();
-		if (!$person_context || $person_context->isGuest()) {
-			$validator = new \Orb\Validator\StringEmail();
-			if (!$validator->isValid($this->newfeedback->person_email)) {
-				$this->addError('person_email.invalid');
-			}
+        $person_context = $this->newfeedback->getPersonContext();
+        if (!$person_context || $person_context->isGuest()) {
+            $validator = new \Orb\Validator\StringEmail();
+            if (!$validator->isValid($this->newfeedback->person_email)) {
+                $this->addError('person_email.invalid');
+            }
 
-			$validator = new \Orb\Validator\StringLength(array('min' => 2));
-			if (!$validator->isValid($this->newfeedback->person_name)) {
-				$this->addError('person_name.short');
-			}
-		}
+            $validator = new \Orb\Validator\StringLength(array('min' => 2));
+            if (!$validator->isValid($this->newfeedback->person_name)) {
+                $this->addError('person_name.short');
+            }
+        }
 
-		if ($this->captca) {
-			if (!$this->captca->validate()) {
-				$this->addError('captcha.invalid');
-			}
-		}
+        if ($this->captca) {
+            if (!$this->captca->validate()) {
+                $this->addError('captcha.invalid');
+            }
+        }
 
-		if ($this->errors) {
-			return false;
-		}
+        if ($this->errors) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

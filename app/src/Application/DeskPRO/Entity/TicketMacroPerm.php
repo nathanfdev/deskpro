@@ -42,59 +42,59 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketMacroPerm extends \Application\DeskPRO\Domain\DomainObject
 {
-	const TYPE_DEPARTMENT = 'department';
-	const TYPE_USERGROUP = 'usergroup';
-	const TYPE_PERSON = 'person';
+    const TYPE_DEPARTMENT = 'department';
+    const TYPE_USERGROUP = 'usergroup';
+    const TYPE_PERSON = 'person';
 
-	/**
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketMacro
-	 */
-	protected $macro = null;
+    /**
+     * @var \Application\DeskPRO\Entity\TicketMacro
+     */
+    protected $macro = null;
 
-	/**
-	 * The type of object this is attached to (should be the table name of
-	 * the super type, eg: tickets, people, organizations).
-	 *
-	 * @var string
-	 */
-	protected $object_type;
+    /**
+     * The type of object this is attached to (should be the table name of
+     * the super type, eg: tickets, people, organizations).
+     *
+     * @var string
+     */
+    protected $object_type;
 
-	/**
-	 * The ID of the object this is attached to.
-	 *
-	 * @var int
-	 */
-	protected $object_id;
+    /**
+     * The ID of the object this is attached to.
+     *
+     * @var int
+     */
+    protected $object_id;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'ticket_macros_perms', 'indexes' => array( 'object_idx' => array( 'columns' => array( 0 => 'object_type', 1 => 'object_id', ), ), ), ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
-		$metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'macro', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMacro', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'macro_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(array( 'name' => 'ticket_macros_perms', 'indexes' => array( 'object_idx' => array( 'columns' => array( 0 => 'object_type', 1 => 'object_id', ), ), ), ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
+        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'macro', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMacro', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'macro_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

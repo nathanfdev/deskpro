@@ -44,141 +44,144 @@ use Symfony\Component\Templating\TemplateNameParserInterface;
  */
 class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Style
-	 */
-	protected $style = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Style
+     */
+    protected $style = null;
 
-	/**
-	 * @var array
-	 */
-	protected $style_template_info = null;
+    /**
+     * @var array
+     */
+    protected $style_template_info = null;
 
-	/**
-	 * @var null
-	 */
-	protected $crashed_custom_templates = array();
+    /**
+     * @var null
+     */
+    protected $crashed_custom_templates = array();
 
-	public function __construct(FileLocatorInterface $locator, TemplateNameParserInterface $parser)
-	{
-		parent::__construct($locator, $parser);
-	}
-
-	protected function _initStyle()
-	{
-		// Already done
-		if ($this->style !== null) return;
-
-		if (!defined('DP_BUILDING')) {
-			$this->style = App::getSystemService('style');
-			$this->style_template_info = App::getDb()->fetchAllKeyed("
-				SELECT id, name, UNIX_TIMESTAMP(date_updated) AS date_updated
-				FROM templates
-				WHERE style_id = ?
-			", array($this->style['id']), 'name');
-		} else {
-			$this->style = new \Application\DeskPRO\Entity\Style();
-		}
-	}
-
-	public function markCustomTemplateAsCrashed($name)
-	{
-		$this->crashed_custom_templates[$name] = true;
-	}
-
-	public function dbHasTemplate($name)
-	{
-		if (isset($this->crashed_custom_templates[(string)$name])) {
-			return false;
-		}
-
-		$this->_initStyle();
-		if (isset($this->style_template_info[(string)$name])) {
-			return true;
-		}
-		return false;
-	}
-
-	public function isFresh($name, $time)
+    public function __construct(FileLocatorInterface $locator, TemplateNameParserInterface $parser)
     {
-		$this->_initStyle();
+        parent::__construct($locator, $parser);
+    }
 
-		$str_name = (string)$name;
+    protected function _initStyle()
+    {
+        // Already done
+        if ($this->style !== null) return;
 
-		// DB templates are always "fresh" because theyre compiled
-		// as soon as they're saved
-		if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
-			return true;
-		}
+        if (!defined('DP_BUILDING')) {
+            $this->style = App::getSystemService('style');
+            $this->style_template_info = App::getDb()->fetchAllKeyed("
+                SELECT id, name, UNIX_TIMESTAMP(date_updated) AS date_updated
+                FROM templates
+                WHERE style_id = ?
+            ", array($this->style['id']), 'name');
+        } else {
+            $this->style = new \Application\DeskPRO\Entity\Style();
+        }
+    }
+
+    public function markCustomTemplateAsCrashed($name)
+    {
+        $this->crashed_custom_templates[$name] = true;
+    }
+
+    public function dbHasTemplate($name)
+    {
+        if (isset($this->crashed_custom_templates[(string)$name])) {
+            return false;
+        }
+
+        $this->_initStyle();
+        if (isset($this->style_template_info[(string)$name])) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function isFresh($name, $time)
+    {
+        $this->_initStyle();
+
+        $str_name = (string)$name;
+
+        // DB templates are always "fresh" because theyre compiled
+        // as soon as they're saved
+        if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
+            return true;
+        }
 
         return parent::isFresh($name, $time);
     }
 
-	public function getCacheKey($name)
+    public function getCacheKey($name)
     {
-		$this->_initStyle();
-		return md5((string)$name);
+        $this->_initStyle();
+
+        return md5((string)$name);
     }
 
-	public function getSource($name)
+    public function getSource($name)
     {
-		$this->_initStyle();
+        $this->_initStyle();
 
-		$str_name = (string)$name;
-		if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
-			return App::getDb()->fetchColumn("
-				SELECT template_code
-				FROM templates
-				WHERE id = ?
-			", array($this->style_template_info[$name]['id']));
-		}
+        $str_name = (string)$name;
+        if (!isset($this->crashed_custom_templates[$str_name]) && isset($this->style_template_info[$str_name])) {
+            return App::getDb()->fetchColumn("
+                SELECT template_code
+                FROM templates
+                WHERE id = ?
+            ", array($this->style_template_info[$name]['id']));
+        }
 
-		$source = file_get_contents($this->findTemplate($name));
+        $source = file_get_contents($this->findTemplate($name));
 
-		if (strpos($name, 'DeskPRO:emails_') !== false) {
-			$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
-			$source = $proc->process($source, $str_name);
-		}
+        if (strpos($name, 'DeskPRO:emails_') !== false) {
+            $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+            $source = $proc->process($source, $str_name);
+        }
 
-		return $source;
+        return $source;
     }
 
-	protected function findTemplate($template)
-	{
-		$this->_initStyle();
+    protected function findTemplate($template)
+    {
+        $this->_initStyle();
 
-		$logicalName = (string)$template;
+        $logicalName = (string)$template;
 
-		if (!isset($this->crashed_custom_templates[$logicalName]) && isset($this->style_template_info[$logicalName])) {
-			return false;
-		}
+        if (!isset($this->crashed_custom_templates[$logicalName]) && isset($this->style_template_info[$logicalName])) {
+            return false;
+        }
 
-		if (strpos($logicalName, 'Apps:') === 0) {
-			if (class_exists('Application\\DeskPRO\\App', false)) {
+        if (strpos($logicalName, 'Apps:') === 0) {
+            if (class_exists('Application\\DeskPRO\\App', false)) {
 
-				$logicalName = preg_replace('#^Apps:#', '', $logicalName);
+                $logicalName = preg_replace('#^Apps:#', '', $logicalName);
 
-				try {
-					$manager = App::getContainer()->getAppManager();
-					$package = null;
-					foreach ($manager->getAllPackages() as $p) {
-						if (!$p->native_name) continue;
-						if (preg_match('#^' . preg_quote($p->native_name) . ':#', $logicalName)) {
-							$package = $p;
-							break;
-						}
-					}
+                try {
+                    $manager = App::getContainer()->getAppManager();
+                    $package = null;
+                    foreach ($manager->getAllPackages() as $p) {
+                        if (!$p->native_name) continue;
+                        if (preg_match('#^' . preg_quote($p->native_name) . ':#', $logicalName)) {
+                            $package = $p;
+                            break;
+                        }
+                    }
 
-					if ($package) {
-						$path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
-						$path_name = str_replace(':', '/', $path_name);
-						$path = DP_ROOT.'/apps/' . $package->native_name . '/native/Resources/views/'.$path_name;
-						return $path;
-					}
-				} catch (\Exception $e) {}
-			}
-		}
+                    if ($package) {
+                        $path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
+                        $path_name = str_replace(':', '/', $path_name);
+                        $path = DP_ROOT.'/apps/' . $package->native_name . '/native/Resources/views/'.$path_name;
 
-		return parent::findTemplate($template);
-	}
+                        return $path;
+                    }
+                } catch (\Exception $e) {}
+            }
+        }
+
+        return parent::findTemplate($template);
+    }
 }

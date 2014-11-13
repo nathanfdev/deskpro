@@ -40,160 +40,160 @@ use Application\UserBundle\Form\RegisterType;
 
 class RegisterController extends \Application\DeskPRO\Controller\AbstractController
 {
-	public function registerAction()
-	{
-		if ($this->session->getPerson()->getId()) {
-			return $this->redirectRoute('user');
-		} else {
-			///////////////////////////////////////
-			// SSO Automatic Redirecting
-			//
-			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
-				return $res;
-			}
-		}
+    public function registerAction()
+    {
+        if ($this->session->getPerson()->getId()) {
+            return $this->redirectRoute('user');
+        } else {
+            ///////////////////////////////////////
+            // SSO Automatic Redirecting
+            //
+            if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
+                return $res;
+            }
+        }
 
-		if (!$this->container->getSetting('core.reg_enabled')) {
-			return $this->redirectRoute('user');
-		}
+        if (!$this->container->getSetting('core.reg_enabled')) {
+            return $this->redirectRoute('user');
+        }
 
-		$captcha = null;
-		if ($this->container->getSetting('user.register_captcha')) {
-			$captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
-		}
+        $captcha = null;
+        if ($this->container->getSetting('user.register_captcha')) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
+        }
 
-		// Custom fields
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('custom_fields', 'form');
+        // Custom fields
+        // We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+        // So dont remove it even though it looks like it's not used! :-)
+        $custom_fields_form = $this->get('form.factory')->createNamedBuilder('custom_fields', 'form');
 
-		/** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
-		$fm = $this->container->getSystemService('PersonFieldsManager');
-		if (isset($_POST['custom_fields'])) {
-			$field_data = $fm->getStrucutredDataFromForm($_POST['custom_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
+        /** @var $fm \Application\DeskPRO\CustomFields\PersonFieldManager */
+        $fm = $this->container->getSystemService('PersonFieldsManager');
+        if (isset($_POST['custom_fields'])) {
+            $field_data = $fm->getStrucutredDataFromForm($_POST['custom_fields'], 'Application\\DeskPRO\\Entity\\CustomDataPerson');
 
-			$field_form_data = $fm->createFieldDataFromArray($field_data);
-			$custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
-		} else {
-			$custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
-		}
+            $field_form_data = $fm->createFieldDataFromArray($field_data);
+            $custom_fields = $fm->getDisplayArray($field_form_data, $custom_fields_form, false);
+        } else {
+            $custom_fields = $fm->getDisplayArray(array(), $custom_fields_form, true);
+        }
 
-		$register = new \Application\UserBundle\Form\Model\Register();
-		$register->setCustomFields($fm->getFields());
+        $register = new \Application\UserBundle\Form\Model\Register();
+        $register->setCustomFields($fm->getFields());
 
-		if ($this->session->get('language_id')) {
-			$register->language_id = $this->session->get('language_id');
-		}
+        if ($this->session->get('language_id')) {
+            $register->language_id = $this->session->get('language_id');
+        }
 
-		$tpl_globals = $this->container->get('templating.globals');
-		if ($tpl_globals->getVariable('login_with_email')) {
-			$register->email = $tpl_globals->getVariable('login_with_email');
-		}
+        $tpl_globals = $this->container->get('templating.globals');
+        if ($tpl_globals->getVariable('login_with_email')) {
+            $register->email = $tpl_globals->getVariable('login_with_email');
+        }
 
-		$reg_formtype = new RegisterType();
+        $reg_formtype = new RegisterType();
 
-		$from_ticket = false;
-		if ($this->session->get('ticket_from_ptac_register')) {
-			$from_ticket = $this->em->find('DeskPRO:Ticket', $this->session->get('ticket_from_ptac_register'));
-			$register->from_ticket = $from_ticket;
-		}
+        $from_ticket = false;
+        if ($this->session->get('ticket_from_ptac_register')) {
+            $from_ticket = $this->em->find('DeskPRO:Ticket', $this->session->get('ticket_from_ptac_register'));
+            $register->from_ticket = $from_ticket;
+        }
 
-		$form = $this->get('form.factory')->create($reg_formtype, $register);
+        $form = $this->get('form.factory')->create($reg_formtype, $register);
 
-		$trap_fail = false;
-		if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
-			$trap_fail = true;
-		}
+        $trap_fail = false;
+        if (!empty($_POST['first_name']) || !empty($_POST['last_name']) || !empty($_POST['email'])) {
+            $trap_fail = true;
+        }
 
-		$error_fields = null;
-		$errors = null;
-		if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit') && !$trap_fail) {
-			$form->handleRequest($this->get('request'));
-			$register->custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
+        $error_fields = null;
+        $errors = null;
+        if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit') && !$trap_fail) {
+            $form->handleRequest($this->get('request'));
+            $register->custom_fields = !empty($_POST['custom_fields']) ? $_POST['custom_fields'] : null;
 
-			$validator = new \Application\UserBundle\Validator\RegisterValidator();
-			$validator->setCustomFields($fm->getFields());
+            $validator = new \Application\UserBundle\Validator\RegisterValidator();
+            $validator->setCustomFields($fm->getFields());
 
-			if ($captcha) {
-				$validator->setCaptcha($captcha);
-			}
+            if ($captcha) {
+                $validator->setCaptcha($captcha);
+            }
 
-			$is_valid = $validator->isValid($register);
+            $is_valid = $validator->isValid($register);
 
-			// If there is only one user on the ticket (no parts), then the access code on the ticket
-			// proves the user is who they say they are and we can set their password etc
-			// without a problem. if there are parts, then we cant be sure who they are,
-			// so they'll just have to "forgot password" their account.
-			if (
-				$from_ticket
-				&& !$from_ticket->person->is_user
-				&& !$from_ticket->getUserParticipants()
-				&& (!$is_valid && $validator->hasError('email.in_use'))
-				&& $from_ticket->person->findEmailAddress($register->email)
-			) {
-				$validator->removeError('email.in_use');
-				$register->no_validation = true;
+            // If there is only one user on the ticket (no parts), then the access code on the ticket
+            // proves the user is who they say they are and we can set their password etc
+            // without a problem. if there are parts, then we cant be sure who they are,
+            // so they'll just have to "forgot password" their account.
+            if (
+                $from_ticket
+                && !$from_ticket->person->is_user
+                && !$from_ticket->getUserParticipants()
+                && (!$is_valid && $validator->hasError('email.in_use'))
+                && $from_ticket->person->findEmailAddress($register->email)
+            ) {
+                $validator->removeError('email.in_use');
+                $register->no_validation = true;
 
-				if (!count($validator->getErrors())) {
-					$is_valid = true;
-				}
-			}
+                if (!count($validator->getErrors())) {
+                    $is_valid = true;
+                }
+            }
 
-			if ($is_valid) {
-				$person = $register->save();
+            if ($is_valid) {
+                $person = $register->save();
 
-				$GLOBALS['DP_SET_SKIP_CACHE'] = true;
+                $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
-				$this->session->setFlash('register_done', 1);
+                $this->session->setFlash('register_done', 1);
 
-				$to_login = false;
-				if (!$person->primary_email) {
-					$this->session->setFlash('register_done_email_validate', 1);
-					$to_login = true;
-				} elseif (!$person->is_agent_confirmed) {
-					$this->session->setFlash('register_done_agent_validate', 1);
-					$to_login = true;
-				}
+                $to_login = false;
+                if (!$person->primary_email) {
+                    $this->session->setFlash('register_done_email_validate', 1);
+                    $to_login = true;
+                } elseif (!$person->is_agent_confirmed) {
+                    $this->session->setFlash('register_done_agent_validate', 1);
+                    $to_login = true;
+                }
 
-				// User not validating if they have an added email address already
-				if ($person->primary_email) {
+                // User not validating if they have an added email address already
+                if ($person->primary_email) {
 
-					$this->session->set('auth_person_id', $person->id);
-					$this->session->set('dp_interface', DP_INTERFACE);
+                    $this->session->set('auth_person_id', $person->id);
+                    $this->session->set('dp_interface', DP_INTERFACE);
 
-					// Set last login date
-					App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
+                    // Set last login date
+                    App::getDb()->update('people', array('date_last_login' => date('Y-m-d H:i:s')), array('id' => $person->getId()));
 
-					if ($from_ticket) {
-						$this->session->remove('ticket_from_ptac_register');
-					}
+                    if ($from_ticket) {
+                        $this->session->remove('ticket_from_ptac_register');
+                    }
 
-					$this->session->save();
+                    $this->session->save();
 
-					if ($from_ticket && $person->hasPerm('tickets.use')) {
-						return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $from_ticket->id));
-					}
-				}
+                    if ($from_ticket && $person->hasPerm('tickets.use')) {
+                        return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $from_ticket->id));
+                    }
+                }
 
-				if ($to_login) {
-					return $this->redirectRoute('user_login');
-				} else {
-					return $this->redirectRoute('user');
-				}
-			} else {
-				$errors = $validator->getErrors(true);
-				$error_fields = $validator->getErrorGroups(true);
-			}
-		}
+                if ($to_login) {
+                    return $this->redirectRoute('user_login');
+                } else {
+                    return $this->redirectRoute('user');
+                }
+            } else {
+                $errors = $validator->getErrors(true);
+                $error_fields = $validator->getErrorGroups(true);
+            }
+        }
 
-		return $this->render('UserBundle:Register:register.html.twig', array(
-			'form' => $form->createView(),
-			'custom_fields' => $custom_fields,
-			'errors' => $errors,
-			'error_fields' => $error_fields,
-			'from_ticket' => $from_ticket,
-			'this_page' => 'register',
-			'captcha' => $captcha,
-		));
-	}
+        return $this->render('UserBundle:Register:register.html.twig', array(
+            'form' => $form->createView(),
+            'custom_fields' => $custom_fields,
+            'errors' => $errors,
+            'error_fields' => $error_fields,
+            'from_ticket' => $from_ticket,
+            'this_page' => 'register',
+            'captcha' => $captcha,
+        ));
+    }
 }

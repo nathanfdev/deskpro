@@ -7,26 +7,26 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class ModSetUserVarTest extends \DpUnitTestCase
 {
-	public function testSet()
-	{
-		$ticket = new Ticket();
-		$exec   = new ExecutorContext();
+    public function testSet()
+    {
+        $ticket = new Ticket();
+        $exec   = new ExecutorContext();
 
-		$action = new ModSetUserVar(array('name' => 'testvar', 'value' => 'test123'));
-		$action->applyAction($ticket, $exec);
+        $action = new ModSetUserVar(array('name' => 'testvar', 'value' => 'test123'));
+        $action->applyAction($ticket, $exec);
 
-		$this->assertTrue($exec->getUserVars()->has('testvar'));
-		$this->assertEquals('test123', $exec->getUserVars()->get('testvar'));
-	}
+        $this->assertTrue($exec->getUserVars()->has('testvar'));
+        $this->assertEquals('test123', $exec->getUserVars()->get('testvar'));
+    }
 
-	public function testNotSet()
-	{
-		$ticket = new Ticket();
-		$exec   = new ExecutorContext();
+    public function testNotSet()
+    {
+        $ticket = new Ticket();
+        $exec   = new ExecutorContext();
 
-		$action = new ModSetUserVar(array('name' => 'xxx', 'value' => 'test123'));
-		$action->applyAction($ticket, $exec);
+        $action = new ModSetUserVar(array('name' => 'xxx', 'value' => 'test123'));
+        $action->applyAction($ticket, $exec);
 
-		$this->assertFalse($exec->getUserVars()->has('testvar'));
-	}
+        $this->assertFalse($exec->getUserVars()->has('testvar'));
+    }
 }

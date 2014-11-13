@@ -45,26 +45,28 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckUserLanguage extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('language_ids');
-		$options->addCallbackCheckedOption('language_ids', function($v) {
-			return (is_array($v) && !empty($v));
-		});
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('language_ids');
+        $options->addCallbackCheckedOption('language_ids', function ($v) {
+            return (is_array($v) && !empty($v));
+        });
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'person.language', 'id', $options['language_ids']);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+
+        return $this->isEntityMatch($ticket, $context, 'person.language', 'id', $options['language_ids']);
+    }
 }

@@ -12,7 +12,7 @@ use Elastica\Util as ElasticaUtil;
  */
 abstract class AbstractRepository extends Repository
 {
-	const MAX_LEN = 315;
+    const MAX_LEN = 315;
 
     /**
      * Tag to be placed before highlight
@@ -42,7 +42,7 @@ abstract class AbstractRepository extends Repository
      * for actual execution.
      *
      * @param $query
-     * @param null $limit
+     * @param null  $limit
      * @param array $options
      *
      * @return array
@@ -50,27 +50,27 @@ abstract class AbstractRepository extends Repository
     public function find($query, $limit = null, $options = array())
     {
         $queryObj = $this->getQuery($query);
-		$queryObj->setSize(50);
+        $queryObj->setSize(50);
 
-		if (isset($options['sort_type'])) {
+        if (isset($options['sort_type'])) {
 
-			switch ($options['sort_type']) {
-				case 'date_active':
-					$queryObj->setSort(array(
-						array('date_active' => array('order' => 'desc')),
-						'_score'
-					));
-					break;
-				case 'date_created':
-					$queryObj->setSort(array(
-						array('date_created' => array('order' => 'desc')),
-						'_score'
-					));
-					break;
-			}
+            switch ($options['sort_type']) {
+                case 'date_active':
+                    $queryObj->setSort(array(
+                        array('date_active' => array('order' => 'desc')),
+                        '_score'
+                    ));
+                    break;
+                case 'date_created':
+                    $queryObj->setSort(array(
+                        array('date_created' => array('order' => 'desc')),
+                        '_score'
+                    ));
+                    break;
+            }
 
-			unset($options['sort_type']);
-		}
+            unset($options['sort_type']);
+        }
 
         $this->setHighlight($queryObj);
 
@@ -85,55 +85,54 @@ abstract class AbstractRepository extends Repository
      */
     protected function getQuery($q)
     {
-		if (isset($q[self::MAX_LEN])) {
-			$q = substr($q, 0, self::MAX_LEN);
-		}
+        if (isset($q[self::MAX_LEN])) {
+            $q = substr($q, 0, self::MAX_LEN);
+        }
 
-		$l = Strings::extractRegexMatch('#^\[(.*?)\]$#', $q);
-		if ($l && $this instanceof WithLabelsInterface) {
-			$queryString = new Query\QueryString(ElasticaUtil::escapeTerm($l));
-			$queryString->setFields(array('labels'));
-			$queryString->setDefaultOperator('AND');
-			$query = new Query(
-				array(
-					'query' => array(
-						'filtered' => array(
-							'query'  => $queryString->toArray(),
-							'filter' => $this->getFilters(),
-						)
-					)
-				)
-			);
-		} else {
-			$query = new Query(
-				array(
-					'query' => array(
-						'filtered' => array(
-							'query'  => $this->getQueryString($q)->toArray(),
-							'filter' => $this->getFilters(),
-						)
-					)
-				)
-			);
-		}
+        $l = Strings::extractRegexMatch('#^\[(.*?)\]$#', $q);
+        if ($l && $this instanceof WithLabelsInterface) {
+            $queryString = new Query\QueryString(ElasticaUtil::escapeTerm($l));
+            $queryString->setFields(array('labels'));
+            $queryString->setDefaultOperator('AND');
+            $query = new Query(
+                array(
+                    'query' => array(
+                        'filtered' => array(
+                            'query'  => $queryString->toArray(),
+                            'filter' => $this->getFilters(),
+                        )
+                    )
+                )
+            );
+        } else {
+            $query = new Query(
+                array(
+                    'query' => array(
+                        'filtered' => array(
+                            'query'  => $this->getQueryString($q)->toArray(),
+                            'filter' => $this->getFilters(),
+                        )
+                    )
+                )
+            );
+        }
 
         return $query;
     }
 
+    /**
+     * Makes sure a "query" var is formatted for use with QueryString
+     *
+     * @param  string $q
+     * @return string
+     */
+    protected function escapeQueryStringTerm($q)
+    {
+        $q = ElasticaUtil::escapeTerm($q);
+        $q = str_replace(array('AND', 'OR', 'NOT'), array('and', 'or', 'not'), $q);
 
-	/**
-	 * Makes sure a "query" var is formatted for use with QueryString
-	 *
-	 * @param string $q
-	 * @return string
-	 */
-	protected function escapeQueryStringTerm($q)
-	{
-		$q = ElasticaUtil::escapeTerm($q);
-		$q = str_replace(array('AND', 'OR', 'NOT'), array('and', 'or', 'not'), $q);
-
-		return $q;
-	}
+        return $q;
+    }
 
     /**
      * Constructs the query string
@@ -141,35 +140,35 @@ abstract class AbstractRepository extends Repository
      * @param $q
      * @return Query\QueryString|Query\MultiMatch
      */
-	protected function getQueryString($q)
+    protected function getQueryString($q)
     {
-		if (isset($q[self::MAX_LEN])) {
-			$q = substr($q, 0, self::MAX_LEN);
-		}
-		
-		$term = $this->escapeQueryStringTerm($q);
+        if (isset($q[self::MAX_LEN])) {
+            $q = substr($q, 0, self::MAX_LEN);
+        }
 
-		// If we have an equal number of quotes, then
-		// they are properly balanced and it's valid so we can
-		// accept the "phrase" search
-		if (substr_count($term, '\\"') % 2 === 0) {
-			$term = str_replace('\\"', '"', $term);
-		}
+        $term = $this->escapeQueryStringTerm($q);
+
+        // If we have an equal number of quotes, then
+        // they are properly balanced and it's valid so we can
+        // accept the "phrase" search
+        if (substr_count($term, '\\"') % 2 === 0) {
+            $term = str_replace('\\"', '"', $term);
+        }
 
         $queryString = new Query\QueryString($term);
-		$queryString->setFields($this->getQueryFields());
+        $queryString->setFields($this->getQueryFields());
         $queryString->setDefaultOperator('AND');
 
         return $queryString;
     }
 
-	/**
-	 * @return array
-	 */
-	protected function getQueryFields()
-	{
-		return array('_all');
-	}
+    /**
+     * @return array
+     */
+    protected function getQueryFields()
+    {
+        return array('_all');
+    }
 
     /**
      * Constructs the filters array (override as needed)

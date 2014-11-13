@@ -36,56 +36,56 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056726 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Updating registration settings");
+        $this->out("Updating registration settings");
 
-		$settings = array(
-			'core.reg_enabled'      => 0,
-			'core.reg_required'     => 0,
-			'core.agent_validation' => 0,
-		);
+        $settings = array(
+            'core.reg_enabled'      => 0,
+            'core.reg_required'     => 0,
+            'core.agent_validation' => 0,
+        );
 
-		$mode = $db->fetchColumn("SELECT value FROM settings WHERE name = 'core.user_mode'");
+        $mode = $db->fetchColumn("SELECT value FROM settings WHERE name = 'core.user_mode'");
 
-		switch ($mode) {
-			case 'open':
-				$settings['core.reg_enabled']      = 1;
-				$settings['core.reg_required']     = 0;
-				$settings['core.agent_validation'] = 0;
-				break;
+        switch ($mode) {
+            case 'open':
+                $settings['core.reg_enabled']      = 1;
+                $settings['core.reg_required']     = 0;
+                $settings['core.agent_validation'] = 0;
+                break;
 
-			case 'require_reg':
-				$settings['core.reg_enabled']      = 1;
-				$settings['core.reg_required']     = 1;
-				$settings['core.agent_validation'] = 0;
-				break;
+            case 'require_reg':
+                $settings['core.reg_enabled']      = 1;
+                $settings['core.reg_required']     = 1;
+                $settings['core.agent_validation'] = 0;
+                break;
 
-			case 'require_reg_agent_validation':
-				$settings['core.reg_enabled']      = 1;
-				$settings['core.reg_required']     = 1;
-				$settings['core.agent_validation'] = 1;
-				break;
+            case 'require_reg_agent_validation':
+                $settings['core.reg_enabled']      = 1;
+                $settings['core.reg_required']     = 1;
+                $settings['core.agent_validation'] = 1;
+                break;
 
-			case 'closed':
-				$settings['core.reg_enabled']      = 0;
-				$settings['core.reg_required']     = 0;
-				$settings['core.agent_validation'] = 0;
-				break;
+            case 'closed':
+                $settings['core.reg_enabled']      = 0;
+                $settings['core.reg_required']     = 0;
+                $settings['core.agent_validation'] = 0;
+                break;
 
-			default:
-				$settings['core.reg_enabled']      = 1;
-				$settings['core.reg_required']     = 0;
-				$settings['core.agent_validation'] = 0;
-				break;
-		}
+            default:
+                $settings['core.reg_enabled']      = 1;
+                $settings['core.reg_required']     = 0;
+                $settings['core.agent_validation'] = 0;
+                break;
+        }
 
-		foreach ($settings as $k => $v) {
-			$db->replace('settings', array('name' => $k, 'value' => $v));
-		}
+        foreach ($settings as $k => $v) {
+            $db->replace('settings', array('name' => $k, 'value' => $v));
+        }
 
-		$db->delete('settings', array('name' => 'core.user_mode'));
-	}
+        $db->delete('settings', array('name' => 'core.user_mode'));
+    }
 }

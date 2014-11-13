@@ -38,58 +38,59 @@ use Application\DeskPRO\App;
 
 class Template extends AbstractEntityRepository
 {
-	/**
-	 * @param $name
-	 * @return null|\Application\DeskPRO\Entity\Template
-	 */
-	public function getTemplateByName($name)
-	{
-		return $this->findOneBy(array('name' => $name));
-	}
+    /**
+     * @param $name
+     * @return null|\Application\DeskPRO\Entity\Template
+     */
+    public function getTemplateByName($name)
+    {
+        return $this->findOneBy(array('name' => $name));
+    }
 
-	public function getTemplateForStyle($template_name, $style = null)
-	{
-		try {
-			if ($style === null OR $style === 0) {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style IS NULL AND t.name = ?1
-				")->setParameters(array(1=>$template_name));
-			} else {
-				$q = $this->getEntityManager()->createQuery("
-					SELECT t
-					FROM DeskPRO:Template t
-					WHERE t.style = ?1 AND t.name = ?2
-				")->setParameters(array(1=>$style, 2=>$template_name));
-			}
+    public function getTemplateForStyle($template_name, $style = null)
+    {
+        try {
+            if ($style === null OR $style === 0) {
+                $q = $this->getEntityManager()->createQuery("
+                    SELECT t
+                    FROM DeskPRO:Template t
+                    WHERE t.style IS NULL AND t.name = ?1
+                ")->setParameters(array(1=>$template_name));
+            } else {
+                $q = $this->getEntityManager()->createQuery("
+                    SELECT t
+                    FROM DeskPRO:Template t
+                    WHERE t.style = ?1 AND t.name = ?2
+                ")->setParameters(array(1=>$style, 2=>$template_name));
+            }
 
-			$r = $q->getSingleResult();
-			return $r;
-		} catch (\Exception $e) {
-			return null;
-		}
-	}
+            $r = $q->getSingleResult();
 
-	public function getCustomTemplateNamesInStyle($style)
-	{
-		$names = App::getDb()->fetchColumn("
-			SELECT name
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']));
+            return $r;
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 
-		return $names;
-	}
+    public function getCustomTemplateNamesInStyle($style)
+    {
+        $names = App::getDb()->fetchColumn("
+            SELECT name
+            FROM templates
+            WHERE style_id = ?
+        ", array($style['id']));
 
-	public function getCustomTemplateInfoInStyle($style)
-	{
-		$names = App::getDb()->fetchAllKeyed("
-			SELECT name, date_updated
-			FROM templates
-			WHERE style_id = ?
-		", array($style['id']), 'name');
+        return $names;
+    }
 
-		return $names;
-	}
+    public function getCustomTemplateInfoInStyle($style)
+    {
+        $names = App::getDb()->fetchAllKeyed("
+            SELECT name, date_updated
+            FROM templates
+            WHERE style_id = ?
+        ", array($style['id']), 'name');
+
+        return $names;
+    }
 }

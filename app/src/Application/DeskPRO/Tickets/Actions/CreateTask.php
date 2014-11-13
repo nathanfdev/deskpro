@@ -49,137 +49,137 @@ use Orb\Util\Strings;
  */
 class CreateTask extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('title', 'creator');
-		$options->addValidNames('date_due', 'public', 'assignee');
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('title', 'creator');
+        $options->addValidNames('date_due', 'public', 'assignee');
 
-		return $options;
-	}
+        return $options;
+    }
 
-	protected function getCreator(Person $person)
-	{
-		$id = (int) $this->getActionOption('creator');
-		if (-1 !== $id) {
-			$person = $this->getContainer()->getEm()->find('DeskPRO:Person', $id);
-			if (!($person && $person['is_agent'] && !$person['is_deleted'])) {
-				return null;
-			}
-		}
+    protected function getCreator(Person $person)
+    {
+        $id = (int) $this->getActionOption('creator');
+        if (-1 !== $id) {
+            $person = $this->getContainer()->getEm()->find('DeskPRO:Person', $id);
+            if (!($person && $person['is_agent'] && !$person['is_deleted'])) {
+                return null;
+            }
+        }
 
-		return $person;
-	}
+        return $person;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$task = new Task();
-		$form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task);
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $task = new Task();
+        $form = $this->getContainer()->getFormFactory()->create(new TaskType(), $task);
 
-		if (!$person = $this->getCreator($ticket->person)) {
-			$context->getLogger()->debug('[CreateTask] Wrong creator');
-		}
+        if (!$person = $this->getCreator($ticket->person)) {
+            $context->getLogger()->debug('[CreateTask] Wrong creator');
+        }
 
-		$due_date = $this->getActionOption('date_due', '');
+        $due_date = $this->getActionOption('date_due', '');
 
-		$assigned_agent_team = null;
-		$assigned_agent = null;
+        $assigned_agent_team = null;
+        $assigned_agent = null;
 
-		$assignee = $this->getActionOption('assignee', '');
-		$context->getLogger()->debug('[CreateTask] assignee is ' . $assignee);
-		if ($assignee = Strings::extractRegexMatch('#^(?P<type>.*?):(?P<id>-?\d+)$#', $assignee, -1)) {
-			switch ($assignee['type']) {
-				case 'agent':
-					$assigned_agent = $assignee['id'];
-					if ($assigned_agent == -1) {
-						$context->getLogger()->debug('[CreateTask] assignee = current agent');
-						if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
-							$assigned_agent = $context->getPersonContext()->id;
-							$context->getLogger()->debug('[CreateTask] current agent is ' . $assigned_agent);
-						} else {
-							$assigned_agent = null;
-							$context->getLogger()->debug('[CreateTask] current agent is null');
-						}
-					}
-					break;
+        $assignee = $this->getActionOption('assignee', '');
+        $context->getLogger()->debug('[CreateTask] assignee is ' . $assignee);
+        if ($assignee = Strings::extractRegexMatch('#^(?P<type>.*?):(?P<id>-?\d+)$#', $assignee, -1)) {
+            switch ($assignee['type']) {
+                case 'agent':
+                    $assigned_agent = $assignee['id'];
+                    if ($assigned_agent == -1) {
+                        $context->getLogger()->debug('[CreateTask] assignee = current agent');
+                        if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
+                            $assigned_agent = $context->getPersonContext()->id;
+                            $context->getLogger()->debug('[CreateTask] current agent is ' . $assigned_agent);
+                        } else {
+                            $assigned_agent = null;
+                            $context->getLogger()->debug('[CreateTask] current agent is null');
+                        }
+                    }
+                    break;
 
-				case 'team':
-					$assigned_agent_team = $assignee['id'];
-					if (!$assigned_agent_team) {
-						$assigned_agent_team = null;
-					}
-					break;
-			}
-		}
+                case 'team':
+                    $assigned_agent_team = $assignee['id'];
+                    if (!$assigned_agent_team) {
+                        $assigned_agent_team = null;
+                    }
+                    break;
+            }
+        }
 
-		$formData = array(
-			'title'               => $this->getActionOption('title'),
-			'date_due'            => $due_date,
-			'visibility'          => (int) $this->getActionOption('public'),
-			'person'              => $person['id'],
-			'ticket'              => $ticket['id'],
-			'assigned_agent'      => $assigned_agent,
-			'assigned_agent_team' => $assigned_agent_team
-		);
+        $formData = array(
+            'title'               => $this->getActionOption('title'),
+            'date_due'            => $due_date,
+            'visibility'          => (int) $this->getActionOption('public'),
+            'person'              => $person['id'],
+            'ticket'              => $ticket['id'],
+            'assigned_agent'      => $assigned_agent,
+            'assigned_agent_team' => $assigned_agent_team
+        );
 
-		$form->submit($formData);
-		if (!$form->isValid()) {
-			$context->getLogger()->debug('[CreateTask] Validation error: ' . (string)$form->getErrorsAsString());
-			return;
-		}
+        $form->submit($formData);
+        if (!$form->isValid()) {
+            $context->getLogger()->debug('[CreateTask] Validation error: ' . (string)$form->getErrorsAsString());
 
-		$em = $this->getContainer()->getEm();
-		$em->persist($task);
-		$em->flush();
+            return;
+        }
 
-		// todo postPersist event
-		$notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($task);
-		$notify->send();
+        $em = $this->getContainer()->getEm();
+        $em->persist($task);
+        $em->flush();
 
-		$context->getLogger()->debug(sprintf('[CreateTask] Created new Task "%s"', $task['title']));
-	}
+        // todo postPersist event
+        $notify = new \Application\DeskPRO\Notifications\TaskAssignNotification($task);
+        $notify->send();
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return false;
-	}
+        $context->getLogger()->debug(sprintf('[CreateTask] Created new Task "%s"', $task['title']));
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person = $this->getCreator($person)) {
-			return array('agent');
-		}
-
-		$loader = new AgentPermsPersonDbLoader($person, $this->getContainer()->getEm());
-		$perms = $loader->getEffectivePermissions()->toArray();
-
-		if (!$perms['tasks']) {
-			return array('tasks');
-		}
-
-		return null;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person = $this->getCreator($person)) {
+            return array('agent');
+        }
+
+        $loader = new AgentPermsPersonDbLoader($person, $this->getContainer()->getEm());
+        $perms = $loader->getEffectivePermissions()->toArray();
+
+        if (!$perms['tasks']) {
+            return array('tasks');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

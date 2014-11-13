@@ -43,210 +43,210 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class CustomDefChat extends CustomDefAbstract
 {
-	/**
-	 * @var CustomDefChat
-	 */
+    /**
+     * @var CustomDefChat
+     */
 
-	protected $parent = null;
+    protected $parent = null;
 
-	/**
-	 * Field children
-	 *
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
+    /**
+     * Field children
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
 
-	protected $children = null;
+    protected $children = null;
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefChat';
-		$metadata->setPrimaryTable(array('name' => 'custom_def_chat',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'id',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'id',
-				 'id'         => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'js_class',
-				 'type'       => 'string',
-				 'length'     => 255,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'js_class',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'has_form_template',
-				 'type'       => 'boolean',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'has_form_template',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'has_display_template',
-				 'type'       => 'boolean',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'has_display_template',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'title',
-				 'type'       => 'string',
-				 'length'     => 255,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'title',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'description',
-				 'type'       => 'text',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'description',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'handler_class',
-				 'type'       => 'string',
-				 'length'     => 255,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => true,
-				 'columnName' => 'handler_class',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'options',
-				 'type'       => 'array',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'options',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'is_user_enabled',
-				 'type'       => 'boolean',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'is_user_enabled',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'is_enabled',
-				 'type'       => 'boolean',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'is_enabled',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'display_order',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'display_order',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'default_value',
-				 'type'       => 'string',
-				 'length'     => 500,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => true,
-				 'columnName' => 'default_value'
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'is_agent_field',
-				 'type'       => 'boolean',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'is_agent_field',
-			)
-		);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(
-			array(
-				 'fieldName'    => 'parent',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
-				 'mappedBy'     => null,
-				 'inversedBy'   => 'children',
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'parent_id',
-						 'referencedColumnName' => 'id',
-						 'nullable'             => true,
-						 'onDelete'             => 'cascade',
-						 'columnDefinition'     => null,
-					 ),
-				 ),
-			)
-		);
-		$metadata->mapOneToMany(
-			array(
-				 'fieldName'    => 'children',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
-				 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
-				 'mappedBy'     => 'parent',
-				 'orderBy'      => array('display_order' => 'ASC',),
-			)
-		);
-		$metadata->mapManyToOne(
-			array(
-				 'fieldName'    => 'app',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
-				 'mappedBy'     => null,
-				 'inversedBy'   => null,
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'app_id',
-						 'referencedColumnName' => 'id',
-						 'unique'               => false,
-						 'nullable'             => true,
-						 'onDelete'             => 'set null',
-						 'columnDefinition'     => null,
-					 ),
-				 ),
-			)
-		);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefChat';
+        $metadata->setPrimaryTable(array('name' => 'custom_def_chat',));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'id',
+                 'type'       => 'integer',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'id',
+                 'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'js_class',
+                 'type'       => 'string',
+                 'length'     => 255,
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'js_class',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'has_form_template',
+                 'type'       => 'boolean',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'has_form_template',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'has_display_template',
+                 'type'       => 'boolean',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'has_display_template',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'title',
+                 'type'       => 'string',
+                 'length'     => 255,
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'title',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'description',
+                 'type'       => 'text',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'description',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'handler_class',
+                 'type'       => 'string',
+                 'length'     => 255,
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => true,
+                 'columnName' => 'handler_class',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'options',
+                 'type'       => 'array',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'options',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'is_user_enabled',
+                 'type'       => 'boolean',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'is_user_enabled',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'is_enabled',
+                 'type'       => 'boolean',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'is_enabled',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'display_order',
+                 'type'       => 'integer',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'display_order',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'default_value',
+                 'type'       => 'string',
+                 'length'     => 500,
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => true,
+                 'columnName' => 'default_value'
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'is_agent_field',
+                 'type'       => 'boolean',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'is_agent_field',
+            )
+        );
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(
+            array(
+                 'fieldName'    => 'parent',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
+                 'mappedBy'     => null,
+                 'inversedBy'   => 'children',
+                 'joinColumns'  => array(
+                     0 => array(
+                         'name'                 => 'parent_id',
+                         'referencedColumnName' => 'id',
+                         'nullable'             => true,
+                         'onDelete'             => 'cascade',
+                         'columnDefinition'     => null,
+                     ),
+                 ),
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                 'fieldName'    => 'children',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefChat',
+                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
+                 'mappedBy'     => 'parent',
+                 'orderBy'      => array('display_order' => 'ASC',),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                 'fieldName'    => 'app',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
+                 'mappedBy'     => null,
+                 'inversedBy'   => null,
+                 'joinColumns'  => array(
+                     0 => array(
+                         'name'                 => 'app_id',
+                         'referencedColumnName' => 'id',
+                         'unique'               => false,
+                         'nullable'             => true,
+                         'onDelete'             => 'set null',
+                         'columnDefinition'     => null,
+                     ),
+                 ),
+            )
+        );
+    }
 }

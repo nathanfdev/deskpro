@@ -39,160 +39,162 @@ use Doctrine\ORM\EntityManager;
 
 class LanguageInstaller
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Language
-	 */
-	protected $upgrade_language;
+    /**
+     * @var \Application\DeskPRO\Entity\Language
+     */
+    protected $upgrade_language;
 
-	/**
-	 * @param \Doctrine\ORM\EntityManager $em
-	 */
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
-
-
-	/**
-	 * This will insert the lang pack into an existing language,
-	 * upgrading it instead of installing a brand new one.
-	 *
-	 * @param \Application\DeskPRO\Entity\Language $language
-	 */
-	public function setUpgradeLanguage(Language $language)
-	{
-		$this->upgrade_language = $language;
-	}
+    /**
+     * @param \Doctrine\ORM\EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
 
-	/**
-	 * Install a language pack from a pack file located at $pack_path.
-	 *
-	 * @param string $pack_path
-	 */
-	public function insatllFromPackFilePath($pack_path)
-	{
-		$pack_file = LanguagePackFile::newFromFile($pack_path);
-		return $this->installPack($pack_file->getPack());
-	}
+    /**
+     * This will insert the lang pack into an existing language,
+     * upgrading it instead of installing a brand new one.
+     *
+     * @param \Application\DeskPRO\Entity\Language $language
+     */
+    public function setUpgradeLanguage(Language $language)
+    {
+        $this->upgrade_language = $language;
+    }
 
 
-	/**
-	 * Install a language pack from a pack file loaded into a string.
-	 *
-	 * @param string $pack_string
-	 */
-	public function installFromPackFileString($pack_string)
-	{
-		$pack_file = LanguagePackFile::newFromString($pack_string);
-		return $this->installPack($pack_file->getPack());
-	}
+    /**
+     * Install a language pack from a pack file located at $pack_path.
+     *
+     * @param string $pack_path
+     */
+    public function insatllFromPackFilePath($pack_path)
+    {
+        $pack_file = LanguagePackFile::newFromFile($pack_path);
+
+        return $this->installPack($pack_file->getPack());
+    }
 
 
-	/**
-	 * Install a language pack from an already loaded LanguagePackFile.
-	 *
-	 * @param \Application\DeskPRO\Languages\LanguagePackFile $pack_file
-	 */
-	public function installFromPackFile(LanguagePackFile $pack_file)
-	{
-		return $this->installPack($pack_file->getPack());
-	}
+    /**
+     * Install a language pack from a pack file loaded into a string.
+     *
+     * @param string $pack_string
+     */
+    public function installFromPackFileString($pack_string)
+    {
+        $pack_file = LanguagePackFile::newFromString($pack_string);
+
+        return $this->installPack($pack_file->getPack());
+    }
 
 
-	/**
-	 * Install a new language pack
-	 *
-	 * @param \Application\DeskPRO\Languages\LanguagePack $pack
-	 * @return \Application\DeskPRO\Entity\Language
-	 * @throws \Exception
-	 */
-	public function installPack(LanguagePack $pack)
-	{
-		$this->em->getConnection()->beginTransaction();
-		try {
+    /**
+     * Install a language pack from an already loaded LanguagePackFile.
+     *
+     * @param \Application\DeskPRO\Languages\LanguagePackFile $pack_file
+     */
+    public function installFromPackFile(LanguagePackFile $pack_file)
+    {
+        return $this->installPack($pack_file->getPack());
+    }
 
-			if ($this->upgrade_language) {
 
-				$lang = $this->upgrade_language;
-				$lang->sys_name = $pack->sys_name;
-				$lang->lang_code = $pack->lang_code;
+    /**
+     * Install a new language pack
+     *
+     * @param  \Application\DeskPRO\Languages\LanguagePack $pack
+     * @return \Application\DeskPRO\Entity\Language
+     * @throws \Exception
+     */
+    public function installPack(LanguagePack $pack)
+    {
+        $this->em->getConnection()->beginTransaction();
+        try {
 
-				// Delete all phrases that arent customized
-				$this->em->getConnection()->executeUpdate("
-					DELETE FROM phrases
-					WHERE language_id = ? AND phrase IS NULL OR phrase = ''
-				", array($lang->getId()));
+            if ($this->upgrade_language) {
 
-				// Figure out obsolete phrases to delete
-				$custom_phrase_ids = $this->em->getConnection()->fetchAllCol("
-					SELECT name FROM phrases
-					WHERE language_id = ?
-				", array($lang->getId()));
+                $lang = $this->upgrade_language;
+                $lang->sys_name = $pack->sys_name;
+                $lang->lang_code = $pack->lang_code;
 
-				$delete_ids = array();
+                // Delete all phrases that arent customized
+                $this->em->getConnection()->executeUpdate("
+                    DELETE FROM phrases
+                    WHERE language_id = ? AND phrase IS NULL OR phrase = ''
+                ", array($lang->getId()));
 
-				foreach ($custom_phrase_ids as $phrase_id) {
-					if (!isset($pack->phrases[$phrase_id])) {
-						$delete_ids[] = $phrase_id;
-					}
-				}
+                // Figure out obsolete phrases to delete
+                $custom_phrase_ids = $this->em->getConnection()->fetchAllCol("
+                    SELECT name FROM phrases
+                    WHERE language_id = ?
+                ", array($lang->getId()));
 
-				if ($delete_ids) {
+                $delete_ids = array();
 
-					$this->em->getConnection()->executeUpdate('
-						DELETE FROM phrases
-						WHERE language_id = ? AND name IN (?)
-					', array($lang->getId(), $delete_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
-				}
+                foreach ($custom_phrase_ids as $phrase_id) {
+                    if (!isset($pack->phrases[$phrase_id])) {
+                        $delete_ids[] = $phrase_id;
+                    }
+                }
 
-			} else {
-				$lang = new Language();
-				$lang->title     = $pack->title;
-				$lang->locale    = $pack->locale;
-				$lang->sys_name  = $pack->sys_name;
-				$lang->lang_code = $pack->lang_code;
+                if ($delete_ids) {
 
-				$this->em->persist($lang);
-				$this->em->flush();
-			}
+                    $this->em->getConnection()->executeUpdate('
+                        DELETE FROM phrases
+                        WHERE language_id = ? AND name IN (?)
+                    ', array($lang->getId(), $delete_ids), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+                }
 
-			$lang_id = $lang->getId();
-			$created_at = date('Y-m-d H:i:s');
+            } else {
+                $lang = new Language();
+                $lang->title     = $pack->title;
+                $lang->locale    = $pack->locale;
+                $lang->sys_name  = $pack->sys_name;
+                $lang->lang_code = $pack->lang_code;
 
-			$insert_phrases = array();
-			foreach ($pack->phrases as $id => $phrase) {
+                $this->em->persist($lang);
+                $this->em->flush();
+            }
 
-				$groupname = \Orb\Util\Strings::rexplode('.', $id);
-				$groupname = array_shift($groupname);
+            $lang_id = $lang->getId();
+            $created_at = date('Y-m-d H:i:s');
 
-				$insert_phrases[] = array(
-					'language_id'       => $lang_id,
-					'name'              => $id,
-					'groupname'         => $groupname,
-					'original_phrase'   => $phrase,
-					'original_hash'     => sha1($phrase),
-					'created_at'        => $created_at,
-					'updated_at'        => $created_at,
-				);
-			}
+            $insert_phrases = array();
+            foreach ($pack->phrases as $id => $phrase) {
 
-			$batch = array_chunk($insert_phrases, 150);
-			foreach ($batch as $b) {
-				$this->em->getConnection()->batchInsert('phrases', $b);
-			}
+                $groupname = \Orb\Util\Strings::rexplode('.', $id);
+                $groupname = array_shift($groupname);
 
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
+                $insert_phrases[] = array(
+                    'language_id'       => $lang_id,
+                    'name'              => $id,
+                    'groupname'         => $groupname,
+                    'original_phrase'   => $phrase,
+                    'original_hash'     => sha1($phrase),
+                    'created_at'        => $created_at,
+                    'updated_at'        => $created_at,
+                );
+            }
 
-		return $lang;
-	}
+            $batch = array_chunk($insert_phrases, 150);
+            foreach ($batch as $b) {
+                $this->em->getConnection()->batchInsert('phrases', $b);
+            }
+
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
+
+        return $lang;
+    }
 }

@@ -41,11 +41,11 @@ use Application\ApiBundle\ApiUser;
  */
 class RequireSessionPermission implements PermissionStrategyInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function userHasPermission(ApiUser $api_user, $context_info = null)
-	{
-		return $api_user->session ? true : false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    {
+        return $api_user->session ? true : false;
+    }
 }

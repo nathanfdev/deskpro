@@ -33,34 +33,34 @@ namespace Application\ImportBundle;
 
 class DirectoryIteratorFilter extends \RecursiveFilterIterator
 {
-	/** @var bool  */
-	private $exclude_done = false;
+    /** @var bool  */
+    private $exclude_done = false;
 
-	public function excludeDone()
-	{
-		$this->exclude_done = true;
-	}
+    public function excludeDone()
+    {
+        $this->exclude_done = true;
+    }
 
-	public function includeDone()
-	{
-		$this->exclude_done = false;
-	}
+    public function includeDone()
+    {
+        $this->exclude_done = false;
+    }
 
-	public function accept()
-	{
-		/** @var \SplFileInfo $current */
-		$current = $this->current();
+    public function accept()
+    {
+        /** @var \SplFileInfo $current */
+        $current = $this->current();
 
-		// Invalid type
-		if (!$current->isDir() && $current->getExtension() != 'json') {
-			return false;
-		}
+        // Invalid type
+        if (!$current->isDir() && $current->getExtension() != 'json') {
+            return false;
+        }
 
-		// Already done
-		if ($this->exclude_done && file_exists($current->getPath() . '.done')) {
-			return false;
-		}
+        // Already done
+        if ($this->exclude_done && file_exists($current->getPath() . '.done')) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

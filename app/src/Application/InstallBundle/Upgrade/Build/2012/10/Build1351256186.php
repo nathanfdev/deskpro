@@ -36,18 +36,18 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351256186 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix LinkedIn contact type");
-		$this->execMutateSql("
-			UPDATE people_contact_data
-			SET contact_type = 'linked_in'
-			WHERE contact_type = 'linkedin'
-		");
-		$this->execMutateSql("
-			UPDATE organizations_contact_data
-			SET contact_type = 'linked_in'
-			WHERE contact_type = 'linkedin'
-		");
-	}
+    public function run()
+    {
+        $this->out("Fix LinkedIn contact type");
+        $this->execMutateSql("
+            UPDATE people_contact_data
+            SET contact_type = 'linked_in'
+            WHERE contact_type = 'linkedin'
+        ");
+        $this->execMutateSql("
+            UPDATE organizations_contact_data
+            SET contact_type = 'linked_in'
+            WHERE contact_type = 'linkedin'
+        ");
+    }
 }

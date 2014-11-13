@@ -35,77 +35,77 @@ use Application\ImportBundle\Value\PersonValue;
 
 class PersonArrayParser implements ArrayParserInterface
 {
-	/**
-	 * @param array $data
-	 * @return PersonValue
-	 */
-	public function parseArray(array $data)
-	{
-		$data = ArrayParserUtils::cleanArray($data);
+    /**
+     * @param  array       $data
+     * @return PersonValue
+     */
+    public function parseArray(array $data)
+    {
+        $data = ArrayParserUtils::cleanArray($data);
 
-		$value = new PersonValue();
+        $value = new PersonValue();
 
-		ArrayParserUtils::copyValueMapping(array(
-			'oid'                   => 'raw',
-			'first_name'            => 'string',
-			'last_name'             => 'string',
-			'name'                  => 'string',
-			'override_display_name' => 'string',
-			'is_agnet'              => 'bool',
-			'is_admin'              => 'bool',
-			'timezone'              => 'string',
-			'language'              => 'string',
-			'organization'          => 'string',
-			'organization_position' => 'string',
-			'password'              => 'string',
-			'password_scheme'       => 'string',
-			'labels'                => 'array',
-			'date_created'          => 'date',
-			'usergroups'            => 'array',
-			'emails'                => 'string[]',
-			'custom_fields'		=> 'array'
-		), $data, $value);
+        ArrayParserUtils::copyValueMapping(array(
+            'oid'                   => 'raw',
+            'first_name'            => 'string',
+            'last_name'             => 'string',
+            'name'                  => 'string',
+            'override_display_name' => 'string',
+            'is_agnet'              => 'bool',
+            'is_admin'              => 'bool',
+            'timezone'              => 'string',
+            'language'              => 'string',
+            'organization'          => 'string',
+            'organization_position' => 'string',
+            'password'              => 'string',
+            'password_scheme'       => 'string',
+            'labels'                => 'array',
+            'date_created'          => 'date',
+            'usergroups'            => 'array',
+            'emails'                => 'string[]',
+            'custom_fields'		=> 'array'
+        ), $data, $value);
 
-		if (!$value->organization) {
-			$value->organization_position = null;
-		}
+        if (!$value->organization) {
+            $value->organization_position = null;
+        }
 
-		if ($value->timezone) {
-			try {
-				new \DateTimeZone($value->timezone);
-			} catch (\Exception $e) {
-				$value->timezone = null;
-			}
-		}
+        if ($value->timezone) {
+            try {
+                new \DateTimeZone($value->timezone);
+            } catch (\Exception $e) {
+                $value->timezone = null;
+            }
+        }
 
-		if ($value->is_admin) {
-			$value->is_agent = true;
-		}
+        if ($value->is_admin) {
+            $value->is_agent = true;
+        }
 
-		if (!empty($data['email'])) {
-			array_unshift($value->emails, $data['email']);
-		}
-		
-		if (!empty($data['custom_fields'])) {
-			$index = 1;
-			
-			foreach ($data['custom_fields'] as $custom_field_data) {
-				$custom_field_data = ArrayParserUtils::cleanArray($custom_field_data);
-				
-				$custom_def_value = new CustomDefValue();
-				
-				$keys = array_keys($custom_field_data);
-				
-				$custom_def_value->oid = $index++;
+        if (!empty($data['email'])) {
+            array_unshift($value->emails, $data['email']);
+        }
 
-				$custom_def_value->key = $keys[0];
-				
-				$custom_def_value->value = $custom_field_data[$keys[0]];
-				
-				$value->custom_def[] = $custom_def_value;
-			}
-		}
+        if (!empty($data['custom_fields'])) {
+            $index = 1;
 
-		return $value;
-	}
+            foreach ($data['custom_fields'] as $custom_field_data) {
+                $custom_field_data = ArrayParserUtils::cleanArray($custom_field_data);
+
+                $custom_def_value = new CustomDefValue();
+
+                $keys = array_keys($custom_field_data);
+
+                $custom_def_value->oid = $index++;
+
+                $custom_def_value->key = $keys[0];
+
+                $custom_def_value->value = $custom_field_data[$keys[0]];
+
+                $value->custom_def[] = $custom_def_value;
+            }
+        }
+
+        return $value;
+    }
 }

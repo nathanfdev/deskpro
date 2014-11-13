@@ -39,9 +39,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class EmailBansService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new EmailBans($container->getEm());
+
         return $x;
-	}
+    }
 }

@@ -36,143 +36,143 @@ namespace Application\DeskPRO\TicketLayout;
 
 class TicketLayoutManager
 {
-	/**
-	 * Layouts keyed by department ID
-	 * @var LayoutCollection
-	 */
-	private $user_layouts;
+    /**
+     * Layouts keyed by department ID
+     * @var LayoutCollection
+     */
+    private $user_layouts;
 
-	/**
-	 * Layouts keyed by deartmend ID
-	 * @var LayoutCollection
-	 */
-	private $agent_layouts;
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\TicketLayout[] $ticket_layouts
-	 * @return TicketLayoutManager
-	 */
-	public static function createWithLayoutRecords(array $ticket_layouts)
-	{
-		$user_layouts  = new LayoutCollection();
-		$agent_layouts = new LayoutCollection();
-
-		foreach ($ticket_layouts as $l) {
-			$key = $l->department ? $l->department->getId() : null;
-			if ($user_layout = $l->user_layout) {
-				LayoutUtil::ensureMinimumUserLayout($user_layout);
-				$user_layouts->addLayout($user_layout, $key);
-			}
-			if ($agent_layout = $l->agent_layout) {
-				LayoutUtil::ensureMinimumAgentLayout($agent_layout);
-				$agent_layouts->addLayout($agent_layout, $key);
-			}
-		}
-
-		return new self($user_layouts, $agent_layouts);
-	}
+    /**
+     * Layouts keyed by deartmend ID
+     * @var LayoutCollection
+     */
+    private $agent_layouts;
 
 
-	/**
-	 * @param array $ticket_layouts
-	 * @return TicketLayoutManager
-	 */
-	public static function createWithLayoutArrays(array $ticket_layouts)
-	{
-		$user_layouts  = new LayoutCollection();
-		$agent_layouts = new LayoutCollection();
+    /**
+     * @param  \Application\DeskPRO\Entity\TicketLayout[] $ticket_layouts
+     * @return TicketLayoutManager
+     */
+    public static function createWithLayoutRecords(array $ticket_layouts)
+    {
+        $user_layouts  = new LayoutCollection();
+        $agent_layouts = new LayoutCollection();
 
-		foreach ($ticket_layouts as $l) {
-			$key = $l['department_id'] ? $l['department_id'] : null;
-			if (!empty($l['user_layout'])) {
-				$user_layout = $l['user_layout'];
-				LayoutUtil::ensureMinimumUserLayout($user_layout);
-				$user_layouts->addLayout($user_layout, $key);
-			}
-			if (!empty($l['agent_layout'])) {
-				$agent_layout = $l['agent_layout'];
-				LayoutUtil::ensureMinimumAgentLayout($agent_layout);
-				$agent_layouts->addLayout($agent_layout, $key);
-			}
-		}
+        foreach ($ticket_layouts as $l) {
+            $key = $l->department ? $l->department->getId() : null;
+            if ($user_layout = $l->user_layout) {
+                LayoutUtil::ensureMinimumUserLayout($user_layout);
+                $user_layouts->addLayout($user_layout, $key);
+            }
+            if ($agent_layout = $l->agent_layout) {
+                LayoutUtil::ensureMinimumAgentLayout($agent_layout);
+                $agent_layouts->addLayout($agent_layout, $key);
+            }
+        }
 
-		return new self($user_layouts, $agent_layouts);
-	}
+        return new self($user_layouts, $agent_layouts);
+    }
 
 
-	/**
-	 * @param LayoutCollection $user_layouts
-	 * @param LayoutCollection $agent_layouts
-	 */
-	public function __construct(LayoutCollection $user_layouts, LayoutCollection $agent_layouts)
-	{
-		$this->user_layouts  = $user_layouts;
-		$this->agent_layouts = $agent_layouts;
-	}
+    /**
+     * @param  array               $ticket_layouts
+     * @return TicketLayoutManager
+     */
+    public static function createWithLayoutArrays(array $ticket_layouts)
+    {
+        $user_layouts  = new LayoutCollection();
+        $agent_layouts = new LayoutCollection();
+
+        foreach ($ticket_layouts as $l) {
+            $key = $l['department_id'] ? $l['department_id'] : null;
+            if (!empty($l['user_layout'])) {
+                $user_layout = $l['user_layout'];
+                LayoutUtil::ensureMinimumUserLayout($user_layout);
+                $user_layouts->addLayout($user_layout, $key);
+            }
+            if (!empty($l['agent_layout'])) {
+                $agent_layout = $l['agent_layout'];
+                LayoutUtil::ensureMinimumAgentLayout($agent_layout);
+                $agent_layouts->addLayout($agent_layout, $key);
+            }
+        }
+
+        return new self($user_layouts, $agent_layouts);
+    }
 
 
-	/**
-	 * @return LayoutCollection
-	 */
-	public function getUserLayouts()
-	{
-		return $this->user_layouts;
-	}
+    /**
+     * @param LayoutCollection $user_layouts
+     * @param LayoutCollection $agent_layouts
+     */
+    public function __construct(LayoutCollection $user_layouts, LayoutCollection $agent_layouts)
+    {
+        $this->user_layouts  = $user_layouts;
+        $this->agent_layouts = $agent_layouts;
+    }
 
 
-	/**
-	 * @return LayoutCollection
-	 */
-	public function getAgentLayouts()
-	{
-		return $this->agent_layouts;
-	}
+    /**
+     * @return LayoutCollection
+     */
+    public function getUserLayouts()
+    {
+        return $this->user_layouts;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getUserLayoutItems()
-	{
-		return $this->_collectLayoutItems($this->user_layouts);
-	}
+    /**
+     * @return LayoutCollection
+     */
+    public function getAgentLayouts()
+    {
+        return $this->agent_layouts;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getAgentLayoutItems()
-	{
-		return $this->_collectLayoutItems($this->user_layouts);
-	}
+    /**
+     * @return array
+     */
+    public function getUserLayoutItems()
+    {
+        return $this->_collectLayoutItems($this->user_layouts);
+    }
 
 
-	/**
-	 * @param LayoutCollection $coll
-	 * @return array
-	 */
-	private function _collectLayoutItems(LayoutCollection $coll)
-	{
-		$items = array();
+    /**
+     * @return array
+     */
+    public function getAgentLayoutItems()
+    {
+        return $this->_collectLayoutItems($this->user_layouts);
+    }
 
-		foreach ($coll as $layout) {
-			foreach ($layout as $item) {
-				if (!isset($items[$item->getId()])) {
-					$items[$item->getId()] = array(
-						'id'           => $item->getId(),
-						'field_type'   => $item->getFieldType(),
-						'field_id'     => $item->getFieldId(),
-						'has_criteria' => false,
-					);
-				}
 
-				if ($item->hasCriteria()) {
-					$items[$item->getId()]['has_criteria'] = true;
-				}
-			}
-		}
+    /**
+     * @param  LayoutCollection $coll
+     * @return array
+     */
+    private function _collectLayoutItems(LayoutCollection $coll)
+    {
+        $items = array();
 
-		return $items;
-	}
+        foreach ($coll as $layout) {
+            foreach ($layout as $item) {
+                if (!isset($items[$item->getId()])) {
+                    $items[$item->getId()] = array(
+                        'id'           => $item->getId(),
+                        'field_type'   => $item->getFieldType(),
+                        'field_id'     => $item->getFieldId(),
+                        'has_criteria' => false,
+                    );
+                }
+
+                if ($item->hasCriteria()) {
+                    $items[$item->getId()]['has_criteria'] = true;
+                }
+            }
+        }
+
+        return $items;
+    }
 }

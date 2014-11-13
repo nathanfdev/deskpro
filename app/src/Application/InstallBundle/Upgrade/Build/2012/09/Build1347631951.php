@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1347631951 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add report builder display order");
-		$this->execMutateSql("ALTER TABLE report_builder ADD display_order INT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add report builder display order");
+        $this->execMutateSql("ALTER TABLE report_builder ADD display_order INT NOT NULL");
+    }
 }

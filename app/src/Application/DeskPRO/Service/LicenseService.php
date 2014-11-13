@@ -37,144 +37,144 @@ use Guzzle\Http\Client as HttpClient;
 
 class LicenseService
 {
-	/**
-	 * @return array
-	 */
-	public static function getLatestVersion()
-	{
-		static $latest = null;
+    /**
+     * @return array
+     */
+    public static function getLatestVersion()
+    {
+        static $latest = null;
 
-		if ($latest === null) {
-			$latest = self::fetchServiceResult('check-latest-version.json', array('my_build' => DP_BUILD_TIME));
-		}
+        if ($latest === null) {
+            $latest = self::fetchServiceResult('check-latest-version.json', array('my_build' => DP_BUILD_TIME));
+        }
 
-		return $latest;
-	}
-
-
-	/**
-	 * Compares current build to the latest build available.
-	 *
-	 * Data returned:
-	 * - build: <timestamp>
-	 * - build_link: <url>
-	 * - your_build: <timestamp>
-	 * - count_behind: <int>
-	 *
-	 * @return array
-	 */
-	public static function compareVersion()
-	{
-		static $data = null;
-
-		if ($data === null) {
-			try {
-				$data = self::fetchServiceResult('build/compare-version.json', array('my_build' => DP_BUILD_TIME));
-			} catch (\Exception $e) {
-				$data = array();
-			}
-		}
-
-		return $data;
-	}
+        return $latest;
+    }
 
 
-	/**
-	 * Get version notice info
-	 *
-	 * Data returned:
-	 * - link: <url>
-	 * - message: <text>
-	 * - level: notice/warning/critical
-	 *
-	 * @return array
-	 */
-	public static function getVersionNotices()
-	{
-		static $data = null;
+    /**
+     * Compares current build to the latest build available.
+     *
+     * Data returned:
+     * - build: <timestamp>
+     * - build_link: <url>
+     * - your_build: <timestamp>
+     * - count_behind: <int>
+     *
+     * @return array
+     */
+    public static function compareVersion()
+    {
+        static $data = null;
 
-		if ($data === null) {
-			try {
-				$data = self::fetchServiceResult('build/version-notices.json', array('my_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0));
-			} catch (\Exception $e) {
-				$data = array();
-			}
-		}
+        if ($data === null) {
+            try {
+                $data = self::fetchServiceResult('build/compare-version.json', array('my_build' => DP_BUILD_TIME));
+            } catch (\Exception $e) {
+                $data = array();
+            }
+        }
 
-		return $data;
-	}
-
-
-	/**
-	 * Gets news from RSS feed
-	 *
-	 * @return array|null
-	 */
-	public static function getNews()
-	{
-		$news = array();
-
-		try {
-			$client = new HttpClient(\DeskPRO\Kernel\License::getSupportUrl(), array(
-				'ssl.certificate_authority' => false
-			));
-			$request = $client->get('/news/2-product.rss');
-			$response = $request->send();
-
-			if (!$response->isSuccessful()) {
-				return null;
-			}
-
-			$rss = simplexml_load_string($response->getBody(true));
-			unset($r);
-
-			$x = 0;
-			foreach ($rss->channel->item as $item) {
-				$news[] = array(
-					'title' => (string)$item->title,
-					'link'  => (string)$item->link
-				);
-				if ($x++ > 5) {
-					break;
-				}
-			}
-		} catch (\Exception $e) {
-			return null;
-		}
-
-		return $news;
-	}
+        return $data;
+    }
 
 
-	/**
-	 * @param string $endpoint
-	 * @param array $post_data
-	 * @return array
-	 */
-	public static function fetchServiceResult($endpoint, array $post_data = array())
-	{
-		$url = \DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/');
+    /**
+     * Get version notice info
+     *
+     * Data returned:
+     * - link: <url>
+     * - message: <text>
+     * - level: notice/warning/critical
+     *
+     * @return array
+     */
+    public static function getVersionNotices()
+    {
+        static $data = null;
 
-		try {
-			$client = new \Zend\Http\Client(null, array('timeout' => 8, 'strictredirects' => true));
-			$client->setMethod(\Zend\Http\Request::METHOD_POST);
-			$client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/'));
-			$client->getRequest()->getPost()->fromArray($post_data);
-			$r = $client->send();
-			$result = $r->getBody();
-		} catch (\Exception $e) {
-			$result = '';
-		}
+        if ($data === null) {
+            try {
+                $data = self::fetchServiceResult('build/version-notices.json', array('my_build' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0));
+            } catch (\Exception $e) {
+                $data = array();
+            }
+        }
 
-		if (!$result) {
-			throw new \RuntimeException("No response from server: $url $result");
-		}
+        return $data;
+    }
 
-		$res_data = json_decode($result, true);
-		if (!is_array($res_data)) {
-			throw new \RuntimeException("Invalid JSON response from server: $url $result");
-		}
 
-		return $res_data;
-	}
+    /**
+     * Gets news from RSS feed
+     *
+     * @return array|null
+     */
+    public static function getNews()
+    {
+        $news = array();
+
+        try {
+            $client = new HttpClient(\DeskPRO\Kernel\License::getSupportUrl(), array(
+                'ssl.certificate_authority' => false
+            ));
+            $request = $client->get('/news/2-product.rss');
+            $response = $request->send();
+
+            if (!$response->isSuccessful()) {
+                return null;
+            }
+
+            $rss = simplexml_load_string($response->getBody(true));
+            unset($r);
+
+            $x = 0;
+            foreach ($rss->channel->item as $item) {
+                $news[] = array(
+                    'title' => (string)$item->title,
+                    'link'  => (string)$item->link
+                );
+                if ($x++ > 5) {
+                    break;
+                }
+            }
+        } catch (\Exception $e) {
+            return null;
+        }
+
+        return $news;
+    }
+
+
+    /**
+     * @param  string $endpoint
+     * @param  array  $post_data
+     * @return array
+     */
+    public static function fetchServiceResult($endpoint, array $post_data = array())
+    {
+        $url = \DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/');
+
+        try {
+            $client = new \Zend\Http\Client(null, array('timeout' => 8, 'strictredirects' => true));
+            $client->setMethod(\Zend\Http\Request::METHOD_POST);
+            $client->setUri(\DeskPRO\Kernel\License::getLicServer() . '/api/' . ltrim($endpoint, '/'));
+            $client->getRequest()->getPost()->fromArray($post_data);
+            $r = $client->send();
+            $result = $r->getBody();
+        } catch (\Exception $e) {
+            $result = '';
+        }
+
+        if (!$result) {
+            throw new \RuntimeException("No response from server: $url $result");
+        }
+
+        $res_data = json_decode($result, true);
+        if (!is_array($res_data)) {
+            throw new \RuntimeException("Invalid JSON response from server: $url $result");
+        }
+
+        return $res_data;
+    }
 }

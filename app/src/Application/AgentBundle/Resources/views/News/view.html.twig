@@ -113,7 +113,7 @@ pageMeta.baseId = '{{ baseId }}';
 					}, true) }}
 				</dd>
 
-				
+
 				<dd id="{{baseId}}_auto_unpub" {% if not (news.status == 'published') %}style="display: none"{% endif %}>
 					<span class="auto-unpublish" {% if not news.date_end %}style="display: none"{% endif %}>
 						{% set phrase_part1 %}<span class="end-action opt" data-val="{{news.end_action|default('unpublish')}}">{{news.end_action|default(phrase('agent.general.unpublish'))}}</span>{% endset %}

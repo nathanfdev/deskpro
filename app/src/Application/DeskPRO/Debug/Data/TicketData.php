@@ -38,21 +38,22 @@ use Application\DeskPRO\Entity\Ticket;
 
 class TicketData implements DataInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $ticket;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $ticket;
 
-	public function __construct(Ticket $ticket)
-	{
-		$this->ticket = $ticket;
-	}
+    public function __construct(Ticket $ticket)
+    {
+        $this->ticket = $ticket;
+    }
 
-	public function getData()
-	{
-		$data = array();
-		$data['ticket']      = $this->ticket->toApiData(true, true);
-		$data['ticket_slas'] = App::getDb()->fetchAssoc("SELECT * FROM ticket_slas WHERE ticket_id = ?", array($this->ticket->id));
-		return $data;
-	}
+    public function getData()
+    {
+        $data = array();
+        $data['ticket']      = $this->ticket->toApiData(true, true);
+        $data['ticket_slas'] = App::getDb()->fetchAssoc("SELECT * FROM ticket_slas WHERE ticket_id = ?", array($this->ticket->id));
+
+        return $data;
+    }
 }

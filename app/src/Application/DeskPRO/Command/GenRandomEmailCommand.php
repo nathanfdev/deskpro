@@ -35,66 +35,65 @@ namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
-use Application\DeskPRO\Entity;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class GenRandomEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:gen-rand-email');
-		$this->addOption('from-email', null, InputOption::VALUE_REQUIRED);
-		$this->addOption('reply-to-email', null, InputOption::VALUE_REQUIRED);
-		$this->addOption('original-from-email', null, InputOption::VALUE_REQUIRED);
-		$this->addOption('to-email', null, InputOption::VALUE_REQUIRED);
-		$this->addOption('with-image', null, InputOption::VALUE_NONE);
-		$this->addOption('attach', null, InputOption::VALUE_REQUIRED);
-		$this->addOption('real-send', null, InputOption::VALUE_NONE);
-		$this->addOption('subject', null, InputOption::VALUE_REQUIRED);
-		$this->addOption('fwd-for', null, InputOption::VALUE_REQUIRED);
-	}
+    protected function configure()
+    {
+        $this->setName('dp:gen-rand-email');
+        $this->addOption('from-email', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('reply-to-email', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('original-from-email', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('to-email', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('with-image', null, InputOption::VALUE_NONE);
+        $this->addOption('attach', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('real-send', null, InputOption::VALUE_NONE);
+        $this->addOption('subject', null, InputOption::VALUE_REQUIRED);
+        $this->addOption('fwd-for', null, InputOption::VALUE_REQUIRED);
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$fwd_for = $input->getOption('fwd-for') ? $input->getOption('fwd-for') : false;
-		$subject = $input->getOption('subject') ?: 'Test Email - %TIME%';
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $fwd_for = $input->getOption('fwd-for') ? $input->getOption('fwd-for') : false;
+        $subject = $input->getOption('subject') ?: 'Test Email - %TIME%';
 
-		if ($subject == "EMPTY") {
-			$subject = "";
-		}
+        if ($subject == "EMPTY") {
+            $subject = "";
+        }
 
-		$email_pre = "";
+        $email_pre = "";
 
-		$email_pre_html = "";
-		if ($email_pre) {
-			$email_pre_html = "<div>" . nl2br($email_pre) . "</div>";
-		}
+        $email_pre_html = "";
+        if ($email_pre) {
+            $email_pre_html = "<div>" . nl2br($email_pre) . "</div>";
+        }
 
-		$from_lines = array();
-		if ($input->hasOption('from-email')) {
-			$from_lines[] = "From: " . $input->getOption('from-email');
-		}
-		if ($input->hasOption('reply-to-email')) {
-			$from_lines[] = "Reply-To: " . $input->getOption('reply-to-email');
-		}
-		if ($input->hasOption('original-from-email')) {
-			$from_lines[] = "X-Original-From: " . $input->getOption('original-from-email');
-		}
+        $from_lines = array();
+        if ($input->hasOption('from-email')) {
+            $from_lines[] = "From: " . $input->getOption('from-email');
+        }
+        if ($input->hasOption('reply-to-email')) {
+            $from_lines[] = "Reply-To: " . $input->getOption('reply-to-email');
+        }
+        if ($input->hasOption('original-from-email')) {
+            $from_lines[] = "X-Original-From: " . $input->getOption('original-from-email');
+        }
 
-		$from_lines = implode("\n", $from_lines);
+        $from_lines = implode("\n", $from_lines);
 
-		$fwd_footer = '';
-		$fwd_footer_html = '';
-		if ($fwd_for) {
-			$fwd_footer = "\n\n----- Forwarded Message -----\nFrom: $fwd_for\nSubject: $subject\n\nOriginal message from the user\n\n";
-			$fwd_footer_html = "<div>" . nl2br($fwd_footer) . "</div>";
-			$subject = "FW: " . $subject;
-		}
+        $fwd_footer = '';
+        $fwd_footer_html = '';
+        if ($fwd_for) {
+            $fwd_footer = "\n\n----- Forwarded Message -----\nFrom: $fwd_for\nSubject: $subject\n\nOriginal message from the user\n\n";
+            $fwd_footer_html = "<div>" . nl2br($fwd_footer) . "</div>";
+            $subject = "FW: " . $subject;
+        }
 
-		if (!$input->getOption('with-image') && !$input->getOption('attach')) {
-			$source = <<<SRC
+        if (!$input->getOption('with-image') && !$input->getOption('attach')) {
+            $source = <<<SRC
 Date: Mon, 10 Dec 2012 19:15:33 +0000
 $from_lines
 To: %TO_EMAIL%
@@ -129,35 +128,36 @@ $fwd_footer_html
 --50c634de_3222e7cd_af2f--
 
 SRC;
-		} else {
+        } else {
 
-			if ($input->getOption('attach')) {
-				$file = file_get_contents($input->getOption('attach'));
-				$filename = basename(realpath($input->getOption('attach')));
+            if ($input->getOption('attach')) {
+                $file = file_get_contents($input->getOption('attach'));
+                $filename = basename(realpath($input->getOption('attach')));
 
-				if (!$file) {
-					echo "Invalid attach file\n";
-					return 1;
-				}
+                if (!$file) {
+                    echo "Invalid attach file\n";
 
-				$filetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($filename);
-				if (!$filetype) {
-					$filetype = 'application/octet-stream';
-				}
+                    return 1;
+                }
 
-				if ($filename == 'winmail.dat') {
-					$filetype = 'application/ms-tnef';
-				}
+                $filetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($filename);
+                if (!$filetype) {
+                    $filetype = 'application/octet-stream';
+                }
 
-			} else {
-				$file = file_get_contents(DP_ROOT.'/../web/images/admin/agent-screen.png');
-				$filename = 'agent-screen.png';
-				$filetype = 'image/png';
-			}
+                if ($filename == 'winmail.dat') {
+                    $filetype = 'application/ms-tnef';
+                }
 
-			$file = base64_encode($file);
+            } else {
+                $file = file_get_contents(DP_ROOT.'/../web/images/admin/agent-screen.png');
+                $filename = 'agent-screen.png';
+                $filetype = 'image/png';
+            }
 
-			$source = <<<SRC
+            $file = base64_encode($file);
+
+            $source = <<<SRC
 Received: from [172.18.24.247] (iw-01.clients.vorboss.net. [194.8.255.114])
         by mx.google.com with ESMTPS id t17sm17495468wiv.6.2012.12.11.10.40.53
         (version=TLSv1/SSLv3 cipher=OTHER);
@@ -206,31 +206,31 @@ $file
 --50c77e34_725a06fb_dfd0--
 SRC;
 
-		}
-		$from_email = $input->getOption('from-email');
-		$to_email   = $input->getOption('to-email');
-		$time       = date('Y-m-d H:i:s');
+        }
+        $from_email = $input->getOption('from-email');
+        $to_email   = $input->getOption('to-email');
+        $time       = date('Y-m-d H:i:s');
 
-		if ($input->getOption('real-send')) {
-			$message = App::getMailer()->createMessage();
-			$message->setTo($to_email);
-			$message->setFrom($from_email);
-			$message->setSubject('Test Email - ' . $time);
-			$message->getBody("Test Message\n\n" . uniqid('eml-', true));
+        if ($input->getOption('real-send')) {
+            $message = App::getMailer()->createMessage();
+            $message->setTo($to_email);
+            $message->setFrom($from_email);
+            $message->setSubject('Test Email - ' . $time);
+            $message->getBody("Test Message\n\n" . uniqid('eml-', true));
 
-			$tr = App::$container->getEmailAccountManager()->getTransportFactory()->createPhpMailTransport(new PhpMailConfig());
-			$message->setForceTransport($tr);
+            $tr = App::$container->getEmailAccountManager()->getTransportFactory()->createPhpMailTransport(new PhpMailConfig());
+            $message->setForceTransport($tr);
 
-			App::getMailer()->send($message);
+            App::getMailer()->send($message);
 
-			echo "Message Sent\n";
-		} else {
-			$source = str_replace('%FROM_EMAIL%', $from_email, $source);
-			$source = str_replace('%TO_EMAIL%', $to_email, $source);
-			$source = str_replace('%TIME%', $time, $source);
-			$source = str_replace('%MSG_UID%', uniqid('eml-', true), $source);
+            echo "Message Sent\n";
+        } else {
+            $source = str_replace('%FROM_EMAIL%', $from_email, $source);
+            $source = str_replace('%TO_EMAIL%', $to_email, $source);
+            $source = str_replace('%TIME%', $time, $source);
+            $source = str_replace('%MSG_UID%', uniqid('eml-', true), $source);
 
-			echo $source;
-		}
-	}
+            echo $source;
+        }
+    }
 }
