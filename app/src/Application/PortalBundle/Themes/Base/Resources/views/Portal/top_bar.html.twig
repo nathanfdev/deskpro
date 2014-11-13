@@ -20,8 +20,8 @@
 		<li>
 			<select onchange="location.href='/'+this.value" class="button button-dropdown button-dropdown-language">
 				{% for language in enabled_languages %}
-					<option value="{{ language.urlPrefix }}"
-						{% if language.urlPrefix == current_language.urlPrefix %}selected="selected"{% endif %}>
+					<option value="{{ language.urlCode }}"
+						{% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
 						{{ language.title|capitalize }}
 					</option>
 				{% endfor %}

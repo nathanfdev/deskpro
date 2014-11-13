@@ -150,7 +150,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
 		return substr($this->locale, 0, 2);
 	}
 
-	public function getUrlPrefix()
+	public function getUrlCode()
 	{
 		return $this->getTwoLetterLanguageCode();
 	}

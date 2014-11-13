@@ -72,7 +72,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     {
         $extractor = new UrlMatcher();
         $split = $extractor->extractLanguageCode($request->getPathInfo());
-        $code = $split['language_code'];
+        $code = $split['lang_url_code'];
 
         if ('GET' !== $request->getMethod()) {
             return $this->matchNonGetRequest($request, $code, $split);
@@ -102,12 +102,12 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
             $language_stack->pushDefault();
         }
 
-        // TODO: note the $referenceType - we need to do much more involved url inspection/manipulation
+        // TODO: note the $referenceType - we need to do much more involved  inspection/manipulation
         switch ($referenceType) {
             case self::ABSOLUTE_PATH:
                 return sprintf(
                     '/%s%s',
-                    $this->language_manager->getLanguageStack()->getActive()->getUrlPrefix(),
+                    $this->language_manager->getLanguageStack()->getActive()->getUrlCode(),
                     $generated
                 );
 

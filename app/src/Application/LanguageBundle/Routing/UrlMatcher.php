@@ -34,7 +34,6 @@
 
 namespace Application\LanguageBundle\Routing;
 
-use Application\LanguageBundle\Language\LanguageManager;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,14 +42,14 @@ class UrlMatcher
 	public function extractLanguageCode($pathinfo)
 	{
 		$return = array(
-			'language_code' => null,
+			'lang_url_code' => null,
 			'remaining_pathinfo' => $pathinfo
 		);
 
 		$locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
 
 		if ($locale && 'kb' !== $locale) {
-			$return['language_code']      = $locale;
+			$return['lang_url_code']      = $locale;
 			$return['remaining_pathinfo'] = preg_replace('#^/(.*?)/#', '/', $pathinfo);
 
 			return $return;
@@ -58,7 +57,7 @@ class UrlMatcher
 
 		$locale = Strings::extractRegexMatch('#^/([a-z]{2})$#', $pathinfo, 1);
 		if ($locale && 'kb' !== $locale) {
-			$return['language_code']      = $locale;
+			$return['lang_url_code']      = $locale;
 			$return['remaining_pathinfo'] = '/';
 		}
 
