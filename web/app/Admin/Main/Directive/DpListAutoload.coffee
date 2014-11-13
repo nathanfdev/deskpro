@@ -1,5 +1,5 @@
 define ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -18,30 +18,30 @@ define ->
     #    <a href="...">Link 3</a>
     # </div>
     # <a href="..." dp-list-autoload autoload-priority="2">If all above links were removed, this link would run</a>
-	###
-	Admin_Main_Directive_DpListAutoload = [ ->
-		return {
-			restrict: 'A',
-			link: (scope, element, attrs) ->
-				if not scope._autoload_links
-					scope._autoload_links = []
+  ###
+  Admin_Main_Directive_DpListAutoload = [ ->
+    return {
+      restrict: 'A',
+      link: (scope, element, attrs) ->
+        if not scope._autoload_links
+          scope._autoload_links = []
 
-				pri = 0
-				select = null
-				if attrs.autoloadPriority
-					pri = parseInt(scope.$eval(attrs.autoloadPriority))
-				if attrs.dpListAutoload and attrs.dpListAutoload.length
-					select = attrs.dpListAutoload
+        pri = 0
+        select = null
+        if attrs.autoloadPriority
+          pri = parseInt(scope.$eval(attrs.autoloadPriority))
+        if attrs.dpListAutoload and attrs.dpListAutoload.length
+          select = attrs.dpListAutoload
 
-				if not select and not element.is('a')
-					select = 'a'
+        if not select and not element.is('a')
+          select = 'a'
 
-				scope._autoload_links.push({
-					element: element,
-					select:  select || 'a',
-					pri:     pri
-				})
-		}
-	]
+        scope._autoload_links.push({
+          element: element,
+          select:  select || 'a',
+          pri:     pri
+        })
+    }
+  ]
 
-	return Admin_Main_Directive_DpListAutoload
+  return Admin_Main_Directive_DpListAutoload

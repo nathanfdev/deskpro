@@ -133,7 +133,7 @@ gulp.task('loader', function() {
 // RJS
 //------------------------------
 
-gulp.task('rjs', /*['coffee', 'loader'],*/ function() {
+gulp.task('rjs', ['coffee', 'loader'], function() {
 	var loadFiles = [
 		'./app/Admin/AdminLoad.js',
 		'./app/Admin/Cloud/CloudAdminLoad.js',

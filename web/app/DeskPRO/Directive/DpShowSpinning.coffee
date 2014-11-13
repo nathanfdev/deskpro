@@ -1,5 +1,5 @@
 define ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -14,31 +14,31 @@ define ->
     # @startSpinner('saving_dep')
     # ...
     # @stopSpinner('enableSpinner')
-	###
-	DeskPRO_Directive_DpShowSpinning = [ ->
-		return {
-			restrict: 'A',
-			link: (scope, element, attrs) ->
-				id = attrs['dpShowSpinning']
-				scopeName = 'dp_spin_els.' + id
+  ###
+  DeskPRO_Directive_DpShowSpinning = [ ->
+    return {
+      restrict: 'A',
+      link: (scope, element, attrs) ->
+        id = attrs['dpShowSpinning']
+        scopeName = 'dp_spin_els.' + id
 
-				update = ->
-					if not scope.dp_spin_els?[id]
-						element.hide()
-					else if scope.dp_spin_els[id].doneTime and scope.dp_spin_els[id].doneSpin
-						element.hide()
-					else
-						element.show()
+        update = ->
+          if not scope.dp_spin_els?[id]
+            element.hide()
+          else if scope.dp_spin_els[id].doneTime and scope.dp_spin_els[id].doneSpin
+            element.hide()
+          else
+            element.show()
 
-				update()
+        update()
 
-				scope.$watch(scopeName+'.doneSpin', ->
-					update()
-				)
-				scope.$watch(scopeName+'.doneTime', ->
-					update()
-				)
-		}
-	]
+        scope.$watch(scopeName+'.doneSpin', ->
+          update()
+        )
+        scope.$watch(scopeName+'.doneTime', ->
+          update()
+        )
+    }
+  ]
 
-	return DeskPRO_Directive_DpShowSpinning
+  return DeskPRO_Directive_DpShowSpinning

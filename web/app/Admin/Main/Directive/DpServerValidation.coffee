@@ -1,5 +1,5 @@
 define ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -20,42 +20,42 @@ define ->
     # ------------
     # <input type="text" model="myfield" name="myfield" dp-server-validation="myfield.strict_requirements" />
     ###
-	Admin_Main_Directive_DpServerValidation = [->
-		return {
-			require: 'ngModel',
-			restrict: 'A',
-			link: (scope, elm, attrs, ngModel) ->
-				ngModel.dpServerValidationKeys = attrs.dpServerValidation.split(',')
+  Admin_Main_Directive_DpServerValidation = [->
+    return {
+      require: 'ngModel',
+      restrict: 'A',
+      link: (scope, elm, attrs, ngModel) ->
+        ngModel.dpServerValidationKeys = attrs.dpServerValidation.split(',')
 
-				if not ngModel.dpServerValidationKeys.length
-					return
+        if not ngModel.dpServerValidationKeys.length
+          return
 
-				# Server-side validation errors always reset
-				# when we re-validate on the client (e.g., so they can re-submit)
-				ngModel.$parsers.unshift( (viewValue) ->
-					for own error_code, is_error of ngModel.$error
-						if not is_error then continue
+        # Server-side validation errors always reset
+        # when we re-validate on the client (e.g., so they can re-submit)
+        ngModel.$parsers.unshift( (viewValue) ->
+          for own error_code, is_error of ngModel.$error
+            if not is_error then continue
 
-						for code in ngModel.dpServerValidationKeys
-							if code.indexOf('.') != -1
-								code_safe = code.replace(/^.*\.(.*)$/, '$1')
-							else
-								code_safe = code
-							code_safe = code_safe.replace(/\./g, '_')
+            for code in ngModel.dpServerValidationKeys
+              if code.indexOf('.') != -1
+                code_safe = code.replace(/^.*\.(.*)$/, '$1')
+              else
+                code_safe = code
+              code_safe = code_safe.replace(/\./g, '_')
 
-							if error_code == code_safe
-								code_segs = code.split('.')
-								last_seg = code_segs.pop();
+              if error_code == code_safe
+                code_segs = code.split('.')
+                last_seg = code_segs.pop();
 
-								switch last_seg
-									when 'required'
-										ngModel.$setValidity('required', true)
-									else
-										ngModel.$setValidity(code_safe, true)
+                switch last_seg
+                  when 'required'
+                    ngModel.$setValidity('required', true)
+                  else
+                    ngModel.$setValidity(code_safe, true)
 
-					return viewValue;
-				)
-		}
-	]
+          return viewValue;
+        )
+    }
+  ]
 
-	return Admin_Main_Directive_DpServerValidation
+  return Admin_Main_Directive_DpServerValidation
