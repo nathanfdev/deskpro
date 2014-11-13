@@ -110,3 +110,15 @@ services:
   session.handler.dbal:
     class: Application\PortalBundle\Session\DbalSessionHandler
     arguments: [@doctrine.dbal.default_connection, %portal.session.name%]
+
+
+
+  visitor_identification_provider:
+    class: Application\PortalBundle\Visitor\VisitorIdentificationProvider
+    arguments: [@request_stack, @logger]
+
+  visitor_identification.listener:
+    class: Application\PortalBundle\EventListener\VisitorIdentificationListener
+    arguments: [@visitor_identification_provider, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
