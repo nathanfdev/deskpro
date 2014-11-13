@@ -434,7 +434,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Visitor';
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
 		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_NONE);
 		$metadata->setPrimaryTable(array(
 			'name' => 'visitors',
 			'indexes' => array(
@@ -443,7 +443,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 				),
 			),
 		));
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
 		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
 		$metadata->mapField(array( 'fieldName' => 'user_token', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_token', ));
 		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
