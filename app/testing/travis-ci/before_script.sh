@@ -17,6 +17,12 @@ sudo chmod 0777 /var/log/selenium-node.log
 sudo chmod 0777 /var/log/php_errors.log
 echo "--> Done"
 
+echo "Installing node modules"
+sudo npm install -g gulp bower
+
+echo "Init project deps"
+$DIR_ROOT/app/bin/init-project.sh
+
 echo "Creating test database"
 mysql -e "CREATE DATABASE deskpro;"
 mysql -u root -e "CREATE USER 'deskpro'@'localhost' IDENTIFIED BY 'deskpro'; CREATE USER 'deskpro'@'%' IDENTIFIED BY 'deskpro';"
@@ -43,12 +49,6 @@ echo "Ensuring permissions"
 chmod -R 0777 data
 chmod -R 0777 app/sys/cache
 echo "--> Done"
-
-echo "Installing node modules"
-sudo npm install -g gulp bower
-
-echo "Building web assets"
-$DIR_ROOT/app/bin/init-project.sh
 
 echo "Installing Apache"
 sudo apt-get update
