@@ -35,6 +35,7 @@
 namespace Application\LanguageBundle\EventListener;
 
 use Application\LanguageBundle\Language\LanguageStack;
+use Psr\Log\LoggerInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -54,9 +55,15 @@ class LastLanguageListener implements EventSubscriberInterface
      */
     private $language_stack;
 
-    public function __construct(LanguageStack $language_stack)
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+    public function __construct(LanguageStack $language_stack, LoggerInterface $logger)
     {
         $this->language_stack = $language_stack;
+        $this->logger = $logger;
     }
 
 	public function onKernelResponse(FilterResponseEvent $event)
@@ -67,6 +74,7 @@ class LastLanguageListener implements EventSubscriberInterface
         // we don't want to set it to null if there is no language because we might want to redirect in the next request
         if ($lang = $this->language_stack->getActive()) {
             $last_lang = $lang->getTwoLetterLanguageCode();
+            $this->logger->debug('language: sending cookie for last language: '.$last_ang);
             $event->getResponse()->headers->setCookie(new Cookie(static::COOKIE_NAME, $last_lang));
         }
 
