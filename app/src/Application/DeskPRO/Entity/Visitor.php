@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\PortalBundle\Visitor\VisitorIdentificationProvider;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Util\Strings;
@@ -239,6 +240,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
+		$this->setModelField('id', VisitorIdentificationProvider::generateRandomIdentifier());
 		$this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
 		$this->setModelField('user_token', Strings::random(8, Strings::CHARS_KEY));
 		$this->setModelField('date_created', new \DateTime());

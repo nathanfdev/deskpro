@@ -61,7 +61,7 @@ class VisitorIdentificationProvider
 
     public static function generateRandomIdentifier()
     {
-        return uniqid(time().'_');
+        return uniqid(time().'-');
     }
 
     public function getVisitorIdentifier()
