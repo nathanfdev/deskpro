@@ -70,52 +70,16 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	 */
 	public function matchRequest(Request $request)
 	{
-		// TODO: clean this up a bit, and if it is not a GET then don't redirect
-		$language_stack = $this->language_manager->getLanguageStack();
 		$extractor      = new UrlMatcher();
 		$split          = $extractor->extractLanguageCode($request->getPathInfo());
 
 		// there IS a potential language in the url path
 		if ($code = $split['language_code']) {
-			if (!$this->language_manager->isMultiLanguagePortal()) {
-				$this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
-			}
-
-			if (!$url_language = $this->language_manager->getLanguage($code)) {
-				// no language exists and enabled in this system
-				$this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
-			}
-
-			$language_stack->push($url_language);
-			return $this->router->match($split['remaining_pathinfo']);
+            return $this->processUrlLangCode($code, $split);
 		}
 
-		if (!$this->language_manager->isMultiLanguagePortal()) {
-			$language_stack->pushDefault();
-			return $this->router->match($split['remaining_pathinfo']);
-		}
-
-		// now we know its a multi lang desk and there was no long code, so we need to decide about where to redirect:
-
-		if ($language = $this->getLastLangFromCookie($request)) {
-            $language_stack->push($language);
-        } else {
-            // 2. authorized persons preference from Person
-            // 3. failing that, negotiate with http.lang
-            // and finally if we can't find anything:
-            $language_stack->pushDefault();
-        }
-		$this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
+        return $this->processNoLangCodeInUrl($request, $split);
 	}
-
-    protected function getLastLangFromCookie(Request $request)
-    {
-        if ($lang_code = $request->cookies->get(LastLanguageListener::COOKIE_NAME)) {
-            return $this->language_manager->getLanguage($lang_code);
-        }
-
-        return null;
-    }
 
 
 	/**
@@ -209,4 +173,62 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 	{
 		return $this->router->getRouteCollection();
 	}
+
+    /**
+     * @param $code
+     * @param $split
+     * @return array
+     */
+    protected function processUrlLangCode($code, $split)
+    {
+        if (!$this->language_manager->isMultiLanguagePortal()) {
+            $this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
+        }
+
+        if (!$url_language = $this->language_manager->getLanguage($code)) {
+            // no language exists and enabled in this system
+            $this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
+        }
+
+        $this->language_manager->getLanguageStack()->push($url_language);
+
+        return $this->router->match($split['remaining_pathinfo']);
+    }
+
+    /**
+     * @param Request $request
+     * @param         $split
+     * @return array
+     */
+    protected function processNoLangCodeInUrl(Request $request, $split)
+    {
+        $language_stack = $this->language_manager->getLanguageStack();
+        if (!$this->language_manager->isMultiLanguagePortal()) {
+            $language_stack->pushDefault();
+
+            return $this->router->match($split['remaining_pathinfo']);
+        }
+
+        // now we know its a multi lang desk and there was no long code, so we need to decide about where to redirect:
+
+        if ($language = $this->getLastLangFromCookie($request)) {
+            $language_stack->push($language);
+            $this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
+        } else {
+            // 2. authorized persons preference from Person
+            // 3. failing that, negotiate with http.lang
+            // and finally if we can't find anything:
+            $language_stack->pushDefault();
+            $this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
+        }
+    }
+
+    protected function getLastLangFromCookie(Request $request)
+    {
+        if ($lang_code = $request->cookies->get(LastLanguageListener::COOKIE_NAME)) {
+            return $this->language_manager->getLanguage($lang_code);
+        }
+
+        return null;
+    }
 }
