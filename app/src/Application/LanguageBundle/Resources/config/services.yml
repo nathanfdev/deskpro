@@ -42,3 +42,9 @@ services:
     arguments: [@logger]
     tags:
       - { name: kernel.event_subscriber }
+
+  last_language.listener:
+    class: Application\LanguageBundle\EventListener\LastLanguageListener
+    arguments: [@language_stack]
+    tags:
+      - { name: kernel.event_subscriber }

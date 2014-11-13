@@ -37,6 +37,7 @@ namespace Application\LanguageBundle\Routing;
 
 use Application\DeskPRO\Entity\Language;
 use Application\LanguageBundle\Language\LanguageManager;
+use Application\LanguageBundle\EventListener\LastLanguageListener;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
@@ -96,13 +97,25 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
 		// now we know its a multi lang desk and there was no long code, so we need to decide about where to redirect:
 
-		// 1. impl. session last_lang
-		// 2. authorized persons preference
-		// 3. failing that, negotiate with http.lang
-		// else:
-		$language_stack->pushDefault();
+		if ($language = $this->getLastLangFromCookie($request)) {
+            $language_stack->push($language);
+        } else {
+            // 2. authorized persons preference from Person
+            // 3. failing that, negotiate with http.lang
+            // and finally if we can't find anything:
+            $language_stack->pushDefault();
+        }
 		$this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
 	}
+
+    protected function getLastLangFromCookie(Request $request)
+    {
+        if ($lang_code = $request->cookies->get(LastLanguageListener::COOKIE_NAME)) {
+            return $this->language_manager->getLanguage($lang_code);
+        }
+
+        return null;
+    }
 
 
 	/**
