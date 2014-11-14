@@ -26,7 +26,7 @@ define(function(){
 			},
 			renderSchema: function(schema, val) {
 				var types = {
-					string: function(val){ return val; },
+					string: function(val){ return val.value || val; },
 					number: function(val) { return val; },
 					array: function(val) {
 						if (!val) return null;
@@ -61,8 +61,7 @@ define(function(){
 				return val ? val.toString() : null;
 			},
             isEnabled: function(type, id) {
-                var fields = meta['default_fields_' + type];
-                return fields && fields.indexOf(id) > -1;
+                return this.fields[id] && this.fields[id]['_' + type];
             }
 		};
 
@@ -71,6 +70,8 @@ define(function(){
 
 				// fields metadata
 				if (data.fields) {
+                    var commentIdx = data.default_fields_list.indexOf('comment');
+                    if (commentIdx > -1) data.default_fields_list.splice(commentIdx, 1);
 					data.fields.each(function (field) {
 						field._list = data.default_fields_list.indexOf(field.id) > -1;
 						field._summary = data.default_fields_summary.indexOf(field.id) > -1;

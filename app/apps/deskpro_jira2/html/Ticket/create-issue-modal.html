@@ -1,4 +1,4 @@
-<form name="create_issue_form" ng-submit="create_issue_form.$valid && confirm()">
+<form name="create_issue_form" ng-submit="create_issue_form.$valid && confirm()" novalidate>
     <div class="modal-header">
         <h3 class="modal-title">New JIRA Issue:</h3>
     </div>
@@ -6,30 +6,37 @@
 
         <label style="display: block; margin: 10px 0;">
             {{ meta.fieldName('project') }}*:
-            <select ui-select2 ng-model="issue.project.id" required style="min-width: 200px;">
+            <select name="issuetype" ui-select2 ng-model="issue.project.id" required style="min-width: 200px;">
                 <option ng-repeat="project in meta.projects" value="{{ project.id }}">{{ project.name }}</option>
             </select>
         </label>
+        <div class="text-danger" ng-if="errors.project">{{ errors.project }}</div>
 
         <label style="display: block; margin: 10px 0;">
             {{ meta.fieldName('issuetype') }}*:
-            <select ui-select2 ng-model="issue.issuetype.id" required style="min-width: 200px;">
+            <select name="issuetype" ui-select2 ng-model="issue.issuetype.id" required style="min-width: 200px;">
                 <option ng-repeat="type in project.issuetypes" value="{{ type.id }}">{{ type.name }}</option>
             </select>
         </label>
+        <div class="text-danger" ng-if="errors.issuetype">{{ errors.issuetype }}</div>
 
         <label style="display: block; margin: 10px 0;">
             {{ meta.fieldName('summary') }}*:
-            <input type="text" ng-model="issue.summary" required />
+            <input name="summary" type="text" ng-model="issue.summary" required />
         </label>
+        <div class="text-danger" ng-if="errors.summary">{{ errors.summary }}</div>
 
         <div ng-repeat="field in fields">
-            <jira-form-widget field="field" ng-model="issue[field.id]" />
+            <jira-form-widget field="field" ng-model="issue[field.id]" error="errors[field.id]" />
         </div>
         <br />
 
         <div ng-show="sending">->spinner<-</div>
-        <button class="btn btn-primary" dp-submit-form style="display: block; margin: 0 auto;"
+        <div class="text-danger" ng-if="errors">
+            Please correct the following error(s):
+            <div ng-repeat="error in errors">{{ error }}</div>
+        </div>
+        <button class="btn btn-primary" type="button" dp-submit-form style="display: block; margin: 0 auto;"
                 ng-show="!sending">
             Create JIRA Issue
         </button>

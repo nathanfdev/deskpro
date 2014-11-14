@@ -976,17 +976,19 @@ JS;
 		$rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/app/bower_components/angular-sanitize/angular-sanitize"');
 		$rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/app/bower_components/angular-bootstrap/ui-bootstrap-tpls-0.11.2.min"');
 
-		$rjs->addPathExpr('angularUISortable', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-sortable/src/sortable"');
-		$rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/vendor/ng-context-menu/src/ng-context-menu"');
-		$rjs->addPathExpr('angularSelect2', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-select2/src/select2"');
+        $rjs->addPathExpr('angularUISortable', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-sortable/src/sortable"');
+        $rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/vendor/ng-context-menu/src/ng-context-menu"');
+        $rjs->addPathExpr('angularSelect2', 'ASSETS_BASE_URL+"/app/bower_components/angular-ui-select2/src/select2"');
+        $rjs->addPathExpr('angularBootstrapDatetime', 'ASSETS_BASE_URL+"/vendor/angular-bootstrap-datetimepicker-master/src/js/datetimepicker"');
 
-		$rjs->addShim('angular', array('exports' => 'angular'));
+        $rjs->addShim('angular', array('exports' => 'angular'));
 		$rjs->addShim('angularAnimate', array('angular'));
 		$rjs->addShim('angularSanitize', array('angular'));
 		$rjs->addShim('angularBootstrap', array('angular'));
 		$rjs->addShim('angularSelect2', array('angular'));
 		$rjs->addShim('angularUISortable', array('angular'));
 		$rjs->addShim('ngContextMenu', array('angular'));
+        $rjs->addShim('angularBootstrapDatetime', array('angular'));
 
 		$rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
 		$rjs->addPathsFromGenerator($rjs_apps);

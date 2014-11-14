@@ -32,7 +32,7 @@ define(function() {
 
                 $.each(type.fields, function(id, field) {
                     if (staticFields[id]) return;
-                    if (!field.required && $meta.default_fields_summary.indexOf(id) === -1) return;
+                    if (!field.required && !$meta.isEnabled('summary', id)) return;
 
                     field.id = field.id || id;
                     fields.push(field);
@@ -46,12 +46,12 @@ define(function() {
 
 		$scope.confirm = function() {
 			$scope.sending = true;
+            $scope.errors = null;
 
             var fields = angular.copy($scope.issue);
-            console.info(fields);
 			issues.create({fields: fields}).then(
 				function(){ $scope.sending = false; $modalInstance.dismiss(); },
-				function(){ $scope.sending = false; /* todo show errors */ }
+				function(data){ $scope.sending = false; $scope.errors = data.errors; }
 			);
 		};
 

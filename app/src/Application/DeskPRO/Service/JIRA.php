@@ -55,8 +55,21 @@ class JIRA
         'environment',
         'comment',
         'resolution',
-        'resolutiondate',
         'duedate',
+    );
+
+    protected $allowed_custom = array(
+        'com.atlassian.jira.plugin.system.customfieldtypes:textfield',
+        'com.atlassian.jira.plugin.system.customfieldtypes:textarea',
+        'com.atlassian.jira.plugin.system.customfieldtypes:select',
+        'com.atlassian.jira.plugin.system.customfieldtypes:multiselect',
+        'com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes',
+        'com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons',
+        'com.atlassian.jira.plugin.system.customfieldtypes:labels',
+        'com.atlassian.jira.plugin.system.customfieldtypes:datepicker',
+        'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
+        'com.atlassian.jira.plugin.system.customfieldtypes:float',
+        'com.atlassian.jira.plugin.system.customfieldtypes:url',
     );
 
     /**
@@ -194,8 +207,9 @@ class JIRA
 			$properties['priorities'] = $priority;
 
             $keys = array_flip($this->allowed);
-            $fields = array_filter($fields, function($a) use ($keys) {
-                return isset($keys[$a['id']]) || 0 === strpos($a['id'], 'customfield_');
+            $keysCustom = array_flip($this->allowed_custom);
+            $fields = array_filter($fields, function($a) use ($keys, $keysCustom) {
+                return isset($keys[$a['id']]) || (isset($a['schema']['custom']) && isset($keysCustom[$a['schema']['custom']]));
             });
 			$properties['fields'] = array_values($fields);
 

@@ -4,6 +4,7 @@ define([
 	'angularBootstrap',
 	'angularSelect2',
 	'angularUISortable',
+    'angularBootstrapDatetime',
 	'DeskPRO/Util/Functions',
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',
@@ -13,13 +14,16 @@ define([
 	'DeskPRO/Service/Person',
 	'DeskPRO/Service/AgentTeam',
 	'ngContextMenu',
-	'DeskPRO/CategoryBuilder/Module'
+	'DeskPRO/CategoryBuilder/Module',
+    'DeskPRO/Directive/DpSubmitForm',
+    'DeskPRO/Directive/JIRAFormWidget'
 ], function(
 	angular,
 	x1,
 	x2,
 	x3,
 	x4,
+    x5,
 	Functions,
 	Strings,
 	DeskPRO_Directive_DpLabel,
@@ -29,7 +33,9 @@ define([
 	DeskPRO_Service_Person,
 	DeskPRO_Service_AgentTeam,
     ngContextMenu,
-    DpCategoryBuilder
+    DpCategoryBuilder,
+    DpSubmitForm,
+    JIRAFormWidget
 	) {
 	var AgentApp = angular.module('AgentApp', [
 		'ngAnimate', 
@@ -37,7 +43,8 @@ define([
 		'ui.sortable', 
 		'ng-context-menu', 
 		'deskpro.category_builder',
-		'ui.select2'
+		'ui.select2',
+        'ui.bootstrap.datetimepicker'
 	]);
 
 	//-------------------------------------------------------------------------
@@ -71,10 +78,41 @@ define([
 		};
 	}]);
 
-	AgentApp.config(['$httpProvider', function($httpProvider) {
+	AgentApp.config(['$httpProvider', '$provide', function($httpProvider, $provide) {
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 		$httpProvider.defaults.headers.common['X-DeskPRO-rt'] = window.DP_REQUEST_TOKEN;
 		$httpProvider.interceptors.push('dpAppAssetInterceptor');
+
+
+        // Workaround for bug #1404
+        // https://github.com/angular/angular.js/issues/1404
+        // Source: http://plnkr.co/edit/hSMzWC?p=preview
+        $provide.decorator('ngModelDirective', function($delegate) {
+            var ngModel = $delegate[0], controller = ngModel.controller;
+            ngModel.controller = ['$scope', '$element', '$attrs', '$injector', function(scope, element, attrs, $injector) {
+                var $interpolate = $injector.get('$interpolate');
+                attrs.$set('name', $interpolate(attrs.name || '')(scope));
+                $injector.invoke(controller, this, {
+                    '$scope': scope,
+                    '$element': element,
+                    '$attrs': attrs
+                });
+            }];
+            return $delegate;
+        });
+        $provide.decorator('formDirective', function($delegate) {
+            var form = $delegate[0], controller = form.controller;
+            form.controller = ['$scope', '$element', '$attrs', '$injector', function(scope, element, attrs, $injector) {
+                var $interpolate = $injector.get('$interpolate');
+                attrs.$set('name', $interpolate(attrs.name || attrs.ngForm || '')(scope));
+                $injector.invoke(controller, this, {
+                    '$scope': scope,
+                    '$element': element,
+                    '$attrs': attrs
+                });
+            }];
+            return $delegate;
+        });
 	}]);
 
 	AgentApp.run(['$rootScope', function($rootScope) {
@@ -1055,6 +1093,8 @@ define([
 
 	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
+    AgentApp.directive('dpSubmitForm', DpSubmitForm);
+    AgentApp.directive('jiraFormWidget', JIRAFormWidget);
 
 	return AgentApp;
 });
