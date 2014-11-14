@@ -85,18 +85,18 @@ gulp.task('coffee-admin', function () {
 });
 
 gulp.task('coffee-reports', function () {
-  return deskpro.taskGen.coffeeScript('./app/Reports/**/*.coffee');
+  return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee');
 });
 
 gulp.task('coffee-deskpro', function () {
-  return deskpro.taskGen.coffeeScript('./app/DeskPRO/**/*.coffee');
+  return deskpro.taskGen.coffeeScript('./app/DeskPRO*/**/*.coffee');
 });
 
 gulp.task('coffee', ['clean'], function() {
   return deskpro.taskGen.coffeeScript([
     './app/Admin*/**/*.coffee',
-    './app/Reports/**/*.coffee',
-    './app/DeskPRO/**/*.coffee'
+    './app/Reports*/**/*.coffee',
+    './app/DeskPRO*/**/*.coffee'
   ]);
 });
 
