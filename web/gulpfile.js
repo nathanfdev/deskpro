@@ -27,8 +27,8 @@ deskpro.watches = [
   ['./app/Admin*/**/*.coffee', ['coffee-admin']],
   ['./app/Reports/**/*.coffee', ['coffee-reports']],
   ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
-  ['./app/**/Resources/style/*.less', ['less']],
-  ['./loader/*', ['loader']]
+  ['./app/**/Resources/style/*.less', ['less-app']],
+  ['./loader/*', ['loader-requirejs']]
 ];
 
 //------------------------------

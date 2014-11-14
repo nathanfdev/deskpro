@@ -7,16 +7,33 @@ dp_load_config();
 # Verify auth
 #------------------------------
 
-header("Content-Type: plain/text");
+function outStatus($code, $status_code, $exit_code = 0)
+{
+	if (isset($_GET['html'])) {
+		header("Content-Type: text/html");
 
-if (!defined('DP_TESTING_MODE_AUTH')) {
-	echo "status(DP_TESTING_MODE_AUTH_UNDEFINED)";
-	exit(1);
+		// Clear cookies
+		if (isset($_GET['clean'])) {
+			foreach ($_COOKIE as $name => $x) {
+				setcookie($name, '', 1415900000);
+				setcookie($name, '', 1415900000, '/');
+			}
+		}
+
+		echo '<div id="status">' . $code . '</div>';
+		echo '<div id="status_code">' . $status_code . '</div>';
+	} else {
+		header("Content-Type: text/plain");
+		echo 'status(' . $code . ')';
+		echo "\n";
+		echo 'status_code(' . $status_code . ')';
+	}
+
+	exit;
 }
 
-if (!isset($_GET['auth']) || $_GET['auth'] != DP_TESTING_MODE_AUTH) {
-	echo "status(DP_TESTING_MODE_AUTH_INVALID)";
-	exit(1);
+if ((!defined('DP_TESTING_MODE_ALLOW') || !DP_TESTING_MODE_ALLOW) && !is_file(DP_WEB_ROOT.'/running_tests.trigger')) {
+	outStatus('DP_TESTING_MODE_ALLOW_FAIL', 'fail');
 }
 
 #------------------------------
@@ -28,12 +45,10 @@ if (isset($_GET['disable'])) {
 	unlink(DP_WEB_ROOT.'/running_tests.trigger');
 
 	if (is_file(DP_WEB_ROOT.'/running_tests.trigger')) {
-		echo "status(DP_TESTING_MODE_FAILED_TRIGGER)";
-		exit(1);
+		outStatus('DP_TESTING_MODE_FAILED_TRIGGER', 'fail');
 	}
 
-	echo "status(DP_TESTING_MODE_DISABLED)";
-	exit(0);
+	outStatus('DP_TESTING_MODE_DISABLED', 'ok');
 
 } else {
 	$php = @$DP_CONFIG['php_path'] ?: "php";
@@ -49,16 +64,13 @@ if (isset($_GET['disable'])) {
 	echo "\n\n";
 
 	if ($ret != 0) {
-		echo "status(DP_TESTING_MODE_FAILED_DB)";
-		exit(1);
+		outStatus('DP_TESTING_MODE_FAILED_DB', 'fail');
 	}
 
 	file_put_contents(DP_WEB_ROOT.'/running_tests.trigger', time());
 	if (!is_file(DP_WEB_ROOT.'/running_tests.trigger')) {
-		echo "status(DP_TESTING_MODE_FAILED_TRIGGER)";
-		exit(1);
+		outStatus('DP_TESTING_MODE_FAILED_TRIGGER', 'fail');
 	}
 
-	echo "status(DP_TESTING_MODE_ENABLED)";
-	exit(0);
+	outStatus('DP_TESTING_MODE_ENABLED', 'ok');
 }

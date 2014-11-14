@@ -18,7 +18,8 @@ sudo chmod 0777 /var/log/php_errors.log
 echo "--> Done"
 
 echo "Installing node modules"
-sudo npm install -g gulp bower protractor karma
+sudo npm install -g gulp bower protractor karma-cli
+sudo webdriver-manager update
 
 echo "Init project deps"
 $DIR_ROOT/app/bin/init-project.sh
