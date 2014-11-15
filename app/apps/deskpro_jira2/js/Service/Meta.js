@@ -26,7 +26,7 @@ define(function(){
 			},
 			renderSchema: function(schema, val) {
 				var types = {
-					string: function(val){ return val.value || val; },
+					string: function(val){ return val ? (val.value || val.name || val) : val; },
 					number: function(val) { return val; },
 					array: function(val) {
 						if (!val) return null;
