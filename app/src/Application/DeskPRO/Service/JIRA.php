@@ -35,6 +35,8 @@ use Application\DeskPRO\JIRA\Meta;
 
 class JIRA
 {
+    const NAME = 'dp.jira';
+
 	const PARAM_COMMENTS    = 'comments';
 	const PARAM_META        = 'meta';
 	const PARAM_URL         = 'url';
@@ -203,6 +205,7 @@ class JIRA
 			$res = $this->getApi()->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
 			$priority = $this->getApi()->get('/priority');
 			$fields = $this->getApi()->get('/field');
+			$properties['statuses'] = $this->getApi()->get('/status');
 			$properties['projects'] = isset($res['projects']) ? $res['projects'] : array();
 			$properties['priorities'] = $priority;
 

@@ -271,7 +271,7 @@ class StateChangeRecorder
 
 		$changes = $this->changes_by_field[$field_id];
 		$first = array_shift($changes);
-		$last  = array_pop($last);
+		$last  = $changes ? array_pop($changes) : null;
 
 		// Only the one change, so
 		// can just return that

@@ -32,6 +32,11 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 	 * @var JIRA issue id
 	 */
 	protected $issue_id;
+
+	/**
+	 * @var JIRA issue status id
+	 */
+	protected $status_id;
 	
 	/**
 	 * Export time
@@ -39,12 +44,6 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int Timestamp
 	 */
 	protected $created;
-	
-	/**
-	 * Issues Comments
-	 * @var 
-	 */
-	protected $comments;
 
 	public function __construct()
 	{
@@ -66,6 +65,7 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 
 		$metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'columnName' => 'id', 'id' => true));
 		$metadata->mapField(array('fieldName' => 'issue_id', 'type' => 'string', 'columnName' => 'issue_id'));
+		$metadata->mapField(array('fieldName' => 'status_id', 'type' => 'integer', 'columnName' => 'status_id', 'nullable' => true));
 		$metadata->mapField(array('fieldName' => 'created', 'type' => 'datetime', 'columnName' => 'created'));
 		$metadata->mapManyToOne(array(
 			'fieldName' => 'ticket',

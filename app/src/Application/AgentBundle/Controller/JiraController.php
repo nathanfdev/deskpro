@@ -2,8 +2,10 @@
 
 namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\Entity\JiraIssue;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\ApiErrorsException;
 use Application\DeskPRO\Service\JIRA;
+use Application\DeskPRO\Tickets\ExecutorContext;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\BadRequestHttpException;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -645,7 +647,7 @@ class JiraController extends AbstractController
 	protected function service()
 	{
 		if (!$this->service) {
-			$this->service = $this->get('dp.jira');
+			$this->service = $this->get(JIRA::NAME);
 		}
 
 		return $this->service;
@@ -778,6 +780,7 @@ class JiraController extends AbstractController
 	 */
 	public function linkAction($ticketId, $issueId)
 	{
+		/** @var $ticket Ticket */
 		if (!$ticket = $this->em->find('DeskPRO:Ticket', $ticketId)) {
 			throw new NotFoundHttpException;
 		}
@@ -792,10 +795,17 @@ class JiraController extends AbstractController
 
 		$issue = new JiraIssue();
 		$issue['issue_id'] = $issueId;
+		$issue['status_id'] = $result['issues'][0]['fields']['status']['id'];
 		$issue->ticket = $ticket;
 
 		$this->em->persist($issue);
 		$this->em->flush($issue);
+
+		$ticket->getStateChangeRecorder()->recordData('jira.linked', $result['issues'][0]);
+		$manager = $this->container->getTicketManager();
+		$context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_WEB);
+		$context->setPersonContext($this->person);
+		$manager->saveTicket($ticket, $context);
 
 		return $this->createJsonResponse($result);
 	}

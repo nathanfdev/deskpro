@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Service\JIRA;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
@@ -94,7 +95,7 @@ class CoreExtension extends Extension
 		    ->addArgument(new Reference('form.factory'));
 
 	    $container
-		    ->register('dp.jira', 'Application\DeskPRO\Service\JIRA')
+		    ->register(JIRA::NAME, 'Application\DeskPRO\Service\JIRA')
 		    ->addArgument(new Reference('service_container'));
 
 		$this->loadPeople($container);

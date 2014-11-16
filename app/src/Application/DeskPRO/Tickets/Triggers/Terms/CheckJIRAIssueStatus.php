@@ -32,84 +32,70 @@
  * @category Entities
  */
 
-namespace deskpro_jira2\RequestHandler;
+namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JIRA\OAuthWrapper;
-use Application\DeskPRO\Service\JIRA;
-use Guzzle\Http\Exception\ClientErrorResponseException;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\CheckedOptionsArray;
 
-class PackageRequestHandler implements ApiPackageRequestHandlerInterface
+/**
+ * Checks issue(s) status(es)
+ *
+ * @option string[] labels
+ */
+class CheckJIRAIssueStatus extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
+	protected function getOptionsDef()
 	{
-		switch ($context->getAction()) {
-			case 'get-meta':
-				return $this->getMetaAction($context);
-			default:
-				throw $context->createNotFoundException();
-		}
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('status', 'all');
+		return $options;
 	}
 
+
 	/**
-	 * check api link connection
-	 * @param DeskproContainer $container
-	 * @return null
+	 * {@inheritDoc}
 	 */
-	protected function checkErrors(DeskproContainer $container)
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$errors = array();
+		$options = $this->getTermOptions();
+		$op = $this->getTermOperator();
 
-		/** @var JIRA $js */
-		$js = $container->get(JIRA::NAME);
-		$back = $container->getRouter()->generateUrl('jira_token');
-		$oauth = new OAuthWrapper($js, $back);
-		try {
-			$oauth->requestTempCredentials();
-		} catch (\Exception $e) {
+		$all = (bool) $options->get('all');
+		$status = $options->get('status');
 
-			if ($e instanceof ClientErrorResponseException) {
-				$code = $e->getResponse()->getStatusCode();
-
-				if (404 === $code || 403 === $code) {
-					$errors['url'] = true;
-				} else {
-					$errors['api'] = true;
-				}
-
-			} else {
-				$errors['url'] = true;
+		if ($change = $ticket->getStateChangeRecorder()->getCombinedChangeForField('jira.status')) {
+			$data = $change->getData();
+			switch ($op) {
+				case 'changed':
+					return true;
+				case 'changed_to':
+					return isset($data['to']) && $data['to'] == $status;
+				case 'changed_from':
+					return isset($data['from']) && $data['from'] == $status;
 			}
 		}
 
-		if (!$errors && !$js->getTokens()) {
-			$errors['token'] = true;
+		$match = false;
+		foreach ($ticket->jira_issues as $issue) {
+			$match =
+				('is' === $op && $issue['status_id'] == $status)
+				||
+				('not' === $op && $issue['status_id'] != $status);
+
+			// break on first false if all
+			if ($all && !$match) {
+				break;
+			}
+			// break on first true if any
+			if (!$all && $match) {
+				break;
+			}
 		}
 
-		return $errors ?: null;
-	}
-
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function getMetaAction(ApiPackageRequestContext $context)
-	{
-		if ($errors = $this->checkErrors($context->getContainer())) {
-			return $context->createJsonResponse(array('errors' => $errors));
-		}
-
-        /** @var JIRA $js */
-        $js = $context->getContainer()->get(JIRA::NAME);
-        $data = (array) $context->getIn()->getAll('req');
-        $meta = $js->updateMeta($data);
-
-
-        return $context->createJsonResponse($meta->toArray());
+		return $match;
 	}
 }

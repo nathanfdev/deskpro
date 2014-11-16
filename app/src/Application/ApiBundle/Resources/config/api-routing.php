@@ -4906,4 +4906,10 @@ $collection->create('api_apps_instance_exec', array(
 	'requirements' => array('id' => '\d+')
 ));
 
+$collection->create('api_apps_jira', array(
+	'path'         => '/apps/jira',
+	'controller'   => 'ApiBundle:Apps:jiraSettings',
+	'methods'      => array('GET'),
+));
+
 return $collection;

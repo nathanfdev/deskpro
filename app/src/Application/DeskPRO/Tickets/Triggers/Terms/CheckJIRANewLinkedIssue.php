@@ -32,84 +32,47 @@
  * @category Entities
  */
 
-namespace deskpro_jira2\RequestHandler;
+namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
-use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\JIRA\OAuthWrapper;
-use Application\DeskPRO\Service\JIRA;
-use Guzzle\Http\Exception\ClientErrorResponseException;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Application\DeskPRO\Util as DeskPROUtil;
+use Orb\Util\Arrays;
+use Orb\Util\CheckedOptionsArray;
 
-class PackageRequestHandler implements ApiPackageRequestHandlerInterface
+/**
+ * Checks if the ticket has labels
+ *
+ * @option string[] labels
+ */
+class CheckJIRANewLinkedIssue extends AbstractTriggerTerm
 {
 	/**
 	 * {@inheritDoc}
 	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
+	protected function getOptionsDef()
 	{
-		switch ($context->getAction()) {
-			case 'get-meta':
-				return $this->getMetaAction($context);
-			default:
-				throw $context->createNotFoundException();
-		}
+		$options = new CheckedOptionsArray();
+		$options->addValidNames('project');
+		return $options;
 	}
 
-	/**
-	 * check api link connection
-	 * @param DeskproContainer $container
-	 * @return null
-	 */
-	protected function checkErrors(DeskproContainer $container)
-	{
-		$errors = array();
-
-		/** @var JIRA $js */
-		$js = $container->get(JIRA::NAME);
-		$back = $container->getRouter()->generateUrl('jira_token');
-		$oauth = new OAuthWrapper($js, $back);
-		try {
-			$oauth->requestTempCredentials();
-		} catch (\Exception $e) {
-
-			if ($e instanceof ClientErrorResponseException) {
-				$code = $e->getResponse()->getStatusCode();
-
-				if (404 === $code || 403 === $code) {
-					$errors['url'] = true;
-				} else {
-					$errors['api'] = true;
-				}
-
-			} else {
-				$errors['url'] = true;
-			}
-		}
-
-		if (!$errors && !$js->getTokens()) {
-			$errors['token'] = true;
-		}
-
-		return $errors ?: null;
-	}
 
 	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * {@inheritDoc}
 	 */
-	public function getMetaAction(ApiPackageRequestContext $context)
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		if ($errors = $this->checkErrors($context->getContainer())) {
-			return $context->createJsonResponse(array('errors' => $errors));
+		$options = $this->getTermOptions();
+		if (!$change = $ticket->getStateChangeRecorder()->getCombinedChangeForField('jira.linked')) {
+			return false;
+		}
+		$issue = $change->getData();
+
+		if ($options['project'] && $options['project'] != $issue['fields']['project']['id']) {
+			return false;
 		}
 
-        /** @var JIRA $js */
-        $js = $context->getContainer()->get(JIRA::NAME);
-        $data = (array) $context->getIn()->getAll('req');
-        $meta = $js->updateMeta($data);
-
-
-        return $context->createJsonResponse($meta->toArray());
+		return true;
 	}
 }

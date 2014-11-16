@@ -47,7 +47,7 @@ class JiraController extends AbstractController
 	 */
 	public function tokenAction(Request $request)
 	{
-		$oauth = new OAuthWrapper($this->get('dp.jira'), $this->generateUrl('jira_token', array(), true));
+		$oauth = new OAuthWrapper($this->get(JIRA::NAME), $this->generateUrl('jira_token', array(), true));
 
 		$verifier = $request->get('oauth_verifier');
 		$credentials = $request->getSession()->get('jira_oauth');
@@ -83,7 +83,7 @@ class JiraController extends AbstractController
 	public function testAction()
 	{
 		/** @var JIRA $js */
-		$js = $this->get('dp.jira');
+		$js = $this->get(JIRA::NAME);
 		$api = $js->getApi();
 
 		$ret = $api->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
