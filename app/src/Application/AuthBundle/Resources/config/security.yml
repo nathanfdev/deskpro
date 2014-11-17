@@ -1,0 +1,37 @@
+
+security:
+    providers:
+        dp_person_user_provider:
+            id: dp_person_user_provider
+
+    firewalls:
+#        dev:
+#            pattern: ^/(_(profiler|wdt)|css|images|js|web)/
+#            security: false
+        portal:
+            pattern: ^/
+            provider: dp_person_user_provider
+            deskpro_form_login: ~
+            anonymous: ~
+            logout: ~
+
+
+services:
+    dp_authentication_manager.user:
+        class: Application\DeskPRO\Auth\AuthenticationManager
+        factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService
+        factory_method: create
+        arguments: [@service_container, 'user']
+
+    dp_person_user_provider:
+        class: Application\AuthBundle\Security\DpPersonUserProvider
+        arguments: [@person_repository]
+
+    dp_security.form_login.provider:
+        class: Application\AuthBundle\Security\Authentication\Provider\DpFormLoginProvider
+        arguments: [@dp_authentication_manager.user,@dp_person_user_provider]
+
+    dp_security.form_login.listener:
+        class: Application\AuthBundle\Security\Firewall\DpAuthListener
+        parent: security.authentication.listener.abstract
+        abstract: true

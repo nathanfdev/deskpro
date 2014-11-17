@@ -1,0 +1,106 @@
+<?php
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage Auth
+ */
+
+namespace Application\AuthBundle\Security\Factory;
+
+use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory;
+use Symfony\Component\Config\Definition\Builder\NodeDefinition;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\DefinitionDecorator;
+use Symfony\Component\DependencyInjection\Reference;
+
+class DpFormLoginFactory extends AbstractFactory
+{
+    public function getPosition()
+    {
+        return 'form';
+    }
+
+    public function getKey()
+    {
+        return 'deskpro_form_login';
+    }
+
+    public function addConfiguration(NodeDefinition $builder)
+    {
+        /** @var \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $builder */
+        $builder
+            ->children()
+                ->scalarNode('remember_me')->defaultTrue()
+            ->end()
+        ;
+    }
+
+    /**
+     * Subclasses must return the id of a service which implements the
+     * AuthenticationProviderInterface.
+     *
+     * @param ContainerBuilder $container
+     * @param string           $id             The unique id of the firewall
+     * @param array            $config         The options array for this listener
+     * @param string           $userProviderId The id of the user provider
+     *
+     * @return string never null, the id of the authentication provider
+     */
+    protected function createAuthProvider(ContainerBuilder $container, $id, $config, $userProviderId)
+    {
+        $providerId = 'dp_security.auth.provider.form_login.'.$id;
+        $container
+            ->setDefinition($providerId, new DefinitionDecorator('dp_security.form_login.provider'))
+            ->replaceArgument(1, new Reference($userProviderId));
+
+        return $providerId;
+    }
+
+    /**
+     * Subclasses must return the id of the listener template.
+     *
+     * Listener definitions should inherit from the AbstractAuthenticationListener
+     * like this:
+     *
+     *    <service id="my.listener.id"
+     *             class="My\Concrete\Classname"
+     *             parent="security.authentication.listener.abstract"
+     *             abstract="true" />
+     *
+     * In the above case, this method would return "my.listener.id".
+     *
+     * @return string
+     */
+    protected function getListenerId()
+    {
+        return 'dp_security.form_login.listener';
+    }
+}
+ 
