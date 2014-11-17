@@ -11,7 +11,8 @@ security:
         portal:
             pattern: ^/
             provider: dp_person_user_provider
-            deskpro_form_login: ~
+            deskpro_form_login:
+                failure_path: /login?retry=auth
             anonymous: ~
             logout:
                 path: portal_logout

@@ -35,13 +35,19 @@
 namespace Application\AuthBundle\Security\Factory;
 
 use Symfony\Bundle\SecurityBundle\DependencyInjection\Security\Factory\AbstractFactory;
-use Symfony\Component\Config\Definition\Builder\NodeDefinition;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\DefinitionDecorator;
 use Symfony\Component\DependencyInjection\Reference;
 
 class DpFormLoginFactory extends AbstractFactory
 {
+    protected $defaultFailureHandlerOptions = array(
+        'failure_path'           => '/login?retry=auth',
+        'failure_forward'        => false,
+        'login_path'             => '/login',
+        'failure_path_parameter' => '_failure_path',
+    );
+
     public function getPosition()
     {
         return 'form';
@@ -50,16 +56,6 @@ class DpFormLoginFactory extends AbstractFactory
     public function getKey()
     {
         return 'deskpro_form_login';
-    }
-
-    public function addConfiguration(NodeDefinition $builder)
-    {
-        /** @var \Symfony\Component\Config\Definition\Builder\ArrayNodeDefinition $builder */
-        $builder
-            ->children()
-                ->scalarNode('remember_me')->defaultTrue()
-            ->end()
-        ;
     }
 
     /**
