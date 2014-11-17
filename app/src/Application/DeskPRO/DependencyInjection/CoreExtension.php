@@ -84,7 +84,6 @@ class CoreExtension extends Extension
 		$this->loadPeople($container);
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
-		$this->loadSettings($container);
     }
 
 	protected function loadPeople(ContainerBuilder $container)
@@ -183,18 +182,6 @@ class CoreExtension extends Extension
 		$definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
 		$definition->addMethodCall('setArrayStringSeparator', array('.'));
 		$container->setDefinition('deskpro.core.input_reader', $definition);
-	}
-
-	/**
-	 * Sets up the settings loader
-	 */
-	protected function loadSettings(ContainerBuilder $container)
-	{
-		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
-			DP_ROOT . '/sys/config/settings.php',
-			new Reference('database_connection')
-		));
-		$container->setDefinition('deskpro.core.settings', $definition);
 	}
 
 	public function getXsdValidationBasePath()

@@ -159,3 +159,10 @@ $container->setDefinition('deskpro.log_handler.log_event', $definition);
 $definition = new Definition('Application\DeskPRO\Monolog\Logger', array('changelog'));
 $definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
 $container->setDefinition('deskpro.logger.changelog', $definition);
+
+
+$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
+    DP_ROOT.'/sys/config/settings.php',
+    new Reference('database_connection')
+));
+$container->setDefinition('deskpro.core.settings', $definition);
