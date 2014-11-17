@@ -213,6 +213,22 @@ define [
 			})
 
 			#------------------------------
+			# JIRA Actions
+			#------------------------------
+
+			options = []
+
+			options.push({
+				title: 'Add Comment to linked JIRA issues',
+				value: 'AddJIRAComment'
+			})
+
+			set_options.push({
+				title: 'JIRA Actions',
+				subOptions: options
+			})
+
+			#------------------------------
 			# Trigger Control
 			#------------------------------
 
@@ -1414,3 +1430,24 @@ define [
 							}
 					}
 			}
+
+		getAddJIRAComment: (options = {}) ->
+			me = @
+			getTemplate: -> me.dpTemplateManager.get 'OptionBuilder/type-actions-addagentreply.html'
+			getData: -> me.loadDataOptions()
+			getDataFormatter: ->
+				getViewValue: (value = {}, data) ->
+					opt = value.options || {}
+					by_agent_id = (opt.by_agent_id || data.agents[0].id) + ""
+
+					type: 'AddJIRAComment',
+					text: opt.note_text || '',
+					by_assigned_agent: opt.by_assigned_agent || false,
+					by_agent_id: by_agent_id
+
+				getValue: (model = {}, data) ->
+					type: 'AddJIRAComment'
+					options:
+						note_text: model.text
+						by_assigned_agent: model.by_assigned_agent || false
+						by_agent_id: parseInt(model.by_agent_id || 0) || 0

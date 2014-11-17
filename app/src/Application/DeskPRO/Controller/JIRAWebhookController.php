@@ -104,6 +104,7 @@ class JIRAWebhookController extends AbstractController
 
 		    if (isset($data['comment'])) {
 			    $state->recordData('jira.comment', $data['comment']);
+			    $context->getUserVars()->set('jira.comment', $data['comment']['body']);
 		    }
 
 		    if (isset($data['changelog'])) {

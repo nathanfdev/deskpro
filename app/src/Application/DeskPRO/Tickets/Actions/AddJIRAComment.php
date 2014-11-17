@@ -35,7 +35,7 @@
 namespace Application\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Service\JIRA;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Orb\Util\CheckedOptionsArray;
@@ -48,7 +48,7 @@ use Orb\Util\CheckedOptionsArray;
  * @option bool   by_assigned_agent
  * @option bool   no_formatter
  */
-class JIRAAddComment extends AbstractContainerAwareAction implements ActionInterface
+class AddJIRAComment extends AbstractContainerAwareAction implements ActionInterface, NoopableInterface
 {
 	/**
 	 * {@inheritDoc}
@@ -80,13 +80,6 @@ class JIRAAddComment extends AbstractContainerAwareAction implements ActionInter
 			return;
 		}
 
-		$em = $this->getContainer()->getEm();
-
-		$message = new TicketMessage();
-		$message->person = $agent;
-		$message->date_created = new \DateTime('+1 second');
-		$message['is_agent_note'] = true;
-
 		$note_text = $this->getActionOption('note_text');
 
 		if (!$this->getActionOption('no_formatter')) {
@@ -95,10 +88,27 @@ class JIRAAddComment extends AbstractContainerAwareAction implements ActionInter
 			$note_text = $formatter->formatText($note_text, $ticket);
 		}
 
-		$message->setMessage($note_text);
+		/** @var JIRA $js */
+		$js = $this->getContainer()->get(JIRA::NAME);
+		foreach ($ticket->jira_issues as $issue) {
+			try {
+				$js->createComment($issue['issue_id'], $agent->getDisplayName() . ': ' . $note_text);
+			} catch (\Exception $e) {
+				$context->getLogger()->error(
+					sprintf("[JIRAAddComment] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+					array('exception' => $e)
+				);
+			}
+		}
+	}
 
-		$ticket->addMessage($message);
-		$em->persist($message);
-		$em->flush($message);
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		/** @var JIRA $js */
+		$js = $this->getContainer()->get(JIRA::NAME);
+		return !$js->isEnabled();
 	}
 }

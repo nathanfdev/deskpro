@@ -169,6 +169,15 @@
         });
         options = [];
         options.push({
+          title: 'Add Comment to linked JIRA issues',
+          value: 'AddJIRAComment'
+        });
+        set_options.push({
+          title: 'JIRA Actions',
+          subOptions: options
+        });
+        options = [];
+        options.push({
           title: 'Stop Processing Triggers',
           value: 'ModStopTriggers'
         });
@@ -1884,6 +1893,53 @@
                     "public": model["public"],
                     creator: model.creator,
                     assignee: model.assignee
+                  }
+                };
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getAddJIRAComment = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-actions-addagentreply.html');
+          },
+          getData: function() {
+            return me.loadDataOptions();
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var by_agent_id, opt;
+                if (value == null) {
+                  value = {};
+                }
+                opt = value.options || {};
+                by_agent_id = (opt.by_agent_id || data.agents[0].id) + "";
+                return {
+                  type: 'AddJIRAComment',
+                  text: opt.note_text || '',
+                  by_assigned_agent: opt.by_assigned_agent || false,
+                  by_agent_id: by_agent_id
+                };
+              },
+              getValue: function(model, data) {
+                if (model == null) {
+                  model = {};
+                }
+                return {
+                  type: 'AddJIRAComment',
+                  options: {
+                    note_text: model.text,
+                    by_assigned_agent: model.by_assigned_agent || false,
+                    by_agent_id: parseInt(model.by_agent_id || 0) || 0
                   }
                 };
               }
