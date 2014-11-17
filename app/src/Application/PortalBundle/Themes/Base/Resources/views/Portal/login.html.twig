@@ -6,15 +6,59 @@
         <div class="error">Bad Credentials. Please try again.</div>
     {% endif %}
 
-	<section>
-		<div class="column-full">
-            <form action="{{ path('portal_login_submit') }}" method="POST">
-                <input type="text" name="username" />
-                <input type="text" name="password" />
-                <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
-              <button type="submit">Login!</button>
-            </form>
-		</div>
-	</section>
+    <header class="section-header">
+        <h1>Log in to the support portal</h1>
+    </header>
+
+
+    <form class="form-ticket" action="{{ path('portal_login_submit') }}" method="post">
+        <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
+
+        <div class="column-half">
+            <div class="bucket">
+                <label class="title">Your email:</label>
+                <input type="text" placeholder="Email" name="email">
+            </div>
+        </div>
+
+        <div class="column-half omega">
+            <div class="bucket">
+                <div class="form-meta form-meta-grey"><a href="#">Need a password reminder?</a></div>
+                <label class="title">Your password:</label>
+                <input type="password" placeholder="Your password (required)" name="password">
+            </div>
+        </div>
+
+
+        <div class="column-full">
+            <div class="bucket">
+                <button class="button">Log In</button>
+                <div class="remember-me"><label for="remember_me"><input type="checkbox" name="remember_me"> Stay Logged In?</label></div>
+            </div>
+        </div>
+
+        <div class="column-full">
+            <div class="bucket">
+                <div class="titled-header-left">
+                    <h2>Or use an external service</h2>
+                </div>
+
+                <button class="button auth auth-facebook"><i class="fa fa-facebook"></i> Facebook</button>
+                <button class="button auth auth-twitter"><i class="fa fa-twitter"></i>Twitter</button>
+                <button class="button auth auth-google"><i class="fa fa-google"></i>Google</button>
+            </div>
+        </div>
+
+        <div class="column-full">
+            <div class="bucket">
+                <div class="titled-header-left">
+                    <h2>Create a new account</h2>
+                </div>
+
+                <button class="button button-secondary">Register</button>
+            </div>
+        </div>
+
+    </form>
 
 {% endblock page_content %}
