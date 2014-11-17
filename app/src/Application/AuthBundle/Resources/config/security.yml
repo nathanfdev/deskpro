@@ -13,7 +13,8 @@ security:
             provider: dp_person_user_provider
             deskpro_form_login: ~
             anonymous: ~
-            logout: ~
+            logout:
+                path: portal_logout
 
 
 services:

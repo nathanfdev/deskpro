@@ -10,6 +10,9 @@ portal_login:
     defaults:
         _controller: Theme:Portal:login
 
+portal_logout:
+    path: /logout
+
 portal_login_submit:
     path: /login/authenticate-password
     defaults:
