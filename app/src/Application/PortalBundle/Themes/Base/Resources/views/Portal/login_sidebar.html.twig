@@ -1,0 +1,38 @@
+{% if not is_granted('ROLE_USER') %}
+<div class="small-form">
+    <h1>Log in</h1>
+
+    <form>
+        <label>
+            <span>Your email:</span>
+            <input type="text" placeholder="email@example.com">
+        </label>
+
+        <div class="permanent-login">
+            <label>Stay Logged In? <input type="checkbox"></label>
+        </div>
+
+        <label>
+            <span>Your password:</span>
+            <input type="password" placeholder="Your password">
+        </label>
+
+        <label class="error">
+            <div class="message">This is a password error</div>
+            <span>Your password:</span>
+            <input type="password" placeholder="Your password">
+        </label>
+
+        <button>Log In</button>
+        <div class="secondary-action">
+            <a href="#">Forgot your password?</a>
+        </div>
+
+    </form>
+
+
+    <a href="#" class="button auth-one">OneLogin</a>
+    <a href="#" class="button auth-facebook">Login with Facebook</a>
+    <hr>
+</div>
+{% endif %}

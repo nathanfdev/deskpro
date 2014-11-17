@@ -1,3 +1,8 @@
+{% if is_granted('ROLE_USER') %}
+    {{ user_sidebar() }}
+{% else %}
+    {{ login_sidebar() }}
+{% endif %}
 {{ get_in_touch() }}
 Knowledgebase
 {{ kb_cats_small() }}

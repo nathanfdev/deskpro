@@ -101,4 +101,14 @@ class PortalController extends AbstractController
     {
         return $this->render('Theme:Portal:login.html.twig');
     }
+
+    public function loginSidebarAction()
+    {
+        return $this->render('Theme:Portal:login_sidebar.html.twig');
+    }
+
+    public function userSidebarAction()
+    {
+        return $this->render('Theme:Portal:user_sidebar.html.twig');
+    }
 }

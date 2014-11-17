@@ -2901,7 +2901,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getUsername()
     {
-        return $this->getId();
+        return $this->getPrimaryEmailAddress();
     }
 
     /**

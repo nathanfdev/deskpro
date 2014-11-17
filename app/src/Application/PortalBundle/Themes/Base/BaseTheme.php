@@ -48,6 +48,8 @@ class BaseTheme extends AbstractTheme
 			new Tag('top_tabs', 'Theme:Portal:topTabs'),
 			new Tag('get_in_touch', 'Theme:Portal:getInTouch'),
 			new Tag('sidebar', 'Theme:Portal:sidebar'),
+			new Tag('user_sidebar', 'Theme:Portal:userSidebar'),
+			new Tag('login_sidebar', 'Theme:Portal:loginSidebar'),
 
 			new Tag('kb_articles_forcat', 'Theme:Articles:list', array('style' => 'forcat')),
 			new Tag('kb_articles_small', 'Theme:Articles:list', array('style' => 'small')),
