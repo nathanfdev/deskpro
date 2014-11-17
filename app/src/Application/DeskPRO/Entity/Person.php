@@ -48,6 +48,7 @@ use Orb\Util\Numbers;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 use Symfony\Component\Security\Core\Role\Role;
+use Symfony\Component\Security\Core\User\EquatableInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 
 /**
@@ -108,7 +109,7 @@ use Symfony\Component\Security\Core\User\UserInterface;
  * @property \DateTime $date_picture_check
  * @property string $browser
  */
-class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable
+class Person extends DomainObject implements HighlightableModelInterface, UserInterface, \Serializable, EquatableInterface
 {
 	const CREATED_WEB_PERSON = 'web.person';
 	const CREATED_WEB_AGENT = 'web.agent';
@@ -2865,7 +2866,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getRoles()
     {
-        return array('ROLE_USER');
+        return array();
     }
 
     /**
@@ -2938,5 +2939,24 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function unserialize($serialized)
     {
         $this->id = unserialize($serialized);
+    }
+
+    /**
+     * The equality comparison should neither be done by referential equality
+     * nor by comparing identities (i.e. getId() === getId()).
+     *
+     * However, you do not need to compare every attribute, but only those that
+     * are relevant for assessing whether re-authentication is required.
+     *
+     * Also implementation should consider that $user instance may implement
+     * the extended user interface `AdvancedUserInterface`.
+     *
+     * @param UserInterface $user
+     *
+     * @return bool
+     */
+    public function isEqualTo(UserInterface $user)
+    {
+        return $this->id == $user->id;
     }
 }

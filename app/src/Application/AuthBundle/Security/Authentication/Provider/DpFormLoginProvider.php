@@ -98,10 +98,10 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             // some sort of UserProviderInterface eventually....
             $login_processor = new LoginProcessor($usersource, $authResult->getIdentity());
             $person = $login_processor->getPerson();
-            $token->setUser($person);
-            $token->setAuthenticated(true);
 
-            return $token;
+            $authenticatedToken = new DpFormLoginToken($person, null, array_merge(array('ROLE_USER'), $person->getRoles()));
+
+            return $authenticatedToken;
         }
 
         throw new BadCredentialsException;

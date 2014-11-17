@@ -34,20 +34,25 @@
 
 namespace Application\AuthBundle\Security;
 
+use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Security\Core\Authentication\Token\AbstractToken;
 
 class DpFormLoginToken extends AbstractToken
 {
-    protected $password;
+    protected $credentials;
 
-    public function __construct($username, $password)
+    public function __construct($user, $credentials, array $roles = array())
     {
-        $this->setUser($username);
-        $this->password = $password;
+        parent::__construct($roles);
+
+        $this->setUser($user);
+        $this->credentials = $credentials;
+
+        parent::setAuthenticated($user instanceof Person && count($roles) > 0);
     }
 
     public function getCredentials()
     {
-        return $this->password;
+        return $this->credentials;
     }
 }
