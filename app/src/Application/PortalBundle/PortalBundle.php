@@ -33,13 +33,12 @@
 
 namespace Application\PortalBundle;
 
-
 use Symfony\Component\Console\Application;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class PortalBundle extends Bundle
 {
-	public function registerCommands(Application $application)
+    public function registerCommands(Application $application)
 	{
 	}
 

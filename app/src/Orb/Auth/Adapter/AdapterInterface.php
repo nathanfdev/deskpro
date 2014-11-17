@@ -34,6 +34,8 @@
 
 namespace Orb\Auth\Adapter;
 
+use Orb\Auth\Result;
+
 interface AdapterInterface
 {
 	/**
