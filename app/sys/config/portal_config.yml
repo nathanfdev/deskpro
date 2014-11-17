@@ -1,6 +1,7 @@
 imports:
     - { resource: config.shared.php }
     - { resource: @PortalBundle/Resources/config/portal_services.yml }
+    - { resource: @AuthBundle/Resources/config/security.yml }
 
 parameters:
     doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies

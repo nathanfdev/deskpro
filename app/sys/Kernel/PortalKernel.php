@@ -34,6 +34,7 @@
 
 namespace DeskPRO\Kernel;
 
+use Application\DeskPRO\App;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
@@ -57,6 +58,7 @@ class PortalKernel extends Kernel
 			new \Symfony\Bundle\MonologBundle\MonologBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+			new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
 			new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
 			new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
@@ -64,6 +66,7 @@ class PortalKernel extends Kernel
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\PortalBundle\PortalBundle(),
 			new \Application\LanguageBundle\LanguageBundle(),
+            new \Application\AuthBundle\AuthBundle()
 		);
 
 		if ('dev' === $this->getEnvironment()
@@ -155,6 +158,10 @@ class PortalKernel extends Kernel
 		$v = libxml_disable_entity_loader(false);
 
 		parent::initializeContainer();
+
+        // TODO: this is the major pain point for us where the App:: globals enter the kernel space
+        // I didn't need this until Auth, because the Person entity itself gets objects that are necessary
+        App::$container = $this->getContainer();
 
 		libxml_disable_entity_loader($v);
 	}
