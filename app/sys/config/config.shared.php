@@ -146,3 +146,16 @@ $container->loadFromExtension(
 		'transport' => 'dp_delegating'
 	)
 );
+
+
+$definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
+    new Reference('doctrine.orm.entity_manager')
+));
+$container->setDefinition('deskpro.person_activity_logger', $definition);
+
+$definition = new Definition('Application\DeskPRO\Log\Handler\LogEventHandler', array(new Reference('doctrine.orm.entity_manager')));
+$container->setDefinition('deskpro.log_handler.log_event', $definition);
+
+$definition = new Definition('Application\DeskPRO\Monolog\Logger', array('changelog'));
+$definition->addMethodCall('pushHandler', array(new Reference('deskpro.log_handler.log_event')));
+$container->setDefinition('deskpro.logger.changelog', $definition);
