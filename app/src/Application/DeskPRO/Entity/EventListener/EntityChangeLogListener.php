@@ -93,7 +93,7 @@ abstract class EntityChangeLogListener
 				}
 			}
 
-			if ($c->has('session') && ($sess = $c->get('session'))) {
+			if ($c->has('session') && ($sess = $c->get('session')) && $sess instanceof Session) {
 				/** @var $sess Session */
 				if ($person = $sess->getPerson()) {
 					return $person;
