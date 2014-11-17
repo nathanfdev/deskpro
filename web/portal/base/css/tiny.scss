@@ -14,10 +14,10 @@
 
       a {
         text-decoration: none;
-        color: #717171;
+        color: $text-color;
 
         &:hover {
-          color: #333;
+          color: $text-color-darker;
           text-decoration: underline;
         }
       }

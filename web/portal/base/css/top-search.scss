@@ -1,3 +1,136 @@
+// Live results
+
+
+
+.live-results-container {
+  position: absolute;
+  top: 56px;
+}
+
+
+
+
+.search-box-results {
+  display: block;
+  background: darken($form-input, 2.5%);
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+
+  header {
+    text-transform: uppercase;
+    padding: 10px 15px;
+    padding-bottom: 0px;
+    border-top: 1px solid $divider-color;
+  }
+  .text-tag {
+    background: $button-color-secondary;
+    top: -1px;
+    font-weight: 500;
+    margin-right: 4px;
+  }
+
+  .pagination {
+    margin-left: 10px;
+  }
+}
+
+
+.live-search-meta {
+  @include clearfix;
+  text-align: center;
+  width: 100%;
+  padding: 10px;
+
+  a {
+    margin: 0px 5px;
+    display: inline-block;
+    min-width: 140px;
+  }
+
+  div {
+    line-height: 1em;
+    margin-bottom: 10px;
+    position: relative;
+    top: -2px;
+    opacity: 0.5;
+  }
+}
+
+
+.result-count { color: $text-color-darker; }
+
+.result-filter {
+  @include blank-list;
+  display: inline-block;
+  font-size: 0.8em;
+  font-weight: 500;
+  text-transform: uppercase;
+  float: right;
+
+  a {
+    text-decoration: none;
+    color: $text-color;
+  }
+
+  i {
+    color: $button-color-secondary;
+  }
+
+  li {
+    display: inline-block;
+    margin-left: 15px;
+    padding-right: 15px;
+    border-right: 1px solid $divider-color;
+
+    &:last-child {
+      margin-right: 0px;
+      padding-right: 0px;
+      border-right: none;
+    }
+  }
+}
+
+.result-list {
+  .focus {
+    font-weight: 500;
+    color: $text-color-darker;
+  }
+
+  ul {
+    @include blank-list;
+    font-size: 0.95em;
+  }
+
+  i {
+    display: inline-block;
+    width: 20px;
+    text-align: center;
+    margin-right: 5px;
+    opacity: 0.5;
+  }
+
+  a {
+    color: inherit;
+    text-decoration: none;
+    display: block;
+
+    padding: 6px 15px;
+  }
+
+  .alt {
+    background: #eeeeee;
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
 // Top search & create ticket panel
 //
 // Add .single-item to .search-and-ticket for showing just the ticket create button
@@ -17,7 +150,7 @@
     display: block;
     @include clearfix;
 
-    &.search-box { width: 65%;  }
+    &.search-box { width: 65%; }
     &.or { width: 5%; }
     &.ticket { width: 30%; }
 
@@ -61,7 +194,7 @@
     border-radius: 2px;
     border-bottom: 1px solid shade($form-input, 7.5%);
     vertical-align: top;
-    font-family: "open sans";
+    font-family: $fonts;
     line-height: $top-search-common-line-height;
     margin-bottom: 0px;
 
@@ -72,6 +205,7 @@
 
   form.search-box {
     margin-bottom: 0px;
+    position: relative;
 
     // Use float instead of inline block to avoid the need for extra styles if there's no ticket
     input[type="text"], button {
@@ -82,30 +216,28 @@
     input[type="text"] {
       background: $form-input;
       border-radius: 2px;
-      color: #333;
+      color: $text-color;
       border-top-right-radius: 0px;
       border-bottom-right-radius: 0px;
       width: 80%;
 
       @include placeholder {
-        color: $text-faded;
+        color: $text-color-lighter;
         font-style: italic;
-        font-weight: 100;
+        font-weight: 400;
       }
     }
 
     button {
-      background: shade($form-input, 5%);
+      background: shade($form-input, 10%);
       padding-left: 0px;
       padding-right: 0px;
       border-bottom-right-radius: 0px;
       border-bottom-left-radius: 0px;
-      color: #cecece;
+      color: $text-color-lighter;
       width: 20%;
 
-      &:hover {
-        box-shadow: $common-box-shadow-inner;
-      }
+      &:hover { box-shadow: $common-box-shadow-inner; }
     }
   }
 
@@ -150,13 +282,8 @@
     overflow: hidden;
     text-overflow: ellipsis;
 
-    &:hover {
-      box-shadow: $common-box-shadow-inner;
-    }
+    &:hover { box-shadow: $common-box-shadow-inner; }
   }
 }
 
-
-table {
-  font-size: 1em;
-}
+table { font-size: 1em; }

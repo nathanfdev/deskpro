@@ -1,122 +1,68 @@
-.extra-margin {
-  margin-top: 20px;
-  margin-bottom: 20px; }
+/*
+Error: Undefined variable: "$divider-color".
+        on line 4 of ./css/misc.scss
 
-.text-tag, .rating-tag, .comment-tag, .date-tag {
-  background: #579034;
-  border-radius: 2px;
-  font-weight: 600;
-  color: #f0f0f0;
-  padding: 3px 6px;
-  font-size: 0.7em;
-  text-transform: uppercase;
-  cursor: default;
-  line-height: 1em;
-  position: relative; }
-  .text-tag i, .rating-tag i, .comment-tag i, .date-tag i {
-    position: relative;
-    top: 0px;
-    left: 2px; }
+1: hr.divider {
+2:   height: 1px;
+3:   border: 0px;
+4:   background: $divider-color;
+5:   margin-top: 15px;
+6:   margin-bottom: 15px;
+7: }
+8: 
+9: 
 
-h1 .text-tag, h1 .rating-tag, h1 .comment-tag, h1 .date-tag {
-  font-size: 10px;
-  background: #93d06e;
-  color: #dbedd2;
-  position: relative;
-  top: -2px;
-  left: 4px; }
-  h1 .text-tag:after, h1 .rating-tag:after, h1 .comment-tag:after, h1 .date-tag:after {
-    content: " ";
-    width: 0px;
-    height: 0px;
-    display: block;
-    border: 4px solid transparent;
-    border-right: 4px solid #93d06e;
-    position: absolute;
-    left: -6px;
-    top: 5px; }
-
-.rating-tag {
-  background: #93d06e;
-  padding-top: 1px;
-  padding-bottom: 1px; }
-
-.comment-tag {
-  background: #3575bd;
-  padding-top: 1px;
-  padding-bottom: 1px; }
-  .comment-tag i {
-    font-size: 0.9em;
-    top: -1px; }
-
-.list-meta {
-  margin-top: 0.5em;
-  font-size: 0.9em;
-  text-align: right; }
-  .list-meta a {
-    opacity: 0.5;
-    display: inline-block;
-    text-decoration: none;
-    color: #aaaaaa;
-    position: relative;
-    left: -5px; }
-    .list-meta a:hover {
-      opacity: 1; }
-    .list-meta a img {
-      position: relative;
-      top: 4px;
-      left: 5px;
-      opacity: 0.3; }
-    .list-meta a span {
-      font-weight: 500;
-      color: #7b7b7b; }
-
-table tr td {
-  vertical-align: top;
-  padding: 10px 10px; }
-  table tr td:first-child {
-    text-align: right;
-    color: #c0c0c0;
-    min-width: 210px; }
-
-.date-tag {
-  background: #e7e7e7;
-  color: #b9b9b9;
-  min-width: 40px;
-  display: inline-block;
-  text-align: center;
-  margin-right: 10px; }
-  .date-tag span {
-    color: #cecece;
-    font-size: 0.7em; }
-  .date-tag:after {
-    content: " ";
-    width: 0px;
-    height: 0px;
-    display: block;
-    border: 4px solid transparent;
-    border-left: 4px solid #e7e7e7;
-    position: absolute;
-    right: -8px;
-    top: 5px; }
-
-.file-tag {
-  display: inline-block;
-  min-width: 40px;
-  font-size: 0.6em;
-  color: rgba(255, 255, 255, 0.6);
-  margin-right: 5px; }
-
-.file-pdf {
-  background-color: #f44e4e;
-  background-image: url(../img/icon-pdf.png);
-  background-repeat: no-repeat;
-  background-position: right center; }
-
-.file-zip {
-  background-color: #b6b800;
-  background-image: url(../img/icon-zip.png);
-  background-repeat: no-repeat;
-  background-position: 30px center; }
-
-/*# sourceMappingURL=misc.css.map */
+Backtrace:
+./css/misc.scss:4
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block (2 levels) in visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:420:in `block in visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:418:in `visit_rule'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `with_base'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:52:in `block in visit_children'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:52:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:52:in `visit_children'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:167:in `block in visit_children'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:179:in `with_environment'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:166:in `visit_children'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `block in visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:186:in `visit_root'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:157:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:8:in `visit'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/root_node.rb:36:in `css_tree'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/root_node.rb:29:in `render_with_sourcemap'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/engine.rb:368:in `_render_with_sourcemap'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/engine.rb:285:in `render_with_sourcemap'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:490:in `update_stylesheet'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:215:in `block in update_stylesheets'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:209:in `each'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:209:in `update_stylesheets'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:470:in `on_file_changed'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/plugin/compiler.rb:329:in `block in watch'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:276:in `call'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:276:in `_process_changes'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:233:in `block in _wait_for_changes'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:216:in `loop'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:216:in `_wait_for_changes'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/listen-2.7.9/lib/listen/listener.rb:312:in `block in _start_wait_thread'
+*/
+body:before {
+  white-space: pre;
+  font-family: monospace;
+  content: "Error: Undefined variable: \"$divider-color\".\A         on line 4 of ./css/misc.scss\A \A 1: hr.divider {\A 2:   height: 1px;\A 3:   border: 0px;\A 4:   background: $divider-color;\A 5:   margin-top: 15px;\A 6:   margin-bottom: 15px;\A 7: }\A 8: \A 9: "; }

@@ -1,28 +1,28 @@
 /*
-Error: Undefined mixin 'generate-background-and-border'.
-        on line 37 of ./buttons.scss, in `generate-background-and-border'
-        from line 37 of ./buttons.scss
+Error: Undefined variable: "$page-background".
+        on line 8 of ./css/buttons.scss
 
-32: 
-33: 
-34: 
-35: 
-36: button, .button, input[type="submit"] {
-37:   @include generate-background-and-border($button-color);
-38:   color: set-button-text-color($button-color);
-39:   border-radius: 2px;
-40:   display: inline-block;
-41:   line-height: 1em;
-42:   padding: 1em 2em;
+3: 
+4: 
+5: .upload-avatar {
+6:   display: inline-block;
+7:   line-height: 1em;
+8:   background: none repeat scroll 0 0 $page-background;
+9:   border: 1px solid $divider-color;
+10:   border-radius: 2px;
+11:   padding-left: 140px;
+12:   position: relative;
+13:   color: $text-color;
 
 Backtrace:
-./buttons.scss:37:in `generate-background-and-border'
-./buttons.scss:37
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:338:in `block in visit_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `block in with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:336:in `visit_mixin'
+./css/buttons.scss:8
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `block in _perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
@@ -71,4 +71,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'generate-background-and-border'.\A         on line 37 of ./buttons.scss, in `generate-background-and-border'\A         from line 37 of ./buttons.scss\A \A 32: \A 33: \A 34: \A 35: \A 36: button, .button, input[type=\"submit\"] {\A 37:   @include generate-background-and-border($button-color);\A 38:   color: set-button-text-color($button-color);\A 39:   border-radius: 2px;\A 40:   display: inline-block;\A 41:   line-height: 1em;\A 42:   padding: 1em 2em;"; }
+  content: "Error: Undefined variable: \"$page-background\".\A         on line 8 of ./css/buttons.scss\A \A 3: \A 4: \A 5: .upload-avatar {\A 6:   display: inline-block;\A 7:   line-height: 1em;\A 8:   background: none repeat scroll 0 0 $page-background;\A 9:   border: 1px solid $divider-color;\A 10:   border-radius: 2px;\A 11:   padding-left: 140px;\A 12:   position: relative;\A 13:   color: $text-color;"; }

@@ -26,7 +26,7 @@
   }
 
   .active-page, a:hover {
-    background: #f6f6f6;
+    background: $surface-secondary;
   }
 
   .inactive {
@@ -61,10 +61,7 @@
     z-index: 99;
   }
 
-
-  li {
-    display: inline-block;
-  }
+  li { display: inline-block; }
 
   a {
     font-size: 0.9em;
@@ -79,8 +76,5 @@
     margin-right: 2px;
   }
 
-  hr {
-    margin: 0;
-
-  }
+  hr { margin: 0; }
 }

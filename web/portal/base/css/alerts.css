@@ -1,22 +1,26 @@
 /*
-Error: Undefined variable: "$font-mid".
-        on line 22 of ./alerts.scss
+Error: Undefined variable: "$grey".
+        on line 6 of ./css/alerts.scss
 
-17:     opacity: 0.7;
-18:   }
-19: 
-20:   .all-tickets {
-21:     margin-left: 15px;
-22:     font-size: $font-mid;
-23:   }
-24: }
-25: 
-26: .alert {
-27:   @include generate-background-and-border(#f9f9f6);
+1: .alerts {
+2:   font-weight: 400;
+3:   margin-top: 10px;
+4: 
+5:   a.all-tickets {
+6:     border-bottom: 2px solid $grey;
+7:     padding-bottom: 1px;
+8:     text-decoration: none;
+9:   }
+10: 
+11:   .ticket-title {
 
 Backtrace:
-./alerts.scss:22
+./css/alerts.scss:6
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `block in _perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `_perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
@@ -78,4 +82,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$font-mid\".\A         on line 22 of ./alerts.scss\A \A 17:     opacity: 0.7;\A 18:   }\A 19: \A 20:   .all-tickets {\A 21:     margin-left: 15px;\A 22:     font-size: $font-mid;\A 23:   }\A 24: }\A 25: \A 26: .alert {\A 27:   @include generate-background-and-border(#f9f9f6);"; }
+  content: "Error: Undefined variable: \"$grey\".\A         on line 6 of ./css/alerts.scss\A \A 1: .alerts {\A 2:   font-weight: 400;\A 3:   margin-top: 10px;\A 4: \A 5:   a.all-tickets {\A 6:     border-bottom: 2px solid $grey;\A 7:     padding-bottom: 1px;\A 8:     text-decoration: none;\A 9:   }\A 10: \A 11:   .ticket-title {"; }

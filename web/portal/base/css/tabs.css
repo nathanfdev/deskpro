@@ -1,6 +1,6 @@
 /*
 Error: Undefined variable: "$divider-color".
-        on line 1 of ./tabs.scss
+        on line 1 of ./css/tabs.scss
 
 1: $tab-border: $divider-color;
 2: 
@@ -10,7 +10,7 @@ Error: Undefined variable: "$divider-color".
 6:     @include clearfix;
 
 Backtrace:
-./tabs.scss:1
+./css/tabs.scss:1
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:458:in `visit_variable'
@@ -51,4 +51,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$divider-color\".\A         on line 1 of ./tabs.scss\A \A 1: $tab-border: $divider-color;\A 2: \A 3: .tabs {\A 4:   margin-bottom: 20px;\A 5:   ul {\A 6:     @include clearfix;"; }
+  content: "Error: Undefined variable: \"$divider-color\".\A         on line 1 of ./css/tabs.scss\A \A 1: $tab-border: $divider-color;\A 2: \A 3: .tabs {\A 4:   margin-bottom: 20px;\A 5:   ul {\A 6:     @include clearfix;"; }

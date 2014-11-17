@@ -2,24 +2,22 @@
 
 
 .expand {
-  border: 1px solid #e2e2e2;
-  border-radius: 4px;
+  border: 1px solid $divider-color;
+  border-radius: $border-radius-main;
   display: block;
   width: 32px;
   height: 32px;
   position: absolute;
   right: 13px;
   text-align: center;
-  color: #e2e2e2;
+  color: $grey;
   top: 13px;
   i {
     position: relative;
     top: 8px;
   }
 
-  &:hover {
-    color: #333;
-  }
+  &:hover { color: $text-color-darker; }
 }
 
 
@@ -31,16 +29,14 @@
   float: left;
   width: 45px;
   height: 45px;
-  background: #3575bd;
-  color: #fff;
-  border-radius: 4px;
+  background: $button-color;
+  color: $button-text;
+  border-radius: $border-radius-main;
   text-align: center;
   line-height: 1em;
   margin-right: 0.66em;
 
-  span {
-    display: block;
-  }
+  span { display: block; }
 
   .month {
     font-size: 0.7em;
@@ -48,7 +44,7 @@
     text-transform: uppercase;
     padding-top: 3px;
     padding-bottom: 3px;
-    color: #7393bf;
+    color: $page-background;
     background: rgba(0, 0, 0, 0.1);
     border-radius: 4px;
   }
@@ -65,8 +61,8 @@
     margin: 0;
     padding: 0;;
     z-index: 99;
-    border-top: 1px solid #2a5e97;
-    background: #4a83c4;
+    border-top: 1px solid darken($main-color, 10%);
+    background: $button-color;
     position: relative;
     top: 0px;
   }
@@ -80,7 +76,7 @@ h1.fancy-header {
   font-size: 1.15em;
   font-weight: 600;
   display: inline-block;
-  background: #fff;
+  background: $page-background;
   padding-left: 2em;
   padding-right: 2em;
   position: relative;
@@ -114,7 +110,6 @@ h1.fancy-header {
       @include clearfix;
       line-height: 1.4em;
       border-radius: 4px;
-      // border: 1px solid #f0f0f0;
       padding: 7px;
       margin-bottom: 10px;
       position: relative;
@@ -125,9 +120,7 @@ h1.fancy-header {
         font-size: 1.1em;
         font-weight: 400;
 
-        a {
-          text-decoration: none;
-        }
+        a { text-decoration: none; }
       }
 
       h2 {
@@ -135,29 +128,27 @@ h1.fancy-header {
         font-size: 0.9em;
         font-weight: 400;
 
-        a {
-          color: #cecece;
-        }
+        a { color: $text-color-lighter; }
       }
 
       p {
         margin-top: 3px;
-        color: #737373;
+        color: $text-color-lighter;
         white-space: nowrap;
         overflow: hidden;
         text-overflow: ellipsis;
       }
 
       &.expanded-post {
-        border: 1px solid #ededed;
-        background: #f6f6f6;
+        border: 1px solid $divider-color;
+        background: darken($page-background, 3%);
         p {
           white-space: normal;
           overflow: visible;
           text-overflow: ellipsis;
           line-height: 1.7em;
           margin-bottom: 10px;
-          color: #333;
+          color: $text-color;
         }
       }
     }
@@ -171,7 +162,7 @@ h1.fancy-header {
   ul {
     li {
       a {
-        color: #3575bd;
+        color: $button-color;
       }
     }
   }

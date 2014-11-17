@@ -1,7 +1,7 @@
 /*
 Error: Undefined mixin 'whitespace'.
-        on line 11 of ./tiny.scss, in `whitespace'
-        from line 11 of ./tiny.scss
+        on line 11 of ./css/tiny.scss, in `whitespace'
+        from line 11 of ./css/tiny.scss
 
 6:     padding: 0px;
 7:     display: block;
@@ -16,8 +16,8 @@ Error: Undefined mixin 'whitespace'.
 16:         text-decoration: none;
 
 Backtrace:
-./tiny.scss:11:in `whitespace'
-./tiny.scss:11
+./css/tiny.scss:11:in `whitespace'
+./css/tiny.scss:11
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:338:in `block in visit_mixin'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `block in with_mixin'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
@@ -93,4 +93,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'whitespace'.\A         on line 11 of ./tiny.scss, in `whitespace'\A         from line 11 of ./tiny.scss\A \A 6:     padding: 0px;\A 7:     display: block;\A 8:     margin-left: 10px;\A 9: \A 10:     li {\A 11:       @include whitespace;\A 12:       display: block;\A 13:       height: 2em;\A 14: \A 15:       a {\A 16:         text-decoration: none;"; }
+  content: "Error: Undefined mixin 'whitespace'.\A         on line 11 of ./css/tiny.scss, in `whitespace'\A         from line 11 of ./css/tiny.scss\A \A 6:     padding: 0px;\A 7:     display: block;\A 8:     margin-left: 10px;\A 9: \A 10:     li {\A 11:       @include whitespace;\A 12:       display: block;\A 13:       height: 2em;\A 14: \A 15:       a {\A 16:         text-decoration: none;"; }

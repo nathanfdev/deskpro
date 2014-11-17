@@ -1,21 +1,21 @@
 /*
 Error: Undefined variable: "$page-background".
-        on line 47 of ./user-ticket-list.scss
+        on line 15 of ./css/user-ticket-list.scss
 
-42: 
-43: .table-controls {
-44:   position: absolute;
-45:   right: 10px;
-46:   top: -20px;
-47:   background: $page-background;
-48:   padding: 0px 5px;
-49: 
-50:   a {
-51:     display: inline-block;
-52:     width: 15px;
+10: 
+11: .table-controls {
+12:   position: absolute;
+13:   right: 10px;
+14:   top: -20px;
+15:   background: $page-background;
+16:   padding: 0px 5px;
+17: 
+18:   a {
+19:     display: inline-block;
+20:     width: 15px;
 
 Backtrace:
-./user-ticket-list.scss:47
+./css/user-ticket-list.scss:15
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
@@ -67,4 +67,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$page-background\".\A         on line 47 of ./user-ticket-list.scss\A \A 42: \A 43: .table-controls {\A 44:   position: absolute;\A 45:   right: 10px;\A 46:   top: -20px;\A 47:   background: $page-background;\A 48:   padding: 0px 5px;\A 49: \A 50:   a {\A 51:     display: inline-block;\A 52:     width: 15px;"; }
+  content: "Error: Undefined variable: \"$page-background\".\A         on line 15 of ./css/user-ticket-list.scss\A \A 10: \A 11: .table-controls {\A 12:   position: absolute;\A 13:   right: 10px;\A 14:   top: -20px;\A 15:   background: $page-background;\A 16:   padding: 0px 5px;\A 17: \A 18:   a {\A 19:     display: inline-block;\A 20:     width: 15px;"; }

@@ -1,8 +1,9 @@
 .alerts {
   font-weight: 400;
+  margin-top: 10px;
 
   a.all-tickets {
-    border-bottom: 2px solid #d9dada;
+    border-bottom: 2px solid $grey;
     padding-bottom: 1px;
     text-decoration: none;
   }
@@ -24,7 +25,7 @@
 }
 
 .alert {
-  @include generate-background-and-border(#f9f9f6);
+  background: darken($page-background, 6%);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -38,14 +39,12 @@
   position: relative;
   margin-bottom: 10px;
 
-  strong {
-    color: #828385;
-  }
+  strong { color: $text-color-darker; }
 
   i {
     position: absolute;
     right: 20px;
     top: 36%;
-    color: #cecece;
+    color: $text-color-lighter;
   }
 }

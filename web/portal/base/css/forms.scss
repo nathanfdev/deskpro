@@ -9,9 +9,10 @@ input[type="text"], input[type="password"], textarea, select {
   background: $form-input;
 
   @include placeholder {
-    color: #b0b0b0;
+    color: $text-faded;
     font-style: italic;
     font-size: $font-mid;
+    font-weight: 400;
   }
 
   &.email {
@@ -29,44 +30,17 @@ textarea {
   @include generate-background-and-border(#f8f8f8);
 
   @include placeholder {
-    color: #b0b0b0;
+    color: $text-faded;
     font-style: italic;
   }
 }
 
 
 
-
-
-
-
-
-hr.divider {
-  height: 1px;
-  border: 0px;
-  background: #cecece;
-  margin-top: 15px;
-  margin-bottom: 15px;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .user-logged-in {
-  border-radius: 4px;
-  border: 1px dashed #bdbdbd;
-  background: #f0f0f0;
+  border-radius: $border-radius-main;
+  border: 1px dashed $divider-color;
+  background: $surface-secondary;
   padding: $form-padding-vertical $form-padding-horizontal;
   display: block;
   margin-bottom: 20px;
@@ -77,7 +51,7 @@ hr.divider {
   i {
     font-size: 1.3em;
     margin-right: 4px;
-    color: #c9c9c9;
+    color: $text-color-lighter;
     position: relative;
     top: 1px;
   }
@@ -89,8 +63,8 @@ hr.divider {
 
   div {
     display: inline-block;
-    color: #fff;
-    background: #4c4c4c;
+    color: $grey;
+    background: $text-color-lighter;
     border-radius: 2px;
     line-height: 1em;
     padding: $form-padding-vertical $form-padding-horizontal;
@@ -111,9 +85,7 @@ hr.divider {
       margin-top: 10px;
     }
 
-    i {
-      display: block;
-    }
+    i { display: block; }
   }
 }
 
@@ -123,10 +95,7 @@ hr.divider {
 
 
 .new-ticket-attachements {
-
-  .title {
-    margin-top: 10px;
-  }
+  .title { margin-top: 10px; }
 
   ul {
     @include blank-list;
@@ -145,17 +114,15 @@ hr.divider {
         width: 5px;
         height: 5px;
         border-radius: 199px;
-        background: #c0c0c0;
+        background: $text-color-lighter;
       }
     }
 
     a { text-decoration: none; }
-
     a:hover { text-decoration: underline; }
 
-
     .file-size {
-      opacity: 0.5;
+      opacity: $text-opacue;
       margin-left: 3px;
       font-size: 0.9em;
     }
@@ -197,21 +164,22 @@ hr.divider {
 .multiselect {
   ul.first-level {
     @include blank-list;
-    border: 2px solid #3575bd;
+    border: 1px solid $button-color;
     border-radius: 2px;
 
     a {
+
+      background: $form-input;
       display: block;
       text-decoration: none;
       padding: 5px 10px;
-      color: #000;
+      color: $text-color;
       // border-bottom: 1px solid #cecece;
       font-weight: 300;
 
       &:hover, &.active {
-        background: #3575bd;
-        color: #fff;
-        // border-bottom: 1px solid #3575bd;
+        background: $button-color;
+        color: $button-text;
       }
     }
 
@@ -236,7 +204,7 @@ hr.divider {
       display: block;
       width: 10px;
       height: 20px;
-      border: 1px dotted #c0c0c0;
+      border: 1px dotted $text-color-lighter;
       border-top: none;
       border-right: none;
       position: absolute;
@@ -247,27 +215,24 @@ hr.divider {
 
   &.default {
     ul.first-level {
-    border: 1px solid #c0c0c0;
-    &:hover {
-      border: 1px solid #3575bd;
-    }
-    a {
-      background: #fff;
-      border-radius: 2px;
-      border-bottom: 1px solid #c0c0c0;
-      line-height: normal;
-      padding: $form-padding-vertical $form-padding-horizontal;
+      border: 1px solid $form-border-color;
 
-      &:hover {
-        background: #3575bd;
-        border-bottom: 1px solid #3575bd;
+      &:hover { border: 1px solid $button-color; }
+
+      a {
+        background: #fff;
+        border-radius: 2px;
+        border-bottom: 1px solid $form-border-color;
+        line-height: normal;
+        padding: $form-padding-vertical $form-padding-horizontal;
+
+        &:hover {
+          background: $button-color;
+          border-bottom: 1px solid $button-color;
+        }
       }
     }
-
-    }
   }
-
-
 }
 
 
@@ -290,7 +255,7 @@ hr.divider {
 
  input[type="radio"] {
     display: none;
-    border : 2px solid #93d06e;
+    border : 2px solid $button-color-secondary;
 
     &:checked + label {
        &:after {
@@ -301,11 +266,11 @@ hr.divider {
         content: "";
         margin-right: 3px;
         float: left;
-        background-color: #93d06e;
+        background-color: $button-color-secondary;
         width: 7px;
         height: 7px;
         border-radius: 16px;
-        border: 1px solid #93d06e;
+        border: 1px solid $button-color-secondary;
     }
     }
   }
@@ -321,17 +286,18 @@ hr.divider {
       width: 19px;
       height:19px;
       border-radius: 24px;
-      border: 2px solid #93d06e;
+      border: 2px solid $button-color-secondary;
     }
   }
 }
 
 
 .form-help {
-  border-left: 1px solid #e5e5e5;
+  border-left: 1px solid $divider-color;
   padding: 5px 0px 5px 20px;
   position: relative;
   top: -5px;
+  margin-bottom: 5px;
 
 
   h1 {
@@ -362,9 +328,7 @@ hr.divider {
     color: $text-color-lighter;
     text-decoration: none;
 
-    &:hover {
-      color: $text-color;
-    }
+    &:hover { color: $text-color; }
   }
 }
 
@@ -384,7 +348,7 @@ hr.divider {
   }
 
   .title {
-    color: #000;
+    color: $text-color;
     padding-left: $form-padding-horizontal;
     display: block;
     margin-bottom: 7px;
@@ -411,44 +375,30 @@ hr.divider {
     width: 100%;
     transition: all 0.30s ease-in-out;
 
-    &:hover {
-      // background: #eaeaea;
-      cursor: pointer;
-    }
+    &:hover { cursor: pointer; }
 
     &:focus {
       background: #f0f0e8;
-      border: 1px solid #3575bd;
+      border: 1px solid $button-color;
     }
   }
 
-
-
   input[type="text"], input[type="password"], textarea {
-    background: #fff;
-    border: 1px solid #c0c0c0;
+    background: $form-input;
+    border: 1px solid $form-border-color;
     border-radius: 2px;
   }
 
   select {
-    background: #fff;
-    border: 1px solid #c0c0c0;
+    background: $page-background;
+    border: 1px solid $form-border-color;
     border-radius: 2px;
-    border-bottom: 1px solid #c0c0c0;
+    border-bottom: 1px solid $form-border-color;
     padding: $form-padding-vertical $form-padding-horizontal;
     line-height: normal;
-
-    option {
-      line-height: normal;
-    }
-
+    option { line-height: normal; }
   }
 }
-
-
-
-
-
 
 
 
@@ -462,11 +412,10 @@ hr.divider {
   }
 
   input[type="text"], textarea {
-    background: #fff;
-    border: 1px solid #c0c0c0;
+    background: $page-background;
+    border: 1px solid $form-border-color;
     border-radius: 2px;
   }
-
 }
 
 
@@ -475,25 +424,8 @@ hr.divider {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .error-large {
-  background: #dc7575;
+  background: $red;
   color: #fff;
   padding: $form-padding-vertical $form-padding-horizontal;
   position: relative;
@@ -505,7 +437,7 @@ hr.divider {
     display: block;
     width: 0px;
     border: 4px solid rgba(0, 0, 0, 0);
-    border-bottom: 4px solid #dc7575;
+    border-bottom: 4px solid $red;
     position: absolute;
     top: -8px;
     left: 40px;
@@ -622,7 +554,7 @@ form {
       position: absolute;
       bottom: 10px;
       right: 0px;
-      background: #de7878;
+      background: $red;
       color: #fff;
       padding-left: 4px;
       padding-right: 4px;
@@ -633,7 +565,7 @@ form {
 
     input[type="text"], input[type="password"] {
       background: #fff0ec;
-      border: 2px solid #de7878;
+      border: 1px solid $red;
       border-top-right-radius: 0px;
     }
   }

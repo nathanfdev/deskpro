@@ -1,27 +1,3 @@
-// List of user ticket(s)
-
-//
-//
-// .table-subheader {
-//   @extend .titled-header;
-//   text-align: left;
-//   margin-bottom: 22px;// Ugly, needs a fix on the original
-//   margin-top: 2px;
-//
-//   h2 {
-//     color: #333;
-//     font-weight: 500;
-//     top: 8px;
-//     padding-left: $universal-left-padding;
-//   }
-// }
-
-
-
-
-
-
-
 .switch-link {
   @extend .button;
   float: right;
@@ -30,15 +6,7 @@
 }
 
 
-
-
-
-
-
-
-.table-meta {
-  position: relative;
-}
+.table-meta { position: relative; }
 
 .table-controls {
   position: absolute;
@@ -59,6 +27,38 @@
     text-decoration: none;
   }
 
+  .column-control {
+    position: relative;
+
+    &:before {
+      content: " ";
+      display: block;
+      border-radius: 99px;
+      width: 5px;
+      height: 5px;
+      background: $text-color-lighter;
+      position: relative;
+      top: 4px;
+      left: 4px;
+    }
+  }
+
+  .sort {
+    width: 45px;
+
+    span {
+      position: absolute;
+      top: 2px;
+      font-size: 9px;
+      font-weight: 700;
+      left: 14px;
+      display: block;
+      line-height: 1em;
+      color: $text-color-lighter;
+      text-transform: uppercase;
+    }
+  }
+
   .expand-control {
     background: #333;
     border: 1px solid #333;
@@ -72,11 +72,6 @@
     }
   }
 }
-
-
-
-
-
 
 
 
@@ -111,15 +106,13 @@
 
 
 .filter-warning {
-  background: #e0d5ad;
+  background: $filter;
   color: $text-color-darker;
   font-size: 0.85em;
   padding: 5px 10px;
   margin-bottom: 7px;
 
-  i {
-    margin-right: 10px;
-  }
+  i { margin-right: 10px; }
 
   a {
     color: inherit;
@@ -135,9 +128,7 @@
   box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.2);
   margin-bottom: 60px;
 
-  .user-ticket-list {
-    margin-bottom: 0px;
-  }
+  .user-ticket-list { margin-bottom: 0px; }
 }
 
 
@@ -145,14 +136,11 @@
   width: 100%;
   margin-bottom: 60px;
 
-
-
   td, td:first-child {
     text-align: left;
     vertical-align: middle;
     padding: 0;
   }
-
 
   td.table-header {
     padding: $form-padding-vertical $form-padding-horizontal;
@@ -168,18 +156,13 @@
       color: $text-color-lighter;
       text-decoration: none;
 
-      &:hover {
-        color: $text-color;
-      }
+      &:hover { color: $text-color; }
     }
   }
 
   .right {
     text-align: right;
   }
-
-
-
 
   .item-row a {
     color: $text-color-darker;
@@ -188,19 +171,16 @@
     padding: $form-padding-vertical $form-padding-horizontal;
     padding-left: $universal-left-padding;
     font-weight: 300;
-    font-wize: 0.9em;
 
     .focus {
       font-weight: 800;
       text-transform: uppercase;
-      color: #000;
+      color: $text-color-darker;
       font-size: 0.8em;
       margin-right: 3px;
     }
 
-    .positive {
-      color: $button-color-secondary;
-    }
+    .positive { color: $button-color-secondary; }
   }
 
 
@@ -208,21 +188,19 @@
     border-bottom: 1px solid $divider-color;
 
     &.last-in-line { border-bottom: 0px; }
-    &.first-in-line { border-bottom: 0px; }// fix
+    &.first-in-line { border-bottom: 0px; }
 
     &.item-row:hover {
-      background: #f6f6f6;
+      background: $surface-secondary;
 
       .info-block {
         &:before, &:after {
-          background: #f6f6f6;
+          background: $surface-secondary;
         }
       }
 
     }
   }
-
-
 
   .status-tag {
     display: inline-block;
@@ -235,7 +213,7 @@
     background: red;
     color: #fff;
     border-radius: 2px;
-    background: $awaiting-agent-color;
+    background: $gold;
     vertical-align: middle;
     margin-right: 5px;
   }

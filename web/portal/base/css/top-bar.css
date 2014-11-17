@@ -1,26 +1,19 @@
 /*
-Error: Undefined variable: "$divider-color".
-        on line 12 of ./top-bar.scss
+Error: Undefined variable: "$universal-left-padding".
+        on line 3 of ./css/top-bar.scss
 
-7:     bottom: 20px;
-8:   }
-9: }
-10: 
-11: .top-bar {
-12:   border-bottom: 1px solid $divider-color;
-13:   padding-bottom: 20px;
-14:   padding-top: 20px;
-15:   margin-bottom: 20px;
-16:   color: #828385;
-17:   position: relative;
+1: 
+2: .brand {
+3:   padding-left: $universal-left-padding;
+4: 
+5:   h1 {
+6:     font-weight: 300;
+7:     font-size: 1.5em;
+8:     position: absolute;
 
 Backtrace:
-./top-bar.scss:12
+./css/top-bar.scss:3
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `block in _perform'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `map'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/list_literal.rb:62:in `_perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
@@ -71,4 +64,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined variable: \"$divider-color\".\A         on line 12 of ./top-bar.scss\A \A 7:     bottom: 20px;\A 8:   }\A 9: }\A 10: \A 11: .top-bar {\A 12:   border-bottom: 1px solid $divider-color;\A 13:   padding-bottom: 20px;\A 14:   padding-top: 20px;\A 15:   margin-bottom: 20px;\A 16:   color: #828385;\A 17:   position: relative;"; }
+  content: "Error: Undefined variable: \"$universal-left-padding\".\A         on line 3 of ./css/top-bar.scss\A \A 1: \A 2: .brand {\A 3:   padding-left: $universal-left-padding;\A 4: \A 5:   h1 {\A 6:     font-weight: 300;\A 7:     font-size: 1.5em;\A 8:     position: absolute;"; }

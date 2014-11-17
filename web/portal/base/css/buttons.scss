@@ -5,12 +5,12 @@
 .upload-avatar {
   display: inline-block;
   line-height: 1em;
-  background: none repeat scroll 0 0 #fff;
-  border: 1px solid #c0c0c0;
+  background: none repeat scroll 0 0 $page-background;
+  border: 1px solid $divider-color;
   border-radius: 2px;
   padding-left: 140px;
   position: relative;
-  color: #000;
+  color: $text-color;
   line-height: 1em;
   padding: 1em 2em;
   padding-left: 50px;
@@ -47,38 +47,50 @@ button, .button, input[type="submit"] {
   text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   position: relative;
 
+  @media screen and (max-width: 760px) {
+    display: block;
+    width: 100%;
+    margin-bottom: 10px;
+  }
+
   &.cancel {
     background: none;
-    color: #333;
-    border-bottom: 1px solid #fff;
+    color: $text-color;
+    border-bottom: 1px solid $page-background;
     text-shadow: none;
   }
 
   &.button-blank {
-    border: 1px solid #e0e0e0;
+    border: 1px solid $grey;
     background: none;
-    color: #828385;
+    color: $text-faded;
     position: relative;
     text-shadow: none;
   }
 
   &.button-secondary {
-    background: #494949;
+    background: $text-color-lighter;
   }
 
   &.button-dropdown {
-    border: 1px solid #e0e0e0;
+    border: 1px solid $divider-color;
     background: none;
-    color: #828385;
+    color: $text-color;
     position: relative;
     text-shadow: none;
 
     .extra {
-      border-left: 1px solid #e0e0e0;
+      border-left: 1px solid $divider-color;
       padding-left: 10px;
       position: relative;
       left: 10px;
       margin-left: 10px;
+
+      @media screen and (max-width: 760px) {
+        left: auto;
+        right: 15px;
+        position: absolute;
+      }
     }
   }
 
@@ -86,18 +98,17 @@ button, .button, input[type="submit"] {
     border-radius: 0px;
     border-top: 0px;
     border-bottom: 0px;
-    color: #3575bd;
-
+    color: $button-color;
     i { margin-left: 10px; }
   }
 
   &.button-dropdown-activated {
     @extend .button-dropdown;
     position: relative;
-    border: 1px solid #c2c2c2;
+    border: 1px solid $divider-color;
     border-bottom: 0px;
     z-index: 100;
-    background: #fff;
+    background: $world-background;
     border-bottom-left-radius: 0px;
     border-bottom-right-radius: 0px;
   }

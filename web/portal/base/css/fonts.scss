@@ -1,19 +1,12 @@
 body {
-  font-size: 1em;
-  font-family: "Ubuntu", helvetica, verdana, sans-serif;
+  font-family: $fonts;
   line-height: 1.75em;
   font-size: 0.85em;
 }
 
 a {
-  color: #3575bd;
+  color: $link-color;
 }
-
-h1, h2, h3, h4, h5 {
-  margin: 0;
-  padding: 0;
-}
-
 
 p {
   margin: 0;
@@ -26,32 +19,19 @@ ul {
   }
 }
 
-
 strong {
   font-weight: 600;
 }
 
-
-
-.grey {
-  color: #d0d0d0;
-}
-
-
-
-
-
 // All the headers
-
-
-h1 {
-  color: #585858;
+h1, h2, h3, h4, h5 {
+  margin: 0;
+  padding: 0;
+  color: $text-color-darker;
 }
 
-h2 {
-  color: #585858;
-  font-size: 1em;
-}
+
+h2 { font-size: 1em; }
 
 
 .titled-header {
@@ -72,7 +52,6 @@ h2 {
     top: 10px;
     z-index: 100;
     color: $text-color-darker;
-
   }
 }
 

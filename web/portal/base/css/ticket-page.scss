@@ -5,9 +5,9 @@
 // Dropdowns
 
 .dropdown-control {
-  background: #f6f6f6;
-  border: 1px solid #e5e5e5;
-  border-radius: 4px;
+  background: $surface-secondary;
+  border: 1px solid $divider-color;
+  border-radius: $border-radius-main;
   width: 25px;
   height: 25px;
 
@@ -16,11 +16,9 @@
   position: relative;
   top: -4px;
   margin-left: 5px;
-  color: #e2e2e2;
+  color: $grey;
 
-  &:hover {
-    color: #333;
-  }
+  &:hover { color: $text-color-darker; }
 
   i {
     position: relative;
@@ -33,8 +31,8 @@
   display: block;
   min-width: 220px;
   position: absolute;
-  background: #f6f6f6;
-  border: 1px solid #e5e5e5;
+  background: $surface-secondary;
+  border: 1px solid $divider-color;
   right: 20px;
   border-radius: 2px;
   text-align: left;
@@ -45,19 +43,14 @@
     padding: 0;
     margin: 0;
 
-    li {
-      padding: 7px 0px;
-
-      &:last-child {
-      }
-    }
+    li { padding: 7px 0px; }
   }
 
   .option {
-    border-top: 1px solid #e5e5e5;
+    border-top: 1px solid $divider-color;
     margin-top: 2px;
     a {
-      color: #c9c9c9;
+      color: $text-color-lighter;
       text-decoration: none;
     }
   }
@@ -89,23 +82,15 @@
   margin: 5px 0px;
   position: relative;
 
-  &.ticket-agents {
-    .agent {
-      width: 47%;
-    }
-  }
-
-  .agent-info {
-    width: 70%;
-  }
+  &.ticket-agents { .agent { width: 47%; } }
+  .agent-info {  width: 70%; }
 }
 
 .agent-extras {// The cc'ed people in this ticket
-  border-left: 1px solid #e5e5e5;
+  border-left: 1px solid $divider-color;
   text-align: right;
   padding-top: 7px;
 }
-
 
 @media screen and (max-width: 760px) {
 
@@ -159,9 +144,9 @@
             a {
               display: block;
               border-radius: 4px;
-              border: 2px solid #e8e8e8;
+              border: 2px solid $divider-color;
               width: 100%;
-              color: #8b8b8b;
+              color: $text-color;
               padding-top: 5px;
               padding-bottom: 5px;
             }
@@ -213,7 +198,7 @@
 
   &:hover {
     border-bottom: 0;
-    background: #93d06e;
+    background: $button-color-secondary;
   }
 }
 
@@ -221,13 +206,25 @@
 .ticket-page {
 
   hr {
-    background: #e5e5e5;
+    background: $divider-color;
     height: 1px;
     margin: 0;
     padding: 0;
     border: 0;
     margin-top: 15px;
     margin-bottom: 15px;
+  }
+
+  table {
+    tr {
+      td {
+        padding: 10px 10px;
+
+        &:first-child {
+          min-width: 210px;
+        }
+      }
+    }
   }
 
   h1 {
@@ -246,7 +243,7 @@
       display: block;
       height: 1px;
       width: 100%;
-      background: #e5e5e5;
+      background: $surface-secondary;
       position: absolute;
       top: 15px;
       z-index: 99;
@@ -261,11 +258,11 @@
     }
 
     .ticket-reference {
-      background: #fff;
+      background: $page-background;
       padding-left: 20px;
       z-index: 100;
       float: right;
-      color: #c7c7c7;
+      color: $text-color-lighter;
       font-weight: 100;
       font-size: 1.2em;
       position: relative;
@@ -302,7 +299,7 @@
 
     p {
       a {// Link underlines
-        border-bottom: 1px solid #3575bd;
+        border-bottom: 1px solid $button-color;
         padding-bottom: 3px;
         text-decoration: none;
       }
@@ -340,7 +337,7 @@
       line-height: 1em;
 
       span {
-        @extend .grey;
+        color: $text-color-lighter;
       }
     }
 
@@ -374,21 +371,17 @@
       &:after { bottom: -10px; }
     }
 
-    strong {
-      font-weight: 400;
-    }
+    strong { font-weight: 400; }
   }
 
   .comment {
     padding: 20px;
     margin-top: 10px;
     font-weight: 300;
-
     p:last-child { margin-bottom: 0px; }
   }
 
   .agent-reply { @include generate-background-and-border($surface-main); }
-
   .user-reply { @include generate-background-and-border($surface-secondary); }
 
   .event-happened-at {
@@ -396,7 +389,7 @@
     display: block;
     font-size: 0.9em;
     font-weight: 400;
-    @extend .grey;
+    color: $text-color-lighter;
   }
 
   // "This posted marked as" text
@@ -419,18 +412,18 @@
         padding: 5px;
         font-weight: 600;
         font-size: 11px;
-        color: #fff;
+        color: $page-background;
         margin-right: 3px;
       }
 
       &.helpful {
-        color: #93d06e;
-        .face { background: #93d06e; }
+        color: $button-color-secondary;
+        .face { background: $button-color-secondary; }
       }
 
       &.unhelpful {
-        color: #de7878;
-        .face { background: #de7878; }
+        color: $red;
+        .face { background: $red; }
       }
     }
 
@@ -441,7 +434,7 @@
         float: right;
         margin-top: -10px;
 
-        &:hover { color: #444; }
+        &:hover { color: $text-color; }
       }
     }
   }
@@ -488,7 +481,7 @@
         i { left: 1px; }
       }
 
-      &.file-type-download { background: #1d70b7; }
+      &.file-type-download { background: $button-color; }
     }
 
     .attachement-size {
@@ -538,7 +531,7 @@
         font-size: 1em;
         display: inline-block;
         border-radius: 199px;
-        background: #cecece;
+        background: $grey;
         width: 32px;
         height: 32px;
         margin-right: 10px;

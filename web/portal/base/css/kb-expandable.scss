@@ -1,8 +1,8 @@
 //Big list of articles
 .article-categories-expandable {
-  background: #eeeeee;
+  background: darken($page-background, 5%);
   padding: 20px;
-  border-radius: 2px;
+  border-radius: $border-radius-small;
   margin-bottom: 10px;
 
   header {
@@ -25,9 +25,7 @@
       @include clearfix;
 
       &:hover {
-        h1 {
-          text-decoration: underline;
-        }
+        h1 { text-decoration: underline; }
       }
     }
   }
@@ -39,9 +37,7 @@
     top: 3px;
     right: 0px;
 
-    &.single-line {
-      top: -5px;
-    }
+    &.single-line { top: -5px; }
   }
 
   h1, h2 {
@@ -49,24 +45,22 @@
     display: block;
   }
 
-  h1 {
-    font-size: 1.2em;
-  }
+  h1 { font-size: 1.2em; }
 
   h2 {
     font-size: 0.85em;
     margin-top: 8px;
-    color: #b1b1b1;
+    color: $text-color-lighter;
   }
 
   // Use the same list meta but reset the styles
   .list-meta {
     text-align: left;
-    background: #fff;
+    background: $page-background;
     margin-top: 0px;
 
     a {
-      color: #3575bd;
+      color: $button-color;
       text-decoration: underline;
       opacity: 1;
       text-transform: uppercase;
@@ -88,7 +82,7 @@
 
   ul {
     @include blank-list;
-    background: #fff;
+    background: $page-background;
     padding: 15px 20px;
     margin-top: 18px;
     border-radius: 2px;
@@ -102,7 +96,7 @@
         width: 5px;
         height: 5px;
         border-radius: 199px;
-        background: #d6d6d6;
+        background: $text-color-lighter;
         margin-right: 10px;
         position: relative;
         top: -2px;
@@ -113,23 +107,21 @@
       color: inherit;
       text-decoration: none;
 
-      &:hover {
-        color: #333;
-      }
+      &:hover { color: #333; }
     }
   }
 
   .text-tag {
     font-size: 0.6em;
-    background: #93d06e;
+    background: $button-color-secondary;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.1);
     margin-left: 3px;
     position: relative;
     top: -1px;
 
     &.updated {
-      background: #e5e5e5;
-      color: #a3a3a3;
+      background: $surface-secondary;
+      color: $text-color-lighter;
     }
   }
 
@@ -143,19 +135,19 @@
   padding: 8px;
   line-height: 1em;
   background: #fff;
-  border-bottom: 1px solid #d7d7d7;
+  border-bottom: 1px solid $divider-color;
   font-size: 10px;
   font-weight: 600;
-  color: #b1b1b1;
+  color: $text-color-lighter;
   text-transform: uppercase;
   border-radius: 2px;
   margin-right: 4px;
   position: relative;
 
   &.new {
-    background: #93d06e;
+    background: $button-color-secondary;
     border-bottom: 1px solid #70aa45;
-    color: #fff;
+    color: $page-background;
     text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.3);
   }
 
@@ -166,7 +158,7 @@
       width: 0px;
       height: 0px;
       border: 4px solid rgba(255, 255, 255, 0);
-      border-left: 4px solid #fff;
+      border-left: 4px solid $page-background;
       position: absolute;
       right: -8px;
       top: 35%;
@@ -178,7 +170,7 @@
 .expandable-control {
   display: inline-block;
   padding: 10px 20px 10px 30px;
-  color: #333;
+  color: $text-color-darker;
   margin-left: 20px;
   position: relative;
   line-height: 1px;

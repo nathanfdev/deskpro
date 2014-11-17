@@ -1,4 +1,263 @@
-//
+hr.divider {
+  height: 1px;
+  border: 0px;
+  background: $divider-color;
+  margin-top: 15px;
+  margin-bottom: 15px;
+}
+
+
+
+
+
+.popup-tiny {
+  display: block;
+  border: 1px solid $divider-color;
+  border-radius: 4px;
+  padding: 10px;
+  background: $world-background;
+  margin-bottom: 20px;
+  position: relative;
+  max-width: 200px;
+
+  ul {
+    @include blank-list;
+
+    input {
+      position: relative;
+      top: -1px;
+    }
+  }
+
+  a {
+    text-decoration: none;
+
+    &.not-selected {
+      color: $text-color-darker;
+    }
+
+    span {
+      color: $text-color-lighter;
+    }
+  }
+
+  .popup-controls {
+    position: absolute;
+    right: 15px;
+    top: 10px;
+    a {
+      color: $text-color;
+      font-size: 0.8em;
+    }
+  }
+}
+
+
+
+
+
+.active-button-dropdown {
+  position: absolute;
+  top: 30px;
+  right: 4px;
+  background: #fff;
+  border: 1px solid $divider-color;
+  border-radius: 2px;
+  display: block;
+  position: absolute;
+  border-radius: 2px;
+  text-align: left;
+  min-width: 135px;
+  padding: 7px 14px;
+  padding-bottom: 14px;
+  border-top-right-radius: 0px;
+  z-index: 99;
+
+  ul {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  hr {
+    background: $divider-color;
+    border: 0px;
+    height: 1px;
+  }
+
+  @media screen and (max-width: 760px) {
+    position: relative;
+    top: -10px;
+    right: 0px;
+
+    hr {
+      display: none;
+    }
+  }
+}
+
+.cleared {
+  @include clearfix;
+}
+
+div.large-title {
+  display: block;
+  border-bottom: 1px solid $divider-color;
+  margin-bottom: 30px;
+  margin-top: 20px;
+  text-align: left;
+
+  h1 {
+    font-weight: 100;
+    font-size: 1.4em;
+    padding-bottom: 0px;
+    display: inline-block;
+    color: $text-color-darker;
+    position: relative;
+    background: $page-background;
+    padding-left: 10px;
+    padding-right: 10px;
+    top: 11px;
+    left: 30px;
+
+  }
+}
+
+
+
+.header-buttons {
+  font-size: 0.9em;
+  float: right;
+  a {
+    display: inline-block;
+    background: $surface-secondary;
+    color: $text-color;
+    text-decoration: none;
+    border-radius: 2px;
+    border: 1px solid $divider-color;
+    padding: 0em 0.5em;
+
+    i {
+      font-size: 0.9em;
+      vertical-align: middle;
+      margin-left: 6px;
+      margin-right: 2px;
+      color: $text-color-darker;
+      position: relative;
+      top: -1px;
+    }
+  }
+}
+
+
+// Not using variables here, need to be consistent everywhere
+.admin-bar {
+  position: fixed;
+  top: 0px;
+  left: 0px;
+  width: 100%;
+  background: #383838;
+  z-index: 9999;
+  font-size: $font-mid;
+  padding: 1px 0px;
+  ul {
+    @include blank-list;
+
+    li { display: inline; }
+  }
+
+  a {
+    display: block;
+    float: right;
+    background: #4c4c4c;
+    color: #d2d2d2;
+    padding: 7px 10px;
+    text-decoration: none;
+    margin-left: 1px;
+
+    span {
+      color: #a2a2a2;
+      font-weight: 500;
+    }
+
+    &:hover {
+      background: #323232;
+      color: $grey;
+    }
+
+    i {
+      margin-left: 5px;
+      color: #838383;
+    }
+
+    .fa-edit {
+      font-size: 1.2em;
+      position: relative;
+      top: 2px;
+    }
+  }
+}
+
+.admin-bar-extended {
+  position: fixed;
+  top: 38px;
+  left: 0px;
+  width: 100%;
+  background: #3d3d3d;
+  color: #d2d2d2;
+  z-index: 9999;
+  font-size: $font-mid;
+  font-weight: 300;
+  text-align: right;
+
+  a {
+    text-align: right;
+    padding: 10px;
+    min-width: 360px;
+    position: relative;
+
+    img {
+      float: right;
+      margin-left: 10px;
+    }
+
+    .title {
+      display: inline-block;
+      font-size: 1.3em;
+      color: #fff;
+      margin-top: 10px;
+      margin-bottom: 2px;
+    }
+
+    p {
+      line-height: 1.6em;
+    }
+
+    display: inline-block;
+    background: #323232;
+    width: auto;
+    color: $text-color-lighter;
+    text-decoration: none;
+  }
+}
+
+
+.welcome-message {
+  h1 {
+    font-weight: 300;
+    font-size: $font-large;
+    margin-bottom: 10px;
+  }
+
+  p {
+    margin-bottom: 10px;
+  }
+
+  padding: 20px;
+  border: 1px solid $divider-color;
+  background: darken($page-background, 3%);
+  border-radius: 4px;
+}
 
 .extra-margin {
   margin-top: 20px;
@@ -8,10 +267,10 @@
 // Inline tags for text
 
 .text-tag {
-  background: #579034;
+  background: $button-color-secondary;
   border-radius: 2px;
   font-weight: 600;
-  color: #f0f0f0;
+  color: #fff;
   padding: 3px 6px;
   font-size: 0.7em;
   text-transform: uppercase;
@@ -30,8 +289,8 @@
 h1 {
   .text-tag {
     font-size: 10px;
-    background: #93d06e;
-    color: #dbedd2;
+    background: $button-color-secondary;
+    color: #fff;
     position: relative;
     top: -2px;
     left: 4px;
@@ -42,7 +301,7 @@ h1 {
       height: 0px;
       display: block;
       border: 4px solid rgba(0, 0, 0, 0);
-      border-right: 4px solid #93d06e;
+      border-right: 4px solid $button-color-secondary;
       position: absolute;
       left: -6px;
       top: 5px;
@@ -53,7 +312,7 @@ h1 {
 // Tag with pointy thingy up
 .rating-tag {
   @extend .text-tag;
-  background: #93d06e;
+  background: $button-color-secondary;
   padding-top: 1px;
   padding-bottom: 1px;
 }
@@ -61,7 +320,7 @@ h1 {
 // Tag with comment icon
 .comment-tag {
   @extend .text-tag;
-  background: #3575bd;
+  background: $button-color;
   padding-top: 1px;
   padding-bottom: 1px;
 
@@ -81,7 +340,7 @@ h1 {
     opacity: 0.5;
     display: inline-block;
     text-decoration: none;
-    color: #aaaaaa;
+    color: $text-color-lighter;
     position: relative;
     left: -5px;
 
@@ -98,7 +357,7 @@ h1 {
 
     span {
       font-weight: 500;
-      color: #7b7b7b;
+      color: $text-color-lighter;
     }
   }
 }
@@ -108,12 +367,12 @@ table {
   tr {
     td {
       vertical-align: top;
-      padding: 10px 10px;
+      padding: 5px 10px;
+      color: $text-color-darker;
 
       &:first-child {
         text-align: right;
-        color: #c0c0c0;
-        min-width: 210px;
+        color: $text-color-lighter;
       }
     }
   }
@@ -122,15 +381,15 @@ table {
 // Date tag for news list
 .date-tag {
   @extend .text-tag;
-  background: #e7e7e7;
-  color: #b9b9b9;
+  background: darken($page-background, 3%);;
+  color: $text-color-lighter;
   min-width: 40px;
   display: inline-block;
   text-align: center;
   margin-right: 10px;
 
   span {
-    color: #cecece;
+    color: $text-color-lighter;
     font-size: 0.7em;
   }
 
@@ -140,7 +399,7 @@ table {
     height: 0px;
     display: block;
     border: 4px solid rgba(0, 0, 0, 0);
-    border-left: 4px solid #e7e7e7;
+    border-left: 4px solid darken($page-background, 3%);
     position: absolute;
     right: -8px;
     top: 5px;

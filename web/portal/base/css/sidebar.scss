@@ -1,9 +1,108 @@
+// This should be applied everywhere, it's a temporary fix for sidebar items
+// that dont inherit margins directly from ul
+.sidebar-container {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.sidebar-news-calendar {
+  line-height: 1em;
+  vertical-align: top;
+
+  .year-list {
+    @include blank-list;
+    display: inline-block;
+    width: 65px;
+    margin-right: 20px;
+    vertical-align: top;
+  }
+
+  .year-list > li {
+    margin-bottom: 20px;
+    text-align: right;
+  }
+
+  a {
+    color: $text-color;
+    display: block;
+  }
+
+  .year-list a {
+    border-right: 2px solid $divider-color;
+    padding-top: 2px;
+    padding-right: 10px;
+  }
+
+  a:hover, a.active {
+    .year { color: $button-color; }
+    .count { color: $text-color; }
+  }
+
+  .year {
+    margin-bottom: 2px;
+    font-size: 1.1em;
+    display: block;
+    font-weight: 500;
+  }
+
+  .count {
+    display: block;
+    font-size: 0.7em;
+    text-transform: uppercase;
+    font-weight: 500;
+    color: $text-color-lighter;
+  }
+  // End year list
+
+
+
+  // Month list
+  .month-list {
+    @include blank-list;
+    display: inline-block;
+    border-left: 2px solid $divider-color;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: 500;
+
+    li {
+      border: 2px solid rgba(0, 0, 0, 0);
+      padding-left: 10px;
+      position: relative;
+      margin-bottom: 5px;
+      padding-top: 3px;
+      padding-bottom: 3px;
+
+
+      &.active, &:hover {
+        background: #f6f6f6;
+      }
+
+      a {
+        color: $button-color;
+
+        span { color: $text-color-lighter; }
+      }
+    }
+  }
+}
+
+
+
+
+
+
 
 
 
 .sidebar {
   padding-left: 20px;
   border-left: 1px dashed $divider-color;
+
+  @media screen and (max-width: 760px) {
+    border-left: 0px;
+    padding-left: 0px;
+  }
 
   .button {
     width: 100%;
@@ -23,6 +122,10 @@
     font-size: 1.3em;
     margin-bottom: 5px;
     color: $text-color-darker;
+
+    @media screen and (max-width: 760px) {
+        text-align: center;
+    }
   }
 
   h2 { font-weight: 500; }
@@ -66,10 +169,10 @@
         .focus {
           @include transition (all 0.5s ease-in-out);
           opacity: 1;
-          color: #76b153;
+          color: $button-color-secondary;
           &:after {
             @include transition (all 0.5s ease-in-out);
-            background: #76b153;
+            background: $button-color-secondary;
           }
         }
       }
@@ -77,7 +180,7 @@
 
     .focus {
       font-size: 0.8em;
-      color: #cecece;
+      color: $grey;
       line-height: 0.8em;
       padding-bottom: 0px;
       font-weight: 700;
@@ -105,9 +208,7 @@
 
 .agents-online {
   ul {
-    li {
-      margin-bottom: 10px;
-    }
+    li { margin-bottom: 10px; }
   }
 
   ul.simple {
@@ -116,10 +217,10 @@
 
       span.agent-avatar {
         box-sizing: content-box;
-        border: 3px solid #fff;
+        border: 3px solid $page-background;
 
         &:hover {
-          border: 3px solid #93d06e;
+          border: 3px solid $button-color-secondary;
           cursor: pointer;
         }
       }
@@ -172,10 +273,29 @@
 
   ul.simple {
     li {
+      a { @include whitespace; }
+    }
+  }
+
+  ul.simple-ticket {
+    li {
       a {
-        @include whitespace;
         background: url(../img/icon-article.png) no-repeat center left;
         padding-left: 25px;
+      }
+    }
+  }
+
+  ul.simple-chat {
+    li {
+      a {
+        i {
+          display: inline-block;
+          width: 20px;
+          margin-right: 5px;
+          text-align: center;
+          color: $text-faded;
+        }
       }
     }
   }
@@ -191,9 +311,7 @@
     }
   }
 
-  .button {
-    margin-top: 10px;
-  }
+  .button { margin-top: 10px; }
 }
 
 
@@ -204,7 +322,7 @@
 .satisfaction-meta {
   font-weight: 500;
   margin-top: 5px;
-  span { color: #93d06e; }
+  span { color: $button-color-secondary; }
 }
 
 .happy-faces {
@@ -227,18 +345,10 @@
   .so-and-so { background: no-repeat center url(../img/icon-face-so-and-so.png); }
 }
 
-
-
-
-
-
-
 .knowledge-base {
-  border-top: 1px dashed #e5e5e5;
+  border-top: 1px dashed $divider-color;
   margin-top: 30px;
   padding: 10px;
 
-  p {
-    opacity: 0.75;
-  }
+  p { opacity: 0.75; }
 }

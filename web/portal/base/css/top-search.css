@@ -1,28 +1,32 @@
 /*
-Error: Undefined mixin 'clearfix'.
-        on line 7 of ./top-search.scss, in `clearfix'
-        from line 7 of ./top-search.scss
+Error: Undefined variable: "$form-input".
+        on line 15 of ./css/top-search.scss
 
-2: //
-3: // Add .single-item to .search-and-ticket for showing just the ticket create button
-4: // or just the search form at 100%
-5: 
-6: .search-and-ticket {
-7:   @include clearfix;
-8:   border: 1px dashed $divider-color;
-9:   border-radius: $border-radius-main;
-10:   padding: 10px;
-11:   margin: 0px 0px 10px 0px;
+10: 
+11: 
 12: 
+13: .search-box-results {
+14:   display: block;
+15:   background: darken($form-input, 2.5%);
+16:   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+17: 
+18:   header {
+19:     text-transform: uppercase;
+20:     padding: 10px 15px;
 
 Backtrace:
-./top-search.scss:7:in `clearfix'
-./top-search.scss:7
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:338:in `block in visit_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `block in with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:336:in `visit_mixin'
+./css/top-search.scss:15
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/funcall.rb:170:in `perform_arg'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/funcall.rb:124:in `block in _perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/funcall.rb:124:in `each'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/funcall.rb:124:in `each_with_index'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/funcall.rb:124:in `each'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/funcall.rb:124:in `map'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/funcall.rb:124:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
@@ -71,4 +75,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'clearfix'.\A         on line 7 of ./top-search.scss, in `clearfix'\A         from line 7 of ./top-search.scss\A \A 2: //\A 3: // Add .single-item to .search-and-ticket for showing just the ticket create button\A 4: // or just the search form at 100%\A 5: \A 6: .search-and-ticket {\A 7:   @include clearfix;\A 8:   border: 1px dashed $divider-color;\A 9:   border-radius: $border-radius-main;\A 10:   padding: 10px;\A 11:   margin: 0px 0px 10px 0px;\A 12: "; }
+  content: "Error: Undefined variable: \"$form-input\".\A         on line 15 of ./css/top-search.scss\A \A 10: \A 11: \A 12: \A 13: .search-box-results {\A 14:   display: block;\A 15:   background: darken($form-input, 2.5%);\A 16:   box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);\A 17: \A 18:   header {\A 19:     text-transform: uppercase;\A 20:     padding: 10px 15px;"; }

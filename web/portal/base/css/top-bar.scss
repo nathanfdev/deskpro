@@ -1,11 +1,29 @@
 
 .brand {
+  padding-left: $universal-left-padding;
+
   h1 {
     font-weight: 300;
     font-size: 1.5em;
     position: absolute;
-    bottom: 20px;
+    bottom: 25px;
   }
+
+  img {
+    max-width: 300px;
+    max-height: 60px;
+  }
+
+  @media screen and (max-width: 760px) {
+    h1 {
+      display: block;
+      position: relative;
+      bottom: 0px;
+      text-align: center;
+      margin-bottom: 20px;
+    }
+  }
+
 }
 
 .top-bar {
@@ -13,7 +31,7 @@
   padding-bottom: 20px;
   padding-top: 20px;
   margin-bottom: 20px;
-  color: #828385;
+  color: $text-color;
   position: relative;
 
   ul {
@@ -28,27 +46,39 @@
       margin-left: 5px;
       text-align: left;
       position: relative;
+
+      @media screen and (max-width: 760px) {
+        display: block;
+        margin-bottom: 5px;
+      }
+    }
+  }
+
+  @media screen and (max-width: 760px) {
+    a {
+      display: block;
+      width: 100%;
     }
   }
 
 
   .language-dropdown {
-    background: #fff;
+    background: $world-background;
 
     li {
       display: block;
 
       a {
-        color: #bfc0c0;
+        color: $text-color;
         padding: 0;
         text-decoration: none;
 
         &.active-language {
-          color: #828385;
+          color: $grey;
         }
 
         &:hover {
-          color: #444;
+          color: $text-color;
         }
       }
     }

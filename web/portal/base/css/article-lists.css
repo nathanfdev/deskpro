@@ -1,28 +1,24 @@
 /*
-Error: Undefined mixin 'whitespace'.
-        on line 56 of ./article-lists.scss, in `whitespace'
-        from line 56 of ./article-lists.scss
+Error: Undefined variable: "$divider-color".
+        on line 13 of ./css/article-lists.scss
 
-51:     list-style: none;
-52:     margin: 0;
-53:     padding: 0;
-54: 
-55:     li {
-56:       @include whitespace;
-57:       font-weight: 400;
-58:       background: no-repeat left 6px url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MUVDMzZCQ0M0MEIwMTFFNEFBQjhEQzRBRERCMTREMTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MUVDMzZCQ0Q0MEIwMTFFNEFBQjhEQzRBRERCMTREMTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowRTM2OTE4OTQwQUIxMUU0QUFCOERDNEFEREIxNEQxNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowRTM2OTE4QTQwQUIxMUU0QUFCOERDNEFEREIxNEQxNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PrQFEF8AAABmSURBVHjaYmRgYGQAAhYg5gNidgYI+AnEn4D4D1CWESQpAsRMDKjgHxC/ASkQAjI4oLo+QCUFoKb9ACmQZIDY8xKI/0IVMAOxOBD/x6UAZJ0ETAHMih9QK0CK+WFiRDkSrzcBAgwA9n0Wb7wLsOAAAAAASUVORK5CYII=);
-59:       line-height: 1.3em;
-60:       margin-bottom: 0.3em;
-61:       //fontfix font-size: 0.85em;
+8:     position: relative;
+9: 
+10:     hr {
+11:       border: 0px;
+12:       height: 1px;
+13:       background: $divider-color;
+14:       margin: 0;
+15:       padding: 0;
+16:       position: relative;
+17:       z-index: 99;
+18:       top: -0.85em;
 
 Backtrace:
-./article-lists.scss:56:in `whitespace'
-./article-lists.scss:56
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:338:in `block in visit_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `block in with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:115:in `with_frame'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:98:in `with_mixin'
-/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:336:in `visit_mixin'
+./css/article-lists.scss:13
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/variable.rb:49:in `_perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/script/tree/node.rb:50:in `perform'
+/Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:384:in `visit_prop'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/base.rb:36:in `visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/tree/visitors/perform.rb:158:in `block in visit'
 /Users/dennis/.rvm/gems/ruby-2.0.0-p481@rails4/gems/sass-3.4.3/lib/sass/stack.rb:79:in `block in with_base'
@@ -93,4 +89,4 @@ Backtrace:
 body:before {
   white-space: pre;
   font-family: monospace;
-  content: "Error: Undefined mixin 'whitespace'.\A         on line 56 of ./article-lists.scss, in `whitespace'\A         from line 56 of ./article-lists.scss\A \A 51:     list-style: none;\A 52:     margin: 0;\A 53:     padding: 0;\A 54: \A 55:     li {\A 56:       @include whitespace;\A 57:       font-weight: 400;\A 58:       background: no-repeat left 6px url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAgAAAAICAYAAADED76LAAAAGXRFWHRTb2Z0d2FyZQBBZG9iZSBJbWFnZVJlYWR5ccllPAAAAyhpVFh0WE1MOmNvbS5hZG9iZS54bXAAAAAAADw/eHBhY2tldCBiZWdpbj0i77u/IiBpZD0iVzVNME1wQ2VoaUh6cmVTek5UY3prYzlkIj8+IDx4OnhtcG1ldGEgeG1sbnM6eD0iYWRvYmU6bnM6bWV0YS8iIHg6eG1wdGs9IkFkb2JlIFhNUCBDb3JlIDUuNS1jMDIxIDc5LjE1NTc3MiwgMjAxNC8wMS8xMy0xOTo0NDowMCAgICAgICAgIj4gPHJkZjpSREYgeG1sbnM6cmRmPSJodHRwOi8vd3d3LnczLm9yZy8xOTk5LzAyLzIyLXJkZi1zeW50YXgtbnMjIj4gPHJkZjpEZXNjcmlwdGlvbiByZGY6YWJvdXQ9IiIgeG1sbnM6eG1wPSJodHRwOi8vbnMuYWRvYmUuY29tL3hhcC8xLjAvIiB4bWxuczp4bXBNTT0iaHR0cDovL25zLmFkb2JlLmNvbS94YXAvMS4wL21tLyIgeG1sbnM6c3RSZWY9Imh0dHA6Ly9ucy5hZG9iZS5jb20veGFwLzEuMC9zVHlwZS9SZXNvdXJjZVJlZiMiIHhtcDpDcmVhdG9yVG9vbD0iQWRvYmUgUGhvdG9zaG9wIENDIDIwMTQgKE1hY2ludG9zaCkiIHhtcE1NOkluc3RhbmNlSUQ9InhtcC5paWQ6MUVDMzZCQ0M0MEIwMTFFNEFBQjhEQzRBRERCMTREMTQiIHhtcE1NOkRvY3VtZW50SUQ9InhtcC5kaWQ6MUVDMzZCQ0Q0MEIwMTFFNEFBQjhEQzRBRERCMTREMTQiPiA8eG1wTU06RGVyaXZlZEZyb20gc3RSZWY6aW5zdGFuY2VJRD0ieG1wLmlpZDowRTM2OTE4OTQwQUIxMUU0QUFCOERDNEFEREIxNEQxNCIgc3RSZWY6ZG9jdW1lbnRJRD0ieG1wLmRpZDowRTM2OTE4QTQwQUIxMUU0QUFCOERDNEFEREIxNEQxNCIvPiA8L3JkZjpEZXNjcmlwdGlvbj4gPC9yZGY6UkRGPiA8L3g6eG1wbWV0YT4gPD94cGFja2V0IGVuZD0iciI/PrQFEF8AAABmSURBVHjaYmRgYGQAAhYg5gNidgYI+AnEn4D4D1CWESQpAsRMDKjgHxC/ASkQAjI4oLo+QCUFoKb9ACmQZIDY8xKI/0IVMAOxOBD/x6UAZJ0ETAHMih9QK0CK+WFiRDkSrzcBAgwA9n0Wb7wLsOAAAAAASUVORK5CYII=);\A 59:       line-height: 1.3em;\A 60:       margin-bottom: 0.3em;\A 61:       //fontfix font-size: 0.85em;"; }
+  content: "Error: Undefined variable: \"$divider-color\".\A         on line 13 of ./css/article-lists.scss\A \A 8:     position: relative;\A 9: \A 10:     hr {\A 11:       border: 0px;\A 12:       height: 1px;\A 13:       background: $divider-color;\A 14:       margin: 0;\A 15:       padding: 0;\A 16:       position: relative;\A 17:       z-index: 99;\A 18:       top: -0.85em;"; }

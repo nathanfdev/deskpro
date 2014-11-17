@@ -1,7 +1,8 @@
+// http://bourbon.io
 @import "./bourbon/bourbon";
 @import "./neat/neat";
 
-//The important stuff
+// Important Stuff (tm)
 @import "variables";// and mixins
 @import "fonts";
 @import "forms";
@@ -9,13 +10,13 @@
 
 // Content
 @import "sidebar";
-@import "tiny";
+@import "tiny";// Small panels for the main page (news, daownload lists etc)
 @import "news";
 @import "feedback";
 @import "downloads";
-@import "top-bar";
+@import "top-bar";// Navigation
 @import "tabs";
-@import "agents";
+@import "agents";// Some styles for displaying agent avatars
 @import "ticket-page";
 @import "top-search";
 @import "misc";
@@ -23,30 +24,36 @@
 @import "article-lists";
 @import "user-ticket-list";
 @import "pagination";
+@import "chat";
 // Misc
 @import "tooltips";
 @import "alerts";
 @import "../fonts/font-awesome/css/font-awesome.min.css";
 
 // Neat Variables
-$grid-columns: 12;// Will change this eventualy to change sidebar width etc
+$grid-columns: 12;
 $max-width: 1080px;
 $tablet: new-breakpoint(max-width 760px 6);
 
 body {
   color: $text-color;
   padding: 20px;
-  background: $page-background;
+  background: $world-background;
 }
 
-* {
-  @include box-sizing(border-box);
-}
+* { @include box-sizing(border-box); }
 
 // Structure
-
 section, .wrapper {
   @include outer-container;
+}
+
+// .world is an easy way to create a box around content that's separate from the background (see home-everything for an example)
+.world {
+  @include outer-container;
+  background: $page-background;
+  padding: $world-padding;
+  padding-top: 0px;
 }
 
   // 12 columns
@@ -89,10 +96,10 @@ section, .wrapper {
 
 // three columns and sidebar
 .column-third-with-sidebar {
-@include span-columns(3 of 9);
+  @include span-columns(3 of 9);
 }
 
-  // clears
+// clears
 .omega {
   @include omega;
 }
@@ -113,10 +120,22 @@ h2 {
 }
 
 
+hr {
+  background: $divider-color;
+  border: 0px;
+  height: 1px;
+}
+
+
 .section-header {
   margin-bottom: 30px;
   margin-top: 15px;
   padding-left: $universal-left-padding;
+
+  @media screen and (max-width: 760px) {
+    text-align: center;
+    margin-bottom: 15px;
+  }
 }
 
 .section-subheader {
@@ -124,64 +143,4 @@ h2 {
   margin-top: 15px;
   padding-left: $universal-left-padding;
 
-}
-
-
-
-// These need their own file (eventualy)
-.active-button-dropdown {
-  position: absolute;
-  top: 30px;
-  right: 4px;
-  background: #fff;
-  border: 1px solid #c2c2c2;
-  border-radius: 2px;
-  display: block;
-  position: absolute;
-  border-radius: 2px;
-  text-align: left;
-  min-width: 135px;
-  padding: 7px 14px;
-  padding-bottom: 14px;
-  border-top-right-radius: 0px;
-  z-index: 99;
-
-  ul {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-  }
-
-  hr {
-    background: #e5e5e5;
-    border: 0px;
-    height: 1px;
-  }
-}
-
-.cleared {
-  @include clearfix;
-}
-
-div.large-title {
-  display: block;
-  border-bottom: 1px solid $divider-color;
-  margin-bottom: 30px;
-  margin-top: 20px;
-  text-align: left;
-
-  h1 {
-    font-weight: 100;
-    font-size: 1.4em;
-    padding-bottom: 0px;
-    display: inline-block;
-    color: $text-color-darker;
-    position: relative;
-    background: $page-background;
-    padding-left: 10px;
-    padding-right: 10px;
-    top: 11px;
-    left: 30px;
-
-  }
 }
