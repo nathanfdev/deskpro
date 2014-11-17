@@ -31,16 +31,19 @@ define(function() {
 				function(res) {
 					$scope.loading_meta = false;
 					$scope.Ctrl.stopSpinner('saving_settings');
-					$scope.meta_errors = res.errors;
 
-                    $scope.meta = res.data;
+					if (res.data.errors) {
+						$scope.meta_errors = res.data.errors;
+					} else {
+						$scope.meta = res.data;
 
-                    $scope.meta_defaults = {
-                        default_fields_list: $scope.meta.default_fields_list,
-                        default_fields_summary: $scope.meta.default_fields_summary,
-                        default_project: $scope.meta.default_project,
-                        default_issuetype: $scope.meta.default_issuetype
-                    };
+						$scope.meta_defaults = {
+							default_fields_list: $scope.meta.default_fields_list,
+							default_fields_summary: $scope.meta.default_fields_summary,
+							default_project: $scope.meta.default_project,
+							default_issuetype: $scope.meta.default_issuetype
+						};
+					}
 				},
 				function() {
 					$scope.loading_meta = false;
