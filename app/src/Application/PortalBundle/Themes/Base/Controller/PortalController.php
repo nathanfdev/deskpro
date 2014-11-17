@@ -96,4 +96,9 @@ class PortalController extends AbstractController
 			)
 		);
 	}
+
+    public function loginAction()
+    {
+        return $this->render('Theme:Portal:login.html.twig');
+    }
 }
