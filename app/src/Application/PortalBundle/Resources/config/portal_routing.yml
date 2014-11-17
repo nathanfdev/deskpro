@@ -4,6 +4,17 @@ portal_index:
     defaults:
       _controller: Theme:Portal:index
 
+#Login
+portal_login:
+    path: /login
+    defaults:
+        _controller: Theme:Portal:login
+
+portal_login_submit:
+    path: /login/authenticate-password
+    defaults:
+        _controller: Theme:Portal:login
+
 # Knowledgebase
 portal_kb:
     path: /kb
