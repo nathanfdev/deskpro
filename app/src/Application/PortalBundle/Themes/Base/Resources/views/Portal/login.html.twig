@@ -2,21 +2,24 @@
 
 {% block page_content %}
 
-    {% if app.request.query.get('retry') == 'auth' %}
-        <div class="error">Bad Credentials. Please try again.</div>
-    {% endif %}
+    {% set login_error = app.request.query.get('retry') == 'auth' %}
 
     <header class="section-header">
         <h1>Log in to the support portal</h1>
     </header>
 
+    {% if login_error %}
+        <!-- just using this until we get proper error alerts :) -->
+        <div class="error" style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
+            Bad Credentials. Please try again.
+        </div>
+    {% endif %}
 
     <form class="form-ticket" action="{{ path('portal_login_submit') }}" method="post">
         <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
-
         <div class="column-half">
             <div class="bucket">
-                <label class="title">Your email:</label>
+                <label class="title{% if login_error %} error{% endif %}">Your email:</label>
                 <input type="text" tabindex="1" placeholder="Email" name="username">
             </div>
         </div>
@@ -24,8 +27,8 @@
         <div class="column-half omega">
             <div class="bucket">
                 <div class="form-meta form-meta-grey"><a href="#">Need a password reminder?</a></div>
-                <label class="title">Your password:</label>
-                <input type="password" tabindex="2" placeholder="Your password (required)" name="password">
+                <label class="title{% if login_error %} error{% endif %}">Your password:</label>
+                <input type="password" tabindex="2" placeholder="Your password" name="password">
             </div>
         </div>
 

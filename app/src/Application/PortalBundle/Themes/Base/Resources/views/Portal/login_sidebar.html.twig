@@ -2,25 +2,20 @@
 <div class="small-form">
     <h1>Log in</h1>
 
-    <form>
+    <form action="{{ path('portal_login_submit') }}" method="post">
+        <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
         <label>
             <span>Your email:</span>
-            <input type="text" placeholder="email@example.com">
+            <input type="text" placeholder="email@example.com" name="username">
         </label>
 
         <div class="permanent-login">
-            <label>Stay Logged In? <input type="checkbox"></label>
+            <label>Stay Logged In? <input type="checkbox" name="remember_me"></label>
         </div>
 
         <label>
             <span>Your password:</span>
-            <input type="password" placeholder="Your password">
-        </label>
-
-        <label class="error">
-            <div class="message">This is a password error</div>
-            <span>Your password:</span>
-            <input type="password" placeholder="Your password">
+            <input type="password" placeholder="Your password" name="password">
         </label>
 
         <button>Log In</button>
