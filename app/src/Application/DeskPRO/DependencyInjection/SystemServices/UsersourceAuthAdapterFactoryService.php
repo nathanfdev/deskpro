@@ -47,7 +47,7 @@ class UsersourceAuthAdapterFactoryService
 	public static function create(DeskproContainer $container, $options = array())
 	{
 		return new UsersourceAuthAdapterFactory(
-			$container, $container->getRouter(), $container->getRequest(), $container->getSession(), DP_INTERFACE
+			$container, $container->getRouter(), $container->getRequest(), $container->getSession(), isset($options['interface']) ? $options['interface'] : DP_INTERFACE
 		);
 	}
 }
