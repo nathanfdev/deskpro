@@ -689,4 +689,11 @@ class Person extends AbstractEntityRepository
 
 		return $ret;
 	}
+
+    public function refresh(\Application\DeskPRO\Entity\Person $user)
+    {
+        $this->_em->refresh($user);
+
+        return $user;
+    }
 }
