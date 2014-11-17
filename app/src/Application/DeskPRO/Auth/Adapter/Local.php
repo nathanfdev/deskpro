@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Auth\Adapter;
 
+use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
 use Doctrine\ORM\EntityManager;
 use Orb\Auth\Adapter\AdapterInterface;
 use Orb\Auth\Adapter\FormLoginInterface;
@@ -46,7 +47,7 @@ use Orb\Log\Logger;
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
-class Local implements AdapterInterface, FormLoginInterface, Loggable
+class Local implements AdapterInterface, FormLoginInterface, Loggable, EntityManagerAwareInterface
 {
 	/**
 	 * Entity manager
@@ -174,4 +175,9 @@ class Local implements AdapterInterface, FormLoginInterface, Loggable
 	{
 		return $this->logger;
 	}
+
+    public function setEm(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 }

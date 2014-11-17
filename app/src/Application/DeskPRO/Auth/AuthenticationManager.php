@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Auth;
 
 
 use Application\DeskPRO\Entity\Usersource;
+use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Settings\Settings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Usersource\UsersourceInfo;
@@ -111,7 +112,7 @@ class AuthenticationManager
 		AuthSettings $authSettings,
 		UsersourceManager $usersourceManager,
 		UsersourceAuthAdapterFactory $auth_adapter_factory,
-		Settings $appSettings,
+		SettingsBag $appSettings,
 		$interface
 	) {
 		$this->usersourceManager  = $usersourceManager;
@@ -238,6 +239,14 @@ class AuthenticationManager
 
 		return new Result(Result::FAILURE_INVALID_CREDS);
 	}
+
+    /**
+     * @return UsersourceAuthAdapterFactory
+     */
+    public function getAuthAdapterFactory()
+    {
+        return $this->authAdapterFactory;
+    }
 
 
 	/**

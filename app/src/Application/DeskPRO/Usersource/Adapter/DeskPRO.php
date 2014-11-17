@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Usersource\Adapter;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\Adapter\Local;
 use Application\DeskPRO\Usersource\UsersourceInfo;
+use Doctrine\ORM\EntityManager;
 use Orb\Auth\Identity;
 
 /**
@@ -44,18 +45,28 @@ use Orb\Auth\Identity;
  *
  * @package Application\DeskPRO\Usersource\Adapter
  */
-class DeskPRO extends AbstractAdapter implements IdentityFinderInterface
+class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, EntityManagerAwareInterface
 {
+    /**
+     * @var EntityManager
+     */
+    protected $em;
+
 	public function getFieldsFromIdentity(Identity $identity)
 	{
 		return $identity->getRawData();
 	}
 
+    public function setEm(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
 
 	public function findIdentityByInput($input)
 	{
 		/** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
-		$personRepo = App::getOrm()->getRepository('DeskPRO:Person');
+		$personRepo = $this->em->getRepository('DeskPRO:Person');
 		if ($person = $personRepo->findOneByEmail($input)) {
 			return $person;
 		}
@@ -65,11 +76,11 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface
 
 
 	/**
-	 * @return \Orb\Auth\Adapter\Google
+	 * @return \Orb\Auth\Adapter\Local
 	 */
 	protected function _createAuthAdapterObject()
 	{
-		return new Local(App::getContainer()->getEm());
+		return new Local($this->em);
 	}
 
 

@@ -37,8 +37,9 @@ namespace Application\DeskPRO\Usersource;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
-use Application\DeskPRO\HttpFoundation\Request;
-use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Orb\Auth\Adapter\SamlAdapterInterface;
 use Orb\Auth\Adapter\SsoCapableInterface;
 use Orb\Auth\Adapter\SsoLoginActionInterface;
@@ -95,7 +96,17 @@ class UsersourceAuthAdapterFactory
 	 */
 	public function getAuthAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
 	{
-		$adapter = $usersource->getAdapter()->getAuthAdapter();
+		$adapter = $usersource->getAdapter();
+
+        if ($adapter instanceof EntityManagerAwareInterface) {
+            $adapter->setEm($this->container->getEm());
+        }
+
+        $adapter = $adapter->getAuthAdapter();
+
+        if ($adapter instanceof EntityManagerAwareInterface) {
+            $adapter->setEm($this->container->getEm());
+        }
 
 		if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
 			$adapter->setLogger($this->_getAdapterLogger());
