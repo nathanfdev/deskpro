@@ -29,67 +29,35 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
  */
 
-namespace Application\PortalBundle\Theme;
+namespace Application\PortalBundle\View\Pagerfanta;
 
-use Application\PortalBundle\Themes\Base\BaseTheme;
-use Application\PortalBundle\Themes\DevTest\DevTestTheme;
-use Application\PortalBundle\Themes\Sidebar\SidebarTheme;
-use Application\PortalBundle\Themes\Simple\SimpleTheme;
-use Application\PortalBundle\Themes\Standard\StandardTheme;
-use Application\PortalBundle\Themes\TabBar\TabBarTheme;
+use Pagerfanta\View\DefaultView;
 
-/**
- * A reporistory of themes.
- * I can see this someday being a service, but we hardcode for now since we have so few.
- *
- * @package Application\PortalBundle\Theme
- */
-class ThemeRepository
+class DeskproView extends DefaultView
 {
     /**
-     * @var ThemeInterface[]
+     * @return Template\DeskproTemplate
      */
-    private $themes;
-
-    public function __construct()
+    protected function createDefaultTemplate()
     {
-        $this->themes = array(
-            $base = new BaseTheme(),
-            new StandardTheme($base),
-            new SimpleTheme($base),
-            new SidebarTheme($base),
-            new TabBarTheme($base),
-            new DevTestTheme($base),
-        );
+        return new Template\DeskproTemplate();
     }
 
     /**
-     * Get a theme by its ID. ie. $repo->find('standard')
-     *
-     * @param $id
-     * @return ThemeInterface
+     * {@inheritdoc}
      */
-    public function find($id)
+    protected function getDefaultProximity()
     {
-        foreach ($this->themes as $theme) {
-            if ($id === $theme->getId()) {
-                return $theme;
-            }
-        }
-
-        return null;
+        return 3;
     }
 
     /**
-     * A list of all themes in the order they are registered
-     *
-     * @return ThemeInterface[]
+     * {@inheritdoc}
      */
-    public function findAll()
+    public function getName()
     {
-        return $this->themes;
+        return 'twitter_bootstrap';
     }
 }

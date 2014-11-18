@@ -37,6 +37,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PortalController extends AbstractController
 {

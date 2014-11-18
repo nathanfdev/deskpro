@@ -1,0 +1,29 @@
+{% extends 'Theme::layout.html.twig' %}
+
+{% block page_content %}
+
+	<section>
+		<div class="column-full">
+			{{ news_list({ count: 3 }) }}
+		</div>
+	</section>
+
+	<section>
+		{{ kb_cats_home({'articles': { sort: 'title asc' }}) }}
+	</section>
+
+	<section>
+		<div class="column-third">
+			{{ news_list_small({ count: 10 }) }}
+		</div>
+
+		<div class="column-third">
+			{{ feedback_list_small({ count: 10 }) }}
+		</div>
+
+		<div class="column-third omega">
+			{{ downloads_list_small({ count: 10 }) }}
+		</div>
+	</section>
+
+{% endblock page_content %}

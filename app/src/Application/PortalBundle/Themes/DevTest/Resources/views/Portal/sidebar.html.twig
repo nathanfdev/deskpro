@@ -1,0 +1,34 @@
+<div class="row">
+    {% if is_granted('ROLE_USER') %}
+        {{ user_sidebar() }}
+    {% else %}
+        {{ login_sidebar() }}
+    {% endif %}
+</div>
+
+<div class="row">
+    {{ get_in_touch() }}
+</div>
+
+<div class="row">
+    <h1>KB Articles</h1>
+    {{ kb_articles_xsmall({category: 2}) }}
+    <hr/>
+</div>
+
+<div class="row">
+    <h1>KB Cats</h1>
+    {{ kb_cats_small() }}
+    <hr/>
+</div>
+
+<div class="row">
+    <h1>News Cats</h1>
+    {{ news_cats_small() }}
+    <hr/>
+</div>
+
+<div class="row">
+    <h1>Download Cats</h1>
+    {{ downloads_cats_small() }}
+</div>

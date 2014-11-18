@@ -235,8 +235,6 @@ textarea {
   }
 }
 
-
-
 .user-logged-in {
   border-radius: $border-radius-main;
   border: 1px dashed $divider-color;
@@ -288,11 +286,6 @@ textarea {
     i { display: block; }
   }
 }
-
-
-
-
-
 
 .new-ticket-attachements {
   .title { margin-top: 10px; }
@@ -349,17 +342,6 @@ textarea {
     opacity: 1;
   }
 }
-
-
-
-
-
-
-
-
-
-
-
 
 .multiselect {
   ul.first-level {
@@ -435,15 +417,6 @@ textarea {
   }
 }
 
-
-
-
-
-
-
-
-
-
 .radio-button {
   position: relative;
   display: inline-block;
@@ -491,7 +464,6 @@ textarea {
   }
 }
 
-
 .form-help {
   border-left: 1px solid $divider-color;
   padding: 5px 0px 5px 20px;
@@ -531,7 +503,6 @@ textarea {
     &:hover { color: $text-color; }
   }
 }
-
 
 .form-ticket {
   header {
@@ -600,8 +571,6 @@ textarea {
   }
 }
 
-
-
 .form-filter {
   .bucket {
     span {
@@ -617,12 +586,6 @@ textarea {
     border-radius: 2px;
   }
 }
-
-
-
-
-
-
 
 .error-large {
   background: $red;
@@ -644,12 +607,6 @@ textarea {
   }
 }
 
-
-
-
-
-
-
 .remember-me {
   display: inline-block;
   vertical-align: top;
@@ -662,9 +619,7 @@ textarea {
   }
 }
 
-
 // Cramped forms (in a dropdown, in the sidebar etc)
-
 .permanent-login {
   display: block;
   font-size: 0.85em;
@@ -677,7 +632,6 @@ textarea {
     cursor: pointer;
   }
 }
-
 
 .small-form {
   margin: 0;
@@ -722,8 +676,6 @@ textarea {
     }
   }
 
-
-
   .secondary-action {
     font-size: 0.85em;
     a {
@@ -744,7 +696,6 @@ textarea {
   }
 
 }
-
 
 // Error handling
 form {
@@ -802,10 +753,6 @@ form {
     vertical-align: middle;
   }
 }
-
-
-
-
 
 button, .button, input[type="submit"] {
   @include generate-background-and-border($button-color);
@@ -934,7 +881,6 @@ button, .button, input[type="submit"] {
 
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // sidebar
 //----------------------------------------------------------------------------------------------------------------------
@@ -1028,14 +974,6 @@ button, .button, input[type="submit"] {
   }
 }
 
-
-
-
-
-
-
-
-
 .sidebar {
   padding-left: 20px;
   border-left: 1px dashed $divider-color;
@@ -1095,7 +1033,6 @@ button, .button, input[type="submit"] {
     }
   }
 
-
   ul {
     list-style: none;
     padding: 0;
@@ -1143,10 +1080,6 @@ button, .button, input[type="submit"] {
   }
 }
 
-
-
-
-
 .agents-online {
   ul {
     li { margin-bottom: 10px; }
@@ -1169,9 +1102,6 @@ button, .button, input[type="submit"] {
   }
 }
 
-
-
-
 .get-in-touch {
   h2 { margin-top: 10px; }
 }
@@ -1193,11 +1123,7 @@ button, .button, input[type="submit"] {
 .link-facebook { color: $color-facebook; }
 .link-twitter { color: $color-twitter; }
 
-
-
-
 // Top articles
-
 .sidebar-list {
 
   ul {
@@ -1255,10 +1181,7 @@ button, .button, input[type="submit"] {
   .button { margin-top: 10px; }
 }
 
-
-
 // Customer satisfaction
-
 // Number of satisfied folk
 .satisfaction-meta {
   font-weight: 500;
@@ -1294,7 +1217,6 @@ button, .button, input[type="submit"] {
   p { opacity: 0.75; }
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // tiny
 //----------------------------------------------------------------------------------------------------------------------
@@ -1324,7 +1246,6 @@ button, .button, input[type="submit"] {
     }
   }
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // news
@@ -1392,10 +1313,7 @@ button, .button, input[type="submit"] {
   }
 }
 
-
-
 // News
-
 h1.fancy-header {
   font-size: 1.15em;
   font-weight: 600;
@@ -1406,7 +1324,6 @@ h1.fancy-header {
   position: relative;
   z-index: 100;
 }
-
 
 .front-page-news {
 
@@ -1489,16 +1406,9 @@ h1.fancy-header {
   }
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // feedback
 //----------------------------------------------------------------------------------------------------------------------
-
-
-// Feedback
-
-
-
 
 .slider-list {
   @include blank-list;
@@ -1629,9 +1539,6 @@ h1.fancy-header {
   }
 }
 
-
-
-
 .feedback-form {
   .main-input {
     @include clearfix;
@@ -1707,8 +1614,6 @@ h1.fancy-header {
     width: 100%;
   }
 }
-
-
 
 .main-feedback {
 
@@ -1814,15 +1719,6 @@ h1.fancy-header {
     }
   }
 
-
-
-
-
-
-
-
-
-
   .feedback-item-content {
     overflow: hidden;
     border-left: 1px solid $divider-color;
@@ -1890,10 +1786,6 @@ h1.fancy-header {
     }
   }
 
-
-
-
-
   .feedback-item-meta {
     margin-top: 15px;
     font-size: 0.9em;
@@ -1917,13 +1809,9 @@ h1.fancy-header {
 }
 
 // Small feedback list
-
 .front-page-feedback {
-
   ul {
-
     li {
-
       span.thumbs {
         cursor: default;
         display: inline-block;
@@ -1948,11 +1836,9 @@ h1.fancy-header {
           color: $button-color;
         }
       }
-
     }
   }
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // downloads
@@ -1992,7 +1878,6 @@ h1.fancy-header {
 // topbar
 //----------------------------------------------------------------------------------------------------------------------
 
-
 .brand {
   padding-left: $universal-left-padding;
 
@@ -2017,7 +1902,6 @@ h1.fancy-header {
       margin-bottom: 20px;
     }
   }
-
 }
 
 .top-bar {
@@ -2055,7 +1939,6 @@ h1.fancy-header {
     }
   }
 
-
   .language-dropdown {
     background: $world-background;
 
@@ -2078,7 +1961,6 @@ h1.fancy-header {
     }
   }
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // tabs
@@ -2203,8 +2085,7 @@ $tab-border: $divider-color;
 //----------------------------------------------------------------------------------------------------------------------
 
 // Showing users & avatar styles
-
-.agent {// Overall user container
+.agent {
   display: inline-block;
   line-height: 1.2em;
   font-weight: 400;
@@ -2213,14 +2094,6 @@ $tab-border: $divider-color;
   &:hover {
     .remove-agent { display: block; }
   }
-
-  // Enable in case we need agent as a link
-  // text-decoration: none;
-  // &:hover {
-  //   border: 0;
-  //   padding: 0;
-  //   color: #333;
-  // }
 }
 
 .agent-info {
@@ -2272,17 +2145,12 @@ $tab-border: $divider-color;
   }
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // ticketpage
 //----------------------------------------------------------------------------------------------------------------------
 
 // Ticket Page
-
-
-
 // Dropdowns
-
 .dropdown-control {
   background: $surface-secondary;
   border: 1px solid $divider-color;
@@ -2344,16 +2212,9 @@ $tab-border: $divider-color;
   }
 }
 
-
-
-
-
-
-
 // Agents
 // Specfic styles for the tickets page
 // See agents.scss for the original stuff
-
 .ticket-agents, .agent-extras {
   float: left;
   width: 50%;
@@ -2450,15 +2311,6 @@ $tab-border: $divider-color;
   }
 }
 
-
-
-
-
-
-
-
-
-
 .ticket-status {
   text-decoration: none;
   position: relative;
@@ -2480,7 +2332,6 @@ $tab-border: $divider-color;
     background: $button-color-secondary;
   }
 }
-
 
 .ticket-page {
 
@@ -2512,7 +2363,6 @@ $tab-border: $divider-color;
   }
 
   // Ticket Header (Title, status and reference)
-
   header {
     margin-bottom: 30px;
     position: relative;
@@ -2565,11 +2415,7 @@ $tab-border: $divider-color;
   }
 
   // End Ticket Header
-
-
-
   // Timeline
-
   .ticket-timeline {
     margin-top: 60px;
 
@@ -2598,10 +2444,7 @@ $tab-border: $divider-color;
     }
   }
 
-
-
   // All types of content posts on the timeline
-
   .item {
     position: relative;
     margin-bottom: 40px;
@@ -2770,9 +2613,7 @@ $tab-border: $divider-color;
     }
   }// End Atachements
 
-
 }// End All types of content posts on the timeline
-
 
 // Customer Satisfaction
 .post-satisfaction {
@@ -2829,17 +2670,10 @@ $tab-border: $divider-color;
 // topsearch
 //----------------------------------------------------------------------------------------------------------------------
 
-// Live results
-
-
-
 .live-results-container {
   position: absolute;
   top: 56px;
 }
-
-
-
 
 .search-box-results {
   display: block;
@@ -2864,7 +2698,6 @@ $tab-border: $divider-color;
   }
 }
 
-
 .live-search-meta {
   @include clearfix;
   text-align: center;
@@ -2885,7 +2718,6 @@ $tab-border: $divider-color;
     opacity: 0.5;
   }
 }
-
 
 .result-count { color: $text-color-darker; }
 
@@ -2951,16 +2783,6 @@ $tab-border: $divider-color;
     background: #eeeeee;
   }
 }
-
-
-
-
-
-
-
-
-
-
 
 // Top search & create ticket panel
 //
@@ -3119,7 +2941,6 @@ $tab-border: $divider-color;
 
 table { font-size: 1em; }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // misc
 //----------------------------------------------------------------------------------------------------------------------
@@ -3131,10 +2952,6 @@ hr.divider {
   margin-top: 15px;
   margin-bottom: 15px;
 }
-
-
-
-
 
 .popup-tiny {
   display: block;
@@ -3177,10 +2994,6 @@ hr.divider {
     }
   }
 }
-
-
-
-
 
 .active-button-dropdown {
   position: absolute;
@@ -3249,8 +3062,6 @@ div.large-title {
   }
 }
 
-
-
 .header-buttons {
   font-size: 0.9em;
   float: right;
@@ -3274,7 +3085,6 @@ div.large-title {
     }
   }
 }
-
 
 // Not using variables here, need to be consistent everywhere
 .admin-bar {
@@ -3366,7 +3176,6 @@ div.large-title {
     text-decoration: none;
   }
 }
-
 
 .welcome-message {
   h1 {
@@ -3639,8 +3448,6 @@ table {
     }
   }
 
-
-
   ul {
     @include blank-list;
     background: $page-background;
@@ -3685,10 +3492,7 @@ table {
       color: $text-color-lighter;
     }
   }
-
 }
-
-
 
 // The article statuses (# of articles, new) on the top right
 .article-tag {
@@ -3755,7 +3559,6 @@ table {
   }
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // articles
 //----------------------------------------------------------------------------------------------------------------------
@@ -3808,7 +3611,6 @@ table {
     color: $text-color-lighter;
   }
 
-
   > ul {
     list-style: none;
     margin: 0;
@@ -3836,8 +3638,6 @@ table {
     }
   }
 }
-
-
 
 .kb-simple-articles {
 
@@ -3887,9 +3687,6 @@ table {
     }
   }
 }
-
-
-
 
 .top-articles-wide {
 
@@ -3944,7 +3741,6 @@ table {
   position: relative;
   top: -5px;
 }
-
 
 .table-meta { position: relative; }
 
@@ -4013,8 +3809,6 @@ table {
   }
 }
 
-
-
 .marked {
   padding: 2px 4px;
   font-weight: 800;
@@ -4042,9 +3836,6 @@ table {
   padding-left: 25px;
 }
 
-
-
-
 .filter-warning {
   background: $filter;
   color: $text-color-darker;
@@ -4060,8 +3851,6 @@ table {
   }
 }
 
-
-
 .user-ticket-list-expanded {
   padding: 10px 20px;
   border: 1px solid $divider-color;
@@ -4070,7 +3859,6 @@ table {
 
   .user-ticket-list { margin-bottom: 0px; }
 }
-
 
 .user-ticket-list {
   width: 100%;
@@ -4206,7 +3994,6 @@ table {
   }
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // pagination
 //----------------------------------------------------------------------------------------------------------------------
@@ -4231,7 +4018,7 @@ table {
     }
   }
 
-  a {
+  a, span {
     text-decoration: none;
     color: $text-color-lighter;
     display: block;
@@ -4246,10 +4033,6 @@ table {
     a { opacity: 0.5;}
   }
 }
-
-
-
-
 
 .breadcrumbs {
   margin-bottom: 15px;
@@ -4291,7 +4074,6 @@ table {
 
   hr { margin: 0; }
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // chat
@@ -4392,7 +4174,6 @@ table {
     }
   }
 
-
   tr {
     border-bottom: 1px solid $divider-color;
 
@@ -4452,12 +4233,6 @@ table {
   }
 }
 
-
-
-
-
-// CHAT
-
 .chat {
   header {
     margin-bottom: 15px;
@@ -4474,7 +4249,6 @@ table {
   }
 
 }
-
 
 .chat-message {
   @include clearfix;
@@ -4533,11 +4307,6 @@ table {
   }
 }
 
-
-
-
-
-
 .chat-event {
   text-align: center;
   position: relative;
@@ -4590,7 +4359,6 @@ table {
   }
 }
 
-
 .chat-image-attached {
   max-width: 260px;
   position: relative;
@@ -4610,8 +4378,6 @@ table {
   }
 }
 
-
-
 .author {
   .avatar {
     display: inline-block;
@@ -4626,8 +4392,6 @@ table {
   }
 }
 
-
-
 .assigned-to-ticket {
   margin-top: 25px;
   margin-bottom: 10px;
@@ -4641,7 +4405,6 @@ table {
     margin-left: 10px;
   }
 }
-
 
 .file-list {
   @include blank-list;
@@ -4690,7 +4453,6 @@ table {
   }
 }
 
-
 //----------------------------------------------------------------------------------------------------------------------
 // tooltips
 //----------------------------------------------------------------------------------------------------------------------
@@ -4718,7 +4480,6 @@ table {
     left: 20px;
   }
 }
-
 
 //----------------------------------------------------------------------------------------------------------------------
 // alerts

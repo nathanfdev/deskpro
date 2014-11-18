@@ -108,7 +108,6 @@ gulp.task('coffee', ['clean'], function() {
 
 deskpro.taskGen.lessCss = function(glob) {
   return gulp.src(glob)
-    .pipe(cache('watch', {optimizeMemory: true}))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
@@ -132,7 +131,6 @@ gulp.task('less', ['clean'], function () {
 
 deskpro.taskGen.sassCss = function(glob) {
   return gulp.src(glob)
-    .pipe(cache('watch', {optimizeMemory: true}))
     .pipe(gulpif(deskpro.isWatching, plumber()))
     .pipe(sourcemaps.init())
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))

@@ -19,6 +19,6 @@
 		{% endfor %}
 	</ul>
 	{% if pager.haveToPaginate %}
-		{{ pagerfanta(pager, 'twitter_bootstrap') }}
+		{{ pagerfanta(pager) }}
 	{% endif %}
 {% endblock inner_content %}

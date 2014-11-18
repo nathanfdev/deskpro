@@ -1,14 +1,39 @@
 {% extends 'ThemeParent::layout.html.twig' %}
+{% block body %}
 
-{% block content_layout %}
-	<div class="column-full">
-		{% block page_content %}
-			<section>
-				<div class="column-full">
-					{% block inner_content %}
-					{% endblock inner_content %}
-				</div>
-			</section>
-		{% endblock page_content %}
+	<div class="world">
+
+		<section>
+			<div class="column-full">
+				{{ top_bar() }}
+			</div>
+		</section>
+
+		<section>
+			<div class="column-full">
+				{{ top_search() }}
+			</div>
+		</section>
+
+		<section>
+			<div class="column-full">
+				{{ top_tabs() }}
+			</div>
+		</section>
+
+		<div class="wrapper">
+			<div class="column-full">
+				{% block page_content %}
+					<section>
+						<div class="column-full">
+							{% block inner_content %}
+							{% endblock inner_content %}
+						</div>
+					</section>
+				{% endblock page_content %}
+			</div>
+		</div>
+
 	</div>
-{% endblock content_layout %}
+
+{% endblock body %}
