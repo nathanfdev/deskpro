@@ -69,6 +69,12 @@ $collection->create('user_login_inline', array(
 	'controller'  => 'UserBundle:Login:inlineLogin',
 ));
 
+$collection->create('portal_login_usersource_sso', array(
+	'path'          => '/login/usersource-sso/{usersource_id}',
+	'controller'    => 'UserBundle:Login:usersourceSso',
+	'requirements'  => array('usersource_id' => '\\d+'),
+));
+
 $collection->create('user_login_usersource_sso', array(
 	'path'          => '/login/usersource-sso/{usersource_id}',
 	'controller'    => 'UserBundle:Login:usersourceSso',
@@ -100,6 +106,12 @@ $collection->create('user_login_authenticate', array(
 	'path'          => '/login/authenticate/{usersource_id}',
 	'controller'    => 'UserBundle:Login:authenticate',
 	'defaults'      => array('usersource_id' => 0),
+	'requirements'  => array('usersource_id' => '\\d+'),
+));
+
+$collection->create('portal_login_callback', array(
+	'path'          => '/login/authenticate-callback/{usersource_id}',
+	'controller'    => 'UserBundle:Login:authenticateCallback',
 	'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
