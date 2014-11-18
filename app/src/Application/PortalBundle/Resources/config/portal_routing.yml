@@ -4,19 +4,24 @@ portal_index:
     defaults:
       _controller: Theme:Portal:index
 
-#Login
+# Login and Auth
 portal_login:
     path: /login
     defaults:
         _controller: Theme:Portal:login
 
+# The following are caught by our security system, and therefore do not need to have default controllers set on them
 portal_logout:
     path: /logout
 
 portal_login_submit:
     path: /login/authenticate-password
-    defaults:
-        _controller: Theme:Portal:login
+
+portal_login_authenticate:
+    path: /login/authenticate/{usersource_id}
+
+portal_login_callback:
+    path: /login/authenticate-callback/{usersource_id}
 
 # Knowledgebase
 portal_kb:

@@ -181,4 +181,9 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, IdentityF
 	{
 		return in_array($capability, $this->getCapabilities());
 	}
+
+    public function getCodeName()
+    {
+        return join('', array_slice(explode('\\', get_called_class()), -1));
+    }
 }

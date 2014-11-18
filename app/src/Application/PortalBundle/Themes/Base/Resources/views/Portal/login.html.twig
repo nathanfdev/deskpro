@@ -54,17 +54,34 @@
             </form>
         {% endif %}
 
+
+        {% if auth_manager.hasLoginIconUsersources or auth_manager.hasLoginTextButtonUsersources %}
         <div class="column-full">
             <div class="bucket">
                 <div class="titled-header-left">
                     <h2>Login with an external service</h2>
                 </div>
 
-                <button class="button auth auth-facebook"><i class="fa fa-facebook"></i> Facebook</button>
-                <button class="button auth auth-twitter"><i class="fa fa-twitter"></i>Twitter</button>
-                <button class="button auth auth-google"><i class="fa fa-google"></i>Google</button>
+                {# twitter, facebook, google (the old "icon" usersources) #}
+                {% if auth_manager.hasLoginIconUsersources %}
+                    {% for usersource in auth_manager.getLoginIconUsersources %}
+                        <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"
+                           class="button auth-{{ usersource.adapter.codeName|lower }}"><i
+                                    class="fa fa-{{ usersource.adapter.codeName|lower }}"></i> Login
+                            with {{ usersource.adapter.codeName|title }}</a>
+                    {% endfor %}
+                {% endif %}
+
+                {# the newer "text button" usersources #}
+                {% if auth_manager.hasLoginTextButtonUsersources %}
+                    {% for usersource in auth_manager.getLoginTextButtonUsersources %}
+                        <a href="{{ path('portal_login_authenticate', {'usersource_id': usersource.id}) }}"
+                           class="button">{{ usersource.options.login_custom_text }}</a>
+                    {% endfor %}
+                {% endif %}
             </div>
         </div>
+        {% endif %}
 
         {% if auth_manager.isRegistrationFormVisible %}
             <div class="column-full">
