@@ -16,6 +16,9 @@ security:
             anonymous: ~
             logout:
                 path: portal_logout
+                target: /
+                invalidate_session: false
+                handlers:  [security.authentication.logout_handler]
             remember_me:
                 key:      "%secret%"
                 lifetime: 31536000 # 365 days in seconds
@@ -31,6 +34,12 @@ services:
         factory_method: create
         arguments: [@service_container, 'user']
 
+    dp_auth_settings:
+        class: Application\DeskPRO\Auth\AuthSettings
+        factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthSettingsService
+        factory_method: create
+        arguments: [@service_container]
+
     dp_person_user_provider:
         class: Application\AuthBundle\Security\DpPersonUserProvider
         arguments: [@person_repository]
@@ -45,3 +54,26 @@ services:
         abstract: true
         calls:
             - [ setContainer, [@service_container] ]
+
+    security.authentication.success_handler:
+            class:  Application\AuthBundle\Handler\AuthenticationSuccessHandler
+            arguments:  [@security.http_utils, {}]
+            calls:
+                - [ setContainer, [ @service_container ] ]
+            tags:
+                - { name: 'monolog.logger', channel: 'security' }
+
+    security.authentication.logout_handler:
+            class:  Application\AuthBundle\Handler\LogoutHandler
+
+    security.authentication.failure_handler:
+        class: Application\AuthBundle\Handler\AuthenticationFailureHandler
+        arguments:  [@http_kernel, @security.http_utils, {}, @logger]
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
+
+    dp_security.twig_extension:
+        class: Application\AuthBundle\Twig\AuthTwigExtension
+        arguments: [@service_container]
+        tags:
+            - { name: twig.extension }
