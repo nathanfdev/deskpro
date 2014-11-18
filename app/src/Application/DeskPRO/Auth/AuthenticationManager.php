@@ -311,6 +311,11 @@ class AuthenticationManager
         return $this->isDeskPROEnabled() && $this->appSettings->get('core.reg_enabled');
     }
 
+    public function isRememberMeEnabled()
+    {
+        return $this->appSettings->get('core.enable_user_rememberme');
+    }
+
     /**
      * Has at least one usersource that can redirect to "lost password"
      *

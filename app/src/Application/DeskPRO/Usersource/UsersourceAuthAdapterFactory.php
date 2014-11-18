@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Usersource\Adapter\EntityManagerAwareInterface;
+use Orb\Auth\StateHandler\SessionWrapper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Session\Session;
 use Orb\Auth\Adapter\SamlAdapterInterface;
@@ -121,7 +122,7 @@ class UsersourceAuthAdapterFactory
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-            $route_type = 'user';
+			$route_type = 'portal';
             if ($this->isAgentInterface($useInterface)) {
                 $route_type = 'agent';
             }
@@ -154,9 +155,7 @@ class UsersourceAuthAdapterFactory
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
-            $auth_state = new \Orb\Auth\StateHandler\ArrayAccessWrapper($this->session);
-            $auth_state->setClearStateMethod('clear');
-
+			$auth_state = new SessionWrapper($this->session);
             $adapter->setStateHandler($auth_state);
         }
 

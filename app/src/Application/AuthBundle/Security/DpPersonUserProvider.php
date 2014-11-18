@@ -55,11 +55,6 @@ class DpPersonUserProvider implements UserProviderInterface
         $this->person_repo = $person_repo;
     }
 
-    public function getOrCreatePersonFromUsersourceIdentity(Usersource $usersource, Identity $identity)
-    {
-
-    }
-
     /**
      * Loads the user for the given username.
      *
@@ -78,7 +73,11 @@ class DpPersonUserProvider implements UserProviderInterface
     public function loadUserByUsername($username)
     {
         // we use the person ID as the username in this context (unique)
-        return $this->person_repo->find($username);
+        if ($person = $this->person_repo->find($username)) {
+            return $person;
+        }
+
+        return $this->person_repo->findOneByEmail($username);
     }
 
     /**
@@ -97,7 +96,11 @@ class DpPersonUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        return $this->person_repo->refresh($this->person_repo->find($user->getId()));
+        if (!$user instanceof Person) {
+            throw new \InvalidArgumentException('the DpPersonUserProvider requires a Person instance for the UserInterface');
+        }
+
+        return $this->person_repo->find($user->id);
     }
 
     /**
