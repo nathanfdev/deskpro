@@ -190,6 +190,10 @@ class ThemeResolver
     {
         $tag = $this->resolveTag($theme, $tag_name);
 
+        if (!$tag) {
+            throw new \InvalidArgumentException("Could not resolve tag: $tag_name");
+        }
+
         $this->logger->debug(sprintf('theme resolver: resolving tag "%s" with controller "%s"', $tag->getName(), $tag->getControllerName()));
 
         // theme can't process a tag it's being asked to resolve; just silently ignore the tag by return a blank string.

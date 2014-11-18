@@ -3,20 +3,20 @@
 {% block page_content %}
 
 	<section>
-		{{ news_list({ count: 3 }) }}
+		{{ news_posts({ count: 3 }) }}
 	</section>
 
 	<section>
-		{{ kb_cats_home({'articles': { sort: 'title asc' }}) }}
+		{{ knowledgebase({'articles': { sort: 'title asc' }}) }}
 	</section>
 
 	<section>
-		{{ kb_cats_expander({'articles': { sort: 'title asc' }}) }}
+		{{ knowledgebase_list({'articles': { sort: 'title asc' }}) }}
 	</section>
 
 	<section>
 		<div class="column-third">
-			{{ news_list_small({ count: 10 }) }}
+			{{ news_posts_list({ count: 10 }) }}
 		</div>
 
 		<div class="column-third">
@@ -24,7 +24,7 @@
 		</div>
 
 		<div class="column-third omega">
-			{{ downloads_list_small({ count: 10 }) }}
+			{{ files_list({ count: 10 }) }}
 		</div>
 	</section>
 

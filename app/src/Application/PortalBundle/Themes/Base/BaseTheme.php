@@ -43,9 +43,10 @@ class BaseTheme extends AbstractTheme
     {
         return array(
             new Tag('alerts',                   'Theme:Portal:alerts'),
-            new Tag('top_bar',                  'Theme:Portal:topBar'),
-            new Tag('top_search',               'Theme:Portal:topSearch'),
-            new Tag('top_tabs',                 'Theme:Portal:topTabs'),
+            new Tag('page_top',                 'Theme:Portal:topBar'),
+            new Tag('page_search_box',          'Theme:Portal:topSearch'),
+            new Tag('page_tabs',                'Theme:Portal:topTabs'),
+
             new Tag('get_in_touch',             'Theme:Portal:getInTouch'),
             new Tag('sidebar',                  'Theme:Portal:sidebar'),
             new Tag('user_sidebar',             'Theme:Portal:userSidebar'),
@@ -55,18 +56,19 @@ class BaseTheme extends AbstractTheme
             new Tag('kb_articles_small',        'Theme:Articles:list',              array('style' => 'small')),
             new Tag('kb_articles_xsmall',       'Theme:Articles:list',              array('style' => 'xsmall')),
 
-            new Tag('kb_cats_home',             'Theme:Articles:categories',        array('style' => 'home')),
-            new Tag('kb_cats_summary',          'Theme:Articles:categories',        array('style' => 'summary')),
-            new Tag('kb_cats_small',            'Theme:Articles:categories',        array('style' => 'small')),
-            new Tag('kb_cats_expander',         'Theme:Articles:categories',        array('style' => 'expander')),
+            new Tag('knowledgebase',            'Theme:Articles:categories',        array('style' => 'home')),
+            new Tag('knowledgebase_compact',    'Theme:Articles:categories',        array('style' => 'summary')),
+            new Tag('knowledgebase_list',       'Theme:Articles:categories',        array('style' => 'expander')),
+            new Tag('kb_cats_list',             'Theme:Articles:categories',        array('style' => 'small')),
 
-            new Tag('news_list',                'Theme:News:list',                  array('style' => 'posts')),
-            new Tag('news_list_small',          'Theme:News:list',                  array('style' => 'small')),
-            new Tag('news_cats_small',          'Theme:News:cats',                  array('style' => 'small')),
+            new Tag('news_posts',               'Theme:News:list',                  array('style' => 'posts')),
+            new Tag('news_posts_list',          'Theme:News:list',                  array('style' => 'small')),
+
+            new Tag('news_cats_list',           'Theme:News:cats',                  array('style' => 'small')),
             new Tag('news_cats_dropdown',       'Theme:News:cats',                  array('style' => 'dropdown')),
 
-            new Tag('downloads_list_small',     'Theme:Downloads:list',             array('style' => 'small')),
-            new Tag('downloads_cats_small',     'Theme:Downloads:cats',             array('style' => 'small')),
+            new Tag('files_list',               'Theme:Downloads:list',             array('style' => 'small')),
+            new Tag('downloads_cats_list',      'Theme:Downloads:cats',             array('style' => 'small')),
 
             new Tag('feedback_list_small',      'Theme:Feedback:list',              array('style' => 'small')),
         );

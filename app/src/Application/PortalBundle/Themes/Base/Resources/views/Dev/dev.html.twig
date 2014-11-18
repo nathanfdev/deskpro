@@ -75,7 +75,7 @@
 	<section id="top_bar">
 		<a name="top_bar"></a>
 
-		<h1>top_bar()</h1>
+		<h1>page_top()</h1>
 
 		<p class="info">
 			Will render this themes "top bar"
@@ -85,7 +85,7 @@
 		</dl>
 		<div class="render">
 
-			{{ top_bar() }}
+			{{ page_top() }}
 
 		</div>
 	</section>
@@ -93,7 +93,7 @@
 	<section id="top_search">
 		<a name="top_search"></a>
 
-		<h1>top_search()</h1>
+		<h1>page_search_box()</h1>
 
 		<p class="info">
 			Will render this theme's "top search bar"
@@ -103,7 +103,7 @@
 		</dl>
 		<div class="render">
 
-			{{ top_search() }}
+			{{ page_search_box() }}
 
 		</div>
 	</section>
@@ -111,7 +111,7 @@
 	<section id="top_tabs">
 		<a name="top_tabs"></a>
 
-		<h1>top_tabs()</h1>
+		<h1>page_tabs()</h1>
 
 		<p class="info">
 			Will render "top tabs". These will auto activate the right tab based on request URI.
@@ -121,7 +121,7 @@
 		</dl>
 		<div class="render">
 
-			{{ top_tabs() }}
+			{{ page_tabs() }}
 
 		</div>
 	</section>
@@ -221,7 +221,7 @@
 	<section id="kb_cats_home">
 		<a name="kb_cats_home"></a>
 
-		<h1>kb_cats_home()</h1>
+		<h1>knowledgebase()</h1>
 
 		<p class="info">
 			article list (Theme:Articles:cats_home.html.twig)
@@ -236,7 +236,7 @@
 		{% endset %}
 		<div class="render">
 
-			{{ kb_cats_home() }}
+			{{ knowledgebase() }}
 
 		</div>
 	</section>
@@ -246,7 +246,7 @@
 	<section id="kb_cats_summary">
 		<a name="kb_cats_summary"></a>
 
-		<h1>kb_cats_summary()</h1>
+		<h1>knowledgebase_compact()</h1>
 
 		<p class="info">
 			article list (Theme:Articles:cats_summary.html.twig)
@@ -254,7 +254,7 @@
 		{{ kb_cats_options }}
 		<div class="render">
 
-			{{ kb_cats_summary() }}
+			{{ knowledgebase_compact() }}
 
 		</div>
 	</section>
@@ -265,7 +265,7 @@
 	<section id="kb_cats_small">
 		<a name="kb_cats_small"></a>
 
-		<h1>kb_cats_small()</h1>
+		<h1>kb_cats_list()</h1>
 
 		<p class="info">
 			article list (Theme:Articles:cats_small.html.twig)
@@ -273,7 +273,7 @@
 		{{ kb_cats_options }}
 		<div class="render">
 
-			{{ kb_cats_small() }}
+			{{ kb_cats_list() }}
 
 		</div>
 	</section>
@@ -284,7 +284,7 @@
 	<section id="kb_cats_expander">
 		<a name="kb_cats_expander"></a>
 
-		<h1>kb_cats_expander()</h1>
+		<h1>knowledgebase_list()</h1>
 
 		<p class="info">
 			article list (Theme:Articles:cats_expander.html.twig)
@@ -292,7 +292,7 @@
 		{{ kb_cats_options }}
 		<div class="render">
 
-			{{ kb_cats_expander() }}
+			{{ knowledgebase_list() }}
 
 		</div>
 	</section>
@@ -300,7 +300,7 @@
 	<section id="news_list">
 		<a name="news_list"></a>
 
-		<h1>news_list()</h1>
+		<h1>news_posts()</h1>
 
 		<p class="info">
 			news articles
@@ -311,7 +311,7 @@
 		</dl>
 		<div class="render">
 
-			{{ news_list() }}
+			{{ news_posts() }}
 
 		</div>
 	</section>
@@ -319,7 +319,7 @@
 	<section id="news_list_small">
 		<a name="news_list_small"></a>
 
-		<h1>news_list_small()</h1>
+		<h1>news_posts_list()</h1>
 
 		<p class="info">
 			article list (Theme:News:list_small.html.twig)
@@ -330,7 +330,7 @@
 		</ul>
 		<div class="render">
 
-			{{ news_list_small() }}
+			{{ news_posts_list() }}
 
 		</div>
 	</section>
@@ -339,7 +339,7 @@
 	<section id="news_cats_small">
 		<a name="news_cats_small"></a>
 
-		<h1>news_cats_small()</h1>
+		<h1>news_posts_list()</h1>
 
 		<p class="info">
 			news categories plainly listed (Theme:News:cats_small.html.twig)
@@ -350,7 +350,7 @@
 		</ul>
 		<div class="render">
 
-			{{ news_cats_small() }}
+			{{ news_list() }}
 
 		</div>
 	</section>
@@ -377,7 +377,7 @@
 	<section id="downloads_list_small">
 		<a name="downloads_list_small"></a>
 
-		<h1>downloads_list_small()</h1>
+		<h1>files_list()</h1>
 
 		<p class="info">
 			downloads list (Theme:Downloads:list_small.html.twig)
@@ -391,7 +391,7 @@
 		</ul>
 		<div class="render">
 
-			{{ downloads_list_small() }}
+			{{ files_list() }}
 
 		</div>
 	</section>
@@ -410,7 +410,7 @@
 		</ul>
 		<div class="render">
 
-			{{ downloads_cats_small() }}
+			{{ downloads_cats_list() }}
 
 		</div>
 	</section>
