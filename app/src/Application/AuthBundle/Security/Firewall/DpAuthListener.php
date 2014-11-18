@@ -36,6 +36,10 @@ namespace Application\AuthBundle\Security\Firewall;
 
 use Application\AuthBundle\Security\DpFormLoginToken;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Usersource;
+use Orb\Auth\Adapter\SsoLoginActionInterface;
+use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\Writer\ArrayWriter;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
@@ -60,7 +64,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
     protected function requiresAuthentication(Request $request)
     {
-        $security_routes = array('portal_login_submit', 'portal_login_authenticate', 'portal_login_callback');
+        $security_routes = array('portal_login_submit', 'portal_login_authenticate', 'portal_login_callback', 'portal_login_usersource_sso');
 
         return in_array($request->attributes->get('_route'), $security_routes);
     }
@@ -90,6 +94,10 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         } elseif ('portal_login_callback' == $request->attributes->get('_route')) {
 
             $tokenOrResponse = $this->processCallback($request);
+
+        } elseif ('portal_login_usersource_sso' == $request->attributes->get('_route')) {
+
+            $tokenOrResponse = $this->processBackgroundSso($request);
 
         }
 
@@ -133,14 +141,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             // The user is already logged in
             if ($result->isValid()) {
 
-                $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-                $person = $login_processor->getPerson();
-                $person->setLastLoginAt();
-
-                $em->persist($person);
-                $em->flush();
-
-                return new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
+                return $this->createTokenFromUsersourceResult($usersource, $result);
 
                 // We expect a redirect to be required
             } elseif ($result->isRedirectRequired()) {
@@ -158,13 +159,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
             if ($result->isValid()) {
 
-                $login_processor = new LoginProcessor($usersource, $result->getIdentity());
-                $person = $login_processor->getPerson();
-                $person->setLastLoginAt();
-                $em->persist($person);
-                $em->flush();
-
-                return new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
+                return $this->createTokenFromUsersourceResult($usersource, $result);
 
             }
 
@@ -189,9 +184,13 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             throw new NotFoundHttpException;
         }
 
-        $usersource_test = $session->getFlashbag()->get(self::USERSOURCE_TEST, array());
+        $usersource_test = $session->getFlashBag()->get(self::USERSOURCE_TEST, array());
         if (!$usersource_test) {
             $usersource_test = $request->get(self::USERSOURCE_TEST);
+        }
+
+        if (!$usersource_test && !$auth_manager->isUsableUsersource($usersource)) {
+            throw new NotFoundHttpException('it is illegal to use this usersource in this context');
         }
 
         $adapter = $auth_adapter_factory->getAuthAdapter($usersource, $requestContext);
@@ -225,7 +224,7 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
             if ($usersource_test) {
                 // test result
-                return $this->container->get('templating')->render(
+                return $this->container->get('templating')->renderResponse(
                     'DeskPRO:Auth:_sso_test_verified.html.twig', array(
                         'person' => $person,
                         'log'    => $arr_writer->getMessagesAsString()
@@ -233,15 +232,80 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
                 );
             }
 
-            $dpFormLoginToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
+            return $this->createTokenFromPerson($person);
 
-            return $dpFormLoginToken;
         } elseif ($usersource_test) {
-            return $this->container->get('templating')->render(
+            return $this->container->get('templating')->renderResponse(
                 'DeskPRO:Auth:_sso_test_failed.html.twig', array(
                     'log' => implode("\n", $arr_writer->getMessages())
                 )
             );
+        }
+
+        throw new BadCredentialsException;
+    }
+
+    protected function processBackgroundSso(Request $request)
+    {
+        /** @var \Symfony\Component\HttpFoundation\Session\Session $session */
+        $session = $request->getSession();
+        $return = $request->get('return');
+        $usersource_id = $request->get('usersource_id');
+        $requestContext = $request->get('context');
+        $em = $this->container->get('doctrine.orm.default_entity_manager');
+        /** @var \Application\DeskPRO\Auth\AuthenticationManager $auth_manager */
+        $auth_manager = $this->container->get('dp_authentication_manager.user');
+        $auth_adapter_factory = $auth_manager->getAuthAdapterFactory();
+
+        $usersource = $em->find('DeskPRO:Usersource', $usersource_id);
+        if (!$usersource) {
+            throw new NotFoundHttpException;
+        }
+
+        $adapter = $auth_adapter_factory->getAuthAdapter($usersource, $requestContext);
+
+        if (!$adapter instanceof SsoLoginActionInterface) {
+            throw new NotFoundHttpException();
+        }
+
+        $arr_writer = new ArrayWriter();
+        if (!$usersource_test = $session->getFlashBag()->get(self::USERSOURCE_TEST, array())) {
+            $usersource_test = $request->get(self::USERSOURCE_TEST);
+        }
+        if (!$usersource_test && !$auth_manager->isUsableUsersource($usersource)) {
+            throw new NotFoundHttpException('it is illegal to use this usersource in this context');
+        }
+        if ($usersource_test && $adapter instanceof Loggable && $adapter->getLogger()) {
+            $adapter->getLogger()->addWriter($arr_writer);
+        }
+
+        $result = $adapter->getSsoLoginActionResult();
+
+        if ($result->isValid()) {
+
+            $token = $this->createTokenFromUsersourceResult($usersource, $result);
+            $token->setAttribute(SsoLoginActionInterface::TOKEN_ATTRIBUTE_BACKGROUND_REFRESH, true);
+
+            if (!$token->isAuthenticated()) {
+                throw new BadCredentialsException;
+            }
+
+            if ($usersource_test) {
+                // test result
+                return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_verified.html.twig', array(
+                        'person' => $token->getUser(),
+                        'log'    => $arr_writer->getMessagesAsString()
+                    )
+                );
+            }
+
+            return $token;
+        } elseif ($usersource_test) {
+            return $this->container->get('templating')->renderResponse('DeskPRO:Auth:_sso_test_failed.html.twig', array(
+                    'log' => implode("\n", $arr_writer->getMessages())
+                )
+            );
+
         }
 
         throw new BadCredentialsException;
@@ -267,6 +331,34 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
     public function setContainer(ContainerInterface $container = null)
     {
         $this->container = $container;
+    }
+
+    /**
+     * @param $usersource
+     * @param $result
+     * @param $em
+     * @return DpFormLoginToken
+     */
+    protected function createTokenFromUsersourceResult(Usersource $usersource, Result $result)
+    {
+        $em = $this->container->get('doctrine.orm.default_entity_manager');
+        $login_processor = new LoginProcessor($usersource, $result->getIdentity());
+        $person = $login_processor->getPerson();
+        $person->setLastLoginAt();
+
+        $em->persist($person);
+        $em->flush();
+
+        return $this->createTokenFromPerson($person);
+    }
+
+    /**
+     * @param $person
+     * @return DpFormLoginToken
+     */
+    protected function createTokenFromPerson(Person $person)
+    {
+        return new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
     }
 }
  

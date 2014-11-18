@@ -72,5 +72,8 @@ to keep the same "header" and "footer" to keep css/js/etc consistent among theme
 
 {% endblock body %}
 
+{% if not is_granted('ROLE_USER') %}
+    {{ background_sso() }}
+{% endif %}
 </body>
 </html>

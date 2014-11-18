@@ -23,6 +23,9 @@ portal_login_authenticate:
 portal_login_callback:
     path: /login/authenticate-callback/{usersource_id}
 
+portal_login_usersource_sso:
+    path: /login/usersource-sso/{usersource_id}
+
 # Knowledgebase
 portal_kb:
     path: /kb
