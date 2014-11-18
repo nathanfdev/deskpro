@@ -7,6 +7,11 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
+$collection->create('user_logout', array(
+    'path'       => '/logout/{auth}',
+    'controller' => 'AgentBundle:Login:logout',
+));
+
 $collection->create('agent', array(
 	'path'        => '/',
 	'controller'  => 'AgentBundle:Main:index',

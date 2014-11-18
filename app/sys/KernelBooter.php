@@ -222,6 +222,8 @@ class KernelBooter
 			define('DP_INTERFACE', 'agent');
 		} elseif (preg_match('#^/adm(in)?(/|\?|$)#', $path)) {
 			define('DP_INTERFACE', 'admin');
+		} elseif (preg_match('#^/logout/.+#', $path)) {
+			define('DP_INTERFACE', 'agent');
 		} elseif (preg_match('#^/billing(/|\?|$)#', $path)) {
 			define('DP_INTERFACE', 'billing');
 		} elseif (preg_match('#^/reports(/|\?|$)#', $path)) {
