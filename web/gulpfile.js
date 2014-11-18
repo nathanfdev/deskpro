@@ -130,7 +130,7 @@ gulp.task('less', ['clean'], function () {
 // Sass
 //------------------------------
 
-deskpro.taskGen.lessCss = function(glob) {
+deskpro.taskGen.sassCss = function(glob) {
   return gulp.src(glob)
     .pipe(cache('watch', {optimizeMemory: true}))
     .pipe(gulpif(deskpro.isWatching, plumber()))
@@ -143,11 +143,11 @@ deskpro.taskGen.lessCss = function(glob) {
 };
 
 gulp.task('sass-app', function () {
-  return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.scss');
+  return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
 });
 
 gulp.task('sass', ['clean'], function () {
-  return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.scss');
+  return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
 });
 
 //------------------------------

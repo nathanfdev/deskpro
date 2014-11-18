@@ -1,8 +1,5 @@
 define([
   'angular',
-  'angularRoute',
-  'angularBootstrap',
-
   'jstz',
 
   'AdminStart/App/App',

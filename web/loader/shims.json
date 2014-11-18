@@ -1,5 +1,6 @@
 {
   "angular":                         {"exports" : "angular", "deps": ["jquery"]},
+  "angularRoute":                    ["angular"],
   "angularAnimate":                  ["angular"],
   "angularBootstrap":                ["angular"],
   "angularSanitize":                 ["angular"],
