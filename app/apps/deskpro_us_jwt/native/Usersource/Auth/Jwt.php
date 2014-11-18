@@ -105,7 +105,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
 	/**
 	 * {@inheritdoc}
 	 */
-	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller)
+	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null)
 	{
 		if ($this->logger) {
 			$this->logger->log(

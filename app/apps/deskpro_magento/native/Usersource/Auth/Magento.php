@@ -237,10 +237,10 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 			</script>';
 	}
 
-	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller)
+	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null)
 	{
-		$id = intval($controller->getRequest()->get('id'));
-		$key = strval($controller->getRequest()->get('key'));
+		$id = intval($_REQUEST['id']);
+		$key = strval($_REQUEST['key']);
 
 		$record = $this->_callMagentoApi('dp_sso.validate', array('id' => $id, 'key' => $key));
 
