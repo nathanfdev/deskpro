@@ -4,6 +4,9 @@ define [
   'AdminStart/App/AppState',
   'DeskPRO/Directive/DpJsonData',
   'DeskPRO/Directive/DpNgTemplate',
+
+  'angularRoute',
+  'angularBootstrap',
 ], (
   angular,
   DeskPRO_Main_Service_DpApi,

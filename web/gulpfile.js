@@ -3,6 +3,7 @@ var gulp       = require('gulp'),
     cache      = require('gulp-cached'),
     coffee     = require('gulp-coffee'),
     less       = require('gulp-less'),
+    sass       = require('gulp-sass'),
     sourcemaps = require('gulp-sourcemaps'),
     watch      = require('gulp-watch'),
     finclude   = require('gulp-file-include'),
@@ -28,6 +29,7 @@ deskpro.watches = [
   ['./app/Reports/**/*.coffee', ['coffee-reports']],
   ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
   ['./app/**/Resources/style/*.less', ['less-app']],
+  ['./app/**/Resources/style/*.scss', ['sass-app']],
   ['./loader/*', ['loader-requirejs']]
 ];
 
@@ -122,6 +124,30 @@ gulp.task('less-app', function () {
 
 gulp.task('less', ['clean'], function () {
   return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
+});
+
+//------------------------------
+// Sass
+//------------------------------
+
+deskpro.taskGen.sassCss = function(glob) {
+  return gulp.src(glob)
+    .pipe(cache('watch', {optimizeMemory: true}))
+    .pipe(gulpif(deskpro.isWatching, plumber()))
+    .pipe(sourcemaps.init())
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+    .pipe(sass())
+    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+    .pipe(gulp.dest('./app-build/'))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+gulp.task('sass-app', function () {
+  return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
+});
+
+gulp.task('sass', ['clean'], function () {
+  return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
 });
 
 //------------------------------
@@ -221,5 +247,5 @@ gulp.task('clean', function () {
 // Main
 //------------------------------
 
-gulp.task('default', ['coffee', 'less', 'loader']);
-gulp.task('prod', ['coffee', 'less', 'loader', 'rjs']);
+gulp.task('default', ['coffee', 'less', 'sass', 'loader']);
+gulp.task('prod', ['coffee', 'less', 'sass', 'loader', 'rjs']);
