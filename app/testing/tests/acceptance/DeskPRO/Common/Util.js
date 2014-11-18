@@ -17,7 +17,10 @@ Util.go = function(page) {
     driver.get(page);
     driver.wait(function() {
       return driver.executeScript(function() {
-        return window.DP_DONE_LOAD && window.DP_DONE_LOAD == true;
+        return window.DP_DONE_LOAD === true
+          && window.DP_IS_BOOTED === true
+          && window.DP_DIGEST_RUNNING === false
+          && window.DP_AJAX_RUNNINGCOUNT === false;
       });
     });
   }
