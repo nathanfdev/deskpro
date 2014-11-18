@@ -1,13 +1,14 @@
+@import "vars";
 @import "lib";
 @import "include";
+
+@import url(http://fonts.googleapis.com/css?family=Ubuntu:400,300,500,700);
 
 //----------------------------------------------------------------------------------------------------------------------
 // main
 //----------------------------------------------------------------------------------------------------------------------
 
 // Neat Variables
-$web-path: "../../../../";
-$portal-res-path: "../../../../app/Portal/Resources";
 $grid-columns: 12;
 $max-width: 1080px;
 $tablet: new-breakpoint(max-width 760px 6);
