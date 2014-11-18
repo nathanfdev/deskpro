@@ -99,7 +99,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             $login_processor = new LoginProcessor($usersource, $authResult->getIdentity());
             $person = $login_processor->getPerson();
 
-            $authenticatedToken = new DpFormLoginToken($person, null, array_merge(array('ROLE_USER'), $person->getRoles()));
+            $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
             $authenticatedToken->setAttributes($token->getAttributes());
 
             return $authenticatedToken;

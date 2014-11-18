@@ -16,6 +16,12 @@ security:
             anonymous: ~
             logout:
                 path: portal_logout
+            remember_me:
+                key:      "%secret%"
+                lifetime: 31536000 # 365 days in seconds
+                path:     /
+                domain:   ~ # the current domain from $_SERVER
+                remember_me_parameter: remember_me
 
 
 services:
