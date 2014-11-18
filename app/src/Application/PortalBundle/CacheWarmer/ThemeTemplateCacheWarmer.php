@@ -34,38 +34,34 @@
 
 namespace Application\PortalBundle\CacheWarmer;
 
-
 use Application\PortalBundle\Theme\ThemeResolver;
 use Symfony\Component\HttpKernel\CacheWarmer\CacheWarmerInterface;
 
 class ThemeTemplateCacheWarmer implements CacheWarmerInterface
 {
-	/**
-	 * @var \Application\PortalBundle\Theme\ThemeResolver
-	 */
-	private $theme_resolver;
+    /**
+     * @var \Application\PortalBundle\Theme\ThemeResolver
+     */
+    private $theme_resolver;
 
+    public function __construct(ThemeResolver $theme_resolver)
+    {
+        $this->theme_resolver = $theme_resolver;
+    }
 
-	public function __construct(ThemeResolver $theme_resolver)
-	{
-		$this->theme_resolver = $theme_resolver;
-	}
+    public function isOptional()
+    {
+        return false;
+    }
 
-	public function isOptional()
-	{
-		return false;
-	}
-
-
-	/**
-	 * Warms up the cache.
-	 *
-	 * @param string $cacheDir The cache directory
-	 */
-	public function warmUp($cacheDir)
-	{
-		// this method will run through and create the map/cache it for us, we just need to call it to warm it.
-		$this->theme_resolver->getThemeTemplateMap();
-	}
+    /**
+     * Warms up the cache.
+     *
+     * @param string $cacheDir The cache directory
+     */
+    public function warmUp($cacheDir)
+    {
+        // this method will run through and create the map/cache it for us, we just need to call it to warm it.
+        $this->theme_resolver->getThemeTemplateMap();
+    }
 }
- 

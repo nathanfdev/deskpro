@@ -118,7 +118,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         }
     }
 
-
     /**
      * @param $code
      * @param $split
@@ -141,8 +140,8 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     }
 
     /**
-     * @param Request $request
-     * @param         $split
+     * @param  Request $request
+     * @param          $split
      * @return array
      */
     protected function processNoLangCodeInUrl(Request $request, $split)
@@ -182,8 +181,8 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     /**
      * Throw an exception that will be caught by our kernel.exception listener
      *
-     * @param Language $language
-     * @param          $url
+     * @param  Language               $language
+     * @param                         $url
      * @throws RedirectToUrlException
      */
     protected function throwRedirectExceptionTo(Language $language = null, $url)
@@ -203,7 +202,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     }
 
     /**
-     * @param Request $request
+     * @param  Request       $request
      * @return Language|null
      */
     protected function getLastLangFromCookie(Request $request)
@@ -216,9 +215,9 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     }
 
     /**
-     * @param Request $request
-     * @param         $code
-     * @param         $split
+     * @param  Request $request
+     * @param          $code
+     * @param          $split
      * @return array
      */
     protected function matchNonGetRequest(Request $request, $code, $split)
@@ -232,7 +231,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         return $this->standardMatch($split);
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -240,7 +238,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     {
         $this->router->setContext($context);
     }
-
 
     /**
      * {@inheritdoc}
@@ -250,7 +247,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         return $this->router->getContext();
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -259,7 +255,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         return $this->matchRequest(Request::create($path_info));
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -267,7 +262,6 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     {
         $this->router->warmUp($cacheDir);
     }
-
 
     /**
      * {@inheritdoc}

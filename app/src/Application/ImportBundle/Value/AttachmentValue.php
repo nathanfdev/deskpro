@@ -33,38 +33,38 @@ namespace Application\ImportBundle\Value;
 
 class AttachmentValue
 {
-	/**
-	 * @var int
-	 */
-	public $oid;
+    /**
+     * @var int
+     */
+    public $oid;
 
-	/**
-	 * @var string
-	 */
-	public $blob_data;
+    /**
+     * @var string
+     */
+    public $blob_data;
 
-	/**
-	 * @var string
-	 */
-	public $blob_url;
+    /**
+     * @var string
+     */
+    public $blob_url;
 
-	/**
-	 * @var string
-	 */
-	public $blob_path;
+    /**
+     * @var string
+     */
+    public $blob_path;
 
-	/**
-	 * @var string
-	 */
-	public $file_name;
+    /**
+     * @var string
+     */
+    public $file_name;
 
-	/**
-	 * @var string
-	 */
-	public $content_type;
+    /**
+     * @var string
+     */
+    public $content_type;
 
-	/**
-	 * @var bool
-	 */
-	public $is_inline = false;
+    /**
+     * @var bool
+     */
+    public $is_inline = false;
 }

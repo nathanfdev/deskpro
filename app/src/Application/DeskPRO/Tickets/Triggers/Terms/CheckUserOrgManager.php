@@ -42,26 +42,26 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 class CheckUserOrgManager extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$person = $ticket->person;
-		$op = $this->getTermOperator();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $person = $ticket->person;
+        $op = $this->getTermOperator();
 
-		if (!$person->organization) {
-			$is_manager = false;
-		} else {
-			$is_manager = (bool)$person->organization_manager;
-		}
+        if (!$person->organization) {
+            $is_manager = false;
+        } else {
+            $is_manager = (bool)$person->organization_manager;
+        }
 
-		if ($is_manager) {
-			if ($op == 'is') return true;
-			else return false;
-		} else {
-			if ($op == 'is') return false;
-			else return true;
-		}
-	}
+        if ($is_manager) {
+            if ($op == 'is') return true;
+            else return false;
+        } else {
+            if ($op == 'is') return false;
+            else return true;
+        }
+    }
 }

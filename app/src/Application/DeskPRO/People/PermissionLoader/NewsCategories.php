@@ -34,21 +34,19 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 /**
  * Loads news category permissions
  */
 class NewsCategories extends BasicCategoryPermission
 {
-	protected function getCategoryPermissionEntity()
-	{
-		return 'DeskPRO:NewsCategoryPermission';
-	}
+    protected function getCategoryPermissionEntity()
+    {
+        return 'DeskPRO:NewsCategoryPermission';
+    }
 
-	protected function getCategoryEntity()
-	{
-		return 'DeskPRO:NewsCategory';
-	}
+    protected function getCategoryEntity()
+    {
+        return 'DeskPRO:NewsCategory';
+    }
 }

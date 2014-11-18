@@ -1,134 +1,134 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-	class Admin_ServerCron_Ctrl_Logs extends Admin_Ctrl_Base
+  class Admin_ServerCron_Ctrl_Logs extends Admin_Ctrl_Base
 
-		@CTRL_ID   = 'Admin_ServerCron_Ctrl_Logs'
-		@CTRL_AS   = 'LogsCtrl'
-		@DEPS      = []
+    @CTRL_ID   = 'Admin_ServerCron_Ctrl_Logs'
+    @CTRL_AS   = 'LogsCtrl'
+    @DEPS      = []
 
-		init: ->
-			@server_cron_logs = null
-			@page = 1
-			@num_pages = 0
-			@page_nums = [1]
+    init: ->
+      @server_cron_logs = null
+      @page = 1
+      @num_pages = 0
+      @page_nums = [1]
 
-			@filter = {
-				job_id: '',
-				priority: '',
-				page: 1
-			}
+      @filter = {
+        job_id: '',
+        priority: '',
+        page: 1
+      }
 
-			@initializeScopeWatching()
+      @initializeScopeWatching()
 
-		initialLoad: ->
+    initialLoad: ->
 
-			return @loadResults()
+      return @loadResults()
 
-		###
- 	#
- 	###
+    ###
+  #
+  ###
 
-		loadResults: ->
+    loadResults: ->
 
-			@startSpinner('paginating_server_cron_logs')
+      @startSpinner('paginating_server_cron_logs')
 
-			data_promise = @Api.sendGet('/server_cron/logs', {
-				job_id: @filter.job_id,
-				priority: @filter.priority,
-				page: @filter.page
-			}).then((res) =>
+      data_promise = @Api.sendGet('/server_cron/logs', {
+        job_id: @filter.job_id,
+        priority: @filter.priority,
+        page: @filter.page
+      }).then((res) =>
 
-				@server_cron_logs = res.data.server_cron_logs
+        @server_cron_logs = res.data.server_cron_logs
 
-				@filter.page = res.data.server_cron_logs.page
-				@page = res.data.server_cron_logs.page
-				@num_pages = res.data.server_cron_logs.num_pages
+        @filter.page = res.data.server_cron_logs.page
+        @page = res.data.server_cron_logs.page
+        @num_pages = res.data.server_cron_logs.num_pages
 
-				@page_nums = []
+        @page_nums = []
 
-				for i in [0...@num_pages]
-					@page_nums.push(i + 1)
+        for i in [0...@num_pages]
+          @page_nums.push(i + 1)
 
-				@stopSpinner('paginating_server_cron_logs', true)
-			)
+        @stopSpinner('paginating_server_cron_logs', true)
+      )
 
-			return @$q.all([data_promise])
+      return @$q.all([data_promise])
 
-		updateFilter: ->
+    updateFilter: ->
 
-			@loadResults()
+      @loadResults()
 
-		###
-		# Show the clear dlg
-		###
+    ###
+    # Show the clear dlg
+    ###
 
-		startClearAll: ->
+    startClearAll: ->
 
-			inst = @$modal.open({
-				templateUrl: @getTemplatePath('Server/server-cron-delete-modal.html'),
-				controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
-					$scope.confirm = ->
-						$modalInstance.close()
+      inst = @$modal.open({
+        templateUrl: @getTemplatePath('Server/server-cron-delete-modal.html'),
+        controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+          $scope.confirm = ->
+            $modalInstance.close()
 
-					$scope.dismiss = ->
-						$modalInstance.dismiss()
-				]
-			});
+          $scope.dismiss = ->
+            $modalInstance.dismiss()
+        ]
+      });
 
-			inst.result.then(() =>
-				@clearAll()
-			)
+      inst.result.then(() =>
+        @clearAll()
+      )
 
-		###
-		# Actually do the clear
-		###
+    ###
+    # Actually do the clear
+    ###
 
-		clearAll: ->
+    clearAll: ->
 
-			@Api.sendDelete('/server_cron/logs').success( =>
+      @Api.sendDelete('/server_cron/logs').success( =>
 
-				@server_cron_logs = null
-			)
+        @server_cron_logs = null
+      )
 
-		###
-		#	Here we watching scope 'page' variable in order to load new page of results
-		###
+    ###
+    # Here we watching scope 'page' variable in order to load new page of results
+    ###
 
-		initializeScopeWatching: ->
+    initializeScopeWatching: ->
 
-			@$scope.$watch('LogsCtrl.page', (newVal, oldVal) =>
+      @$scope.$watch('LogsCtrl.page', (newVal, oldVal) =>
 
-				if parseInt(newVal) == parseInt(oldVal)
-					return undefined
+        if parseInt(newVal) == parseInt(oldVal)
+          return undefined
 
-				if isNaN(parseInt(newVal))
-					return undefined
+        if isNaN(parseInt(newVal))
+          return undefined
 
-				@changePageCallback()
-			)
+        @changePageCallback()
+      )
 
-		###
-		# This is executed after we chnaged the current page
-		###
+    ###
+    # This is executed after we chnaged the current page
+    ###
 
-		changePageCallback: ->
+    changePageCallback: ->
 
-			@filter.page = @page
-			@loadResults()
+      @filter.page = @page
+      @loadResults()
 
-		###
- 	#
-		###
+    ###
+  #
+    ###
 
-		goPrevPage: ->
+    goPrevPage: ->
 
-			@page--
+      @page--
 
-		###
-		#
-		###
+    ###
+    #
+    ###
 
-		goNextPage: ->
+    goNextPage: ->
 
-			@page++
+      @page++
 
-	Admin_ServerCron_Ctrl_Logs.EXPORT_CTRL()
+  Admin_ServerCron_Ctrl_Logs.EXPORT_CTRL()

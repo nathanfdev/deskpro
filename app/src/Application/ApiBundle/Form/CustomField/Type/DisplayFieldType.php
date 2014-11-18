@@ -38,15 +38,15 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class DisplayFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('html', 'textarea', array('required' => true));
-	}
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('html', 'textarea', array('required' => true));
+    }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DisplayField',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DisplayField',
+        );
+    }
 }

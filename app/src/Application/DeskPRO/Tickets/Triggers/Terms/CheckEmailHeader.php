@@ -46,41 +46,42 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckEmailHeader extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		$options->addRequiredNames('value');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('name');
+        $options->addRequiredNames('value');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$context->hasEmailContext()) {
-			return false;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$context->hasEmailContext()) {
+            return false;
+        }
 
-		$options = $this->getTermOptions();
+        $options = $this->getTermOptions();
 
-		$reader = $context->getEmailContext();
-		$header = $reader->getHeader($options['name']);
-		$strings = array();
+        $reader = $context->getEmailContext();
+        $header = $reader->getHeader($options['name']);
+        $strings = array();
 
-		if ($header) {
-			foreach ($header->getAllParts() as $val) {
-				$strings[] = $val;
-			}
-		}
+        if ($header) {
+            foreach ($header->getAllParts() as $val) {
+                $strings[] = $val;
+            }
+        }
 
-		$value = TermValue::createWithValue($strings);
+        $value = TermValue::createWithValue($strings);
 
-		return $this->isStringMatch($ticket, $context, $value, $options['value']);
-	}
+        return $this->isStringMatch($ticket, $context, $value, $options['value']);
+    }
 }

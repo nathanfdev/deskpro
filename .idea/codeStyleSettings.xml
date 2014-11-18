@@ -6,6 +6,9 @@
         <CoffeeScriptCodeStyleSettings>
           <option name="SPACE_WITHIN_OBJECT_BRACES" value="true" />
         </CoffeeScriptCodeStyleSettings>
+        <JSCodeStyleSettings>
+          <option name="ALIGN_MULTILINE_VAR_DECLARATION" value="true" />
+        </JSCodeStyleSettings>
         <JSON>
           <option name="OBJECT_WRAPPING" value="1" />
           <option name="ARRAY_WRAPPING" value="1" />
@@ -21,6 +24,9 @@
           <option name="LOWER_CASE_NULL_CONST" value="true" />
           <option name="BLANK_LINE_BEFORE_RETURN_STATEMENT" value="true" />
         </PHPCodeStyleSettings>
+        <XML>
+          <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+        </XML>
         <codeStyleSettings language="CoffeeScript">
           <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
           <option name="CALL_PARAMETERS_WRAP" value="0" />

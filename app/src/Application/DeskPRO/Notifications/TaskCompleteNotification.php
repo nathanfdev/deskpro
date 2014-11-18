@@ -40,53 +40,53 @@ use Application\DeskPRO\Entity\Task;
 
 class TaskCompleteNotification extends AbstractAgentNotification
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Task
-	 */
-	protected $task;
+    /**
+     * @var \Application\DeskPRO\Entity\Task
+     */
+    protected $task;
 
-	public function __construct(Task $task)
-	{
-		parent::__construct();
-		$this->task = $task;
-	}
+    public function __construct(Task $task)
+    {
+        parent::__construct();
+        $this->task = $task;
+    }
 
-	public function shouldSendBrowserNotification(Person $agent)
-	{
-		if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.alert")) {
-			return false;
-		}
+    public function shouldSendBrowserNotification(Person $agent)
+    {
+        if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.alert")) {
+            return false;
+        }
 
-		if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.alert')) {
-			return true;
-		}
+        if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.alert')) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function shouldSendEmailNotification(Person $agent)
-	{
-		if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.email")) {
-			return false;
-		}
+    public function shouldSendEmailNotification(Person $agent)
+    {
+        if (App::getCurrentPerson()->id == $agent->id && !$agent->getPref("agent_notify_override.all.email")) {
+            return false;
+        }
 
-		if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.email')) {
-			return true;
-		}
+        if ($this->task->person->getId() == $agent->id && $agent->getPref('agent_notif.task_complete.email')) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function send()
-	{
-		$this->sendBrowserNotifications('AgentBundle:Task:notify-row-completed.html.twig', array(
-			'task' => $this->task,
-			'performer' => App::getCurrentPerson(),
-			'notify_data' => array('notify_type' => 'tasks')
-		));
-		$this->sendEmailNotifications('DeskPRO:emails_agent:task-completed.html.twig', array(
-			'task' => $this->task,
-			'performer' => App::getCurrentPerson(),
-		));
-	}
+    public function send()
+    {
+        $this->sendBrowserNotifications('AgentBundle:Task:notify-row-completed.html.twig', array(
+            'task' => $this->task,
+            'performer' => App::getCurrentPerson(),
+            'notify_data' => array('notify_type' => 'tasks')
+        ));
+        $this->sendEmailNotifications('DeskPRO:emails_agent:task-completed.html.twig', array(
+            'task' => $this->task,
+            'performer' => App::getCurrentPerson(),
+        ));
+    }
 }

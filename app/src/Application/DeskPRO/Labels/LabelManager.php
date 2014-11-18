@@ -43,216 +43,219 @@ use Application\DeskPRO\ORM\EntityManager;
 
 class LabelManager
 {
-	/** @var DomainObject */
-	protected $entity;
-	/** @var string */
-	protected $label_entity_name;
-	/** @var string */
-	protected $labels_property;
-	/** @var \Doctrine\ORM\EntityManager  */
-	protected $em;
+    /** @var DomainObject */
+    protected $entity;
+    /** @var string */
+    protected $label_entity_name;
+    /** @var string */
+    protected $labels_property;
+    /** @var \Doctrine\ORM\EntityManager  */
+    protected $em;
 
-	public function __construct($entity, $label_entity_name, $labels_property = 'labels')
-	{
-		$this->entity = $entity;
-		$this->label_entity_name = $label_entity_name;
-		$this->label_entity_classname = str_replace('DeskPRO:', 'Application\\DeskPRO\\Entity\\', $this->label_entity_name);
-		$this->labels_property = $labels_property;
+    public function __construct($entity, $label_entity_name, $labels_property = 'labels')
+    {
+        $this->entity = $entity;
+        $this->label_entity_name = $label_entity_name;
+        $this->label_entity_classname = str_replace('DeskPRO:', 'Application\\DeskPRO\\Entity\\', $this->label_entity_name);
+        $this->labels_property = $labels_property;
 
-		// todo construct in factory method, em injection
-		$this->em = App::getOrm();
-	}
+        // todo construct in factory method, em injection
+        $this->em = App::getOrm();
+    }
 
-	public function createLabelEntity()
-	{
-		$label = new $this->label_entity_classname;
-		return $label;
-	}
+    public function createLabelEntity()
+    {
+        $label = new $this->label_entity_classname;
 
-	public function removeLabel($label)
-	{
-		$label = self::normalizeLabel($label);
+        return $label;
+    }
 
-		foreach ($this->entity[$this->labels_property] as $k => $labelobj) {
-			if ($labelobj['label'] == $label) {
-				if ($this->entity instanceof Ticket || $this->entity instanceof Person) {
-					$this->entity->removeLabelByString($label);
-				} else {
-					$this->entity[$this->labels_property]->remove($k);
-				}
+    public function removeLabel($label)
+    {
+        $label = self::normalizeLabel($label);
 
-				if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
-					$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_removed', $label, null);
-				}
+        foreach ($this->entity[$this->labels_property] as $k => $labelobj) {
+            if ($labelobj['label'] == $label) {
+                if ($this->entity instanceof Ticket || $this->entity instanceof Person) {
+                    $this->entity->removeLabelByString($label);
+                } else {
+                    $this->entity[$this->labels_property]->remove($k);
+                }
 
-				$type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
-				if ($type_name == 'chatconversations') {
-					$type_name = 'chat';
-				}
+                if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
+                    $this->entity->getTicketLogger()->recordMultiPropertyChanged('label_removed', $label, null);
+                }
 
-				/** @var LabelDef $rep */
-				$rep = $this->em->getRepository('DeskPRO:LabelDef');
-				if ($definition = $rep->getDefinition($type_name, $label)) {
-					$rep->updateDefinitionUsages($definition);
-				}
-				// todo should be handled here '$this->entity[$this->labels_property]->remove($k);'
-				$this->em->remove($labelobj);
-				return $labelobj;
-			}
-		}
+                $type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
+                if ($type_name == 'chatconversations') {
+                    $type_name = 'chat';
+                }
 
-		return null;
-	}
+                /** @var LabelDef $rep */
+                $rep = $this->em->getRepository('DeskPRO:LabelDef');
+                if ($definition = $rep->getDefinition($type_name, $label)) {
+                    $rep->updateDefinitionUsages($definition);
+                }
+                // todo should be handled here '$this->entity[$this->labels_property]->remove($k);'
+                $this->em->remove($labelobj);
 
-	public function removeLabels(array $labels)
-	{
-		foreach ($labels as $label) {
-			$this->removeLabel($label);
-		}
-	}
+                return $labelobj;
+            }
+        }
 
-	public function addLabel($label, $skip_corrections = false)
-	{
-		$label = self::normalizeLabel($label);
+        return null;
+    }
 
-		if (!$skip_corrections) {
-			$rep     = $this->em->getRepository('DeskPRO:LabelDef');
-			$type    = $rep->getTypeByEntityName($this->label_entity_name);
-			$labels  = $rep->correctLabels($type, array($label), true);
-			$label   = array_pop($labels);
-		}
+    public function removeLabels(array $labels)
+    {
+        foreach ($labels as $label) {
+            $this->removeLabel($label);
+        }
+    }
 
-		foreach ($this->entity[$this->labels_property] as $labelobj) {
-			if ($labelobj['label'] == $label) {
-				return $labelobj;
-			}
-		}
+    public function addLabel($label, $skip_corrections = false)
+    {
+        $label = self::normalizeLabel($label);
 
-		$labelobj = $this->createLabelEntity();
-		$labelobj['label'] = $label;
-		$this->entity->addLabel($labelobj);
+        if (!$skip_corrections) {
+            $rep     = $this->em->getRepository('DeskPRO:LabelDef');
+            $type    = $rep->getTypeByEntityName($this->label_entity_name);
+            $labels  = $rep->correctLabels($type, array($label), true);
+            $label   = array_pop($labels);
+        }
 
-		$type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
-		if ($type_name == 'chatconversations') {
-			$type_name = 'chat';
-		}
+        foreach ($this->entity[$this->labels_property] as $labelobj) {
+            if ($labelobj['label'] == $label) {
+                return $labelobj;
+            }
+        }
 
-		if ($type_name == 'persons') {
-			$type_name = 'people';
-		}
+        $labelobj = $this->createLabelEntity();
+        $labelobj['label'] = $label;
+        $this->entity->addLabel($labelobj);
 
-		if ($type_name == 'feedbacks') {
-			$type_name = 'feedback';
-		}
+        $type_name = strtolower(\Orb\Util\Util::getBaseClassname($this->entity)) . 's';
+        if ($type_name == 'chatconversations') {
+            $type_name = 'chat';
+        }
 
-		/** @var LabelDef $rep */
-		$rep = $this->em->getRepository('DeskPRO:LabelDef');
-		if ('chat_conversations' === $type_name) {
-			$type_name = 'chat';
-		}
-		if (!$definition = $rep->getDefinition($type_name, $label)) {
-			$definition = new \Application\DeskPRO\Entity\LabelDef(array(
-				'label_type' => $type_name,
-				'label' => $label,
-				'color' => $rep->getColorForLabel($label),
-			));
-			$this->em->persist($definition);
-			$rep->updateDefinitionUsages($definition);
-			$this->em->flush();
-		}
+        if ($type_name == 'persons') {
+            $type_name = 'people';
+        }
 
-		if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
-			$this->entity->getTicketLogger()->recordMultiPropertyChanged('label_added', null, $label);
-		}
+        if ($type_name == 'feedbacks') {
+            $type_name = 'feedback';
+        }
 
-		$this->em->persist($labelobj);
-		return $labelobj;
-	}
+        /** @var LabelDef $rep */
+        $rep = $this->em->getRepository('DeskPRO:LabelDef');
+        if ('chat_conversations' === $type_name) {
+            $type_name = 'chat';
+        }
+        if (!$definition = $rep->getDefinition($type_name, $label)) {
+            $definition = new \Application\DeskPRO\Entity\LabelDef(array(
+                'label_type' => $type_name,
+                'label' => $label,
+                'color' => $rep->getColorForLabel($label),
+            ));
+            $this->em->persist($definition);
+            $rep->updateDefinitionUsages($definition);
+            $this->em->flush();
+        }
 
-	public function addLabels(array $labels)
-	{
-		$rep     = $this->em->getRepository('DeskPRO:LabelDef');
-		$type    = $rep->getTypeByEntityName($this->label_entity_name);
-		$labels  = $rep->correctLabels($type, $labels, true);
+        if ($this->entity instanceof Ticket && $this->entity->getTicketLogger()) {
+            $this->entity->getTicketLogger()->recordMultiPropertyChanged('label_added', null, $label);
+        }
 
-		foreach ($labels as $label) {
-			$this->addLabel($label, true);
-		}
-	}
+        $this->em->persist($labelobj);
 
-	public function getLabelsArray()
-	{
-		$labels = array();
-		foreach ($this->entity[$this->labels_property] as $label) {
-			$labels[] = $label['label'];
-		}
+        return $labelobj;
+    }
 
-		return $labels;
-	}
+    public function addLabels(array $labels)
+    {
+        $rep     = $this->em->getRepository('DeskPRO:LabelDef');
+        $type    = $rep->getTypeByEntityName($this->label_entity_name);
+        $labels  = $rep->correctLabels($type, $labels, true);
 
-	public function hasLabel($label)
-	{
-		$label_test = self::normalizeLabel($label);
+        foreach ($labels as $label) {
+            $this->addLabel($label, true);
+        }
+    }
 
-		foreach ($this->entity[$this->labels_property] as $label) {
-			if ($label['label'] == $label_test) {
-				return true;
-			}
-		}
+    public function getLabelsArray()
+    {
+        $labels = array();
+        foreach ($this->entity[$this->labels_property] as $label) {
+            $labels[] = $label['label'];
+        }
 
-		return false;
-	}
+        return $labels;
+    }
 
-	/**
-	 * @param null $labels
-	 */
-	public function setLabelsArray($labels = null)
-	{
-		// back compatibility
-		if (!$labels) {
-			$labels = array();
-		} elseif (!is_array($labels)) {
-			$labels = explode(',', $labels);
-		}
+    public function hasLabel($label)
+    {
+        $label_test = self::normalizeLabel($label);
 
-		$labels_raw = $labels;
-		$labels = array();
+        foreach ($this->entity[$this->labels_property] as $label) {
+            if ($label['label'] == $label_test) {
+                return true;
+            }
+        }
 
-		foreach ($labels_raw as $label) {
-			$label = self::normalizeLabel($label);
-			if ($label) {
-				$labels[] = $label;
-			}
-		}
+        return false;
+    }
 
-		$existing_labels = $this->getLabelsArray();
-		$added = array_diff($labels, $existing_labels);
-		$removed = array_diff($existing_labels, $labels);
+    /**
+     * @param null $labels
+     */
+    public function setLabelsArray($labels = null)
+    {
+        // back compatibility
+        if (!$labels) {
+            $labels = array();
+        } elseif (!is_array($labels)) {
+            $labels = explode(',', $labels);
+        }
 
-		/** @var LabelDef $rep */
-		$rep     = $this->em->getRepository('DeskPRO:LabelDef');
-		$type    = $rep->getTypeByEntityName($this->label_entity_name);
-		$perm_name = sprintf('labels.%s.agent_can_create', $type);
+        $labels_raw = $labels;
+        $labels = array();
 
-		if ($added && !App::getSetting(sprintf('labels.%s.agent_can_create', $type))) {
-			$added = $rep->correctLabels($type, $added, false);
-		} else {
-			$added = $rep->correctLabels($type, $added, true);
-		}
+        foreach ($labels_raw as $label) {
+            $label = self::normalizeLabel($label);
+            if ($label) {
+                $labels[] = $label;
+            }
+        }
 
-		foreach ($added as $added_label) {
-			$this->addLabel($added_label, true);
-		}
-		foreach ($removed as $removed_label) {
-			$this->removeLabel($removed_label);
-		}
-	}
+        $existing_labels = $this->getLabelsArray();
+        $added = array_diff($labels, $existing_labels);
+        $removed = array_diff($existing_labels, $labels);
 
-	public static function normalizeLabel($label)
-	{
-		$label = trim($label);
-		$label = str_replace(',', '', $label);
+        /** @var LabelDef $rep */
+        $rep     = $this->em->getRepository('DeskPRO:LabelDef');
+        $type    = $rep->getTypeByEntityName($this->label_entity_name);
+        $perm_name = sprintf('labels.%s.agent_can_create', $type);
 
-		return $label;
-	}
+        if ($added && !App::getSetting(sprintf('labels.%s.agent_can_create', $type))) {
+            $added = $rep->correctLabels($type, $added, false);
+        } else {
+            $added = $rep->correctLabels($type, $added, true);
+        }
+
+        foreach ($added as $added_label) {
+            $this->addLabel($added_label, true);
+        }
+        foreach ($removed as $removed_label) {
+            $this->removeLabel($removed_label);
+        }
+    }
+
+    public static function normalizeLabel($label)
+    {
+        $label = trim($label);
+        $label = str_replace(',', '', $label);
+
+        return $label;
+    }
 }

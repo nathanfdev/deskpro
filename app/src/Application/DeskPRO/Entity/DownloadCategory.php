@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -44,112 +43,112 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class DownloadCategory extends CategoryAbstract
 {
-	/**
-	 */
-	protected $parent;
+    /**
+     */
+    protected $parent;
 
-	/**
-	 */
-	protected $children;
+    /**
+     */
+    protected $children;
 
-	/**
-	 * ArrayCollection
-	 */
-	protected $downloads;
-
-
-	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $usergroups;
+    /**
+     * ArrayCollection
+     */
+    protected $downloads;
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * @var Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $usergroups;
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DownloadCategory';
-		$metadata->setPrimaryTable(array('name' => 'download_categories',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
-				'columnName' => 'id', 'id' => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-				'nullable'  => false, 'columnName' => 'title',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'slug', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-				'nullable'  => false, 'columnName' => 'slug', 'unique' => true
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
-				'nullable'  => false, 'columnName' => 'display_order',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'depth', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
-				'columnName' => 'depth',
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName'  => 'root', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true,
-				'columnName' => 'root',
-			)
-		);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(
-			array(
-				'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
-				'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
-				0 => array(
-					'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null'
-				),
-			), 'dpApi'      => true
-			)
-		);
-		$metadata->mapOneToMany(
-			array(
-				'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
-				'mappedBy'  => 'parent', 'orderBy' => array('display_order' => 'ASC',),
-			)
-		);
-		$metadata->mapManyToMany(
-			array(
-				'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-				'cascade'   => array('persist', 'merge'), 'joinTable' => array(
-				'name'                  => 'download_category2usergroup', 'schema' => null, 'joinColumns' => array(
-					0 => array(
-						'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
-						'onDelete' => 'cascade', 'columnDefinition' => null,
-					),
-				), 'inverseJoinColumns' => array(
-					0 => array(
-						'name'     => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true,
-						'onDelete' => 'cascade', 'columnDefinition' => null,
-					),
-				),
-			), 'dpApi'      => true
-			)
-		);
-		$metadata->mapOneToMany(
-			array(
-				'fieldName' => 'downloads', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
-				'mappedBy'  => 'category'
-			)
-		);
-	}
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DownloadCategory';
+        $metadata->setPrimaryTable(array('name' => 'download_categories',));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+                'columnName' => 'id', 'id' => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+                'nullable'  => false, 'columnName' => 'title',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName' => 'slug', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+                'nullable'  => false, 'columnName' => 'slug', 'unique' => true
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
+                'nullable'  => false, 'columnName' => 'display_order',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'depth', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false,
+                'columnName' => 'depth',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'root', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true,
+                'columnName' => 'root',
+            )
+        );
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(
+            array(
+                'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
+                'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
+                0 => array(
+                    'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null'
+                ),
+            ), 'dpApi'      => true
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
+                'mappedBy'  => 'parent', 'orderBy' => array('display_order' => 'ASC',),
+            )
+        );
+        $metadata->mapManyToMany(
+            array(
+                'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                'cascade'   => array('persist', 'merge'), 'joinTable' => array(
+                'name'                  => 'download_category2usergroup', 'schema' => null, 'joinColumns' => array(
+                    0 => array(
+                        'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
+                        'onDelete' => 'cascade', 'columnDefinition' => null,
+                    ),
+                ), 'inverseJoinColumns' => array(
+                    0 => array(
+                        'name'     => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true,
+                        'onDelete' => 'cascade', 'columnDefinition' => null,
+                    ),
+                ),
+            ), 'dpApi'      => true
+            )
+        );
+        $metadata->mapOneToMany(
+            array(
+                'fieldName' => 'downloads', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
+                'mappedBy'  => 'category'
+            )
+        );
+    }
 }

@@ -1,3 +1,3 @@
 <?php return array(
-	'agent.report.current'                                                 => 'Aktuell',
+    'agent.report.current'                                                 => 'Aktuell',
 );

@@ -36,16 +36,16 @@ namespace Application\DeskPRO\Tickets\TicketActions;
 
 interface CollectionModifierInterface
 {
-	/**
-	 * Inspect the collection and modify it
-	 *
-	 * @param ActionsCollection $collection
-	 * @return void
-	 */
-	public function modifyCollection(ActionsCollection $collection);
+    /**
+     * Inspect the collection and modify it
+     *
+     * @param  ActionsCollection $collection
+     * @return void
+     */
+    public function modifyCollection(ActionsCollection $collection);
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true);
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true);
 }

@@ -39,12 +39,12 @@ namespace Orb\Auth\Adapter;
  */
 interface CookieLoginInterface extends AdapterInterface
 {
-	/**
-	 * Authenticates based on data a cookie (such as a session or remember me cookie)
-	 *
-	 * @param array $cookies
-	 *
-	 * @return array|false Array of user info or false if nothing can be found
-	 */
-	public function authenticateCookie(array $cookies);
+    /**
+     * Authenticates based on data a cookie (such as a session or remember me cookie)
+     *
+     * @param array $cookies
+     *
+     * @return array|false Array of user info or false if nothing can be found
+     */
+    public function authenticateCookie(array $cookies);
 }

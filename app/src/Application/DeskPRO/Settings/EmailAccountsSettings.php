@@ -30,72 +30,72 @@ namespace Application\DeskPRO\Settings;
 
 class EmailAccountsSettings
 {
-	const PREFIX = 'core.emails';
+    const PREFIX = 'core.emails';
 
-	/**
-	 * @var Settings
-	 */
-	protected $settings;
+    /**
+     * @var Settings
+     */
+    protected $settings;
 
-	/** @var array  */
-	protected $values = array(
-		'attach_agent_maxsize'   => 26214400,
-		'attach_agent_must_exts' => array(),
-		'attach_agent_not_exts'  => array(),
-		'attach_user_maxsize'    => 26214400,
-		'attach_user_must_exts'  => array(),
-		'attach_user_not_exts'   => array(),
-		'sendemail_attach_maxsize' => 7340032,
-	);
+    /** @var array  */
+    protected $values = array(
+        'attach_agent_maxsize'   => 26214400,
+        'attach_agent_must_exts' => array(),
+        'attach_agent_not_exts'  => array(),
+        'attach_user_maxsize'    => 26214400,
+        'attach_user_must_exts'  => array(),
+        'attach_user_not_exts'   => array(),
+        'sendemail_attach_maxsize' => 7340032,
+    );
 
-	public function __construct(Settings $settings)
-	{
-		$this->settings = $settings;
-	}
+    public function __construct(Settings $settings)
+    {
+        $this->settings = $settings;
+    }
 
-	public function toArray()
-	{
-		$data = array();
-		foreach ($this->values as $k => $v) {
-			if ($k == 'sendemail_attach_maxsize') {
-				$storedValue = $this->settings->get('core.sendemail_attach_maxsize');
-			} else {
-				$storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
-			}
+    public function toArray()
+    {
+        $data = array();
+        foreach ($this->values as $k => $v) {
+            if ($k == 'sendemail_attach_maxsize') {
+                $storedValue = $this->settings->get('core.sendemail_attach_maxsize');
+            } else {
+                $storedValue = $this->settings->get(self::PREFIX . '.' . $k, $v);
+            }
 
-			if (is_int($v)) {
-				$storedValue = (int) $storedValue;
-			} elseif (is_array($v)) {
-				$storedValue = $storedValue ? explode(',', $storedValue) : $v;
-			}
+            if (is_int($v)) {
+                $storedValue = (int) $storedValue;
+            } elseif (is_array($v)) {
+                $storedValue = $storedValue ? explode(',', $storedValue) : $v;
+            }
 
-			$data[$k] = $this->values[$k] = $storedValue ?: $v;
-		}
+            $data[$k] = $this->values[$k] = $storedValue ?: $v;
+        }
 
-		return $data;
-	}
+        return $data;
+    }
 
-	public function fromArray(array $data = array())
-	{
-		foreach ($data as $k => $v) {
-			if (!array_key_exists($k, $this->values)) {
-				continue;
-			}
+    public function fromArray(array $data = array())
+    {
+        foreach ($data as $k => $v) {
+            if (!array_key_exists($k, $this->values)) {
+                continue;
+            }
 
-			$storeValue = $v;
-			if (is_int($this->values[$k])) {
-				$storeValue = $v = (int) $v;
-			} elseif (is_array($this->values[$k])) {
-				$v = (array) $v;
-				$storeValue = implode(',', $v);
-			}
-			$this->values[$k] = $v;
+            $storeValue = $v;
+            if (is_int($this->values[$k])) {
+                $storeValue = $v = (int) $v;
+            } elseif (is_array($this->values[$k])) {
+                $v = (array) $v;
+                $storeValue = implode(',', $v);
+            }
+            $this->values[$k] = $v;
 
-			if ($k == 'sendemail_attach_maxsize') {
-				$this->settings->setSetting('core.sendemail_attach_maxsize', (int)$storeValue ?: null);
-			} else {
-				$this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
-			}
-		}
-	}
-} 
+            if ($k == 'sendemail_attach_maxsize') {
+                $this->settings->setSetting('core.sendemail_attach_maxsize', (int)$storeValue ?: null);
+            } else {
+                $this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
+            }
+        }
+    }
+}

@@ -48,123 +48,124 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
  */
 class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
+    protected $id = null;
 
 
-	/**
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * @var string
+     */
+    protected $name;
 
 
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $members = null;
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $members = null;
 
-	/**
-	 * @var Blob
-	 */
-	protected $avatar;
+    /**
+     * @var Blob
+     */
+    protected $avatar;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function __construct()
-	{
-		$this->members = new ArrayCollection();
-	}
-
-
-	public function addPerson(Entity\Person $person)
-	{
-		if ($this->members->contains($person)) {
-			return;
-		}
-		$this->members->add($person);
-		$this->_onPropertyChanged('members', $this->members, $this->members);
-	}
-
-	public function removePerson(Entity\Person $person)
-	{
-		$this->members->removeElement($person);
-		$this->_onPropertyChanged('members', $this->members, $this->members);
-	}
-
-	public function hasAvatar()
-	{
-		return $this->avatar && $this->avatar->isImage();
-	}
-
-	public function getAvatarUrl($size = 50)
-	{
-		if (!$this->hasAvatar()) {
-			return App::get('router')->generate('serve_default_picture', array(
-				's' => $size,
-				'size-fit' => 1,
-			), true);
-		}
-		return $this->avatar->getThumbnailUrl($size);
-	}
+    public function __construct()
+    {
+        $this->members = new ArrayCollection();
+    }
 
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
+    public function addPerson(Entity\Person $person)
+    {
+        if ($this->members->contains($person)) {
+            return;
+        }
+        $this->members->add($person);
+        $this->_onPropertyChanged('members', $this->members, $this->members);
+    }
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		$metadata->addPropertyConstraint('name', new NotBlank());
-	}
+    public function removePerson(Entity\Person $person)
+    {
+        $this->members->removeElement($person);
+        $this->_onPropertyChanged('members', $this->members, $this->members);
+    }
+
+    public function hasAvatar()
+    {
+        return $this->avatar && $this->avatar->isImage();
+    }
+
+    public function getAvatarUrl($size = 50)
+    {
+        if (!$this->hasAvatar()) {
+            return App::get('router')->generate('serve_default_picture', array(
+                's' => $size,
+                'size-fit' => 1,
+            ), true);
+        }
+
+        return $this->avatar->getThumbnailUrl($size);
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentTeam';
-		$metadata->setPrimaryTable(array( 'name' => 'agent_teams', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToMany(array(
-			'fieldName' => 'members',
-			'mapedBy' => 'teams',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-			'joinTable' => array(
-				'name' => 'agent_team_members',
-				'joinColumns' => array(array( 'name' => 'team_id' )),
-				'inverseJoinColumns' => array(array( 'name' => 'person_id' )),
-				'onDelete' => 'cascade',
-			),
-			'orderBy' => array( 'name' => 'ASC', ),
-		));
-		$metadata->mapManyToOne(array(
-			'fieldName' => 'avatar',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
-			'mappedBy' => NULL,
-			'inversedBy' => NULL,
-			'joinColumns' => array(array(
-				'name' => 'avatar_blob_id',
-				'referencedColumnName' => 'id',
-				'nullable' => true,
-				'onDelete' => 'set null',
-			)),
-			'dpApi' => true
-		));
-	}
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('name', new NotBlank());
+    }
+
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentTeam';
+        $metadata->setPrimaryTable(array( 'name' => 'agent_teams', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToMany(array(
+            'fieldName' => 'members',
+            'mapedBy' => 'teams',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'joinTable' => array(
+                'name' => 'agent_team_members',
+                'joinColumns' => array(array( 'name' => 'team_id' )),
+                'inverseJoinColumns' => array(array( 'name' => 'person_id' )),
+                'onDelete' => 'cascade',
+            ),
+            'orderBy' => array( 'name' => 'ASC', ),
+        ));
+        $metadata->mapManyToOne(array(
+            'fieldName' => 'avatar',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'mappedBy' => NULL,
+            'inversedBy' => NULL,
+            'joinColumns' => array(array(
+                'name' => 'avatar_blob_id',
+                'referencedColumnName' => 'id',
+                'nullable' => true,
+                'onDelete' => 'set null',
+            )),
+            'dpApi' => true
+        ));
+    }
 }

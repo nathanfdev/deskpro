@@ -38,54 +38,54 @@ use Doctrine\ORM\EntityManager;
 
 class ServerMysqlStatus
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getMysqlStatus()
-	{
-		return $this->_getInfo();
-	}
+    public function getMysqlStatus()
+    {
+        return $this->_getInfo();
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	protected function _getInfo()
-	{
-		try {
+    protected function _getInfo()
+    {
+        try {
 
-			$mysql_processes = App::getDb()->fetchAll("SHOW PROCESSLIST");
+            $mysql_processes = App::getDb()->fetchAll("SHOW PROCESSLIST");
 
-		} catch(\Exception $e) {
+        } catch(\Exception $e) {
 
-			$mysql_processes = null;
-		}
+            $mysql_processes = null;
+        }
 
-		try {
+        try {
 
-			$mysql_status = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), array(), 0, 1);
+            $mysql_status = App::getDb()->fetchAllKeyValue("SHOW STATUS", array(), array(), 0, 1);
 
-		} catch(\Exception $e) {
+        } catch(\Exception $e) {
 
-			$mysql_status = null;
-		}
+            $mysql_status = null;
+        }
 
-		return array(
-			'mysql_processes' => $mysql_processes,
-			'mysql_status'    => $mysql_status
-		);
+        return array(
+            'mysql_processes' => $mysql_processes,
+            'mysql_status'    => $mysql_status
+        );
 
-	}
+    }
 }

@@ -44,26 +44,27 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterAgentParticipant extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('agent_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('agent_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$query = new FilterQuery();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $query = new FilterQuery();
 
-		$query->addJoin('tickets.organization.labels', 'labels_organizations', 'org_labels', 'org_labels.organization_id = tickets.organization_id');
-		$query->addJoin('tickets.participants', 'tickets_participants', 'unique:parts', 'parts.ticket_id = tickets.id');
-		$query->andWhereIn('parts.person_id', $this->getTermOptions()->get('agent_ids'), $this->getTermOperator() == self::OP_NOT);
-	}
+        $query->addJoin('tickets.organization.labels', 'labels_organizations', 'org_labels', 'org_labels.organization_id = tickets.organization_id');
+        $query->addJoin('tickets.participants', 'tickets_participants', 'unique:parts', 'parts.ticket_id = tickets.id');
+        $query->andWhereIn('parts.person_id', $this->getTermOptions()->get('agent_ids'), $this->getTermOperator() == self::OP_NOT);
+    }
 }

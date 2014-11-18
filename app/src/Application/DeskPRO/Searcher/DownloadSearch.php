@@ -39,476 +39,470 @@ use Orb\Util\Util;
 
 class DownloadSearch extends SearcherAbstract
 {
-	const TERM_ID              = 'id';
-	const TERM_CATEGORY        = 'category';
-	const TERM_DELETED         = 'deleted';
-	const TERM_CATEGORY_SPECIFIC = 'category_specific';
-	const TERM_DOWNLOADS       = 'num_downloads';
-	const TERM_DATE_CREATED    = 'date_created';
-	const TERM_POPULAR         = 'popular';
-	const TERM_NEW             = 'new';
-	const TERM_LABEL           = 'label';
-	const TERM_STATUS          = 'status';
-	const TERM_AGENT_LIST      = 'agent_list';
-	const TERM_QUERY           = 'query';
+    const TERM_ID              = 'id';
+    const TERM_CATEGORY        = 'category';
+    const TERM_DELETED         = 'deleted';
+    const TERM_CATEGORY_SPECIFIC = 'category_specific';
+    const TERM_DOWNLOADS       = 'num_downloads';
+    const TERM_DATE_CREATED    = 'date_created';
+    const TERM_POPULAR         = 'popular';
+    const TERM_NEW             = 'new';
+    const TERM_LABEL           = 'label';
+    const TERM_STATUS          = 'status';
+    const TERM_AGENT_LIST      = 'agent_list';
+    const TERM_QUERY           = 'query';
 
-	const ORDER_ID       = 'id';
-	const ORDER_TITLE    = 'title';
-	const ORDER_DATE     = 'id';
-	const ORDER_DOWNLOAD = 'num_downloads';
+    const ORDER_ID       = 'id';
+    const ORDER_TITLE    = 'title';
+    const ORDER_DATE     = 'id';
+    const ORDER_DOWNLOAD = 'num_downloads';
 
-	/**
-	 * From getSqlParts()
-	 * @var array
-	 */
-	protected $sql_parts = null;
+    /**
+     * From getSqlParts()
+     * @var array
+     */
+    protected $sql_parts = null;
 
-	/**
-	 * Summary of terms in phrases
-	 * @var array
-	 */
-	protected $summary = array();
+    /**
+     * Summary of terms in phrases
+     * @var array
+     */
+    protected $summary = array();
 
-	/**
-	 * Run the search and return an array of matching ID's.
-	 *
-	 * @param int $limit
-	 * @return array
-	 */
-	public function getMatches(array $limit = null)
-	{
-		$db = App::getDbRead('search.filter.downloads');
+    /**
+     * Run the search and return an array of matching ID's.
+     *
+     * @param  int   $limit
+     * @return array
+     */
+    public function getMatches(array $limit = null)
+    {
+        $db = App::getDbRead('search.filter.downloads');
 
-		$download_ids = $db->fetchAllCol($this->getSql($limit));
+        $download_ids = $db->fetchAllCol($this->getSql($limit));
 
-		return $download_ids;
-	}
+        return $download_ids;
+    }
 
+    /**
+     * Get actual model objects for matches
+     *
+     * @param  array $limit
+     * @return array
+     */
+    public function getMatchingObjects(array $limit = null)
+    {
+        $ids = $this->getMatches($limit);
 
-	/**
-	 * Get actual model objects for matches
-	 *
-	 * @param array $limit
-	 * @return array
-	 */
-	public function getMatchingObjects(array $limit = null)
-	{
-		$ids = $this->getMatches($limit);
+        if (!$ids) return array();
+        return App::getEntityRepository('DeskPRO:Download')->getByResultIds($ids);
+    }
 
-		if (!$ids) return array();
+    /**
+     * @return string
+     */
+    public function getPermWhere()
+    {
+        if (!$this->person) {
+            return '';
+        }
 
-		return App::getEntityRepository('DeskPRO:Download')->getByResultIds($ids);
-	}
+        if (!$this->person->hasPerm('downloads.use')) {
+            return '0';
+        }
 
+        $where = '(downloads.status != \'hidden\')';
 
-	/**
-	 * @return string
-	 */
-	public function getPermWhere()
-	{
-		if (!$this->person) {
-			return '';
-		}
+        $dis_ids = $this->person->PermissionsManager->DownloadCategories->getDisallowedCategories();
+        if (!$dis_ids) {
+            return $where;
+        }
 
-		if (!$this->person->hasPerm('downloads.use')) {
-			return '0';
-		}
+        $dis_ids = implode(',', $dis_ids);
 
-		$where = '(downloads.status != \'hidden\')';
+        return '('.$where.' AND downloads.category_id NOT IN(' . $dis_ids . '))';
+    }
 
-		$dis_ids = $this->person->PermissionsManager->DownloadCategories->getDisallowedCategories();
-		if (!$dis_ids) {
-			return $where;
-		}
+    /**
+     * Get the total number of matches
+     *
+     * @return int
+     */
+    public function getCount()
+    {
+        $sql = "SELECT COUNT(*) FROM downloads ";
+        $parts = $this->getSqlParts();
+        $order_by = $this->getOrderByPart();
 
-		$dis_ids = implode(',', $dis_ids);
+        #------------------------------
+        # Add joins
+        #------------------------------
 
-		return '('.$where.' AND downloads.category_id NOT IN(' . $dis_ids . '))';
-	}
+        foreach ($parts['joins'] as $j) {
+            if (is_array($j)) {
+                $sql .= $j[1] . " ";
+            } else {
+                $sql .= "LEFT JOIN $j ON $j.download_id = downloads.id ";
+            }
+        }
 
+        if (is_array($order_by)) {
+            list ($order_join, $order_by) = $order_by;
 
-	/**
-	 * Get the total number of matches
-	 *
-	 * @return int
-	 */
-	public function getCount()
-	{
-		$sql = "SELECT COUNT(*) FROM downloads ";
-		$parts = $this->getSqlParts();
-		$order_by = $this->getOrderByPart();
+            $sql .= " $order_join ";
+        }
 
-		#------------------------------
-		# Add joins
-		#------------------------------
+        #------------------------------
+        # Add wheres
+        #------------------------------
 
-		foreach ($parts['joins'] as $j) {
-			if (is_array($j)) {
-				$sql .= $j[1] . " ";
-			} else {
-				$sql .= "LEFT JOIN $j ON $j.download_id = downloads.id ";
-			}
-		}
+        $sql .= "WHERE ";
+        if (!$this->findTerm(self::TERM_AGENT_LIST)) {
+            $where_perm = $this->getPermWhere();
+            if ($where_perm) {
+                $sql .= $where_perm . ' AND ';
+            }
+        }
+        if ($parts['wheres']) {
+            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+        } else {
+            $sql .= '1';
+        }
 
-		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
+        $count = App::getDbRead('search.filter.downloads')->fetchColumn($sql);
 
-			$sql .= " $order_join ";
-		}
+        return $count;
+    }
 
-		#------------------------------
-		# Add wheres
-		#------------------------------
+    /**
+     * Get the summary of crtiera
+     *
+     * @return array
+     */
+    public function getSummary()
+    {
+        $this->getSqlParts();
 
-		$sql .= "WHERE ";
-		if (!$this->findTerm(self::TERM_AGENT_LIST)) {
-			$where_perm = $this->getPermWhere();
-			if ($where_perm) {
-				$sql .= $where_perm . ' AND ';
-			}
-		}
-		if ($parts['wheres']) {
-			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
-		} else {
-			$sql .= '1';
-		}
+        $summary = $this->summary;
 
-		$count = App::getDbRead('search.filter.downloads')->fetchColumn($sql);
+        return $summary;
+    }
 
-		return $count;
-	}
+    /**
+     * Get the SQL query that'll fetch the results
+     *
+     * @return string
+     */
+    public function getSql(array $limit = null)
+    {
+        $sql = "SELECT downloads.id FROM downloads ";
 
-
-	/**
-	 * Get the summary of crtiera
-	 *
-	 * @return array
-	 */
-	public function getSummary()
-	{
-		$this->getSqlParts();
-
-		$summary = $this->summary;
-
-		return $summary;
-	}
-
-
-	/**
-	 * Get the SQL query that'll fetch the results
-	 *
-	 * @return string
-	 */
-	public function getSql(array $limit = null)
-	{
-		$sql = "SELECT downloads.id FROM downloads ";
-
-		$parts = $this->getSqlParts();
-		$order_by = $this->getOrderByPart();
+        $parts = $this->getSqlParts();
+        $order_by = $this->getOrderByPart();
 
 
-		#------------------------------
-		# Add joins
-		#------------------------------
+        #------------------------------
+        # Add joins
+        #------------------------------
 
-		foreach ($parts['joins'] as $j) {
-			if (is_array($j)) {
-				$sql .= $j[1] . " ";
-			} else {
-				$sql .= "LEFT JOIN $j ON $j.download_id = downloads.id ";
-			}
-		}
+        foreach ($parts['joins'] as $j) {
+            if (is_array($j)) {
+                $sql .= $j[1] . " ";
+            } else {
+                $sql .= "LEFT JOIN $j ON $j.download_id = downloads.id ";
+            }
+        }
 
-		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
+        if (is_array($order_by)) {
+            list ($order_join, $order_by) = $order_by;
 
-			$sql .= " $order_join ";
-		}
+            $sql .= " $order_join ";
+        }
 
-		#------------------------------
-		# Add wheres
-		#------------------------------
+        #------------------------------
+        # Add wheres
+        #------------------------------
 
-		$sql .= "WHERE ";
-		if (!$this->findTerm(self::TERM_AGENT_LIST)) {
-			$where_perm = $this->getPermWhere();
-			if ($where_perm) {
-				$sql .= $where_perm . ' AND ';
-			}
-		}
-		if ($parts['wheres']) {
-			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
-		} else {
-			$sql .= '1';
-		}
+        $sql .= "WHERE ";
+        if (!$this->findTerm(self::TERM_AGENT_LIST)) {
+            $where_perm = $this->getPermWhere();
+            if ($where_perm) {
+                $sql .= $where_perm . ' AND ';
+            }
+        }
+        if ($parts['wheres']) {
+            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+        } else {
+            $sql .= '1';
+        }
 
-		$sql .= " GROUP BY downloads.id ";
-		$sql .= $order_by;
+        $sql .= " GROUP BY downloads.id ";
+        $sql .= $order_by;
 
-		if ($limit) {
-			$sql .= " LIMIT {$limit['offset']},{$limit['max']}";
-		} else {
-			$sql .= " LIMIT 1000";
-		}
+        if ($limit) {
+            $sql .= " LIMIT {$limit['offset']},{$limit['max']}";
+        } else {
+            $sql .= " LIMIT 1000";
+        }
 
-		return $sql;
-	}
-
-
-	/**
-	 * Get the ORDER BY clause based on order info set.
-	 *
-	 * @return string
-	 */
-	public function getOrderByPart()
-	{
-		// Set a default if none
-		if (!$this->order_by) {
-			$this->order_by = array('id', 'DESC');
-		}
-
-		list($type, $dir) = $this->order_by;
-
-		$dir = strtoupper($dir);
-		if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
-			$dir = self::ORDER_DESC;
-		}
-
-		$order_by = '';
-
-		switch ($type) {
-			case 'id':
-			case 'date':
-				$order_by = "ORDER BY downloads.date_published $dir";
-				break;
-
-			case 'num_downloads':
-				$order_by = "ORDER BY downloads.num_downloads $dir";
-				break;
-
-			case 'title':
-				$order_by = "ORDER BY downloads.title $dir";
-				break;
-		}
-
-		return $order_by;
-	}
+        return $sql;
+    }
 
 
-	/**
-	 * Get the SQL parts we need in the query.
-	 *
-	 * @return array
-	 */
-	public function getSqlParts()
-	{
-		if ($this->sql_parts !== null) return $this->sql_parts;
+    /**
+     * Get the ORDER BY clause based on order info set.
+     *
+     * @return string
+     */
+    public function getOrderByPart()
+    {
+        // Set a default if none
+        if (!$this->order_by) {
+            $this->order_by = array('id', 'DESC');
+        }
 
-		$db = App::getDbRead('search.filter.downloads');
-		$tr = App::getTranslator();
+        list($type, $dir) = $this->order_by;
 
-		$wheres = array();
-		$joins = array();
+        $dir = strtoupper($dir);
+        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+            $dir = self::ORDER_DESC;
+        }
 
-		foreach ($this->terms as $info) {
-			$join_id = Util::requestUniqueId();
-			$join_name = "j_$join_id";
+        $order_by = '';
 
-			list($term, $op, $choice) = $info;
-			$term_id = null;
+        switch ($type) {
+            case 'id':
+            case 'date':
+                $order_by = "ORDER BY downloads.date_published $dir";
+                break;
 
-			switch ($term) {
+            case 'num_downloads':
+                $order_by = "ORDER BY downloads.num_downloads $dir";
+                break;
+
+            case 'title':
+                $order_by = "ORDER BY downloads.title $dir";
+                break;
+        }
+
+        return $order_by;
+    }
+
+
+    /**
+     * Get the SQL parts we need in the query.
+     *
+     * @return array
+     */
+    public function getSqlParts()
+    {
+        if ($this->sql_parts !== null) return $this->sql_parts;
+
+        $db = App::getDbRead('search.filter.downloads');
+        $tr = App::getTranslator();
+
+        $wheres = array();
+        $joins = array();
+
+        foreach ($this->terms as $info) {
+            $join_id = Util::requestUniqueId();
+            $join_name = "j_$join_id";
+
+            list($term, $op, $choice) = $info;
+            $term_id = null;
+
+            switch ($term) {
                 case self::TERM_ID:
-					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
-					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+                    $choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+                    $choice = isset($choice['id']) ? $choice['id'] : $choice;
 
-					if ($op == self::OP_CONTAINS || is_array($choice)) {
-						if (!is_array($choice)) {
-							$choice = array($choice);
-						}
-						$wheres[] = $this->_choiceMatch('downloads.id', 'is', $choice);
-					} else {
-						$wheres[] = $this->_rangeMatch("downloads.id", $op, $choice, true);
-						$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
-					}
-					break;
+                    if ($op == self::OP_CONTAINS || is_array($choice)) {
+                        if (!is_array($choice)) {
+                            $choice = array($choice);
+                        }
+                        $wheres[] = $this->_choiceMatch('downloads.id', 'is', $choice);
+                    } else {
+                        $wheres[] = $this->_rangeMatch("downloads.id", $op, $choice, true);
+                        $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+                    }
+                    break;
 
-				case self::TERM_STATUS:
+                case self::TERM_STATUS:
 
-					$choice = (array)$choice;
-					$choice = array_pop($choice);
+                    $choice = (array)$choice;
+                    $choice = array_pop($choice);
 
-					// Normal vis status
-					if (strpos($choice, '.') === false){
-						$status = $choice;
-						$hidden_status = '';
+                    // Normal vis status
+                    if (strpos($choice, '.') === false){
+                        $status = $choice;
+                        $hidden_status = '';
 
-					// Formatted: hidden.hidden_status
-					} else {
-						list ($status, $hidden_status) = explode('.', $choice, 2);
-					}
+                    // Formatted: hidden.hidden_status
+                    } else {
+                        list ($status, $hidden_status) = explode('.', $choice, 2);
+                    }
 
-					if ($hidden_status) {
-						$wheres[] = $this->_stringMatch('downloads.hidden_status', $op, $hidden_status);
-					} else {
-						$wheres[] = $this->_stringMatch('downloads.status', $op, $status);
-					}
+                    if ($hidden_status) {
+                        $wheres[] = $this->_stringMatch('downloads.hidden_status', $op, $hidden_status);
+                    } else {
+                        $wheres[] = $this->_stringMatch('downloads.status', $op, $status);
+                    }
 
                     $phrase_vars = array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status));
 
-					if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
+                    if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
                         $this->summary[] = $tr->phrase('agent.general.x_is_not_y', $phrase_vars);
-					}
-                    else {
+                    } else {
                         $this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
                     }
-					break;
+                    break;
 
-				case self::TERM_DELETED:
-					if ($op == self::OP_IS) {
-						$wheres[] = 'downloads.hidden_status = \'deleted\'';
-					} else {
-						$wheres[] = 'downloads.hidden_status != \'deleted\' OR downloads.hidden_status IS NULL';
-					}
-					break;
+                case self::TERM_DELETED:
+                    if ($op == self::OP_IS) {
+                        $wheres[] = 'downloads.hidden_status = \'deleted\'';
+                    } else {
+                        $wheres[] = 'downloads.hidden_status != \'deleted\' OR downloads.hidden_status IS NULL';
+                    }
+                    break;
 
-				case self::TERM_CATEGORY:
-				case self::TERM_CATEGORY_SPECIFIC:
-					$base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
-					$ids = array();
+                case self::TERM_CATEGORY:
+                case self::TERM_CATEGORY_SPECIFIC:
+                    $base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
+                    $ids = array();
 
-					if ($term == self::TERM_CATEGORY_SPECIFIC) {
-						$ids = $base_ids;
-					} else {
-						foreach ($base_ids as $id) {
-							$ids = array_merge($ids, App::getEntityRepository('DeskPRO:DownloadCategory')->getIdsInTree($id, true));
-						}
-					}
+                    if ($term == self::TERM_CATEGORY_SPECIFIC) {
+                        $ids = $base_ids;
+                    } else {
+                        foreach ($base_ids as $id) {
+                            $ids = array_merge($ids, App::getEntityRepository('DeskPRO:DownloadCategory')->getIdsInTree($id, true));
+                        }
+                    }
 
-					$ids = array_unique($ids);
+                    $ids = array_unique($ids);
 
-					$wheres[] = $this->_choiceMatch('downloads.category_id', $op, $ids);
+                    $wheres[] = $this->_choiceMatch('downloads.category_id', $op, $ids);
 
-					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:DownloadCategory')->getNames((array)$choice);
-						return $titles;
-					});
-					break;
+                    $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
+                        $titles = App::getEntityRepository('DeskPRO:DownloadCategory')->getNames((array)$choice);
 
-				case self::TERM_QUERY:
+                        return $titles;
+                    });
+                    break;
 
-					$string = $choice['query'];
-					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+                case self::TERM_QUERY:
 
-					if (!$string) {
-						break;
-					}
+                    $string = $choice['query'];
+                    $type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
-					$w = array();
-					$w[] = '(' . $this->_stringSearch("downloads.title", $op, $string, $type) . ')';
-					$w[] = '(' . $this->_stringSearch("downloads.content", $op, $string, $type) . ')';
+                    if (!$string) {
+                        break;
+                    }
 
-					$wheres[] = implode(' OR ' , $w);
-					break;
+                    $w = array();
+                    $w[] = '(' . $this->_stringSearch("downloads.title", $op, $string, $type) . ')';
+                    $w[] = '(' . $this->_stringSearch("downloads.content", $op, $string, $type) . ')';
 
-				case self::TERM_DOWNLOADS:
-					$choice = (array)$choice;
-					$choice = array_values($choice);
+                    $wheres[] = implode(' OR ' , $w);
+                    break;
 
-					$wheres[] = $this->_rangeMatch('downloads.num_downloads', $op, $choice);
-					$this->summary[] = $this->_rangeSummary('Downloads', $op, $choice);
-					break;
+                case self::TERM_DOWNLOADS:
+                    $choice = (array)$choice;
+                    $choice = array_values($choice);
 
-				case self::TERM_POPULAR:
-					if (is_array($choice)) {
-						$choice = array_pop($choice);
-					}
-					// must be 1
-					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
-					if ($choice) {
-						$wheres[] = $this->_rangeMatch('downloads.num_downloads', 'gte', App::getSetting('core_downloads.popular_downloads'));
-						$this->summary[] = 'Popular';
-					}
-					break;
+                    $wheres[] = $this->_rangeMatch('downloads.num_downloads', $op, $choice);
+                    $this->summary[] = $this->_rangeSummary('Downloads', $op, $choice);
+                    break;
 
-				case self::TERM_NEW:
-					if (is_array($choice)) {
-						$choice = array_pop($choice);
-					}
-					// must be 1
-					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
-					if ($choice) {
-						$date = new \DateTime(App::getSetting('core_downloads.new_time'));
-						$wheres[] = $this->_dateMatch('downloads.date_created', 'gte', array('date1' => $date));
-					}
-					break;
+                case self::TERM_POPULAR:
+                    if (is_array($choice)) {
+                        $choice = array_pop($choice);
+                    }
+                    // must be 1
+                    // this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
+                    if ($choice) {
+                        $wheres[] = $this->_rangeMatch('downloads.num_downloads', 'gte', App::getSetting('core_downloads.popular_downloads'));
+                        $this->summary[] = 'Popular';
+                    }
+                    break;
 
-				case self::TERM_DATE_CREATED:
-					$wheres[] = $this->_dateMatch('downloads.date_created', $op, $choice);
-					$this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
-					break;
+                case self::TERM_NEW:
+                    if (is_array($choice)) {
+                        $choice = array_pop($choice);
+                    }
+                    // must be 1
+                    // this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
+                    if ($choice) {
+                        $date = new \DateTime(App::getSetting('core_downloads.new_time'));
+                        $wheres[] = $this->_dateMatch('downloads.date_created', 'gte', array('date1' => $date));
+                    }
+                    break;
 
-				case self::TERM_AGENT_LIST:
-					$wheres[] = "(downloads.status IN ('published', 'archived') OR downloads.hidden_status IN('unpublished'))";
-					break;
+                case self::TERM_DATE_CREATED:
+                    $wheres[] = $this->_dateMatch('downloads.date_created', $op, $choice);
+                    $this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
+                    break;
 
-				case self::TERM_LABEL:
-					$this->_normalizeOpAndChoice($op, $choice);
+                case self::TERM_AGENT_LIST:
+                    $wheres[] = "(downloads.status IN ('published', 'archived') OR downloads.hidden_status IN('unpublished'))";
+                    break;
 
-					$choices_in = array();
-					if (is_array($choice)) {
-						foreach ((array)$choice as $c) {
-							$choices_in[] = $db->quote($c);
-						}
-						$choices_in = implode(',', $choices_in);
-					}
+                case self::TERM_LABEL:
+                    $this->_normalizeOpAndChoice($op, $choice);
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
+                    $choices_in = array();
+                    if (is_array($choice)) {
+                        foreach ((array)$choice as $c) {
+                            $choices_in[] = $db->quote($c);
+                        }
+                        $choices_in = implode(',', $choices_in);
+                    }
 
-					switch ($op) {
-						case self::OP_IS:
-							$joins[] = array(
-								'labels_downloads',
-								"LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id)"
-							);
-							$wheres[] = "$join_name.label = " . $db->quote($choice);
-							break;
-						case self::OP_NOT:
-							$joins[] = array(
-								'labels_downloads',
-								"LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id AND $join_name.label = '.$db->quote($choice).')"
-							);
-							$wheres[] = "$join_name.person_id IS NULL";
-							break;
-						case self::OP_CONTAINS:
-							$joins[] = array(
-								'labels_downloads',
-								"LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id)"
-							);
-							$wheres[] = "$join_name.label IN ($choices_in)";
-							break;
+                    $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
 
-						case self::OP_NOTCONTAINS:
-							$joins[] = array(
-								'labels_downloads',
-								"LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id AND $join_name.label IN ($choices_in)"
-							);
-							$wheres[] = "$join_name.person_id IS NULL";
-							break;
-					}
-					break;// end labels
-			}
-		}
+                    switch ($op) {
+                        case self::OP_IS:
+                            $joins[] = array(
+                                'labels_downloads',
+                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id)"
+                            );
+                            $wheres[] = "$join_name.label = " . $db->quote($choice);
+                            break;
+                        case self::OP_NOT:
+                            $joins[] = array(
+                                'labels_downloads',
+                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id AND $join_name.label = '.$db->quote($choice).')"
+                            );
+                            $wheres[] = "$join_name.person_id IS NULL";
+                            break;
+                        case self::OP_CONTAINS:
+                            $joins[] = array(
+                                'labels_downloads',
+                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id)"
+                            );
+                            $wheres[] = "$join_name.label IN ($choices_in)";
+                            break;
 
-		$joins = array_unique($joins);
+                        case self::OP_NOTCONTAINS:
+                            $joins[] = array(
+                                'labels_downloads',
+                                "LEFT JOIN labels_downloads AS $join_name ON ($join_name.download_id = downloads.id AND $join_name.label IN ($choices_in)"
+                            );
+                            $wheres[] = "$join_name.person_id IS NULL";
+                            break;
+                    }
+                    break;// end labels
+            }
+        }
 
-		$wheres = Arrays::removeEmptyString($wheres);
+        $joins = array_unique($joins);
 
-		$this->sql_parts = array(
-			'joins' => $joins,
-			'wheres' => $wheres
-		);
+        $wheres = Arrays::removeEmptyString($wheres);
 
-		return $this->sql_parts;
-	}
+        $this->sql_parts = array(
+            'joins' => $joins,
+            'wheres' => $wheres
+        );
+
+        return $this->sql_parts;
+    }
 }

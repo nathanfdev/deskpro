@@ -39,57 +39,57 @@ use Application\DeskPRO\Templating\Templates\TemplateSet;
 
 class TemplateData extends AbstractDefaultData
 {
-	public function runInstall()
-	{
-		$this->getLogger()->debug("Saving default template");
-		$this->getDb()->executeUpdate("DELETE FROM templates WHERE name = 'UserBundle:Portal:welcome-block.html.twig'");
+    public function runInstall()
+    {
+        $this->getLogger()->debug("Saving default template");
+        $this->getDb()->executeUpdate("DELETE FROM templates WHERE name = 'UserBundle:Portal:welcome-block.html.twig'");
 
-		$set = new TemplateSet(
-			$this->getEm(),
-			$this->getContainer()->get('twig')
-		);
-		$template = $set->getCustomTemplate('UserBundle:Portal:welcome-block.html.twig');
-		$template_code = $template->getTemplateCode();
-		$template_code->setCode($this->getCode());
-		$set->saveTemplate($template);
-	}
+        $set = new TemplateSet(
+            $this->getEm(),
+            $this->getContainer()->get('twig')
+        );
+        $template = $set->getCustomTemplate('UserBundle:Portal:welcome-block.html.twig');
+        $template_code = $template->getTemplateCode();
+        $template_code->setCode($this->getCode());
+        $set->saveTemplate($template);
+    }
 
-	public function runReset()
-	{
-		$this->runInstall();
-	}
+    public function runReset()
+    {
+        $this->runInstall();
+    }
 
-	public function runSync()
-	{
-		return;
-	}
+    public function runSync()
+    {
+        return;
+    }
 
-	private function getCode()
-	{
-		return <<<'HTML'
+    private function getCode()
+    {
+        return <<<'HTML'
 {##
  # This is the block displayed at the top of the portal home page.
  ##}
 
 <article class="dp-intro-box">
-	<h2>Welcome</h2>
-	<p>
-		This is your new installation of DeskPRO. Why don't you try
-		<a href="{{ path('user_tickets_new') }}">submitting a new ticket</a> to test out your new helpdesk?
-	</p>
-	<p>
-		Here are some ideas on what to do next:
-	</p>
-	<ul>
-		<li>Change this welcome text from <a href="{{ path('user') }}admin/#/portal/portal_editor">Admin Interface {{ language_arrow('right') }} Portal</a></li>
-		<li>Integrate with your website using the Javascript widgets from <a href="{{ path('user') }}admin/#/portal/embeds">Admin Interface {{ language_arrow('right') }} Portal {{ language_arrow('right') }} Embed</a></li>
-		<li>Add some new knowledgebase articles from <a href="{{ path('user') }}agent">Agent Interface {{ language_arrow('right') }} Publish</a></li>
-	</ul>
-	<p>
-		If you are new to DeskPRO, we recommend reading through our <a href="https://support.deskpro.com/kb/articles/127-getting-started">Getting Started Guide</a>.
-		Remember, if you need help you can always contact us through <a href="http://support.deskpro.com/">support.deskpro.com</a>!
-	</p>
+    <h2>Welcome</h2>
+    <p>
+        This is your new installation of DeskPRO. Why don't you try
+        <a href="{{ path('user_tickets_new') }}">submitting a new ticket</a> to test out your new helpdesk?
+    </p>
+    <p>
+        Here are some ideas on what to do next:
+    </p>
+    <ul>
+        <li>Change this welcome text from <a href="{{ path('user') }}admin/#/portal/portal_editor">Admin Interface {{ language_arrow('right') }} Portal</a></li>
+        <li>Integrate with your website using the Javascript widgets from <a href="{{ path('user') }}admin/#/portal/embeds">Admin Interface {{ language_arrow('right') }} Portal {{ language_arrow('right') }} Embed</a></li>
+        <li>Add some new knowledgebase articles from <a href="{{ path('user') }}agent">Agent Interface {{ language_arrow('right') }} Publish</a></li>
+    </ul>
+    <p>
+        If you are new to DeskPRO, we recommend reading through our <a href="https://support.deskpro.com/kb/articles/127-getting-started">Getting Started Guide</a>.
+        Remember, if you need help you can always contact us through <a href="http://support.deskpro.com/">support.deskpro.com</a>!
+    </p>
 </article>
 HTML;
-	}
+    }
 }

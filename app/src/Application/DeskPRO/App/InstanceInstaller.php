@@ -44,184 +44,184 @@ use Doctrine\ORM\EntityManager;
 
 class InstanceInstaller
 {
-	/**
-	 * @var AppManager
-	 */
-	private $manager;
+    /**
+     * @var AppManager
+     */
+    private $manager;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\AppPackage
-	 */
-	private $package;
+    /**
+     * @var \Application\DeskPRO\Entity\AppPackage
+     */
+    private $package;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @param AppManager $manager
-	 * @param AppPackage $package
-	 * @param EntityManager $em
-	 */
-	public function __construct(AppManager $manager, AppPackage $package, EntityManager $em)
-	{
-		$this->manager = $manager;
-		$this->package = $package;
-		$this->em      = $em;
-	}
-
-
-	/**
-	 * @param string $title
-	 * @param array $settings
-	 * @param DeskproContainer $container
-	 * @return AppInstance
-	 */
-	public function install($title, array $settings, DeskproContainer $container, $usersource_type = '')
-	{
-		$app = new AppInstance();
-		$app->title = $title ?: $this->package->title;
-		$app->package = $this->package;
-
-		// Need to persist now so we have an actual app record
-		// (the id may be used in the installer)
-		$this->em->persist($app);
-		$this->em->flush();
-
-		$settings = self::readAppSettings($this->package, $settings);
-		$context = $this->createInstallContext($this->package, $app, $settings, $container, $usersource_type);
-		$handler = $this->createInstallHandler($this->package, $app);
-
-		$settings = $handler->processSettings($context, $settings);
-		$app->setSettings($settings ?: array());
-		$this->em->persist($app);
-		$this->em->flush();
-
-		$handler->install($context);
-
-		// if this package is a usersource package, we should always check with the manager to avoid invalid SSO configurations
-		if ($context->getPackage()->isUsersource()) {
-			$container->getSystemService('usersource_manager')->ensureSsoSettings($context->getUsersource());
-		}
-
-		return $app;
-	}
+    /**
+     * @param AppManager    $manager
+     * @param AppPackage    $package
+     * @param EntityManager $em
+     */
+    public function __construct(AppManager $manager, AppPackage $package, EntityManager $em)
+    {
+        $this->manager = $manager;
+        $this->package = $package;
+        $this->em      = $em;
+    }
 
 
-	/**
-	 * @param AppPackage       $package
-	 * @param AppInstance      $app
-	 * @param array            $settings
-	 * @param DeskproContainer $container
-	 * @param null             $usersource_type
-	 * @return InstallerContext
-	 */
-	protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container, $usersource_type = null)
-	{
-		if ($package->native_name) {
-			$native_app = $this->manager->getNativeApp($app);
-			$usersource = null;
+    /**
+     * @param  string           $title
+     * @param  array            $settings
+     * @param  DeskproContainer $container
+     * @return AppInstance
+     */
+    public function install($title, array $settings, DeskproContainer $container, $usersource_type = '')
+    {
+        $app = new AppInstance();
+        $app->title = $title ?: $this->package->title;
+        $app->package = $this->package;
 
-			if ($package->isUsersource()) {
-				$usersource = new Usersource(); // this method only creates the installcontext for NEW app instances
-				$usersource->app = $app;
-				$usersource->title = $app->title;
-				$usersource->type = $usersource_type;
-			}
+        // Need to persist now so we have an actual app record
+        // (the id may be used in the installer)
+        $this->em->persist($app);
+        $this->em->flush();
 
-			return new InstallerContext($container, $native_app, $settings, $usersource);
-		}
+        $settings = self::readAppSettings($this->package, $settings);
+        $context = $this->createInstallContext($this->package, $app, $settings, $container, $usersource_type);
+        $handler = $this->createInstallHandler($this->package, $app);
 
-		return new InstallerContext($container, null, $settings);
-	}
+        $settings = $handler->processSettings($context, $settings);
+        $app->setSettings($settings ?: array());
+        $this->em->persist($app);
+        $this->em->flush();
 
+        $handler->install($context);
 
-	/**
-	 * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
-	 *
-	 * @param AppPackage  $package
-	 * @param AppInstance $app
-	 * @return \Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface
-	 */
-	protected function createInstallHandler(AppPackage $package, AppInstance $app)
-	{
-		if ($package->native_name) {
-			$native_app = $this->manager->getNativeApp($app);
-			if ($class = $native_app->getConfig()->getInstallerHandlerClass()) {
-				return new $class($this->package['settings_def']);
-			}
-		}
+        // if this package is a usersource package, we should always check with the manager to avoid invalid SSO configurations
+        if ($context->getPackage()->isUsersource()) {
+            $container->getSystemService('usersource_manager')->ensureSsoSettings($context->getUsersource());
+        }
 
-		return new NoopInstallerHandler();
-	}
+        return $app;
+    }
 
 
-	/**
-	 * @param AppPackage $package
-	 * @param array $settings_form
-	 * @return array
-	 */
-	public static function readAppSettings(AppPackage $package, array $settings_form)
-	{
-		$settings = array();
-		foreach ($package->settings_def as $setting_def) {
-			$value = isset($settings_form[$setting_def['name']]) ? $settings_form[$setting_def['name']] : null;
-			if (!is_scalar($value)) {
-				$value = null;
-			}
+    /**
+     * @param  AppPackage       $package
+     * @param  AppInstance      $app
+     * @param  array            $settings
+     * @param  DeskproContainer $container
+     * @param  null             $usersource_type
+     * @return InstallerContext
+     */
+    protected function createInstallContext(AppPackage $package, AppInstance $app, array $settings, DeskproContainer $container, $usersource_type = null)
+    {
+        if ($package->native_name) {
+            $native_app = $this->manager->getNativeApp($app);
+            $usersource = null;
 
-			if ($value !== null) {
-				switch ($setting_def) {
-					case 'choice':
-						$found = false;
-						if (isset($setting_def['options'])) {
-							foreach ($setting_def['options'] as $opt) {
-								if ($opt['value'] == $value) {
-									$found = true;
-									break;
-								}
-							}
-						}
-						if (!$found) {
-							$value = null;
-						}
-						break;
+            if ($package->isUsersource()) {
+                $usersource = new Usersource(); // this method only creates the installcontext for NEW app instances
+                $usersource->app = $app;
+                $usersource->title = $app->title;
+                $usersource->type = $usersource_type;
+            }
 
-					case 'checkbox':
-						if ($value === true || $value === 1 || $value === "1" || $value === "true") {
-							$value = true;
-						} else {
-							$value = false;
-						}
-						break;
-				}
-			}
+            return new InstallerContext($container, $native_app, $settings, $usersource);
+        }
 
-			if ($value === null && isset($setting_def['default_value'])) {
-				$value = $setting_def['default_value'];
-			}
+        return new InstallerContext($container, null, $settings);
+    }
 
-			if ($value !== null) {
-				$settings[$setting_def['name']] = $value;
-			}
 
-			#------------------------------------------
-			# include dependant children
-			# TODO: meant to be expanded to allow more options and diffent kinds of dependant fields
-			#------------------------------------------
-			if (isset($setting_def['inline_dependant'])) {
-				$dep = $setting_def['inline_dependant'];
-				$val = isset($settings_form[$dep['name']]) ? $settings_form[$dep['name']] : null;
-				if ($val === null && isset($dep['default_value'])) {
-					$val = $dep['default_value'];
-				}
-				if ($val !== null) {
-					$settings[$dep['name']] = $val;
-				}
-			}
-		}
+    /**
+     * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
+     *
+     * @param  AppPackage                                                                 $package
+     * @param  AppInstance                                                                $app
+     * @return \Application\DeskPRO\App\Native\InstallerHandler\InstallerHandlerInterface
+     */
+    protected function createInstallHandler(AppPackage $package, AppInstance $app)
+    {
+        if ($package->native_name) {
+            $native_app = $this->manager->getNativeApp($app);
+            if ($class = $native_app->getConfig()->getInstallerHandlerClass()) {
+                return new $class($this->package['settings_def']);
+            }
+        }
 
-		return $settings;
-	}
+        return new NoopInstallerHandler();
+    }
+
+
+    /**
+     * @param  AppPackage $package
+     * @param  array      $settings_form
+     * @return array
+     */
+    public static function readAppSettings(AppPackage $package, array $settings_form)
+    {
+        $settings = array();
+        foreach ($package->settings_def as $setting_def) {
+            $value = isset($settings_form[$setting_def['name']]) ? $settings_form[$setting_def['name']] : null;
+            if (!is_scalar($value)) {
+                $value = null;
+            }
+
+            if ($value !== null) {
+                switch ($setting_def) {
+                    case 'choice':
+                        $found = false;
+                        if (isset($setting_def['options'])) {
+                            foreach ($setting_def['options'] as $opt) {
+                                if ($opt['value'] == $value) {
+                                    $found = true;
+                                    break;
+                                }
+                            }
+                        }
+                        if (!$found) {
+                            $value = null;
+                        }
+                        break;
+
+                    case 'checkbox':
+                        if ($value === true || $value === 1 || $value === "1" || $value === "true") {
+                            $value = true;
+                        } else {
+                            $value = false;
+                        }
+                        break;
+                }
+            }
+
+            if ($value === null && isset($setting_def['default_value'])) {
+                $value = $setting_def['default_value'];
+            }
+
+            if ($value !== null) {
+                $settings[$setting_def['name']] = $value;
+            }
+
+            #------------------------------------------
+            # include dependant children
+            # TODO: meant to be expanded to allow more options and diffent kinds of dependant fields
+            #------------------------------------------
+            if (isset($setting_def['inline_dependant'])) {
+                $dep = $setting_def['inline_dependant'];
+                $val = isset($settings_form[$dep['name']]) ? $settings_form[$dep['name']] : null;
+                if ($val === null && isset($dep['default_value'])) {
+                    $val = $dep['default_value'];
+                }
+                if ($val !== null) {
+                    $settings[$dep['name']] = $val;
+                }
+            }
+        }
+
+        return $settings;
+    }
 }

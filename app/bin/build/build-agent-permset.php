@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run from the CLI.\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run from the CLI.\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 chdir(__DIR__);
@@ -19,8 +19,8 @@ require DP_ROOT . '/bin/build/php-path.php';
 
 $scanner = new \Application\InstallBundle\Data\AgentGroupPermScanner();
 $perm_names = array(
-	'all'  => $scanner->getNames(),
-	'safe' => $scanner->getSafeNames()
+    'all'  => $scanner->getNames(),
+    'safe' => $scanner->getSafeNames()
 );
 
 $write_path = DP_ROOT . '/sys/Resources/agent-perm-names.php';

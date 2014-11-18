@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1413512384 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Remove 'styles' table");
-		$this->execMutateSql("ALTER TABLE templates DROP FOREIGN KEY FK_6F287D8EBACD6074");
-		$this->execMutateSql("DROP INDEX IDX_6F287D8EBACD6074 ON templates");
-		$this->execMutateSql("ALTER TABLE templates DROP style_id");
-		$this->execMutateSql("DROP TABLE styles");
-	}
+    public function run()
+    {
+        $this->out("Remove 'styles' table");
+        $this->execMutateSql("ALTER TABLE templates DROP FOREIGN KEY FK_6F287D8EBACD6074");
+        $this->execMutateSql("DROP INDEX IDX_6F287D8EBACD6074 ON templates");
+        $this->execMutateSql("ALTER TABLE templates DROP style_id");
+        $this->execMutateSql("DROP TABLE styles");
+    }
 }

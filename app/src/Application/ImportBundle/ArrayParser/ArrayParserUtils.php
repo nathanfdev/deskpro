@@ -37,133 +37,134 @@ use Orb\Util\Strings;
 
 class ArrayParserUtils
 {
-	private function __construct() {}
+    private function __construct() {}
 
 
-	/**
-	 * @param string $type
-	 * @param string $field
-	 * @param array $data
-	 * @param mixed $value
-	 */
-	public static function copyValue($type, $field, array $data, &$value)
-	{
-		if (!isset($data[$field])) {
-			return;
-		}
+    /**
+     * @param string $type
+     * @param string $field
+     * @param array  $data
+     * @param mixed  $value
+     */
+    public static function copyValue($type, $field, array $data, &$value)
+    {
+        if (!isset($data[$field])) {
+            return;
+        }
 
-		$clean_val = function($type, $v) use (&$clean_val) {
-			switch ($type) {
-				case 'raw':
-					return $v;
-					break;
-				case 'int':
-					return (int)$v;
-					break;
-				case 'bool':
-					if ($v === 1 || $v === true || $v === "1" || $v === "true" || $v === "yes") {
-						return true;
-					} else {
-						return false;
-					}
-				case 'string':
-					return (string)$v;
-					break;
-				case 'lstring':
-					return Strings::utf8_strtolower((string)$v);
-					break;
-				case 'array':
-					return is_array($v) ? array_values($v) : array($v);
-					break;
-				case 'karray':
-					return is_array($v) ? $v : array($v);
-					break;
-				case 'date':
-					try {
-						if (Numbers::isInteger($v)) {
-							return new \DateTime("@$v");
-						} else {
-							return \DateTime::createFromFormat('Y-m-d H:i:s', $v);
-						}
-					} catch (\Exception $e) {
-						return null;
-					}
-					break;
-				default:
-					// type[] -- string[] means array of strings, etc
-					if (preg_match('#^(.*?)\[\]$#', $type, $m)) {
+        $clean_val = function ($type, $v) use (&$clean_val) {
+            switch ($type) {
+                case 'raw':
+                    return $v;
+                    break;
+                case 'int':
+                    return (int)$v;
+                    break;
+                case 'bool':
+                    if ($v === 1 || $v === true || $v === "1" || $v === "true" || $v === "yes") {
+                        return true;
+                    } else {
+                        return false;
+                    }
+                case 'string':
+                    return (string)$v;
+                    break;
+                case 'lstring':
+                    return Strings::utf8_strtolower((string)$v);
+                    break;
+                case 'array':
+                    return is_array($v) ? array_values($v) : array($v);
+                    break;
+                case 'karray':
+                    return is_array($v) ? $v : array($v);
+                    break;
+                case 'date':
+                    try {
+                        if (Numbers::isInteger($v)) {
+                            return new \DateTime("@$v");
+                        } else {
+                            return \DateTime::createFromFormat('Y-m-d H:i:s', $v);
+                        }
+                    } catch (\Exception $e) {
+                        return null;
+                    }
+                    break;
+                default:
+                    // type[] -- string[] means array of strings, etc
+                    if (preg_match('#^(.*?)\[\]$#', $type, $m)) {
 
-						if (!is_array($v)) {
-							$v = array($v);
-						}
-						$v = array_values($v);
+                        if (!is_array($v)) {
+                            $v = array($v);
+                        }
+                        $v = array_values($v);
 
-						foreach ($v as &$subv) {
-							$subv = $clean_val($m[1], $subv);
-						}
-						unset($subv);
-						return $v;
-					} else {
-						throw new \InvalidArgumentException("Unknown type: $type");
-					}
-			}
-		};
+                        foreach ($v as &$subv) {
+                            $subv = $clean_val($m[1], $subv);
+                        }
+                        unset($subv);
 
-		return $value->$field = $clean_val($type, $data[$field]);
-	}
+                        return $v;
+                    } else {
+                        throw new \InvalidArgumentException("Unknown type: $type");
+                    }
+            }
+        };
 
-
-	/**
-	 * @param array $mapping
-	 * @param array $data
-	 * @param mixed $value
-	 */
-	public static function copyValueMapping(array $mapping, array $data, &$value)
-	{
-		foreach ($mapping as $f => $t) {
-			self::copyValue($t, $f, $data, $value);
-		}
-	}
+        return $value->$field = $clean_val($type, $data[$field]);
+    }
 
 
-	/**
-	 * @param array $data
-	 * @return array
-	 */
-	public static function cleanArray(array $data)
-	{
-		foreach ($data as &$v) {
-			if (is_string($v)) {
-				$v = trim($v);
-				$v = Strings::utf8_bad_strip($v);
-			} else if (is_array($v)) {
-				$v = self::cleanArray($v);
-			}
-		}
-		unset($v);
-
-		$data = Arrays::removeEmptyString($data);
-		$data = Arrays::removeEmptyArray($data);
-		$data = Arrays::removeNull($data);
-
-		return $data;
-	}
+    /**
+     * @param array $mapping
+     * @param array $data
+     * @param mixed $value
+     */
+    public static function copyValueMapping(array $mapping, array $data, &$value)
+    {
+        foreach ($mapping as $f => $t) {
+            self::copyValue($t, $f, $data, $value);
+        }
+    }
 
 
-	/**
-	 * @param string|int $value
-	 * @return \DateTime|null
-	 */
-	public static function parseDateValue($value)
-	{
-		try {
-			if (Numbers::isInteger($value)) {
-				return new \DateTime("@$value");
-			} else {
-				return \DateTime::createFromFormat('Y-m-d H:i:s', $value);
-			}
-		} catch (\Exception $e) {
-			return null;
-		}
-	}
+    /**
+     * @param  array $data
+     * @return array
+     */
+    public static function cleanArray(array $data)
+    {
+        foreach ($data as &$v) {
+            if (is_string($v)) {
+                $v = trim($v);
+                $v = Strings::utf8_bad_strip($v);
+            } elseif (is_array($v)) {
+                $v = self::cleanArray($v);
+            }
+        }
+        unset($v);
+
+        $data = Arrays::removeEmptyString($data);
+        $data = Arrays::removeEmptyArray($data);
+        $data = Arrays::removeNull($data);
+
+        return $data;
+    }
+
+
+    /**
+     * @param  string|int     $value
+     * @return \DateTime|null
+     */
+    public static function parseDateValue($value)
+    {
+        try {
+            if (Numbers::isInteger($value)) {
+                return new \DateTime("@$value");
+            } else {
+                return \DateTime::createFromFormat('Y-m-d H:i:s', $value);
+            }
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 }

@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352916197 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Re-compile custom templates");
-		$this->recompileCustomTemplates();
-	}
+    public function run()
+    {
+        $this->out("Re-compile custom templates");
+        $this->recompileCustomTemplates();
+    }
 }

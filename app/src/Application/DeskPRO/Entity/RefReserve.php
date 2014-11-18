@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -48,60 +47,60 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class RefReserve extends DomainObject
 {
-	/**
-	 * @var string
-	 */
-	protected $obj_type = null;
+    /**
+     * @var string
+     */
+    protected $obj_type = null;
 
-	/**
-	 * @var string
-	 */
-	protected $ref = null;
+    /**
+     * @var string
+     */
+    protected $ref = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public function __construct()
-	{
-		$this->date_created = new \DateTime();
-	}
+    public function __construct()
+    {
+        $this->date_created = new \DateTime();
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->inheritanceType = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->generatorType = ClassMetadataInfo::GENERATOR_TYPE_NONE;
-		$metadata->setPrimaryTable(array(
-			'name' => 'ref_reserve'
-		));
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->inheritanceType = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->changeTrackingPolicy = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType = ClassMetadataInfo::GENERATOR_TYPE_NONE;
+        $metadata->setPrimaryTable(array(
+            'name' => 'ref_reserve'
+        ));
 
-		$metadata->mapField(array(
-			'columnName' => 'obj_type',
-			'fieldName'  => 'obj_type',
-			'type'       => 'string',
-			'length'     => 50,
-			'nullable'   => false,
-			'id'         => true
-		));
-		$metadata->mapField(array(
-			'columnName' => 'ref',
-			'fieldName'  => 'ref',
-			'type'       => 'string',
-			'length'     => 255,
-			'nullable'   => false,
-			'id'         => true
-		));
-		$metadata->mapField(array(
-			'fieldName'  => 'date_created',
-			'columnName' => 'date_created',
-			'type'       => 'datetime',
-			'nullable'   => false,
-		));
-	}
+        $metadata->mapField(array(
+            'columnName' => 'obj_type',
+            'fieldName'  => 'obj_type',
+            'type'       => 'string',
+            'length'     => 50,
+            'nullable'   => false,
+            'id'         => true
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'ref',
+            'fieldName'  => 'ref',
+            'type'       => 'string',
+            'length'     => 255,
+            'nullable'   => false,
+            'id'         => true
+        ));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_created',
+            'columnName' => 'date_created',
+            'type'       => 'datetime',
+            'nullable'   => false,
+        ));
+    }
 }

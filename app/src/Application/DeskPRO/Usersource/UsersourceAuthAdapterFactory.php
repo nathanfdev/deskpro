@@ -51,52 +51,52 @@ use Symfony\Component\Routing\RouterInterface;
  */
 class UsersourceAuthAdapterFactory
 {
-	/**
-	 * @var DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @var RouterInterface
-	 */
-	private $router;
+    /**
+     * @var RouterInterface
+     */
+    private $router;
 
-	/**
-	 * @var Session
-	 */
-	private $session;
+    /**
+     * @var Session
+     */
+    private $session;
 
-	/**
-	 * @var string "user" or "agent"/"admin"/etc
-	 */
-	private $interface;
+    /**
+     * @var string "user" or "agent"/"admin"/etc
+     */
+    private $interface;
 
-	/**
-	 * @var Request
-	 */
-	private $request;
-
-
-	public function __construct(DeskproContainer $container, RouterInterface $router, Request $request, Session $session, $interface)
-	{
-		$this->container = $container;
-		$this->router = $router;
-		$this->session = $session;
-		$this->interface = $interface;
-		$this->request = $request;
-	}
+    /**
+     * @var Request
+     */
+    private $request;
 
 
-	/**
-	 * Logic around preparing an auth adapter for use
-	 *
-	 * @param Usersource $usersource
-	 * @param null $displayContext
-	 * @return \Orb\Auth\Adapter\AdapterInterface
-	 */
-	public function getAuthAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
-	{
-		$adapter = $usersource->getAdapter();
+    public function __construct(DeskproContainer $container, RouterInterface $router, Request $request, Session $session, $interface)
+    {
+        $this->container = $container;
+        $this->router = $router;
+        $this->session = $session;
+        $this->interface = $interface;
+        $this->request = $request;
+    }
+
+
+    /**
+     * Logic around preparing an auth adapter for use
+     *
+     * @param  Usersource                         $usersource
+     * @param  null                               $displayContext
+     * @return \Orb\Auth\Adapter\AdapterInterface
+     */
+    public function getAuthAdapter(Usersource $usersource, $displayContext = null, $useInterface = null)
+    {
+        $adapter = $usersource->getAdapter();
 
         if ($adapter instanceof EntityManagerAwareInterface) {
             $adapter->setEm($this->container->getEm());
@@ -108,102 +108,103 @@ class UsersourceAuthAdapterFactory
             $adapter->setEm($this->container->getEm());
         }
 
-		if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
-			$adapter->setLogger($this->_getAdapterLogger());
-		}
+        if (App::getConfig('debug.enable_usersource_log') && $adapter instanceof \Orb\Log\Loggable) {
+            $adapter->setLogger($this->_getAdapterLogger());
+        }
 
-		if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
-			$adapter->setFormData($_POST);
-		}
+        if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
+            $adapter->setFormData($_POST);
+        }
 
-		if ($displayContext && $adapter instanceof \Orb\Auth\Adapter\DisplayContextInterface) {
-			$adapter->setDisplayContext($displayContext);
-		}
+        if ($displayContext && $adapter instanceof \Orb\Auth\Adapter\DisplayContextInterface) {
+            $adapter->setDisplayContext($displayContext);
+        }
 
-		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-			$route_type = 'user';
-			if ($this->isAgentInterface($useInterface)) {
-				$route_type = 'agent';
-			}
+        if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
+            $route_type = 'user';
+            if ($this->isAgentInterface($useInterface)) {
+                $route_type = 'agent';
+            }
 
-			if ($adapter instanceof SamlAdapterInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
-				$url = $this->router->generate(
-					$route_type . '_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
-					RouterInterface::ABSOLUTE_URL
-				);
-			} elseif ($adapter instanceof SamlAdapterInterface && $displayContext == SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND) {
-				$url = $this->router->generate(
-					$route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
-					RouterInterface::ABSOLUTE_URL
-				);
-			} elseif ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
-				$url = $this->router->generate(
-					$route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
-					RouterInterface::ABSOLUTE_URL
-				);
-			} else {
-				$url = $this->router->generate(
-					$route_type . '_login_callback', array('usersource_id' => $usersource['id']),
-					RouterInterface::ABSOLUTE_URL
-				);
-			}
+            if ($adapter instanceof SamlAdapterInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
+                $url = $this->router->generate(
+                    $route_type . '_login_authenticate', array('usersource_id' => $usersource['id'], 'context' => SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND),
+                    RouterInterface::ABSOLUTE_URL
+                );
+            } elseif ($adapter instanceof SamlAdapterInterface && $displayContext == SamlAdapterInterface::CONTEXT_SAML_REDIRECT_BACKGROUND) {
+                $url = $this->router->generate(
+                    $route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    RouterInterface::ABSOLUTE_URL
+                );
+            } elseif ($adapter instanceof SsoCapableInterface && $displayContext == SsoLoginActionInterface::CONTEXT_BACKGROUND) {
+                $url = $this->router->generate(
+                    $route_type . '_login_usersource_sso', array('usersource_id' => $usersource['id']),
+                    RouterInterface::ABSOLUTE_URL
+                );
+            } else {
+                $url = $this->router->generate(
+                    $route_type . '_login_callback', array('usersource_id' => $usersource['id']),
+                    RouterInterface::ABSOLUTE_URL
+                );
+            }
 
-			$adapter->setCallbackUrl(
-				$url
-			);
-		}
+            $adapter->setCallbackUrl(
+                $url
+            );
+        }
 
-		if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
-			$auth_state = new \Orb\Auth\StateHandler\ArrayAccessWrapper($this->session);
-			$auth_state->setClearStateMethod('clear');
+        if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
+            $auth_state = new \Orb\Auth\StateHandler\ArrayAccessWrapper($this->session);
+            $auth_state->setClearStateMethod('clear');
 
-			$adapter->setStateHandler($auth_state);
-		}
+            $adapter->setStateHandler($auth_state);
+        }
 
-		if ($adapter instanceof \Orb\Auth\Adapter\SsoCapableInterface) {
-			if ($this->isAgentInterface($useInterface)) {
-				$logout_url = $usersource->getAdapter()->getAgentLogoutRedirectUrl();
-			} else {
-				$logout_url = $usersource->getAdapter()->getUserLogoutRedirectUrl();
-			}
+        if ($adapter instanceof \Orb\Auth\Adapter\SsoCapableInterface) {
+            if ($this->isAgentInterface($useInterface)) {
+                $logout_url = $usersource->getAdapter()->getAgentLogoutRedirectUrl();
+            } else {
+                $logout_url = $usersource->getAdapter()->getUserLogoutRedirectUrl();
+            }
 
-			$adapter->setLogoutRedirectUrl($logout_url);
-		}
+            $adapter->setLogoutRedirectUrl($logout_url);
+        }
 
-		if ($adapter instanceof SamlAdapterInterface) {
-			$adapter->setMetadataXmlUrl(
-				$this->router->generate(
-					'user_saml_metadata', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
-				));
-			$adapter->setSingleLogoutServiceUrl(
-				$this->router->generate(
-					'user_saml_sls', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
-				)
-			);
-		}
+        if ($adapter instanceof SamlAdapterInterface) {
+            $adapter->setMetadataXmlUrl(
+                $this->router->generate(
+                    'user_saml_metadata', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
+                ));
+            $adapter->setSingleLogoutServiceUrl(
+                $this->router->generate(
+                    'user_saml_sls', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
+                )
+            );
+        }
 
-		return $adapter;
-	}
-
-
-	protected function _getAdapterLogger()
-	{
-		static $logger = null;
-
-		if ($logger === null) {
-			$logger = new \Orb\Log\Logger();
-			$logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
-		}
-
-		return $logger;
-	}
+        return $adapter;
+    }
 
 
-	private function isAgentInterface($useInterface = null)
-	{
-		if ($useInterface && $useInterface != 'agent') {
-			return false;
-		}
-		return $this->interface && $this->interface != 'user';
-	}
+    protected function _getAdapterLogger()
+    {
+        static $logger = null;
+
+        if ($logger === null) {
+            $logger = new \Orb\Log\Logger();
+            $logger->addWriter(new \Orb\Log\Writer\Stream($this->container->getLogDir() . '/usersource_log.log'));
+        }
+
+        return $logger;
+    }
+
+
+    private function isAgentInterface($useInterface = null)
+    {
+        if ($useInterface && $useInterface != 'agent') {
+            return false;
+        }
+
+        return $this->interface && $this->interface != 'user';
+    }
 }

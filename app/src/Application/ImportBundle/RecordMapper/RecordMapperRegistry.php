@@ -33,107 +33,98 @@ namespace Application\ImportBundle\RecordMapper;
 
 class RecordMapperRegistry implements \ArrayAccess, \IteratorAggregate
 {
-	/**
-	 * @var \Application\ImportBundle\RecordMapper\RecordMapperInterface[]
-	 */
-	private $mappers = array();
+    /**
+     * @var \Application\ImportBundle\RecordMapper\RecordMapperInterface[]
+     */
+    private $mappers = array();
 
+    /**
+     * @param string                $type
+     * @param RecordMapperInterface $mapper
+     */
+    public function addMapper($type, RecordMapperInterface $mapper)
+    {
+        if (isset($this->mappers[$type])) {
+            throw new \InvalidArgumentException("Mapper already exists: $type");
+        }
 
-	/**
-	 * @param string $type
-	 * @param RecordMapperInterface $mapper
-	 */
-	public function addMapper($type, RecordMapperInterface $mapper)
-	{
-		if (isset($this->mappers[$type])) {
-			throw new \InvalidArgumentException("Mapper already exists: $type");
-		}
+        $this->mappers[$type] = $mapper;
+    }
 
-		$this->mappers[$type] = $mapper;
-	}
+    /**
+     * @param  string                $type
+     * @return RecordMapperInterface
+     */
+    public function getMapper($type)
+    {
+        if (!isset($this->mappers[$type])) {
+            throw new \InvalidArgumentException("Unknown mapper type: $type");
+        }
 
+        return $this->mappers[$type];
+    }
 
-	/**
-	 * @param string $type
-	 * @return RecordMapperInterface
-	 */
-	public function getMapper($type)
-	{
-		if (!isset($this->mappers[$type])) {
-			throw new \InvalidArgumentException("Unknown mapper type: $type");
-		}
+    /**
+     * @param  string   $type
+     * @param  mixed    $value
+     * @return int|null
+     */
+    public function findIdFromMappedValue($type, $value)
+    {
+        return $this->getMapper($type)->findIdFromValue($value);
+    }
 
-		return $this->mappers[$type];
-	}
+    /**
+     * @param string $type
+     * @param mixed  $record
+     */
+    public function learnMapping($type, $record)
+    {
+        $mapper = $this->getMapper($type);
+        if (!($mapper instanceof LearnableRecordMapperInterface)) {
+            throw new \InvalidArgumentException("$type is not a learnable record mapper");
+        }
 
+        $mapper->learnRecord($record);
+    }
 
-	/**
-	 * @param string $type
-	 * @param mixed $value
-	 * @return int|null
-	 */
-	public function findIdFromMappedValue($type, $value)
-	{
-		return $this->getMapper($type)->findIdFromValue($value);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->mappers);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetExists($offset)
+    {
+        return isset($this->mappers[$offset]);
+    }
 
-	/**
-	 * @param string $type
-	 * @param mixed $record
-	 */
-	public function learnMapping($type, $record)
-	{
-		$mapper = $this->getMapper($type);
-		if (!($mapper instanceof LearnableRecordMapperInterface)) {
-			throw new \InvalidArgumentException("$type is not a learnable record mapper");
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetGet($offset)
+    {
+        return $this->mappers[$offset];
+    }
 
-		$mapper->learnRecord($record);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetSet($offset, $value)
+    {
+        $this->addMapper($offset, $value);
+    }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getIterator()
-	{
-		return new \ArrayIterator($this->mappers);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function offsetExists($offset)
-	{
-		return isset($this->mappers[$offset]);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function offsetGet($offset)
-	{
-		return $this->mappers[$offset];
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function offsetSet($offset, $value)
-	{
-		$this->addMapper($offset, $value);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function offsetUnset($offset)
-	{
-		unset($this->mappers[$offset]);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function offsetUnset($offset)
+    {
+        unset($this->mappers[$offset]);
+    }
 }

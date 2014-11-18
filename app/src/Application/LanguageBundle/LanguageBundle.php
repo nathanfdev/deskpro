@@ -34,10 +34,8 @@
 
 namespace Application\LanguageBundle;
 
-
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class LanguageBundle extends Bundle
 {
 }
- 

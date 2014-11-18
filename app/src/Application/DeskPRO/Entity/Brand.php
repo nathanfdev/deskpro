@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use Application\DeskPRO\Entity\Blob;
 
 /**
  * @property int $id
@@ -47,64 +46,64 @@ use Application\DeskPRO\Entity\Blob;
  */
 class Brand extends DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var string the brand name
-	 */
-	protected $name;
+    /**
+     * @var string the brand name
+     */
+    protected $name;
 
-	/**
-	 * @var string the theme id ie. "base"
-	 */
-	protected $theme_id;
+    /**
+     * @var string the theme id ie. "base"
+     */
+    protected $theme_id;
 
-	/**
-	 * @var Blob
-	 */
-	protected $logo_blob;
-
-
-	public function getId()
-	{
-		return $this->id;
-	}
-
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, $deep, $visited);
-		$data['logo_blob'] = $this->logo_blob ? $this->logo_blob->toApiData() : null;
-
-		return $data;
-	}
+    /**
+     * @var Blob
+     */
+    protected $logo_blob;
 
 
-	public function __construct($name = 'Default Brand', $theme_id = 'standard')
-	{
-		$this->id = 0;
-		$this->name = $name;
-		$this->theme_id = $theme_id;
-	}
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+        $data['logo_blob'] = $this->logo_blob ? $this->logo_blob->toApiData() : null;
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$builder = new ClassMetadataBuilder($metadata);
-		$builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Brand');
-		$builder->setChangeTrackingPolicyNotify();
-		$builder->setTable('brands');
+        return $data;
+    }
 
-		$builder->mapId();
-		$builder->mapString('name');
-		$builder->mapString('theme_id');
-		$builder->addOwningOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob');
-	}
+
+    public function __construct($name = 'Default Brand', $theme_id = 'standard')
+    {
+        $this->id = 0;
+        $this->name = $name;
+        $this->theme_id = $theme_id;
+    }
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $builder = new ClassMetadataBuilder($metadata);
+        $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Brand');
+        $builder->setChangeTrackingPolicyNotify();
+        $builder->setTable('brands');
+
+        $builder->mapId();
+        $builder->mapString('name');
+        $builder->mapString('theme_id');
+        $builder->addOwningOneToOne('logo_blob', 'Application\DeskPRO\Entity\Blob');
+    }
 }

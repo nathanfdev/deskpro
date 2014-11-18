@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1413325526 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adds brands");
-		$this->execMutateSql("CREATE TABLE brands (id INT AUTO_INCREMENT NOT NULL, logo_blob_id INT DEFAULT NULL, name VARCHAR(256) DEFAULT NULL, UNIQUE INDEX UNIQ_7EA24434D91464D5 (logo_blob_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE brands ADD CONSTRAINT FK_7EA24434D91464D5 FOREIGN KEY (logo_blob_id) REFERENCES blobs (id)");
-	}
+    public function run()
+    {
+        $this->out("Adds brands");
+        $this->execMutateSql("CREATE TABLE brands (id INT AUTO_INCREMENT NOT NULL, logo_blob_id INT DEFAULT NULL, name VARCHAR(256) DEFAULT NULL, UNIQUE INDEX UNIQ_7EA24434D91464D5 (logo_blob_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE brands ADD CONSTRAINT FK_7EA24434D91464D5 FOREIGN KEY (logo_blob_id) REFERENCES blobs (id)");
+    }
 }

@@ -39,5 +39,5 @@ namespace Application\DeskPRO\Search\Searcher;
  */
 class UnsupportedOperation extends \BadMethodCallException
 {
-	
+
 }

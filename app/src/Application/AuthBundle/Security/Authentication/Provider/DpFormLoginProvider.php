@@ -113,7 +113,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
      *
      * @param TokenInterface $token A TokenInterface instance
      *
-     * @return bool    true if the implementation supports the Token, false otherwise
+     * @return bool true if the implementation supports the Token, false otherwise
      */
     public function supports(TokenInterface $token)
     {
@@ -121,8 +121,8 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
     }
 
     /**
-     * @param TokenInterface $token
-     * @param Usersource[]   $usersources
+     * @param  TokenInterface $token
+     * @param  Usersource[]   $usersources
      * @return Result
      */
     protected function getDpAuthResultForGivenUsersources(TokenInterface $token, AuthenticationManager $auth_manager)
@@ -148,7 +148,6 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 }
 
                 if ($authResult->isValid()) {
-
                     return array($authResult, $us);
                 }
             }
@@ -159,4 +158,3 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
         return array($failedResult, $us);
     }
 }
- 

@@ -39,8 +39,8 @@ use Application\PortalBundle\Controller\AbstractController;
 
 class SearchController extends AbstractController
 {
-	public function indexAction()
-	{
-		return $this->render('Theme:Search:index.html.twig');
-	}
+    public function indexAction()
+    {
+        return $this->render('Theme:Search:index.html.twig');
+    }
 }

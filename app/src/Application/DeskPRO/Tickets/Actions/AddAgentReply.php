@@ -50,54 +50,55 @@ use Orb\Util\CheckedOptionsArray;
  */
 class AddAgentReply extends AbstractContainerAwareAction implements ActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('by_agent_id');
-		$options->addRequiredNames('reply_text');
-		$options->addValidNames('by_assigned_agent');
-		$options->addValidNames('no_formatter');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('by_agent_id');
+        $options->addRequiredNames('reply_text');
+        $options->addValidNames('by_assigned_agent');
+        $options->addValidNames('no_formatter');
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$agent = null;
-		if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {
-			$agent = $ticket->agent;
-		}
-		if (!$agent) {
-			$agent = $this->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
-		}
+        return $options;
+    }
 
-		if (!$agent) {
-			return;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $agent = null;
+        if ($this->getActionOption('by_assigned_agent') && $ticket->agent) {
+            $agent = $ticket->agent;
+        }
+        if (!$agent) {
+            $agent = $this->getContainer()->getAgentData()->get($this->getActionOption('by_agent_id'));
+        }
 
-		$em = $this->getContainer()->getEm();
+        if (!$agent) {
+            return;
+        }
 
-		$message = new TicketMessage();
-		$message->person = $agent;
-		$message->date_created = new \DateTime('+1 second');
+        $em = $this->getContainer()->getEm();
 
-		$reply_text = $this->getActionOption('reply_text');
+        $message = new TicketMessage();
+        $message->person = $agent;
+        $message->date_created = new \DateTime('+1 second');
 
-		if (!$this->getActionOption('no_formatter')) {
-			$formatter = new SnippetFormatter($this->getContainer()->getTwig());
-			$formatter->addVar('user_vars', $context->getUserVars());
-			$reply_text = $formatter->formatText($reply_text, $ticket);
-		}
+        $reply_text = $this->getActionOption('reply_text');
 
-		$message->setMessage($reply_text);
+        if (!$this->getActionOption('no_formatter')) {
+            $formatter = new SnippetFormatter($this->getContainer()->getTwig());
+            $formatter->addVar('user_vars', $context->getUserVars());
+            $reply_text = $formatter->formatText($reply_text, $ticket);
+        }
 
-		$ticket->addMessage($message);
-		$em->persist($message);
-		$em->flush($message);
-	}
+        $message->setMessage($reply_text);
+
+        $ticket->addMessage($message);
+        $em->persist($message);
+        $em->flush($message);
+    }
 }

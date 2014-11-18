@@ -67,11 +67,11 @@ class NewTask extends AbstractType
 
         $builder->add('assigned_agent', 'entity', array(
             'class' => 'Application\DeskPRO\Entity\Person',
-			'query_builder' => function(\Doctrine\ORM\EntityRepository $er) {
-				return $er->createQueryBuilder('p')
-						->where('p.is_agent = true')
-						->orderBy('p.name', 'ASC');
-			},
+            'query_builder' => function (\Doctrine\ORM\EntityRepository $er) {
+                return $er->createQueryBuilder('p')
+                        ->where('p.is_agent = true')
+                        ->orderBy('p.name', 'ASC');
+            },
             'property' => 'name',
             'required' => false,
             'empty_value'=> '--Agent--'

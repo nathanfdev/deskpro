@@ -34,82 +34,81 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
 
 class UserTrackController extends AbstractController
 {
-	####################################################################################################################
-	# win-header-table
-	####################################################################################################################
+    ####################################################################################################################
+    # win-header-table
+    ####################################################################################################################
 
-	public function winHeaderTableAction()
-	{
-		$cut = new \DateTime("@" . (time() - $this->settings->get('core_chat.user_online_time')));
+    public function winHeaderTableAction()
+    {
+        $cut = new \DateTime("@" . (time() - $this->settings->get('core_chat.user_online_time')));
 
-		$visitors = $this->em->createQuery("
-			SELECT v, t, ti, ts, p
-			FROM DeskPRO:Visitor v
-			LEFT JOIN v.last_track t
-			LEFT JOIN v.last_track_soft ts
-			LEFT JOIN v.visit_track ti
-			LEFT JOIN v.person p
-			WHERE v.date_last > ?0 AND v.last_track IS NOT NULL AND v.hint_hidden = 0
-			ORDER BY v.date_last DESC
-		")->setMaxResults(100)->execute(array($cut));
+        $visitors = $this->em->createQuery("
+            SELECT v, t, ti, ts, p
+            FROM DeskPRO:Visitor v
+            LEFT JOIN v.last_track t
+            LEFT JOIN v.last_track_soft ts
+            LEFT JOIN v.visit_track ti
+            LEFT JOIN v.person p
+            WHERE v.date_last > ?0 AND v.last_track IS NOT NULL AND v.hint_hidden = 0
+            ORDER BY v.date_last DESC
+        ")->setMaxResults(100)->execute(array($cut));
 
-		return $this->render('AgentBundle:UserTrack:header-table.html.twig', array(
-			'visitors' => $visitors
-		));
-	}
+        return $this->render('AgentBundle:UserTrack:header-table.html.twig', array(
+            'visitors' => $visitors
+        ));
+    }
 
-	####################################################################################################################
-	# view
-	####################################################################################################################
+    ####################################################################################################################
+    # view
+    ####################################################################################################################
 
-	public function viewAction($visitor_id)
-	{
-		$visitor = $this->em->find('DeskPRO:Visitor', $visitor_id);
+    public function viewAction($visitor_id)
+    {
+        $visitor = $this->em->find('DeskPRO:Visitor', $visitor_id);
 
-		if (!$visitor) {
-			throw $this->createNotFoundException();
-		}
+        if (!$visitor) {
+            throw $this->createNotFoundException();
+        }
 
-		$tracks = $this->em->createQuery("
-			SELECT t
-			FROM DeskPRO:VisitorTrack t
-			WHERE t.visitor = ?0
-			ORDER BY t.id DESC
-		")->execute(array($visitor));
+        $tracks = $this->em->createQuery("
+            SELECT t
+            FROM DeskPRO:VisitorTrack t
+            WHERE t.visitor = ?0
+            ORDER BY t.id DESC
+        ")->execute(array($visitor));
 
-		$visit_tracks = $this->em->createQuery("
-			SELECT t
-			FROM DeskPRO:VisitorTrack t
-			WHERE t.visitor = ?0 AND t.is_new_visit = true AND t.is_soft_track = 0
-			ORDER BY t.id DESC
-		")->execute(array($visitor));
+        $visit_tracks = $this->em->createQuery("
+            SELECT t
+            FROM DeskPRO:VisitorTrack t
+            WHERE t.visitor = ?0 AND t.is_new_visit = true AND t.is_soft_track = 0
+            ORDER BY t.id DESC
+        ")->execute(array($visitor));
 
-		$ip_addresses  = array();
-		$user_agents   = array();
-		$geo_countries = array();
-		foreach ($visit_tracks as $t) {
-			if ($t->ip_address) {
-				$ip_addresses[$t->ip_address] = $t->ip_address;
-			}
-			if ($t->user_agent) {
-				$user_agents[$t->user_agent] = $t->user_agent;
-			}
-			if ($t->geo_country) {
-				$geo_countries[$t->geo_country] = $t->geo_country;
-			}
-		}
+        $ip_addresses  = array();
+        $user_agents   = array();
+        $geo_countries = array();
+        foreach ($visit_tracks as $t) {
+            if ($t->ip_address) {
+                $ip_addresses[$t->ip_address] = $t->ip_address;
+            }
+            if ($t->user_agent) {
+                $user_agents[$t->user_agent] = $t->user_agent;
+            }
+            if ($t->geo_country) {
+                $geo_countries[$t->geo_country] = $t->geo_country;
+            }
+        }
 
-		return $this->render('AgentBundle:UserTrack:view.html.twig', array(
-			'visitor'         => $visitor,
-			'tracks'          => $tracks,
-			'visit_tracks'    => $visit_tracks,
-			'ip_addresses'    => $ip_addresses,
-			'user_agents'     => $user_agents,
-			'geo_countries'   => $geo_countries,
-		));
-	}
+        return $this->render('AgentBundle:UserTrack:view.html.twig', array(
+            'visitor'         => $visitor,
+            'tracks'          => $tracks,
+            'visit_tracks'    => $visit_tracks,
+            'ip_addresses'    => $ip_addresses,
+            'user_agents'     => $user_agents,
+            'geo_countries'   => $geo_countries,
+        ));
+    }
 }

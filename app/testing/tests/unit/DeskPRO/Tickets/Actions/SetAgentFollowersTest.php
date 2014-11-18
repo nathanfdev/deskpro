@@ -3,61 +3,61 @@ namespace DpUnitTests\DeskPRO\Tickets\Actions;
 
 use Application\DeskPRO\Tickets\Actions\SetAgentFollowers;
 use DpTestingMocks\ContainerMock;
-use Mockery as m;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetAgentFollowersTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private function getMockContainer()
-	{
-		if ($this->container) return $this->container;
-		$this->container = ContainerMock::create()->withAgentData()->get();
-		return $this->container;
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private function getMockContainer()
+    {
+        if ($this->container) return $this->container;
+        $this->container = ContainerMock::create()->withAgentData()->get();
 
-	public function testAdd()
-	{
-		$ticket = new Ticket();
-		$exec   = new ExecutorContext();
+        return $this->container;
+    }
 
-		$ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(1));
-		$ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(10));
-		$ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(20));
+    public function testAdd()
+    {
+        $ticket = new Ticket();
+        $exec   = new ExecutorContext();
 
-		$action = new SetAgentFollowers(array('add_agent_ids' => array(2,3), 'remove_agent_ids' => array(10,20)));
-		$action->setContainer($this->getMockContainer());
-		$action->applyAction($ticket, $exec);
+        $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(1));
+        $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(10));
+        $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(20));
 
-		$this->assertEquals(3, count($ticket->getAgentParticipants()));
-		$this->assertFalse($ticket->hasParticipantPerson(10));
-		$this->assertTrue($ticket->hasParticipantPerson(2) !== false);
-		$this->assertTrue($ticket->hasParticipantPerson(1) !== false);
-	}
+        $action = new SetAgentFollowers(array('add_agent_ids' => array(2,3), 'remove_agent_ids' => array(10,20)));
+        $action->setContainer($this->getMockContainer());
+        $action->applyAction($ticket, $exec);
 
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$exec   = new ExecutorContext();
+        $this->assertEquals(3, count($ticket->getAgentParticipants()));
+        $this->assertFalse($ticket->hasParticipantPerson(10));
+        $this->assertTrue($ticket->hasParticipantPerson(2) !== false);
+        $this->assertTrue($ticket->hasParticipantPerson(1) !== false);
+    }
 
-		$ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(1));
-		$ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(10));
-		$ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(20));
+    public function testInvalid()
+    {
+        $ticket = new Ticket();
+        $exec   = new ExecutorContext();
 
-		$action = new SetAgentFollowers(array('add_agent_ids' => array(120), 'remove_agent_ids' => array(121)));
-		$action->setContainer($this->getMockContainer());
-		$action->applyAction($ticket, $exec);
+        $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(1));
+        $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(10));
+        $ticket->addParticipantPerson($this->getMockContainer()->getAgentData()->get(20));
 
-		$this->assertEquals(3, count($ticket->getAgentParticipants()));
-		$this->assertTrue($ticket->hasParticipantPerson(1) !== false);
-		$this->assertFalse($ticket->hasParticipantPerson(120));
-	}
+        $action = new SetAgentFollowers(array('add_agent_ids' => array(120), 'remove_agent_ids' => array(121)));
+        $action->setContainer($this->getMockContainer());
+        $action->applyAction($ticket, $exec);
+
+        $this->assertEquals(3, count($ticket->getAgentParticipants()));
+        $this->assertTrue($ticket->hasParticipantPerson(1) !== false);
+        $this->assertFalse($ticket->hasParticipantPerson(120));
+    }
 }

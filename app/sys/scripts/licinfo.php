@@ -29,20 +29,20 @@ dp_load_config();
 
 $open = dp_get_config('sys_licinfo');
 if (!$open) {
-	exit;
+    exit;
 } elseif ($open !== true) {
-	// if its not a boolean true, then its an authcode
-	if (!isset($_GET[$open])) {
-		exit;
-	}
+    // if its not a boolean true, then its an authcode
+    if (!isset($_GET[$open])) {
+        exit;
+    }
 }
 
 $env = 'prod';
 $debug = false;
 
 if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-	$env = 'dev';
-	$debug = true;
+    $env = 'dev';
+    $debug = true;
 }
 
 require DP_ROOT . '/sys/KernelBooter.php';

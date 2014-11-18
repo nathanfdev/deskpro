@@ -38,41 +38,41 @@ use Application\DeskPRO\DBAL\Connection;
 
 class Build1358499996 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Populate tickets.count data");
+    public function run()
+    {
+        $this->out("Populate tickets.count data");
 
-		$agent_ids = $this->container->getDb()->fetchAllCol("
-			SELECT id FROM people
-			WHERE is_agent = 1
-		");
+        $agent_ids = $this->container->getDb()->fetchAllCol("
+            SELECT id FROM people
+            WHERE is_agent = 1
+        ");
 
-		$this->out('Populating tickets.count_agent_replies');
-		$t = microtime(true);
-		$x = $this->container->getDb()->executeUpdate("
-			UPDATE tickets
-			LEFT JOIN (
-				SELECT COUNT(*) AS count, ticket_id
-				FROM tickets_messages
-				WHERE person_id IN (?) AND is_agent_note = 0
-				GROUP BY ticket_id
-			) AS t ON tickets.id = t.ticket_id
-			SET tickets.count_agent_replies = COALESCE(t.count, 0);
-		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
-		$this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
+        $this->out('Populating tickets.count_agent_replies');
+        $t = microtime(true);
+        $x = $this->container->getDb()->executeUpdate("
+            UPDATE tickets
+            LEFT JOIN (
+                SELECT COUNT(*) AS count, ticket_id
+                FROM tickets_messages
+                WHERE person_id IN (?) AND is_agent_note = 0
+                GROUP BY ticket_id
+            ) AS t ON tickets.id = t.ticket_id
+            SET tickets.count_agent_replies = COALESCE(t.count, 0);
+        ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+        $this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
 
-		$this->out('Populating tickets.count_user_replies');
-		$t = microtime(true);
-		$x = $this->container->getDb()->executeUpdate("
-			UPDATE tickets
-			LEFT JOIN (
-				SELECT COUNT(*) AS count, ticket_id
-				FROM tickets_messages
-				WHERE person_id NOT IN (?)
-				GROUP BY ticket_id
-			) AS t ON tickets.id = t.ticket_id
-			SET tickets.count_user_replies = COALESCE(t.count, 0);
-		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
-		$this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
-	}
+        $this->out('Populating tickets.count_user_replies');
+        $t = microtime(true);
+        $x = $this->container->getDb()->executeUpdate("
+            UPDATE tickets
+            LEFT JOIN (
+                SELECT COUNT(*) AS count, ticket_id
+                FROM tickets_messages
+                WHERE person_id NOT IN (?)
+                GROUP BY ticket_id
+            ) AS t ON tickets.id = t.ticket_id
+            SET tickets.count_user_replies = COALESCE(t.count, 0);
+        ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+        $this->out(sprintf("-- Updated $x rows in %.4f s", microtime(true) - $t));
+    }
 }

@@ -41,60 +41,60 @@ use Application\DeskPRO\App;
  */
 class TicketProps implements \ArrayAccess
 {
-	/** @var array */
-	protected static $prop_names = array(
-		'subject' => 1, 'message_is_html' => 1, 'message' => 1,
-		'message_raw' => 1, 'notify_email' => 1, 'cc_emails' => 1,
-		'new_upload' => 1, 'attach_ids' => 1, 'attach_ids_authed' => 1,
-		'department_id' => 1, 'category_id' => 1, 'priority_id' => 1, 'product_id' => 1,
-		'workflow_id' => 1
-	);
+    /** @var array */
+    protected static $prop_names = array(
+        'subject' => 1, 'message_is_html' => 1, 'message' => 1,
+        'message_raw' => 1, 'notify_email' => 1, 'cc_emails' => 1,
+        'new_upload' => 1, 'attach_ids' => 1, 'attach_ids_authed' => 1,
+        'department_id' => 1, 'category_id' => 1, 'priority_id' => 1, 'product_id' => 1,
+        'workflow_id' => 1
+    );
 
-	/** @var string */
-	public $subject = '';
-	/** @var bool */
-	public $message_is_html = false;
-	/** @var string */
-	public $message = '';
-	/** @var string|null */
-	public $message_raw = null;
-	/** @var string */
-	public $notify_email = '';
-	/** @var string */
-	public $cc_emails = '';
+    /** @var string */
+    public $subject = '';
+    /** @var bool */
+    public $message_is_html = false;
+    /** @var string */
+    public $message = '';
+    /** @var string|null */
+    public $message_raw = null;
+    /** @var string */
+    public $notify_email = '';
+    /** @var string */
+    public $cc_emails = '';
 
-	/**
-	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile
-	 */
-	public $new_upload = null;
+    /**
+     * @var \Symfony\Component\HttpFoundation\File\UploadedFile
+     */
+    public $new_upload = null;
 
-	/** @var array */
-	public $attach_ids = array();
-	/** @var bool */
-	public $attach_ids_authed = false;
+    /** @var array */
+    public $attach_ids = array();
+    /** @var bool */
+    public $attach_ids_authed = false;
 
-	/** @var int */
-	public $department_id = 0;
-	/** @var int */
-	public $category_id   = 0;
-	/** @var int */
-	public $priority_id   = 0;
-	/** @var int */
-	public $product_id    = 0;
-	/** @var int */
-	public $workflow_id   = 0;
+    /** @var int */
+    public $department_id = 0;
+    /** @var int */
+    public $category_id   = 0;
+    /** @var int */
+    public $priority_id   = 0;
+    /** @var int */
+    public $product_id    = 0;
+    /** @var int */
+    public $workflow_id   = 0;
 
-	public function __construct()
-	{
-		$this->department_id   = App::getSetting('core.default_ticket_dep') ?: 0;
-		$this->category_id     = App::getSetting('core.default_ticket_cat') ?: 0;
-		$this->priority_id     = App::getSetting('core.default_ticket_pri') ?: 0;
-		$this->product_id      = App::getSetting('core.default_prod_id') ?: 0;
-		$this->workflow_id     = App::getSetting('core.default_ticket_work') ?: 0;
-	}
+    public function __construct()
+    {
+        $this->department_id   = App::getSetting('core.default_ticket_dep') ?: 0;
+        $this->category_id     = App::getSetting('core.default_ticket_cat') ?: 0;
+        $this->priority_id     = App::getSetting('core.default_ticket_pri') ?: 0;
+        $this->product_id      = App::getSetting('core.default_prod_id') ?: 0;
+        $this->workflow_id     = App::getSetting('core.default_ticket_work') ?: 0;
+    }
 
-	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

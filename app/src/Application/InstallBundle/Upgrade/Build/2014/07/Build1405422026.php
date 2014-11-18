@@ -36,18 +36,18 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1405422026 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct authorless messages");
+    public function run()
+    {
+        $this->out("Correct authorless messages");
 
-		// Fixes bug in previous version where deleting a user might
-		// leave their messages behind with a null person_id
+        // Fixes bug in previous version where deleting a user might
+        // leave their messages behind with a null person_id
 
-		$this->execMutateSql("
-			UPDATE tickets_messages
-				JOIN tickets ON (tickets.id = tickets_messages.ticket_id)
-			SET tickets_messages.person_id = tickets.person_id
-			WHERE tickets_messages.person_id IS NULL
-		");
-	}
+        $this->execMutateSql("
+            UPDATE tickets_messages
+                JOIN tickets ON (tickets.id = tickets_messages.ticket_id)
+            SET tickets_messages.person_id = tickets.person_id
+            WHERE tickets_messages.person_id IS NULL
+        ");
+    }
 }

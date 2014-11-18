@@ -44,103 +44,103 @@ use Application\DeskPRO\People\PersonContextInterface;
  */
 class FlagAction extends AbstractAction implements PersonContextInterface, ExecutionContextAware
 {
-	/** @var string */
-	protected $flag;
-	/** @var Person */
-	protected $person_context;
-	/** @var string|null */
-	protected $execution_context = null;
+    /** @var string */
+    protected $flag;
+    /** @var Person */
+    protected $person_context;
+    /** @var string|null */
+    protected $execution_context = null;
 
-	public function __construct($flag)
-	{
-		$this->flag = $flag;
-	}
-
-
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
-
-	public function setExecutionContext($context)
-	{
-		$this->execution_context = $context;
-	}
+    public function __construct($flag)
+    {
+        $this->flag = $flag;
+    }
 
 
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		$flag = $this->flag;
+    public function setPersonContext(Person $person)
+    {
+        $this->person_context = $person;
+    }
 
-		// Context of a trigger, flagging means flag for everyone
-		if ($this->execution_context == 'trigger') {
-			$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-			foreach ($agents as $a) {
-				$ticket->setFlagForPerson($a, $flag);
-			}
-
-		// Otherwise its a macro, flag for the performer
-		} else {
-			// Invalid context
-			if (!$this->person_context OR !$this->person_context['is_agent']) {
-				return;
-			}
-
-			$ticket->setFlagForPerson($this->person_context, $flag);
-		}
-	}
+    public function setExecutionContext($context)
+    {
+        $this->execution_context = $context;
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array(
-			array('action' => 'flag', 'color' => $this->flag)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        $flag = $this->flag;
+
+        // Context of a trigger, flagging means flag for everyone
+        if ($this->execution_context == 'trigger') {
+            $agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+            foreach ($agents as $a) {
+                $ticket->setFlagForPerson($a, $flag);
+            }
+
+        // Otherwise its a macro, flag for the performer
+        } else {
+            // Invalid context
+            if (!$this->person_context OR !$this->person_context['is_agent']) {
+                return;
+            }
+
+            $ticket->setFlagForPerson($this->person_context, $flag);
+        }
+    }
 
 
-	/**
-	 * Get the flag color
-	 *
-	 * @return int
-	 */
-	public function getFlag()
-	{
-		return $this->flag;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array(
+            array('action' => 'flag', 'color' => $this->flag)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * Get the flag color
+     *
+     * @return int
+     */
+    public function getFlag()
+    {
+        return $this->flag;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
-		$tr = App::getTranslator();
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
 
-		if (!$this->flag) {
-			return $tr->phrase('agent.tickets.unset_flag_action');
-		} else {
-			return $tr->phrase('agent.tickets.set_flag_to_action', array('flag' => $this->flag));
-		}
-	}
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
+        $tr = App::getTranslator();
+
+        if (!$this->flag) {
+            return $tr->phrase('agent.tickets.unset_flag_action');
+        } else {
+            return $tr->phrase('agent.tickets.set_flag_to_action', array('flag' => $this->flag));
+        }
+    }
 }

@@ -50,87 +50,86 @@ use Symfony\Component\HttpKernel\KernelEvents;
  */
 class BrandDetectionListener implements EventSubscriberInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Brand\BrandStack
-	 */
-	private $brand_stack;
+    /**
+     * @var \Application\DeskPRO\Brand\BrandStack
+     */
+    private $brand_stack;
 
-	/**
-	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
-	 */
-	private $settings_resolver;
+    /**
+     * @var \Application\DeskPRO\NewSettings\SettingsResolver
+     */
+    private $settings_resolver;
 
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\Brand
-	 */
-	private $brand_repository;
+    /**
+     * @var \Application\DeskPRO\EntityRepository\Brand
+     */
+    private $brand_repository;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Brand
-	 */
-	private $default_brand;
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	private $logger;
+    /**
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    private $default_brand;
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
 
-	public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand, LoggerInterface $logger)
-	{
-		$this->brand_stack = $brand_stack;
-		$this->settings_resolver = $settings_resolver;
-		$this->brand_repository = $brand_repository;
-		$this->default_brand = $default_brand;
-		$this->logger = $logger;
-	}
+    public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver, Brand $brand_repository, BrandEntity $default_brand, LoggerInterface $logger)
+    {
+        $this->brand_stack = $brand_stack;
+        $this->settings_resolver = $settings_resolver;
+        $this->brand_repository = $brand_repository;
+        $this->default_brand = $default_brand;
+        $this->logger = $logger;
+    }
 
-	/**
-	 * @param Request $request
-	 * @return int|null the brand id detected
-	 */
-	public function detectBrandInRequest(Request $request)
-	{
-		if ($brand_id = $request->query->get('brand', null)) {
-			try {
-				return $this->brand_repository->find($brand_id);
-			} catch (\Exception $e) {
-				return null;
-			}
-		}
+    /**
+     * @param  Request  $request
+     * @return int|null the brand id detected
+     */
+    public function detectBrandInRequest(Request $request)
+    {
+        if ($brand_id = $request->query->get('brand', null)) {
+            try {
+                return $this->brand_repository->find($brand_id);
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-	public function getDefaultBrand()
-	{
-		return $this->default_brand;
-	}
+    public function getDefaultBrand()
+    {
+        return $this->default_brand;
+    }
 
-	public function onKernelRequest(GetResponseEvent $event)
-	{
-		if (!$event->isMasterRequest()) {
-			// only run this on the master request - we only detect once per request.
-			return;
-		}
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        if (!$event->isMasterRequest()) {
+            // only run this on the master request - we only detect once per request.
+            return;
+        }
 
-		$request = $event->getRequest();
+        $request = $event->getRequest();
 
-		if (!$brand = $this->detectBrandInRequest($request)) {
-			$this->logger->info('Brand Detector: can\'t determine brand from request. falling back on default brand');
-			$brand = $this->getDefaultBrand();
-		}
+        if (!$brand = $this->detectBrandInRequest($request)) {
+            $this->logger->info('Brand Detector: can\'t determine brand from request. falling back on default brand');
+            $brand = $this->getDefaultBrand();
+        }
 
-		$this->brand_stack->push($brand);
+        $this->brand_stack->push($brand);
 
-		$this->logger->info('Brand Detector: initialized brand stack with brand id='.$brand->getId());
-	}
+        $this->logger->info('Brand Detector: initialized brand stack with brand id='.$brand->getId());
+    }
 
-	public static function getSubscribedEvents()
-	{
-		return array(
-			// high priority, must be called BEFORE RouterListener (which is 32)
-			KernelEvents::REQUEST => array('onKernelRequest', 33)
-		);
-	}
+    public static function getSubscribedEvents()
+    {
+        return array(
+            // high priority, must be called BEFORE RouterListener (which is 32)
+            KernelEvents::REQUEST => array('onKernelRequest', 33)
+        );
+    }
 }
- 

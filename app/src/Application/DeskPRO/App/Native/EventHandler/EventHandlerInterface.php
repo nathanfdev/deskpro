@@ -36,9 +36,9 @@ namespace Application\DeskPRO\App\Native\EventHandler;
 
 interface EventHandlerInterface
 {
-	/**
-	 * @param EventContext $context
-	 * @return void
-	 */
-	public function handleEvent(EventContext $context);
+    /**
+     * @param  EventContext $context
+     * @return void
+     */
+    public function handleEvent(EventContext $context);
 }

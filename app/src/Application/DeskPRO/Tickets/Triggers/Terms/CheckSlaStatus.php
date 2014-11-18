@@ -49,65 +49,66 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckSlaStatus extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('sla_ids');
-		$options->addValidNames('sla_status', 'is_complete');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('sla_ids');
+        $options->addValidNames('sla_status', 'is_complete');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
 
-		$map = array();
-		foreach ($ticket->ticket_slas as $ticket_sla) {
-			$map[$ticket_sla->sla->id] = $ticket_sla;
-		}
+        $map = array();
+        foreach ($ticket->ticket_slas as $ticket_sla) {
+            $map[$ticket_sla->sla->id] = $ticket_sla;
+        }
 
-		$check_status   = $options->get('sla_status');
-		$check_complete = $options->get('is_complete');
+        $check_status   = $options->get('sla_status');
+        $check_complete = $options->get('is_complete');
 
-		$passing = true;
-		foreach ($options->get('sla_ids') as $sla_id) {
-			if (!isset($map[$sla_id])) {
-				continue;
-			}
+        $passing = true;
+        foreach ($options->get('sla_ids') as $sla_id) {
+            if (!isset($map[$sla_id])) {
+                continue;
+            }
 
-			if ($check_status) {
-				if ($ticket_sla->sla_status != $check_status) {
-					$passing = false;
-					break;
-				}
-			}
-			if ($check_complete) {
-				if ($ticket_sla->is_completed != $check_status) {
-					$passing = false;
-					break;
-				}
-			}
-		}
+            if ($check_status) {
+                if ($ticket_sla->sla_status != $check_status) {
+                    $passing = false;
+                    break;
+                }
+            }
+            if ($check_complete) {
+                if ($ticket_sla->is_completed != $check_status) {
+                    $passing = false;
+                    break;
+                }
+            }
+        }
 
-		switch ($this->getTermOperator()) {
-			case 'is':
-			case 'contains':
-				return $passing;
-				break;
+        switch ($this->getTermOperator()) {
+            case 'is':
+            case 'contains':
+                return $passing;
+                break;
 
-			case 'not':
-			case 'notcontains':
-				return !$passing;
-				break;
-		}
+            case 'not':
+            case 'notcontains':
+                return !$passing;
+                break;
+        }
 
-		return false;
-	}
+        return false;
+    }
 }

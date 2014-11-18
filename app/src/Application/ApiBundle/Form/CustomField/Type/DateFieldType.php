@@ -42,26 +42,26 @@ class DateFieldType extends CustomFieldTypeAbstract
     {
         $builder->add('default_value', 'text', array('required' => false));
         $builder->add('default_mode', 'text', array('required' => true));
-		$builder->add('required', 'checkbox', array('required' => false));
-		$builder->add('agent_required', 'checkbox', array('required' => false));
+        $builder->add('required', 'checkbox', array('required' => false));
+        $builder->add('agent_required', 'checkbox', array('required' => false));
 
-		$builder->add('date_valid_type', 'hidden');
-		$builder->add('date_valid_date1', 'text', array('required' => false));
-		$builder->add('date_valid_date2', 'text', array('required' => false));
-		$builder->add('date_valid_range1', 'text', array('required' => false));
-		$builder->add('date_valid_range2', 'text', array('required' => false));
-		$builder->add('date_valid_dow', 'choice', array(
-			'multiple' => true,
-			'expanded' => true,
-			'required' => false,
-			'choices' => array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
-		));
+        $builder->add('date_valid_type', 'hidden');
+        $builder->add('date_valid_date1', 'text', array('required' => false));
+        $builder->add('date_valid_date2', 'text', array('required' => false));
+        $builder->add('date_valid_range1', 'text', array('required' => false));
+        $builder->add('date_valid_range2', 'text', array('required' => false));
+        $builder->add('date_valid_dow', 'choice', array(
+            'multiple' => true,
+            'expanded' => true,
+            'required' => false,
+            'choices' => array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
+        ));
     }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DateField',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DateField',
+        );
+    }
 }

@@ -38,25 +38,25 @@ use Application\DeskPRO\DBAL\Connection;
 
 class Build1361377744 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fixing origin on chat messages");
+    public function run()
+    {
+        $this->out("Fixing origin on chat messages");
 
-		$agent_ids = $this->container->getDb()->fetchAllCol("
-			SELECT id FROM people
-			WHERE is_agent = 1
-		");
+        $agent_ids = $this->container->getDb()->fetchAllCol("
+            SELECT id FROM people
+            WHERE is_agent = 1
+        ");
 
-		$this->execMutateSql("
-			UPDATE chat_messages
-			SET origin = 'agent'
-			WHERE author_id IN (?)
-		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+        $this->execMutateSql("
+            UPDATE chat_messages
+            SET origin = 'agent'
+            WHERE author_id IN (?)
+        ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 
-		$this->execMutateSql("
-			UPDATE chat_messages
-			SET origin = 'user'
-			WHERE (author_id IS NULL OR author_id NOT IN (?)) AND is_sys = 0
-		", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
-	}
+        $this->execMutateSql("
+            UPDATE chat_messages
+            SET origin = 'user'
+            WHERE (author_id IS NULL OR author_id NOT IN (?)) AND is_sys = 0
+        ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+    }
 }

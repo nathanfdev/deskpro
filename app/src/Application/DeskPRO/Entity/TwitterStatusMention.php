@@ -46,106 +46,106 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var integer
-	 */
-	protected $id;
+    /**
+     * @var integer
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 */
-	protected $status;
+    /**
+     * @var \Application\DeskPRO\Entity\TwitterStatus
+     */
+    protected $status;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 */
-	protected $user;
+    /**
+     * @var \Application\DeskPRO\Entity\TwitterUser
+     */
+    protected $user;
 
-	/**
-	 * @var integer
-	 */
-	protected $starts = 0;
+    /**
+     * @var integer
+     */
+    protected $starts = 0;
 
-	/**
-	 * @var integer
-	 */
-	protected $ends = 0;
+    /**
+     * @var integer
+     */
+    protected $ends = 0;
 
-	/**
-	 * @return integer
-	 */
-	public function getStatusId()
-	{
-		if (null !== $this->status) {
-			return $this->status->getId();
-		}
+    /**
+     * @return integer
+     */
+    public function getStatusId()
+    {
+        if (null !== $this->status) {
+            return $this->status->getId();
+        }
 
-		return 0;
-	}
+        return 0;
+    }
 
-	/**
-	 * @param integer $id
-	 */
-	public function setStatusId($id)
-	{
-		$this->status = null;
+    /**
+     * @param integer $id
+     */
+    public function setStatusId($id)
+    {
+        $this->status = null;
 
-		if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
-			$this->status = $status;
-		}
-	}
+        if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
+            $this->status = $status;
+        }
+    }
 
-	/**
-	 * @return integer
-	 */
-	public function getUserId()
-	{
-		return null !== $this->user ? $this->user->getId() : null;
-	}
+    /**
+     * @return integer
+     */
+    public function getUserId()
+    {
+        return null !== $this->user ? $this->user->getId() : null;
+    }
 
-	/**
-	 * @param integer $id
-	 */
-	public function setUserId($id)
-	{
-		if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
-			$this->user = $user;
-		} else {
-			$this->user = null;
-		}
-	}
+    /**
+     * @param integer $id
+     */
+    public function setUserId($id)
+    {
+        if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
+            $this->user = $user;
+        } else {
+            $this->user = null;
+        }
+    }
 
-	/**
-	 * @param object $mention
-	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
-	 */
-	static public function createFromJson($mention)
-	{
-		$entity = new self();
-		$entity['starts'] = $mention->indices[0];
-		$entity['ends'] = $mention->indices[1];
+    /**
+     * @param  object                                           $mention
+     * @return \Application\DeskPRO\Entity\TwitterStatusMention
+     */
+    public static function createFromJson($mention)
+    {
+        $entity = new self();
+        $entity['starts'] = $mention->indices[0];
+        $entity['ends'] = $mention->indices[1];
 
-		return $entity;
-	}
-
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+        return $entity;
+    }
 
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-		$metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_mentions', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts', ));
-		$metadata->mapField(array( 'fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->setPrimaryTable(array( 'name' => 'twitter_statuses_mentions', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'starts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'starts', ));
+        $metadata->mapField(array( 'fieldName' => 'ends', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ends', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'status', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterStatus', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'status_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => 'mentions', 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

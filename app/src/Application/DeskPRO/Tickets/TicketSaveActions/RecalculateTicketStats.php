@@ -40,55 +40,55 @@ use Doctrine\DBAL\Driver\Connection;
 
 class RecalculateTicketStats implements TicketSaveActionInterface
 {
-	/**
-	 * @var int[]
-	 */
-	private $agent_ids = array();
+    /**
+     * @var int[]
+     */
+    private $agent_ids = array();
 
-	/**
-	 * @var Connection
-	 */
-	private $db;
-
-
-	/**
-	 * @param array      $agent_ids
-	 * @param Connection $db
-	 */
-	public function __construct(array $agent_ids, Connection $db)
-	{
-		$this->agent_ids = $agent_ids;
-		$this->db = $db;
-	}
+    /**
+     * @var Connection
+     */
+    private $db;
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($context->getEventType() == 'noop') {
-			return;
-		}
+    /**
+     * @param array      $agent_ids
+     * @param Connection $db
+     */
+    public function __construct(array $agent_ids, Connection $db)
+    {
+        $this->agent_ids = $agent_ids;
+        $this->db = $db;
+    }
 
-		$state = $ticket->getStateChangeRecorder();
 
-		if ($state->isNewTicket() || $state->hasChangedField('message')) {
-			$agent_ids_in = implode(',', $this->agent_ids);
+    /**
+     * @param Ticket                   $ticket
+     * @param ExecutorContextInterface $context
+     */
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($context->getEventType() == 'noop') {
+            return;
+        }
 
-			$ticket->count_agent_replies = $this->db->fetchColumn("
-				SELECT COUNT(*)
-				FROM tickets_messages
-				WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
-			", array($ticket->id));
+        $state = $ticket->getStateChangeRecorder();
 
-			$ticket->count_user_replies = $this->db->fetchColumn("
-				SELECT COUNT(*)
-				FROM tickets_messages
-				WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
-			", array($ticket->id));
-		}
-	}
+        if ($state->isNewTicket() || $state->hasChangedField('message')) {
+            $agent_ids_in = implode(',', $this->agent_ids);
+
+            $ticket->count_agent_replies = $this->db->fetchColumn("
+                SELECT COUNT(*)
+                FROM tickets_messages
+                WHERE ticket_id = ? AND is_agent_note = 0 AND person_id IN ($agent_ids_in)
+            ", array($ticket->id));
+
+            $ticket->count_user_replies = $this->db->fetchColumn("
+                SELECT COUNT(*)
+                FROM tickets_messages
+                WHERE ticket_id = ? AND person_id NOT IN ($agent_ids_in)
+            ", array($ticket->id));
+        }
+    }
 
 }

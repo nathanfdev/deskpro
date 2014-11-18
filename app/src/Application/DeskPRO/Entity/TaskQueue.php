@@ -34,115 +34,115 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class TaskQueue extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/** @var string */
-	protected $runner_class;
-	/** @var array */
-	protected $task_data = array();
-	/** @var \DateTime */
-	protected $date_runnable;
-	/** @var string */
-	protected $task_group;
-	/** @var string */
-	protected $status = 'queued';
-	/** @var \DateTime */
-	protected $date_started;
-	/** @var \DateTime */
-	protected $date_completed;
-	/** @var string */
-	protected $error_text = '';
-	/** @var string */
-	protected $run_status = '';
+    /** @var string */
+    protected $runner_class;
+    /** @var array */
+    protected $task_data = array();
+    /** @var \DateTime */
+    protected $date_runnable;
+    /** @var string */
+    protected $task_group;
+    /** @var string */
+    protected $status = 'queued';
+    /** @var \DateTime */
+    protected $date_started;
+    /** @var \DateTime */
+    protected $date_completed;
+    /** @var string */
+    protected $error_text = '';
+    /** @var string */
+    protected $run_status = '';
 
-	public function __construct()
-	{
-		$this['date_runnable'] = new \DateTime();
-	}
+    public function __construct()
+    {
+        $this['date_runnable'] = new \DateTime();
+    }
 
-	/**
-	 * @param \Application\DeskPRO\Log\Logger|null $logger
-	 *
-	 * @return \Application\DeskPRO\TaskQueueJob\AbstractJob
-	 */
-	public function getRunner(\Application\DeskPRO\Log\Logger $logger = null)
-	{
-		$class = $this['runner_class'];
-		return new $class($this['task_data'], $this, $logger);
-	}
+    /**
+     * @param \Application\DeskPRO\Log\Logger|null $logger
+     *
+     * @return \Application\DeskPRO\TaskQueueJob\AbstractJob
+     */
+    public function getRunner(\Application\DeskPRO\Log\Logger $logger = null)
+    {
+        $class = $this['runner_class'];
 
-	public function getTitle()
-	{
-		return $this->getRunner()->getTitle();
-	}
+        return new $class($this['task_data'], $this, $logger);
+    }
 
-	public function runTask($max_time = 15, \Application\DeskPRO\Log\Logger $logger = null)
-	{
-		if ($this['status'] == 'completed') {
-			throw new \Exception('Task has already been completed');
-		}
+    public function getTitle()
+    {
+        return $this->getRunner()->getTitle();
+    }
 
-		if (!$this['date_started']) {
-			$this['date_started'] = new \DateTime();
-		}
-		$this['status'] = 'running';
+    public function runTask($max_time = 15, \Application\DeskPRO\Log\Logger $logger = null)
+    {
+        if ($this['status'] == 'completed') {
+            throw new \Exception('Task has already been completed');
+        }
 
-		try {
-			$runner = $this->getRunner($logger);
-			$result = $runner->run($max_time);
+        if (!$this['date_started']) {
+            $this['date_started'] = new \DateTime();
+        }
+        $this['status'] = 'running';
 
-			if ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_COMPLETED) {
-				$this['status'] = 'completed';
-				$this['date_completed'] = new \DateTime();
-			} elseif ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_CONTINUING) {
-				$this['task_data'] = $runner->getData();
-			} else {
-				throw new \Exception('Unexpected return value from task; expected TASK_COMPLETED or TASK_CONTINUING');
-			}
+        try {
+            $runner = $this->getRunner($logger);
+            $result = $runner->run($max_time);
 
-			return $result;
-		} catch (\Exception $e) {
-			$this['status'] = 'errored';
-			$this['error_text'] = $e->getMessage();
-			throw $e;
-		}
-	}
+            if ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_COMPLETED) {
+                $this['status'] = 'completed';
+                $this['date_completed'] = new \DateTime();
+            } elseif ($result === \Application\DeskPRO\TaskQueueJob\AbstractJob::TASK_CONTINUING) {
+                $this['task_data'] = $runner->getData();
+            } else {
+                throw new \Exception('Unexpected return value from task; expected TASK_COMPLETED or TASK_CONTINUING');
+            }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+            return $result;
+        } catch (\Exception $e) {
+            $this['status'] = 'errored';
+            $this['error_text'] = $e->getMessage();
+            throw $e;
+        }
+    }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TaskQueue';
-		$metadata->setPrimaryTable(array(
-			'name' => 'task_queue',
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'runner_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'runner_class', ));
-		$metadata->mapField(array( 'fieldName' => 'task_data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'task_data', ));
-		$metadata->mapField(array( 'fieldName' => 'date_runnable', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_runnable', ));
-		$metadata->mapField(array( 'fieldName' => 'task_group', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'task_group', ));
-		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-		$metadata->mapField(array( 'fieldName' => 'date_started', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_started', ));
-		$metadata->mapField(array( 'fieldName' => 'date_completed', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_completed', ));
-		$metadata->mapField(array( 'fieldName' => 'error_text', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'error_text', ));
-		$metadata->mapField(array( 'fieldName' => 'run_status', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_status', ));
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TaskQueue';
+        $metadata->setPrimaryTable(array(
+            'name' => 'task_queue',
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'runner_class', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'runner_class', ));
+        $metadata->mapField(array( 'fieldName' => 'task_data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'task_data', ));
+        $metadata->mapField(array( 'fieldName' => 'date_runnable', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_runnable', ));
+        $metadata->mapField(array( 'fieldName' => 'task_group', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'task_group', ));
+        $metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 25, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
+        $metadata->mapField(array( 'fieldName' => 'date_started', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_started', ));
+        $metadata->mapField(array( 'fieldName' => 'date_completed', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_completed', ));
+        $metadata->mapField(array( 'fieldName' => 'error_text', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'error_text', ));
+        $metadata->mapField(array( 'fieldName' => 'run_status', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'run_status', ));
+
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+    }
 }

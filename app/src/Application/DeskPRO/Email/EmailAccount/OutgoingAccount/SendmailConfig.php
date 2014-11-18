@@ -40,52 +40,52 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class SendmailConfig implements AccountConfigInterface
 {
-	/**
-	 * @var string
-	 */
-	public $sendmail_path;
+    /**
+     * @var string
+     */
+    public $sendmail_path;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function serializeJsonArray()
-	{
-		return array(
-			'sendmail_path' => $this->sendmail_path,
-		);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
+    {
+        return array(
+            'sendmail_path' => $this->sendmail_path,
+        );
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		foreach ($data as $k => $v) {
-			$obj->$k = $v;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data as $k => $v) {
+            $obj->$k = $v;
+        }
 
-		return $obj;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType()
-	{
-		return 'sendmail';
-	}
+        return $obj;
+    }
 
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+        return 'sendmail';
+    }
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		$metadata->addPropertyConstraint('sendmail_path', new Constraints\NotBlank());
-	}
+
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('sendmail_path', new Constraints\NotBlank());
+    }
 }

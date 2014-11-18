@@ -43,48 +43,49 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 
 class SettingsResolverService
 {
-	public static function create(DeskproContainer $container)
-	{
-		/** @var \Application\DeskPRO\Cache\Adapter\SimpleArrayCache $simple_array_cache */
-		$simple_array_cache = $container->get('cache.simple_array');
+    public static function create(DeskproContainer $container)
+    {
+        /** @var \Application\DeskPRO\Cache\Adapter\SimpleArrayCache $simple_array_cache */
+        $simple_array_cache = $container->get('cache.simple_array');
 
-		// loaders, in proper order. first loader is treated as the default settings.
-		$loaders = array(
-			$container->getSystemService('default_settings_loader'),
-		    new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
-			new GlobalsArrayLoader($simple_array_cache)
-		);
+        // loaders, in proper order. first loader is treated as the default settings.
+        $loaders = array(
+            $container->getSystemService('default_settings_loader'),
+            new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
+            new GlobalsArrayLoader($simple_array_cache)
+        );
 
-		// brand settings loader is a special loader, injected directly
-		$resolver = new SettingsResolver(
-			$loaders,
-			$simple_array_cache,
-			new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
-		);
+        // brand settings loader is a special loader, injected directly
+        $resolver = new SettingsResolver(
+            $loaders,
+            $simple_array_cache,
+            new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
+        );
 
 
-		// virtual settings
-		$resolver->setVirtual(
-			'core.interact_require_login', function (array $settings) {
-				$settings = new SettingsBag($settings);
-				return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
-			}
-		);
-		$resolver->setVirtual(
-			'default_timezone', function ($settings) {
-				$settings = new SettingsBag($settings);
+        // virtual settings
+        $resolver->setVirtual(
+            'core.interact_require_login', function (array $settings) {
+                $settings = new SettingsBag($settings);
 
-				try {
-					$timezone_string = $settings->get('core.default_timezone');
-					$tz = new \DateTimeZone($timezone_string);
-				} catch (\Exception $e) {
-					$tz = new \DateTimeZone('UTC');
-				}
+                return !$settings->get('core.reg_enabled') || $settings->get('core.reg_required');
+            }
+        );
+        $resolver->setVirtual(
+            'default_timezone', function ($settings) {
+                $settings = new SettingsBag($settings);
 
-				return $tz;
-			}
-		);
+                try {
+                    $timezone_string = $settings->get('core.default_timezone');
+                    $tz = new \DateTimeZone($timezone_string);
+                } catch (\Exception $e) {
+                    $tz = new \DateTimeZone('UTC');
+                }
 
-		return $resolver;
-	}
+                return $tz;
+            }
+        );
+
+        return $resolver;
+    }
 }

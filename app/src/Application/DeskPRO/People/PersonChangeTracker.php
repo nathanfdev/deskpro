@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 
 /**
@@ -43,75 +42,73 @@ use Application\DeskPRO\Entity\Person;
  */
 class PersonChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @var bool
-	 */
-	protected $running = false;
+    /**
+     * @var bool
+     */
+    protected $running = false;
 
-	public function __construct(Person $person)
-	{
-		$this->entity = $person;
-		$this->person = $person;
-	}
-
-
-	/**
-	 * Get the person
-	 *
-	 * @return \Application\DeskPRO\Entity\Person
-	 */
-	public function getPerson()
-	{
-		return $this->person;
-	}
+    public function __construct(Person $person)
+    {
+        $this->entity = $person;
+        $this->person = $person;
+    }
 
 
-
-	/**
-	 * Was the person new (just created?)
-	 *
-	 * @return bool
-	 */
-	public function isNewPerson()
-	{
-		return $this->person->isNewPerson();
-	}
+    /**
+     * Get the person
+     *
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
 
 
 
-	public function propertyChanged($sender, $prop, $old_val, $new_val)
-	{
-		if (in_array($prop, array('notes'))) {
-			$this->recordMultiPropertyChanged($prop, $old_val, $new_val);
-		} else {
-			$this->recordPropertyChanged($prop, $old_val, $new_val);
-		}
-	}
-
-	public function preSave()
-	{
-		if ($this->running) {
-			return;
-		}
-		$this->running = true;
-
-		$this->running = false;
-	}
+    /**
+     * Was the person new (just created?)
+     *
+     * @return bool
+     */
+    public function isNewPerson()
+    {
+        return $this->person->isNewPerson();
+    }
 
 
 
-	/**
-	 * Notify all listeners that changes to the person have been committed
-	 *
-	 * @return void
-	 */
-	public function done()
-	{
+    public function propertyChanged($sender, $prop, $old_val, $new_val)
+    {
+        if (in_array($prop, array('notes'))) {
+            $this->recordMultiPropertyChanged($prop, $old_val, $new_val);
+        } else {
+            $this->recordPropertyChanged($prop, $old_val, $new_val);
+        }
+    }
 
-	}
+    public function preSave()
+    {
+        if ($this->running) {
+            return;
+        }
+        $this->running = true;
+
+        $this->running = false;
+    }
+
+    /**
+     * Notify all listeners that changes to the person have been committed
+     *
+     * @return void
+     */
+    public function done()
+    {
+
+    }
 }

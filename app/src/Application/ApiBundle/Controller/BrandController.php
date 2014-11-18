@@ -34,118 +34,117 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Brand;
 
 class BrandController extends AbstractController
 {
-	public function listAction()
-	{
-		$brands = $this->getBrandRepo()->findAll();
+    public function listAction()
+    {
+        $brands = $this->getBrandRepo()->findAll();
 
-		$serialized_brands = $this->container->getSerializer()->serializeArray($brands);
+        $serialized_brands = $this->container->getSerializer()->serializeArray($brands);
 
-		return $this->createApiResponse(array('brands' => $serialized_brands));
-	}
+        return $this->createApiResponse(array('brands' => $serialized_brands));
+    }
 
-	public function showAction($id)
-	{
-		$brand = $this->getBrandRepo()->find($id);
+    public function showAction($id)
+    {
+        $brand = $this->getBrandRepo()->find($id);
 
-		if (!$brand) {
-			throw $this->createNotFoundException('could not find id="'.$id.'"');
-		}
+        if (!$brand) {
+            throw $this->createNotFoundException('could not find id="'.$id.'"');
+        }
 
-		$serialized_brand = $this->container->getSerializer()->serialize($brand);
+        $serialized_brand = $this->container->getSerializer()->serialize($brand);
 
-		return $this->createApiResponse($serialized_brand);
-	}
+        return $this->createApiResponse($serialized_brand);
+    }
 
-	public function saveAction($id = 0)
-	{
-		if ($id) {
-			$brand = $this->getBrandRepo()->find($id);
-			$http_status = 200;
-		} else {
-			$brand = new Brand();
-			$http_status = 201;
-		}
+    public function saveAction($id = 0)
+    {
+        if ($id) {
+            $brand = $this->getBrandRepo()->find($id);
+            $http_status = 200;
+        } else {
+            $brand = new Brand();
+            $http_status = 201;
+        }
 
-		$errors = array();
+        $errors = array();
 
-		$name = $this->in->getString('brand.name');
-		if (!$name) {
-			$errors[] = 'Your brand must have a name';
-		}
+        $name = $this->in->getString('brand.name');
+        if (!$name) {
+            $errors[] = 'Your brand must have a name';
+        }
 
-		if ($this->in->getBool('unset_logo')) {
-			if ($brand->logo_blob) {
-				$old_blob             = $brand->logo_blob;
-				$brand->logo_blob = null;
+        if ($this->in->getBool('unset_logo')) {
+            if ($brand->logo_blob) {
+                $old_blob             = $brand->logo_blob;
+                $brand->logo_blob = null;
 
-				try {
-					$this->container->getBlobStorage()->deleteBlobRecord($old_blob);
-				} catch (\Exception $e) {
-				}
-			}
-		} elseif ($blobAuthCode = $this->in->getString('set_logo_blob')) {
-			if ($brand->logo_blob) {
-				$old_blob             = $brand->logo_blob;
-				$brand->logo_blob = null;
+                try {
+                    $this->container->getBlobStorage()->deleteBlobRecord($old_blob);
+                } catch (\Exception $e) {
+                }
+            }
+        } elseif ($blobAuthCode = $this->in->getString('set_logo_blob')) {
+            if ($brand->logo_blob) {
+                $old_blob             = $brand->logo_blob;
+                $brand->logo_blob = null;
 
-				try {
-					$this->container->getBlobStorage()->deleteBlobRecord($old_blob);
-				} catch (\Exception $e) {
-				}
-			}
+                try {
+                    $this->container->getBlobStorage()->deleteBlobRecord($old_blob);
+                } catch (\Exception $e) {
+                }
+            }
 
-			$blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($blobAuthCode);
-			if ($blob && $blob->isImage()) {
-				$brand->logo_blob = $blob;
-			}
-		}
+            $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthCode($blobAuthCode);
+            if ($blob && $blob->isImage()) {
+                $brand->logo_blob = $blob;
+            }
+        }
 
-		if (!count($errors)) {
-			$brand->name = $name;
+        if (!count($errors)) {
+            $brand->name = $name;
 
-			$this->container->getEm()->persist($brand);
-			$this->container->getEm()->flush();
+            $this->container->getEm()->persist($brand);
+            $this->container->getEm()->flush();
 
-			$serialized_brand = $this->container->getSerializer()->serialize($brand);
+            $serialized_brand = $this->container->getSerializer()->serialize($brand);
 
-			return $this->createApiSuccessResponse($serialized_brand, $http_status);
-		}
+            return $this->createApiSuccessResponse($serialized_brand, $http_status);
+        }
 
-		return $this->createApiMultipleErrorResponse($errors);
-	}
+        return $this->createApiMultipleErrorResponse($errors);
+    }
 
-	public function removeAction($id)
-	{
-		if ($id == 1) {
-			return $this->createApiErrorResponse('not_allowed', 'cannot delete default brand');
-		}
+    public function removeAction($id)
+    {
+        if ($id == 1) {
+            return $this->createApiErrorResponse('not_allowed', 'cannot delete default brand');
+        }
 
-		$brand = null;
-		if ($id) {
-			$brand = $this->getBrandRepo()->find($id);
-		}
+        $brand = null;
+        if ($id) {
+            $brand = $this->getBrandRepo()->find($id);
+        }
 
-		if (!$brand) {
-			throw $this->createNotFoundException('brand not found for id = "' . $id . '"');
-		}
+        if (!$brand) {
+            throw $this->createNotFoundException('brand not found for id = "' . $id . '"');
+        }
 
-		$this->container->getEm()->remove($brand);
-		$this->container->getEm()->flush();
+        $this->container->getEm()->remove($brand);
+        $this->container->getEm()->flush();
 
-		return $this->createApiSuccessResponse();
-	}
+        return $this->createApiSuccessResponse();
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\Brand
-	 */
-	protected function getBrandRepo()
-	{
-		return $this->container->getEm()->getRepository('DeskPRO:Brand');
-	}
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Brand
+     */
+    protected function getBrandRepo()
+    {
+        return $this->container->getEm()->getRepository('DeskPRO:Brand');
+    }
 }

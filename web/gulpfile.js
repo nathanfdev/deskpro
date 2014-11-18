@@ -1,0 +1,225 @@
+var gulp       = require('gulp'),
+    gutil      = require('gulp-util'),
+    cache      = require('gulp-cached'),
+    coffee     = require('gulp-coffee'),
+    less       = require('gulp-less'),
+    sourcemaps = require('gulp-sourcemaps'),
+    watch      = require('gulp-watch'),
+    finclude   = require('gulp-file-include'),
+    path       = require('path'),
+    rename     = require('gulp-rename'),
+    rjs        = require('gulp-r'),
+    plumber    = require('gulp-plumber'),
+    debug      = require('gulp-debug'),
+    using      = require('gulp-using'),
+    gulpif     = require('gulp-if'),
+    lazypipe   = require('lazypipe'),
+    clean      = require('gulp-clean');
+
+var deskpro = {util: {}, taskGen: {}};
+deskpro.isWatching = false;
+
+//------------------------------
+// Config
+//------------------------------
+
+deskpro.watches = [
+  ['./app/Admin*/**/*.coffee', ['coffee-admin']],
+  ['./app/Reports/**/*.coffee', ['coffee-reports']],
+  ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
+  ['./app/**/Resources/style/*.less', ['less-app']],
+  ['./loader/*', ['loader-requirejs']]
+];
+
+//------------------------------
+// Util
+//------------------------------
+
+deskpro.util.sourceMapRoot = function (file) {
+  var path = file.path.replace(/\\/g, '/')
+  var rel = path.replace(/^.*?\/web\/app\//, '');
+
+  // Counts slashes the relative path to decide how many levels up we need to go
+  var depth = (rel.match(/(\/|\\)/g) || []).length + 1;
+
+  // The sub-dir that the file is under
+  var ns = rel.split('/')[0];
+
+  var up = "";
+  for (var i = 0; i < depth; i++) up += "../";
+
+  return up + 'app/' + ns;
+};
+
+//------------------------------
+// Coffeescript
+//------------------------------
+
+deskpro.util.coffeeError = function (e) {
+  gutil.log(gutil.colors.white.bgRed('Coffee Error:'), e.name, ' ', e.message);
+
+  var shortName = (e.filename || "").replace(/.*?\/web\/app\//, 'web/app/');
+  gutil.log('              ' + shortName, ' Line: ' + e.location.first_line);
+  gutil.beep();
+
+  // workaround for gulp not returning error status
+  if (!deskpro.isWatching) {
+    throw "CoffeeScript Error";
+  }
+};
+
+deskpro.taskGen.coffeeScript = function(glob) {
+  return gulp.src(glob)
+    .pipe(cache('watch', {optimizeMemory: true}))
+    .pipe(gulpif(deskpro.isWatching, plumber()))
+    .pipe(sourcemaps.init())
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+    .pipe(coffee().on('error', deskpro.util.coffeeError))
+    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+    .pipe(gulp.dest('./app-build/'))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+gulp.task('coffee-admin', function () {
+  return deskpro.taskGen.coffeeScript('./app/Admin*/**/*.coffee');
+});
+
+gulp.task('coffee-reports', function () {
+  return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee');
+});
+
+gulp.task('coffee-deskpro', function () {
+  return deskpro.taskGen.coffeeScript('./app/DeskPRO*/**/*.coffee');
+});
+
+gulp.task('coffee', ['clean'], function() {
+  return deskpro.taskGen.coffeeScript([
+    './app/Admin*/**/*.coffee',
+    './app/Reports*/**/*.coffee',
+    './app/DeskPRO*/**/*.coffee'
+  ]);
+});
+
+//------------------------------
+// Less
+//------------------------------
+
+deskpro.taskGen.lessCss = function(glob) {
+  return gulp.src(glob)
+    .pipe(cache('watch', {optimizeMemory: true}))
+    .pipe(gulpif(deskpro.isWatching, plumber()))
+    .pipe(sourcemaps.init())
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+    .pipe(less())
+    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+    .pipe(gulp.dest('./app-build/'))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+gulp.task('less-app', function () {
+  return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
+});
+
+gulp.task('less', ['clean'], function () {
+  return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
+});
+
+//------------------------------
+// Loader
+//------------------------------
+
+deskpro.taskGen.loaderTpl = function(glob) {
+  return gulp.src(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js'])
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+    .pipe(finclude({
+      prefix: '!!'
+    }))
+    .pipe(gulp.dest('./loader-build/'))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+gulp.task('loader-requirejs', function () {
+  return deskpro.taskGen.loaderTpl(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js']);
+});
+
+gulp.task('loader', ['clean'], function () {
+  return deskpro.taskGen.loaderTpl(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js']);
+});
+
+//------------------------------
+// RJS
+//------------------------------
+
+gulp.task('rjs', ['coffee', 'loader'], function () {
+  var loadFiles = [
+    './app/Admin/AdminLoad.js',
+    './app/Admin/Cloud/CloudAdminLoad.js',
+    './app/AdminUpgrade/AdminUpgradeLoad.js',
+    './app/AdminStart/AdminStartLoad.js',
+    './app/Reports/ReportsLoad.js'
+  ];
+
+  var rjsConfig = require('./loader-build/rjs-optimizer-config.js');
+
+  return gulp.src(loadFiles, {base: './'})
+    .pipe(using({prefix: '<< Build --'}))
+    .pipe(rjs(rjsConfig.config))
+    .pipe(rename(function (path) {
+      switch (path.basename.replace(/\.js$/, '')) {
+        case 'AdminLoad':
+          path.dirname = 'Admin';
+          break;
+        case 'CloudAdminLoad':
+          path.dirname = 'Admin/Cloud';
+          break;
+        case 'AdminUpgradeLoad':
+          path.dirname = 'AdminUpgrade';
+          break;
+        case 'AdminStartLoad':
+          path.dirname = 'AdminStart';
+          break;
+        case 'ReportsLoad':
+          path.dirname = 'Reports';
+          break;
+      }
+
+      if (path.extname != '.map') {
+        path.extname = '.min.js';
+      }
+    }))
+    .pipe(gulp.dest('./app-build/'))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+});
+
+//------------------------------
+// Tasks
+//------------------------------
+
+gulp.task('precache', function () {
+  var globs = [];
+  deskpro.watches.forEach(function (w) {
+    globs.push(w[0]);
+  });
+
+  return gulp.src(globs)
+    .pipe(cache('watch', {optimizeMemory: true}));
+});
+
+gulp.task('watch', ['precache'], function () {
+  deskpro.isWatching = true;
+  deskpro.watches.forEach(function (w) {
+    gulp.watch(w[0], w[1]);
+  });
+});
+
+gulp.task('clean', function () {
+  return gulp.src(['./app-build', './loader-build'])
+    .pipe(clean());
+});
+
+//------------------------------
+// Main
+//------------------------------
+
+gulp.task('default', ['coffee', 'less', 'loader']);
+gulp.task('prod', ['coffee', 'less', 'loader', 'rjs']);

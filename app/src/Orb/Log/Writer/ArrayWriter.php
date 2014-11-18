@@ -40,50 +40,50 @@ use \Orb\Log\LogItem;
  */
 class ArrayWriter extends AbstractWriter
 {
-	/** @var array */
-	protected $messages = array();
-	/** @var int */
-	protected $max_size = 10000;
-	/** @var int */
-	protected $max_line_length = 10000;
+    /** @var array */
+    protected $messages = array();
+    /** @var int */
+    protected $max_size = 10000;
+    /** @var int */
+    protected $max_line_length = 10000;
 
-	public function setMaxMessageLength($max_line_length = 10000)
-	{
-		$this->max_line_length = $max_line_length;
-	}
+    public function setMaxMessageLength($max_line_length = 10000)
+    {
+        $this->max_line_length = $max_line_length;
+    }
 
-	public function setMaxSize($max_size)
-	{
-		$this->max_size = $max_size;
-	}
+    public function setMaxSize($max_size)
+    {
+        $this->max_size = $max_size;
+    }
 
-	public function getMessages()
-	{
-		return $this->messages;
-	}
+    public function getMessages()
+    {
+        return $this->messages;
+    }
 
-	public function getMessagesAsString()
-	{
-		return implode("\n", $this->getMessages());
-	}
+    public function getMessagesAsString()
+    {
+        return implode("\n", $this->getMessages());
+    }
 
-	public function _write(LogItem $log_item)
-	{
-		$msg = trim($log_item[LogItem::MESSAGE_LINE]);
+    public function _write(LogItem $log_item)
+    {
+        $msg = trim($log_item[LogItem::MESSAGE_LINE]);
 
-		if (strlen($msg) > $this->max_line_length) {
-			$msg = substr($msg, 0, $this->max_line_length);
-		}
+        if (strlen($msg) > $this->max_line_length) {
+            $msg = substr($msg, 0, $this->max_line_length);
+        }
 
-		$this->messages[] = $msg;
+        $this->messages[] = $msg;
 
-		while(count($this->messages) > $this->max_size) {
-			array_shift($this->messages);
-		}
-	}
+        while(count($this->messages) > $this->max_size) {
+            array_shift($this->messages);
+        }
+    }
 
-	public function clear()
-	{
-		$this->messages = array();
-	}
+    public function clear()
+    {
+        $this->messages = array();
+    }
 }

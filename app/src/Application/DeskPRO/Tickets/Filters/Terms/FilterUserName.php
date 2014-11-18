@@ -44,60 +44,61 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterUserName extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('name');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
-		$check_value = $options['name'];
-		$like_value = null;
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
+        $check_value = $options['name'];
+        $like_value = null;
 
-		switch ($this->getTermOperator()) {
-			case self::OP_IS:
-			case self::OP_NOT:
-				break;
-			case self::OP_NOT:
-			case self::OP_CONTAINS:
-				$like_value = $check_value;
-				$like_value = str_replace('%', '%%', $like_value);
-				$like_value = str_replace('_', '__', $like_value);
-				$like_value = '%' . $like_value . '%';
-				break;
-			default:
-				throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");
-		}
+        switch ($this->getTermOperator()) {
+            case self::OP_IS:
+            case self::OP_NOT:
+                break;
+            case self::OP_NOT:
+            case self::OP_CONTAINS:
+                $like_value = $check_value;
+                $like_value = str_replace('%', '%%', $like_value);
+                $like_value = str_replace('_', '__', $like_value);
+                $like_value = '%' . $like_value . '%';
+                break;
+            default:
+                throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");
+        }
 
-		$query = new FilterQuery();
+        $query = new FilterQuery();
 
-		foreach (array('name', 'first_name', 'last_name') as $k => $field_name) {
-			switch ($this->getTermOperator()) {
-				case self::OP_IS:
-				case self::OP_NOT:
-					$use_op = $this->getTermOptions() == self::OP_NOT ? '!=' : '=';
-					$query->orWhere("$field_name $use_op {param.str$k}");
-					$query->setParameter('str'.$k, $check_value);
-					break;
-				case self::OP_NOT:
-				case self::OP_CONTAINS:
-					$use_op = $this->getTermOptions() == self::OP_NOT ? 'NOT LIKE' : 'LIKE';
-					$query->orWhere("$field_name $use_op {param.str$k}");
-					$query->setParameter('str'.$k, $like_value);
-					break;
-			}
-		}
+        foreach (array('name', 'first_name', 'last_name') as $k => $field_name) {
+            switch ($this->getTermOperator()) {
+                case self::OP_IS:
+                case self::OP_NOT:
+                    $use_op = $this->getTermOptions() == self::OP_NOT ? '!=' : '=';
+                    $query->orWhere("$field_name $use_op {param.str$k}");
+                    $query->setParameter('str'.$k, $check_value);
+                    break;
+                case self::OP_NOT:
+                case self::OP_CONTAINS:
+                    $use_op = $this->getTermOptions() == self::OP_NOT ? 'NOT LIKE' : 'LIKE';
+                    $query->orWhere("$field_name $use_op {param.str$k}");
+                    $query->setParameter('str'.$k, $like_value);
+                    break;
+            }
+        }
 
-		return $query;
-	}
+        return $query;
+    }
 }

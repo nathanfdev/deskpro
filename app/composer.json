@@ -44,9 +44,5 @@
 		"pagerfanta/pagerfanta": "~1.0",
 		"white-october/pagerfanta-bundle": "~1.0"
 	},
-	"scripts": {
-		"post-update-cmd": ["bin/clean-vendors.sh", "bin/hack-vendors.sh"],
-		"post-install-cmd": ["bin/clean-vendors.sh", "bin/hack-vendors.sh"]
-	},
 	"preferred-install": "dist"
 }

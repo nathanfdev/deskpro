@@ -23,12 +23,12 @@ $DP_CONFIG['debug']['enable_debug_trace'] = false;
 $DP_CONFIG['debug']['enable_debug_trace_keep'] = false;
 
 $DP_CONFIG['debug']['page_log'] = array(
-	'enabled' => false,
-	'slow_query_time' => false,
-	'max_query_count' => false,
-	'slow_db_time' => false,
-	'slow_php_time' => false,
-	'slow_page_time' => false,
+    'enabled' => false,
+    'slow_query_time' => false,
+    'max_query_count' => false,
+    'slow_db_time' => false,
+    'slow_php_time' => false,
+    'slow_page_time' => false,
 );
 
 $DP_CONFIG['debug']['enable_usersource_log'] = false;

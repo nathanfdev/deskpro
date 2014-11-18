@@ -90,4 +90,3 @@ class ThemeResolverTest extends \DpUnitTestCase
 //		$this->assertEquals('Application\PortalBundle\Themes\Base\Controller\PortalController::indexAction', $result);
 //	}
 }
- 

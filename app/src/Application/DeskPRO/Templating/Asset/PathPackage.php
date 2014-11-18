@@ -34,13 +34,12 @@
 
 namespace Application\DeskPRO\Templating\Asset;
 
-use Application\DeskPRO\App;
 use Symfony\Component\HttpFoundation\Request;
 
 class PathPackage extends UrlPackage
 {
-	public function __construct(Request $request, $version = null, $format = null)
-	{
-		parent::__construct(array('CONFIG_HTTP'), $version, $format);
-	}
+    public function __construct(Request $request, $version = null, $format = null)
+    {
+        parent::__construct(array('CONFIG_HTTP'), $version, $format);
+    }
 }

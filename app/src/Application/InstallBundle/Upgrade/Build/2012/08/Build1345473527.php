@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1345473527 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets_attachments.is_inline");
-		$this->execMutateSql("ALTER TABLE tickets_attachments ADD is_inline TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add tickets_attachments.is_inline");
+        $this->execMutateSql("ALTER TABLE tickets_attachments ADD is_inline TINYINT(1) NOT NULL");
+    }
 }

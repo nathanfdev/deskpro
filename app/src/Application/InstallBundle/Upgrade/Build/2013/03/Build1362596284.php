@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1362596284 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets_deleted.old_ref");
-		$this->execMutateSql("ALTER TABLE tickets_deleted ADD old_ref VARCHAR(80) NOT NULL");
-		$this->execMutateSql("CREATE INDEX old_ref_idx ON tickets_deleted (old_ref)");
-	}
+    public function run()
+    {
+        $this->out("Add tickets_deleted.old_ref");
+        $this->execMutateSql("ALTER TABLE tickets_deleted ADD old_ref VARCHAR(80) NOT NULL");
+        $this->execMutateSql("CREATE INDEX old_ref_idx ON tickets_deleted (old_ref)");
+    }
 }

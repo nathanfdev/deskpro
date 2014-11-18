@@ -39,27 +39,27 @@ use Application\DeskPRO\Brand\BrandContainer;
 
 class BrandContainerTest extends \DpUnitTestCase
 {
-	public function testGetters()
-	{
-		$mockBrand     = \Mockery::mock('Application\DeskPRO\Entity\Brand');
-		$mockSettings  = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
-		$themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
-		$bc            = new BrandContainer($mockBrand, $mockSettings, $themeResolver);
+    public function testGetters()
+    {
+        $mockBrand     = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+        $mockSettings  = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
+        $themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
+        $bc            = new BrandContainer($mockBrand, $mockSettings, $themeResolver);
 
-		$this->assertSame($mockBrand, $bc->getBrand());
-		$this->assertSame($mockSettings, $bc->getSettings());
-	}
+        $this->assertSame($mockBrand, $bc->getBrand());
+        $this->assertSame($mockSettings, $bc->getSettings());
+    }
 
 
-	public function testGetSetting()
-	{
-		$mockBrand     = \Mockery::mock('Application\DeskPRO\Entity\Brand');
-		$mockSettings  = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
-		$themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
-		$bc            = new BrandContainer($mockBrand, $mockSettings, $themeResolver);
+    public function testGetSetting()
+    {
+        $mockBrand     = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+        $mockSettings  = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
+        $themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
+        $bc            = new BrandContainer($mockBrand, $mockSettings, $themeResolver);
 
-		$mockSettings->shouldReceive('get')->with('setting_name')->andReturn('the val!')->once();
+        $mockSettings->shouldReceive('get')->with('setting_name')->andReturn('the val!')->once();
 
-		$this->assertEquals('the val!', $bc->getSetting('setting_name'));
-	}
+        $this->assertEquals('the val!', $bc->getSetting('setting_name'));
+    }
 }

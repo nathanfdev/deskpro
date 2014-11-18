@@ -42,17 +42,17 @@ use Application\DeskPRO\Dpql;
  */
 class Today extends AbstractDateRange
 {
-	/**
-	 * Gets the date range components (printable, start, end).
-	 *
-	 * @return string[int]
-	 */
-	protected function _getDateRange()
-	{
-		$tz = App::getCurrentPerson()->getTimezone();
-		$date = new \DateTime('now', new \DateTimeZone($tz));
-		$today = $date->format('Y-m-d');
+    /**
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
+     */
+    protected function _getDateRange()
+    {
+        $tz = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('now', new \DateTimeZone($tz));
+        $today = $date->format('Y-m-d');
 
-		return array($today, "$today 00:00:00", "$today 23:59:59");
-	}
+        return array($today, "$today 00:00:00", "$today 23:59:59");
+    }
 }

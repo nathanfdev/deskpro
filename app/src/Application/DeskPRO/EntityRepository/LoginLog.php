@@ -34,28 +34,27 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class LoginLog extends AbstractEntityRepository
 {
-	/**
-	 * Gets the last successful login
-	 *
-	 * @return \Application\DeskPRO\Entity\LoginLog
-	 */
-	public function getLast(PersonEntity $person)
-	{
-		// The last login will be the one before the last,
-		// since the absolute last will be the current login
+    /**
+     * Gets the last successful login
+     *
+     * @return \Application\DeskPRO\Entity\LoginLog
+     */
+    public function getLast(PersonEntity $person)
+    {
+        // The last login will be the one before the last,
+        // since the absolute last will be the current login
 
-		$last_login = $this->_em->createQuery("
-			SELECT l
-			FROM DeskPRO:LoginLog l
-			WHERE l.person = ?0 AND l.is_success = true
-			ORDER BY l.id DESC
-		")->setMaxResults(1)->setFirstResult(1)->setParameter(0, $person)->getOneOrNullResult();
+        $last_login = $this->_em->createQuery("
+            SELECT l
+            FROM DeskPRO:LoginLog l
+            WHERE l.person = ?0 AND l.is_success = true
+            ORDER BY l.id DESC
+        ")->setMaxResults(1)->setFirstResult(1)->setParameter(0, $person)->getOneOrNullResult();
 
-		return $last_login;
-	}
+        return $last_login;
+    }
 }

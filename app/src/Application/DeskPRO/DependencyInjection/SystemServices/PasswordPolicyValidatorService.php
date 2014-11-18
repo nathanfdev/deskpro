@@ -40,15 +40,15 @@ use Application\DeskPRO\Settings\PasswordSettings;
 
 class PasswordPolicyValidatorService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$settings = $container->getSettingsHandler();
-		$password_settings = new PasswordSettings($settings);
+    public static function create(DeskproContainer $container)
+    {
+        $settings = $container->getSettingsHandler();
+        $password_settings = new PasswordSettings($settings);
 
-		return new PasswordPolicyValidator(
-			$password_settings->getUserPolicy(),
-			$password_settings->getAgentPolicy(),
-			$container->getEm()->getRepository('DeskPRO:PasswordHistory')
-		);
-	}
+        return new PasswordPolicyValidator(
+            $password_settings->getUserPolicy(),
+            $password_settings->getAgentPolicy(),
+            $container->getEm()->getRepository('DeskPRO:PasswordHistory')
+        );
+    }
 }

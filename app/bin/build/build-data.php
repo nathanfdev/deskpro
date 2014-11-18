@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run from the CLI.\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run from the CLI.\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 define('DP_BUILDING', true);
@@ -18,22 +18,22 @@ require DP_ROOT.'/sys/system.php';
 # Build cloudflare IPs data
 #------------------------------
 
-$fn_get_url = function($url) {
-	for ($i = 0; $i < 5; $i++) {
-		$content = trim(file_get_contents($url));
-		if ($content) {
-			break;
-		}
+$fn_get_url = function ($url) {
+    for ($i = 0; $i < 5; $i++) {
+        $content = trim(file_get_contents($url));
+        if ($content) {
+            break;
+        }
 
-		sleep(1);
-	}
+        sleep(1);
+    }
 
-	if (!$content) {
-		echo "Could not download IPs\n";
-		die(1);
-	}
+    if (!$content) {
+        echo "Could not download IPs\n";
+        die(1);
+    }
 
-	return $content;
+    return $content;
 };
 
 $data_path = DP_ROOT.'/sys/Resources/cloudflare-ips.php';

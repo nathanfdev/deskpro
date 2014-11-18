@@ -44,168 +44,169 @@ use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 
 class TicketEscalationsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
-		$escalations = $this->em->getRepository('DeskPRO:TicketEscalation')->getEscalations();
+    public function listAction()
+    {
+        $escalations = $this->em->getRepository('DeskPRO:TicketEscalation')->getEscalations();
 
-		$data = array();
-		foreach ($escalations as $esc) {
-			$row = array(
-				'id'                 => $esc->id,
-				'title'              => $esc->title,
-				'is_enabled'         => $esc->is_enabled,
-				'event_trigger'      => $esc->event_trigger,
-				'event_trigger_time' => $esc->event_trigger_time,
-			);
+        $data = array();
+        foreach ($escalations as $esc) {
+            $row = array(
+                'id'                 => $esc->id,
+                'title'              => $esc->title,
+                'is_enabled'         => $esc->is_enabled,
+                'event_trigger'      => $esc->event_trigger,
+                'event_trigger_time' => $esc->event_trigger_time,
+            );
 
-			$data[] = $row;
-		}
+            $data[] = $row;
+        }
 
-		return $this->createApiResponse(array(
-			'escalations' => $data
-		));
-	}
+        return $this->createApiResponse(array(
+            'escalations' => $data
+        ));
+    }
 
-	####################################################################################################################
-	# get
-	####################################################################################################################
+    ####################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		$esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
+    public function getAction($id)
+    {
+        $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
 
-		if (!$esc) {
-			throw $this->createNotFoundException();
-		}
+        if (!$esc) {
+            throw $this->createNotFoundException();
+        }
 
-		$trans = new LegacyTermsTransformer();
-		$crit = $trans->toFilterTerms($esc->terms);
-		$crit2 = $trans->toFilterTerms($esc->terms_any);
+        $trans = new LegacyTermsTransformer();
+        $crit = $trans->toFilterTerms($esc->terms);
+        $crit2 = $trans->toFilterTerms($esc->terms_any);
 
-		$esc = $this->getApiData($esc);
-		$esc['terms'] = $crit->exportToArray();
-		$esc['terms_any'] = $crit2->exportToArray();
+        $esc = $this->getApiData($esc);
+        $esc['terms'] = $crit->exportToArray();
+        $esc['terms_any'] = $crit2->exportToArray();
 
-		return $this->createApiResponse(array(
-			'escalation' => $esc
-		));
-	}
+        return $this->createApiResponse(array(
+            'escalation' => $esc
+        ));
+    }
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-	public function saveAction($id)
-	{
-		if ($id) {
-			$esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
+    public function saveAction($id)
+    {
+        if ($id) {
+            $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
 
-			if (!$esc) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$esc = new TicketEscalation();
-		}
+            if (!$esc) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $esc = new TicketEscalation();
+        }
 
-		$esc->title = $this->in->getString('title');
-		$esc->event_trigger = $this->in->getString('event_trigger');
-		$esc->event_trigger_time = $this->in->getUint('event_trigger_time') ?: 1;
+        $esc->title = $this->in->getString('title');
+        $esc->event_trigger = $this->in->getString('event_trigger');
+        $esc->event_trigger_time = $this->in->getUint('event_trigger_time') ?: 1;
 
-		$crit = new FilterTerms();
-		foreach ($this->in->getArrayValue('terms') as $term_info) {
-			$crit->addTermFromArray($term_info);
-		}
+        $crit = new FilterTerms();
+        foreach ($this->in->getArrayValue('terms') as $term_info) {
+            $crit->addTermFromArray($term_info);
+        }
 
-		$trans = new LegacyTermsTransformer();
-		$esc->terms = $trans->toLegacyTerms($crit);
+        $trans = new LegacyTermsTransformer();
+        $esc->terms = $trans->toLegacyTerms($crit);
 
-		$crit = new FilterTerms();
-		foreach ($this->in->getArrayValue('terms_any') as $term_info) {
-			$crit->addTermFromArray($term_info);
-		}
+        $crit = new FilterTerms();
+        foreach ($this->in->getArrayValue('terms_any') as $term_info) {
+            $crit->addTermFromArray($term_info);
+        }
 
-		$trans = new LegacyTermsTransformer();
-		$esc->terms_any = $trans->toLegacyTerms($crit);
+        $trans = new LegacyTermsTransformer();
+        $esc->terms_any = $trans->toLegacyTerms($crit);
 
-		$actions = new TriggerActions();
-		foreach ($this->in->getArrayValue('actions') as $act) {
-			if ($act) {
-				$actions->addActionFromArray($act);
-			}
-		}
-		$esc->actions = $actions;
+        $actions = new TriggerActions();
+        foreach ($this->in->getArrayValue('actions') as $act) {
+            if ($act) {
+                $actions->addActionFromArray($act);
+            }
+        }
+        $esc->actions = $actions;
 
-		$this->em->persist($esc);
-		$this->em->flush();
+        $this->em->persist($esc);
+        $this->em->flush();
 
-		return $this->createSuccessResponse(array(
-			'escalation_id' => $esc->id
-		));
-	}
+        return $this->createSuccessResponse(array(
+            'escalation_id' => $esc->id
+        ));
+    }
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-	public function deleteAction($id)
-	{
-		$esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
+    public function deleteAction($id)
+    {
+        $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
 
-		if (!$esc) {
-			throw $this->createNotFoundException();
-		}
+        if (!$esc) {
+            throw $this->createNotFoundException();
+        }
 
-		$this->em->remove($esc);
-		$this->em->flush();
+        $this->em->remove($esc);
+        $this->em->flush();
 
-		return $this->createSuccessResponse(array(
-			'old_id' => $id
-		));
-	}
+        return $this->createSuccessResponse(array(
+            'old_id' => $id
+        ));
+    }
 
-	####################################################################################################################
-	# toggle-trigger
-	####################################################################################################################
+    ####################################################################################################################
+    # toggle-trigger
+    ####################################################################################################################
 
-	public function toggleEscalationAction($id, $is_enabled)
-	{
-		$trigger = $this->em->find('DeskPRO:TicketEscalation', $id);
-		if (!$trigger) {
-			throw $this->createNotFoundException();
-		}
+    public function toggleEscalationAction($id, $is_enabled)
+    {
+        $trigger = $this->em->find('DeskPRO:TicketEscalation', $id);
+        if (!$trigger) {
+            throw $this->createNotFoundException();
+        }
 
-		$trigger->is_enabled = $is_enabled;
-		$this->em->persist($trigger);
-		$this->em->flush();
+        $trigger->is_enabled = $is_enabled;
+        $this->em->persist($trigger);
+        $this->em->flush();
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
+    ####################################################################################################################
+    # save-display-order
+    ####################################################################################################################
 
-	public function saveRunOrderAction()
-	{
-		$run_order = $this->in->getCleanValueArray('run_order', 'uint', 'discard');
-		$this->em->getRepository('DeskPRO:TicketEscalation')->updateRunOrder($run_order);
+    public function saveRunOrderAction()
+    {
+        $run_order = $this->in->getCleanValueArray('run_order', 'uint', 'discard');
+        $this->em->getRepository('DeskPRO:TicketEscalation')->updateRunOrder($run_order);
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 }

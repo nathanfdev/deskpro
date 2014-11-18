@@ -58,124 +58,121 @@ use Orb\Util\Arrays;
  */
 class RuleBuilder
 {
-	/**
-	 * @var array
-	 */
-	protected $special_keys = array();
+    /**
+     * @var array
+     */
+    protected $special_keys = array();
 
-	/**
-	 * The "Actions" builder has a 'type' item and then an options array.
-	 *
-	 * A typical result might look like:
-	 * <code>
-	 * array(
-	 *     array('type' => 'urgency', 'options' => array('num' => 22)),
-	 *     array('type' => 'priority_id', 'options' => array('priority_id' => 5)),
-	 * )
-	 * </code>
-	 *
-	 * @return \Application\DeskPRO\UI\RuleBuilder
-	 */
-	public static function newActionsBuilder()
-	{
-		return new self(array('type'));
-	}
+    /**
+     * The "Actions" builder has a 'type' item and then an options array.
+     *
+     * A typical result might look like:
+     * <code>
+     * array(
+     *     array('type' => 'urgency', 'options' => array('num' => 22)),
+     *     array('type' => 'priority_id', 'options' => array('priority_id' => 5)),
+     * )
+     * </code>
+     *
+     * @return \Application\DeskPRO\UI\RuleBuilder
+     */
+    public static function newActionsBuilder()
+    {
+        return new self(array('type'));
+    }
 
+    /**
+     * The "Terms" builder has a 'type' item and an 'op' item, and then an options array.
+     *
+     * A typical result might look like:
+     * <code>
+     * array(
+     *     array('type' => 'urgency', 'op' => 'ltg', 'options' => array('num' => 22)),
+     *     array('type' => 'priority_id', 'op' => 'is', 'options' => array('priority_id' => 5)),
+     * )
+     * </code>
+     *
+     * @return \Application\DeskPRO\UI\RuleBuilder
+     */
+    public static function newTermsBuilder()
+    {
+        return new self(array('type', 'op'));
+    }
 
-	/**
-	 * The "Terms" builder has a 'type' item and an 'op' item, and then an options array.
-	 *
-	 * A typical result might look like:
-	 * <code>
-	 * array(
-	 *     array('type' => 'urgency', 'op' => 'ltg', 'options' => array('num' => 22)),
-	 *     array('type' => 'priority_id', 'op' => 'is', 'options' => array('priority_id' => 5)),
-	 * )
-	 * </code>
-	 *
-	 * @return \Application\DeskPRO\UI\RuleBuilder
-	 */
-	public static function newTermsBuilder()
-	{
-		return new self(array('type', 'op'));
-	}
+    /**
+     * Special keys are keys we'll find in the form that aren't options.
+     *
+     * @param array $special_keys
+     */
+    public function __construct(array $special_keys)
+    {
+        $this->special_keys = $special_keys;
+    }
 
+    /**
+     * Read an array of terms based from the form, using structure defined.
+     *
+     * @param  array $form
+     * @return array
+     */
+    public function readForm(array $form)
+    {
+        $data = array();
 
-	/**
-	 * Special keys are keys we'll find in the form that aren't options.
-	 *
-	 * @param array $special_keys
-	 */
-	public function __construct(array $special_keys)
-	{
-		$this->special_keys = $special_keys;
-	}
+        foreach ($form as $item) {
+            if (!is_array($item)) continue;
 
+            $data_item = array();
+            foreach ($this->special_keys as $k) {
+                $data_item[$k] = null;
+            }
+            $data_item['options'] = array();
 
-	/**
-	 * Read an array of terms based from the form, using structure defined.
-	 *
-	 * @param array $form
-	 * @return array
-	 */
-	public function readForm(array $form)
-	{
-		$data = array();
+            $is_blank = true;
+            foreach ($item as $k => $v) {
+                // Special value means not to add the term
+                // Used for things like "any" where the term shouldnt
+                // be applied.
+                if ($v == 'DP_DISCARD_TERM') {
+                    continue 2;
+                }
 
-		foreach ($form as $item) {
-			if (!is_array($item)) continue;
+                if ($v == 'DP_ALLOW_BLANK') {
+                    $is_blank = false;
+                    continue;
+                }
 
-			$data_item = array();
-			foreach ($this->special_keys as $k) {
-				$data_item[$k] = null;
-			}
-			$data_item['options'] = array();
+                if (in_array($k, $this->special_keys)) {
+                    $data_item[$k] = $v;
+                } else {
+                    if ($is_blank) {
+                        if (is_array($v)) {
+                            $v = Arrays::removeEmptyString($v);
+                            if ($v) {
+                                $is_blank = false;
+                            }
+                        } else {
+                            $v = trim($v);
+                            if ($v !== '') {
+                                $is_blank = false;
+                            }
+                        }
+                    } elseif (!is_array($v) && trim($v) !== '') {
+                        $is_blank = false;
+                    } elseif (is_array($v) && !$v) {
+                        $is_blank = false;
+                    }
+                    $data_item['options'][$k] = $v;
+                }
+            }
 
-			$is_blank = true;
-			foreach ($item as $k => $v) {
-				// Special value means not to add the term
-				// Used for things like "any" where the term shouldnt
-				// be applied.
-				if ($v == 'DP_DISCARD_TERM') {
-					continue 2;
-				}
+            if ($is_blank) {
+                continue;
+            }
 
-				if ($v == 'DP_ALLOW_BLANK') {
-					$is_blank = false;
-					continue;
-				}
+            $data[] = $data_item;
+        }
 
-				if (in_array($k, $this->special_keys)) {
-					$data_item[$k] = $v;
-				} else {
-					if ($is_blank) {
-						if (is_array($v)) {
-							$v = Arrays::removeEmptyString($v);
-							if ($v) {
-								$is_blank = false;
-							}
-						} else {
-							$v = trim($v);
-							if ($v !== '') {
-								$is_blank = false;
-							}
-						}
-					} elseif (!is_array($v) && trim($v) !== '') {
-						$is_blank = false;
-					} elseif (is_array($v) && !$v) {
-						$is_blank = false;
-					}
-					$data_item['options'][$k] = $v;
-				}
-			}
-
-			if ($is_blank) {
-				continue;
-			}
-
-			$data[] = $data_item;
-		}
-
-		return $data;
-	}
+        return $data;
+    }
 }

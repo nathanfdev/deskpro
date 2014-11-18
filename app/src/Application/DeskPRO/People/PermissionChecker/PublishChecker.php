@@ -34,47 +34,46 @@
 
 namespace Application\DeskPRO\People\PermissionChecker;
 
-use Application\DeskPRO\App;
 
 class PublishChecker extends AbstractChecker
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @param mixed $content
-	 * @return bool
-	 */
-	public function canDelete($content)
-	{
-		return $this->person->hasPerm('agent_publish.delete');
-	}
+    /**
+     * @param  mixed $content
+     * @return bool
+     */
+    public function canDelete($content)
+    {
+        return $this->person->hasPerm('agent_publish.delete');
+    }
 
-	/**
-	 * @param mixed $content
-	 * @return bool
-	 */
-	public function canEdit($content)
-	{
-		if ($this->person->hasPerm('agent_publish.edit')) {
-			return true;
-		}
+    /**
+     * @param  mixed $content
+     * @return bool
+     */
+    public function canEdit($content)
+    {
+        if ($this->person->hasPerm('agent_publish.edit')) {
+            return true;
+        }
 
-		if ($content->person && $content->person->getId() == $this->person->getId()) {
-			return true;
-		}
+        if ($content->person && $content->person->getId() == $this->person->getId()) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
 
-	/**
-	 * @param $content
-	 */
-	public function canValidate($content)
-	{
-		return $this->person->hasPerm('agent_publish.validate');
-	}
+    /**
+     * @param $content
+     */
+    public function canValidate($content)
+    {
+        return $this->person->hasPerm('agent_publish.validate');
+    }
 }

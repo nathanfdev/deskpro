@@ -9,63 +9,60 @@ require_once 'AbstractStringCheckTest.php';
 
 class CheckOrgDomainEmailTest extends AbstractStringCheckTest
 {
-	/**
-	 * @param int $id
-	 * @param string $test_string
-	 * @return Ticket
-	 */
-	public function createTicket($id, $test_string)
-	{
-		$org = new Organization();
-		$org->id = $id;
+    /**
+     * @param  int    $id
+     * @param  string $test_string
+     * @return Ticket
+     */
+    public function createTicket($id, $test_string)
+    {
+        $org = new Organization();
+        $org->id = $id;
 
-		$domain1 = new OrganizationEmailDomain();
-		$domain1->domain = '12093821382103.com';
-		$domain2 = new OrganizationEmailDomain();
-		$domain2->domain = $test_string;
+        $domain1 = new OrganizationEmailDomain();
+        $domain1->domain = '12093821382103.com';
+        $domain2 = new OrganizationEmailDomain();
+        $domain2->domain = $test_string;
 
-		$org->email_domains->add($domain1);
-		$org->email_domains->add($domain2);
+        $org->email_domains->add($domain1);
+        $org->email_domains->add($domain2);
 
-		$ticket = new Ticket();
-		$ticket->id = $id;
-		$ticket->organization = $org;
+        $ticket = new Ticket();
+        $ticket->id = $id;
+        $ticket->organization = $org;
 
-		return $ticket;
-	}
+        return $ticket;
+    }
 
+    /**
+     * @return string
+     */
+    public function getString1()
+    {
+        return 'example@example.com';
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getString1()
-	{
-		return 'example@example.com';
-	}
+    /**
+     * @return string
+     */
+    public function getString2()
+    {
+        return 'example@example.com.other.tld';
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClass()
+    {
+        return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckOrgEmailDomain';
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getString2()
-	{
-		return 'example@example.com.other.tld';
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClass()
-	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckOrgEmailDomain';
-	}
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClassOptionKey()
-	{
-		return 'email_domain';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClassOptionKey()
+    {
+        return 'email_domain';
+    }
 }

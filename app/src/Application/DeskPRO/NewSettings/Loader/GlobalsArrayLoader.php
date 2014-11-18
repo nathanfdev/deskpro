@@ -43,52 +43,51 @@ use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
  */
 class GlobalsArrayLoader implements SettingsLoaderInterface
 {
-	const CACHE_KEY = 'settings.loader.global_array';
+    const CACHE_KEY = 'settings.loader.global_array';
 
-	/**
-	 * @var string the key we use for cache on this loader
-	 */
-	private $cacheKey;
+    /**
+     * @var string the key we use for cache on this loader
+     */
+    private $cacheKey;
 
-	/**
-	 * @var \Application\DeskPRO\Cache\ConvenientCache
-	 */
-	private $cache;
+    /**
+     * @var \Application\DeskPRO\Cache\ConvenientCache
+     */
+    private $cache;
 
 
-	public function __construct(CacheAdapterInterface $cache)
-	{
-		$this->cacheKey = static::CACHE_KEY;
-		$this->cache = new ConvenientCache($cache);
-	}
+    public function __construct(CacheAdapterInterface $cache)
+    {
+        $this->cacheKey = static::CACHE_KEY;
+        $this->cache = new ConvenientCache($cache);
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function load($force = false)
-	{
-		if ($force) {
-			$this->cache->delete($this->cacheKey);
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function load($force = false)
+    {
+        if ($force) {
+            $this->cache->delete($this->cacheKey);
+        }
 
-		return $this->cache->get(
-			$this->cacheKey,
-			function() {
-				if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
-					return $GLOBALS['DP_CONFIG']['SETTINGS'];
-				}
+        return $this->cache->get(
+            $this->cacheKey,
+            function () {
+                if (isset($GLOBALS['DP_CONFIG']['SETTINGS']) && is_array($GLOBALS['DP_CONFIG']['SETTINGS'])) {
+                    return $GLOBALS['DP_CONFIG']['SETTINGS'];
+                }
 
-				return array();
-			}
-		);
-	}
+                return array();
+            }
+        );
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCacheKey()
-	{
-		return $this->cacheKey;
-	}
+    /**
+     * @return string
+     */
+    public function getCacheKey()
+    {
+        return $this->cacheKey;
+    }
 }
- 

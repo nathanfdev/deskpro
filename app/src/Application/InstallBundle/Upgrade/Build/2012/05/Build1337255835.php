@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1337255835 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adding user_title to departments table");
-		$this->execMutateSql("ALTER TABLE `departments` ADD `user_title` VARCHAR(255)  NOT NULL  DEFAULT ''  AFTER `title`");
-	}
+    public function run()
+    {
+        $this->out("Adding user_title to departments table");
+        $this->execMutateSql("ALTER TABLE `departments` ADD `user_title` VARCHAR(255)  NOT NULL  DEFAULT ''  AFTER `title`");
+    }
 }

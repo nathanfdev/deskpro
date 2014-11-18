@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1408010946 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add email_sources.exec_count");
-		$this->execMutateSql("ALTER TABLE email_sources ADD exec_count INT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add email_sources.exec_count");
+        $this->execMutateSql("ALTER TABLE email_sources ADD exec_count INT NOT NULL");
+    }
 }

@@ -44,115 +44,115 @@ use Orb\Log\Logger;
 
 class BlobStorageService
 {
-	public static function create(DeskproContainer $container)
-	{
-		#------------------------------
-		# Create a logger
-		#------------------------------
+    public static function create(DeskproContainer $container)
+    {
+        #------------------------------
+        # Create a logger
+        #------------------------------
 
-		$logger = new Logger();
+        $logger = new Logger();
 
-		if (!dp_get_config('enable_blobstorage_log')) {
-			$logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
-		}
+        if (!dp_get_config('enable_blobstorage_log')) {
+            $logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
+        }
 
-		$wr = new \Orb\Log\Writer\Stream($container->getLogDir() . DIRECTORY_SEPARATOR . 'blob_storage.log');
-		$logger->addWriter($wr);
+        $wr = new \Orb\Log\Writer\Stream($container->getLogDir() . DIRECTORY_SEPARATOR . 'blob_storage.log');
+        $logger->addWriter($wr);
 
-		#------------------------------
-		# Filesystem adapter
-		#------------------------------
+        #------------------------------
+        # Filesystem adapter
+        #------------------------------
 
-		$opts = array('base_path' => $container->getBlobDir());
-		if ($container->getSetting('core.filestorage_file_mode')) {
-			$opts['file_mode'] = $container->getSetting('core.filestorage_file_mode');
-		}
-		if ($container->getSetting('core.filestorage_dir_mode')) {
-			$opts['dir_mode'] = $container->getSetting('core.filestorage_dir_mode');
-		}
+        $opts = array('base_path' => $container->getBlobDir());
+        if ($container->getSetting('core.filestorage_file_mode')) {
+            $opts['file_mode'] = $container->getSetting('core.filestorage_file_mode');
+        }
+        if ($container->getSetting('core.filestorage_dir_mode')) {
+            $opts['dir_mode'] = $container->getSetting('core.filestorage_dir_mode');
+        }
 
-		$fs_adapter = new FilesystemStorage($opts);
-		$fs_adapter->setLogger($logger);
+        $fs_adapter = new FilesystemStorage($opts);
+        $fs_adapter->setLogger($logger);
 
-		#------------------------------
-		# S3 Adapter
-		#------------------------------
+        #------------------------------
+        # S3 Adapter
+        #------------------------------
 
-		$s3_adapter = null;
-		if ($container->getSetting('core.filestorage_s3_key') && $container->getSetting('core.filestorage_s3_secret') && $container->getSetting('core.filestorage_s3_bucket')) {
-			if (!defined('CURLOPT_CONNECTTIMEOUT')) define(CURLOPT_CONNECTTIMEOUT, 78);
-			if (!defined('CURLOPT_TIMEOUT')) define(CURLOPT_TIMEOUT, 13);
+        $s3_adapter = null;
+        if ($container->getSetting('core.filestorage_s3_key') && $container->getSetting('core.filestorage_s3_secret') && $container->getSetting('core.filestorage_s3_bucket')) {
+            if (!defined('CURLOPT_CONNECTTIMEOUT')) define(CURLOPT_CONNECTTIMEOUT, 78);
+            if (!defined('CURLOPT_TIMEOUT')) define(CURLOPT_TIMEOUT, 13);
 
-			$client = S3Client::factory(array(
-				'key'          => $container->getSetting('core.filestorage_s3_key'),
-				'secret'       => $container->getSetting('core.filestorage_s3_secret'),
-				'request.options' => array(
-					'connect_timeout' => 15,
-					'timeout'         => 120,
-				),
-				'curl.options' => array(
-					CURLOPT_CONNECTTIMEOUT => 15,
-					CURLOPT_TIMEOUT        => 120,
-				)
-			));
-			$s3_adapter = new AmazonS3Storage(array(
-				's3_client'       => $client,
-				'bucket'          => $container->getSetting('core.filestorage_s3_bucket'),
-				'file_url_domain' => $container->getSetting('core.filestorage_s3_file_url_domain'),
-				'base_path'       => $container->getSetting('core.filestorage_s3_basepath'),
-			));
-			$s3_adapter->setLogger($logger);
-		}
+            $client = S3Client::factory(array(
+                'key'          => $container->getSetting('core.filestorage_s3_key'),
+                'secret'       => $container->getSetting('core.filestorage_s3_secret'),
+                'request.options' => array(
+                    'connect_timeout' => 15,
+                    'timeout'         => 120,
+                ),
+                'curl.options' => array(
+                    CURLOPT_CONNECTTIMEOUT => 15,
+                    CURLOPT_TIMEOUT        => 120,
+                )
+            ));
+            $s3_adapter = new AmazonS3Storage(array(
+                's3_client'       => $client,
+                'bucket'          => $container->getSetting('core.filestorage_s3_bucket'),
+                'file_url_domain' => $container->getSetting('core.filestorage_s3_file_url_domain'),
+                'base_path'       => $container->getSetting('core.filestorage_s3_basepath'),
+            ));
+            $s3_adapter->setLogger($logger);
+        }
 
-		#------------------------------
-		# Database adapter
-		#------------------------------
+        #------------------------------
+        # Database adapter
+        #------------------------------
 
-		$db_adapter = new DatabaseStorage(array(
-			'db'                   => $container->getDb(),
-			'table'                => 'blobs_storage',
-			'field_name.data'      => 'data',
-			'field_name.path'      => 'blob_id',
-			'field_name.order'     => 'id',
-			'metadata_id_property' => 'blob_id'
-		));
-		$db_adapter->setLogger($logger);
+        $db_adapter = new DatabaseStorage(array(
+            'db'                   => $container->getDb(),
+            'table'                => 'blobs_storage',
+            'field_name.data'      => 'data',
+            'field_name.path'      => 'blob_id',
+            'field_name.order'     => 'id',
+            'metadata_id_property' => 'blob_id'
+        ));
+        $db_adapter->setLogger($logger);
 
-		#------------------------------
-		# Create the storage
-		#------------------------------
+        #------------------------------
+        # Create the storage
+        #------------------------------
 
-		$bs = new DeskproBlobStorage($container->getEm());
-		$bs->setLogger($logger);
+        $bs = new DeskproBlobStorage($container->getEm());
+        $bs->setLogger($logger);
 
-		if ($s3_adapter && $container->getSetting('core.filestorage_method') == 's3') {
-			$bs->addAdapter('s3', $s3_adapter);
-			$bs->addAdapter('fs', $fs_adapter);
-			$bs->addAdapter('db', $db_adapter);
-			$bs->disableAdapter('fs');
-		} elseif ($container->getSetting('core.filestorage_method') == 'fs') {
-			$bs->addAdapter('fs', $fs_adapter);
-			if ($s3_adapter) {
-				$bs->addAdapter('s3', $s3_adapter);
-				$bs->disableAdapter('s3');
-			}
-			$bs->addAdapter('db', $db_adapter);
-		} else {
-			$bs->addAdapter('db', $db_adapter);
-			$bs->addAdapter('fs', $fs_adapter);
-			$bs->disableAdapter('fs', $fs_adapter);
-			if ($s3_adapter) {
-				$bs->addAdapter('s3', $s3_adapter);
-				$bs->disableAdapter('s3');
-			}
-		}
+        if ($s3_adapter && $container->getSetting('core.filestorage_method') == 's3') {
+            $bs->addAdapter('s3', $s3_adapter);
+            $bs->addAdapter('fs', $fs_adapter);
+            $bs->addAdapter('db', $db_adapter);
+            $bs->disableAdapter('fs');
+        } elseif ($container->getSetting('core.filestorage_method') == 'fs') {
+            $bs->addAdapter('fs', $fs_adapter);
+            if ($s3_adapter) {
+                $bs->addAdapter('s3', $s3_adapter);
+                $bs->disableAdapter('s3');
+            }
+            $bs->addAdapter('db', $db_adapter);
+        } else {
+            $bs->addAdapter('db', $db_adapter);
+            $bs->addAdapter('fs', $fs_adapter);
+            $bs->disableAdapter('fs', $fs_adapter);
+            if ($s3_adapter) {
+                $bs->addAdapter('s3', $s3_adapter);
+                $bs->disableAdapter('s3');
+            }
+        }
 
-		// Store logs in the database if config flag is set
-		if ($log_adapter_id = $container->getSetting('core.filestorage_method_logs')) {
-			$bs->setAdapterForTag('logs.email_source_log', $log_adapter_id);
-			$bs->setAdapterForTag('logs.ticket_proc_log', $log_adapter_id);
-		}
+        // Store logs in the database if config flag is set
+        if ($log_adapter_id = $container->getSetting('core.filestorage_method_logs')) {
+            $bs->setAdapterForTag('logs.email_source_log', $log_adapter_id);
+            $bs->setAdapterForTag('logs.ticket_proc_log', $log_adapter_id);
+        }
 
-		return $bs;
-	}
+        return $bs;
+    }
 }

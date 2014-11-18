@@ -38,32 +38,30 @@ use Application\ApiBundle\ApiUser;
 
 class CompositePermission implements PermissionStrategyInterface
 {
-	/**
-	 * @var PermissionStrategyInterface[]
-	 */
-	private $perms = array();
+    /**
+     * @var PermissionStrategyInterface[]
+     */
+    private $perms = array();
 
+    /**
+     * @param PermissionStrategyInterface $p
+     */
+    public function addPermissionStrategy(PermissionStrategyInterface $p)
+    {
+        $this->perms[] = $p;
+    }
 
-	/**
-	 * @param PermissionStrategyInterface $p
-	 */
-	public function addPermissionStrategy(PermissionStrategyInterface $p)
-	{
-		$this->perms[] = $p;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function userHasPermission(ApiUser $api_user, $context_info = null)
+    {
+        foreach ($this->perms as $p) {
+            if (!$p->userHasPermission($api_user, $context_info)) {
+                return false;
+            }
+        }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function userHasPermission(ApiUser $api_user, $context_info = null)
-	{
-		foreach ($this->perms as $p) {
-			if (!$p->userHasPermission($api_user, $context_info)) {
-				return false;
-			}
-		}
-
-		return true;
-	}
+        return true;
+    }
 }

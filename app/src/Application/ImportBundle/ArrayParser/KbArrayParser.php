@@ -38,40 +38,40 @@ use Orb\Util\Strings;
 class KbArrayParser implements ArrayParserInterface
 {
 
-	/**
-	 * @param array $data
-	 * @return PersonValue
-	 */
-	public function parseArray(array $data)
-	{
-		$data = ArrayParserUtils::cleanArray($data);
+    /**
+     * @param  array       $data
+     * @return PersonValue
+     */
+    public function parseArray(array $data)
+    {
+        $data = ArrayParserUtils::cleanArray($data);
 
-		$value = new KbValue();
+        $value = new KbValue();
 
-		ArrayParserUtils::copyValueMapping(array(
-			'oid'		=> 'raw',
-			'person'	=> 'string',
-			'language'	=> 'string',
-			'date_end'	=> 'date',
-			'end_action'	=> 'string',
-			'slug'		=> 'string',
-			'title'		=> 'string',
-			'content'	=> 'string',
-			'total_rating'	=> 'int',
-			'num_comments'	=> 'int',
-			'num_ratings'	=> 'int',
-			'status'	=> 'string',
-			'date_created'	=> 'date',
-			'date_published'	=> 'date',
-			'categories'	=> 'array',
-			'labels'	=> 'array',
-		), $data, $value);
+        ArrayParserUtils::copyValueMapping(array(
+            'oid'		=> 'raw',
+            'person'	=> 'string',
+            'language'	=> 'string',
+            'date_end'	=> 'date',
+            'end_action'	=> 'string',
+            'slug'		=> 'string',
+            'title'		=> 'string',
+            'content'	=> 'string',
+            'total_rating'	=> 'int',
+            'num_comments'	=> 'int',
+            'num_ratings'	=> 'int',
+            'status'	=> 'string',
+            'date_created'	=> 'date',
+            'date_published'	=> 'date',
+            'categories'	=> 'array',
+            'labels'	=> 'array',
+        ), $data, $value);
 
-		if ($value->title && !$value->slug) {
-			$value->slug = Strings::slugifyTitle($value->title);
-		}
+        if ($value->title && !$value->slug) {
+            $value->slug = Strings::slugifyTitle($value->title);
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
 }

@@ -39,111 +39,115 @@ use Doctrine\ORM\EntityManager;
 
 class AgentTeamDataService
 {
-	/** @var bool */
-	protected $has_init = false;
+    /** @var bool */
+    protected $has_init = false;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\AgentTeam[]
-	 */
-	public $agent_teams = array();
+    /**
+     * @var \Application\DeskPRO\Entity\AgentTeam[]
+     */
+    public $agent_teams = array();
 
-	/**
-	 * @var int[]
-	 */
-	public $ids = array();
+    /**
+     * @var int[]
+     */
+    public $ids = array();
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	public static function create(DeskproContainer $container, array $options = null)
-	{
-		$em = $container->getEm();
-		$o = new static($em);
-		return $o;
-	}
+    public static function create(DeskproContainer $container, array $options = null)
+    {
+        $em = $container->getEm();
+        $o = new static($em);
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-		$this->db = $em->getConnection();
-	}
+        return $o;
+    }
 
-	protected function preload()
-	{
-		if ($this->has_init) {
-			return;
-		}
-		$this->has_init = true;
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+        $this->db = $em->getConnection();
+    }
 
-		$this->agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
-		foreach ($this->agent_teams as $a) {
-			$this->ids[] = $a->getId();
-		}
-	}
+    protected function preload()
+    {
+        if ($this->has_init) {
+            return;
+        }
+        $this->has_init = true;
 
-
-	/**
-	 * @return \Application\DeskPRO\Entity\AgentTeam[]
-	 */
-	public function getTeams()
-	{
-		$this->preload();
-		return $this->agent_teams;
-	}
+        $this->agent_teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeams();
+        foreach ($this->agent_teams as $a) {
+            $this->ids[] = $a->getId();
+        }
+    }
 
 
-	/**
-	 * @param array $for_ids
-	 */
-	public function getNames(array $for_ids = null)
-	{
-		$ret = array();
+    /**
+     * @return \Application\DeskPRO\Entity\AgentTeam[]
+     */
+    public function getTeams()
+    {
+        $this->preload();
 
-		foreach ($this->getTeams() as $a) {
-			if ($for_ids === null || in_array($a->getId(), $for_ids)) {
-				$ret[$a->getId()] = $a->getName();
-			}
-		}
-
-		return $ret;
-	}
+        return $this->agent_teams;
+    }
 
 
-	/**
-	 * @return int[]
-	 */
-	public function getIds()
-	{
-		$this->preload();
-		return $this->ids;
-	}
+    /**
+     * @param array $for_ids
+     */
+    public function getNames(array $for_ids = null)
+    {
+        $ret = array();
+
+        foreach ($this->getTeams() as $a) {
+            if ($for_ids === null || in_array($a->getId(), $for_ids)) {
+                $ret[$a->getId()] = $a->getName();
+            }
+        }
+
+        return $ret;
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\Person
-	 */
-	public function get($id)
-	{
-		$this->preload();
+    /**
+     * @return int[]
+     */
+    public function getIds()
+    {
+        $this->preload();
 
-		if (isset($this->agent_teams[$id])) {
-			return $this->agent_teams[$id];
-		}
-
-		return null;
-	}
+        return $this->ids;
+    }
 
 
-	public function __call($name, $args)
-	{
-		$repos = $this->em->getRepository('DeskPRO:AgentTeam');
-		return call_user_func_array(array($repos, $name), $args);
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    public function get($id)
+    {
+        $this->preload();
+
+        if (isset($this->agent_teams[$id])) {
+            return $this->agent_teams[$id];
+        }
+
+        return null;
+    }
+
+
+    public function __call($name, $args)
+    {
+        $repos = $this->em->getRepository('DeskPRO:AgentTeam');
+
+        return call_user_func_array(array($repos, $name), $args);
+    }
 }

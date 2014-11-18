@@ -42,18 +42,18 @@ use Application\DeskPRO\Dpql;
  */
 class Yesterday extends AbstractDateRange
 {
-	/**
-	 * Gets the date range components (printable, start, end).
-	 *
-	 * @return string[int]
-	 */
-	protected function _getDateRange()
-	{
-		$tz = App::getCurrentPerson()->getTimezone();
-		$date = new \DateTime('-1 day', new \DateTimeZone($tz));
+    /**
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
+     */
+    protected function _getDateRange()
+    {
+        $tz = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('-1 day', new \DateTimeZone($tz));
 
-		$yesterday = $date->format('Y-m-d');
+        $yesterday = $date->format('Y-m-d');
 
-		return array($yesterday, "$yesterday 00:00:00", "$yesterday 23:59:59");
-	}
+        return array($yesterday, "$yesterday 00:00:00", "$yesterday 23:59:59");
+    }
 }

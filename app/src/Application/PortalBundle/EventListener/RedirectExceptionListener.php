@@ -40,7 +40,6 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 
@@ -50,49 +49,48 @@ use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
  */
 class RedirectExceptionListener implements EventSubscriberInterface
 {
-	/**
-	 * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
-	 */
-	private $url_generator;
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	private $logger;
+    /**
+     * @var \Symfony\Component\Routing\Generator\UrlGeneratorInterface
+     */
+    private $url_generator;
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
 
-	public function __construct(UrlGeneratorInterface $url_generator, LoggerInterface $logger)
-	{
-		$this->url_generator = $url_generator;
-		$this->logger = $logger;
-	}
+    public function __construct(UrlGeneratorInterface $url_generator, LoggerInterface $logger)
+    {
+        $this->url_generator = $url_generator;
+        $this->logger = $logger;
+    }
 
 
-	public function onKernelException(GetResponseForExceptionEvent $event)
-	{
-		$e = $event->getException();
+    public function onKernelException(GetResponseForExceptionEvent $event)
+    {
+        $e = $event->getException();
 
-		// only interested in a particular exception here
-		if (!$e instanceof PermanentRedirectException) {
-			return;
-		}
+        // only interested in a particular exception here
+        if (!$e instanceof PermanentRedirectException) {
+            return;
+        }
 
-		$url = $this->url_generator->generate(
-			$e->getRouteName(),
-			$e->getRouteParams(),
-			$e->getUrlType()
-		);
+        $url = $this->url_generator->generate(
+            $e->getRouteName(),
+            $e->getRouteParams(),
+            $e->getUrlType()
+        );
 
-		$this->logger->info('PermanentRedirectException caught: 301 redirecting to "'.$url.'"');
+        $this->logger->info('PermanentRedirectException caught: 301 redirecting to "'.$url.'"');
 
-		$event->setResponse(new RedirectResponse($url, Response::HTTP_MOVED_PERMANENTLY));
-		$event->stopPropagation();
-	}
+        $event->setResponse(new RedirectResponse($url, Response::HTTP_MOVED_PERMANENTLY));
+        $event->stopPropagation();
+    }
 
-	public static function getSubscribedEvents()
-	{
-		return array(
-			KernelEvents::EXCEPTION => array('onKernelException', 129) // very high priority
-		);
-	}
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::EXCEPTION => array('onKernelException', 129) // very high priority
+        );
+    }
 }
- 

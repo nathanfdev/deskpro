@@ -99,4 +99,3 @@ class DpFormLoginFactory extends AbstractFactory
         return 'dp_security.form_login.listener';
     }
 }
- 

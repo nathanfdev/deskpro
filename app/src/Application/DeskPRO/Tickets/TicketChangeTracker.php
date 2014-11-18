@@ -43,83 +43,83 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class TicketChangeTracker
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	private $ticket;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    private $ticket;
 
-	public function __construct(Ticket $ticket)
-	{
-		$this->ticket = $ticket;
-	}
+    public function __construct(Ticket $ticket)
+    {
+        $this->ticket = $ticket;
+    }
 
-	public function done()
-	{
-		$this->ticket->_autoProcessTicket();
-	}
+    public function done()
+    {
+        $this->ticket->_autoProcessTicket();
+    }
 
-	public function recordExtra()
-	{
-		// ignore
-	}
+    public function recordExtra()
+    {
+        // ignore
+    }
 
-	public function recordMultiPropertyChanged()
-	{
-		// ignore
-	}
+    public function recordMultiPropertyChanged()
+    {
+        // ignore
+    }
 
-	public function setLogger()
-	{
-		// ignore
-	}
+    public function setLogger()
+    {
+        // ignore
+    }
 
-	public function setApplyingTrigger()
-	{
-		// ignore
-	}
+    public function setApplyingTrigger()
+    {
+        // ignore
+    }
 
-	public function getApplyingTrigger()
-	{
-		return null;
-	}
+    public function getApplyingTrigger()
+    {
+        return null;
+    }
 
-	public function setApplyingSla()
-	{
-		// ignore
-	}
+    public function setApplyingSla()
+    {
+        // ignore
+    }
 
-	public function getApplyingSla()
-	{
-		return null;
-	}
+    public function getApplyingSla()
+    {
+        return null;
+    }
 
-	public function getApplyingSlaStatus()
-	{
-		return null;
-	}
+    public function getApplyingSlaStatus()
+    {
+        return null;
+    }
 
-	public function getTicket()
-	{
-		return $this->ticket;
-	}
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
 
-	public function isTriggerChangeField()
-	{
-		return false;
-	}
+    public function isTriggerChangeField()
+    {
+        return false;
+    }
 
-	public function preDone()
-	{
+    public function preDone()
+    {
 
-	}
+    }
 
-	public function getLogMessagesAsString()
-	{
-		return '';
-	}
+    public function getLogMessagesAsString()
+    {
+        return '';
+    }
 
-	public function __call($n, $v)
-	{
-		throw new \BadMethodCallException();
-	}
+    public function __call($n, $v)
+    {
+        throw new \BadMethodCallException();
+    }
 }

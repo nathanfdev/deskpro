@@ -40,37 +40,37 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TwitterAccountPropsType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add(
-			'persons',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Person',
-				 'required'      => false,
-				 'expanded'      => true,
-				 'multiple'      => true,
-				 'property'      => 'display_name',
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('p')->where(
-						 'p.is_agent = true AND p.is_deleted = false'
-					 );
-				 }
-			)
-		);
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add(
+            'persons',
+            'entity',
+            array(
+                 'class'         => 'DeskPRO:Person',
+                 'required'      => false,
+                 'expanded'      => true,
+                 'multiple'      => true,
+                 'property'      => 'display_name',
+                 'query_builder' => function (EntityRepository $er) {
+                     return $er->createQueryBuilder('p')->where(
+                         'p.is_agent = true AND p.is_deleted = false'
+                     );
+                 }
+            )
+        );
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class' => 'Application\\DeskPRO\\Entity\\TwitterAccount',
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'twitter_account';
-	}
+    public function getName()
+    {
+        return 'twitter_account';
+    }
 }

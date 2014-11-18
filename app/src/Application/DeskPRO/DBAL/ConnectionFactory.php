@@ -46,120 +46,120 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactory implements ContainerAwareInterface
 {
-	/**
-	 * @var \Symfony\Component\DependencyInjection\ContainerInterface
-	 */
-	protected $container = null;
+    /**
+     * @var \Symfony\Component\DependencyInjection\ContainerInterface
+     */
+    protected $container = null;
 
-	public function __construct(array $typesConfig)
-	{
-		parent::__construct($typesConfig);
+    public function __construct(array $typesConfig)
+    {
+        parent::__construct($typesConfig);
 
-		if (!\Doctrine\DBAL\Types\Type::hasType('dpblob')) {
-			\Doctrine\DBAL\Types\Type::addType('dpblob', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType');
-		}
-		if (!\Doctrine\DBAL\Types\Type::hasType('dpblob_file')) {
-			\Doctrine\DBAL\Types\Type::addType('dpblob_file', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType');
-		}
-		if (!\Doctrine\DBAL\Types\Type::hasType('dp_json_obj')) {
-			\Doctrine\DBAL\Types\Type::addType('dp_json_obj', 'Application\\DeskPRO\\DBAL\\Types\\DpJsonObject');
-		}
+        if (!\Doctrine\DBAL\Types\Type::hasType('dpblob')) {
+            \Doctrine\DBAL\Types\Type::addType('dpblob', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobType');
+        }
+        if (!\Doctrine\DBAL\Types\Type::hasType('dpblob_file')) {
+            \Doctrine\DBAL\Types\Type::addType('dpblob_file', 'Application\\DeskPRO\\DBAL\\Types\\DpBlobFileType');
+        }
+        if (!\Doctrine\DBAL\Types\Type::hasType('dp_json_obj')) {
+            \Doctrine\DBAL\Types\Type::addType('dp_json_obj', 'Application\\DeskPRO\\DBAL\\Types\\DpJsonObject');
+        }
 
-		\Doctrine\DBAL\Types\Type::overrideType('array', 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType');
-		\Doctrine\DBAL\Types\Type::overrideType('object', 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType');
-	}
+        \Doctrine\DBAL\Types\Type::overrideType('array', 'Application\\DeskPRO\\DBAL\\Types\\DpArrayType');
+        \Doctrine\DBAL\Types\Type::overrideType('object', 'Application\\DeskPRO\\DBAL\\Types\\DpObjectType');
+    }
 
-	public function setContainer(ContainerInterface $container = null)
-	{
-		$this->container = $container;
-	}
+    public function setContainer(ContainerInterface $container = null)
+    {
+        $this->container = $container;
+    }
 
-	public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
-	{
-		$params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
+    public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
+    {
+        $params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
 
-		$host = $params['host'];
-		$m = null;
-		$dp_global_key = null;
-		$recreate_retry = false;
+        $host = $params['host'];
+        $m = null;
+        $dp_global_key = null;
+        $recreate_retry = false;
 
-		if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
-			$key = $m[1];
-			$dp_global_key = $key;
-			unset($params['host']);
+        if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
+            $key = $m[1];
+            $dp_global_key = $key;
+            unset($params['host']);
 
-			$conf = App::getConfig($key);
-			if (!$conf && defined('DP_BUILDING')) {
-				$conf = array('bogus'); // Dont need dbinfo
-			}
+            $conf = App::getConfig($key);
+            if (!$conf && defined('DP_BUILDING')) {
+                $conf = array('bogus'); // Dont need dbinfo
+            }
 
-			if (!$conf) {
-				throw new \Exception("Invalid database key $key");
-			}
-			$params = array_merge($params, $conf);
-			if (empty($params['driver'])) {
-				$params['driver'] = 'pdo_mysql';
-			}
+            if (!$conf) {
+                throw new \Exception("Invalid database key $key");
+            }
+            $params = array_merge($params, $conf);
+            if (empty($params['driver'])) {
+                $params['driver'] = 'pdo_mysql';
+            }
 
-			// When in testing mode, the db might be changed by overwriting a var
-			if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing' && !empty($GLOBALS['DP_TESTING_USEDB'])) {
-				$params['dbname'] = $GLOBALS['DP_TESTING_USEDB'];
-				$recreate_retry = true;
+            // When in testing mode, the db might be changed by overwriting a var
+            if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing' && !empty($GLOBALS['DP_TESTING_USEDB'])) {
+                $params['dbname'] = $GLOBALS['DP_TESTING_USEDB'];
+                $recreate_retry = true;
 
-			// When testing a web request (eg selenium), there might exist a file that contains a different db name
-			} else if (isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'] && file_exists(DP_WEB_ROOT.'/testing_db_name')) {
-				$params['dbname'] = trim(file_get_contents(DP_WEB_ROOT.'/testing_db_name'));
-			}
-		}
+            // When testing a web request (eg selenium), there might exist a file that contains a different db name
+            } elseif (isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'] && file_exists(DP_WEB_ROOT.'/testing_db_name')) {
+                $params['dbname'] = trim(file_get_contents(DP_WEB_ROOT.'/testing_db_name'));
+            }
+        }
 
-		// Sometimes in a pre-boot handler like serve_file.php we might
-		// already have a connection, so use that PDO object
-		if (isset($GLOBALS['DP_DEFAULT_CONNECTION_PDO']) && $host === 'from_user_config.db') {
-			$params['pdo'] = $GLOBALS['DP_DEFAULT_CONNECTION_PDO'];
-		}
+        // Sometimes in a pre-boot handler like serve_file.php we might
+        // already have a connection, so use that PDO object
+        if (isset($GLOBALS['DP_DEFAULT_CONNECTION_PDO']) && $host === 'from_user_config.db') {
+            $params['pdo'] = $GLOBALS['DP_DEFAULT_CONNECTION_PDO'];
+        }
 
-		/** @var $conn \Doctrine\DBAL\Connection */
-		$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
+        /** @var $conn \Doctrine\DBAL\Connection */
+        $conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
 
-		if ($recreate_retry) {
-			try {
-				$conn->connect();
-			} catch (\Exception $err) {
-				if ($err instanceof DBALException || $err instanceof \PDOException) {
-					if (strpos($err->getMessage(), 'Unknown database') !== false) {
-						$params_2 = $params;
-						unset($params_2['dbname']);
-						try {
-							$conn2 = parent::createConnection($params_2);
-							$conn2->exec("CREATE DATABASE `{$params['dbname']}`");
+        if ($recreate_retry) {
+            try {
+                $conn->connect();
+            } catch (\Exception $err) {
+                if ($err instanceof DBALException || $err instanceof \PDOException) {
+                    if (strpos($err->getMessage(), 'Unknown database') !== false) {
+                        $params_2 = $params;
+                        unset($params_2['dbname']);
+                        try {
+                            $conn2 = parent::createConnection($params_2);
+                            $conn2->exec("CREATE DATABASE `{$params['dbname']}`");
 
-							$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
-							$conn->connect();
-						} catch (\Exception $e) {
-							error_log("Could not create test database: {$e->getMessage()}");
-							throw $err;
-						}
-					} else {
-						throw $err;
-					}
-				} else {
-					throw $err;
-				}
-			}
-		}
+                            $conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
+                            $conn->connect();
+                        } catch (\Exception $e) {
+                            error_log("Could not create test database: {$e->getMessage()}");
+                            throw $err;
+                        }
+                    } else {
+                        throw $err;
+                    }
+                } else {
+                    throw $err;
+                }
+            }
+        }
 
-		$conn->getDatabasePlatform()->registerDoctrineTypeMapping('BLOB', 'dpblob');
+        $conn->getDatabasePlatform()->registerDoctrineTypeMapping('BLOB', 'dpblob');
 
-		if ($dp_global_key) {
-			// Save ref in globals
-			// This is an optimisation used by some logging that happens
-			// outside of normal request/DI flow
-			if (!isset($GLOBALS['DP_DB_CON'])) {
-				$GLOBALS['DP_DB_CON'] = array();
-			}
-			$GLOBALS['DP_DB_CON'][$dp_global_key] = $conn;
-		}
+        if ($dp_global_key) {
+            // Save ref in globals
+            // This is an optimisation used by some logging that happens
+            // outside of normal request/DI flow
+            if (!isset($GLOBALS['DP_DB_CON'])) {
+                $GLOBALS['DP_DB_CON'] = array();
+            }
+            $GLOBALS['DP_DB_CON'][$dp_global_key] = $conn;
+        }
 
-		return $conn;
-	}
+        return $conn;
+    }
 }

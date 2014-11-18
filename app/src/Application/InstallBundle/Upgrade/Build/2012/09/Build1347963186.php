@@ -36,26 +36,26 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1347963186 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Update ticket_filter_subscriptions");
+    public function run()
+    {
+        $this->out("Update ticket_filter_subscriptions");
 
-		$this->execMutateSql("
-			ALTER TABLE ticket_filter_subscriptions
-			ADD email_created TINYINT(1) NOT NULL,
-			ADD alert_created TINYINT(1) NOT NULL
-		");
+        $this->execMutateSql("
+            ALTER TABLE ticket_filter_subscriptions
+            ADD email_created TINYINT(1) NOT NULL,
+            ADD alert_created TINYINT(1) NOT NULL
+        ");
 
-		$this->execMutateSql("
-			UPDATE ticket_filter_subscriptions
-			SET email_created = 1
-			WHERE email_new = 1
-		");
+        $this->execMutateSql("
+            UPDATE ticket_filter_subscriptions
+            SET email_created = 1
+            WHERE email_new = 1
+        ");
 
-		$this->execMutateSql("
-			UPDATE ticket_filter_subscriptions
-			SET alert_created = 1
-			WHERE alert_new = 1
-		");
-	}
+        $this->execMutateSql("
+            UPDATE ticket_filter_subscriptions
+            SET alert_created = 1
+            WHERE alert_new = 1
+        ");
+    }
 }

@@ -10,78 +10,79 @@ require_once 'AbstractTicketStringCheckTest.php';
 
 class CheckEmailHeaderTest extends AbstractStringCheckTest
 {
-	/**
-	 * @param int $id
-	 * @param string $test_string
-	 * @return Ticket
-	 */
-	public function createTicket($id, $test_string)
-	{
-		$ticket = new Ticket();
-		$ticket->id = $id;
-		$ticket->subject = $test_string;
+    /**
+     * @param  int    $id
+     * @param  string $test_string
+     * @return Ticket
+     */
+    public function createTicket($id, $test_string)
+    {
+        $ticket = new Ticket();
+        $ticket->id = $id;
+        $ticket->subject = $test_string;
 
-		return $ticket;
-	}
+        return $ticket;
+    }
 
-	/**
-	 * @param Ticket $ticket
-	 * @return ExecutorContext
-	 */
-	public function createExecutorContext(Ticket $ticket)
-	{
-		$value_reader = new ValueReader();
+    /**
+     * @param  Ticket          $ticket
+     * @return ExecutorContext
+     */
+    public function createExecutorContext(Ticket $ticket)
+    {
+        $value_reader = new ValueReader();
 
-		$value_reader->setValues(array(
-			'headers' => array('other-test' => array('xyz'), 'test-header' => array('abc', $ticket->subject))
-		));
+        $value_reader->setValues(array(
+            'headers' => array('other-test' => array('xyz'), 'test-header' => array('abc', $ticket->subject))
+        ));
 
-		$exec = new ExecutorContext();
-		$exec->setEmailContext($value_reader);
+        $exec = new ExecutorContext();
+        $exec->setEmailContext($value_reader);
 
-		return $exec;
-	}
+        return $exec;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClass()
-	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckEmailHeader';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClass()
+    {
+        return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckEmailHeader';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClassOptionKey()
-	{
-		return 'value';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClassOptionKey()
+    {
+        return 'value';
+    }
 
-	/**
-	 * @param string $op
-	 * @param array $options
-	 * @return CheckEmailHeader
-	 */
-	protected function createChecker($op, array $options)
-	{
-		if (isset($options['%OPT%'])) {
-			$opt_key = $this->getCheckClassOptionKey();
-			$options[$opt_key] = $options['%OPT%'];
-			unset($options['%OPT%']);
-		}
+    /**
+     * @param  string           $op
+     * @param  array            $options
+     * @return CheckEmailHeader
+     */
+    protected function createChecker($op, array $options)
+    {
+        if (isset($options['%OPT%'])) {
+            $opt_key = $this->getCheckClassOptionKey();
+            $options[$opt_key] = $options['%OPT%'];
+            unset($options['%OPT%']);
+        }
 
-		$options['name'] = 'test-header';
-		$check = new CheckEmailHeader($op, $options);
-		return $check;
-	}
+        $options['name'] = 'test-header';
+        $check = new CheckEmailHeader($op, $options);
 
-	public function testNoEmailContext()
-	{
-		$ticket = new Ticket();
-		$exec = new ExecutorContext();
+        return $check;
+    }
 
-		$check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
-		$this->assertFalse($check->isTriggerMatch($ticket, $exec));
-	}
+    public function testNoEmailContext()
+    {
+        $ticket = new Ticket();
+        $exec = new ExecutorContext();
+
+        $check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
+        $this->assertFalse($check->isTriggerMatch($ticket, $exec));
+    }
 }

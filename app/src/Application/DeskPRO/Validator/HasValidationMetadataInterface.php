@@ -42,5 +42,5 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 interface HasValidationMetadataInterface
 {
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata);
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata);
 }

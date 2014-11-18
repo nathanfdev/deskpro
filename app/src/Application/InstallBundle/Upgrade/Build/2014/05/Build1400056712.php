@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056712 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Add tickets.email_account_id and tickets.email_account_address");
-		$db->exec("ALTER TABLE tickets ADD email_account_id INT DEFAULT NULL, ADD email_account_address VARCHAR(255) NOT NULL");
-		$db->exec("ALTER TABLE tickets ADD CONSTRAINT FK_54469DF437D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE SET NULL");
-		$db->exec("CREATE INDEX IDX_54469DF437D8AD65 ON tickets (email_account_id)");
-	}
+        $this->out("Add tickets.email_account_id and tickets.email_account_address");
+        $db->exec("ALTER TABLE tickets ADD email_account_id INT DEFAULT NULL, ADD email_account_address VARCHAR(255) NOT NULL");
+        $db->exec("ALTER TABLE tickets ADD CONSTRAINT FK_54469DF437D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE SET NULL");
+        $db->exec("CREATE INDEX IDX_54469DF437D8AD65 ON tickets (email_account_id)");
+    }
 }

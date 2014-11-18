@@ -31,7 +31,6 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\NewSearch\SearchEngine\Result\ResultSet;
 use Application\DeskPRO\NewSearch\SearchEngine\SearchContextInterface;
 use Application\DeskPRO\NewSearch\SearchEngine\UserSearchInterface;
-use Elastica\Filter;
 use Elastica\Query;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -39,275 +38,275 @@ use Orb\Util\OptionsArray;
 
 class UserSearch implements UserSearchInterface
 {
-	const MAX_WORDS = 25;
+    const MAX_WORDS = 25;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * @var MysqlResultsTransformer
-	 */
-	private $transformer;
-
-
-	/**
-	 * @param Connection              $db
-	 * @param MysqlResultsTransformer $transformer
-	 */
-	public function __construct(Connection $db, MysqlResultsTransformer $transformer)
-	{
-		$this->db = $db;
-		$this->transformer = $transformer;
-	}
+    /**
+     * @var MysqlResultsTransformer
+     */
+    private $transformer;
 
 
-	/**
-	 * @param SearchContextInterface $context
-	 * @param string                 $query
-	 * @param array                  $options
-	 * @return ResultSet
-	 */
-	public function search(SearchContextInterface $context, $query, array $options = null)
-	{
-		$options      = new OptionsArray($options ?: array());
-		$per_page     = Numbers::bound($options->get('per_page', 50), 1, 100);
-		$page         = max($options->get('page', 1), 1);
-		$ignore_perms = $options->get('ignore_perms');
+    /**
+     * @param Connection              $db
+     * @param MysqlResultsTransformer $transformer
+     */
+    public function __construct(Connection $db, MysqlResultsTransformer $transformer)
+    {
+        $this->db = $db;
+        $this->transformer = $transformer;
+    }
 
-		$limit_types = isset($options['limit_types']) ? $options['limit_types'] : null;
-		if ($limit_types && !is_array($limit_types)) {
-			$limit_types = explode(',', $limit_types);
-			$limit_types = Arrays::func($limit_types, 'trim');
-		}
-		if ($limit_types) {
-			$limit_types = Arrays::removeFalsey($limit_types);
-		}
 
-		$limit_types_array = $limit_types;
+    /**
+     * @param  SearchContextInterface $context
+     * @param  string                 $query
+     * @param  array                  $options
+     * @return ResultSet
+     */
+    public function search(SearchContextInterface $context, $query, array $options = null)
+    {
+        $options      = new OptionsArray($options ?: array());
+        $per_page     = Numbers::bound($options->get('per_page', 50), 1, 100);
+        $page         = max($options->get('page', 1), 1);
+        $ignore_perms = $options->get('ignore_perms');
 
-		$context_params = $this->buildParams($context, $limit_types);
-		$types = $context_params['types'];
+        $limit_types = isset($options['limit_types']) ? $options['limit_types'] : null;
+        if ($limit_types && !is_array($limit_types)) {
+            $limit_types = explode(',', $limit_types);
+            $limit_types = Arrays::func($limit_types, 'trim');
+        }
+        if ($limit_types) {
+            $limit_types = Arrays::removeFalsey($limit_types);
+        }
 
-		if (!$types) {
-			return new ResultSet(array());
-		}
+        $limit_types_array = $limit_types;
 
-		$limit_types = "'" . implode('\',\'', $types) . "'";
+        $context_params = $this->buildParams($context, $limit_types);
+        $types = $context_params['types'];
 
-		$query_words = explode(' ', $query);
-		if (!$query_words) {
-			return new ResultSet();
-		}
+        if (!$types) {
+            return new ResultSet(array());
+        }
 
-		$params = array();
-		$likes = array();
-		foreach ($query_words as $w) {
-			if (strlen($w) <= 2) {
-				continue;
-			}
+        $limit_types = "'" . implode('\',\'', $types) . "'";
 
-			$likes[] = "content_search.content LIKE ?";
-			$params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+        $query_words = explode(' ', $query);
+        if (!$query_words) {
+            return new ResultSet();
+        }
 
-			if (count($likes) >= self::MAX_WORDS) {
-				break;
-			}
-		}
-		if ($likes) {
-			$where = "
-				content_search.object_type IN ($limit_types)
-				AND (" . implode(' OR ', $likes) . ")
-			";
+        $params = array();
+        $likes = array();
+        foreach ($query_words as $w) {
+            if (strlen($w) <= 2) {
+                continue;
+            }
 
-			if (!$ignore_perms) {
-				$perm_join  = $context_params['join'];
-				$perm_where = $context_params['where'];
-				if (!$perm_where) {
-					$perm_where = '1';
-				}
-			} else {
-				$perm_join = '';
-				$perm_where = '1';
-			}
+            $likes[] = "content_search.content LIKE ?";
+            $params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
 
-			$count_query = "
-				SELECT COUNT(*)
-				FROM content_search
-				$perm_join
-				WHERE $perm_where AND $where
-				LIMIT $per_page
-			";
+            if (count($likes) >= self::MAX_WORDS) {
+                break;
+            }
+        }
+        if ($likes) {
+            $where = "
+                content_search.object_type IN ($limit_types)
+                AND (" . implode(' OR ', $likes) . ")
+            ";
 
-			$start = ($page - 1) * $per_page;
-			$select_query = "
-				SELECT content_search.object_type, content_search.object_id
-				FROM content_search
-				$perm_join
-				WHERE $perm_where AND $where
-				ORDER BY content_search.object_id DESC
-				LIMIT $start, $per_page
-			";
+            if (!$ignore_perms) {
+                $perm_join  = $context_params['join'];
+                $perm_where = $context_params['where'];
+                if (!$perm_where) {
+                    $perm_where = '1';
+                }
+            } else {
+                $perm_join = '';
+                $perm_where = '1';
+            }
 
-			$total = $this->db->fetchColumn($count_query, $params);
-			$results  = $this->db->fetchAll($select_query, $params);
-		} else {
-			$total       = 0;
-			$results     = array();
-		}
+            $count_query = "
+                SELECT COUNT(*)
+                FROM content_search
+                $perm_join
+                WHERE $perm_where AND $where
+                LIMIT $per_page
+            ";
 
-		if ($total === null) {
-			$total = count($results);
-		}
+            $start = ($page - 1) * $per_page;
+            $select_query = "
+                SELECT content_search.object_type, content_search.object_id
+                FROM content_search
+                $perm_join
+                WHERE $perm_where AND $where
+                ORDER BY content_search.object_id DESC
+                LIMIT $start, $per_page
+            ";
 
-		if ($context->getPerson() && ($limit_types_array === null || in_array('ticket', $limit_types_array)) && $page == 1) {
-			$ticket_results = $this->getTicketResults($context, $query_words);
+            $total = $this->db->fetchColumn($count_query, $params);
+            $results  = $this->db->fetchAll($select_query, $params);
+        } else {
+            $total       = 0;
+            $results     = array();
+        }
 
-			if ($ticket_results) {
-				$total += count($ticket_results);
-				$results = array_merge($ticket_results, $results);
-			}
-		}
+        if ($total === null) {
+            $total = count($results);
+        }
 
-		$objects = $this->transformer->transform($results);
+        if ($context->getPerson() && ($limit_types_array === null || in_array('ticket', $limit_types_array)) && $page == 1) {
+            $ticket_results = $this->getTicketResults($context, $query_words);
 
-		return new ResultSet($objects, $total);
-	}
+            if ($ticket_results) {
+                $total += count($ticket_results);
+                $results = array_merge($ticket_results, $results);
+            }
+        }
 
-	private function getTicketResults(SearchContextInterface $context, array $query_words)
-	{
-		$limit = 5;
+        $objects = $this->transformer->transform($results);
 
-		$search_places = array();
-		$search_params = array();
+        return new ResultSet($objects, $total);
+    }
 
-		foreach ($query_words as $w) {
-			if (strlen($w) <= 2) {
-				continue;
-			}
+    private function getTicketResults(SearchContextInterface $context, array $query_words)
+    {
+        $limit = 5;
 
-			$search_places[] = "tickets_messages.message LIKE ?";
-			$search_params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
+        $search_places = array();
+        $search_params = array();
 
-			if (count($search_params) >= self::MAX_WORDS) {
-				break;
-			}
-		}
+        foreach ($query_words as $w) {
+            if (strlen($w) <= 2) {
+                continue;
+            }
 
-		if (!$search_params) {
-			return array();
-		}
+            $search_places[] = "tickets_messages.message LIKE ?";
+            $search_params[] = '%' . str_replace(array('%', '_', '\\'), array('\\%', '\\_', '\\\\'), $w) . '%';
 
-		$search_places = implode(' OR ', $search_places);
+            if (count($search_params) >= self::MAX_WORDS) {
+                break;
+            }
+        }
 
-		if ($context->getPerson()->organization && $context->getPerson()->organization_manager) {
-			$params = array(
-				$context->getPerson()->getId(),
-				$context->getPerson()->getId(),
-				$context->getPerson()->organization->getId()
-			);
+        if (!$search_params) {
+            return array();
+        }
 
-			$params = array_merge($params, $search_params);
+        $search_places = implode(' OR ', $search_places);
 
-			$ticket_ids = $this->db->fetchAllCol("
-				SELECT tickets.id
-				FROM tickets
-				LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-				LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
-				WHERE
-					(tickets.person_id = ?
-					OR tickets_participants.person_id = ?
-					OR tickets.organization_id = ?)
-					AND ($search_places)
-				ORDER BY tickets.date_status DESC, tickets.date_created DESC
-				LIMIT $limit
-			", $params);
-		} else {
-			$params = array(
-				$context->getPerson()->getId(),
-				$context->getPerson()->getId(),
-			);
+        if ($context->getPerson()->organization && $context->getPerson()->organization_manager) {
+            $params = array(
+                $context->getPerson()->getId(),
+                $context->getPerson()->getId(),
+                $context->getPerson()->organization->getId()
+            );
 
-			$params = array_merge($params, $search_params);
+            $params = array_merge($params, $search_params);
 
-			$ticket_ids = $this->db->fetchAllCol("
-				SELECT tickets.id
-				FROM tickets
-				LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
-				LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
-				WHERE
-					(tickets.person_id = ?
-					OR tickets_participants.person_id = ?)
-					AND ($search_places)
-				ORDER BY tickets.date_status DESC, tickets.date_created DESC
-				LIMIT $limit
-			", $params);
-		}
+            $ticket_ids = $this->db->fetchAllCol("
+                SELECT tickets.id
+                FROM tickets
+                LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
+                LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
+                WHERE
+                    (tickets.person_id = ?
+                    OR tickets_participants.person_id = ?
+                    OR tickets.organization_id = ?)
+                    AND ($search_places)
+                ORDER BY tickets.date_status DESC, tickets.date_created DESC
+                LIMIT $limit
+            ", $params);
+        } else {
+            $params = array(
+                $context->getPerson()->getId(),
+                $context->getPerson()->getId(),
+            );
 
-		if (!$ticket_ids) {
-			return array();
-		}
+            $params = array_merge($params, $search_params);
 
-		$hits = array_map(function($tid) {
-			return array(
-				'object_type' => 'ticket',
-				'object_id'   => $tid,
-			);
-		}, $ticket_ids);
+            $ticket_ids = $this->db->fetchAllCol("
+                SELECT tickets.id
+                FROM tickets
+                LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
+                LEFT JOIN tickets_messages ON (tickets_messages.ticket_id = tickets.id AND tickets_messages.is_agent_note = 0)
+                WHERE
+                    (tickets.person_id = ?
+                    OR tickets_participants.person_id = ?)
+                    AND ($search_places)
+                ORDER BY tickets.date_status DESC, tickets.date_created DESC
+                LIMIT $limit
+            ", $params);
+        }
 
-		return $hits;
-	}
+        if (!$ticket_ids) {
+            return array();
+        }
 
-	/**
-	 * @param SearchContextInterface $context
-	 * @param array $limit_types
-	 * @return ResultSet
-	 */
-	private function buildParams(SearchContextInterface $context, array $limit_types = null)
-	{
-		$types  = array();
-		$joins  = array();
-		$wheres = array();
+        $hits = array_map(function ($tid) {
+            return array(
+                'object_type' => 'ticket',
+                'object_id'   => $tid,
+            );
+        }, $ticket_ids);
 
-		$x = 0;
-		if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
-			$jn = '_cs' . $x++;
-			$cat_ids = implode(',', $context->getArticleCategoryIds());
+        return $hits;
+    }
 
-			$types[]  = 'article';
-			$joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'article' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id LIKE 'category_id%' AND $jn.content IN ($cat_ids))";
-			$wheres[] = "($jn.object_type = 'article' AND $jn.object_id IS NOT NULL)";
-		}
-		if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
-			$jn = '_cs' . $x++;
-			$cat_ids = implode(',', $context->getNewsCategoryIds());
+    /**
+     * @param  SearchContextInterface $context
+     * @param  array                  $limit_types
+     * @return ResultSet
+     */
+    private function buildParams(SearchContextInterface $context, array $limit_types = null)
+    {
+        $types  = array();
+        $joins  = array();
+        $wheres = array();
 
-			$types[]  = 'news';
-			$joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'news' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
-			$wheres[] = "($jn.object_type = 'news' AND $jn.object_id IS NOT NULL)";
-		}
-		if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
-			$jn = '_cs' . $x++;
-			$cat_ids = implode(',', $context->getFeedbackCategoryIds());
+        $x = 0;
+        if ($context->getArticleCategoryIds() && ($limit_types === null || in_array('article', $limit_types))) {
+            $jn = '_cs' . $x++;
+            $cat_ids = implode(',', $context->getArticleCategoryIds());
 
-			$types[]  = 'feedback';
-			$joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";;
-			$wheres[] = "($jn.object_type AND $jn.object_id IS NOT NULL)";
-		}
-		if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
-			$jn = '_cs' . $x++;
-			$cat_ids = implode(',', $context->getDownloadCategoryIds());
+            $types[]  = 'article';
+            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'article' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id LIKE 'category_id%' AND $jn.content IN ($cat_ids))";
+            $wheres[] = "($jn.object_type = 'article' AND $jn.object_id IS NOT NULL)";
+        }
+        if ($context->getNewsCategoryIds() && ($limit_types === null || in_array('news', $limit_types))) {
+            $jn = '_cs' . $x++;
+            $cat_ids = implode(',', $context->getNewsCategoryIds());
 
-			$types[]  = 'download';
-			$joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'download' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
-			$wheres[] = "($jn.object_type = 'download' AND $jn.object_id IS NOT NULL)";
-		}
+            $types[]  = 'news';
+            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'news' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
+            $wheres[] = "($jn.object_type = 'news' AND $jn.object_id IS NOT NULL)";
+        }
+        if ($context->getFeedbackCategoryIds() && ($limit_types === null || in_array('feedback', $limit_types))) {
+            $jn = '_cs' . $x++;
+            $cat_ids = implode(',', $context->getFeedbackCategoryIds());
 
-		return array(
-			'types' => $types,
-			'join'  => implode("\n", $joins),
-			'where' =>  "(" . implode(' OR ', $wheres) . ")"
-		);
-	}
+            $types[]  = 'feedback';
+            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'feedback' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";;
+            $wheres[] = "($jn.object_type AND $jn.object_id IS NOT NULL)";
+        }
+        if ($context->getDownloadCategoryIds() && ($limit_types === null || in_array('download', $limit_types))) {
+            $jn = '_cs' . $x++;
+            $cat_ids = implode(',', $context->getDownloadCategoryIds());
+
+            $types[]  = 'download';
+            $joins[]  = "LEFT JOIN content_search_attribute AS $jn ON ($jn.object_type = 'download' AND $jn.object_type = content_search.object_type AND $jn.object_id = content_search.object_id AND $jn.attribute_id = 'category_id' AND $jn.content IN ($cat_ids))";
+            $wheres[] = "($jn.object_type = 'download' AND $jn.object_id IS NOT NULL)";
+        }
+
+        return array(
+            'types' => $types,
+            'join'  => implode("\n", $joins),
+            'where' =>  "(" . implode(' OR ', $wheres) . ")"
+        );
+    }
 }

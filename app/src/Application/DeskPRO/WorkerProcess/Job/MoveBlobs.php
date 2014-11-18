@@ -42,43 +42,43 @@ use Application\DeskPRO\BlobStorage\MoveBlobsUtil;
  */
 class MoveBlobs extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 60;
+    const DEFAULT_INTERVAL = 60;
 
-	public function run()
-	{
-		// Signals error handler to log error to standard error log.
-		// Usually errors are logged to blob log, but not to standard error log.
-		// (so automated reporting and such dont send on temporarily issues that arent important).
-		// But if it fails here during the retry, then it means the admin should probably check it out
+    public function run()
+    {
+        // Signals error handler to log error to standard error log.
+        // Usually errors are logged to blob log, but not to standard error log.
+        // (so automated reporting and such dont send on temporarily issues that arent important).
+        // But if it fails here during the retry, then it means the admin should probably check it out
 
-		$GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'] = true;
+        $GLOBALS['DP_IS_MOVE_BLOBS_COMMAND'] = true;
 
-		$mover = new MoveBlobsUtil(App::getOrm(), App::getContainer()->getBlobStorage());
-		$mover->setLogger($this->getLogger());
-		$mover->setIgnoreErrors();
-		$mover->setLimit(450);
-		$mover->setLimitTime(60);
+        $mover = new MoveBlobsUtil(App::getOrm(), App::getContainer()->getBlobStorage());
+        $mover->setLogger($this->getLogger());
+        $mover->setIgnoreErrors();
+        $mover->setLimit(450);
+        $mover->setLimitTime(60);
 
-		$count = $mover->getCount();
-		if (!$count) {
-			unset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND']);
-			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
+        $count = $mover->getCount();
+        if (!$count) {
+            unset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND']);
+            App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
 
-			// Nothing to do
-			return;
-		}
+            // Nothing to do
+            return;
+        }
 
-		$this->logStatus("$count blobs moved");
+        $this->logStatus("$count blobs moved");
 
-		$mover->run();
+        $mover->run();
 
-		$next_id = App::getDb()->fetchColumn("SELECT id FROM blobs WHERE storage_loc_pref IS NOT NULL ORDER BY id ASC LIMIT 1");
-		if ($next_id) {
-			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', $next_id);
-		} else {
-			App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
-		}
+        $next_id = App::getDb()->fetchColumn("SELECT id FROM blobs WHERE storage_loc_pref IS NOT NULL ORDER BY id ASC LIMIT 1");
+        if ($next_id) {
+            App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', $next_id);
+        } else {
+            App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
+        }
 
-		unset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND']);
-	}
+        unset($GLOBALS['DP_IS_MOVE_BLOBS_COMMAND']);
+    }
 }

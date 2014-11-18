@@ -40,89 +40,89 @@ namespace Application\DeskPRO\Entity;
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * IMPLEMENT IN CHILD CLASS
-	 * The form field this is attached to
-	 *
-	 * @var \Application\DeskPRO\Entity\CustomDefXXX
-	 */
-	//protected $field = null;
+    /**
+     * IMPLEMENT IN CHILD CLASS
+     * The form field this is attached to
+     *
+     * @var \Application\DeskPRO\Entity\CustomDefXXX
+     */
+    //protected $field = null;
 
-	/**
-	 * IMPLEMENT IN CHILD CLASS
-	 * The root custom field this is attached to
-	 *
-	 * @var \Application\DeskPRO\Entity\CustomDefXXX
-	 */
-	//protected $root_field = null;
+    /**
+     * IMPLEMENT IN CHILD CLASS
+     * The root custom field this is attached to
+     *
+     * @var \Application\DeskPRO\Entity\CustomDefXXX
+     */
+    //protected $root_field = null;
 
-	/**
-	 * IMPLEMENT IN CHILD CLASS
-	 *
-	 * @var \Application\DeskPRO\Entity\Xxx
-	 */
-	//protected $xxx;
+    /**
+     * IMPLEMENT IN CHILD CLASS
+     *
+     * @var \Application\DeskPRO\Entity\Xxx
+     */
+    //protected $xxx;
 
-	/**
-	 * User numeric data
-	 *
-	 * @var int
-	 */
-	protected $value = 0;
+    /**
+     * User numeric data
+     *
+     * @var int
+     */
+    protected $value = 0;
 
-	/**
-	 * User string data
-	 *
-	 * @var string
-	 */
-	protected $input = '';
+    /**
+     * User string data
+     *
+     * @var string
+     */
+    protected $input = '';
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-
-	/**
-	 * Get the value or input.
-	 *
-	 * @return mixed
-	 */
-	public function getData()
-	{
-		return $this->value ? $this->value : $this->input;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
-	public function getFieldId()
-	{
-		return $this->field->getId();
-	}
 
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, $deep, $visited);
+    /**
+     * Get the value or input.
+     *
+     * @return mixed
+     */
+    public function getData()
+    {
+        return $this->value ? $this->value : $this->input;
+    }
 
-		// record isn't useful without these, so always include them
-		if ($this->field) {
-			$data['field'] = $this->field->toApiData(false, false, $visited);
-		}
-		if ($this->root_field) {
-			$data['root_field'] = $this->root_field->toApiData(false, false, $visited);
-		}
 
-		return $data;
-	}
+    public function getFieldId()
+    {
+        return $this->field->getId();
+    }
+
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+
+        // record isn't useful without these, so always include them
+        if ($this->field) {
+            $data['field'] = $this->field->toApiData(false, false, $visited);
+        }
+        if ($this->root_field) {
+            $data['root_field'] = $this->root_field->toApiData(false, false, $visited);
+        }
+
+        return $data;
+    }
 }

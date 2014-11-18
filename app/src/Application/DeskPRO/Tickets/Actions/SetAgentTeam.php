@@ -46,111 +46,111 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetAgentTeam extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('agent_team_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('agent_team_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * @param $set_team_id
-	 * @param ExecutorContextInterface $context
-	 * @return \Application\DeskPRO\Entity\AgentTeam|null
-	 * @throws \RuntimeException
-	 * @throws \InvalidArgumentException
-	 */
-	private function resolveTeam($set_team_id, ExecutorContextInterface $context)
-	{
-		if ($set_team_id == -1) {
-			if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
-				throw new \RuntimeException();
-			}
-			$agent = $context->getPersonContext();
-			$agent->loadHelper('Agent');
-			$teams = array_values($agent->getHelper('Agent')->getTeams());
+    /**
+     * @param $set_team_id
+     * @param  ExecutorContextInterface                   $context
+     * @return \Application\DeskPRO\Entity\AgentTeam|null
+     * @throws \RuntimeException
+     * @throws \InvalidArgumentException
+     */
+    private function resolveTeam($set_team_id, ExecutorContextInterface $context)
+    {
+        if ($set_team_id == -1) {
+            if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
+                throw new \RuntimeException();
+            }
+            $agent = $context->getPersonContext();
+            $agent->loadHelper('Agent');
+            $teams = array_values($agent->getHelper('Agent')->getTeams());
 
-			if (!count($teams)) {
-				return null;
-			}
+            if (!count($teams)) {
+                return null;
+            }
 
-			$team = $teams[0];
-		} elseif ($set_team_id == 0) {
-			$team = null;
-		} else {
-			$team = $this->getContainer()->getAgentData()->getTeam($set_team_id);
-			if (!$team) {
-				throw new \InvalidArgumentException();
-			}
-		}
+            $team = $teams[0];
+        } elseif ($set_team_id == 0) {
+            $team = null;
+        } else {
+            $team = $this->getContainer()->getAgentData()->getTeam($set_team_id);
+            if (!$team) {
+                throw new \InvalidArgumentException();
+            }
+        }
 
-		return $team;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		try {
-			$team = $this->resolveTeam($this->getActionOption('agent_team_id'), $context);
-		} catch (\RuntimeException $e) {
-			return;
-		} catch (\InvalidArgumentException $e) {
-			return;
-		}
-
-		$ticket->agent_team = $team;
-	}
+        return $team;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		try {
-			$team = $this->resolveTeam($this->getActionOption('agent_team_id'), $context);
-		} catch (\RuntimeException $e) {
-			return true;
-		} catch (\InvalidArgumentException $e) {
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        try {
+            $team = $this->resolveTeam($this->getActionOption('agent_team_id'), $context);
+        } catch (\RuntimeException $e) {
+            return;
+        } catch (\InvalidArgumentException $e) {
+            return;
+        }
 
-		$set_team_id    = $team ? $team->id : 0;
-		$ticket_team_id = $ticket->agent_team ? $ticket->agent_team->id : 0;
-
-		if ($ticket_team_id == $set_team_id) {
-			return true;
-		}
-
-		return false;
-	}
+        $ticket->agent_team = $team;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_team')) {
-			return array('assign_team');
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        try {
+            $team = $this->resolveTeam($this->getActionOption('agent_team_id'), $context);
+        } catch (\RuntimeException $e) {
+            return true;
+        } catch (\InvalidArgumentException $e) {
+            return true;
+        }
 
-		return null;
-	}
+        $set_team_id    = $team ? $team->id : 0;
+        $ticket_team_id = $ticket->agent_team ? $ticket->agent_team->id : 0;
+
+        if ($ticket_team_id == $set_team_id) {
+            return true;
+        }
+
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_team')) {
+            return array('assign_team');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

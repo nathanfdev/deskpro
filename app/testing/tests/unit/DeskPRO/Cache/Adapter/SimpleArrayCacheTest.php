@@ -38,18 +38,17 @@ use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 
 class SimpleArrayCacheTest extends \DpUnitTestCase
 {
-	public function testCacheWorks()
-	{
-		$cache = new SimpleArrayCache;
+    public function testCacheWorks()
+    {
+        $cache = new SimpleArrayCache;
 
-		$this->assertFalse($cache->has('key'));
+        $this->assertFalse($cache->has('key'));
 
-		$cache->set('key', $arr = array('some' => 'data'));
+        $cache->set('key', $arr = array('some' => 'data'));
 
-		$this->assertSame($arr, $cache->get('key'));
-		$this->assertTrue($cache->has('key'));
+        $this->assertSame($arr, $cache->get('key'));
+        $this->assertTrue($cache->has('key'));
 
-		$this->assertNull($cache->get('non_existant-key'));
-	}
+        $this->assertNull($cache->get('non_existant-key'));
+    }
 }
- 

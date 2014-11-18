@@ -39,113 +39,113 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CustomFieldDefinitionType extends AbstractType implements EventSubscriberInterface
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder
-			->add('title', 'text', array(
-				'required' => true,
-			))
-			->add('description', 'textarea', array(
-				'required' => false,
-			))
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder
+            ->add('title', 'text', array(
+                'required' => true,
+            ))
+            ->add('description', 'textarea', array(
+                'required' => false,
+            ))
 
-			->add('is_enabled', 'checkbox', array(
-				'required' => true,
-			))
+            ->add('is_enabled', 'checkbox', array(
+                'required' => true,
+            ))
 
-			->add($builder->create('options', 'form')
-				->add('required', 'checkbox')
-			)
-		;
+            ->add($builder->create('options', 'form')
+                ->add('required', 'checkbox')
+            )
+        ;
 
-		$builder->addEventSubscriber($this);
-	}
+        $builder->addEventSubscriber($this);
+    }
 
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver
-			->setDefaults(array(
-				'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-				'allow_edit' => false,
-			))
-			->setRequired(array(
-				'persister',
-			))
-			->setOptional(array(
-				'context',
-				'allow_edit',
-			))
-			->setAllowedTypes(array(
-				// todo
-				'context' => array(
-					'Application\DeskPRO\Entity\Person',
-					'Application\DeskPRO\Entity\Ticket',
-					'Application\DeskPRO\Entity\Organization',
-				),
-				'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
-			))
-		;
-	}
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults(array(
+                'data_class' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
+                'allow_edit' => false,
+            ))
+            ->setRequired(array(
+                'persister',
+            ))
+            ->setOptional(array(
+                'context',
+                'allow_edit',
+            ))
+            ->setAllowedTypes(array(
+                // todo
+                'context' => array(
+                    'Application\DeskPRO\Entity\Person',
+                    'Application\DeskPRO\Entity\Ticket',
+                    'Application\DeskPRO\Entity\Organization',
+                ),
+                'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
+            ))
+        ;
+    }
 
-	/**
-	 * @param FormEvent $event
-	 */
-	public function onPreSubmit(FormEvent $event)
-	{
-		// clean extra data
-		if ($data = $event->getData()) {
-			$data = array_intersect_key($data, $event->getForm()->all());
-			$event->setData($data);
-		}
-	}
+    /**
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        // clean extra data
+        if ($data = $event->getData()) {
+            $data = array_intersect_key($data, $event->getForm()->all());
+            $event->setData($data);
+        }
+    }
 
-	/**
-	 * @param FormEvent $event
-	 */
-	public function onPostSubmit(FormEvent $event)
-	{
-		if (!$definition = $event->getForm()->getData()) {
-			return;
-		}
+    /**
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        if (!$definition = $event->getForm()->getData()) {
+            return;
+        }
 
-	    if ($definition['form_type']) {
-		    return;
-	    }
+        if ($definition['form_type']) {
+            return;
+        }
 
-		$definition['form_type'] = str_replace(array('\Definitions', 'Definition'), array('', ''), get_class($this));
-	}
+        $definition['form_type'] = str_replace(array('\Definitions', 'Definition'), array('', ''), get_class($this));
+    }
 
-	/**
-	 * @return array
-	 */
-	public static function getSubscribedEvents()
-	{
-		return array(
-			FormEvents::PRE_SUBMIT    => 'onPreSubmit',
-			FormEvents::POST_SUBMIT   => 'onPostSubmit',
-		);
-	}
+    /**
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            FormEvents::PRE_SUBMIT    => 'onPreSubmit',
+            FormEvents::POST_SUBMIT   => 'onPostSubmit',
+        );
+    }
 
-	public function getName()
-	{
-		return 'cf_definition';
-	}
+    public function getName()
+    {
+        return 'cf_definition';
+    }
 
-	/**
-	 * @param FormView $view
-	 * @param FormInterface $form
-	 * @param array $options
-	 */
-	public function buildView(FormView $view, FormInterface $form, array $options)
-	{
-		$view->vars['rendered_data'] = null;
+    /**
+     * @param FormView      $view
+     * @param FormInterface $form
+     * @param array         $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['rendered_data'] = null;
 
-		if (!($data = $form->getData()) instanceof CustomFieldDefinition) {
-			return;
-		}
-		$view->vars['rendered_data'] = $data['title'];
-	}
+        if (!($data = $form->getData()) instanceof CustomFieldDefinition) {
+            return;
+        }
+        $view->vars['rendered_data'] = $data['title'];
+    }
 }

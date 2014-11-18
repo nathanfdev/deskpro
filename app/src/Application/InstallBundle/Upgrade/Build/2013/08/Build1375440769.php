@@ -36,17 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1375440769 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Remove some records leftover from agents that were converted into users");
+    public function run()
+    {
+        $this->out("Remove some records leftover from agents that were converted into users");
 
-		$agent_ids = $this->container->getDb()->fetchAllCol("
-			SELECT id
-			FROM people
-			WHERE is_agent = 1
-		");
+        $agent_ids = $this->container->getDb()->fetchAllCol("
+            SELECT id
+            FROM people
+            WHERE is_agent = 1
+        ");
 
-		$this->container->getDb()->deleteIn('agent_team_members', $agent_ids, 'person_id', true);
-		$this->container->getDb()->deleteIn('ticket_filter_subscriptions', $agent_ids, 'person_id', true);
-	}
+        $this->container->getDb()->deleteIn('agent_team_members', $agent_ids, 'person_id', true);
+        $this->container->getDb()->deleteIn('ticket_filter_subscriptions', $agent_ids, 'person_id', true);
+    }
 }

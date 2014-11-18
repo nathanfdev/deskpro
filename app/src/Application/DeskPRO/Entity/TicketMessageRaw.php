@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -44,39 +43,39 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketMessageRaw extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketMessage
-	 */
-	protected $message = null;
+    /**
+     * @var \Application\DeskPRO\Entity\TicketMessage
+     */
+    protected $message = null;
 
-	/**
-	 * The raw content
-	 *
-	 * @var string
-	 */
-	protected $raw = '';
+    /**
+     * The raw content
+     *
+     * @var string
+     */
+    protected $raw = '';
 
-	/**
-	 * The charset provided
-	 *
-	 * @var string
-	 */
-	protected $charset = 'UNKNOWN';
+    /**
+     * The charset provided
+     *
+     * @var string
+     */
+    protected $charset = 'UNKNOWN';
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setIdentifier(array('message'));
-		$metadata->setPrimaryTable(array( 'name' => 'tickets_messages_raw', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'raw', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'raw', ));
-		$metadata->mapField(array( 'fieldName' => 'charset', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'charset', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setIdentifier(array('message'));
+        $metadata->setPrimaryTable(array( 'name' => 'tickets_messages_raw', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'raw', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'raw', ));
+        $metadata->mapField(array( 'fieldName' => 'charset', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'charset', ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

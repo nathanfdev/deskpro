@@ -36,11 +36,9 @@ namespace Application\DeskPRO\Sms;
 use Application\DeskPRO\Entity\Job;
 use Application\DeskPRO\JobQueue\JobQueue;
 use Application\DeskPRO\JobQueue\Processor\OutgoingSmsProcessor;
-use Doctrine\ORM\EntityManager;
 use Orb\Sms\SmsException;
 use Orb\Sms\SmsMessage;
 use Orb\Sms\SmsProviderInterface;
-use Orb\Sms\SmsResult;
 use Orb\Sms\SmsSender;
 
 /**
@@ -51,92 +49,87 @@ use Orb\Sms\SmsSender;
  */
 class DeskPROSmsSender extends SmsSender
 {
-	/**
-	 * @var int|null
-	 */
-	protected $max_chunks;
+    /**
+     * @var int|null
+     */
+    protected $max_chunks;
 
-	/**
-	 * @var JobQueue
-	 */
-	protected $queue;
+    /**
+     * @var JobQueue
+     */
+    protected $queue;
 
+    /**
+     * @param SmsProviderInterface $provider
+     * @param null                 $from_number
+     * @param JobQueue             $queue
+     * @param null                 $max_chunks  if a message requires more than this amount of messages to be send
+     *                                          it will fail and not send any
+     */
+    public function __construct(SmsProviderInterface $provider = null, $from_number = null, JobQueue $queue, $max_chunks = null)
+    {
+        $this->default_provider = $provider;
+        $this->from_number      = $from_number;
+        $this->max_chunks       = $max_chunks;
+        $this->queue            = $queue;
+    }
 
-	/**
-	 * @param SmsProviderInterface $provider
-	 * @param null                 $from_number
-	 * @param JobQueue             $queue
-	 * @param null                 $max_chunks if a message requires more than this amount of messages to be send
-	 *                                         it will fail and not send any
-	 */
-	public function __construct(SmsProviderInterface $provider = null, $from_number = null, JobQueue $queue, $max_chunks = null)
-	{
-		$this->default_provider = $provider;
-		$this->from_number      = $from_number;
-		$this->max_chunks       = $max_chunks;
-		$this->queue            = $queue;
-	}
+    /**
+     * Same as the Orb SmsSender, except DeskPRO can fail a message if it exceeds a set max chunks
+     *
+     * @param  string               $to_number
+     * @param  SmsMessage           $message
+     * @param  null                 $from_number
+     * @param  SmsProviderInterface $provider
+     * @return bool
+     */
+    public function send($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
+    {
+        if ($message->hasMultipleChunks() && count($message->getChunks()) > $this->max_chunks) {
+            throw new SmsException(sprintf('the message contains too many chunks (%s chunks, but the system limit
+            for SMS chunks is %s', count($message->getChunks()), $this->max_chunks));
+        }
 
+        return $this->doSend($to_number, $message, $from_number, $provider);
+    }
 
-	/**
-	 * Same as the Orb SmsSender, except DeskPRO can fail a message if it exceeds a set max chunks
-	 *
-	 * @param string               $to_number
-	 * @param SmsMessage           $message
-	 * @param null                 $from_number
-	 * @param SmsProviderInterface $provider
-	 * @return bool
-	 */
-	public function send($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
-	{
-		if ($message->hasMultipleChunks() && count($message->getChunks()) > $this->max_chunks) {
-			throw new SmsException(sprintf('the message contains too many chunks (%s chunks, but the system limit
-			for SMS chunks is %s', count($message->getChunks()), $this->max_chunks));
-		}
+    public function doSend($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
+    {
+        if (!$provider = $this->getProvider($provider)) {
+            throw new SmsException('cannot send SMS without an SmsProvider');
+        }
 
-		return $this->doSend($to_number, $message, $from_number, $provider);
-	}
+        $from_number = $this->getFromNumber($from_number);
 
+        $data = array(
+            'provider'        => $provider->getName(),
+            'provider_params' => $provider->getParams(),
+            'to_number'       => $to_number,
+            'from_number'     => $from_number,
+            'message'         => $message->getRawMessage()
+        );
+        $job = new Job(
+            OutgoingSmsProcessor::JOB_TYPE,
+            $data
+        );
+        $this->queue->addJob($job);
 
-	public function doSend($to_number, SmsMessage $message, $from_number = null, SmsProviderInterface $provider = null)
-	{
-		if (!$provider = $this->getProvider($provider)) {
-			throw new SmsException('cannot send SMS without an SmsProvider');
-		}
+        return true;
+    }
 
-		$from_number = $this->getFromNumber($from_number);
+    /**
+     * @return int|null
+     */
+    public function getMaxChunks()
+    {
+        return $this->max_chunks;
+    }
 
-		$data = array(
-			'provider'        => $provider->getName(),
-			'provider_params' => $provider->getParams(),
-			'to_number'       => $to_number,
-			'from_number'     => $from_number,
-			'message'         => $message->getRawMessage()
-		);
-		$job = new Job(
-			OutgoingSmsProcessor::JOB_TYPE,
-			$data
-		);
-		$this->queue->addJob($job);
-
-		return true;
-	}
-
-
-	/**
-	 * @return int|null
-	 */
-	public function getMaxChunks()
-	{
-		return $this->max_chunks;
-	}
-
-
-	/**
-	 * @param int|null $max_chunks
-	 */
-	public function setMaxChunks($max_chunks)
-	{
-		$this->max_chunks = $max_chunks;
-	}
+    /**
+     * @param int|null $max_chunks
+     */
+    public function setMaxChunks($max_chunks)
+    {
+        $this->max_chunks = $max_chunks;
+    }
 }

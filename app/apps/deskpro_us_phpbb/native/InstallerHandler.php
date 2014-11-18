@@ -42,27 +42,27 @@ use deskpro_us_phpbb\Usersource\AppOptionsMapper;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
-	{
-		if (3 == $app->getSetting('phpbb_version')) {
-			$type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb3';
-		} else {
-			$type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb2';
-		}
+    /**
+     * {@inheritDoc}
+     */
+    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    {
+        if (3 == $app->getSetting('phpbb_version')) {
+            $type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb3';
+        } else {
+            $type = 'Application\\DeskPRO\\Usersource\\Adapter\\PhpBb2';
+        }
 
-		$us->title             = $app->title;
-		$us->options           = AppOptionsMapper::getOptions($app);
-		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-		$us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
-		$us->source_type       = $type;
+        $us->title             = $app->title;
+        $us->options           = AppOptionsMapper::getOptions($app);
+        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
+        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+        $us->source_type       = $type;
 
-		$this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 
-		$em->persist($us);
-		$em->persist($app);
-		$em->flush();
-	}
+        $em->persist($us);
+        $em->persist($app);
+        $em->flush();
+    }
 }

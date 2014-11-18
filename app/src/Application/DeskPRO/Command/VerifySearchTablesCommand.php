@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Command;
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Tickets\DetectSearchTableErrors;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,25 +44,25 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class VerifySearchTablesCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:verify-search-tables');
-		$this->addOption('limit', null, InputOption::VALUE_REQUIRED,  'Max tickets to fetch (defaults to 10000)');
-	}
+    protected function configure()
+    {
+        $this->setName('dp:verify-search-tables');
+        $this->addOption('limit', null, InputOption::VALUE_REQUIRED,  'Max tickets to fetch (defaults to 10000)');
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-		$limit = intval($input->getOption('limit')) ?: 10000;
+        $limit = intval($input->getOption('limit')) ?: 10000;
 
-		$tool = new DetectSearchTableErrors(App::getDb());
-		$tool->setLimit($limit);
+        $tool = new DetectSearchTableErrors(App::getDb());
+        $tool->setLimit($limit);
 
-		$str = $tool->errorsAsString();
-		if ($str) {
-			$output->writeln("<error>Detected problems</error>");
-			echo $str;
-		} else {
-			echo "Everything looks okay\n";
-		}
-	}
+        $str = $tool->errorsAsString();
+        if ($str) {
+            $output->writeln("<error>Detected problems</error>");
+            echo $str;
+        } else {
+            echo "Everything looks okay\n";
+        }
+    }
 }

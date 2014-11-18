@@ -36,15 +36,15 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1365509523 extends AbstractBuild
 {
-	public function run()
-	{
-		if (defined('DPC_IS_CLOUD')) {
-			$this->out("Updating blob path URLs");
-			$this->execMutateSql("
-				UPDATE blobs
-				SET file_url = REPLACE(file_url, 'https://deskpro-cloud.s3.amazonaws.com/', 'https://cdn.deskpro.com/')
-				WHERE storage_loc = 's3' AND file_url IS NOT NULL
-			");
-		}
-	}
+    public function run()
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            $this->out("Updating blob path URLs");
+            $this->execMutateSql("
+                UPDATE blobs
+                SET file_url = REPLACE(file_url, 'https://deskpro-cloud.s3.amazonaws.com/', 'https://cdn.deskpro.com/')
+                WHERE storage_loc = 's3' AND file_url IS NOT NULL
+            ");
+        }
+    }
 }

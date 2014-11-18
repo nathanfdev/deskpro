@@ -37,47 +37,47 @@ use Application\ImportBundle\Exception\DuplicateValueException;
 
 class AttachmentValueImporter extends AbstractValueImporter
 {
-	/**
-	 * 
-	 * @param \Application\ImportBundle\Value\FeedbackValue $aval
-	 * @return boolean
-	 * @throws \InvalidArgumentException
-	 * @throws BadDataException
-	 * @throws DuplicateValueException
-	 */
-	public function importValue($aval)
-	{
-		if (!($aval instanceof AttachmentValue)) {
-			throw new \InvalidArgumentException("This importer can only import Attachments");
-		}
-		
-		$log_id = "Attachment :: " . $aval->oid . " ";
-		
-		if (!$aval->blob_data &&
-			!$aval->blob_path &&
-			!$aval->blob_url) {
-			throw new BadDataException(sprintf("[%s] Invalid Attachment: The attachement must have one of 'blob_data', 'blob_path' or 'blob_url'", $log_id));
-		}
-		
-		if ($aval->blob_data) {
-			$blob_data = base64_decode($aval->blob_data);
-		} elseif ($aval->blob_path) {
-			if (!is_readable($aval->blob_path)) {
-				throw new BadDataException(sprintf('[%s] Invalid blob path %s', $log_id, $aval->blob_path));
-			}
-			
-			$blob_data = file_get_contents($aval->blob_path);
-		} elseif ($aval->blob_url) {
-			if (!is_readable($aval->blob_url)) {
-				throw new BadDataException(sprintf('[%s] Invalid blob url %s', $log_id, $aval->blob_url));
-			}
-			$blob_data = file_get_contents($aval->blob_url);
-		}
-			
-		$blobStarage = $this->getContainer()->getBlobStorage();
+    /**
+     *
+     * @param  \Application\ImportBundle\Value\FeedbackValue $aval
+     * @return boolean
+     * @throws \InvalidArgumentException
+     * @throws BadDataException
+     * @throws DuplicateValueException
+     */
+    public function importValue($aval)
+    {
+        if (!($aval instanceof AttachmentValue)) {
+            throw new \InvalidArgumentException("This importer can only import Attachments");
+        }
 
-		$blob = $blobStarage->createBlobRecordFromString($blob_data, $aval->filename, $aval->content_type);
-		
-		return $blob;
-	}
+        $log_id = "Attachment :: " . $aval->oid . " ";
+
+        if (!$aval->blob_data &&
+            !$aval->blob_path &&
+            !$aval->blob_url) {
+            throw new BadDataException(sprintf("[%s] Invalid Attachment: The attachement must have one of 'blob_data', 'blob_path' or 'blob_url'", $log_id));
+        }
+
+        if ($aval->blob_data) {
+            $blob_data = base64_decode($aval->blob_data);
+        } elseif ($aval->blob_path) {
+            if (!is_readable($aval->blob_path)) {
+                throw new BadDataException(sprintf('[%s] Invalid blob path %s', $log_id, $aval->blob_path));
+            }
+
+            $blob_data = file_get_contents($aval->blob_path);
+        } elseif ($aval->blob_url) {
+            if (!is_readable($aval->blob_url)) {
+                throw new BadDataException(sprintf('[%s] Invalid blob url %s', $log_id, $aval->blob_url));
+            }
+            $blob_data = file_get_contents($aval->blob_url);
+        }
+
+        $blobStarage = $this->getContainer()->getBlobStorage();
+
+        $blob = $blobStarage->createBlobRecordFromString($blob_data, $aval->filename, $aval->content_type);
+
+        return $blob;
+    }
 }

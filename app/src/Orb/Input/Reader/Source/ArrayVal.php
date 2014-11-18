@@ -39,98 +39,88 @@ namespace Orb\Input\Reader\Source;
  */
 class ArrayVal implements SourceInterface
 {
-	/**
-	 * The array set.
-	 * @var array
-	 */
-	protected $array;
+    /**
+     * The array set.
+     * @var array
+     */
+    protected $array;
 
+    /**
+     * Create the source.
+     *
+     * @param  $array The array
+     */
+    public function __construct($array)
+    {
+        $this->array = $array;
+    }
 
+    /**
+     * Get the value of some variable
+     *
+     * @param  string|array $name    The name of the variable
+     * @param  mixed        $options Any options there may be
+     * @return mixed
+     */
+    public function getValue($name, $options = null)
+    {
+        $parts = array();
+        if (is_array($name)) {
+            $parts = $name;
+            $name = array_shift($parts);
+        }
 
-	/**
-	 * Create the source.
-	 *
-	 * @param  $array The array
-	 */
-	public function __construct($array)
-	{
-		$this->array = $array;
-	}
+        if (isset($this->array[$name])) {
+            $value = $this->array[$name];
+        } else {
+            $value = null;
+        }
 
+        if ($parts) {
+            foreach ($parts as $part) {
 
+                if (!is_array($value) OR !isset($value[$part])) {
+                    $value = null;
+                    break;
+                }
 
-	/**
-	 * Get the value of some variable
-	 *
-	 * @param   string|array  $name     The name of the variable
-	 * @param   mixed         $options  Any options there may be
-	 * @return  mixed
-	 */
-	public function getValue($name, $options = null)
-	{
-		$parts = array();
-		if (is_array($name)) {
-			$parts = $name;
-			$name = array_shift($parts);
-		}
+                $value = $value[$part];
+            }
+        }
 
-		if (isset($this->array[$name])) {
-			$value = $this->array[$name];
-		} else {
-			$value = null;
-		}
+        return $value;
+    }
 
-		if ($parts) {
-			foreach ($parts as $part) {
+    /**
+     * Check if a value of some variable is set.
+     *
+     * @param  string|array $name    The name of the variable
+     * @param  mixed        $options Any options there may be
+     * @return bool
+     */
+    public function checkIsset($name, $options = null)
+    {
+        return ($this->getValue($name, $options) === null ? false : true);
+    }
 
-				if (!is_array($value) OR !isset($value[$part])) {
-					$value = null;
-					break;
-				}
+    /**
+     * Get the superglobal name.
+     *
+     * @return string
+     */
+    public function getArray()
+    {
+        return $this->array;
+    }
 
-				$value = $value[$part];
-			}
-		}
-
-		return $value;
-	}
-
-
-
-	/**
-	 * Check if a value of some variable is set.
-	 *
-	 * @param   string|array  $name     The name of the variable
-	 * @param   mixed         $options  Any options there may be
-	 * @return  bool
-	 */
-	public function checkIsset($name, $options = null)
-	{
-		return ($this->getValue($name, $options) === null ? false : true);
-	}
-
-
-
-	/**
-	 * Get the superglobal name.
-	 *
-	 * @return string
-	 */
-	public function getArray()
-	{
-		return $this->array;
-	}
-
-
-
-	/**
-	 * Set the array value.
-	 *
-	 * @param array $array
-	 * @return void
-	 */
-	public function setArray($array)
-	{
-		$this->array = $array;
-	}
+    /**
+     * Set the array value.
+     *
+     * @param  array $array
+     * @return void
+     */
+    public function setArray($array)
+    {
+        $this->array = $array;
+    }
 }

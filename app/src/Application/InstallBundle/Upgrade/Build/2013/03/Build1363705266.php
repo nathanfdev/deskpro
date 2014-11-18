@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1363705266 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Default value for core_tickets.default_ticket_reverse_order");
-		$this->execMutateSql("
-			REPLACE INTO settings
-			SET name = 'core_tickets.default_ticket_reverse_order', value = '0'
-		");
-	}
+    public function run()
+    {
+        $this->out("Default value for core_tickets.default_ticket_reverse_order");
+        $this->execMutateSql("
+            REPLACE INTO settings
+            SET name = 'core_tickets.default_ticket_reverse_order', value = '0'
+        ");
+    }
 }

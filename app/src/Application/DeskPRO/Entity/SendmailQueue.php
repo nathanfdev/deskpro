@@ -44,214 +44,214 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 {
-	const STATUS_INSERTED   = 'pending';
-	const STATUS_PROCESSING = 'processing';
-	const STATUS_COMPLETE   = 'complete';
-	const STATUS_ERROR      = 'error';
+    const STATUS_INSERTED   = 'pending';
+    const STATUS_PROCESSING = 'processing';
+    const STATUS_COMPLETE   = 'complete';
+    const STATUS_ERROR      = 'error';
 
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Blob
-	 */
-	protected $blob = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $blob = null;
 
-	/**
-	 * @var string
-	 */
-	protected $subject = '';
+    /**
+     * @var string
+     */
+    protected $subject = '';
 
-	/**
-	 * @var string
-	 */
-	protected $from_address;
+    /**
+     * @var string
+     */
+    protected $from_address;
 
-	/**
-	 * @var string
-	 */
-	protected $to_address;
+    /**
+     * @var string
+     */
+    protected $to_address;
 
-	/**
-	 * @var int
-	 */
-	protected $attempts = 0;
+    /**
+     * @var int
+     */
+    protected $attempts = 0;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_next_attempt = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_next_attempt = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_sent = null;
+    /**
+     * @var \DateTime
+     */
+    protected $date_sent = null;
 
-	/**
-	 * @var bool
-	 */
-	protected $has_sent = false;
+    /**
+     * @var bool
+     */
+    protected $has_sent = false;
 
-	/**
-	 * @var string
-	 */
-	protected $log = '';
+    /**
+     * @var string
+     */
+    protected $log = '';
 
-	/**
-	 * @var int
-	 */
-	protected $priority = 0;
+    /**
+     * @var int
+     */
+    protected $priority = 0;
 
-	/**
-	 * @var string
-	 */
-	protected $status = self::STATUS_INSERTED;
+    /**
+     * @var string
+     */
+    protected $status = self::STATUS_INSERTED;
 
-	public function __construct()
-	{
-		$this->date_created = new \DateTime();
-	}
+    public function __construct()
+    {
+        $this->date_created = new \DateTime();
+    }
 
-	/**
-	 * @param string $subject
-	 */
-	public function setSubject($subject)
-	{
-		$this->subject = $subject ?: '';
-	}
+    /**
+     * @param string $subject
+     */
+    public function setSubject($subject)
+    {
+        $this->subject = $subject ?: '';
+    }
 
-	/**
-	 * @param string $addr
-	 */
-	public function setFromAddress($addr)
-	{
-		if (is_array($addr)) {
-			$addr = array_shift($addr);
-		}
+    /**
+     * @param string $addr
+     */
+    public function setFromAddress($addr)
+    {
+        if (is_array($addr)) {
+            $addr = array_shift($addr);
+        }
 
-		$this->setModelField('from_address', $addr);
-	}
-
-
-	/**
-	 * @param string|array $addr
-	 */
-	public function setToAddress($addr)
-	{
-		if (is_array($addr)) {
-			$addr = implode(',', $addr);
-		}
-
-		$this->setModelField('to_address', $addr);
-	}
+        $this->setModelField('from_address', $addr);
+    }
 
 
-	/**
-	 * Get the message blob as a raw email string
-	 *
-	 * @return string
-	 */
-	public function getMessageAsString()
-	{
-		if (!$this->blob) {
-			return '';
-		}
+    /**
+     * @param string|array $addr
+     */
+    public function setToAddress($addr)
+    {
+        if (is_array($addr)) {
+            $addr = implode(',', $addr);
+        }
 
-		$raw_source = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
+        $this->setModelField('to_address', $addr);
+    }
 
-		// A DeskPRO queue job means we should parse out the headers
-		if ($this->blob->filename == 'sendmail.job') {
-			$pos = strpos($raw_source, "\n");
-			if ($pos !== false) {
-				$pos2 = strpos($raw_source, "\n", $pos+2);
-				if ($pos2 !== false) {
-					$pos = $pos2;
-				}
-			}
 
-			if ($pos !== false) {
-				$raw_source = substr($raw_source, $pos+2);
-			}
+    /**
+     * Get the message blob as a raw email string
+     *
+     * @return string
+     */
+    public function getMessageAsString()
+    {
+        if (!$this->blob) {
+            return '';
+        }
 
-		// Its an object, we can unserialise and get the value
-		} else {
+        $raw_source = App::getContainer()->getBlobStorage()->copyBlobRecordToString($this->blob);
 
-			// Possible the cache dir doesnt exist yet...
-			$tmpdir = dp_get_tmp_dir() . '/swiftmailer-cache';
-			if (!is_dir(dp_get_tmp_dir() . '/swiftmailer-cache')) {
-				if (!@mkdir($tmpdir, 0777, true)) {
-					$tmpdir = sys_get_temp_dir() . '/dp-swiftmailer-cache';
-					if (!is_dir($tmpdir)) {
-						@mkdir($tmpdir, 0777, true);
-					}
-				}
-			}
+        // A DeskPRO queue job means we should parse out the headers
+        if ($this->blob->filename == 'sendmail.job') {
+            $pos = strpos($raw_source, "\n");
+            if ($pos !== false) {
+                $pos2 = strpos($raw_source, "\n", $pos+2);
+                if ($pos2 !== false) {
+                    $pos = $pos2;
+                }
+            }
 
-			$message = @unserialize($raw_source);
-			$raw_source = '';
+            if ($pos !== false) {
+                $raw_source = substr($raw_source, $pos+2);
+            }
 
-			if ($message) {
-				$raw_source = @((string)$message);
-				$message = null;
-			}
-		}
+        // Its an object, we can unserialise and get the value
+        } else {
 
-		return $raw_source;
-	}
+            // Possible the cache dir doesnt exist yet...
+            $tmpdir = dp_get_tmp_dir() . '/swiftmailer-cache';
+            if (!is_dir(dp_get_tmp_dir() . '/swiftmailer-cache')) {
+                if (!@mkdir($tmpdir, 0777, true)) {
+                    $tmpdir = sys_get_temp_dir() . '/dp-swiftmailer-cache';
+                    if (!is_dir($tmpdir)) {
+                        @mkdir($tmpdir, 0777, true);
+                    }
+                }
+            }
 
-	/**
-	 * @param string $log
-	 */
-	public function appendLog($log)
-	{
-		$this->log .= "\n" . $log;
+            $message = @unserialize($raw_source);
+            $raw_source = '';
 
-		$len = strlen($this->log);
-		if ($len > 25000) {
-			$trim = $len - 25000;
-			if ($trim > 1000) {
-				$this->log = "(Truncated)\n\n" . substr($this->log, -25000);
-			}
-		}
+            if ($message) {
+                $raw_source = @((string)$message);
+                $message = null;
+            }
+        }
 
-		$this->log = trim($this->log);
-	}
+        return $raw_source;
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * @param string $log
+     */
+    public function appendLog($log)
+    {
+        $this->log .= "\n" . $log;
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailSource';
-		$metadata->setPrimaryTable(array(
-			'name' => 'sendmail_queue',
-			'indexes' => array(
-				'has_sent_idx' => array('columns' => array('has_sent', 'date_next_attempt'))
-			)
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
-		$metadata->mapField(array( 'fieldName' => 'to_address', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'to_address', ));
-		$metadata->mapField(array( 'fieldName' => 'from_address', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'from_address', ));
-		$metadata->mapField(array( 'fieldName' => 'attempts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'attempts', ));
-		$metadata->mapField(array( 'fieldName' => 'date_next_attempt', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_next_attempt', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'date_sent', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_sent', ));
-		$metadata->mapField(array( 'fieldName' => 'has_sent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_sent', ));
-		$metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
-		$metadata->mapField(array( 'fieldName' => 'log', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'log', ));
-		$metadata->mapField(array( 'fieldName' => 'priority', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'priority'));
-		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+        $len = strlen($this->log);
+        if ($len > 25000) {
+            $trim = $len - 25000;
+            if ($trim > 1000) {
+                $this->log = "(Truncated)\n\n" . substr($this->log, -25000);
+            }
+        }
+
+        $this->log = trim($this->log);
+    }
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\EmailSource';
+        $metadata->setPrimaryTable(array(
+            'name' => 'sendmail_queue',
+            'indexes' => array(
+                'has_sent_idx' => array('columns' => array('has_sent', 'date_next_attempt'))
+            )
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'subject', ));
+        $metadata->mapField(array( 'fieldName' => 'to_address', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'to_address', ));
+        $metadata->mapField(array( 'fieldName' => 'from_address', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'from_address', ));
+        $metadata->mapField(array( 'fieldName' => 'attempts', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'attempts', ));
+        $metadata->mapField(array( 'fieldName' => 'date_next_attempt', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_next_attempt', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'date_sent', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_sent', ));
+        $metadata->mapField(array( 'fieldName' => 'has_sent', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'has_sent', ));
+        $metadata->mapField(array( 'fieldName' => 'status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'status', ));
+        $metadata->mapField(array( 'fieldName' => 'log', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'log', ));
+        $metadata->mapField(array( 'fieldName' => 'priority', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'priority'));
+        $metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+    }
 }

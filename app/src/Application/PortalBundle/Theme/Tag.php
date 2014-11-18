@@ -39,59 +39,55 @@ namespace Application\PortalBundle\Theme;
  */
 class Tag
 {
-	protected $name;
-	protected $controller_name;
-	protected $esi;
-	protected $get_params;
+    protected $name;
+    protected $controller_name;
+    protected $esi;
+    protected $get_params;
 
 
-	/**
-	 * @param string $name            the tag's name
-	 * @param string $controller_name Theme:Portal:index
-	 * @param array  $get_params      GET params to pass the controller - might change come tag specific params like template name
-	 * @param bool   $esi             true if this should be an edge side include
-	 */
-	public function __construct($name, $controller_name, $get_params = array(), $esi = false)
-	{
-		$this->name            = $name;
-		$this->controller_name = $controller_name;
-		$this->esi             = $esi;
-		$this->get_params      = $get_params;
-	}
+    /**
+     * @param string $name            the tag's name
+     * @param string $controller_name Theme:Portal:index
+     * @param array  $get_params      GET params to pass the controller - might change come tag specific params like template name
+     * @param bool   $esi             true if this should be an edge side include
+     */
+    public function __construct($name, $controller_name, $get_params = array(), $esi = false)
+    {
+        $this->name            = $name;
+        $this->controller_name = $controller_name;
+        $this->esi             = $esi;
+        $this->get_params      = $get_params;
+    }
 
+    /**
+     * @return mixed
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getName()
-	{
-		return $this->name;
-	}
+    /**
+     * @return mixed
+     */
+    public function getControllerName()
+    {
+        return $this->controller_name;
+    }
 
+    /**
+     * @return array params sent as GET params on the request
+     */
+    public function getParams()
+    {
+        return $this->get_params;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getControllerName()
-	{
-		return $this->controller_name;
-	}
-
-
-	/**
-	 * @return array params sent as GET params on the request
-	 */
-	public function getParams()
-	{
-		return $this->get_params;
-	}
-
-
-	/**
-	 * @return boolean
-	 */
-	public function isEsi()
-	{
-		return (bool) $this->esi;
-	}
+    /**
+     * @return boolean
+     */
+    public function isEsi()
+    {
+        return (bool) $this->esi;
+    }
 }

@@ -36,23 +36,23 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361796374 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adding default value for agent_people.use permission");
+    public function run()
+    {
+        $this->out("Adding default value for agent_people.use permission");
 
-		$agent_group_ids = $this->container->getDb()->fetchAllCol("
-			SELECT id
-			FROM usergroups
-			WHERE is_agent_group = 1
-		");
+        $agent_group_ids = $this->container->getDb()->fetchAllCol("
+            SELECT id
+            FROM usergroups
+            WHERE is_agent_group = 1
+        ");
 
-		foreach ($agent_group_ids as $gid) {
-			$this->container->getDb()->executeUpdate("
-				INSERT IGNORE INTO permissions
-				SET usergroup_id = ?, name = 'agent_people.use', value = 1
-			", array($gid));
-		}
+        foreach ($agent_group_ids as $gid) {
+            $this->container->getDb()->executeUpdate("
+                INSERT IGNORE INTO permissions
+                SET usergroup_id = ?, name = 'agent_people.use', value = 1
+            ", array($gid));
+        }
 
-		$this->container->getDb()->executeUpdate("DELETE FROM permissions_cache");
-	}
+        $this->container->getDb()->executeUpdate("DELETE FROM permissions_cache");
+    }
 }

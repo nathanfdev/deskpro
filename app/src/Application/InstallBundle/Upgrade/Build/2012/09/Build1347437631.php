@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1347437631 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Recreate chat_blocks");
-		$this->execMutateSql("DROP TABLE chat_blocks");
-		$this->execMutateSql("CREATE TABLE chat_blocks (id INT AUTO_INCREMENT NOT NULL, visitor_id INT DEFAULT NULL, by_person_id INT DEFAULT NULL, ip_address VARCHAR(255) NOT NULL, reason LONGTEXT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_A931A25970BEE6D (visitor_id), INDEX IDX_A931A259B5BE2AA2 (by_person_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE chat_blocks ADD CONSTRAINT FK_A931A25970BEE6D FOREIGN KEY (visitor_id) REFERENCES visitors (id) ON DELETE SET NULL");
-		$this->execMutateSql("ALTER TABLE chat_blocks ADD CONSTRAINT FK_A931A259B5BE2AA2 FOREIGN KEY (by_person_id) REFERENCES people (id) ON DELETE SET NULL");
-	}
+    public function run()
+    {
+        $this->out("Recreate chat_blocks");
+        $this->execMutateSql("DROP TABLE chat_blocks");
+        $this->execMutateSql("CREATE TABLE chat_blocks (id INT AUTO_INCREMENT NOT NULL, visitor_id INT DEFAULT NULL, by_person_id INT DEFAULT NULL, ip_address VARCHAR(255) NOT NULL, reason LONGTEXT NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_A931A25970BEE6D (visitor_id), INDEX IDX_A931A259B5BE2AA2 (by_person_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE chat_blocks ADD CONSTRAINT FK_A931A25970BEE6D FOREIGN KEY (visitor_id) REFERENCES visitors (id) ON DELETE SET NULL");
+        $this->execMutateSql("ALTER TABLE chat_blocks ADD CONSTRAINT FK_A931A259B5BE2AA2 FOREIGN KEY (by_person_id) REFERENCES people (id) ON DELETE SET NULL");
+    }
 }

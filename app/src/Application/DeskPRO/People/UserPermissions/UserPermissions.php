@@ -43,86 +43,86 @@ use Application\DeskPRO\People\UserPermissions\Value\TicketPermissions;
 
 class UserPermissions
 {
-	/**
-	 * @var \Application\DeskPRO\People\UserPermissions\Value\TicketPermissions
-	 */
-	public $ticket;
+    /**
+     * @var \Application\DeskPRO\People\UserPermissions\Value\TicketPermissions
+     */
+    public $ticket;
 
-	/**
-	 * @var \Application\DeskPRO\People\UserPermissions\Value\ChatPermissions
-	 */
-	public $chat;
+    /**
+     * @var \Application\DeskPRO\People\UserPermissions\Value\ChatPermissions
+     */
+    public $chat;
 
-	/**
-	 * @var \Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions
-	 */
-	public $feedback;
+    /**
+     * @var \Application\DeskPRO\People\UserPermissions\Value\FeedbackPermissions
+     */
+    public $feedback;
 
-	/**
-	 * @var \Application\DeskPRO\People\UserPermissions\Value\ArticlePermissions
-	 */
-	public $article;
+    /**
+     * @var \Application\DeskPRO\People\UserPermissions\Value\ArticlePermissions
+     */
+    public $article;
 
-	/**
-	 * @var \Application\DeskPRO\People\UserPermissions\Value\DownloadPermissions
-	 */
-	public $download;
+    /**
+     * @var \Application\DeskPRO\People\UserPermissions\Value\DownloadPermissions
+     */
+    public $download;
 
-	/**
-	 * @var \Application\DeskPRO\People\UserPermissions\Value\NewsPermissions
-	 */
-	public $news;
+    /**
+     * @var \Application\DeskPRO\People\UserPermissions\Value\NewsPermissions
+     */
+    public $news;
 
-	public function __construct()
-	{
-		$this->ticket   = new TicketPermissions();
-		$this->chat     = new ChatPermissions();
-		$this->feedback = new FeedbackPermissions();
-		$this->article  = new ArticlePermissions();
-		$this->download = new DownloadPermissions();
-		$this->news     = new NewsPermissions();
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function toArray()
-	{
-		$arr = array();
-		foreach ($this->getTypes() as $prop) {
-			$arr[$prop] = array();
-			foreach ($this->$prop->getNames() as $name) {
-				$arr[$prop][$name] = (bool)$this->$prop->$name;
-			}
-		}
-
-		return $arr;
-	}
+    public function __construct()
+    {
+        $this->ticket   = new TicketPermissions();
+        $this->chat     = new ChatPermissions();
+        $this->feedback = new FeedbackPermissions();
+        $this->article  = new ArticlePermissions();
+        $this->download = new DownloadPermissions();
+        $this->news     = new NewsPermissions();
+    }
 
 
-	/**
-	 * Reads perms in from an array
-	 *
-	 * @param array $perms
-	 */
-	public function fromArray(array $perms)
-	{
-		foreach ($this->getTypes() as $prop) {
-			if (!isset($perms[$prop])) continue;
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        $arr = array();
+        foreach ($this->getTypes() as $prop) {
+            $arr[$prop] = array();
+            foreach ($this->$prop->getNames() as $name) {
+                $arr[$prop][$name] = (bool)$this->$prop->$name;
+            }
+        }
 
-			foreach ($this->$prop->getNames() as $name) {
-				$this->$prop->$name = isset($perms[$prop][$name]) ? ((bool)$perms[$prop][$name]) : false;
-			}
-		}
-	}
+        return $arr;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getTypes()
-	{
-		return array('ticket', 'chat', 'feedback', 'article', 'download', 'news');
-	}
+    /**
+     * Reads perms in from an array
+     *
+     * @param array $perms
+     */
+    public function fromArray(array $perms)
+    {
+        foreach ($this->getTypes() as $prop) {
+            if (!isset($perms[$prop])) continue;
+
+            foreach ($this->$prop->getNames() as $name) {
+                $this->$prop->$name = isset($perms[$prop][$name]) ? ((bool)$perms[$prop][$name]) : false;
+            }
+        }
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getTypes()
+    {
+        return array('ticket', 'chat', 'feedback', 'article', 'download', 'news');
+    }
 }

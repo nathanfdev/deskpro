@@ -39,10 +39,10 @@ namespace Orb\Auth\Adapter;
  */
 interface FormLoginInterface extends AdapterInterface
 {
-	/**
-	 * Sets the data got from a form
-	 *
-	 * @param string $url The URL
-	 */
-	public function setFormData(array $form_data);
+    /**
+     * Sets the data got from a form
+     *
+     * @param string $url The URL
+     */
+    public function setFormData(array $form_data);
 }

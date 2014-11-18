@@ -34,7 +34,6 @@
 namespace Application\DeskPRO\EmailGateway\Fetcher;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 /**
  * Reads all files in a directory as mail.
@@ -47,210 +46,209 @@ use Application\DeskPRO\Entity;
  */
 class PlainMailDir extends AbstractFetcher
 {
-	/**
-	 * @var string
-	 */
-	protected $maildir;
+    /**
+     * @var string
+     */
+    protected $maildir;
 
-	/**
-	 * @var \Directory
-	 */
-	protected $dir;
+    /**
+     * @var \Directory
+     */
+    protected $dir;
 
-	/**
-	 * @var array
-	 */
-	protected $message_list;
+    /**
+     * @var array
+     */
+    protected $message_list;
 
-	/**
-	 * @var int
-	 */
-	protected $read_count = 0;
+    /**
+     * @var int
+     */
+    protected $read_count = 0;
 
-	/**
-	 * Initiates the connection
-	 */
-	protected function _initConnection()
-	{
-		$this->maildir = $this->account['connection_options']['dir'];
-		$this->maildir = str_replace('%DP_DATA_DIR%', dp_get_data_dir(), $this->maildir);
+    /**
+     * Initiates the connection
+     */
+    protected function _initConnection()
+    {
+        $this->maildir = $this->account['connection_options']['dir'];
+        $this->maildir = str_replace('%DP_DATA_DIR%', dp_get_data_dir(), $this->maildir);
 
-		$this->logger->logDebug("Reading from: {$this->maildir}");
+        $this->logger->logDebug("Reading from: {$this->maildir}");
 
-		if (is_dir($this->maildir)) {
-			$this->dir = dir($this->maildir);
-		} else {
-			$this->logger->logDebug("Directory does not exist");
+        if (is_dir($this->maildir)) {
+            $this->dir = dir($this->maildir);
+        } else {
+            $this->logger->logDebug("Directory does not exist");
 
-			// Dir doesnt exist, but that doesnt mean error
-			// Just means no mail. Checking on dir should be a separate test at setup time
-			$this->dir = false;
-		}
+            // Dir doesnt exist, but that doesnt mean error
+            // Just means no mail. Checking on dir should be a separate test at setup time
+            $this->dir = false;
+        }
 
-		return $this->dir;
-	}
+        return $this->dir;
+    }
 
-	public function __destruct()
-	{
-		if ($this->storage && is_resource($this->storage->handle)) {
-			try { @$this->storage->close(); } catch (\Exception $e) {}
-		}
+    public function __destruct()
+    {
+        if ($this->storage && is_resource($this->storage->handle)) {
+            try { @$this->storage->close(); } catch (\Exception $e) {}
+        }
 
-		$this->storage = null;
-		$this->dir = null;
-	}
+        $this->storage = null;
+        $this->dir = null;
+    }
 
+    /**
+     * Read filenames from directory
+     */
+    protected function _initMessageList()
+    {
+        if ($this->message_list !== null) {
+            return $this->message_list;
+        }
 
-	/**
-	 * Read filenames from directory
-	 */
-	protected function _initMessageList()
-	{
-		if ($this->message_list !== null) {
-			return $this->message_list;
-		}
+        $this->message_list = array();
 
-		$this->message_list = array();
+        while (($f = $this->dir->read()) !== false) {
+            if ($f != '.' && $f !== '..') {
+                $this->message_list[] = $f;
+            }
+        }
 
-		while (($f = $this->dir->read()) !== false) {
-			if ($f != '.' && $f !== '..') {
-				$this->message_list[] = $f;
-			}
-		}
+        return $this->message_list;
+    }
 
-		return $this->message_list;
-	}
+    /**
+     * @return \Directory
+     */
+    public function getStorage($reconnect = false)
+    {
+        if ($this->storage === null) {
+            $this->storage = $this->_initConnection();
+        }
 
+        return $this->storage;
+    }
 
-	/**
-	 * @return \Directory
-	 */
-	public function getStorage($reconnect = false)
-	{
-		if ($this->storage === null) {
-			$this->storage = $this->_initConnection();
-		}
+    /**
+     * Reads the next message in the inbox
+     *
+     * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
+     */
+    protected function _readNext()
+    {
+        if (!$this->getStorage()) {
+            return null;
+        }
 
-		return $this->storage;
-	}
+        $this->getStorage();
+        $this->_initMessageList();
 
-	/**
-	 * Reads the next message in the inbox
-	 *
-	 * @return \Application\DeskPRO\EmailGateway\Fetcher\RawMessage
-	 */
-	protected function _readNext()
-	{
-		if (!$this->getStorage()) {
-			return null;
-		}
+        $this->read_count++;
+        $this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
 
-		$this->getStorage();
-		$this->_initMessageList();
+        $next = array_shift($this->message_list);
+        if (!$next) {
+            return null;
+        }
 
-		$this->read_count++;
-		$this->logger->log("Trying to read next ({$this->read_count} call)", 'debug');
+        $mailfile = $this->maildir . '/' . $next;
 
-		$next = array_shift($this->message_list);
-		if (!$next) {
-			return null;
-		}
+        if (!is_writable($mailfile)) {
+            error_log("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
+            $this->logger->logError("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
 
-		$mailfile = $this->maildir . '/' . $next;
+            return $this->_readNext();
+        }
 
-		if (!is_writable($mailfile)) {
-			error_log("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
-			$this->logger->logError("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
-			return $this->_readNext();
-		}
+        if (dp_get_config('plainmaildir_track_read')) {
+            $check_name = md5('plainmaildir::' . $mailfile);
+            $check = App::getDb()->fetchColumn("
+                SELECT data
+                FROM install_data
+                WHERE build = ? AND name = ?
+                LIMIT 1
+            ", array(DP_BUILD_TIME, $check_name));
 
-		if (dp_get_config('plainmaildir_track_read')) {
-			$check_name = md5('plainmaildir::' . $mailfile);
-			$check = App::getDb()->fetchColumn("
-				SELECT data
-				FROM install_data
-				WHERE build = ? AND name = ?
-				LIMIT 1
-			", array(DP_BUILD_TIME, $check_name));
+            if ($check) {
+                $this->logger->logError("Skipping mailfile $mailfile because it has been marked as read");
+                error_log("Skipping mailfile $mailfile because it has been marked as read");
 
-			if ($check) {
-				$this->logger->logError("Skipping mailfile $mailfile because it has been marked as read");
-				error_log("Skipping mailfile $mailfile because it has been marked as read");
-				return $this->_readNext();
-			}
+                return $this->_readNext();
+            }
 
-			App::getDb()->insert('install_data', array(
-				'build' => DP_BUILD_TIME,
-				'name'  => $check_name,
-				'data'  => 1
-			));
-		}
+            App::getDb()->insert('install_data', array(
+                'build' => DP_BUILD_TIME,
+                'name'  => $check_name,
+                'data'  => 1
+            ));
+        }
 
-		$message_size = filesize($mailfile);
+        $message_size = filesize($mailfile);
 
-		$start_time = microtime(true);
+        $start_time = microtime(true);
 
-		$this->logger->log("Fetching message $next", 'debug');
+        $this->logger->log("Fetching message $next", 'debug');
 
-		$raw_message = new RawMessage();
-		$raw_message->id = $next;
-		$raw_message->size = $message_size;
+        $raw_message = new RawMessage();
+        $raw_message->id = $next;
+        $raw_message->size = $message_size;
 
-		$raw_message->content = file_get_contents($mailfile);
-		$headers = null;
+        $raw_message->content = file_get_contents($mailfile);
+        $headers = null;
 
-		$EOL = "\n";
-		if (strpos($raw_message->content, $EOL . $EOL)) {
-			list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
-		} else if ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-			list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
-		} else if ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-			list($headers, ) = explode("\n\n", $raw_message->content, 2);
-		} else {
-			@list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
-		}
+        $EOL = "\n";
+        if (strpos($raw_message->content, $EOL . $EOL)) {
+            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
+        } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
+            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+        } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
+            list($headers, ) = explode("\n\n", $raw_message->content, 2);
+        } else {
+            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+        }
 
-		$raw_message->headers = $headers;
+        $raw_message->headers = $headers;
 
-		if ($this->max_size && $raw_message->size > $this->max_size) {
-			$raw_message->too_big = true;
-		}
+        if ($this->max_size && $raw_message->size > $this->max_size) {
+            $raw_message->too_big = true;
+        }
 
-		$this->logger->log(sprintf("Got message Took %0.2f seconds.", microtime(true) - $start_time), 'debug');
+        $this->logger->log(sprintf("Got message Took %0.2f seconds.", microtime(true) - $start_time), 'debug');
 
-		return $raw_message;
-	}
+        return $raw_message;
+    }
 
-	/**
-	 * Deletes the message from the server.
-	 *
-	 * @param  $id
-	 */
-	protected function _doneRead($id)
-	{
-		$this->logger->log("Marking message as deleted: $id", 'debug');
+    /**
+     * Deletes the message from the server.
+     *
+     * @param  $id
+     */
+    protected function _doneRead($id)
+    {
+        $this->logger->log("Marking message as deleted: $id", 'debug');
 
-		if (is_file($this->maildir . '/' . $id) && !@unlink($this->maildir . '/' . $id)) {
-			sleep(1);
-			if (is_file($this->maildir . '/' . $id) && !unlink($this->maildir . '/' . $id)) {
-				$this->logger->logError("Failed to delete source file: " . $this->maildir . '/' . $id);
-			}
-		}
-	}
+        if (is_file($this->maildir . '/' . $id) && !@unlink($this->maildir . '/' . $id)) {
+            sleep(1);
+            if (is_file($this->maildir . '/' . $id) && !unlink($this->maildir . '/' . $id)) {
+                $this->logger->logError("Failed to delete source file: " . $this->maildir . '/' . $id);
+            }
+        }
+    }
 
+    /**
+     * Tests the connection and returns the number of messages on success
+     *
+     * @return bool
+     * @throws \InvalidArgumentException
+     */
+    public function test()
+    {
+        if (!is_dir($this->maildir)) {
+            throw new \InvalidArgumentException("Mail directory does not exist");
+        }
 
-	/**
-	 * Tests the connection and returns the number of messages on success
-	 *
-	 * @return bool
-	 * @throws \InvalidArgumentException
-	 */
-	public function test()
-	{
-		if (!is_dir($this->maildir)) {
-			throw new \InvalidArgumentException("Mail directory does not exist");
-		}
-
-		return 0;
-	}
+        return 0;
+    }
 }

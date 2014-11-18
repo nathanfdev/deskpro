@@ -38,33 +38,33 @@ use Application\ApiBundle\PermissionStrategy\RequireSessionPermission;
 
 class MySessionController extends AbstractController implements ProtectedControllerInterface
 {
-	const TOKEN_LIFETIME = 420;
+    const TOKEN_LIFETIME = 420;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new RequireSessionPermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new RequireSessionPermission();
+    }
 
-	public function renewRequestTokenAction()
-	{
-		$session_id = $this->in->getString('session_id');
+    public function renewRequestTokenAction()
+    {
+        $session_id = $this->in->getString('session_id');
 
-		// Ping the session
-		if ($session_id) {
-			$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
-			if ($session) {
-				$session->date_last = new \DateTime();
-				$session->date_last_page = new \DateTime();
-				$this->em->persist($session);
-				$this->em->flush();
-			}
-		}
+        // Ping the session
+        if ($session_id) {
+            $session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
+            if ($session) {
+                $session->date_last = new \DateTime();
+                $session->date_last_page = new \DateTime();
+                $this->em->persist($session);
+                $this->em->flush();
+            }
+        }
 
-		return $this->createApiResponse(array(
-			'request_token' => $this->api_user->session->generateSecurityToken('request_token', self::TOKEN_LIFETIME)
-		));
-	}
+        return $this->createApiResponse(array(
+            'request_token' => $this->api_user->session->generateSecurityToken('request_token', self::TOKEN_LIFETIME)
+        ));
+    }
 }

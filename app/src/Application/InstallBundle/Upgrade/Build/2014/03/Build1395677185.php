@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1395677185 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->execMutateSql("
-			UPDATE people_emails
-			LEFT JOIN people ON people.primary_email_id = people_emails.id AND people.is_confirmed = 1
-			SET people_emails.is_validated = 1
-			WHERE people_emails.is_validated = 0
-		");
-	}
+    public function run()
+    {
+        $this->execMutateSql("
+            UPDATE people_emails
+            LEFT JOIN people ON people.primary_email_id = people_emails.id AND people.is_confirmed = 1
+            SET people_emails.is_validated = 1
+            WHERE people_emails.is_validated = 0
+        ");
+    }
 }

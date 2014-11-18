@@ -38,35 +38,34 @@ use Application\DeskPRO\Entity\DataStore as DataStoreEntity;
 
 class DataStore extends AbstractEntityRepository
 {
-	public function getByCode($code, $type = null)
-	{
-		$info = DataStoreEntity::getPartsFromCode($code);
-		if (!$info) return null;
+    public function getByCode($code, $type = null)
+    {
+        $info = DataStoreEntity::getPartsFromCode($code);
+        if (!$info) return null;
 
-		$tmpdata = $this->find($info['id']);
-		if ($tmpdata['auth'] != $info['auth']) return null;
+        $tmpdata = $this->find($info['id']);
+        if ($tmpdata['auth'] != $info['auth']) return null;
 
-		if ($type AND $tmpdata->getType() != $type) return null;
+        if ($type AND $tmpdata->getType() != $type) return null;
+        return $tmpdata;
+    }
 
-		return $tmpdata;
-	}
 
+    /**
+     * Get data by its unique name
+     *
+     * @param  string          $name
+     * @return DataStoreEntity
+     */
+    public function getByName($name, $create_unset = false)
+    {
+        $ds = $this->findOneBy(array('name' => $name));
 
-	/**
-	 * Get data by its unique name
-	 *
-	 * @param string $name
-	 * @return DataStoreEntity
-	 */
-	public function getByName($name, $create_unset = false)
-	{
-		$ds = $this->findOneBy(array('name' => $name));
+        if (!$ds && $create_unset) {
+            $ds = new DataStoreEntity();
+            $ds->name = $name;
+        }
 
-		if (!$ds && $create_unset) {
-			$ds = new DataStoreEntity();
-			$ds->name = $name;
-		}
-
-		return $ds;
-	}
+        return $ds;
+    }
 }

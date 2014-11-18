@@ -38,28 +38,27 @@ use Application\DeskPRO\Entity\TmpData as TmpDataEntity;
 
 class TmpData extends AbstractEntityRepository
 {
-	public function getByCode($code, $type = null)
-	{
-		$info = TmpDataEntity::getPartsFromCode($code);
-		if (!$info || empty($info['id']) || !$info['id']) return null;
+    public function getByCode($code, $type = null)
+    {
+        $info = TmpDataEntity::getPartsFromCode($code);
+        if (!$info || empty($info['id']) || !$info['id']) return null;
 
-		$tmpdata = $this->find($info['id']);
-		if ($tmpdata['auth'] != $info['auth']) return null;
+        $tmpdata = $this->find($info['id']);
+        if ($tmpdata['auth'] != $info['auth']) return null;
 
-		if ($type AND $tmpdata->getType() != $type) return null;
+        if ($type AND $tmpdata->getType() != $type) return null;
+        return $tmpdata;
+    }
 
-		return $tmpdata;
-	}
 
-
-	/**
-	 * Get data by its unique name
-	 *
-	 * @param string $name
-	 * @return TmpDataEntity
-	 */
-	public function getByName($name)
-	{
-		return $this->findOneBy(array('name' => $name));
-	}
+    /**
+     * Get data by its unique name
+     *
+     * @param  string        $name
+     * @return TmpDataEntity
+     */
+    public function getByName($name)
+    {
+        return $this->findOneBy(array('name' => $name));
+    }
 }

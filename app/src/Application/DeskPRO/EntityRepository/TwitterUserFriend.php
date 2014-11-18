@@ -34,41 +34,40 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 
 class TwitterUserFriend extends AbstractEntityRepository
 {
-	public function getByUserAndFriends($user_id, array $friend_ids)
-	{
-		if (!$friend_ids) {
-			return array();
-		}
+    public function getByUserAndFriends($user_id, array $friend_ids)
+    {
+        if (!$friend_ids) {
+            return array();
+        }
 
-		$output = array();
-		$results = $this->getEntityManager()->createQuery("
-			SELECT f, u
-			FROM   DeskPRO:TwitterUserFriend f
-			INNER JOIN f.friend_user u
-			WHERE  f.user = :user AND f.friend_user IN (:friend)
-		")->setParameters(array(
-			'user' => $user_id,
-			'friend' => $friend_ids
-		))->execute();
-		foreach ($results AS $result) {
-			$output[$result->friend_user->getId()] = $result;
-		}
+        $output = array();
+        $results = $this->getEntityManager()->createQuery("
+            SELECT f, u
+            FROM   DeskPRO:TwitterUserFriend f
+            INNER JOIN f.friend_user u
+            WHERE  f.user = :user AND f.friend_user IN (:friend)
+        ")->setParameters(array(
+            'user' => $user_id,
+            'friend' => $friend_ids
+        ))->execute();
+        foreach ($results AS $result) {
+            $output[$result->friend_user->getId()] = $result;
+        }
 
-		return $output;
-	}
+        return $output;
+    }
 
-	public function getFriendsForUser($user, $page = 1, $per_page = 25)
-	{
-		return $this->getEntityManager()->createQuery("
-			SELECT f, u
-			FROM DeskPRO:TwitterUserFriend f
-			INNER JOIN f.friend_user u
-			WHERE f.user = ?0
-			ORDER BY f.display_order DESC
-		")->setFirstResult((max(1, $page) - 1) * $per_page)->setMaxResults($per_page)->execute(array($user));
-	}
+    public function getFriendsForUser($user, $page = 1, $per_page = 25)
+    {
+        return $this->getEntityManager()->createQuery("
+            SELECT f, u
+            FROM DeskPRO:TwitterUserFriend f
+            INNER JOIN f.friend_user u
+            WHERE f.user = ?0
+            ORDER BY f.display_order DESC
+        ")->setFirstResult((max(1, $page) - 1) * $per_page)->setMaxResults($per_page)->execute(array($user));
+    }
 }

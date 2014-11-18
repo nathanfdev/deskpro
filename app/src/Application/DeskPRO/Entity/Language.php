@@ -51,161 +51,159 @@ if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
  */
 class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * The unique sys name assigned to the language
-	 *
-	 * @var string
-	 */
-	protected $sys_name;
+    /**
+     * The unique sys name assigned to the language
+     *
+     * @var string
+     */
+    protected $sys_name;
 
-	/**
-	 * The three-letter ISO 639-2 code
-	 *
-	 * @var string
-	 */
-	protected $lang_code;
+    /**
+     * The three-letter ISO 639-2 code
+     *
+     * @var string
+     */
+    protected $lang_code;
 
-	/**
-	 * Title of the language
-	 *
-	 * @var string
-	 */
-	protected $title;
+    /**
+     * Title of the language
+     *
+     * @var string
+     */
+    protected $title;
 
-	/**
-	 * The base filepath for default phrases for this lang.
-	 *
-	 * @var string
-	 */
-	protected $base_filepath;
+    /**
+     * The base filepath for default phrases for this lang.
+     *
+     * @var string
+     */
+    protected $base_filepath;
 
-	/**
-	 * The locale code
-	 *
-	 * @var string
-	 */
-	protected $locale = 'en_US';
+    /**
+     * The locale code
+     *
+     * @var string
+     */
+    protected $locale = 'en_US';
 
-	/**
-	 * @var string
-	 */
-	protected $flag_image = '';
+    /**
+     * @var string
+     */
+    protected $flag_image = '';
 
-	/**
-	 * True if this is a right-to-left language.
-	 *
-	 * @var bool
-	 */
-	protected $is_rtl = false;
+    /**
+     * True if this is a right-to-left language.
+     *
+     * @var bool
+     */
+    protected $is_rtl = false;
 
-	/**
-	 * @var bool
-	 */
-	protected $has_user = true;
+    /**
+     * @var bool
+     */
+    protected $has_user = true;
 
-	/**
-	 * @var bool
-	 */
-	protected $has_agent = true;
+    /**
+     * @var bool
+     */
+    protected $has_agent = true;
 
-	/**
-	 * @var bool
-	 */
-	protected $has_admin = true;
+    /**
+     * @var bool
+     */
+    protected $has_admin = true;
 
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    public function _invalidateLanguageCache()
+    {
+        $orm = App::getOrm();
 
-
-	public function _invalidateLanguageCache()
-	{
-		$orm = App::getOrm();
-
-		if (method_exists($orm, 'delayedUpdate')) {
-			$orm->delayedUpdate(function ($em) {
-				// defer this until after the flush to avoid a race condition and make sure it's updated after insert
-				$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-				$cache->invalidateLanguageCache();
-			});
-		}
-	}
+        if (method_exists($orm, 'delayedUpdate')) {
+            $orm->delayedUpdate(function ($em) {
+                // defer this until after the flush to avoid a race condition and make sure it's updated after insert
+                $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+                $cache->invalidateLanguageCache();
+            });
+        }
+    }
 
 
-	public function getTwoLetterLanguageCode()
-	{
-		return substr($this->locale, 0, 2);
-	}
+    public function getTwoLetterLanguageCode()
+    {
+        return substr($this->locale, 0, 2);
+    }
 
-	public function getUrlCode()
-	{
-		return $this->getTwoLetterLanguageCode();
-	}
-
-
-	/**
-	 * Return a unique ID that we can use to look up translations for this object
-	 *
-	 * @param string    $property  If supplied, the property on the object we want to translate.
-	 * @param Translate $translate The translate object requesting
-	 * @return string
-	 */
-	public function getPhraseName($property = null, Translate $translate)
-	{
-		return 'user.lang.lang_title_' . $this->sys_name;
-	}
+    public function getUrlCode()
+    {
+        return $this->getTwoLetterLanguageCode();
+    }
 
 
-	/**
-	 * Get the default value phrase for the object
-	 *
-	 * @param string    $property  If supplied, the property on the object we want to translate.
-	 * @param Translate $translate The translate object requesting
-	 * @return string
-	 */
-	public function getPhraseDefault($property = null, Translate $translate)
-	{
-		return $this->title;
-	}
+    /**
+     * Return a unique ID that we can use to look up translations for this object
+     *
+     * @param  string    $property  If supplied, the property on the object we want to translate.
+     * @param  Translate $translate The translate object requesting
+     * @return string
+     */
+    public function getPhraseName($property = null, Translate $translate)
+    {
+        return 'user.lang.lang_title_' . $this->sys_name;
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * Get the default value phrase for the object
+     *
+     * @param  string    $property  If supplied, the property on the object we want to translate.
+     * @param  Translate $translate The translate object requesting
+     * @return string
+     */
+    public function getPhraseDefault($property = null, Translate $translate)
+    {
+        return $this->title;
+    }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
-		$metadata->setPrimaryTable(array('name' => 'languages',));
-		$metadata->addLifecycleCallback('_invalidateLanguageCache', 'preFlush');
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true,));
-		$metadata->mapField(array('fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name',));
-		$metadata->mapField(array('fieldName' => 'lang_code', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lang_code',));
-		$metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title',));
-		$metadata->mapField(array('fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath',));
-		$metadata->mapField(array('fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale',));
-		$metadata->mapField(array('fieldName' => 'flag_image', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'flag_image',));
-		$metadata->mapField(array('fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl',));
-		$metadata->mapField(array('fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user',));
-		$metadata->mapField(array('fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent',));
-		$metadata->mapField(array('fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin',));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
+        $metadata->setPrimaryTable(array('name' => 'languages',));
+        $metadata->addLifecycleCallback('_invalidateLanguageCache', 'preFlush');
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true,));
+        $metadata->mapField(array('fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name',));
+        $metadata->mapField(array('fieldName' => 'lang_code', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lang_code',));
+        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title',));
+        $metadata->mapField(array('fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath',));
+        $metadata->mapField(array('fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale',));
+        $metadata->mapField(array('fieldName' => 'flag_image', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'flag_image',));
+        $metadata->mapField(array('fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl',));
+        $metadata->mapField(array('fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user',));
+        $metadata->mapField(array('fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent',));
+        $metadata->mapField(array('fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin',));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+    }
 }
 
 } // end class_exists

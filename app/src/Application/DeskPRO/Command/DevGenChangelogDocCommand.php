@@ -35,7 +35,6 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
@@ -43,44 +42,46 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class DevGenChangelogDocCommand extends ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setHelp("Generates a new changelog doc");
-		$this->setName('dpdev:gen-changelog-doc');
-		$this->addArgument('id', InputArgument::REQUIRED, 'The ID of the doc. The date prefix will be added automatically.');
-		$this->addArgument('target', InputArgument::REQUIRED, 'Target must be "agent" or "admin"');
-	}
+    protected function configure()
+    {
+        $this->setHelp("Generates a new changelog doc");
+        $this->setName('dpdev:gen-changelog-doc');
+        $this->addArgument('id', InputArgument::REQUIRED, 'The ID of the doc. The date prefix will be added automatically.');
+        $this->addArgument('target', InputArgument::REQUIRED, 'Target must be "agent" or "admin"');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$target = $input->getArgument('target');
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $target = $input->getArgument('target');
 
-		if (!$target || ($target != 'agent' && $target != 'admin')) {
-			$output->writeln('<error>You must enter a target of either agent or admin</error>');
-		}
+        if (!$target || ($target != 'agent' && $target != 'admin')) {
+            $output->writeln('<error>You must enter a target of either agent or admin</error>');
+        }
 
-		$real_id = date('Ymd') . '-' . $input->getArgument('id');
+        $real_id = date('Ymd') . '-' . $input->getArgument('id');
 
-		$path = DP_ROOT . '/docs/changelog/' . $real_id . '/log.html';
-		$dir  = DP_ROOT . '/docs/changelog/' . $real_id;
-		$output->writeln("Path: <info>$path</info>");
+        $path = DP_ROOT . '/docs/changelog/' . $real_id . '/log.html';
+        $dir  = DP_ROOT . '/docs/changelog/' . $real_id;
+        $output->writeln("Path: <info>$path</info>");
 
-		if (file_exists($path)) {
-			$output->writeln("<error>A changelog doc of this ID and date already exist.</error>");
-			return 1;
-		}
+        if (file_exists($path)) {
+            $output->writeln("<error>A changelog doc of this ID and date already exist.</error>");
 
-		if (!is_dir($dir) && !mkdir($dir)) {
-			$output->writeln("<error>Failed to create doc directory</error>");
-			return 1;
-		}
+            return 1;
+        }
 
-		$tpl = <<<HTML
+        if (!is_dir($dir) && !mkdir($dir)) {
+            $output->writeln("<error>Failed to create doc directory</error>");
+
+            return 1;
+        }
+
+        $tpl = <<<HTML
 <!DOCTYPE html>
 <html lang="en">
 <head>
-	<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet" />
-	<style type="text/css">body { padding: 100px; }</style>
+    <link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.1/css/bootstrap-combined.no-icons.min.css" rel="stylesheet" />
+    <style type="text/css">body { padding: 100px; }</style>
 </head>
 <body>
 
@@ -92,20 +93,21 @@ Your changelog document here.
 </html>
 HTML;
 
-		if (!file_put_contents($path, $tpl)) {
-			$output->writeln("<error>Failed to write empty log template file</error>");
-			return 1;
-		}
+        if (!file_put_contents($path, $tpl)) {
+            $output->writeln("<error>Failed to write empty log template file</error>");
 
-		$docs_path = DP_ROOT.'/docs/changelog/docs.php';
-		$docs = require($docs_path);
-		$docs[$real_id] = array(
-			'date' => date('Y-m-d H:i:s'),
-			'target' => $target
-		);
+            return 1;
+        }
 
-		file_put_contents($docs_path, '<?php return ' . var_export($docs, true) . ';');
+        $docs_path = DP_ROOT.'/docs/changelog/docs.php';
+        $docs = require($docs_path);
+        $docs[$real_id] = array(
+            'date' => date('Y-m-d H:i:s'),
+            'target' => $target
+        );
 
-		return 0;
-	}
+        file_put_contents($docs_path, '<?php return ' . var_export($docs, true) . ';');
+
+        return 0;
+    }
 }

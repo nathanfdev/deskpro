@@ -47,133 +47,135 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class ArticlesController extends AbstractController
 {
-	public function indexAction()
-	{
-		return $this->render('Theme:Articles:index.html.twig');
-	}
+    public function indexAction()
+    {
+        return $this->render('Theme:Articles:index.html.twig');
+    }
 
 
-	/**
-	 * @ParamConverter(name="category", converter="deskpro_slug")
-	 */
-	public function browseAction(ArticleCategory $category, Request $request)
-	{
-		// TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-		$pager = new Pagerfanta(new DoctrineCollectionAdapter($category->articles));
-		$pager->setMaxPerPage(5); // TODO: should come from a brand setting
-		$pager->setCurrentPage($request->get('page', 1));
+    /**
+     * @ParamConverter(name="category", converter="deskpro_slug")
+     */
+    public function browseAction(ArticleCategory $category, Request $request)
+    {
+        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
+        $pager = new Pagerfanta(new DoctrineCollectionAdapter($category->articles));
+        $pager->setMaxPerPage(5); // TODO: should come from a brand setting
+        $pager->setCurrentPage($request->get('page', 1));
 
-		return $this->render('Theme:Articles:browse.html.twig', array(
-				'cat' => $category,
-				'pager' => $pager
-			)
-		);
-	}
+        return $this->render('Theme:Articles:browse.html.twig', array(
+                'cat' => $category,
+                'pager' => $pager
+            )
+        );
+    }
 
-	/**
-	 * @ParamConverter(name="article", converter="deskpro_slug")
-	 */
-    function viewAction(Article $article)
-	{
-		return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
-	}
-
-
-	public function listAction(Request $request)
-	{
-		$options_resolver = new OptionsResolver();
-		$options_resolver
-			->setRequired(array('category'))
-			->setDefaults(
-				array(
-					'style'                 => 'small',
-					'include_subcategories' => false,
-					'count'                 => 10,
-					'labelled'              => '',
-					'sort'                  => 'date_published desc',
-					'sort_by'               => function (Options $options) {
-												$opts = explode(' ', $options['sort']);
-												return isset($opts[0]) ? trim($opts[0]) : 'date_published';
-											},
-					'sort_direction'        => function (Options $options) {
-												$opts = explode(' ', $options['sort']);
-												return isset($opts[1]) ? trim($opts[1]) : 'desc';
-											},
-				)
-			)
-			->setAllowedValues(
-				array(
-					'style' => array('forcat', 'small', 'xsmall')
-				)
-			)
-		;
-		$options = $options_resolver->resolve($request->query->get('tag_options'));
-
-		$data = $this->getArticlesRepo()->getDataForTagOptions($options);
-
-		return $this->render(
-			sprintf('Theme:Articles:list_%s.html.twig', $options['style']),
-			array(
-				'cat' => $data['cat'],
-				'articles' => $data['articles'],
-				'total_count' => $data['total_count']
-			)
-		);
-	}
+    /**
+     * @ParamConverter(name="article", converter="deskpro_slug")
+     */
+    public function viewAction(Article $article)
+    {
+        return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
+    }
 
 
-	public function categoriesAction(Request $request)
-	{
-		$options_resolver = new OptionsResolver();
-		$options_resolver
-			->setDefaults(
-				array(
-					'style'                 => 'small',
-					'parent'                => null,
-					'articles'              => array(
-						'include_subcategories' => false
-					)
-				)
-			)
-			->setAllowedValues(
-				array(
-					'style' => array('expander', 'home', 'small', 'summary')
-				)
-			)
-		;
-		$options = $options_resolver->resolve($request->query->get('tag_options'));
+    public function listAction(Request $request)
+    {
+        $options_resolver = new OptionsResolver();
+        $options_resolver
+            ->setRequired(array('category'))
+            ->setDefaults(
+                array(
+                    'style'                 => 'small',
+                    'include_subcategories' => false,
+                    'count'                 => 10,
+                    'labelled'              => '',
+                    'sort'                  => 'date_published desc',
+                    'sort_by'               => function (Options $options) {
+                                                $opts = explode(' ', $options['sort']);
 
-		/** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
-		if ($options['parent']) {
-			$categories = array($this->getArticleCategoryRepo()->find($options['parent']));
-		} else {
-			$categories = $this->getArticleCategoryRepo()->findAll();
-		}
+                                                return isset($opts[0]) ? trim($opts[0]) : 'date_published';
+                                            },
+                    'sort_direction'        => function (Options $options) {
+                                                $opts = explode(' ', $options['sort']);
 
-		return $this->render(
-			sprintf('Theme:Articles:cats_%s.html.twig', $options['style']),
-			array(
-				'cats' => $categories,
-				'articles_options' => $options['articles']
-			)
-		);
-	}
+                                                return isset($opts[1]) ? trim($opts[1]) : 'desc';
+                                            },
+                )
+            )
+            ->setAllowedValues(
+                array(
+                    'style' => array('forcat', 'small', 'xsmall')
+                )
+            )
+        ;
+        $options = $options_resolver->resolve($request->query->get('tag_options'));
 
+        $data = $this->getArticlesRepo()->getDataForTagOptions($options);
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\Article
-	 */
-	protected function getArticlesRepo()
-	{
-		return $this->getDoctrine()->getRepository('DeskPRO:Article');
-	}
+        return $this->render(
+            sprintf('Theme:Articles:list_%s.html.twig', $options['style']),
+            array(
+                'cat' => $data['cat'],
+                'articles' => $data['articles'],
+                'total_count' => $data['total_count']
+            )
+        );
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\ArticleCategory
-	 */
-	protected function getArticleCategoryRepo()
-	{
-		return $this->getDoctrine()->getRepository('DeskPRO:ArticleCategory');
-	}
+    public function categoriesAction(Request $request)
+    {
+        $options_resolver = new OptionsResolver();
+        $options_resolver
+            ->setDefaults(
+                array(
+                    'style'                 => 'small',
+                    'parent'                => null,
+                    'articles'              => array(
+                        'include_subcategories' => false
+                    )
+                )
+            )
+            ->setAllowedValues(
+                array(
+                    'style' => array('expander', 'home', 'small', 'summary')
+                )
+            )
+        ;
+        $options = $options_resolver->resolve($request->query->get('tag_options'));
+
+        /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
+        if ($options['parent']) {
+            $categories = array($this->getArticleCategoryRepo()->find($options['parent']));
+        } else {
+            $categories = $this->getArticleCategoryRepo()->findAll();
+        }
+
+        return $this->render(
+            sprintf('Theme:Articles:cats_%s.html.twig', $options['style']),
+            array(
+                'cats' => $categories,
+                'articles_options' => $options['articles']
+            )
+        );
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Article
+     */
+    protected function getArticlesRepo()
+    {
+        return $this->getDoctrine()->getRepository('DeskPRO:Article');
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\ArticleCategory
+     */
+    protected function getArticleCategoryRepo()
+    {
+        return $this->getDoctrine()->getRepository('DeskPRO:ArticleCategory');
+    }
 }

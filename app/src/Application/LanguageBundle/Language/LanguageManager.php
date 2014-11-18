@@ -34,103 +34,95 @@
 
 namespace Application\LanguageBundle\Language;
 
-use Application\DeskPRO\Translate\SystemLanguage;
 use Application\DeskPRO\Translate\Translate;
 use Application\DeskPRO\Entity\Language;
 use Application\DeskPRO\EntityRepository\Language as LanguageRepo;
 
 class LanguageManager
 {
-	/**
-	 * @var Translate
-	 */
-	private $translate;
+    /**
+     * @var Translate
+     */
+    private $translate;
 
-	/**
-	 * @var LanguageStack
-	 */
-	private $language_stack;
+    /**
+     * @var LanguageStack
+     */
+    private $language_stack;
 
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\Language
-	 */
-	private $language_repo;
+    /**
+     * @var \Application\DeskPRO\EntityRepository\Language
+     */
+    private $language_repo;
 
-	/**
-	 * @var bool
-	 */
-	private $multi_langauge;
+    /**
+     * @var bool
+     */
+    private $multi_langauge;
 
+    public function __construct(Translate $translate, LanguageStack $language_stack, LanguageRepo $language_repo)
+    {
+        $this->translate = $translate;
+        $this->language_stack = $language_stack;
+        $this->language_repo = $language_repo;
+        $this->multi_langauge = null;
+    }
 
-	public function __construct(Translate $translate, LanguageStack $language_stack, LanguageRepo $language_repo)
-	{
-		$this->translate = $translate;
-		$this->language_stack = $language_stack;
-		$this->language_repo = $language_repo;
-		$this->multi_langauge = null;
-	}
+    /**
+     * @return bool
+     */
+    public function isMultiLanguagePortal()
+    {
+        if ($this->multi_langauge !== null) {
+            return $this->multi_langauge;
+        }
 
+        return $this->multi_langauge = ($this->language_repo->countPortalLanguages() > 1);
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isMultiLanguagePortal()
-	{
-		if ($this->multi_langauge !== null) {
-			return $this->multi_langauge;
-		}
+    /**
+     * @param  string $lang_code an arbitrary lang string
+     * @return bool
+     */
+    public function isLanguageSupported($lang_code)
+    {
+        $lang_code = $this->normalizeLanguageCode($lang_code);
 
-		return $this->multi_langauge = ($this->language_repo->countPortalLanguages() > 1);
-	}
+        return $this->getLanguage($lang_code) !== null;
+    }
 
-	/**
-	 * @param string $lang_code an arbitrary lang string
-	 * @return bool
-	 */
-	public function isLanguageSupported($lang_code)
-	{
-		$lang_code = $this->normalizeLanguageCode($lang_code);
+    /**
+     * @param  string   $lang_code an arbitrary lang string
+     * @return Language
+     */
+    public function getLanguage($lang_code)
+    {
+        $lang_code = $this->normalizeLanguageCode($lang_code);
 
-		return $this->getLanguage($lang_code) !== null;
-	}
+        return $this->language_repo->getForLangCode($lang_code);
+    }
 
+    /**
+     * Turns an arbitrary lang string into a more normalized lang string that we use internally for URLs.
+     *
+     * @param  string $lang_code
+     * @return string
+     */
+    public function normalizeLanguageCode($lang_code)
+    {
+        return strtolower(substr($lang_code, 0, 2));
+    }
 
-	/**
-	 * @param string $lang_code an arbitrary lang string
-	 * @return Language
-	 */
-	public function getLanguage($lang_code)
-	{
-		$lang_code = $this->normalizeLanguageCode($lang_code);
+    /**
+     * @return LanguageStack
+     */
+    public function getLanguageStack()
+    {
+        return $this->language_stack;
+    }
 
-		return $this->language_repo->getForLangCode($lang_code);
-	}
-
-
-	/**
-	 * Turns an arbitrary lang string into a more normalized lang string that we use internally for URLs.
-	 *
-	 * @param string $lang_code
-	 * @return string
-	 */
-	public function normalizeLanguageCode($lang_code)
-	{
-		return strtolower(substr($lang_code, 0, 2));
-	}
-
-
-	/**
-	 * @return LanguageStack
-	 */
-	public function getLanguageStack()
-	{
-		return $this->language_stack;
-	}
-
-
-	public function getEnabledLanguages() 
-	{
-		return $this->language_repo->getPortalLanguages();
-	}
+    public function getEnabledLanguages()
+    {
+        return $this->language_repo->getPortalLanguages();
+    }
 }
- 

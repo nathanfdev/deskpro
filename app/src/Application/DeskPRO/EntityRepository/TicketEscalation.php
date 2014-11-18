@@ -36,14 +36,14 @@ namespace Application\DeskPRO\EntityRepository;
 
 class TicketEscalation extends AbstractEntityRepository
 {
-	/**
-	 * @return array
-	 */
-	public function getEscalations()
-	{
-		return $this->_em->createQuery("
-			SELECT te
-			FROM DeskPRO:TicketEscalation te
-		")->execute();
-	}
+    /**
+     * @return array
+     */
+    public function getEscalations()
+    {
+        return $this->_em->createQuery("
+            SELECT te
+            FROM DeskPRO:TicketEscalation te
+        ")->execute();
+    }
 }

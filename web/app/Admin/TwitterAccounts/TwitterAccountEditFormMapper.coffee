@@ -1,66 +1,66 @@
 define [
-	'DeskPRO/Util/Util'
+  'DeskPRO/Util/Util'
 ], (
-	Util
+  Util
 ) ->
-	class Admin_TwitterAccounts_TwitterAccountEditFormMapper
+  class Admin_TwitterAccounts_TwitterAccountEditFormMapper
 
-		###
-			#
- 		#
-		###
+    ###
+      #
+    #
+    ###
 
-		getFormFromModel: (model) ->
+    getFormFromModel: (model) ->
 
-			form = {}
+      form = {}
 
-			form.id = model.twitter_account.id
-			form.verified = model.twitter_account.verified
+      form.id = model.twitter_account.id
+      form.verified = model.twitter_account.verified
 
-			form.user = {}
-			form.user.profile_image_url = model.twitter_account.user.profile_image_url
-			form.user.name = model.twitter_account.user.name
-			form.user.screen_name = model.twitter_account.user.screen_name
-			form.user.agents = model.twitter_account.user.agents
+      form.user = {}
+      form.user.profile_image_url = model.twitter_account.user.profile_image_url
+      form.user.name = model.twitter_account.user.name
+      form.user.screen_name = model.twitter_account.user.screen_name
+      form.user.agents = model.twitter_account.user.agents
 
-			form.agents = model.all_agents
+      form.agents = model.all_agents
 
-			form.selected_agents = {}
+      form.selected_agents = {}
 
-			ids = _.pluck(form.user.agents, 'id')
+      ids = _.pluck(form.user.agents, 'id')
 
-			for id in ids
-				form.selected_agents[id] = true
+      for id in ids
+        form.selected_agents[id] = true
 
-			return form
+      return form
 
-		###
-			#
-			#
-		###
+    ###
+      #
+      #
+    ###
 
-		applyFormToModel: (model, formModel) ->
+    applyFormToModel: (model, formModel) ->
 
-			model.id = formModel.id
+      model.id = formModel.id
 
-		###
-			#
-			#
-		###
+    ###
+      #
+      #
+    ###
 
-		getPostDataFromForm: (formModel) ->
+    getPostDataFromForm: (formModel) ->
 
-			postData = {}
+      postData = {}
 
-			postData.id = formModel.id
+      postData.id = formModel.id
 
-			# instead of agents, resulting request should include persons
+      # instead of agents, resulting request should include persons
 
-			postData.persons = []
+      postData.persons = []
 
-			for own key, value of formModel.selected_agents
-				if value
-					agent = _.findWhere(formModel.agents, {id: parseInt(key)})
-					postData.persons.push(agent.id) if agent
+      for own key, value of formModel.selected_agents
+        if value
+          agent = _.findWhere(formModel.agents, {id: parseInt(key)})
+          postData.persons.push(agent.id) if agent
 
-			return postData
+      return postData

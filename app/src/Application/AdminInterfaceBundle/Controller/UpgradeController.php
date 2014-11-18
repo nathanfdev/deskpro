@@ -37,34 +37,34 @@ use Application\DeskPRO\Entity\ApiToken;
 
 class UpgradeController extends AbstractController
 {
-	public function preAction($action, $arguments = null)
-	{
-		if (defined('DPC_IS_CLOUD')) {
-			throw $this->createNotFoundException();
-		}
+    public function preAction($action, $arguments = null)
+    {
+        if (defined('DPC_IS_CLOUD')) {
+            throw $this->createNotFoundException();
+        }
 
-		return parent::preAction($action, $arguments);
-	}
+        return parent::preAction($action, $arguments);
+    }
 
-	####################################################################################################################
-	# index
-	####################################################################################################################
+    ####################################################################################################################
+    # index
+    ####################################################################################################################
 
-	public function indexAction()
-	{
-		$token = new ApiToken();
-		$token->scope = ApiToken::SCOPE_SESSION;
-		$token->person = $this->person;
-		$token->date_expires = new \DateTime("+1 hour");
+    public function indexAction()
+    {
+        $token = new ApiToken();
+        $token->scope = ApiToken::SCOPE_SESSION;
+        $token->person = $this->person;
+        $token->date_expires = new \DateTime("+1 hour");
 
-		$this->em->persist($token);
-		$this->em->flush();
+        $this->em->persist($token);
+        $this->em->flush();
 
-		return $this->render('AdminInterfaceBundle:Upgrade:layout.html.twig', array(
-			'api_token'     => $token,
-			'session'       => $this->session->getEntity(),
-			'is_wincache'   => extension_loaded('wincache'),
-			'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
-		));
-	}
+        return $this->render('AdminInterfaceBundle:Upgrade:layout.html.twig', array(
+            'api_token'     => $token,
+            'session'       => $this->session->getEntity(),
+            'is_wincache'   => extension_loaded('wincache'),
+            'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
+        ));
+    }
 }

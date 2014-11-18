@@ -39,89 +39,89 @@ use Application\DeskPRO\App\Native\RequestHandler\AgentRequestHandlerInterface;
 
 class AgentRequestHandler implements AgentRequestHandlerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handleAgentRequest(AgentRequestContext $context)
-	{
-		if ($context->getAction() == 'call-api') {
-			return $this->callApiAction($context);
-		} else {
-			throw $context->createNotFoundException();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function handleAgentRequest(AgentRequestContext $context)
+    {
+        if ($context->getAction() == 'call-api') {
+            return $this->callApiAction($context);
+        } else {
+            throw $context->createNotFoundException();
+        }
+    }
 
-	/**
-	 * @param AgentRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	private function callApiAction(AgentRequestContext $context)
-	{
-		$url  = $context->getAppSetting('url');
-		$user = $context->getAppSetting('api_user');
-		$key  = $context->getAppSetting('api_key');
+    /**
+     * @param  AgentRequestContext                        $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    private function callApiAction(AgentRequestContext $context)
+    {
+        $url  = $context->getAppSetting('url');
+        $user = $context->getAppSetting('api_user');
+        $key  = $context->getAppSetting('api_key');
 
-		if (!$url || !$user || !$key) {
-			return $context->createJsonResponse(array('error' => 'API URL, user or key missing. Please configure the plugin.'));
-		}
+        if (!$url || !$user || !$key) {
+            return $context->createJsonResponse(array('error' => 'API URL, user or key missing. Please configure the plugin.'));
+        }
 
-		if (!class_exists('\SoapClient')) {
-			return $context->createJsonResponse(array('error' => 'SOAP support missing from PHP.'));
-		}
+        if (!class_exists('\SoapClient')) {
+            return $context->createJsonResponse(array('error' => 'SOAP support missing from PHP.'));
+        }
 
-		$matches = array();
+        $matches = array();
 
-		$email = $context->getIn()->getString('email');
-		if ($email) {
-			try {
-				$error = error_reporting();
-				error_reporting($error & ~E_WARNING);
-				$client = new \SoapClient($url . '/api?wsdl');
-				error_reporting($error);
-			} catch (\SoapFault $e) {
-				return $context->createJsonResponse(array('error' => 'Invalid Magento URL'));
-			}
+        $email = $context->getIn()->getString('email');
+        if ($email) {
+            try {
+                $error = error_reporting();
+                error_reporting($error & ~E_WARNING);
+                $client = new \SoapClient($url . '/api?wsdl');
+                error_reporting($error);
+            } catch (\SoapFault $e) {
+                return $context->createJsonResponse(array('error' => 'Invalid Magento URL'));
+            }
 
-			try {
-				$session = $client->login($user, $key);
-			} catch (\SoapFault $e) {
-				return $context->createJsonResponse(array('error' => 'Invalid Magento API user or key'));
-			}
+            try {
+                $session = $client->login($user, $key);
+            } catch (\SoapFault $e) {
+                return $context->createJsonResponse(array('error' => 'Invalid Magento API user or key'));
+            }
 
-			$results = $client->call($session, 'customer.list', array(
-				array('email' => $email)
-			));
+            $results = $client->call($session, 'customer.list', array(
+                array('email' => $email)
+            ));
 
-			foreach ($results AS $record) {
-				$sales = $client->call($session, 'sales_order.list', array(
-					array('customer_id' => $record['customer_id'])
-				));
+            foreach ($results AS $record) {
+                $sales = $client->call($session, 'sales_order.list', array(
+                    array('customer_id' => $record['customer_id'])
+                ));
 
-				$orders = array();
-				foreach ($sales AS $sale) {
-					$orders[] = array(
-						'id' => $sale['increment_id'],
-						'order_id' => $sale['order_id'],
-						'created_at' => $sale['created_at'],
-						'grand_total' => number_format($sale['grand_total'], 2),
-						'currency' => $sale['order_currency_code'],
-						'status' => $sale['status'],
-						'url' => $url . '/admin/sales_order/view/order_id/' . $sale['order_id'] . '/',
-					);
-				}
+                $orders = array();
+                foreach ($sales AS $sale) {
+                    $orders[] = array(
+                        'id' => $sale['increment_id'],
+                        'order_id' => $sale['order_id'],
+                        'created_at' => $sale['created_at'],
+                        'grand_total' => number_format($sale['grand_total'], 2),
+                        'currency' => $sale['order_currency_code'],
+                        'status' => $sale['status'],
+                        'url' => $url . '/admin/sales_order/view/order_id/' . $sale['order_id'] . '/',
+                    );
+                }
 
-				$matches[] = array(
-					'id' => $record['customer_id'],
-					'name' => $record['firstname'] . ' ' . $record['lastname'],
-					'email' => $record['email'],
-					'profile' => $url . '/admin/customer/edit/id/' . $record['customer_id'] . '/',
-					'orders' => $orders
-				);
-			}
+                $matches[] = array(
+                    'id' => $record['customer_id'],
+                    'name' => $record['firstname'] . ' ' . $record['lastname'],
+                    'email' => $record['email'],
+                    'profile' => $url . '/admin/customer/edit/id/' . $record['customer_id'] . '/',
+                    'orders' => $orders
+                );
+            }
 
-			$client->endSession($session);
-		}
+            $client->endSession($session);
+        }
 
-		return $context->createJsonResponse(array('matched' => count($matches), 'matches' => $matches));
-	}
+        return $context->createJsonResponse(array('matched' => count($matches), 'matches' => $matches));
+    }
 }

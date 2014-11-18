@@ -46,50 +46,48 @@ use Application\PortalBundle\Themes\TabBar\TabBarTheme;
  *
  * @package Application\PortalBundle\Theme
  */
-class ThemeRepository 
+class ThemeRepository
 {
-	/**
-	 * @var ThemeInterface[]
-	 */
-	private $themes;
+    /**
+     * @var ThemeInterface[]
+     */
+    private $themes;
 
-	public function __construct()
-	{
-		$this->themes = array(
-			$base = new BaseTheme(),
-			new StandardTheme($base),
-			new SimpleTheme($base),
-			new SidebarTheme($base),
-			new TabBarTheme($base),
-		);
-	}
+    public function __construct()
+    {
+        $this->themes = array(
+            $base = new BaseTheme(),
+            new StandardTheme($base),
+            new SimpleTheme($base),
+            new SidebarTheme($base),
+            new TabBarTheme($base),
+        );
+    }
 
-	/**
-	 * Get a theme by its ID. ie. $repo->find('standard')
-	 *
-	 * @param $id
-	 * @return ThemeInterface
-	 */
-	public function find($id)
-	{
-		foreach ($this->themes as $theme) {
-			if ($id === $theme->getId()) {
-				return $theme;
-			}
-		}
+    /**
+     * Get a theme by its ID. ie. $repo->find('standard')
+     *
+     * @param $id
+     * @return ThemeInterface
+     */
+    public function find($id)
+    {
+        foreach ($this->themes as $theme) {
+            if ($id === $theme->getId()) {
+                return $theme;
+            }
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-
-	/**
-	 * A list of all themes in the order they are registered
-	 *
-	 * @return ThemeInterface[]
-	 */
-	public function findAll()
-	{
-		return $this->themes;
-	}
+    /**
+     * A list of all themes in the order they are registered
+     *
+     * @return ThemeInterface[]
+     */
+    public function findAll()
+    {
+        return $this->themes;
+    }
 }
- 

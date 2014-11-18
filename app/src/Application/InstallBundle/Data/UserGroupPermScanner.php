@@ -34,46 +34,44 @@
 
 namespace Application\InstallBundle\Data;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\People\UserPermissions\GroupsDbLoader;
 use Application\DeskPRO\People\UserPermissions\UserPermissions;
 
 class UserGroupPermScanner
 {
-	/**
-	 * @var array
-	 */
-	protected $perm_names = null;
+    /**
+     * @var array
+     */
+    protected $perm_names = null;
 
-	protected function load()
-	{
-		if ($this->perm_names !== null) {
-			return;
-		}
+    protected function load()
+    {
+        if ($this->perm_names !== null) {
+            return;
+        }
 
-		$perms = new UserPermissions();
+        $perms = new UserPermissions();
 
-		$set_perms = array();
-		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
-			$obj = $perms->$coll_name;
-			foreach ($obj->getNames() as $prop) {
-				$set_perms[] = $real_name . '.' . $prop;
-			}
-		}
+        $set_perms = array();
+        foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+            $obj = $perms->$coll_name;
+            foreach ($obj->getNames() as $prop) {
+                $set_perms[] = $real_name . '.' . $prop;
+            }
+        }
 
-		$this->perm_names = $set_perms;
-	}
+        $this->perm_names = $set_perms;
+    }
 
+    /**
+     * Get the names of all the permissions
+     *
+     * @return array
+     */
+    public function getNames()
+    {
+        $this->load();
 
-	/**
-	 * Get the names of all the permissions
-	 *
-	 * @return array
-	 */
-	public function getNames()
-	{
-		$this->load();
-		return $this->perm_names;
-	}
+        return $this->perm_names;
+    }
 }

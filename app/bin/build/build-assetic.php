@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run from the CLI.\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run from the CLI.\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 define('DP_BUILDING', true);
@@ -17,11 +17,11 @@ require DP_ROOT.'/sys/system.php';
 $kernel = new \DeskPRO\Kernel\DpKernel('dev', true, 'sys');
 
 if (in_array('--js', $_SERVER['argv'])) {
-	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', '--not', '--verbose', '-p', '_css');
+    $_SERVER['argv'] = array('x', 'dp:assetic', '-r', '--not', '--verbose', '-p', '_css');
 } elseif (in_array('--css', $_SERVER['argv'])) {
-	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', '--verbose', '-p', 'css');
+    $_SERVER['argv'] = array('x', 'dp:assetic', '-r', '--verbose', '-p', 'css');
 } else {
-	$_SERVER['argv'] = array('x', 'dp:assetic', '-r', 'ALL', '--verbose');
+    $_SERVER['argv'] = array('x', 'dp:assetic', '-r', 'ALL', '--verbose');
 }
 
 require_once DP_ROOT . '/sys/load_config.php';

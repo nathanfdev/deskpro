@@ -1,4 +1,4 @@
 <?php return array(
-	'key' => 'val',
-	'extra_key' => 'extra_val'
+    'key' => 'val',
+    'extra_key' => 'extra_val'
 );

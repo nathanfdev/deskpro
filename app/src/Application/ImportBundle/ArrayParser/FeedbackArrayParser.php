@@ -38,40 +38,40 @@ use Orb\Util\Strings;
 class FeedbackArrayParser implements ArrayParserInterface
 {
 
-	/**
-	 * @param array $data
-	 * @return PersonValue
-	 */
-	public function parseArray(array $data)
-	{
-		$data = ArrayParserUtils::cleanArray($data);
+    /**
+     * @param  array       $data
+     * @return PersonValue
+     */
+    public function parseArray(array $data)
+    {
+        $data = ArrayParserUtils::cleanArray($data);
 
-		$value = new FeedbackValue();
+        $value = new FeedbackValue();
 
-		ArrayParserUtils::copyValueMapping(array(
-			'oid'			=> 'raw',
-			'person'		=> 'string',
-			'language'		=> 'string',
-			'popularity'		=> 'int',
-			'slug'			=> 'string',
-			'title'			=> 'string',
-			'content'		=> 'string',
-			'view_count'		=> 'int',
-			'total_rating'		=> 'int',
-			'num_comments'		=> 'int',
-			'num_ratings'		=> 'int',
-			'status'		=> 'string',
-			'date_created'		=> 'date',
-			'date_published'	=> 'date',
-			'category'		=> 'string',
-			'labels'		=> 'array',
-		), $data, $value);
+        ArrayParserUtils::copyValueMapping(array(
+            'oid'			=> 'raw',
+            'person'		=> 'string',
+            'language'		=> 'string',
+            'popularity'		=> 'int',
+            'slug'			=> 'string',
+            'title'			=> 'string',
+            'content'		=> 'string',
+            'view_count'		=> 'int',
+            'total_rating'		=> 'int',
+            'num_comments'		=> 'int',
+            'num_ratings'		=> 'int',
+            'status'		=> 'string',
+            'date_created'		=> 'date',
+            'date_published'	=> 'date',
+            'category'		=> 'string',
+            'labels'		=> 'array',
+        ), $data, $value);
 
-		if ($value->title && !$value->slug) {
-			$value->slug = Strings::slugifyTitle($value->title);
-		}
+        if ($value->title && !$value->slug) {
+            $value->slug = Strings::slugifyTitle($value->title);
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
 }

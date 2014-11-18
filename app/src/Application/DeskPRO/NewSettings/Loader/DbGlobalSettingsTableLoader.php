@@ -44,66 +44,65 @@ use Application\DeskPRO\DBAL\Connection;
  */
 class DbGlobalSettingsTableLoader implements SettingsLoaderInterface
 {
-	const CACHE_KEY = 'settings.loader.db_global_settings_table';
+    const CACHE_KEY = 'settings.loader.db_global_settings_table';
 
-	/**
-	 * @var string the key we use for cache on this loader
-	 */
-	private $cacheKey;
+    /**
+     * @var string the key we use for cache on this loader
+     */
+    private $cacheKey;
 
-	/**
-	 * @var \Application\DeskPRO\Cache\ConvenientCache
-	 */
-	private $cache;
+    /**
+     * @var \Application\DeskPRO\Cache\ConvenientCache
+     */
+    private $cache;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
+    public function __construct(Connection $db, CacheAdapterInterface $cache)
+    {
+        $this->cacheKey = static::CACHE_KEY;
+        $this->cache = new ConvenientCache($cache);
+        $this->db = $db;
+    }
 
-	public function __construct(Connection $db, CacheAdapterInterface $cache)
-	{
-		$this->cacheKey = static::CACHE_KEY;
-		$this->cache = new ConvenientCache($cache);
-		$this->db = $db;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function load($force = false)
+    {
+        if ($force) {
+            $this->cache->delete($this->cacheKey);
+        }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function load($force = false)
-	{
-		if ($force) {
-			$this->cache->delete($this->cacheKey);
-		}
+        $conn = $this->db;
 
-		$conn = $this->db;
-		return $this->cache->get(
-			$this->cacheKey,
-			function() use ($conn) {
-				try {
-					return $conn->fetchAllKeyValue(
-						"
-							SELECT name, value
-							FROM settings
-							WHERE brand_id IS NULL
-						"
-					);
-				} catch (\Exception $e) {
-					// during install and such, we expect this to happen when no "settings" table exists
-					return array();
-				}
-			}
-		);
-	}
+        return $this->cache->get(
+            $this->cacheKey,
+            function () use ($conn) {
+                try {
+                    return $conn->fetchAllKeyValue(
+                        "
+                            SELECT name, value
+                            FROM settings
+                            WHERE brand_id IS NULL
+                        "
+                    );
+                } catch (\Exception $e) {
+                    // during install and such, we expect this to happen when no "settings" table exists
+                    return array();
+                }
+            }
+        );
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCacheKey()
-	{
-		return $this->cacheKey;
-	}
+    /**
+     * @return string
+     */
+    public function getCacheKey()
+    {
+        return $this->cacheKey;
+    }
 }
- 

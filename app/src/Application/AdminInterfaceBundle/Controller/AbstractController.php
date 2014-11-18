@@ -38,121 +38,122 @@ use Application\DeskPRO\Service\CheckWhitelistedIP;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
-	/**
-	 * The currently logged in person.
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	public $person;
+    /**
+     * The currently logged in person.
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    public $person;
 
-	protected function init()
-	{
-		parent::init();
-		$this->person = $this->session->getPerson();
-	}
+    protected function init()
+    {
+        parent::init();
+        $this->person = $this->session->getPerson();
+    }
 
-	/**
-	 * Check if the global request token check is required for the request
-	 */
-	public function requireRequestToken($action, $arguments = null)
-	{
-		// Pre install we dont have a secret yet
-		// So dont require the request token on POSTs
-		// while we fill out setup form
-		if (!App::getSetting('core.setup_initial')) {
-			return false;
-		}
+    /**
+     * Check if the global request token check is required for the request
+     */
+    public function requireRequestToken($action, $arguments = null)
+    {
+        // Pre install we dont have a secret yet
+        // So dont require the request token on POSTs
+        // while we fill out setup form
+        if (!App::getSetting('core.setup_initial')) {
+            return false;
+        }
 
-		if ($this->request->getMethod() == 'POST') {
-			return true;
-		}
+        if ($this->request->getMethod() == 'POST') {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	/**
-	 * Force a login
-	 */
-	public function preAction($action, $arguments = null)
-	{
-		$return = '';
-		if (!$this->person['id']) {
-			if ($this->isPostRequest()) {
-				$return = $this->get('router')->generate('admin');
-			} else {
-				$return = $this->request->getRequestUri();
-			}
-		}
+    /**
+     * Force a login
+     */
+    public function preAction($action, $arguments = null)
+    {
+        $return = '';
+        if (!$this->person['id']) {
+            if ($this->isPostRequest()) {
+                $return = $this->get('router')->generate('admin');
+            } else {
+                $return = $this->request->getRequestUri();
+            }
+        }
 
-		if (!$this->_userHasPermissions()) {
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array('error' => 'session_expired');
-				return $this->createJsonResponse($data, 403);
-			}
+        if (!$this->_userHasPermissions()) {
+            if ($this->request->isXmlHttpRequest()) {
+                $data = array('error' => 'session_expired');
 
-			return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
-				'return' => $return
-			));
-		}
+                return $this->createJsonResponse($data, 403);
+            }
 
-		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array(
-					'error' => 'invalid_request_token',
-					'redirect_login' => $this->generateUrl('agent_login')
-				);
+            return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+                'return' => $return
+            ));
+        }
 
-				return $this->createJsonResponse($data, 403);
-			} else {
-				return $this->standardErrorResponse('The form you are trying to submit has expired. Please go back and try again.');
-			}
-		}
+        if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+            if ($this->request->isXmlHttpRequest()) {
+                $data = array(
+                    'error' => 'invalid_request_token',
+                    'redirect_login' => $this->generateUrl('agent_login')
+                );
 
-		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
-			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-				'ip' => dp_get_user_ip_address()
-			));
-		}
+                return $this->createJsonResponse($data, 403);
+            } else {
+                return $this->standardErrorResponse('The form you are trying to submit has expired. Please go back and try again.');
+            }
+        }
 
-		return null;
-	}
+        if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+                'ip' => dp_get_user_ip_address()
+            ));
+        }
 
-	/**
-	 * @param string $error_message
-	 * @param string $error_title
-	 * @param int    $code
-	 * @param array  $vars
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())
-	{
-		$tpl_standard = 'UserBundle:Main:error-standard.html.twig';
-		$tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
+        return null;
+    }
 
-		$tpl = $tpl_standard;
-		if (App::getTemplating()->exists($tpl_specific)) {
-			$tpl = $tpl_specific;
-		}
+    /**
+     * @param  string                                     $error_message
+     * @param  string                                     $error_title
+     * @param  int                                        $code
+     * @param  array                                      $vars
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())
+    {
+        $tpl_standard = 'UserBundle:Main:error-standard.html.twig';
+        $tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
 
-		$vars = array_merge(
-			$vars, array(
-				'error_message' => $error_message,
-				'error_title'   => $error_title
-			)
-		);
+        $tpl = $tpl_standard;
+        if (App::getTemplating()->exists($tpl_specific)) {
+            $tpl = $tpl_specific;
+        }
 
-		$res = $this->render($tpl, $vars);
+        $vars = array_merge(
+            $vars, array(
+                'error_message' => $error_message,
+                'error_title'   => $error_title
+            )
+        );
 
-		$res->setStatusCode($code);
+        $res = $this->render($tpl, $vars);
 
-		return $res;
-	}
+        $res->setStatusCode($code);
 
-	protected function _userHasPermissions()
-	{
-		if ($this->person->is_agent && $this->person->can_admin) {
-			return true;
-		}
+        return $res;
+    }
 
-		return false;
-	}
+    protected function _userHasPermissions()
+    {
+        if ($this->person->is_agent && $this->person->can_admin) {
+            return true;
+        }
+
+        return false;
+    }
 }

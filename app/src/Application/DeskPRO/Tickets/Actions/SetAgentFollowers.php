@@ -47,95 +47,95 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetAgentFollowers extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('add_agent_ids', 'remove_agent_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('add_agent_ids', 'remove_agent_ids');
 
-	protected function resolveAgent(ExecutorContextInterface $context, $id)
-	{
-		if (!$id) {
-			return null;
-		}
+        return $options;
+    }
 
-		if (-1 == $id) {
-			if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
-				return null;
-			}
-			$agent = $context->getPersonContext();
-		} else {
-			$agent = $this->getContainer()->getAgentData()->get($id);
-		}
+    protected function resolveAgent(ExecutorContextInterface $context, $id)
+    {
+        if (!$id) {
+            return null;
+        }
 
-		return $agent;
-	}
+        if (-1 == $id) {
+            if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
+                return null;
+            }
+            $agent = $context->getPersonContext();
+        } else {
+            $agent = $this->getContainer()->getAgentData()->get($id);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		#--------------------
-		# Add followers
-		#--------------------
+        return $agent;
+    }
 
-		if ($add_agent_ids = $this->getActionOption('add_agent_ids')) {
-			if (!is_array($add_agent_ids)) {
-				$add_agent_ids = array($add_agent_ids);
-			}
-			foreach ($add_agent_ids as $agent_id) {
-				if (!$agent = $this->resolveAgent($context, $agent_id)) {
-					continue;
-				}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        #--------------------
+        # Add followers
+        #--------------------
 
-				if (!$ticket->participants->contains($agent)) {
-					$ticket->addParticipantPerson($agent);
-				}
-			}
-		}
+        if ($add_agent_ids = $this->getActionOption('add_agent_ids')) {
+            if (!is_array($add_agent_ids)) {
+                $add_agent_ids = array($add_agent_ids);
+            }
+            foreach ($add_agent_ids as $agent_id) {
+                if (!$agent = $this->resolveAgent($context, $agent_id)) {
+                    continue;
+                }
 
-		#--------------------
-		# Remove followers
-		#--------------------
+                if (!$ticket->participants->contains($agent)) {
+                    $ticket->addParticipantPerson($agent);
+                }
+            }
+        }
 
-		if ($remove_agent_ids = $this->getActionOption('remove_agent_ids')) {
-			if (!is_array($remove_agent_ids)) {
-				$remove_agent_ids = array($remove_agent_ids);
-			}
-			foreach ($remove_agent_ids as $agent_id) {
-				if (!$agent = $this->resolveAgent($context, $agent_id)) {
-					continue;
-				}
+        #--------------------
+        # Remove followers
+        #--------------------
 
-				$ticket->removeParticipantPerson($agent);
-			}
-		}
-	}
+        if ($remove_agent_ids = $this->getActionOption('remove_agent_ids')) {
+            if (!is_array($remove_agent_ids)) {
+                $remove_agent_ids = array($remove_agent_ids);
+            }
+            foreach ($remove_agent_ids as $agent_id) {
+                if (!$agent = $this->resolveAgent($context, $agent_id)) {
+                    continue;
+                }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
-			return array('cc');
-		}
-
-		return array();
-	}
+                $ticket->removeParticipantPerson($agent);
+            }
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'cc')) {
+            return array('cc');
+        }
+
+        return array();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

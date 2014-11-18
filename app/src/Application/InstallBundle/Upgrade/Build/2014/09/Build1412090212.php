@@ -36,15 +36,15 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1412090212 extends AbstractBuild
 {
-	public function run()
-	{
-		if (!defined('DPC_IS_CLOUD') && $this->container->getSetting('elastica.enabled')) {
-			$this->out("Setting ElasticSearch reindex flag");
-			$this->container->getDb()->replace('settings', array(
-				'name'  => 'elastica.requires_reset',
-				'value' => '1',
-			));
-			$this->container->getDb()->delete('datastore', array('name' => 'sys.es_indexer'));
-		}
-	}
+    public function run()
+    {
+        if (!defined('DPC_IS_CLOUD') && $this->container->getSetting('elastica.enabled')) {
+            $this->out("Setting ElasticSearch reindex flag");
+            $this->container->getDb()->replace('settings', array(
+                'name'  => 'elastica.requires_reset',
+                'value' => '1',
+            ));
+            $this->container->getDb()->delete('datastore', array('name' => 'sys.es_indexer'));
+        }
+    }
 }

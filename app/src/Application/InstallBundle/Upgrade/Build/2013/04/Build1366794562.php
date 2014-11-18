@@ -36,18 +36,18 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366794562 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Clear permission cache");
-		$this->execMutateSql("DELETE FROM permissions_cache");
+    public function run()
+    {
+        $this->out("Clear permission cache");
+        $this->execMutateSql("DELETE FROM permissions_cache");
 
-		$this->out("Add ref_reserve table");
-		$this->execMutateSql("
-			CREATE TABLE `ref_reserve` (
-			`obj_type` varchar(50) NOT NULL,
-			`ref` varchar(255) NOT NULL DEFAULT '',
-			PRIMARY KEY (`obj_type`,`ref`)
-			) ENGINE=MyISAM
-		");
-	}
+        $this->out("Add ref_reserve table");
+        $this->execMutateSql("
+            CREATE TABLE `ref_reserve` (
+            `obj_type` varchar(50) NOT NULL,
+            `ref` varchar(255) NOT NULL DEFAULT '',
+            PRIMARY KEY (`obj_type`,`ref`)
+            ) ENGINE=MyISAM
+        ");
+    }
 }

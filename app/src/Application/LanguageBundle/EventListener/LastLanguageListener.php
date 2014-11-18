@@ -66,8 +66,8 @@ class LastLanguageListener implements EventSubscriberInterface
         $this->logger = $logger;
     }
 
-	public function onKernelResponse(FilterResponseEvent $event)
-	{
+    public function onKernelResponse(FilterResponseEvent $event)
+    {
         $last_lang = null;
 
         // only set the cookie if there is actually a language
@@ -78,13 +78,12 @@ class LastLanguageListener implements EventSubscriberInterface
             $event->getResponse()->headers->setCookie(new Cookie(static::COOKIE_NAME, $last_lang));
         }
 
-	}
+    }
 
-	public static function getSubscribedEvents()
-	{
-		return array(
-			KernelEvents::RESPONSE => array('onKernelResponse')
-		);
-	}
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::RESPONSE => array('onKernelResponse')
+        );
+    }
 }
- 

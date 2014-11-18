@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1347556734 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add datastore");
-		$this->execMutateSql("CREATE TABLE datastore (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) DEFAULT NULL, auth VARCHAR(15) NOT NULL, data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', INDEX name_idx (name), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-	}
+    public function run()
+    {
+        $this->out("Add datastore");
+        $this->execMutateSql("CREATE TABLE datastore (id INT AUTO_INCREMENT NOT NULL, name VARCHAR(100) DEFAULT NULL, auth VARCHAR(15) NOT NULL, data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', INDEX name_idx (name), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+    }
 }

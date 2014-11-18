@@ -43,31 +43,32 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckUserValidAgent extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$person = $ticket->person;
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $person = $ticket->person;
 
-		$is_valid = $person->is_agent_confirmed;
+        $is_valid = $person->is_agent_confirmed;
 
-		if ($is_valid) {
-			if ($this->getTermOperator() == 'is') return true;
-			else return false;
-		} else {
-			if ($this->getTermOperator() == 'is') return false;
-			else return true;
-		}
-	}
+        if ($is_valid) {
+            if ($this->getTermOperator() == 'is') return true;
+            else return false;
+        } else {
+            if ($this->getTermOperator() == 'is') return false;
+            else return true;
+        }
+    }
 }

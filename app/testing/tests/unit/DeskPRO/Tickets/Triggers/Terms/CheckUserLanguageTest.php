@@ -8,46 +8,46 @@ require_once 'AbstractEntityCheckTest.php';
 
 class CheckUserLanguageTest extends AbstractEntityCheckTest
 {
-	/**
-	 * @param int $id
-	 * @param $object
-	 * @return Ticket
-	 */
-	public function createTicket($id, $object)
-	{
-		$person = new Person();
-		$person->id = $id;
-		$person->language = $object;
+    /**
+     * @param  int    $id
+     * @param $object
+     * @return Ticket
+     */
+    public function createTicket($id, $object)
+    {
+        $person = new Person();
+        $person->id = $id;
+        $person->language = $object;
 
-		$ticket = new Ticket();
-		$ticket->id = $id;
-		$ticket->person = $person;
+        $ticket = new Ticket();
+        $ticket->id = $id;
+        $ticket->person = $person;
 
-		return $ticket;
-	}
+        return $ticket;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClass()
-	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckUserLanguage';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClass()
+    {
+        return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckUserLanguage';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClassOptionKey()
-	{
-		return 'language_ids';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClassOptionKey()
+    {
+        return 'language_ids';
+    }
 
-	/**
-	 * The entity class we are checking
-	 * @return string
-	 */
-	public function getEntityClass()
-	{
-		return 'Application\DeskPRO\Entity\Language';
-	}
+    /**
+     * The entity class we are checking
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'Application\DeskPRO\Entity\Language';
+    }
 }

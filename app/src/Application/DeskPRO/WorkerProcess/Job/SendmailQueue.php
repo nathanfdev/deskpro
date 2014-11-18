@@ -34,8 +34,6 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 use Application\DeskPRO\Mail\SendmailQueueRunner;
 
 /**
@@ -43,25 +41,25 @@ use Application\DeskPRO\Mail\SendmailQueueRunner;
  */
 class SendmailQueue extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 60;
+    const DEFAULT_INTERVAL = 60;
 
-	/** @var int */
-	protected $count_success = 0;
-	/** @var int */
-	protected $count_failed = 0;
-	/** @var int */
-	protected $time_start = 0;
+    /** @var int */
+    protected $count_success = 0;
+    /** @var int */
+    protected $count_failed = 0;
+    /** @var int */
+    protected $time_start = 0;
 
-	public function run()
-	{
-		@ini_set('memory_limit', DP_MAX_MEMSIZE);
-		$runner = new SendmailQueueRunner();
-		$runner->setLogger($this->logger);
-		$count = $runner->run(0, 30);
-		@ini_set('memory_limit', DP_SET_MEMSIZE);
+    public function run()
+    {
+        @ini_set('memory_limit', DP_MAX_MEMSIZE);
+        $runner = new SendmailQueueRunner();
+        $runner->setLogger($this->logger);
+        $count = $runner->run(0, 30);
+        @ini_set('memory_limit', DP_SET_MEMSIZE);
 
-		if ($count) {
-			$this->logStatus("Processed {$count} emails in queue.");
-		}
-	}
+        if ($count) {
+            $this->logStatus("Processed {$count} emails in queue.");
+        }
+    }
 }

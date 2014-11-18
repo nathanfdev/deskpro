@@ -55,24 +55,25 @@ use Orb\Util\Strings;
  */
 class WebHook extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('url');
-		$options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('url');
+        $options->addValidNames('username', 'password', 'method', 'custom_data', 'headers', 'timeout', 'payload_type');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$timeout = intval($this->getActionOption('timeout')) ?: 20;
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $timeout = intval($this->getActionOption('timeout')) ?: 20;
 
         /** @var TemplatingExtension $renderer */
         $renderer = $this->getContainer()->getTwig()->getExtension('deskpro_templating');
@@ -86,73 +87,71 @@ class WebHook extends AbstractContainerAwareAction implements ActionInterface, M
             'timeout' => $timeout
         ));
 
-		if ($headers) {
-			$headers = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
-		} else {
-			$headers = array();
-		}
+        if ($headers) {
+            $headers = Strings::parseEqualsLines($headers, Strings::EQUALSLINES_DUPE_ADD_ARRAY, ':');
+        } else {
+            $headers = array();
+        }
 
-		$data = array();
-		$data['ticket']          = $ticket->toApiData();
-		$data['person_context']  = $context->getPersonContext()->toApiData();
-		$data['event_performer'] = $context->getEventPerformer();
-		$data['event_type']      = $context->getEventType();
-		$data['event_method']    = $context->getEventMethod();
-		$data['custom_data']     = $custom_data;
+        $data = array();
+        $data['ticket']          = $ticket->toApiData();
+        $data['person_context']  = $context->getPersonContext()->toApiData();
+        $data['event_performer'] = $context->getEventPerformer();
+        $data['event_type']      = $context->getEventType();
+        $data['event_method']    = $context->getEventMethod();
+        $data['custom_data']     = $custom_data;
 
-		if ('json' === $this->getActionOption('payload_type')) {
-			$data = json_encode($data);
-			$headers['content-type'] = 'application/json';
-		} else {
-			$headers['content-type'] = 'application/x-www-form-urlencoded';
-		}
+        if ('json' === $this->getActionOption('payload_type')) {
+            $data = json_encode($data);
+            $headers['content-type'] = 'application/json';
+        } else {
+            $headers['content-type'] = 'application/x-www-form-urlencoded';
+        }
 
-		$request = new \Guzzle\Http\Message\EntityEnclosingRequest($this->getActionOption('method') ?: 'POST', $url, $headers);
-		$request->setBody($data);
+        $request = new \Guzzle\Http\Message\EntityEnclosingRequest($this->getActionOption('method') ?: 'POST', $url, $headers);
+        $request->setBody($data);
 
-		if ($username || $password) {
-			$request->setAuth($username ?: '', $password ?: '');
-		}
+        if ($username || $password) {
+            $request->setAuth($username ?: '', $password ?: '');
+        }
 
-		try {
+        try {
 
-			$response = $http_client->send($request);
-			$data = array(
-				'url' => $url,
-				'reason' => $response->getReasonPhrase(),
-				'status' => $response->getStatusCode(),
-				'content' => $response->getBody(true),
-			);
-			$ticket->getStateChangeRecorder()->recordData('webhook', $data);
+            $response = $http_client->send($request);
+            $data = array(
+                'url' => $url,
+                'reason' => $response->getReasonPhrase(),
+                'status' => $response->getStatusCode(),
+                'content' => $response->getBody(true),
+            );
+            $ticket->getStateChangeRecorder()->recordData('webhook', $data);
 
-		} catch (\Exception $e) {
+        } catch (\Exception $e) {
 
-			KernelErrorHandler::logException($e, false, 'webhook_' . md5($this->getActionOption('url')));
-			$data = array(
-				'url' => $url,
-				'reason' => $e->getMessage(),
-				'status' => $e->getCode(),
-				'content' => null,
-			);
-			$ticket->getStateChangeRecorder()->recordData('webhook', $data);
-		}
-	}
+            KernelErrorHandler::logException($e, false, 'webhook_' . md5($this->getActionOption('url')));
+            $data = array(
+                'url' => $url,
+                'reason' => $e->getMessage(),
+                'status' => $e->getCode(),
+                'content' => null,
+            );
+            $ticket->getStateChangeRecorder()->recordData('webhook', $data);
+        }
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return null;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return null;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

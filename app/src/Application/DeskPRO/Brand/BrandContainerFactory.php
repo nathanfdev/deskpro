@@ -43,26 +43,24 @@ use Application\PortalBundle\Theme\ThemeResolver;
  */
 class BrandContainerFactory
 {
-	/**
-	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
-	 */
-	private $settings_resolver;
+    /**
+     * @var \Application\DeskPRO\NewSettings\SettingsResolver
+     */
+    private $settings_resolver;
 
-	/**
-	 * @var \Application\PortalBundle\Theme\ThemeResolver
-	 */
-	private $theme_resolver;
+    /**
+     * @var \Application\PortalBundle\Theme\ThemeResolver
+     */
+    private $theme_resolver;
 
+    public function __construct(SettingsResolver $settings_resolver, ThemeResolver $theme_resolver)
+    {
+        $this->settings_resolver = $settings_resolver;
+        $this->theme_resolver = $theme_resolver;
+    }
 
-	public function __construct(SettingsResolver $settings_resolver, ThemeResolver $theme_resolver)
-	{
-		$this->settings_resolver = $settings_resolver;
-		$this->theme_resolver = $theme_resolver;
-	}
-
-	public function create(Brand $brand)
-	{
-		return new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand), $this->theme_resolver);
-	}
+    public function create(Brand $brand)
+    {
+        return new BrandContainer($brand, $this->settings_resolver->getBrandSettings($brand), $this->theme_resolver);
+    }
 }
- 

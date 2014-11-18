@@ -39,12 +39,12 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class AppManipulatorService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$app_manipulator = new AppManipulator(
-			$container->getSystemService('app_manager'), $container->getEm(), $container
-		);
+    public static function create(DeskproContainer $container)
+    {
+        $app_manipulator = new AppManipulator(
+            $container->getSystemService('app_manager'), $container->getEm(), $container
+        );
 
-		return $app_manipulator;
-	}
+        return $app_manipulator;
+    }
 }

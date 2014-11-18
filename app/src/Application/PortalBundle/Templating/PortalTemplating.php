@@ -34,47 +34,45 @@
 
 namespace Application\PortalBundle\Templating;
 
-
 use Symfony\Bundle\TwigBundle\TwigEngine;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Templating\EngineInterface;
 
 class PortalTemplating implements EngineInterface
 {
-	/**
-	 * @var \Symfony\Bundle\TwigBundle\TwigEngine
-	 */
-	private $engine;
+    /**
+     * @var \Symfony\Bundle\TwigBundle\TwigEngine
+     */
+    private $engine;
 
-	public function __construct(TwigEngine $engine)
-	{
-		$this->engine = $engine;
-	}
+    public function __construct(TwigEngine $engine)
+    {
+        $this->engine = $engine;
+    }
 
-	public function render($name, array $parameters = array())
-	{
-		return $this->engine->render($name, $parameters);
-	}
+    public function render($name, array $parameters = array())
+    {
+        return $this->engine->render($name, $parameters);
+    }
 
-	public function renderResponse($view, array $parameters = array(), Response $response = null)
-	{
-		if (null === $response) {
-			$response = new Response();
-		}
+    public function renderResponse($view, array $parameters = array(), Response $response = null)
+    {
+        if (null === $response) {
+            $response = new Response();
+        }
 
-		$response->setContent($this->render($view, $parameters));
+        $response->setContent($this->render($view, $parameters));
 
-		return $response;
-	}
+        return $response;
+    }
 
-	public function exists($name)
-	{
-		return $this->engine->exists($name);
-	}
+    public function exists($name)
+    {
+        return $this->engine->exists($name);
+    }
 
-	public function supports($name)
-	{
-		return $this->engine->supports($name);
-	}
+    public function supports($name)
+    {
+        return $this->engine->supports($name);
+    }
 }
- 

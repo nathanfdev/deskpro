@@ -48,66 +48,66 @@ use Application\DeskPRO\Util as DeskPROUtil;
  */
 class SetLabels extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('remove_labels', 'add_labels');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('remove_labels', 'add_labels');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		#--------------------
-		# Add labels
-		#--------------------
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        #--------------------
+        # Add labels
+        #--------------------
 
-		$add_labels = DeskPROUtil::labelsArrayFromString($this->getActionOption('add_labels', ''));
+        $add_labels = DeskPROUtil::labelsArrayFromString($this->getActionOption('add_labels', ''));
 
-		if ($add_labels) {
-			foreach ($add_labels as $l) {
-				$ticket->addLabelByString($l);
-			}
-		}
+        if ($add_labels) {
+            foreach ($add_labels as $l) {
+                $ticket->addLabelByString($l);
+            }
+        }
 
-		#--------------------
-		# Remove labels
-		#--------------------
+        #--------------------
+        # Remove labels
+        #--------------------
 
-		$remove_labels = DeskPROUtil::labelsArrayFromString($this->getActionOption('remove_labels', ''));
+        $remove_labels = DeskPROUtil::labelsArrayFromString($this->getActionOption('remove_labels', ''));
 
-		if ($remove_labels) {
-			foreach ($remove_labels as $l) {
-				$ticket->removeLabelByString($l);
-			}
-		}
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'labels')) {
-			return array('labels');
-		}
-
-		return array();
-	}
+        if ($remove_labels) {
+            foreach ($remove_labels as $l) {
+                $ticket->removeLabelByString($l);
+            }
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'labels')) {
+            return array('labels');
+        }
+
+        return array();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

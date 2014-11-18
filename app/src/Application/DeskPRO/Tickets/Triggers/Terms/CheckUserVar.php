@@ -46,42 +46,44 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckUserVar extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		$options->addValidNames('value');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('name');
+        $options->addValidNames('value');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
 
-		$name = $options->get('name');
-		if (!$name) {
-			return false;
-		}
+        $name = $options->get('name');
+        if (!$name) {
+            return false;
+        }
 
-		if (!$context->getUserVars()->has($name)) {
-			if ($this->getTermOperator() == 'not_isset') {
-				return true;
-			}
-			return false;
-		}
-		if ($this->getTermOperator() == 'isset') {
-			return true;
-		}
+        if (!$context->getUserVars()->has($name)) {
+            if ($this->getTermOperator() == 'not_isset') {
+                return true;
+            }
 
-		$value = TermValue::createWithValue($context->getUserVars()->get($name));
+            return false;
+        }
+        if ($this->getTermOperator() == 'isset') {
+            return true;
+        }
 
-		return $this->isStringMatch($ticket, $context, $value, $options['value']);
-	}
+        $value = TermValue::createWithValue($context->getUserVars()->get($name));
+
+        return $this->isStringMatch($ticket, $context, $value, $options['value']);
+    }
 }

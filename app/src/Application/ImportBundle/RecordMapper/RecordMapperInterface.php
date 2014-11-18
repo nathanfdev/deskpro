@@ -33,11 +33,11 @@ namespace Application\ImportBundle\RecordMapper;
 
 interface RecordMapperInterface
 {
-	/**
-	 * Returns an ID in the DeskPRO database given a value from the old database.
-	 *
-	 * @param mixed $value
-	 * @return int|null
-	 */
-	public function findIdFromValue($value);
+    /**
+     * Returns an ID in the DeskPRO database given a value from the old database.
+     *
+     * @param  mixed    $value
+     * @return int|null
+     */
+    public function findIdFromValue($value);
 }

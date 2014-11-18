@@ -36,31 +36,31 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1346358439 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix tickets in invalid parent departments");
-		$parent_ids = $this->container->getDb()->fetchAllCol("
-			SELECT DISTINCT(parent_id)
-			FROM departments
-			WHERE parent_id IS NOT NULL
-		");
+    public function run()
+    {
+        $this->out("Fix tickets in invalid parent departments");
+        $parent_ids = $this->container->getDb()->fetchAllCol("
+            SELECT DISTINCT(parent_id)
+            FROM departments
+            WHERE parent_id IS NOT NULL
+        ");
 
-		foreach ($parent_ids as $pid) {
-			$cid = $this->container->getDb()->fetchColumn("
-				SELECT id
-				FROM departments
-				WHERE parent_id = ?
-				ORDER BY display_order ASC
-				LIMIT 1
-			", array($pid));
+        foreach ($parent_ids as $pid) {
+            $cid = $this->container->getDb()->fetchColumn("
+                SELECT id
+                FROM departments
+                WHERE parent_id = ?
+                ORDER BY display_order ASC
+                LIMIT 1
+            ", array($pid));
 
-			if ($cid) {
-				$this->container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE department_id = ?', array($cid, $pid));
-				$this->container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE department_id = ?', array($cid, $pid));
-				$this->container->getDb()->executeUpdate('UPDATE tickets_search_message SET department_id = ? WHERE department_id = ?', array($cid, $pid));
-				$this->container->getDb()->executeUpdate('UPDATE tickets_search_message_active SET department_id = ? WHERE department_id = ?', array($cid, $pid));
-				$this->container->getDb()->executeUpdate('UPDATE chat_conversations SET department_id = ? WHERE department_id = ?', array($cid, $pid));
-			}
-		}
-	}
+            if ($cid) {
+                $this->container->getDb()->executeUpdate('UPDATE tickets SET department_id = ? WHERE department_id = ?', array($cid, $pid));
+                $this->container->getDb()->executeUpdate('UPDATE tickets_search_active SET department_id = ? WHERE department_id = ?', array($cid, $pid));
+                $this->container->getDb()->executeUpdate('UPDATE tickets_search_message SET department_id = ? WHERE department_id = ?', array($cid, $pid));
+                $this->container->getDb()->executeUpdate('UPDATE tickets_search_message_active SET department_id = ? WHERE department_id = ?', array($cid, $pid));
+                $this->container->getDb()->executeUpdate('UPDATE chat_conversations SET department_id = ? WHERE department_id = ?', array($cid, $pid));
+            }
+        }
+    }
 }

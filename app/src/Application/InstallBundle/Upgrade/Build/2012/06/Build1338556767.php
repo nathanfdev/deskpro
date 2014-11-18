@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1338556767 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adding is_chat_available to sessions table");
-		$this->execMutateSql("ALTER TABLE sessions ADD is_chat_available TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Adding is_chat_available to sessions table");
+        $this->execMutateSql("ALTER TABLE sessions ADD is_chat_available TINYINT(1) NOT NULL");
+    }
 }

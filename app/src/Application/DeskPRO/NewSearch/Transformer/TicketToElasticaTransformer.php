@@ -20,7 +20,7 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
      * Transform
      *
      * @param Ticket $object
-     * @param array $fields
+     * @param array  $fields
      *
      * @return Document
      */
@@ -37,22 +37,22 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
         $document->set('agent_team', $object->getAgentTeamId());
         $document->set('participants', $object->getParticipantPeopleIds());
 
-		if ($object->organization) {
-			$document->set('organization_id', $object->organization->getId());
-		} else {
-			$document->set('organization_id', 0);
-		}
+        if ($object->organization) {
+            $document->set('organization_id', $object->organization->getId());
+        } else {
+            $document->set('organization_id', 0);
+        }
 
-		if ($object->person) {
-			$document->set('person_id', $object->person->getId());
-		} else {
-			$document->set('person_id', 0);
-		}
+        if ($object->person) {
+            $document->set('person_id', $object->person->getId());
+        } else {
+            $document->set('person_id', 0);
+        }
 
-		if ($object->labels) {
-			$labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
-			$document->set('labels', $labels);
-		}
+        if ($object->labels) {
+            $labels = Arrays::map(function ($l) { return $l->label; }, $object->labels);
+            $document->set('labels', $labels);
+        }
 
         $document->set('labels', $labels);
 
@@ -63,13 +63,13 @@ class TicketToElasticaTransformer implements ModelToElasticaTransformerInterface
 
         $document->set('messages', $messages);
 
-		$document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
+        $document->set('date_created', $object->date_created->format('Y-m-d H:i:s'));
 
-		$dates = array($object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply);
-		$dates = Arrays::removeFalsey($dates);
-		$d = max($dates);
-		$document->set('date_active', $d->format('Y-m-d H:i:s'));
+        $dates = array($object->date_created, $object->date_status, $object->date_last_agent_reply, $object->date_last_user_reply);
+        $dates = Arrays::removeFalsey($dates);
+        $d = max($dates);
+        $document->set('date_active', $d->format('Y-m-d H:i:s'));
 
         return $document;
     }
-} 
+}

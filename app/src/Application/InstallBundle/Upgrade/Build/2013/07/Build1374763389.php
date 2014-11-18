@@ -36,28 +36,28 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1374763389 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Clear out old result caches");
-		$this->execMutateSql("TRUNCATE TABLE result_cache");
+    public function run()
+    {
+        $this->out("Clear out old result caches");
+        $this->execMutateSql("TRUNCATE TABLE result_cache");
 
-		$this->out("Fix possible invalid feedback statuses");
-		$active_id = $this->container->getDb()->fetchColumn("SELECT id FROM feedback_status_categories WHERE status_type = 'active' ORDER BY display_order DESC LIMIT 1");
-		if ($active_id) {
-			$this->execMutateSql("
-				UPDATE feedback
-				SET status_category_id = $active_id
-				WHERE status = 'active' AND status_category_id IS NULL
-			");
-		}
+        $this->out("Fix possible invalid feedback statuses");
+        $active_id = $this->container->getDb()->fetchColumn("SELECT id FROM feedback_status_categories WHERE status_type = 'active' ORDER BY display_order DESC LIMIT 1");
+        if ($active_id) {
+            $this->execMutateSql("
+                UPDATE feedback
+                SET status_category_id = $active_id
+                WHERE status = 'active' AND status_category_id IS NULL
+            ");
+        }
 
-		$closed_id = $this->container->getDb()->fetchColumn("SELECT id FROM feedback_status_categories WHERE status_type = 'closed' ORDER BY display_order DESC LIMIT 1");
-		if ($closed_id) {
-			$this->execMutateSql("
-				UPDATE feedback
-				SET status_category_id = $closed_id
-				WHERE status = 'closed' AND status_category_id IS NULL
-			");
-		}
-	}
+        $closed_id = $this->container->getDb()->fetchColumn("SELECT id FROM feedback_status_categories WHERE status_type = 'closed' ORDER BY display_order DESC LIMIT 1");
+        if ($closed_id) {
+            $this->execMutateSql("
+                UPDATE feedback
+                SET status_category_id = $closed_id
+                WHERE status = 'closed' AND status_category_id IS NULL
+            ");
+        }
+    }
 }

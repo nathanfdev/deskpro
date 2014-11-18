@@ -36,8 +36,8 @@ namespace Application\DeskPRO\People\UserPermissions\Value;
 
 interface PermissionValueInterface
 {
-	/**
-	 * @return array
-	 */
-	public function getNames();
+    /**
+     * @return array
+     */
+    public function getNames();
 }

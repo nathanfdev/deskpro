@@ -36,17 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1360836748 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add task_reminder_logs table");
-		$this->execMutateSql("CREATE TABLE task_reminder_logs (id INT AUTO_INCREMENT NOT NULL, task_id INT DEFAULT NULL, person_id INT DEFAULT NULL, date_sent DATE DEFAULT NULL, INDEX IDX_A264D7248DB60186 (task_id), INDEX IDX_A264D724217BBB47 (person_id), PRIMARY KEY(id)) ENGINE = InnoDB");
-		$this->execMutateSql("ALTER TABLE task_reminder_logs ADD CONSTRAINT FK_A264D7248DB60186 FOREIGN KEY (task_id) REFERENCES tasks (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE task_reminder_logs ADD CONSTRAINT FK_A264D724217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+    public function run()
+    {
+        $this->out("Add task_reminder_logs table");
+        $this->execMutateSql("CREATE TABLE task_reminder_logs (id INT AUTO_INCREMENT NOT NULL, task_id INT DEFAULT NULL, person_id INT DEFAULT NULL, date_sent DATE DEFAULT NULL, INDEX IDX_A264D7248DB60186 (task_id), INDEX IDX_A264D724217BBB47 (person_id), PRIMARY KEY(id)) ENGINE = InnoDB");
+        $this->execMutateSql("ALTER TABLE task_reminder_logs ADD CONSTRAINT FK_A264D7248DB60186 FOREIGN KEY (task_id) REFERENCES tasks (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE task_reminder_logs ADD CONSTRAINT FK_A264D724217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
 
-		$this->out("Change tasks.date_due to datetime");
-		$this->execMutateSql("ALTER TABLE tasks CHANGE date_due date_due DATETIME DEFAULT NULL");
+        $this->out("Change tasks.date_due to datetime");
+        $this->execMutateSql("ALTER TABLE tasks CHANGE date_due date_due DATETIME DEFAULT NULL");
 
-		$this->out("Change tasks.date_due time to end of the day");
-		$this->execMutateSql("UPDATE tasks SET date_due = CONCAT(DATE(date_due), ' 23:59:59') WHERE date_due IS NOT NULL");
-	}
+        $this->out("Change tasks.date_due time to end of the day");
+        $this->execMutateSql("UPDATE tasks SET date_due = CONCAT(DATE(date_due), ' 23:59:59') WHERE date_due IS NOT NULL");
+    }
 }

@@ -36,17 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1378129237 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add agent_people.login_as permission to 'All Non-Destructive Permissions' group");
-		$exists = $this->container->getDb()->fetchColumn("SELECT id FROM usergroups WHERE id = 3");
+    public function run()
+    {
+        $this->out("Add agent_people.login_as permission to 'All Non-Destructive Permissions' group");
+        $exists = $this->container->getDb()->fetchColumn("SELECT id FROM usergroups WHERE id = 3");
 
-		if ($exists) {
-			$this->execMutateSql("
-				REPLACE INTO permissions
-				SET usergroup_id = 3, name = 'agent_people.login_as', value = 1
-			");
-			$this->execMutateSql("DELETE FROM permissions_cache");
-		}
-	}
+        if ($exists) {
+            $this->execMutateSql("
+                REPLACE INTO permissions
+                SET usergroup_id = 3, name = 'agent_people.login_as', value = 1
+            ");
+            $this->execMutateSql("DELETE FROM permissions_cache");
+        }
+    }
 }

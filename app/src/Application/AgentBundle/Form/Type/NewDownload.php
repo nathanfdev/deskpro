@@ -39,39 +39,39 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NewDownload extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		#------------------------------
-		# Basic fields
-		#------------------------------
+        #------------------------------
+        # Basic fields
+        #------------------------------
 
-		$builder->add('title', 'text', array('required' => false));
-		$builder->add('content', 'textarea', array('required' => false));
-		$builder->add('status', 'text');
+        $builder->add('title', 'text', array('required' => false));
+        $builder->add('content', 'textarea', array('required' => false));
+        $builder->add('status', 'text');
 
-		$builder->add('fileurl', 'text', array('required' => false));
-		$builder->add('filesize', 'text', array('required' => false));
-		$builder->add('filename', 'text', array('required' => false));
+        $builder->add('fileurl', 'text', array('required' => false));
+        $builder->add('filesize', 'text', array('required' => false));
+        $builder->add('filename', 'text', array('required' => false));
 
-		$builder->add('category_id', 'text');
-		$builder->add('slug', 'text');
+        $builder->add('category_id', 'text');
+        $builder->add('slug', 'text');
 
-		$builder->add('labels', 'collection', array(
-			'type' => 'hidden',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $builder->add('labels', 'collection', array(
+            'type' => 'hidden',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
 
         $builder->add('attach', 'hidden');
     }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewDownload',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewDownload',
+        );
+    }
 
     public function getName()
     {

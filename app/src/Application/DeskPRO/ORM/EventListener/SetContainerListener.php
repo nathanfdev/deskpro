@@ -43,27 +43,27 @@ use Doctrine\ORM\Events;
  */
 class SetContainerListener implements EventSubscriber
 {
-	/** @var \Symfony\Component\DependencyInjection\Container */
-	protected $container;
+    /** @var \Symfony\Component\DependencyInjection\Container */
+    protected $container;
 
-	public function __construct(\Symfony\Component\DependencyInjection\Container $container)
-	{
-		$this->container = $container;
-	}
+    public function __construct(\Symfony\Component\DependencyInjection\Container $container)
+    {
+        $this->container = $container;
+    }
 
-	public function getSubscribedEvents()
-	{
-	   return array(Events::postLoad);
-	}
+    public function getSubscribedEvents()
+    {
+       return array(Events::postLoad);
+    }
 
-	public function postLoad(LifecycleEventArgs $args)
-	{
-		$entity = $args->getEntity();
+    public function postLoad(LifecycleEventArgs $args)
+    {
+        $entity = $args->getEntity();
 
-		if ($entity instanceof Entity) {
-			if (!$entity->hasContainer()) {
-				$entity->setContainer($container);
-			}
-		}
-	}
+        if ($entity instanceof Entity) {
+            if (!$entity->hasContainer()) {
+                $entity->setContainer($container);
+            }
+        }
+    }
 }

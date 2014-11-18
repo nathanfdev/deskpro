@@ -40,46 +40,44 @@ use Orb\Util\Util;
 
 class FacebookLike
 {
-	/** @var string ? */
-	protected $entity;
+    /** @var string ? */
+    protected $entity;
 
-	/**
-	 * Creates a new instance of this helper
-	 *
-	 * @param  $page_url
-	 * @param  $entity
-	 * @return Comments
-	 */
-	public static function create($entity)
-	{
-		return new self($entity);
-	}
+    /**
+     * Creates a new instance of this helper
+     *
+     * @param  $page_url
+     * @param  $entity
+     * @return Comments
+     */
+    public static function create($entity)
+    {
+        return new self($entity);
+    }
 
-	/**
-	 * @param Entity $entity   The entity we're adding comments to
-	 */
-	public function __construct($entity)
-	{
-		$this->entity = $entity;
-	}
+    /**
+     * @param Entity $entity The entity we're adding comments to
+     */
+    public function __construct($entity)
+    {
+        $this->entity = $entity;
+    }
 
+    /**
+     * Get the HTML block from the adapter
+     *
+     * @return string
+     */
+    public function getHtml()
+    {
+        $html = App::get('templating')->render('UserBundle:Common:facebook-like.html.twig', array(
+            'entity'           => $this->entity,
+            'entity_type'      => get_class($this->entity),
+            'entity_basetype'  => Util::getBaseClassname($this->entity),
 
+            'page_permalink'   => $this->entity->getPermalink()
+        ));
 
-	/**
-	 * Get the HTML block from the adapter
-	 *
-	 * @return string
-	 */
-	public function getHtml()
-	{
-		$html = App::get('templating')->render('UserBundle:Common:facebook-like.html.twig', array(
-			'entity'           => $this->entity,
-			'entity_type'      => get_class($this->entity),
-			'entity_basetype'  => Util::getBaseClassname($this->entity),
-
-			'page_permalink'   => $this->entity->getPermalink()
-		));
-
-		return $html;
-	}
+        return $html;
+    }
 }

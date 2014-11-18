@@ -46,194 +46,194 @@ use Application\DeskPRO\ContactData\ContactData;
  */
 abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * The handler class
-	 *
-	 * @var string
-	 */
-	protected $contact_type;
+    /**
+     * The handler class
+     *
+     * @var string
+     */
+    protected $contact_type;
 
-	/**
-	 * The label/comment/name for this contact entry (Work, Home, etc).
-	 *
-	 * @var string
-	 */
-	protected $comment = '';
+    /**
+     * The label/comment/name for this contact entry (Work, Home, etc).
+     *
+     * @var string
+     */
+    protected $comment = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_1 = '';
+    /**
+     * @var string
+     */
+    protected $field_1 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_2 = '';
+    /**
+     * @var string
+     */
+    protected $field_2 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_3 = '';
+    /**
+     * @var string
+     */
+    protected $field_3 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_4 = '';
+    /**
+     * @var string
+     */
+    protected $field_4 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_5 = '';
+    /**
+     * @var string
+     */
+    protected $field_5 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_6 = '';
+    /**
+     * @var string
+     */
+    protected $field_6 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_7 = '';
+    /**
+     * @var string
+     */
+    protected $field_7 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_8 = '';
+    /**
+     * @var string
+     */
+    protected $field_8 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_9 = '';
+    /**
+     * @var string
+     */
+    protected $field_9 = '';
 
-	/**
-	 * @var string
-	 */
-	protected $field_10 = '';
+    /**
+     * @var string
+     */
+    protected $field_10 = '';
 
-	/**
-	 * Instance of the handler class
-	 * @var \Application\DeskPRO\ContactData\AbstractContactData
-	 */
-	protected $_handler = null;
+    /**
+     * Instance of the handler class
+     * @var \Application\DeskPRO\ContactData\AbstractContactData
+     */
+    protected $_handler = null;
 
-	/**
-	 * @var array
-	 */
-	protected $_save_callbacks = array();
+    /**
+     * @var array
+     */
+    protected $_save_callbacks = array();
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	/**
-	 * Get the DeskPRO form field object that knows how to render data etc.
-	 *
-	 * @return \Application\DeskPRO\ContactData\AbstractContactData
-	 */
-	public function getHandler()
-	{
-		if ($this->_handler !== null) return $this->_handler;
-		$this->_handler = ContactData::getHandler($this->contact_type);
+    /**
+     * Get the DeskPRO form field object that knows how to render data etc.
+     *
+     * @return \Application\DeskPRO\ContactData\AbstractContactData
+     */
+    public function getHandler()
+    {
+        if ($this->_handler !== null) return $this->_handler;
+        $this->_handler = ContactData::getHandler($this->contact_type);
 
-		return $this->_handler;
-	}
-
-
-	/**
-	 * @param array $input
-	 * @return void
-	 */
-	public function applyFormData(array $input)
-	{
-		$this->getHandler()->applyFormData($input, $this);
-	}
+        return $this->_handler;
+    }
 
 
-	/**
-	 * Get values that will be useful in a template.
-	 *
-	 * @return string
-	 */
-	public function getTemplateVars()
-	{
-		$vars = $this->getHandler()->getTemplateVars($this);
-		$vars['contact_type'] = $this->getHandler()->getContactType();
-		$vars['id'] = $this->id;
-		$vars['rec'] = $this;
-
-		return $vars;
-	}
+    /**
+     * @param  array $input
+     * @return void
+     */
+    public function applyFormData(array $input)
+    {
+        $this->getHandler()->applyFormData($input, $this);
+    }
 
 
-	/**
-	 * Gets a collapsed string that can be tried for searches
-	 *
-	 * @return mixed
-	 */
-	public function getSearchString()
-	{
-		$pieces = array();
-		for ($i = 1; $i <= 10; $i++) {
-			$field = 'field_' . $i;
-			if ($this->$field) {
-				$pieces[] = $this->$field;
-			}
-		}
+    /**
+     * Get values that will be useful in a template.
+     *
+     * @return string
+     */
+    public function getTemplateVars()
+    {
+        $vars = $this->getHandler()->getTemplateVars($this);
+        $vars['contact_type'] = $this->getHandler()->getContactType();
+        $vars['id'] = $this->id;
+        $vars['rec'] = $this;
 
-		$pieces = implode(',', $pieces);
-		$pieces = preg_replace('#\s#', '', $pieces);
-		$pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
-
-		return $pieces;
-	}
+        return $vars;
+    }
 
 
-	/**
-	 * @param $string
-	 * @return bool
-	 */
-	public function checkStringMatch($string)
-	{
-		$string = preg_replace('#\s#', '', $string);
-		$string = \Orb\Util\Strings::utf8_strtolower($string);
+    /**
+     * Gets a collapsed string that can be tried for searches
+     *
+     * @return mixed
+     */
+    public function getSearchString()
+    {
+        $pieces = array();
+        for ($i = 1; $i <= 10; $i++) {
+            $field = 'field_' . $i;
+            if ($this->$field) {
+                $pieces[] = $this->$field;
+            }
+        }
 
-		return (strpos($this->getSearchString(), $string) !== false);
-	}
+        $pieces = implode(',', $pieces);
+        $pieces = preg_replace('#\s#', '', $pieces);
+        $pieces = \Orb\Util\Strings::utf8_strtolower($pieces);
 
-	public function addSaveCallback(\Closure $callback)
-	{
-		$this->_save_callbacks[] = $callback;
-	}
+        return $pieces;
+    }
 
-	public function _preSave()
-	{
-		foreach ($this->_save_callbacks AS $callback) {
-			$callback($this);
-		}
-	}
 
-	public function _preDelete()
-	{
-		$this->getHandler()->deleteType($this);
-	}
+    /**
+     * @param $string
+     * @return bool
+     */
+    public function checkStringMatch($string)
+    {
+        $string = preg_replace('#\s#', '', $string);
+        $string = \Orb\Util\Strings::utf8_strtolower($string);
 
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, $deep, $visited);
-		$data = array_merge($data, $this->getHandler()->getApiVars($this));
+        return (strpos($this->getSearchString(), $string) !== false);
+    }
 
-		return $data;
-	}
+    public function addSaveCallback(\Closure $callback)
+    {
+        $this->_save_callbacks[] = $callback;
+    }
+
+    public function _preSave()
+    {
+        foreach ($this->_save_callbacks AS $callback) {
+            $callback($this);
+        }
+    }
+
+    public function _preDelete()
+    {
+        $this->getHandler()->deleteType($this);
+    }
+
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+        $data = array_merge($data, $this->getHandler()->getApiVars($this));
+
+        return $data;
+    }
 }

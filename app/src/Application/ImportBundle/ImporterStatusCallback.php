@@ -35,33 +35,33 @@ use Application\ImportBundle\ValueImporter\AbstractValueImporter;
 
 class ImporterStatusCallback
 {
-	public function preStep(Importer $importer, AbstractValueImporter $value_importer, $dir)
-	{
+    public function preStep(Importer $importer, AbstractValueImporter $value_importer, $dir)
+    {
 
-	}
+    }
 
-	public function postStep(Importer $importer, AbstractValueImporter $value_importer, $dir, $count, $time)
-	{
+    public function postStep(Importer $importer, AbstractValueImporter $value_importer, $dir, $count, $time)
+    {
 
-	}
+    }
 
-	public function preImportValueRead(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count)
-	{
+    public function preImportValueRead(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count)
+    {
 
-	}
+    }
 
-	public function preImportValue(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count, array $data)
-	{
+    public function preImportValue(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count, array $data)
+    {
 
-	}
+    }
 
-	public function postImportValue(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count, array $data, $time)
-	{
+    public function postImportValue(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count, array $data, $time)
+    {
 
-	}
+    }
 
-	public function postResetDoneMarker(Importer $importer, \SplFileInfo $file)
-	{
+    public function postResetDoneMarker(Importer $importer, \SplFileInfo $file)
+    {
 
-	}
+    }
 }

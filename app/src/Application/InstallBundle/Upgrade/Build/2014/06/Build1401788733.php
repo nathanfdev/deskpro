@@ -36,42 +36,42 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1401788733 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Ensure built-in fields are disabled if they have no options");
-		$settings = $this->container->getSettingsHandler();
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $this->out("Ensure built-in fields are disabled if they have no options");
+        $settings = $this->container->getSettingsHandler();
+        $db = $this->container->getDb();
 
-		if ($settings->get('core.use_product')) {
-			$count = $db->count('products');
-			if (!$count) {
-				$this->out("Disable product");
-				$settings->setSetting('core.use_product', '0');
-			}
-		}
+        if ($settings->get('core.use_product')) {
+            $count = $db->count('products');
+            if (!$count) {
+                $this->out("Disable product");
+                $settings->setSetting('core.use_product', '0');
+            }
+        }
 
-		if ($settings->get('core.use_ticket_category')) {
-			$count = $db->count('ticket_categories');
-			if (!$count) {
-				$this->out("Disable category");
-				$settings->setSetting('core.use_ticket_category', '0');
-			}
-		}
+        if ($settings->get('core.use_ticket_category')) {
+            $count = $db->count('ticket_categories');
+            if (!$count) {
+                $this->out("Disable category");
+                $settings->setSetting('core.use_ticket_category', '0');
+            }
+        }
 
-		if ($settings->get('core.use_ticket_priority')) {
-			$count = $db->count('ticket_priorities');
-			if (!$count) {
-				$this->out("Disable priority");
-				$settings->setSetting('core.use_ticket_priority', '0');
-			}
-		}
+        if ($settings->get('core.use_ticket_priority')) {
+            $count = $db->count('ticket_priorities');
+            if (!$count) {
+                $this->out("Disable priority");
+                $settings->setSetting('core.use_ticket_priority', '0');
+            }
+        }
 
-		if ($settings->get('core.use_ticket_workflow')) {
-			$count = $db->count('ticket_workflows');
-			if (!$count) {
-				$this->out("Disable workflow");
-				$settings->setSetting('core.use_ticket_workflow', '0');
-			}
-		}
-	}
+        if ($settings->get('core.use_ticket_workflow')) {
+            $count = $db->count('ticket_workflows');
+            if (!$count) {
+                $this->out("Disable workflow");
+                $settings->setSetting('core.use_ticket_workflow', '0');
+            }
+        }
+    }
 }

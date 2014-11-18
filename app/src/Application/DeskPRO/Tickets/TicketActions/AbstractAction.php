@@ -38,73 +38,71 @@ use Application\DeskPRO\Entity\TicketTrigger;
 
 abstract class AbstractAction implements ActionInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketTrigger
-	 */
-	protected $trigger;
+    /**
+     * @var \Application\DeskPRO\Entity\TicketTrigger
+     */
+    protected $trigger;
 
-	/**
-	 * @var array
-	 */
-	protected $metadata = array();
+    /**
+     * @var array
+     */
+    protected $metadata = array();
 
-	/**
-	 * @param \Application\DeskPRO\Entity\TicketTrigger $trigger
-	 */
-	public function setTrigger(TicketTrigger $trigger)
-	{
-		$this->trigger = $trigger;
-	}
+    /**
+     * @param \Application\DeskPRO\Entity\TicketTrigger $trigger
+     */
+    public function setTrigger(TicketTrigger $trigger)
+    {
+        $this->trigger = $trigger;
+    }
 
-	/**
-	 * @param array $metadata
-	 * @return mixed
-	 */
-	public function setMetaData(array $metadata)
-	{
-		if ($this->metadata) {
-			$metadata = array_merge($this->metadata, $metadata);
-		}
+    /**
+     * @param  array $metadata
+     * @return mixed
+     */
+    public function setMetaData(array $metadata)
+    {
+        if ($this->metadata) {
+            $metadata = array_merge($this->metadata, $metadata);
+        }
 
-		$this->metadata = $metadata;
-	}
+        $this->metadata = $metadata;
+    }
 
+    /**
+     * @param string $k
+     * @param mixed  $v
+     */
+    public function addMetaData($k, $v)
+    {
+        $this->metadata[$k] = $v;
+    }
 
-	/**
-	 * @param string $k
-	 * @param mixed $v
-	 */
-	public function addMetaData($k, $v)
-	{
-		$this->metadata[$k] = $v;
-	}
+    /**
+     * @return array
+     */
+    public function getMetaData($k = null, $default = null)
+    {
+        if ($k === null) {
+            return $this->metadata;
+        }
 
-	/**
-	 * @return array
-	 */
-	public function getMetaData($k = null, $default = null)
-	{
-		if ($k === null) {
-			return $this->metadata;
-		}
+        return isset($this->metadata[$k]) ? $this->metadata[$k] : $default;
+    }
 
-		return isset($this->metadata[$k]) ? $this->metadata[$k] : $default;
-	}
+    /**
+     * @return bool
+     */
+    public function doPrepend()
+    {
+        return false;
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function doPrepend()
-	{
-		return false;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getActionName()
-	{
-		return get_class($this);
-	}
+    /**
+     * @return string
+     */
+    public function getActionName()
+    {
+        return get_class($this);
+    }
 }

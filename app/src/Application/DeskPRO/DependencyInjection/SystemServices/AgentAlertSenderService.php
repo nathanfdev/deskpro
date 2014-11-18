@@ -39,9 +39,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class AgentAlertSenderService
 {
-	public static function create(DeskproContainer $container, array $options = array())
-	{
-		$alerter = new AlertSender($container->getEm());
-		return $alerter;
-	}
+    public static function create(DeskproContainer $container, array $options = array())
+    {
+        $alerter = new AlertSender($container->getEm());
+
+        return $alerter;
+    }
 }

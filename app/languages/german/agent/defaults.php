@@ -1,3 +1,3 @@
 <?php return array(
-	'agent.defaults.usergroup_registered'                                  => 'Registriert',
+    'agent.defaults.usergroup_registered'                                  => 'Registriert',
 );

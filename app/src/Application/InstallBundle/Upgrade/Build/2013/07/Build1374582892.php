@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1374582892 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add sendmail_queue.log column");
-		$this->execMutateSql("ALTER TABLE sendmail_queue ADD log LONGTEXT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add sendmail_queue.log column");
+        $this->execMutateSql("ALTER TABLE sendmail_queue ADD log LONGTEXT NOT NULL");
+    }
 }

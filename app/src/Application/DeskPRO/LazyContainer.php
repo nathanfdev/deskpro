@@ -38,52 +38,53 @@ namespace Application\DeskPRO;
  */
 class LazyContainer
 {
-	/** @var array */
-	protected $items = array();
-	/** @var array */
-	protected $wait_items = array();
+    /** @var array */
+    protected $items = array();
+    /** @var array */
+    protected $wait_items = array();
 
-	public function add($id, $loader)
-	{
-		$this->wait_items[$id] = $loader;
-	}
+    public function add($id, $loader)
+    {
+        $this->wait_items[$id] = $loader;
+    }
 
-	public function set($id, $value)
-	{
-		$this->items[$id] = $value;
-	}
+    public function set($id, $value)
+    {
+        $this->items[$id] = $value;
+    }
 
-	public function has($id)
-	{
-		return array_key_exists($id, $this->items) OR isset($this->wait_items[$id]);
-	}
+    public function has($id)
+    {
+        return array_key_exists($id, $this->items) OR isset($this->wait_items[$id]);
+    }
 
-	public function get($id)
-	{
-		if (array_key_exists($id, $this->items)) {
-			return $this->items[$id];
-		}
+    public function get($id)
+    {
+        if (array_key_exists($id, $this->items)) {
+            return $this->items[$id];
+        }
 
-		if (isset($this->wait_items[$id])) {
-			$f = $this->wait_items[$id];
-			unset($this->wait_items[$id]);
+        if (isset($this->wait_items[$id])) {
+            $f = $this->wait_items[$id];
+            unset($this->wait_items[$id]);
 
-			$v = $f();
+            $v = $f();
 
-			$this->set($id, $v);
-			return $this->items[$id];
-		}
+            $this->set($id, $v);
 
-		return null;
-	}
+            return $this->items[$id];
+        }
 
-	public function __get($id)
-	{
-		return $this->get($id);
-	}
+        return null;
+    }
 
-	public function __isset($id)
-	{
-		return $this->has($id);
-	}
+    public function __get($id)
+    {
+        return $this->get($id);
+    }
+
+    public function __isset($id)
+    {
+        return $this->has($id);
+    }
 }

@@ -40,113 +40,110 @@ use Twig_Error_Loader;
 
 class PortalLoader implements \Twig_LoaderInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Brand\BrandStack
-	 */
-	private $brand_stack;
+    /**
+     * @var \Application\DeskPRO\Brand\BrandStack
+     */
+    private $brand_stack;
 
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\Template
-	 */
-	private $template_repo;
-
-
-	public function __construct(BrandStack $brand_stack, Template $template_repo)
-	{
-		$this->brand_stack = $brand_stack;
-		$this->template_repo = $template_repo;
-	}
-
-	/**
-	 * Gets the source code of a template, given its name.
-	 *
-	 * @param string $name The name of the template to load
-	 * @return string The template source code
-	 * @throws Twig_Error_Loader When $name is not found
-	 */
-	public function getSource($name)
-	{
-		if ($template = $this->getDbTemplate($name)) {
-			return $template->template_code;
-		}
-
-		if ($path = $this->getBrandContainer()->resolveTemplatePath((string) $name)) {
-			return file_get_contents($path);
-		}
-
-		throw new Twig_Error_Loader('could not find theme template "'.$name.'"');
-	}
+    /**
+     * @var \Application\DeskPRO\EntityRepository\Template
+     */
+    private $template_repo;
 
 
-	/**
-	 * Gets the cache key to use for the cache for a given template name.
-	 *
-	 * @param string $name The name of the template to load
-	 * @return string The cache key
-	 * @throws Twig_Error_Loader When $name is not found
-	 */
-	public function getCacheKey($name)
-	{
-	    $brand = $this->getBrandContainer();
+    public function __construct(BrandStack $brand_stack, Template $template_repo)
+    {
+        $this->brand_stack = $brand_stack;
+        $this->template_repo = $template_repo;
+    }
 
-		return $brand->getBrand()->theme_id.$name.$this->brand_stack->getActive()->getBrand()->id;
-	}
+    /**
+     * Gets the source code of a template, given its name.
+     *
+     * @param  string            $name The name of the template to load
+     * @return string            The template source code
+     * @throws Twig_Error_Loader When $name is not found
+     */
+    public function getSource($name)
+    {
+        if ($template = $this->getDbTemplate($name)) {
+            return $template->template_code;
+        }
 
+        if ($path = $this->getBrandContainer()->resolveTemplatePath((string) $name)) {
+            return file_get_contents($path);
+        }
 
-	/**
-	 * Returns true if the template is still fresh.
-	 *
-	 * @param string    $name The template name
-	 * @param timestamp $time The last modification time of the cached template
-	 * @return bool    true if the template is fresh, false otherwise
-	 * @throws Twig_Error_Loader When $name is not found
-	 */
-	public function isFresh($name, $time)
-	{
-		// If a DB template exists, check its update_at value
-		if ($template = $this->getDbTemplate($name)) {
-			return $template->date_updated->getTimestamp() <= $time;
-		}
-
-		// TODO: Possible flaw
-		// if you have a template in DB and it is deleted, the cached version will still appear due to the below
-		// solution is to mark a template as deleted=1 and have the loader ignore deleted=1 templates.
-
-		return filemtime($this->getBrandContainer()->resolveTemplatePath((string)$name)) <= $time;
-	}
+        throw new Twig_Error_Loader('could not find theme template "'.$name.'"');
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Brand\BrandContainer
-	 * @throws \RuntimeException
-	 */
-	protected function getBrandContainer()
-	{
-		if (!$brand_container = $this->brand_stack->getActive()) {
-			$this->brand_stack->push($this->brand_stack->getDefault());
-		}
+    /**
+     * Gets the cache key to use for the cache for a given template name.
+     *
+     * @param  string            $name The name of the template to load
+     * @return string            The cache key
+     * @throws Twig_Error_Loader When $name is not found
+     */
+    public function getCacheKey($name)
+    {
+        $brand = $this->getBrandContainer();
 
-		if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
-			throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
-		}
-
-		return $brand_container;
-	}
+        return $brand->getBrand()->theme_id.$name.$this->brand_stack->getActive()->getBrand()->id;
+    }
 
 
-	/**
-	 * @param $name
-	 * @return \Application\DeskPRO\Entity\Template|null
-	 */
-	protected function getDbTemplate($name)
-	{
-		try {
-			return $this->template_repo->getBrandTemplate(
-				$name, $this->getBrandContainer()->getBrand(), $this->getBrandContainer()->getTheme()
-			);
-		} catch (\Exception $e) {
-			return null;
-		}
-	}
+    /**
+     * Returns true if the template is still fresh.
+     *
+     * @param  string            $name The template name
+     * @param  timestamp         $time The last modification time of the cached template
+     * @return bool              true if the template is fresh, false otherwise
+     * @throws Twig_Error_Loader When $name is not found
+     */
+    public function isFresh($name, $time)
+    {
+        // If a DB template exists, check its update_at value
+        if ($template = $this->getDbTemplate($name)) {
+            return $template->date_updated->getTimestamp() <= $time;
+        }
+
+        // TODO: Possible flaw
+        // if you have a template in DB and it is deleted, the cached version will still appear due to the below
+        // solution is to mark a template as deleted=1 and have the loader ignore deleted=1 templates.
+        return filemtime($this->getBrandContainer()->resolveTemplatePath((string)$name)) <= $time;
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\Brand\BrandContainer
+     * @throws \RuntimeException
+     */
+    protected function getBrandContainer()
+    {
+        if (!$brand_container = $this->brand_stack->getActive()) {
+            $this->brand_stack->push($this->brand_stack->getDefault());
+        }
+
+        if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
+            throw new \RuntimeException('no brand is active in the brand stack. cannot fetch a theme template.');
+        }
+
+        return $brand_container;
+    }
+
+    /**
+     * @param $name
+     * @return \Application\DeskPRO\Entity\Template|null
+     */
+    protected function getDbTemplate($name)
+    {
+        try {
+            return $this->template_repo->getBrandTemplate(
+                $name, $this->getBrandContainer()->getBrand(), $this->getBrandContainer()->getTheme()
+            );
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 }
- 

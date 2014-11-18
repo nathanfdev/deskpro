@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1345106506 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Support for favoriting reports");
-		$this->execMutateSql("CREATE TABLE report_builder_favorite (report_builder_id INT NOT NULL, person_id INT NOT NULL, INDEX IDX_CCD5CB1186DD4ADF (report_builder_id), INDEX IDX_CCD5CB11217BBB47 (person_id), PRIMARY KEY(report_builder_id, person_id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE report_builder_favorite ADD CONSTRAINT FK_CCD5CB1186DD4ADF FOREIGN KEY (report_builder_id) REFERENCES report_builder (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE report_builder_favorite ADD CONSTRAINT FK_CCD5CB11217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Support for favoriting reports");
+        $this->execMutateSql("CREATE TABLE report_builder_favorite (report_builder_id INT NOT NULL, person_id INT NOT NULL, INDEX IDX_CCD5CB1186DD4ADF (report_builder_id), INDEX IDX_CCD5CB11217BBB47 (person_id), PRIMARY KEY(report_builder_id, person_id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE report_builder_favorite ADD CONSTRAINT FK_CCD5CB1186DD4ADF FOREIGN KEY (report_builder_id) REFERENCES report_builder (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE report_builder_favorite ADD CONSTRAINT FK_CCD5CB11217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+    }
 }

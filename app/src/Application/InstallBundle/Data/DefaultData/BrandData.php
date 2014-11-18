@@ -35,41 +35,39 @@
 namespace Application\InstallBundle\Data\DefaultData;
 
 
-use Application\DeskPRO\Entity\Usersource;
 
 class BrandData extends AbstractDefaultData
 {
-	public function runInstallViaUpgrade()
-	{
-		$this->installDefaultBrand();
-	}
+    public function runInstallViaUpgrade()
+    {
+        $this->installDefaultBrand();
+    }
 
 
-	public function runInstall()
-	{
-		$this->installDefaultBrand();
-	}
+    public function runInstall()
+    {
+        $this->installDefaultBrand();
+    }
 
 
-	public function runReset()
-	{
-	}
+    public function runReset()
+    {
+    }
 
 
-	public function runSync()
-	{
-	}
+    public function runSync()
+    {
+    }
 
 
-	private function installDefaultBrand()
-	{
-		$num_brands = $this->getDb()->query('select count(*) from brands')->fetchColumn();
+    private function installDefaultBrand()
+    {
+        $num_brands = $this->getDb()->query('select count(*) from brands')->fetchColumn();
 
-		if ($num_brands > 0) {
-			return null;
-		}
+        if ($num_brands > 0) {
+            return null;
+        }
 
-		$this->getDb()->exec("INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')");
-	}
+        $this->getDb()->exec("INSERT INTO brands (name, theme_id) VALUES ('Default Brand', 'standard')");
+    }
 }
- 

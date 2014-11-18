@@ -43,251 +43,252 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
  */
 abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	protected $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    protected $container;
 
-	/**
-	 * The request
-	 * @var \Symfony\Component\HttpFoundation\Request
-	 */
-	public $request;
+    /**
+     * The request
+     * @var \Symfony\Component\HttpFoundation\Request
+     */
+    public $request;
 
-	/**
-	 * The response
-	 * @var \Symfony\Component\HttpFoundation\Response
-	 */
-	public $response;
+    /**
+     * The response
+     * @var \Symfony\Component\HttpFoundation\Response
+     */
+    public $response;
 
-	/**
-	 * Event dispatcher
-	 * @var \Symfony\Component\EventDispatcher\EventDispatcher
-	 */
-	protected $event_dispatcher;
+    /**
+     * Event dispatcher
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $event_dispatcher;
 
-	/**
-	 * @var int
-	 */
-	public $request_type = HttpKernelInterface::MASTER_REQUEST;
-
-
-	public function __construct(ContainerInterface $container)
-	{
-		$this->setContainer($container);
-		$this->request           = $this->get('request');
-		$this->response          = $this->get('response');
-		$this->event_dispatcher  = $this->get('event_dispatcher');
-		$this->init();
-	}
+    /**
+     * @var int
+     */
+    public $request_type = HttpKernelInterface::MASTER_REQUEST;
 
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return $this->container;
-	}
+    public function __construct(ContainerInterface $container)
+    {
+        $this->setContainer($container);
+        $this->request           = $this->get('request');
+        $this->response          = $this->get('response');
+        $this->event_dispatcher  = $this->get('event_dispatcher');
+        $this->init();
+    }
 
 
-	/**
-	 * An empty callback function
-	 */
-	protected function init()
-	{
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
 
-	}
 
+    /**
+     * An empty callback function
+     */
+    protected function init()
+    {
 
-
-	public function DeskPRO_onControllerPreAction($event)
-	{
-		$ret = $this->preAction($event->get('action'), $event->get('arguments'));
-		if ($ret) {
-			$event->setResponse($ret);
-		}
-	}
-
-	/**
-	 * Called by the HttpKernel before a specific action is executed.
-	 *
-	 * If this method returns a response object, then that repsonse is used and
-	 * the original action is NOT called. Any other return value is discarded.
-	 *
-	 * @param string $action      The action that will be called
-	 * @param array  $arguments   The arguments that will be passed in
-	 */
-	public function preAction($action, $arguments = null)
-	{
-
-	}
+    }
 
 
 
-	public function DeskPRO_onControllerPostAction($event)
-	{
-		$ret = $this->postAction($event->get('response'));
-		if ($ret) {
-			$event->setResponse($ret);
-		}
-	}
+    public function DeskPRO_onControllerPreAction($event)
+    {
+        $ret = $this->preAction($event->get('action'), $event->get('arguments'));
+        if ($ret) {
+            $event->setResponse($ret);
+        }
+    }
 
+    /**
+     * Called by the HttpKernel before a specific action is executed.
+     *
+     * If this method returns a response object, then that repsonse is used and
+     * the original action is NOT called. Any other return value is discarded.
+     *
+     * @param string $action    The action that will be called
+     * @param array  $arguments The arguments that will be passed in
+     */
+    public function preAction($action, $arguments = null)
+    {
 
-	/**
-	 * @param \Exception $e
-	 * @throws \Exception
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function handleActionException(\Exception $e)
-	{
-		throw $e;
-	}
-
-
-	/**
-	 * Called by the HttpKernel after an action has been executed.
-	 *
-	 * If this method returns a response object, then that response is used
-	 * and the original discarded. Any other return value will be discarded and result
-	 * in the original response being used.
-	 *
-	 * @param Symfony\Component\HttpFoundation\Response $response
-	 */
-	public function postAction($response)
-	{
-
-	}
+    }
 
 
 
-	/**
-	 * Redirect to a named route.
-	 *
-	 * @param string $route
-	 * @param array $parameters
-	 * @param int $status
-	 * @return Response
-	 */
-	public function redirectRoute($route, array $parameters = array(), $status = 302)
-	{
-		$url = $this->generateUrl($route, $parameters, true);
-		return $this->redirect($url, $status);
-	}
+    public function DeskPRO_onControllerPostAction($event)
+    {
+        $ret = $this->postAction($event->get('response'));
+        if ($ret) {
+            $event->setResponse($ret);
+        }
+    }
+
+
+    /**
+     * @param  \Exception                                 $e
+     * @throws \Exception
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function handleActionException(\Exception $e)
+    {
+        throw $e;
+    }
+
+
+    /**
+     * Called by the HttpKernel after an action has been executed.
+     *
+     * If this method returns a response object, then that response is used
+     * and the original discarded. Any other return value will be discarded and result
+     * in the original response being used.
+     *
+     * @param Symfony\Component\HttpFoundation\Response $response
+     */
+    public function postAction($response)
+    {
+
+    }
 
 
 
-	/**
-	 * Create a regular html response
-	 *
-	 * @param string $content
-	 * @param int $status_code
-	 * @return Response
-	 */
-	public function createResponse($content, $status_code = 200)
-	{
-		$response = $this->container->get('response');
-		$response->headers->set('Content-Type', 'text/html');
-		$response->setStatusCode($status_code);
+    /**
+     * Redirect to a named route.
+     *
+     * @param  string   $route
+     * @param  array    $parameters
+     * @param  int      $status
+     * @return Response
+     */
+    public function redirectRoute($route, array $parameters = array(), $status = 302)
+    {
+        $url = $this->generateUrl($route, $parameters, true);
 
-		$response->setContent($content);
-
-		return $response;
-	}
+        return $this->redirect($url, $status);
+    }
 
 
 
-	/**
-	 * Create a JSON response.
-	 *
-	 * @param string $content
-	 * @param int $status_code
-	 * @return Response
-	 */
-	public function createJsonResponse($content, $status_code = 200)
-	{
+    /**
+     * Create a regular html response
+     *
+     * @param  string   $content
+     * @param  int      $status_code
+     * @return Response
+     */
+    public function createResponse($content, $status_code = 200)
+    {
+        $response = $this->container->get('response');
+        $response->headers->set('Content-Type', 'text/html');
+        $response->setStatusCode($status_code);
+
+        $response->setContent($content);
+
+        return $response;
+    }
+
+
+
+    /**
+     * Create a JSON response.
+     *
+     * @param  string   $content
+     * @param  int      $status_code
+     * @return Response
+     */
+    public function createJsonResponse($content, $status_code = 200)
+    {
 //		$response = $this->container->get('response');
-		$response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
+        $response = new \Application\ApiBundle\HttpFoundation\JsonResponse();
 
-		// Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
-		if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
-			$response->headers->set('Content-Type', 'application/json');
-		} else {
-			$response->headers->set('Content-Type', 'text/plain');
-		}
+        // Because IE will sometimes prompt to download json when using iframe transport for ajax if we dont do this
+        if ($this->request->isXmlHttpRequest() || isset($_SERVER['HTTP_ACCEPT']) && (strpos($_SERVER['HTTP_ACCEPT'], 'application/json') !== false)) {
+            $response->headers->set('Content-Type', 'application/json');
+        } else {
+            $response->headers->set('Content-Type', 'text/plain');
+        }
 
-		$response->setStatusCode($status_code);
+        $response->setStatusCode($status_code);
 
 //		if (is_array($content)) {
 //			$content = Util::jsonEncode($content);
 //		}
 
-		$response->setContent($content);
+        $response->setContent($content);
 
-		return $response;
-	}
-
-
-
-	/**
-	 * Create a JSONP response.
-	 *
-	 * Remember that personal data (e.g., account info) should never be exposed via jsonp.
-	 *
-	 * @param string $content
-	 * @param int $status_code
-	 * @param string $callback_name
-	 * @return Response
-	 */
-	public function createJsonpResponse($content, $status_code = 200, $callback_name = null)
-	{
-		if (!$callback_name) {
-			$callback_name = preg_replace('#[^a-zA-Z0-9_\.]#', '', @$_GET['callback']);
-		}
-		if (!$callback_name) {
-			$callback_name = 'jsonp_callback';
-		}
-
-		if (strlen($callback_name) > 200) {
-			$callback_name = substr($callback_name, 0, 200);
-		}
-
-		$response = $this->container->get('response');
-		$response->headers->set('Content-Type', 'text/javascript');
-		$response->headers->set('X-Content-Type-Options', 'nosniff');
-		$response->setStatusCode($status_code);
-
-		if (is_array($content)) {
-			$content = Util::jsonEncode($content);
-		}
-
-		// The prepended JS comment here hinders the "rosetta flash" (CVE-2014-4671)
-		// CSRF attack against clients using old flash players
-
-		$response->setContent("/**/$callback_name($content);");
-
-		return $response;
-	}
+        return $response;
+    }
 
 
 
-	/**
-	 * Render a template and create a JSON response with it.
-	 *
-	 * @param string $view
-	 * @param array $parameters
-	 * @param Response $response
-	 * @return Response
-	 */
-	public function renderJson($view, array $parameters = array(), Response $response = null)
-	{
-		if ($response === null) {
-			$response = $this->container->get('response');
-			$response->headers->set('Content-Type', 'application/json');
-			$response->setStatusCode(200);
-		}
-		$response = $this->container->get('templating')->renderResponse($view, $parameters, $response);
+    /**
+     * Create a JSONP response.
+     *
+     * Remember that personal data (e.g., account info) should never be exposed via jsonp.
+     *
+     * @param  string   $content
+     * @param  int      $status_code
+     * @param  string   $callback_name
+     * @return Response
+     */
+    public function createJsonpResponse($content, $status_code = 200, $callback_name = null)
+    {
+        if (!$callback_name) {
+            $callback_name = preg_replace('#[^a-zA-Z0-9_\.]#', '', @$_GET['callback']);
+        }
+        if (!$callback_name) {
+            $callback_name = 'jsonp_callback';
+        }
 
-		return $response;
-	}
+        if (strlen($callback_name) > 200) {
+            $callback_name = substr($callback_name, 0, 200);
+        }
+
+        $response = $this->container->get('response');
+        $response->headers->set('Content-Type', 'text/javascript');
+        $response->headers->set('X-Content-Type-Options', 'nosniff');
+        $response->setStatusCode($status_code);
+
+        if (is_array($content)) {
+            $content = Util::jsonEncode($content);
+        }
+
+        // The prepended JS comment here hinders the "rosetta flash" (CVE-2014-4671)
+        // CSRF attack against clients using old flash players
+
+        $response->setContent("/**/$callback_name($content);");
+
+        return $response;
+    }
+
+
+
+    /**
+     * Render a template and create a JSON response with it.
+     *
+     * @param  string   $view
+     * @param  array    $parameters
+     * @param  Response $response
+     * @return Response
+     */
+    public function renderJson($view, array $parameters = array(), Response $response = null)
+    {
+        if ($response === null) {
+            $response = $this->container->get('response');
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setStatusCode(200);
+        }
+        $response = $this->container->get('templating')->renderResponse($view, $parameters, $response);
+
+        return $response;
+    }
 }

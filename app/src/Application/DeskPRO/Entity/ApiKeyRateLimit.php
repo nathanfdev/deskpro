@@ -39,39 +39,39 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class ApiKeyRateLimit extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\ApiKey
-	 */
-	protected $api_key = null;
+    /**
+     * @var \Application\DeskPRO\Entity\ApiKey
+     */
+    protected $api_key = null;
 
-	/** @var int */
-	protected $hits = 0;
-	/** @var int */
-	protected $created_stamp;
-	/** @var int */
-	protected $reset_stamp;
+    /** @var int */
+    protected $hits = 0;
+    /** @var int */
+    protected $created_stamp;
+    /** @var int */
+    protected $reset_stamp;
 
-	public function __construct()
-	{
-		$this->setModelField('created_stamp', time());
-		$this->setModelField('reset_stamp', $this->created_stamp + 3600);
-	}
+    public function __construct()
+    {
+        $this->setModelField('created_stamp', time());
+        $this->setModelField('reset_stamp', $this->created_stamp + 3600);
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-		$metadata->setPrimaryTable(array(
-			'name' => 'api_key_rate_limit',
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'hits', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hits', ));
-		$metadata->mapField(array( 'fieldName' => 'created_stamp', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'created_stamp', ));
-		$metadata->mapField(array( 'fieldName' => 'reset_stamp', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reset_stamp', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'api_key', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKey', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'api_key_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true,  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->setPrimaryTable(array(
+            'name' => 'api_key_rate_limit',
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'hits', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'hits', ));
+        $metadata->mapField(array( 'fieldName' => 'created_stamp', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'created_stamp', ));
+        $metadata->mapField(array( 'fieldName' => 'reset_stamp', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'reset_stamp', ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'api_key', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKey', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'api_key_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true,  ));
+    }
 }

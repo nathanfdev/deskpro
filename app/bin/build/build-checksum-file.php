@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run from the CLI.\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run from the CLI.\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 define('DP_BUILDING', true);
@@ -20,10 +20,10 @@ echo sprintf("Starting :: %.f\n", $start);
 
 $checker = new \Application\DeskPRO\Distribution\ChecksumChecker();
 
-$checker->load(function($count, $file, $hash) {
-	if ($count % 100 == 0) {
-		echo "Processed $count files...\n";
-	}
+$checker->load(function ($count, $file, $hash) {
+    if ($count % 100 == 0) {
+        echo "Processed $count files...\n";
+    }
 });
 
 $checker->dumpToStardnardFile();

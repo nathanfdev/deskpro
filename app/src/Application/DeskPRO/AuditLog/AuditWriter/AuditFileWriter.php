@@ -37,62 +37,63 @@ use Application\DeskPRO\Entity\AuditLog;
 
 class AuditFileWriter implements AuditWriterInterface
 {
-	/**
-	 * @var string
-	 */
-	private $file_path;
+    /**
+     * @var string
+     */
+    private $file_path;
 
-	/**
-	 * @param string $file_path
-	 */
-	public function __construct($file_path)
-	{
-		$this->file_path = $file_path;
-	}
-
-
-	/**
-	 * Write a log entry
-	 *
-	 * @param \Application\DeskPRO\Entity\AuditLog[] $log
-	 * @throws \Exception
-	 * @return void
-	 */
-	public function writeLogs(array $logs)
-	{
-		$fp = fopen($this->file_path, 'a');
-		if (!$fp) {
-			throw new \Exception("Could not open log file for writing: " . $this->file_path);
-		}
-
-		foreach ($logs as $log) {
-			$str = $this->_formatLog($log);
-			fwrite($fp, $str);
-			fwrite($fp, "\n");
-		}
-
-		fclose($fp);
-	}
+    /**
+     * @param string $file_path
+     */
+    public function __construct($file_path)
+    {
+        $this->file_path = $file_path;
+    }
 
 
-	/**
-	 * @param AuditLog $log
-	 * @return string
-	 */
-	private function _formatLog(AuditLog $log)
-	{
-		$str = '[' . date('Y-m-d H:i:s') . '] ' . $log->getObjectName() . ' ' . $log->op . ' by ' . $log->person_name;
-		if ($log->data) {
-			foreach ($log->data as $row) {
-				$new_val = isset($row['new_val']) && $row['new_val'] ? $row['new_val'] : 'none';
-				if ($row['type'] == AuditLog::UPDATE && $row['old_val']) {
-					$str .= "\n\t{$row['field_id']} = {$new_val} (from {$row['old_val']})";
-				} else if ($row['type'] == AuditLog::UPDATE) {
-					$str .= "\n\t{$row['field_id']} = {$new_val}";
-				}
-			}
-		}
-		$str = trim($str);
-		return $str;
-	}
+    /**
+     * Write a log entry
+     *
+     * @param  \Application\DeskPRO\Entity\AuditLog[] $log
+     * @throws \Exception
+     * @return void
+     */
+    public function writeLogs(array $logs)
+    {
+        $fp = fopen($this->file_path, 'a');
+        if (!$fp) {
+            throw new \Exception("Could not open log file for writing: " . $this->file_path);
+        }
+
+        foreach ($logs as $log) {
+            $str = $this->_formatLog($log);
+            fwrite($fp, $str);
+            fwrite($fp, "\n");
+        }
+
+        fclose($fp);
+    }
+
+
+    /**
+     * @param  AuditLog $log
+     * @return string
+     */
+    private function _formatLog(AuditLog $log)
+    {
+        $str = '[' . date('Y-m-d H:i:s') . '] ' . $log->getObjectName() . ' ' . $log->op . ' by ' . $log->person_name;
+        if ($log->data) {
+            foreach ($log->data as $row) {
+                $new_val = isset($row['new_val']) && $row['new_val'] ? $row['new_val'] : 'none';
+                if ($row['type'] == AuditLog::UPDATE && $row['old_val']) {
+                    $str .= "\n\t{$row['field_id']} = {$new_val} (from {$row['old_val']})";
+                } elseif ($row['type'] == AuditLog::UPDATE) {
+                    $str .= "\n\t{$row['field_id']} = {$new_val}";
+                }
+            }
+        }
+        $str = trim($str);
+
+        return $str;
+    }
 }

@@ -41,77 +41,78 @@ use Orb\Util\Util as OrbUtil;
  */
 class Markdown extends \Markdown_Parser
 {
-	/** @var array */
-	protected $attach_tokens = array();
+    /** @var array */
+    protected $attach_tokens = array();
 
-	/**
-	 * Format the supplied markdown string to HTML
-	 * 
-	 * @static
-	 * @param  $string
-	 * @return string
-	 */
-	public static function format($string)
-	{
-		$tr = new self();
-		return $tr->transform($string);
-	}
+    /**
+     * Format the supplied markdown string to HTML
+     *
+     * @static
+     * @param  $string
+     * @return string
+     */
+    public static function format($string)
+    {
+        $tr = new self();
 
-	public function transform($text)
-	{
-		$this->attach_tokens = array();
+        return $tr->transform($string);
+    }
 
-		// Get rid of more tokens, they'd've been handled elsewhere
-		$text = str_replace('![more]', '', $text);
+    public function transform($text)
+    {
+        $this->attach_tokens = array();
 
-		$m = null;
-		if (preg_match_all('#!\[attach(.*?)\]#', $text, $m)) {
-			foreach ($m[0] as $match) {
-				$token = ":attach-token-" . md5(microtime() . OrbUtil::requestUniqueId()) . ":";
-				$this->attach_tokens[$token] = $match;
-			}
-		}
+        // Get rid of more tokens, they'd've been handled elsewhere
+        $text = str_replace('![more]', '', $text);
 
-		$text = parent::transform($text);
+        $m = null;
+        if (preg_match_all('#!\[attach(.*?)\]#', $text, $m)) {
+            foreach ($m[0] as $match) {
+                $token = ":attach-token-" . md5(microtime() . OrbUtil::requestUniqueId()) . ":";
+                $this->attach_tokens[$token] = $match;
+            }
+        }
 
-		if ($this->attach_tokens) {
-			$text = $this->processAttachTokens($text, $this->attach_tokens);
-		}
+        $text = parent::transform($text);
 
-		$this->attach_tokens = array();
+        if ($this->attach_tokens) {
+            $text = $this->processAttachTokens($text, $this->attach_tokens);
+        }
 
-		return $text;
-	}
+        $this->attach_tokens = array();
 
-	public function processAttachTokens($text, array $attach_tokens)
-	{
-		foreach ($attach_tokens as $token => $attach_code) {
-			$attach_html = $this->getAttachHtml($attach_code);
-			$text = str_replace($token, $attach_html, $text);
-		}
+        return $text;
+    }
 
-		return $text;
-	}
+    public function processAttachTokens($text, array $attach_tokens)
+    {
+        foreach ($attach_tokens as $token => $attach_code) {
+            $attach_html = $this->getAttachHtml($attach_code);
+            $text = str_replace($token, $attach_html, $text);
+        }
 
-	public function getAttachHtml($attach_code)
-	{
-		$blob_id = Strings::extractRegexMatch('#!\[attach:(\d+)#', $attach_code, 1);
-		if (!$blob_id) {
-			return '';
-		}
+        return $text;
+    }
 
-		/** @var $blob \Application\DeskPRO\Entity\Blob */
-		$blob = App::findEntity('DeskPRO:Blob', $blob_id);
-		if (!$blob) {
-			return '';
-		}
+    public function getAttachHtml($attach_code)
+    {
+        $blob_id = Strings::extractRegexMatch('#!\[attach:(\d+)#', $attach_code, 1);
+        if (!$blob_id) {
+            return '';
+        }
 
-		if (strpos('url]', $attach_code) !== null) {
-			return $blob->getDownloadUrl();
-		} elseif (strpos('image]', $attach_code) !== null) {
-			return '<img src="'.$blob->getDownloadUrl().'" alt="" class="blob blob-'.$blob['id'].'" border="0" />';
-		}
+        /** @var $blob \Application\DeskPRO\Entity\Blob */
+        $blob = App::findEntity('DeskPRO:Blob', $blob_id);
+        if (!$blob) {
+            return '';
+        }
 
-		return '';
-	}
+        if (strpos('url]', $attach_code) !== null) {
+            return $blob->getDownloadUrl();
+        } elseif (strpos('image]', $attach_code) !== null) {
+            return '<img src="'.$blob->getDownloadUrl().'" alt="" class="blob blob-'.$blob['id'].'" border="0" />';
+        }
+
+        return '';
+    }
 }

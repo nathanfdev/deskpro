@@ -39,74 +39,74 @@ use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
-	{
-		$this->refreshTriggerAction($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function install(InstallerContext $context)
+    {
+        $this->refreshTriggerAction($context);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$action_name = $this->getActionName($context);
-		$context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", array($action_name));
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function uninstall(InstallerContext $context)
+    {
+        $action_name = $this->getActionName($context);
+        $context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", array($action_name));
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$this->refreshTriggerAction($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updateSettings(InstallerContext $context)
+    {
+        $this->refreshTriggerAction($context);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		$this->refreshTriggerAction($context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updatePackage(InstallerContext $context)
+    {
+        $this->refreshTriggerAction($context);
+    }
 
 
-	/**
-	 * @param InstallerContext $context
-	 */
-	private function refreshTriggerAction(InstallerContext $context)
-	{
-		$action_name = $this->getActionName($context);
+    /**
+     * @param InstallerContext $context
+     */
+    private function refreshTriggerAction(InstallerContext $context)
+    {
+        $action_name = $this->getActionName($context);
 
-		$rec = array(
-			'app_id' => $context->getApp()->id,
-			'action_name' => $action_name,
-			'def_class' => 'deskpro_twilio_sms\\Ticket\\Actions\\ActionDef\\SmsTwilioActionDef',
-			'settings' => null
-		);
+        $rec = array(
+            'app_id' => $context->getApp()->id,
+            'action_name' => $action_name,
+            'def_class' => 'deskpro_twilio_sms\\Ticket\\Actions\\ActionDef\\SmsTwilioActionDef',
+            'settings' => null
+        );
 
-		$exist_id = $context->getDb()->fetchColumn(
-			"SELECT id FROM ticket_actions_def WHERE action_name = ?",
-			array($action_name)
-		);
-		if ($exist_id) {
-			$context->getDb()->update('ticket_actions_def', $rec, array('id' => $exist_id));
-		} else {
-			$context->getDb()->insert('ticket_actions_def', $rec);
-		}
-	}
+        $exist_id = $context->getDb()->fetchColumn(
+            "SELECT id FROM ticket_actions_def WHERE action_name = ?",
+            array($action_name)
+        );
+        if ($exist_id) {
+            $context->getDb()->update('ticket_actions_def', $rec, array('id' => $exist_id));
+        } else {
+            $context->getDb()->insert('ticket_actions_def', $rec);
+        }
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @return string
-	 */
-	private function getActionName(InstallerContext $context)
-	{
-		return "SmsTwilioAction" . $context->getApp()->id;
-	}
+    /**
+     * @param  InstallerContext $context
+     * @return string
+     */
+    private function getActionName(InstallerContext $context)
+    {
+        return "SmsTwilioAction" . $context->getApp()->id;
+    }
 }

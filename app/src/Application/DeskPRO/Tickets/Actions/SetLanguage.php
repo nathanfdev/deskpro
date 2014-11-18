@@ -46,78 +46,78 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetLanguage extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('language_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('language_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_lang_id = $this->getActionOption('language_id');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_lang_id = $this->getActionOption('language_id');
 
-		if ($set_lang_id) {
-			$lang = $this->getContainer()->getLanguageData()->get($set_lang_id);
-			if (!$lang) {
-				return; //invalid
-			}
-		} else {
-			$lang = null;
-		}
+        if ($set_lang_id) {
+            $lang = $this->getContainer()->getLanguageData()->get($set_lang_id);
+            if (!$lang) {
+                return; //invalid
+            }
+        } else {
+            $lang = null;
+        }
 
-		$ticket->language = $lang;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_lang_id    = $this->getActionOption('language_id');
-		$ticket_lang_id = $ticket->language ? $ticket->language->id : 0;
-
-		if ($ticket_lang_id == $set_lang_id) {
-			return true;
-		}
-
-		if ($set_lang_id) {
-			$lang = $this->getContainer()->getLanguageData()->get($set_lang_id);
-			if (!$lang) {
-				return true; //invalid
-			}
-		}
-
-		return false;
-	}
+        $ticket->language = $lang;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return array('fields');
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_lang_id    = $this->getActionOption('language_id');
+        $ticket_lang_id = $ticket->language ? $ticket->language->id : 0;
 
-		return null;
-	}
+        if ($ticket_lang_id == $set_lang_id) {
+            return true;
+        }
+
+        if ($set_lang_id) {
+            $lang = $this->getContainer()->getLanguageData()->get($set_lang_id);
+            if (!$lang) {
+                return true; //invalid
+            }
+        }
+
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return array('fields');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1414489598 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add indewx to custom_field_definition");
-		$this->execMutateSql("CREATE INDEX context_idx ON custom_field_definition (context_class, context_id)");
-	}
+    public function run()
+    {
+        $this->out("Add indewx to custom_field_definition");
+        $this->execMutateSql("CREATE INDEX context_idx ON custom_field_definition (context_class, context_id)");
+    }
 }

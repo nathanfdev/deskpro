@@ -44,95 +44,96 @@ use Application\DeskPRO\Dpql\Statement\Display;
  */
 class BinaryLogical extends AbstractPart
 {
-	/**
-	 * Token ID of the operator
-	 *
-	 * @var integer
-	 */
-	public $operator;
+    /**
+     * Token ID of the operator
+     *
+     * @var integer
+     */
+    public $operator;
 
-	/**
-	 * Left hand side of comparison
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
-	 */
-	public $lhs;
+    /**
+     * Left hand side of comparison
+     *
+     * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+     */
+    public $lhs;
 
-	/**
-	 * Right hand side of comparison
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
-	 */
-	public $rhs;
+    /**
+     * Right hand side of comparison
+     *
+     * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+     */
+    public $rhs;
 
-	/**
-	 * Maps from token IDs to printable/usable operators
-	 *
-	 * @var array
-	 */
-	protected static $_operatorMap = array(
-		Parser::T_OP_AND => 'AND',
-		Parser::T_OP_OR => 'OR'
-	);
+    /**
+     * Maps from token IDs to printable/usable operators
+     *
+     * @var array
+     */
+    protected static $_operatorMap = array(
+        Parser::T_OP_AND => 'AND',
+        Parser::T_OP_OR => 'OR'
+    );
 
-	/**
-	 * @param integer $operator
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $rhs
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 */
-	public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
-	{
-		if (!isset(self::$_operatorMap[$operator])) {
-			throw new Exception("Invalid logical operator (token ID: $operator)");
-		}
+    /**
+     * @param integer                                               $operator
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $rhs
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     */
+    public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
+    {
+        if (!isset(self::$_operatorMap[$operator])) {
+            throw new Exception("Invalid logical operator (token ID: $operator)");
+        }
 
-		$this->operator = $operator;
-		$this->lhs = $lhs;
-		$this->rhs = $rhs;
-	}
+        $this->operator = $operator;
+        $this->lhs = $lhs;
+        $this->rhs = $rhs;
+    }
 
-	/**
-	 * Prepares a part for use, including validating that the usage is valid.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section Name of the section usage is in (select, where, split, group, order)
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
-	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
-	 */
-	public function prepare(
-		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	)
-	{
-		$childStack = $this->getChildStack($stack);
+    /**
+     * Prepares a part for use, including validating that the usage is valid.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section   Name of the section usage is in (select, where, split, group, order)
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack     Parent parts
+     * @param \Application\DeskPRO\Dpql\SqlSelect                     $select    Select being built up
+     * @param \Application\DeskPRO\Dpql\ResultHandler                 $result
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+     */
+    public function prepare(
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+    )
+    {
+        $childStack = $this->getChildStack($stack);
 
-		$lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
-		$rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
-		$operator = self::$_operatorMap[$this->operator];
+        $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
+        $rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
+        $operator = self::$_operatorMap[$this->operator];
 
-		$sql = "({$lhs->sql()} $operator {$rhs->sql()})";
-		return new Prepared($sql, "{$lhs->name()} $operator {$rhs->name()}", false, 'boolean');
-	}
+        $sql = "({$lhs->sql()} $operator {$rhs->sql()})";
 
-	/**
-	 * Renders a part back to DPQL.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
-	 *
-	 * @return string
-	 */
-	public function toDpql(Display $statement, $section, array $stack)
-	{
-		return $this->lhs->toDpql($statement, $section, $stack)
-			. ' ' . self::$_operatorMap[$this->operator] . ' '
-			. $this->rhs->toDpql($statement, $section, $stack);
-	}
+        return new Prepared($sql, "{$lhs->name()} $operator {$rhs->name()}", false, 'boolean');
+    }
+
+    /**
+     * Renders a part back to DPQL.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
+     *
+     * @return string
+     */
+    public function toDpql(Display $statement, $section, array $stack)
+    {
+        return $this->lhs->toDpql($statement, $section, $stack)
+            . ' ' . self::$_operatorMap[$this->operator] . ' '
+            . $this->rhs->toDpql($statement, $section, $stack);
+    }
 }

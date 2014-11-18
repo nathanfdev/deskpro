@@ -44,101 +44,101 @@ use Symfony\Component\HttpKernel\Kernel;
 
 class PortalKernel extends Kernel
 {
-	/**
-	 * Returns an array of bundles to register.
-	 *
-	 * @return BundleInterface[] An array of bundle instances.
-	 * @api
-	 */
-	public function registerBundles()
-	{
-		$bundles = array(
-			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
-			new \Symfony\Bundle\TwigBundle\TwigBundle(),
-			new \Symfony\Bundle\MonologBundle\MonologBundle(),
-			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
-			new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
-			new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
-			new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
+    /**
+     * Returns an array of bundles to register.
+     *
+     * @return BundleInterface[] An array of bundle instances.
+     * @api
+     */
+    public function registerBundles()
+    {
+        $bundles = array(
+            new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+            new \Symfony\Bundle\TwigBundle\TwigBundle(),
+            new \Symfony\Bundle\MonologBundle\MonologBundle(),
+            new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
+            new \Doctrine\Bundle\DoctrineBundle\DoctrineBundle(),
+            new \Symfony\Bundle\SecurityBundle\SecurityBundle(),
+            new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
-			new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
+            new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
 
-			new \Application\DeskPRO\DeskPROBundle(),
-			new \Application\PortalBundle\PortalBundle(),
-			new \Application\LanguageBundle\LanguageBundle(),
+            new \Application\DeskPRO\DeskPROBundle(),
+            new \Application\PortalBundle\PortalBundle(),
+            new \Application\LanguageBundle\LanguageBundle(),
             new \Application\AuthBundle\AuthBundle()
-		);
+        );
 
-		if ('dev' === $this->getEnvironment()
-			OR
-			'test' === $this->getEnvironment()) {
-			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
-			$bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
-		}
+        if ('dev' === $this->getEnvironment()
+            OR
+            'test' === $this->getEnvironment()) {
+            $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
+            $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
+        }
 
-		return $bundles;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getContainerBaseClass()
-	{
-		return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
-	}
-
-	/**
-	 * Loads the container configuration.
-	 *
-	 * @param LoaderInterface $loader A LoaderInterface instance
-	 * @api
-	 */
-	public function registerContainerConfiguration(LoaderInterface $loader)
-	{
-		$loader->load(DP_ROOT . '/sys/config/portal_config_' . $this->getEnvironment() . '.yml');
-	}
+        return $bundles;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getRootDir()
-	{
-		return DP_ROOT . '/sys';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getContainerBaseClass()
+    {
+        return '\\Application\\DeskPRO\\DependencyInjection\\DeskproContainer';
+    }
+
+    /**
+     * Loads the container configuration.
+     *
+     * @param LoaderInterface $loader A LoaderInterface instance
+     * @api
+     */
+    public function registerContainerConfiguration(LoaderInterface $loader)
+    {
+        $loader->load(DP_ROOT . '/sys/config/portal_config_' . $this->getEnvironment() . '.yml');
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getCacheDir()
-	{
-		static $cache_dir = null;
-
-		if ($cache_dir === null) {
-			if (defined('DPC_IS_CLOUD')) {
-				$cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '-cloud';
-			} else {
-				$cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '';
-			}
-		}
-
-		return $cache_dir;
-	}
+    /**
+     * @return string
+     */
+    public function getRootDir()
+    {
+        return DP_ROOT . '/sys';
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function initializeContainer()
-	{
-		if ($this->environment == 'dev') {
-			$routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
-			if (!$routing_cache_cleaner->isFresh()) {
-				$routing_cache_cleaner->clearCache();
-			}
-		}
+    /**
+     * @return string
+     */
+    public function getCacheDir()
+    {
+        static $cache_dir = null;
+
+        if ($cache_dir === null) {
+            if (defined('DPC_IS_CLOUD')) {
+                $cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '-cloud';
+            } else {
+                $cache_dir = dp_get_cache_dir() . '/portal/' . $this->environment . '';
+            }
+        }
+
+        return $cache_dir;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function initializeContainer()
+    {
+        if ($this->environment == 'dev') {
+            $routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
+            if (!$routing_cache_cleaner->isFresh()) {
+                $routing_cache_cleaner->clearCache();
+            }
+        }
 //
 //      TODO: SKIPPING THIS - might need to come back to this before we ship?
 //
@@ -153,62 +153,60 @@ class PortalKernel extends Kernel
 //			}
 //		}
 
-		// entity loader required to construct symfony container
-		// so enable it temporarily while the container builds
-		$v = libxml_disable_entity_loader(false);
+        // entity loader required to construct symfony container
+        // so enable it temporarily while the container builds
+        $v = libxml_disable_entity_loader(false);
 
-		parent::initializeContainer();
+        parent::initializeContainer();
 
         // TODO: this is the major pain point for us where the App:: globals enter the kernel space
         // I didn't need this until Auth, because the Person entity itself gets objects that are necessary
         App::$container = $this->getContainer();
 
-		libxml_disable_entity_loader($v);
-	}
+        libxml_disable_entity_loader($v);
+    }
 
+    /**
+     * {@inheritDoc}
+     */
+    protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
+    {
+        // Make sure the cache dirs exist
+        $env_dir = realpath($this->getCacheDir() . '/../../');
+        if (!is_dir($this->getCacheDir())) {
+            mkdir($this->getCacheDir(), 0777, true);
+        }
+        if (!file_exists($env_dir . '/doctrine-proxies')) {
+            mkdir($env_dir . '/doctrine-proxies', 0777, true);
+        }
+        if (!file_exists($env_dir . '/twig-compiled')) {
+            @mkdir($env_dir . '/twig-compiled', 0777, true);
+        }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
-	{
-		// Make sure the cache dirs exist
-		$env_dir = realpath($this->getCacheDir() . '/../../');
-		if (!is_dir($this->getCacheDir())) {
-			mkdir($this->getCacheDir(), 0777, true);
-		}
-		if (!file_exists($env_dir . '/doctrine-proxies')) {
-			mkdir($env_dir . '/doctrine-proxies', 0777, true);
-		}
-		if (!file_exists($env_dir . '/twig-compiled')) {
-			@mkdir($env_dir . '/twig-compiled', 0777, true);
-		}
+        @chmod($this->getCacheDir(), 0777);
+        @chmod($env_dir . '/doctrine-proxies', 0777);
+        @chmod($env_dir . '/twig-compiled', 0777);
 
-		@chmod($this->getCacheDir(), 0777);
-		@chmod($env_dir . '/doctrine-proxies', 0777);
-		@chmod($env_dir . '/twig-compiled', 0777);
+        // Clear the dql cache when the container is regenerated as well
+        $dql_cache = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache';
+        if (file_exists($dql_cache)) {
+            @unlink($dql_cache);
+        }
 
-		// Clear the dql cache when the container is regenerated as well
-		$dql_cache = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache';
-		if (file_exists($dql_cache)) {
-			@unlink($dql_cache);
-		}
+        // cache the container
+        $dumper  = new PhpDumper($container);
+        $content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
+        if (!$this->debug) {
+            $content = self::stripComments($content);
+        }
 
-		// cache the container
-		$dumper  = new PhpDumper($container);
-		$content = $dumper->dump(array('class' => $class, 'base_class' => $baseClass));
-		if (!$this->debug) {
-			$content = self::stripComments($content);
-		}
+        // Re-write absolute paths to use DP_ROOT instead
+        $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+        // Correct double slash paths
+        $content = str_replace('prod//', 'prod/', $content);
+        // Empty logs dir that isn't used (we get it from conf)
+        $content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
 
-		// Re-write absolute paths to use DP_ROOT instead
-		$content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
-		// Correct double slash paths
-		$content = str_replace('prod//', 'prod/', $content);
-		// Empty logs dir that isn't used (we get it from conf)
-		$content = preg_replace("#'kernel\\.logs_dir' => '(.*?)'#", "'kernel.logs_dir' => ''", $content);
-
-		$cache->write($content, $container->getResources());
-	}
+        $cache->write($content, $container->getResources());
+    }
 }
- 

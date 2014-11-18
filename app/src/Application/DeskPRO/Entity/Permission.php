@@ -51,188 +51,188 @@ use Orb\Util\Numbers;
  */
 class Permission extends DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
 
-	protected $id = null;
+    protected $id = null;
 
-	/**
-	 * The name of the permission
-	 *
-	 * @var string
-	 */
+    /**
+     * The name of the permission
+     *
+     * @var string
+     */
 
-	protected $name = null;
+    protected $name = null;
 
-	/**
-	 * The usergroup this properly belongs to. Note that a permission applies to either
-	 * a person or a usergroup, never both.
-	 *
-	 * @var \Application\DeskPRO\Entity\Usergroup
-	 */
+    /**
+     * The usergroup this properly belongs to. Note that a permission applies to either
+     * a person or a usergroup, never both.
+     *
+     * @var \Application\DeskPRO\Entity\Usergroup
+     */
 
-	protected $usergroup;
+    protected $usergroup;
 
-	/**
-	 * The person this properly belongs to. Note that a permission applies to either
-	 * a person or a usergroup, never both.
-	 *
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
+    /**
+     * The person this properly belongs to. Note that a permission applies to either
+     * a person or a usergroup, never both.
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
 
-	protected $person;
+    protected $person;
 
-	/**
-	 * Any numeric number (ex filesize, flag)
-	 *
-	 * @var bool
-	 */
+    /**
+     * Any numeric number (ex filesize, flag)
+     *
+     * @var bool
+     */
 
-	protected $value = null;
+    protected $value = null;
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function getId()
-	{
-		return $this->id;
-	}
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function __toString()
-	{
-		$str = '[' . $this->name . ':';
+    public function __toString()
+    {
+        $str = '[' . $this->name . ':';
 
-		if ($prop->value !== null) {
+        if ($prop->value !== null) {
 
-			$str .= $prop->data;
-		} else {
+            $str .= $prop->data;
+        } else {
 
-			$str .= 'NULL';
-		}
+            $str .= 'NULL';
+        }
 
-		$str .= ']';
+        $str .= ']';
 
-		return $str;
-	}
-
-
-	/**
-	 * Combine an array of permissions into a superduper array of effective permissions.
-	 *
-	 * @param \Application\DeskPRO\Entity\Permission[]|array $perms
-	 * @return array
-	 */
-
-	public static function getEffectivePermissions(array $perms)
-	{
-		$effective_perms = array();
-
-		foreach ($perms as $perm) {
-
-			if (is_array($perm)) {
-				$k = $perm['name'];
-				$v = $perm['value'];
-			} else {
-				$k = $perm->name;
-				$v = $perm->value;
-			}
-
-			if (!Numbers::isInteger($v)) {
-
-				$v = (int)$v;
-			}
-
-			// If it hasnt been set yet, or the one we have is "lower",
-			// then take the new value.
-			if (!isset($effective_perms[$k]) || (is_int($v) && $effective_perms[$k] < $v)) {
-
-				$effective_perms[$k] = $v;
-			}
-		}
-
-		return $effective_perms;
-	}
+        return $str;
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * Combine an array of permissions into a superduper array of effective permissions.
+     *
+     * @param  \Application\DeskPRO\Entity\Permission[]|array $perms
+     * @return array
+     */
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array('name' => 'permissions',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'id',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'id',
-				 'id'         => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'name',
-				 'type'       => 'string',
-				 'length'     => 50,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'name',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'value',
-				 'type'       => 'text',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => true,
-				 'columnName' => 'value',
-			)
-		);
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(
-			array(
-				 'fieldName'    => 'usergroup',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
-				 'mappedBy'     => null,
-				 'inversedBy'   => null,
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'usergroup_id',
-						 'referencedColumnName' => 'id',
-						 'nullable'             => true,
-						 'onDelete'             => 'cascade',
-						 'columnDefinition'     => null,
-					 ),
-				 ),
-			)
-		);
-		$metadata->mapManyToOne(
-			array(
-				 'fieldName'    => 'person',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-				 'mappedBy'     => null,
-				 'inversedBy'   => null,
-				 'joinColumns'  => array(
-					 0 => array(
-						 'name'                 => 'person_id',
-						 'referencedColumnName' => 'id',
-						 'nullable'             => true,
-						 'onDelete'             => 'cascade',
-						 'columnDefinition'     => null,
-					 ),
-				 ),
-			)
-		);
-	}
+    public static function getEffectivePermissions(array $perms)
+    {
+        $effective_perms = array();
+
+        foreach ($perms as $perm) {
+
+            if (is_array($perm)) {
+                $k = $perm['name'];
+                $v = $perm['value'];
+            } else {
+                $k = $perm->name;
+                $v = $perm->value;
+            }
+
+            if (!Numbers::isInteger($v)) {
+
+                $v = (int)$v;
+            }
+
+            // If it hasnt been set yet, or the one we have is "lower",
+            // then take the new value.
+            if (!isset($effective_perms[$k]) || (is_int($v) && $effective_perms[$k] < $v)) {
+
+                $effective_perms[$k] = $v;
+            }
+        }
+
+        return $effective_perms;
+    }
+
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(array('name' => 'permissions',));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'id',
+                 'type'       => 'integer',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'id',
+                 'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'name',
+                 'type'       => 'string',
+                 'length'     => 50,
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'name',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'value',
+                 'type'       => 'text',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => true,
+                 'columnName' => 'value',
+            )
+        );
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(
+            array(
+                 'fieldName'    => 'usergroup',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup',
+                 'mappedBy'     => null,
+                 'inversedBy'   => null,
+                 'joinColumns'  => array(
+                     0 => array(
+                         'name'                 => 'usergroup_id',
+                         'referencedColumnName' => 'id',
+                         'nullable'             => true,
+                         'onDelete'             => 'cascade',
+                         'columnDefinition'     => null,
+                     ),
+                 ),
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                 'fieldName'    => 'person',
+                 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                 'mappedBy'     => null,
+                 'inversedBy'   => null,
+                 'joinColumns'  => array(
+                     0 => array(
+                         'name'                 => 'person_id',
+                         'referencedColumnName' => 'id',
+                         'nullable'             => true,
+                         'onDelete'             => 'cascade',
+                         'columnDefinition'     => null,
+                     ),
+                 ),
+            )
+        );
+    }
 }

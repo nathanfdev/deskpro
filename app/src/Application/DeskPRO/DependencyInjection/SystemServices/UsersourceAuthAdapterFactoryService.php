@@ -39,15 +39,15 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class UsersourceAuthAdapterFactoryService
 {
-	/**
-	 * @param DeskproContainer $container
-	 * @param array            $options
-	 * @return \Application\DeskPRO\Sms\DeskPROSmsSender
-	 */
-	public static function create(DeskproContainer $container, $options = array())
-	{
-		return new UsersourceAuthAdapterFactory(
-			$container, $container->getRouter(), $container->getRequest(), $container->getSession(), isset($options['interface']) ? $options['interface'] : DP_INTERFACE
-		);
-	}
+    /**
+     * @param  DeskproContainer                          $container
+     * @param  array                                     $options
+     * @return \Application\DeskPRO\Sms\DeskPROSmsSender
+     */
+    public static function create(DeskproContainer $container, $options = array())
+    {
+        return new UsersourceAuthAdapterFactory(
+            $container, $container->getRouter(), $container->getRequest(), $container->getSession(), isset($options['interface']) ? $options['interface'] : DP_INTERFACE
+        );
+    }
 }

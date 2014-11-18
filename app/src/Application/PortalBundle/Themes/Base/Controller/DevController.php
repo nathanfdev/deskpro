@@ -39,8 +39,8 @@ use Application\PortalBundle\Controller\AbstractController;
 
 class DevController extends AbstractController
 {
-	public function devAction()
-	{
-		return $this->render('Theme:Dev:dev.html.twig');
-	}
+    public function devAction()
+    {
+        return $this->render('Theme:Dev:dev.html.twig');
+    }
 }

@@ -37,60 +37,56 @@ namespace Application\PortalBundle\Theme;
 /**
  * Representation of a DeskPRO Theme
  */
-interface ThemeInterface 
+interface ThemeInterface
 {
-	/**
-	 * Templates have a string identifier. "base", or "default", or "default-modified", etc. Must be unique.
-	 *
-	 * @return string
-	 */
-	public function getId();
+    /**
+     * Templates have a string identifier. "base", or "default", or "default-modified", etc. Must be unique.
+     *
+     * @return string
+     */
+    public function getId();
 
 
-	/**
-	 * A human readable name of the theme (used in dropdown, reporting, etc)
-	 *
-	 * @return string
-	 */
-	public function getName();
+    /**
+     * A human readable name of the theme (used in dropdown, reporting, etc)
+     *
+     * @return string
+     */
+    public function getName();
 
 
-	/**
-	 * Returns the parent of this theme. This theme will inherit templates/tags/controllers of the parent, and can
-	 * override them.
-	 *
-	 * @return ThemeInterface|null
-	 */
-	public function getParent();
+    /**
+     * Returns the parent of this theme. This theme will inherit templates/tags/controllers of the parent, and can
+     * override them.
+     *
+     * @return ThemeInterface|null
+     */
+    public function getParent();
 
 
-	/**
-	 * @return string relative path to the root of this theme's templates - it is relative to the kernel root dir
-	 */
-	public function getBaseTemplateDir();
+    /**
+     * @return string relative path to the root of this theme's templates - it is relative to the kernel root dir
+     */
+    public function getBaseTemplateDir();
 
+    /**
+     * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
+     */
+    public function getNamespace();
 
-	/**
-	 * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
-	 */
-	public function getNamespace();
+    /**
+     * Get the tag for the given tag name.
+     *
+     * @param $tag_name
+     * @return Tag|null
+     */
+    public function getTag($tag_name);
 
-
-	/**
-	 * Get the tag for the given tag name.
-	 *
-	 * @param $tag_name
-	 * @return Tag|null
-	 */
-	public function getTag($tag_name);
-
-
-	/**
-	 * Get a map of "Theme:x:y.html.twig" => "/abs/path/to/source/twig/file.twig" for all templates that this theme
-	 * can resolve. This means recursively going through the parents for a complete list. See AbstractTheme.
-	 *
-	 * @return array
-	 */
-	public function getTemplateMap();
+    /**
+     * Get a map of "Theme:x:y.html.twig" => "/abs/path/to/source/twig/file.twig" for all templates that this theme
+     * can resolve. This means recursively going through the parents for a complete list. See AbstractTheme.
+     *
+     * @return array
+     */
+    public function getTemplateMap();
 }
- 

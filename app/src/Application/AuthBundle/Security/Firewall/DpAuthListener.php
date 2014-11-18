@@ -64,4 +64,3 @@ class DpAuthListener extends AbstractAuthenticationListener
         return $this->authenticationManager->authenticate($token);
     }
 }
- 

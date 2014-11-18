@@ -39,355 +39,354 @@ use Application\DeskPRO\Entity;
 
 class TicketFilter extends AbstractEntityRepository
 {
-	public function getFilters()
-	{
-		$filters = $this->_em->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q
-			ORDER BY q.display_order
-		")->execute();
+    public function getFilters()
+    {
+        $filters = $this->_em->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q
+            ORDER BY q.display_order
+        ")->execute();
 
-		return $filters;
-	}
+        return $filters;
+    }
 
-	public function getDefinedFilters()
-	{
-		$filters = $this->_em->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q
-			WHERE q.sys_name IS NULL
-			ORDER BY q.display_order
-		")->execute();
+    public function getDefinedFilters()
+    {
+        $filters = $this->_em->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q
+            WHERE q.sys_name IS NULL
+            ORDER BY q.display_order
+        ")->execute();
 
-		return $filters;
-	}
-
-
-	/**
-	 * Updates display orders of $filter_ids
-	 * @param array $filter_ids
-	 */
-	public function updateDisplayOrder(array $filter_ids)
-	{
-		$x = 0;
-		foreach ($filter_ids as $fid) {
-			$x += 10;
-			$this->_em->getConnection()->executeUpdate("
-				UPDATE ticket_filters
-				SET display_order = ?
-				WHERE id = ?
-			", array($x, $fid));
-		}
-	}
+        return $filters;
+    }
 
 
-	public function getAllForActiveAgents()
-	{
-		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
-		if (!$online_agents) return array();
-
-		return $this->getAllForAgents($online_agents);
-	}
-
-	public function getAllRecords()
-	{
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-		")->execute();
-
-		return $filters;
-	}
-
-	public function getAll()
-	{
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			LEFT JOIN q.person p
-			WHERE p IS NULL OR (p.is_agent = true AND p.is_deleted = 0)
-			ORDER BY q.id ASC
-		")->execute();
-
-		return $filters;
-	}
-
-	public function getAllForAgents($agents)
-	{
-		$agent_ids = array();
-		foreach ($agents as $a) {
-			if (is_object($a)) {
-				$agent_ids[] = $a['id'];
-			} else {
-				$agent_ids[] = $a;
-			}
-		}
-
-		if (!$agent_ids) {
-			return array();
-		}
-
-		$teams = App::getEntityRepository('DeskPRO:AgentTeam')->getAllTeamIdsForAgents($agents);
-		if (!$teams) $teams = array(0);
-
-		$agent_ids = implode(',', $agent_ids);
-		$teams = implode(',', $teams);
-
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			WHERE
-				q.is_global = true
-				OR q.person IN ($agent_ids)
-				OR q.agent_team IN ($teams)
-		")->execute();
-
-		return $filters;
-	}
-
-	public function getPersonalFilters($agent)
-	{
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			WHERE q.person = ?0
-			ORDER BY q.title ASC
-		")->execute(array($agent));
-
-		return $filters;
-	}
-
-	public function getSharedFilters(Entity\Person $agent)
-	{
-		try {
-			$teams = $agent_data = App::$container->getAgentData()->getTeamsForAgent($agent);
-		} catch (\InvalidArgumentException $e) {
-			return arary();
-		}
-
-		if ($teams) {
-			$teams = array_values($teams);
-			$filters = $this->getEntityManager()->createQuery("
-				SELECT q
-				FROM DeskPRO:TicketFilter q INDEX BY q.id
-				WHERE (q.person IS NULL OR q.person != ?0) AND (q.is_global = true OR q.agent_team IN (?1)) AND q.sys_name IS NULL
-				ORDER BY q.title ASC
-			")->execute(array($agent, $teams));
-		} else {
-			$filters = $this->getEntityManager()->createQuery("
-				SELECT q
-				FROM DeskPRO:TicketFilter q INDEX BY q.id
-				WHERE (q.person IS NULL OR q.person != ?0) AND q.is_global = true AND q.sys_name IS NULL
-				ORDER BY q.title ASC
-			")->execute(array($agent));
-		}
-
-		return $filters;
-	}
-
-	/**
-	 * Gets an array of all global filters.
-	 *
-	 * This is mainly used in admin for listing.
-	 *
-	 * @return array
-	 */
-	public function getAllGlobalFilters()
-	{
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			WHERE q.is_global = true AND q.sys_name IS NULL
-			ORDER BY q.title ASC
-		")->execute();
-
-		return $filters;
-	}
+    /**
+     * Updates display orders of $filter_ids
+     * @param array $filter_ids
+     */
+    public function updateDisplayOrder(array $filter_ids)
+    {
+        $x = 0;
+        foreach ($filter_ids as $fid) {
+            $x += 10;
+            $this->_em->getConnection()->executeUpdate("
+                UPDATE ticket_filters
+                SET display_order = ?
+                WHERE id = ?
+            ", array($x, $fid));
+        }
+    }
 
 
-	/**
-	 * Gets an array of all team filters, grouped by agent team id.
-	 *
-	 * This is mainly used in admin for listing.
-	 *
-	 * @return array
-	 */
-	public function getAllTeamFilters()
-	{
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			LEFT JOIN q.agent_team at
-			WHERE q.agent_team IS NOT NULL
-			ORDER BY at.name ASC, q.title ASC
-		")->execute();
+    public function getAllForActiveAgents()
+    {
+        $online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
+        if (!$online_agents) return array();
+        return $this->getAllForAgents($online_agents);
+    }
 
-		$grouped_filters = array();
+    public function getAllRecords()
+    {
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+        ")->execute();
 
-		foreach ($filters as $filter) {
-			$team_id = $filter->agent_team['id'];
+        return $filters;
+    }
 
-			if (!isset($grouped_filters[$team_id])) {
-				$grouped_filters[$team_id] = array('team' => $filter->agent_team, 'filters' => array());
-			}
+    public function getAll()
+    {
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            LEFT JOIN q.person p
+            WHERE p IS NULL OR (p.is_agent = true AND p.is_deleted = 0)
+            ORDER BY q.id ASC
+        ")->execute();
 
-			$grouped_filters[$team_id]['filters'][] = $filter;
-		}
+        return $filters;
+    }
 
-		return $grouped_filters;
-	}
+    public function getAllForAgents($agents)
+    {
+        $agent_ids = array();
+        foreach ($agents as $a) {
+            if (is_object($a)) {
+                $agent_ids[] = $a['id'];
+            } else {
+                $agent_ids[] = $a;
+            }
+        }
+
+        if (!$agent_ids) {
+            return array();
+        }
+
+        $teams = App::getEntityRepository('DeskPRO:AgentTeam')->getAllTeamIdsForAgents($agents);
+        if (!$teams) $teams = array(0);
+
+        $agent_ids = implode(',', $agent_ids);
+        $teams = implode(',', $teams);
+
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            WHERE
+                q.is_global = true
+                OR q.person IN ($agent_ids)
+                OR q.agent_team IN ($teams)
+        ")->execute();
+
+        return $filters;
+    }
+
+    public function getPersonalFilters($agent)
+    {
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            WHERE q.person = ?0
+            ORDER BY q.title ASC
+        ")->execute(array($agent));
+
+        return $filters;
+    }
+
+    public function getSharedFilters(Entity\Person $agent)
+    {
+        try {
+            $teams = $agent_data = App::$container->getAgentData()->getTeamsForAgent($agent);
+        } catch (\InvalidArgumentException $e) {
+            return arary();
+        }
+
+        if ($teams) {
+            $teams = array_values($teams);
+            $filters = $this->getEntityManager()->createQuery("
+                SELECT q
+                FROM DeskPRO:TicketFilter q INDEX BY q.id
+                WHERE (q.person IS NULL OR q.person != ?0) AND (q.is_global = true OR q.agent_team IN (?1)) AND q.sys_name IS NULL
+                ORDER BY q.title ASC
+            ")->execute(array($agent, $teams));
+        } else {
+            $filters = $this->getEntityManager()->createQuery("
+                SELECT q
+                FROM DeskPRO:TicketFilter q INDEX BY q.id
+                WHERE (q.person IS NULL OR q.person != ?0) AND q.is_global = true AND q.sys_name IS NULL
+                ORDER BY q.title ASC
+            ")->execute(array($agent));
+        }
+
+        return $filters;
+    }
+
+    /**
+     * Gets an array of all global filters.
+     *
+     * This is mainly used in admin for listing.
+     *
+     * @return array
+     */
+    public function getAllGlobalFilters()
+    {
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            WHERE q.is_global = true AND q.sys_name IS NULL
+            ORDER BY q.title ASC
+        ")->execute();
+
+        return $filters;
+    }
 
 
-	/**
-	 * Gets an array of all agent filters, grouped by agent id.
-	 *
-	 * This is mainly used in admin for listing.
-	 *
-	 * @return array
-	 */
-	public function getAllAgentFilters()
-	{
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			LEFT JOIN q.person p
-			WHERE q.agent_team IS NULL AND q.is_global = false
-			ORDER BY p.name ASC, q.title ASC
-		")->execute();
+    /**
+     * Gets an array of all team filters, grouped by agent team id.
+     *
+     * This is mainly used in admin for listing.
+     *
+     * @return array
+     */
+    public function getAllTeamFilters()
+    {
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            LEFT JOIN q.agent_team at
+            WHERE q.agent_team IS NOT NULL
+            ORDER BY at.name ASC, q.title ASC
+        ")->execute();
 
-		$grouped_filters = array();
+        $grouped_filters = array();
 
-		foreach ($filters as $filter) {
-			$agent_id = $filter->person['id'];
+        foreach ($filters as $filter) {
+            $team_id = $filter->agent_team['id'];
 
-			if (!isset($grouped_filters[$agent_id])) {
-				$grouped_filters[$agent_id] = array('person' => $filter->person, 'filters' => array());
-			}
+            if (!isset($grouped_filters[$team_id])) {
+                $grouped_filters[$team_id] = array('team' => $filter->agent_team, 'filters' => array());
+            }
 
-			$grouped_filters[$agent_id]['filters'][] = $filter;
-		}
+            $grouped_filters[$team_id]['filters'][] = $filter;
+        }
 
-		return $grouped_filters;
-	}
+        return $grouped_filters;
+    }
 
 
-	/**
-	 *
-	 * @param  $type
-	 * @return void
-	 */
-	public function getFiltersForType($type)
-	{
-		switch ($type) {
-			case 'global':
-				$filters = $this->getEntityManager()->createQuery("
-					SELECT q
-					FROM DeskPRO:TicketFilter q INDEX BY q.id
-					WHERE q.is_global = true
-					ORDER BY q.title ASC
-				")->execute();
-				break;
+    /**
+     * Gets an array of all agent filters, grouped by agent id.
+     *
+     * This is mainly used in admin for listing.
+     *
+     * @return array
+     */
+    public function getAllAgentFilters()
+    {
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            LEFT JOIN q.person p
+            WHERE q.agent_team IS NULL AND q.is_global = false
+            ORDER BY p.name ASC, q.title ASC
+        ")->execute();
 
-			case 'team':
-				$filters = $this->getEntityManager()->createQuery("
-					SELECT q
-					FROM DeskPRO:TicketFilter q INDEX BY q.id
-					WHERE q.is_global = true
-					ORDER BY q.title ASC
-				")->execute();
-				break;
-		}
+        $grouped_filters = array();
 
-		return $filters;
-	}
+        foreach ($filters as $filter) {
+            $agent_id = $filter->person['id'];
 
-	public function getSystemFilters($person_id)
-	{
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			WHERE q.sys_name IS NOT NULL AND (q.person = ?1 OR q.is_global = true)
-			ORDER BY q.title ASC
-		")->setParameter(1, $person_id)->execute();
+            if (!isset($grouped_filters[$agent_id])) {
+                $grouped_filters[$agent_id] = array('person' => $filter->person, 'filters' => array());
+            }
 
-		return $filters;
-	}
+            $grouped_filters[$agent_id]['filters'][] = $filter;
+        }
 
-	/**
-	 * Find all ticket filters (system and custom) that a person can see.
-	 *
-	 * @param mixed $person_id
-	 * @return array
-	 */
-	public function getFiltersForPerson($person)
-	{
-		/** @var $person \Application\DeskPRO\Entity\Person */
+        return $grouped_filters;
+    }
 
-		if (!($person instanceof \Application\DeskPRO\Entity\Person)) {
-			$person = $this->getEntityManager()->find('DeskPRO:Person', $person);
-		}
 
-		$person_id = $person->getId();
+    /**
+     *
+     * @param  $type
+     * @return void
+     */
+    public function getFiltersForType($type)
+    {
+        switch ($type) {
+            case 'global':
+                $filters = $this->getEntityManager()->createQuery("
+                    SELECT q
+                    FROM DeskPRO:TicketFilter q INDEX BY q.id
+                    WHERE q.is_global = true
+                    ORDER BY q.title ASC
+                ")->execute();
+                break;
 
-		$team_ids = array();
-		if ($person->is_agent) {
-			$person->loadHelper('Agent');
-			$team_ids = $person->getHelper('Agent')->getTeamIds();
-		}
+            case 'team':
+                $filters = $this->getEntityManager()->createQuery("
+                    SELECT q
+                    FROM DeskPRO:TicketFilter q INDEX BY q.id
+                    WHERE q.is_global = true
+                    ORDER BY q.title ASC
+                ")->execute();
+                break;
+        }
 
-		if ($team_ids) {
-			$filters = $this->getEntityManager()->createQuery("
-				SELECT q
-				FROM DeskPRO:TicketFilter q INDEX BY q.id
-				WHERE q.person = ?1 OR q.is_global = true OR q.agent_team IN (?2)
-				ORDER BY q.title ASC
-			")->setParameter(1, $person_id)->setParameter(2, $team_ids)->execute();
-		} else {
-			$filters = $this->getEntityManager()->createQuery("
-				SELECT q
-				FROM DeskPRO:TicketFilter q INDEX BY q.id
-				WHERE q.person = ?1 OR q.is_global = true
-				ORDER BY q.title ASC
-			")->setParameter(1, $person_id)->execute();
-		}
+        return $filters;
+    }
 
-		return $filters;
-	}
+    public function getSystemFilters($person_id)
+    {
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            WHERE q.sys_name IS NOT NULL AND (q.person = ?1 OR q.is_global = true)
+            ORDER BY q.title ASC
+        ")->setParameter(1, $person_id)->execute();
 
-	/**
-	 * @param $person_id
-	 * @return
-	 */
-	public function getCustomFiltersForPerson($person_id)
-	{
-		$filters = $this->getEntityManager()->createQuery("
-			SELECT q
-			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			WHERE q.sys_name IS NULL AND (q.person = ?1 OR q.is_global = true)
-			ORDER BY q.title ASC
-		")->setParameter(1, $person_id)->execute();
+        return $filters;
+    }
 
-		return $filters;
-	}
+    /**
+     * Find all ticket filters (system and custom) that a person can see.
+     *
+     * @param  mixed $person_id
+     * @return array
+     */
+    public function getFiltersForPerson($person)
+    {
+        /** @var $person \Application\DeskPRO\Entity\Person */
 
-	public function getTicketFilterFromVar($var)
-	{
-		$ticket_filter_id = null;
+        if (!($person instanceof \Application\DeskPRO\Entity\Person)) {
+            $person = $this->getEntityManager()->find('DeskPRO:Person', $person);
+        }
 
-		if (is_int($var) OR ctype_digit($var)) {
-			$ticket_filter_id = (int)$var;
-		} elseif (\is_object($var)) {
-			if ($var instanceof Entity\TicketFilter) {
-				return $var;
-			}
-		} elseif (isset($var['ticket_filter'])) {
-			return $var['ticket_filter'];
-		}
+        $person_id = $person->getId();
 
-		if ($ticket_filter_id) {
-			return $this->find($ticket_filter_id);
-		}
+        $team_ids = array();
+        if ($person->is_agent) {
+            $person->loadHelper('Agent');
+            $team_ids = $person->getHelper('Agent')->getTeamIds();
+        }
 
-		return null;
-	}
+        if ($team_ids) {
+            $filters = $this->getEntityManager()->createQuery("
+                SELECT q
+                FROM DeskPRO:TicketFilter q INDEX BY q.id
+                WHERE q.person = ?1 OR q.is_global = true OR q.agent_team IN (?2)
+                ORDER BY q.title ASC
+            ")->setParameter(1, $person_id)->setParameter(2, $team_ids)->execute();
+        } else {
+            $filters = $this->getEntityManager()->createQuery("
+                SELECT q
+                FROM DeskPRO:TicketFilter q INDEX BY q.id
+                WHERE q.person = ?1 OR q.is_global = true
+                ORDER BY q.title ASC
+            ")->setParameter(1, $person_id)->execute();
+        }
+
+        return $filters;
+    }
+
+    /**
+     * @param $person_id
+     * @return
+     */
+    public function getCustomFiltersForPerson($person_id)
+    {
+        $filters = $this->getEntityManager()->createQuery("
+            SELECT q
+            FROM DeskPRO:TicketFilter q INDEX BY q.id
+            WHERE q.sys_name IS NULL AND (q.person = ?1 OR q.is_global = true)
+            ORDER BY q.title ASC
+        ")->setParameter(1, $person_id)->execute();
+
+        return $filters;
+    }
+
+    public function getTicketFilterFromVar($var)
+    {
+        $ticket_filter_id = null;
+
+        if (is_int($var) OR ctype_digit($var)) {
+            $ticket_filter_id = (int)$var;
+        } elseif (\is_object($var)) {
+            if ($var instanceof Entity\TicketFilter) {
+                return $var;
+            }
+        } elseif (isset($var['ticket_filter'])) {
+            return $var['ticket_filter'];
+        }
+
+        if ($ticket_filter_id) {
+            return $this->find($ticket_filter_id);
+        }
+
+        return null;
+    }
 }

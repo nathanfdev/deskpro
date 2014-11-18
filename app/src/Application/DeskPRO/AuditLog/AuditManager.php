@@ -41,167 +41,168 @@ use Orb\Util\CompositeCaller;
 
 class AuditManager
 {
-	/**
-	 * @var \Orb\Util\CompositeCaller
-	 */
-	protected $writers;
+    /**
+     * @var \Orb\Util\CompositeCaller
+     */
+    protected $writers;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\AuditLog[]
-	 */
-	protected $pending_logs = array();
+    /**
+     * @var \Application\DeskPRO\Entity\AuditLog[]
+     */
+    protected $pending_logs = array();
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $default_performer = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $default_performer = null;
 
-	/**
-	 * @var bool
-	 */
-	protected $disabled = false;
+    /**
+     * @var bool
+     */
+    protected $disabled = false;
 
-	public function __construct()
-	{
-		$this->writers = new CompositeCaller();
-	}
-
-
-	/**
-	 * Disable the audit manager
-	 */
-	public function disable()
-	{
-		$this->disabled = true;
-	}
+    public function __construct()
+    {
+        $this->writers = new CompositeCaller();
+    }
 
 
-	/**
-	 * Enable the audit manager
-	 */
-	public function enable()
-	{
-		$this->disabled = false;
-	}
+    /**
+     * Disable the audit manager
+     */
+    public function disable()
+    {
+        $this->disabled = true;
+    }
 
 
-	/**
-	 * Check if the audit manager is enabled
-	 */
-	public function isEnabled()
-	{
-		return !$this->disabled;
-	}
+    /**
+     * Enable the audit manager
+     */
+    public function enable()
+    {
+        $this->disabled = false;
+    }
 
 
-	/**
-	 * @param Person $person
-	 */
-	public function setDefaultPerformer(Person $person = null)
-	{
-		$this->default_performer = $person;
-	}
+    /**
+     * Check if the audit manager is enabled
+     */
+    public function isEnabled()
+    {
+        return !$this->disabled;
+    }
 
 
-	/**
-	 * Add a writer
-	 *
-	 * @param AuditWriterInterface $writer
-	 */
-	public function addWriter(AuditWriterInterface $writer)
-	{
-		$this->writers->addObject($writer);
-	}
+    /**
+     * @param Person $person
+     */
+    public function setDefaultPerformer(Person $person = null)
+    {
+        $this->default_performer = $person;
+    }
 
 
-	/**
-	 * @param mixed  $object
-	 * @param string $field_id
-	 * @param mixed  $old_val
-	 * @param mixed  $new_val
-	 * @return AuditLog
-	 */
-	public function recordChange($object, $field_id, $old_val, $new_val)
-	{
-		if ($this->disabled) return null;
-
-		$name = AuditLog::getObjectNameFromVar($object);
-
-		if (isset($this->pending_logs[$name])) {
-			$audit_log = $this->pending_logs[$name];
-		} else {
-			$audit_log = new AuditLog(AuditLog::UPDATE, $object);
-			if ($this->default_performer) {
-				$audit_log->setPerson($this->default_performer);
-			}
-			$this->pending_logs[$name] = $audit_log;
-		}
-
-		// A create/delete doesnt set change values
-		if ($audit_log->op == AuditLog::CREATE || $audit_log->op == AuditLog::DELETE) {
-			return;
-		}
-
-		$audit_log->addChangeData($field_id, $old_val, $new_val);
-		return $audit_log;
-	}
+    /**
+     * Add a writer
+     *
+     * @param AuditWriterInterface $writer
+     */
+    public function addWriter(AuditWriterInterface $writer)
+    {
+        $this->writers->addObject($writer);
+    }
 
 
-	/**
-	 * @param mixed  $object
-	 * @return AuditLog
-	 */
-	public function recordCreated($object)
-	{
-		if ($this->disabled) return null;
+    /**
+     * @param  mixed    $object
+     * @param  string   $field_id
+     * @param  mixed    $old_val
+     * @param  mixed    $new_val
+     * @return AuditLog
+     */
+    public function recordChange($object, $field_id, $old_val, $new_val)
+    {
+        if ($this->disabled) return null;
 
-		$name = AuditLog::getObjectNameFromVar($object);
-		$audit_log = new AuditLog(AuditLog::CREATE, $object);
-		$this->pending_logs[$name] = $audit_log;
+        $name = AuditLog::getObjectNameFromVar($object);
 
-		if ($this->default_performer) {
-			$audit_log->setPerson($this->default_performer);
-		}
+        if (isset($this->pending_logs[$name])) {
+            $audit_log = $this->pending_logs[$name];
+        } else {
+            $audit_log = new AuditLog(AuditLog::UPDATE, $object);
+            if ($this->default_performer) {
+                $audit_log->setPerson($this->default_performer);
+            }
+            $this->pending_logs[$name] = $audit_log;
+        }
 
-		return $audit_log;
-	}
+        // A create/delete doesnt set change values
+        if ($audit_log->op == AuditLog::CREATE || $audit_log->op == AuditLog::DELETE) {
+            return;
+        }
 
+        $audit_log->addChangeData($field_id, $old_val, $new_val);
 
-	/**
-	 * @param mixed  $object
-	 * @return AuditLog
-	 */
-	public function recordDelete($object)
-	{
-		if ($this->disabled) return null;
-
-		$name = AuditLog::getObjectNameFromVar($object);
-		$audit_log = new AuditLog(AuditLog::DELETE, $object);
-		$this->pending_logs[$name] = $audit_log;
-
-		if ($this->default_performer) {
-			$audit_log->setPerson($this->default_performer);
-		}
-
-		return $audit_log;
-	}
+        return $audit_log;
+    }
 
 
-	/**
-	 * Write logs
-	 *
-	 * @return void
-	 */
-	public function flushLogs()
-	{
-		if ($this->disabled) return;
+    /**
+     * @param  mixed    $object
+     * @return AuditLog
+     */
+    public function recordCreated($object)
+    {
+        if ($this->disabled) return null;
 
-		$ret = $this->writers->callMethod('writeLogs', array($this->pending_logs), null, true);
+        $name = AuditLog::getObjectNameFromVar($object);
+        $audit_log = new AuditLog(AuditLog::CREATE, $object);
+        $this->pending_logs[$name] = $audit_log;
 
-		foreach ($ret as $r) {
-			if ($r['exception']) {
-				KernelErrorHandler::logException($r['exception'], false);
-			}
-		}
-	}
+        if ($this->default_performer) {
+            $audit_log->setPerson($this->default_performer);
+        }
+
+        return $audit_log;
+    }
+
+
+    /**
+     * @param  mixed    $object
+     * @return AuditLog
+     */
+    public function recordDelete($object)
+    {
+        if ($this->disabled) return null;
+
+        $name = AuditLog::getObjectNameFromVar($object);
+        $audit_log = new AuditLog(AuditLog::DELETE, $object);
+        $this->pending_logs[$name] = $audit_log;
+
+        if ($this->default_performer) {
+            $audit_log->setPerson($this->default_performer);
+        }
+
+        return $audit_log;
+    }
+
+
+    /**
+     * Write logs
+     *
+     * @return void
+     */
+    public function flushLogs()
+    {
+        if ($this->disabled) return;
+
+        $ret = $this->writers->callMethod('writeLogs', array($this->pending_logs), null, true);
+
+        foreach ($ret as $r) {
+            if ($r['exception']) {
+                KernelErrorHandler::logException($r['exception'], false);
+            }
+        }
+    }
 }

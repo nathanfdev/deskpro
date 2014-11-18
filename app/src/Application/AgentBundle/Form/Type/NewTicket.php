@@ -39,76 +39,76 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NewTicket extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		#------------------------------
-		# User fields
-		#------------------------------
+        #------------------------------
+        # User fields
+        #------------------------------
 
-		$user_builder = $builder->create('person', 'form', array('data_class' => 'Application\\AgentBundle\\Form\\Model\\NewTicketPerson'));
-		$user_builder->add('id', 'hidden');
-		$user_builder->add('name', 'text', array('required' => false));
-		$user_builder->add('email_address', 'text', array('required' => false));
-		$user_builder->add('organization', 'text', array('required' => false));
-		$user_builder->add('organization_position', 'text', array('required' => false));
-		$user_builder->add('language_id', 'text', array('required' => false));
+        $user_builder = $builder->create('person', 'form', array('data_class' => 'Application\\AgentBundle\\Form\\Model\\NewTicketPerson'));
+        $user_builder->add('id', 'hidden');
+        $user_builder->add('name', 'text', array('required' => false));
+        $user_builder->add('email_address', 'text', array('required' => false));
+        $user_builder->add('organization', 'text', array('required' => false));
+        $user_builder->add('organization_position', 'text', array('required' => false));
+        $user_builder->add('language_id', 'text', array('required' => false));
 
-		$builder->add($user_builder);
+        $builder->add($user_builder);
 
-		#------------------------------
-		# Ticket fields
-		#------------------------------
+        #------------------------------
+        # Ticket fields
+        #------------------------------
 
-		$builder->add('subject', 'text');
-		$builder->add('notify_template', 'hidden');
-		$builder->add('message', 'textarea');
-	    $builder->add('is_html_reply', 'hidden');
+        $builder->add('subject', 'text');
+        $builder->add('notify_template', 'hidden');
+        $builder->add('message', 'textarea');
+        $builder->add('is_html_reply', 'hidden');
 
-		$builder->add('department_id', 'text');
-		$builder->add('status', 'text');
-		$builder->add('agent_id', 'text', array('required' => false));
-		$builder->add('agent_team_id', 'text', array('required' => false));
+        $builder->add('department_id', 'text');
+        $builder->add('status', 'text');
+        $builder->add('agent_id', 'text', array('required' => false));
+        $builder->add('agent_team_id', 'text', array('required' => false));
 
-		$builder->add('category_id', 'text', array('required' => false));
-		$builder->add('priority_id', 'text', array('required' => false));
-		$builder->add('workflow_id', 'text', array('required' => false));
-		$builder->add('product_id', 'text', array('required' => false));
+        $builder->add('category_id', 'text', array('required' => false));
+        $builder->add('priority_id', 'text', array('required' => false));
+        $builder->add('workflow_id', 'text', array('required' => false));
+        $builder->add('product_id', 'text', array('required' => false));
 
-		$builder->add('billing_type', 'hidden', array('required' => false));
-		$builder->add('billing_amount', 'hidden', array('required' => false));
-		$builder->add('billing_hours', 'hidden', array('required' => false));
-		$builder->add('billing_minutes', 'hidden', array('required' => false));
-		$builder->add('billing_seconds', 'hidden', array('required' => false));
-		$builder->add('billing_comment', 'hidden', array('required' => false));
+        $builder->add('billing_type', 'hidden', array('required' => false));
+        $builder->add('billing_amount', 'hidden', array('required' => false));
+        $builder->add('billing_hours', 'hidden', array('required' => false));
+        $builder->add('billing_minutes', 'hidden', array('required' => false));
+        $builder->add('billing_seconds', 'hidden', array('required' => false));
+        $builder->add('billing_comment', 'hidden', array('required' => false));
 
-		$builder->add('add_cc_person', 'collection', array(
-			'type' => 'hidden',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $builder->add('add_cc_person', 'collection', array(
+            'type' => 'hidden',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
 
-		$builder->add('add_cc_newperson', 'collection', array(
-			'type' => 'hidden',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $builder->add('add_cc_newperson', 'collection', array(
+            'type' => 'hidden',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
 
-		$builder->add('attach', 'collection', array(
-			'type' => 'hidden',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $builder->add('attach', 'collection', array(
+            'type' => 'hidden',
+            'required' => false,
+            'allow_add' => true,
+            'allow_delete' => true
+        ));
     }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewTicket',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AgentBundle\\Form\\Model\\NewTicket',
+        );
+    }
 
     public function getName()
     {

@@ -46,34 +46,36 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterUserEmailAddress extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('email');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('email');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
 
-		$email = $options['email'];
-		$is_domain = $email[0] === '@';
+        $email = $options['email'];
+        $is_domain = $email[0] === '@';
 
-		if ($is_domain) {
-			$query = $this->getStringMatchQuery('user_email.email_domain', $email);
-		} else {
-			$query = $this->getStringMatchQuery('user_email.email', $email);
-		}
+        if ($is_domain) {
+            $query = $this->getStringMatchQuery('user_email.email_domain', $email);
+        } else {
+            $query = $this->getStringMatchQuery('user_email.email', $email);
+        }
 
-		$query->addJoin('tickets.person.email', 'people_emails', 'user_email', 'user_email.person_id = tickets.person_id');
-		return $query;
-	}
+        $query->addJoin('tickets.person.email', 'people_emails', 'user_email', 'user_email.person_id = tickets.person_id');
+
+        return $query;
+    }
 }

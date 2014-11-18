@@ -34,35 +34,27 @@
 
 namespace Application\DeskPRO\Tickets\Escalations;
 
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\TicketEscalation;
-use Application\DeskPRO\Searcher\OrganizationSearch;
-use Application\DeskPRO\Searcher\PersonSearch;
-use Application\DeskPRO\Searcher\TicketSearch;
-use Doctrine\ORM\EntityManager;
-use Monolog\Logger;
-use Psr\Log\NullLogger;
 
 class EscalationTicketMatcherTest extends EscalationTicketMatcher
 {
-	private $matches;
+    private $matches;
 
+    /**
+     * @param \Application\DeskPRO\Entity\Ticket[] $tickets
+     */
+    public function setTickets(array $tickets)
+    {
+        $this->matches = $tickets;
+    }
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Ticket[] $tickets
-	 */
-	public function setTickets(array $tickets)
-	{
-		$this->matches = $tickets;
-	}
-
-	/**
-	 * @param TicketEscalation $esc
-	 * @param int              $limit
-	 * @return \Application\DeskPRO\Entity\Ticket[]
-	 */
-	public function getMatches(TicketEscalation $esc, $limit = 100)
-	{
-		return $this->matches;
-	}
+    /**
+     * @param  TicketEscalation                     $esc
+     * @param  int                                  $limit
+     * @return \Application\DeskPRO\Entity\Ticket[]
+     */
+    public function getMatches(TicketEscalation $esc, $limit = 100)
+    {
+        return $this->matches;
+    }
 }

@@ -38,122 +38,120 @@ use Orb\Util\Arrays;
 
 class AbstractEntityRepository extends \Doctrine\ORM\EntityRepository
 {
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
-	 */
-	protected $identity_helper;
+    /**
+     * @var \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
+     */
+    protected $identity_helper;
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
-	 */
-	public function getIdentityHelper()
-	{
-		if (!$this->identity_helper) {
-			$this->identity_helper = new Helper\IdentityHelper($this->getEntityManager(), $this);
-		}
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Helper\IdentityHelper
+     */
+    public function getIdentityHelper()
+    {
+        if (!$this->identity_helper) {
+            $this->identity_helper = new Helper\IdentityHelper($this->getEntityManager(), $this);
+        }
 
-		return $this->identity_helper;
-	}
-
-
-	/**
-	 * Get a collection of entities by ID
-	 *
-	 * @param array $ids
-	 * @param bool $keep_order True to order the resulting array in the same order that ids are provided in $ids
-	 * @return array
-	 */
-	public function getByIds(array $ids, $keep_order = false)
-	{
-		if (!$ids) return array();
-
-		$class = $this->getName();
-
-		$ids = array_values($ids);
-
-		if ($this->getEntityManager()->getUnitOfWork()->isAddedPreloadedEntity($this->getName())) {
-			$this->getEntityManager()->getUnitOfWork()->preloadEntitySet($this->getName());
-			$recs = $this->getIdentityHelper()->findByIds($ids, $keep_order);
-			$recs = Arrays::keyFromData($recs, 'id');
-			return $recs;
-		} else {
-			$q_res = $this->getEntityManager()->createQuery("
-				SELECT o
-				FROM {$class} o INDEX BY o.id
-				WHERE o.id IN(?0)
-			")->execute(array($ids));
-
-			if ($keep_order) {
-				$q_res = Arrays::orderIdArray($ids, $q_res);
-			}
-
-			return $q_res;
-		}
-	}
+        return $this->identity_helper;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getAllIndexedById()
-	{
-		$class = $this->getName();
-		return $this->getEntityManager()->createQuery("
-			SELECT o
-			FROM {$class} o INDEX BY o.id
-		")->execute();
-	}
+    /**
+     * Get a collection of entities by ID
+     *
+     * @param  array $ids
+     * @param  bool  $keep_order True to order the resulting array in the same order that ids are provided in $ids
+     * @return array
+     */
+    public function getByIds(array $ids, $keep_order = false)
+    {
+        if (!$ids) return array();
 
+        $class = $this->getName();
 
-	/**
-	 * Alias for find
-	 *
-	 * @param int $id
-	 * @return object
-	 */
-	public function get($id)
-	{
-		return $this->find($id);
-	}
+        $ids = array_values($ids);
 
+        if ($this->getEntityManager()->getUnitOfWork()->isAddedPreloadedEntity($this->getName())) {
+            $this->getEntityManager()->getUnitOfWork()->preloadEntitySet($this->getName());
+            $recs = $this->getIdentityHelper()->findByIds($ids, $keep_order);
+            $recs = Arrays::keyFromData($recs, 'id');
 
-	/**
-	 * @return int
-	 */
-	public function countAll()
-	{
-		return $this->getEntityManager()->getConnection()->count($this->getTableName());
-	}
+            return $recs;
+        } else {
+            $q_res = $this->getEntityManager()->createQuery("
+                SELECT o
+                FROM {$class} o INDEX BY o.id
+                WHERE o.id IN(?0)
+            ")->execute(array($ids));
 
+            if ($keep_order) {
+                $q_res = Arrays::orderIdArray($ids, $q_res);
+            }
 
-	/**
-	 * @return string
-	 */
-	public function getTableName()
-	{
-		return $this->getClassMetadata()->getTableName();
-	}
+            return $q_res;
+        }
+    }
 
-	public function getFieldMappings()
-	{
-		return $this->getClassMetadata()->fieldMappings;
-	}
+    /**
+     * @return array
+     */
+    public function getAllIndexedById()
+    {
+        $class = $this->getName();
 
-	public function getAssociationMappings()
-	{
-		return $this->getClassMetadata()->getAssociationMappings();
-	}
+        return $this->getEntityManager()->createQuery("
+            SELECT o
+            FROM {$class} o INDEX BY o.id
+        ")->execute();
+    }
 
-	public function getReportAssociations()
-	{
-		return array();
-	}
+    /**
+     * Alias for find
+     *
+     * @param  int    $id
+     * @return object
+     */
+    public function get($id)
+    {
+        return $this->find($id);
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return $this->getClassMetadata()->getName();
-	}
+    /**
+     * @return int
+     */
+    public function countAll()
+    {
+        return $this->getEntityManager()->getConnection()->count($this->getTableName());
+    }
+
+    /**
+     * @return string
+     */
+    public function getTableName()
+    {
+        return $this->getClassMetadata()->getTableName();
+    }
+
+    public function getFieldMappings()
+    {
+        return $this->getClassMetadata()->fieldMappings;
+    }
+
+    public function getAssociationMappings()
+    {
+        return $this->getClassMetadata()->getAssociationMappings();
+    }
+
+    public function getReportAssociations()
+    {
+        return array();
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->getClassMetadata()->getName();
+    }
 }

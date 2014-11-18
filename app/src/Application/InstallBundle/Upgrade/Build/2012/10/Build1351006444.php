@@ -36,14 +36,14 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351006444 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add task queue system");
-		$this->execMutateSql("CREATE TABLE task_queue (id INT AUTO_INCREMENT NOT NULL, runner_class VARCHAR(255) NOT NULL, task_data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', date_runnable DATETIME NOT NULL, task_group VARCHAR(50) DEFAULT NULL, status VARCHAR(25) NOT NULL, date_started DATETIME DEFAULT NULL, date_completed DATETIME DEFAULT NULL, error_text LONGTEXT NOT NULL, run_status LONGTEXT NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("
-			INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
-			VALUES ('run_queued_tasks', 'run_queued_tasks', 'Run Queued Tasks', 'Runs any general-purpose queued tasks', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\RunQueuedTasks', X'613A303A7B7D', '60', NULL, NULL)
-		");
+    public function run()
+    {
+        $this->out("Add task queue system");
+        $this->execMutateSql("CREATE TABLE task_queue (id INT AUTO_INCREMENT NOT NULL, runner_class VARCHAR(255) NOT NULL, task_data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', date_runnable DATETIME NOT NULL, task_group VARCHAR(50) DEFAULT NULL, status VARCHAR(25) NOT NULL, date_started DATETIME DEFAULT NULL, date_completed DATETIME DEFAULT NULL, error_text LONGTEXT NOT NULL, run_status LONGTEXT NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("
+            INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
+            VALUES ('run_queued_tasks', 'run_queued_tasks', 'Run Queued Tasks', 'Runs any general-purpose queued tasks', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\RunQueuedTasks', X'613A303A7B7D', '60', NULL, NULL)
+        ");
 
-	}
+    }
 }

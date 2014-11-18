@@ -36,21 +36,21 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1359117400 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add subscription options for agent notes");
-		$this->execMutateSql("ALTER TABLE ticket_filter_subscriptions ADD email_agent_note TINYINT(1) NOT NULL, ADD alert_agent_note TINYINT(1) NOT NULL");
+    public function run()
+    {
+        $this->out("Add subscription options for agent notes");
+        $this->execMutateSql("ALTER TABLE ticket_filter_subscriptions ADD email_agent_note TINYINT(1) NOT NULL, ADD alert_agent_note TINYINT(1) NOT NULL");
 
-		// Enable for agents that currently get agent activity
-		$this->execMutateSql("
-			UPDATE ticket_filter_subscriptions
-			SET email_agent_note = 1
-			WHERE email_agent_activity = 1
-		");
-		$this->execMutateSql("
-			UPDATE ticket_filter_subscriptions
-			SET alert_agent_note = 1
-			WHERE alert_agent_activity = 1
-		");
-	}
+        // Enable for agents that currently get agent activity
+        $this->execMutateSql("
+            UPDATE ticket_filter_subscriptions
+            SET email_agent_note = 1
+            WHERE email_agent_activity = 1
+        ");
+        $this->execMutateSql("
+            UPDATE ticket_filter_subscriptions
+            SET alert_agent_note = 1
+            WHERE alert_agent_activity = 1
+        ");
+    }
 }

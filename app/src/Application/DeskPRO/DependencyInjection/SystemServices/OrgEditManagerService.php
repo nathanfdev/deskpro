@@ -39,12 +39,12 @@ use Application\DeskPRO\Organizations\OrgEditManager;
 
 class OrgEditManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$s = new OrgEditManager(
-			$container->get('doctrine.orm.entity_manager')
-		);
+    public static function create(DeskproContainer $container)
+    {
+        $s = new OrgEditManager(
+            $container->get('doctrine.orm.entity_manager')
+        );
 
-		return $s;
-	}
+        return $s;
+    }
 }

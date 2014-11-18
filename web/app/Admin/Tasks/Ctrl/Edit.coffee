@@ -1,62 +1,62 @@
 define [
-	'Admin/Main/Ctrl/Base'
+  'Admin/Main/Ctrl/Base'
 ], (
-	Admin_Ctrl_Base
+  Admin_Ctrl_Base
 ) ->
-	class Admin_Tasks_Ctrl_Edit extends Admin_Ctrl_Base
-		@CTRL_ID   = 'Admin_Tasks_Ctrl_Edit'
-		@CTRL_AS   = 'EditCtrl'
-		@DEPS      = ['$stateParams']
+  class Admin_Tasks_Ctrl_Edit extends Admin_Ctrl_Base
+    @CTRL_ID   = 'Admin_Tasks_Ctrl_Edit'
+    @CTRL_AS   = 'EditCtrl'
+    @DEPS      = ['$stateParams']
 
-		init: ->
-			@map = {} # groups map
-			@service = @DataService.get('Tasks')
-			@$scope.settings = null
-			@$scope.updateAgents = @updateAgents
+    init: ->
+      @map = {} # groups map
+      @service = @DataService.get('Tasks')
+      @$scope.settings = null
+      @$scope.updateAgents = @updateAgents
 
-			@$scope.$watch('settings', (newVal, oldVal) =>
-				@$scope.updateAgents() if parseInt(newVal?.enabled)
-			)
-
-
-
-		initialLoad: ->
-			@service.load().then (settings) =>
-				@$scope.settings = settings
-				settings.groups.map (group) => @map[group.id] = group
+      @$scope.$watch('settings', (newVal, oldVal) =>
+        @$scope.updateAgents() if parseInt(newVal?.enabled)
+      )
 
 
 
-		# update agents checkboxes states
-		updateAgents: =>
-
-			@$scope.settings.agents.map (agent) =>
-
-				for group in agent.usergroups
-
-					if @map[group.id]?.perms.tasks.use
-						agent._checked = true
-						agent._disabled = true
-						return
-
-				agent._checked = agent.perms.tasks.use
-				agent._disabled = false
+    initialLoad: ->
+      @service.load().then (settings) =>
+        @$scope.settings = settings
+        settings.groups.map (group) => @map[group.id] = group
 
 
 
-		save: ->
-			@startSpinner('saving')
+    # update agents checkboxes states
+    updateAgents: =>
 
-			for agent in @$scope.settings.agents
-				if !agent._disabled then agent.perms.tasks.use = agent._checked
+      @$scope.settings.agents.map (agent) =>
 
-			@service.save().then(
-				=>
-					@stopSpinner('saving')
-				=>
-					@stopSpinner('saving')
-			)
+        for group in agent.usergroups
+
+          if @map[group.id]?.perms.tasks.use
+            agent._checked = true
+            agent._disabled = true
+            return
+
+        agent._checked = agent.perms.tasks.use
+        agent._disabled = false
 
 
 
-	Admin_Tasks_Ctrl_Edit.EXPORT_CTRL()
+    save: ->
+      @startSpinner('saving')
+
+      for agent in @$scope.settings.agents
+        if !agent._disabled then agent.perms.tasks.use = agent._checked
+
+      @service.save().then(
+        =>
+          @stopSpinner('saving')
+        =>
+          @stopSpinner('saving')
+      )
+
+
+
+  Admin_Tasks_Ctrl_Edit.EXPORT_CTRL()

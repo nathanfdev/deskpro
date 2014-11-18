@@ -39,9 +39,10 @@ use Application\DeskPRO\Translate\ObjectLangRepository;
 
 class ObjectLangRepositoryService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$olr = new ObjectLangRepository($container->getEm());
-		return $olr;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $olr = new ObjectLangRepository($container->getEm());
+
+        return $olr;
+    }
 }

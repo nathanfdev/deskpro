@@ -41,65 +41,66 @@ use Symfony\Component\HttpKernel\Client;
 
 class PortalBaseThemeTest extends WebTestCase
 {
-	public function testHome()
-	{
-		$client = static::createClient();
+    public function testHome()
+    {
+        $client = static::createClient();
 
-		$this->test200codeForPath($client, '/');
+        $this->test200codeForPath($client, '/');
 
-		$this->test200codeForPath($client, '/kb');
-		$this->test200codeForPath($client, '/kb/slugggg');
-		$this->test200codeForPath($client, '/kb/posts/slugggggg');
+        $this->test200codeForPath($client, '/kb');
+        $this->test200codeForPath($client, '/kb/slugggg');
+        $this->test200codeForPath($client, '/kb/posts/slugggggg');
 
-		$this->test200codeForPath($client, '/downloads');
-		$this->test200codeForPath($client, '/downloads/sluggg');
-		$this->test200codeForPath($client, '/downloads/files/adfdfa');
-		$this->test200codeForPath($client, '/downloads/files/asdddd/download');
+        $this->test200codeForPath($client, '/downloads');
+        $this->test200codeForPath($client, '/downloads/sluggg');
+        $this->test200codeForPath($client, '/downloads/files/adfdfa');
+        $this->test200codeForPath($client, '/downloads/files/asdddd/download');
 
-		$this->test200codeForPath($client, '/news');
-		$this->test200codeForPath($client, '/news/slugggg');
-		$this->test200codeForPath($client, '/news/posts/slugggggg');
+        $this->test200codeForPath($client, '/news');
+        $this->test200codeForPath($client, '/news/slugggg');
+        $this->test200codeForPath($client, '/news/posts/slugggggg');
 
-		$this->test200codeForPath($client, '/search');
+        $this->test200codeForPath($client, '/search');
 
-		$this->test200codeForPath($client, '/new-ticket');
+        $this->test200codeForPath($client, '/new-ticket');
 
-		$this->test200codeForPath($client, '/tickets');
-		$this->test200codeForPath($client, '/tickets/{ref}');
-	}
-
-
-	/**
-	 * Creates a Client.
-	 *
-	 * @param array $options An array of options to pass to the createKernel class
-	 * @param array $server  An array of server parameters
-	 * @return Client A Client instance
-	 */
-	protected static function createClient(array $options = array(), array $server = array())
-	{
-		static::bootKernel($options);
-
-		$client = new Client(static::$kernel);
-		$client->setServerParameters($server);
-
-		return $client;
-	}
-
-	public static function createKernel(array $options = array())
-	{
-		require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
-		return new PortalKernel('test', true);
-	}
+        $this->test200codeForPath($client, '/tickets');
+        $this->test200codeForPath($client, '/tickets/{ref}');
+    }
 
 
-	/**
-	 * @param $client
-	 * @param $path
-	 */
-	protected function test200codeForPath($client, $path)
-	{
-		$crawler = $client->request('GET', $path);
-		$this->assertEquals(200, $client->getResponse()->getStatusCode());
-	}
+    /**
+     * Creates a Client.
+     *
+     * @param  array  $options An array of options to pass to the createKernel class
+     * @param  array  $server  An array of server parameters
+     * @return Client A Client instance
+     */
+    protected static function createClient(array $options = array(), array $server = array())
+    {
+        static::bootKernel($options);
+
+        $client = new Client(static::$kernel);
+        $client->setServerParameters($server);
+
+        return $client;
+    }
+
+    public static function createKernel(array $options = array())
+    {
+        require_once DP_ROOT.'/sys/Kernel/PortalKernel.php';
+
+        return new PortalKernel('test', true);
+    }
+
+
+    /**
+     * @param $client
+     * @param $path
+     */
+    protected function test200codeForPath($client, $path)
+    {
+        $crawler = $client->request('GET', $path);
+        $this->assertEquals(200, $client->getResponse()->getStatusCode());
+    }
 }

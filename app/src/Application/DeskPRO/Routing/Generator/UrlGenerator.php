@@ -42,130 +42,131 @@ use Symfony\Component\Routing\RequestContext;
  */
 class UrlGenerator extends BaseUrlGenerator
 {
-	/** @var ObjectUrlGenerator|null */
-	protected $object_url_generator = null;
+    /** @var ObjectUrlGenerator|null */
+    protected $object_url_generator = null;
 
-	public function setContext(RequestContext $context)
+    public function setContext(RequestContext $context)
     {
-		if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
-			$deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
-			if (!isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
-				$GLOBALS['DP_CONFIG']['rewrite_urls'] = App::getSetting('core.rewrite_urls');
-			}
-			if (!$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#index\.php$#', $deskpro_url)) {
-				$deskpro_url .= '/index.php';
-			}
+        if (defined('DP_INTERFACE') && DP_INTERFACE == 'cli') {
+            $deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
+            if (!isset($GLOBALS['DP_CONFIG']['rewrite_urls'])) {
+                $GLOBALS['DP_CONFIG']['rewrite_urls'] = App::getSetting('core.rewrite_urls');
+            }
+            if (!$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#index\.php$#', $deskpro_url)) {
+                $deskpro_url .= '/index.php';
+            }
 
-			$info = parse_url($deskpro_url);
-			$context->setScheme($info['scheme']);
-			if (!empty($info['path'])) {
-				$context->setBaseUrl($info['path']);
-			} else {
-				$context->setBaseUrl('');
-			}
-			$context->setHost($info['host']);
-			$context->setMethod('GET');
-			if (!empty($info['port'])) {
-				$context->setHttpPort($info['port']);
-			}
-		}
+            $info = parse_url($deskpro_url);
+            $context->setScheme($info['scheme']);
+            if (!empty($info['path'])) {
+                $context->setBaseUrl($info['path']);
+            } else {
+                $context->setBaseUrl('');
+            }
+            $context->setHost($info['host']);
+            $context->setMethod('GET');
+            if (!empty($info['port'])) {
+                $context->setHttpPort($info['port']);
+            }
+        }
 
         $this->context = $context;
     }
 
-	public function getEnvMode()
-	{
-		return 'dev';
-	}
+    public function getEnvMode()
+    {
+        return 'dev';
+    }
 
-	public function generate($name, $parameters = array(), $absolute = false)
-	{
-		if ($this->getEnvMode() == 'dev') {
-			return parent::generate($name, $parameters, $absolute);
-		}
+    public function generate($name, $parameters = array(), $absolute = false)
+    {
+        if ($this->getEnvMode() == 'dev') {
+            return parent::generate($name, $parameters, $absolute);
+        }
 
-		// When in prod, eat route not found exceptions because
-		// users can mistype them when editing templates
-		try {
-			return parent::generate($name, $parameters, $absolute);
-		} catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
-			return null;
-		}
-	}
+        // When in prod, eat route not found exceptions because
+        // users can mistype them when editing templates
+        try {
+            return parent::generate($name, $parameters, $absolute);
+        } catch (\Symfony\Component\Routing\Exception\RouteNotFoundException $e) {
+            return null;
+        }
+    }
 
-	public function generateUrl($name, $parameters = array())
-	{
-		$url = $this->generatePath($name, $parameters, false);
+    public function generateUrl($name, $parameters = array())
+    {
+        $url = $this->generatePath($name, $parameters, false);
 
-		// Make sure index.php is in links
-		$deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
-		if (!App::getSetting('core.rewrite_urls') && !@$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#index\.php$#', $deskpro_url)) {
-			$deskpro_url .= '/index.php';
-		}
+        // Make sure index.php is in links
+        $deskpro_url = rtrim(App::getSetting('core.deskpro_url'), '/');
+        if (!App::getSetting('core.rewrite_urls') && !@$GLOBALS['DP_CONFIG']['rewrite_urls'] && !preg_match('#index\.php$#', $deskpro_url)) {
+            $deskpro_url .= '/index.php';
+        }
 
-		return $deskpro_url . $url;
-	}
+        return $deskpro_url . $url;
+    }
 
-	/**
-	 * This is like generate() except it returns JUST the route. Nothing to do with the current base
-	 * path etc is added. This will begin with a slash.
-	 *
-	 * @param $name
-	 * @param array $parameters
-	 * @param bool $absolute
-	 */
-	public function generatePath($name, $parameters = array(), $absolute = false)
-	{
-		$url = $this->generate($name, $parameters, $absolute);
+    /**
+     * This is like generate() except it returns JUST the route. Nothing to do with the current base
+     * path etc is added. This will begin with a slash.
+     *
+     * @param $name
+     * @param array $parameters
+     * @param bool  $absolute
+     */
+    public function generatePath($name, $parameters = array(), $absolute = false)
+    {
+        $url = $this->generate($name, $parameters, $absolute);
 
-		$with_file = false;
-		$with_widget = false;
-		if (strpos($url, '/file.php/') !== false) {
-			$with_file = true;
-			$url = str_replace('/file.php/', '/index.php/', $url);
-		} elseif (strpos($url, '/dp.php/') !== false) {
-			$with_file = true;
-			$url = str_replace('/dp.php/', '/index.php/', $url);
-		}
+        $with_file = false;
+        $with_widget = false;
+        if (strpos($url, '/file.php/') !== false) {
+            $with_file = true;
+            $url = str_replace('/file.php/', '/index.php/', $url);
+        } elseif (strpos($url, '/dp.php/') !== false) {
+            $with_file = true;
+            $url = str_replace('/dp.php/', '/index.php/', $url);
+        }
 
-		$url = preg_replace('#^' . preg_quote($this->context->getBaseUrl(), '#') . '#', '', $url);
+        $url = preg_replace('#^' . preg_quote($this->context->getBaseUrl(), '#') . '#', '', $url);
 
-		if ($with_file) {
-			$url = '/file.php' . $url;
-			$url = str_replace('/file.php/index.php/', '/file.php/', $url);
-		} elseif ($with_widget) {
-			$url = '/dp.php' . $url;
-			$url = str_replace('/dp.php/index.php/', '/dp.php/', $url);
-		}
+        if ($with_file) {
+            $url = '/file.php' . $url;
+            $url = str_replace('/file.php/index.php/', '/file.php/', $url);
+        } elseif ($with_widget) {
+            $url = '/dp.php' . $url;
+            $url = str_replace('/dp.php/index.php/', '/dp.php/', $url);
+        }
 
-		return $url;
-	}
+        return $url;
+    }
 
-	protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = array())
-	{
-		$url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
+    protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, array $requiredSchemes = array())
+    {
+        $url = parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $referenceType, $hostTokens, $requiredSchemes);
 
-		// /file.php/ is a hint to say that we want to serve through the file loader,
-		// Any route that is prefixed with /file.php/ has this magic below applied
-		if (strpos($url, '/file.php/') !== false) {
-			$url = str_replace('/index.php/', '/', $url);
-		} elseif (strpos($url, '/dp.php/') !== false) {
-			$url = str_replace('/dp.php', '', $url);
-		}
+        // /file.php/ is a hint to say that we want to serve through the file loader,
+        // Any route that is prefixed with /file.php/ has this magic below applied
+        if (strpos($url, '/file.php/') !== false) {
+            $url = str_replace('/index.php/', '/', $url);
+        } elseif (strpos($url, '/dp.php/') !== false) {
+            $url = str_replace('/dp.php', '', $url);
+        }
 
-		return $url;
-	}
+        return $url;
+    }
 
-	public function getObjectUrlGenerator()
-	{
-		if ($this->object_url_generator !== null) return $this->object_url_generator;
+    public function getObjectUrlGenerator()
+    {
+        if ($this->object_url_generator !== null) return $this->object_url_generator;
 
-		$this->object_url_generator = new ObjectUrlGenerator($this);
-		return $this->object_url_generator;
-	}
+        $this->object_url_generator = new ObjectUrlGenerator($this);
 
-	public function generateObjectUrl($object, array $params = array(), $context = null)
-	{
-		return $this->getObjectUrlGenerator()->generateObjectUrl($object, $params, $context);
-	}
+        return $this->object_url_generator;
+    }
+
+    public function generateObjectUrl($object, array $params = array(), $context = null)
+    {
+        return $this->getObjectUrlGenerator()->generateObjectUrl($object, $params, $context);
+    }
 }

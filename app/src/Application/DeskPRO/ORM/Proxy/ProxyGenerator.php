@@ -104,19 +104,19 @@ class <proxyShortClassName> extends \<className> implements \<baseProxyInterface
 <cloneImpl>
 
     public function __load() { $this->__initializer__ && $this->__initializer__->__invoke($this, \'__load\', array()); }
-	public function __isInitialized() { return $this->__isInitialized__; }
-	public function __setInitialized($initialized) { $this->__isInitialized__ = $initialized; }
+    public function __isInitialized() { return $this->__isInitialized__; }
+    public function __setInitialized($initialized) { $this->__isInitialized__ = $initialized; }
     public function __setInitializer(\Closure $initializer = null) { $this->__initializer__ = $initializer; }
     public function __getInitializer() { return $this->__initializer__; }
-	public function __setCloner(\Closure $cloner = null) { $this->__cloner__ = $cloner; }
-	public function __getCloner() { return $this->__cloner__; }
+    public function __setCloner(\Closure $cloner = null) { $this->__cloner__ = $cloner; }
+    public function __getCloner() { return $this->__cloner__; }
     public function __getLazyProperties() { return self::$lazyPropertiesDefaults; }
 
     <methods>
 
     public function __getPropValue__($k) { return $this->$k; }
-	public function __setPropValue__($k, $v) { $this->$k = $v; }
-	public function __hasRunLoad__() { if (isset($this->__isInitialized__) && $this->__isInitialized__) return true; return false; }
+    public function __setPropValue__($k, $v) { $this->$k = $v; }
+    public function __hasRunLoad__() { if (isset($this->__isInitialized__) && $this->__isInitialized__) return true; return false; }
 }
 ';
 
@@ -633,14 +633,14 @@ EOT;
             '__set'     => true,
             '__isset'   => true,
 
-			'__getpropvalue__' => true,
-			'__setpropvalue__' => true,
-			'__hasrunload__' => true,
-			'addcustomcallable' => true,
-			'getobjecttranslatable' => true,
-			'ensuredefaultpropertychangedlistener' => true,
-			'addpropertychangedlistener' => true,
-			'removepropertychangedlistener' => true,
+            '__getpropvalue__' => true,
+            '__setpropvalue__' => true,
+            '__hasrunload__' => true,
+            'addcustomcallable' => true,
+            'getobjecttranslatable' => true,
+            'ensuredefaultpropertychangedlistener' => true,
+            'addpropertychangedlistener' => true,
+            'removepropertychangedlistener' => true,
         );
 
         foreach ($reflectionMethods as $method) {
@@ -818,4 +818,3 @@ EOT;
         return $properties;
     }
 }
-

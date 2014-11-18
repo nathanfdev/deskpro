@@ -47,131 +47,131 @@ use Application\DeskPRO\Entity\Session;
  */
 class StatusCheck
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\ChatConversation
-	 */
-	protected $conversation;
-	/** @var Session */
-	protected $session;
-	/** @var Person */
-	protected $person;
-	/** @var bool */
-	protected $is_agent = false;
+    /**
+     * @var \Application\DeskPRO\Entity\ChatConversation
+     */
+    protected $conversation;
+    /** @var Session */
+    protected $session;
+    /** @var Person */
+    protected $person;
+    /** @var bool */
+    protected $is_agent = false;
 
-	public function __construct($conversation, $session)
-	{
-		$this->conversation = $conversation;
-		$this->session = $session;
+    public function __construct($conversation, $session)
+    {
+        $this->conversation = $conversation;
+        $this->session = $session;
 
-		if ($session->person) {
-			$this->person = $session->person;
-			if ($this->person['is_agent']) {
-				$this->is_agent = true;
-			}
-		}
-	}
+        if ($session->person) {
+            $this->person = $session->person;
+            if ($this->person['is_agent']) {
+                $this->is_agent = true;
+            }
+        }
+    }
 
-	public function runChecks()
-	{
-		if ($this->is_agent) {
-			$this->runChecksByAgents();
-		} else {
-			$this->runChecksByUser();
-		}
-	}
+    public function runChecks()
+    {
+        if ($this->is_agent) {
+            $this->runChecksByAgents();
+        } else {
+            $this->runChecksByUser();
+        }
+    }
 
-	/**
-	 * These checks are done by the agent:
-	 * - Check if user has timedout
-	 *
-	 * @return void
-	 */
-	public function runChecksByAgents()
-	{
-		// Get the users session
-		$user_sess = $this->conversation->session;
+    /**
+     * These checks are done by the agent:
+     * - Check if user has timedout
+     *
+     * @return void
+     */
+    public function runChecksByAgents()
+    {
+        // Get the users session
+        $user_sess = $this->conversation->session;
 
-		$cut_close = time() - App::getSetting('core_chat.user_timeout');
-		if ($user_sess) {
-			$last = $user_sess['date_last']->getTimestamp();
-		} else {
-			$last = 0;
-		}
+        $cut_close = time() - App::getSetting('core_chat.user_timeout');
+        if ($user_sess) {
+            $last = $user_sess['date_last']->getTimestamp();
+        } else {
+            $last = 0;
+        }
 
-		if ($last < $cut_close) {
+        if ($last < $cut_close) {
 
-			$this->conversation->addSystemMessage(
-				App::getTranslator()->phrase('agent.general.msg_user_timeout'),
-				true
-			);
+            $this->conversation->addSystemMessage(
+                App::getTranslator()->phrase('agent.general.msg_user_timeout'),
+                true
+            );
 
-			$this->conversation->setStatus('ended');
-			$client_messages = ChatClientMessageGenerator::createChatEndedMessages(
-				'sys',
-				$this->conversation
-			);
-			foreach ($this->conversation->getCreatedMessages() as $msg) {
-				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages('sys', $msg));
-			}
+            $this->conversation->setStatus('ended');
+            $client_messages = ChatClientMessageGenerator::createChatEndedMessages(
+                'sys',
+                $this->conversation
+            );
+            foreach ($this->conversation->getCreatedMessages() as $msg) {
+                $client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages('sys', $msg));
+            }
 
-			foreach ($client_messages as $cm) {
-				App::getOrm()->persist($cm);
-			}
+            foreach ($client_messages as $cm) {
+                App::getOrm()->persist($cm);
+            }
 
-			App::getOrm()->persist($this->conversation);
-			App::getOrm()->flush();
-		}
-	}
+            App::getOrm()->persist($this->conversation);
+            App::getOrm()->flush();
+        }
+    }
 
 
-	/**
-	 * The checks run by the user:
-	 * - Check if agent has tiemdout
-	 *
-	 * @return void
-	 */
-	public function runChecksByUser()
-	{
-		// Get the users session
-		$user_sess = $this->conversation->session;
+    /**
+     * The checks run by the user:
+     * - Check if agent has tiemdout
+     *
+     * @return void
+     */
+    public function runChecksByUser()
+    {
+        // Get the users session
+        $user_sess = $this->conversation->session;
 
-		$cut = time() - App::getSetting('core_chat.agent_timeout');
-		$last = $user_sess['date_last']->getTimestamp();
+        $cut = time() - App::getSetting('core_chat.agent_timeout');
+        $last = $user_sess['date_last']->getTimestamp();
 
-		if ($last < $cut) {
-			$msg = $this->conversation->addSystemMessage(
-				App::getTranslator()->phrase('agent.general.msg_agent_timeout'),
-				true
-			);
+        if ($last < $cut) {
+            $msg = $this->conversation->addSystemMessage(
+                App::getTranslator()->phrase('agent.general.msg_agent_timeout'),
+                true
+            );
 
-			$client_messages = ChatClientMessageGenerator::createNewMessageMessages('sys', $msg);
+            $client_messages = ChatClientMessageGenerator::createNewMessageMessages('sys', $msg);
 
-			// And need to insert a "new chat" event for agents
-			if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
+            // And need to insert a "new chat" event for agents
+            if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
 
-				$assign_agent = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
-				$conversation->agent = $assign_agent;
+                $assign_agent = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
+                $conversation->agent = $assign_agent;
 
-				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatRoundRobinMessages(
-					'sys',
-					$this->conversation,
-					$msg
-				));
-			} else {
+                $client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatRoundRobinMessages(
+                    'sys',
+                    $this->conversation,
+                    $msg
+                ));
+            } else {
 
-				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
-					'sys',
-					$this->conversation,
-					$msg
-				));
-			}
+                $client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
+                    'sys',
+                    $this->conversation,
+                    $msg
+                ));
+            }
 
-			foreach ($client_messages as $cm) {
-				App::getOrm()->persist($cm);
-			}
+            foreach ($client_messages as $cm) {
+                App::getOrm()->persist($cm);
+            }
 
-			App::getOrm()->persist($this->conversation);
-			App::getOrm()->flush();
-		}
-	}
+            App::getOrm()->persist($this->conversation);
+            App::getOrm()->flush();
+        }
+    }
 }

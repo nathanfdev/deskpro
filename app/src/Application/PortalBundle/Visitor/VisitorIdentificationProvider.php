@@ -34,7 +34,6 @@
 
 namespace Application\PortalBundle\Visitor;
 
-use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\RequestStack;
 use Psr\Log\LoggerInterface;
 
@@ -68,6 +67,7 @@ class VisitorIdentificationProvider
     {
         if ($identifier = $this->request_stack->getCurrentRequest()->cookies->get(static::COOKIE_NAME)) {
             $this->logger->info(sprintf('found visitor identifier in cookie "%s"', static::COOKIE_NAME));
+
             return $identifier;
         } else {
             $identifier = static::generateRandomIdentifier();
@@ -77,4 +77,3 @@ class VisitorIdentificationProvider
         return $identifier;
     }
 }
- 

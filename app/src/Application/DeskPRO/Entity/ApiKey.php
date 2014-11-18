@@ -52,160 +52,161 @@ use Orb\Util\Strings;
 
 class ApiKey extends DomainObject
 {
-	const FLAG_ADMIN_MANAGE = 'admin_manage';
-	const FLAG_SUPER_KEY = 'super';
+    const FLAG_ADMIN_MANAGE = 'admin_manage';
+    const FLAG_SUPER_KEY = 'super';
 
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var string
-	 */
-	protected $code;
+    /**
+     * @var string
+     */
+    protected $code;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * A note or description about the key (ie what its used for).
-	 *
-	 * @var string
-	 */
-	protected $note = '';
+    /**
+     * A note or description about the key (ie what its used for).
+     *
+     * @var string
+     */
+    protected $note = '';
 
-	/**
-	 * @var array
-	 */
-	protected $flags = array();
+    /**
+     * @var array
+     */
+    protected $flags = array();
 
-	/**
-	 * @var ArrayCollection
-	 */
-	protected $logs;
-
-
-	public function __construct()
-	{
-		$this->regenerateApiKey();
-		$this->logs = new ArrayCollection();
-	}
+    /**
+     * @var ArrayCollection
+     */
+    protected $logs;
 
 
-	/**
-	 * Regenerate the API key
-	 */
-	public function regenerateApiKey()
-	{
-		$this['code'] = Strings::random(25, Strings::CHARS_KEY);
-	}
+    public function __construct()
+    {
+        $this->regenerateApiKey();
+        $this->logs = new ArrayCollection();
+    }
 
 
-	/**
-	 * Get a "key string". This is a combined ID and code like id:code
-	 * that is used in auth lookup.
-	 *
-	 * @return string
-	 */
-	public function getKeyString()
-	{
-		return $this->id . ':' . $this->code;
-	}
+    /**
+     * Regenerate the API key
+     */
+    public function regenerateApiKey()
+    {
+        $this['code'] = Strings::random(25, Strings::CHARS_KEY);
+    }
 
 
-	/**
-	 * @param string $flag
-	 * @return bool
-	 */
-	public function isFlagSet($flag)
-	{
-		return in_array($flag, $this->flags);
-	}
-
-	/**
-	 * @param bool $primary
-	 * @param bool $deep
-	 * @param array $visited
-	 * @return array
-	 */
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, false, $visited);
-		$data['keyString'] = $this->getKeyString();
-		$data['person'] = $this->person ? $this->person['id'] : null;
-		foreach ($this->flags as $f) {
-			$data[$f] = true;
-		}
-		return $data;
-	}
+    /**
+     * Get a "key string". This is a combined ID and code like id:code
+     * that is used in auth lookup.
+     *
+     * @return string
+     */
+    public function getKeyString()
+    {
+        return $this->id . ':' . $this->code;
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * @param  string $flag
+     * @return bool
+     */
+    public function isFlagSet($flag)
+    {
+        return in_array($flag, $this->flags);
+    }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\ApiKey';
-		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+    /**
+     * @param  bool  $primary
+     * @param  bool  $deep
+     * @param  array $visited
+     * @return array
+     */
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, false, $visited);
+        $data['keyString'] = $this->getKeyString();
+        $data['person'] = $this->person ? $this->person['id'] : null;
+        foreach ($this->flags as $f) {
+            $data[$f] = true;
+        }
 
-		$metadata->setPrimaryTable(array(
-			'name' => 'api_keys'
-		));
+        return $data;
+    }
 
-		$metadata->mapField(array(
-			'columnName' => 'id',
-			'fieldName'  => 'id',
-			'type'       => 'integer',
-			'id'         => true,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'code',
-			'fieldName'  => 'code',
-			'type'       => 'string',
-			'length'     => 25,
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'note',
-			'fieldName'  => 'note',
-			'type'       => 'text',
-			'nullable'   => false,
-		));
-		$metadata->mapField(array(
-			'columnName' => 'flags',
-			'fieldName'  => 'flags',
-			'type'       => 'simple_array',
-			'nullable'   => true,
-		));
 
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'person',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-			'mappedBy'     => null,
-			'inversedBy'   => null,
-			'joinColumns'  => array(array(
-				'name'                 => 'person_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'cascade',
-				'columnDefinition'     => null,
-			)),
-		));
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-		$metadata->mapOneToMany(array(
-			'fieldName'    => 'logs',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
-			'mappedBy'     => 'key',
-			'inversedBy'   => null,
-			'orderBy'      => array('id' => 'DESC'),
-			'cascade'      => array('persist', 'remove'), // doesn't work
-		));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\ApiKey';
+        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+
+        $metadata->setPrimaryTable(array(
+            'name' => 'api_keys'
+        ));
+
+        $metadata->mapField(array(
+            'columnName' => 'id',
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'id'         => true,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'code',
+            'fieldName'  => 'code',
+            'type'       => 'string',
+            'length'     => 25,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'note',
+            'fieldName'  => 'note',
+            'type'       => 'text',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'flags',
+            'fieldName'  => 'flags',
+            'type'       => 'simple_array',
+            'nullable'   => true,
+        ));
+
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => array(array(
+                'name'                 => 'person_id',
+                'referencedColumnName' => 'id',
+                'nullable'             => true,
+                'onDelete'             => 'cascade',
+                'columnDefinition'     => null,
+            )),
+        ));
+
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'logs',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKeyLog',
+            'mappedBy'     => 'key',
+            'inversedBy'   => null,
+            'orderBy'      => array('id' => 'DESC'),
+            'cascade'      => array('persist', 'remove'), // doesn't work
+        ));
+    }
 }

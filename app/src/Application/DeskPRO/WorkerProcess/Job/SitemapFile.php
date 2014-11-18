@@ -35,36 +35,35 @@
 namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 
 /**
  * Updates the sitemap file
  */
 class SitemapFile extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 604800; // 7 days
+    const DEFAULT_INTERVAL = 604800; // 7 days
 
-	public function run()
-	{
-		$old_sitemap_file = App::getSetting('core.sitemap_blob_id');
+    public function run()
+    {
+        $old_sitemap_file = App::getSetting('core.sitemap_blob_id');
 
-		if ($old_sitemap_file) {
-			try {
-				$blob = App::getOrm()->find('DeskPRO:Blob', $old_sitemap_file);
-				if ($blob) {
-					App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
-				}
-			} catch (\Exception $e) {}
-		}
+        if ($old_sitemap_file) {
+            try {
+                $blob = App::getOrm()->find('DeskPRO:Blob', $old_sitemap_file);
+                if ($blob) {
+                    App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+                }
+            } catch (\Exception $e) {}
+        }
 
-		$gen = new \Application\DeskPRO\Portal\SitemapGenerator(App::getSetting('core.deskpro_url'), App::getOrm(), App::getRouter());
-		$file = $gen->getXml();
+        $gen = new \Application\DeskPRO\Portal\SitemapGenerator(App::getSetting('core.deskpro_url'), App::getOrm(), App::getRouter());
+        $file = $gen->getXml();
 
-		App::getContainer()->getBlobStorage()->createBlobRecordFromString(
-			$file,
-			'sitemap.xml',
-			'text/xml',
-			array('sys_name' => 'sitemap_xml')
-		);
-	}
+        App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+            $file,
+            'sitemap.xml',
+            'text/xml',
+            array('sys_name' => 'sitemap_xml')
+        );
+    }
 }

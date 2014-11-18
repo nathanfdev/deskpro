@@ -37,5 +37,5 @@ use Doctrine\ORM\EntityManager;
 
 interface EntityManagerAwareInterface
 {
-	public function setEm(EntityManager $em);
+    public function setEm(EntityManager $em);
 }

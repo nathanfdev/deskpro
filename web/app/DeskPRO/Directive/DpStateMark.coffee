@@ -1,8 +1,8 @@
 define [
-	'DeskPRO/Util/Util',
-	'DeskPRO/Util/Strings'
+  'DeskPRO/Util/Util',
+  'DeskPRO/Util/Strings'
 ], (Util, Strings) ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -37,78 +37,78 @@ define [
     # ------------
     # <li dp-state-mark="tickets.ticket_deps">Ticket Departments</li>
     ###
-	DeskPRO_Directive_DpStateMark = ['$state', ($state) ->
-		return {
-			restrict: 'A',
-			link: (scope, element, attrs) ->
-				myStateId   = attrs.dpStateMark
-				currentStateVars = null
-				hashParams = {}
+  DeskPRO_Directive_DpStateMark = ['$state', ($state) ->
+    return {
+      restrict: 'A',
+      link: (scope, element, attrs) ->
+        myStateId   = attrs.dpStateMark
+        currentStateVars = null
+        hashParams = {}
 
-				# Parse out comma-separated list of route params
-				m = myStateId.match(/^(.*?):(.*?)$/)
-				if m
-					myStateId = m[2]
-					currentStateVars = []
-					for p in m[1].split(',')
-						if p.substr(-1) == '!'
-							p = p.substr(0, p.length-1)
-							hashParams[p] = true
-						currentStateVars.push(p)
+        # Parse out comma-separated list of route params
+        m = myStateId.match(/^(.*?):(.*?)$/)
+        if m
+          myStateId = m[2]
+          currentStateVars = []
+          for p in m[1].split(',')
+            if p.substr(-1) == '!'
+              p = p.substr(0, p.length-1)
+              hashParams[p] = true
+            currentStateVars.push(p)
 
-				myStateIdRe = Strings.escapeRegex(myStateId)
-				myStateIdRe1 = new RegExp('^' + myStateIdRe + '\\.') # prefix "abc.zyx."
-				myStateIdRe2 = new RegExp('^' + myStateIdRe + '$')   # full   "abc.xyz.1"
+        myStateIdRe = Strings.escapeRegex(myStateId)
+        myStateIdRe1 = new RegExp('^' + myStateIdRe + '\\.') # prefix "abc.zyx."
+        myStateIdRe2 = new RegExp('^' + myStateIdRe + '$')   # full   "abc.xyz.1"
 
-				# This sets the active state immediately on click
-				# which makes the UI feel faster
-				element.on('click', ->
-					element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active')
-					element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active')
-					element.addClass('state-on active')
-				)
+        # This sets the active state immediately on click
+        # which makes the UI feel faster
+        element.on('click', ->
+          element.closest('.dp-layout-appnav').find('.state-on').removeClass('state-on active')
+          element.closest('.dp-layout-list-listpane').find('.state-on').removeClass('state-on active')
+          element.addClass('state-on active')
+        )
 
-				updateMarker = ->
-					checkStateId = $state.current.name
-					checkStateId2 = null
+        updateMarker = ->
+          checkStateId = $state.current.name
+          checkStateId2 = null
 
-					if $state.current.data?.stateMarkId
-						checkStateId2 = $state.current.data.stateMarkId
+          if $state.current.data?.stateMarkId
+            checkStateId2 = $state.current.data.stateMarkId
 
-					isOn = false
+          isOn = false
 
-					for currentStateId in [checkStateId, checkStateId2]
-						if isOn or not currentStateId then continue
+          for currentStateId in [checkStateId, checkStateId2]
+            if isOn or not currentStateId then continue
 
-						if currentStateVars
-							for v in currentStateVars
-								if $state.params[v]?
-									if hashParams[v]
-										currentStateId += '.' + Strings.murmurhash3($state.params[v])
-									else
-										currentStateId += '.' + $state.params[v]
-								else
-									currentStateId += '.0'
-						else
-							if $state.params['id']?
-								currentStateId += '.' + $state.params['id']
+            if currentStateVars
+              for v in currentStateVars
+                if $state.params[v]?
+                  if hashParams[v]
+                    currentStateId += '.' + Strings.murmurhash3($state.params[v])
+                  else
+                    currentStateId += '.' + $state.params[v]
+                else
+                  currentStateId += '.0'
+            else
+              if $state.params['id']?
+                currentStateId += '.' + $state.params['id']
 
-						if currentStateId.match(myStateIdRe1) or currentStateId.match(myStateIdRe2)
-							isOn = true
+            if currentStateId.match(myStateIdRe1) or currentStateId.match(myStateIdRe2)
+              isOn = true
 
-					if isOn
-						element.addClass('state-on active')
-						if element.closest('[dp-nav-subnav]')
-							element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
-					else
-						element.removeClass('state-on active')
+          if isOn
+            element.addClass('state-on active')
+            if element.closest('[dp-nav-subnav]')
+              element.closest('[dp-nav-subnav]').show().closest('li').addClass('sublist-open')
+          else
+            element.removeClass('state-on active')
 
-				scope.$on('$stateChangeSuccess', ->
-					updateMarker()
-				);
+        scope.$on('$stateChangeSuccess', ->
+          updateMarker()
+        );
 
-				updateMarker()
-		}
-	]
+        updateMarker()
+    }
+  ]
 
-	return DeskPRO_Directive_DpStateMark
+  return DeskPRO_Directive_DpStateMark

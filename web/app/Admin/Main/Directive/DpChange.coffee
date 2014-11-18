@@ -1,5 +1,5 @@
 define ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -9,12 +9,12 @@ define ->
     # -------
     # <input dp-change="submit" />
     ###
-	Admin_Main_Directive_DpChange = [ ->
-		return {
-			restrict: 'A',
-			link: (scope, element, attrs) ->
-				element.bind('change', -> scope.$eval attrs.dpChange)
-		}
-	]
+  Admin_Main_Directive_DpChange = [ ->
+    return {
+      restrict: 'A',
+      link: (scope, element, attrs) ->
+        element.bind('change', -> scope.$eval attrs.dpChange)
+    }
+  ]
 
-	return Admin_Main_Directive_DpChange
+  return Admin_Main_Directive_DpChange

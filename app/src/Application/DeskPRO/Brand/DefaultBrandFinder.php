@@ -44,40 +44,39 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
  */
 class DefaultBrandFinder
 {
-	/**
-	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
-	 */
-	private $settings_resolver;
+    /**
+     * @var \Application\DeskPRO\NewSettings\SettingsResolver
+     */
+    private $settings_resolver;
 
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\Brand
-	 */
-	private $brand_repo;
-
-
-	/**
-	 * @param SettingsResolver $settings_resolver
-	 * @param Brand            $brand_repo
-	 */
-	public function __construct(SettingsResolver $settings_resolver, Brand $brand_repo)
-	{
-		$this->settings_resolver = $settings_resolver;
-		$this->brand_repo = $brand_repo;
-	}
+    /**
+     * @var \Application\DeskPRO\EntityRepository\Brand
+     */
+    private $brand_repo;
 
 
-	/**
-	 * @return BrandEntity
-	 */
-	public function getDefaultBrand()
-	{
-		try {
-			return $this->brand_repo->find(
-				$this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1)
-			);
-		} catch (\Exception $e) {
-			return new BrandEntity();
-		}
-	}
+    /**
+     * @param SettingsResolver $settings_resolver
+     * @param Brand            $brand_repo
+     */
+    public function __construct(SettingsResolver $settings_resolver, Brand $brand_repo)
+    {
+        $this->settings_resolver = $settings_resolver;
+        $this->brand_repo = $brand_repo;
+    }
+
+
+    /**
+     * @return BrandEntity
+     */
+    public function getDefaultBrand()
+    {
+        try {
+            return $this->brand_repo->find(
+                $this->settings_resolver->getGlobalSettings()->get('portal.default_brand', 1)
+            );
+        } catch (\Exception $e) {
+            return new BrandEntity();
+        }
+    }
 }
- 

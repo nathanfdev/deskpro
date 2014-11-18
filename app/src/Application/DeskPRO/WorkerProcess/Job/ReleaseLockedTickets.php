@@ -41,15 +41,15 @@ use Application\DeskPRO\App;
  */
 class ReleaseLockedTickets extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 120;
+    const DEFAULT_INTERVAL = 120;
 
-	public function run()
-	{
-		$offset = 60 * 2; // 2 minutes offline offset
-		$n = App::getOrm()->getRepository('DeskPRO:Ticket')->unlockOfflineAgentsTickets($offset);
+    public function run()
+    {
+        $offset = 60 * 2; // 2 minutes offline offset
+        $n = App::getOrm()->getRepository('DeskPRO:Ticket')->unlockOfflineAgentsTickets($offset);
 
-		if ($n) {
-			$this->logStatus("Released $n stale locks");
-		}
-	}
+        if ($n) {
+            $this->logStatus("Released $n stale locks");
+        }
+    }
 }

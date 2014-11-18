@@ -38,21 +38,20 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DummyProcessor extends AbstractJobProcessor
 {
-	const JOB_TYPE = 'dummy';
+    const JOB_TYPE = 'dummy';
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function setDataOptions(OptionsResolverInterface $resolver)
-	{
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function setDataOptions(OptionsResolverInterface $resolver)
+    {
+    }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function process(array $data, array $job)
-	{
-		return true;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function process(array $data, array $job)
+    {
+        return true;
+    }
 }

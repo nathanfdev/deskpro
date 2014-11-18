@@ -41,341 +41,339 @@ use Symfony\Component\HttpKernel\HttpKernelInterface;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
-	/**
-	 * The currently logged in person.
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	public $person;
+    /**
+     * The currently logged in person.
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    public $person;
 
-	/** @var string */
-	protected $search_query = '';
+    /** @var string */
+    protected $search_query = '';
 
-	protected function init()
-	{
-		parent::init();
+    protected function init()
+    {
+        parent::init();
 
-		$tpl_globals = $this->container->get('templating.globals');
-		if (!$tpl_globals->getVariable('usersources')) {
-			 $tpl_globals->setVariable('usersources', $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources());
-		}
+        $tpl_globals = $this->container->get('templating.globals');
+        if (!$tpl_globals->getVariable('usersources')) {
+             $tpl_globals->setVariable('usersources', $this->em->getRepository('DeskPRO:Usersource')->getAllUsersources());
+        }
 
-		if ($this->in->getString('q')) {
-			$this->search_query = $this->in->getString('q');
-		} else {
-			$referrer = $this->request->headers->get('Referer');
-			if ($referrer && ($q = Strings::extractRegexMatch('#search\?q=(.*?)(&|$)#', $referrer, 1))) {
-				$this->search_query = urldecode($q);
-			}
-		}
-		$tpl_globals->setVariable('search_query', $this->search_query);
-	}
+        if ($this->in->getString('q')) {
+            $this->search_query = $this->in->getString('q');
+        } else {
+            $referrer = $this->request->headers->get('Referer');
+            if ($referrer && ($q = Strings::extractRegexMatch('#search\?q=(.*?)(&|$)#', $referrer, 1))) {
+                $this->search_query = urldecode($q);
+            }
+        }
+        $tpl_globals->setVariable('search_query', $this->search_query);
+    }
 
-	/**
-	 * Check if the global request token check is required for the request
-	 */
-	public function requireRequestToken($action, $arguments = null)
-	{
-		if ($this->request->getMethod() == 'POST') {
-			global $DP_CONFIG;
-			if (!empty($DP_CONFIG['cache']['page_cache']['enable']) && (!$this->person || !$this->person->getId())) {
-				return false;
-			}
+    /**
+     * Check if the global request token check is required for the request
+     */
+    public function requireRequestToken($action, $arguments = null)
+    {
+        if ($this->request->getMethod() == 'POST') {
+            global $DP_CONFIG;
+            if (!empty($DP_CONFIG['cache']['page_cache']['enable']) && (!$this->person || !$this->person->getId())) {
+                return false;
+            }
 
-			return true;
-		}
-	}
+            return true;
+        }
+    }
 
-	public function preAction($action, $arguments = null)
-	{
-		$this->person = $this->session->getPerson();
+    public function preAction($action, $arguments = null)
+    {
+        $this->person = $this->session->getPerson();
 
-		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
-			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-				'ip' => dp_get_user_ip_address()
-			));
-		}
+        if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+                'ip' => dp_get_user_ip_address()
+            ));
+        }
 
-		///////////////////////////////////////////
-		// SSO Automatic Redirecting
-		//
-		if (!$this->person['id']) {
-			if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
-				return $res;
-			}
-		}
+        ///////////////////////////////////////////
+        // SSO Automatic Redirecting
+        //
+        if (!$this->person['id']) {
+            if ($res = $this->checkAuthSystemForResponse($this->getUserAuthSettings(), false)) {
+                return $res;
+            }
+        }
 
-		if (
-			($set_lang_id = $this->in->getString('language_id'))
-			&& ($set_lang = $this->container->getDataService('Language')->get($set_lang_id))
-		) {
-			// Set cookie too so it lasts after session expires
-			$cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplid', $set_lang_id, 'never', true);
-			$cookie->send();
+        if (
+            ($set_lang_id = $this->in->getString('language_id'))
+            && ($set_lang = $this->container->getDataService('Language')->get($set_lang_id))
+        ) {
+            // Set cookie too so it lasts after session expires
+            $cookie = \Application\DeskPRO\HttpFoundation\Cookie::makeCookie('dplid', $set_lang_id, 'never', true);
+            $cookie->send();
 
-			$this->person->language = $set_lang;
-			App::getTranslator()->setLanguage($set_lang);
+            $this->person->language = $set_lang;
+            App::getTranslator()->setLanguage($set_lang);
 
-			if (!$this->person->isGuest()) {
-				$this->em->persist($this->person);
-				$this->em->flush();
-			}
+            if (!$this->person->isGuest()) {
+                $this->em->persist($this->person);
+                $this->em->flush();
+            }
 
-			$this->session->set('language_id', $set_lang->getId());
-			$this->session->save();
-		}
+            $this->session->set('language_id', $set_lang->getId());
+            $this->session->save();
+        }
 
-		if ($this->in->getBool('admin_portal_controls')) {
-			if ($this->person->id && !$this->person->can_admin) {
-				$this->person = new \Application\DeskPRO\People\PersonGuest();;
-			}
+        if ($this->in->getBool('admin_portal_controls')) {
+            if ($this->person->id && !$this->person->can_admin) {
+                $this->person = new \Application\DeskPRO\People\PersonGuest();;
+            }
 
-			$cas = new CarryAdminSession($this);
-			$cas->process();
+            $cas = new CarryAdminSession($this);
+            $cas->process();
 
-			// With admin portal controls, give permission to the sections even if we dont usually
-			$this->person->getPermissionsManager()->enableAdminMode();
-		}
+            // With admin portal controls, give permission to the sections even if we dont usually
+            $this->person->getPermissionsManager()->enableAdminMode();
+        }
 
-		$this->person->loadHelper('FeedbackVotes', array(
-			'visitor' => $this->session->getVisitor()
-		));
-		$this->person->loadHelper('HelpdeskUser', array(
-			'session' => $this->session,
-			'visitor' => $this->session->getVisitor()
-		));
+        $this->person->loadHelper('FeedbackVotes', array(
+            'visitor' => $this->session->getVisitor()
+        ));
+        $this->person->loadHelper('HelpdeskUser', array(
+            'session' => $this->session,
+            'visitor' => $this->session->getVisitor()
+        ));
 
-		if ($this instanceof RequireUserInterface) {
-			if (!$this->person['id']) {
-				if ($this->isPostRequest()) {
-					$return = $this->get('router')->generate('user');
-				} else {
-					$return = $this->request->getRequestUri();
-				}
+        if ($this instanceof RequireUserInterface) {
+            if (!$this->person['id']) {
+                if ($this->isPostRequest()) {
+                    $return = $this->get('router')->generate('user');
+                } else {
+                    $return = $this->request->getRequestUri();
+                }
 
-				$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
-				return $this->redirect($redirect_url);
-			}
-		}
+                $redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
 
-		static $done_pcheck;
-		if (!$done_pcheck && $action != 'articleAgentIframeAction') {
-			$done_pcheck = true;
-			if (!$this->sectionPermissionCheck()) {
-				return $this->renderLoginOrPermissionError();
-			}
-		}
+                return $this->redirect($redirect_url);
+            }
+        }
 
-		$tpl_globals = $this->container->get('templating.globals');
-		if ($this->in->getBool('admin_portal_controls') && $this->person->can_admin) {
-			$tpl_globals->setVariable('admin_portal_controls', true);
-			$tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
-		}
+        static $done_pcheck;
+        if (!$done_pcheck && $action != 'articleAgentIframeAction') {
+            $done_pcheck = true;
+            if (!$this->sectionPermissionCheck()) {
+                return $this->renderLoginOrPermissionError();
+            }
+        }
 
-		if ($this->person && $this->person->id && !($this instanceof ProfileController)) {
-			/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
-			$password_validator = App::$container->getSystemService('password_policy_validator');
-			if ($password_validator->isPasswordExpired($this->person)) {
-				return $this->redirectRoute('user_profile');
-			}
-		}
+        $tpl_globals = $this->container->get('templating.globals');
+        if ($this->in->getBool('admin_portal_controls') && $this->person->can_admin) {
+            $tpl_globals->setVariable('admin_portal_controls', true);
+            $tpl_globals->setVariable('custom_templates', $this->db->fetchAllKeyValue("SELECT name,id FROM templates"));
+        }
 
-		if (
-			!($this instanceof LoginController || $this instanceof MainController || $this instanceof ProfileController || $this instanceof PortalController)
-			AND !($this instanceof TicketsController && preg_match('#^feedback#', $action))
-			AND !$this->person->HelpdeskUser->canDoAnything()
-			AND !$tpl_globals->getVariable('admin_portal_controls')
-			AND $this->request_type == HttpKernelInterface::MASTER_REQUEST
-		) {
+        if ($this->person && $this->person->id && !($this instanceof ProfileController)) {
+            /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+            $password_validator = App::$container->getSystemService('password_policy_validator');
+            if ($password_validator->isPasswordExpired($this->person)) {
+                return $this->redirectRoute('user_profile');
+            }
+        }
 
-			if ($this instanceof PortalController) {
-				return $this->redirectRoute('user_profile');
-			}
+        if (
+            !($this instanceof LoginController || $this instanceof MainController || $this instanceof ProfileController || $this instanceof PortalController)
+            AND !($this instanceof TicketsController && preg_match('#^feedback#', $action))
+            AND !$this->person->HelpdeskUser->canDoAnything()
+            AND !$tpl_globals->getVariable('admin_portal_controls')
+            AND $this->request_type == HttpKernelInterface::MASTER_REQUEST
+        ) {
 
-			if ($this->isPostRequest()) {
-				$return = $this->get('router')->generate('user');
-			} else {
-				$return = $this->request->getRequestUri();
-			}
+            if ($this instanceof PortalController) {
+                return $this->redirectRoute('user_profile');
+            }
 
-			return $this->renderLoginOrPermissionError($return);
-		}
+            if ($this->isPostRequest()) {
+                $return = $this->get('router')->generate('user');
+            } else {
+                $return = $this->request->getRequestUri();
+            }
 
-		#------------------------------
-		# Portal display order
-		#------------------------------
+            return $this->renderLoginOrPermissionError($return);
+        }
 
-		if (!$tpl_globals->getVariable('portal_tabs_order')) {
-			$val = App::getSetting('user.portal_tabs_order');
+        #------------------------------
+        # Portal display order
+        #------------------------------
 
-			if ($val) {
-				$val = explode(',', $val);
-				$val = \Orb\Util\Arrays::removeFalsey($val);
-			} else {
-				$val = array();
-			}
+        if (!$tpl_globals->getVariable('portal_tabs_order')) {
+            $val = App::getSetting('user.portal_tabs_order');
 
-			$val = array_merge($val, array(
-				'articles',
-				'news',
-				'feedback',
-				'downloads',
-				'newticket'
-			));
+            if ($val) {
+                $val = explode(',', $val);
+                $val = \Orb\Util\Arrays::removeFalsey($val);
+            } else {
+                $val = array();
+            }
 
-			$val = array_unique($val);
+            $val = array_merge($val, array(
+                'articles',
+                'news',
+                'feedback',
+                'downloads',
+                'newticket'
+            ));
 
-			$admin_controls = $tpl_globals->getVariable('admin_portal_controls');
-			foreach ($val as &$tabtype) {
-				switch ($tabtype) {
-					case 'news':
-						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_news') && $this->person->hasPerm('news.use')))) {
-							$tabtype = false;
-						}
-						break;
-					case 'articles':
-						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use')))) {
-							$tabtype = false;
-						}
-						break;
-					case 'feedback':
-						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use')))) {
-							$tabtype = false;
-						}
-						break;
-					case 'downloads':
-						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use')))) {
-							$tabtype = false;
-						}
-						break;
-					case 'newticket':
-						if (!($admin_controls || ($this->container->getSetting('user.portal_tab_tickets') && $this->person->hasPerm('tickets.use')))) {
-							$tabtype = false;
-						}
-						break;
-				}
-			}
+            $val = array_unique($val);
 
-			$val = \Orb\Util\Arrays::removeFalsey($val);
+            $admin_controls = $tpl_globals->getVariable('admin_portal_controls');
+            foreach ($val as &$tabtype) {
+                switch ($tabtype) {
+                    case 'news':
+                        if (!($admin_controls || ($this->container->getSetting('user.portal_tab_news') && $this->person->hasPerm('news.use')))) {
+                            $tabtype = false;
+                        }
+                        break;
+                    case 'articles':
+                        if (!($admin_controls || ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use')))) {
+                            $tabtype = false;
+                        }
+                        break;
+                    case 'feedback':
+                        if (!($admin_controls || ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use')))) {
+                            $tabtype = false;
+                        }
+                        break;
+                    case 'downloads':
+                        if (!($admin_controls || ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use')))) {
+                            $tabtype = false;
+                        }
+                        break;
+                    case 'newticket':
+                        if (!($admin_controls || ($this->container->getSetting('user.portal_tab_tickets') && $this->person->hasPerm('tickets.use')))) {
+                            $tabtype = false;
+                        }
+                        break;
+                }
+            }
 
-			$tpl_globals->setVariable('portal_tabs_order', $val);
-		}
+            $val = \Orb\Util\Arrays::removeFalsey($val);
 
-		$can_see_any_publish = false;
-		if ($this->container->getSetting('user.portal_tab_news') && $this->person->hasPerm('news.use')) {
-			$can_see_any_publish = true;
-		} elseif ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use')) {
-			$can_see_any_publish = true;
-		} elseif ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use')) {
-			$can_see_any_publish = true;
-		} elseif ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use')) {
-			$can_see_any_publish = true;
-		}
+            $tpl_globals->setVariable('portal_tabs_order', $val);
+        }
 
-		$tpl_globals->setVariable('can_see_any_publish', $can_see_any_publish);
+        $can_see_any_publish = false;
+        if ($this->container->getSetting('user.portal_tab_news') && $this->person->hasPerm('news.use')) {
+            $can_see_any_publish = true;
+        } elseif ($this->container->getSetting('user.portal_tab_articles') && $this->person->hasPerm('articles.use')) {
+            $can_see_any_publish = true;
+        } elseif ($this->container->getSetting('user.portal_tab_feedback') && $this->person->hasPerm('feedback.use')) {
+            $can_see_any_publish = true;
+        } elseif ($this->container->getSetting('user.portal_tab_downloads') && $this->person->hasPerm('downloads.use')) {
+            $can_see_any_publish = true;
+        }
 
-		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array(
-					'error' => 'invalid_request_token',
-					'redirect_login' => $this->generateUrl('agent_login')
-				);
+        $tpl_globals->setVariable('can_see_any_publish', $can_see_any_publish);
 
-				return $this->createJsonResponse($data, 403);
-			} else {
-				return $this->renderStandardError('The form you are trying to submit has expired. Please go back and try again.');
-			}
-		}
-	}
+        if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+            if ($this->request->isXmlHttpRequest()) {
+                $data = array(
+                    'error' => 'invalid_request_token',
+                    'redirect_login' => $this->generateUrl('agent_login')
+                );
 
-
-	/**
-	 * Method called after getting session. Meant to be used in controllers as a top-level check to see if they
-	 * can use a resource. Eg. can use articles.
-	 *
-	 * @return bool
-	 */
-	public function sectionPermissionCheck()
-	{
-		return true;
-	}
+                return $this->createJsonResponse($data, 403);
+            } else {
+                return $this->renderStandardError('The form you are trying to submit has expired. Please go back and try again.');
+            }
+        }
+    }
 
 
-	/**
-	 * Renders the login form if the user isn't logged in, or a standard permission error if they are already logged in.
-	 */
-	public function renderLoginOrPermissionError($return_url = '', $type = 'login')
-	{
-		if ($this->person->getId()) {
-			return $this->renderStandardError('@user.error.permission-denied');
-		}
+    /**
+     * Method called after getting session. Meant to be used in controllers as a top-level check to see if they
+     * can use a resource. Eg. can use articles.
+     *
+     * @return bool
+     */
+    public function sectionPermissionCheck()
+    {
+        return true;
+    }
 
 
-		$act = 'UserBundle:Login:index';
-		if ($type == 'reset') {
-			$act = 'UserBundle:Login:resetPassword';
-		} elseif ($type == 'register') {
-			$act = 'UserBundle:Register:register';
-		}
+    /**
+     * Renders the login form if the user isn't logged in, or a standard permission error if they are already logged in.
+     */
+    public function renderLoginOrPermissionError($return_url = '', $type = 'login')
+    {
+        if ($this->person->getId()) {
+            return $this->renderStandardError('@user.error.permission-denied');
+        }
 
-		return $this->forward($act, array(), array('return' => $return_url));
-	}
+        $act = 'UserBundle:Login:index';
+        if ($type == 'reset') {
+            $act = 'UserBundle:Login:resetPassword';
+        } elseif ($type == 'register') {
+            $act = 'UserBundle:Register:register';
+        }
 
+        return $this->forward($act, array(), array('return' => $return_url));
+    }
 
-	/**
-	 * Render a standard error message.
-	 *
-	 * @param string $error_message
-	 * @param string $error_title
-	 * @return Response
-	 */
-	public function renderStandardError($error_message = '', $error_title = '', $code = 200, array $vars = array())
-	{
-		if ($error_message AND $error_message[0] == '@') {
-			$error_message = App::getTranslator()->getPhraseText(substr($error_message, 1));
-		}
+    /**
+     * Render a standard error message.
+     *
+     * @param  string   $error_message
+     * @param  string   $error_title
+     * @return Response
+     */
+    public function renderStandardError($error_message = '', $error_title = '', $code = 200, array $vars = array())
+    {
+        if ($error_message AND $error_message[0] == '@') {
+            $error_message = App::getTranslator()->getPhraseText(substr($error_message, 1));
+        }
 
-		if ($error_title AND $error_title[0] == '@') {
-			$error_title = App::getTranslator()->getPhraseText(substr($error_title, 1));
-		}
+        if ($error_title AND $error_title[0] == '@') {
+            $error_title = App::getTranslator()->getPhraseText(substr($error_title, 1));
+        }
 
-		return $this->standardErrorResponse($error_message, $error_title, $code, $vars);
-	}
+        return $this->standardErrorResponse($error_message, $error_title, $code, $vars);
+    }
 
+    /**
+     * @param  string                                     $error_message
+     * @param  string                                     $error_title
+     * @param  int                                        $code
+     * @param  array                                      $vars
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())
+    {
+        $tpl_standard = 'UserBundle:Main:error-standard.html.twig';
+        $tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
 
-	/**
-	 * @param string $error_message
-	 * @param string $error_title
-	 * @param int $code
-	 * @param array $vars
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function standardErrorResponse($error_message = '', $error_title = '', $code = 200, array $vars = array())
-	{
-		$tpl_standard = 'UserBundle:Main:error-standard.html.twig';
-		$tpl_specific = "UserBundle:Main:error-{$code}.html.twig";
+        $tpl = $tpl_standard;
+        if (App::getTemplating()->exists($tpl_specific)) {
+            $tpl = $tpl_specific;
+        }
 
-		$tpl = $tpl_standard;
-		if (App::getTemplating()->exists($tpl_specific)) {
-			$tpl = $tpl_specific;
-		}
+        $vars = array_merge($vars, array(
+            'error_message' => $error_message,
+            'error_title'   => $error_title
+        ));
 
-		$vars = array_merge($vars, array(
-			'error_message' => $error_message,
-			'error_title'   => $error_title
-		));
+        $res = $this->render($tpl, $vars);
 
-		$res = $this->render($tpl, $vars);
+        $res->setStatusCode($code);
 
-		$res->setStatusCode($code);
+        return $res;
+    }
 
-		return $res;
-	}
-
-	/**
-	 * @return Response
-	 */
-	public function renderStandardTokenError()
-	{
-		return $this->renderStandardError('@user.error.expired-token');
-	}
+    /**
+     * @return Response
+     */
+    public function renderStandardTokenError()
+    {
+        return $this->renderStandardError('@user.error.expired-token');
+    }
 }

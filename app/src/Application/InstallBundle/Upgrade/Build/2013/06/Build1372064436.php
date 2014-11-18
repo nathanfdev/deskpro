@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1372064436 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Ensure object_lang has proper charset and collation");
-		$this->execMutateSql("ALTER TABLE `object_lang` CHARACTER SET = utf8, COLLATE = utf8_general_ci");
-	}
+    public function run()
+    {
+        $this->out("Ensure object_lang has proper charset and collation");
+        $this->execMutateSql("ALTER TABLE `object_lang` CHARACTER SET = utf8, COLLATE = utf8_general_ci");
+    }
 }

@@ -41,129 +41,129 @@ use Orb\Util\Arrays;
 
 class InstallerContext
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @var \Application\DeskPRO\App\Native\NativeApp
-	 */
-	private $native_app;
+    /**
+     * @var \Application\DeskPRO\App\Native\NativeApp
+     */
+    private $native_app;
 
-	/**
-	 * @var array
-	 */
-	private $raw_form;
+    /**
+     * @var array
+     */
+    private $raw_form;
 
-	/**
-	 * @var Usersource|null must be preset for "usersources" apps. null otherwise.
-	 */
-	private $usersource;
-
-
-	/**
-	 * @param DeskproContainer $container
-	 * @param NativeApp        $native_app
-	 * @param array            $raw_form
-	 * @param                  $usersource_type
-	 */
-	public function __construct(DeskproContainer $container, NativeApp $native_app = null, array $raw_form = array(), Usersource $usersource = null)
-	{
-		$this->container       = $container;
-		$this->native_app      = $native_app;
-		$this->raw_form        = $raw_form;
-		$this->usersource      = $usersource;
-	}
+    /**
+     * @var Usersource|null must be preset for "usersources" apps. null otherwise.
+     */
+    private $usersource;
 
 
-	/**
-	 * @return array
-	 */
-	public function getRawForm()
-	{
-		return $this->raw_form;
-	}
+    /**
+     * @param DeskproContainer $container
+     * @param NativeApp        $native_app
+     * @param array            $raw_form
+     * @param                  $usersource_type
+     */
+    public function __construct(DeskproContainer $container, NativeApp $native_app = null, array $raw_form = array(), Usersource $usersource = null)
+    {
+        $this->container       = $container;
+        $this->native_app      = $native_app;
+        $this->raw_form        = $raw_form;
+        $this->usersource      = $usersource;
+    }
 
 
-	/**
-	 * @param string $name
-	 * @return mixed
-	 */
-	public function getRawFormData($name)
-	{
-		return Arrays::getValue($this->raw_form, $name);
-	}
+    /**
+     * @return array
+     */
+    public function getRawForm()
+    {
+        return $this->raw_form;
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\AppInstance
-	 */
-	public function getNativeApp()
-	{
-		return $this->native_app;
-	}
+    /**
+     * @param  string $name
+     * @return mixed
+     */
+    public function getRawFormData($name)
+    {
+        return Arrays::getValue($this->raw_form, $name);
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\AppInstance
-	 */
-	public function getApp()
-	{
-		return $this->native_app->getApp();
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\AppInstance
+     */
+    public function getNativeApp()
+    {
+        return $this->native_app;
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\AppPackage
-	 */
-	public function getPackage()
-	{
-		return $this->native_app->getPackage();
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\AppInstance
+     */
+    public function getApp()
+    {
+        return $this->native_app->getApp();
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return $this->container;
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\AppPackage
+     */
+    public function getPackage()
+    {
+        return $this->native_app->getPackage();
+    }
 
 
-	/**
-	 * @return Usersource|null
-	 */
-	public function getUsersource()
-	{
-		return $this->usersource;
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\DBAL\Connection
-	 */
-	public function getDb()
-	{
-		return $this->container->getDb();
-	}
+    /**
+     * @return Usersource|null
+     */
+    public function getUsersource()
+    {
+        return $this->usersource;
+    }
 
 
-	/**
-	 * @return \Doctrine\ORM\EntityManager
-	 */
-	public function getEm()
-	{
-		return $this->container->getEm();
-	}
+    /**
+     * @return \Application\DeskPRO\DBAL\Connection
+     */
+    public function getDb()
+    {
+        return $this->container->getDb();
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Usersource\UsersourceManager
-	 */
-	public function getUsersourceManager()
-	{
-		return $this->container->getSystemService('usersource_manager');
-	}
+    /**
+     * @return \Doctrine\ORM\EntityManager
+     */
+    public function getEm()
+    {
+        return $this->container->getEm();
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\Usersource\UsersourceManager
+     */
+    public function getUsersourceManager()
+    {
+        return $this->container->getSystemService('usersource_manager');
+    }
 }

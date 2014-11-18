@@ -40,7 +40,7 @@ use Symfony\Bridge\Twig\Extension\TranslationExtension as BaseTranslationExtensi
  */
 class TranslationExtension extends BaseTranslationExtension
 {
-	public function trans($message, array $arguments = array(), $domain = "messages", $locale = null)
+    public function trans($message, array $arguments = array(), $domain = "messages", $locale = null)
     {
         return $message;
     }

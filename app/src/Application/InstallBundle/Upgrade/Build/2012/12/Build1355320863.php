@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355320863 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adjust Twitter stream column type");
-		$this->execMutateSql("ALTER TABLE `twitter_stream` CHANGE `data` `data` LONGBLOB NOT NULL COMMENT '(DC2Type:object)'");
-	}
+    public function run()
+    {
+        $this->out("Adjust Twitter stream column type");
+        $this->execMutateSql("ALTER TABLE `twitter_stream` CHANGE `data` `data` LONGBLOB NOT NULL COMMENT '(DC2Type:object)'");
+    }
 }

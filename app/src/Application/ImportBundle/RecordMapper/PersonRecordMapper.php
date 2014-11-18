@@ -35,72 +35,72 @@ use Doctrine\DBAL\Connection;
 
 class PersonRecordMapper implements RecordMapperInterface
 {
-	/**
-	 * @var \Doctrine\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * @var array
-	 */
-	private $cache = array();
-
-
-	/**
-	 * @param Connection $db
-	 */
-	public function __construct(Connection $db)
-	{
-		$this->db = $db;
-	}
+    /**
+     * @var array
+     */
+    private $cache = array();
 
 
-	/**
-	 * Returns person ID given an email address.
-	 *
-	 * @param mixed $value
-	 * @return int|null
-	 */
-	public function findIdFromValue($value)
-	{
-		$dataArray = $this->fetch($value);
-		
-		return isset($dataArray['id']) ? $dataArray['id'] : null;
-	}
-	
-	/**
-	 * Checks if the give person is an agent
-	 * 
-	 * @param string $email The email to check by
-	 * @return bool True if the given user is an agent and false otherwise
-	 */
-	public function checkIsAgent($email)
-	{
-		$dataArray = $this->fetch($email);
-		
-		return (bool) $dataArray['is_agent'];
-	}
-	
-	protected function fetch($email)
-	{
-		$query = 'SELECT people.id, people.is_agent, people_emails.email FROM people JOIN people_emails ON people.id = people_emails.person_id WHERE people_emails.email = ?';
-		
-		$email = strtolower($email);
+    /**
+     * @param Connection $db
+     */
+    public function __construct(Connection $db)
+    {
+        $this->db = $db;
+    }
 
-		if (!isset($this->cache[$email])) {
-			$result = $this->db->fetchAll($query, array($email));
-			
-			if (!$result || !isset($result[0])) {
-				return null;
-			}
-			
-			while (count($this->cache) >= 5000) {
-				array_shift($this->cache);
-			}
-			
-			$this->cache[$email] = $result[0];
-		}
-		
-		return $this->cache[$email];
-	}
+
+    /**
+     * Returns person ID given an email address.
+     *
+     * @param  mixed    $value
+     * @return int|null
+     */
+    public function findIdFromValue($value)
+    {
+        $dataArray = $this->fetch($value);
+
+        return isset($dataArray['id']) ? $dataArray['id'] : null;
+    }
+
+    /**
+     * Checks if the give person is an agent
+     *
+     * @param  string $email The email to check by
+     * @return bool   True if the given user is an agent and false otherwise
+     */
+    public function checkIsAgent($email)
+    {
+        $dataArray = $this->fetch($email);
+
+        return (bool) $dataArray['is_agent'];
+    }
+
+    protected function fetch($email)
+    {
+        $query = 'SELECT people.id, people.is_agent, people_emails.email FROM people JOIN people_emails ON people.id = people_emails.person_id WHERE people_emails.email = ?';
+
+        $email = strtolower($email);
+
+        if (!isset($this->cache[$email])) {
+            $result = $this->db->fetchAll($query, array($email));
+
+            if (!$result || !isset($result[0])) {
+                return null;
+            }
+
+            while (count($this->cache) >= 5000) {
+                array_shift($this->cache);
+            }
+
+            $this->cache[$email] = $result[0];
+        }
+
+        return $this->cache[$email];
+    }
 }

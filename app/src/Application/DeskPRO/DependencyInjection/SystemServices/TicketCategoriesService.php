@@ -39,10 +39,11 @@ use Application\DeskPRO\Tickets\TicketCategories;
 
 class TicketCategoriesService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$x = new TicketCategories($container->getEm());
-		$x->setDefaultCategoryPreference($container->getSetting('core.default_ticket_cat'));
-		return $x;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $x = new TicketCategories($container->getEm());
+        $x->setDefaultCategoryPreference($container->getSetting('core.default_ticket_cat'));
+
+        return $x;
+    }
 }

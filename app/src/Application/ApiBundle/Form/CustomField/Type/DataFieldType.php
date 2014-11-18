@@ -34,21 +34,20 @@
 
 namespace Application\ApiBundle\Form\CustomField\Type;
 
-use Application\DeskPRO\App;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class DataFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('usersource_id', 'text', array('required' => false));
-		$builder->add('field_name', 'text', array('required' => false));
-	}
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('usersource_id', 'text', array('required' => false));
+        $builder->add('field_name', 'text', array('required' => false));
+    }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DataField',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\DataField',
+        );
+    }
 }

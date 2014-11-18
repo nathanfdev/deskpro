@@ -30,7 +30,7 @@ $container->setParameter('templating.engine.twig.class', 'Application\\DeskPRO\\
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Twig\\Extension\\TemplatingExtension');
 $definition->setArguments(array(
-	new Reference('service_container')
+    new Reference('service_container')
 ));
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_templating', $definition);
@@ -39,7 +39,7 @@ $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
 $definition->setArguments(array(
-	new Reference('service_container')
+    new Reference('service_container')
 ));
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
@@ -48,7 +48,7 @@ $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\UserBundle\\Twig\\Extension\\UserTemplatingExtension');
 $definition->setArguments(array(
-	new Reference('service_container')
+    new Reference('service_container')
 ));
 $definition->addTag('twig.extension', array());
 $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
@@ -57,7 +57,7 @@ $container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');
 $definition->setArguments(array(
-	'%doctrine.dbal.connection_factory.types%'
+    '%doctrine.dbal.connection_factory.types%'
 ));
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
 $container->setDefinition('doctrine.dbal.connection_factory', $definition);
@@ -82,50 +82,47 @@ $container->setDefinition('deskpro.core.translate_loader', $definition);
 
 // Now create the translate object
 $definition = new Definition('Application\\DeskPRO\\Translate\\Translate', array(
-	new Reference('deskpro.core.translate_loader'),
-	new Reference('event_dispatcher')
+    new Reference('deskpro.core.translate_loader'),
+    new Reference('event_dispatcher')
 ));
 $container->setDefinition('deskpro.core.translate', $definition);
-
 
 ############################################################################
 # Framework Configuration
 ############################################################################
 
 $container->loadFromExtension('framework', array(
-	'router' => array(
-		'resource' => DP_ROOT.'/sys/config/install/routing.php'
-	),
-	'secret' => 'mube224etsmhxky1gvwixc4b',
-	'templating' => array(
-		'engines' => array('php'),
-		'assets_base_urls' => 'CONFIG_HTTP'
-	),
-	'validation' => array('enabled' => true),
-	'form' => array('enabled' => true)
+    'router' => array(
+        'resource' => DP_ROOT.'/sys/config/install/routing.php'
+    ),
+    'secret' => 'mube224etsmhxky1gvwixc4b',
+    'templating' => array(
+        'engines' => array('php'),
+        'assets_base_urls' => 'CONFIG_HTTP'
+    ),
+    'validation' => array('enabled' => true),
+    'form' => array('enabled' => true)
 ));
-
 
 ############################################################################
 # Doctrine Configuration
 ############################################################################
 
 $container->loadFromExtension('doctrine', array(
-	'orm' => array(
-		'auto_generate_proxy_classes' => false,
-		'default_entity_manager' => 'default',
-		'entity_managers' => array(
-			'default' => array('mappings' => array('DeskPRO' => array('type' => 'staticphp')), 'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory')
-		)
-	),
-	'dbal' => array(
-		'default_connection' => 'default',
-		'connections' => array(
-			'default' => array('host' => 'from_user_config.db', 'logging' => true)
-		)
-	)
+    'orm' => array(
+        'auto_generate_proxy_classes' => false,
+        'default_entity_manager' => 'default',
+        'entity_managers' => array(
+            'default' => array('mappings' => array('DeskPRO' => array('type' => 'staticphp')), 'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory')
+        )
+    ),
+    'dbal' => array(
+        'default_connection' => 'default',
+        'connections' => array(
+            'default' => array('host' => 'from_user_config.db', 'logging' => true)
+        )
+    )
 ));
-
 
 ############################################################################
 # DeskPRO Configuration
@@ -134,4 +131,3 @@ $container->loadFromExtension('doctrine', array(
 $container->loadFromExtension('install', array(
 
 ));
-

@@ -46,94 +46,86 @@ use Application\PortalBundle\Theme\ThemeInterface;
  */
 class BrandContainer
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Brand
-	 */
-	private $brand;
+    /**
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    private $brand;
 
-	/**
-	 * @var \Application\DeskPRO\NewSettings\SettingsBag
-	 */
-	private $settings;
+    /**
+     * @var \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    private $settings;
 
-	/**
-	 * @var \Application\PortalBundle\Theme\ThemeResolver
-	 */
-	private $theme_resolver;
+    /**
+     * @var \Application\PortalBundle\Theme\ThemeResolver
+     */
+    private $theme_resolver;
 
-	/**
-	 * @var \Application\PortalBundle\Theme\ThemeInterface
-	 */
-	private $theme;
+    /**
+     * @var \Application\PortalBundle\Theme\ThemeInterface
+     */
+    private $theme;
 
+    public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver)
+    {
+        $this->brand          = $brand;
+        $this->settings       = $settings;
+        $this->theme_resolver = $theme_resolver;
+    }
 
-	public function __construct(Brand $brand, SettingsBag $settings, ThemeResolver $theme_resolver)
-	{
-		$this->brand          = $brand;
-		$this->settings       = $settings;
-		$this->theme_resolver = $theme_resolver;
-	}
+    /**
+     * @param $setting_name
+     * @return mixed
+     */
+    public function getSetting($setting_name)
+    {
+        return $this->getSettings()->get($setting_name);
+    }
 
+    /**
+     * @return Brand
+     */
+    public function getBrand()
+    {
+        return $this->brand;
+    }
 
-	/**
-	 * @param $setting_name
-	 * @return mixed
-	 */
-	public function getSetting($setting_name)
-	{
-		return $this->getSettings()->get($setting_name);
-	}
+    /**
+     * @return ThemeInterface
+     */
+    public function getTheme()
+    {
+        return $this->theme ? $this->theme : $this->theme = $this->theme_resolver->getThemeById($this->getBrand()->theme_id);
+    }
 
+    /**
+     * @return SettingsBag
+     */
+    public function getSettings()
+    {
+        return $this->settings;
+    }
 
-	/**
-	 * @return Brand
-	 */
-	public function getBrand()
-	{
-		return $this->brand;
-	}
+    /**
+     * @param $controller
+     * @return null|string
+     */
+    public function resolveController($controller)
+    {
+        return $this->theme_resolver->controller($this->getTheme(), $controller);
+    }
 
+    /**
+     * @param $name
+     * @return string|null
+     */
+    public function resolveTemplatePath($name)
+    {
+        return $this->theme_resolver->templatePath($this->getTheme(), $name);
+    }
 
-	/**
-	 * @return ThemeInterface
-	 */
-	public function getTheme()
-	{
-		return $this->theme ? $this->theme : $this->theme = $this->theme_resolver->getThemeById($this->getBrand()->theme_id);
-	}
-
-
-	/**
-	 * @return SettingsBag
-	 */
-	public function getSettings()
-	{
-		return $this->settings;
-	}
-
-
-	/**
-	 * @param $controller
-	 * @return null|string
-	 */
-	public function resolveController($controller)
-	{
-		return $this->theme_resolver->controller($this->getTheme(), $controller);
-	}
-
-
-	/**
-	 * @param $name
-	 * @return string|null
-	 */
-	public function resolveTemplatePath($name)
-	{
-		return $this->theme_resolver->templatePath($this->getTheme(), $name);
-	}
-
-
-	public function renderTag($tag_name, array $arguments)
-	{
-		return $this->theme_resolver->processTag($this->getTheme(), $tag_name, $arguments);
-	}
+    public function renderTag($tag_name, array $arguments)
+    {
+        return $this->theme_resolver->processTag($this->getTheme(), $tag_name, $arguments);
+    }
 }

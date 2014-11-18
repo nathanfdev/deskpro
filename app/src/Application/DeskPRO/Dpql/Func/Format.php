@@ -47,85 +47,85 @@ use Application\DeskPRO\Dpql\Statement\Part\Prepared;
  */
 class Format extends AbstractFunc
 {
-	/**
-	 * Prepares the function for use, including validating that the usage is valid.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section Name of the section usage is in (select, where, split, group, order)
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
-	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
-	 */
-	public function prepare(
-		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	)
-	{
-		if (count($this->_arguments) < 2) {
-			throw new Exception('FORMAT() requires at least 2 arguments.');
-		}
+    /**
+     * Prepares the function for use, including validating that the usage is valid.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section   Name of the section usage is in (select, where, split, group, order)
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack     Parent parts
+     * @param \Application\DeskPRO\Dpql\SqlSelect                     $select    Select being built up
+     * @param \Application\DeskPRO\Dpql\ResultHandler                 $result
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+     */
+    public function prepare(
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+    )
+    {
+        if (count($this->_arguments) < 2) {
+            throw new Exception('FORMAT() requires at least 2 arguments.');
+        }
 
-		$arguments = $this->_arguments;
-		$value = array_shift($arguments);
-		$type = array_shift($arguments);
-		$typeLiteral = $this->_toLiteral($type);
+        $arguments = $this->_arguments;
+        $value = array_shift($arguments);
+        $type = array_shift($arguments);
+        $typeLiteral = $this->_toLiteral($type);
 
-		$argNames = array();
-		$argLiterals = array();
-		foreach ($arguments AS $argument) {
-			$prepped = $argument->prepare($statement, $section, $stack, $select, $result);
-			$argNames[] = $prepped->name();
-			$argLiterals[] = $this->_toLiteral($argument);
-		}
+        $argNames = array();
+        $argLiterals = array();
+        foreach ($arguments AS $argument) {
+            $prepped = $argument->prepare($statement, $section, $stack, $select, $result);
+            $argNames[] = $prepped->name();
+            $argLiterals[] = $this->_toLiteral($argument);
+        }
 
-		$preppedValue = $value->prepare($statement, $section, $stack, $select, $result);
-		$preppedType = $type->prepare($statement, $section, $stack, $select, $result);
+        $preppedValue = $value->prepare($statement, $section, $stack, $select, $result);
+        $preppedType = $type->prepare($statement, $section, $stack, $select, $result);
 
-		if ($argNames) {
-			$argNameOutput = ', ' . implode(', ', $argNames);
-		} else {
-			$argNameOutput = '';
-		}
+        if ($argNames) {
+            $argNameOutput = ', ' . implode(', ', $argNames);
+        } else {
+            $argNameOutput = '';
+        }
 
-		$name = 'FORMAT(' . $preppedValue->name() . ', ' . $preppedType->name() . $argNameOutput . ')';
+        $name = 'FORMAT(' . $preppedValue->name() . ', ' . $preppedType->name() . $argNameOutput . ')';
 
-		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
-			use ($typeLiteral, $argLiterals)
-		{
-			if ($value === null) {
-				return $valueRenderer->renderValue(null, 'string');
-			}
+        $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($typeLiteral, $argLiterals) {
+            if ($value === null) {
+                return $valueRenderer->renderValue(null, 'string');
+            }
 
-			switch (strtolower($typeLiteral)) {
-				case 'number':
-					if ($argLiterals) {
-						return $valueRenderer->escapeValue(number_format($value, $argLiterals[0]));
-					}
-					break;
+            switch (strtolower($typeLiteral)) {
+                case 'number':
+                    if ($argLiterals) {
+                        return $valueRenderer->escapeValue(number_format($value, $argLiterals[0]));
+                    }
+                    break;
 
-				case 'date':
-					if ($argLiterals) {
-						$tz = App::getCurrentPerson()->getTimezone();
-						try {
-							$date = new \DateTime($value, new \DateTimeZone($tz));
-							return $valueRenderer->escapeValue($date->format($argLiterals[0]));
-						} catch (\Exception $e) {
-							return $valueRenderer->escapeValue($value);
-						}
-					}
-					break;
+                case 'date':
+                    if ($argLiterals) {
+                        $tz = App::getCurrentPerson()->getTimezone();
+                        try {
+                            $date = new \DateTime($value, new \DateTimeZone($tz));
 
-				case 'percent':
-					$decimals = isset($argLiterals[0]) ? $argLiterals[0] : 2;
-					return $valueRenderer->escapeValue(number_format($value * 100, $decimals) . '%');
-			}
+                            return $valueRenderer->escapeValue($date->format($argLiterals[0]));
+                        } catch (\Exception $e) {
+                            return $valueRenderer->escapeValue($value);
+                        }
+                    }
+                    break;
 
-			return $valueRenderer->renderValue($value, $typeLiteral);
-		};
+                case 'percent':
+                    $decimals = isset($argLiterals[0]) ? $argLiterals[0] : 2;
 
-		return new Prepared($preppedValue->sql(), $name, false, $renderer);
-	}
+                    return $valueRenderer->escapeValue(number_format($value * 100, $decimals) . '%');
+            }
+
+            return $valueRenderer->renderValue($value, $typeLiteral);
+        };
+
+        return new Prepared($preppedValue->sql(), $name, false, $renderer);
+    }
 }

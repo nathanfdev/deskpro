@@ -34,13 +34,13 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
-use Application\DeskPRO\App;
 
 class SettingFiles
 {
-	public function getAllSettings()
-	{
-		$settings = require(DP_ROOT.'/sys/config/settings.php');
-		return $settings;
-	}
+    public function getAllSettings()
+    {
+        $settings = require(DP_ROOT.'/sys/config/settings.php');
+
+        return $settings;
+    }
 }

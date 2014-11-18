@@ -38,97 +38,97 @@ use Application\DeskPRO\Entity\SendmailQueue;
 
 class SendmailUtil
 {
-	public static function rewriteFromAddress(SendmailQueue $sendmail, $from_address)
-	{
-		$data = App::getContainer()->getBlobStorage()->copyBlobRecordToString($sendmail->blob);
+    public static function rewriteFromAddress(SendmailQueue $sendmail, $from_address)
+    {
+        $data = App::getContainer()->getBlobStorage()->copyBlobRecordToString($sendmail->blob);
 
-		// A DeskPRO queue job
-		// We have to rewrite it a bit and update the smtp data
-		if ($sendmail->blob->filename == 'sendmail.job') {
+        // A DeskPRO queue job
+        // We have to rewrite it a bit and update the smtp data
+        if ($sendmail->blob->filename == 'sendmail.job') {
 
-			$mode = 0;
-			$pre = array();
-			$json = array();
-			$email = array();
+            $mode = 0;
+            $pre = array();
+            $json = array();
+            $email = array();
 
-			$old_from = $sendmail->from_address;
-			$new_from = $from_address;
+            $old_from = $sendmail->from_address;
+            $new_from = $from_address;
 
-			$data = explode("\n", $data);
-			while (($l = array_shift($data)) !== null) {
-				if ($mode == 0) {
-					if ($l == "") {
-						$mode++;
-					} else {
-						$pre[] = $l;
-					}
-				} elseif ($mode == 1) {
-					if ($l == "") {
-						$mode++;
-					} else {
-						$json[] = $l;
-					}
-				} else {
-					if ($l == "") {
-						$mode++;
-					}
+            $data = explode("\n", $data);
+            while (($l = array_shift($data)) !== null) {
+                if ($mode == 0) {
+                    if ($l == "") {
+                        $mode++;
+                    } else {
+                        $pre[] = $l;
+                    }
+                } elseif ($mode == 1) {
+                    if ($l == "") {
+                        $mode++;
+                    } else {
+                        $json[] = $l;
+                    }
+                } else {
+                    if ($l == "") {
+                        $mode++;
+                    }
 
-					if ($mode < 3) {
-						$l = str_replace($old_from, $new_from, $l);
-						if (preg_match('#^From: #', $l)) {
-							$l = "From: " . $new_from;
-						} elseif (preg_match('#^Reply-To: #', $l)) {
-							$l = "Reply-To: " . $new_from;
-						}
-					}
+                    if ($mode < 3) {
+                        $l = str_replace($old_from, $new_from, $l);
+                        if (preg_match('#^From: #', $l)) {
+                            $l = "From: " . $new_from;
+                        } elseif (preg_match('#^Reply-To: #', $l)) {
+                            $l = "Reply-To: " . $new_from;
+                        }
+                    }
 
-					$email[] = $l;
-				}
-			}
+                    $email[] = $l;
+                }
+            }
 
-			$json = json_decode(implode("\n", $json), true);
-			$json['from_addresses'] = array($new_from);
+            $json = json_decode(implode("\n", $json), true);
+            $json['from_addresses'] = array($new_from);
 
-			$account = App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_from, 'is_enabled | with_transport');
-			if (!$account) {
-				$account = App::$container->getEmailAccountManager()->getPrimaryTicketAccountWithFallback();
-			}
-			$use_tr = App::$container->getEmailAccountManager()->getTransportForAccount($account);
-			unset($json['smtp_options']);
+            $account = App::$container->getEmailAccountManager()->findAccountForEmailAddress($new_from, 'is_enabled | with_transport');
+            if (!$account) {
+                $account = App::$container->getEmailAccountManager()->getPrimaryTicketAccountWithFallback();
+            }
+            $use_tr = App::$container->getEmailAccountManager()->getTransportForAccount($account);
+            unset($json['smtp_options']);
 
-			if ($use_tr && $smtp_options = $use_tr->getSmtpOptions()) {
-				$json['smtp_options'] = $smtp_options;
-			}
+            if ($use_tr && $smtp_options = $use_tr->getSmtpOptions()) {
+                $json['smtp_options'] = $smtp_options;
+            }
 
-			$data = implode("\n", $pre) . "\n\n" . json_encode($json) . "\n\n" . implode("\n", $email);
+            $data = implode("\n", $pre) . "\n\n" . json_encode($json) . "\n\n" . implode("\n", $email);
 
-		// A serialised message
-		// We can just change the from in the object. The SMTP info is selected at the time its sent
-		} else {
+        // A serialised message
+        // We can just change the from in the object. The SMTP info is selected at the time its sent
+        } else {
 
-			$message = @unserialize($data);
+            $message = @unserialize($data);
 
-			// A bug could result in the message being double encoded
-			if ($message && !is_object($message)) {
-				$message = @unserialize($message);
-			}
+            // A bug could result in the message being double encoded
+            if ($message && !is_object($message)) {
+                $message = @unserialize($message);
+            }
 
-			$message->setFrom($from_address);
-			$data = serialize($message);
-		}
+            $message->setFrom($from_address);
+            $data = serialize($message);
+        }
 
-		// Delete old blob
-		$old_filename = $sendmail->blob->filename;
-		App::getContainer()->getBlobStorage()->deleteBlobRecord($sendmail->blob);
+        // Delete old blob
+        $old_filename = $sendmail->blob->filename;
+        App::getContainer()->getBlobStorage()->deleteBlobRecord($sendmail->blob);
 
-		// Create new blob
-		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString($data, $old_filename, 'plain/text');
-		$sendmail->blob = $blob;
+        // Create new blob
+        $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString($data, $old_filename, 'plain/text');
+        $sendmail->blob = $blob;
 
-		$sendmail->setFromAddress($from_address);
+        $sendmail->setFromAddress($from_address);
 
-		App::getOrm()->persist($blob);
-		App::getOrm()->persist($sendmail);
-		App::getOrm()->flush();
-	}
+        App::getOrm()->persist($blob);
+        App::getOrm()->persist($sendmail);
+        App::getOrm()->flush();
+    }
 }
