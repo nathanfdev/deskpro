@@ -122,7 +122,7 @@ class UsersourceAuthAdapterFactory
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
-			$route_type = 'portal';
+            $route_type = 'portal';
             if ($this->isAgentInterface($useInterface)) {
                 $route_type = 'agent';
             }
@@ -155,7 +155,7 @@ class UsersourceAuthAdapterFactory
         }
 
         if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
-			$auth_state = new SessionWrapper($this->session);
+            $auth_state = new SessionWrapper($this->session);
             $adapter->setStateHandler($auth_state);
         }
 

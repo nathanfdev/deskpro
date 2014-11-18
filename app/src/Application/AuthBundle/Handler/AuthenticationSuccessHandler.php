@@ -70,4 +70,3 @@ class AuthenticationSuccessHandler extends DefaultAuthenticationSuccessHandler i
         $this->container = $container;
     }
 }
- 

@@ -149,7 +149,7 @@ class Saml extends AbstractCallbackAdatper implements SsoCapableInterface, Ifram
     /**
      * {@inheritdoc}
      */
-	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null)
+    public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null)
     {
         if ($this->logger) {
             $this->logger->log(

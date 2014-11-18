@@ -45,13 +45,13 @@ interface SsoLoginActionInterface
 
     /**
      * TODO: Depending on a controller is odd, this should be cleaned up eventually
-	 * TODO: no current implementers actually use this $controller arg. should replace with $request instead.
+     * TODO: no current implementers actually use this $controller arg. should replace with $request instead.
      *
      *
      * @param  \Application\DeskPRO\Controller\AbstractController $controller
      * @return \Orb\Auth\Result
      */
-	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null);
+    public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null);
 
     /**
      * Return true if the user is authenticated via a background js (iframe) and you want to signal that

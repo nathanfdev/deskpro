@@ -34,7 +34,6 @@
 
 namespace Orb\Auth\StateHandler;
 
-use Symfony\Component\HttpFoundation\Session\Attribute\AttributeBag;
 use Symfony\Component\HttpFoundation\Session\Session;
 
 /**
@@ -42,90 +41,90 @@ use Symfony\Component\HttpFoundation\Session\Session;
  */
 class SessionWrapper implements StateHandlerInterface
 {
-	/**
-	 * @var Session
-	 */
-	protected $session;
+    /**
+     * @var Session
+     */
+    protected $session;
 
-	/**
-	 * The method on the state object that we can call to clear state.
-	 * @var string
-	 */
-	protected $_clear_state_method = null;
+    /**
+     * The method on the state object that we can call to clear state.
+     * @var string
+     */
+    protected $_clear_state_method = null;
 
-	/**
-	 * A prefix to prefix all keys with
-	 * @var string
-	 */
-	protected $_prefix;
+    /**
+     * A prefix to prefix all keys with
+     * @var string
+     */
+    protected $_prefix;
 
-	/**
-	 * @param Session $state_obj the symfony session object
-	 */
-	public function __construct(Session $state_obj, $prefix = 'state_obj')
-	{
-		$this->session = $state_obj;
+    /**
+     * @param Session $state_obj the symfony session object
+     */
+    public function __construct(Session $state_obj, $prefix = 'state_obj')
+    {
+        $this->session = $state_obj;
         $this->setPrefix($prefix);
-	}
+    }
 
 
-	/**
-	 * Set the key prefix
-	 *
-	 * @param string $prefix
-	 * @return void
-	 */
-	public function setPrefix($prefix)
-	{
-		$this->_prefix = $prefix;
-	}
+    /**
+     * Set the key prefix
+     *
+     * @param  string $prefix
+     * @return void
+     */
+    public function setPrefix($prefix)
+    {
+        $this->_prefix = $prefix;
+    }
 
 
-	/**
-	 * If the object has it's own clear method, then you can set it's method name
-	 * here that will be called with clearState().
-	 *
-	 * Optionally $method can be a callback
-	 *
-	 * @param string $method The name of the method on the state object to call when clearing state
-	 * @return void
-	 */
-	public function setClearStateMethod($method)
-	{
+    /**
+     * If the object has it's own clear method, then you can set it's method name
+     * here that will be called with clearState().
+     *
+     * Optionally $method can be a callback
+     *
+     * @param  string $method The name of the method on the state object to call when clearing state
+     * @return void
+     */
+    public function setClearStateMethod($method)
+    {
         // we know how to clear the session storage
-	}
+    }
 
 
-	/**
-	 * Clears all state data, or resets back into its initial state.
-	 *
-	 * @return void
-	 */
-	public function clearState()
-	{
+    /**
+     * Clears all state data, or resets back into its initial state.
+     *
+     * @return void
+     */
+    public function clearState()
+    {
         $this->getSessionBag()->clear();
-	}
+    }
 
 
-	public function offsetUnset($offset)
-	{
-		$this->getSessionBag()->remove($this->addPrefix($offset));
-	}
+    public function offsetUnset($offset)
+    {
+        $this->getSessionBag()->remove($this->addPrefix($offset));
+    }
 
-	public function offsetSet($offset, $value)
-	{
+    public function offsetSet($offset, $value)
+    {
         $this->getSessionBag()->set($this->addPrefix($offset), $value);
-	}
+    }
 
-	public function offsetGet($offset)
-	{
-		return $this->getSessionBag()->get($this->addPrefix($offset));
-	}
+    public function offsetGet($offset)
+    {
+        return $this->getSessionBag()->get($this->addPrefix($offset));
+    }
 
-	public function offsetExists($offset)
-	{
-		return $this->getSessionBag()->has($this->addPrefix($offset));
-	}
+    public function offsetExists($offset)
+    {
+        return $this->getSessionBag()->has($this->addPrefix($offset));
+    }
 
     protected function addPrefix($name)
     {

@@ -114,6 +114,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
             case self::ABSOLUTE_URL:
                 $url = Url::createFromUrl($generated);
                 $url->getPath()->prepend($urlCode);
+
                 return (string) $url;
             default:
                 throw new \InvalidArgumentException(
