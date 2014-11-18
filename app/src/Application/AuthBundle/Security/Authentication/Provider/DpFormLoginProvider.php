@@ -77,6 +77,10 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
      */
     public function authenticate(TokenInterface $token)
     {
+        if ($token->isAuthenticated()) {
+            return $token;
+        }
+
         /** @var Usersource $usersource */
         /** @var Result $authResult */
         $auth_manager = $this->dp_auth_manager;

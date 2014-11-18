@@ -38,6 +38,7 @@ namespace Application\LanguageBundle\Routing;
 use Application\DeskPRO\Entity\Language;
 use Application\LanguageBundle\Language\LanguageManager;
 use Application\LanguageBundle\EventListener\LastLanguageListener;
+use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
@@ -102,18 +103,21 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
             $language_stack->pushDefault();
         }
 
-        // TODO: note the $referenceType - we need to do much more involved  inspection/manipulation
+        $urlCode = $this->language_manager->getLanguageStack()->getActive()->getUrlCode();
         switch ($referenceType) {
             case self::ABSOLUTE_PATH:
                 return sprintf(
                     '/%s%s',
-                    $this->language_manager->getLanguageStack()->getActive()->getUrlCode(),
+                    $urlCode,
                     $generated
                 );
-
+            case self::ABSOLUTE_URL:
+                $url = Url::createFromUrl($generated);
+                $url->getPath()->prepend($urlCode);
+                return (string) $url;
             default:
                 throw new \InvalidArgumentException(
-                    'we only support generating ABSOLUTE PATH urls at this time, see LanguageBundle\'s Router'
+                    'we only support generating ABSOLUTE_PATH or ABSOLUTE_URL urls at this time, see LanguageBundle\'s Router'
                 );
         }
     }

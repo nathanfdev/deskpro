@@ -97,7 +97,11 @@ class DpPersonUserProvider implements UserProviderInterface
      */
     public function refreshUser(UserInterface $user)
     {
-        return $this->person_repo->refresh($this->person_repo->find($user->getId()));
+        if (!$user instanceof Person) {
+            throw new \InvalidArgumentException('the DpPersonUserProvider requires a Person instance for the UserInterface');
+        }
+
+        return $this->person_repo->find($user->id);
     }
 
     /**

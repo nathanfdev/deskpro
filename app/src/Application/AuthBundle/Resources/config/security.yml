@@ -43,3 +43,5 @@ services:
         class: Application\AuthBundle\Security\Firewall\DpAuthListener
         parent: security.authentication.listener.abstract
         abstract: true
+        calls:
+            - [ setContainer, [@service_container] ]
