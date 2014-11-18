@@ -70,6 +70,7 @@ app/sys/Resources/agent-perm-names.php
 /web/stylesheets/admin
 /web/stylesheets/report
 /app/sys/config/changed-files.php
+/app/sys/logs/dev.log
 
 # Place devs can use as scratch space
 /_dev
