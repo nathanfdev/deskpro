@@ -1,7 +1,8 @@
-{% if not is_granted('ROLE_USER') %}
+{% if not is_granted('ROLE_USER')  and auth_manager.isAuthVisible %}
 <div class="small-form">
     <h1>Log in</h1>
 
+    {% if auth_manager.isLoginFormVisible %}
     <form action="{{ path('portal_login_submit') }}" method="post">
         <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
         <label>
@@ -9,9 +10,11 @@
             <input type="text" placeholder="email@example.com" name="username">
         </label>
 
+        {% if auth_manager.isRememberMeEnabled %}
         <div class="permanent-login">
             <label>Stay Logged In? <input type="checkbox" name="remember_me"></label>
         </div>
+        {% endif %}
 
         <label>
             <span>Your password:</span>
@@ -19,11 +22,14 @@
         </label>
 
         <button>Log In</button>
+
+        {% if auth_manager.isForgotPasswordVisible %}
         <div class="secondary-action">
             <a href="#">Forgot your password?</a>
         </div>
-
+        {% endif %}
     </form>
+    {% endif %}
 
 
     <a href="#" class="button auth-one">OneLogin</a>

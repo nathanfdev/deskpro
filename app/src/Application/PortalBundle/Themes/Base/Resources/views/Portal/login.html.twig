@@ -2,48 +2,62 @@
 
 {% block page_content %}
 
-    {% set login_error = app.request.query.get('retry') == 'auth' %}
+    {% if auth_manager.isAuthVisible %}
 
-    <header class="section-header">
-        <h1>Log in to the support portal</h1>
-    </header>
+        <header class="section-header">
+            <h1>Log in to the support portal</h1>
+        </header>
 
-    {% if login_error %}
-        <!-- just using this until we get proper error alerts :) -->
-        <div class="error" style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
-            Bad Credentials. Please try again.
-        </div>
-    {% endif %}
-
-    <form class="form-ticket" action="{{ path('portal_login_submit') }}" method="post">
-        <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
-        <div class="column-half">
-            <div class="bucket">
-                <label class="title{% if login_error %} error{% endif %}">Your email:</label>
-                <input type="text" tabindex="1" placeholder="Email" name="username">
+        {% if login_error %}
+            <!-- just using this until we get proper error alerts :) -->
+            <div class="error"
+                 style="border: 2px solid black; background-color: firebrick;  color:black; font-weight:bold; display: block; padding:5px; margin: 8px;">
+                Bad Credentials. Please try again.
             </div>
-        </div>
-
-        <div class="column-half omega">
-            <div class="bucket">
-                <div class="form-meta form-meta-grey"><a href="#">Need a password reminder?</a></div>
-                <label class="title{% if login_error %} error{% endif %}">Your password:</label>
-                <input type="password" tabindex="2" placeholder="Your password" name="password">
-            </div>
-        </div>
+        {% endif %}
 
 
-        <div class="column-full">
-            <div class="bucket">
-                <button class="button" tabindex="3">Log In</button>
-                <div class="remember-me"><label for="remember_me"><input type="checkbox" name="remember_me"> Stay Logged In?</label></div>
-            </div>
-        </div>
+        {% if auth_manager.isLoginFormVisible %}
+            <form class="form-ticket" action="{{ path('portal_login_submit') }}" method="post">
+                <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
+
+                <div class="column-half">
+                    <div class="bucket">
+                        <label class="title{% if login_error %} error{% endif %}">Your email:</label>
+                        <input type="text" tabindex="1" placeholder="Email" name="username">
+                    </div>
+                </div>
+
+                <div class="column-half omega">
+                    <div class="bucket">
+
+                        {% if auth_manager.isForgotPasswordVisible %}
+                            <div class="form-meta form-meta-grey"><a href="#">Need a password reminder?</a></div>
+                        {% endif %}
+                        <label class="title{% if login_error %} error{% endif %}">Your password:</label>
+                        <input type="password" tabindex="2" placeholder="Your password" name="password">
+                    </div>
+                </div>
+
+                {% if auth_manager.isRememberMeEnabled %}
+                    <div class="column-full">
+                        <div class="bucket">
+                            <button class="button" tabindex="4">Log In</button>
+                            <div class="remember-me"><label for="remember_me">
+                                    <input tabindex="3" type="checkbox" name="remember_me">
+                                    Stay Logged In?
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                {% endif %}
+            </form>
+        {% endif %}
 
         <div class="column-full">
             <div class="bucket">
                 <div class="titled-header-left">
-                    <h2>Or use an external service</h2>
+                    <h2>Login with an external service</h2>
                 </div>
 
                 <button class="button auth auth-facebook"><i class="fa fa-facebook"></i> Facebook</button>
@@ -52,16 +66,17 @@
             </div>
         </div>
 
-        <div class="column-full">
-            <div class="bucket">
-                <div class="titled-header-left">
-                    <h2>Create a new account</h2>
+        {% if auth_manager.isRegistrationFormVisible %}
+            <div class="column-full">
+                <div class="bucket">
+                    <div class="titled-header-left">
+                        <h2>Create a new account</h2>
+                    </div>
+
+                    <button class="button button-secondary">Register</button>
                 </div>
-
-                <button class="button button-secondary">Register</button>
             </div>
-        </div>
+        {% endif %}
 
-    </form>
-
+    {% endif %}
 {% endblock page_content %}

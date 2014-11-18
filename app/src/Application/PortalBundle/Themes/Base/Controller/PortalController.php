@@ -67,7 +67,8 @@ class PortalController extends AbstractController
 			array(
 				'enabled_languages' => $language_manager->getEnabledLanguages(),
 				'current_language' => $language_manager->getLanguageStack()->getActive(),
-				'is_multi_language' => $language_manager->isMultiLanguagePortal()
+				'is_multi_language' => $language_manager->isMultiLanguagePortal(),
+				'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
 			)
 		);
 	}
@@ -97,14 +98,25 @@ class PortalController extends AbstractController
 		);
 	}
 
-    public function loginAction()
+    public function loginAction(Request $request)
     {
-        return $this->render('Theme:Portal:login.html.twig');
+        return $this->render(
+            'Theme:Portal:login.html.twig',
+            array(
+                'auth_manager' => $this->get('dp_authentication_manager.user'),
+                'login_error' => $request->get('retry') == 'auth'
+            )
+        );
     }
 
     public function loginSidebarAction()
     {
-        return $this->render('Theme:Portal:login_sidebar.html.twig');
+        return $this->render(
+            'Theme:Portal:login_sidebar.html.twig',
+            array(
+                'auth_manager' => $this->get('dp_authentication_manager.user')
+            )
+        );
     }
 
     public function userSidebarAction()
