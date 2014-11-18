@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Settings;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 
 
