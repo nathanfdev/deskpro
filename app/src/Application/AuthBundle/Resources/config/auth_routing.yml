@@ -1,0 +1,4 @@
+saml_sls:
+    path: /saml/sls/{usersource_id}
+saml_metadata:
+    path: /saml/metadata/{usersource_id}.xml

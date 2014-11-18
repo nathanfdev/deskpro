@@ -172,11 +172,11 @@ class UsersourceAuthAdapterFactory
 		if ($adapter instanceof SamlAdapterInterface) {
 			$adapter->setMetadataXmlUrl(
 				$this->router->generate(
-					'user_saml_metadata', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
+					'saml_metadata', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
 				));
 			$adapter->setSingleLogoutServiceUrl(
 				$this->router->generate(
-					'user_saml_sls', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
+					'saml_sls', array('usersource_id' => $usersource->id), RouterInterface::ABSOLUTE_URL
 				)
 			);
 		}

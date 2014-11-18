@@ -86,12 +86,12 @@ $collection->create('user_logout', array(
 	'controller'  => 'UserBundle:Login:logout',
 ));
 
-$collection->create('user_saml_sls', array(
+$collection->create('saml_sls', array(
 	'path'        => '/saml/sls/{usersource_id}',
 	'controller'  => 'UserBundle:Login:samlSingleLogoutService',
 ));
 
-$collection->create('user_saml_metadata', array(
+$collection->create('saml_metadata', array(
 	'path'        => '/saml/metadata/{usersource_id}.xml',
 	'controller'  => 'UserBundle:Login:samlMetadata',
 ));
@@ -100,6 +100,13 @@ $collection->create('user_login_authenticate_local', array(
 	'path'        => '/login/authenticate-password',
 	'controller'  => 'UserBundle:Login:authenticateLocal',
 	'defaults'    => array('usersource_id' => 0),
+));
+
+$collection->create('portal_login_authenticate', array(
+	'path'          => '/login/authenticate/{usersource_id}',
+	'controller'    => 'UserBundle:Login:authenticate',
+	'defaults'      => array('usersource_id' => 0),
+	'requirements'  => array('usersource_id' => '\\d+'),
 ));
 
 $collection->create('user_login_authenticate', array(
