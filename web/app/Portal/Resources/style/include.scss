@@ -1,0 +1,151 @@
+// World overwrites
+$world-background: #fff;
+$world-padding: 20px;
+
+// Main Scheme
+
+$page-background: darken($world-background, 3%);
+$fonts: "Ubuntu", helvetica, verdana, sans-serif;
+$divider-color: rgba(0, 0, 0, 0.1);
+$universal-left-padding: 10px; // Simple global left padding for elements inside other elements when we cant use a padding on the wrapper (say, if we need to use the full width, example: the live search results "boxes" need to be full width)
+$main-color: #3575bd;
+
+
+// Font sizes
+$font-small: 0.8em;
+$font-mid: 0.9em;
+$font-default: 1em;
+$font-large: 1.4em;
+
+// Font Colors
+$text-color: #606060;
+$text-color-darker: darken($text-color, 30%);
+$text-color-lighter: lighten($text-color, 15%);
+$text-faded: lighten($text-color, 20%);
+
+$link-color: darken($main-color, 10%);
+
+
+
+
+
+
+// Secondary Font Colors
+$grey: #e6e6e6;
+$red: #dc7575;
+$gold: #d0cf6e;
+$filter: #e0d5ad;
+$text-opacue: 0.5;
+
+// Generic Static Colors
+$color-twitter: #6eb9e4;
+$color-facebook: #4c6fab;
+
+// Use for placeholders, disabled, can be switched to rgba opacity safely
+$text-faded: #d4d4d4;
+
+
+
+// Buttons
+
+$button-color: $main-color;// Blue
+$button-text: $page-background;// #fff
+
+$button-color-secondary: #93d06e;// Green
+$button-color-secondary-darker: darken($button-color-secondary, 15%);
+
+// Secondary surface colors
+$surface-main: #f2f2ec;// Grey to yellow-ish
+$surface-secondary: #f6f6f6;// Grey
+
+
+
+
+
+
+
+
+// Generic use cases
+$button-grey: #e8e8e8;
+$button-text: $page-background;
+
+
+// Forms
+$form-input: lighten($page-background, 5%); //#f7f7f7;
+$form-border-color: #c0c0c0;// Could follow from $divider-color for a lot of cases
+
+
+// This is the marked text when filtering stuff
+$marked-search: #ffe47f;
+
+
+
+
+
+// Generic stuff - No need to change thise for color scheme
+
+// Default corners
+$border-radius-main: 4px;
+$border-radius-small: 2px;
+
+// Inner shadow for buttons that need it (usualy large buttons)
+$common-box-shadow-inner: inset 0px 0px 20px 10px rgba(0, 0, 0, 0.05);
+
+// Form paddings
+$form-padding-vertical: 0.75em;
+$form-padding-horizontal: 1em;
+
+
+/////////////////////////////////////////////////////////
+
+
+// Mixins
+
+// Button text color based on how dark the button color is
+@function set-button-text-color($color) {
+  @if (lightness( $color ) > 60) {
+    @return #000;
+  }
+  @else {
+    @return #fff;
+  }
+}
+
+@mixin whitespace {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+@mixin blank-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+@mixin generate-background-and-border($bg) {
+  background: $bg;
+  border: 0px;
+  border-bottom: 1px solid shade($bg, 15%);
+  border-radius: 2px;
+}
+
+
+@mixin make-this-a-button($bg, $text, $padding-vertical, $padding-horizontal) {
+  background: $bg;
+  border: 0px;
+  border-bottom: 1px solid shade($bg, 15%);
+  padding: $padding-vertical $padding-horizontal;
+  display: inline-block;
+  color: $text;
+  border-radius: 2px;
+  text-decoration: none;
+  line-height: 1em;
+  font-size: 0.9em;
+
+  &:hover {
+    background: shade($bg, 5%);
+    color: #fff;
+    border-bottom: 1px solid shade($bg, 15%);
+  }
+}
