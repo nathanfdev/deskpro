@@ -1,13 +1,19 @@
 {% extends 'Theme::layout.html.twig' %}
 {% import 'Theme:Articles:_macros.html.twig' as macros %}
 
+{# TODO #}
+
 {% block inner_content %}
     {{ macros.kb_article_cat_breadcrumbs(cat, cat.treeParents) }}
     {%  if cat.children|length > 0 %}
-        <p>There are {{ cat.children|length }} sub-categories</p>
-        {% for child in cat.children %}
-            {{ kb_cats_expander({ parent:child.id }) }}
-        {% endfor %}
+        <div style="background: #eee; padding: 10px;">
+            Sub-Categories:
+            <br/>
+            {% for child in cat.children %}
+                {{ knowledgebase({ parent:child.id }) }}
+            {% endfor %}
+            <br style="clear:both;"/>
+        </div>
     {% endif %}
     <ul>
         {% for article in pager.currentPageResults %}
