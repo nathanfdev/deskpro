@@ -2085,7 +2085,8 @@ $tab-border: $divider-color;
 //----------------------------------------------------------------------------------------------------------------------
 
 // Showing users & avatar styles
-.agent {
+
+.agent {// Overall user container
   display: inline-block;
   line-height: 1.2em;
   font-weight: 400;
@@ -2094,6 +2095,14 @@ $tab-border: $divider-color;
   &:hover {
     .remove-agent { display: block; }
   }
+
+  // Enable in case we need agent as a link
+  // text-decoration: none;
+  // &:hover {
+  //   border: 0;
+  //   padding: 0;
+  //   color: #333;
+  // }
 }
 
 .agent-info {
@@ -2116,11 +2125,24 @@ $tab-border: $divider-color;
   border-radius: 199px;
   margin-right: 5px;
   position: relative;
+  background: #cecece;
+  text-align: center;
+
+  i {
+    position: relative;
+    top: 6px;
+    color: #fff;
+  }
 
   &.agent-avatar-tiny {
     width: 25px;
     height: 25px;
     margin-left: 2px;
+  }
+
+  &.agent-avatar-mini {
+    width: 18px;
+    height: 18px;
   }
 
   &.agent-avatar-blank, &.agent-avatar-add {
@@ -2953,6 +2975,66 @@ hr.divider {
   margin-bottom: 15px;
 }
 
+
+.glossary-link {
+  border-bottom: 1px dotted $text-color;
+  text-decoration: none;
+  color: $text-color;
+}
+
+
+
+.tag-list {
+  border: 1px solid $divider-color;
+  border-radius: 2px;
+  display: inline-block;
+  margin-top: 10px;
+
+  .tag-list-header {
+    i {
+      position: absolute;
+      left: -10px;
+      top: 2px;
+      background: $page-background;
+      padding: 3px;
+    }
+  }
+
+
+
+  ul {
+    @include blank-list;
+    li {
+      display: inline-block;
+      position: relative;
+      vertical-align: middle;
+      padding: 0px 10px;
+      border-right: 1px solid $divider-color;
+      color: $text-faded;
+      font-size: 0.9em;
+
+      &:last-child {
+        border-right: 0px;
+      }
+    }
+
+    a {
+      color: $text-color-lighter;
+      text-decoration: none;
+    }
+
+    a:hover {
+      color: $text-color;
+    }
+  }
+}
+
+
+
+
+
+
+
 .popup-tiny {
   display: block;
   border: 1px solid $divider-color;
@@ -2994,6 +3076,10 @@ hr.divider {
     }
   }
 }
+
+
+
+
 
 .active-button-dropdown {
   position: absolute;
@@ -3062,6 +3148,8 @@ div.large-title {
   }
 }
 
+
+
 .header-buttons {
   font-size: 0.9em;
   float: right;
@@ -3074,17 +3162,26 @@ div.large-title {
     border: 1px solid $divider-color;
     padding: 0em 0.5em;
 
+    &:hover {
+      background: darken($surface-secondary, 10%);
+    }
+
+    &.unsubscribe {
+      background: darken($surface-secondary, 5%);
+    }
+
     i {
       font-size: 0.9em;
       vertical-align: middle;
       margin-left: 6px;
       margin-right: 2px;
-      color: $text-color-darker;
+      color: $text-color-lighter;
       position: relative;
       top: -1px;
     }
   }
 }
+
 
 // Not using variables here, need to be consistent everywhere
 .admin-bar {
@@ -3176,6 +3273,7 @@ div.large-title {
     text-decoration: none;
   }
 }
+
 
 .welcome-message {
   h1 {
@@ -3730,6 +3828,362 @@ table {
   }
 }
 
+//----------------------------------------------------------------------------------------------------------------------
+// kb-article
+//----------------------------------------------------------------------------------------------------------------------
+
+.kb-article {
+
+  header, footer {
+    @include clearfix;
+    a {
+      text-decoration: none;
+      color: $text-color;
+    }
+
+    h1 { margin-bottom: 10px; }
+    hr { margin: 30px 0px; }
+  }
+
+  header, .padded { padding-left: 10px; }
+
+
+  .header-button-container {
+    @include clearfix;
+    display: block;
+    width: 100%;
+    margin-top: 30px;
+    margin-bottom: 30px;
+    float: none;
+    border-bottom: 1px solid $divider-color;
+    position: relative;
+  }
+
+  .header-buttons {
+    position: absolute;
+    top: -12px;
+    right: 0px;
+    padding-left: 5px ;
+    background: $page-background
+
+  }
+
+
+  p {
+    margin-bottom: 10px;
+    line-height: 1.7em;
+    font-weight: 300;
+  }
+
+  .article-content {
+
+    img {
+      padding: 5px;
+      border: 1px solid $divider-color;
+      margin: 10px;
+    }
+
+    img.left {
+      float: left;
+      margin-left: 0px;
+      margin-right: 10px;
+      margin-bottom: 10px;
+    }
+
+    img.full {
+      width: 100%;
+      margin: 0px;
+      margin-bottom: 10px;
+    }
+  }
+
+  .article-meta {
+    color: $text-color-lighter;
+    font-size: 0.9em;
+
+    .updated {
+      margin-left: 10px
+    }
+
+    .agent-avatar {
+      margin-left: 4px;
+      margin-right: 4px;
+    }
+
+    span { margin-right: 10px; }
+    .comments { margin-left: 10px; }
+    i { margin-right: 2px; }
+    a { text-decoration: underline; }
+  }
+
+  .rate-article {
+    text-align: center;
+    margin: 30px 0px;
+
+    a {
+      display: inline-block;
+      color: #fff;
+      border-radius: 2px;
+      color: #fff;
+      text-decoration: none;
+      font-size: 0.9em;
+      line-height: 1.2em;
+      padding: 10px;
+      position: relative;
+
+    }
+
+    a:after {
+      content: " ";
+      display: block;
+      width: 0px;
+      border: 3px solid rgba(0, 0, 0, 0);
+      border-bottom: 3px solid #93d06e;
+      position: absolute;
+      top: -6px;
+      right: 18px;
+    }
+
+    .rate-up {
+      background: $button-color-secondary;
+      border-bottom: 1px solid darken($button-color-secondary, 20%);
+      &:hover { background: darken($button-color-secondary, 10%); }
+
+      span {
+        border-left: 1px solid $divider-color;
+        padding: 3px 10px;
+        margin-left: 10px;
+      }
+    }
+
+    .rate-down {
+      background: $red;
+      border-bottom: 1px solid darken($red, 20%);
+      &:hover { background: darken($red, 10%); }
+
+      &:after {
+        left: 20px;
+        border-bottom: 3px solid #dc7575;
+      }
+
+      span {
+        border-right: 1px solid $divider-color;
+        padding: 3px 10px;
+        margin-right: 10px;
+      }
+    }
+
+    .rated {
+      &:after {
+        left: 50%;
+      }
+    }
+  }
+
+
+
+
+  .article-extras {
+    padding: 10px 10px;
+    background: $surface-main;
+    border-radius: 2px;
+    margin-top: 20px;
+    font-weight: 100;
+    font-size: 0.9em;
+    border: 1px solid $divider-color;
+    border-bottom: 2px solid $divider-color;
+
+    strong {
+      font-weight: 500;
+    }
+
+    ul {
+      @include blank-list;
+    }
+
+    li {
+      &:before {
+        content: " ";
+        display: inline-block;
+        width: 5px;
+        height: 5px;
+        margin-right: 4px;
+        position: relative;
+        top: -2px;
+        background: darken($surface-main, 20%);
+        border-radius: 99px;
+      }
+    }
+  }
+
+
+
+  .related {
+
+    ul {
+      font-size: 1em;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      margin-top: 20px;
+
+      li {
+        margin-left: 5px;
+        margin-bottom: 5px;
+      }
+
+      a {
+        text-decoration: none;
+        color: $text-color;
+      }
+
+      .text-tag {
+        position: relative;
+        top: -1px;
+      }
+
+      i {
+        margin-right: 3px;
+        font-size: 0.85em;
+        position: relative;
+        top: -1px;
+      }
+    }
+  }
+
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// comments
+//----------------------------------------------------------------------------------------------------------------------
+
+.comment-box {
+
+
+  .single-comment {
+    @include clearfix;
+    margin-bottom: 20px;
+  }
+
+  .agent-response {
+    .blurb {
+      background: $surface-secondary;
+      border-left: 4px solid $button-color;
+    }
+  }
+
+  .comment-info, .comment-content {
+    float: left;
+  }
+
+  .comment-info {
+    width: 20%;
+    text-align: right;
+    line-height: 1.3em;
+  }
+
+  .comment-content {
+    width: 80%;
+  }
+
+  .avatar {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 5px;
+  }
+
+  strong {
+    font-weight: 500;
+    color: $text-color-darker;
+  }
+
+  .author {
+    display: block;
+  }
+
+  .date {
+    font-size: 0.9em;
+    color: $text-faded;
+  }
+
+  .blurb {
+    @include clearfix;
+    border-left: 1px solid $divider-color;
+    padding: 10px;
+    padding-left: 20px;
+    margin-left: 20px;
+
+    .response {
+      background: $surface-secondary;
+      border: 0px;
+      border-left: 4px solid $button-color;
+      border-radius: 0px;
+
+      span {
+        font-size: 1.15em;
+        font-weight: 400;
+      }
+    }
+  }
+
+  form {
+    textarea {
+      background: $page-background;
+      border: 1px solid $divider-color;
+      border-radius: 2px;
+      width: 100%;
+      min-height: 50px;
+      height: 50px;
+    }
+
+    textarea:focus {
+      height: 100px;
+      transition: all 0.5s ease;
+    }
+  }
+}
+
+
+.response {
+  background: $form-input;
+  border: 1px solid $divider-color;
+  border-radius: 4px;
+  padding: 5px 10px;
+  position: relative;
+  margin-left: 160px;
+  margin-top: 10px;
+
+  .response-meta {
+    position: absolute;
+    left: -160px;
+    width: 160px;
+    color: $text-color-lighter;
+    font-size: 0.85em;
+    text-align: right;
+    padding-right: 50px;
+    line-height: 1.5em;
+
+    span {
+      display: block;
+      color: $text-color;
+      font-size: 1.2em;
+      font-weight: 500;
+    }
+
+    .avatar {
+      display: block;
+      position: absolute;
+      right: 15px;
+      width: 22px;
+      height: 22px;
+      background-size: cover;
+      float: right;
+      border-radius: 199px;
+      margin-top: 7px;
+      margin-left: 10px;
+    }
+  }
+}
 
 //----------------------------------------------------------------------------------------------------------------------
 // ticketlist
@@ -4478,6 +4932,40 @@ table {
     position: absolute;
     top: -8px;
     left: 20px;
+  }
+}
+
+
+.glossary-tooltip {
+  position: absolute;
+  background: #fff;
+  border: 2px solid $text-color-darker;
+  border-radius: 4px;
+  display: block;
+  width: 380px;
+  padding: 10px;
+  font-weight: 300;
+
+
+  h1 {
+    font-size: 1.2em;
+    font-weight: 300;
+  }
+
+  h1, p {
+    padding-left: 10px;
+  }
+
+  &:before {
+    content: " ";
+    display: block;
+    width: 0px;
+    height: 0px;
+    border: 5px solid rgba(0, 0, 0, 0);
+    border-top: 5px solid $text-color-darker;
+    position: absolute;
+    bottom: -10px;
+    left: 10px;
   }
 }
 

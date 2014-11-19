@@ -4,7 +4,7 @@ $world-padding: 20px;
 
 // Main Scheme
 
-$page-background: #fff;
+$page-background: $world-background;
 $fonts: "Ubuntu", helvetica, verdana, sans-serif;
 $divider-color: rgba(0, 0, 0, 0.1);
 $universal-left-padding: 10px; // Simple global left padding for elements inside other elements when we cant use a padding on the wrapper (say, if we need to use the full width, example: the live search results "boxes" need to be full width)
