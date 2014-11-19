@@ -105,7 +105,7 @@ class ArticlesController extends AbstractController
             )
             ->setAllowedValues(
                 array(
-                    'style' => array('forcat', 'small', 'xsmall')
+                    'style' => array('forcat', 'small', 'xsmall', 'simple')
                 )
             )
         ;

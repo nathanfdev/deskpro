@@ -55,6 +55,7 @@ class BaseTheme extends AbstractTheme
             new Tag('kb_articles_forcat',       'Theme:Articles:list',              array('style' => 'forcat')),
             new Tag('kb_articles_small',        'Theme:Articles:list',              array('style' => 'small')),
             new Tag('kb_articles_xsmall',       'Theme:Articles:list',              array('style' => 'xsmall')),
+            new Tag('kb_articles_simple',       'Theme:Articles:list',              array('style' => 'simple')),
 
             new Tag('knowledgebase',            'Theme:Articles:categories',        array('style' => 'home')),
             new Tag('knowledgebase_compact',    'Theme:Articles:categories',        array('style' => 'summary')),
