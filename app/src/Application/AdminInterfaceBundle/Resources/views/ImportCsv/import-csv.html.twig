@@ -85,7 +85,7 @@
 
 			<div class="well danger-message upload-message" ng-if="importErrors.no_move">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared. Please, refresh the page and try again.
+				There was a problem uploading the file. Please refresh the page and try again.
 			</div>
 
 			<div class="well danger-message upload-message" ng-if="importErrors.no_email">
@@ -288,27 +288,27 @@
 				</div>
 				<div class="clearfix"></div>
 				<button type="button" class="btn btn-success" ng-click="Ctrl.startImport()">
-					<span>Click here to start Import</span>
+					<span>Click here to start import</span>
 				</button>
 			</div>
 
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'no_file'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared. No file was provided, please re-upload file.
+				No file was provided; please re-upload the file.
 			</div>
 
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'no_move'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared. Can't move file, check write permissions please.
+				Problem with file upload; please check write permissions.
 			</div>
 
 			<div class="well danger-message upload-message"
 				 ng-if="fileUploadResults && fileUploadResults.upload_failed && fileUploadResults.error == 'not_csv'">
 				<strong>{{ phrase('admin.server.failed') }}</strong><br/>
-				Problems with uploaded file appeared.
-				It doesn't have CSV format, please re-upload file in appropriate format.
+				The uploaded file wasn't in CSV format. Please check that the file is formatted as comma separated values.
+				
 			</div>
 
             <br />
