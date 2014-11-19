@@ -54,7 +54,11 @@ define(function(){
 
 					progress: function(val) { if (val) return val.progress + ' of ' + val.total; },
 					issuelinks: function(val) { if (val) return val.inwardIssue.key; },
-					timetracking: function(val) { return val; }
+					timetracking: function(val) { return val; },
+
+					comment: function(val) {
+						return val.total + ' ' + (1 === val.total ? ' comment' : ' comments');
+					}
 				};
 
 				if (types[schema.type]) return types[schema.type](val);
@@ -75,8 +79,8 @@ define(function(){
 
 				// fields metadata
 				if (data.fields) {
-                    var commentIdx = data.default_fields_list.indexOf('comment');
-                    if (commentIdx > -1) data.default_fields_list.splice(commentIdx, 1);
+                    //var commentIdx = data.default_fields_list.indexOf('comment');
+                    //if (commentIdx > -1) data.default_fields_list.splice(commentIdx, 1);
 					data.fields.each(function (field) {
 						field._list = data.default_fields_list.indexOf(field.id) > -1;
 						field._summary = data.default_fields_summary.indexOf(field.id) > -1;
