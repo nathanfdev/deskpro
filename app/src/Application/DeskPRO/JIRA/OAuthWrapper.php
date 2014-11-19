@@ -32,15 +32,15 @@ class OAuthWrapper
 		$this->service = $service;
 
 		if (!$this->base_url = $this->service->getUrl()) {
-			throw new \Exception('JIRA base url is required');
+			throw new \Exception('JIRA base url is required', 1000);
 		}
 
 		if (!$this->private_key = $this->service->getPrivateKey()) {
-			throw new \Exception('JIRA private key is required');
+			throw new \Exception('JIRA private key is required', 1001);
 		}
 
 		if (!$this->consumer_key = $this->service->getConsumerKey()) {
-			throw new \Exception('JIRA consumer key is required');
+			throw new \Exception('JIRA consumer key is required', 1002);
 		}
 
 
@@ -144,8 +144,10 @@ class OAuthWrapper
 				$certificate = openssl_pkey_get_private($privateKey);
 				$privateKeyId = openssl_get_privatekey($certificate);
 				$signature = null;
-				openssl_sign($stringToSign, $signature, $privateKeyId);
-				openssl_free_key($privateKeyId);
+				if (!@openssl_sign($stringToSign, $signature, $privateKeyId)) {
+					throw new \Exception('Invalid Private Key', 1004);
+				}
+				@openssl_free_key($privateKeyId);
 				return $signature;
 			}
 		));

@@ -26,12 +26,24 @@
 
 <div class="form-group">
     <div class="col-lg-4">
-        <h3>Application Link Public Key</h3>
+        <h3>{{ definitions.private_key.label }}</h3>
+    </div>
+    <div class="col-lg-8" dp-error-class="jira_form.private_key">
+        <textarea class="form-control" name="private_key" ng-model="setting_values.private_key" required></textarea>
+		<span class="help-block">
+			<span>{{ definitions.private_key.description }}</span>
+		</span>
+    </div>
+</div>
+
+<div class="form-group">
+    <div class="col-lg-4">
+        <h3>{{ definitions.public_key.label }}</h3>
     </div>
     <div class="col-lg-8">
-        <textarea class="form-control" readonly="readonly">MIICxTCCAi6gAwIBAgIJAJw9+a1S8dAqMA0GCSqGSIb3DQEBBQUAMEwxCzAJBgNVBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEYMBYGA1UEAxMPd3d3LmV4YW1wbGUuY29tMB4XDTE0MTAyOTE5MDcyM1oXDTE1MTAyOTE5MDcyM1owTDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3VudGFpbiBWaWV3MRgwFgYDVQQDEw93d3cuZXhhbXBsZS5jb20wgZ8wDQYJKoZIhvcNAQEBBQADgY0AMIGJAoGBALrLMcIfPcVEd8+Vex+0cFXAimqwYzBJbffywhIJQdQiTUIo5/tNlfjGKVT9dLyuxTH6FLSuGEvkMrAT1Y17ohyi3QaNlhr/dfjcflfK0dK8SAQqypnfqzJc0KWutHuGzSOsKii8zMbZ5HOKWAG02gyqCn0rE9YPN/LNnha0KcqVAgMBAAGjga4wgaswHQYDVR0OBBYEFNb+MNAN24VEyrZX1mOVe7hN2YLFMHwGA1UdIwR1MHOAFNb+MNAN24VEyrZX1mOVe7hN2YLFoVCkTjBMMQswCQYDVQQGEwJVUzELMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxGDAWBgNVBAMTD3d3dy5leGFtcGxlLmNvbYIJAJw9+a1S8dAqMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcNAQEFBQADgYEAWN0qMBDqssXnO7mUTUekyZf799L9ksIAC81phy5nmkeSrZbFJI+wqjQQM1yTz0RiHNvP1hLtV5KkPRDb07y9UCYJRfqymdch1Vt/9g2tWiiI97GasNYFC40w3fCzhYtwwe0duWWpHBDQ7Pn6yBNTBru3zCo2tmYsbM4fo5A/czE=</textarea>
+        <textarea class="form-control" readonly="readonly">{{ definitions.public_key.default }}</textarea>
 		<span class="help-block">
-			<span>Copy this key to your JIRA Application Link.</span>
+			<span>{{ definitions.public_key.description }}</span>
 		</span>
     </div>
 </div>

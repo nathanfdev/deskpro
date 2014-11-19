@@ -31,6 +31,9 @@
                     <div class="text-danger" ng-show="meta_errors.api">
                         Error while connecting to your Application Link, please check your JIRA configuration.
                     </div>
+                    <div class="text-danger" ng-show="meta_errors.message">
+                        {{ meta_errors.message }}
+                    </div>
 
                     <div ng-show="meta_errors.token">
                         <br />

@@ -68,8 +68,8 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 		/** @var JIRA $js */
 		$js = $container->get(JIRA::NAME);
 		$back = $container->getRouter()->generateUrl('jira_token');
-		$oauth = new OAuthWrapper($js, $back);
 		try {
+			$oauth = new OAuthWrapper($js, $back);
 			$oauth->requestTempCredentials();
 		} catch (\Exception $e) {
 
@@ -81,7 +81,9 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 				} else {
 					$errors['api'] = true;
 				}
-
+			} elseif ($e->getCode() >= 1000) {
+				$errors['code'] = $e->getCode();
+				$errors['message'] = $e->getMessage();
 			} else {
 				$errors['url'] = true;
 			}

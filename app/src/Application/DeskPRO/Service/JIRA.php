@@ -42,7 +42,7 @@ class JIRA
 	const PARAM_URL         = 'url';
 	const PARAM_CONSUMER    = 'consumer_key';
 	const PARAM_TOKENS      = 'oauth_tokens';
-    const PARAM_KEY         = 'core_jira.private_key';
+    const PARAM_KEY         = 'private_key';
 
     protected $allowed = array(
         'project',
@@ -129,7 +129,11 @@ class JIRA
 	 */
 	public function getPrivateKey()
 	{
-		return $this->container->getSetting(self::PARAM_KEY);
+		if (!$app = $this->getApp()) {
+			return null;
+		}
+
+		return $app->getSetting(self::PARAM_KEY);
 	}
 
 	/**

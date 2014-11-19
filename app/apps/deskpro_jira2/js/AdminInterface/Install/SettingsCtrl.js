@@ -8,6 +8,10 @@ define(function() {
 		for (var i = 0; i < $scope.pack.settings_def.length; i++) {
 			var def = $scope.pack.settings_def[i];
 			$scope.definitions[def.name] = def;
+
+			if (def.default && !$scope.setting_values[def.name]) {
+				$scope.setting_values[def.name] = def.default;
+			}
 		}
 
         $scope.$watch('meta_defaults.default_project', function(val){
