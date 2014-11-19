@@ -3082,6 +3082,8 @@ hr.divider {
   margin-bottom: 15px;
 }
 
+.padded { padding-left: 10px; }
+
 
 .glossary-link {
   border-bottom: 1px dotted $text-color;
@@ -3089,6 +3091,26 @@ hr.divider {
   color: $text-color;
 }
 
+header {
+  .category-jumper {
+    border: 1px solid $divider-color;
+    color: inherit;
+    margin-left: -10px;
+    &:hover { background: $surface-secondary; }
+    padding: 5px 10px;
+    border-radius: 2px;
+    font-size: 0.9em;
+    color: $text-color;
+    position: relative;
+    top: -1px;
+    margin-right: 5px;
+
+    i {
+      font-size: 14px;
+      opacity: 0.5;
+    }
+  }
+}
 
 
 .tag-list {
@@ -3941,6 +3963,85 @@ table {
 
 
 
+
+.article-meta {
+  color: $text-color-lighter;
+  font-size: 0.9em;
+
+  .updated {
+    margin-left: 10px
+  }
+
+  .agent-avatar {
+    margin-left: 4px;
+    margin-right: 4px;
+  }
+
+  span { margin-right: 10px; }
+  .comments { margin-left: 10px; }
+  i { margin-right: 2px; }
+  a { text-decoration: underline; }
+}
+
+
+
+
+.categories {
+
+  ul.categories-article-list {
+    @include blank-list;
+    margin-top: 20px;
+
+    li {
+      padding-left: 10px;
+      border-bottom: 1px solid $divider-color;
+      padding-bottom: 15px;
+      margin-bottom: 15px;
+    }
+
+
+    a {
+      text-decoration: none;
+      font-size: 1em;
+
+      h1 {
+        font-size: 1.2em;
+        color: $button-color;
+      }
+
+      .article-meta {
+        color: $text-color-lighter;
+
+        span {
+          margin-left: 0px;
+          margin-right: 0px;
+        }
+
+        .focus {
+          color: $text-color-darker;
+        }
+
+        .agent-avatar {
+          margin-right: 3px;
+        }
+
+        .comments {
+          margin-left: 10px;
+        }
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
 .kb-article {
 
   header, footer {
@@ -4009,24 +4110,7 @@ table {
     }
   }
 
-  .article-meta {
-    color: $text-color-lighter;
-    font-size: 0.9em;
 
-    .updated {
-      margin-left: 10px
-    }
-
-    .agent-avatar {
-      margin-left: 4px;
-      margin-right: 4px;
-    }
-
-    span { margin-right: 10px; }
-    .comments { margin-left: 10px; }
-    i { margin-right: 2px; }
-    a { text-decoration: underline; }
-  }
 
   .rate-article {
     text-align: center;
@@ -4597,7 +4681,7 @@ table {
     }
   }
 
-  a, span {
+  a {
     text-decoration: none;
     color: $text-color-lighter;
     display: block;
@@ -4642,6 +4726,10 @@ table {
     font-size: 0.9em;
     color: inherit;
     text-decoration: none;
+  }
+
+  a.active-page {
+    color: $text-color-lighter;
   }
 
   i {

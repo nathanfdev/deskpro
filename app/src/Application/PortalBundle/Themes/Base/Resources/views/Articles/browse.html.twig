@@ -5,26 +5,33 @@
 
 {% block inner_content %}
     {{ macros.kb_article_cat_breadcrumbs(cat, cat.treeParents) }}
-    {%  if cat.children|length > 0 %}
-        <div style="background: #eee; padding: 10px;">
-            Sub-Categories:
-            <br/>
-            {% for child in cat.children %}
-                {{ knowledgebase({ parent:child.id }) }}
+
+    <article class="categories">
+
+        {%  if cat.children|length > 0 %}
+            <div class="row">
+                {{ knowledgebase({ parent: cat.id }) }}
+            </div>
+            <hr>
+        {% endif %}
+
+        <ul class="categories-article-list">
+            {% for article in pager.currentPageResults %}
+                <li>
+                    <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
+                        <h1>{{ article.realTitle }}</h1>
+
+                        <div class="article-meta">
+                            {{ phrase('portal.articles.by-line', { name: article.person.name, date: article.date_published | date('Y-m-d') }) }}
+                            <span class="comments focus"><i class="fa fa-comments"></i> 0 comments</span>
+                        </div>
+                    </a>
+                </li>
             {% endfor %}
-            <br style="clear:both;"/>
-        </div>
-    {% endif %}
-    <ul>
-        {% for article in pager.currentPageResults %}
-            <li>
-                <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
-                    {{ article.realTitle }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-    {% if pager.haveToPaginate %}
-        {{ pagerfanta(pager) }}
-    {% endif %}
+        </ul>
+
+        {% if pager.haveToPaginate %}
+            {{ pagerfanta(pager) }}
+        {% endif %}
+    </article>
 {% endblock inner_content %}

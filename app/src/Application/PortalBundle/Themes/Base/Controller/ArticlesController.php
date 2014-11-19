@@ -147,7 +147,7 @@ class ArticlesController extends AbstractController
 
         /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
         if ($options['parent']) {
-            $categories = array($this->getArticleCategoryRepo()->find($options['parent']));
+            $categories = $this->getArticleCategoryRepo()->findBy(array('parent' => $options['parent']));
         } else {
             $categories = $this->getArticleCategoryRepo()->findAll();
         }
