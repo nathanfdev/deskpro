@@ -69,7 +69,7 @@ class Api
 		try {
 
 			return $this->getOAuth()->getClient()
-				->{strtolower($method)}(self::API_BASE_PATH . $endpoint, $headers, $params)
+				->{strtolower($method)}($endpoint, $headers, $params)
 				->send()
 				->json();
 
@@ -99,7 +99,7 @@ class Api
 	 */
 	public function get($endpoint, array $params = array())
 	{
-		return $this->call($endpoint, 'GET', array(), array('query' => $params));
+		return $this->call(self::API_BASE_PATH . $endpoint, 'GET', array(), array('query' => $params));
 	}
 
 	/**
@@ -109,7 +109,7 @@ class Api
 	 */
 	public function post($endpoint, array $params = array())
 	{
-		return $this->call($endpoint, 'POST', array('content-type' => 'application/json'), json_encode($params));
+		return $this->call(self::API_BASE_PATH . $endpoint, 'POST', array('content-type' => 'application/json'), json_encode($params));
 	}
 
 	/**
@@ -119,7 +119,7 @@ class Api
 	 */
 	public function put($endpoint, array $params = array())
 	{
-		return $this->call($endpoint, 'PUT', array('content-type' => 'application/json'), json_encode($params));
+		return $this->call(self::API_BASE_PATH . $endpoint, 'PUT', array('content-type' => 'application/json'), json_encode($params));
 	}
 
 	/**
@@ -129,7 +129,7 @@ class Api
 	 */
 	public function delete($endpoint, array $params = array())
 	{
-		return $this->call($endpoint, 'DELETE', array(), $params);
+		return $this->call(self::API_BASE_PATH . $endpoint, 'DELETE', array(), $params);
 	}
 
 	/**
@@ -148,6 +148,6 @@ class Api
 	 */
 	public function createIssueJson($json)
 	{
-		return $this->call('/issue', 'POST', array('content-type' => 'application/json'), $json);
+		return $this->call(self::API_BASE_PATH . '/issue', 'POST', array('content-type' => 'application/json'), $json);
 	}
 } 

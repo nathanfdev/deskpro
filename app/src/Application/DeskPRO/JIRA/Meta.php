@@ -32,6 +32,11 @@ namespace Application\DeskPRO\JIRA;
 class Meta
 {
 	/**
+	 * @var username authorized current oauth session
+	 */
+	protected $api_username;
+
+	/**
 	 * create meta-data
 	 * @var array
 	 */
@@ -92,5 +97,13 @@ class Meta
 	public function getAllFields()
 	{
 		return array_values(array_unique(array_merge($this->default_fields_summary, $this->default_fields_list)));
+	}
+
+	/**
+	 * @return string
+	 */
+	public function getApiUsername()
+	{
+		return $this->api_username;
 	}
 } 

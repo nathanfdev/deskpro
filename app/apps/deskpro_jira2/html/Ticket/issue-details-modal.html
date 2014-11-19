@@ -16,8 +16,7 @@
         <h4>{{ meta.fieldName('comment') }}:</h4>
         <ul>
             <li ng-repeat="comment in issue.fields.comment.comments">
-
-                {{ comment.body }}
+                {{ meta.renderComment(comment) }}
             </li>
         </ul>
 

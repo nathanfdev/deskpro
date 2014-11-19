@@ -96,6 +96,7 @@ class JIRAWebhookController extends AbstractController
 	    $manager = $this->container->getTicketManager();
 	    $em = $this->em;
 	    $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
+	    $meta = $this->get(JIRA::NAME)->getMeta();
 
 	    foreach ($issues as $issue) {
 		    /** @var $issue JiraIssue */
@@ -103,7 +104,7 @@ class JIRAWebhookController extends AbstractController
 		    $context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_API);
 		    $context->setPersonContext($issue->ticket->agent);
 
-		    if (isset($data['comment'])) {
+		    if (isset($data['comment']) && $meta->getApiUsername() !== $data['comment']['author']['name']) {
 			    $state->recordData('jira.comment', $data['comment']);
 			    $context->getUserVars()->set('jira.comment', $data['comment']['body']);
 		    }

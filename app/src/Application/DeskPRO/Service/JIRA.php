@@ -178,10 +178,12 @@ class JIRA
 	 */
 	public function setTokens(array $tokens)
 	{
-		if ($app = $this->getApp()) {
-			$app->setSetting(self::PARAM_TOKENS, $tokens);
-			$this->container->getEm()->flush($app);
+		if (!$app = $this->getApp()) {
+			return;
 		}
+
+		$app->setSetting(self::PARAM_TOKENS, $tokens);
+		$this->container->getEm()->flush($app);
 	}
 
 	/**
@@ -197,10 +199,13 @@ class JIRA
 
 		try {
 
-            unset($properties['projects'], $properties['fields']);
+            unset($properties['projects'], $properties['fields'], $properties['api_username']);
             if ($metadata = $app->getSetting(self::PARAM_META)) {
                 $properties = array_merge($metadata, $properties);
             }
+
+			$session = $this->getApi()->call('rest/auth/1/session');
+			$properties['api_username'] = $session['name'];
 
 			$res = $this->getApi()->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
 			$priority = $this->getApi()->get('/priority');

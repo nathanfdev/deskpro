@@ -126,12 +126,28 @@ class JiraController extends AbstractController
 			$issues = array($issue);
 		}
 
+		if (!$issues) {
+			throw new NotFoundHttpException;
+		}
+
 		$js = $this->service();
 		$message = $request->getContent();
 		$response = array('body' => '');
+		/** @var Ticket $ticket */
+		$ticket = null;
+
 		foreach ($issues as $issue) {
+			$message = '[' . $this->person->getDisplayName() . ' via DeskPRO]: ' . $message;
 			$response = $js->createComment($issue['issue_id'], $message);
+
+			$ticket = $ticket ?: $issue->ticket;
 		}
+
+		$manager = $this->container->getTicketManager();
+		$context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_WEB);
+		$context->setPersonContext($this->person);
+		$ticket->getStateChangeRecorder()->recordData('jira.comment', $response);
+		$context->getUserVars()->set('jira.comment', $response['body']);
 
 		return $this->createJsonResponse($response);
 	}

@@ -21,7 +21,7 @@ define([
 			$scope.search_issue_state = 1;
 
 			for (var i = 0; i < issues.length; i++) {
-				if ($scope.search_issue.indexOf(issues[i].key) > -1) {
+				if ($scope.search_issue.toLowerCase().indexOf(issues[i].key.toLowerCase()) > -1) {
 					return $scope.search_issue_state = 409;
 				}
 			}

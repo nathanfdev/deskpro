@@ -86,7 +86,8 @@ class JiraController extends AbstractController
 		$js = $this->get(JIRA::NAME);
 		$api = $js->getApi();
 
-		$ret = $api->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
+		$ret = $api->call('rest/auth/1/session');
+//		$ret = $api->get('/user', array('username' => 'n3b'));
 
 
 //		$meta = $js->getMeta()->toArray();
@@ -99,7 +100,7 @@ class JiraController extends AbstractController
 
 		echo '<script type="text/javascript">
 			var a = ' . json_encode($ret) . ';
-			console.log(a.projects[1].issuetypes[0].fields);
+			console.log(a);
 		</script>';
 //		var_export($ret);
 

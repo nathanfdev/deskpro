@@ -62,7 +62,12 @@ define(function(){
 			},
             isEnabled: function(type, id) {
                 return this.fields[id] && this.fields[id]['_' + type];
-            }
+            },
+			renderComment: function(comment) {
+				return comment.author.name === meta.user
+					? comment.body
+					: ('[' + comment.author.displayName + ' via JIRA]: ' + comment.body);
+			}
 		};
 
 		$http.get('/agent/jira/meta')
@@ -90,6 +95,7 @@ define(function(){
 				data.default_fields_summary.each(function(id) { meta.default_fields_summary.push(id); });
 				meta.default_issuetype = data.default_issuetype;
 				meta.default_project = data.default_project;
+				meta.user = data.api_username;
 
 				console.info(meta);
 			})
