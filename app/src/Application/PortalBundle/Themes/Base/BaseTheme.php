@@ -70,6 +70,7 @@ class BaseTheme extends AbstractTheme
             new Tag('files_list',               'Theme:Downloads:list',             array('style' => 'small')),
             new Tag('downloads_cats_list',      'Theme:Downloads:cats',             array('style' => 'small')),
 
+            new Tag('feedback_list',            'Theme:Feedback:list',              array('style' => 'items')),
             new Tag('feedback_list_small',      'Theme:Feedback:list',              array('style' => 'small')),
         );
     }

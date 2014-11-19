@@ -1,18 +1,23 @@
 {% extends 'Theme::layout.html.twig' %}
 {% import 'Theme:Feedback:_macros.html.twig' as macros %}
 
+{# TODO #}
+
 {% block inner_content %}
-    {{ macros.kb_feedback_breadcrumbs() }}
-    <ul>
-        {% for feedback in pager.currentPageResults %}
-            <li>
-                <a href="{{ path('portal_feedback_view', { slug: feedback.slug }) }}">
-                    {{ feedback.realTitle }}
-                </a>
-            </li>
-        {% endfor %}
-    </ul>
-    {% if pager.haveToPaginate %}
-        {{ pagerfanta(pager) }}
-    {% endif %}
+    <div class="feedback main-feedback">
+        <header class="section-header">
+            <h1>{{ phrase('portal.feedback.section-title') }}</h1>
+            <p>
+                {{ phrase('portal.feedback.section-desc') }}
+            </p>
+        </header>
+
+        {% include 'Theme:Feedback:controls.html.twig' %}
+
+        {{ feedback_list() }}
+
+        {% if pager.haveToPaginate %}
+            {{ pagerfanta(pager) }}
+        {% endif %}
+    </div>
 {% endblock inner_content %}

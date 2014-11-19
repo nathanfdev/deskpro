@@ -1,0 +1,65 @@
+<div class="feedback-filter-controls">
+
+    {# Status #}
+    <ul class="flat-tabs">
+        <li>
+            <a href="#">{{ phrase('portal.feedback.nav-all-items') }}</a>
+        </li>
+
+        <li>
+            <a href="#" class="active">{{ phrase('portal.feedback.nav-open-items') }} <span class="control active-control"><i class="fa fa-caret-down"></i></span></a>
+        </li>
+
+        <li>
+            <a href="#">{{ phrase('portal.feedback.nav-closed-items') }} <span class="control"><i class="fa fa-caret-down"></i></span></a>
+        </li>
+
+        <li>
+            <a href="#">{{ phrase('portal.feedback.nav-my-items') }}</a>
+        </li>
+    </ul>
+
+    {# Controls #}
+    <div class="table-meta">
+        <div class="table-controls">
+            <a href="#" class="column-control sort"><span>{{ phrase('portal.general.label-sort') }}</span></a>
+            <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
+        </div>
+    </div>
+
+    {# Type #}
+    <div>
+        <ul class="slider-list">
+            <li>
+                <div class="slider-panel">
+                    <a href="#" class="slider">
+                        <span class="slider-status">on</span>
+                        <span class="slider-icon"><i class="fa fa-check"></i></span>
+                    </a>
+                    <span class="slider-label">Feature request</span> <span class="slider-options"><i class="fa fa-caret-down"></i></span>
+                </div>
+            </li>
+
+            <li>
+                <div class="slider-panel">
+                    <a href="#" class="slider">
+                        <span class="slider-status">on</span>
+                        <span class="slider-icon"><i class="fa fa-check"></i></span>
+                    </a>
+                    <span class="slider-label">Bug Reports</span> <span class="slider-options"><i class="fa fa-caret-down"></i></span>
+                </div>
+            </li>
+
+            <li>
+                <div class="slider-panel">
+                    <a href="#" class="slider off">
+                        <span class="slider-icon"><i class="fa fa-times"></i></span>
+                        <span class="slider-status">off</span>
+                    </a>
+                    <span class="slider-label">Feature request</span> <span class="slider-options"><i class="fa fa-caret-down"></i></span>
+                </div>
+            </li>
+        </ul>
+    </div>
+
+</div>
