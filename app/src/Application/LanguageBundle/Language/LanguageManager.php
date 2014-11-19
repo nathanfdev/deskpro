@@ -121,8 +121,22 @@ class LanguageManager
         return $this->language_stack;
     }
 
+    /**
+     * @return array
+     */
     public function getEnabledLanguages()
     {
         return $this->language_repo->getPortalLanguages();
+    }
+
+    /**
+     * TODO this is meant to return a translate object for a specific lang
+     *
+     * @param Language|string|null $lang
+     * @return Translate
+     */
+    public function getTranslator($lang = null)
+    {
+        return $this->translate;
     }
 }
