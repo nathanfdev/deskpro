@@ -89,13 +89,14 @@ class DownloadsController extends AbstractController
         $options_resolver
             ->setDefaults(
                 array(
+                    'category' => 0, //TODO
                     'count' => 10,
                     'style' => 'small'
                 )
             )
             ->setAllowedValues(
                 array(
-                    'style' => array('items', 'small')
+                    'style' => array('items', 'small', 'simple')
                 )
             );
         $options = $options_resolver->resolve($request->query->get('tag_options'));
@@ -125,7 +126,7 @@ class DownloadsController extends AbstractController
             )
             ->setAllowedValues(
                 array(
-                    'style' => array('small')
+                    'style' => array('small', 'overview')
                 )
             );
         $options = $options_resolver->resolve($request->query->get('tag_options'));

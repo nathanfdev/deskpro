@@ -1,0 +1,13 @@
+{% for cat in child_cats %}
+    <div class="column-half{% if loop.index0 % 2 == 1 %} omega{% endif %}">
+        <article class="article-categories">
+            <header>
+                <h1>
+                    <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> <a href="{{ path('portal_downloads_browse', { slug: cat.slug }) }}">{{ cat.title }}</a> (X)</h1>
+                <hr>
+            </header>
+
+            {{ files_list_simple({'category':cat.id}) }}
+        </article>
+    </div>
+{% endfor %}

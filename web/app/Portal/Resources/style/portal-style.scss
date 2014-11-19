@@ -1844,9 +1844,114 @@ h1.fancy-header {
 // downloads
 //----------------------------------------------------------------------------------------------------------------------
 
+.downloads {
+
+
+  ul.download-list {
+    @include blank-list;
+    margin-top: 20px;
+
+    > li {
+      margin-bottom: 10px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid $divider-color;
+      padding-left: 10px;
+
+      a { text-decoration: none; }
+
+      p {
+        color: $text-color;
+        margin-bottom: 10px;
+        font-weight: 300;
+      }
+
+      h1 {
+        font-size: 1.25em;
+        display: inline-block;
+        color: #3575bd;
+        margin-top: 5px;
+        margin-bottom: 5px;
+
+        i {
+          font-size: 0.8em;
+          position: relative;
+          top: -2px;
+          margin-right: 3px;
+        }
+      }
+      .date {
+        margin-left: 5px;
+        color: $text-faded;
+      }
+    }
+  }
+
+  .controls {
+    float: right;
+    font-weight: 400;
+
+    ul {
+      @include blank-list;
+      line-height: 1em;
+      display: inline-block;
+      border-radius: 2px;
+      overflow: hidden;
+      font-size: 0.8em;
+      background: darken($surface-secondary, 5%);
+
+      li {
+        display: inline-block;
+      }
+
+      a {
+        display: block;
+        background: darken($surface-secondary, 5%);
+
+        color: lighten($text-color-lighter, 20%);
+        padding: 8px 10px;
+        &:hover { background: darken($surface-secondary, 20%); color: #fff; }
+      }
+
+      i {
+        margin: 0px 3px;
+        font-size: 1.3em;
+      }
+
+      .the-file {
+        a {
+          background: $button-color;
+          color: #fff;
+          &:hover { background: darken($button-color, 10%); }
+        }
+      }
+
+      .the-cudos {
+        border-left: 1px solid $divider-color;
+      }
+
+      .the-cudos.has-cudos {
+        background: $button-color-secondary;
+        border-left: 1px solid $button-color-secondary;
+
+        a {
+          background: $button-color-secondary;
+          color: #fff;
+        }
+      }
+    }
+  }
+
+
+
+}
+
+// Downloads
 .front-page-downloads {
   ul {
+
     li {
+
+
       .file-icon {
         display: inline-block;
         background: $button-color;
@@ -1870,9 +1975,11 @@ h1.fancy-header {
           line-height: 1em;
         }
       }
+
     }
   }
 }
+
 
 //----------------------------------------------------------------------------------------------------------------------
 // topbar
@@ -3832,6 +3939,8 @@ table {
 // kb-article
 //----------------------------------------------------------------------------------------------------------------------
 
+
+
 .kb-article {
 
   header, footer {
@@ -3842,7 +3951,6 @@ table {
     }
 
     h1 { margin-bottom: 10px; }
-    hr { margin: 30px 0px; }
   }
 
   header, .padded { padding-left: 10px; }
@@ -3894,6 +4002,10 @@ table {
       width: 100%;
       margin: 0px;
       margin-bottom: 10px;
+    }
+
+    h2 {
+      font-size: 1.15em;
     }
   }
 
@@ -4051,6 +4163,19 @@ table {
     }
   }
 
+}
+
+
+.kb-article-news {
+
+  header {
+    h1 {
+      margin-bottom: 5px;
+    }
+  }
+  .calendar-decoration {
+    margin-top: 2px;
+  }
 }
 
 //----------------------------------------------------------------------------------------------------------------------
@@ -5021,5 +5146,126 @@ table {
     right: 20px;
     top: 36%;
     color: $text-color-lighter;
+  }
+}
+
+//----------------------------------------------------------------------------------------------------------------------
+// popup
+//----------------------------------------------------------------------------------------------------------------------
+
+.cover {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 108;
+}
+
+// main popup styles
+.popup {
+  @include clearfix;
+  border-radius: 2px;
+  width: 100%;// Some responsiveness (although content will break for now)
+  max-width: 850px;
+  display: block;
+  background: $popup-background;
+  z-index: 109;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  color: $text-color;
+  padding: 20px;
+  // Place it in the middle of the screen
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  * { line-height: 1.2em; }
+}
+
+
+
+.popup-file-download {
+  max-width: 400px;
+  text-align: center;
+  padding-top: 30px;
+  padding-bottom: 40px;
+
+  .cancel {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    color: $text-color-lighter;
+    font-size: 0.85em;
+    text-decoration: none;
+    font-weight: 500;
+    opacity: 0.5;
+
+    &:hover { opacity: 1; }
+  }
+
+  .cudos-wrapper {
+    text-align: center;
+    position: relative;
+    z-index: 89;
+    margin-top: -15px;
+  }
+
+  .cudos {
+    background: $button-color-secondary;
+    border-radius: 199px;
+    color: #fff;
+    text-decoration: none;
+    padding: 3px 12px;
+    font-size: 0.9em;
+    border: 4px solid $popup-background;
+    &:hover { background: darken($button-color-secondary, 10%); }
+
+    i { margin-right: 2px; }
+
+  }
+
+  .file-icon {
+    position: relative;
+
+    >i {
+      font-size: 90px;
+      color: $text-faded;
+      background: $popup-background;
+      position: relative;
+      z-index: 88;
+      padding: 0px 10px;
+      cursor: default;
+
+    }
+
+    hr {
+      margin: 0;
+      position: absolute;
+      top: 50px;
+      width: 100%;
+      z-index: 81;
+    }
+  }
+
+  .button {
+    font-size: 1.1em;
+    padding: 12px 40px;
+    &:hover { background: darken($button-color, 10%); }
+  }
+
+  h1 {
+    font-weight: 100;
+    display: block;
+    margin-top: 25px;
+    margin-bottom: 5px;
+    font-size: 1.5em;
+  }
+
+  h2 {
+    color: $text-faded;
+    font-weight: 500;
+    margin-bottom: 25px;
+    font-size: 0.9em;
   }
 }
