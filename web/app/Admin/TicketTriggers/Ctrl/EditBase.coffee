@@ -18,6 +18,7 @@ define [
 			@triggerId   = @$stateParams.id
 			@options     = {}
 			@editFormMapper = new TriggerEditFormMapper()
+			@mode = null
 
 			@$scope.form = @editFormMapper.getFormFromModel({})
 
@@ -25,16 +26,18 @@ define [
 			@$scope.triggerId   = @$stateParams.id
 
 			with_changed_ops = true
-			if @$stateParams.type == 'newticket'
-				with_changed_ops = false
-				@dpTriggers = @DataService.get('TriggersNew')
-			else if @$stateParams.type == 'newreply'
-				@dpTriggers = @DataService.get('TriggersReply')
-			else
-				@dpTriggers = @DataService.get('TriggersUpdate')
+			switch @$stateParams.type
+				when 'newticket'
+					@mode = 'TriggersNew'
+					with_changed_ops = false
+				when 'newreply'
+					@mode = 'TriggersReply'
+				else
+					@mode = 'TriggersUpdate'
 
+			@dpTriggers = @DataService.get @mode
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
-			@criteraTypeDef.setWithChangedOps(with_changed_ops)
+			@criteraTypeDef.setWithChangedOps with_changed_ops
 
 			@actionsTypeDef = @dpObTypesDefTicketActions
 
@@ -74,12 +77,12 @@ define [
 					Arrays.pushUnique(types, 'api')
 					Arrays.pushUnique(types, 'api.agent')
 
-			setCritOptions = @criteraTypeDef.getOptionsForTypes(types)
+			setCritOptions = @criteraTypeDef.getOptionsForTypes types, null, @mode
 			@$scope.criteriaOptionTypes.length = 0
 			for opt in setCritOptions
 				@$scope.criteriaOptionTypes.push(opt)
 
-			setActionOptions = @actionsTypeDef.getOptionsForTypes(types, { dynamicOptions: @customActions })
+			setActionOptions = @actionsTypeDef.getOptionsForTypes types, { dynamicOptions: @customActions }, @mode
 			@$scope.actionOptionTypes.length = 0
 			for opt in setActionOptions
 				@$scope.actionOptionTypes.push(opt)

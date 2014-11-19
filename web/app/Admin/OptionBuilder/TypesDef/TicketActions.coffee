@@ -9,7 +9,7 @@ define [
 		init: ->
 			@options_data = null
 
-		getOptionsForTypes: (types = [], typesData = null) ->
+		getOptionsForTypes: (types = [], typesData = null, mode) ->
 			set_options = []
 
 			#------------------------------
@@ -216,17 +216,18 @@ define [
 			# JIRA Actions
 			#------------------------------
 
-			options = []
+			if @options_data?.jira_settings?.enabled && 'TriggersUpdate' == mode
+				options = []
 
-			options.push({
-				title: 'Add Comment to linked JIRA issues',
-				value: 'AddJIRAComment'
-			})
+				options.push({
+					title: 'Add Comment to linked JIRA issues',
+					value: 'AddJIRAComment'
+				})
 
-			set_options.push({
-				title: 'JIRA Actions',
-				subOptions: options
-			})
+				set_options.push({
+					title: 'JIRA Actions',
+					subOptions: options
+				})
 
 			#------------------------------
 			# Trigger Control
@@ -516,6 +517,7 @@ define [
 						round_robins:      '/round_robin',
 						tasks:             '/tasks/settings'
 						contextual_fields: '/custom_fields'
+						'jira_settings':   '/apps/jira'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -538,6 +540,7 @@ define [
 						options_data['round_robins']     = data.round_robins
 						options_data['tasks']            = data.tasks
 						options_data['contextual_fields']= data.contextual_fields
+						options_data['jira_settings']    = data.jira_settings
 
 						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 

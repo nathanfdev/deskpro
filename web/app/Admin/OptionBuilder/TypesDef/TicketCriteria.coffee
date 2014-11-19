@@ -26,7 +26,7 @@ define [
 			return ops
 
 
-		getOptionsForTypes: (types, typesData = null) ->
+		getOptionsForTypes: (types, typesData = null, mode) ->
 			set_options = []
 
 			#------------------------------
@@ -224,7 +224,7 @@ define [
 			# JIRA
 			#------------------------------
 
-			if @options_data?.jira_settings?.enabled
+			if @options_data?.jira_settings?.enabled && 'TriggersUpdate' == mode
 				options = []
 
 				options.push({
@@ -506,8 +506,8 @@ define [
 						'email_tpls':      '/email-templates-info'
 						'api_keys':        '/api_keys'
 						'ticket_settings': '/ticket_settings'
-						'contextual_fields': '/custom_fields'
-						'jira_settings':   '/apps/jira'
+						'contextual_fields':'/custom_fields'
+						'jira_settings'    :'/apps/jira'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}

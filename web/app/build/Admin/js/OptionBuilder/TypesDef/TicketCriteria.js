@@ -38,7 +38,7 @@
         return ops;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData, mode) {
         var f, options, set_options, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
         if (typesData == null) {
           typesData = null;
@@ -199,7 +199,7 @@
             subOptions: options
           });
         }
-        if ((_ref6 = this.options_data) != null ? (_ref7 = _ref6.jira_settings) != null ? _ref7.enabled : void 0 : void 0) {
+        if (((_ref6 = this.options_data) != null ? (_ref7 = _ref6.jira_settings) != null ? _ref7.enabled : void 0 : void 0) && 'TriggersUpdate' === mode) {
           options = [];
           options.push({
             title: 'New JIRA Comment',

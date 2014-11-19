@@ -24,18 +24,23 @@
         this.triggerId = this.$stateParams.id;
         this.options = {};
         this.editFormMapper = new TriggerEditFormMapper();
+        this.mode = null;
         this.$scope.form = this.editFormMapper.getFormFromModel({});
         this.$scope.triggerType = this.$stateParams.type;
         this.$scope.triggerId = this.$stateParams.id;
         with_changed_ops = true;
-        if (this.$stateParams.type === 'newticket') {
-          with_changed_ops = false;
-          this.dpTriggers = this.DataService.get('TriggersNew');
-        } else if (this.$stateParams.type === 'newreply') {
-          this.dpTriggers = this.DataService.get('TriggersReply');
-        } else {
-          this.dpTriggers = this.DataService.get('TriggersUpdate');
+        switch (this.$stateParams.type) {
+          case 'newticket':
+            this.mode = 'TriggersNew';
+            with_changed_ops = false;
+            break;
+          case 'newreply':
+            this.mode = 'TriggersReply';
+            break;
+          default:
+            this.mode = 'TriggersUpdate';
         }
+        this.dpTriggers = this.DataService.get(this.mode);
         this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
         this.criteraTypeDef.setWithChangedOps(with_changed_ops);
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
@@ -81,7 +86,7 @@
             Arrays.pushUnique(types, 'api.agent');
           }
         }
-        setCritOptions = this.criteraTypeDef.getOptionsForTypes(types);
+        setCritOptions = this.criteraTypeDef.getOptionsForTypes(types, null, this.mode);
         this.$scope.criteriaOptionTypes.length = 0;
         for (_i = 0, _len = setCritOptions.length; _i < _len; _i++) {
           opt = setCritOptions[_i];
@@ -89,7 +94,7 @@
         }
         setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, {
           dynamicOptions: this.customActions
-        });
+        }, this.mode);
         this.$scope.actionOptionTypes.length = 0;
         _results = [];
         for (_j = 0, _len1 = setActionOptions.length; _j < _len1; _j++) {
