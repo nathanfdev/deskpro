@@ -2,17 +2,17 @@
 {% import 'Theme:Feedback:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-	{{ macros.kb_feedback_breadcrumbs() }}
-	<ul>
-		{% for feedback in pager.currentPageResults %}
-			<li>
-				<a href="{{ path('portal_feedback_view', { slug: feedback.slug }) }}">
-					{{ feedback.realTitle }}
-				</a>
-			</li>
-		{% endfor %}
-	</ul>
-	{% if pager.haveToPaginate %}
-		{{ pagerfanta(pager) }}
-	{% endif %}
+    {{ macros.kb_feedback_breadcrumbs() }}
+    <ul>
+        {% for feedback in pager.currentPageResults %}
+            <li>
+                <a href="{{ path('portal_feedback_view', { slug: feedback.slug }) }}">
+                    {{ feedback.realTitle }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if pager.haveToPaginate %}
+        {{ pagerfanta(pager) }}
+    {% endif %}
 {% endblock inner_content %}

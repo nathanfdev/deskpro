@@ -1,21 +1,21 @@
 {% macro kb_feedback_breadcrumbs(feedback) %}
-	<div class="breadcrumbs">
-		<ul>
-			<li>
-				<a href="{{ path('portal_index') }}">{{ global_settings.get('core.deskpro_name') }}</a> <i
-					class="fa fa-angle-right"></i>
-			</li>
+    <div class="breadcrumbs">
+        <ul>
+            <li>
+                <a href="{{ path('portal_index') }}">{{ global_settings.get('core.deskpro_name') }}</a> <i
+                    class="fa fa-angle-right"></i>
+            </li>
 
-			<li>
-				<a href="{{ path('portal_feedback') }}">Feedback</a> <i class="fa fa-angle-right"></i>
-			</li>
+            <li>
+                <a href="{{ path('portal_feedback') }}">Feedback</a> <i class="fa fa-angle-right"></i>
+            </li>
 
-			{% if feedback %}
-				<li>
-					<a href="{{ path('portal_feedback_view', { slug:feedback.slug }) }}">{{ feedback.title }}</a>
-				</li>
-			{% endif %}
-		</ul>
-		<hr>
-	</div>
+            {% if feedback %}
+                <li>
+                    <a href="{{ path('portal_feedback_view', { slug:feedback.slug }) }}">{{ feedback.title }}</a>
+                </li>
+            {% endif %}
+        </ul>
+        <hr>
+    </div>
 {% endmacro %}

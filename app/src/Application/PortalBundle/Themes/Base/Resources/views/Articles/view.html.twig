@@ -2,18 +2,18 @@
 {% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-	{{ macros.kb_article_cat_breadcrumbs(article.categories.first, article.categories.first.treeParents, article) }}
-	<h1>{{ article.realTitle }}</h1>
-	<p style="margin-bottom: 20px; font-weight: bold;">
-		Posted by <strong>{{ article.person.name }}</strong></a>
-		on {{ article.date_published | date('M j, Y') }}
-		in {{ macros.kb_article_cat_list(article) }}
-	</p>
-	{% if article.labels|length > 0 %}
-		<p>
-			<strong>Labeld as:</strong>
-			{{ article.labels|join(',') }}
-		</p><br>
-	{% endif %}
-	<p>{{ article.realContent|raw }}</p>
+    {{ macros.kb_article_cat_breadcrumbs(article.categories.first, article.categories.first.treeParents, article) }}
+    <h1>{{ article.realTitle }}</h1>
+    <p style="margin-bottom: 20px; font-weight: bold;">
+        Posted by <strong>{{ article.person.name }}</strong></a>
+        on {{ article.date_published | date('M j, Y') }}
+        in {{ macros.kb_article_cat_list(article) }}
+    </p>
+    {% if article.labels|length > 0 %}
+        <p>
+            <strong>Labeld as:</strong>
+            {{ article.labels|join(',') }}
+        </p><br>
+    {% endif %}
+    <p>{{ article.realContent|raw }}</p>
 {% endblock inner_content %}

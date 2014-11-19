@@ -2,23 +2,23 @@
 {% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-	{{ macros.kb_article_cat_breadcrumbs(cat, cat.treeParents) }}
-	{%  if cat.children|length > 0 %}
-	    <p>There are {{ cat.children|length }} sub-categories</p>
-	    {% for child in cat.children %}
-		    {{ kb_cats_expander({ parent:child.id }) }}
-	    {% endfor %}
-	{% endif %}
-	<ul>
-		{% for article in pager.currentPageResults %}
-			<li>
-				<a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
-					{{ article.realTitle }}
-				</a>
-			</li>
-		{% endfor %}
-	</ul>
-	{% if pager.haveToPaginate %}
-		{{ pagerfanta(pager) }}
-	{% endif %}
+    {{ macros.kb_article_cat_breadcrumbs(cat, cat.treeParents) }}
+    {%  if cat.children|length > 0 %}
+        <p>There are {{ cat.children|length }} sub-categories</p>
+        {% for child in cat.children %}
+            {{ kb_cats_expander({ parent:child.id }) }}
+        {% endfor %}
+    {% endif %}
+    <ul>
+        {% for article in pager.currentPageResults %}
+            <li>
+                <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
+                    {{ article.realTitle }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+    {% if pager.haveToPaginate %}
+        {{ pagerfanta(pager) }}
+    {% endif %}
 {% endblock inner_content %}

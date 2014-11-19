@@ -2,22 +2,22 @@
 {% import 'Theme:Downloads:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-	{{ macros.kb_downloads_cat_breadcrumbs(cat, cat.treeParents) }}
+    {{ macros.kb_downloads_cat_breadcrumbs(cat, cat.treeParents) }}
 
-	<h1>{{ cat.title }}</h1>
+    <h1>{{ cat.title }}</h1>
 
-	{% if cat.children|length>0 %}
-		<p>There are {{ cat.children|length }} sub-categories</p>
-		{{ downloads_cats_small({ parent: cat.id }) }}
-	{% endif %}
+    {% if cat.children|length>0 %}
+        <p>There are {{ cat.children|length }} sub-categories</p>
+        {{ downloads_cats_small({ parent: cat.id }) }}
+    {% endif %}
 
-	<ul>
-		{% for download in cat.downloads %}
-			<li>
-				<a href="{{ path('portal_downloads_view', { slug: download.slug }) }}">
-					{{ download.realTitle }}
-				</a>
-			</li>
-		{% endfor %}
-	</ul>
+    <ul>
+        {% for download in cat.downloads %}
+            <li>
+                <a href="{{ path('portal_downloads_view', { slug: download.slug }) }}">
+                    {{ download.realTitle }}
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
 {% endblock inner_content %}

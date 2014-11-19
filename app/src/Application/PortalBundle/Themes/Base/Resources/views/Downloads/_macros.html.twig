@@ -1,37 +1,37 @@
 {% macro kb_downloads_cat_breadcrumbs(cat, parents, download) %}
-	<div class="breadcrumbs">
-		<ul>
-			<li>
-				<a href="{{ path('portal_index') }}">{{ global_settings.get('core.deskpro_name') }}</a> <i
-					class="fa fa-angle-right"></i>
-			</li>
+    <div class="breadcrumbs">
+        <ul>
+            <li>
+                <a href="{{ path('portal_index') }}">{{ global_settings.get('core.deskpro_name') }}</a> <i
+                    class="fa fa-angle-right"></i>
+            </li>
 
-			<li>
-				<a href="{{ path('portal_downloads') }}">Downloads</a>{% if parents|length or cat or download %} <i
-					class="fa fa-angle-right">{% endif %}</i>
-			</li>
+            <li>
+                <a href="{{ path('portal_downloads') }}">Downloads</a>{% if parents|length or cat or download %} <i
+                    class="fa fa-angle-right">{% endif %}</i>
+            </li>
 
 
-			{% for parent in parents %}
-				<a href="{{ path('portal_downloads_browse', { slug:parent.slug }) }}">{{ parent.title }}</a> <i
-				class="fa fa-angle-right"></i>
-			{% endfor %}
+            {% for parent in parents %}
+                <a href="{{ path('portal_downloads_browse', { slug:parent.slug }) }}">{{ parent.title }}</a> <i
+                class="fa fa-angle-right"></i>
+            {% endfor %}
 
-			{% if cat %}
-				<li>
-					<a href="{{ path('portal_downloads_browse', { slug:cat.slug }) }}">{{ cat.title }}</a>
-					{% if download %}
-						<i class="fa fa-angle-right"></i>
-					{% endif %}
-				</li>
-			{% endif %}
+            {% if cat %}
+                <li>
+                    <a href="{{ path('portal_downloads_browse', { slug:cat.slug }) }}">{{ cat.title }}</a>
+                    {% if download %}
+                        <i class="fa fa-angle-right"></i>
+                    {% endif %}
+                </li>
+            {% endif %}
 
-			{% if download %}
-				<li>
-					<a href="{{ path('portal_downloads_view', { slug:download.slug }) }}">{{ download.realTitle }}</a>
-				</li>
-			{% endif %}
-		</ul>
-		<hr>
-	</div>
+            {% if download %}
+                <li>
+                    <a href="{{ path('portal_downloads_view', { slug:download.slug }) }}">{{ download.realTitle }}</a>
+                </li>
+            {% endif %}
+        </ul>
+        <hr>
+    </div>
 {% endmacro %}

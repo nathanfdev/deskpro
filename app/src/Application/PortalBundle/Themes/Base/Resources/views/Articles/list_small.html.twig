@@ -1,20 +1,20 @@
 {% if articles|length > 0 %}
-	<div class="column-full">
-		<article class="top-articles-wide">
-			<ul>
-				{% for article in articles %}
-					<li>
-						<h1><a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a></h1>
-			        <span class="meta">
-			          Posted <strong>{{ article.date_published | date('M j, Y') }}</strong> by
-				      <a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.person.name }}</a>
-			          <span class="text-tag rating-tag">{{ article.num_comments }} <i class="fa fa-caret-up"></i></span>
-			        </span>
-					</li>
-				{% endfor %}
-			</ul>
-		</article>
-	</div>
+    <div class="column-full">
+        <article class="top-articles-wide">
+            <ul>
+                {% for article in articles %}
+                    <li>
+                        <h1><a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a></h1>
+                    <span class="meta">
+                      Posted <strong>{{ article.date_published | date('M j, Y') }}</strong> by
+                      <a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.person.name }}</a>
+                      <span class="text-tag rating-tag">{{ article.num_comments }} <i class="fa fa-caret-up"></i></span>
+                    </span>
+                    </li>
+                {% endfor %}
+            </ul>
+        </article>
+    </div>
 {% else %}
-	<strong>No articles yet</strong>
+    <strong>No articles yet</strong>
 {% endif %}

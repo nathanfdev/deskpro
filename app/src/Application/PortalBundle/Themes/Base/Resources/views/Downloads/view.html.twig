@@ -2,11 +2,11 @@
 {% import 'Theme:Downloads:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-	{{ macros.kb_downloads_cat_breadcrumbs(download.category, download.category.treeParents, download) }}
-	<h1>{{ download.title }}</h1>
-	<p class="info">
-		size: {{ download.readableFileSize }}
-	</p>
-	<p>{{ download.contentDesc }}</p>
-	<p><a href="{{ path('portal_downloads_download', { slug:download.slug }) }}">Click here to download...</a></p>
+    {{ macros.kb_downloads_cat_breadcrumbs(download.category, download.category.treeParents, download) }}
+    <h1>{{ download.title }}</h1>
+    <p class="info">
+        size: {{ download.readableFileSize }}
+    </p>
+    <p>{{ download.contentDesc }}</p>
+    <p><a href="{{ path('portal_downloads_download', { slug:download.slug }) }}">Click here to download...</a></p>
 {% endblock inner_content %}

@@ -2,28 +2,28 @@
 
 {% block page_content %}
 
-	<section>
-		<div class="column-full">
-			{{ news_posts({ count: 3 }) }}
-		</div>
-	</section>
+    <section>
+        <div class="column-full">
+            {{ news_posts({ count: 3 }) }}
+        </div>
+    </section>
 
-	<section>
-		{{ knowledgebase({'articles': { sort: 'title asc' }}) }}
-	</section>
+    <section>
+        {{ knowledgebase({'articles': { sort: 'title asc' }}) }}
+    </section>
 
-	<section>
-		<div class="column-third">
-			{{ news_posts_list({ count: 10 }) }}
-		</div>
+    <section>
+        <div class="column-third">
+            {{ news_posts_list({ count: 10 }) }}
+        </div>
 
-		<div class="column-third">
-			{{ feedback_list_small({ count: 10 }) }}
-		</div>
+        <div class="column-third">
+            {{ feedback_list_small({ count: 10 }) }}
+        </div>
 
-		<div class="column-third omega">
-			{{ files_list({ count: 10 }) }}
-		</div>
-	</section>
+        <div class="column-third omega">
+            {{ files_list({ count: 10 }) }}
+        </div>
+    </section>
 
 {% endblock page_content %}
