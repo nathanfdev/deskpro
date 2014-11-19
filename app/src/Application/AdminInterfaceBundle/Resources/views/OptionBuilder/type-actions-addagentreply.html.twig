@@ -32,7 +32,8 @@
 						<tr>
 							<td width="100">Text:</td>
 							<td>
-								<textarea class="form-control" dp-redactor style="height: 100px;" ng-model="model.text"></textarea>
+								<textarea class="form-control" dp-redactor style="height: 100px;" ng-model="model.text" ng-if="model.type != 'AddJIRAComment'""></textarea>
+                                <textarea class="form-control" style="height: 100px;" ng-model="model.text" ng-if="model.type == 'AddJIRAComment'""></textarea>
 							</td>
 						</tr>
 					</table>
