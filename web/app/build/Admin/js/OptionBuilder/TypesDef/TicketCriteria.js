@@ -202,7 +202,7 @@
         if ((_ref6 = this.options_data) != null ? (_ref7 = _ref6.jira_settings) != null ? _ref7.enabled : void 0 : void 0) {
           options = [];
           options.push({
-            title: 'New Comment',
+            title: 'New JIRA Comment',
             value: 'CheckJIRANewComment'
           });
           options.push({

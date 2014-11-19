@@ -77,7 +77,7 @@ class Api
 			$code = $e->getResponse()->getStatusCode();
 
 			if (404 === $code) {
-				throw new NotFoundHttpException($e->getResponse()->getReasonPhrase());
+				throw new NotFoundHttpException($e->getResponse()->getReasonPhrase(), null, 404);
 			}
 
 			// todo log error message

@@ -81,8 +81,9 @@ define ->
 			priority:           'com.atlassian.jira.plugin.system.customfieldtypes:select'
 			resolution:         'com.atlassian.jira.plugin.system.customfieldtypes:select'
 			resolutiondate:     'com.atlassian.jira.plugin.system.customfieldtypes:datetime'
+			created:            'com.atlassian.jira.plugin.system.customfieldtypes:datetime'
+			updated:            'com.atlassian.jira.plugin.system.customfieldtypes:datetime'
 
-		return {
 		restrict: 'AE'
 		scope:
 			getField: '&field'
@@ -118,6 +119,7 @@ define ->
 				'com.atlassian.jira.plugin.system.customfieldtypes:datetime':         'datetime'
 				priority:                                                             'object'
 				resolution:                                                           'object'
+				parent:                                                               (val) -> {key: val}
 
 			mapModel = (val) ->
 				return $scope.model = val if !val?
@@ -137,6 +139,9 @@ define ->
 					when 'datetime'
 						val = moment(val).format('YYYY-MM-DDTHH:mm:ss.SSSZZ') if moment && val instanceof Date
 
+				if 'function' == typeof type
+					val = type(val)
+
 				$scope.model = val
 
 			$scope.$watch 'value', mapModel
@@ -145,6 +150,4 @@ define ->
 				return if !val?
 				idx = $scope.value.indexOf val
 				if idx > -1 then $scope.value.splice(idx, 1) else $scope.value.push val
-				mapModel $scope.value # trigger watch manually
-
-		}
+				mapModel $scope.value # trigger 'watch' manually

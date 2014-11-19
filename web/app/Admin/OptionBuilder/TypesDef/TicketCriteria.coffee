@@ -228,7 +228,7 @@ define [
 				options = []
 
 				options.push({
-					title: 'New Comment'
+					title: 'New JIRA Comment'
 					value: 'CheckJIRANewComment'
 				})
 

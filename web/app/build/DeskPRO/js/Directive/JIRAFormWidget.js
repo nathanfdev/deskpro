@@ -19,7 +19,9 @@
         labels: 'com.atlassian.jira.plugin.system.customfieldtypes:labels',
         priority: 'com.atlassian.jira.plugin.system.customfieldtypes:select',
         resolution: 'com.atlassian.jira.plugin.system.customfieldtypes:select',
-        resolutiondate: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime'
+        resolutiondate: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
+        created: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime',
+        updated: 'com.atlassian.jira.plugin.system.customfieldtypes:datetime'
       };
       return {
         restrict: 'AE',
@@ -55,7 +57,12 @@
             'com.atlassian.jira.plugin.system.customfieldtypes:float': 'float',
             'com.atlassian.jira.plugin.system.customfieldtypes:datetime': 'datetime',
             priority: 'object',
-            resolution: 'object'
+            resolution: 'object',
+            parent: function(val) {
+              return {
+                key: val
+              };
+            }
           };
           mapModel = function(val) {
             var schema, type;
@@ -88,6 +95,9 @@
                 if (moment && val instanceof Date) {
                   val = moment(val).format('YYYY-MM-DDTHH:mm:ss.SSSZZ');
                 }
+            }
+            if ('function' === typeof type) {
+              val = type(val);
             }
             return $scope.model = val;
           };
