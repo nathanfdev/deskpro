@@ -2,3 +2,9 @@ saml_sls:
     path: /saml/sls/{usersource_id}
 saml_metadata:
     path: /saml/metadata/{usersource_id}.xml
+
+  # only temporarily here, until other interfaces stop relying on the routes of UserBundle
+user_saml_sls:
+    path: /saml/sls/{usersource_id}
+user_saml_metadata:
+    path: /saml/metadata/{usersource_id}.xml
