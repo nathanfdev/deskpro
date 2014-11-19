@@ -36,81 +36,81 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ChoiceDefinitionType extends CustomFieldDefinitionType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		// if we need to define all properties, not only children
-		if (!$options['children_only']) {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        // if we need to define all properties, not only children
+        if (!$options['children_only']) {
 
-			parent::buildForm($builder, $options);
-			$builder->get('options')
-				->add('multiple', 'checkbox')
-				->add('expanded', 'checkbox');
+            parent::buildForm($builder, $options);
+            $builder->get('options')
+                ->add('multiple', 'checkbox')
+                ->add('expanded', 'checkbox');
 
-		} else {
-			// called in parent
-			$builder->addEventSubscriber($this);
-		}
+        } else {
+            // called in parent
+            $builder->addEventSubscriber($this);
+        }
 
-		$children = null;
-		if ($options['data'] && $options['children_collection']) {
-			$children = $options['children_collection']->get($options['data']['id']);
-		}
+        $children = null;
+        if ($options['data'] && $options['children_collection']) {
+            $children = $options['children_collection']->get($options['data']['id']);
+        }
 
-		$builder
-			->add('_children', new DpCategoryBuilderType(), array(
-				'type' => new SimpleDefinitionType(),
-				'label' => false,
-				'allow_add' => true,
-				'allow_delete' => true,
-				'required' => false,
-				'data' => $children ?: new ArrayCollection(),
-				'mapped' => false,
-				'persister' => $options['persister'],
-				'options' => array(
-					'label' => false,
-					'context' => $options['context'],
-					'parent' => $options['data'],
-				),
-			))
-		;
-	}
+        $builder
+            ->add('_children', new DpCategoryBuilderType(), array(
+                'type' => new SimpleDefinitionType(),
+                'label' => false,
+                'allow_add' => true,
+                'allow_delete' => true,
+                'required' => false,
+                'data' => $children ?: new ArrayCollection(),
+                'mapped' => false,
+                'persister' => $options['persister'],
+                'options' => array(
+                    'label' => false,
+                    'context' => $options['context'],
+                    'parent' => $options['data'],
+                ),
+            ))
+        ;
+    }
 
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		parent::setDefaultOptions($resolver);
-		$resolver
-			->setDefaults(array(
-				'children_only' => false,
-				'children_collection' => null,
-			))
-			->setOptional(array(
-				'children_collection', 'children_only',
-			))
-			->addAllowedTypes(array(
-				'children_collection' => array('null', 'Doctrine\Common\Collections\ArrayCollection'),
-			))
-		;
-	}
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        parent::setDefaultOptions($resolver);
+        $resolver
+            ->setDefaults(array(
+                'children_only' => false,
+                'children_collection' => null,
+            ))
+            ->setOptional(array(
+                'children_collection', 'children_only',
+            ))
+            ->addAllowedTypes(array(
+                'children_collection' => array('null', 'Doctrine\Common\Collections\ArrayCollection'),
+            ))
+        ;
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'cf_definition_choice';
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'cf_definition_choice';
+    }
 
-	/**
-	 * @param FormView $view
-	 * @param FormInterface $form
-	 * @param array $options
-	 */
-	public function buildView(FormView $view, FormInterface $form, array $options)
-	{
-		parent::buildView($view, $form, $options);
-		$view->vars['rendered_data'] = $form->get('_children')->count() . ' Options';
-	}
+    /**
+     * @param FormView      $view
+     * @param FormInterface $form
+     * @param array         $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        parent::buildView($view, $form, $options);
+        $view->vars['rendered_data'] = $form->get('_children')->count() . ' Options';
+    }
 }

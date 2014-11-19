@@ -45,35 +45,36 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckEmailCcName extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('name');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$context->hasEmailContext()) {
-			return false;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$context->hasEmailContext()) {
+            return false;
+        }
 
-		$reader = $context->getEmailContext();
-		$strings = array();
-		foreach ($reader->getCcAddresses() as $email) {
-			$strings[] = $email->getNameUtf8();
-		}
+        $reader = $context->getEmailContext();
+        $strings = array();
+        foreach ($reader->getCcAddresses() as $email) {
+            $strings[] = $email->getNameUtf8();
+        }
 
-		$options = $this->getTermOptions();
-		$value   = TermValue::createWithValue($strings);
+        $options = $this->getTermOptions();
+        $value   = TermValue::createWithValue($strings);
 
-		return $this->isStringMatch($ticket, $context, $value, $options['name']);
-	}
+        return $this->isStringMatch($ticket, $context, $value, $options['name']);
+    }
 }

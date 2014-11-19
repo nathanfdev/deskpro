@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\Adapter\Local;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Doctrine\ORM\EntityManager;
@@ -52,10 +51,10 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
      */
     protected $em;
 
-	public function getFieldsFromIdentity(Identity $identity)
-	{
-		return $identity->getRawData();
-	}
+    public function getFieldsFromIdentity(Identity $identity)
+    {
+        return $identity->getRawData();
+    }
 
     public function setEm(EntityManager $em)
     {
@@ -63,45 +62,42 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
     }
 
 
-	public function findIdentityByInput($input)
-	{
-		/** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
-		$personRepo = $this->em->getRepository('DeskPRO:Person');
-		if ($person = $personRepo->findOneByEmail($input)) {
-			return $person;
-		}
+    public function findIdentityByInput($input)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
+        $personRepo = $this->em->getRepository('DeskPRO:Person');
+        if ($person = $personRepo->findOneByEmail($input)) {
+            return $person;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
+    /**
+     * @return \Orb\Auth\Adapter\Local
+     */
+    protected function _createAuthAdapterObject()
+    {
+        return new Local($this->em);
+    }
 
-	/**
-	 * @return \Orb\Auth\Adapter\Local
-	 */
-	protected function _createAuthAdapterObject()
-	{
-		return new Local($this->em);
-	}
+    /**
+     * @return array
+     */
+    public function getCapabilities()
+    {
+        return array(
+            UsersourceInfo::CAPABILITY_FORM_LOGIN,
+            UsersourceInfo::CAPABILITY_FIND_IDENTITY
+        );
+    }
 
-
-	/**
-	 * @return array
-	 */
-	public function getCapabilities()
-	{
-		return array(
-			UsersourceInfo::CAPABILITY_FORM_LOGIN,
-			UsersourceInfo::CAPABILITY_FIND_IDENTITY
-		);
-	}
-
-
-	/**
-	 * @param  mixed $capability
-	 * @return bool
-	 */
-	public function isCapable($capability)
-	{
-		return in_array($capability, $this->getCapabilities());
-	}
+    /**
+     * @param  mixed $capability
+     * @return bool
+     */
+    public function isCapable($capability)
+    {
+        return in_array($capability, $this->getCapabilities());
+    }
 }

@@ -39,78 +39,77 @@ use Application\DeskPRO\Cache\ConvenientCache;
 
 class ConvenientCacheTest extends \DpUnitTestCase
 {
-	public function testGetWillUseAndSetDefaultIfNoCacheEntryExists()
-	{
-		$adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
-		$adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
-		$adapter->shouldReceive('set')->with('key', 'some_val')->once();
+    public function testGetWillUseAndSetDefaultIfNoCacheEntryExists()
+    {
+        $adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+        $adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
+        $adapter->shouldReceive('set')->with('key', 'some_val')->once();
 
-		$cache = new ConvenientCache($adapter);
-		$val = $cache->get('key', 'some_val');
+        $cache = new ConvenientCache($adapter);
+        $val = $cache->get('key', 'some_val');
 
-		$this->assertEquals('some_val', $val);
-	}
+        $this->assertEquals('some_val', $val);
+    }
 
-	public function testGetDefaultCanBeAnyClosure()
-	{
-		$adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
-		$adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
-		$adapter->shouldReceive('set')->with('key', 'some_val')->once();
+    public function testGetDefaultCanBeAnyClosure()
+    {
+        $adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+        $adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
+        $adapter->shouldReceive('set')->with('key', 'some_val')->once();
 
-		$cache = new ConvenientCache($adapter);
-		$val = $cache->get('key', function () {
-				return 'some_val';
-			}
-		);
+        $cache = new ConvenientCache($adapter);
+        $val = $cache->get('key', function () {
+                return 'some_val';
+            }
+        );
 
-		$this->assertEquals('some_val', $val);
-	}
+        $this->assertEquals('some_val', $val);
+    }
 
-	public function testGetDefaultCanBeAnyCallable()
-	{
-		$adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
-		$adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
-		$adapter->shouldReceive('set')->with('key', 'some_val')->once();
+    public function testGetDefaultCanBeAnyCallable()
+    {
+        $adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+        $adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
+        $adapter->shouldReceive('set')->with('key', 'some_val')->once();
 
-		$cache = new ConvenientCache($adapter);
-		$val = $cache->get('key', array($this, 'getReturnVal'));
+        $cache = new ConvenientCache($adapter);
+        $val = $cache->get('key', array($this, 'getReturnVal'));
 
-		$this->assertEquals('some_val', $val);
-	}
+        $this->assertEquals('some_val', $val);
+    }
 
-	public function getReturnVal()
-	{
-		return 'some_val';
-	}
+    public function getReturnVal()
+    {
+        return 'some_val';
+    }
 
-	public function testGEtCallableDefaultDoesNotInterfereWithRealValues()
-	{
-		$adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
-		$adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
+    public function testGEtCallableDefaultDoesNotInterfereWithRealValues()
+    {
+        $adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+        $adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
 
-		$not_callable = array('some_key_that_is_not_a_class', 'getReturnVal');
+        $not_callable = array('some_key_that_is_not_a_class', 'getReturnVal');
 
-		$adapter->shouldReceive('set')->with('key', $not_callable)->once();
+        $adapter->shouldReceive('set')->with('key', $not_callable)->once();
 
-		$cache = new ConvenientCache($adapter);
-		$val = $cache->get('key', $not_callable);
+        $cache = new ConvenientCache($adapter);
+        $val = $cache->get('key', $not_callable);
 
-		$this->assertEquals($not_callable, $val);
-	}
+        $this->assertEquals($not_callable, $val);
+    }
 
-	public function testGEtCallableDefaultDoesNotInterfereWithRealValues2()
-	{
-		$adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
-		$adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
+    public function testGEtCallableDefaultDoesNotInterfereWithRealValues2()
+    {
+        $adapter = \Mockery::mock('Application\DeskPRO\Cache\CacheAdapterInterface');
+        $adapter->shouldReceive('has')->with('key')->andReturn(false)->once();
 
-		$not_callable = 'someNonExistantClass::noMethod';
+        $not_callable = 'someNonExistantClass::noMethod';
 
-		$adapter->shouldReceive('set')->with('key', $not_callable)->once();
+        $adapter->shouldReceive('set')->with('key', $not_callable)->once();
 
-		$cache = new ConvenientCache($adapter);
-		$val = $cache->get('key', $not_callable);
+        $cache = new ConvenientCache($adapter);
+        $val = $cache->get('key', $not_callable);
 
-		$this->assertEquals($not_callable, $val);
-	}
+        $this->assertEquals($not_callable, $val);
+    }
 }
- 

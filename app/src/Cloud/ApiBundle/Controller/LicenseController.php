@@ -41,68 +41,82 @@ use Orb\Util\Dates;
 
 class LicenseController extends BaseLicenseController
 {
-	####################################################################################################################
-	# get-license
-	####################################################################################################################
+    ####################################################################################################################
+    # get-license
+    ####################################################################################################################
 
-	public function getLicenseAction()
-	{
-		$lic = License::getLicense();
+    public function getLicenseAction()
+    {
+        $lic = License::getLicense();
 
-		$is_expired = false;
-		$expire_in_days = 0;
+        $is_expired = false;
+        $expire_in_days = 0;
 
-		if ($lic->getExpireDate()) {
-			$is_expired = $lic->getExpireDate()->format('U') < time();
-			if (!$is_expired) {
-				$lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
-				$expire_in_days = $lic_expire_parts['days'];
-				$expire_in_days += $lic_expire_parts['years'] * 365;
-			}
-		}
+        if ($lic->getExpireDate()) {
+            $is_expired = $lic->getExpireDate()->format('U') < time();
+            if (!$is_expired) {
+                $lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
+                $expire_in_days = $lic_expire_parts['days'];
+                $expire_in_days += $lic_expire_parts['years'] * 365;
+            }
+        }
 
-		return $this->createApiResponse(array(
-			'license' => array(
-				'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
-				'isExpired'   => $is_expired,
-				'expireDays'  => $expire_in_days,
-				'isDemo'      => $lic->isDemo() ? true : false,
-				'maxAgents'   => $lic->getMaxAgents()
-			)
-		));
-	}
+        $current_agents = $this->db->fetchColumn("
+            SELECT COUNT(*)
+            FROM people
+            WHERE is_agent = 1 AND is_deleted = 0
+        ");
 
-	####################################################################################################################
-	# get-billing-login-token
-	####################################################################################################################
+        $max_agents = License::getLicense()->getMaxAgents();
 
-	public function getBillingLoginTokenAction()
-	{
-		$tmpdata = new TmpData();
-		$tmpdata->setType('dpc_billing_access');
-		$tmpdata->setData('person_info', array(
-			'helpdesk_url'     => rtrim($this->container->getSetting('core.deskpro_url'), '/'),
-			'asset_url'        => str_replace('/index.php', '', rtrim($this->container->getSetting('core.deskpro_url'), '/')),
-			'person_id'        => $this->person->getId(),
-			'first_name'       => $this->person->first_name,
-			'last_name'        => $this->person->last_name,
-			'name'             => $this->person->getDisplayName(),
-			'email'            => $this->person->getPrimaryEmailAddress(),
-			'picture_url_24'   => $this->person->getPictureUrl(24),
-			'can_admin'        => $this->person->can_admin,
-			'can_agent'        => $this->person->can_agent,
-			'can_billing'      => $this->person->can_billing,
-			'can_reports'      => $this->person->can_reports,
-			'can_portal'       => $this->container->getSetting('user.portal_enabled'),
-		));
-		$tmpdata->date_expire = new \DateTime('+15 minutes');
+        return $this->createApiResponse(array(
+            'license' => array(
+                'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
+                'isExpired'   => $is_expired,
+                'expireDays'  => $expire_in_days,
+                'isDemo'      => $lic->isDemo() ? true : false,
+                'maxAgents'   => $lic->getMaxAgents(),
+                'licenseCode' => '',
+            ),
+            'limits' => array(
+                'max_agents'    => $max_agents,
+                'count_agents'  => $current_agents,
+                'remain_agents' => 1 // override for cloud because we handle it automatically
+            ),
+        ));
+    }
 
-		$this->em->persist($tmpdata);
-		$this->em->flush();
+    ####################################################################################################################
+    # get-billing-login-token
+    ####################################################################################################################
 
-		return $this->createJsonResponse(array(
-			'code'   => $tmpdata->getCode(),
-			'ma_url' => DP_MA_SERVER . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode()
-		));
-	}
+    public function getBillingLoginTokenAction()
+    {
+        $tmpdata = new TmpData();
+        $tmpdata->setType('dpc_billing_access');
+        $tmpdata->setData('person_info', array(
+            'helpdesk_url'     => rtrim($this->container->getSetting('core.deskpro_url'), '/'),
+            'asset_url'        => str_replace('/index.php', '', rtrim($this->container->getSetting('core.deskpro_url'), '/')),
+            'person_id'        => $this->person->getId(),
+            'first_name'       => $this->person->first_name,
+            'last_name'        => $this->person->last_name,
+            'name'             => $this->person->getDisplayName(),
+            'email'            => $this->person->getPrimaryEmailAddress(),
+            'picture_url_24'   => $this->person->getPictureUrl(24),
+            'can_admin'        => $this->person->can_admin,
+            'can_agent'        => $this->person->can_agent,
+            'can_billing'      => $this->person->can_billing,
+            'can_reports'      => $this->person->can_reports,
+            'can_portal'       => $this->container->getSetting('user.portal_enabled'),
+        ));
+        $tmpdata->date_expire = new \DateTime('+15 minutes');
+
+        $this->em->persist($tmpdata);
+        $this->em->flush();
+
+        return $this->createJsonResponse(array(
+            'code'   => $tmpdata->getCode(),
+            'ma_url' => DP_MA_SERVER . '/cloud/start/'.DPC_SITE_ID.'/'. $tmpdata->getCode()
+        ));
+    }
 }

@@ -43,231 +43,232 @@ use Orb\Util\Strings;
 
 class SearchController extends AbstractController
 {
-	public function searchAction()
-	{
-		$q = $this->in->getString('q');
+    public function searchAction()
+    {
+        $q = $this->in->getString('q');
 
-		if ($this->in->getString('gourl')) {
-			$gourl = $this->in->getString('gourl');
-			$count = $this->in->getUint('c');
+        if ($this->in->getString('gourl')) {
+            $gourl = $this->in->getString('gourl');
+            $count = $this->in->getUint('c');
 
-			$validate = $this->checkRequestToken($gourl . $count, 't');
-			if ($validate || 1) {
-				$searchlog = SearchLog::create($q, $count, true);
-				$this->em->persist($searchlog);
-				$this->em->flush();
+            $validate = $this->checkRequestToken($gourl . $count, 't');
+            if ($validate || 1) {
+                $searchlog = SearchLog::create($q, $count, true);
+                $this->em->persist($searchlog);
+                $this->em->flush();
 
-				$this->session->set('from_search', true);
-				$this->session->set('last_searchlog_id', $searchlog->id);
-				$this->session->save();
-			}
-			return $this->redirect($this->in->getString('gourl'));
-		}
+                $this->session->set('from_search', true);
+                $this->session->set('last_searchlog_id', $searchlog->id);
+                $this->session->save();
+            }
 
-		$is_search = false;
-		$results = false;
-		$sticky_results = false;
+            return $this->redirect($this->in->getString('gourl'));
+        }
 
-		$total = 0;
-		$per_page = 25;
-		$cur_page = 1;
-		if ($this->in->getUint('p')) {
-			$cur_page = $this->in->getUint('p');
-		}
+        $is_search = false;
+        $results = false;
+        $sticky_results = false;
 
-		if ($q) {
-			$is_search  = true;
+        $total = 0;
+        $per_page = 25;
+        $cur_page = 1;
+        if ($this->in->getUint('p')) {
+            $cur_page = $this->in->getUint('p');
+        }
 
-			$se = $this->container->getSearchEngine();
-			$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
-			$result_set = $se->getUserSearch()->search($context, $q);
+        if ($q) {
+            $is_search  = true;
 
-			$total      = $result_set->getTotal();
-			$results    = $result_set->getTypedResults();
+            $se = $this->container->getSearchEngine();
+            $context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+            $result_set = $se->getUserSearch()->search($context, $q);
 
-			$sticky_search  = new StickyWordSearch($this->em);
-			$sticky_search->setPersonContext($this->person);
-			$sticky_results = $sticky_search->getResults($q, 5);
+            $total      = $result_set->getTotal();
+            $results    = $result_set->getTypedResults();
 
-			if ($sticky_results) {
-				$got_sticky = array();
-				foreach ($sticky_results as $sitem) {
-					$total++;
-					$got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
-				}
-				$results = array_filter($results, function($r) use ($got_sticky) {
-					return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
-				});
-			}
+            $sticky_search  = new StickyWordSearch($this->em);
+            $sticky_search->setPersonContext($this->person);
+            $sticky_results = $sticky_search->getResults($q, 5);
 
-			$searchlog = SearchLog::create($q, count($results) + count($sticky_results), true);
-			$this->em->transactional(function($em) use ($searchlog) {
-				$em->persist($searchlog);
-				$em->flush();
-			});
+            if ($sticky_results) {
+                $got_sticky = array();
+                foreach ($sticky_results as $sitem) {
+                    $total++;
+                    $got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
+                }
+                $results = array_filter($results, function ($r) use ($got_sticky) {
+                    return !isset($got_sticky[get_class($r['object']).$r['object']->getId()]);
+                });
+            }
 
-			$this->session->set('last_searchlog_id', $searchlog->id);
-			$this->session->save();
-		}
+            $searchlog = SearchLog::create($q, count($results) + count($sticky_results), true);
+            $this->em->transactional(function ($em) use ($searchlog) {
+                $em->persist($searchlog);
+                $em->flush();
+            });
 
-		$pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
+            $this->session->set('last_searchlog_id', $searchlog->id);
+            $this->session->save();
+        }
 
-		return $this->render('UserBundle:Search:search.html.twig', array(
-			'is_search'         => $is_search,
-			'results'           => $results,
-			'sticky_results'    => $sticky_results,
-			'query'             => $q,
-			'pageinfo'          => $pageinfo,
-			'num_results'       => $total,
-		));
-	}
+        $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
 
-	public function labelSearchAction($label = '', $type = 'all')
-	{
-		if ($this->in->getString('label') || $this->in->getString('type')) {
-			if (!$label) {
-				$label = $this->in->getString('label');
-			}
-			if ($this->in->getString('type')) {
-				$type = $this->in->getString('type');
-			}
+        return $this->render('UserBundle:Search:search.html.twig', array(
+            'is_search'         => $is_search,
+            'results'           => $results,
+            'sticky_results'    => $sticky_results,
+            'query'             => $q,
+            'pageinfo'          => $pageinfo,
+            'num_results'       => $total,
+        ));
+    }
 
-			if ($label) {
-				if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
-					$type = 'all';
-				}
+    public function labelSearchAction($label = '', $type = 'all')
+    {
+        if ($this->in->getString('label') || $this->in->getString('type')) {
+            if (!$label) {
+                $label = $this->in->getString('label');
+            }
+            if ($this->in->getString('type')) {
+                $type = $this->in->getString('type');
+            }
 
-				// Redirect label in query string (ie from form) to proper URL
-				return $this->redirectRoute('user_search_labels', array('label' => $label, 'type' => $type));
-			}
-		}
+            if ($label) {
+                if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
+                    $type = 'all';
+                }
 
-		if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
-			$type = 'all';
-		}
+                // Redirect label in query string (ie from form) to proper URL
+                return $this->redirectRoute('user_search_labels', array('label' => $label, 'type' => $type));
+            }
+        }
 
-		#------------------------------
-		# Find content with label
-		#------------------------------
+        if (!$type OR !in_array($type, array('all', 'articles', 'feedback', 'downloads', 'news'))) {
+            $type = 'all';
+        }
 
-		$total = 0;
-		$per_page = 25;
-		$cur_page = 1;
-		if ($this->in->getUint('p')) {
-			$cur_page = $this->in->getUint('p');
-		}
+        #------------------------------
+        # Find content with label
+        #------------------------------
 
-		$search_types = array();
-		if ($type == 'all') {
-			$search_types = array('article', 'feedback', 'download', 'news');
-		} else {
-			if ($type == 'articles')   $search_types = array('article');
-			if ($type == 'feedback')   $search_types = array('feedback');
-			if ($type == 'downloads')  $search_types = array('download');
-			if ($type == 'news')       $search_types = array('news');
-		}
+        $total = 0;
+        $per_page = 25;
+        $cur_page = 1;
+        if ($this->in->getUint('p')) {
+            $cur_page = $this->in->getUint('p');
+        }
 
-		$results = null;
-		$pageinfo = null;
-		if ($label) {
-			$search      = App::getSearchAdapter();
-			$result_set  = $search->getContentSearcher()->labelled(array($label), $per_page, $cur_page, $search_types);
-			$results     = $search->getResultSetObjects($result_set, true);
+        $search_types = array();
+        if ($type == 'all') {
+            $search_types = array('article', 'feedback', 'download', 'news');
+        } else {
+            if ($type == 'articles')   $search_types = array('article');
+            if ($type == 'feedback')   $search_types = array('feedback');
+            if ($type == 'downloads')  $search_types = array('download');
+            if ($type == 'news')       $search_types = array('news');
+        }
 
-			$total    = $result_set->totalCount();
-			$pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
-		}
+        $results = null;
+        $pageinfo = null;
+        if ($label) {
+            $search      = App::getSearchAdapter();
+            $result_set  = $search->getContentSearcher()->labelled(array($label), $per_page, $cur_page, $search_types);
+            $results     = $search->getResultSetObjects($result_set, true);
 
-		#------------------------------
-		# Make combined search cloud
-		#------------------------------
+            $total    = $result_set->totalCount();
+            $pageinfo = Numbers::getPaginationPages($total, $cur_page, $per_page);
+        }
 
-		$content_cloud = new ContentLabelCloud();
-		$cloud = $content_cloud->getCloud();
+        #------------------------------
+        # Make combined search cloud
+        #------------------------------
 
-		return $this->render('UserBundle:Search:label-search.html.twig', array(
-			'cloud'    => $cloud,
-			'label'    => $label,
-			'results'  => $results,
-			'type'     => $type,
-			'pageinfo' => $pageinfo,
-			'num_results' => $total
-		));
-	}
+        $content_cloud = new ContentLabelCloud();
+        $cloud = $content_cloud->getCloud();
 
-	public function omnisearchAction($query)
-	{
-		$se = $this->container->getSearchEngine();
-		$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
-		$search_results = $se->getUserSearch()->search($context, $query);
+        return $this->render('UserBundle:Search:label-search.html.twig', array(
+            'cloud'    => $cloud,
+            'label'    => $label,
+            'results'  => $results,
+            'type'     => $type,
+            'pageinfo' => $pageinfo,
+            'num_results' => $total
+        ));
+    }
 
-		$sticky_search  = new StickyWordSearch($this->em);
-		$sticky_search->setPersonContext($this->person);
-		$sticky_results = $sticky_search->getResults($query, 5);
+    public function omnisearchAction($query)
+    {
+        $se = $this->container->getSearchEngine();
+        $context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+        $search_results = $se->getUserSearch()->search($context, $query);
 
-		$format = $this->in->getString('format');
+        $sticky_search  = new StickyWordSearch($this->em);
+        $sticky_search->setPersonContext($this->person);
+        $sticky_results = $sticky_search->getResults($query, 5);
 
-		$results = array();
+        $format = $this->in->getString('format');
 
-		$got_sticky = array();
-		foreach ($sticky_results as $sitem) {
-			$got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
-			$results[] = $sitem;
-		}
-		foreach ($search_results->getTypedResults() as $item) {
-			if (isset($got_sticky[get_class($item['object']).$item['object']->getId()])) {
-				continue;
-			}
-			$results[] = $item;
-		}
+        $results = array();
 
-		if ($format == 'json') {
-			$data = array('results' => array());
+        $got_sticky = array();
+        foreach ($sticky_results as $sitem) {
+            $got_sticky[get_class($sitem['object']) . $sitem['object']->getId()] = true;
+            $results[] = $sitem;
+        }
+        foreach ($search_results->getTypedResults() as $item) {
+            if (isset($got_sticky[get_class($item['object']).$item['object']->getId()])) {
+                continue;
+            }
+            $results[] = $item;
+        }
 
-			foreach ($results as $item) {
-				$data['results'][] = array(
-					'url' => $item->getLink(),
-					'title' => $item->getTitle()
-				);
-			}
+        if ($format == 'json') {
+            $data = array('results' => array());
 
-			if ($this->in->getString('callback')) {
-				return $this->createJsonpResponse($data);
-			} else {
-				return $this->createJsonResponse($data);
-			}
-		} else {
-			return $this->render('UserBundle:Search:omnisearch.html.twig', array(
-				'results' => $results,
-				'query'   => $query,
-			));
-		}
-	}
+            foreach ($results as $item) {
+                $data['results'][] = array(
+                    'url' => $item->getLink(),
+                    'title' => $item->getTitle()
+                );
+            }
 
-	public function similarToAction($content_type)
-	{
-		$content = isset($_REQUEST['content']) ? (string)$_REQUEST['content'] : '';
-		$content = Strings::utf8_accents_to_ascii($content);
-		$content = strtolower($content);
-		$content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
-		$content = preg_replace('#\s+#', ' ', $content);
-		$content = explode(' ', $content);
-		$content = array_filter($content, function($s) { return isset($s[2]); });
-		$content = array_unique($content);
-		$content = implode(' ', $content);
+            if ($this->in->getString('callback')) {
+                return $this->createJsonpResponse($data);
+            } else {
+                return $this->createJsonResponse($data);
+            }
+        } else {
+            return $this->render('UserBundle:Search:omnisearch.html.twig', array(
+                'results' => $results,
+                'query'   => $query,
+            ));
+        }
+    }
 
-		if (!$content) {
-			return $this->render('UserBundle:Search:similar-to.html.twig', array(
-				'results' => array(),
-			));
-		}
+    public function similarToAction($content_type)
+    {
+        $content = isset($_REQUEST['content']) ? (string)$_REQUEST['content'] : '';
+        $content = Strings::utf8_accents_to_ascii($content);
+        $content = strtolower($content);
+        $content = preg_replace('#[^a-zA-Z0-9]#', ' ', $content);
+        $content = preg_replace('#\s+#', ' ', $content);
+        $content = explode(' ', $content);
+        $content = array_filter($content, function ($s) { return isset($s[2]); });
+        $content = array_unique($content);
+        $content = implode(' ', $content);
 
-		$se = $this->container->getSearchEngine();
-		$context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
-		$results = $se->getUserSearch()->search($context, $content, array('limit_types' => array($content_type)));
+        if (!$content) {
+            return $this->render('UserBundle:Search:similar-to.html.twig', array(
+                'results' => array(),
+            ));
+        }
 
-		return $this->render('UserBundle:Search:similar-to.html.twig', array(
-			'results' => $results->getTypedResults(),
-		));
-	}
+        $se = $this->container->getSearchEngine();
+        $context = $this->container->getSearchContextFactory()->createUserSearchContext($this->person);
+        $results = $se->getUserSearch()->search($context, $content, array('limit_types' => array($content_type)));
+
+        return $this->render('UserBundle:Search:similar-to.html.twig', array(
+            'results' => $results->getTypedResults(),
+        ));
+    }
 }

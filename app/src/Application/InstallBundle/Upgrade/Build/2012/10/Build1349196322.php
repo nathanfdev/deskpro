@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1349196322 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add right-to-left marker for languages");
-		$this->execMutateSql("ALTER TABLE languages ADD is_rtl TINYINT(1) NOT NULL");
-		$this->execMutateSql("ALTER TABLE styles ADD css_blob_rtl_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE styles ADD CONSTRAINT FK_B65AFAF5FEED6A62 FOREIGN KEY (css_blob_rtl_id) REFERENCES blobs (id) ON DELETE SET NULL");
-		$this->execMutateSql("CREATE UNIQUE INDEX UNIQ_B65AFAF5FEED6A62 ON styles (css_blob_rtl_id)");
-	}
+    public function run()
+    {
+        $this->out("Add right-to-left marker for languages");
+        $this->execMutateSql("ALTER TABLE languages ADD is_rtl TINYINT(1) NOT NULL");
+        $this->execMutateSql("ALTER TABLE styles ADD css_blob_rtl_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE styles ADD CONSTRAINT FK_B65AFAF5FEED6A62 FOREIGN KEY (css_blob_rtl_id) REFERENCES blobs (id) ON DELETE SET NULL");
+        $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_B65AFAF5FEED6A62 ON styles (css_blob_rtl_id)");
+    }
 }

@@ -47,221 +47,227 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ProcessEmailCommand extends ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:process-email');
-		$this->addOption('account', null, InputOption::VALUE_REQUIRED, 'ID or email address of the gateway to process the source under. -1 for default. If not provided, then the account will be detected based on the to/cc address.');
-		$this->addOption('account-force', null, InputOption::VALUE_NONE, 'Use the account even if its disabled');
-		$this->addOption('to', null, InputOption::VALUE_REQUIRED, 'The TO address to interpret the email to. If provided, the gateway will be determiend based on this.');
-		$this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
-		$this->addOption('file', null, InputOption::VALUE_OPTIONAL,  'Path to an email file to process. No filename is required if you are sending the file through standard input (e.g., piping).');
-		$this->addOption('success-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of success (e.g., use as a trigger for external tool). Note that this command will return 0 on success, so you can use that instead.');
-		$this->addOption('error-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of error (e.g., use as a trigger for external tool). Note that this command will return 1 on an error, so you can use that instead.');
-		$this->addOption('enable-retries', null, InputOption::VALUE_NONE, 'If processing the message fails, enable retry scheduling instead of setting to "error".');
-		$this->addOption('insert-only', null, InputOption::VALUE_NONE, 'Save the source with an inserted status (do not process right now)');
-		$this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from-email=\"user@example.com\" --to-email=\"gateway@example.com\" | php cmd.php dp:process-email --file");
-	}
+    protected function configure()
+    {
+        $this->setName('dp:process-email');
+        $this->addOption('account', null, InputOption::VALUE_REQUIRED, 'ID or email address of the gateway to process the source under. -1 for default. If not provided, then the account will be detected based on the to/cc address.');
+        $this->addOption('account-force', null, InputOption::VALUE_NONE, 'Use the account even if its disabled');
+        $this->addOption('to', null, InputOption::VALUE_REQUIRED, 'The TO address to interpret the email to. If provided, the gateway will be determiend based on this.');
+        $this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
+        $this->addOption('file', null, InputOption::VALUE_OPTIONAL,  'Path to an email file to process. No filename is required if you are sending the file through standard input (e.g., piping).');
+        $this->addOption('success-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of success (e.g., use as a trigger for external tool). Note that this command will return 0 on success, so you can use that instead.');
+        $this->addOption('error-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of error (e.g., use as a trigger for external tool). Note that this command will return 1 on an error, so you can use that instead.');
+        $this->addOption('enable-retries', null, InputOption::VALUE_NONE, 'If processing the message fails, enable retry scheduling instead of setting to "error".');
+        $this->addOption('insert-only', null, InputOption::VALUE_NONE, 'Save the source with an inserted status (do not process right now)');
+        $this->setHelp("Example usage with dp:gen-rand-email:\n\tphp cmd.php dp:gen-rand-email --from-email=\"user@example.com\" --to-email=\"gateway@example.com\" | php cmd.php dp:process-email --file");
+    }
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return parent::getContainer();
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return parent::getContainer();
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$success_string = $input->getOption('success-string');
-		$error_string   = $input->getOption('error-string');
-		$insert_only    = $input->getOption('insert-only');
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $success_string = $input->getOption('success-string');
+        $error_string   = $input->getOption('error-string');
+        $insert_only    = $input->getOption('insert-only');
 
-		#----------------------------------------
-		# Read/save source object
-		#----------------------------------------
+        #----------------------------------------
+        # Read/save source object
+        #----------------------------------------
 
-		if ($input->getOption('source')) {
-			$source = $this->getContainer()->getEm()->find('DeskPRO:EmailSource', $input->getOption('source'));
+        if ($input->getOption('source')) {
+            $source = $this->getContainer()->getEm()->find('DeskPRO:EmailSource', $input->getOption('source'));
 
-			if (!$source) {
-				$output->writeln("<error>Could not find source</error>");
-				return 1;
-			}
+            if (!$source) {
+                $output->writeln("<error>Could not find source</error>");
 
-			$reader = new EzcReader();
-			$reader->setRawSource($source['raw_source']);
-			$account = $source->email_account;
+                return 1;
+            }
 
-			if (!$account) {
-				$account = $this->findEmailAccountFrom($reader);
-			}
-		} else {
+            $reader = new EzcReader();
+            $reader->setRawSource($source['raw_source']);
+            $account = $source->email_account;
 
-			if ($input->getOption('file')) {
-				if (file_exists($input->getOption('file'))) {
-					$raw_source = file_get_contents($input->getOption('file'));
-				} else {
-					$output->writeln("<error>File path does not exist: " . $input->getOption('file') . "</error>");
-					return 1;
-				}
-			} else {
-				$raw_source = '';
-				while (!feof(STDIN)) {
-					$raw_source .= fread(STDIN, 1024);
-				}
-			}
+            if (!$account) {
+                $account = $this->findEmailAccountFrom($reader);
+            }
+        } else {
 
-			$raw_source = trim($raw_source);
-			if (!$raw_source) {
-				$output->writeln("<error>No email source file provided</error>");
-				return 1;
-			}
+            if ($input->getOption('file')) {
+                if (file_exists($input->getOption('file'))) {
+                    $raw_source = file_get_contents($input->getOption('file'));
+                } else {
+                    $output->writeln("<error>File path does not exist: " . $input->getOption('file') . "</error>");
 
-			$raw_source = Strings::standardEol($raw_source);
+                    return 1;
+                }
+            } else {
+                $raw_source = '';
+                while (!feof(STDIN)) {
+                    $raw_source .= fread(STDIN, 1024);
+                }
+            }
 
-			$header_end = strpos($raw_source, "\n\n");
-			if ($header_end === false) {
-				// Means an empty body (eg message with only subject)
-				// But we trimmed above so the \n\n sep would be trimmed off
-				$raw_source .= "\n\n";
-				$header_end = strpos($raw_source, "\n\n");
-			}
+            $raw_source = trim($raw_source);
+            if (!$raw_source) {
+                $output->writeln("<error>No email source file provided</error>");
 
-			$raw_headers = trim(substr($raw_source,0, $header_end));
+                return 1;
+            }
 
-			$reader = new EzcReader();
-			$reader->setRawSource($raw_source);
-			$account = $this->findEmailAccountFrom($reader);
+            $raw_source = Strings::standardEol($raw_source);
 
-			$source = new EmailSource();
-			$source->fromArray(array(
-				'email_account' => $account,
-				'headers' => $raw_headers,
-				'status' => 'inserted',
-			));
+            $header_end = strpos($raw_source, "\n\n");
+            if ($header_end === false) {
+                // Means an empty body (eg message with only subject)
+                // But we trimmed above so the \n\n sep would be trimmed off
+                $raw_source .= "\n\n";
+                $header_end = strpos($raw_source, "\n\n");
+            }
 
-			// Rough matching, just for info purposes when browsing a list
-			$source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';
-			$source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_headers) ?: '';
-			$source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
-			$source->object_type    = 'ticket';
+            $raw_headers = trim(substr($raw_source,0, $header_end));
 
-			$t = microtime(true);
-			$output->writeln("<info>Saving blob...</info>");
+            $reader = new EzcReader();
+            $reader->setRawSource($raw_source);
+            $account = $this->findEmailAccountFrom($reader);
 
-			$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
-				$raw_source,
-				'email.eml',
-				'message/rfc822'
-			);
+            $source = new EmailSource();
+            $source->fromArray(array(
+                'email_account' => $account,
+                'headers' => $raw_headers,
+                'status' => 'inserted',
+            ));
 
-			$source->blob = $blob;
+            // Rough matching, just for info purposes when browsing a list
+            $source->header_to      = Strings::extractRegexMatch('#^To:\s*(.*?)$#m', $raw_headers) ?: '';
+            $source->header_from    = Strings::extractRegexMatch('#^From:\s*(.*?)$#m', $raw_headers) ?: '';
+            $source->header_subject = Strings::extractRegexMatch('#^Subject:\s*(.*?)$#m', $raw_headers) ?: '';
+            $source->object_type    = 'ticket';
 
-			// Set the copied raw source or else $source->getRawSource() will
-			// attempt to load it from the blob storage which is wasteful (eg could read back from s3 what we just wrote)
-			$source->_raw = $raw_source;
+            $t = microtime(true);
+            $output->writeln("<info>Saving blob...</info>");
 
-			App::getOrm()->persist($source);
-			App::getOrm()->flush();
+            $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromString(
+                $raw_source,
+                'email.eml',
+                'message/rfc822'
+            );
 
-			$output->writeln(sprintf("<info>Saved email source #" . $source->getId() . " (took %.5s)</info>", microtime(true) - $t));
-		}
+            $source->blob = $blob;
 
-		#----------------------------------------
-		# Get gateway account
-		#----------------------------------------
+            // Set the copied raw source or else $source->getRawSource() will
+            // attempt to load it from the blob storage which is wasteful (eg could read back from s3 what we just wrote)
+            $source->_raw = $raw_source;
 
-		$account_id = $input->getOption('account');
+            App::getOrm()->persist($source);
+            App::getOrm()->flush();
 
-		if (!$source->email_account && !$account_id) {
-			$output->writeln("<error>Could not find account for email. Specify an account using --account</error>");
-			return 1;
-		}
+            $output->writeln(sprintf("<info>Saved email source #" . $source->getId() . " (took %.5s)</info>", microtime(true) - $t));
+        }
 
-		if ($account_id) {
-			$account_manager = App::$container->getEmailAccountManager();
+        #----------------------------------------
+        # Get gateway account
+        #----------------------------------------
 
-			if (ctype_digit($account_id)) {
-				if ($account_manager->hasAcccount($account_id)) {
-					$output->writeln("<error>No account with ID $account_id</error>");
-					return 1;
-				}
+        $account_id = $input->getOption('account');
 
-				$account = $account_manager->getAccount($account_id);
-			} else {
-				$account = $account_manager->findAccountForEmailAddress($account_id);
+        if (!$source->email_account && !$account_id) {
+            $output->writeln("<error>Could not find account for email. Specify an account using --account</error>");
 
-				if (!$account) {
-					$output->writeln("<error>No account with address $account_id</error>");
-					return 1;
-				}
-			}
+            return 1;
+        }
 
+        if ($account_id) {
+            $account_manager = App::$container->getEmailAccountManager();
 
-			if ($input->getOption('account-force') && !$account->is_enabled) {
-				$output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
-			}
-		}
+            if (ctype_digit($account_id)) {
+                if ($account_manager->hasAcccount($account_id)) {
+                    $output->writeln("<error>No account with ID $account_id</error>");
 
-		$source->email_account = $account;
+                    return 1;
+                }
 
-		#----------------------------------------
-		# Run the gateway
-		#----------------------------------------
+                $account = $account_manager->getAccount($account_id);
+            } else {
+                $account = $account_manager->findAccountForEmailAddress($account_id);
 
-		if (!$insert_only) {
-			$output->setVerbosity(3);
+                if (!$account) {
+                    $output->writeln("<error>No account with address $account_id</error>");
 
-			$logger = new Logger();
-			$logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
-			$logger->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
-
-			$runner = new Runner();
-			$runner->setLogger($logger);
-			$runner->setPhpTimeLimit(900);
-			if ($input->getOption('enable-retries') || defined('DP_EMAILPROC_ALWAYS_RETRY')) {
-				$runner->setRetryScheduling(true);
-			} else {
-				$runner->setRetryScheduling(false);
-			}
-			$result = $runner->executeSource($source, $reader);
-
-			if ($result) {
-				if ($success_string) {
-					echo "\n";
-					echo $success_string;
-					echo "\n";
-				}
-
-				return 0;
-			} else {
-				if ($error_string) {
-					echo "\n";
-					echo $error_string;
-					echo "\n";
-				}
-
-				return 1;
-			}
-		}
-	}
+                    return 1;
+                }
+            }
 
 
-	/**
-	 * @param AbstractReader $reader
-	 * @return \Application\DeskPRO\Entity\EmailAccount|null
-	 */
-	private function findEmailAccountFrom(AbstractReader $reader)
-	{
-		$account_manager = App::$container->getEmailAccountManager();
+            if ($input->getOption('account-force') && !$account->is_enabled) {
+                $output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
+            }
+        }
 
-		foreach ($reader->getReceivedAddresses() as $email) {
-			$account = $account_manager->findAccountForEmailAddress($email->email, 'is_enabled');
-			if ($account) {
-				return $account;
-			}
-		}
+        $source->email_account = $account;
 
-		return null;
-	}
+        #----------------------------------------
+        # Run the gateway
+        #----------------------------------------
+
+        if (!$insert_only) {
+            $output->setVerbosity(3);
+
+            $logger = new Logger();
+            $logger->addWriter(new \Orb\Log\Writer\ConsoleOutputWriter($output));
+            $logger->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
+
+            $runner = new Runner();
+            $runner->setLogger($logger);
+            $runner->setPhpTimeLimit(900);
+            if ($input->getOption('enable-retries') || defined('DP_EMAILPROC_ALWAYS_RETRY')) {
+                $runner->setRetryScheduling(true);
+            } else {
+                $runner->setRetryScheduling(false);
+            }
+            $result = $runner->executeSource($source, $reader);
+
+            if ($result) {
+                if ($success_string) {
+                    echo "\n";
+                    echo $success_string;
+                    echo "\n";
+                }
+
+                return 0;
+            } else {
+                if ($error_string) {
+                    echo "\n";
+                    echo $error_string;
+                    echo "\n";
+                }
+
+                return 1;
+            }
+        }
+    }
+
+
+    /**
+     * @param  AbstractReader                                $reader
+     * @return \Application\DeskPRO\Entity\EmailAccount|null
+     */
+    private function findEmailAccountFrom(AbstractReader $reader)
+    {
+        $account_manager = App::$container->getEmailAccountManager();
+
+        foreach ($reader->getReceivedAddresses() as $email) {
+            $account = $account_manager->findAccountForEmailAddress($email->email, 'is_enabled');
+            if ($account) {
+                return $account;
+            }
+        }
+
+        return null;
+    }
 }

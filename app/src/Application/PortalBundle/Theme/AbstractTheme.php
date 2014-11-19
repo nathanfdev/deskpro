@@ -41,69 +41,68 @@ use Symfony\Component\Finder\Finder;
  */
 abstract class AbstractTheme implements ThemeInterface
 {
-	/**
-	 * @var Tag[]
-	 */
-	protected $tags;
+    /**
+     * @var Tag[]
+     */
+    protected $tags;
 
-	/**
-	 * @var ThemeInterface|null
-	 */
-	private $parent;
+    /**
+     * @var ThemeInterface|null
+     */
+    private $parent;
 
-	public function __construct(ThemeInterface $parent = null)
-	{
-		$this->parent = $parent;
-		foreach ($this->getTags() as $tag) {
-			$this->tags[$tag->getName()] = $tag;
-		}
-	}
+    public function __construct(ThemeInterface $parent = null)
+    {
+        $this->parent = $parent;
+        foreach ($this->getTags() as $tag) {
+            $this->tags[$tag->getName()] = $tag;
+        }
+    }
 
-	/**
-	 * @return Tag[]
-	 */
-	abstract function getTags();
+    /**
+     * @return Tag[]
+     */
+    abstract public function getTags();
 
-	public function getParent()
-	{
-		return $this->parent;
-	}
-
-
-	/**
-	 * Get the tag for the given tag name.
-	 *
-	 * @param $tag_name
-	 * @return Tag|null
-	 */
-	public function getTag($tag_name)
-	{
-		return isset($this->tags[$tag_name]) ? $this->tags[$tag_name] : null;
-	}
+    public function getParent()
+    {
+        return $this->parent;
+    }
 
 
-	public function getTemplateMap()
-	{
-		$temps = array();
-		if (is_dir($this->getBaseTemplateDir())) {
-			$finder = new Finder();
-			$finder->files()->name('*.twig')->in($this->getBaseTemplateDir());
+    /**
+     * Get the tag for the given tag name.
+     *
+     * @param $tag_name
+     * @return Tag|null
+     */
+    public function getTag($tag_name)
+    {
+        return isset($this->tags[$tag_name]) ? $this->tags[$tag_name] : null;
+    }
 
-			foreach ($finder as $temp) {
 
-				// turn twig filename/path into Theme:x:y.html.twig syntax
-				$path        = $temp->getRelativePathname();
-				$name        = $temp->getFilename();
-				$path_broken = explode('/', $path);
-				array_pop($path_broken);
-				$ctrl          = implode('/', $path_broken);
-				$template_name = "Theme:$ctrl:$name";
+    public function getTemplateMap()
+    {
+        $temps = array();
+        if (is_dir($this->getBaseTemplateDir())) {
+            $finder = new Finder();
+            $finder->files()->name('*.twig')->in($this->getBaseTemplateDir());
 
-				$temps[$template_name] = $temp->getRealPath();
-			}
-		}
+            foreach ($finder as $temp) {
 
-		return $this->getParent() ? array_merge($this->parent->getTemplateMap(), $temps) : $temps;
-	}
+                // turn twig filename/path into Theme:x:y.html.twig syntax
+                $path        = $temp->getRelativePathname();
+                $name        = $temp->getFilename();
+                $path_broken = explode('/', $path);
+                array_pop($path_broken);
+                $ctrl          = implode('/', $path_broken);
+                $template_name = "Theme:$ctrl:$name";
+
+                $temps[$template_name] = $temp->getRealPath();
+            }
+        }
+
+        return $this->getParent() ? array_merge($this->parent->getTemplateMap(), $temps) : $temps;
+    }
 }
- 

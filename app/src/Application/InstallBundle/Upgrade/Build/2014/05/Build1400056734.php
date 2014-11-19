@@ -42,176 +42,178 @@ use Orb\Util\Dates;
 
 class Build1400056734 extends AbstractBuild
 {
-	/**
-	 * @var TriggerActionConverter
-	 */
-	private $action_converter;
+    /**
+     * @var TriggerActionConverter
+     */
+    private $action_converter;
 
-	public function run()
-	{
-		require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
+    public function run()
+    {
+        require_once DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/2014/05/Helper/TriggerActionConverter.php';
 
-		$this->out("Upgrading escalations");
+        $this->out("Upgrading escalations");
 
-		$db = $this->container->getDb();
-		$db->executeUpdate('DELETE FROM ticket_escalations');
+        $db = $this->container->getDb();
+        $db->executeUpdate('DELETE FROM ticket_escalations');
 
-		#------------------------------
-		# Init helpers
-		#------------------------------
+        #------------------------------
+        # Init helpers
+        #------------------------------
 
-		$gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
+        $gateway_addr_map = $this->getUpgradeData('201404', 'gateway_address_map') ?: array();
 
-		$mappings = array(
-			'gateway_address_to_email_account' => $gateway_addr_map
-		);
+        $mappings = array(
+            'gateway_address_to_email_account' => $gateway_addr_map
+        );
 
-		$this->action_converter = new TriggerActionConverter($mappings);
+        $this->action_converter = new TriggerActionConverter($mappings);
 
-		#------------------------------
-		# Process old escalations
-		#------------------------------
+        #------------------------------
+        # Process old escalations
+        #------------------------------
 
-		$old_escalations = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
+        $old_escalations = $this->getUpgradeData('201404', 'ticket_triggers') ?: array();
 
-		$id_map = array();
+        $id_map = array();
 
-		foreach ($old_escalations as $esc) {
-			// We only care about escalations
-			if (strpos($esc['event_trigger'], 'time') === false) {
-				continue;
-			}
+        foreach ($old_escalations as $esc) {
+            // We only care about escalations
+            if (strpos($esc['event_trigger'], 'time') === false) {
+                continue;
+            }
 
-			$this->out("Processing #{$esc['id']} ...");
-			$new_esc = $this->processTrigger($esc);
-			if ($new_esc) {
-				$this->container->getEm()->persist($new_esc);
-				$this->container->getEm()->flush();
-				$this->out("-- Saved");
+            $this->out("Processing #{$esc['id']} ...");
+            $new_esc = $this->processTrigger($esc);
+            if ($new_esc) {
+                $this->container->getEm()->persist($new_esc);
+                $this->container->getEm()->flush();
+                $this->out("-- Saved");
 
-				$id_map[$esc['id']] = $new_esc->id;
-			} else {
-				$this->out("-- Skipped");
-			}
-		}
+                $id_map[$esc['id']] = $new_esc->id;
+            } else {
+                $this->out("-- Skipped");
+            }
+        }
 
-		if ($id_map) {
-			$this->saveUpgradeData('201404', 'esc_id_map', $id_map);
-		}
-	}
-
-
-	/**
-	 * @param array $old_esc
-	 * @return TicketTrigger|null
-	 */
-	private function processTrigger(array $old_esc)
-	{
-		// Default triggers just turn on depending on the status of the old default triggers
-		if ($old_esc['sys_name']) {
-			return null;
-		}
-
-		$old_esc['event_trigger_options'] = @unserialize($old_esc['event_trigger_options']) ?: array();
-		$old_esc['terms']     = @unserialize($old_esc['terms']) ?: array();
-		$old_esc['terms_any'] = @unserialize($old_esc['terms_any']) ?: array();
-		$old_esc['actions']   = @unserialize($old_esc['actions']) ?: array();
-
-		if (!$old_esc['event_trigger_options'] || empty($old_esc['event_trigger_options']['time'])) {
-			$this->out("-- No or bad time option");
-			return null;
-		}
-
-		#------------------------------
-		# Update actions
-		#------------------------------
-
-		$is_incomplete = false;
-
-		$actions_set = new TriggerActions();
-
-		foreach ($old_esc['actions'] as $act) {
-			$new_act = $this->action_converter->getTriggerAction($act);
-			if ($new_act) {
-				if (is_array($new_act)) {
-					foreach ($new_act as $a) {
-						$actions_set->addAction($a);
-					}
-				} else {
-					$actions_set->addAction($new_act);
-				}
-			} else {
-				$this->out("-- Skipped action {$act['type']}");
-				$is_incomplete = true;
-			}
-		}
-
-		if (!count($actions_set)) {
-			$this->out("-- Skipping no action escalation");
-			return null;
-		}
-
-		#------------------------------
-		# Create trigger object
-		#------------------------------
-
-		$esc = new TicketEscalation();
-		$esc->event_trigger = $old_esc['event_trigger'];
-		$esc->event_trigger_time = $this->getTimeSeconds($old_esc['event_trigger_options']['time']);
-		$esc->date_created  = new \DateTime();
-		$esc->date_last_run = new \DateTime();
-
-		if (!empty($old_esc['date_created'])) {
-			try {
-				$d = \DateTime::createFromFormat('Y-m-d H:i:s', $old_esc['date_created']);
-				if ($d) {
-					$esc->date_created = $d;
-				}
-			} catch (\Exception $e) {}
-		}
-
-		$esc->title      = $old_esc['title'] ?: 'Trigger ' . $old_esc['id'];
-		if ($is_incomplete) {
-			$esc->title .= ' (REQUIRES REVIEW)';
-		}
-		$esc->is_enabled = (bool)$old_esc['is_enabled'] && !$is_incomplete;
-		$esc->terms      = $old_esc['terms'];
-		$esc->terms_any  = $old_esc['terms_any'];
-		$esc->actions    = $actions_set;
-
-		return $esc;
-	}
+        if ($id_map) {
+            $this->saveUpgradeData('201404', 'esc_id_map', $id_map);
+        }
+    }
 
 
-	/**
-	 * @param $time_with_unit
-	 * @return int
-	 */
-	private function getTimeSeconds($time_with_unit)
-	{
-		list ($time, $scale) = explode(' ', $time_with_unit);
+    /**
+     * @param  array              $old_esc
+     * @return TicketTrigger|null
+     */
+    private function processTrigger(array $old_esc)
+    {
+        // Default triggers just turn on depending on the status of the old default triggers
+        if ($old_esc['sys_name']) {
+            return null;
+        }
 
-		switch ($scale) {
-			case 'minutes':
-				$secs = $time * Dates::SECS_MIN;
-				break;
-			case 'hours':
-				$secs = $time * Dates::SECS_HOUR;
-				break;
-			case 'days':
-				$secs = $time * Dates::SECS_DAY;
-				break;
-			case 'weeks':
-				$secs = $time * Dates::SECS_WEEK;
-				break;
-			case 'months':
-				$secs = $time * Dates::SECS_MONTH;
-				break;
-			default:
-				$secs = $time;
-				break;
-		}
+        $old_esc['event_trigger_options'] = @unserialize($old_esc['event_trigger_options']) ?: array();
+        $old_esc['terms']     = @unserialize($old_esc['terms']) ?: array();
+        $old_esc['terms_any'] = @unserialize($old_esc['terms_any']) ?: array();
+        $old_esc['actions']   = @unserialize($old_esc['actions']) ?: array();
 
-		return $secs;
-	}
+        if (!$old_esc['event_trigger_options'] || empty($old_esc['event_trigger_options']['time'])) {
+            $this->out("-- No or bad time option");
+
+            return null;
+        }
+
+        #------------------------------
+        # Update actions
+        #------------------------------
+
+        $is_incomplete = false;
+
+        $actions_set = new TriggerActions();
+
+        foreach ($old_esc['actions'] as $act) {
+            $new_act = $this->action_converter->getTriggerAction($act);
+            if ($new_act) {
+                if (is_array($new_act)) {
+                    foreach ($new_act as $a) {
+                        $actions_set->addAction($a);
+                    }
+                } else {
+                    $actions_set->addAction($new_act);
+                }
+            } else {
+                $this->out("-- Skipped action {$act['type']}");
+                $is_incomplete = true;
+            }
+        }
+
+        if (!count($actions_set)) {
+            $this->out("-- Skipping no action escalation");
+
+            return null;
+        }
+
+        #------------------------------
+        # Create trigger object
+        #------------------------------
+
+        $esc = new TicketEscalation();
+        $esc->event_trigger = $old_esc['event_trigger'];
+        $esc->event_trigger_time = $this->getTimeSeconds($old_esc['event_trigger_options']['time']);
+        $esc->date_created  = new \DateTime();
+        $esc->date_last_run = new \DateTime();
+
+        if (!empty($old_esc['date_created'])) {
+            try {
+                $d = \DateTime::createFromFormat('Y-m-d H:i:s', $old_esc['date_created']);
+                if ($d) {
+                    $esc->date_created = $d;
+                }
+            } catch (\Exception $e) {}
+        }
+
+        $esc->title      = $old_esc['title'] ?: 'Trigger ' . $old_esc['id'];
+        if ($is_incomplete) {
+            $esc->title .= ' (REQUIRES REVIEW)';
+        }
+        $esc->is_enabled = (bool)$old_esc['is_enabled'] && !$is_incomplete;
+        $esc->terms      = $old_esc['terms'];
+        $esc->terms_any  = $old_esc['terms_any'];
+        $esc->actions    = $actions_set;
+
+        return $esc;
+    }
+
+
+    /**
+     * @param $time_with_unit
+     * @return int
+     */
+    private function getTimeSeconds($time_with_unit)
+    {
+        list ($time, $scale) = explode(' ', $time_with_unit);
+
+        switch ($scale) {
+            case 'minutes':
+                $secs = $time * Dates::SECS_MIN;
+                break;
+            case 'hours':
+                $secs = $time * Dates::SECS_HOUR;
+                break;
+            case 'days':
+                $secs = $time * Dates::SECS_DAY;
+                break;
+            case 'weeks':
+                $secs = $time * Dates::SECS_WEEK;
+                break;
+            case 'months':
+                $secs = $time * Dates::SECS_MONTH;
+                break;
+            default:
+                $secs = $time;
+                break;
+        }
+
+        return $secs;
+    }
 }

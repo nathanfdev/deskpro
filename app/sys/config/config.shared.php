@@ -3,7 +3,6 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
-
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 // TODO: make this secret just a config.php global
@@ -20,8 +19,8 @@ $definition->setClass('Application\DeskPRO\NewSettings\SettingsResolver');
 $definition->setFactoryClass('Application\DeskPRO\DependencyInjection\SystemServices\SettingsResolverService');
 $definition->setFactoryMethod('create');
 $definition->setArguments(array(
-		new Reference('service_container')
-	)
+        new Reference('service_container')
+    )
 );
 $container->setDefinition('settings_resolver', $definition);
 
@@ -31,12 +30,11 @@ $definition->setClass('Application\\DeskPRO\\Mail\\Mailer');
 $definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailerFactory');
 $definition->setFactoryMethod('create');
 $definition->setArguments(
-	array(
-		new Reference('service_container')
-	)
+    array(
+        new Reference('service_container')
+    )
 );
 $container->setDefinition('swiftmailer.mailer', $definition);
-
 
 ############################################################################
 # Doctrine services
@@ -46,9 +44,9 @@ $container->setDefinition('swiftmailer.mailer', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\DBAL\\ConnectionFactory');
 $definition->setArguments(
-	array(
-		'%doctrine.dbal.connection_factory.types%'
-	)
+    array(
+        '%doctrine.dbal.connection_factory.types%'
+    )
 );
 $definition->addMethodCall('setContainer', array(new Reference('service_container')));
 $container->setDefinition('doctrine.dbal.connection_factory', $definition);
@@ -56,9 +54,9 @@ $container->setDefinition('doctrine.dbal.connection_factory', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\ORM\\ContainerAwareEntityListenerResolver');
 $definition->setArguments(
-	array(
-		new Reference('service_container')
-	)
+    array(
+        new Reference('service_container')
+    )
 );
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
 
@@ -88,33 +86,31 @@ $definition->setArguments(array(new Reference('service_container')));
 $definition->addTag('doctrine.entity_listener');
 $container->setDefinition('dp.entity_lister.person_custo_data_changelog', $definition);
 
-
 ############################################################################
 # Doctrine Configuration
 ############################################################################
 
 $container->loadFromExtension(
-	'doctrine', array(
-		'orm'  => array(
-			'auto_generate_proxy_classes' => false,
-			'default_entity_manager'      => 'default',
-			'entity_managers'             => array(
-				'default' => array(
-					'mappings'                    => array('DeskPRO' => array('type' => 'staticphp')),
-					'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory'
-				)
-			)
-		),
-		'dbal' => array(
-			'default_connection' => 'default',
-			'connections'        => array(
-				'default' => array('host' => 'from_user_config.db', 'logging' => true),
-				'read'    => array('host' => 'from_user_config.db_read', 'logging' => true)
-			)
-		)
-	)
+    'doctrine', array(
+        'orm'  => array(
+            'auto_generate_proxy_classes' => false,
+            'default_entity_manager'      => 'default',
+            'entity_managers'             => array(
+                'default' => array(
+                    'mappings'                    => array('DeskPRO' => array('type' => 'staticphp')),
+                    'class_metadata_factory_name' => 'Orb\\Doctrine\\ORM\\Mapping\\StaticClassMetadataFactory'
+                )
+            )
+        ),
+        'dbal' => array(
+            'default_connection' => 'default',
+            'connections'        => array(
+                'default' => array('host' => 'from_user_config.db', 'logging' => true),
+                'read'    => array('host' => 'from_user_config.db_read', 'logging' => true)
+            )
+        )
+    )
 );
-
 
 ############################################################################
 # Cache services
@@ -135,16 +131,16 @@ $container->setDefinition('cache.simple_array', $definition);
 $definition = new Definition();
 $definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
 $definition->setArguments(
-	array(
-		new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
-	)
+    array(
+        new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
+    )
 );
 $container->setDefinition('swiftmailer.mailer.transport.dp_delegating', $definition);
 
 $container->loadFromExtension(
-	'swiftmailer', array(
-		'transport' => 'dp_delegating'
-	)
+    'swiftmailer', array(
+        'transport' => 'dp_delegating'
+    )
 );
 
 

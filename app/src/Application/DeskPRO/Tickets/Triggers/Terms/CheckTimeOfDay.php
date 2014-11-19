@@ -52,90 +52,91 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckTimeOfDay extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('time1', 'tz');
-		$options->addValidNames('time1', 'time2', 'var', 'test_date');
-		$options->addCallbackCheckedOption('var', function($v) {
-			return ($v == 'now' || $v == 'date_created' || $v === null);
-		});
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('time1', 'tz');
+        $options->addValidNames('time1', 'time2', 'var', 'test_date');
+        $options->addCallbackCheckedOption('var', function ($v) {
+            return ($v == 'now' || $v == 'date_created' || $v === null);
+        });
 
+        return $options;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$op = $this->getTermOperator();
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $op = $this->getTermOperator();
+        $options = $this->getTermOptions();
 
-		try {
-			$tz = new \DateTimeZone($options->get('tz', 'UTC'));
-		} catch (\Exception $e) {
-			$context->getLogger()->warn("[CheckDayOfWeek] Invalid timezone: {$options->get('tz')}");
-			return false;
-		}
+        try {
+            $tz = new \DateTimeZone($options->get('tz', 'UTC'));
+        } catch (\Exception $e) {
+            $context->getLogger()->warn("[CheckDayOfWeek] Invalid timezone: {$options->get('tz')}");
 
-		if ($options->has('test_date')) {
-			$now = $options->get('test_date');
-		} else {
-			$var = $options->get('var', 'now');
-			switch ($var) {
-				case 'now':
-					$now = new \DateTime('now', $tz);
-					break;
-				case 'date_created':
-					$now = $ticket->date_created ?: new \DateTime('now');
-					$now->setTimezone($tz);
-					break;
-				default:
-					throw new \InvalidArgumentException("Unknown var type: $var");
-			}
-		}
+            return false;
+        }
 
-		$fn_check = function($time, $op) use ($now) {
-			list($hour, $min) = explode(':', $time);
-			$hour = (int)$hour;
-			$min  = (int)$min;
+        if ($options->has('test_date')) {
+            $now = $options->get('test_date');
+        } else {
+            $var = $options->get('var', 'now');
+            switch ($var) {
+                case 'now':
+                    $now = new \DateTime('now', $tz);
+                    break;
+                case 'date_created':
+                    $now = $ticket->date_created ?: new \DateTime('now');
+                    $now->setTimezone($tz);
+                    break;
+                default:
+                    throw new \InvalidArgumentException("Unknown var type: $var");
+            }
+        }
 
-			$now_hour = (int)$now->format('G');
-			$now_min  = (int)$now->format('i');
+        $fn_check = function ($time, $op) use ($now) {
+            list($hour, $min) = explode(':', $time);
+            $hour = (int)$hour;
+            $min  = (int)$min;
 
-			if ($op == 'gt' || $op == 'gte') {
-				if ($hour == $now_hour) {
-					return $min <= $now_min;
-				} else {
-					return $hour < $now_hour;
-				}
-			} else {
-				if ($hour == $now_hour) {
-					return $min >= $now_min;
-				} else {
-					return $hour > $now_hour;
-				}
-			}
-		};
+            $now_hour = (int)$now->format('G');
+            $now_min  = (int)$now->format('i');
 
-		switch ($op) {
-			case 'gt':
-			case 'gte':
-				return $fn_check($options->get('time1'), 'gt');
+            if ($op == 'gt' || $op == 'gte') {
+                if ($hour == $now_hour) {
+                    return $min <= $now_min;
+                } else {
+                    return $hour < $now_hour;
+                }
+            } else {
+                if ($hour == $now_hour) {
+                    return $min >= $now_min;
+                } else {
+                    return $hour > $now_hour;
+                }
+            }
+        };
 
-			case 'lt':
-			case 'lte':
-				return $fn_check($options->get('time1'), 'lt');
+        switch ($op) {
+            case 'gt':
+            case 'gte':
+                return $fn_check($options->get('time1'), 'gt');
 
-			case 'between':
-				return $fn_check($options->get('time1'), 'gt') && $fn_check($options->get('time2'), 'lt');
+            case 'lt':
+            case 'lte':
+                return $fn_check($options->get('time1'), 'lt');
 
-			default:
-				return false;
-		}
-	}
+            case 'between':
+                return $fn_check($options->get('time1'), 'gt') && $fn_check($options->get('time2'), 'lt');
+
+            default:
+                return false;
+        }
+    }
 }

@@ -1,19 +1,76 @@
 {% extends 'Theme::layout.html.twig' %}
 {% import 'Theme:Articles:_macros.html.twig' as macros %}
 
+{# TODO #}
+
 {% block inner_content %}
-	{{ macros.kb_article_cat_breadcrumbs(article.categories.first, article.categories.first.treeParents, article) }}
-	<h1>{{ article.realTitle }}</h1>
-	<p style="margin-bottom: 20px; font-weight: bold;">
-		Posted by <strong>{{ article.person.name }}</strong></a>
-		on {{ article.date_published | date('M j, Y') }}
-		in {{ macros.kb_article_cat_list(article) }}
-	</p>
-	{% if article.labels|length > 0 %}
-		<p>
-			<strong>Labeld as:</strong>
-			{{ article.labels|join(',') }}
-		</p><br>
-	{% endif %}
-	<p>{{ article.realContent|raw }}</p>
+    {{ macros.kb_article_cat_breadcrumbs(article.categories.first, article.categories.first.treeParents, article) }}
+
+    <article class="news kb-article">
+        <header>
+            <h1>{{ article.realTitle }}</h1>
+
+            <div class="article-meta">
+                <span class="agent-avatar agent-avatar-mini"></span>
+                {{ phrase('portal.articles.by-line', { name: article.person.name, date: article.date_published | date('Y-m-d') }) }}
+                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: 1}) }}</a></span>
+            </div>
+        </header>
+
+        <div class="header-button-container">
+            <div class="header-buttons">
+                <a href="#">{{ phrase('portal.general.btn-subscribe') }} <i class="fa fa-rss"></i></a>
+                <a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>
+                <a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>
+                <a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
+            </div>
+        </div>
+
+        <div class="article-content padded">
+            {{ article.realContent|raw }}
+        </div>
+
+        {% if article.labels|length %}
+            <div class="tag-list">
+                <ul>
+                    <li class="tag-list-header"><i class="fa fa-tags"></i> Tags</li>
+                    {% for l in article.labels %}
+                        <li class="tag-list-item"><a href="#">{{ l }}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+        {% endif %}
+
+        <div class="rate-article">
+            <div class="titled-header">
+                <h1>{{ phrase('portal.general.rate-page') }}</h1>
+            </div>
+
+            <div class="rate-article">
+                <a href="#" class="rate-up">{{ phrase('portal.general.rate-page-positive') }} (12) <span>:)</span></a>
+                <a href="#" class="rate-down"> <span>:(</span> {{ phrase('portal.general.rate-page-negative') }} (4)</a>
+            </div>
+        </div>
+
+        <div class="related">
+
+            <div class="titled-header">
+                <h1>{{ phrase('portal.general.related-pages') }}</h1>
+            </div>
+
+            <ul>
+                <li>
+                    <a href="#"><i class="fa fa-file-text-o"></i> Using a custom email address with DeskPRO Cloud <span class="text-tag">New!</span></a>
+                </li>
+
+                <li>
+                    <a href="#"><i class="fa fa-file-text-o"></i> Do you provide training?</a>
+                </li>
+
+                <li>
+                    <a href="#"><i class="fa fa-file-text-o"></i> Productivity tips for agents</a>
+                </li>
+            </ul>
+        </div>
+    </article>
 {% endblock inner_content %}

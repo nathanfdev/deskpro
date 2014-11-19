@@ -38,20 +38,19 @@ use Application\DeskPRO\Entity\ClientMessage;
 
 class Event extends \Symfony\Component\EventDispatcher\Event
 {
-	/** @var ClientMessage */
-	protected $client_message;
+    /** @var ClientMessage */
+    protected $client_message;
 
-	public function construct(ClientMessage $client_message)
-	{
-		$this->client_message = $client_message;
-	}
+    public function construct(ClientMessage $client_message)
+    {
+        $this->client_message = $client_message;
+    }
 
-
-	/**
-	 * @return \Application\DeskPRO\Entity\ClientMessage
-	 */
-	public function getClientMessage()
-	{
-		return $this->client_message;
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\ClientMessage
+     */
+    public function getClientMessage()
+    {
+        return $this->client_message;
+    }
 }

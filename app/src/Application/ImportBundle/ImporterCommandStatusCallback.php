@@ -39,55 +39,52 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class ImporterCommandStatusCallback extends ImporterStatusCallback
 {
-	/**
-	 * @var \Symfony\Component\Console\Command\Command
-	 */
-	private $command;
+    /**
+     * @var \Symfony\Component\Console\Command\Command
+     */
+    private $command;
 
-	/**
-	 * @var \Symfony\Component\Console\Output\OutputInterface
-	 */
-	private $output;
+    /**
+     * @var \Symfony\Component\Console\Output\OutputInterface
+     */
+    private $output;
 
-	/**
-	 * @var \Symfony\Component\Console\Helper\ProgressBar
-	 */
-	private $current_progress;
+    /**
+     * @var \Symfony\Component\Console\Helper\ProgressBar
+     */
+    private $current_progress;
 
+    /**
+     * @param Command         $command
+     * @param OutputInterface $output
+     */
+    public function __construct(Command $command, OutputInterface $output)
+    {
+        $this->command = $command;
+        $this->output = $output;
 
-	/**
-	 * @param Command         $command
-	 * @param OutputInterface $output
-	 */
-	public function __construct(Command $command, OutputInterface $output)
-	{
-		$this->command = $command;
-		$this->output = $output;
+    }
 
-	}
+    public function preStep(Importer $importer, AbstractValueImporter $value_importer, $dir)
+    {
+        if ($this->current_progress) {
+            $this->current_progress->finish();
+            $this->current_progress = null;
+        }
 
+        $this->current_progress = new ProgressBar($this->output);
+        $this->current_progress->start();
+        $this->current_progress->setMessage("Running step: " . Util::getBaseClassname($value_importer));
+    }
 
-	public function preStep(Importer $importer, AbstractValueImporter $value_importer, $dir)
-	{
-		if ($this->current_progress) {
-			$this->current_progress->finish();
-			$this->current_progress = null;
-		}
+    public function postStep(Importer $importer, AbstractValueImporter $value_importer, $dir, $count, $time)
+    {
+        $this->current_progress->finish();
+        $this->current_progress = null;
+    }
 
-		$this->current_progress = new ProgressBar($this->output);
-		$this->current_progress->start();
-		$this->current_progress->setMessage("Running step: " . Util::getBaseClassname($value_importer));
-	}
-
-
-	public function postStep(Importer $importer, AbstractValueImporter $value_importer, $dir, $count, $time)
-	{
-		$this->current_progress->finish();
-		$this->current_progress = null;
-	}
-
-	public function preImportValue(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count, array $data)
-	{
-		$this->current_progress->advance();
-	}
+    public function preImportValue(Importer $importer, AbstractValueImporter $value_importer, \SplFileInfo $file, $count, array $data)
+    {
+        $this->current_progress->advance();
+    }
 }

@@ -1,163 +1,163 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-	{# this page wants to use its own sidebar. how will we deal with that when there is a sidebar in the layout already? #}
-	<div class="wrapper">
+    {# this page wants to use its own sidebar. how will we deal with that when there is a sidebar in the layout already? #}
+    <div class="wrapper">
 
-		<div class="column-half-plus">
-			<!-- Every ticket item -->
-			<form class="form-ticket">
+        <div class="column-half-plus">
+            <!-- Every ticket item -->
+            <form class="form-ticket">
 
-				<!-- Ticket header -->
-				<div class="column-full">
-					<div>
-						<header class="section-header">
-							<h1>Contact Us</h1>
+                <!-- Ticket header -->
+                <div class="column-full">
+                    <div>
+                        <header class="section-header">
+                            <h1>Contact Us</h1>
 
-							<p>Please complete this form and one of our agents will reply to you by email as soon as
-								possible.</p>
-						</header>
-						<hr class="divider">
-					</div>
-				</div>
+                            <p>Please complete this form and one of our agents will reply to you by email as soon as
+                                possible.</p>
+                        </header>
+                        <hr class="divider">
+                    </div>
+                </div>
 
-				<!-- Single text input with title & blurb -->
-				<div class="column-half">
-					<div>
-						<div class="bucket">
-							<label class="title">Your Name: *</label>
-							<input type="text" placeholder="Your name (required)">
-						</div>
-					</div>
-				</div>
-
-
-				<!-- Single text input with title & blurb -->
-				<div class="column-half omega">
-					<div>
-						<div class="bucket">
-							<p class="form-meta">Already registered? <a href="{{ path('portal_user_profile') }}">Log
-									In</a>.</p>
-							<label class="title">Your email address *</label>
-							<input type="text" placeholder="Your email address (required)">
-						</div>
-					</div>
-				</div>
-
-				<!-- Select default -->
-				<div class="column-half">
-					<div>
-						<div class="bucket">
-
-							<label class="title">Department</label>
-
-							<div class="multiselect default">
-								<ul class="first-level">
-									<li>
-										<a href="#">Select department for your ticket<i
-												class="fa fa-caret-down"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
+                <!-- Single text input with title & blurb -->
+                <div class="column-half">
+                    <div>
+                        <div class="bucket">
+                            <label class="title">Your Name: *</label>
+                            <input type="text" placeholder="Your name (required)">
+                        </div>
+                    </div>
+                </div>
 
 
-				<!-- Select default -->
-				<div class="column-half">
-					<div>
-						<div class="bucket">
-							<div class="title">Multiselect</div>
-							<div class="multiselect">
-								<ul class="first-level">
-									<li>
-										<a href="#">Sales<i class="fa fa-caret-down"></i></a>
-									</li>
+                <!-- Single text input with title & blurb -->
+                <div class="column-half omega">
+                    <div>
+                        <div class="bucket">
+                            <p class="form-meta">Already registered? <a href="{{ path('portal_user_profile') }}">Log
+                                    In</a>.</p>
+                            <label class="title">Your email address *</label>
+                            <input type="text" placeholder="Your email address (required)">
+                        </div>
+                    </div>
+                </div>
 
-									<li>
-										<a href="#">Tech Support</a>
-									</li>
+                <!-- Select default -->
+                <div class="column-half">
+                    <div>
+                        <div class="bucket">
 
-									<li>
-										<a href="#" class="active">Partnerships</a>
-									</li>
+                            <label class="title">Department</label>
 
-									<li>
-										<a href="#">Media Request</a>
-									</li>
-
-									<li>
-										<a href="#">General Questions</a>
-									</li>
-
-									<li>
-										<a href="#">Misc</a>
-									</li>
-
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
+                            <div class="multiselect default">
+                                <ul class="first-level">
+                                    <li>
+                                        <a href="#">Select department for your ticket<i
+                                                class="fa fa-caret-down"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
-				<!-- Single text input with title & blurb -->
-				<div class="column-full">
-					<div>
-						<div class="bucket">
-							<label class="title">Your Name: *</label>
-							<input type="text" placeholder="Your name (required)">
-						</div>
-					</div>
-				</div>
+                <!-- Select default -->
+                <div class="column-half">
+                    <div>
+                        <div class="bucket">
+                            <div class="title">Multiselect</div>
+                            <div class="multiselect">
+                                <ul class="first-level">
+                                    <li>
+                                        <a href="#">Sales<i class="fa fa-caret-down"></i></a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#">Tech Support</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#" class="active">Partnerships</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#">Media Request</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#">General Questions</a>
+                                    </li>
+
+                                    <li>
+                                        <a href="#">Misc</a>
+                                    </li>
+
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
 
 
-				<!-- Textarea -->
-				<div class="column-full">
-					<div>
-						<div class="bucket">
-							<label class="title">What is your question?</label>
-							<textarea placeholder="Say it like you mean it"></textarea>
-						</div>
-					</div>
-				</div>
-
-				<!-- Attachements -->
-				<div class="column-full">
-					<div>
-						<div class="new-ticket-attachements">
-							<a href="#" class="attach-file"><i class="fa fa-link"></i> Click to attach a file (or just
-								drag &amp; drop a file here)</a>
-						</div>
-					</div>
-				</div>
+                <!-- Single text input with title & blurb -->
+                <div class="column-full">
+                    <div>
+                        <div class="bucket">
+                            <label class="title">Your Name: *</label>
+                            <input type="text" placeholder="Your name (required)">
+                        </div>
+                    </div>
+                </div>
 
 
-				<!-- Submit Form -->
-				<div class="column-full">
-					<div>
-						<div class="bucket">
-							<hr class="divider">
-							<button class="button">Submit Ticket</button>
-						</div>
-					</div>
-				</div>
+                <!-- Textarea -->
+                <div class="column-full">
+                    <div>
+                        <div class="bucket">
+                            <label class="title">What is your question?</label>
+                            <textarea placeholder="Say it like you mean it"></textarea>
+                        </div>
+                    </div>
+                </div>
 
-			</form>
-		</div>
-		<!-- end .column-half-plus -->
-
-
-		<!-- Sidebar -->
-		<aside class="sidebar">
-			<div class="row">
-				<div>
-					{{ get_in_touch() }}
-				</div>
-			</div>
-		</aside>
+                <!-- Attachements -->
+                <div class="column-full">
+                    <div>
+                        <div class="new-ticket-attachements">
+                            <a href="#" class="attach-file"><i class="fa fa-link"></i> Click to attach a file (or just
+                                drag &amp; drop a file here)</a>
+                        </div>
+                    </div>
+                </div>
 
 
-	</div>
+                <!-- Submit Form -->
+                <div class="column-full">
+                    <div>
+                        <div class="bucket">
+                            <hr class="divider">
+                            <button class="button">Submit Ticket</button>
+                        </div>
+                    </div>
+                </div>
+
+            </form>
+        </div>
+        <!-- end .column-half-plus -->
+
+
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="row">
+                <div>
+                    {{ get_in_touch() }}
+                </div>
+            </div>
+        </aside>
+
+
+    </div>
 {% endblock inner_content %}

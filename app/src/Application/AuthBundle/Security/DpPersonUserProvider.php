@@ -34,9 +34,7 @@
 
 namespace Application\AuthBundle\Security;
 
-
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Orb\Auth\Identity;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
@@ -116,4 +114,3 @@ class DpPersonUserProvider implements UserProviderInterface
         return $class instanceof Person;
     }
 }
- 

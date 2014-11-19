@@ -41,48 +41,48 @@ use Application\DeskPRO\ORM\EntityManager;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function disableSsoSettings(AppInstance $app, EntityManager $em)
-	{
-		$settings               = $app->getSettings();
-		$settings['sso_type']   = 'none';
-		$app->setSettings($settings);
+    /**
+     * {@inheritDoc}
+     */
+    public function disableSsoSettings(AppInstance $app, EntityManager $em)
+    {
+        $settings               = $app->getSettings();
+        $settings['sso_type']   = 'none';
+        $app->setSettings($settings);
 
-		$em->persist($app);
-		$em->flush($app);
-	}
+        $em->persist($app);
+        $em->flush($app);
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
-	{
-		$us->title             = $app->title;
-		$us->options           = array(
-			'sso_url'           => $app->getSetting('sso_url'),
-			'slo_url'           => $app->getSetting('slo_url'),
-			'issuer_id'         => $app->getSetting('issuer_id'),
-			'cert_fingerprint'  => $app->getSetting('cert_fingerprint'),
-			'login_custom_text' => $app->getSetting('login_custom_text'),
-		);
-		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-		$us->lost_password_url = '';
-		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Saml';
+    /**
+     * {@inheritdoc}
+     */
+    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    {
+        $us->title             = $app->title;
+        $us->options           = array(
+            'sso_url'           => $app->getSetting('sso_url'),
+            'slo_url'           => $app->getSetting('slo_url'),
+            'issuer_id'         => $app->getSetting('issuer_id'),
+            'cert_fingerprint'  => $app->getSetting('cert_fingerprint'),
+            'login_custom_text' => $app->getSetting('login_custom_text'),
+        );
+        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
+        $us->lost_password_url = '';
+        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Saml';
 
-		$this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 
-		if ('auto' == $app->getSetting('sso_type')) {
-			$us->makeSsoAutoOnly();
-		} elseif ('background' == $app->getSetting('sso_type')) {
-			$us->makeSsoBackgroundOnly();
-		} else {
-			$us->disableSso();
-		}
+        if ('auto' == $app->getSetting('sso_type')) {
+            $us->makeSsoAutoOnly();
+        } elseif ('background' == $app->getSetting('sso_type')) {
+            $us->makeSsoBackgroundOnly();
+        } else {
+            $us->disableSso();
+        }
 
-		$em->persist($us);
-		$em->persist($app);
-		$em->flush();
-	}
+        $em->persist($us);
+        $em->persist($app);
+        $em->flush();
+    }
 }

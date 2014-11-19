@@ -51,193 +51,195 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SendAgentAlert extends AbstractContainerAwareAction implements ActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('agent_ids', 'ticket_logs');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('agent_ids', 'ticket_logs');
 
-	/**
-	 * @param Ticket $ticket
-	 * @param array $agent_ids
-	 * @param ExecutorContextInterface $context
-	 * @return array
-	 */
-	private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
-	{
-		$agents = array();
+        return $options;
+    }
 
-		foreach ($agent_ids as $aid) {
-			// -1 = current user
-			if ($aid == -1) {
-				if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
-					$agents[] = $context->getPersonContext();
-				}
+    /**
+     * @param  Ticket                   $ticket
+     * @param  array                    $agent_ids
+     * @param  ExecutorContextInterface $context
+     * @return array
+     */
+    private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
+    {
+        $agents = array();
 
-			// assigned agent
-			} else if ($aid == 'agent') {
-				if ($ticket->agent) {
-					$agents[] = $ticket->agent;
-				}
+        foreach ($agent_ids as $aid) {
+            // -1 = current user
+            if ($aid == -1) {
+                if ($context->getPersonContext() && $context->getPersonContext()->is_agent) {
+                    $agents[] = $context->getPersonContext();
+                }
 
-			// agents of assigned team
-			} else if ($aid == 'team') {
-				if ($ticket->agent_team) {
-					foreach ($ticket->agent_team->members as $agent) {
-						$agents[] = $agent;
-					}
-				}
+            // assigned agent
+            } elseif ($aid == 'agent') {
+                if ($ticket->agent) {
+                    $agents[] = $ticket->agent;
+                }
 
-			// followers
-			} else if ($aid == 'followers') {
-				if ($agent_followers = $ticket->getAgentParticipants()) {
-					foreach ($agent_followers as $agent) {
-						$agents[] = $agent;
-					}
-				}
+            // agents of assigned team
+            } elseif ($aid == 'team') {
+                if ($ticket->agent_team) {
+                    foreach ($ticket->agent_team->members as $agent) {
+                        $agents[] = $agent;
+                    }
+                }
 
-			// based on notify list
-			} else if ($aid == 'notify_list') {
-				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
-				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
-				$list_builder  = new AgentNotifyListBuilder(
-					$ticket,
-					$change_set,
-					$this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
-				);
-				$list_builder->setLogger($context->getLogger());
+            // followers
+            } elseif ($aid == 'followers') {
+                if ($agent_followers = $ticket->getAgentParticipants()) {
+                    foreach ($agent_followers as $agent) {
+                        $agents[] = $agent;
+                    }
+                }
 
-				$notify = $list_builder->genNotifyList();
+            // based on notify list
+            } elseif ($aid == 'notify_list') {
+                $change_detect = $this->getContainer()->getTicketFilterChangeDetector();
+                $change_set    = $change_detect->getFilterChangeSet($ticket, $context);
+                $list_builder  = new AgentNotifyListBuilder(
+                    $ticket,
+                    $change_set,
+                    $this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
+                );
+                $list_builder->setLogger($context->getLogger());
 
-				$person_context = $context->getPersonContext();
-				foreach ($notify as $n) {
-					// dont send to self
-					if ($person_context && $person_context === $n['agent']) {
-						$override = false;
-						if ($person_context->getPref('agent_notify_override.all.alert')) {
-							$override = true;
-						} else if ($person_context->getPref('agent_notify_override.forward.alert') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
-							$override = true;
-						}
+                $notify = $list_builder->genNotifyList();
 
-						if (!$override) {
-							$context->getLogger()->debug("[SendAgentAlert] notify_list skipping self");
-							continue;
-						} else {
-							$context->getLogger()->debug("[SendAgentAlert] notify_list sending to self because got override preference");
-						}
-					}
-					if (in_array('alert', $n['types'])) {
-						$agents[] = $n['agent'];
-					}
-				}
+                $person_context = $context->getPersonContext();
+                foreach ($notify as $n) {
+                    // dont send to self
+                    if ($person_context && $person_context === $n['agent']) {
+                        $override = false;
+                        if ($person_context->getPref('agent_notify_override.all.alert')) {
+                            $override = true;
+                        } elseif ($person_context->getPref('agent_notify_override.forward.alert') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+                            $override = true;
+                        }
 
-			// specific agents
-			} else {
-				if ($agent = $this->getContainer()->getAgentData()->get($aid)) {
-					$agents[] = $agent;
-				}
-			}
-		}
+                        if (!$override) {
+                            $context->getLogger()->debug("[SendAgentAlert] notify_list skipping self");
+                            continue;
+                        } else {
+                            $context->getLogger()->debug("[SendAgentAlert] notify_list sending to self because got override preference");
+                        }
+                    }
+                    if (in_array('alert', $n['types'])) {
+                        $agents[] = $n['agent'];
+                    }
+                }
 
-		if (!$agents) {
-			return array();
-		}
+            // specific agents
+            } else {
+                if ($agent = $this->getContainer()->getAgentData()->get($aid)) {
+                    $agents[] = $agent;
+                }
+            }
+        }
 
-		$agents = array_unique($agents);
+        if (!$agents) {
+            return array();
+        }
 
-		return $agents;
-	}
+        $agents = array_unique($agents);
+
+        return $agents;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getLogger()->debug("[SendAgentAlert] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
-		$start_time = microtime(true);
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $context->getLogger()->debug("[SendAgentAlert] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
+        $start_time = microtime(true);
 
-		$agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
+        $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
 
-		if (!$agents) {
-			$context->getLogger()->debug("[SendAgentAlert] No agents to send to");
-			return;
-		}
+        if (!$agents) {
+            $context->getLogger()->debug("[SendAgentAlert] No agents to send to");
 
-		$vars = array(
-			'is_new_ticket'      => $ticket->getStateChangeRecorder()->isNewTicket(),
-			'is_new_agent_reply' => $ticket->getStateChangeRecorder()->hasNewAgentReply(),
-			'is_new_agent_note'  => $ticket->getStateChangeRecorder()->hasNewAgentNote(),
-			'is_new_user_reply'  => $ticket->getStateChangeRecorder()->hasNewUserReply(),
-			'ticket'             => $ticket,
-			'performer'          => $context->getPersonContext(),
-			'log_items'          => $this->getActionOption('ticket_logs'),
-		);
+            return;
+        }
 
-		$log_ids = array_map(function($l) { return $l->id; }, $vars['log_items']);
-		$alert_sender = $this->getContainer()->getAgentAlertSender();
+        $vars = array(
+            'is_new_ticket'      => $ticket->getStateChangeRecorder()->isNewTicket(),
+            'is_new_agent_reply' => $ticket->getStateChangeRecorder()->hasNewAgentReply(),
+            'is_new_agent_note'  => $ticket->getStateChangeRecorder()->hasNewAgentNote(),
+            'is_new_user_reply'  => $ticket->getStateChangeRecorder()->hasNewUserReply(),
+            'ticket'             => $ticket,
+            'performer'          => $context->getPersonContext(),
+            'log_items'          => $this->getActionOption('ticket_logs'),
+        );
 
-		$alert_data = array(
-			'@fetch_types'       => array('ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'),
-			'ticket'             => $ticket->getId(),
-			'performer'          => $vars['performer'] ? $vars['performer']->id : 0,
-			'is_new_ticket'      => $vars['is_new_ticket'],
-			'is_new_agent_reply' => $vars['is_new_agent_reply'],
-			'is_new_agent_note'  => $vars['is_new_agent_note'],
-			'is_new_user_reply'  => $vars['is_new_user_reply'],
-			'log_items'          => $log_ids,
-		);
+        $log_ids = array_map(function ($l) { return $l->id; }, $vars['log_items']);
+        $alert_sender = $this->getContainer()->getAgentAlertSender();
 
-		$sent_count = 0;
-		$em  = $this->getContainer()->getEm();
-		$tpl = $this->getContainer()->getTemplating();
-		$tr  = $this->getContainer()->getTranslator();
+        $alert_data = array(
+            '@fetch_types'       => array('ticket' => 'DeskPRO:Ticket', 'performer' => 'DeskPRO:Person', 'log_items' => 'DeskPRO:TicketLog'),
+            'ticket'             => $ticket->getId(),
+            'performer'          => $vars['performer'] ? $vars['performer']->id : 0,
+            'is_new_ticket'      => $vars['is_new_ticket'],
+            'is_new_agent_reply' => $vars['is_new_agent_reply'],
+            'is_new_agent_note'  => $vars['is_new_agent_note'],
+            'is_new_user_reply'  => $vars['is_new_user_reply'],
+            'log_items'          => $log_ids,
+        );
 
-		$alert_records = array();
+        $sent_count = 0;
+        $em  = $this->getContainer()->getEm();
+        $tpl = $this->getContainer()->getTemplating();
+        $tr  = $this->getContainer()->getTranslator();
 
-		foreach ($agents as $agent) {
-			if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
-				continue;
-			}
+        $alert_records = array();
 
-			$vars['agent'] = $agent;
+        foreach ($agents as $agent) {
+            if (!$agent->PermissionsManager->TicketChecker->canView($ticket)) {
+                continue;
+            }
 
-			if (!empty($this->notify_info[$agent->id])) {
-				$vars['notify_info'] = $this->notify_info[$agent->id];
-			}
+            $vars['agent'] = $agent;
 
-			$tpl_line = $tr->callWithPersonContext($agent, function() use ($tpl, $vars) {
-				return $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
-			});
-			$alert_data['browser_rendered'] = $tpl_line;
+            if (!empty($this->notify_info[$agent->id])) {
+                $vars['notify_info'] = $this->notify_info[$agent->id];
+            }
 
-			$alert = $alert_sender->createAlert($agent, 'tickets', $alert_data);
+            $tpl_line = $tr->callWithPersonContext($agent, function () use ($tpl, $vars) {
+                return $tpl->render('AgentBundle:TicketSearch:notify-row.html.twig', $vars);
+            });
+            $alert_data['browser_rendered'] = $tpl_line;
 
-			if ($alert) {
-				$sent_count++;
-				$em->persist($alert);
+            $alert = $alert_sender->createAlert($agent, 'tickets', $alert_data);
 
-				$alert_records[] = array($agent, $alert_data, $alert);
-			}
-		}
+            if ($alert) {
+                $sent_count++;
+                $em->persist($alert);
 
-		$em->flush();
+                $alert_records[] = array($agent, $alert_data, $alert);
+            }
+        }
 
-		if ($alert_records) {
-			foreach ($alert_records	as $rec) {
-				$cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
-				if ($cm) {
-					$em->persist($cm);
-				}
-			}
-			$em->flush();
-		}
+        $em->flush();
 
-		$context->getLogger()->info(sprintf("[SendAgentAlert] Sent %d alerts in %.3fs", $sent_count, microtime(true)-$start_time));
-	}
+        if ($alert_records) {
+            foreach ($alert_records	as $rec) {
+                $cm = $alert_sender->createClientMessage($rec[0], 'tickets', $rec[1], $rec[2]);
+                if ($cm) {
+                    $em->persist($cm);
+                }
+            }
+            $em->flush();
+        }
+
+        $context->getLogger()->info(sprintf("[SendAgentAlert] Sent %d alerts in %.3fs", $sent_count, microtime(true)-$start_time));
+    }
 }

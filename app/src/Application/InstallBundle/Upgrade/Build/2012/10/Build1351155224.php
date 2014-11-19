@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351155224 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add display name override");
-		$this->execMutateSql("ALTER TABLE people ADD override_display_name VARCHAR(200) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add display name override");
+        $this->execMutateSql("ALTER TABLE people ADD override_display_name VARCHAR(200) NOT NULL");
+    }
 }

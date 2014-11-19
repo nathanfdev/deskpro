@@ -40,270 +40,268 @@ use Application\DeskPRO\Entity\AgentTeam as AgentTeamEntity;
 
 class AgentTeam extends AbstractEntityRepository
 {
-	public function getTeams()
-	{
-		if (($teams = $this->getIdentityHelper()->getCollection('all')) === null) {
-			$teams = $this->getEntityManager()->createQuery("
-				SELECT t
-				FROM DeskPRO:AgentTeam t
-				ORDER BY t.name ASC
-			")->execute();
+    public function getTeams()
+    {
+        if (($teams = $this->getIdentityHelper()->getCollection('all')) === null) {
+            $teams = $this->getEntityManager()->createQuery("
+                SELECT t
+                FROM DeskPRO:AgentTeam t
+                ORDER BY t.name ASC
+            ")->execute();
 
-			$this->getIdentityHelper()->setCollectionFromResults('all', $teams);
-		}
+            $this->getIdentityHelper()->setCollectionFromResults('all', $teams);
+        }
 
-		return $teams;
-	}
+        return $teams;
+    }
 
-	/**
-	 * Get agent names
-	 *
-	 * @param null $for_ids
-	 * @return mixed
-	 */
-	public function getAgentNames($for_ids = null)
-	{
-		$names = array();
+    /**
+     * Get agent names
+     *
+     * @param  null  $for_ids
+     * @return mixed
+     */
+    public function getAgentNames($for_ids = null)
+    {
+        $names = array();
 
-		// No names to return
-		if (is_array($for_ids) && !$for_ids) {
-			return array();
-		}
+        // No names to return
+        if (is_array($for_ids) && !$for_ids) {
+            return array();
+        }
 
-		foreach ($this->getAgents() as $agent) {
-			if ($for_ids && !in_array($agent->id, $for_ids)) {
-				continue;
-			}
-			$names[$agent->getId()] = $agent->getDisplayName();
-		}
+        foreach ($this->getAgents() as $agent) {
+            if ($for_ids && !in_array($agent->id, $for_ids)) {
+                continue;
+            }
+            $names[$agent->getId()] = $agent->getDisplayName();
+        }
 
-		return;
-	}
+        return;
+    }
 
-	public function getTeamsFromIds(array $ids)
-	{
-		return $this->getIdentityHelper()->findByIds($ids);
-	}
+    public function getTeamsFromIds(array $ids)
+    {
+        return $this->getIdentityHelper()->findByIds($ids);
+    }
 
-	public function findByName($name)
-	{
-		try {
-			$team = $this->getEntityManager()->createQuery("
-				SELECT t
-				FROM DeskPRO:AgentTeam t
-				WHERE t.name LIKE ?1
-			")->setParameter(1, "%$name%")->getSingleResult();
-		} catch (\Exception $e) {
-			return null;
-		}
+    public function findByName($name)
+    {
+        try {
+            $team = $this->getEntityManager()->createQuery("
+                SELECT t
+                FROM DeskPRO:AgentTeam t
+                WHERE t.name LIKE ?1
+            ")->setParameter(1, "%$name%")->getSingleResult();
+        } catch (\Exception $e) {
+            return null;
+        }
 
-		return $team;
-	}
+        return $team;
+    }
 
-	public function getTeamName($id)
-	{
-		$all = $this->getTeamNames(array($id));
-		if (!isset($all[$id])) {
-			return null;
-		}
+    public function getTeamName($id)
+    {
+        $all = $this->getTeamNames(array($id));
+        if (!isset($all[$id])) {
+            return null;
+        }
 
-		return $all[$id];
-	}
+        return $all[$id];
+    }
 
-	public function getTeamNames($for_ids = null)
-	{
-		$ret = array();
-		if ($for_ids) {
-			$for_ids = (array)$for_ids;
-		}
-		foreach ($this->getTeams() as $team) {
-			if ($for_ids and !in_array($team->id, $for_ids)) {
-				continue;
-			}
+    public function getTeamNames($for_ids = null)
+    {
+        $ret = array();
+        if ($for_ids) {
+            $for_ids = (array)$for_ids;
+        }
+        foreach ($this->getTeams() as $team) {
+            if ($for_ids and !in_array($team->id, $for_ids)) {
+                continue;
+            }
 
-			$ret[$team->getId()] = $team->getName();
-		}
+            $ret[$team->getId()] = $team->getName();
+        }
 
-		return $ret;
-	}
+        return $ret;
+    }
 
-	public function getTeamCounts()
-	{
-		$counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
-			SELECT team_id, COUNT(*)
-			FROM agent_team_members
-			LEFT JOIN people ON (people.id = agent_team_members.person_id)
-			WHERE people.is_deleted = 0
-			GROUP BY team_id
-		");
+    public function getTeamCounts()
+    {
+        $counts = $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+            SELECT team_id, COUNT(*)
+            FROM agent_team_members
+            LEFT JOIN people ON (people.id = agent_team_members.person_id)
+            WHERE people.is_deleted = 0
+            GROUP BY team_id
+        ");
 
-		return $counts;
-	}
+        return $counts;
+    }
 
-	public function getMemberIds($team_id)
-	{
-		if ($team_id instanceof AgentTeamEntity) {
-			$team_id = $team_id->id;
-		}
+    public function getMemberIds($team_id)
+    {
+        if ($team_id instanceof AgentTeamEntity) {
+            $team_id = $team_id->id;
+        }
 
-		if (!is_array($team_id)) {
-			$agent_ids = App::getDb()->fetchAllCol("
-				SELECT person_id
-				FROM agent_team_members
-				WHERE team_id = ?
-			", array($team_id));
-		} else {
-			$agent_ids = App::getDb()->fetchAllCol('
-				SELECT person_id
-				FROM agent_team_members
-				WHERE team_id IN (?)
-			', array($team_id), array(Connection::PARAM_INT_ARRAY));
-		}
+        if (!is_array($team_id)) {
+            $agent_ids = App::getDb()->fetchAllCol("
+                SELECT person_id
+                FROM agent_team_members
+                WHERE team_id = ?
+            ", array($team_id));
+        } else {
+            $agent_ids = App::getDb()->fetchAllCol('
+                SELECT person_id
+                FROM agent_team_members
+                WHERE team_id IN (?)
+            ', array($team_id), array(Connection::PARAM_INT_ARRAY));
+        }
 
-		return $agent_ids;
-	}
+        return $agent_ids;
+    }
 
-	/**
-	 * Get all agents of all teams, and sort them into an array keyed
-	 * by team: array('teamid' => array('agentid', 'agentid'))
-	 *
-	 * @return array
-	 */
-	public function getSortedMemberIds()
-	{
-		return App::getDb()->fetchAllGrouped("
-			SELECT team_id, person_id
-			FROM agent_team_members
-		", array(), 'team_id', null, 'person_id');
-	}
+    /**
+     * Get all agents of all teams, and sort them into an array keyed
+     * by team: array('teamid' => array('agentid', 'agentid'))
+     *
+     * @return array
+     */
+    public function getSortedMemberIds()
+    {
+        return App::getDb()->fetchAllGrouped("
+            SELECT team_id, person_id
+            FROM agent_team_members
+        ", array(), 'team_id', null, 'person_id');
+    }
 
-	public function getMembers($team)
-	{
-		$agent_ids = $this->getMemberIds($team);
-		if (!$agent_ids) {
-			return array();
-		}
+    public function getMembers($team)
+    {
+        $agent_ids = $this->getMemberIds($team);
+        if (!$agent_ids) {
+            return array();
+        }
 
-		$agent_ids = implode(',', $agent_ids);
+        $agent_ids = implode(',', $agent_ids);
 
-		$agents = $this->getEntityManager()->createQuery("
-			SELECT p
-			FROM DeskPRO:Person p
-			WHERE p.id IN ($agent_ids)
-		")->execute();
+        $agents = $this->getEntityManager()->createQuery("
+            SELECT p
+            FROM DeskPRO:Person p
+            WHERE p.id IN ($agent_ids)
+        ")->execute();
 
-		return $agents;
-	}
-
-
-	/**
-	 * Get an array of all team IDs that the agents passed
-	 * belong to. This is an all inclusive list and unsorted.
-	 *
-	 * @param $agents
-	 * @return array
-	 */
-	public function getAllTeamIdsForAgents($agents)
-	{
-		$agent_ids = array();
-		foreach ($agents as $a) {
-			if (is_object($a)) {
-				$agent_ids[] = $a['id'];
-			} else {
-				$agent_ids[] = $a;
-			}
-		}
-
-		if (!$agent_ids) return array();
-
-		$team_ids = App::getDb()->fetchAllCol('
-			SELECT team_id
-			FROM agent_team_members
-			WHERE person_id IN (?)
-			GROUP BY team_id
-		', array($agent_ids), array(Connection::PARAM_INT_ARRAY));
-
-		return $team_ids;
-	}
+        return $agents;
+    }
 
 
-	/**
-	 * Gets an array of team ID's for each agent. Keyed
-	 * by agent_id. Like getAllTeamIdsForAgents() except this
-	 * is sorted into agents
-	 *
-	 * @param $agents
-	 * @return array
-	 */
-	public function getTeamIdsForAgents($agents)
-	{
-		$agent_ids = array();
-		foreach ($agents as $a) {
-			if (is_object($a)) {
-				$agent_ids[] = $a['id'];
-			} else {
-				$agent_ids[] = $a;
-			}
-		}
+    /**
+     * Get an array of all team IDs that the agents passed
+     * belong to. This is an all inclusive list and unsorted.
+     *
+     * @param $agents
+     * @return array
+     */
+    public function getAllTeamIdsForAgents($agents)
+    {
+        $agent_ids = array();
+        foreach ($agents as $a) {
+            if (is_object($a)) {
+                $agent_ids[] = $a['id'];
+            } else {
+                $agent_ids[] = $a;
+            }
+        }
 
-		if (!$agent_ids) return array();
-		$agent_ids = implode(',', $agent_ids);
+        if (!$agent_ids) return array();
 
-		$agent_teams = App::getDb()->fetchAllGrouped("
-			SELECT person_id, team_id
-			FROM agent_team_members
-			WHERE person_id IN ($agent_ids)
-		", array(), 'person_id', null, 'team_id');
+        $team_ids = App::getDb()->fetchAllCol('
+            SELECT team_id
+            FROM agent_team_members
+            WHERE person_id IN (?)
+            GROUP BY team_id
+        ', array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 
-		return $agent_teams;
-	}
-
-
-	public function getTeamToAgentsMap()
-	{
-		return App::getDb()->fetchAllGrouped("
-			SELECT team_id, person_id
-			FROM agent_team_members
-		", array(), 'team_id', null, 'person_id');
-	}
+        return $team_ids;
+    }
 
 
-	/**
-	 * Invalidates caches associated with agent teams
-	 */
-	public function invalidateCaches()
-	{
+    /**
+     * Gets an array of team ID's for each agent. Keyed
+     * by agent_id. Like getAllTeamIdsForAgents() except this
+     * is sorted into agents
+     *
+     * @param $agents
+     * @return array
+     */
+    public function getTeamIdsForAgents($agents)
+    {
+        $agent_ids = array();
+        foreach ($agents as $a) {
+            if (is_object($a)) {
+                $agent_ids[] = $a['id'];
+            } else {
+                $agent_ids[] = $a;
+            }
+        }
 
-	}
+        if (!$agent_ids) return array();
+        $agent_ids = implode(',', $agent_ids);
 
-	/**
-	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
-	 * @param  $sql
-	 * @return void
-	 */
-	public function invalidateFromQuery($sql)
-	{
-		$this->invalidateCaches();
-	}
+        $agent_teams = App::getDb()->fetchAllGrouped("
+            SELECT person_id, team_id
+            FROM agent_team_members
+            WHERE person_id IN ($agent_ids)
+        ", array(), 'person_id', null, 'team_id');
 
-	/**
-	 * @return array
-	 */
-	public function getTeamsRaw()
-	{
-		$ret = array();
+        return $agent_teams;
+    }
 
-		// todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
+    public function getTeamToAgentsMap()
+    {
+        return App::getDb()->fetchAllGrouped("
+            SELECT team_id, person_id
+            FROM agent_team_members
+        ", array(), 'team_id', null, 'person_id');
+    }
 
-		foreach ($this->getTeams() as $team) {
-			/** @var $team \Application\DeskPRO\Entity\AgentTeam */
-			$ret[] = array(
-				'id' => $team['id'],
-				'name' => $team['name'],
-				'picture_url' => $team->getAvatarUrl(16),
-			);
-		}
+    /**
+     * Invalidates caches associated with agent teams
+     */
+    public function invalidateCaches()
+    {
 
-		return $ret;
-	}
+    }
+
+    /**
+     * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+     * @param  $sql
+     * @return void
+     */
+    public function invalidateFromQuery($sql)
+    {
+        $this->invalidateCaches();
+    }
+
+    /**
+     * @return array
+     */
+    public function getTeamsRaw()
+    {
+        $ret = array();
+
+        // todo we don't need to hydrate entities here (by getAgents()), but before we should move all helpers outside of Person entity
+
+        foreach ($this->getTeams() as $team) {
+            /** @var $team \Application\DeskPRO\Entity\AgentTeam */
+            $ret[] = array(
+                'id' => $team['id'],
+                'name' => $team['name'],
+                'picture_url' => $team->getAvatarUrl(16),
+            );
+        }
+
+        return $ret;
+    }
 }

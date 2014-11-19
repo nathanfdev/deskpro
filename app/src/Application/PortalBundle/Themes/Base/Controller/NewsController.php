@@ -48,141 +48,141 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class NewsController extends AbstractController
 {
-	public function indexAction(Request $request)
-	{
-		$qb = $this->getNewsRepo()->createQueryBuilder('n');
-		$pager = new Pagerfanta(new DoctrineCollectionAdapter(new ArrayCollection($qb->select('n')->getQuery()->execute())));
-		$pager->setCurrentPage($request->get('page', 1));
-		$pager->setMaxPerPage(10);
+    public function indexAction(Request $request)
+    {
+        $qb = $this->getNewsRepo()->createQueryBuilder('n');
+        $pager = new Pagerfanta(new DoctrineCollectionAdapter(new ArrayCollection($qb->select('n')->getQuery()->execute())));
+        $pager->setCurrentPage($request->get('page', 1));
+        $pager->setMaxPerPage(10);
 
-		return $this->render('Theme:News:index.html.twig',
-			array(
-				'pager' => $pager,
-				'news_articles' => $pager->getCurrentPageResults()
-			)
-		);
-	}
-
-
-	/**
-	 * @ParamConverter(name="category", converter="deskpro_slug")
-	 */
-	public function browseAction(NewsCategory $category, Request $request)
-	{
-		if (!$category) {
-			throw $this->createNotFoundException('news category "' . $slug . '" not found');
-		}
-
-		$qb    = $this->getNewsRepo()->createQueryBuilder('n');
-		$qb->andWhere('n.category = :cat')->setParameter('cat', $category);
-		$pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-		$pager->setCurrentPage($request->get('page', 1));
-		$pager->setMaxPerPage(3);
-
-		return $this->render(
-			'Theme:News:browse.html.twig',
-			array(
-				'cat'           => $category,
-				'pager'         => $pager,
-				'news_articles' => $pager->getCurrentPageResults()
-			)
-		);
-	}
-
-	/**
-	 * @ParamConverter(name="news", converter="deskpro_slug")
-	 */
-	public function viewAction(News $news)
-	{
-		return $this->render(
-			'Theme:News:view.html.twig',
-			array(
-				'cat'     => $news->category,
-				'article' => $news
-			)
-		);
-	}
+        return $this->render('Theme:News:index.html.twig',
+            array(
+                'pager' => $pager,
+                'news_articles' => $pager->getCurrentPageResults()
+            )
+        );
+    }
 
 
-	public function catsAction(Request $request)
-	{
-		$options_resolver = new OptionsResolver();
-		$options_resolver
-			->setDefaults(
-				array(
-					'style' => 'small',
-					'parent' => null
-				)
-			)
-			->setAllowedValues(
-				array(
-					'style' => 'small'
-				)
-			);
-		$options = $options_resolver->resolve($request->query->get('tag_options'));
+    /**
+     * @ParamConverter(name="category", converter="deskpro_slug")
+     */
+    public function browseAction(NewsCategory $category, Request $request)
+    {
+        if (!$category) {
+            throw $this->createNotFoundException('news category "' . $slug . '" not found');
+        }
 
-		if ($category = $options['parent']) {
-			if (!$category instanceof NewsCategory) {
-				$category = $this->getNewsCategoriesRepo()->find($category);
-			}
-			$categories = $category->children;
-		} else {
-			$categories = $this->getNewsCategoriesRepo()->findBy(array('parent' => $category));
-		}
+        $qb    = $this->getNewsRepo()->createQueryBuilder('n');
+        $qb->andWhere('n.category = :cat')->setParameter('cat', $category);
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+        $pager->setCurrentPage($request->get('page', 1));
+        $pager->setMaxPerPage(3);
 
-		return $this->render(
-			sprintf('Theme:News:cats_%s.html.twig', $options['style']),
-			array(
-				'cat'        => $category,
-				'child_cats' => $categories
-			)
-		);
-	}
+        return $this->render(
+            'Theme:News:browse.html.twig',
+            array(
+                'cat'           => $category,
+                'pager'         => $pager,
+                'news_articles' => $pager->getCurrentPageResults()
+            )
+        );
+    }
 
-
-	public function listAction(Request $request)
-	{
-		$options_resolver = new OptionsResolver();
-		$options_resolver
-			->setDefaults(
-				array(
-					'style'  => 'small',
-					'count' => 5
-				)
-			)
-			->setAllowedValues(
-				array(
-					'style' => array('posts', 'small')
-				)
-			);
-		$options = $options_resolver->resolve($request->query->get('tag_options'));
-
-		$news  = $this->getNewsRepo()->getNewest($options['count']);
-		$total = $this->getNewsRepo()->countPublished();
-
-		return $this->render(
-			sprintf('Theme:News:list_%s.html.twig', $options['style']),
-			array(
-				'news_count_total' => $total,
-				'news_articles'    => $news
-			)
-		);
-	}
+    /**
+     * @ParamConverter(name="news", converter="deskpro_slug")
+     */
+    public function viewAction(News $news)
+    {
+        return $this->render(
+            'Theme:News:view.html.twig',
+            array(
+                'cat'     => $news->category,
+                'article' => $news
+            )
+        );
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\News
-	 */
-	protected function getNewsRepo()
-	{
-		return $this->getDoctrine()->getRepository('DeskPRO:News');
-	}
+    public function catsAction(Request $request)
+    {
+        $options_resolver = new OptionsResolver();
+        $options_resolver
+            ->setDefaults(
+                array(
+                    'style' => 'small',
+                    'parent' => null
+                )
+            )
+            ->setAllowedValues(
+                array(
+                    'style' => 'small'
+                )
+            );
+        $options = $options_resolver->resolve($request->query->get('tag_options'));
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\NewsCategory
-	 */
-	protected function getNewsCategoriesRepo()
-	{
-		return $this->getDoctrine()->getRepository('DeskPRO:NewsCategory');
-	}
+        if ($category = $options['parent']) {
+            if (!$category instanceof NewsCategory) {
+                $category = $this->getNewsCategoriesRepo()->find($category);
+            }
+            $categories = $category->children;
+        } else {
+            $categories = $this->getNewsCategoriesRepo()->findBy(array('parent' => $category));
+        }
+
+        return $this->render(
+            sprintf('Theme:News:cats_%s.html.twig', $options['style']),
+            array(
+                'cat'        => $category,
+                'child_cats' => $categories
+            )
+        );
+    }
+
+
+    public function listAction(Request $request)
+    {
+        $options_resolver = new OptionsResolver();
+        $options_resolver
+            ->setDefaults(
+                array(
+                    'style'  => 'small',
+                    'count' => 5
+                )
+            )
+            ->setAllowedValues(
+                array(
+                    'style' => array('posts', 'small')
+                )
+            );
+        $options = $options_resolver->resolve($request->query->get('tag_options'));
+
+        $news  = $this->getNewsRepo()->getNewest($options['count']);
+        $total = $this->getNewsRepo()->countPublished();
+
+        return $this->render(
+            sprintf('Theme:News:list_%s.html.twig', $options['style']),
+            array(
+                'news_count_total' => $total,
+                'news_articles'    => $news
+            )
+        );
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\News
+     */
+    protected function getNewsRepo()
+    {
+        return $this->getDoctrine()->getRepository('DeskPRO:News');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\NewsCategory
+     */
+    protected function getNewsCategoriesRepo()
+    {
+        return $this->getDoctrine()->getRepository('DeskPRO:NewsCategory');
+    }
 }

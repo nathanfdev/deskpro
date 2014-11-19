@@ -71,4 +71,3 @@ class VisitorIdentificationProviderTest extends \DpUnitTestCase
         $this->assertEquals('CNCPCT_CODE', $provider->getVisitorIdentifier(), 'no cookie but has an identifier');
     }
 }
- 

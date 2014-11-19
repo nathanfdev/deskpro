@@ -140,7 +140,6 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
 
             // The user is already logged in
             if ($result->isValid()) {
-
                 return $this->createTokenFromUsersourceResult($usersource, $result);
 
                 // We expect a redirect to be required
@@ -158,7 +157,6 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
             $result = $adapter->authenticate();
 
             if ($result->isValid()) {
-
                 return $this->createTokenFromUsersourceResult($usersource, $result);
 
             }
@@ -361,4 +359,3 @@ class DpAuthListener extends AbstractAuthenticationListener implements Container
         return new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
     }
 }
- 

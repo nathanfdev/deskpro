@@ -33,26 +33,26 @@ namespace Application\ImportBundle;
 
 class ImporterConfig
 {
-	/**
-	 * @var string
-	 */
-	public $data_path;
+    /**
+     * @var string
+     */
+    public $data_path;
 
-	/**
-	 * @var string
-	 */
-	public $log_path;
+    /**
+     * @var string
+     */
+    public $log_path;
 
-	/**
-	 * 'test' or 'live'
-	 * @var string
-	 */
-	public $mode = 'test';
+    /**
+     * 'test' or 'live'
+     * @var string
+     */
+    public $mode = 'test';
 
-	/**
-	 * Mark files as done when they are finished importing?
-	 *
-	 * @var bool
-	 */
-	public $mark_done = true;
+    /**
+     * Mark files as done when they are finished importing?
+     *
+     * @var bool
+     */
+    public $mark_done = true;
 }

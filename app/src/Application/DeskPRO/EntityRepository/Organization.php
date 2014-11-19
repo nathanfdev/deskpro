@@ -41,11 +41,11 @@ use Orb\Util\Numbers;
 
 class Organization extends AbstractEntityRepository
 {
-	/** @var array|null */
-	protected $_organization_names = null;
+    /** @var array|null */
+    protected $_organization_names = null;
 
-	public function findOneByName($name)
-	{
+    public function findOneByName($name)
+    {
             $qb = $this->getEntityManager()->createQueryBuilder();
             $qb->select('o')
             ->from('DeskPRO:Organization', 'o')
@@ -53,147 +53,147 @@ class Organization extends AbstractEntityRepository
             ->setParameter('name', $name);
 
             $query = $qb->getQuery();
-            return $query->getOneOrNullResult();
-	}
 
-	/**
-	 * @return array
-	 */
-	public function getOrganizationNames($for_ids = null)
-	{
-		if ($this->_organization_names == null) {
-			$db = $this->getEntityManager()->getConnection();
-			$this->_organization_names = $db->fetchAllKeyValue("
-				SELECT id, name
-				FROM organizations
-				ORDER BY name ASC
-			");
+            return $query->getOneOrNullResult();
+    }
+
+    /**
+     * @return array
+     */
+    public function getOrganizationNames($for_ids = null)
+    {
+        if ($this->_organization_names == null) {
+            $db = $this->getEntityManager()->getConnection();
+            $this->_organization_names = $db->fetchAllKeyValue("
+                SELECT id, name
+                FROM organizations
+                ORDER BY name ASC
+            ");
         }
 
         if ($for_ids === null) {
-		    return $this->_organization_names;
+            return $this->_organization_names;
         }
 
         $ret = array();
         foreach ((array)$for_ids as $id) {
-			if (isset($this->_organization_names[$id])) {
-            	$ret[$id] = $this->_organization_names[$id];
-			}
+            if (isset($this->_organization_names[$id])) {
+                $ret[$id] = $this->_organization_names[$id];
+            }
         }
 
         return $ret;
-	}
+    }
 
 
-	public function getOrganizationsFromIds(array $ids)
-	{
-		// Only valid ID's please :)
-		// Do this because Doctrine doesnt have proper IN()
-		// escaping until 2.1
-		$ids = array_filter($ids, function ($val) {
-			if (Numbers::isInteger($val)) {
-				return true;
-			}
-			return false;
-		});
+    public function getOrganizationsFromIds(array $ids)
+    {
+        // Only valid ID's please :)
+        // Do this because Doctrine doesnt have proper IN()
+        // escaping until 2.1
+        $ids = array_filter($ids, function ($val) {
+            if (Numbers::isInteger($val)) {
+                return true;
+            }
 
-		if (!$ids) return array();
+            return false;
+        });
 
-		$orgs = $this->getEntityManager()->createQuery("
-			SELECT o
-			FROM DeskPRO:Organization o INDEX BY o.id
-			WHERE o.id IN(?0)
-			ORDER BY o.id ASC
-		")->execute(array($ids));
+        if (!$ids) return array();
 
-		return $orgs;
-	}
+        $orgs = $this->getEntityManager()->createQuery("
+            SELECT o
+            FROM DeskPRO:Organization o INDEX BY o.id
+            WHERE o.id IN(?0)
+            ORDER BY o.id ASC
+        ")->execute(array($ids));
 
-	/**
-	 * Get a count of how many orgs there are
-	 *
-	 * @return int
-	 */
-	public function getCount()
-	{
-		return App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM organizations
-		");
-	}
+        return $orgs;
+    }
 
-	/**
-	 * Count how many people there are in an organization
-	 *
-	 * @param \Application\DeskPRO\Entity\Organization $org
-	 * @return int
-	 */
-	public function countMembersFor(OrganizationEntity $org)
-	{
-		if (!$org->id) {
-			return 0;
-		}
+    /**
+     * Get a count of how many orgs there are
+     *
+     * @return int
+     */
+    public function getCount()
+    {
+        return App::getDb()->fetchColumn("
+            SELECT COUNT(*)
+            FROM organizations
+        ");
+    }
 
-		return App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM people
-			WHERE organization_id = {$org['id']} AND is_deleted = false
-		");
-	}
+    /**
+     * Count how many people there are in an organization
+     *
+     * @param  \Application\DeskPRO\Entity\Organization $org
+     * @return int
+     */
+    public function countMembersFor(OrganizationEntity $org)
+    {
+        if (!$org->id) {
+            return 0;
+        }
 
-	/**
-	 * Gets the list of organization managers
-	 *
-	 * @param \Application\DeskPRO\Entity\Organization $org
-	 *
-	 * @return \Application\DeskPRO\Entity\Person[]
-	 */
-	public function getManagers(OrganizationEntity $org)
-	{
-		return $this->getEntityManager()->createQuery('
-			SELECT p
-			FROM DeskPRO:Person p
-			WHERE p.organization = ?1 AND p.organization_manager = 1
-			ORDER BY p.last_name, p.first_name
-		')->execute(array(1 => $org));
-	}
+        return App::getDb()->fetchColumn("
+            SELECT COUNT(*)
+            FROM people
+            WHERE organization_id = {$org['id']} AND is_deleted = false
+        ");
+    }
 
+    /**
+     * Gets the list of organization managers
+     *
+     * @param \Application\DeskPRO\Entity\Organization $org
+     *
+     * @return \Application\DeskPRO\Entity\Person[]
+     */
+    public function getManagers(OrganizationEntity $org)
+    {
+        return $this->getEntityManager()->createQuery('
+            SELECT p
+            FROM DeskPRO:Person p
+            WHERE p.organization = ?1 AND p.organization_manager = 1
+            ORDER BY p.last_name, p.first_name
+        ')->execute(array(1 => $org));
+    }
 
-	/**
-	 * Fetch an organization by its name.
-	 *
-	 * @param string $name
-	 * @return \Application\DeskPRO\Entity\Organization
-	 */
-	public function getByName($name)
-	{
-		$name = trim($name);
+    /**
+     * Fetch an organization by its name.
+     *
+     * @param  string                                   $name
+     * @return \Application\DeskPRO\Entity\Organization
+     */
+    public function getByName($name)
+    {
+        $name = trim($name);
 
-		return $this->getEntityManager()->createQuery("
-			SELECT o
-			FROM DeskPRO:Organization o
-			WHERE
-				o.name = ?1
-		")->setParameter(1, $name)->setMaxResults(1)->getOneOrNullResult();
-	}
+        return $this->getEntityManager()->createQuery("
+            SELECT o
+            FROM DeskPRO:Organization o
+            WHERE
+                o.name = ?1
+        ")->setParameter(1, $name)->setMaxResults(1)->getOneOrNullResult();
+    }
 
+    /**
+     * @param $q
+     * @param  null  $limit
+     * @return mixed
+     */
+    public function search($q, $limit = null, $hydrate = true)
+    {
+        $q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
+        $q = strtolower($q);
+        $mode = $hydrate ? null : Query::HYDRATE_ARRAY;
 
-	/**
-	 * @param $q
-	 * @param null $limit
-	 * @return mixed
-	 */
-	public function search($q, $limit = null, $hydrate = true)
-	{
-		$q = '%' . str_replace(array('%', '_'), array('\\\\%', '\\\\_'), $q) . '%';
-		$q = strtolower($q);
-		$mode = $hydrate ? null : Query::HYDRATE_ARRAY;
-
-		return $this->getEntityManager()->createQuery("
-			SELECT o
-			FROM DeskPRO:Organization o
-			WHERE LOWER(o.name) LIKE ?1
-			ORDER BY o.name ASC
-		")->setMaxResults($limit)->execute(array(1=> $q), $mode);
-	}
+        return $this->getEntityManager()->createQuery("
+            SELECT o
+            FROM DeskPRO:Organization o
+            WHERE LOWER(o.name) LIKE ?1
+            ORDER BY o.name ASC
+        ")->setMaxResults($limit)->execute(array(1=> $q), $mode);
+    }
 }

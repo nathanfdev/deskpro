@@ -1,19 +1,19 @@
 <div class="column-half">
-	<article class="kb-simple-articles">
-		<ul>
-			{% for cat in cats %}
-				<li>
-					<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
+    <article class="kb-simple-articles">
+        <ul>
+            {% for cat in cats %}
+                <li>
+                    <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
 
-					<h1><a href="{{ path('portal_kb_browse', { slug: cat.slug }) }}">{{ cat.title }} <span>{{ cat.articles|length }}</span></a></h1>
-			<span class="meta">
-				{% for child_cat in cat.children %}
-				<a href="{{ path('portal_kb_browse', { slug:child_cat.slug }) }}">{{ child_cat.title }}</a>{% if not loop.last %}, {% endif %}
-				{% endfor %}
-			</span>
-				</li>
+                    <h1><a href="{{ path('portal_kb_browse', { slug: cat.slug }) }}">{{ cat.title }} <span>{{ cat.articles|length }}</span></a></h1>
+            <span class="meta">
+                {% for child_cat in cat.children %}
+                <a href="{{ path('portal_kb_browse', { slug:child_cat.slug }) }}">{{ child_cat.title }}</a>{% if not loop.last %}, {% endif %}
+                {% endfor %}
+            </span>
+                </li>
 
-			{% endfor %}
-		</ul>
-	</article>
+            {% endfor %}
+        </ul>
+    </article>
 </div>

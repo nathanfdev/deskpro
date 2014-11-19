@@ -36,27 +36,27 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1340907258 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix bad ticket_send_email action");
+    public function run()
+    {
+        $this->out("Fix bad ticket_send_email action");
 
-		$bad = $this->container->getDb()->fetchAll("SELECT id, actions FROM ticket_triggers WHERE actions LIKE '%ticket_send_email%'");
-		foreach ($bad as $tr) {
-			$tr['actions'] = unserialize($tr['actions']);
-			$change = false;
-			foreach ($tr['actions'] as &$act) {
-				if ($act['type'] == 'ticket_send_email') {
-					$act['type'] = 'send_ticket_email';
-					$change = true;
-				}
-			}
+        $bad = $this->container->getDb()->fetchAll("SELECT id, actions FROM ticket_triggers WHERE actions LIKE '%ticket_send_email%'");
+        foreach ($bad as $tr) {
+            $tr['actions'] = unserialize($tr['actions']);
+            $change = false;
+            foreach ($tr['actions'] as &$act) {
+                if ($act['type'] == 'ticket_send_email') {
+                    $act['type'] = 'send_ticket_email';
+                    $change = true;
+                }
+            }
 
-			if ($change) {
-				$this->out("Fixing trigger #{$tr['id']}");
+            if ($change) {
+                $this->out("Fixing trigger #{$tr['id']}");
 
-				$tr['actions'] = serialize($tr['actions']);
-				$this->container->getDb()->update('ticket_triggers', array('actions' => $tr['actions']), array('id' => $tr['id']));
-			}
-		}
-	}
+                $tr['actions'] = serialize($tr['actions']);
+                $this->container->getDb()->update('ticket_triggers', array('actions' => $tr['actions']), array('id' => $tr['id']));
+            }
+        }
+    }
 }

@@ -45,35 +45,35 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class ChatConversationPing extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $chat_id = null;
+    /**
+     * @var int
+     */
+    protected $chat_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $ping_time = 0;
+    /**
+     * @var int
+     */
+    protected $ping_time = 0;
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversationPing';
-		$metadata->setPrimaryTable(array(
-			'name' => 'chat_conversation_pings',
-			'indexes' => array(
-				'chat_id_idx' => array('columns' => array('chat_id')),
-			),
-		));
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'chat_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'chat_id', ));
-		$metadata->mapField(array( 'fieldName' => 'ping_time', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ping_time', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ChatConversationPing';
+        $metadata->setPrimaryTable(array(
+            'name' => 'chat_conversation_pings',
+            'indexes' => array(
+                'chat_id_idx' => array('columns' => array('chat_id')),
+            ),
+        ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'chat_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'chat_id', ));
+        $metadata->mapField(array( 'fieldName' => 'ping_time', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ping_time', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+    }
 }

@@ -34,14 +34,13 @@
 
 namespace Application\DeskPRO\People\ActivityLogger\ActionType;
 
-use Application\DeskPRO\App;
 
 class NewCommentArticle extends NewCommentAbstract
 {
-	public function getDetails()
-	{
-		$details = parent::getDetails();
-		$details['article_id'] = $this->comment->article['id'];
-		$details['article_title'] = $this->comment->article['title'];
-	}
+    public function getDetails()
+    {
+        $details = parent::getDetails();
+        $details['article_id'] = $this->comment->article['id'];
+        $details['article_title'] = $this->comment->article['title'];
+    }
 }

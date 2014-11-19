@@ -35,124 +35,115 @@ namespace Application\DeskPRO\Groups;
 
 abstract class GroupsRepos implements \Countable, \IteratorAggregate
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Usergroup[]
-	 */
-	private $groups;
+    /**
+     * @var \Application\DeskPRO\Entity\Usergroup[]
+     */
+    private $groups;
 
-	/**
-	 * Groups mapped by sysname
-	 * @var \Application\DeskPRO\Entity\Usergroup[]
-	 */
-	private $groups_named;
+    /**
+     * Groups mapped by sysname
+     * @var \Application\DeskPRO\Entity\Usergroup[]
+     */
+    private $groups_named;
 
-	/**
-	 * @var int
-	 */
-	private $count;
+    /**
+     * @var int
+     */
+    private $count;
 
+    /**
+     * @param array $groups */
+    public function __construct(array $groups)
+    {
+        $this->groups = array();
+        $this->groups_named = array();
 
-	/**
-	 * @param array $groups	 */
-	public function __construct(array $groups)
-	{
-		$this->groups = array();
-		$this->groups_named = array();
+        foreach ($groups as $g) {
+            $this->groups[$g->id] = $g;
 
-		foreach ($groups as $g) {
-			$this->groups[$g->id] = $g;
+            if ($g->sys_name) {
+                $this->groups_named[$g->sys_name] = $g;
+            }
+        }
+    }
 
-			if ($g->sys_name) {
-				$this->groups_named[$g->sys_name] = $g;
-			}
-		}
-	}
+    /**
+     * @param  int  $id
+     * @return bool
+     */
+    public function groupExists($id)
+    {
+        return isset($this->groups[$id]);
+    }
 
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    public function sysGroupExists($name)
+    {
+        return isset($this->groups_named[$name]);
+    }
 
-	/**
-	 * @param int $id
-	 * @return bool
-	 */
-	public function groupExists($id)
-	{
-		return isset($this->groups[$id]);
-	}
+    /**
+     * @param  int                                   $id
+     * @return \Application\DeskPRO\Entity\Usergroup
+     */
+    public function getGroup($id)
+    {
+        if (!isset($this->groups[$id])) {
+            throw new \InvalidArgumentException();
+        }
 
+        return $this->groups[$id];
+    }
 
-	/**
-	 * @param string $name
-	 * @return bool
-	 */
-	public function sysGroupExists($name)
-	{
-		return isset($this->groups_named[$name]);
-	}
+    /**
+     * @param  string                                $name
+     * @return \Application\DeskPRO\Entity\Usergroup
+     */
+    public function getSysGroup($name)
+    {
+        if (!isset($this->groups_named[$name])) {
+            throw new \InvalidArgumentException();
+        }
 
+        return $this->groups_named[$name];
+    }
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\Usergroup
-	 */
-	public function getGroup($id)
-	{
-		if (!isset($this->groups[$id])) {
-			throw new \InvalidArgumentException();
-		}
+    /**
+     * @return \Application\DeskPRO\Entity\Usergroup[]
+     */
+    public function getAll()
+    {
+        return $this->groups;
+    }
 
-		return $this->groups[$id];
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\Usergroup[]
+     */
+    public function getAllSys()
+    {
+        return $this->groups_named;
+    }
 
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        if ($this->count === null) {
+            $this->count = count($this->groups);
+        }
 
-	/**
-	 * @param string $name
-	 * @return \Application\DeskPRO\Entity\Usergroup
-	 */
-	public function getSysGroup($name)
-	{
-		if (!isset($this->groups_named[$name])) {
-			throw new \InvalidArgumentException();
-		}
+        return $this->count;
+    }
 
-		return $this->groups_named[$name];
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Usergroup[]
-	 */
-	public function getAll()
-	{
-		return $this->groups;
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Usergroup[]
-	 */
-	public function getAllSys()
-	{
-		return $this->groups_named;
-	}
-
-
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		if ($this->count === null) {
-			$this->count = count($this->groups);
-		}
-
-		return $this->count;
-	}
-
-
-	/**
-	 * @return \ArrayIterator|\Traversable
-	 */
-	public function getIterator()
-	{
-		return new \ArrayIterator($this->groups);
-	}
+    /**
+     * @return \ArrayIterator|\Traversable
+     */
+    public function getIterator()
+    {
+        return new \ArrayIterator($this->groups);
+    }
 }

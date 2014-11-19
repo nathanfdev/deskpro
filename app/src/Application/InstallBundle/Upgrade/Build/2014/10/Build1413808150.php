@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1413808150 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Rename date_closed -> date_archived");
-		$this->execMutateSql("ALTER TABLE tickets CHANGE date_closed date_archived DATETIME DEFAULT NULL");
-		$this->execMutateSql("UPDATE report_builder SET query = REPLACE(query, 'date_closed', 'date_archived')");
-	}
+    public function run()
+    {
+        $this->out("Rename date_closed -> date_archived");
+        $this->execMutateSql("ALTER TABLE tickets CHANGE date_closed date_archived DATETIME DEFAULT NULL");
+        $this->execMutateSql("UPDATE report_builder SET query = REPLACE(query, 'date_closed', 'date_archived')");
+    }
 }

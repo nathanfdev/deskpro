@@ -33,129 +33,127 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Application\DeskPRO\Service\CheckWhitelistedIP;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
-	/**
-	 * The currently logged in person.
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	public $person;
+    /**
+     * The currently logged in person.
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    public $person;
 
-	protected function init()
-	{
-		parent::init();
+    protected function init()
+    {
+        parent::init();
 
-		$this->person = $this->session->getPerson();
+        $this->person = $this->session->getPerson();
 
-		if (!$this->person->id) {
-			$cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
-			$cas->process();
-		}
-	}
+        if (!$this->person->id) {
+            $cas = new \Application\AgentBundle\Controller\Helper\CarryAdminSession($this);
+            $cas->process();
+        }
+    }
 
-	/**
-	 * Check if the global request token check is required for the request
-	 */
-	protected function requireRequestToken($action, $arguments = null)
-	{
-		return true;
-	}
+    /**
+     * Check if the global request token check is required for the request
+     */
+    protected function requireRequestToken($action, $arguments = null)
+    {
+        return true;
+    }
 
-	/**
-	 * Force a login
-	 */
-	public function preAction($action, $arguments = null)
-	{
-		if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
-			return $this->redirectRoute('agent_browser_requirements');
-		}
+    /**
+     * Force a login
+     */
+    public function preAction($action, $arguments = null)
+    {
+        if (!$this->request->isXmlHttpRequest() && !UserAgentRequirementCheck::passAgentInterface($this->container->get('browser_sniffer'))) {
+            return $this->redirectRoute('agent_browser_requirements');
+        }
 
-		if (!$this->person['id']) {
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array(
-					'error' => 'session_expired',
-					'redirect_login' => $this->generateUrl('agent_login')
-				);
+        if (!$this->person['id']) {
+            if ($this->request->isXmlHttpRequest()) {
+                $data = array(
+                    'error' => 'session_expired',
+                    'redirect_login' => $this->generateUrl('agent_login')
+                );
 
-				return $this->createJsonResponse($data, 403);
+                return $this->createJsonResponse($data, 403);
 
-			} else {
-				if ($this->isPostRequest()) {
-					$return = $this->get('router')->generate('agent');
-				} else {
-					$return = $this->request->getRequestUri();
-				}
+            } else {
+                if ($this->isPostRequest()) {
+                    $return = $this->get('router')->generate('agent');
+                } else {
+                    $return = $this->request->getRequestUri();
+                }
 
-				return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
-					'return' => $return
-				));
-			}
-		}
+                return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
+                    'return' => $return
+                ));
+            }
+        }
 
-		if (!$this->_userHasPermissions()) {
-			return $this->redirectRoute('user');
-		}
+        if (!$this->_userHasPermissions()) {
+            return $this->redirectRoute('user');
+        }
 
-		if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
-			if ($this->request->isXmlHttpRequest()) {
-				$data = array(
-					'error' => 'invalid_request_token',
-					'redirect_login' => $this->generateUrl('agent_login')
-				);
+        if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
+            if ($this->request->isXmlHttpRequest()) {
+                $data = array(
+                    'error' => 'invalid_request_token',
+                    'redirect_login' => $this->generateUrl('agent_login')
+                );
 
-				return $this->createJsonResponse($data, 403);
-			} else {
-				throw new AccessDeniedException;
-			}
-		}
+                return $this->createJsonResponse($data, 403);
+            } else {
+                throw new AccessDeniedException;
+            }
+        }
 
-		if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
-			return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-				'ip' => dp_get_user_ip_address()
-			));
-		}
+        if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
+            return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
+                'ip' => dp_get_user_ip_address()
+            ));
+        }
 
-		$this->person->loadHelper('Agent');
-		$this->person->loadHelper('AgentTeam');
-		$this->person->loadHelper('AgentPermissions');
-		$this->person->loadHelper('PermissionsManager');
-		$this->person->loadHelper('HelpMessages');
-		$this->person->loadHelper('AgentPrefs');
-	}
+        $this->person->loadHelper('Agent');
+        $this->person->loadHelper('AgentTeam');
+        $this->person->loadHelper('AgentPermissions');
+        $this->person->loadHelper('PermissionsManager');
+        $this->person->loadHelper('HelpMessages');
+        $this->person->loadHelper('AgentPrefs');
+    }
 
-	protected function _userHasPermissions()
-	{
-		if ($this->person->is_agent && $this->person->can_agent) {
-			return true;
-		}
+    protected function _userHasPermissions()
+    {
+        if ($this->person->is_agent && $this->person->can_agent) {
+            return true;
+        }
 
-		return false;
-	}
-
-
-
-	/**
-	 * Create a reponse that indicates a permissions error.
-	 *
-	 * @param string $message The message to show the user
-	 * @return Response
-	 */
-	protected function createPermissionErrorResponse($message)
-	{
-		return $this->createJsonResponse(array('error' => 'not_allowed', 'message' => $message), 403);
-	}
+        return false;
+    }
 
 
-	/**
-	 * @return Application\DeskPRO\Entity\Person
-	 */
-	public function getPerson()
-	{
-		return $this->person;
-	}
+
+    /**
+     * Create a reponse that indicates a permissions error.
+     *
+     * @param  string   $message The message to show the user
+     * @return Response
+     */
+    protected function createPermissionErrorResponse($message)
+    {
+        return $this->createJsonResponse(array('error' => 'not_allowed', 'message' => $message), 403);
+    }
+
+    /**
+     * @return Application\DeskPRO\Entity\Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
 }

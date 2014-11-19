@@ -38,13 +38,13 @@ use Application\PortalBundle\Controller\AbstractController;
 
 class TicketsController extends AbstractController
 {
-	public function indexAction()
-	{
-		return $this->render('Theme:Tickets:index.html.twig');
-	}
+    public function indexAction()
+    {
+        return $this->render('Theme:Tickets:index.html.twig');
+    }
 
-	public function viewAction($ref)
-	{
-		return $this->render('Theme:Tickets:view.html.twig', array('ticket' => $ref));
-	}
+    public function viewAction($ref)
+    {
+        return $this->render('Theme:Tickets:view.html.twig', array('ticket' => $ref));
+    }
 }

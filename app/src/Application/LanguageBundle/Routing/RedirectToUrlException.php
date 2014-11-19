@@ -37,25 +37,23 @@ namespace Application\LanguageBundle\Routing;
 
 class RedirectToUrlException extends \InvalidArgumentException
 {
-	/**
-	 * @var string
-	 */
-	private $url;
+    /**
+     * @var string
+     */
+    private $url;
 
 
-	public function __construct($url)
-	{
-		parent::__construct('301 - Found', 301);
-		$this->url = $url;
-	}
+    public function __construct($url)
+    {
+        parent::__construct('301 - Found', 301);
+        $this->url = $url;
+    }
 
-
-	/**
-	 * @return string
-	 */
-	public function getUrl()
-	{
-		return $this->url;
-	}
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
 }
- 

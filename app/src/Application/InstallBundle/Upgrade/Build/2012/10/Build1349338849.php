@@ -36,21 +36,21 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1349338849 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add flags to languages");
-		$this->execMutateSql("ALTER TABLE languages ADD flag_image VARCHAR(50) NOT NULL");
-		$this->execMutateSql("
-			UPDATE languages SET flag_image = CASE lang_code
-				WHEN 'eng' THEN 'us.png'
-				WHEN 'ger' THEN 'de.png'
-				WHEN 'ita' THEN 'it.png'
-				WHEN 'jpn' THEN 'jp.png'
-				WHEN 'tur' THEN 'tr.png'
-				WHEN 'dut' THEN 'nl.png'
-				WHEN 'per' THEN 'ir.png'
-				ELSE ''
-				END
-		");
-	}
+    public function run()
+    {
+        $this->out("Add flags to languages");
+        $this->execMutateSql("ALTER TABLE languages ADD flag_image VARCHAR(50) NOT NULL");
+        $this->execMutateSql("
+            UPDATE languages SET flag_image = CASE lang_code
+                WHEN 'eng' THEN 'us.png'
+                WHEN 'ger' THEN 'de.png'
+                WHEN 'ita' THEN 'it.png'
+                WHEN 'jpn' THEN 'jp.png'
+                WHEN 'tur' THEN 'tr.png'
+                WHEN 'dut' THEN 'nl.png'
+                WHEN 'per' THEN 'ir.png'
+                ELSE ''
+                END
+        ");
+    }
 }

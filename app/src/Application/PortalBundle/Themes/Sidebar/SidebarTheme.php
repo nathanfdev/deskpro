@@ -38,44 +38,43 @@ use Application\PortalBundle\Theme\AbstractTheme;
 
 class SidebarTheme extends AbstractTheme
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getId()
-	{
-		return 'sidebar';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return 'sidebar';
+    }
 
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getName()
-	{
-		return 'Side Bar';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'Side Bar';
+    }
 
 
-	public function getTags()
-	{
-		return array();
-	}
+    public function getTags()
+    {
+        return array();
+    }
 
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getBaseTemplateDir()
-	{
-		return __DIR__ . '/Resources/views';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseTemplateDir()
+    {
+        return __DIR__ . '/Resources/views';
+    }
 
-
-	/**
-	 * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
-	 */
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
+    /**
+     * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
+     */
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
 }

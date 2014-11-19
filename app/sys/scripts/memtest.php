@@ -31,32 +31,32 @@
  *
  * @package DeskPRO
  */
- 
+
 // no direct access
 if (!defined('DP_ROOT')) exit('No access');
 
 $memlimit = ini_get('memory_limit');
 if (!$memlimit || $memlimit == -1) {
-	$memlimit = 0;
-	$memlimit_mb = 0;
+    $memlimit = 0;
+    $memlimit_mb = 0;
 } else {
-	$last = strtolower($memlimit[strlen($memlimit)-1]);
-	$memlimit = (int)$memlimit;
-	switch($last) {
-		case 'g': $memlimit *= 1024;
-		case 'm': $memlimit *= 1024;
-		case 'k': $memlimit *= 1024;
-	}
+    $last = strtolower($memlimit[strlen($memlimit)-1]);
+    $memlimit = (int)$memlimit;
+    switch($last) {
+        case 'g': $memlimit *= 1024;
+        case 'm': $memlimit *= 1024;
+        case 'k': $memlimit *= 1024;
+    }
 
-	$memlimit_mb = round($memlimit / 1024 / 1024, 2);
+    $memlimit_mb = round($memlimit / 1024 / 1024, 2);
 }
 
 if ($memlimit) {
-	echo "Expected memory limit of {$memlimit} ({$memlimit_mb} MB)<br />";
+    echo "Expected memory limit of {$memlimit} ({$memlimit_mb} MB)<br />";
 } else {
-	echo "No memory limit defined in PHP configuration. Testing with 500 MB.<br />";
-	$memlimit = 500 * 1024 * 1024;
-	$memlimit_mb = 500;
+    echo "No memory limit defined in PHP configuration. Testing with 500 MB.<br />";
+    $memlimit = 500 * 1024 * 1024;
+    $memlimit_mb = 500;
 }
 
 $mem = memory_get_usage();
@@ -65,17 +65,17 @@ echo "Start: {$mem} ($mem_mb <B)<br />";
 
 $counter = 0;
 while (true) {
-	$counter += 102400;
+    $counter += 102400;
 
-	$fill = str_repeat('x', $counter * 100);
-	$mem = memory_get_usage();
-	$mem_mb = round($mem / 1024 / 1024, 2);
-	echo "Reached: {$mem} ($mem_mb MB)<br />";
-	unset($fill);
+    $fill = str_repeat('x', $counter * 100);
+    $mem = memory_get_usage();
+    $mem_mb = round($mem / 1024 / 1024, 2);
+    echo "Reached: {$mem} ($mem_mb MB)<br />";
+    unset($fill);
 
-	if ($mem_mb + 8 >= $memlimit_mb) {
-		break;
-	}
+    if ($mem_mb + 8 >= $memlimit_mb) {
+        break;
+    }
 }
 
 echo "<br />";

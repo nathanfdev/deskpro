@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1346753876 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Update plugin structure");
-		$this->execMutateSql("ALTER TABLE plugins ADD enabled TINYINT(1) NOT NULL, DROP autoload_paths");
-	}
+    public function run()
+    {
+        $this->out("Update plugin structure");
+        $this->execMutateSql("ALTER TABLE plugins ADD enabled TINYINT(1) NOT NULL, DROP autoload_paths");
+    }
 }

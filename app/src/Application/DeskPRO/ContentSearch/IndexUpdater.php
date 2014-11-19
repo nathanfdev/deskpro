@@ -41,39 +41,39 @@ use Application\DeskPRO\App;
  */
 class IndexUpdater
 {
-	/**
-	 * @var \Application\DeskPRO\ContentSearch\ContentSearchable
-	 */
-	protected $entity;
+    /**
+     * @var \Application\DeskPRO\ContentSearch\ContentSearchable
+     */
+    protected $entity;
 
-	public function __construct(\Application\DeskPRO\ContentSearch\ContentSearchable $entity)
-	{
-		$this->entity = $entity;
-	}
+    public function __construct(\Application\DeskPRO\ContentSearch\ContentSearchable $entity)
+    {
+        $this->entity = $entity;
+    }
 
-	public function updateIndex()
-	{
-		App::getDb()->beginTransaction();
+    public function updateIndex()
+    {
+        App::getDb()->beginTransaction();
 
-		App::getDb()->delete('content_search', array('id' => $this->entity->getSearchId()));
-		App::getDb()->delete('content_search_attributes', array('id' => $this->entity->getSearchId()));
+        App::getDb()->delete('content_search', array('id' => $this->entity->getSearchId()));
+        App::getDb()->delete('content_search_attributes', array('id' => $this->entity->getSearchId()));
 
-		App::getDb()->insert('content_search', array(
-			'id' => $this->entity->getSearchId(),
-			'content' => $this->entity->getSearchContent()
-		));
+        App::getDb()->insert('content_search', array(
+            'id' => $this->entity->getSearchId(),
+            'content' => $this->entity->getSearchContent()
+        ));
 
-		$attr = $this->entity->getSearchAttributes();
-		if ($attr) {
-			foreach ($attr as $k => $v) {
-				App::getDb()->insert('content_search', array(
-					'search_id' => $this->entity->getSearchId(),
-					'attribute_id' => $k,
-					'content' => $v
-				));
-			}
-		}
+        $attr = $this->entity->getSearchAttributes();
+        if ($attr) {
+            foreach ($attr as $k => $v) {
+                App::getDb()->insert('content_search', array(
+                    'search_id' => $this->entity->getSearchId(),
+                    'attribute_id' => $k,
+                    'content' => $v
+                ));
+            }
+        }
 
-		App::getDb()->commit();
-	}
+        App::getDb()->commit();
+    }
 }

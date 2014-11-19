@@ -41,46 +41,46 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ChatDepartmentType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('department', new ChatDepartmentPropsType());
-		$builder->add(
-			'permissions',
-			'collection',
-			array(
-				 'type'         => new PermissionRowType(),
-				 'allow_add'    => true,
-				 'allow_delete' => true
-			)
-		);
-		$builder->add(
-			'move_department',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Department',
-				 'required'      => false,
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('d')->where(
-						 'd.is_chat_enabled = true AND d.parent IS NULL'
-					 )->orderBy('d.display_order', 'ASC');
-				 }
-			)
-		);
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('department', new ChatDepartmentPropsType());
+        $builder->add(
+            'permissions',
+            'collection',
+            array(
+                 'type'         => new PermissionRowType(),
+                 'allow_add'    => true,
+                 'allow_delete' => true
+            )
+        );
+        $builder->add(
+            'move_department',
+            'entity',
+            array(
+                 'class'         => 'DeskPRO:Department',
+                 'required'      => false,
+                 'query_builder' => function (EntityRepository $er) {
+                     return $er->createQueryBuilder('d')->where(
+                         'd.is_chat_enabled = true AND d.parent IS NULL'
+                     )->orderBy('d.display_order', 'ASC');
+                 }
+            )
+        );
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class'         => 'Application\\DeskPRO\\Departments\\ChatDepartmentEdit',
-				 'cascade_validation' => true
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class'         => 'Application\\DeskPRO\\Departments\\ChatDepartmentEdit',
+                 'cascade_validation' => true
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'department_edit';
-	}
+    public function getName()
+    {
+        return 'department_edit';
+    }
 
 }

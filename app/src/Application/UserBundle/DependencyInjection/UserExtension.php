@@ -34,7 +34,6 @@
 
 namespace Application\UserBundle\DependencyInjection;
 
-use Application\DeskPRO\App;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
@@ -42,26 +41,26 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class UserExtension extends Extension
 {
-	public function load(array $config, ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container)
     {
-		$definition = new Definition('Application\\DeskPRO\\PageDisplay\\Page\\PortalPage', array(
-			new Reference('service_container'),
-			new Reference('deskpro.session_person')
-		));
-		$container->setDefinition('deskpro.user_portal_page', $definition);
-	}
+        $definition = new Definition('Application\\DeskPRO\\PageDisplay\\Page\\PortalPage', array(
+            new Reference('service_container'),
+            new Reference('deskpro.session_person')
+        ));
+        $container->setDefinition('deskpro.user_portal_page', $definition);
+    }
 
-	public function getXsdValidationBasePath()
-	{
-		return null;
-	}
+    public function getXsdValidationBasePath()
+    {
+        return null;
+    }
 
-	public function getNamespace()
-	{
-		return null;
-	}
+    public function getNamespace()
+    {
+        return null;
+    }
 
-	public function getAlias()
+    public function getAlias()
     {
         return 'user';
     }

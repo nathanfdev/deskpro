@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366123703 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix old submitted feedback without status cats");
-		$this->execMutateSql("
-			UPDATE feedback SET `status` = 'new'
-			WHERE `status` = 'approve' AND `status_category_id` IS NULL
-		");
-	}
+    public function run()
+    {
+        $this->out("Fix old submitted feedback without status cats");
+        $this->execMutateSql("
+            UPDATE feedback SET `status` = 'new'
+            WHERE `status` = 'approve' AND `status_category_id` IS NULL
+        ");
+    }
 }

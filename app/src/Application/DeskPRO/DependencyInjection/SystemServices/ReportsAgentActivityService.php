@@ -39,9 +39,10 @@ use Application\DeskPRO\Reports\AgentActivity;
 
 class ReportsAgentActivityService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new AgentActivity($container->getEm());
+
         return $x;
-	}
+    }
 }

@@ -44,66 +44,66 @@ use Application\DeskPRO\DBAL\Connection;
  */
 class BrandSettingsLoader implements SettingsLoaderInterface
 {
-	const CACHE_KEY_PREFIX = 'settings.loader.brand.';
+    const CACHE_KEY_PREFIX = 'settings.loader.brand.';
 
-	/**
-	 * @var \Application\DeskPRO\Cache\ConvenientCache
-	 */
-	private $cache;
+    /**
+     * @var \Application\DeskPRO\Cache\ConvenientCache
+     */
+    private $cache;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
 
-	public function __construct(Connection $db, CacheAdapterInterface $cache)
-	{
-		$this->cache = new ConvenientCache($cache);
-		$this->db = $db;
-	}
+    public function __construct(Connection $db, CacheAdapterInterface $cache)
+    {
+        $this->cache = new ConvenientCache($cache);
+        $this->db = $db;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function load($force = false, $brand_id = null)
-	{
-		if (!$brand_id) {
-			throw new \InvalidArgumentException('must pass a brand id');
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function load($force = false, $brand_id = null)
+    {
+        if (!$brand_id) {
+            throw new \InvalidArgumentException('must pass a brand id');
+        }
 
-		$cacheKey = self::CACHE_KEY_PREFIX . $brand_id;
+        $cacheKey = self::CACHE_KEY_PREFIX . $brand_id;
 
-		if ($force) {
-			$this->cache->delete($cacheKey);
-		}
+        if ($force) {
+            $this->cache->delete($cacheKey);
+        }
 
-		$conn = $this->db;
-		return $this->cache->get(
-			$cacheKey,
-			function() use ($conn, $brand_id) {
-				try {
-					return $conn->fetchAllKeyValue(
-						"
-							SELECT name, value
-							FROM settings
-							WHERE brand_id = :brand_id
-						",
-						array('brand_id' => $brand_id)
-					);
-				} catch (\Exception $e) {
-					return array();
-				}
-			}
-		);
-	}
+        $conn = $this->db;
 
-	/**
-	 * @return string
-	 */
-	public function getCacheKey()
-	{
-		return $this->cacheKey;
-	}
+        return $this->cache->get(
+            $cacheKey,
+            function () use ($conn, $brand_id) {
+                try {
+                    return $conn->fetchAllKeyValue(
+                        "
+                            SELECT name, value
+                            FROM settings
+                            WHERE brand_id = :brand_id
+                        ",
+                        array('brand_id' => $brand_id)
+                    );
+                } catch (\Exception $e) {
+                    return array();
+                }
+            }
+        );
+    }
+
+    /**
+     * @return string
+     */
+    public function getCacheKey()
+    {
+        return $this->cacheKey;
+    }
 }
- 

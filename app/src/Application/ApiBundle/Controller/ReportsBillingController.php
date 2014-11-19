@@ -35,29 +35,29 @@ namespace Application\ApiBundle\Controller;
 
 class ReportsBillingController extends AbstractController
 {
-	####################################################################################################################
-	# get report
-	####################################################################################################################
+    ####################################################################################################################
+    # get report
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\Reports\Billing $reports_billing
-		 */
+    public function getAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\Reports\Billing $reports_billing
+         */
 
-		$reports_billing = $this->container->getSystemService('reports_billing');
-		$report          = $reports_billing->getById($id);
+        $reports_billing = $this->container->getSystemService('reports_billing');
+        $report          = $reports_billing->getById($id);
 
-		if (!$report) {
-			throw $this->createNotFoundException();
-		}
+        if (!$report) {
+            throw $this->createNotFoundException();
+        }
 
-		$rendered_result = $reports_billing->getRenderedResult($id);
+        $rendered_result = $reports_billing->getRenderedResult($id);
 
-		return $this->createApiResponse(
-			array(
-				 'rendered_result' => $rendered_result,
-			)
-		);
-	}
+        return $this->createApiResponse(
+            array(
+                 'rendered_result' => $rendered_result,
+            )
+        );
+    }
 }

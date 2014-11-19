@@ -39,286 +39,291 @@ use Application\DeskPRO\People\EmailValidator;
 
 class MainController extends AbstractController
 {
-	public function requireRequestToken($action, $arguments = null)
-	{
-		if ($action == 'acceptTempUploadAction') {
-			return false;
-		}
-		return parent::requireRequestToken($action, $arguments);
-	}
+    public function requireRequestToken($action, $arguments = null)
+    {
+        if ($action == 'acceptTempUploadAction') {
+            return false;
+        }
 
-	/**
-	 * This action is used to render the header/footer in the portal editor when it was updated.
-	 * We need to actually render it like this because they could use twig tags in it, and it could
-	 * depend on the user scope, so we can't render it as part of the admin request that does the saving.
-	 */
-	public function adminRenderTemplateAction($type)
-	{
-		if (!$this->person->can_admin) {
-			throw $this->createNotFoundException();
-		}
+        return parent::requireRequestToken($action, $arguments);
+    }
 
-		if ($pid = \Orb\Util\Strings::extractRegexMatch('#^block:([0-9]+)$#', $type)) {
-			$page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
+    /**
+     * This action is used to render the header/footer in the portal editor when it was updated.
+     * We need to actually render it like this because they could use twig tags in it, and it could
+     * depend on the user scope, so we can't render it as part of the admin request that does the saving.
+     */
+    public function adminRenderTemplateAction($type)
+    {
+        if (!$this->person->can_admin) {
+            throw $this->createNotFoundException();
+        }
 
-			if (!$page_display) {
-				throw $this->createNotFoundException();
-			}
+        if ($pid = \Orb\Util\Strings::extractRegexMatch('#^block:([0-9]+)$#', $type)) {
+            $page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
 
-			if (strpos($page_display->type, '\\') === false) {
-				$type_class = ucfirst(\Orb\Util\Strings::underscoreToCamelCase($page_display->type));
-				$type_class = "Application\\DeskPRO\\PageDisplay\\Item\\Portal\\$type_class";
-			} else {
-				$type_class = $type;
-			}
+            if (!$page_display) {
+                throw $this->createNotFoundException();
+            }
 
-			$data = $page_display->data;
-			$data['pid'] = $page_display->id;
-			$data['is_enabled'] = $page_display->is_enabled;
-			$data['display_order'] = $page_display->display_order;
-			$data['admin_mode'] = true;
+            if (strpos($page_display->type, '\\') === false) {
+                $type_class = ucfirst(\Orb\Util\Strings::underscoreToCamelCase($page_display->type));
+                $type_class = "Application\\DeskPRO\\PageDisplay\\Item\\Portal\\$type_class";
+            } else {
+                $type_class = $type;
+            }
 
-			$obj = new $type_class($page_display->section, $page_display->data, $this->container, $this->person);
+            $data = $page_display->data;
+            $data['pid'] = $page_display->id;
+            $data['is_enabled'] = $page_display->is_enabled;
+            $data['display_order'] = $page_display->display_order;
+            $data['admin_mode'] = true;
 
-			$res = new \Symfony\Component\HttpFoundation\Response($obj->getHtml(), 200);
+            $obj = new $type_class($page_display->section, $page_display->data, $this->container, $this->person);
 
-		} else {
-			$res = null;
-			switch ($type) {
-				case 'header':
-					$res = $this->render('UserBundle::custom-header.html.twig');
-					break;
-				case 'articles_header':
-					$res = $this->render('UserBundle:Articles:section-header.html.twig');
-					break;
-				case 'downloads_header':
-					$res = $this->render('UserBundle:Downloads:section-header.html.twig');
-					break;
-				case 'feedback_header':
-					$res = $this->render('UserBundle:Feedback:section-header.html.twig');
-					break;
-				case 'welcome':
-					$res = $this->render('UserBundle:Portal:welcome-block.html.twig');
-					break;
-				case 'footer':
-					$res = $this->render('UserBundle::custom-footer.html.twig');
-					break;
-			}
+            $res = new \Symfony\Component\HttpFoundation\Response($obj->getHtml(), 200);
 
-			if (!$res) {
-				throw $this->createNotFoundException();
-			}
-		}
+        } else {
+            $res = null;
+            switch ($type) {
+                case 'header':
+                    $res = $this->render('UserBundle::custom-header.html.twig');
+                    break;
+                case 'articles_header':
+                    $res = $this->render('UserBundle:Articles:section-header.html.twig');
+                    break;
+                case 'downloads_header':
+                    $res = $this->render('UserBundle:Downloads:section-header.html.twig');
+                    break;
+                case 'feedback_header':
+                    $res = $this->render('UserBundle:Feedback:section-header.html.twig');
+                    break;
+                case 'welcome':
+                    $res = $this->render('UserBundle:Portal:welcome-block.html.twig');
+                    break;
+                case 'footer':
+                    $res = $this->render('UserBundle::custom-footer.html.twig');
+                    break;
+            }
 
-		$res->setMaxAge(0);
-		$res->setExpires(new \DateTime('-7 days ago'));
-		$res->setLastModified(new \DateTime());
-		return $res;
-	}
+            if (!$res) {
+                throw $this->createNotFoundException();
+            }
+        }
 
-	public function acceptTempUploadAction()
-	{
-		$security_token = $this->in->getString('security_token');
-		if (!$this->container->checkStaticSecurityToken('attach_temp', $security_token)) {
-			return $this->createJsonResponse(array(array(
-				'error_code' => 'invalid_security_token'
-			)), 403);
-		}
+        $res->setMaxAge(0);
+        $res->setExpires(new \DateTime('-7 days ago'));
+        $res->setLastModified(new \DateTime());
 
-		$file = $this->request->files->get('attach');
-		if (is_array($file)) {
-			$file = array_pop($file);
-		}
-		$accept = $this->container->getAttachmentAccepter();
+        return $res;
+    }
 
-		$error = $accept->getError($file, 'user');
-		if ($error) {
-			switch ($error['error_code']) {
-				case 'size': $phrase_id = 'user.error.attach_size'; break;
-				case 'failed_upload': $phrase_id = 'user.error.attach_failed'; break;
-				case 'no_file': $phrase_id = 'user.error.attach_no-file'; break;
-				case 'server_error': $phrase_id = 'user.error.attach_unknown-error'; break;
-				case 'not_in_allowed_exts': $phrase_id = 'user.error.attach_ext-allowed'; break;
-				case 'not_allowed_exts': $phrase_id = 'user.error.attach_ext-not-allow'; break;
-			}
-			$error['error'] = $this->container->getTranslator()->phrase($phrase_id, $error);
-			return $this->createJsonResponse(array($error));
-		}
+    public function acceptTempUploadAction()
+    {
+        $security_token = $this->in->getString('security_token');
+        if (!$this->container->checkStaticSecurityToken('attach_temp', $security_token)) {
+            return $this->createJsonResponse(array(array(
+                'error_code' => 'invalid_security_token'
+            )), 403);
+        }
 
-		if ($error) {
-			$error['error'] = $this->container->getTranslator()->phrase('user.error.attach_' . $error['error_code'], $error);
-			return $this->createJsonResponse(array($error));
-		}
+        $file = $this->request->files->get('attach');
+        if (is_array($file)) {
+            $file = array_pop($file);
+        }
+        $accept = $this->container->getAttachmentAccepter();
 
-		$blob = $accept->accept($file, true);
+        $error = $accept->getError($file, 'user');
+        if ($error) {
+            switch ($error['error_code']) {
+                case 'size': $phrase_id = 'user.error.attach_size'; break;
+                case 'failed_upload': $phrase_id = 'user.error.attach_failed'; break;
+                case 'no_file': $phrase_id = 'user.error.attach_no-file'; break;
+                case 'server_error': $phrase_id = 'user.error.attach_unknown-error'; break;
+                case 'not_in_allowed_exts': $phrase_id = 'user.error.attach_ext-allowed'; break;
+                case 'not_allowed_exts': $phrase_id = 'user.error.attach_ext-not-allow'; break;
+            }
+            $error['error'] = $this->container->getTranslator()->phrase($phrase_id, $error);
 
-		return $this->createJsonResponse(array(array(
-			'blob_id'           => $blob->getId(),
-			'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
-			'download_url'      => $blob->getDownloadUrl(true),
-			'filename'          => $blob->getFilename(),
-			'filesize_readable' => $blob->getReadableFilesize()
-		)));
-	}
+            return $this->createJsonResponse(array($error));
+        }
 
-	public function commentFormLoginPartialAction()
-	{
-		return $this->render('UserBundle:Common:comments-login-form.html.twig');
-	}
+        if ($error) {
+            $error['error'] = $this->container->getTranslator()->phrase('user.error.attach_' . $error['error_code'], $error);
 
-	public function validateEmailAction($id, $auth)
-	{
-		$validator = EmailValidator::createFromId($id, $auth);
+            return $this->createJsonResponse(array($error));
+        }
 
-		if (!$validator) {
-			return $this->renderStandardError('@user.error.invalid_email-code', '', 404);
-		}
+        $blob = $accept->accept($file, true);
 
-		$valdating_email = $validator->getValidatingEmail();
+        return $this->createJsonResponse(array(array(
+            'blob_id'           => $blob->getId(),
+            'blob_auth_id'      => $blob->id . '-' . $blob->authcode,
+            'download_url'      => $blob->getDownloadUrl(true),
+            'filename'          => $blob->getFilename(),
+            'filesize_readable' => $blob->getReadableFilesize()
+        )));
+    }
 
-		$email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
-		if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
-			return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
-				'email' => $email_exists,
-				'person' => $validator->getPerson(),
-				'ticket_ids' => $validator->getTicketIds()
-			));
-		}
+    public function commentFormLoginPartialAction()
+    {
+        return $this->render('UserBundle:Common:comments-login-form.html.twig');
+    }
 
-		try {
-			$email = $validator->validate();
-		} catch (\OutOfBoundsException $e) {
-			if ($e->getCode() == 100) {
-				return $this->renderStandardError('@user.error.dupe_email');
-			} else {
-				throw $e;
-			}
-		}
+    public function validateEmailAction($id, $auth)
+    {
+        $validator = EmailValidator::createFromId($id, $auth);
 
-		return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
-			'email' => $email,
-			'person' => $validator->getPerson(),
-			'ticket_ids' => $validator->getTicketIds()
-		));
-	}
+        if (!$validator) {
+            return $this->renderStandardError('@user.error.invalid_email-code', '', 404);
+        }
 
-	public function validateTicketEmailAction($access_code)
-	{
-		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
-		$ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($access_code);
+        $valdating_email = $validator->getValidatingEmail();
 
-		if (!$ticket) {
-			return $this->renderStandardError('@user.error.invalid_email-code', '', 404);
-		}
+        $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
+        if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
+            return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
+                'email' => $email_exists,
+                'person' => $validator->getPerson(),
+                'ticket_ids' => $validator->getTicketIds()
+            ));
+        }
 
-		// A new email address
-		if ($ticket->person_email_validating) {
-			$validator = new EmailValidator($ticket->person_email_validating);
-			$valdating_email = $validator->getValidatingEmail();
+        try {
+            $email = $validator->validate();
+        } catch (\OutOfBoundsException $e) {
+            if ($e->getCode() == 100) {
+                return $this->renderStandardError('@user.error.dupe_email');
+            } else {
+                throw $e;
+            }
+        }
 
-			$email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
-			if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
+        return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
+            'email' => $email,
+            'person' => $validator->getPerson(),
+            'ticket_ids' => $validator->getTicketIds()
+        ));
+    }
 
-				// Unset the email on the ticket
-				$ticket->person_email_validating = null;
-				$this->em->persist($ticket);
-				$this->em->flush();
+    public function validateTicketEmailAction($access_code)
+    {
+        /** @var $ticket \Application\DeskPRO\Entity\Ticket */
+        $ticket = $this->em->getRepository('DeskPRO:Ticket')->getByAccessCode($access_code);
 
-				return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
-					'email' => $email_exists,
-					'person' => $validator->getPerson(),
-					'ticket_ids' => $validator->getTicketIds()
-				));
-			}
+        if (!$ticket) {
+            return $this->renderStandardError('@user.error.invalid_email-code', '', 404);
+        }
 
-			$email = $validator->validate();
+        // A new email address
+        if ($ticket->person_email_validating) {
+            $validator = new EmailValidator($ticket->person_email_validating);
+            $valdating_email = $validator->getValidatingEmail();
 
-		// Validating the account
-		} else {
-			$validator = new AccountValidator($ticket->person, $ticket->person_email ?: $ticket->person->getPrimaryEmailAddress());
-			$validator->validate();
+            $email_exists = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($validator->getValidatingEmail()->getEmail());
+            if ($email_exists && $email_exists->person->id != $valdating_email->person->id) {
 
-			$email = $ticket->person_email;
-		}
+                // Unset the email on the ticket
+                $ticket->person_email_validating = null;
+                $this->em->persist($ticket);
+                $this->em->flush();
 
-		return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
-			'email' => $email,
-			'person' => $validator->getPerson(),
-			'ticket_ids' => $validator->getTicketIds()
-		));
-	}
+                return $this->render('UserBundle:Profile:validate-email-exists.html.twig', array(
+                    'email' => $email_exists,
+                    'person' => $validator->getPerson(),
+                    'ticket_ids' => $validator->getTicketIds()
+                ));
+            }
 
-	public function jstellLoginAction($jstell, $security_token, $usersource_id = 0)
-	{
-		if (!$this->session->getEntity()->checkSecurityToken('jstell', $security_token)) {
-			return $this->createResponse('', 403);
-		}
+            $email = $validator->validate();
 
-		if ($this->person->isGuest()) {
-			$person_data = array(
-				'person_id' => 0
-			);
-		} else {
+        // Validating the account
+        } else {
+            $validator = new AccountValidator($ticket->person, $ticket->person_email ?: $ticket->person->getPrimaryEmailAddress());
+            $validator->validate();
 
-			$person_data = array(
-				'person_id' => $this->person->id,
-				'person_name' => $this->person->name,
-				'person_email' => $this->person->getPrimaryEmailAddress(),
-			);
+            $email = $ticket->person_email;
+        }
 
-			if ($this->session->get('auth_usersource_id')) {
-				$usersource = $this->em->getRepository('DeskPRO:Usersource')->getUsersource($this->session->get('auth_usersource_id'));
-				if ($usersource) {
-					$person_data['usersource_type']     = $usersource->source_type;
-					$person_data['usersource_title']    = $usersource->title;
+        return $this->render('UserBundle:Profile:validate-email-success.html.twig', array(
+            'email' => $email,
+            'person' => $validator->getPerson(),
+            'ticket_ids' => $validator->getTicketIds()
+        ));
+    }
 
-					if ($this->session->get('auth_usersource_display_name')) {
-						$person_data['usersource_display_name']  = $this->session->get('auth_usersource_display_name');
-					}
-					if ($this->session->get('auth_usersource_display_link')) {
-						$person_data['usersource_display_link']  = $this->session->get('auth_usersource_display_link');
-					}
-				}
-			}
+    public function jstellLoginAction($jstell, $security_token, $usersource_id = 0)
+    {
+        if (!$this->session->getEntity()->checkSecurityToken('jstell', $security_token)) {
+            return $this->createResponse('', 403);
+        }
 
-			if ($usersource_id && $this->person->usersource_assoc[$usersource_id]) {
-				$person_data = array_merge(
-					$this->person->usersource_assoc[$usersource_id]->getData(),
-					$person_data
-				);
-			}
-		}
+        if ($this->person->isGuest()) {
+            $person_data = array(
+                'person_id' => 0
+            );
+        } else {
 
-		$person_data = json_encode($person_data);
+            $person_data = array(
+                'person_id' => $this->person->id,
+                'person_name' => $this->person->name,
+                'person_email' => $this->person->getPrimaryEmailAddress(),
+            );
 
-		$html = <<<HTML
+            if ($this->session->get('auth_usersource_id')) {
+                $usersource = $this->em->getRepository('DeskPRO:Usersource')->getUsersource($this->session->get('auth_usersource_id'));
+                if ($usersource) {
+                    $person_data['usersource_type']     = $usersource->source_type;
+                    $person_data['usersource_title']    = $usersource->title;
+
+                    if ($this->session->get('auth_usersource_display_name')) {
+                        $person_data['usersource_display_name']  = $this->session->get('auth_usersource_display_name');
+                    }
+                    if ($this->session->get('auth_usersource_display_link')) {
+                        $person_data['usersource_display_link']  = $this->session->get('auth_usersource_display_link');
+                    }
+                }
+            }
+
+            if ($usersource_id && $this->person->usersource_assoc[$usersource_id]) {
+                $person_data = array_merge(
+                    $this->person->usersource_assoc[$usersource_id]->getData(),
+                    $person_data
+                );
+            }
+        }
+
+        $person_data = json_encode($person_data);
+
+        $html = <<<HTML
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html lang="en">
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-	<script type="text/javascript" charset="utf-8">
-	function load() {
-		window.opener['$jstell']($person_data);
-		window.close();
-	}
-	</script>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <script type="text/javascript" charset="utf-8">
+    public function load()
+    {
+        window.opener['$jstell']($person_data);
+        window.close();
+    }
+    </script>
 </head>
 <body onload="load()">
 </body>
 </html>
 HTML;
 
-		return $this->createResponse($html);
-	}
+        return $this->createResponse($html);
+    }
 
+    public function quickSetLanguageAction()
+    {
+        if ($return = $this->in->getString('return')) {
+            $return = preg_replace('#(\?|&)?language_id=\d+#', '', $return);
 
-	public function quickSetLanguageAction()
-	{
-		if ($return = $this->in->getString('return')) {
-			$return = preg_replace('#(\?|&)?language_id=\d+#', '', $return);
-			return $this->redirect($return);
-		}
+            return $this->redirect($return);
+        }
 
-		return $this->redirectRoute('user');
-	}
+        return $this->redirectRoute('user');
+    }
 }

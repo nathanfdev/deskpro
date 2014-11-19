@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056725 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Remove old plugin tables");
+    public function run()
+    {
+        $this->out("Remove old plugin tables");
 
-		$this->container->getDb()->exec("DROP TABLE IF EXISTS ticket_trigger_plugin_actions");
-		$this->container->getDb()->exec("DROP TABLE IF EXISTS plugin_listeners");
-		$this->container->getDb()->exec("DROP TABLE IF EXISTS widgets");
-		$this->container->getDb()->exec("DROP TABLE IF EXISTS plugins");
-	}
+        $this->container->getDb()->exec("DROP TABLE IF EXISTS ticket_trigger_plugin_actions");
+        $this->container->getDb()->exec("DROP TABLE IF EXISTS plugin_listeners");
+        $this->container->getDb()->exec("DROP TABLE IF EXISTS widgets");
+        $this->container->getDb()->exec("DROP TABLE IF EXISTS plugins");
+    }
 }

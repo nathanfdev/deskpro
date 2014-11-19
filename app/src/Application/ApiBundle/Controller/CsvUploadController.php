@@ -37,72 +37,72 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 
 class CsvUploadController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
 
-	####################################################################################################################
-	# upload
-	####################################################################################################################
+    ####################################################################################################################
+    # upload
+    ####################################################################################################################
 
-	public function uploadAction()
-	{
-		$file = $this->request->files->get('file');
+    public function uploadAction()
+    {
+        $file = $this->request->files->get('file');
 
-		/**
-		 * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
-		 */
+        /**
+         * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
+         */
 
-		$csv_upload = $this->container->getSystemService('csv_upload');
-		$options = $this->in->getArrayValue('options');
+        $csv_upload = $this->container->getSystemService('csv_upload');
+        $options = $this->in->getArrayValue('options');
 
-		$result = $csv_upload->upload($file, $options);
+        $result = $csv_upload->upload($file, $options);
 
-		return $this->createApiResponse($result);
-	}
+        return $this->createApiResponse($result);
+    }
 
-	####################################################################################################################
-	# import
-	####################################################################################################################
+    ####################################################################################################################
+    # import
+    ####################################################################################################################
 
-	public function importAction()
-	{
-		$field_maps    = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
-		$user_filename = $this->in->getString('user_filename');
-		$skip_first    = $this->in->getBool('skip_first');
-		$welcome_email = $this->in->getBool('welcome_email');
-		$filename      = $this->in->getUint('filename');
-		$options       = $this->in->getArrayValue('options');
+    public function importAction()
+    {
+        $field_maps    = $this->in->getCleanValueArray('field_maps', 'raw', 'uint');
+        $user_filename = $this->in->getString('user_filename');
+        $skip_first    = $this->in->getBool('skip_first');
+        $welcome_email = $this->in->getBool('welcome_email');
+        $filename      = $this->in->getUint('filename');
+        $options       = $this->in->getArrayValue('options');
 
-		/**
-		 * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
-		 */
+        /**
+         * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
+         */
 
-		$csv_upload = $this->container->getSystemService('csv_upload');
+        $csv_upload = $this->container->getSystemService('csv_upload');
 
-		$result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $options);
+        $result = $csv_upload->startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, $options);
 
-		return $this->createApiResponse($result);
-	}
+        return $this->createApiResponse($result);
+    }
 
-	####################################################################################################################
-	# status
-	####################################################################################################################
+    ####################################################################################################################
+    # status
+    ####################################################################################################################
 
-	public function statusAction()
-	{
-		/**
-		 * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
-		 */
+    public function statusAction()
+    {
+        /**
+         * @var \Application\DeskPRO\CsvUpload\CsvUpload $csv_upload
+         */
 
-		$csv_upload = $this->container->getSystemService('csv_upload');
+        $csv_upload = $this->container->getSystemService('csv_upload');
 
-		$result = $csv_upload->returnStatusOfImport();
+        $result = $csv_upload->returnStatusOfImport();
 
-		return $this->createApiResponse($result);
-	}
+        return $this->createApiResponse($result);
+    }
 }

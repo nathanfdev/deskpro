@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056727 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add support for password history (used with password policies)");
-		$this->execMutateSql("CREATE TABLE password_history (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, password VARCHAR(255) NOT NULL, password_scheme VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_F352144217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE password_history ADD CONSTRAINT FK_F352144217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE people ADD date_password_set DATETIME DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add support for password history (used with password policies)");
+        $this->execMutateSql("CREATE TABLE password_history (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, password VARCHAR(255) NOT NULL, password_scheme VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_F352144217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE password_history ADD CONSTRAINT FK_F352144217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE people ADD date_password_set DATETIME DEFAULT NULL");
+    }
 }

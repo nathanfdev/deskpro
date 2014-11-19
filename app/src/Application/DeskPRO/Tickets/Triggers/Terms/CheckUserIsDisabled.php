@@ -43,29 +43,30 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckUserIsDisabled extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$is_disabled = $ticket->person->is_disabled;
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $is_disabled = $ticket->person->is_disabled;
 
-		if ($is_disabled) {
-			if ($this->getTermOperator() == 'is') return true;
-			else return false;
-		} else {
-			if ($this->getTermOperator() == 'is') return false;
-			else return true;
-		}
-	}
+        if ($is_disabled) {
+            if ($this->getTermOperator() == 'is') return true;
+            else return false;
+        } else {
+            if ($this->getTermOperator() == 'is') return false;
+            else return true;
+        }
+    }
 }

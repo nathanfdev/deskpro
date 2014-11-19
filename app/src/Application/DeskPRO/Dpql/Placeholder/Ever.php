@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Dpql\Placeholder;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql;
 
 /**
@@ -42,13 +41,13 @@ use Application\DeskPRO\Dpql;
  */
 class Ever extends AbstractDateRange
 {
-	/**
-	 * Gets the date range components (printable, start, end).
-	 *
-	 * @return array
-	 */
-	protected function _getDateRange()
-	{
-		return array('ever');
-	}
+    /**
+     * Gets the date range components (printable, start, end).
+     *
+     * @return array
+     */
+    protected function _getDateRange()
+    {
+        return array('ever');
+    }
 }

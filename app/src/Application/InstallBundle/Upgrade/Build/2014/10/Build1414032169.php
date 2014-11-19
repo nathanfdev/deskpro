@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1414032169 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Brands are themeable");
-		$this->execMutateSql("ALTER TABLE brands ADD theme_id VARCHAR(256) DEFAULT NULL");
-		$this->execMutateSql("UPDATE brands SET theme_id = 'standard'");
-	}
+    public function run()
+    {
+        $this->out("Brands are themeable");
+        $this->execMutateSql("ALTER TABLE brands ADD theme_id VARCHAR(256) DEFAULT NULL");
+        $this->execMutateSql("UPDATE brands SET theme_id = 'standard'");
+    }
 }

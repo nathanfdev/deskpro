@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056705 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Recreate ref_reserve table");
-		$db->exec("DROP TABLE IF EXISTS ref_reserve");
-		$db->exec("CREATE TABLE ref_reserve (obj_type VARCHAR(50) NOT NULL, ref VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, PRIMARY KEY(obj_type, ref)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-	}
+        $this->out("Recreate ref_reserve table");
+        $db->exec("DROP TABLE IF EXISTS ref_reserve");
+        $db->exec("CREATE TABLE ref_reserve (obj_type VARCHAR(50) NOT NULL, ref VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, PRIMARY KEY(obj_type, ref)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+    }
 }

@@ -51,273 +51,275 @@ use Symfony\Component\HttpFoundation\Response;
  */
 abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
-	public function __get($prop)
-	{
-		switch ($prop) {
-			case 'em': return $this->get('doctrine.orm.entity_manager');
-			case 'db': return $this->get('database_connection');
-			case 'in': return $this->get('deskpro.core.input_reader');
-			case 'cleaner': return $this->get('deskpro.core.input_cleaner');
-			case 'settings': return $this->get('deskpro.core.settings');
-			case 'session': return $this->get('session');
-			case 'tpl': return $this->get('templating');
-			default:
-				throw new \InvalidArgumentException("Unknown property {$prop}");
-		}
-	}
+    public function __get($prop)
+    {
+        switch ($prop) {
+            case 'em': return $this->get('doctrine.orm.entity_manager');
+            case 'db': return $this->get('database_connection');
+            case 'in': return $this->get('deskpro.core.input_reader');
+            case 'cleaner': return $this->get('deskpro.core.input_cleaner');
+            case 'settings': return $this->get('deskpro.core.settings');
+            case 'session': return $this->get('session');
+            case 'tpl': return $this->get('templating');
+            default:
+                throw new \InvalidArgumentException("Unknown property {$prop}");
+        }
+    }
 
-	/**
-	 * Is this a POST request?
-	 *
-	 * @return bool
-	 */
-	public function isPostRequest()
-	{
-		return ($this->get('request')->getMethod() == 'POST');
-	}
-
-
-	/**
-	 * Checks a request token in a form
-	 *
-	 * @param string $name
-	 * @param string $field_name
-	 * @return bool
-	 */
-	public function checkRequestToken($name = '', $field_name = '_dp_security_token')
-	{
-		if (defined('DP_BYPASS_TOKEN_AUTH') && isset($_REQUEST['DP_BYPASS_TOKEN_AUTH']) && $_REQUEST['DP_BYPASS_TOKEN_AUTH'] == DP_BYPASS_TOKEN_AUTH) {
-			return true;
-		}
-
-		$header_name = "HTTP_" . str_replace('-', '_', strtoupper('X-DeskPRO-' . trim($field_name, '_-')));
-
-		if (!empty($_REQUEST[$field_name])) {
-			$in_token = $_REQUEST[$field_name];
-		} else if (!empty($_SERVER[$header_name])) {
-			$in_token = $_SERVER[$header_name];
-		} else {
-			$in_token = '';
-		}
-
-		$in_token = trim($in_token);
-
-		if (!$in_token) {
-			return false;
-		}
-
-		if (!$this->session->getEntity()->getPersonId()) {
-			if (substr($in_token, 0, 7) == 'STATIC_') {
-				$in_token = substr($in_token, 7);
-				return App::$container->checkStaticSecurityToken($name, $in_token);
-			}
-		}
-
-		return $this->session->getEntity()->checkSecurityToken($name, $in_token);
-	}
-
-
-	/**
-	 * Checks the standard request token.
-	 *
-	 * @return bool
-	 */
-	public function checkStandardRequestToken()
-	{
-		return $this->checkRequestToken('request_token', '_rt');
-	}
-
-
-	/**
-	 * Protects against double-submitted requests. If an exact form is submitted a second time, then this method
-	 * returns true.
-	 *
-	 * @param string $name
-	 * @return bool
-	 */
-	public function consumeRequest($name = '')
-	{
-		$hash = md5($name . App::getRequest()->getUri());
-		if (App::getRequest()->getMethod() == 'POST') {
-			$hash = md5($hash . serialize($_GET + $_POST));
-		}
-
-		$used = $this->session->get('consumed_tokens', array());
-		if (in_array($hash, $used)) {
-			return false;
-		}
-
-		$used[] = $hash;
-
-		while (count($used) > 100) {
-			array_shift($used);
-		}
-
-		$this->session->set('consumed_tokens', $used);
-		$this->session->save();
-
-		return true;
-	}
-
-
-	/**
-	 * Just like checkRequestToken but this shows an error for you if its bad
-	 *
-	 * @param string $name
-	 * @param string $field_name
-	 */
-	public function ensureRequestToken($name = '', $field_name = '_dp_security_token')
-	{
-		if (!$this->checkRequestToken($name, $field_name)) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('invalid_request_token');
-		}
-	}
-
-
-	/**
-	 * Just like checkRequestToken but this shows an error for you if its bad
-	 *
-	 * @param string $name
-	 * @param string $field_name
-	 */
-	public function ensureStandardRequestToken()
-	{
-		return $this->ensureRequestToken('request_token', '_rt');
-	}
-
-
-	/**
-	 * Checks a request token $token
-	 *
-	 * @param string $name
-	 * @param string $token
-	 * @return bool
-	 */
-	public function checkAuthToken($name, $token)
-	{
-		if (defined('DP_BYPASS_TOKEN_AUTH') && isset($_REQUEST['DP_BYPASS_TOKEN_AUTH']) && $_REQUEST['DP_BYPASS_TOKEN_AUTH'] == DP_BYPASS_TOKEN_AUTH) {
-			return true;
-		}
-		return $this->session->getEntity()->checkSecurityToken($name, $token);
-	}
-
-
-	/**
-	 * Just like checkAuthToken but this shows an error for you if its bad
-	 *
-	 * @param string $name
-	 * @param string $field_name
-	 */
-	public function ensureAuthToken($name, $token)
-	{
-		if (!$this->checkAuthToken($name, $token)) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('invalid_auth_token');
-		}
-	}
-
-
-	/**
-	 * Just enables 'smart view resoltion' when the at sign is used.
-	 *
-	 * When the at sign is used, the bundle and optionally the sub-directory can be inferred from the calling controller.
-	 * @list.html.twig will get SomeBundle:MyController:list.html.
-	 *
-	 * @param string $view
-	 * @param array $parameters
-	 * @param \Symfony\Component\HttpFoundation\Response $response
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function render($view, array $parameters = array(), Response $response = null)
-	{
-		if ($view[0] == '@') {
-			$m = null;
-			if (!preg_match('#(Application|Cloud)\\\\([A-Za-z0-9_\-]+)\\\\#', get_class($this), $m)) {
-				throw new \InvalidArgumentException("Cannot resolve bundle name with @ notation in `$view`");
-			}
-
-			if ($m[1] == 'Cloud') {
-				$bundle = 'Cloud' . $m[2];
-			} else {
-				$bundle = $m[2];
-			}
-
-			$c = substr_count($view, ':');
-			if ($c == 1) {
-				$pre = "$bundle:";
-			} else {
-				$controller = \Orb\Util\Strings::extractRegexMatch('#\\\\([A-Za-z0-9_\-]+)Controller$#', get_class($this), 1);
-				$pre = "$bundle:$controller:";
-			}
-
-			$view = preg_replace('#^@#', $pre, $view);
-		}
-
-		return parent::render($view, $parameters, $response);
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
-	 */
-	protected function getUserAuthSettings()
-	{
-		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
-		$auth = $this->container->getSystemService('auth_settings');
-
-		return $auth->getUserInterfaceSettings();
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
-	 */
-	protected function getAgentAuthSettings()
-	{
-		/** @var \Application\DeskPRO\Auth\AuthSettings $auth */
-		$auth = $this->container->getSystemService('auth_settings');
-
-		return $auth->getAgentInterfaceSettings();
-	}
-
-
-	/**
-	 * Returns a RedirectResponse if SSO says it needs to redirect
+    /**
+     * Is this a POST request?
      *
-	 * @param bool $has_just_logged_out
-	 * @param AuthInterfaceSettings $authInterfaceSettings
-	 * @return \Symfony\Component\HttpFoundation\RedirectResponse
-	 */
-	protected function checkAuthSystemForResponse(
-		AuthInterfaceSettings $authInterfaceSettings, $has_just_logged_out = false
-	) {
-		if ($has_just_logged_out) {
-			if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
-				return $this->redirect($url);
-			}
-		}
-
-		if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
-			if ($sso_result->isRedirectRequired()) {
-
-				$return = $this->in->getString('return');
-				$this->session->set('auth_return', $return);
-				$this->session->save();
-
-				return $this->redirect($sso_result->getRedirectUrl());
-			}
-		}
-	}
-
-	/**
-	 * @param AuthInterfaceSettings $authInterfaceSettings
-	 * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
+     * @return bool
      */
-	protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
-	{
-		if ($authInterfaceSettings->isAutoSsoEnabled()) {
-			return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
-		}
+    public function isPostRequest()
+    {
+        return ($this->get('request')->getMethod() == 'POST');
+    }
 
-		return null;
-	}
+
+    /**
+     * Checks a request token in a form
+     *
+     * @param  string $name
+     * @param  string $field_name
+     * @return bool
+     */
+    public function checkRequestToken($name = '', $field_name = '_dp_security_token')
+    {
+        if (defined('DP_BYPASS_TOKEN_AUTH') && isset($_REQUEST['DP_BYPASS_TOKEN_AUTH']) && $_REQUEST['DP_BYPASS_TOKEN_AUTH'] == DP_BYPASS_TOKEN_AUTH) {
+            return true;
+        }
+
+        $header_name = "HTTP_" . str_replace('-', '_', strtoupper('X-DeskPRO-' . trim($field_name, '_-')));
+
+        if (!empty($_REQUEST[$field_name])) {
+            $in_token = $_REQUEST[$field_name];
+        } elseif (!empty($_SERVER[$header_name])) {
+            $in_token = $_SERVER[$header_name];
+        } else {
+            $in_token = '';
+        }
+
+        $in_token = trim($in_token);
+
+        if (!$in_token) {
+            return false;
+        }
+
+        if (!$this->session->getEntity()->getPersonId()) {
+            if (substr($in_token, 0, 7) == 'STATIC_') {
+                $in_token = substr($in_token, 7);
+
+                return App::$container->checkStaticSecurityToken($name, $in_token);
+            }
+        }
+
+        return $this->session->getEntity()->checkSecurityToken($name, $in_token);
+    }
+
+
+    /**
+     * Checks the standard request token.
+     *
+     * @return bool
+     */
+    public function checkStandardRequestToken()
+    {
+        return $this->checkRequestToken('request_token', '_rt');
+    }
+
+
+    /**
+     * Protects against double-submitted requests. If an exact form is submitted a second time, then this method
+     * returns true.
+     *
+     * @param  string $name
+     * @return bool
+     */
+    public function consumeRequest($name = '')
+    {
+        $hash = md5($name . App::getRequest()->getUri());
+        if (App::getRequest()->getMethod() == 'POST') {
+            $hash = md5($hash . serialize($_GET + $_POST));
+        }
+
+        $used = $this->session->get('consumed_tokens', array());
+        if (in_array($hash, $used)) {
+            return false;
+        }
+
+        $used[] = $hash;
+
+        while (count($used) > 100) {
+            array_shift($used);
+        }
+
+        $this->session->set('consumed_tokens', $used);
+        $this->session->save();
+
+        return true;
+    }
+
+
+    /**
+     * Just like checkRequestToken but this shows an error for you if its bad
+     *
+     * @param string $name
+     * @param string $field_name
+     */
+    public function ensureRequestToken($name = '', $field_name = '_dp_security_token')
+    {
+        if (!$this->checkRequestToken($name, $field_name)) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('invalid_request_token');
+        }
+    }
+
+
+    /**
+     * Just like checkRequestToken but this shows an error for you if its bad
+     *
+     * @param string $name
+     * @param string $field_name
+     */
+    public function ensureStandardRequestToken()
+    {
+        return $this->ensureRequestToken('request_token', '_rt');
+    }
+
+
+    /**
+     * Checks a request token $token
+     *
+     * @param  string $name
+     * @param  string $token
+     * @return bool
+     */
+    public function checkAuthToken($name, $token)
+    {
+        if (defined('DP_BYPASS_TOKEN_AUTH') && isset($_REQUEST['DP_BYPASS_TOKEN_AUTH']) && $_REQUEST['DP_BYPASS_TOKEN_AUTH'] == DP_BYPASS_TOKEN_AUTH) {
+            return true;
+        }
+
+        return $this->session->getEntity()->checkSecurityToken($name, $token);
+    }
+
+
+    /**
+     * Just like checkAuthToken but this shows an error for you if its bad
+     *
+     * @param string $name
+     * @param string $field_name
+     */
+    public function ensureAuthToken($name, $token)
+    {
+        if (!$this->checkAuthToken($name, $token)) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('invalid_auth_token');
+        }
+    }
+
+
+    /**
+     * Just enables 'smart view resoltion' when the at sign is used.
+     *
+     * When the at sign is used, the bundle and optionally the sub-directory can be inferred from the calling controller.
+     * @list.html.twig will get SomeBundle:MyController:list.html.
+     *
+     * @param  string                                     $view
+     * @param  array                                      $parameters
+     * @param  \Symfony\Component\HttpFoundation\Response $response
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function render($view, array $parameters = array(), Response $response = null)
+    {
+        if ($view[0] == '@') {
+            $m = null;
+            if (!preg_match('#(Application|Cloud)\\\\([A-Za-z0-9_\-]+)\\\\#', get_class($this), $m)) {
+                throw new \InvalidArgumentException("Cannot resolve bundle name with @ notation in `$view`");
+            }
+
+            if ($m[1] == 'Cloud') {
+                $bundle = 'Cloud' . $m[2];
+            } else {
+                $bundle = $m[2];
+            }
+
+            $c = substr_count($view, ':');
+            if ($c == 1) {
+                $pre = "$bundle:";
+            } else {
+                $controller = \Orb\Util\Strings::extractRegexMatch('#\\\\([A-Za-z0-9_\-]+)Controller$#', get_class($this), 1);
+                $pre = "$bundle:$controller:";
+            }
+
+            $view = preg_replace('#^@#', $pre, $view);
+        }
+
+        return parent::render($view, $parameters, $response);
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
+     */
+    protected function getUserAuthSettings()
+    {
+        /** @var \Application\DeskPRO\Auth\AuthSettings $auth */
+        $auth = $this->container->getSystemService('auth_settings');
+
+        return $auth->getUserInterfaceSettings();
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
+     */
+    protected function getAgentAuthSettings()
+    {
+        /** @var \Application\DeskPRO\Auth\AuthSettings $auth */
+        $auth = $this->container->getSystemService('auth_settings');
+
+        return $auth->getAgentInterfaceSettings();
+    }
+
+
+    /**
+     * Returns a RedirectResponse if SSO says it needs to redirect
+     *
+     * @param  bool                                               $has_just_logged_out
+     * @param  AuthInterfaceSettings                              $authInterfaceSettings
+     * @return \Symfony\Component\HttpFoundation\RedirectResponse
+     */
+    protected function checkAuthSystemForResponse(
+        AuthInterfaceSettings $authInterfaceSettings, $has_just_logged_out = false
+    ) {
+        if ($has_just_logged_out) {
+            if ($url = $authInterfaceSettings->getLogoutRedirectUrl()) {
+                return $this->redirect($url);
+            }
+        }
+
+        if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
+            if ($sso_result->isRedirectRequired()) {
+
+                $return = $this->in->getString('return');
+                $this->session->set('auth_return', $return);
+                $this->session->save();
+
+                return $this->redirect($sso_result->getRedirectUrl());
+            }
+        }
+    }
+
+    /**
+     * @param  AuthInterfaceSettings $authInterfaceSettings
+     * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
+     */
+    protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
+    {
+        if ($authInterfaceSettings->isAutoSsoEnabled()) {
+            return $authInterfaceSettings->getSsoAuthAdapter()->authenticate();
+        }
+
+        return null;
+    }
 }

@@ -39,13 +39,13 @@ use Application\DeskPRO\People\EmailAddressValidator;
 
 class EmailAddressValidatorService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$v = new EmailAddressValidator(
-			$container->getEmailAccountManager(),
-			$container->getEm()->getRepository('DeskPRO:BanEmail')
-		);
+    public static function create(DeskproContainer $container)
+    {
+        $v = new EmailAddressValidator(
+            $container->getEmailAccountManager(),
+            $container->getEm()->getRepository('DeskPRO:BanEmail')
+        );
 
-		return $v;
-	}
+        return $v;
+    }
 }

@@ -40,44 +40,62 @@ use Application\DeskPRO\NewSettings\SettingsResolver;
 
 class PortalExtension extends \Twig_Extension
 {
-	/**
-	 * @var \Application\DeskPRO\Brand\BrandStack
-	 */
-	private $brand_stack;
+    /**
+     * @var \Application\DeskPRO\Brand\BrandStack
+     */
+    private $brand_stack;
 
-	/**
-	 * @var \Application\DeskPRO\NewSettings\SettingsResolver
-	 */
-	private $settings_resolver;
-
-
-	public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver)
-	{
-		$this->brand_stack = $brand_stack;
-		$this->settings_resolver = $settings_resolver;
-	}
-
-	public function getFunctions()
-	{
-		return array(
-			new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html')))
-		);
-	}
-
-	public function processPortalTag($tag_name, $arguments = array())
-	{
-		return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
-	}
+    /**
+     * @var \Application\DeskPRO\NewSettings\SettingsResolver
+     */
+    private $settings_resolver;
 
 
-	public function getGlobals()
-	{
-		return array('global_settings' => $this->settings_resolver->getGlobalSettings());
-	}
+    /**
+     * @param BrandStack       $brand_stack
+     * @param SettingsResolver $settings_resolver
+     */
+    public function __construct(BrandStack $brand_stack, SettingsResolver $settings_resolver)
+    {
+        $this->brand_stack = $brand_stack;
+        $this->settings_resolver = $settings_resolver;
+    }
 
-	public function getName()
-	{
-		return 'portal_extension';
-	}
+    /**
+     * @return array
+     */
+    public function getFunctions()
+    {
+        return array(
+            new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html'))),
+        );
+    }
+
+    /**
+     * @param string $tag_name
+     * @param array  $arguments
+     * @return string
+     */
+    public function processPortalTag($tag_name, $arguments = array())
+    {
+        return $this->brand_stack->getActive()->renderTag($tag_name, $arguments);
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getGlobals()
+    {
+        return array('global_settings' => $this->settings_resolver->getGlobalSettings());
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'portal_extension';
+    }
 }
- 

@@ -39,265 +39,265 @@ use Orb\Log\Logger;
 
 class InstallSchema
 {
-	/**
-	 * Plain database connection for raw queries
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * Plain database connection for raw queries
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @param array $schema
-	 */
-	protected $schema;
+    /**
+     * @param array $schema
+     */
+    protected $schema;
 
-	/**
-	 * @var \Application\DeskPRO\Log\Logger
-	 */
-	protected $logger = null;
+    /**
+     * @var \Application\DeskPRO\Log\Logger
+     */
+    protected $logger = null;
 
-	/**
-	 * @var string
-	 */
-	protected $build = 'default';
+    /**
+     * @var string
+     */
+    protected $build = 'default';
 
-	/**
-	 * @var null|array
-	 */
-	protected $done_steps = null;
+    /**
+     * @var null|array
+     */
+    protected $done_steps = null;
 
-	/**
-	 * @param \Application\DeskPRO\DBAL\Connection $db
-	 * @param array $schema
-	 */
-	public function __construct($db, array $schema = null, $build = 'default')
-	{
-		$this->db = $db;
+    /**
+     * @param \Application\DeskPRO\DBAL\Connection $db
+     * @param array                                $schema
+     */
+    public function __construct($db, array $schema = null, $build = 'default')
+    {
+        $this->db = $db;
 
-		// Generate now dynamically (dev tool)
-		if ($schema === null) {
-			$sc = new \Application\InstallBundle\Data\GenerateSchema(App::getOrm());
-			$schema = array(
-				'create' => $sc->getCreates(),
-				'alter' => $sc->getAlters(),
-				'trigger' => $sc->getTriggers()
-			);
-		}
+        // Generate now dynamically (dev tool)
+        if ($schema === null) {
+            $sc = new \Application\InstallBundle\Data\GenerateSchema(App::getOrm());
+            $schema = array(
+                'create' => $sc->getCreates(),
+                'alter' => $sc->getAlters(),
+                'trigger' => $sc->getTriggers()
+            );
+        }
 
-		$this->schema = $schema;
-		$this->build = $build;
-	}
+        $this->schema = $schema;
+        $this->build = $build;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Log\Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+    /**
+     * @param \Application\DeskPRO\Log\Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
-	protected function getLogger()
-	{
-		if ($this->logger === null) {
-			$this->logger = new \Orb\Log\Logger();
-		}
+    protected function getLogger()
+    {
+        if ($this->logger === null) {
+            $this->logger = new \Orb\Log\Logger();
+        }
 
-		return $this->logger;
-	}
+        return $this->logger;
+    }
 
-	public function countQueries()
-	{
-		return count($this->schema['create']) + count($this->schema['alter']) + count($this->schema['trigger']);
-	}
+    public function countQueries()
+    {
+        return count($this->schema['create']) + count($this->schema['alter']) + count($this->schema['trigger']);
+    }
 
-	public function hasDoneStep($id)
-	{
+    public function hasDoneStep($id)
+    {
 
-		if ($this->done_steps === null) {
-			$this->done_steps = $this->db->fetchAllKeyValue("SELECT name, data FROM install_data WHERE build = ? AND name LIKE 'buildstep_%'", array($this->build));
-		}
+        if ($this->done_steps === null) {
+            $this->done_steps = $this->db->fetchAllKeyValue("SELECT name, data FROM install_data WHERE build = ? AND name LIKE 'buildstep_%'", array($this->build));
+        }
 
-		if (isset($this->done_steps['buildstep_' . $id])) {
-			return true;
-		}
+        if (isset($this->done_steps['buildstep_' . $id])) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function markStepDone($id)
-	{
-		$this->db->insert('install_data', array('build' => $this->build, 'name' => 'buildstep_' . $id, 'data' => 1));
-		if (!is_array($this->done_steps)) {
-			$this->hasDoneStep($id);
-		}
-		$this->done_steps['buildstep_' . $id] = 1;
-	}
+    public function markStepDone($id)
+    {
+        $this->db->insert('install_data', array('build' => $this->build, 'name' => 'buildstep_' . $id, 'data' => 1));
+        if (!is_array($this->done_steps)) {
+            $this->hasDoneStep($id);
+        }
+        $this->done_steps['buildstep_' . $id] = 1;
+    }
 
-	/**
-	 * Run through all the queries
-	 *
-	 * @param bool $halt_on_error True to stop and throw an exception when an error is encountered.
-	 * @return bool True on success, false on error
-	 */
-	public function run($halt_on_error = true, $limit = 1000000, $skip = 0, $callback = null)
-	{
-		$has_error = false;
+    /**
+     * Run through all the queries
+     *
+     * @param  bool $halt_on_error True to stop and throw an exception when an error is encountered.
+     * @return bool True on success, false on error
+     */
+    public function run($halt_on_error = true, $limit = 1000000, $skip = 0, $callback = null)
+    {
+        $has_error = false;
 
-		$s_time = microtime(true);
-		$this->getLogger()->log("InstallSchema::run started " . sprintf("%.f", $s_time), Logger::DEBUG);
+        $s_time = microtime(true);
+        $this->getLogger()->log("InstallSchema::run started " . sprintf("%.f", $s_time), Logger::DEBUG);
 
-		if (!$this->schema['create']) $this->schema['create'] = array();
-		if (!$this->schema['alter']) $this->schema['alter'] = array();
+        if (!$this->schema['create']) $this->schema['create'] = array();
+        if (!$this->schema['alter']) $this->schema['alter'] = array();
 
-		if ($limit) {
-			foreach ($this->schema['create'] as $k => $sql) {
+        if ($limit) {
+            foreach ($this->schema['create'] as $k => $sql) {
 
-				if ($skip) {
-					$skip--;
-					continue;
-				}
+                if ($skip) {
+                    $skip--;
+                    continue;
+                }
 
-				$step_id = "query_table_$k";
-				if ($this->hasDoneStep($step_id)) {
-					$this->getLogger()->log("[QUERY:TABLE:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
-					if ($callback) $callback('table', 'skip', $sql, $k);
-					$limit--;
-					if (!$limit) {
-						break;
-					}
-					continue;
-				}
+                $step_id = "query_table_$k";
+                if ($this->hasDoneStep($step_id)) {
+                    $this->getLogger()->log("[QUERY:TABLE:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+                    if ($callback) $callback('table', 'skip', $sql, $k);
+                    $limit--;
+                    if (!$limit) {
+                        break;
+                    }
+                    continue;
+                }
 
-				$this->getLogger()->log("[QUERY:TABLE:$k] $sql", Logger::DEBUG, array('sql' => $sql));
+                $this->getLogger()->log("[QUERY:TABLE:$k] $sql", Logger::DEBUG, array('sql' => $sql));
 
-				try {
-					$time_start = microtime(true);
-					$this->db->exec($sql);
-					$time_end = microtime(true);
+                try {
+                    $time_start = microtime(true);
+                    $this->db->exec($sql);
+                    $time_end = microtime(true);
 
-					$this->markStepDone($step_id);
-					if ($callback) $callback('table', 'done', $sql, $k, $time_end-$time_start);
-				} catch (\Exception $e) {
-					$has_error = true;
-					if (strlen($sql) > 30) {
-						$sub = substr($sql, 0, 30) . '...';
-					} else {
-						$sub = $sql;
-					}
-					$this->getLogger()->log("[QUERY:TABLE:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
-					if ($callback) $callback('table', 'error', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
-					if ($halt_on_error) {
-						throw $e;
-					}
-				}
+                    $this->markStepDone($step_id);
+                    if ($callback) $callback('table', 'done', $sql, $k, $time_end-$time_start);
+                } catch (\Exception $e) {
+                    $has_error = true;
+                    if (strlen($sql) > 30) {
+                        $sub = substr($sql, 0, 30) . '...';
+                    } else {
+                        $sub = $sql;
+                    }
+                    $this->getLogger()->log("[QUERY:TABLE:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+                    if ($callback) $callback('table', 'error', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
+                    if ($halt_on_error) {
+                        throw $e;
+                    }
+                }
 
-				$limit--;
-				if (!$limit) {
-					break;
-				}
-			}
-		}
+                $limit--;
+                if (!$limit) {
+                    break;
+                }
+            }
+        }
 
-		if ($limit) {
-			foreach ($this->schema['alter'] as $k => $sql) {
-				if ($skip) {
-					$skip--;
-					continue;
-				}
+        if ($limit) {
+            foreach ($this->schema['alter'] as $k => $sql) {
+                if ($skip) {
+                    $skip--;
+                    continue;
+                }
 
-				$step_id = "query_alter_$k";
-				if ($this->hasDoneStep($step_id)) {
-					$this->getLogger()->log("[QUERY:ALTER:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
-					if ($callback) $callback('alter', 'skip', $sql, $k);
-					$limit--;
-					if (!$limit) {
-						break;
-					}
-					continue;
-				}
+                $step_id = "query_alter_$k";
+                if ($this->hasDoneStep($step_id)) {
+                    $this->getLogger()->log("[QUERY:ALTER:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+                    if ($callback) $callback('alter', 'skip', $sql, $k);
+                    $limit--;
+                    if (!$limit) {
+                        break;
+                    }
+                    continue;
+                }
 
-				$this->getLogger()->log("[QUERY:ALTER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
+                $this->getLogger()->log("[QUERY:ALTER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
 
-				try {
-					$time_start = microtime(true);
-					$this->db->exec($sql);
-					$time_end = microtime(true);
+                try {
+                    $time_start = microtime(true);
+                    $this->db->exec($sql);
+                    $time_end = microtime(true);
 
-					$this->markStepDone($step_id);
-					if ($callback) $callback('alter', 'done', $sql, $k, $time_end-$time_start);
-				} catch (\Exception $e) {
-					$has_error = true;
-					if (strlen($sql) > 30) {
-						$sub = substr($sql, 0, 30) . '...';
-					} else {
-						$sub = $sql;
-					}
-					$this->getLogger()->log("[QUERY:ALTER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
-					if ($callback) $callback('alter', 'fail', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
-					if ($halt_on_error) {
-						throw $e;
-					}
-				}
+                    $this->markStepDone($step_id);
+                    if ($callback) $callback('alter', 'done', $sql, $k, $time_end-$time_start);
+                } catch (\Exception $e) {
+                    $has_error = true;
+                    if (strlen($sql) > 30) {
+                        $sub = substr($sql, 0, 30) . '...';
+                    } else {
+                        $sub = $sql;
+                    }
+                    $this->getLogger()->log("[QUERY:ALTER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+                    if ($callback) $callback('alter', 'fail', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
+                    if ($halt_on_error) {
+                        throw $e;
+                    }
+                }
 
-				$limit--;
-				if (!$limit) {
-					break;
-				}
-			}
-		}
+                $limit--;
+                if (!$limit) {
+                    break;
+                }
+            }
+        }
 
-		if ($limit && isset($this->schema['trigger'])) {
-			foreach ($this->schema['trigger'] as $k => $sql) {
-				if ($skip) {
-					$skip--;
-					continue;
-				}
+        if ($limit && isset($this->schema['trigger'])) {
+            foreach ($this->schema['trigger'] as $k => $sql) {
+                if ($skip) {
+                    $skip--;
+                    continue;
+                }
 
-				$step_id = "query_triger_$k";
-				if ($this->hasDoneStep($step_id)) {
-					$this->getLogger()->log("[QUERY:TRIGGER:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
-					if ($callback) $callback('trigger', 'skip', $sql, $k);
-					$limit--;
-					if (!$limit) {
-						break;
-					}
-					continue;
-				}
+                $step_id = "query_triger_$k";
+                if ($this->hasDoneStep($step_id)) {
+                    $this->getLogger()->log("[QUERY:TRIGGER:$k] SKIPPED $sql", Logger::DEBUG, array('skipped' => true));
+                    if ($callback) $callback('trigger', 'skip', $sql, $k);
+                    $limit--;
+                    if (!$limit) {
+                        break;
+                    }
+                    continue;
+                }
 
-				$this->getLogger()->log("[QUERY:TRIGGER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
+                $this->getLogger()->log("[QUERY:TRIGGER:$k] $sql", Logger::DEBUG, array('sql' => $sql));
 
-				try {
-					$this->db->exec($sql);
-					$this->markStepDone($step_id);
-					if ($callback) $callback('trigger', 'done', $sql, $k);
-				} catch (\Exception $e) {
-					$has_error = true;
-					if (strlen($sql) > 30) {
-						$sub = substr($sql, 0, 30) . '...';
-					} else {
-						$sub = $sql;
-					}
-					$this->getLogger()->log("[QUERY:TRIGGER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
-					if ($callback) $callback('trigger', 'error', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
-					if ($halt_on_error) {
-						throw $e;
-					}
-				}
+                try {
+                    $this->db->exec($sql);
+                    $this->markStepDone($step_id);
+                    if ($callback) $callback('trigger', 'done', $sql, $k);
+                } catch (\Exception $e) {
+                    $has_error = true;
+                    if (strlen($sql) > 30) {
+                        $sub = substr($sql, 0, 30) . '...';
+                    } else {
+                        $sub = $sql;
+                    }
+                    $this->getLogger()->log("[QUERY:TRIGGER:$k] FAILED: {$e->getMessage()} in query: $sub", Logger::CRIT, array('type' => 'alter', 'sql' => $sql, 'exception' => $e));
+                    if ($callback) $callback('trigger', 'error', $sql, $k, $e->getCode() . ' ' . $e->getMessage());
+                    if ($halt_on_error) {
+                        throw $e;
+                    }
+                }
 
-				$limit--;
-				if (!$limit) {
-					break;
-				}
-			}
-		}
+                $limit--;
+                if (!$limit) {
+                    break;
+                }
+            }
+        }
 
-		$e_time = microtime(true);
-		$this->getLogger()->log("InstallSchema::run finished " . sprintf("%.f (took %.fs)", $e_time, $e_time - $s_time), Logger::DEBUG);
+        $e_time = microtime(true);
+        $this->getLogger()->log("InstallSchema::run finished " . sprintf("%.f (took %.fs)", $e_time, $e_time - $s_time), Logger::DEBUG);
 
-		if ($has_error) {
-			return false;
-		}
+        if ($has_error) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

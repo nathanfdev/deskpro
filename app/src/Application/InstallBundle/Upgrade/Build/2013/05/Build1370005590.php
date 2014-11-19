@@ -36,14 +36,14 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1370005590 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets_messages_translated table");
-		$this->execMutateSql("CREATE TABLE tickets_messages_translated (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, message_id INT DEFAULT NULL, date_created DATETIME NOT NULL, from_lang_code VARCHAR(80) NOT NULL, lang_code VARCHAR(80) NOT NULL, message LONGTEXT NOT NULL, INDEX IDX_EDCD3BB3700047D2 (ticket_id), INDEX IDX_EDCD3BB3537A1329 (message_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE tickets_messages_translated ADD CONSTRAINT FK_EDCD3BB3700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE tickets_messages_translated ADD CONSTRAINT FK_EDCD3BB3537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
+    public function run()
+    {
+        $this->out("Add tickets_messages_translated table");
+        $this->execMutateSql("CREATE TABLE tickets_messages_translated (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, message_id INT DEFAULT NULL, date_created DATETIME NOT NULL, from_lang_code VARCHAR(80) NOT NULL, lang_code VARCHAR(80) NOT NULL, message LONGTEXT NOT NULL, INDEX IDX_EDCD3BB3700047D2 (ticket_id), INDEX IDX_EDCD3BB3537A1329 (message_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE tickets_messages_translated ADD CONSTRAINT FK_EDCD3BB3700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE tickets_messages_translated ADD CONSTRAINT FK_EDCD3BB3537A1329 FOREIGN KEY (message_id) REFERENCES tickets_messages (id) ON DELETE CASCADE");
 
-		$this->out("Add tickets_messages.message_translated_id and tickets_messages.lang_code");
-		$this->execMutateSql("ALTER TABLE tickets_messages ADD message_translated_id INT DEFAULT NULL, ADD lang_code VARCHAR(80) DEFAULT NULL, ADD geo_country VARCHAR(10) DEFAULT NULL, ADD CONSTRAINT FK_3A9962E2251FB291 FOREIGN KEY (message_translated_id) REFERENCES tickets_messages_translated (id) ON DELETE SET NULL, ADD INDEX IDX_3A9962E2251FB291 (message_translated_id)");
-	}
+        $this->out("Add tickets_messages.message_translated_id and tickets_messages.lang_code");
+        $this->execMutateSql("ALTER TABLE tickets_messages ADD message_translated_id INT DEFAULT NULL, ADD lang_code VARCHAR(80) DEFAULT NULL, ADD geo_country VARCHAR(10) DEFAULT NULL, ADD CONSTRAINT FK_3A9962E2251FB291 FOREIGN KEY (message_translated_id) REFERENCES tickets_messages_translated (id) ON DELETE SET NULL, ADD INDEX IDX_3A9962E2251FB291 (message_translated_id)");
+    }
 }

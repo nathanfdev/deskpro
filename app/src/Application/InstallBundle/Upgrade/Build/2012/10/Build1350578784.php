@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1350578784 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add ticket_filter_subscriptions.email_leave and ticket_filter_subscriptions.alert_leave");
-		$this->execMutateSql("ALTER TABLE ticket_filter_subscriptions ADD email_leave TINYINT(1) NOT NULL, ADD alert_leave TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add ticket_filter_subscriptions.email_leave and ticket_filter_subscriptions.alert_leave");
+        $this->execMutateSql("ALTER TABLE ticket_filter_subscriptions ADD email_leave TINYINT(1) NOT NULL, ADD alert_leave TINYINT(1) NOT NULL");
+    }
 }

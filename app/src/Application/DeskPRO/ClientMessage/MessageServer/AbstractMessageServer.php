@@ -45,33 +45,29 @@ use Application\DeskPRO\Entity;
  */
 abstract class AbstractMessageServer
 {
-	public function __construct(array $options)
-	{
-		$event_dispatcher = App::get('event_dispatcher');
-		$event_dispatcher->addListener('DeskPRO_onNewClientMessage', $this);
+    public function __construct(array $options)
+    {
+        $event_dispatcher = App::get('event_dispatcher');
+        $event_dispatcher->addListener('DeskPRO_onNewClientMessage', $this);
 
-		$this->init($options);
-	}
+        $this->init($options);
+    }
 
-	protected function init(array $options)
-	{
-		// hook for children
-	}
+    protected function init(array $options)
+    {
+        // hook for children
+    }
 
+    public function DeskPRO_onNewClientMessage(Event $event)
+    {
+        $this->handleNewMessage($event->getClientMessage());
+    }
 
-
-	public function DeskPRO_onNewClientMessage(Event $event)
-	{
-		$this->handleNewMessage($event->getClientMessage());
-	}
-
-
-
-	/**
-	 * Handle a new message
-	 *
-	 * @param ClientMessage $message
-	 * @return mixed
-	 */
-	abstract function handleNewMessage(Entity\ClientMessage $message);
+    /**
+     * Handle a new message
+     *
+     * @param  ClientMessage $message
+     * @return mixed
+     */
+    abstract public function handleNewMessage(Entity\ClientMessage $message);
 }

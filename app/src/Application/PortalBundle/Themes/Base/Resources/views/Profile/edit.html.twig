@@ -1,172 +1,172 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-	<div class="column-full">
-		<!-- Header -->
-		<div class="column-full">
-			<div>
-				<header class="section-header">
-					<h1>Your Profile</h1>
-				</header>
-			</div>
-		</div>
+    <div class="column-full">
+        <!-- Header -->
+        <div class="column-full">
+            <div>
+                <header class="section-header">
+                    <h1>Your Profile</h1>
+                </header>
+            </div>
+        </div>
 
-		<!-- Edit Tabs -->
-		<div class="column-full">
-			<div>
-				<nav class="tabs secondary-tabs">
-					<ul>
-						<li class="tab-active">
-							<a href="#">
-								<div>
-									<span class="title">Profile Options</span></div>
+        <!-- Edit Tabs -->
+        <div class="column-full">
+            <div>
+                <nav class="tabs secondary-tabs">
+                    <ul>
+                        <li class="tab-active">
+                            <a href="#">
+                                <div>
+                                    <span class="title">Profile Options</span></div>
 
-							</a>
-						</li>
+                            </a>
+                        </li>
 
-						<li class="tab-inactive">
-							<a href="#">
-								<div>
-									<span class="title">Email</span>
-								</div>
-							</a>
-						</li>
+                        <li class="tab-inactive">
+                            <a href="#">
+                                <div>
+                                    <span class="title">Email</span>
+                                </div>
+                            </a>
+                        </li>
 
-						<li class="tab-inactive">
-							<a href="#">
-								<div>
-									<span class="title">Social Media</span>
-								</div>
-							</a>
-						</li>
-					</ul>
-				</nav>
-			</div>
-		</div>
+                        <li class="tab-inactive">
+                            <a href="#">
+                                <div>
+                                    <span class="title">Social Media</span>
+                                </div>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+            </div>
+        </div>
 
-		<!-- Base Form -->
-		<div class="column-full">
-			<div>
-				<form class="form-ticket">
-
-
-					<div class="column-half">
-						<div class="bucket">
-							<label class="title">Name:</label>
-							<input type="text" placeholder="Your name (required)">
-						</div>
-					</div>
-
-					<div class="column-half omega">
-						<div class="bucket">
-							<label class="title">Update your photo:</label>
-							<button class="upload-avatar"><img src="{{ asset('web/portal/base/img/avatar.png') }}" alt="AVATAR">Upload an image
-							</button>
-						</div>
-					</div>
+        <!-- Base Form -->
+        <div class="column-full">
+            <div>
+                <form class="form-ticket">
 
 
-					<div class="row"></div>
+                    <div class="column-half">
+                        <div class="bucket">
+                            <label class="title">Name:</label>
+                            <input type="text" placeholder="Your name (required)">
+                        </div>
+                    </div>
 
-					<div class="column-half">
-						<div class="bucket">
-							<div class="form-meta form-meta-grey"><a href="#">Add another email</a></div>
-							<label class="title">Email:</label>
-							<input type="text" class="email" value="dennis.schipper@deskpro.com">
-						</div>
-					</div>
-
-					<div class="column-half omega">
-						<div class="bucket">
-							<div class="title">Password:</div>
-							<a href="#" class="button">Update your password</a>
-						</div>
-					</div>
-
-					<div class="row"></div>
-
-					<div class="column-half">
-						<div class="bucket">
-							<div class="form-meta form-meta-grey"><a href="#">Validate again</a> - <a
-									href="#">Remove</a></div>
-							<label class="title">Alternate email:</label>
-							<input type="text" class="email" value="alternate-email@deskpro.com">
-						</div>
-					</div>
-
-					<div class="row"></div>
-
-					<div class="column-half">
-						<div class="bucket">
-							<label class="title">Your time zone</label>
-
-							<div class="multiselect default">
-								<ul class="first-level">
-									<li>
-										<a href="#">Europe / London<i class="fa fa-caret-down"></i></a>
-									</li>
-								</ul>
-							</div>
-						</div>
-					</div>
-
-					<div class="row"></div>
-
-					<div class="column-half">
-						<div class="bucket">
-							<button class="button">Submit Ticket</button>
-						</div>
-					</div>
+                    <div class="column-half omega">
+                        <div class="bucket">
+                            <label class="title">Update your photo:</label>
+                            <button class="upload-avatar"><img src="{{ asset('web/portal/base/img/avatar.png') }}" alt="AVATAR">Upload an image
+                            </button>
+                        </div>
+                    </div>
 
 
-				</form>
-			</div>
-		</div>
+                    <div class="row"></div>
 
-		<!-- Password Form Form -->
-		<div class="column-full">
-			<div>
-				<form class="form-ticket">
+                    <div class="column-half">
+                        <div class="bucket">
+                            <div class="form-meta form-meta-grey"><a href="#">Add another email</a></div>
+                            <label class="title">Email:</label>
+                            <input type="text" class="email" value="dennis.schipper@deskpro.com">
+                        </div>
+                    </div>
 
-					<div class="column-half">
-						<div class="bucket">
-							<label class="title">Current Password:</label>
-							<input type="password" placeholder="Your current password">
-						</div>
-					</div>
+                    <div class="column-half omega">
+                        <div class="bucket">
+                            <div class="title">Password:</div>
+                            <a href="#" class="button">Update your password</a>
+                        </div>
+                    </div>
 
-					<div class="row"></div>
+                    <div class="row"></div>
 
-					<div class="column-half">
-						<div class="bucket">
-							<label class="title">New password:</label>
-							<input type="password" placeholder="Your new password">
-						</div>
-					</div>
+                    <div class="column-half">
+                        <div class="bucket">
+                            <div class="form-meta form-meta-grey"><a href="#">Validate again</a> - <a
+                                    href="#">Remove</a></div>
+                            <label class="title">Alternate email:</label>
+                            <input type="text" class="email" value="alternate-email@deskpro.com">
+                        </div>
+                    </div>
+
+                    <div class="row"></div>
+
+                    <div class="column-half">
+                        <div class="bucket">
+                            <label class="title">Your time zone</label>
+
+                            <div class="multiselect default">
+                                <ul class="first-level">
+                                    <li>
+                                        <a href="#">Europe / London<i class="fa fa-caret-down"></i></a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row"></div>
+
+                    <div class="column-half">
+                        <div class="bucket">
+                            <button class="button">Submit Ticket</button>
+                        </div>
+                    </div>
 
 
-					<div class="row"></div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Password Form Form -->
+        <div class="column-full">
+            <div>
+                <form class="form-ticket">
+
+                    <div class="column-half">
+                        <div class="bucket">
+                            <label class="title">Current Password:</label>
+                            <input type="password" placeholder="Your current password">
+                        </div>
+                    </div>
+
+                    <div class="row"></div>
+
+                    <div class="column-half">
+                        <div class="bucket">
+                            <label class="title">New password:</label>
+                            <input type="password" placeholder="Your new password">
+                        </div>
+                    </div>
 
 
-					<div class="column-half">
-						<div class="bucket">
-							<label class="title">Repeat your new password:</label>
-							<input type="password" placeholder="Repeat">
-						</div>
-					</div>
-
-					<div class="row"></div>
-
-					<div class="column-half">
-						<div class="bucket">
-							<button class="button">Update password</button>
-						</div>
-					</div>
+                    <div class="row"></div>
 
 
-				</form>
-			</div>
-		</div>
+                    <div class="column-half">
+                        <div class="bucket">
+                            <label class="title">Repeat your new password:</label>
+                            <input type="password" placeholder="Repeat">
+                        </div>
+                    </div>
 
-	</div>
+                    <div class="row"></div>
+
+                    <div class="column-half">
+                        <div class="bucket">
+                            <button class="button">Update password</button>
+                        </div>
+                    </div>
+
+
+                </form>
+            </div>
+        </div>
+
+    </div>
 {% endblock inner_content %}

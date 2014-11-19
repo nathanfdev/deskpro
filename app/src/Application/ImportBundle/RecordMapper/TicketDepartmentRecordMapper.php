@@ -35,19 +35,18 @@ use Doctrine\DBAL\Connection;
 
 class TicketDepartmentRecordMapper extends CommonRecordMapper
 {
-	public function __construct(Connection $db)
-	{
-		parent::__construct($db, 'departments', 'title');
-	}
+    public function __construct(Connection $db)
+    {
+        parent::__construct($db, 'departments', 'title');
+    }
 
-
-	protected function getDbRecords()
-	{
-		return $this->db->fetchAll("
-			SELECT *
-			FROM {$this->table}
-			WHERE is_tickets_enabled = 1
-			ORDER BY display_order ASC
-		");
-	}
+    protected function getDbRecords()
+    {
+        return $this->db->fetchAll("
+            SELECT *
+            FROM {$this->table}
+            WHERE is_tickets_enabled = 1
+            ORDER BY display_order ASC
+        ");
+    }
 }

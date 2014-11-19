@@ -1,15 +1,13 @@
-<div class="large-title clearfix"><h1>Knowledgebase</h1></div>
-
 {% for cat in cats %}
-	<div class="column-half{% if loop.index0 % 2 == 1 %} omega{% endif %}">
-		<article class="article-categories">
-			<header>
-				<h1>
-					<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ cat.title }} ({{ cat.articles|length }})</h1>
-				<hr>
-			</header>
+    <div class="column-half{% if loop.index0 % 2 == 1 %} omega{% endif %}">
+        <article class="article-categories">
+            <header>
+                <h1>
+                    <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ cat.title }} ({{ cat.articles|length }})</h1>
+                <hr>
+            </header>
 
-			{{ kb_articles_forcat({'category':cat.id,'include_subcategories': true}|merge(articles_options)) }}
-		</article>
-	</div>
+            {{ kb_articles_forcat({'category':cat.id,'include_subcategories': true}|merge(articles_options)) }}
+        </article>
+    </div>
 {% endfor %}

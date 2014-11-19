@@ -44,310 +44,311 @@ use Application\DeskPRO\TicketLayout\LayoutFieldFilter;
 
 class TicketLayoutsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# get
-	####################################################################################################################
+    ####################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction($dep_id = 0)
-	{
-		$is_default = false;
-		$ticket_layout = null;
+    public function getAction($dep_id = 0)
+    {
+        $is_default = false;
+        $ticket_layout = null;
 
-		if ($dep_id) {
-			$dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
-			if (!$dep) {
-				throw $this->createNotFoundException();
-			}
+        if ($dep_id) {
+            $dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
+            if (!$dep) {
+                throw $this->createNotFoundException();
+            }
 
-			$ticket_layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => $dep));
-		}
+            $ticket_layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => $dep));
+        }
 
-		if (!$ticket_layout) {
-			$is_default = true;
-			$ticket_layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => null));
-		}
+        if (!$ticket_layout) {
+            $is_default = true;
+            $ticket_layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => null));
+        }
 
-		if (!$ticket_layout) {
-			$is_default = true;
-			$ticket_layout = new TicketLayout(null);
-		}
+        if (!$ticket_layout) {
+            $is_default = true;
+            $ticket_layout = new TicketLayout(null);
+        }
 
-		$filter = new LayoutFieldFilter(
-			$this->container->getTicketFieldManager(),
-			$this->container->getPersonFieldManager()
-		);
-		$filter->filterInvalid($ticket_layout->user_layout);
-		$filter->filterInvalid($ticket_layout->agent_layout);
+        $filter = new LayoutFieldFilter(
+            $this->container->getTicketFieldManager(),
+            $this->container->getPersonFieldManager()
+        );
+        $filter->filterInvalid($ticket_layout->user_layout);
+        $filter->filterInvalid($ticket_layout->agent_layout);
 
-		return $this->createApiResponse(array(
-			'layout'     => array(
-				'user'  => $ticket_layout->user_layout->exportToArray(),
-				'agent' => $ticket_layout->agent_layout->exportToArray(),
-			),
-			'is_default' => $is_default
-		));
-	}
-
-
-	####################################################################################################################
-	# stats
-	####################################################################################################################
-
-	public function getLayoutStatsAction()
-	{
-		$deps_with_layouts = $this->db->fetchAllCol("
-			SELECT department_id
-			FROM ticket_layouts
-			WHERE department_id IS NOT NULL
-		");
-		if ($deps_with_layouts) {
-			$deps_with_layouts = array_fill_keys($deps_with_layouts, true);
-		}
-
-		$data = array('default' => array(), 'custom' => array());
-
-		/** @var \Application\DeskPRO\Departments\TicketDepartments $ticket_deps */
-		$ticket_deps = $this->container->getSystemService('ticket_departments');
-
-		foreach ($ticket_deps->getAll() as $dep) {
-			if (isset($deps_with_layouts[$dep->id])) {
-				$data['custom'][] = $dep->toApiData();
-			} else {
-				$data['default'][] = $dep->toApiData();
-			}
-		}
-
-		return $this->createApiResponse(array(
-			'layout_info'   => $data,
-			'count_custom'  => count($data['custom']),
-			'count_default' => count($data['default']),
-		));
-	}
+        return $this->createApiResponse(array(
+            'layout'     => array(
+                'user'  => $ticket_layout->user_layout->exportToArray(),
+                'agent' => $ticket_layout->agent_layout->exportToArray(),
+            ),
+            'is_default' => $is_default
+        ));
+    }
 
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ####################################################################################################################
+    # stats
+    ####################################################################################################################
 
-	public function saveAction($dep_id = 0)
-	{
-		if ($dep_id) {
-			$dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
-			if (!$dep) {
-				throw $this->createNotFoundException();
-			}
+    public function getLayoutStatsAction()
+    {
+        $deps_with_layouts = $this->db->fetchAllCol("
+            SELECT department_id
+            FROM ticket_layouts
+            WHERE department_id IS NOT NULL
+        ");
+        if ($deps_with_layouts) {
+            $deps_with_layouts = array_fill_keys($deps_with_layouts, true);
+        }
 
-			$layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => $dep));
-		} else {
-			$dep = null;
-			$layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => null));
-		}
+        $data = array('default' => array(), 'custom' => array());
 
-		if (!$layout) {
-			$layout = new TicketLayout($dep);
-		}
+        /** @var \Application\DeskPRO\Departments\TicketDepartments $ticket_deps */
+        $ticket_deps = $this->container->getSystemService('ticket_departments');
 
-		$user_layout  = new Layout();
-		$agent_layout = new Layout();
+        foreach ($ticket_deps->getAll() as $dep) {
+            if (isset($deps_with_layouts[$dep->id])) {
+                $data['custom'][] = $dep->toApiData();
+            } else {
+                $data['default'][] = $dep->toApiData();
+            }
+        }
 
-		$layout_user_array  = $this->in->getArrayValue('layout.user');
-		$layout_agent_array = $this->in->getArrayValue('layout.agent');
-
-		$fn_order = function($a, $b) {
-			$a_o = isset($a['display_order']) ? $a['display_order'] : 0;
-			$b_o = isset($b['display_order']) ? $b['display_order'] : 0;
-
-			if ($a_o == $b_o) return 0;
-			return $a_o < $b_o ? -1 : 1;
-		};
-
-		usort($layout_user_array, $fn_order);
-		usort($layout_agent_array, $fn_order);
-
-		foreach ($layout_user_array as $field_info) {
-			$field = new LayoutField($field_info['field_type'], $field_info['field_id'] ?: null);
-			$field->setOptionsFromArray($field_info['options']);
-			$user_layout->add($field);
-		}
-		foreach ($layout_agent_array as $field_info) {
-			$field = new LayoutField($field_info['field_type'], $field_info['field_id'] ?: null);
-			$field->setOptionsFromArray($field_info['options']);
-			$agent_layout->add($field);
-		}
-
-		$layout->user_layout  = $user_layout;
-		$layout->agent_layout = $agent_layout;
-
-		$this->em->persist($layout);
-		$this->em->flush();
-
-		// Sanity check
-		if ($layout->department) {
-			$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?", array($layout->department->id, $layout->id));
-		} else {
-			$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?", array($layout->id));
-		}
-
-		return $this->createSuccessResponse();
-	}
+        return $this->createApiResponse(array(
+            'layout_info'   => $data,
+            'count_custom'  => count($data['custom']),
+            'count_default' => count($data['default']),
+        ));
+    }
 
 
-	####################################################################################################################
-	# delete
-	####################################################################################################################
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-	public function deleteAction($dep_id)
-	{
-		$dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
-		if (!$dep) {
-			throw $this->createNotFoundException();
-		}
+    public function saveAction($dep_id = 0)
+    {
+        if ($dep_id) {
+            $dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
+            if (!$dep) {
+                throw $this->createNotFoundException();
+            }
 
-		$this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ?", array($dep->id));
+            $layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => $dep));
+        } else {
+            $dep = null;
+            $layout = $this->em->getRepository('DeskPRO:TicketLayout')->findOneBy(array('department' => null));
+        }
 
-		return $this->createSuccessResponse();
-	}
+        if (!$layout) {
+            $layout = new TicketLayout($dep);
+        }
+
+        $user_layout  = new Layout();
+        $agent_layout = new Layout();
+
+        $layout_user_array  = $this->in->getArrayValue('layout.user');
+        $layout_agent_array = $this->in->getArrayValue('layout.agent');
+
+        $fn_order = function ($a, $b) {
+            $a_o = isset($a['display_order']) ? $a['display_order'] : 0;
+            $b_o = isset($b['display_order']) ? $b['display_order'] : 0;
+
+            if ($a_o == $b_o) return 0;
+            return $a_o < $b_o ? -1 : 1;
+        };
+
+        usort($layout_user_array, $fn_order);
+        usort($layout_agent_array, $fn_order);
+
+        foreach ($layout_user_array as $field_info) {
+            $field = new LayoutField($field_info['field_type'], $field_info['field_id'] ?: null);
+            $field->setOptionsFromArray($field_info['options']);
+            $user_layout->add($field);
+        }
+        foreach ($layout_agent_array as $field_info) {
+            $field = new LayoutField($field_info['field_type'], $field_info['field_id'] ?: null);
+            $field->setOptionsFromArray($field_info['options']);
+            $agent_layout->add($field);
+        }
+
+        $layout->user_layout  = $user_layout;
+        $layout->agent_layout = $agent_layout;
+
+        $this->em->persist($layout);
+        $this->em->flush();
+
+        // Sanity check
+        if ($layout->department) {
+            $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ? AND id != ?", array($layout->department->id, $layout->id));
+        } else {
+            $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id IS NULL AND id != ?", array($layout->id));
+        }
+
+        return $this->createSuccessResponse();
+    }
 
 
-	####################################################################################################################
-	# get-field-status
-	####################################################################################################################
+    ####################################################################################################################
+    # delete
+    ####################################################################################################################
 
-	public function getFieldStatusAction($field_id)
-	{
-		$dm = $this->getContainer()->getTicketDepartments();
-		$lm = $this->getContainer()->getTicketLayoutManager();
+    public function deleteAction($dep_id)
+    {
+        $dep = $this->container->getSystemService('ticket_departments')->getById($dep_id);
+        if (!$dep) {
+            throw $this->createNotFoundException();
+        }
 
-		$agent_status = array();
-		$user_status  = array();
+        $this->db->executeUpdate("DELETE FROM ticket_layouts WHERE department_id = ?", array($dep->id));
 
-		foreach ($lm->getAgentLayouts() as $id => $layout) {
-			$dep = null;
-			if ($id) {
-				$dep = $dm->getById($id);
-				if (!$dep) continue;
-				$dep = $dep->toApiData();
-			}
-			$agent_status[$id] = array(
-				'department' => $dep,
-				'enabled' => $layout->has($field_id)
-			);
-		}
-		foreach ($lm->getUserLayouts() as $id => $layout) {
-			$dep = null;
-			if ($id) {
-				$dep = $dm->getById($id);
-				if (!$dep) continue;
-				$dep = $dep->toApiData();
-			}
-			$user_status[$id] = array(
-				'department' => $dep,
-				'enabled' => $layout->has($field_id)
-			);
-		}
+        return $this->createSuccessResponse();
+    }
 
-		$sort_fn = function($a, $b) {
-			$ao = $a['department'] ? $a['department']['display_order'] : -1000;
-			$bo = $b['department'] ? $b['department']['display_order'] : -1000;
 
-			if ($ao == $bo) return 0;
-			return $ao < $bo ? -1 : 1;
-		};
-		uasort($agent_status, $sort_fn);
-		uasort($user_status, $sort_fn);
+    ####################################################################################################################
+    # get-field-status
+    ####################################################################################################################
 
-		return $this->createApiResponse(array(
-			'agent_layouts' => $agent_status,
-			'user_layouts'  => $user_status
-		));
-	}
+    public function getFieldStatusAction($field_id)
+    {
+        $dm = $this->getContainer()->getTicketDepartments();
+        $lm = $this->getContainer()->getTicketLayoutManager();
 
-	####################################################################################################################
-	# save-field-status
-	####################################################################################################################
+        $agent_status = array();
+        $user_status  = array();
 
-	public function saveFieldStatusAction($field_id)
-	{
-		$enable_user_layouts  = $this->in->getArrayOfUInts('enable_user_layouts');
-		$enable_agent_layouts = $this->in->getArrayOfUInts('enable_agent_layouts');
+        foreach ($lm->getAgentLayouts() as $id => $layout) {
+            $dep = null;
+            if ($id) {
+                $dep = $dm->getById($id);
+                if (!$dep) continue;
+                $dep = $dep->toApiData();
+            }
+            $agent_status[$id] = array(
+                'department' => $dep,
+                'enabled' => $layout->has($field_id)
+            );
+        }
+        foreach ($lm->getUserLayouts() as $id => $layout) {
+            $dep = null;
+            if ($id) {
+                $dep = $dm->getById($id);
+                if (!$dep) continue;
+                $dep = $dep->toApiData();
+            }
+            $user_status[$id] = array(
+                'department' => $dep,
+                'enabled' => $layout->has($field_id)
+            );
+        }
 
-		$layout_records = $this->em->getRepository('DeskPRO:TicketLayout')->findAll();
+        $sort_fn = function ($a, $b) {
+            $ao = $a['department'] ? $a['department']['display_order'] : -1000;
+            $bo = $b['department'] ? $b['department']['display_order'] : -1000;
 
-		$field_type = $field_id;
-		$field_type_id = null;
+            if ($ao == $bo) return 0;
+            return $ao < $bo ? -1 : 1;
+        };
+        uasort($agent_status, $sort_fn);
+        uasort($user_status, $sort_fn);
 
-		if (preg_match('#^(ticket_field)_(\d+)$#', $field_id, $m)) {
-			$field_type = $m[1];
-			$field_type_id = $m[2];
-		}
+        return $this->createApiResponse(array(
+            'agent_layouts' => $agent_status,
+            'user_layouts'  => $user_status
+        ));
+    }
 
-		foreach ($layout_records as $layout) {
-			/** @var $layout TicketLayout */
-			$dep_id = $layout->department ? $layout->department->id : 0;
+    ####################################################################################################################
+    # save-field-status
+    ####################################################################################################################
 
-			$user_layout  = clone $layout->user_layout;
-			$agent_layout = clone $layout->agent_layout;
+    public function saveFieldStatusAction($field_id)
+    {
+        $enable_user_layouts  = $this->in->getArrayOfUInts('enable_user_layouts');
+        $enable_agent_layouts = $this->in->getArrayOfUInts('enable_agent_layouts');
 
-			$has_user  = $layout->user_layout->has($field_id);
-			$has_agent = $layout->agent_layout->has($field_id);
+        $layout_records = $this->em->getRepository('DeskPRO:TicketLayout')->findAll();
 
-			$want_user  = in_array($dep_id, $enable_user_layouts);
-			$want_agent = in_array($dep_id, $enable_agent_layouts);
+        $field_type = $field_id;
+        $field_type_id = null;
 
-			$change = false;
+        if (preg_match('#^(ticket_field)_(\d+)$#', $field_id, $m)) {
+            $field_type = $m[1];
+            $field_type_id = $m[2];
+        }
 
-			if ($has_user && !$want_user) {
-				$user_layout->remove($field_id);
-				$change = true;
-			} else if (!$has_user && $want_user) {
-				$field = new LayoutField($field_type, $field_type_id);
-				$field->setOptionsFromArray(array(
-					'on_editticket' => true,
-					'on_viewticket' => true,
-					'on_viewticket_mode' => 'value',
-					'on_newticket' => true
-				));
-				$user_layout->add($field, 'message');
-				$change = true;
-			}
+        foreach ($layout_records as $layout) {
+            /** @var $layout TicketLayout */
+            $dep_id = $layout->department ? $layout->department->id : 0;
 
-			if ($has_agent && !$want_agent) {
-				$agent_layout->remove($field_id);
-				$change = true;
-			} else if (!$has_agent && $want_agent) {
-				$field = new LayoutField($field_type, $field_type_id);
-				$field->setOptionsFromArray(array(
-					'on_editticket' => true,
-					'on_viewticket' => true,
-					'on_viewticket_mode' => 'value',
-					'on_newticket' => true
-				));
-				$agent_layout->add($field, 'message');
-				$change = true;
-			}
+            $user_layout  = clone $layout->user_layout;
+            $agent_layout = clone $layout->agent_layout;
 
-			if ($change) {
-				$layout->user_layout  = $user_layout;
-				$layout->agent_layout = $agent_layout;
-				$layout->date_updated = new \DateTime();
-				$this->em->persist($layout);
-			}
-		}
+            $has_user  = $layout->user_layout->has($field_id);
+            $has_agent = $layout->agent_layout->has($field_id);
 
-		$this->em->flush();
+            $want_user  = in_array($dep_id, $enable_user_layouts);
+            $want_agent = in_array($dep_id, $enable_agent_layouts);
 
-		return $this->createApiSuccessResponse();
-	}
+            $change = false;
+
+            if ($has_user && !$want_user) {
+                $user_layout->remove($field_id);
+                $change = true;
+            } elseif (!$has_user && $want_user) {
+                $field = new LayoutField($field_type, $field_type_id);
+                $field->setOptionsFromArray(array(
+                    'on_editticket' => true,
+                    'on_viewticket' => true,
+                    'on_viewticket_mode' => 'value',
+                    'on_newticket' => true
+                ));
+                $user_layout->add($field, 'message');
+                $change = true;
+            }
+
+            if ($has_agent && !$want_agent) {
+                $agent_layout->remove($field_id);
+                $change = true;
+            } elseif (!$has_agent && $want_agent) {
+                $field = new LayoutField($field_type, $field_type_id);
+                $field->setOptionsFromArray(array(
+                    'on_editticket' => true,
+                    'on_viewticket' => true,
+                    'on_viewticket_mode' => 'value',
+                    'on_newticket' => true
+                ));
+                $agent_layout->add($field, 'message');
+                $change = true;
+            }
+
+            if ($change) {
+                $layout->user_layout  = $user_layout;
+                $layout->agent_layout = $agent_layout;
+                $layout->date_updated = new \DateTime();
+                $this->em->persist($layout);
+            }
+        }
+
+        $this->em->flush();
+
+        return $this->createApiSuccessResponse();
+    }
 }

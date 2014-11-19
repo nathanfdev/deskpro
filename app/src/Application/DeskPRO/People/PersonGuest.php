@@ -42,26 +42,26 @@ use Application\DeskPRO\Entity\Person;
  */
 class PersonGuest extends Person
 {
-	public function __construct()
-	{
-		$this->id = 0;
-		$this->_usergroup_ids = array();
-		$this->usergroups = array();
-		$this->timezone = App::getSetting('core.default_timezone');
-	}
+    public function __construct()
+    {
+        $this->id = 0;
+        $this->_usergroup_ids = array();
+        $this->usergroups = array();
+        $this->timezone = App::getSetting('core.default_timezone');
+    }
 
-	public function getUsergroups()
-	{
-		return array();
-	}
+    public function getUsergroups()
+    {
+        return array();
+    }
 
-	public function isGuest()
-	{
-		return true;
-	}
+    public function isGuest()
+    {
+        return true;
+    }
 
-	public function noPersist()
-	{
-		throw new \BadMethodCallException('A PersonGuest cannot be persisted');
-	}
+    public function noPersist()
+    {
+        throw new \BadMethodCallException('A PersonGuest cannot be persisted');
+    }
 }

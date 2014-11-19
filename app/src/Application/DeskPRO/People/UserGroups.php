@@ -37,20 +37,20 @@ use Application\DeskPRO\Groups\GroupsRepos;
 
 class UserGroups extends GroupsRepos
 {
-	/**
-	 * @return \Application\DeskPRO\Entity\Usergroup
-	 */
-	public function getEveryoneGroup()
-	{
-		return $this->getSysGroup('everyone');
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\Usergroup
+     */
+    public function getEveryoneGroup()
+    {
+        return $this->getSysGroup('everyone');
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\Usergroup
-	 */
-	public function getRegisteredGroup()
-	{
-		return $this->getSysGroup('registered');
-	}
+    /**
+     * @return \Application\DeskPRO\Entity\Usergroup
+     */
+    public function getRegisteredGroup()
+    {
+        return $this->getSysGroup('registered');
+    }
 }

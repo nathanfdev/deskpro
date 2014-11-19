@@ -46,93 +46,93 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketProcLog extends DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $ticket = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $ticket = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Blob
-	 */
-	protected $blob = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $blob = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public function __construct()
-	{
-		$this->date_created = new \DateTime();
-	}
+    public function __construct()
+    {
+        $this->date_created = new \DateTime();
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
 
-		$metadata->setPrimaryTable(array(
-			'name' => 'ticket_proc_log',
-			'indexes' => array(
-				'date_created_idx' => array('columns' => array('date_created'))
-			)
-		));
+        $metadata->setPrimaryTable(array(
+            'name' => 'ticket_proc_log',
+            'indexes' => array(
+                'date_created_idx' => array('columns' => array('date_created'))
+            )
+        ));
 
-		$metadata->mapField(array(
-			'id'         => true,
-			'fieldName'  => 'id',
-			'columnName' => 'id',
-			'type'       => 'integer',
-			'nullable'   => false,
-		));
+        $metadata->mapField(array(
+            'id'         => true,
+            'fieldName'  => 'id',
+            'columnName' => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
+        ));
 
-		$metadata->mapField(array(
-			'fieldName'  => 'date_created',
-			'columnName' => 'date_created',
-			'type'       => 'datetime',
-			'nullable'   => false,
-		));
+        $metadata->mapField(array(
+            'fieldName'  => 'date_created',
+            'columnName' => 'date_created',
+            'type'       => 'datetime',
+            'nullable'   => false,
+        ));
 
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'ticket',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
-			'joinColumns'  => array(array(
-				'name'                 => 'ticket_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'cascade',
-				'columnDefinition'     => NULL
-			))
-		));
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'ticket',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket',
+            'joinColumns'  => array(array(
+                'name'                 => 'ticket_id',
+                'referencedColumnName' => 'id',
+                'nullable'             => true,
+                'onDelete'             => 'cascade',
+                'columnDefinition'     => NULL
+            ))
+        ));
 
-		$metadata->mapManyToOne(array(
-			'fieldName'    => 'blob',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
-			'joinColumns'  => array(array(
-				'name'                 => 'blob_id',
-				'referencedColumnName' => 'id',
-				'nullable'             => true,
-				'onDelete'             => 'cascade',
-				'columnDefinition'     => NULL
-			))
-		));
-	}
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'blob',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob',
+            'joinColumns'  => array(array(
+                'name'                 => 'blob_id',
+                'referencedColumnName' => 'id',
+                'nullable'             => true,
+                'onDelete'             => 'cascade',
+                'columnDefinition'     => NULL
+            ))
+        ));
+    }
 }

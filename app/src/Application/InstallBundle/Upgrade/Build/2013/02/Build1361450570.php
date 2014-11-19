@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361450570 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add chat_messages.tag");
-		$this->execMutateSql("ALTER TABLE chat_messages ADD tag VARCHAR(255) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add chat_messages.tag");
+        $this->execMutateSql("ALTER TABLE chat_messages ADD tag VARCHAR(255) DEFAULT NULL");
+    }
 }

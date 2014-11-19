@@ -37,16 +37,16 @@ use FOS\ElasticaBundle\Client as BaseClient;
 
 class Client extends BaseClient
 {
-	protected function _initConnections()
-	{
-		parent::_initConnections();
+    protected function _initConnections()
+    {
+        parent::_initConnections();
 
-		// Adds empty 'headers' config or else logger on
-		// BaseClient will cause exception
-		foreach ($this->getConnections() as $conn) {
-			if (!$conn->hasConfig('headers')) {
-				$conn->addConfig('headers', array());
-			}
-		}
-	}
+        // Adds empty 'headers' config or else logger on
+        // BaseClient will cause exception
+        foreach ($this->getConnections() as $conn) {
+            if (!$conn->hasConfig('headers')) {
+                $conn->addConfig('headers', array());
+            }
+        }
+    }
 }

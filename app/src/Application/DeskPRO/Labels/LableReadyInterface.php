@@ -36,6 +36,6 @@ namespace Application\DeskPRO\Labels;
 
 interface LableReadyInterface
 {
-	public function removeLabel($label);
-	public function addLabel($label);
+    public function removeLabel($label);
+    public function addLabel($label);
 }

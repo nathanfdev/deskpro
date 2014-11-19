@@ -40,33 +40,32 @@ use Symfony\Component\HttpKernel\KernelInterface;
 
 class ControllerNameParser extends BaseParser
 {
-	/**
-	 * @var \Application\DeskPRO\Brand\BrandStack
-	 */
-	private $brand_stack;
+    /**
+     * @var \Application\DeskPRO\Brand\BrandStack
+     */
+    private $brand_stack;
 
-	public function __construct(KernelInterface $kernel, BrandStack $brand_stack)
-	{
-		parent::__construct($kernel);
-		$this->brand_stack = $brand_stack;
-	}
+    public function __construct(KernelInterface $kernel, BrandStack $brand_stack)
+    {
+        parent::__construct($kernel);
+        $this->brand_stack = $brand_stack;
+    }
 
-	public function parse($controller)
-	{
-		if (!$brand_container = $this->brand_stack->getActive()) {
-			$this->brand_stack->push($this->brand_stack->getDefault());
-		}
+    public function parse($controller)
+    {
+        if (!$brand_container = $this->brand_stack->getActive()) {
+            $this->brand_stack->push($this->brand_stack->getDefault());
+        }
 
-		if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
-			throw new \RuntimeException('no brand is active in the brand stack. cannot parse theme controller.');
-		}
+        if (!$brand_container && !$brand_container = $this->brand_stack->getActive()) {
+            throw new \RuntimeException('no brand is active in the brand stack. cannot parse theme controller.');
+        }
 
-		if ($theme_controller = $brand_container->resolveController($controller)) {
-			return $theme_controller;
-		}
+        if ($theme_controller = $brand_container->resolveController($controller)) {
+            return $theme_controller;
+        }
 
-		return parent::parse($controller);
-	}
+        return parent::parse($controller);
+    }
 
 }
- 

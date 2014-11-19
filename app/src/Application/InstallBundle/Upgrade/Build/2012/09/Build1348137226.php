@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1348137226 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add support for ticket charges/billing");
-		$this->execMutateSql("CREATE TABLE ticket_charges (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, person_id INT DEFAULT NULL, organization_id INT DEFAULT NULL, agent_id INT DEFAULT NULL, charge_time INT DEFAULT NULL, charge NUMERIC(10, 2) DEFAULT NULL, comment VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_36230948700047D2 (ticket_id), INDEX IDX_36230948217BBB47 (person_id), INDEX IDX_3623094832C8A3DE (organization_id), INDEX IDX_362309483414710B (agent_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE ticket_charges ADD CONSTRAINT FK_36230948700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE ticket_charges ADD CONSTRAINT FK_36230948217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE ticket_charges ADD CONSTRAINT FK_3623094832C8A3DE FOREIGN KEY (organization_id) REFERENCES organizations (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE ticket_charges ADD CONSTRAINT FK_362309483414710B FOREIGN KEY (agent_id) REFERENCES people (id) ON DELETE SET NULL");
-	}
+    public function run()
+    {
+        $this->out("Add support for ticket charges/billing");
+        $this->execMutateSql("CREATE TABLE ticket_charges (id INT AUTO_INCREMENT NOT NULL, ticket_id INT DEFAULT NULL, person_id INT DEFAULT NULL, organization_id INT DEFAULT NULL, agent_id INT DEFAULT NULL, charge_time INT DEFAULT NULL, charge NUMERIC(10, 2) DEFAULT NULL, comment VARCHAR(255) NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_36230948700047D2 (ticket_id), INDEX IDX_36230948217BBB47 (person_id), INDEX IDX_3623094832C8A3DE (organization_id), INDEX IDX_362309483414710B (agent_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE ticket_charges ADD CONSTRAINT FK_36230948700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE ticket_charges ADD CONSTRAINT FK_36230948217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE ticket_charges ADD CONSTRAINT FK_3623094832C8A3DE FOREIGN KEY (organization_id) REFERENCES organizations (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE ticket_charges ADD CONSTRAINT FK_362309483414710B FOREIGN KEY (agent_id) REFERENCES people (id) ON DELETE SET NULL");
+    }
 }

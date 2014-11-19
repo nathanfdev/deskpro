@@ -9,62 +9,62 @@ require_once 'AbstractTicketStringCheckTest.php';
 
 class CheckEmailBodyTest extends AbstractStringCheckTest
 {
-	/**
-	 * @param int $id
-	 * @param string $test_string
-	 * @return Ticket
-	 */
-	public function createTicket($id, $test_string)
-	{
-		$ticket = new Ticket();
-		$ticket->id = $id;
-		$ticket->subject = $test_string;
+    /**
+     * @param  int    $id
+     * @param  string $test_string
+     * @return Ticket
+     */
+    public function createTicket($id, $test_string)
+    {
+        $ticket = new Ticket();
+        $ticket->id = $id;
+        $ticket->subject = $test_string;
 
-		return $ticket;
-	}
+        return $ticket;
+    }
 
-	public function createExecutorContext(Ticket $ticket)
-	{
-		$value_reader = new ValueReader();
+    public function createExecutorContext(Ticket $ticket)
+    {
+        $value_reader = new ValueReader();
 
-		if ($ticket->id % 2 === 0) {
-			$value_reader->setValues(array(
-				'body_html' => '<div><strong>' . $ticket->subject . '</strong>'
-			));
-		} else {
-			$value_reader->setValues(array(
-				'body_text' => $ticket->subject
-			));
-		}
+        if ($ticket->id % 2 === 0) {
+            $value_reader->setValues(array(
+                'body_html' => '<div><strong>' . $ticket->subject . '</strong>'
+            ));
+        } else {
+            $value_reader->setValues(array(
+                'body_text' => $ticket->subject
+            ));
+        }
 
-		$exec = new ExecutorContext();
-		$exec->setEmailContext($value_reader);
+        $exec = new ExecutorContext();
+        $exec->setEmailContext($value_reader);
 
-		return $exec;
-	}
+        return $exec;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClass()
-	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckEmailBody';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClass()
+    {
+        return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckEmailBody';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClassOptionKey()
-	{
-		return 'body';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClassOptionKey()
+    {
+        return 'body';
+    }
 
-	public function testNoEmailContext()
-	{
-		$ticket = new Ticket();
-		$exec = new ExecutorContext();
+    public function testNoEmailContext()
+    {
+        $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-		$check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
-		$this->assertFalse($check->isTriggerMatch($ticket, $exec));
-	}
+        $check = $this->createChecker('is', array('%OPT%' => $this->getString1()));
+        $this->assertFalse($check->isTriggerMatch($ticket, $exec));
+    }
 }

@@ -39,86 +39,87 @@ use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterf
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function handleApiPackageRequest(ApiPackageRequestContext $context)
-	{
-		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-			case 'check-requirements':
-				return $this->checkRequirementsAction($context);
-			default:
-				throw $context->createNotFoundException();
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function handleApiPackageRequest(ApiPackageRequestContext $context)
+    {
+        switch ($context->getAction()) {
+            case 'test-settings':
+                return $this->testSettingsAction($context);
+            case 'check-requirements':
+                return $this->checkRequirementsAction($context);
+            default:
+                throw $context->createNotFoundException();
+        }
+    }
 
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function checkRequirementsAction(ApiPackageRequestContext $context)
-	{
-		return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
-	}
+    /**
+     * @param  ApiPackageRequestContext                   $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function checkRequirementsAction(ApiPackageRequestContext $context)
+    {
+        return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
+    }
 
-	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
-	{
-		$user = $context->getIn()->getString('jira_username');
-		$password = $context->getIn()->getString('jira_password');
-		$url = $context->getIn()->getString('jira_url');
-		$em = $context->getEm();
-		$regEnabled = $context->getContainer()->getSetting('core.reg_enabled');
+    /**
+     * @param  ApiPackageRequestContext                   $context
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function testSettingsAction(ApiPackageRequestContext $context)
+    {
+        $user = $context->getIn()->getString('jira_username');
+        $password = $context->getIn()->getString('jira_password');
+        $url = $context->getIn()->getString('jira_url');
+        $em = $context->getEm();
+        $regEnabled = $context->getContainer()->getSetting('core.reg_enabled');
 
-		$error = false;
-		$client = null;
+        $error = false;
+        $client = null;
 
-		$log = array();
-		$log[] = 'username: ' . $user;
-		$log[] = 'password: ' . $password;
-		$log[] = 'url: ' . $url;
+        $log = array();
+        $log[] = 'username: ' . $user;
+        $log[] = 'password: ' . $password;
+        $log[] = 'url: ' . $url;
 
 
-		$tests = array();
-		$tests[] = function() use (&$log, $url, $user, $password, $em, $regEnabled) {
+        $tests = array();
+        $tests[] = function () use (&$log, $url, $user, $password, $em, $regEnabled) {
 
-			$log[] = "Verifying JIRA API...";
+            $log[] = "Verifying JIRA API...";
 
-			$service = new \Orb\Jira\Service($url, array(
-				'username'	=> $user,
-				'password'	=> $password,
-				'debug'		=> DP_DEBUG,
-				'reg_enabled' => $regEnabled,
-			), $em);
+            $service = new \Orb\Jira\Service($url, array(
+                'username'	=> $user,
+                'password'	=> $password,
+                'debug'		=> DP_DEBUG,
+                'reg_enabled' => $regEnabled,
+            ), $em);
 
-			try {
-				$meta = $service->getCreateMeta();
-				$log[] = 'Everything is ok';
-			} catch (\Exception $e) {
-				$log[] = $e->getMessage();
-				return array($e->getCode(), 'API Exception');
-			}
-		};
+            try {
+                $meta = $service->getCreateMeta();
+                $log[] = 'Everything is ok';
+            } catch (\Exception $e) {
+                $log[] = $e->getMessage();
 
-		foreach ($tests as $t) {
-			$error = $t();
-			if ($error) {
-				break;
-			}
-		}
+                return array($e->getCode(), 'API Exception');
+            }
+        };
 
-		$result_data = array(
-			'log'        => implode("\n", $log),
-			'error'      => $error ? $error[1] : false,
-			'error_code' => $error ? $error[0] : false
-		);
+        foreach ($tests as $t) {
+            $error = $t();
+            if ($error) {
+                break;
+            }
+        }
 
-		return $context->createJsonResponse($result_data);
-	}
+        $result_data = array(
+            'log'        => implode("\n", $log),
+            'error'      => $error ? $error[1] : false,
+            'error_code' => $error ? $error[0] : false
+        );
+
+        return $context->createJsonResponse($result_data);
+    }
 }

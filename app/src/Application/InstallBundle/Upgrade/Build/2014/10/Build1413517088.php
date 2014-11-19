@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1413517088 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Update settings");
-		$this->execMutateSql("ALTER TABLE settings DROP PRIMARY KEY");
-		$this->execMutateSql("ALTER TABLE settings ADD id INT PRIMARY KEY AUTO_INCREMENT NOT NULL");
-		$this->execMutateSql("CREATE UNIQUE INDEX unique_settings_per_brand ON settings (name, brand_id)");
-	}
+    public function run()
+    {
+        $this->out("Update settings");
+        $this->execMutateSql("ALTER TABLE settings DROP PRIMARY KEY");
+        $this->execMutateSql("ALTER TABLE settings ADD id INT PRIMARY KEY AUTO_INCREMENT NOT NULL");
+        $this->execMutateSql("CREATE UNIQUE INDEX unique_settings_per_brand ON settings (name, brand_id)");
+    }
 }

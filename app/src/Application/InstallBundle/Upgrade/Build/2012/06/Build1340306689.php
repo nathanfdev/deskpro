@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1340306689 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add origin to chat_messages");
-		$this->execMutateSql("ALTER TABLE chat_messages ADD origin VARCHAR(50) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add origin to chat_messages");
+        $this->execMutateSql("ALTER TABLE chat_messages ADD origin VARCHAR(50) NOT NULL");
+    }
 }

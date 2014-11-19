@@ -45,23 +45,25 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckDepartment extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('department_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('department_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'department', 'id', $options['department_ids']);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+
+        return $this->isEntityMatch($ticket, $context, 'department', 'id', $options['department_ids']);
+    }
 }

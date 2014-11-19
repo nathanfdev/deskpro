@@ -41,83 +41,83 @@ use Orb\Validator\AbstractValidator;
 
 class RegisterValidator extends AbstractValidator
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefPerson[]
-	 */
-	protected $_custom_fields;
+    /**
+     * @var \Application\DeskPRO\Entity\CustomDefPerson[]
+     */
+    protected $_custom_fields;
 
-	/**
-	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
-	 */
-	protected $_captcha;
+    /**
+     * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
+     */
+    protected $_captcha;
 
-	/**
-	 * @var \Application\UserBundle\Form\Model\Register
-	 */
-	protected $register;
+    /**
+     * @var \Application\UserBundle\Form\Model\Register
+     */
+    protected $register;
 
-	protected function checkIsValid($register)
-	{
-		$this->register = $register;
+    protected function checkIsValid($register)
+    {
+        $this->register = $register;
 
-		if ($this->_captcha && !$this->_captcha->validate()) {
-			$this->addError('captcha.invalid');
-		}
+        if ($this->_captcha && !$this->_captcha->validate()) {
+            $this->addError('captcha.invalid');
+        }
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 2));
-		if (!$validator->isValid($this->register->name)) {
-			$this->addError('name.short');
-		}
+        $validator = new \Orb\Validator\StringLength(array('min' => 2));
+        if (!$validator->isValid($this->register->name)) {
+            $this->addError('name.short');
+        }
 
-		if (!App::getSystemService('email_address_validator')->isValidUserEmail($this->register->email)) {
-			$this->addError('email.invalid');
-		} else {
-			$check_exist = App::getDb()->fetchColumn("
-				SELECT person_id
-				FROM people_emails
-				WHERE email = ?
-			", array($this->register->email));
-			if ($check_exist) {
-				$this->addError('email.in_use');
-			}
-		}
+        if (!App::getSystemService('email_address_validator')->isValidUserEmail($this->register->email)) {
+            $this->addError('email.invalid');
+        } else {
+            $check_exist = App::getDb()->fetchColumn("
+                SELECT person_id
+                FROM people_emails
+                WHERE email = ?
+            ", array($this->register->email));
+            if ($check_exist) {
+                $this->addError('email.in_use');
+            }
+        }
 
-		/** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
-		$password_validator = App::$container->getSystemService('password_policy_validator');
+        /** @var \Application\DeskPRO\People\PasswordPolicyValidator $password_validator */
+        $password_validator = App::$container->getSystemService('password_policy_validator');
 
-		$mock_user = new Entity\Person();
-		if (!$password_validator->checkPassword($this->register->password, $mock_user)) {
-			$this->addError('password.invalid');
-		} elseif ($this->register->password != $this->register->password2) {
-			$this->addError('password.mismatch');
-		}
+        $mock_user = new Entity\Person();
+        if (!$password_validator->checkPassword($this->register->password, $mock_user)) {
+            $this->addError('password.invalid');
+        } elseif ($this->register->password != $this->register->password2) {
+            $this->addError('password.mismatch');
+        }
 
-		if ($this->_custom_fields) {
-			foreach ($this->_custom_fields as $field) {
-				$errors = $field->getHandler()->validateFormData($this->register->custom_fields ?: array());
-				foreach ($errors as $code) {
-					$this->addError($code);
-				}
-			}
-		}
+        if ($this->_custom_fields) {
+            foreach ($this->_custom_fields as $field) {
+                $errors = $field->getHandler()->validateFormData($this->register->custom_fields ?: array());
+                foreach ($errors as $code) {
+                    $this->addError($code);
+                }
+            }
+        }
 
-		if ($this->errors) {
-			return false;
-		}
+        if ($this->errors) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	public function setCustomFields(array $custom_fields)
-	{
-		$this->_custom_fields = $custom_fields;
-	}
+    public function setCustomFields(array $custom_fields)
+    {
+        $this->_custom_fields = $custom_fields;
+    }
 
-	/**
-	 * @param CaptchaAbstract $captcha
-	 */
-	public function setCaptcha(CaptchaAbstract $captcha)
-	{
-		$this->_captcha = $captcha;
-	}
+    /**
+     * @param CaptchaAbstract $captcha
+     */
+    public function setCaptcha(CaptchaAbstract $captcha)
+    {
+        $this->_captcha = $captcha;
+    }
 }

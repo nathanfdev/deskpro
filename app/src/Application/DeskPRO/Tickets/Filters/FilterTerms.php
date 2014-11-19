@@ -50,179 +50,179 @@ use DeskPRO\Kernel\KernelErrorHandler;
  */
 class FilterTerms implements \Serializable, FilterTermInterface
 {
-	/**
-	 * @var FilterTermComposite
-	 */
-	private $criteria;
+    /**
+     * @var FilterTermComposite
+     */
+    private $criteria;
 
-	/**
-	 * @var FilterTermFactory
-	 */
-	private $term_factory;
+    /**
+     * @var FilterTermFactory
+     */
+    private $term_factory;
 
-	public function __construct()
-	{
-		$this->criteria = new FilterTermComposite();
-		$this->criteria->setOperator(FilterTermComposite::OP_AND);
-		$this->term_factory = new FilterTermFactory();
-	}
-
-
-	/**
-	 * @return FilterTermInterface[]
-	 */
-	public function getTerms()
-	{
-		return $this->criteria->getAll();
-	}
+    public function __construct()
+    {
+        $this->criteria = new FilterTermComposite();
+        $this->criteria->setOperator(FilterTermComposite::OP_AND);
+        $this->term_factory = new FilterTermFactory();
+    }
 
 
-	/**
-	 * @param FilterTermInterface $term
-	 * @throws \InvalidArgumentException
-	 */
-	public function addTerm(FilterTermInterface $term)
-	{
-		if (!($term instanceof CriteriaTermInterface) && !($term instanceof FilterTermComposite)) {
-			$class_name = get_class($term);
-			throw new \InvalidArgumentException("FilterTerms can only manage terms terms that implement CriteriaTermInterface. Invalid class: $class_name");
-		}
-		$this->criteria->add($term);
-	}
+    /**
+     * @return FilterTermInterface[]
+     */
+    public function getTerms()
+    {
+        return $this->criteria->getAll();
+    }
 
 
-	/**
-	 * @param array $term_info
-	 * @throws \InvalidArgumentException
-	 */
-	public function addTermFromArray(array $term_info)
-	{
-		if (isset($term_info['set_terms'])) {
-			$composite = new FilterTermComposite(array(), FilterTermComposite::OP_AND);
-			foreach ($term_info['set_terms'] as $ti) {
-				$t = $this->getTermFromArray($ti);
-				$composite->add($t);
-			}
-
-			$this->addTerm($composite);
-		} else {
-			$t = $this->getTermFromArray($term_info);
-			$this->addTerm($t);
-		}
-	}
+    /**
+     * @param  FilterTermInterface       $term
+     * @throws \InvalidArgumentException
+     */
+    public function addTerm(FilterTermInterface $term)
+    {
+        if (!($term instanceof CriteriaTermInterface) && !($term instanceof FilterTermComposite)) {
+            $class_name = get_class($term);
+            throw new \InvalidArgumentException("FilterTerms can only manage terms terms that implement CriteriaTermInterface. Invalid class: $class_name");
+        }
+        $this->criteria->add($term);
+    }
 
 
-	/**
-	 * @param array $term_info
-	 * @throws \InvalidArgumentException
-	 */
-	private function getTermFromArray(array $term_info)
-	{
-		return $this->term_factory->createFromArray($term_info);
-	}
+    /**
+     * @param  array                     $term_info
+     * @throws \InvalidArgumentException
+     */
+    public function addTermFromArray(array $term_info)
+    {
+        if (isset($term_info['set_terms'])) {
+            $composite = new FilterTermComposite(array(), FilterTermComposite::OP_AND);
+            foreach ($term_info['set_terms'] as $ti) {
+                $t = $this->getTermFromArray($ti);
+                $composite->add($t);
+            }
+
+            $this->addTerm($composite);
+        } else {
+            $t = $this->getTermFromArray($term_info);
+            $this->addTerm($t);
+        }
+    }
 
 
-	/**
-	 * @param ExecutorContextInterface $context
-	 * @return \Application\DeskPRO\Tickets\Filters\Terms\FilterQuery|null
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		return $this->criteria->getFilterQuery($context);
-	}
+    /**
+     * @param  array                     $term_info
+     * @throws \InvalidArgumentException
+     */
+    private function getTermFromArray(array $term_info)
+    {
+        return $this->term_factory->createFromArray($term_info);
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function exportToArray()
-	{
-		$data = array();
-
-		$data['version']  = 1;
-		$data['terms'] = array();
-		foreach ($this->criteria->getAll() as $criteria) {
-			if ($criteria instanceof FilterTermComposite) {
-				$set_terms = array();
-				foreach ($criteria->getAll() as $set_criteria) {
-					if (!($set_criteria instanceof CriteriaTermInterface)) {
-						continue;
-					}
-
-					$set_terms[] = array(
-						'type'    => $set_criteria->getTermType(),
-						'op'      => $set_criteria->getTermOperator(),
-						'options' => $set_criteria->getTermOptions()->all()
-					);
-				}
-
-				if ($set_terms) {
-					$data['terms'][] = array(
-						'set_terms' => $set_terms
-					);
-				}
-			} else {
-				if (!($criteria instanceof CriteriaTermInterface)) {
-					continue;
-				}
-
-				$data['terms'][] = array(
-					'type'    => $criteria->getTermType(),
-					'op'      => $criteria->getTermOperator(),
-					'options' => $criteria->getTermOptions()->all()
-				);
-			}
-		}
-
-		return $data;
-	}
+    /**
+     * @param  ExecutorContextInterface                                    $context
+     * @return \Application\DeskPRO\Tickets\Filters\Terms\FilterQuery|null
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        return $this->criteria->getFilterQuery($context);
+    }
 
 
-	/**
-	 * @param array $data
-	 */
-	public function importFromArray(array $data)
-	{
-		foreach ($data['terms'] as $term_info) {
-			$this->addTermFromArray($term_info);
-		}
-	}
+    /**
+     * @return array
+     */
+    public function exportToArray()
+    {
+        $data = array();
+
+        $data['version']  = 1;
+        $data['terms'] = array();
+        foreach ($this->criteria->getAll() as $criteria) {
+            if ($criteria instanceof FilterTermComposite) {
+                $set_terms = array();
+                foreach ($criteria->getAll() as $set_criteria) {
+                    if (!($set_criteria instanceof CriteriaTermInterface)) {
+                        continue;
+                    }
+
+                    $set_terms[] = array(
+                        'type'    => $set_criteria->getTermType(),
+                        'op'      => $set_criteria->getTermOperator(),
+                        'options' => $set_criteria->getTermOptions()->all()
+                    );
+                }
+
+                if ($set_terms) {
+                    $data['terms'][] = array(
+                        'set_terms' => $set_terms
+                    );
+                }
+            } else {
+                if (!($criteria instanceof CriteriaTermInterface)) {
+                    continue;
+                }
+
+                $data['terms'][] = array(
+                    'type'    => $criteria->getTermType(),
+                    'op'      => $criteria->getTermOperator(),
+                    'options' => $criteria->getTermOptions()->all()
+                );
+            }
+        }
+
+        return $data;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function exportToJson()
-	{
-		return json_encode($this->exportToArray());
-	}
+    /**
+     * @param array $data
+     */
+    public function importFromArray(array $data)
+    {
+        foreach ($data['terms'] as $term_info) {
+            $this->addTermFromArray($term_info);
+        }
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		return $this->exportToJson();
-	}
+    /**
+     * @return string
+     */
+    public function exportToJson()
+    {
+        return json_encode($this->exportToArray());
+    }
 
 
-	/**
-	 * @param string $data
-	 */
-	public function unserialize($data)
-	{
-		$data = json_decode($data, true);
-		$this->__construct();
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return $this->exportToJson();
+    }
 
-		foreach ($data['terms'] as $term_info) {
-			try {
-				$this->addTermFromArray($term_info);
-			} catch (\Exception $e) {
-				if (!empty($term_info['type'])) {
-					KernelErrorHandler::logException($e, false, md5('filter_' . $term_info['type']));
-				}
-			}
-		}
-	}
+
+    /**
+     * @param string $data
+     */
+    public function unserialize($data)
+    {
+        $data = json_decode($data, true);
+        $this->__construct();
+
+        foreach ($data['terms'] as $term_info) {
+            try {
+                $this->addTermFromArray($term_info);
+            } catch (\Exception $e) {
+                if (!empty($term_info['type'])) {
+                    KernelErrorHandler::logException($e, false, md5('filter_' . $term_info['type']));
+                }
+            }
+        }
+    }
 }

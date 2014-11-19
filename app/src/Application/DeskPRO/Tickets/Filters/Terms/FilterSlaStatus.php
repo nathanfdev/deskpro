@@ -44,22 +44,22 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterSlaStatus extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('sla_ids', 'sla_status');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('sla_ids', 'sla_status');
 
+        return $options;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		throw new NotImplementedException;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        throw new NotImplementedException;
+    }
 }

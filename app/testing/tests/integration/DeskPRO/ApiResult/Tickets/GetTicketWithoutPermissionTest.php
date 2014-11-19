@@ -9,125 +9,125 @@ require_once __DIR__ . '/../AbstractApiResultTest.php';
 class GetTicketWithoutPermissionTest extends AbstractApiResultTest
 {
 
-	public function testFindByIdWithoutPermission()
-	{
-		$expectedTicketArray = $this->_getExpectedTicket();
+    public function testFindByIdWithoutPermission()
+    {
+        $expectedTicketArray = $this->_getExpectedTicket();
 
-		$ticketId = 1;
+        $ticketId = 1;
 
-		$result = $this->getApiWithLimitedAccess()->tickets->findById($ticketId);
-		
-		$this->assertEquals('404', $result->getResponseCode());
-	}
+        $result = $this->getApiWithLimitedAccess()->tickets->findById($ticketId);
 
-	public function testFindBySubjectWithoutPermission()
-	{
-		$testSubject = 'Test';
+        $this->assertEquals('404', $result->getResponseCode());
+    }
 
-		$criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
+    public function testFindBySubjectWithoutPermission()
+    {
+        $testSubject = 'Test';
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
 
-		$criteria->addSubject($testSubject);
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-		$result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
+        $criteria->addSubject($testSubject);
 
-		$this->assertEquals('200', $result->getResponseCode());
-		
-		$data = $result->getData();
-		
-		$this->assertArrayHasKey('tickets', $data);
-		
-		$this->assertEquals(count($data['tickets']), 0);
-	}
+        $result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
 
-	/* TODO Fatal error: Call to undefined method DeskPRO\Criteria\Ticket::addDepartment() in /deskpro/www/app/testing/tests/integration/DeskPRO/ApiResult/Tickets/GetTicketWithoutPermissionTest.php on line 52
-	public function testFindByDepartmentWithoutPermission()
-	{
-		$testDepartmentId = 1;
+        $this->assertEquals('200', $result->getResponseCode());
 
-		$criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
+        $data = $result->getData();
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $this->assertArrayHasKey('tickets', $data);
 
-		$criteria->addDepartment($testDepartmentId);
+        $this->assertEquals(count($data['tickets']), 0);
+    }
 
-		$result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
-		
-		$this->assertEquals('200', $result->getResponseCode());
-		
-		$data = $result->getData();
-		
-		$this->assertArrayHasKey('tickets', $data);
-		
-		$this->assertEquals(count($data['tickets']), 0);
-	}
-	*/
+    /* TODO Fatal error: Call to undefined method DeskPRO\Criteria\Ticket::addDepartment() in /deskpro/www/app/testing/tests/integration/DeskPRO/ApiResult/Tickets/GetTicketWithoutPermissionTest.php on line 52
+    public function testFindByDepartmentWithoutPermission()
+    {
+        $testDepartmentId = 1;
 
-	public function testFindByAgentWithoutPermission()
-	{
-		$testAgentId = 1;
+        $criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
 
-		$testTicketId = 1;
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-		$criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
+        $criteria->addDepartment($testDepartmentId);
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
 
-		$criteria->addAgent($testAgentId);
+        $this->assertEquals('200', $result->getResponseCode());
 
-		$result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
-		
-		$this->assertEquals('200', $result->getResponseCode());
-		
-		$data = $result->getData();
-		
-		$this->assertArrayHasKey('tickets', $data);
-		
-		$this->assertEquals(count($data['tickets']), 0);
-	}
+        $data = $result->getData();
 
-	public function testFindByCategoryWithoutPermission()
-	{
-		$testCategoryId = 1;
+        $this->assertArrayHasKey('tickets', $data);
 
-		$testTicketId = 1;
+        $this->assertEquals(count($data['tickets']), 0);
+    }
+    */
 
-		$criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
+    public function testFindByAgentWithoutPermission()
+    {
+        $testAgentId = 1;
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $testTicketId = 1;
 
-		$criteria->addCategory($testCategoryId);
+        $criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
 
-		$result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
-		
-		$this->assertEquals('200', $result->getResponseCode());
-		
-		$data = $result->getData();
-		
-		$this->assertArrayHasKey('tickets', $data);
-		
-		$this->assertEquals(count($data['tickets']), 0);
-	}
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-	public function testFindByOrganizationWithoutPermission()
-	{
-		$testOrganizationId = 1;
+        $criteria->addAgent($testAgentId);
 
-		$criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
+        $result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $this->assertEquals('200', $result->getResponseCode());
 
-		$criteria->addOrganization($testOrganizationId);
+        $data = $result->getData();
 
-		$result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
-		
-		$this->assertEquals('200', $result->getResponseCode());
-		
-		$data = $result->getData();
-		
-		$this->assertArrayHasKey('tickets', $data);
-		
-		$this->assertEquals(count($data['tickets']), 0);
-	}
+        $this->assertArrayHasKey('tickets', $data);
+
+        $this->assertEquals(count($data['tickets']), 0);
+    }
+
+    public function testFindByCategoryWithoutPermission()
+    {
+        $testCategoryId = 1;
+
+        $testTicketId = 1;
+
+        $criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
+
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+        $criteria->addCategory($testCategoryId);
+
+        $result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
+
+        $this->assertEquals('200', $result->getResponseCode());
+
+        $data = $result->getData();
+
+        $this->assertArrayHasKey('tickets', $data);
+
+        $this->assertEquals(count($data['tickets']), 0);
+    }
+
+    public function testFindByOrganizationWithoutPermission()
+    {
+        $testOrganizationId = 1;
+
+        $criteria = $this->getApiWithLimitedAccess()->tickets->createCriteria();
+
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+
+        $criteria->addOrganization($testOrganizationId);
+
+        $result = $this->getApiWithLimitedAccess()->tickets->find($criteria);
+
+        $this->assertEquals('200', $result->getResponseCode());
+
+        $data = $result->getData();
+
+        $this->assertArrayHasKey('tickets', $data);
+
+        $this->assertEquals(count($data['tickets']), 0);
+    }
 }

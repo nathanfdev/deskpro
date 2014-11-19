@@ -34,7 +34,6 @@
 
 namespace Application\UserBundle\Twig\Extension;
 
-use Application\DeskPRO\App;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -42,7 +41,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
  */
 class UserTemplatingExtension extends \Twig_Extension
 {
-	/** @var \Symfony\Component\DependencyInjection\ContainerInterface  */
+    /** @var \Symfony\Component\DependencyInjection\ContainerInterface  */
     protected $container;
 
     public function __construct(ContainerInterface $container)
@@ -50,74 +49,76 @@ class UserTemplatingExtension extends \Twig_Extension
         $this->container = $container;
     }
 
-	public function getFunctions()
+    public function getFunctions()
     {
         return array(
             'portal_js'         => new \Twig_Function_Method($this, 'portalJs', array('is_safe' => array('html'))),
-			'portal_css'        => new \Twig_Function_Method($this, 'portalCss', array('is_safe' => array('html'))),
+            'portal_css'        => new \Twig_Function_Method($this, 'portalCss', array('is_safe' => array('html'))),
             'portal_section'    => new \Twig_Function_Method($this, 'portalSection', array('is_safe' => array('html'))),
             'portal_hasblock'   => new \Twig_Function_Method($this, 'portalHasBlock', array('is_safe' => array('html'))),
-			'portal_option'     => new \Twig_Function_Method($this, 'portalOption', array()),
+            'portal_option'     => new \Twig_Function_Method($this, 'portalOption', array()),
         );
     }
 
-	public function portalJs($section)
-	{
-		$html = array();
+    public function portalJs($section)
+    {
+        $html = array();
 
-		$portal_page = $this->container->get('deskpro.user_portal_page');
-		foreach ($portal_page->getJsAssets($section) as $asset) {
-			$url = $this->container->get('templating.helper.assets')->getUrl($asset);
-			$html[] = '<script src="' . $url . '"></script>';
-		}
+        $portal_page = $this->container->get('deskpro.user_portal_page');
+        foreach ($portal_page->getJsAssets($section) as $asset) {
+            $url = $this->container->get('templating.helper.assets')->getUrl($asset);
+            $html[] = '<script src="' . $url . '"></script>';
+        }
 
-		return implode("\n", $html);
-	}
+        return implode("\n", $html);
+    }
 
-	public function portalCss($section)
-	{
-		$html = array();
+    public function portalCss($section)
+    {
+        $html = array();
 
-		$portal_page = $this->container->get('deskpro.user_portal_page');
-		foreach ($portal_page->getCssAssets($section) as $asset) {
-			$url = $this->container->get('templating.helper.assets')->getUrl($asset);
-			$html[] = '<link rel="stylesheet" type="text/css" href="'.$url.'" />';
-		}
+        $portal_page = $this->container->get('deskpro.user_portal_page');
+        foreach ($portal_page->getCssAssets($section) as $asset) {
+            $url = $this->container->get('templating.helper.assets')->getUrl($asset);
+            $html[] = '<link rel="stylesheet" type="text/css" href="'.$url.'" />';
+        }
 
-		return implode("\n", $html);
-	}
+        return implode("\n", $html);
+    }
 
-	public function portalSection($section)
-	{
-		$portal_page = $this->container->get('deskpro.user_portal_page');
-		return $portal_page->getSectionHtml($section);
-	}
+    public function portalSection($section)
+    {
+        $portal_page = $this->container->get('deskpro.user_portal_page');
 
-	public function portalHasBlock($section, $type)
-	{
-		$portal_page = $this->container->get('deskpro.user_portal_page');
-		return $portal_page->hasBlock($section, $type);
-	}
+        return $portal_page->getSectionHtml($section);
+    }
 
-	public function portalOption($name)
-	{
-		static $options = array();
-		if (isset($options[$name])) {
-			return $options[$name];
-		}
+    public function portalHasBlock($section, $type)
+    {
+        $portal_page = $this->container->get('deskpro.user_portal_page');
 
-		switch ($name) {
-			default:
-				return '';
-		}
-	}
+        return $portal_page->hasBlock($section, $type);
+    }
 
-	public function getFilters()
+    public function portalOption($name)
+    {
+        static $options = array();
+        if (isset($options[$name])) {
+            return $options[$name];
+        }
+
+        switch ($name) {
+            default:
+                return '';
+        }
+    }
+
+    public function getFilters()
     {
         return array();
     }
 
-	 public function getName()
+     public function getName()
     {
         return 'deskpro_user_templating';
     }

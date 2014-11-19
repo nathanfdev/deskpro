@@ -43,81 +43,81 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class PersonFile extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * The person the file is attached to.
-	 *
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * The person the file is attached to.
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * The agent that added the file
-	 *
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $agent;
+    /**
+     * The agent that added the file
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $agent;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
-	
-	/**
-	 * The Blob object
-	 * 
-	 * @var \Application\DeskPRO\Entity\Blob
-	 */
-	protected $blob;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * The note contents
-	 *
-	 * @var string
-	 */
-	protected $note = '';
+    /**
+     * The Blob object
+     *
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $blob;
 
-	public function __construct()
-	{
-		$this['date_created'] = new \DateTime();
-	}
+    /**
+     * The note contents
+     *
+     * @var string
+     */
+    protected $note = '';
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    public function __construct()
+    {
+        $this['date_created'] = new \DateTime();
+    }
 
-	public function getNoteHtml()
-	{
-		return nl2br(htmlspecialchars($this->note), true);
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    public function getNoteHtml()
+    {
+        return nl2br(htmlspecialchars($this->note), true);
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonFile';
-		$metadata->setPrimaryTable(array( 'name' => 'people_files', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), )  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonFile';
+        $metadata->setPrimaryTable(array( 'name' => 'people_files', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'note', 'type' => 'string', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), )  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
+    }
 }

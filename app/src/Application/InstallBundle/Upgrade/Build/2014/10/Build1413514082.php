@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1413514082 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Scope some settings to a brand");
-		$this->execMutateSql("ALTER TABLE settings ADD brand_id INT DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE settings ADD CONSTRAINT FK_E545A0C544F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE");
-		$this->execMutateSql("CREATE INDEX IDX_E545A0C544F5D008 ON settings (brand_id)");
-	}
+    public function run()
+    {
+        $this->out("Scope some settings to a brand");
+        $this->execMutateSql("ALTER TABLE settings ADD brand_id INT DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE settings ADD CONSTRAINT FK_E545A0C544F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE");
+        $this->execMutateSql("CREATE INDEX IDX_E545A0C544F5D008 ON settings (brand_id)");
+    }
 }

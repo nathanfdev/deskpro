@@ -34,10 +34,7 @@
 
 namespace Application\DeskPRO\Tickets\TicketActions;
 
-use Application\DeskPRO\App;
-
-
 interface ExecutionContextAware
 {
-	public function setExecutionContext($context);
+    public function setExecutionContext($context);
 }

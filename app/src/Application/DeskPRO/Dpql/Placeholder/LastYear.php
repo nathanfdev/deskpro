@@ -42,18 +42,18 @@ use Application\DeskPRO\Dpql;
  */
 class LastYear extends AbstractDateRange
 {
-	/**
-	 * Gets the date range components (printable, start, end).
-	 *
-	 * @return string[int]
-	 */
-	protected function _getDateRange()
-	{
-		$tz = App::getCurrentPerson()->getTimezone();
-		$date = new \DateTime('now', new \DateTimeZone($tz));
+    /**
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
+     */
+    protected function _getDateRange()
+    {
+        $tz = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('now', new \DateTimeZone($tz));
 
-		$year = $date->format('Y') - 1;
+        $year = $date->format('Y') - 1;
 
-		return array($year, "$year-01-01 00:00:00", "$year-12-31 23:59:59");
-	}
+        return array($year, "$year-01-01 00:00:00", "$year-12-31 23:59:59");
+    }
 }

@@ -36,16 +36,16 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1351871191 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Allow multiple glossary words per definition");
-		$this->execMutateSql("CREATE TABLE glossary_word_definitions (id INT AUTO_INCREMENT NOT NULL, definition LONGTEXT NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE glossary_words ADD definition_id INT NOT NULL");
-		$this->execMutateSql("INSERT INTO glossary_word_definitions SELECT id, content FROM glossary_words");
-		$this->execMutateSql("UPDATE glossary_words SET definition_id = id");
-		$this->execMutateSql("ALTER TABLE glossary_words DROP content");
-		$this->execMutateSql("ALTER TABLE glossary_words ADD CONSTRAINT FK_1A8003DAD11EA911 FOREIGN KEY (definition_id) REFERENCES glossary_word_definitions (id) ON DELETE CASCADE");
-		$this->execMutateSql("CREATE INDEX IDX_1A8003DAD11EA911 ON glossary_words (definition_id)");
-		$this->execMutateSql("CREATE UNIQUE INDEX UNIQ_1A8003DAC3F17511 ON glossary_words (word)");
-	}
+    public function run()
+    {
+        $this->out("Allow multiple glossary words per definition");
+        $this->execMutateSql("CREATE TABLE glossary_word_definitions (id INT AUTO_INCREMENT NOT NULL, definition LONGTEXT NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE glossary_words ADD definition_id INT NOT NULL");
+        $this->execMutateSql("INSERT INTO glossary_word_definitions SELECT id, content FROM glossary_words");
+        $this->execMutateSql("UPDATE glossary_words SET definition_id = id");
+        $this->execMutateSql("ALTER TABLE glossary_words DROP content");
+        $this->execMutateSql("ALTER TABLE glossary_words ADD CONSTRAINT FK_1A8003DAD11EA911 FOREIGN KEY (definition_id) REFERENCES glossary_word_definitions (id) ON DELETE CASCADE");
+        $this->execMutateSql("CREATE INDEX IDX_1A8003DAD11EA911 ON glossary_words (definition_id)");
+        $this->execMutateSql("CREATE UNIQUE INDEX UNIQ_1A8003DAC3F17511 ON glossary_words (word)");
+    }
 }

@@ -33,11 +33,11 @@ namespace Application\ImportBundle\RecordMapper;
 
 interface LearnableRecordMapperInterface extends RecordMapperInterface
 {
-	/**
-	 * Have the mapper learn a new value. For examlpe, this might add a new value to an internal cache.
-	 *
-	 * @param mixed $record
-	 * @return void
-	 */
-	public function learnRecord($record);
+    /**
+     * Have the mapper learn a new value. For examlpe, this might add a new value to an internal cache.
+     *
+     * @param  mixed $record
+     * @return void
+     */
+    public function learnRecord($record);
 }

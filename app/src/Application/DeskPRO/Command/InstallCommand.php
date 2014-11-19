@@ -50,9 +50,9 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
     protected function configure()
     {
         $this->setName('dp:install');
-		$this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Unused (exists for legacy)");
-		$this->addOption('admin-email', null, InputOption::VALUE_REQUIRED, "The initial admin email");
-		$this->addOption('admin-password', null, InputOption::VALUE_REQUIRED, "The initial admin password");
+        $this->addOption('insert-initial', null, InputOption::VALUE_NONE, "Unused (exists for legacy)");
+        $this->addOption('admin-email', null, InputOption::VALUE_REQUIRED, "The initial admin email");
+        $this->addOption('admin-password', null, InputOption::VALUE_REQUIRED, "The initial admin password");
     }
 
     protected function execute(InputInterface $input, OutputInterface $output)
@@ -61,10 +61,11 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             exit;
         }
 
-		if (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
-			echo "Please specify --admin-email and --admin-password\n";
-			return 1;
-		}
+        if (!$input->getOption('admin-email') || !$input->getOption('admin-password')) {
+            echo "Please specify --admin-email and --admin-password\n";
+
+            return 1;
+        }
 
         $this->createDatabase();
         $this->getLogger()->log('Install::createTables', 'debug');
@@ -75,21 +76,23 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         if ($check != 'install_data') {
             try {
                 $db->exec("
-					CREATE TABLE `install_data` (
-					  `build` varchar(30) NOT NULL,
-					  `name` varchar(75) NOT NULL DEFAULT '',
-					  `data` blob NOT NULL,
-					  PRIMARY KEY (`build`,`name`)
-					) ENGINE=InnoDB DEFAULT CHARSET=latin1
-				");
+                    CREATE TABLE `install_data` (
+                      `build` varchar(30) NOT NULL,
+                      `name` varchar(75) NOT NULL DEFAULT '',
+                      `data` blob NOT NULL,
+                      PRIMARY KEY (`build`,`name`)
+                    ) ENGINE=InnoDB DEFAULT CHARSET=latin1
+                ");
             } catch (\Exception $e) {
                 $this->getLogger()->log('Failed to craete install_data: ' . $e->getCode() . ' ' . $e->getMessage(), 'err');
+
                 return;
             }
 
             $tableinfo = $db->fetchColumn("SHOW CREATE TABLE `install_data`", array(), 1);
             if (stripos($tableinfo, 'innodb') === false) {
                 $this->getLogger()->log('install_data is not innodb', 'err');
+
                 return;
             }
         }
@@ -117,152 +120,152 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         $install_schema->run(false);
 
-		#------------------------------
-		# Install Data
-		#------------------------------
+        #------------------------------
+        # Install Data
+        #------------------------------
 
-		$initial_password = 'password';
-		$initial_email    = 'admin@example.com';
+        $initial_password = 'password';
+        $initial_email    = 'admin@example.com';
 
-		if ($input->getOption('admin-email')) {
-			$initial_email = $input->getOption('admin-email');
-		}
-		if ($input->getOption('admin-password')) {
-			$initial_password = $input->getOption('admin-password');
-		}
+        if ($input->getOption('admin-email')) {
+            $initial_email = $input->getOption('admin-email');
+        }
+        if ($input->getOption('admin-password')) {
+            $initial_password = $input->getOption('admin-password');
+        }
 
-		if ($initial_email == 'CONFIG') {
-			if (defined('DP_TECHNICAL_EMAIL')) {
-				$initial_email = DP_TECHNICAL_EMAIL;
-			} else {
-				$initial_email = 'admin@example.com';
-			}
-		}
+        if ($initial_email == 'CONFIG') {
+            if (defined('DP_TECHNICAL_EMAIL')) {
+                $initial_email = DP_TECHNICAL_EMAIL;
+            } else {
+                $initial_email = 'admin@example.com';
+            }
+        }
 
-		$agent = new \Application\DeskPRO\Entity\Person();
-		$agent->first_name = 'Admin';
-		$agent->last_name = 'Admin';
-		$agent->setEmail($initial_email, true);
-		$agent->setPassword($initial_password);
-		$agent->is_user = true;
-		$agent->is_confirmed = true;
-		$agent->is_agent_confirmed = true;
-		$agent->is_agent = true;
-		$agent->can_agent = true;
-		$agent->can_admin = true;
-		$agent->can_billing = true;
-		$agent->can_reports = true;
+        $agent = new \Application\DeskPRO\Entity\Person();
+        $agent->first_name = 'Admin';
+        $agent->last_name = 'Admin';
+        $agent->setEmail($initial_email, true);
+        $agent->setPassword($initial_password);
+        $agent->is_user = true;
+        $agent->is_confirmed = true;
+        $agent->is_agent_confirmed = true;
+        $agent->is_agent = true;
+        $agent->can_agent = true;
+        $agent->can_admin = true;
+        $agent->can_billing = true;
+        $agent->can_reports = true;
 
-		$this->getOrm()->persist($agent);
-		$this->getOrm()->flush();
+        $this->getOrm()->persist($agent);
+        $this->getOrm()->flush();
 
-		$this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
+        $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
 
-		// Install data stuff
-		$AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
-		$USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-		$AGENT = $agent; // can be used in data.php
-		$WEB_INSTALL = true;
-		$IMPORT_INSTALL = false;
+        // Install data stuff
+        $AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+        $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
+        $AGENT = $agent; // can be used in data.php
+        $WEB_INSTALL = true;
+        $IMPORT_INSTALL = false;
 
-		$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-		$em = $this->getOrm();
-		$translate = $this->getContainer()->get('deskpro.core.translate');
+        $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
+        $em = $this->getOrm();
+        $translate = $this->getContainer()->get('deskpro.core.translate');
 
-		foreach ($install_data as $php) {
-			eval($php);
-		}
+        foreach ($install_data as $php) {
+            eval($php);
+        }
 
-		$data_proc = new DefaultDataProcessor($this->getContainer());
-		if ($logger) {
-			$orb_logger_adapter = new OrbLoggerAdapterHandler($logger);
-			$data_proc->setLogger(new Logger('data_proc', array($orb_logger_adapter)));
-		}
-		$data_proc->runInstall();
+        $data_proc = new DefaultDataProcessor($this->getContainer());
+        if ($logger) {
+            $orb_logger_adapter = new OrbLoggerAdapterHandler($logger);
+            $data_proc->setLogger(new Logger('data_proc', array($orb_logger_adapter)));
+        }
+        $data_proc->runInstall();
 
-		$this->getOrm()->flush();
+        $this->getOrm()->flush();
 
-		\Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
+        \Application\DeskPRO\DataSync\AbstractDataSync::syncAllBaseToLive();
 
-		// For the all agent group, fetch permissions from the template
-		if ($AGENTGROUP_ALL) {
-			$ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
-			$ch->setCollection(array($AGENTGROUP_ALL));
-			$this->getOrm()->persist($agent);
-			$this->getOrm()->flush();
-		}
+        // For the all agent group, fetch permissions from the template
+        if ($AGENTGROUP_ALL) {
+            $ch = new \Application\DeskPRO\ORM\CollectionHelper($agent, 'usergroups');
+            $ch->setCollection(array($AGENTGROUP_ALL));
+            $this->getOrm()->persist($agent);
+            $this->getOrm()->flush();
+        }
 
-		if ($USERGROUP_EVERYONE) {
-			$scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
-			foreach ($scanner->getNames() as $p_name) {
-				$p = new \Application\DeskPRO\Entity\Permission();
-				$p->usergroup = $USERGROUP_EVERYONE;
-				$p->name = $p_name;
-				$p->value = 1;
-				$this->getOrm()->persist($p);
-			}
-			$this->getOrm()->flush();
-		}
+        if ($USERGROUP_EVERYONE) {
+            $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
+            foreach ($scanner->getNames() as $p_name) {
+                $p = new \Application\DeskPRO\Entity\Permission();
+                $p->usergroup = $USERGROUP_EVERYONE;
+                $p->name = $p_name;
+                $p->value = 1;
+                $this->getOrm()->persist($p);
+            }
+            $this->getOrm()->flush();
+        }
 
-		$data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
-		$data_init->admin_user = $agent;
-		$data_init->run();
-		App::getDb()->replace('settings', array(
-			'name' => 'core.done_data_initializer',
-			'value' => 1,
-		));
+        $data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+        $data_init->admin_user = $agent;
+        $data_init->run();
+        App::getDb()->replace('settings', array(
+            'name' => 'core.done_data_initializer',
+            'value' => 1,
+        ));
 
-		$app_syncer = new \Application\DeskPRO\App\Native\NativeAppsSync(
-			$this->getContainer(),
-			$this->getContainer()->getAppManager(),
-			new \Application\DeskPRO\App\Package\PackageInstaller($this->getContainer()->getEm(), $this->getContainer()->getBlobStorage(), $this->getContainer()->getImagine()),
-			null
-		);
-		$app_syncer->runSync();
+        $app_syncer = new \Application\DeskPRO\App\Native\NativeAppsSync(
+            $this->getContainer(),
+            $this->getContainer()->getAppManager(),
+            new \Application\DeskPRO\App\Package\PackageInstaller($this->getContainer()->getEm(), $this->getContainer()->getBlobStorage(), $this->getContainer()->getImagine()),
+            null
+        );
+        $app_syncer->runSync();
 
-		$this->getContainer()->resetSystemService('app_manager');
-		$instance_installer = new \Application\DeskPRO\App\InstanceInstaller(
-			$this->getContainer()->getAppManager(),
-			$this->getContainer()->getAppManager()->getPackage('deskpro_gravatar'),
-			$this->getContainer()->getEm()
-		);
-		$instance_installer->install('', array(), $this->getContainer());
+        $this->getContainer()->resetSystemService('app_manager');
+        $instance_installer = new \Application\DeskPRO\App\InstanceInstaller(
+            $this->getContainer()->getAppManager(),
+            $this->getContainer()->getAppManager()->getPackage('deskpro_gravatar'),
+            $this->getContainer()->getEm()
+        );
+        $instance_installer->install('', array(), $this->getContainer());
 
-		App::getDb()->replace('install_data', array(
-			'build' => 'default',
-			'name' => 'install_build',
-			'data' => DP_BUILD_TIME
-		));
+        App::getDb()->replace('install_data', array(
+            'build' => 'default',
+            'name' => 'install_build',
+            'data' => DP_BUILD_TIME
+        ));
 
-		App::getDb()->replace('settings', array(
-			'name' => 'core.deskpro_build',
-			'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
-		));
-		App::getDb()->replace('settings', array(
-			'name' => 'core.deskpro_build_num',
-			'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
-		));
-		App::getDb()->replace('settings', array(
-			'name' => 'core.install_build',
-			'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
-		));
+        App::getDb()->replace('settings', array(
+            'name' => 'core.deskpro_build',
+            'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+        ));
+        App::getDb()->replace('settings', array(
+            'name' => 'core.deskpro_build_num',
+            'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
+        ));
+        App::getDb()->replace('settings', array(
+            'name' => 'core.install_build',
+            'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
+        ));
 
-		App::getDb()->replace('settings', array(
-			'name' => 'core.install_timestamp',
-			'value' => time(),
-		));
-		App::getDb()->replace('settings', array(
-			'name' => 'core.install_key',
-			'value' => Strings::random(20, Strings::CHARS_KEY),
-		));
-		App::getDb()->replace('settings', array(
-			'name' => 'core.deskpro_version',
-			'value' => date('YmdHis'),
-		));
-		App::getDb()->replace('settings', array(
-			'name' => 'core.install_via_cmd',
-			'value' => 1,
-		));
+        App::getDb()->replace('settings', array(
+            'name' => 'core.install_timestamp',
+            'value' => time(),
+        ));
+        App::getDb()->replace('settings', array(
+            'name' => 'core.install_key',
+            'value' => Strings::random(20, Strings::CHARS_KEY),
+        ));
+        App::getDb()->replace('settings', array(
+            'name' => 'core.deskpro_version',
+            'value' => date('YmdHis'),
+        ));
+        App::getDb()->replace('settings', array(
+            'name' => 'core.install_via_cmd',
+            'value' => 1,
+        ));
     }
 
     private function createDatabase()
@@ -270,20 +273,20 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         try {
             App::getDb()->connect();
         } catch (\Exception $e) {
-			if ($e instanceof DBALException || $e instanceof \PDOException) {
-				if ($e->getCode() == '1049') {
+            if ($e instanceof DBALException || $e instanceof \PDOException) {
+                if ($e->getCode() == '1049') {
 
-					// Attempt to create an empty database
-					try {
-						global $DP_CONFIG;
-						$dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
-						$dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
-					} catch (\Exception $e) {
-					}
-				}
-			} else {
-				throw $e;
-			}
+                    // Attempt to create an empty database
+                    try {
+                        global $DP_CONFIG;
+                        $dbh = new \PDO("mysql:host={$DP_CONFIG['db']['host']}", $DP_CONFIG['db']['user'], $DP_CONFIG['db']['password']);
+                        $dbh->exec("CREATE DATABASE `{$DP_CONFIG['db']['dbname']}`");
+                    } catch (\Exception $e) {
+                    }
+                }
+            } else {
+                throw $e;
+            }
         }
     }
 

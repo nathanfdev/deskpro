@@ -47,66 +47,65 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
  */
 class DeskproSlugConverter implements ParamConverterInterface
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
+    private $em;
 
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	public function apply(Request $request, ParamConverter $configuration)
-	{
-		$param_name       = $configuration->getName();
-		$param_class      = $configuration->getClass();
-		$param_options    = $this->getOptions($configuration);
-		$slug_attribute_name = $param_options['slug_route_param'];
-		$slug_route_param = $request->attributes->get($slug_attribute_name);
-		$slug_col         = $param_options['slug_col'];
+    public function apply(Request $request, ParamConverter $configuration)
+    {
+        $param_name       = $configuration->getName();
+        $param_class      = $configuration->getClass();
+        $param_options    = $this->getOptions($configuration);
+        $slug_attribute_name = $param_options['slug_route_param'];
+        $slug_route_param = $request->attributes->get($slug_attribute_name);
+        $slug_col         = $param_options['slug_col'];
 
-		$repo = $this->em->getRepository($param_class);
-		if ($obj = $repo->findOneBy(array($slug_col => $slug_route_param))) {
-			$request->attributes->set($param_name, $obj);
+        $repo = $this->em->getRepository($param_class);
+        if ($obj = $repo->findOneBy(array($slug_col => $slug_route_param))) {
+            $request->attributes->set($param_name, $obj);
 
-			return;
-		}
+            return;
+        }
 
 
-		$id = substr($slug_route_param, 0, strpos($slug_route_param, '-'));
-		if ($obj = $repo->find($id)) {
-			// it exists and we are on the old url at the moment, lets flag a 301 response
-			$new_slug_attribute = array(
-				$slug_attribute_name => $obj->slug
-			);
+        $id = substr($slug_route_param, 0, strpos($slug_route_param, '-'));
+        if ($obj = $repo->find($id)) {
+            // it exists and we are on the old url at the moment, lets flag a 301 response
+            $new_slug_attribute = array(
+                $slug_attribute_name => $obj->slug
+            );
 
-			throw new PermanentRedirectException(
-				$request->attributes->get('_route'),
-				array_merge(
-					$request->attributes->get('_route_params'),
-					$new_slug_attribute
-				)
-			);
-		}
+            throw new PermanentRedirectException(
+                $request->attributes->get('_route'),
+                array_merge(
+                    $request->attributes->get('_route_params'),
+                    $new_slug_attribute
+                )
+            );
+        }
 
-		throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $param_class, $slug_attribute_name, $slug_route_param));
-	}
+        throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $param_class, $slug_attribute_name, $slug_route_param));
+    }
 
-	public function supports(ParamConverter $configuration)
-	{
-		return true;
-	}
+    public function supports(ParamConverter $configuration)
+    {
+        return true;
+    }
 
-	protected function getOptions(ParamConverter $configuration)
-	{
-		return array_replace(
-			array(
-				'slug_col' => 'slug',
-				'slug_route_param' => 'slug',
-			), $configuration->getOptions()
-		);
-	}
+    protected function getOptions(ParamConverter $configuration)
+    {
+        return array_replace(
+            array(
+                'slug_col' => 'slug',
+                'slug_route_param' => 'slug',
+            ), $configuration->getOptions()
+        );
+    }
 }
- 

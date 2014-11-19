@@ -41,159 +41,160 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ContextualChoiceType extends ChoiceType
 {
-	/**
-	 * @param FormBuilderInterface $builder
-	 * @param array $options
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		parent::buildForm($builder, $options);
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildForm($builder, $options);
 
-		if ($options['allow_edit']) {
-			$builder->add('custom_choice', 'text', array(
-				'required' => false,
-				'label' => false,
-				'mapped' => false,
-				'attr' => array(
-					'placeholder' => 'Custom choice',
-					'style' => 'display:none;',
-				),
-			));
-		}
-	}
+        if ($options['allow_edit']) {
+            $builder->add('custom_choice', 'text', array(
+                'required' => false,
+                'label' => false,
+                'mapped' => false,
+                'attr' => array(
+                    'placeholder' => 'Custom choice',
+                    'style' => 'display:none;',
+                ),
+            ));
+        }
+    }
 
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		parent::setDefaultOptions($resolver);
-		$options = $this->definition['options'];
-		$resolver
-			->setRequired(array('context'))
-			->setDefaults(array(
-				'allow_edit' => isset($options['allow_edit']) ? $options['allow_edit'] : false
-			))
-		;
-	}
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        parent::setDefaultOptions($resolver);
+        $options = $this->definition['options'];
+        $resolver
+            ->setRequired(array('context'))
+            ->setDefaults(array(
+                'allow_edit' => isset($options['allow_edit']) ? $options['allow_edit'] : false
+            ))
+        ;
+    }
 
-	/**
-	 * @param EntityRepository $er
-	 * @param array $options
-	 * @return \Doctrine\ORM\QueryBuilder
-	 */
-	public function getChoicesQueryBuilder(EntityRepository $er, array $options)
-	{
-		/** @var DomainObject $ctx */
-		$ctx = $options['context'];
-		$def = $this->definition;
+    /**
+     * @param  EntityRepository           $er
+     * @param  array                      $options
+     * @return \Doctrine\ORM\QueryBuilder
+     */
+    public function getChoicesQueryBuilder(EntityRepository $er, array $options)
+    {
+        /** @var DomainObject $ctx */
+        $ctx = $options['context'];
+        $def = $this->definition;
 
-		return $er->createQueryBuilder('d')
-			->add('from', new From('DeskPRO:CustomFieldDefinition', 'd', 'd.id'), false)
-			->where('d.parent = :parent')
-			->andWhere('d.owner_class = :owner_class and d.context_class = :cc and d.context_id = :cid')
-			->orderBy('d.display_order', 'ASC')
-			->setParameter('parent', $def['id'])
-			->setParameter('owner_class', $def['owner_class'])
-			->setParameter('cc', ClassUtils::getClass($ctx))
-			->setParameter('cid', $ctx['id']);
-	}
+        return $er->createQueryBuilder('d')
+            ->add('from', new From('DeskPRO:CustomFieldDefinition', 'd', 'd.id'), false)
+            ->where('d.parent = :parent')
+            ->andWhere('d.owner_class = :owner_class and d.context_class = :cc and d.context_id = :cid')
+            ->orderBy('d.display_order', 'ASC')
+            ->setParameter('parent', $def['id'])
+            ->setParameter('owner_class', $def['owner_class'])
+            ->setParameter('cc', ClassUtils::getClass($ctx))
+            ->setParameter('cid', $ctx['id']);
+    }
 
-	/**
-	 * @param FormView $view
-	 * @param FormInterface $form
-	 * @param array $options
-	 */
-	public function buildView(FormView $view, FormInterface $form, array $options)
-	{
-		parent::buildView($view, $form, $options);
-		$view->vars['allow_edit'] = $options['allow_edit'];
-	}
+    /**
+     * @param FormView      $view
+     * @param FormInterface $form
+     * @param array         $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        parent::buildView($view, $form, $options);
+        $view->vars['allow_edit'] = $options['allow_edit'];
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'cf_contextual_choice';
-	}
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'cf_contextual_choice';
+    }
 
-	/**
-	 * @param FormEvent $event
-	 */
-	public function onPreSubmit(FormEvent $event)
-	{
-		if (!$data = $event->getData()) {
-			parent::onPreSubmit($event);
-			return;
-		}
+    /**
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        if (!$data = $event->getData()) {
+            parent::onPreSubmit($event);
 
-		$form = $event->getForm();
-		$editable = $form->getConfig()->getOption('allow_edit');
+            return;
+        }
 
-		if ($editable && !empty($data['custom_choice'])) {
+        $form = $event->getForm();
+        $editable = $form->getConfig()->getOption('allow_edit');
 
-			/** @var EntityChoiceList $choices */
-			$choices = $form->get('value')->getConfig()->getOption('choice_list')->getChoices();
-			$this->handleCustomChoice($form, $choices, $data);
-			$form->remove('value');
-			$form->add('value', 'entity', array_merge($this->getValueOptions(), array(
-				'class' => 'DeskPRO:CustomFieldDefinition',
-				'choices' => $choices,
-			)));
+        if ($editable && !empty($data['custom_choice'])) {
 
-			$event->setData($data);
-		}
-	}
+            /** @var EntityChoiceList $choices */
+            $choices = $form->get('value')->getConfig()->getOption('choice_list')->getChoices();
+            $this->handleCustomChoice($form, $choices, $data);
+            $form->remove('value');
+            $form->add('value', 'entity', array_merge($this->getValueOptions(), array(
+                'class' => 'DeskPRO:CustomFieldDefinition',
+                'choices' => $choices,
+            )));
 
-	/**
-	 * select choice or add new if not exist
-	 * @param FormInterface $form
-	 * @param array $choices
-	 * @param $data
-	 */
-	protected function handleCustomChoice(FormInterface $form, array &$choices, &$data)
-	{
-		if (empty($data['custom_choice'])) {
-			return;
-		}
+            $event->setData($data);
+        }
+    }
 
-		$check = strtolower($data['custom_choice']);
-		$newVal = isset($choices[$data['custom_choice']]) ? $choices[$data['custom_choice']] : null;
+    /**
+     * select choice or add new if not exist
+     * @param FormInterface $form
+     * @param array         $choices
+     * @param $data
+     */
+    protected function handleCustomChoice(FormInterface $form, array &$choices, &$data)
+    {
+        if (empty($data['custom_choice'])) {
+            return;
+        }
 
-		// first, string comparison
-		if (!$newVal) {
-			foreach ($choices as $choice) {
-				/** @var CustomFieldDefinition $choice */
-				if (strtolower($choice['title']) === $check) {
-					$newVal = $choice['id'];
-				}
-			}
-		}
+        $check = strtolower($data['custom_choice']);
+        $newVal = isset($choices[$data['custom_choice']]) ? $choices[$data['custom_choice']] : null;
 
-		// then, add new choice to list
-		if (!$newVal) {
-			$newDef = clone $this->definition;
-			$newDef['id'] = null;
-			$newDef->parent = $this->definition;
-			$newDef->children = new ArrayCollection();
-			$newDef['title'] = $data['custom_choice'];
-			$newDef['options'] = array();
+        // first, string comparison
+        if (!$newVal) {
+            foreach ($choices as $choice) {
+                /** @var CustomFieldDefinition $choice */
+                if (strtolower($choice['title']) === $check) {
+                    $newVal = $choice['id'];
+                }
+            }
+        }
 
-			if ($context = $form->getConfig()->getOption('context')) {
-				$newDef['context_id'] = $context['id'];
-			}
+        // then, add new choice to list
+        if (!$newVal) {
+            $newDef = clone $this->definition;
+            $newDef['id'] = null;
+            $newDef->parent = $this->definition;
+            $newDef->children = new ArrayCollection();
+            $newDef['title'] = $data['custom_choice'];
+            $newDef['options'] = array();
 
-			$form->get('value')->getConfig()->getOption('em')->persist($newDef);
-			$form->get('value')->getConfig()->getOption('em')->flush($newDef);
-			$newVal = $newDef['id'];
-			$choices[$newVal] = $newDef;
-		}
+            if ($context = $form->getConfig()->getOption('context')) {
+                $newDef['context_id'] = $context['id'];
+            }
 
-		if ($newVal && $form->get('value')->getConfig()->getOption('multiple')) {
-			$newVal = (array) $newVal;
-		}
-		$data['value'] = $newVal;
-		unset($data['custom_choice']);
-	}
+            $form->get('value')->getConfig()->getOption('em')->persist($newDef);
+            $form->get('value')->getConfig()->getOption('em')->flush($newDef);
+            $newVal = $newDef['id'];
+            $choices[$newVal] = $newDef;
+        }
+
+        if ($newVal && $form->get('value')->getConfig()->getOption('multiple')) {
+            $newVal = (array) $newVal;
+        }
+        $data['value'] = $newVal;
+        unset($data['custom_choice']);
+    }
 }

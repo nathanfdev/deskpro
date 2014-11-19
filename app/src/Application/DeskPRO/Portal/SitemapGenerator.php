@@ -41,333 +41,333 @@ use Symfony\Bundle\FrameworkBundle\Routing\Router;
 
 class SitemapGenerator
 {
-	/**
-	 * @var \Doctrine\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
-	 */
-	protected $router;
+    /**
+     * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
+     */
+    protected $router;
 
-	/**
-	 * @var \Application\DeskPRO\Publish\Structure
-	 */
-	protected $structure;
+    /**
+     * @var \Application\DeskPRO\Publish\Structure
+     */
+    protected $structure;
 
-	/**
-	 * @var string
-	 */
-	protected $base_url;
+    /**
+     * @var string
+     */
+    protected $base_url;
 
-	/**
-	 * @var array
-	 */
-	protected $items = null;
+    /**
+     * @var array
+     */
+    protected $items = null;
 
-	public function __construct($base_url, EntityManager $em, Router $router)
-	{
-		$this->base_url   = rtrim($base_url, '/');
-		$this->em         = $em;
-		$this->db         = $em->getConnection();
-		$this->router     = $router;
+    public function __construct($base_url, EntityManager $em, Router $router)
+    {
+        $this->base_url   = rtrim($base_url, '/');
+        $this->em         = $em;
+        $this->db         = $em->getConnection();
+        $this->router     = $router;
 
-		$person = new PersonGuest();
-		$this->structure = new PublishStructure(
-			$person,
-			$this->em,
-			new \Doctrine\Common\Cache\ArrayCache()
-		);
-	}
-
-
-	/**
-	 * Get sitemap.xml
-	 *
-	 * @return string
-	 */
-	public function getXml()
-	{
-		$xml = array();
-		$xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
-		$xml[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
-
-		$attributes = array('loc', 'changefreq', 'lastmod', 'priority');
-
-		foreach ($this->getItems() as $item) {
-			$xml[] = "<url>";
-			foreach ($attributes as $attr) {
-				if (!empty($item[$attr])) {
-					$val = $item[$attr];
-					if ($attr == 'loc') {
-						$val = $this->base_url . $val;
-					}
-
-					$xml[] = "\t<$attr>$val</$attr>";
-				}
-			}
-			$xml[] = "</url>";
-		}
-
-		$xml[] = "</urlset>";
-		$xml[] = '';
-
-		$xml = implode("\n", $xml);
-
-		return $xml;
-	}
+        $person = new PersonGuest();
+        $this->structure = new PublishStructure(
+            $person,
+            $this->em,
+            new \Doctrine\Common\Cache\ArrayCache()
+        );
+    }
 
 
-	/**
-	 * Get items
-	 *
-	 * @return array
-	 */
-	public function getItems()
-	{
-		if ($this->items !== null) return $this->items;
+    /**
+     * Get sitemap.xml
+     *
+     * @return string
+     */
+    public function getXml()
+    {
+        $xml = array();
+        $xml[] = '<?xml version="1.0" encoding="UTF-8"?>';
+        $xml[] = '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">';
 
-		$this->items = array_merge(
-			$this->getSiteItems(),
-			$this->getArticleItems(),
-			$this->getFeedbackItems(),
-			$this->getDownloadItems(),
-			$this->getNewsItems()
-		);
+        $attributes = array('loc', 'changefreq', 'lastmod', 'priority');
 
-		return $this->items;
-	}
+        foreach ($this->getItems() as $item) {
+            $xml[] = "<url>";
+            foreach ($attributes as $attr) {
+                if (!empty($item[$attr])) {
+                    $val = $item[$attr];
+                    if ($attr == 'loc') {
+                        $val = $this->base_url . $val;
+                    }
 
-	/**
-	 * @return array
-	 */
-	protected function getSiteItems()
-	{
-		$items = array();
-		$items[] = array(
-			'loc' => $this->router->generate('user', array()),
-			'changefreq' => 'daily',
-		);
+                    $xml[] = "\t<$attr>$val</$attr>";
+                }
+            }
+            $xml[] = "</url>";
+        }
 
-		$items[] = array(
-			'loc' => $this->router->generate('user_tickets_new', array()),
-			'changefreq' => 'monthly',
-		);
+        $xml[] = "</urlset>";
+        $xml[] = '';
 
-		$items[] = array(
-			'loc' => $this->router->generate('user_feedback_new', array()),
-			'changefreq' => 'monthly',
-		);
+        $xml = implode("\n", $xml);
 
-		return $items;
-	}
+        return $xml;
+    }
 
-	/**
-	 * @return array
-	 */
-	protected function getArticleItems()
-	{
-		$cat_ids = $this->structure->getArticleCategoryIds();
-		if (!$cat_ids) {
-			return array();
-		}
 
-		$items = array();
+    /**
+     * Get items
+     *
+     * @return array
+     */
+    public function getItems()
+    {
+        if ($this->items !== null) return $this->items;
 
-		$items[] = array(
-			'loc' => $this->router->generate('user_articles', array()),
-			'changefreq' => 'daily'
-		);
+        $this->items = array_merge(
+            $this->getSiteItems(),
+            $this->getArticleItems(),
+            $this->getFeedbackItems(),
+            $this->getDownloadItems(),
+            $this->getNewsItems()
+        );
 
-		#------------------------------
-		# Categories
-		#------------------------------
+        return $this->items;
+    }
 
-		$cats = $this->structure->getArticleCategories();
+    /**
+     * @return array
+     */
+    protected function getSiteItems()
+    {
+        $items = array();
+        $items[] = array(
+            'loc' => $this->router->generate('user', array()),
+            'changefreq' => 'daily',
+        );
 
-		foreach ($cats as $cat) {
-			$items[] = array(
-				'loc' => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
-				'changefreq' => 'daily'
-			);
-		}
+        $items[] = array(
+            'loc' => $this->router->generate('user_tickets_new', array()),
+            'changefreq' => 'monthly',
+        );
 
-		#------------------------------
-		# Articles
-		#------------------------------
+        $items[] = array(
+            'loc' => $this->router->generate('user_feedback_new', array()),
+            'changefreq' => 'monthly',
+        );
 
-		$articles = $this->em->createQuery("
-			SELECT PARTIAL art.{id,slug,title}
-			FROM DeskPRO:Article art
-			LEFT JOIN art.categories cat
-			WHERE art.status = 'published' AND cat.id IN (?0)
-		")->execute(array($cat_ids));
+        return $items;
+    }
 
-		foreach ($articles as $a) {
-			$items[] = array(
-				'loc' => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
-				'changefreq' => 'weekly'
-			);
-		}
+    /**
+     * @return array
+     */
+    protected function getArticleItems()
+    {
+        $cat_ids = $this->structure->getArticleCategoryIds();
+        if (!$cat_ids) {
+            return array();
+        }
 
-		return $items;
-	}
+        $items = array();
 
-	/**
-	 * @return array
-	 */
-	protected function getNewsItems()
-	{
-		$cat_ids = $this->structure->getNewsCategoryIds();
-		if (!$cat_ids) {
-			return array();
-		}
+        $items[] = array(
+            'loc' => $this->router->generate('user_articles', array()),
+            'changefreq' => 'daily'
+        );
 
-		$items = array();
+        #------------------------------
+        # Categories
+        #------------------------------
 
-		$items[] = array(
-			'loc' => $this->router->generate('user_news', array()),
-			'changefreq' => 'daily'
-		);
+        $cats = $this->structure->getArticleCategories();
 
-		#------------------------------
-		# Categories
-		#------------------------------
+        foreach ($cats as $cat) {
+            $items[] = array(
+                'loc' => $this->router->generate('user_articles', array('slug' => $cat->getUrlSlug())),
+                'changefreq' => 'daily'
+            );
+        }
 
-		$cats = $this->structure->getNewsCategories();
+        #------------------------------
+        # Articles
+        #------------------------------
 
-		foreach ($cats as $cat) {
-			$items[] = array(
-				'loc' => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
-				'changefreq' => 'daily'
-			);
-		}
+        $articles = $this->em->createQuery("
+            SELECT PARTIAL art.{id,slug,title}
+            FROM DeskPRO:Article art
+            LEFT JOIN art.categories cat
+            WHERE art.status = 'published' AND cat.id IN (?0)
+        ")->execute(array($cat_ids));
 
-		#------------------------------
-		# News
-		#------------------------------
+        foreach ($articles as $a) {
+            $items[] = array(
+                'loc' => $this->router->generate('user_articles_article', array('slug' => $a->getUrlSlug())),
+                'changefreq' => 'weekly'
+            );
+        }
 
-		if ($cat_ids) {
-			$news = $this->em->createQuery("
-				SELECT PARTIAL news.{id,slug,title}
-				FROM DeskPRO:News news
-				WHERE news.status = 'published' AND news.category IN (?0)
-			")->execute(array($cat_ids));
+        return $items;
+    }
 
-			foreach ($news as $n) {
-				$items[] = array(
-					'loc' => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
-					'changefreq' => 'weekly'
-				);
-			}
-		}
+    /**
+     * @return array
+     */
+    protected function getNewsItems()
+    {
+        $cat_ids = $this->structure->getNewsCategoryIds();
+        if (!$cat_ids) {
+            return array();
+        }
 
-		return $items;
-	}
+        $items = array();
 
-	/**
-	 * @return array
-	 */
-	protected function getDownloadItems()
-	{
-		$cat_ids = $this->structure->getDownloadCategoryIds();
-		if (!$cat_ids) {
-			return array();
-		}
+        $items[] = array(
+            'loc' => $this->router->generate('user_news', array()),
+            'changefreq' => 'daily'
+        );
 
-		$items = array();
+        #------------------------------
+        # Categories
+        #------------------------------
 
-		$items[] = array(
-			'loc' => $this->router->generate('user_downloads', array()),
-			'changefreq' => 'daily'
-		);
+        $cats = $this->structure->getNewsCategories();
 
-		#------------------------------
-		# Categories
-		#------------------------------
+        foreach ($cats as $cat) {
+            $items[] = array(
+                'loc' => $this->router->generate('user_news', array('slug' => $cat->getUrlSlug())),
+                'changefreq' => 'daily'
+            );
+        }
 
-		$cats = $this->structure->getDownloadCategories();
+        #------------------------------
+        # News
+        #------------------------------
 
-		foreach ($cats as $cat) {
-			$items[] = array(
-				'loc' => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
-				'changefreq' => 'daily'
-			);
-		}
+        if ($cat_ids) {
+            $news = $this->em->createQuery("
+                SELECT PARTIAL news.{id,slug,title}
+                FROM DeskPRO:News news
+                WHERE news.status = 'published' AND news.category IN (?0)
+            ")->execute(array($cat_ids));
 
-		#------------------------------
-		# Downloads
-		#------------------------------
+            foreach ($news as $n) {
+                $items[] = array(
+                    'loc' => $this->router->generate('user_news_view', array('slug' => $n->getUrlSlug())),
+                    'changefreq' => 'weekly'
+                );
+            }
+        }
 
-		$downloads = $this->em->createQuery("
-			SELECT PARTIAL download.{id,slug,title}
-			FROM DeskPRO:Download download
-			WHERE download.status = 'published' AND download.category IN (?0)
-		")->execute(array($cat_ids));
+        return $items;
+    }
 
-		foreach ($downloads as $d) {
-			$items[] = array(
-				'loc' => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
-				'changefreq' => 'weekly'
-			);
-		}
+    /**
+     * @return array
+     */
+    protected function getDownloadItems()
+    {
+        $cat_ids = $this->structure->getDownloadCategoryIds();
+        if (!$cat_ids) {
+            return array();
+        }
 
-		return $items;
-	}
+        $items = array();
 
-	/**
-	 * @return array
-	 */
-	protected function getFeedbackItems()
-	{
-		$cat_ids = $this->structure->getFeedbackCategoryIds();
-		if (!$cat_ids) {
-			return array();
-		}
+        $items[] = array(
+            'loc' => $this->router->generate('user_downloads', array()),
+            'changefreq' => 'daily'
+        );
 
-		$items = array();
+        #------------------------------
+        # Categories
+        #------------------------------
 
-		$items[] = array(
-			'loc' => $this->router->generate('user_feedback', array()),
-			'changefreq' => 'daily'
-		);
+        $cats = $this->structure->getDownloadCategories();
 
-		#------------------------------
-		# Categories
-		#------------------------------
+        foreach ($cats as $cat) {
+            $items[] = array(
+                'loc' => $this->router->generate('user_downloads', array('slug' => $cat->getUrlSlug())),
+                'changefreq' => 'daily'
+            );
+        }
 
-		$cats = $this->structure->getFeedbackCategories();
+        #------------------------------
+        # Downloads
+        #------------------------------
 
-		foreach ($cats as $cat) {
-			$items[] = array(
-				'loc' => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
-				'changefreq' => 'daily'
-			);
-		}
+        $downloads = $this->em->createQuery("
+            SELECT PARTIAL download.{id,slug,title}
+            FROM DeskPRO:Download download
+            WHERE download.status = 'published' AND download.category IN (?0)
+        ")->execute(array($cat_ids));
 
-		#------------------------------
-		# Downloads
-		#------------------------------
+        foreach ($downloads as $d) {
+            $items[] = array(
+                'loc' => $this->router->generate('user_downloads_file', array('slug' => $d->getUrlSlug())),
+                'changefreq' => 'weekly'
+            );
+        }
 
-		$feedback = $this->em->createQuery("
-			SELECT PARTIAL feedback.{id,slug,title}
-			FROM DeskPRO:Feedback feedback
-			WHERE feedback.hidden_status IS NULL AND feedback.category IN (?0)
-		")->execute(array($cat_ids));
+        return $items;
+    }
 
-		foreach ($feedback as $f) {
-			$items[] = array(
-				'loc' => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
-				'changefreq' => 'weekly'
-			);
-		}
+    /**
+     * @return array
+     */
+    protected function getFeedbackItems()
+    {
+        $cat_ids = $this->structure->getFeedbackCategoryIds();
+        if (!$cat_ids) {
+            return array();
+        }
 
-		return $items;
-	}
+        $items = array();
+
+        $items[] = array(
+            'loc' => $this->router->generate('user_feedback', array()),
+            'changefreq' => 'daily'
+        );
+
+        #------------------------------
+        # Categories
+        #------------------------------
+
+        $cats = $this->structure->getFeedbackCategories();
+
+        foreach ($cats as $cat) {
+            $items[] = array(
+                'loc' => $this->router->generate('user_feedback', array('slug' => $cat->getUrlSlug())),
+                'changefreq' => 'daily'
+            );
+        }
+
+        #------------------------------
+        # Downloads
+        #------------------------------
+
+        $feedback = $this->em->createQuery("
+            SELECT PARTIAL feedback.{id,slug,title}
+            FROM DeskPRO:Feedback feedback
+            WHERE feedback.hidden_status IS NULL AND feedback.category IN (?0)
+        ")->execute(array($cat_ids));
+
+        foreach ($feedback as $f) {
+            $items[] = array(
+                'loc' => $this->router->generate('user_feedback_view', array('slug' => $f->getUrlSlug())),
+                'changefreq' => 'weekly'
+            );
+        }
+
+        return $items;
+    }
 }

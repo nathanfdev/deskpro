@@ -52,134 +52,139 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SendArbitraryUserEmail extends AbstractEmailAction
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('template', 'from_name', 'from_account', 'emails', 'send_org_managers', 'single_email', 'headers');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('template', 'from_name', 'from_account', 'emails', 'send_org_managers', 'single_email', 'headers');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getLogger()->debug("[SendArbitraryUserEmail] Begin");
-		$start_time = microtime(true);
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $context->getLogger()->debug("[SendArbitraryUserEmail] Begin");
+        $start_time = microtime(true);
 
-		try {
-			$from_account = $this->getFromEmailAccountOption($ticket, $context);
-		} catch (\InvalidArgumentException $e) {
-			$context->getLogger()->warn("[SendArbitraryUserEmail] Error {$e->getMessage()}");
-			return;
-		}
+        try {
+            $from_account = $this->getFromEmailAccountOption($ticket, $context);
+        } catch (\InvalidArgumentException $e) {
+            $context->getLogger()->warn("[SendArbitraryUserEmail] Error {$e->getMessage()}");
 
-		try {
-			$template = $this->getEmailTemplateOption($ticket, $context, false);
-		} catch (\InvalidArgumentException $e) {
-			$context->getLogger()->warn("[SendArbitraryUserEmail] Error {$e->getMessage()}");
-			return;
-		}
+            return;
+        }
 
-		#-------------------------
-		# Vars
-		#-------------------------
+        try {
+            $template = $this->getEmailTemplateOption($ticket, $context, false);
+        } catch (\InvalidArgumentException $e) {
+            $context->getLogger()->warn("[SendArbitraryUserEmail] Error {$e->getMessage()}");
 
-		$default_vars = $this->getStandardEmailVars($ticket, $context, 'user');
+            return;
+        }
 
-		#-------------------------
-		# Sort out the users to send to
-		#-------------------------
+        #-------------------------
+        # Vars
+        #-------------------------
 
-		/** @var \Application\DeskPRO\Entity\Person[] $send_people */
-		$send_people = array();
+        $default_vars = $this->getStandardEmailVars($ticket, $context, 'user');
 
-		if ($this->getActionOption('send_org_managers')) {
-			$managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
-			foreach ($managers as $p) {
-				$send_people[] = $p;
-			}
-		}
+        #-------------------------
+        # Sort out the users to send to
+        #-------------------------
 
-		$reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
-		foreach ($this->getActionOption('emails') as $email) {
-			$person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
-			if ($person) {
-				$send_people[] = $person;
-			} else {
-				if ($reg_closed) {
-					continue;
-				}
-				$person_processor = new PersonFromEmailProcessor();
+        /** @var \Application\DeskPRO\Entity\Person[] $send_people */
+        $send_people = array();
 
-				$eml = new EmailAddress();
-				$eml->email = $email;
-				$person = $person_processor->createPerson($eml, true);
+        if ($this->getActionOption('send_org_managers')) {
+            $managers = $this->getContainer()->getEm()->getRepository('DeskPRO:Organization')->getManagers($ticket->organization);
+            foreach ($managers as $p) {
+                $send_people[] = $p;
+            }
+        }
 
-				if ($person) {
-					$send_people[] = $person;
-				}
-			}
-		}
+        $reg_closed = !$this->getContainer()->getSetting('core.reg_enabled');
+        foreach ($this->getActionOption('emails') as $email) {
+            $person = $this->getContainer()->getEm()->getRepository('DeskPRO:Person')->findOneByEmail($email);
+            if ($person) {
+                $send_people[] = $person;
+            } else {
+                if ($reg_closed) {
+                    continue;
+                }
+                $person_processor = new PersonFromEmailProcessor();
 
-		$send_people = array_unique($send_people);
+                $eml = new EmailAddress();
+                $eml->email = $email;
+                $person = $person_processor->createPerson($eml, true);
 
-		if (!$send_people) {
-			$context->getLogger()->debug("[SendArbitraryUserEmail] no people to send to");
-		}
+                if ($person) {
+                    $send_people[] = $person;
+                }
+            }
+        }
 
-		#-------------------------
-		# Send emails
-		#-------------------------
+        $send_people = array_unique($send_people);
 
-		foreach ($send_people as $person) {
-			$context->getLogger()->debug(sprintf("[SendArbitraryUserEmail] Sending to Person#%d %s <%s>", $person->id, $person->getDisplayName(), $person->primary_email->email));
+        if (!$send_people) {
+            $context->getLogger()->debug("[SendArbitraryUserEmail] no people to send to");
+        }
 
-			$build = TicketEmailBuilder::createFromContainer($this->getContainer())
-				->setTicket($ticket)
-				->setToPerson($person)
-				->setUserMode()
-				->setTemplateName($template)
-				->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
-				->setMaxAttachSize(0)
-				->setLogger($context->getLogger())
-				->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
-				->setFromEmailAccount($from_account);
+        #-------------------------
+        # Send emails
+        #-------------------------
 
-			$ticket_email = $build->buildTicketEmail();
+        foreach ($send_people as $person) {
+            $context->getLogger()->debug(sprintf("[SendArbitraryUserEmail] Sending to Person#%d %s <%s>", $person->id, $person->getDisplayName(), $person->primary_email->email));
 
-			try {
-				$ticket_email->send($default_vars);
-				$this->recordEmailTicketLog($ticket_email, $ticket, $context);
-			} catch (\Exception $e) {
-				$context->getLogger()->error(sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
-				throw $e;
-			}
+            $build = TicketEmailBuilder::createFromContainer($this->getContainer())
+                ->setTicket($ticket)
+                ->setToPerson($person)
+                ->setUserMode()
+                ->setTemplateName($template)
+                ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'user'))
+                ->setMaxAttachSize(0)
+                ->setLogger($context->getLogger())
+                ->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
+                ->setFromEmailAccount($from_account);
 
-			$context->getLogger() ->info(sprintf("[SendArbitraryUserEmail] Sent message in %.3fs", microtime(true) - $start_time));
-		}
-	}
+            $ticket_email = $build->buildTicketEmail();
+
+            try {
+                $ticket_email->send($default_vars);
+                $this->recordEmailTicketLog($ticket_email, $ticket, $context);
+            } catch (\Exception $e) {
+                $context->getLogger()->error(sprintf("Exception: [%s] %s", $e->getCode(), $e->getMessage()), array('exception' => $e));
+                throw $e;
+            }
+
+            $context->getLogger() ->info(sprintf("[SendArbitraryUserEmail] Sent message in %.3fs", microtime(true) - $start_time));
+        }
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-			$context->getLogger()->debug("[SendArbitraryUserEmail] no outgoing email accounts are defined");
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
+            $context->getLogger()->debug("[SendArbitraryUserEmail] no outgoing email accounts are defined");
 
-		if ($context->getVars()->get('mute_user_emails')) {
-			$context->getLogger()->debug("[SendArbitraryUserEmail] mute_user_emails = true");
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
+        if ($context->getVars()->get('mute_user_emails')) {
+            $context->getLogger()->debug("[SendArbitraryUserEmail] mute_user_emails = true");
+
+            return true;
+        }
+
+        return false;
+    }
 }

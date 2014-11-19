@@ -38,11 +38,11 @@ use Doctrine\ORM\EntityManager;
 
 class TwitterAccounts
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\TwitterAccount[]
@@ -50,80 +50,79 @@ class TwitterAccounts
 
     protected $twitter_accounts;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * Loads twitter accounts data from the database
-	 */
+    /**
+     * Loads twitter accounts data from the database
+     */
 
-	private function preload()
-	{
-		if ($this->twitter_accounts !== null) {
+    private function preload()
+    {
+        if ($this->twitter_accounts !== null) {
+            return;
+        }
 
-			return;
-		}
-
-		$this->twitter_accounts = $this->em->getRepository('DeskPRO:TwitterAccount')->getAll();
-	}
+        $this->twitter_accounts = $this->em->getRepository('DeskPRO:TwitterAccount')->getAll();
+    }
 
 
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
+    /**
+     * Resets this repository so the next time data is requested form it, it will
+     * be queried again.
+     */
 
-	public function reset()
-	{
-		$this->twitter_accounts = null;
-	}
+    public function reset()
+    {
+        $this->twitter_accounts = null;
+    }
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\TwitterAccount
-	 */
+    /**
+     * @param  int                                        $id
+     * @return \Application\DeskPRO\Entity\TwitterAccount
+     */
 
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
-	}
+    public function getById($id)
+    {
+        return $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
+    }
 
-	/**
-	 * @param int $id
-	 *
-	 * @return array
-	 */
+    /**
+     * @param int $id
+     *
+     * @return array
+     */
 
-	public function getWithUserById($id)
-	{
-		$twitter_account = $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
+    public function getWithUserById($id)
+    {
+        $twitter_account = $this->em->getRepository('DeskPRO:TwitterAccount')->get($id);
 
-		$resultData = array();
+        $resultData = array();
 
-		if ($twitter_account) {
+        if ($twitter_account) {
 
-			$data['id']                        = $twitter_account->id;
-			$data['verified']                  = $twitter_account->verifyCredentials();
-			$data['user']['profile_image_url'] = $twitter_account->user->profile_image_url;
-			$data['user']['name']              = $twitter_account->user->name;
-			$data['user']['screen_name']       = $twitter_account->user->screen_name;
+            $data['id']                        = $twitter_account->id;
+            $data['verified']                  = $twitter_account->verifyCredentials();
+            $data['user']['profile_image_url'] = $twitter_account->user->profile_image_url;
+            $data['user']['name']              = $twitter_account->user->name;
+            $data['user']['screen_name']       = $twitter_account->user->screen_name;
 
-			$agentsArray = array();
+            $agentsArray = array();
 
-			foreach ($twitter_account->persons as $agent) {
+            foreach ($twitter_account->persons as $agent) {
 
-				$agentsArray[] = array('id' => $agent->id, 'display_name' => $agent->display_name);
-			}
+                $agentsArray[] = array('id' => $agent->id, 'display_name' => $agent->display_name);
+            }
 
-			$data['user']['agents'] = $agentsArray;
+            $data['user']['agents'] = $agentsArray;
 
-			$resultData = $data;
-		}
+            $resultData = $data;
+        }
 
-		return $resultData;
-	}
+        return $resultData;
+    }
 
     /**
      * @return \Application\DeskPRO\Entity\TwitterAccount[]
@@ -136,68 +135,68 @@ class TwitterAccounts
         return $this->twitter_accounts;
     }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getAllWithUserAsArray()
-	{
-		$this->preload();
+    public function getAllWithUserAsArray()
+    {
+        $this->preload();
 
-		$resultData = array();
+        $resultData = array();
 
-		foreach ($this->twitter_accounts as $twitter_account) {
+        foreach ($this->twitter_accounts as $twitter_account) {
 
-			$data['id']                        = $twitter_account->id;
-			$data['verified']                  = $twitter_account->verifyCredentials();
-			$data['user']['profile_image_url'] = $twitter_account->user->profile_image_url;
-			$data['user']['name']              = $twitter_account->user->name;
-			$data['user']['screen_name']       = $twitter_account->user->screen_name;
+            $data['id']                        = $twitter_account->id;
+            $data['verified']                  = $twitter_account->verifyCredentials();
+            $data['user']['profile_image_url'] = $twitter_account->user->profile_image_url;
+            $data['user']['name']              = $twitter_account->user->name;
+            $data['user']['screen_name']       = $twitter_account->user->screen_name;
 
-			$resultData[] = $data;
-		}
+            $resultData[] = $data;
+        }
 
-		return $resultData;
-	}
+        return $resultData;
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getAllAgents()
-	{
-		$agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
+    public function getAllAgents()
+    {
+        $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
-		$resultData = array();
+        $resultData = array();
 
-		foreach($agents as $agent) {
+        foreach($agents as $agent) {
 
-			$data['id']           = $agent->id;
-			$data['display_name'] = $agent->display_name;
+            $data['id']           = $agent->id;
+            $data['display_name'] = $agent->display_name;
 
-			$resultData[] = $data;
-		}
+            $resultData[] = $data;
+        }
 
-		return $resultData;
-	}
+        return $resultData;
+    }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function count()
-	{
-		$this->preload();
+    public function count()
+    {
+        $this->preload();
 
-		return count($this->twitter_accounts);
-	}
+        return count($this->twitter_accounts);
+    }
 
-	/**
-	 * @return \Application\DeskPRO\Entity\TwitterAccount
-	 */
+    /**
+     * @return \Application\DeskPRO\Entity\TwitterAccount
+     */
 
-	public function createNew()
-	{
-		return TwitterAccount::createTwitterAccount();
-	}
+    public function createNew()
+    {
+        return TwitterAccount::createTwitterAccount();
+    }
 }

@@ -38,19 +38,19 @@ use Application\DeskPRO\Brand\BrandContainerFactory;
 
 class BrandContainerFactoryTest extends \DpUnitTestCase
 {
-	public function testConstruction()
-	{
-		$mockBrand    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
-		$mockSettings = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
+    public function testConstruction()
+    {
+        $mockBrand    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+        $mockSettings = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsBag');
 
-		$mockSettingsResolver = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsResolver');
-		$mockSettingsResolver->shouldReceive('getBrandSettings')->with($mockBrand)->andReturn($mockSettings)->once();
-		$themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
-		$factory           = new BrandContainerFactory($mockSettingsResolver, $themeResolver);
+        $mockSettingsResolver = \Mockery::mock('Application\DeskPRO\NewSettings\SettingsResolver');
+        $mockSettingsResolver->shouldReceive('getBrandSettings')->with($mockBrand)->andReturn($mockSettings)->once();
+        $themeResolver = \Mockery::mock('Application\PortalBundle\Theme\ThemeResolver');
+        $factory           = new BrandContainerFactory($mockSettingsResolver, $themeResolver);
 
-		$container = $factory->create($mockBrand);
+        $container = $factory->create($mockBrand);
 
-		$this->assertSame($mockBrand, $container->getBrand());
-		$this->assertSame($mockSettings, $container->getSettings());
-	}
+        $this->assertSame($mockBrand, $container->getBrand());
+        $this->assertSame($mockSettings, $container->getSettings());
+    }
 }

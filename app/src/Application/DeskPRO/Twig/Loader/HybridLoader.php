@@ -35,8 +35,6 @@
 namespace Application\DeskPRO\Twig\Loader;
 
 use Application\DeskPRO\App;
-use Symfony\Component\Config\FileLocatorInterface;
-use Symfony\Component\Templating\TemplateNameParserInterface;
 
 /**
  * This hybrid loader loads templates from the filesystem first, and then from the
@@ -46,65 +44,66 @@ use Symfony\Component\Templating\TemplateNameParserInterface;
  */
 class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 {
-	public function markCustomTemplateAsCrashed($name)
-	{
-		$this->crashed_custom_templates[$name] = true;
-	}
-
-	public function dbHasTemplate($name)
-	{
-		return false;
-	}
-
-	public function getCacheKey($name)
+    public function markCustomTemplateAsCrashed($name)
     {
-		return md5((string)$name);
+        $this->crashed_custom_templates[$name] = true;
     }
 
-	public function getSource($name)
+    public function dbHasTemplate($name)
     {
-		$str_name = (string)$name;
-
-		$source = file_get_contents($this->findTemplate($name));
-
-		if (strpos($name, 'DeskPRO:emails_') !== false) {
-			$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
-			$source = $proc->process($source, $str_name);
-		}
-
-		return $source;
+        return false;
     }
 
-	protected function findTemplate($template)
-	{
-		$logicalName = (string)$template;
+    public function getCacheKey($name)
+    {
+        return md5((string)$name);
+    }
 
-		if (strpos($logicalName, 'Apps:') === 0) {
-			if (class_exists('Application\\DeskPRO\\App', false)) {
+    public function getSource($name)
+    {
+        $str_name = (string)$name;
 
-				$logicalName = preg_replace('#^Apps:#', '', $logicalName);
+        $source = file_get_contents($this->findTemplate($name));
 
-				try {
-					$manager = App::getContainer()->getAppManager();
-					$package = null;
-					foreach ($manager->getAllPackages() as $p) {
-						if (!$p->native_name) continue;
-						if (preg_match('#^' . preg_quote($p->native_name) . ':#', $logicalName)) {
-							$package = $p;
-							break;
-						}
-					}
+        if (strpos($name, 'DeskPRO:emails_') !== false) {
+            $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+            $source = $proc->process($source, $str_name);
+        }
 
-					if ($package) {
-						$path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
-						$path_name = str_replace(':', '/', $path_name);
-						$path = DP_ROOT.'/apps/' . $package->native_name . '/native/Resources/views/'.$path_name;
-						return $path;
-					}
-				} catch (\Exception $e) {}
-			}
-		}
+        return $source;
+    }
 
-		return parent::findTemplate($template);
-	}
+    protected function findTemplate($template)
+    {
+        $logicalName = (string)$template;
+
+        if (strpos($logicalName, 'Apps:') === 0) {
+            if (class_exists('Application\\DeskPRO\\App', false)) {
+
+                $logicalName = preg_replace('#^Apps:#', '', $logicalName);
+
+                try {
+                    $manager = App::getContainer()->getAppManager();
+                    $package = null;
+                    foreach ($manager->getAllPackages() as $p) {
+                        if (!$p->native_name) continue;
+                        if (preg_match('#^' . preg_quote($p->native_name) . ':#', $logicalName)) {
+                            $package = $p;
+                            break;
+                        }
+                    }
+
+                    if ($package) {
+                        $path_name = preg_replace('#^.*?:(.*?)$#', '$2', $logicalName);
+                        $path_name = str_replace(':', '/', $path_name);
+                        $path = DP_ROOT.'/apps/' . $package->native_name . '/native/Resources/views/'.$path_name;
+
+                        return $path;
+                    }
+                } catch (\Exception $e) {}
+            }
+        }
+
+        return parent::findTemplate($template);
+    }
 }

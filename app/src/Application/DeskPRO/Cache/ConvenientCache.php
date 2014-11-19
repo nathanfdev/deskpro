@@ -56,79 +56,77 @@ namespace Application\DeskPRO\Cache;
  */
 class ConvenientCache implements CacheAdapterInterface
 {
-	/**
-	 * @var CacheAdapterInterface
-	 */
-	private $adapter;
+    /**
+     * @var CacheAdapterInterface
+     */
+    private $adapter;
 
-	/**
-	 * @param CacheAdapterInterface $adapter
-	 */
-	public function __construct(CacheAdapterInterface $adapter)
-	{
-		$this->adapter = $adapter;
-	}
+    /**
+     * @param CacheAdapterInterface $adapter
+     */
+    public function __construct(CacheAdapterInterface $adapter)
+    {
+        $this->adapter = $adapter;
+    }
 
-	/**
-	 * @return CacheAdapterInterface
-	 */
-	public function getAdapter()
-	{
-		return $this->adapter;
-	}
+    /**
+     * @return CacheAdapterInterface
+     */
+    public function getAdapter()
+    {
+        return $this->adapter;
+    }
 
-	/**
-	 * Similar to CacheAdapterInterface but adds a default value (which also sets on cache if used)
-	 *
-	 * @param      $key
-	 * @param null $default
-	 * @return mixed|null
-	 */
-	public function get($key, $default = null)
-	{
-		if ($default && !$this->adapter->has($key)) {
-			$val = $this->resolveDefault($default);
+    /**
+     * Similar to CacheAdapterInterface but adds a default value (which also sets on cache if used)
+     *
+     * @param             $key
+     * @param  null       $default
+     * @return mixed|null
+     */
+    public function get($key, $default = null)
+    {
+        if ($default && !$this->adapter->has($key)) {
+            $val = $this->resolveDefault($default);
 
-			$this->adapter->set($key, $val);
+            $this->adapter->set($key, $val);
 
-			return $val;
-		}
+            return $val;
+        }
 
-		return $this->adapter->get($key);
-	}
+        return $this->adapter->get($key);
+    }
 
+    protected function resolveDefault($val)
+    {
+        if (is_callable($val)) {
+            return call_user_func($val);
+        }
 
-	protected function resolveDefault($val)
-	{
-		if (is_callable($val)) {
-			return call_user_func($val);
-		}
+        return $val;
+    }
 
-		return $val;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function set($key, $val)
+    {
+        $this->adapter->set($key, $val);
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function set($key, $val)
-	{
-		$this->adapter->set($key, $val);
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function has($key)
+    {
+        return $this->adapter->has($key);
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function has($key)
-	{
-		return $this->adapter->has($key);
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function delete($key)
-	{
-		return $this->adapter->delete($key);
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function delete($key)
+    {
+        return $this->adapter->delete($key);
+    }
 }
- 

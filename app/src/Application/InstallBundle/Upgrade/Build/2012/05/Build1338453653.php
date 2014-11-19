@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1338453653 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Adding user_title to departments table");
-		$this->execMutateSql("CREATE TABLE login_log (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, area VARCHAR(20) NOT NULL, is_success TINYINT(1) NOT NULL, ip_address VARCHAR(20) NOT NULL, hostname VARCHAR(20) NOT NULL, user_agent VARCHAR(20) NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_F16D9FFF217BBB47 (person_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE login_log ADD CONSTRAINT FK_F16D9FFF217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL");
-	}
+    public function run()
+    {
+        $this->out("Adding user_title to departments table");
+        $this->execMutateSql("CREATE TABLE login_log (id INT AUTO_INCREMENT NOT NULL, person_id INT DEFAULT NULL, area VARCHAR(20) NOT NULL, is_success TINYINT(1) NOT NULL, ip_address VARCHAR(20) NOT NULL, hostname VARCHAR(20) NOT NULL, user_agent VARCHAR(20) NOT NULL, date_created DATETIME NOT NULL, INDEX IDX_F16D9FFF217BBB47 (person_id), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE login_log ADD CONSTRAINT FK_F16D9FFF217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE SET NULL");
+    }
 }

@@ -11,33 +11,33 @@ require_once 'AbstractStringCheckTest.php';
 
 class CheckUserOrgManagerTest extends \DpUnitTestCase
 {
-	public function testUserIsManager()
-	{
-		$ticket = new Ticket();
+    public function testUserIsManager()
+    {
+        $ticket = new Ticket();
 
-		$org = new Organization();
+        $org = new Organization();
 
-		$person = new Person();
-		$person->organization = $org;
-		$person->organization_manager = true;
-		$ticket->person = $person;
+        $person = new Person();
+        $person->organization = $org;
+        $person->organization_manager = true;
+        $ticket->person = $person;
 
-		$exec = new ExecutorContext();
+        $exec = new ExecutorContext();
 
-		$check = new CheckUserOrgManager('is');
-		$this->assertTrue($check->isTriggerMatch($ticket, $exec));
-	}
+        $check = new CheckUserOrgManager('is');
+        $this->assertTrue($check->isTriggerMatch($ticket, $exec));
+    }
 
-	public function testUserNotManager()
-	{
-		$ticket = new Ticket();
+    public function testUserNotManager()
+    {
+        $ticket = new Ticket();
 
-		$person = new Person();
-		$ticket->person = $person;
+        $person = new Person();
+        $ticket->person = $person;
 
-		$exec = new ExecutorContext();
+        $exec = new ExecutorContext();
 
-		$check = new CheckUserOrgManager('not');
-		$this->assertTrue($check->isTriggerMatch($ticket, $exec));
-	}
+        $check = new CheckUserOrgManager('not');
+        $this->assertTrue($check->isTriggerMatch($ticket, $exec));
+    }
 }

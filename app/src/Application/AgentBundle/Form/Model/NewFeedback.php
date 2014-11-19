@@ -40,80 +40,80 @@ use Application\DeskPRO\Entity\Person;
 
 class NewFeedback
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/** @var string */
-	public $title;
-	/** @var int */
-	public $category_id;
-	/** @var string */
-	public $status_code;
-	/** @var string */
-	public $content;
+    /** @var string */
+    public $title;
+    /** @var int */
+    public $category_id;
+    /** @var string */
+    public $status_code;
+    /** @var string */
+    public $content;
 
-	/** @var string */
-	public $slug;
-	/** @var array */
-	public $labels = array();
-	/** @var array */
-	public $attach_ids;
+    /** @var string */
+    public $slug;
+    /** @var array */
+    public $labels = array();
+    /** @var array */
+    public $attach_ids;
 
-	/** @var Feedback */
-	protected $_feedback;
+    /** @var Feedback */
+    protected $_feedback;
 
-	public function __construct(Person $person_context)
-	{
-		$this->_person_context = $person_context;
+    public function __construct(Person $person_context)
+    {
+        $this->_person_context = $person_context;
 
-		$this->em = App::getOrm();
-	}
+        $this->em = App::getOrm();
+    }
 
-	public function save()
-	{
-		$this->em->beginTransaction();
+    public function save()
+    {
+        $this->em->beginTransaction();
 
-		$feedback = new Feedback();
-		$feedback->person = $this->_person_context;
-		$feedback->setStatusCode($this->status_code);
-		$feedback->title = $this->title;
-		$feedback->content = $this->content ?: '';
+        $feedback = new Feedback();
+        $feedback->person = $this->_person_context;
+        $feedback->setStatusCode($this->status_code);
+        $feedback->title = $this->title;
+        $feedback->content = $this->content ?: '';
 
-		$cat = $this->em->find('DeskPRO:FeedbackCategory', $this->category_id);
-		$feedback->category = $cat;
-		$this->em->persist($feedback);
-		$this->em->flush();
+        $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->category_id);
+        $feedback->category = $cat;
+        $this->em->persist($feedback);
+        $this->em->flush();
 
-		if ($this->labels) {
-			$feedback->getLabelManager()->setLabelsArray($this->labels, $this->em);
-			$this->em->flush();
-		}
+        if ($this->labels) {
+            $feedback->getLabelManager()->setLabelsArray($this->labels, $this->em);
+            $this->em->flush();
+        }
 
-		if ($this->attach_ids) {
-			foreach ($this->attach_ids as $aid) {
-				$blob = $this->em->getRepository('DeskPRO:Blob')->find($aid);
-				if ($blob) {
-					$attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
-					$attach->person   = $feedback->person;
-					$attach->feedback = $feedback;
-					$attach->blob     = $blob;
+        if ($this->attach_ids) {
+            foreach ($this->attach_ids as $aid) {
+                $blob = $this->em->getRepository('DeskPRO:Blob')->find($aid);
+                if ($blob) {
+                    $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                    $attach->person   = $feedback->person;
+                    $attach->feedback = $feedback;
+                    $attach->blob     = $blob;
 
-					$feedback->addAttachment($attach);
-					$this->em->persist($attach);
-				}
-			}
-			$this->em->flush();
-		}
+                    $feedback->addAttachment($attach);
+                    $this->em->persist($attach);
+                }
+            }
+            $this->em->flush();
+        }
 
-		$this->em->commit();
+        $this->em->commit();
 
-		$this->_feedback = $feedback;
-	}
+        $this->_feedback = $feedback;
+    }
 
-	public function getFeedback()
-	{
-		return $this->_feedback;
-	}
+    public function getFeedback()
+    {
+        return $this->_feedback;
+    }
 }

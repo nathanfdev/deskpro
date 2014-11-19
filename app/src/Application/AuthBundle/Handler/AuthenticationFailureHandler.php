@@ -39,4 +39,3 @@ use Symfony\Component\Security\Http\Authentication\DefaultAuthenticationFailureH
 class AuthenticationFailureHandler extends DefaultAuthenticationFailureHandler
 {
 }
- 

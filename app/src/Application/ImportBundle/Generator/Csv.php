@@ -42,222 +42,220 @@ use Application\ImportBundle\GeneratorConfig;
  */
 class Csv implements GeneratorInterface
 {
-	/** @var string */
-	protected $input_path;
-	/** @var string */
-	protected $output_path;
-	/** @var int|null */
-	protected $ticket_offset;
-	/** @var int */
-	protected $batch_size;
-	
-	/** @var \Psr\Log\LoggerInterface */
-	protected $logger;
-	
-	/** @var GeneratorConfig */
-	protected $config;
+    /** @var string */
+    protected $input_path;
+    /** @var string */
+    protected $output_path;
+    /** @var int|null */
+    protected $ticket_offset;
+    /** @var int */
+    protected $batch_size;
 
-	public function __construct(GeneratorConfig $config, $logger)
-	{
-		$this->config = $config;
-		
-		$this->input_path = $config->input_path;
-		
-		$this->output_path = $config->output_path;
-		
-		$this->batch_size = 10;
-		
-		$this->logger = $logger;
-	}
-	
-	protected function getFileName($data_source)
-	{
-		return $this->input_path . DIRECTORY_SEPARATOR . $data_source . '.csv';
-	}
+    /** @var \Psr\Log\LoggerInterface */
+    protected $logger;
 
+    /** @var GeneratorConfig */
+    protected $config;
 
-	protected function getFile($data_source)
-	{
-		$data_file = $this->getFileName($data_source);
-		
-		return fopen($data_file, 'rt');
-	}
-	
-	public function getRecordCount($data_source)
-	{
-		$data_file = $this->getFile($data_source);
-		
-		$records = -1;
-		
-		while (($row = fgetcsv($data_file, 4096, ';')) !== false) {
-		    ++$records;
-		}
-		
-		fclose($data_file);
-		
-		return $records;
-	}
-	
-	public function exportPeople()
-	{
-		$index = 1;
-		
-		$output_file_path = $this->output_path . 'people/';
-		
-		foreach ($this->getData('people') as $person) {
-			if (!isset($person['name']) || !isset($person['email'])) {
-				$this->logger->warning(sprintf('Invalid person record found (Skipping)'));
-				$this->config->progress_bar->advance();
-				continue;
-			}
-			
-			$file_name = 'person' . $index . '.json';
-			
-			$names = explode(' ', $person['name']);
-			
-			$transformedArray = array();
+    public function __construct(GeneratorConfig $config, $logger)
+    {
+        $this->config = $config;
 
-			$transformedArray['oid']		= $index;
-			$transformedArray['is_agent']		= isset($person['is_agent']) ? (bool) $person['is_agent'] : FALSE;
-			$transformedArray['first_name']		= $names[0];
-			$transformedArray['last_name']		= isset($names[1]) ? $names[1] : '';
-			$transformedArray['emails']		= array($person['email']);
+        $this->input_path = $config->input_path;
 
-			if ($this->config->mode === 'live') {
-				file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
-			}
-			
-			$this->logger->info(sprintf('%s exported successfully!', $file_name));
-			
-			$this->config->progress_bar->advance();
+        $this->output_path = $config->output_path;
 
-			$index++;
-		}
-		
-	}
-	
-	public function exportTickets()
-	{
-		$index = 1;
-		
-		$output_file_path = $this->output_path . 'tickets/';
-		
-		foreach ($this->getData('tickets') as $ticket) {
-			if (!isset($ticket['subject']) || !isset($ticket['user'])) {
-				$this->logger->warning(sprintf('Invalid ticket record found (Skipping)'));
-				$this->config->progress_bar->advance();
-				continue;
-			}
-			
-			$file_name = 'ticket_' . trim($ticket['id']) . '.json';
-			
-			$transformedArray = array();
+        $this->batch_size = 10;
 
-			$transformedArray['ref']		= $ticket['id'];
-			$transformedArray['person']		= $ticket['user'];
-			$transformedArray['agent']		= isset($ticket['agent']) ? $ticket['agent'] : null;
-			$transformedArray['status']		= isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent';
-			$transformedArray['date_created']	= isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s');
-			$transformedArray['subject']		= $ticket['subject'];
+        $this->logger = $logger;
+    }
 
-			if ($this->config->mode === 'live') {
-				file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
-			}
-			
-			$this->logger->info(sprintf('%s exported successfully!', $file_name));
-			
-			$this->config->progress_bar->advance();
-
-			$index++;
-		}
-	}
-	
-	public function exportTicketMessages()
-	{
-		$output_file_path = $this->output_path . 'tickets/';
-
-		$index = 0;
-		
-		foreach ($this->getData('messages') as $ticket_message) {
-			if (!isset($ticket_message['message_text']) || !isset($ticket_message['user'])) {
-				$this->logger->warning(sprintf('Invalid ticket message record found (Skipping)'));
-				$this->config->progress_bar->advance();
-				continue;
-			}
-			
-			$ticket_id = trim($ticket_message['ticket_id']);
-			
-			$ticket_file_name = 'ticket_' . $ticket_id . '.json';
-			
-			$ticket_file_path = $output_file_path . $ticket_file_name;
-			
-			if (is_writable($ticket_file_path)) {
-				$ticket_array = json_decode(file_get_contents($ticket_file_path), true);
-			
-				$message = array(
-					'person'	=> $ticket_message['user'],
-					'date_created'	=> isset($ticket_message['date_created']) ? $ticket_message['date_created'] : date('Y-m-d H:i:s'),
-					'message_text'	=> $ticket_message['message_text']
-				);
-				
-				@$ticket_array['messages'][] = $message;
-
-				if ($this->config->mode === 'live') {
-					file_put_contents($ticket_file_path, json_encode($ticket_array));
-				}
-
-				$this->logger->info(sprintf('%s exported successfully!', $ticket_file_path));
-				
-			} else {
-				$this->logger->warning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
-			}
-			
-			$index++;
-			
-			$this->config->progress_bar->advance();
-		}
-	}
-	
-	public function getData($data_source)
-	{
-		$handle = $this->getFile($data_source);
-
-		$header = NULL;
-		
-		$data = array();
-		
-		if ($handle)
-		{
-			while (($row = fgetcsv($handle, 4096, ';')) !== FALSE)
-			{
-				if(!$header) {
-					$header = array_map('trim',$row);
-				}
-				else {
-					$data[] = array_combine($header, array_map('trim',$row));
-				}
-			}
-			
-			fclose($handle);
-		}
-		return $data;
-	}
+    protected function getFileName($data_source)
+    {
+        return $this->input_path . DIRECTORY_SEPARATOR . $data_source . '.csv';
+    }
 
 
-	public function generateJson()
-	{
-		$steps = $this->getRecordCount('people') + 
-			$this->getRecordCount('tickets') +
-			$this->getRecordCount('messages');
-		
-		$this->config->progress_bar->start($this->config->output, $steps);
-		
-		try {
-			$this->exportPeople();
-			$this->exportTickets();
-			$this->exportTicketMessages();
-		} catch (\Exception $ex) {
-			$this->logger->warning($ex->getMessage());
-		}
-	}
+    protected function getFile($data_source)
+    {
+        $data_file = $this->getFileName($data_source);
+
+        return fopen($data_file, 'rt');
+    }
+
+    public function getRecordCount($data_source)
+    {
+        $data_file = $this->getFile($data_source);
+
+        $records = -1;
+
+        while (($row = fgetcsv($data_file, 4096, ';')) !== false) {
+            ++$records;
+        }
+
+        fclose($data_file);
+
+        return $records;
+    }
+
+    public function exportPeople()
+    {
+        $index = 1;
+
+        $output_file_path = $this->output_path . 'people/';
+
+        foreach ($this->getData('people') as $person) {
+            if (!isset($person['name']) || !isset($person['email'])) {
+                $this->logger->warning(sprintf('Invalid person record found (Skipping)'));
+                $this->config->progress_bar->advance();
+                continue;
+            }
+
+            $file_name = 'person' . $index . '.json';
+
+            $names = explode(' ', $person['name']);
+
+            $transformedArray = array();
+
+            $transformedArray['oid']		= $index;
+            $transformedArray['is_agent']		= isset($person['is_agent']) ? (bool) $person['is_agent'] : FALSE;
+            $transformedArray['first_name']		= $names[0];
+            $transformedArray['last_name']		= isset($names[1]) ? $names[1] : '';
+            $transformedArray['emails']		= array($person['email']);
+
+            if ($this->config->mode === 'live') {
+                file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
+            }
+
+            $this->logger->info(sprintf('%s exported successfully!', $file_name));
+
+            $this->config->progress_bar->advance();
+
+            $index++;
+        }
+
+    }
+
+    public function exportTickets()
+    {
+        $index = 1;
+
+        $output_file_path = $this->output_path . 'tickets/';
+
+        foreach ($this->getData('tickets') as $ticket) {
+            if (!isset($ticket['subject']) || !isset($ticket['user'])) {
+                $this->logger->warning(sprintf('Invalid ticket record found (Skipping)'));
+                $this->config->progress_bar->advance();
+                continue;
+            }
+
+            $file_name = 'ticket_' . trim($ticket['id']) . '.json';
+
+            $transformedArray = array();
+
+            $transformedArray['ref']		= $ticket['id'];
+            $transformedArray['person']		= $ticket['user'];
+            $transformedArray['agent']		= isset($ticket['agent']) ? $ticket['agent'] : null;
+            $transformedArray['status']		= isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent';
+            $transformedArray['date_created']	= isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s');
+            $transformedArray['subject']		= $ticket['subject'];
+
+            if ($this->config->mode === 'live') {
+                file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
+            }
+
+            $this->logger->info(sprintf('%s exported successfully!', $file_name));
+
+            $this->config->progress_bar->advance();
+
+            $index++;
+        }
+    }
+
+    public function exportTicketMessages()
+    {
+        $output_file_path = $this->output_path . 'tickets/';
+
+        $index = 0;
+
+        foreach ($this->getData('messages') as $ticket_message) {
+            if (!isset($ticket_message['message_text']) || !isset($ticket_message['user'])) {
+                $this->logger->warning(sprintf('Invalid ticket message record found (Skipping)'));
+                $this->config->progress_bar->advance();
+                continue;
+            }
+
+            $ticket_id = trim($ticket_message['ticket_id']);
+
+            $ticket_file_name = 'ticket_' . $ticket_id . '.json';
+
+            $ticket_file_path = $output_file_path . $ticket_file_name;
+
+            if (is_writable($ticket_file_path)) {
+                $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
+
+                $message = array(
+                    'person'	=> $ticket_message['user'],
+                    'date_created'	=> isset($ticket_message['date_created']) ? $ticket_message['date_created'] : date('Y-m-d H:i:s'),
+                    'message_text'	=> $ticket_message['message_text']
+                );
+
+                @$ticket_array['messages'][] = $message;
+
+                if ($this->config->mode === 'live') {
+                    file_put_contents($ticket_file_path, json_encode($ticket_array));
+                }
+
+                $this->logger->info(sprintf('%s exported successfully!', $ticket_file_path));
+
+            } else {
+                $this->logger->warning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
+            }
+
+            $index++;
+
+            $this->config->progress_bar->advance();
+        }
+    }
+
+    public function getData($data_source)
+    {
+        $handle = $this->getFile($data_source);
+
+        $header = NULL;
+
+        $data = array();
+
+        if ($handle) {
+            while (($row = fgetcsv($handle, 4096, ';')) !== FALSE) {
+                if(!$header) {
+                    $header = array_map('trim',$row);
+                } else {
+                    $data[] = array_combine($header, array_map('trim',$row));
+                }
+            }
+
+            fclose($handle);
+        }
+
+        return $data;
+    }
+
+
+    public function generateJson()
+    {
+        $steps = $this->getRecordCount('people') +
+            $this->getRecordCount('tickets') +
+            $this->getRecordCount('messages');
+
+        $this->config->progress_bar->start($this->config->output, $steps);
+
+        try {
+            $this->exportPeople();
+            $this->exportTickets();
+            $this->exportTicketMessages();
+        } catch (\Exception $ex) {
+            $this->logger->warning($ex->getMessage());
+        }
+    }
 }

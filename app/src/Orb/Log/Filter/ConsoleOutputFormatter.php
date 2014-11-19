@@ -44,32 +44,32 @@ use Orb\Log\Logger;
  */
 class ConsoleOutputFormatter extends \Orb\Filter\AbstractFilter
 {
-	public function filter($log_item)
-	{
-		if (!$log_item) return null;
+    public function filter($log_item)
+    {
+        if (!$log_item) return null;
 
-		$message = $log_item[LogItem::MESSAGE];
+        $message = $log_item[LogItem::MESSAGE];
 
-		switch ($log_item[LogItem::PRIORITY]) {
-			case Logger::ERR:
-			case Logger::WARN:
-			case Logger::CRIT:
-			case Logger::EMERG:
-			case Logger::ALERT:
-				$message = '<error>'.$message.'</error>';
-				break;
+        switch ($log_item[LogItem::PRIORITY]) {
+            case Logger::ERR:
+            case Logger::WARN:
+            case Logger::CRIT:
+            case Logger::EMERG:
+            case Logger::ALERT:
+                $message = '<error>'.$message.'</error>';
+                break;
 
-			case Logger::NOTICE:
-				$message = '<info>'.$message.'</info>';
-				break;
+            case Logger::NOTICE:
+                $message = '<info>'.$message.'</info>';
+                break;
 
-			case Logger::DEBUG:
-				$message = '<comment>'.$message.'</comment>';
-				break;
-		}
+            case Logger::DEBUG:
+                $message = '<comment>'.$message.'</comment>';
+                break;
+        }
 
-		$log_item[LogItem::MESSAGE_LINE] = $message;
+        $log_item[LogItem::MESSAGE_LINE] = $message;
 
-		return $log_item;
-	}
+        return $log_item;
+    }
 }

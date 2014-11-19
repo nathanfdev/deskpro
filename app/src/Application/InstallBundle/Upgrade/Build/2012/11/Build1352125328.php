@@ -36,21 +36,21 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352125328 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Restore default display order of portal tabs");
+    public function run()
+    {
+        $this->out("Restore default display order of portal tabs");
 
-		$value = $this->container->getDb()->fetchColumn("
-			SELECT value
-			FROM settings
-			WHERE name = 'user.portal_tabs_order'
-		");
+        $value = $this->container->getDb()->fetchColumn("
+            SELECT value
+            FROM settings
+            WHERE name = 'user.portal_tabs_order'
+        ");
 
-		if (!$value) {
-			$this->container->getDb()->executeUpdate("
-				REPLACE INTO settings
-				SET name = 'user.portal_tabs_order', value = 'news,articles,feedback,downloads,newticket'
-			");
-		}
-	}
+        if (!$value) {
+            $this->container->getDb()->executeUpdate("
+                REPLACE INTO settings
+                SET name = 'user.portal_tabs_order', value = 'news,articles,feedback,downloads,newticket'
+            ");
+        }
+    }
 }

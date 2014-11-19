@@ -38,28 +38,28 @@ use Application\LanguageBundle\Routing\UrlMatcher;
 
 class UrlMatcherTest extends \DpUnitTestCase
 {
-	public function testExtractsLanguage()
-	{
-		$matcher = new UrlMatcher();
+    public function testExtractsLanguage()
+    {
+        $matcher = new UrlMatcher();
 
-		$this->assertEquals(
-			array('language_code' => 'en', 'remaining_pathinfo' => '/kb/articles/article-five'),
-			$matcher->extractLanguageCode('/en/kb/articles/article-five')
-		);
+        $this->assertEquals(
+            array('language_code' => 'en', 'remaining_pathinfo' => '/kb/articles/article-five'),
+            $matcher->extractLanguageCode('/en/kb/articles/article-five')
+        );
 
-		$this->assertEquals(
-			array('language_code' => 'en', 'remaining_pathinfo' => '/'),
-			$matcher->extractLanguageCode('/en')
-		);
+        $this->assertEquals(
+            array('language_code' => 'en', 'remaining_pathinfo' => '/'),
+            $matcher->extractLanguageCode('/en')
+        );
 
-		$this->assertEquals(
-			array('language_code' => 'en', 'remaining_pathinfo' => '/'),
-			$matcher->extractLanguageCode('/en/')
-		);
+        $this->assertEquals(
+            array('language_code' => 'en', 'remaining_pathinfo' => '/'),
+            $matcher->extractLanguageCode('/en/')
+        );
 
-		$this->assertEquals(
-			array('language_code' => null, 'remaining_pathinfo' => '/kb/articles/article-five'),
-			$matcher->extractLanguageCode('/kb/articles/article-five')
-		);
-	}
+        $this->assertEquals(
+            array('language_code' => null, 'remaining_pathinfo' => '/kb/articles/article-five'),
+            $matcher->extractLanguageCode('/kb/articles/article-five')
+        );
+    }
 }

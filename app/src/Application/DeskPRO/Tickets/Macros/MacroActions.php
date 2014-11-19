@@ -36,7 +36,6 @@ namespace Application\DeskPRO\Tickets\Macros;
 
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Tickets\Actions\ActionContext;
 use Application\DeskPRO\Tickets\Actions\ActionDefinitionInterface;
 use Application\DeskPRO\Tickets\Actions\MacroActionComposite;
 use Application\DeskPRO\Tickets\Actions\MacroActionInterface;
@@ -52,143 +51,143 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 class MacroActions implements \Serializable, MacroActionInterface
 {
-	/**
-	 * @var ActionComposite
-	 */
-	private $actions;
+    /**
+     * @var ActionComposite
+     */
+    private $actions;
 
-	public function __construct()
-	{
-		$this->actions = new MacroActionComposite();
-	}
-
-
-	/**
-	 * @param MacroActionInterface $action
-	 * @throws \InvalidArgumentException
-	 */
-	public function addAction(MacroActionInterface $action)
-	{
-		if (!($action instanceof ActionDefinitionInterface)) {
-			$class_name = get_class($action);
-			throw new \InvalidArgumentException("MacroActions can only manage terms terms that implement ActionDefinitionInterface. Invalid class: $class_name");
-		}
-		$this->actions->add($action);
-	}
+    public function __construct()
+    {
+        $this->actions = new MacroActionComposite();
+    }
 
 
-	/**
-	 * @param array $action_info
-	 * @throws \InvalidArgumentException
-	 */
-	public function addActionFromArray(array $action_info)
-	{
-		$class_name = "Application\\DeskPRO\\Tickets\\Actions\\{$action_info['type']}";
-		if (!class_exists($class_name)) {
-			throw new \InvalidArgumentException("Unknown action {$action_info['type']} (could not locate class: $class_name)");
-		}
-
-		$action = new $class_name($action_info['options']);
-		$this->addAction($action);
-	}
-
-	/**
-	 * Return an array of macros that the user does not have permission to use.
-	 * An empty array means there are no permission errors.
-	 *
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return array
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return $this->actions->getMacroPermissionErrors($person, $ticket, $context);
-	}
+    /**
+     * @param  MacroActionInterface      $action
+     * @throws \InvalidArgumentException
+     */
+    public function addAction(MacroActionInterface $action)
+    {
+        if (!($action instanceof ActionDefinitionInterface)) {
+            $class_name = get_class($action);
+            throw new \InvalidArgumentException("MacroActions can only manage terms terms that implement ActionDefinitionInterface. Invalid class: $class_name");
+        }
+        $this->actions->add($action);
+    }
 
 
-	/**
-	 * @param Person $person
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->actions->applyMacro($person, $ticket, $context);
-	}
+    /**
+     * @param  array                     $action_info
+     * @throws \InvalidArgumentException
+     */
+    public function addActionFromArray(array $action_info)
+    {
+        $class_name = "Application\\DeskPRO\\Tickets\\Actions\\{$action_info['type']}";
+        if (!class_exists($class_name)) {
+            throw new \InvalidArgumentException("Unknown action {$action_info['type']} (could not locate class: $class_name)");
+        }
+
+        $action = new $class_name($action_info['options']);
+        $this->addAction($action);
+    }
+
+    /**
+     * Return an array of macros that the user does not have permission to use.
+     * An empty array means there are no permission errors.
+     *
+     * @param  Person                   $person
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return array
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return $this->actions->getMacroPermissionErrors($person, $ticket, $context);
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function exportToArray()
-	{
-		$data = array();
-
-		$data['version']  = 1;
-		$data['actions'] = array();
-		foreach ($this->actions->getAll() as $actions) {
-			if (!($actions instanceof ActionDefinitionInterface)) {
-				continue;
-			}
-
-			$data['actions'][] = array(
-				'type'    => $actions->getActionType(),
-				'options' => $actions->getActionOptions()->all()
-			);
-		}
-
-		return $data;
-	}
+    /**
+     * @param  Person                   $person
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->actions->applyMacro($person, $ticket, $context);
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function exportToJson()
-	{
-		return json_encode($this->exportToArray());
-	}
+    /**
+     * @return array
+     */
+    public function exportToArray()
+    {
+        $data = array();
+
+        $data['version']  = 1;
+        $data['actions'] = array();
+        foreach ($this->actions->getAll() as $actions) {
+            if (!($actions instanceof ActionDefinitionInterface)) {
+                continue;
+            }
+
+            $data['actions'][] = array(
+                'type'    => $actions->getActionType(),
+                'options' => $actions->getActionOptions()->all()
+            );
+        }
+
+        return $data;
+    }
 
 
-	/**
-	 * @param array $data
-	 */
-	public function importFromArray(array $data)
-	{
-		foreach ($data['actions'] as $action_info) {
-			$this->addActionFromArray($action_info);
-		}
-	}
+    /**
+     * @return string
+     */
+    public function exportToJson()
+    {
+        return json_encode($this->exportToArray());
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		return $this->exportToJson();
-	}
+    /**
+     * @param array $data
+     */
+    public function importFromArray(array $data)
+    {
+        foreach ($data['actions'] as $action_info) {
+            $this->addActionFromArray($action_info);
+        }
+    }
 
 
-	/**
-	 * @param string $data
-	 */
-	public function unserialize($data)
-	{
-		$data = json_decode($data, true);
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return $this->exportToJson();
+    }
 
-		$this->__construct();
 
-		foreach ($data['actions'] as $action_info) {
-			try {
-				$this->addActionFromArray($action_info);
-			} catch (\Exception $e) {
-				if (!empty($action_info['type'])) {
-					KernelErrorHandler::logException($e, false, md5('macro_' . $action_info['type']));
-				}
-			}
-		}
-	}
+    /**
+     * @param string $data
+     */
+    public function unserialize($data)
+    {
+        $data = json_decode($data, true);
+
+        $this->__construct();
+
+        foreach ($data['actions'] as $action_info) {
+            try {
+                $this->addActionFromArray($action_info);
+            } catch (\Exception $e) {
+                if (!empty($action_info['type'])) {
+                    KernelErrorHandler::logException($e, false, md5('macro_' . $action_info['type']));
+                }
+            }
+        }
+    }
 }

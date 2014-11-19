@@ -42,189 +42,189 @@ namespace Orb\Sms;
  */
 class SmsResult
 {
-	/**
-	 * SMS_SEND means WE successfully handed off the SMS to the provider, the provider may queue the message to be
-	 * sent at a later time, or it may send it immediately, this status simply means we did our part to tell them to send.
-	 */
-	const SMS_SENT = 'sent';
+    /**
+     * SMS_SEND means WE successfully handed off the SMS to the provider, the provider may queue the message to be
+     * sent at a later time, or it may send it immediately, this status simply means we did our part to tell them to send.
+     */
+    const SMS_SENT = 'sent';
 
-	/**
-	 * The provider told us there was a problem with the message and refused to send it.
-	 */
-	const SMS_FAIL = 'fail';
+    /**
+     * The provider told us there was a problem with the message and refused to send it.
+     */
+    const SMS_FAIL = 'fail';
 
-	/** @var string */
-	private $status;
-	/** @var string */
-	private $from_number;
-	/** @var string */
-	private $to_number;
-	/** @var string */
-	private $message;
-	/** @var string */
-	private $provider;
-	/** @var array */
-	private $provider_metadata;
+    /** @var string */
+    private $status;
+    /** @var string */
+    private $from_number;
+    /** @var string */
+    private $to_number;
+    /** @var string */
+    private $message;
+    /** @var string */
+    private $provider;
+    /** @var array */
+    private $provider_metadata;
 
-	/**
-	 * @var string optional - usually just used for error logging/debug purposes
-	 */
-	private $provider_message;
+    /**
+     * @var string optional - usually just used for error logging/debug purposes
+     */
+    private $provider_message;
 
-	/**
-	 * @param string $status            the status of the sms send request (a const value of this class)
-	 * @param string $from_number       the number from
-	 * @param string $to_number         the number to
-	 * @param string $message           the sent message
-	 * @param string $providerId        the value of the provider's getName() method
-	 * @param array  $provider_metadata an array of provider-specific metadata about a SMS sent api request
-	 *                                  the $provider_metadata array will be serialized
-	 */
-	public function __construct(
-		$status,
-		$from_number,
-		$to_number,
-		$message,
-		$providerId,
-		array $provider_metadata
-	) {
-		$this->setStatus($status);
-		$this->to_number = $to_number;
-		$this->message = $message;
-		$this->provider = $providerId;
-		$this->provider_metadata = $provider_metadata;
-		$this->from_number = $from_number;
-	}
+    /**
+     * @param string $status            the status of the sms send request (a const value of this class)
+     * @param string $from_number       the number from
+     * @param string $to_number         the number to
+     * @param string $message           the sent message
+     * @param string $providerId        the value of the provider's getName() method
+     * @param array  $provider_metadata an array of provider-specific metadata about a SMS sent api request
+     *                                  the $provider_metadata array will be serialized
+     */
+    public function __construct(
+        $status,
+        $from_number,
+        $to_number,
+        $message,
+        $providerId,
+        array $provider_metadata
+    ) {
+        $this->setStatus($status);
+        $this->to_number = $to_number;
+        $this->message = $message;
+        $this->provider = $providerId;
+        $this->provider_metadata = $provider_metadata;
+        $this->from_number = $from_number;
+    }
 
-	/**
-	 * @return bool convenience method to check if status is sent
-	 */
-	public function isSent()
-	{
-		return self::SMS_SENT == $this->status;
-	}
+    /**
+     * @return bool convenience method to check if status is sent
+     */
+    public function isSent()
+    {
+        return self::SMS_SENT == $this->status;
+    }
 
-	/**
-	 * @return bool convenience method to check if status is failed
-	 */
-	public function isFail()
-	{
-		return self::SMS_FAIL == $this->status;
-	}
+    /**
+     * @return bool convenience method to check if status is failed
+     */
+    public function isFail()
+    {
+        return self::SMS_FAIL == $this->status;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getStatus()
-	{
-		return $this->status;
-	}
+    /**
+     * @return mixed
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
 
-	/**
-	 * @param mixed $status
-	 */
-	public function setStatus($status)
-	{
-		if (!in_array($status, array(self::SMS_SENT, self::SMS_FAIL))) {
-			throw new \InvalidArgumentException(sprintf('Invalid SMS status "%s"', $status));
-		}
+    /**
+     * @param mixed $status
+     */
+    public function setStatus($status)
+    {
+        if (!in_array($status, array(self::SMS_SENT, self::SMS_FAIL))) {
+            throw new \InvalidArgumentException(sprintf('Invalid SMS status "%s"', $status));
+        }
 
-		$this->status = $status;
-	}
+        $this->status = $status;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getToNumber()
-	{
-		return $this->to_number;
-	}
+    /**
+     * @return mixed
+     */
+    public function getToNumber()
+    {
+        return $this->to_number;
+    }
 
-	/**
-	 * @param mixed $to_number
-	 */
-	public function setToNumber($to_number)
-	{
-		$this->to_number = $to_number;
-	}
+    /**
+     * @param mixed $to_number
+     */
+    public function setToNumber($to_number)
+    {
+        $this->to_number = $to_number;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getMessage()
-	{
-		return $this->message;
-	}
+    /**
+     * @return mixed
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
 
-	/**
-	 * @param mixed $message
-	 */
-	public function setMessage($message)
-	{
-		$this->message = $message;
-	}
+    /**
+     * @param mixed $message
+     */
+    public function setMessage($message)
+    {
+        $this->message = $message;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getProvider()
-	{
-		return $this->provider;
-	}
+    /**
+     * @return mixed
+     */
+    public function getProvider()
+    {
+        return $this->provider;
+    }
 
-	/**
-	 * @param SmsProviderInterface $provider
-	 */
-	public function setProvider(SmsProviderInterface $provider)
-	{
-		$this->provider = $provider;
-	}
+    /**
+     * @param SmsProviderInterface $provider
+     */
+    public function setProvider(SmsProviderInterface $provider)
+    {
+        $this->provider = $provider;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getProviderMetadata()
-	{
-		return $this->provider_metadata;
-	}
+    /**
+     * @return mixed
+     */
+    public function getProviderMetadata()
+    {
+        return $this->provider_metadata;
+    }
 
-	/**
-	 * @param mixed $provider_metadata
-	 */
-	public function setProviderMetadata(array $provider_metadata)
-	{
-		$this->provider_metadata = $provider_metadata;
-	}
+    /**
+     * @param mixed $provider_metadata
+     */
+    public function setProviderMetadata(array $provider_metadata)
+    {
+        $this->provider_metadata = $provider_metadata;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getFromNumber()
-	{
-		return $this->from_number;
-	}
+    /**
+     * @return mixed
+     */
+    public function getFromNumber()
+    {
+        return $this->from_number;
+    }
 
-	/**
-	 * @param mixed $from_number
-	 */
-	public function setFromNumber($from_number)
-	{
-		$this->from_number = $from_number;
-	}
+    /**
+     * @param mixed $from_number
+     */
+    public function setFromNumber($from_number)
+    {
+        $this->from_number = $from_number;
+    }
 
-	/**
-	 * @return mixed
-	 */
-	public function getProviderMessage()
-	{
-		return $this->provider_message;
-	}
+    /**
+     * @return mixed
+     */
+    public function getProviderMessage()
+    {
+        return $this->provider_message;
+    }
 
-	/**
-	 * @param mixed $provider_message
-	 */
-	public function setProviderMessage($provider_message)
-	{
-		$this->provider_message = $provider_message;
-	}
+    /**
+     * @param mixed $provider_message
+     */
+    public function setProviderMessage($provider_message)
+    {
+        $this->provider_message = $provider_message;
+    }
 }

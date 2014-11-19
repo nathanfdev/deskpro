@@ -34,10 +34,8 @@
 
 namespace Application\DeskPRO\PortalBundle\HttpKernel;
 
-
 use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
 
 class PortalHttpCache extends HttpCache
 {
 }
- 

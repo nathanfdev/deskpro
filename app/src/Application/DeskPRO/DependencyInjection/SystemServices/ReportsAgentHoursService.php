@@ -39,9 +39,10 @@ use Application\DeskPRO\Reports\AgentHours;
 
 class ReportsAgentHoursService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new AgentHours($container->getEm());
+
         return $x;
-	}
+    }
 }

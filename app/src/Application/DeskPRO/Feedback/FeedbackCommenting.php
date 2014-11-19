@@ -42,147 +42,147 @@ use Application\DeskPRO\People\PersonContextInterface;
 
 class FeedbackCommenting implements PersonContextInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Mail\Mailer
-	 */
-	protected $mailer;
+    /**
+     * @var \Application\DeskPRO\Mail\Mailer
+     */
+    protected $mailer;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\Translate\Translate
-	 */
-	protected $translator;
+    /**
+     * @var \Application\DeskPRO\Translate\Translate
+     */
+    protected $translator;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person_context;
 
-	/**
-	 * @param DeskproContainer $container
-	 * @param Person $person
-	 */
-	public function __construct(DeskproContainer $container, Person $person)
-	{
-		$this->mailer      = $container->getMailer();
-		$this->em          = $container->getEm();
-		$this->translator  = $container->getTranslator();
+    /**
+     * @param DeskproContainer $container
+     * @param Person           $person
+     */
+    public function __construct(DeskproContainer $container, Person $person)
+    {
+        $this->mailer      = $container->getMailer();
+        $this->em          = $container->getEm();
+        $this->translator  = $container->getTranslator();
 
-		$this->setPersonContext($person);
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 */
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
+        $this->setPersonContext($person);
+    }
 
 
-	/**
-	 * @param Feedback $feedback
-	 * @param \Application\DeskPRO\Feedback\FeedbackComment $comment
-	 */
-	public function saveComment(Feedback $feedback, FeedbackComment $comment)
-	{
-		#------------------------------
-		# Save the comment
-		#------------------------------
-
-		if (!$comment->person) {
-			$comment->person = $this->person_context;
-		}
-
-		if ($this->person_context->is_agent) {
-			$comment->is_reviewed = true;
-		}
-
-		$comment->feedback = $feedback;
-		$feedback->addComment($comment);
-
-		$this->em->getConnection()->beginTransaction();
-		try {
-			$this->em->persist($comment);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
-
-		if ($feedback->status == FeedbackComment::STATUS_VISIBLE) {
-			$this->newCommentNotify($comment);
-		}
-	}
+    /**
+     * @param \Application\DeskPRO\Entity\Person $person
+     */
+    public function setPersonContext(Person $person)
+    {
+        $this->person_context = $person;
+    }
 
 
-	/**
-	 * Send notifications to everyone involved in feedback about a new comment
-	 *
-	 * @param \Application\DeskPRO\Feedback\FeedbackComment $comment
-	 */
-	public function newCommentNotify(FeedbackComment $comment)
-	{
-		if (!App::getSetting('user.feedback_notify_comments')) {
-			return;
-		}
+    /**
+     * @param Feedback                                      $feedback
+     * @param \Application\DeskPRO\Feedback\FeedbackComment $comment
+     */
+    public function saveComment(Feedback $feedback, FeedbackComment $comment)
+    {
+        #------------------------------
+        # Save the comment
+        #------------------------------
 
-		$feedback = $comment->feedback;
+        if (!$comment->person) {
+            $comment->person = $this->person_context;
+        }
 
-		$to_people_ids = array();
+        if ($this->person_context->is_agent) {
+            $comment->is_reviewed = true;
+        }
 
-		#------------------------------
-		# Send to author
-		#------------------------------
+        $comment->feedback = $feedback;
+        $feedback->addComment($comment);
 
-		if ($comment->person->getId() != $feedback->person->getId()) {
-			$to_people_ids[] = $feedback->person->getId();
-		}
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->persist($comment);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
 
-		#------------------------------
-		# Send to anyone else who posted
-		#------------------------------
+        if ($feedback->status == FeedbackComment::STATUS_VISIBLE) {
+            $this->newCommentNotify($comment);
+        }
+    }
 
-		$to_people_ids = array_merge($to_people_ids, $this->em->getConnection()->fetchAllCol("
-			SELECT DISTINCT(person_id)
-			FROM feedback_comments
-			WHERE feedback_id = ? AND person_id IS NOT NULL AND status = 'visible' AND person_id != ?
-		", array($feedback->getId(), $comment->person ? $comment->person->getId() : 0)));
 
-		$to_people_ids = array_unique($to_people_ids);
+    /**
+     * Send notifications to everyone involved in feedback about a new comment
+     *
+     * @param \Application\DeskPRO\Feedback\FeedbackComment $comment
+     */
+    public function newCommentNotify(FeedbackComment $comment)
+    {
+        if (!App::getSetting('user.feedback_notify_comments')) {
+            return;
+        }
 
-		if (!$to_people_ids) {
-			return 0;
-		}
+        $feedback = $comment->feedback;
 
-		#------------------------------
-		# Send the emails
-		#------------------------------
+        $to_people_ids = array();
 
-		$mailer = $this->mailer;
+        #------------------------------
+        # Send to author
+        #------------------------------
 
-		$people = $this->em->getRepository('DeskPRO:Person')->getByIds($to_people_ids);
-		foreach ($people as $person) {
-			$this->translator->setTemporaryPersonContext($person, function () use ($feedback, $comment, $mailer, $person) {
-				$message = $mailer->createMessage();
-				$message->setTemplate('DeskPRO:emails_user:feedback-new-comment.html.twig', array(
-					'feedback' => $feedback,
-					'comment'  => $comment,
-					'person'   => $person
-				));
+        if ($comment->person->getId() != $feedback->person->getId()) {
+            $to_people_ids[] = $feedback->person->getId();
+        }
 
-				$message->setToPerson($person);
+        #------------------------------
+        # Send to anyone else who posted
+        #------------------------------
 
-				$mailer->send($message);
-			});
-		}
+        $to_people_ids = array_merge($to_people_ids, $this->em->getConnection()->fetchAllCol("
+            SELECT DISTINCT(person_id)
+            FROM feedback_comments
+            WHERE feedback_id = ? AND person_id IS NOT NULL AND status = 'visible' AND person_id != ?
+        ", array($feedback->getId(), $comment->person ? $comment->person->getId() : 0)));
 
-		return count($to_people_ids);
-	}
+        $to_people_ids = array_unique($to_people_ids);
+
+        if (!$to_people_ids) {
+            return 0;
+        }
+
+        #------------------------------
+        # Send the emails
+        #------------------------------
+
+        $mailer = $this->mailer;
+
+        $people = $this->em->getRepository('DeskPRO:Person')->getByIds($to_people_ids);
+        foreach ($people as $person) {
+            $this->translator->setTemporaryPersonContext($person, function () use ($feedback, $comment, $mailer, $person) {
+                $message = $mailer->createMessage();
+                $message->setTemplate('DeskPRO:emails_user:feedback-new-comment.html.twig', array(
+                    'feedback' => $feedback,
+                    'comment'  => $comment,
+                    'person'   => $person
+                ));
+
+                $message->setToPerson($person);
+
+                $mailer->send($message);
+            });
+        }
+
+        return count($to_people_ids);
+    }
 }

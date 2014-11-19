@@ -44,144 +44,144 @@ use Application\DeskPRO\Dpql\Statement\Display;
  */
 class BinaryComparison extends AbstractPart
 {
-	/**
-	 * Token ID of the operator
-	 *
-	 * @var integer
-	 */
-	public $operator;
+    /**
+     * Token ID of the operator
+     *
+     * @var integer
+     */
+    public $operator;
 
-	/**
-	 * Left hand side of comparison
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
-	 */
-	public $lhs;
+    /**
+     * Left hand side of comparison
+     *
+     * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+     */
+    public $lhs;
 
-	/**
-	 * Right hand side of comparison
-	 *
-	 * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
-	 */
-	public $rhs;
+    /**
+     * Right hand side of comparison
+     *
+     * @var \Application\DeskPRO\Dpql\Statement\Part\AbstractPart
+     */
+    public $rhs;
 
-	/**
-	 * Maps from token IDs to printable/usable operators
-	 *
-	 * @var array
-	 */
-	protected static $_operatorMap = array(
-		Parser::T_OP_EQ => '=',
-		Parser::T_OP_NE => '<>',
-		Parser::T_OP_GT => '>',
-		Parser::T_OP_GTEQ => '>=',
-		Parser::T_OP_LT => '<',
-		Parser::T_OP_LTEQ => '<='
-	);
+    /**
+     * Maps from token IDs to printable/usable operators
+     *
+     * @var array
+     */
+    protected static $_operatorMap = array(
+        Parser::T_OP_EQ => '=',
+        Parser::T_OP_NE => '<>',
+        Parser::T_OP_GT => '>',
+        Parser::T_OP_GTEQ => '>=',
+        Parser::T_OP_LT => '<',
+        Parser::T_OP_LTEQ => '<='
+    );
 
-	/**
-	 * This is used when a comparison needs to be flipped (for placeholders, for example).
-	 * Maps from the original operator string to the equivalent when the
-	 * comparison's LHS and RHS are swapped.
-	 *
-	 * @var array
-	 */
-	protected static $_operatorOrderFlipped = array(
-		'=' => '=',
-		'<>' => '<>',
-		'>' => '<',
-		'>=' => '<=',
-		'<' => '>',
-		'<=' => '>='
-	);
+    /**
+     * This is used when a comparison needs to be flipped (for placeholders, for example).
+     * Maps from the original operator string to the equivalent when the
+     * comparison's LHS and RHS are swapped.
+     *
+     * @var array
+     */
+    protected static $_operatorOrderFlipped = array(
+        '=' => '=',
+        '<>' => '<>',
+        '>' => '<',
+        '>=' => '<=',
+        '<' => '>',
+        '<=' => '>='
+    );
 
-	/**
-	 * @param integer $operator
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $rhs
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 */
-	public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
-	{
-		if (!isset(self::$_operatorMap[$operator])) {
-			throw new Exception("Invalid comparison operator (token ID: $operator)");
-		}
+    /**
+     * @param integer                                               $operator
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $lhs
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart $rhs
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     */
+    public function __construct($operator, AbstractPart $lhs, AbstractPart $rhs)
+    {
+        if (!isset(self::$_operatorMap[$operator])) {
+            throw new Exception("Invalid comparison operator (token ID: $operator)");
+        }
 
-		$this->operator = $operator;
-		$this->lhs = $lhs;
-		$this->rhs = $rhs;
-	}
+        $this->operator = $operator;
+        $this->lhs = $lhs;
+        $this->rhs = $rhs;
+    }
 
-	/**
-	 * Prepares a part for use, including validating that the usage is valid.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section Name of the section usage is in (select, where, split, group, order)
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
-	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
-	 */
-	public function prepare(
-		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	)
-	{
-		$childStack = $this->getChildStack($stack);
+    /**
+     * Prepares a part for use, including validating that the usage is valid.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section   Name of the section usage is in (select, where, split, group, order)
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack     Parent parts
+     * @param \Application\DeskPRO\Dpql\SqlSelect                     $select    Select being built up
+     * @param \Application\DeskPRO\Dpql\ResultHandler                 $result
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+     */
+    public function prepare(
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+    )
+    {
+        $childStack = $this->getChildStack($stack);
 
-		$lhs = $this->lhs;
-		$rhs = $this->rhs;
-		$operator = self::$_operatorMap[$this->operator];
+        $lhs = $this->lhs;
+        $rhs = $this->rhs;
+        $operator = self::$_operatorMap[$this->operator];
 
-		if ($lhs instanceof Placeholder || $lhs instanceof BinaryInterval) {
-			// flip as placeholder/interval comparison expects placeholder/interval on RHS
-			$temp = $lhs;
-			$lhs = $rhs;
-			$rhs = $temp;
-			$operator = self::$_operatorOrderFlipped[$operator];
-		}
+        if ($lhs instanceof Placeholder || $lhs instanceof BinaryInterval) {
+            // flip as placeholder/interval comparison expects placeholder/interval on RHS
+            $temp = $lhs;
+            $lhs = $rhs;
+            $rhs = $temp;
+            $operator = self::$_operatorOrderFlipped[$operator];
+        }
 
-		if ($rhs instanceof Placeholder || $rhs instanceof BinaryInterval) {
-			$prepared = $rhs->prepareComparison(
-				$lhs, $operator, $statement, $section, $childStack, $select, $result
-			);
-			if ($prepared) {
-				return $prepared;
-			}
-		}
+        if ($rhs instanceof Placeholder || $rhs instanceof BinaryInterval) {
+            $prepared = $rhs->prepareComparison(
+                $lhs, $operator, $statement, $section, $childStack, $select, $result
+            );
+            if ($prepared) {
+                return $prepared;
+            }
+        }
 
-		$lhsRes = $lhs->prepare($statement, $section, $childStack, $select, $result);
-		$rhsRes = $rhs->prepare($statement, $section, $childStack, $select, $result);
+        $lhsRes = $lhs->prepare($statement, $section, $childStack, $select, $result);
+        $rhsRes = $rhs->prepare($statement, $section, $childStack, $select, $result);
 
-		$title = "{$lhsRes->name()} $operator {$rhsRes->name()}";
+        $title = "{$lhsRes->name()} $operator {$rhsRes->name()}";
 
-		if ($rhs instanceof NullValue) {
-			if ($this->operator == Parser::T_OP_EQ) {
-				return new Prepared("({$lhsRes->sql()} IS NULL)", $title);
-			} else if ($this->operator == Parser::T_OP_NE) {
-				return new Prepared("({$lhsRes->sql()} IS NOT NULL)", $title);
-			}
-		}
+        if ($rhs instanceof NullValue) {
+            if ($this->operator == Parser::T_OP_EQ) {
+                return new Prepared("({$lhsRes->sql()} IS NULL)", $title);
+            } elseif ($this->operator == Parser::T_OP_NE) {
+                return new Prepared("({$lhsRes->sql()} IS NOT NULL)", $title);
+            }
+        }
 
-		return new Prepared("({$lhsRes->sql()} $operator {$rhsRes->sql()})", $title, false, 'boolean');
-	 }
+        return new Prepared("({$lhsRes->sql()} $operator {$rhsRes->sql()})", $title, false, 'boolean');
+     }
 
-	/**
-	 * Renders a part back to DPQL.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
-	 *
-	 * @return string
-	 */
-	public function toDpql(Display $statement, $section, array $stack)
-	{
-		return $this->lhs->toDpql($statement, $section, $stack)
-			. ' ' . self::$_operatorMap[$this->operator] . ' '
-			. $this->rhs->toDpql($statement, $section, $stack);
-	}
+    /**
+     * Renders a part back to DPQL.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack
+     *
+     * @return string
+     */
+    public function toDpql(Display $statement, $section, array $stack)
+    {
+        return $this->lhs->toDpql($statement, $section, $stack)
+            . ' ' . self::$_operatorMap[$this->operator] . ' '
+            . $this->rhs->toDpql($statement, $section, $stack);
+    }
 }

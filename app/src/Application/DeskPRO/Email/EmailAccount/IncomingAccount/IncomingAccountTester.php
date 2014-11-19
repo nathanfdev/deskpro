@@ -40,263 +40,262 @@ use Orb\Log\Writer\ArrayWriter;
 
 class IncomingAccountTester
 {
-	/**
-	 * @var \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
-	 */
-	private $account_config;
+    /**
+     * @var \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface
+     */
+    private $account_config;
 
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	private $logger;
+    /**
+     * @var \Orb\Log\Logger
+     */
+    private $logger;
 
-	/**
-	 * @var \Orb\Log\Writer\ArrayWriter
-	 */
-	private $logger_writer;
+    /**
+     * @var \Orb\Log\Writer\ArrayWriter
+     */
+    private $logger_writer;
 
-	/**
-	 * @var
-	 */
-	private $exception;
+    /**
+     * @var
+     */
+    private $exception;
 
-	/**
-	 * @var bool
-	 */
-	private $is_success = false;
+    /**
+     * @var bool
+     */
+    private $is_success = false;
 
-	/**
-	 * @var array
-	 */
-	private $message_count = 0;
+    /**
+     * @var array
+     */
+    private $message_count = 0;
 
-	public function __construct(AccountConfigInterface $account_config)
-	{
-		$this->account_config = $account_config;
+    public function __construct(AccountConfigInterface $account_config)
+    {
+        $this->account_config = $account_config;
 
-		$this->logger        = new Logger();
-		$this->logger_writer = new ArrayWriter();
-		$this->logger->addWriter($this->logger_writer);
-	}
-
-
-	/**
-	 * Run the test
-	 *
-	 * @return bool
-	 */
-	public function test()
-	{
-		switch ($this->account_config->getType()) {
-			case 'pop3':
-				$this->_testPop3();
-				break;
-
-			case 'imap':
-				$this->_testImap();
-				break;
-
-			case 'exchange':
-				$this->_testExchange();
-				break;
-
-			case 'gmail':
-				$this->_testGmail();
-				break;
-		}
-
-		return $this->is_success;
-	}
+        $this->logger        = new Logger();
+        $this->logger_writer = new ArrayWriter();
+        $this->logger->addWriter($this->logger_writer);
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isSuccess()
-	{
-		return $this->is_success;
-	}
+    /**
+     * Run the test
+     *
+     * @return bool
+     */
+    public function test()
+    {
+        switch ($this->account_config->getType()) {
+            case 'pop3':
+                $this->_testPop3();
+                break;
+
+            case 'imap':
+                $this->_testImap();
+                break;
+
+            case 'exchange':
+                $this->_testExchange();
+                break;
+
+            case 'gmail':
+                $this->_testGmail();
+                break;
+        }
+
+        return $this->is_success;
+    }
 
 
-	/**
-	 * @return \Exception
-	 */
-	public function getException()
-	{
-		return $this->exception;
-	}
+    /**
+     * @return bool
+     */
+    public function isSuccess()
+    {
+        return $this->is_success;
+    }
 
 
-	/**
-	 * As part of the test, we fetch the count of messages.
-	 *
-	 * @return array|int
-	 */
-	public function getMessageCount()
-	{
-		return $this->message_count;
-	}
+    /**
+     * @return \Exception
+     */
+    public function getException()
+    {
+        return $this->exception;
+    }
 
 
-	/**
-	 * Tests Pop3
-	 */
-	private function _testPop3()
-	{
-		/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $account_config */
-		$account_config = $this->account_config;
-
-		$this->logger->logInfo('Testing Pop3Account');
-
-		try {
-			$storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-				'host'     => $account_config->host,
-				'user'     => $account_config->user,
-				'password' => $account_config->password,
-				'port'     => $account_config->port,
-				'ssl'      => $account_config->secure_mode,
-				'logger'   => $this->logger,
-				'test_mode' => true,
-			));
-
-			$this->message_count = $storage->countMessages();
-
-			$this->is_success = true;
-		} catch (\Exception $e) {
-			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
-			$this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
-			$this->is_success = false;
-		}
-	}
+    /**
+     * As part of the test, we fetch the count of messages.
+     *
+     * @return array|int
+     */
+    public function getMessageCount()
+    {
+        return $this->message_count;
+    }
 
 
-	private function _testImap()
-	{
-		/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $account_config */
-		$account_config = $this->account_config;
+    /**
+     * Tests Pop3
+     */
+    private function _testPop3()
+    {
+        /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\Pop3Config $account_config */
+        $account_config = $this->account_config;
 
-		$this->logger->logInfo('Testing ImapAccount');
+        $this->logger->logInfo('Testing Pop3Account');
 
-		try {
-			$storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
-				'host'     => $account_config->host,
-				'user'     => $account_config->user,
-				'password' => $account_config->password,
-				'port'     => $account_config->port,
-				'secure'   => $account_config->secure_mode,
-				'no_validation' => $account_config->no_validation,
-				'logger'   => $this->logger,
-				'test_mode' => true,
-			));
-			if ($account_config->read_mailbox) {
-				$storage->ensureMailboxExists($account_config->read_mailbox);
-				$storage->setMailBox($account_config->read_mailbox);
-			}
+        try {
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
+                'host'     => $account_config->host,
+                'user'     => $account_config->user,
+                'password' => $account_config->password,
+                'port'     => $account_config->port,
+                'ssl'      => $account_config->secure_mode,
+                'logger'   => $this->logger,
+                'test_mode' => true,
+            ));
 
-			if ($account_config->mode == 'read') {
-				$ids = $storage->getAllUnseenMessageUids();
-			} else {
-				$ids = $storage->getAllMessageUids();
-			}
+            $this->message_count = $storage->countMessages();
 
-			$this->logger->logInfo("Read IDs: " . implode(', ', $ids));
-			$this->message_count = count($ids);
-
-			$this->is_success = true;
-		} catch (\Exception $e) {
-			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
-			$this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
-			$this->is_success = false;
-		}
-	}
+            $this->is_success = true;
+        } catch (\Exception $e) {
+            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
+            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->is_success = false;
+        }
+    }
 
 
-	private function _testExchange()
-	{
-		/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $account_config */
-		$account_config = $this->account_config;
+    private function _testImap()
+    {
+        /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $account_config */
+        $account_config = $this->account_config;
 
-		$this->logger->logInfo('Testing ExchangeAccount');
+        $this->logger->logInfo('Testing ImapAccount');
 
-		try {
-			$storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange(array(
-				'host'     => $account_config->host,
-				'user'     => $account_config->user,
-				'password' => $account_config->password,
-				'port'     => $account_config->port,
-				'logger'   => $this->logger,
-				'test_mode' => true,
-			));
-			if ($account_config->read_mailbox) {
-				$storage->ensureFolderExists($account_config->read_mailbox);
-			}
+        try {
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
+                'host'     => $account_config->host,
+                'user'     => $account_config->user,
+                'password' => $account_config->password,
+                'port'     => $account_config->port,
+                'secure'   => $account_config->secure_mode,
+                'no_validation' => $account_config->no_validation,
+                'logger'   => $this->logger,
+                'test_mode' => true,
+            ));
+            if ($account_config->read_mailbox) {
+                $storage->ensureMailboxExists($account_config->read_mailbox);
+                $storage->setMailBox($account_config->read_mailbox);
+            }
 
-			$unread_only = false;
-			$folder = null;
+            if ($account_config->mode == 'read') {
+                $ids = $storage->getAllUnseenMessageUids();
+            } else {
+                $ids = $storage->getAllMessageUids();
+            }
 
-			if ($account_config->mode == 'read') {
-				$unread_only = true;
-			}
-			if ($account_config->read_mailbox) {
-				$folder = $account_config->read_mailbox;
-			}
+            $this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+            $this->message_count = count($ids);
 
-			$ids = $storage->searchIds(100, $unread_only, $folder);
-
-			$this->logger->logInfo("Read IDs: " . implode(', ', $ids));
-			$this->message_count = count($ids);
-
-			$this->is_success = true;
-		} catch (\Exception $e) {
-			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
-			$this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
-			$this->is_success = false;
-		}
-	}
+            $this->is_success = true;
+        } catch (\Exception $e) {
+            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
+            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->is_success = false;
+        }
+    }
 
 
-	/**
-	 * Tests Gmail
-	 */
-	private function _testGmail()
-	{
-		/** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $account_config */
-		$account_config = $this->account_config;
+    private function _testExchange()
+    {
+        /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ExchangeConfig $account_config */
+        $account_config = $this->account_config;
 
-		$this->logger->logInfo('Testing GmailAccount');
+        $this->logger->logInfo('Testing ExchangeAccount');
 
-		try {
-			$storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-				'host'     => 'pop.gmail.com',
-				'user'     => $account_config->user,
-				'password' => $account_config->password,
-				'port'     => 995,
-				'ssl'      => 'ssl',
-				'logger'   => $this->logger,
-				'test_mode' => true,
-			));
+        try {
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange(array(
+                'host'     => $account_config->host,
+                'user'     => $account_config->user,
+                'password' => $account_config->password,
+                'port'     => $account_config->port,
+                'logger'   => $this->logger,
+                'test_mode' => true,
+            ));
+            if ($account_config->read_mailbox) {
+                $storage->ensureFolderExists($account_config->read_mailbox);
+            }
 
-			$this->message_count = $storage->countMessages();
+            $unread_only = false;
+            $folder = null;
 
-			$this->is_success = true;
-		} catch (\Exception $e) {
-			$this->exception = $e;
-			$this->logger->logError(sprintf("Error: %s", $e->getMessage()));
-			$this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
-			$this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
-			$this->is_success = false;
-		}
-	}
+            if ($account_config->mode == 'read') {
+                $unread_only = true;
+            }
+            if ($account_config->read_mailbox) {
+                $folder = $account_config->read_mailbox;
+            }
+
+            $ids = $storage->searchIds(100, $unread_only, $folder);
+
+            $this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+            $this->message_count = count($ids);
+
+            $this->is_success = true;
+        } catch (\Exception $e) {
+            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
+            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->is_success = false;
+        }
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getLog()
-	{
-		return $this->logger_writer->getMessagesAsString();
-	}
+    /**
+     * Tests Gmail
+     */
+    private function _testGmail()
+    {
+        /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\GmailConfig $account_config */
+        $account_config = $this->account_config;
+
+        $this->logger->logInfo('Testing GmailAccount');
+
+        try {
+            $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
+                'host'     => 'pop.gmail.com',
+                'user'     => $account_config->user,
+                'password' => $account_config->password,
+                'port'     => 995,
+                'ssl'      => 'ssl',
+                'logger'   => $this->logger,
+                'test_mode' => true,
+            ));
+
+            $this->message_count = $storage->countMessages();
+
+            $this->is_success = true;
+        } catch (\Exception $e) {
+            $this->exception = $e;
+            $this->logger->logError(sprintf("Error: %s", $e->getMessage()));
+            $this->logger->logError(sprintf("(Code: %s:%s)", get_class($e), $e->getCode()));
+            $this->logger->logError(KernelErrorHandler::formatBacktrace($e->getTrace()));
+            $this->is_success = false;
+        }
+    }
+
+    /**
+     * @return string
+     */
+    public function getLog()
+    {
+        return $this->logger_writer->getMessagesAsString();
+    }
 }

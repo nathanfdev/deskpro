@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1414364121 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Allow custom templates for brand/theme");
-		$this->execMutateSql("ALTER TABLE templates ADD brand_id INT DEFAULT NULL, ADD theme_id VARCHAR(256) DEFAULT NULL");
-		$this->execMutateSql("ALTER TABLE templates ADD CONSTRAINT FK_6F287D8E44F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id)");
-		$this->execMutateSql("CREATE INDEX IDX_6F287D8E44F5D008 ON templates (brand_id)");
-	}
+    public function run()
+    {
+        $this->out("Allow custom templates for brand/theme");
+        $this->execMutateSql("ALTER TABLE templates ADD brand_id INT DEFAULT NULL, ADD theme_id VARCHAR(256) DEFAULT NULL");
+        $this->execMutateSql("ALTER TABLE templates ADD CONSTRAINT FK_6F287D8E44F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id)");
+        $this->execMutateSql("CREATE INDEX IDX_6F287D8E44F5D008 ON templates (brand_id)");
+    }
 }

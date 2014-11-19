@@ -37,51 +37,52 @@ namespace Application\ApiBundle\Controller;
 
 class BlobsController extends AbstractController
 {
-	####################################################################################################################
-	# upload
-	####################################################################################################################
+    ####################################################################################################################
+    # upload
+    ####################################################################################################################
 
-	/**
-	 * Uploads a new temp file. Note that temp files are removed automatically after some time,
-	 * so whatever process that uses the file upload must toggle the temp status off.
-	 */
-	public function uploadAction()
-	{
-		$file = $this->request->files->get('upfile');
-		$accept = $this->container->getAttachmentAccepter();
+    /**
+     * Uploads a new temp file. Note that temp files are removed automatically after some time,
+     * so whatever process that uses the file upload must toggle the temp status off.
+     */
+    public function uploadAction()
+    {
+        $file = $this->request->files->get('upfile');
+        $accept = $this->container->getAttachmentAccepter();
 
-		$context = 'agent';
-		if ($this->in->getString('context') == 'user') {
-			$context = 'user';
-		}
+        $context = 'agent';
+        if ($this->in->getString('context') == 'user') {
+            $context = 'user';
+        }
 
-		$error = $accept->getError($file, $context);
-		if ($error) {
-			$message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
-			return $this->createApiErrorResponse($error['error_code'], $message);
-		}
+        $error = $accept->getError($file, $context);
+        if ($error) {
+            $message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
 
-		$blob = $accept->accept($file, true);
+            return $this->createApiErrorResponse($error['error_code'], $message);
+        }
 
-		return $this->createApiCreateResponse(array(
-			'blob' => $blob->toApiData()
-		), $this->generateUrl('api'));
-	}
+        $blob = $accept->accept($file, true);
+
+        return $this->createApiCreateResponse(array(
+            'blob' => $blob->toApiData()
+        ), $this->generateUrl('api'));
+    }
 
 
-	####################################################################################################################
-	# get-info
-	####################################################################################################################
+    ####################################################################################################################
+    # get-info
+    ####################################################################################################################
 
-	public function getInfoAction($id, $auth)
-	{
-		$blob = $this->em->find('DeskPRO:Blob', $id);
-		if (!$blob || $blob->authcode != $auth) {
-			throw $this->createNotFoundException();
-		}
+    public function getInfoAction($id, $auth)
+    {
+        $blob = $this->em->find('DeskPRO:Blob', $id);
+        if (!$blob || $blob->authcode != $auth) {
+            throw $this->createNotFoundException();
+        }
 
-		return $this->createApiResponse(array(
-			'blob' => $blob->toApiData()
-		));
-	}
+        return $this->createApiResponse(array(
+            'blob' => $blob->toApiData()
+        ));
+    }
 }

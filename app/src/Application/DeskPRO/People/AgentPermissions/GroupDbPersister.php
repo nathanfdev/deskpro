@@ -40,123 +40,123 @@ use Doctrine\ORM\EntityManager;
 
 class GroupDbPersister
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
-
-
-	/**
-	 * @param EntityManager $em
-	 */
-	public function __construct(EntityManager $em)
-	{
-		$this->em        = $em;
-		$this->db        = $em->getConnection();
-	}
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
 
-	/**
-	 * @param Usergroup $group
-	 * @param AgentPermissions $perms
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function savePerms(Usergroup $group, AgentPermissions $perms)
-	{
-		$current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE usergroup_id = ?", array($group->id));
-
-		$set_perms = array();
-		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
-			$obj = $perms->$coll_name;
-			foreach ($obj->getNames() as $prop) {
-				if ($obj->$prop) {
-					$set_perms[] = $real_name . '.' . $prop;
-				}
-			}
-		}
-
-		$del_perms = array_diff($current_perms, $set_perms);
-		$new_perms = array_diff($set_perms, $current_perms);
-
-		$ins = array();
-		if ($new_perms) {
-			foreach ($new_perms as $p) {
-				$ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
-			}
-
-		}
-
-		$this->db->beginTransaction();
-		try {
-			if ($del_perms) {
-				$this->db->deleteIn('permissions', $del_perms, 'name', false, "usergroup_id = {$group->id}");
-			}
-			if ($ins) {
-				$this->db->batchInsert('permissions', $ins, true);
-			}
-
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
-		}
-
-		return true;
-	}
+    /**
+     * @param EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em        = $em;
+        $this->db        = $em->getConnection();
+    }
 
 
-	/**
-	 * @param Person $person
-	 * @param AgentPermissions $perms
-	 * @return bool
-	 * @throws \Exception
-	 */
-	public function saveOverridePerms(Person $person, AgentPermissions $perms)
-	{
-		$current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE person_id = ?", array($person->id));
+    /**
+     * @param  Usergroup        $group
+     * @param  AgentPermissions $perms
+     * @return bool
+     * @throws \Exception
+     */
+    public function savePerms(Usergroup $group, AgentPermissions $perms)
+    {
+        $current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE usergroup_id = ?", array($group->id));
 
-		$set_perms = array();
-		foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
-			$obj = $perms->$coll_name;
-			foreach ($obj->getNames() as $prop) {
-				if ($obj->$prop) {
-					$set_perms[] = $real_name . '.' . $prop;
-				}
-			}
-		}
+        $set_perms = array();
+        foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+            $obj = $perms->$coll_name;
+            foreach ($obj->getNames() as $prop) {
+                if ($obj->$prop) {
+                    $set_perms[] = $real_name . '.' . $prop;
+                }
+            }
+        }
 
-		$del_perms = array_diff($current_perms, $set_perms);
-		$new_perms = array_diff($set_perms, $current_perms);
+        $del_perms = array_diff($current_perms, $set_perms);
+        $new_perms = array_diff($set_perms, $current_perms);
 
-		$ins = array();
-		if ($new_perms) {
-			foreach ($new_perms as $p) {
-				$ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1);
-			}
+        $ins = array();
+        if ($new_perms) {
+            foreach ($new_perms as $p) {
+                $ins[] = array('usergroup_id' => $group->id, 'name' => $p, 'value' => 1);
+            }
 
-		}
+        }
 
-		$this->db->beginTransaction();
-		try {
-			if ($del_perms) {
-				$this->db->deleteIn('permissions', $del_perms, 'name', false, "person_id = {$person->id}");
-			}
-			if ($ins) {
-				$this->db->batchInsert('permissions', $ins, true);
-			}
+        $this->db->beginTransaction();
+        try {
+            if ($del_perms) {
+                $this->db->deleteIn('permissions', $del_perms, 'name', false, "usergroup_id = {$group->id}");
+            }
+            if ($ins) {
+                $this->db->batchInsert('permissions', $ins, true);
+            }
 
-			$this->db->commit();
-		} catch (\Exception $e) {
-			$this->db->rollback();
-			throw $e;
-		}
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
 
-		return true;
-	}
+        return true;
+    }
+
+
+    /**
+     * @param  Person           $person
+     * @param  AgentPermissions $perms
+     * @return bool
+     * @throws \Exception
+     */
+    public function saveOverridePerms(Person $person, AgentPermissions $perms)
+    {
+        $current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE person_id = ?", array($person->id));
+
+        $set_perms = array();
+        foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
+            $obj = $perms->$coll_name;
+            foreach ($obj->getNames() as $prop) {
+                if ($obj->$prop) {
+                    $set_perms[] = $real_name . '.' . $prop;
+                }
+            }
+        }
+
+        $del_perms = array_diff($current_perms, $set_perms);
+        $new_perms = array_diff($set_perms, $current_perms);
+
+        $ins = array();
+        if ($new_perms) {
+            foreach ($new_perms as $p) {
+                $ins[] = array('person_id' => $person->id, 'name' => $p, 'value' => 1);
+            }
+
+        }
+
+        $this->db->beginTransaction();
+        try {
+            if ($del_perms) {
+                $this->db->deleteIn('permissions', $del_perms, 'name', false, "person_id = {$person->id}");
+            }
+            if ($ins) {
+                $this->db->batchInsert('permissions', $ins, true);
+            }
+
+            $this->db->commit();
+        } catch (\Exception $e) {
+            $this->db->rollback();
+            throw $e;
+        }
+
+        return true;
+    }
 }

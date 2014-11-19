@@ -40,378 +40,378 @@ use Symfony\Bundle\FrameworkBundle\Templating\GlobalVariables as BaseGlobalVaria
 
 class GlobalVariables extends BaseGlobalVariables
 {
-	/** @var array */
-	protected $variables = array();
-
-	public function setVariable($name, $value)
-	{
-		$this->variables[$name] = $value;
-	}
-
-	public function getLicense()
-	{
-		return \DeskPRO\Kernel\License::getLicense();
-	}
-
-	public function getVariable($name)
-	{
-		return isset($this->variables[$name]) ? $this->variables[$name] : null;
-	}
-
-	public function getUser()
-	{
-		return App::getCurrentPerson();
-	}
-
-	public function getSetting($name)
-	{
-		return App::getSetting($name);
-	}
-
-	public function getSettingDefaultGroup($id)
-	{
-		return App::get('deskpro.core.settings')->getDefaultGroup($id);
-	}
-
-	public function getRequest()
-	{
-		return App::$container->getRequest();
-	}
-
-	public function isPortalEnabled()
-	{
-		return App::$container->getSetting('user.portal_enabled');
-	}
-
-	public function getSettingGroup($group)
-	{
-		$group_vars = App::get('deskpro.core.settings')->getGroup($group);
-
-		if ($group == 'user_style') {
-			if (defined('DPC_IS_CLOUD')) {
-				// Always use https cloud.deskpro.com for css,
-				// it'll always work regardless of how you mess with URLs and ssl certs
-				$group_vars['static_path'] = 'https://cloud.deskpro.com/web' . DPC_SITE_BUILD_NUM;
-			} else {
-				// External blob storage means we need ot use a full URL for assets
-				if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
-					$url = App::getSetting('core.deskpro_url');
-					$url = str_replace('index.php', '', $url);
-					$url = trim($url, '/');
-
-					$group_vars['static_path'] = $url . '/web';
-				} else {
-					// A custom defined static URL
-					if (App::getConfig('static_path')) {
-						$group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
-
-					// Default static path relative to current
-					} else {
-						$group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
-					}
-				}
-			}
-		}
-
-		return $group_vars;
-	}
-
-	public function getConfig($name, $default = null)
-	{
-		return App::getConfig($name, $default);
-	}
-
-	public function getSession()
-	{
-		return App::getSession();
-	}
-
-	public function getVisitor()
-	{
-		return App::getSession()->getVisitor();
-	}
-
-	public function getLanguage()
-	{
-		return App::getLanguage();
-	}
-
-	public function isDebug()
-	{
-		return $this->container->isDebug();
-	}
-
-	public function isTesting()
-	{
-		return isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'];
-	}
-
-	public function isDemo()
-	{
-		return License::getLicense()->isDemo();
-	}
-
-
-	/**
-	 * @return null
-	 * @deprecated
-	 */
-	public function getStyle()
-	{
-		return App::getSystemService('style');
-	}
-
-	public function getLogoBlob()
-	{
-		return App::getSystemService('logo_blob');
-	}
-
-	public function getUsersourceManager()
-	{
-		return App::getSystemService('UsersourceManager');
-	}
-
-	public function getAuthenticationManager()
-	{
-		return App::getSystemService('authentication_manager');
-	}
-
-	public function getTicketFieldManager()
-	{
-		return App::getSystemService('TicketFieldsManager');
-	}
-
-	public function getPersonFieldManager()
-	{
-		return App::getSystemService('PersonFieldsManager');
-	}
-
-	public function getOrgFieldManager()
-	{
-		return App::getSystemService('OrgFieldsManager');
-	}
-
-	public function getEmailAccounts()
-	{
-		static $accounts;
-
-		if ($accounts === null) {
-			$accounts = array_map(function ($a) {
-				return array(
-					'id'                    => $a->id,
-					'address'               => $a->address,
-					'other_addresses'       => $a->other_addresses,
-					'all_addresses'         => $a->getAllAddresses(),
-					'incoming_account_type' => $a->getIncomingAccountType(),
-					'outgoing_account_type' => $a->getOutgoingAccountType(),
-				);
-			}, App::$container->getEmailAccountManager()
-				->getAllAccounts());
-		}
-
-		return $accounts;
-	}
-
-	/**
-	 * Used only for backwards comptat
-	 * @deprecated
-	 */
-	public function getDataRepository($ent)
-	{
-		return App::getSystemService("{$ent}Data");
-	}
-
-	public function getDataService($ent)
-	{
-		return App::getDataService($ent);
-	}
-
-	public function getDepartments()
-	{
-		return App::getDataService('Department');
-	}
-
-	public function getAgents()
-	{
-		return App::getDataService('Agent');
-	}
-
-	public function agent_teams()
-	{
-		return App::getDataService('AgentTeam');
-	}
-	public function getAgentTeams()
-	{
-		return App::getDataService('AgentTeam');
-	}
-
-	public function getUsersources()
-	{
-		return App::getDataService('Usersource');
-	}
-
-	public function getUsergroups()
-	{
-		return App::getDataService('Usergroup');
-	}
-
-	public function getLanguages()
-	{
-		return App::getDataService('Language');
-	}
-
-	public function getProducts()
-	{
-		return App::getDataService('Product');
-	}
-
-	public function getCustomFieldManager($type)
-	{
-		switch ($type) {
-			case 'tickets':
-				return App::getSystemService('ticket_fields_manager');
-			case 'people':
-				return App::getSystemService('person_fields_manager');
-		}
-
-		return null;
-	}
-
-	public function getBrowserSniffer()
-	{
-		return App::get('browser_sniffer');
-	}
-
-	public function get($name)
-	{
-		return $this->__get($name);
-	}
-
-	public function __get($name)
-	{
-		if (isset($this->variables[$name])) {
-			return $this->variables[$name];
-		}
-
-		if (method_exists($this, $name)) {
-			return $this->$name;
-		}
-		if (method_exists($this, "get$name")) {
-			return $this->{"get$name"};
-		}
-
-		if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
-			return App::getContainer()->getSystemService(ucfirst($ent) . 'Data');
-		}
-
-		return null;
-	}
-
-	public function __call($method, $args)
-	{
-		if ($var = \Orb\Util\Strings::extractRegexMatch('#^get(.*?)$#', $method, 1)) {
-			return $this->__get(ucfirst($method));
-		}
-
-		return null;
-	}
-
-	public function __isset($name)
-	{
-		return isset($this->variables[$name]);
-	}
-
-	public function getLastException()
-	{
-		if (!App::has('deskpro.exception_logger')) {
-			return null;
-		}
-
-		$logger = App::get('deskpro.exception_logger');
-		return $logger->getLastException();
-	}
-
-	public function getTimezoneList()
-	{
-		static $tz = null;
-
-		if ($tz === null) {
-			$tz = array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers());
-		}
-
-		return $tz;
-	}
-
-	public function getReturnUrl()
-	{
-		$request = App::getRequest();
-
-		// Cant recreate a post, so back to home
-		if ($request->getMethod() == 'POST') {
-			return App::getSetting('core.deskpro_url');
-		}
-
-		return $request->getRequestUri();
-	}
-
-	public function isCloud()
-	{
-		return defined('DPC_IS_CLOUD');
-	}
-
-	public function getBuildTime()
-	{
-		return defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0;
-	}
-
-	public function isAppInstalled($name)
-	{
-		return App::getContainer()->getAppManager()->isPackageInstalled($name);
-	}
-
-	public function getAppService($name)
-	{
-		return App::getContainer()->getAppManager()->getService($name);
-	}
-
-	public function getFullAssetUrl()
-	{
-		if (defined('DPC_SITE_DOMAIN')) {
-			return '//' . DPC_SITE_DOMAIN . '/web/';
-		} else {
-			$asset_url = dp_get_config('assets_full_url');
-			if (!$asset_url) {
-				$asset_url = $this->container->getSetting('core.deskpro_url');
-				$asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
-				$asset_url .= (dp_get_config('static_path') ?: '/web') . '/';
-			}
-			$asset_url = preg_replace('#^https?://#', '//', $asset_url);
-
-			return $asset_url;
-		}
-	}
-
-	public function getFullWidgetUrl()
-	{
-		if (defined('DPC_SITE_DOMAIN')) {
-			return '//' . DPC_SITE_DOMAIN . '/';
-		} else {
-			$helpdesk_url = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/') . '/';
-			$deskpro_url  = $helpdesk_url;
-
-			if (!$this->container->getSetting('core.rewrite_urls')) {
-				$deskpro_url .= 'index.php/';
-			}
-
-			$widget_url = $deskpro_url;
-			$widget_url = preg_replace('#^https?://#', '//', $widget_url);
-
-			return $widget_url;
-		}
-	}
-
-	public function __toString()
-	{
-		return '[app]';
-	}
+    /** @var array */
+    protected $variables = array();
+
+    public function setVariable($name, $value)
+    {
+        $this->variables[$name] = $value;
+    }
+
+    public function getLicense()
+    {
+        return \DeskPRO\Kernel\License::getLicense();
+    }
+
+    public function getVariable($name)
+    {
+        return isset($this->variables[$name]) ? $this->variables[$name] : null;
+    }
+
+    public function getUser()
+    {
+        return App::getCurrentPerson();
+    }
+
+    public function getSetting($name)
+    {
+        return App::getSetting($name);
+    }
+
+    public function getSettingDefaultGroup($id)
+    {
+        return App::get('deskpro.core.settings')->getDefaultGroup($id);
+    }
+
+    public function getRequest()
+    {
+        return App::$container->getRequest();
+    }
+
+    public function isPortalEnabled()
+    {
+        return App::$container->getSetting('user.portal_enabled');
+    }
+
+    public function getSettingGroup($group)
+    {
+        $group_vars = App::get('deskpro.core.settings')->getGroup($group);
+
+        if ($group == 'user_style') {
+            if (defined('DPC_IS_CLOUD')) {
+                // Always use https cloud.deskpro.com for css,
+                // it'll always work regardless of how you mess with URLs and ssl certs
+                $group_vars['static_path'] = 'https://cloud.deskpro.com/web' . DPC_SITE_BUILD_NUM;
+            } else {
+                // External blob storage means we need ot use a full URL for assets
+                if (!App::getConfig('static_path') && App::getContainer()->getBlobStorage()->getPreferredAdapterId() == 's3') {
+                    $url = App::getSetting('core.deskpro_url');
+                    $url = str_replace('index.php', '', $url);
+                    $url = trim($url, '/');
+
+                    $group_vars['static_path'] = $url . '/web';
+                } else {
+                    // A custom defined static URL
+                    if (App::getConfig('static_path')) {
+                        $group_vars['static_path'] = rtrim(App::getConfig('static_path'), '/');
+
+                    // Default static path relative to current
+                    } else {
+                        $group_vars['static_path'] = rtrim('../..' . (App::getConfig('static_path') ?: '/web/'), '/');
+                    }
+                }
+            }
+        }
+
+        return $group_vars;
+    }
+
+    public function getConfig($name, $default = null)
+    {
+        return App::getConfig($name, $default);
+    }
+
+    public function getSession()
+    {
+        return App::getSession();
+    }
+
+    public function getVisitor()
+    {
+        return App::getSession()->getVisitor();
+    }
+
+    public function getLanguage()
+    {
+        return App::getLanguage();
+    }
+
+    public function isDebug()
+    {
+        return $this->container->isDebug();
+    }
+
+    public function isTesting()
+    {
+        return isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'];
+    }
+
+    public function isDemo()
+    {
+        return License::getLicense()->isDemo();
+    }
+
+    /**
+     * @return null
+     * @deprecated
+     */
+    public function getStyle()
+    {
+        return App::getSystemService('style');
+    }
+
+    public function getLogoBlob()
+    {
+        return App::getSystemService('logo_blob');
+    }
+
+    public function getUsersourceManager()
+    {
+        return App::getSystemService('UsersourceManager');
+    }
+
+    public function getAuthenticationManager()
+    {
+        return App::getSystemService('authentication_manager');
+    }
+
+    public function getTicketFieldManager()
+    {
+        return App::getSystemService('TicketFieldsManager');
+    }
+
+    public function getPersonFieldManager()
+    {
+        return App::getSystemService('PersonFieldsManager');
+    }
+
+    public function getOrgFieldManager()
+    {
+        return App::getSystemService('OrgFieldsManager');
+    }
+
+    public function getEmailAccounts()
+    {
+        static $accounts;
+
+        if ($accounts === null) {
+            $accounts = array_map(function ($a) {
+                return array(
+                    'id'                    => $a->id,
+                    'address'               => $a->address,
+                    'other_addresses'       => $a->other_addresses,
+                    'all_addresses'         => $a->getAllAddresses(),
+                    'incoming_account_type' => $a->getIncomingAccountType(),
+                    'outgoing_account_type' => $a->getOutgoingAccountType(),
+                );
+            }, App::$container->getEmailAccountManager()
+                ->getAllAccounts());
+        }
+
+        return $accounts;
+    }
+
+    /**
+     * Used only for backwards comptat
+     * @deprecated
+     */
+    public function getDataRepository($ent)
+    {
+        return App::getSystemService("{$ent}Data");
+    }
+
+    public function getDataService($ent)
+    {
+        return App::getDataService($ent);
+    }
+
+    public function getDepartments()
+    {
+        return App::getDataService('Department');
+    }
+
+    public function getAgents()
+    {
+        return App::getDataService('Agent');
+    }
+
+    public function agent_teams()
+    {
+        return App::getDataService('AgentTeam');
+    }
+    public function getAgentTeams()
+    {
+        return App::getDataService('AgentTeam');
+    }
+
+    public function getUsersources()
+    {
+        return App::getDataService('Usersource');
+    }
+
+    public function getUsergroups()
+    {
+        return App::getDataService('Usergroup');
+    }
+
+    public function getLanguages()
+    {
+        return App::getDataService('Language');
+    }
+
+    public function getProducts()
+    {
+        return App::getDataService('Product');
+    }
+
+    public function getCustomFieldManager($type)
+    {
+        switch ($type) {
+            case 'tickets':
+                return App::getSystemService('ticket_fields_manager');
+            case 'people':
+                return App::getSystemService('person_fields_manager');
+        }
+
+        return null;
+    }
+
+    public function getBrowserSniffer()
+    {
+        return App::get('browser_sniffer');
+    }
+
+    public function get($name)
+    {
+        return $this->__get($name);
+    }
+
+    public function __get($name)
+    {
+        if (isset($this->variables[$name])) {
+            return $this->variables[$name];
+        }
+
+        if (method_exists($this, $name)) {
+            return $this->$name;
+        }
+        if (method_exists($this, "get$name")) {
+            return $this->{"get$name"};
+        }
+
+        if ($ent = \Orb\Util\Strings::extractRegexMatch('#^(.*?)Data$#', $name, 1)) {
+            return App::getContainer()->getSystemService(ucfirst($ent) . 'Data');
+        }
+
+        return null;
+    }
+
+    public function __call($method, $args)
+    {
+        if ($var = \Orb\Util\Strings::extractRegexMatch('#^get(.*?)$#', $method, 1)) {
+            return $this->__get(ucfirst($method));
+        }
+
+        return null;
+    }
+
+    public function __isset($name)
+    {
+        return isset($this->variables[$name]);
+    }
+
+    public function getLastException()
+    {
+        if (!App::has('deskpro.exception_logger')) {
+            return null;
+        }
+
+        $logger = App::get('deskpro.exception_logger');
+
+        return $logger->getLastException();
+    }
+
+    public function getTimezoneList()
+    {
+        static $tz = null;
+
+        if ($tz === null) {
+            $tz = array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers());
+        }
+
+        return $tz;
+    }
+
+    public function getReturnUrl()
+    {
+        $request = App::getRequest();
+
+        // Cant recreate a post, so back to home
+        if ($request->getMethod() == 'POST') {
+            return App::getSetting('core.deskpro_url');
+        }
+
+        return $request->getRequestUri();
+    }
+
+    public function isCloud()
+    {
+        return defined('DPC_IS_CLOUD');
+    }
+
+    public function getBuildTime()
+    {
+        return defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0;
+    }
+
+    public function isAppInstalled($name)
+    {
+        return App::getContainer()->getAppManager()->isPackageInstalled($name);
+    }
+
+    public function getAppService($name)
+    {
+        return App::getContainer()->getAppManager()->getService($name);
+    }
+
+    public function getFullAssetUrl()
+    {
+        if (defined('DPC_SITE_DOMAIN')) {
+            return '//' . DPC_SITE_DOMAIN . '/web/';
+        } else {
+            $asset_url = dp_get_config('assets_full_url');
+            if (!$asset_url) {
+                $asset_url = $this->container->getSetting('core.deskpro_url');
+                $asset_url = trim(str_replace('/index.php', '', $asset_url), '/');
+                $asset_url .= (dp_get_config('static_path') ?: '/web') . '/';
+            }
+            $asset_url = preg_replace('#^https?://#', '//', $asset_url);
+
+            return $asset_url;
+        }
+    }
+
+    public function getFullWidgetUrl()
+    {
+        if (defined('DPC_SITE_DOMAIN')) {
+            return '//' . DPC_SITE_DOMAIN . '/';
+        } else {
+            $helpdesk_url = trim(str_replace('/index.php', '', $this->container->getSetting('core.deskpro_url')), '/') . '/';
+            $deskpro_url  = $helpdesk_url;
+
+            if (!$this->container->getSetting('core.rewrite_urls')) {
+                $deskpro_url .= 'index.php/';
+            }
+
+            $widget_url = $deskpro_url;
+            $widget_url = preg_replace('#^https?://#', '//', $widget_url);
+
+            return $widget_url;
+        }
+    }
+
+    public function __toString()
+    {
+        return '[app]';
+    }
 }

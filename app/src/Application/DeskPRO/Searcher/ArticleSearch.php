@@ -39,521 +39,515 @@ use Orb\Util\Util;
 
 class ArticleSearch extends SearcherAbstract
 {
-	const TERM_ID                  = 'id';
-	const TERM_STATUS              = 'status';
-	const TERM_HIDDEN_STATUS       = 'hidden_status';
-	const TERM_DELETED             = 'deleted';
-	const TERM_CATEGORY            = 'category';
-	const TERM_CATEGORY_SPECIFIC   = 'category_specific';
-	const TERM_DATE_CREATED        = 'date_created';
-	const TERM_VIEW_COUNT          = 'view_count';
-	const TERM_POPULAR             = 'popular';
-	const TERM_NEW                 = 'new';
-	const TERM_LABEL               = 'label';
-	const TERM_AGENT_LIST          = 'agent_list';
-	const TERM_PENDING_TRANSLATE   = 'pending_translate';
-	const TERM_QUERY               = 'query';
+    const TERM_ID                  = 'id';
+    const TERM_STATUS              = 'status';
+    const TERM_HIDDEN_STATUS       = 'hidden_status';
+    const TERM_DELETED             = 'deleted';
+    const TERM_CATEGORY            = 'category';
+    const TERM_CATEGORY_SPECIFIC   = 'category_specific';
+    const TERM_DATE_CREATED        = 'date_created';
+    const TERM_VIEW_COUNT          = 'view_count';
+    const TERM_POPULAR             = 'popular';
+    const TERM_NEW                 = 'new';
+    const TERM_LABEL               = 'label';
+    const TERM_AGENT_LIST          = 'agent_list';
+    const TERM_PENDING_TRANSLATE   = 'pending_translate';
+    const TERM_QUERY               = 'query';
 
-	const ORDER_ID    = 'id';
-	const ORDER_DATE  = 'id';
-	const ORDER_VIEWS = 'view_count';
+    const ORDER_ID    = 'id';
+    const ORDER_DATE  = 'id';
+    const ORDER_VIEWS = 'view_count';
 
-	/**
-	 * From getSqlParts()
-	 * @var array
-	 */
-	protected $sql_parts = null;
+    /**
+     * From getSqlParts()
+     * @var array
+     */
+    protected $sql_parts = null;
 
-	/**
-	 * Summary of terms in phrases
-	 * @var array
-	 */
-	protected $summary = array();
+    /**
+     * Summary of terms in phrases
+     * @var array
+     */
+    protected $summary = array();
 
-	/**
-	 * Run the search and return an array of matching ID's.
-	 *
-	 * @param array $limit
-	 * @return array
-	 */
-	public function getMatches(array $limit = null)
-	{
-		$db = App::getDbRead('search.filter.articles');
+    /**
+     * Run the search and return an array of matching ID's.
+     *
+     * @param  array $limit
+     * @return array
+     */
+    public function getMatches(array $limit = null)
+    {
+        $db = App::getDbRead('search.filter.articles');
 
-		$article_ids = $db->fetchAllCol($this->getSql($limit));
+        $article_ids = $db->fetchAllCol($this->getSql($limit));
 
-		return $article_ids;
-	}
+        return $article_ids;
+    }
 
+    /**
+     * Get actual model objects for matches
+     *
+     * @param  array $limit
+     * @return array
+     */
+    public function getMatchingObjects(array $limit = null)
+    {
+        $ids = $this->getMatches($limit);
 
-	/**
-	 * Get actual model objects for matches
-	 *
-	 * @param array $limit
-	 * @return array
-	 */
-	public function getMatchingObjects(array $limit = null)
-	{
-		$ids = $this->getMatches($limit);
+        if (!$ids) return array();
+        return App::getEntityRepository('DeskPRO:Article')->getByResultIds($ids);
+    }
 
-		if (!$ids) return array();
+    /**
+     * @return string
+     */
+    public function getPermWhere()
+    {
+        if (!$this->person) {
+            return '';
+        }
 
-		return App::getEntityRepository('DeskPRO:Article')->getByResultIds($ids);
-	}
+        if (!$this->person->hasPerm('articles.use')) {
+            return '0';
+        }
 
+        $where = '(articles.status != \'hidden\')';
 
-	/**
-	 * @return string
-	 */
-	public function getPermWhere()
-	{
-		if (!$this->person) {
-			return '';
-		}
+        $dis_ids = $this->person->PermissionsManager->ArticleCategories->getDisallowedCategories();
+        if (!$dis_ids) {
+            return $where;
+        }
 
-		if (!$this->person->hasPerm('articles.use')) {
-			return '0';
-		}
+        $dis_ids = implode(',', $dis_ids);
 
-		$where = '(articles.status != \'hidden\')';
+        return '('.$where.' AND catperm.category_id NOT IN(' . $dis_ids . '))';
+    }
 
-		$dis_ids = $this->person->PermissionsManager->ArticleCategories->getDisallowedCategories();
-		if (!$dis_ids) {
-			return $where;
-		}
+    /**
+     * Get the total number of matches
+     *
+     * @return int
+     */
+    public function getCount()
+    {
+        $sql = "SELECT COUNT(DISTINCT id) FROM articles ";
+        $parts = $this->getSqlParts();
+        $order_by = $this->getOrderByPart();
 
-		$dis_ids = implode(',', $dis_ids);
+        #------------------------------
+        # Add joins
+        #------------------------------
 
-		return '('.$where.' AND catperm.category_id NOT IN(' . $dis_ids . '))';
-	}
+        foreach ($parts['joins'] as $j) {
+            if (is_array($j)) {
+                $sql .= $j[1] . " ";
+            } else {
+                $sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
+            }
+        }
 
+        if (is_array($order_by)) {
+            list ($order_join, $order_by) = $order_by;
 
-	/**
-	 * Get the total number of matches
-	 *
-	 * @return int
-	 */
-	public function getCount()
-	{
-		$sql = "SELECT COUNT(DISTINCT id) FROM articles ";
-		$parts = $this->getSqlParts();
-		$order_by = $this->getOrderByPart();
+            $sql .= " $order_join ";
+        }
 
-		#------------------------------
-		# Add joins
-		#------------------------------
+        #------------------------------
+        # Add wheres
+        #------------------------------
 
-		foreach ($parts['joins'] as $j) {
-			if (is_array($j)) {
-				$sql .= $j[1] . " ";
-			} else {
-				$sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
-			}
-		}
+        $sql .= "WHERE ";
+        if (!$this->findTerm(self::TERM_AGENT_LIST)) {
+            $where_perm = $this->getPermWhere();
+            if ($where_perm) {
+                $sql .= $where_perm . ' AND ';
+            }
+        }
+        if ($parts['wheres']) {
+            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+        } else {
+            $sql .= '1';
+        }
 
-		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
+        $count = App::getDbRead('search.filter.articles')->fetchColumn($sql);
 
-			$sql .= " $order_join ";
-		}
+        return $count;
+    }
 
-		#------------------------------
-		# Add wheres
-		#------------------------------
+    /**
+     * Get the summary of crtiera
+     *
+     * @return array
+     */
+    public function getSummary()
+    {
+        $this->getSqlParts();
 
-		$sql .= "WHERE ";
-		if (!$this->findTerm(self::TERM_AGENT_LIST)) {
-			$where_perm = $this->getPermWhere();
-			if ($where_perm) {
-				$sql .= $where_perm . ' AND ';
-			}
-		}
-		if ($parts['wheres']) {
-			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
-		} else {
-			$sql .= '1';
-		}
+        $summary = $this->summary;
 
-		$count = App::getDbRead('search.filter.articles')->fetchColumn($sql);
+        return $summary;
+    }
 
-		return $count;
-	}
+    /**
+     * Get the SQL query that'll fetch the results
+     *
+     * @return string
+     */
+    public function getSql(array $limit = null)
+    {
+        $sql = "SELECT articles.id FROM articles ";
 
-
-	/**
-	 * Get the summary of crtiera
-	 *
-	 * @return array
-	 */
-	public function getSummary()
-	{
-		$this->getSqlParts();
-
-		$summary = $this->summary;
-
-		return $summary;
-	}
-
-
-	/**
-	 * Get the SQL query that'll fetch the results
-	 *
-	 * @return string
-	 */
-	public function getSql(array $limit = null)
-	{
-		$sql = "SELECT articles.id FROM articles ";
-
-		$parts = $this->getSqlParts();
-		$order_by = $this->getOrderByPart();
+        $parts = $this->getSqlParts();
+        $order_by = $this->getOrderByPart();
 
 
-		#------------------------------
-		# Add joins
-		#------------------------------
+        #------------------------------
+        # Add joins
+        #------------------------------
 
-		foreach ($parts['joins'] as $j) {
-			if (is_array($j)) {
-				$sql .= $j[1] . " ";
-			} else {
-				$sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
-			}
-		}
+        foreach ($parts['joins'] as $j) {
+            if (is_array($j)) {
+                $sql .= $j[1] . " ";
+            } else {
+                $sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
+            }
+        }
 
-		if (is_array($order_by)) {
-			list ($order_join, $order_by) = $order_by;
+        if (is_array($order_by)) {
+            list ($order_join, $order_by) = $order_by;
 
-			$sql .= " $order_join ";
-		}
+            $sql .= " $order_join ";
+        }
 
-		#------------------------------
-		# Add wheres
-		#------------------------------
+        #------------------------------
+        # Add wheres
+        #------------------------------
 
-		$sql .= "WHERE ";
+        $sql .= "WHERE ";
 
-		if (!$this->findTerm(self::TERM_AGENT_LIST)) {
-			$where_perm = $this->getPermWhere();
-			if ($where_perm) {
-				$sql .= $where_perm . ' AND ';
-			}
-		}
+        if (!$this->findTerm(self::TERM_AGENT_LIST)) {
+            $where_perm = $this->getPermWhere();
+            if ($where_perm) {
+                $sql .= $where_perm . ' AND ';
+            }
+        }
 
-		if ($parts['wheres']) {
-			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
-		} else {
-			$sql .= '1';
-		}
+        if ($parts['wheres']) {
+            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+        } else {
+            $sql .= '1';
+        }
 
-		$sql .= " GROUP BY articles.id ";
-		$sql .= $order_by;
+        $sql .= " GROUP BY articles.id ";
+        $sql .= $order_by;
 
-		if ($limit) {
-			$sql .= " LIMIT {$limit['offset']},{$limit['max']}";
-		} else {
-			$sql .= " LIMIT 1000";
-		}
+        if ($limit) {
+            $sql .= " LIMIT {$limit['offset']},{$limit['max']}";
+        } else {
+            $sql .= " LIMIT 1000";
+        }
 
-		return $sql;
-	}
-
-
-	/**
-	 * Get the ORDER BY clause based on order info set.
-	 *
-	 * @return string
-	 */
-	public function getOrderByPart()
-	{
-		// Set a default if none
-		if (!$this->order_by) {
-			$this->order_by = array('id', 'DESC');
-		}
-
-		list($type, $dir) = $this->order_by;
-
-		$dir = strtoupper($dir);
-		if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
-			$dir = self::ORDER_DESC;
-		}
-
-		$order_by = '';
-
-		switch ($type) {
-			case 'id':
-			case 'date':
-				$order_by = "ORDER BY articles.date_published $dir";
-				break;
-
-			case 'view_count':
-				$order_by = "ORDER BY articles.view_count $dir";
-				break;
-		}
-
-		return $order_by;
-	}
+        return $sql;
+    }
 
 
-	/**
-	 * Get the SQL parts we need in the query.
-	 *
-	 * @return array
-	 */
-	public function getSqlParts()
-	{
-		if ($this->sql_parts !== null) return $this->sql_parts;
+    /**
+     * Get the ORDER BY clause based on order info set.
+     *
+     * @return string
+     */
+    public function getOrderByPart()
+    {
+        // Set a default if none
+        if (!$this->order_by) {
+            $this->order_by = array('id', 'DESC');
+        }
 
-		$db = App::getDbRead('search.filter.articles');
-		$tr = App::getTranslator();
+        list($type, $dir) = $this->order_by;
 
-		$wheres = array();
-		$joins = array(
-			array('article_to_categories_perm', "LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)")
-		);
+        $dir = strtoupper($dir);
+        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+            $dir = self::ORDER_DESC;
+        }
 
-		foreach ($this->terms as $info) {
-			$join_id = Util::requestUniqueId();
-			$join_name = "j_$join_id";
+        $order_by = '';
 
-			list($term, $op, $choice) = $info;
-			$term_id = null;
+        switch ($type) {
+            case 'id':
+            case 'date':
+                $order_by = "ORDER BY articles.date_published $dir";
+                break;
 
-			switch ($term) {
+            case 'view_count':
+                $order_by = "ORDER BY articles.view_count $dir";
+                break;
+        }
+
+        return $order_by;
+    }
+
+
+    /**
+     * Get the SQL parts we need in the query.
+     *
+     * @return array
+     */
+    public function getSqlParts()
+    {
+        if ($this->sql_parts !== null) return $this->sql_parts;
+
+        $db = App::getDbRead('search.filter.articles');
+        $tr = App::getTranslator();
+
+        $wheres = array();
+        $joins = array(
+            array('article_to_categories_perm', "LEFT JOIN article_to_categories AS catperm ON (catperm.article_id = articles.id)")
+        );
+
+        foreach ($this->terms as $info) {
+            $join_id = Util::requestUniqueId();
+            $join_name = "j_$join_id";
+
+            list($term, $op, $choice) = $info;
+            $term_id = null;
+
+            switch ($term) {
                 case self::TERM_ID:
-					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
-					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+                    $choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+                    $choice = isset($choice['id']) ? $choice['id'] : $choice;
 
-					if ($op == self::OP_CONTAINS || is_array($choice)) {
-						if (!is_array($choice)) {
-							$choice = array($choice);
-						}
-						$wheres[] = $this->_choiceMatch('articles.id', 'is', $choice);
-					} else {
-						$wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
-					}
-					$this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
-					break;
+                    if ($op == self::OP_CONTAINS || is_array($choice)) {
+                        if (!is_array($choice)) {
+                            $choice = array($choice);
+                        }
+                        $wheres[] = $this->_choiceMatch('articles.id', 'is', $choice);
+                    } else {
+                        $wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
+                    }
+                    $this->summary[] = $this->_rangeSummary($tr->phrase('agent.general.id'), $op, $choice);
+                    break;
 
-				case self::TERM_DELETED:
-					if ($op == self::OP_IS) {
-						$wheres[] = 'articles.hidden_status = \'deleted\'';
-					} else {
-						$wheres[] = 'articles.hidden_status != \'deleted\' OR articles.hidden_status IS NULL';
-					}
-					break;
+                case self::TERM_DELETED:
+                    if ($op == self::OP_IS) {
+                        $wheres[] = 'articles.hidden_status = \'deleted\'';
+                    } else {
+                        $wheres[] = 'articles.hidden_status != \'deleted\' OR articles.hidden_status IS NULL';
+                    }
+                    break;
 
-				case self::TERM_HIDDEN_STATUS:
-					$wheres[] = $this->_stringMatch('articles.hidden_status', $op, $choice);
-					break;
+                case self::TERM_HIDDEN_STATUS:
+                    $wheres[] = $this->_stringMatch('articles.hidden_status', $op, $choice);
+                    break;
 
-				case self::TERM_STATUS:
+                case self::TERM_STATUS:
 
-					$choice = (array)$choice;
-					$choice = array_pop($choice);
+                    $choice = (array)$choice;
+                    $choice = array_pop($choice);
 
-					// Normal vis status
-					if (strpos($choice, '.') === false){
-						$status = $choice;
-						$hidden_status = '';
+                    // Normal vis status
+                    if (strpos($choice, '.') === false){
+                        $status = $choice;
+                        $hidden_status = '';
 
-					// Formatted: hidden.hidden_status
-					} else {
-						list ($status, $hidden_status) = explode('.', $choice, 2);
-					}
+                    // Formatted: hidden.hidden_status
+                    } else {
+                        list ($status, $hidden_status) = explode('.', $choice, 2);
+                    }
 
-					if ($hidden_status) {
-						$wheres[] = $this->_stringMatch('articles.hidden_status', $op, $hidden_status);
-					} else {
-						$wheres[] = $this->_stringMatch('articles.status', $op, $status);
-					}
+                    if ($hidden_status) {
+                        $wheres[] = $this->_stringMatch('articles.hidden_status', $op, $hidden_status);
+                    } else {
+                        $wheres[] = $this->_stringMatch('articles.status', $op, $status);
+                    }
 
                     $phrase_vars = array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status));
 
-					if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
+                    if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
                         $this->summary[] = $tr->phrase('agent.general.x_is_not_y', $phrase_vars);
-					}
-                    else {
-    					$this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
+                    } else {
+                        $this->summary[] = $tr->phrase('agent.general.x_is_y', $phrase_vars);
                     }
 
-					break;
+                    break;
 
-				case self::TERM_QUERY:
+                case self::TERM_QUERY:
 
-					$j1 = $join_name . '_t';
-					$j2 = $join_name . '_c';
+                    $j1 = $join_name . '_t';
+                    $j2 = $join_name . '_c';
 
-					$joins[] = array(
-						'object_lang',
-						"LEFT JOIN object_lang AS $j1 ON ($j1.ref_type = 'article' AND $j1.ref_id = articles.id AND $j1.prop_name = 'title')"
-					);
+                    $joins[] = array(
+                        'object_lang',
+                        "LEFT JOIN object_lang AS $j1 ON ($j1.ref_type = 'article' AND $j1.ref_id = articles.id AND $j1.prop_name = 'title')"
+                    );
 
-					$joins[] = array(
-						'object_lang',
-						"LEFT JOIN object_lang AS $j2 ON ($j2.ref_type = 'article' AND $j2.ref_id = articles.id AND $j2.prop_name = 'content')"
-					);
+                    $joins[] = array(
+                        'object_lang',
+                        "LEFT JOIN object_lang AS $j2 ON ($j2.ref_type = 'article' AND $j2.ref_id = articles.id AND $j2.prop_name = 'content')"
+                    );
 
-					$string = $choice['query'];
-					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+                    $string = $choice['query'];
+                    $type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
-					if (!$string) {
-						break;
-					}
+                    if (!$string) {
+                        break;
+                    }
 
-					$w = array();
-					$w[] = '(' . $this->_stringSearch("articles.title", $op, $string, $type) . ')';
-					$w[] = '(' . $this->_stringSearch("articles.content", $op, $string, $type) . ')';
-					$w[] = '(' . $this->_stringSearch("$j1.value", $op, $string, $type) . ')';
-					$w[] = '(' . $this->_stringSearch("$j2.value", $op, $string, $type) . ')';
+                    $w = array();
+                    $w[] = '(' . $this->_stringSearch("articles.title", $op, $string, $type) . ')';
+                    $w[] = '(' . $this->_stringSearch("articles.content", $op, $string, $type) . ')';
+                    $w[] = '(' . $this->_stringSearch("$j1.value", $op, $string, $type) . ')';
+                    $w[] = '(' . $this->_stringSearch("$j2.value", $op, $string, $type) . ')';
 
-					$wheres[] = implode(' OR ' , $w);
-					break;
+                    $wheres[] = implode(' OR ' , $w);
+                    break;
 
-				case self::TERM_CATEGORY:
-				case self::TERM_CATEGORY_SPECIFIC:
-					$base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
-					$ids = array();
+                case self::TERM_CATEGORY:
+                case self::TERM_CATEGORY_SPECIFIC:
+                    $base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
+                    $ids = array();
 
-					if ($term == self::TERM_CATEGORY_SPECIFIC) {
-						$ids = $base_ids;
-					} else {
-						foreach ($base_ids as $id) {
-							$ids = array_merge($ids, App::getEntityRepository('DeskPRO:ArticleCategory')->getIdsInTree($id, true));
-						}
-					}
+                    if ($term == self::TERM_CATEGORY_SPECIFIC) {
+                        $ids = $base_ids;
+                    } else {
+                        foreach ($base_ids as $id) {
+                            $ids = array_merge($ids, App::getEntityRepository('DeskPRO:ArticleCategory')->getIdsInTree($id, true));
+                        }
+                    }
 
-					$ids = array_unique($ids);
+                    $ids = array_unique($ids);
 
-					$joins[] = array(
-						'article_to_categories',
-						"LEFT JOIN article_to_categories AS $join_name ON ($join_name.article_id = articles.id)"
-					);
+                    $joins[] = array(
+                        'article_to_categories',
+                        "LEFT JOIN article_to_categories AS $join_name ON ($join_name.article_id = articles.id)"
+                    );
 
-					$wheres[] = $this->_choiceMatch("$join_name.category_id", $op, $ids);
+                    $wheres[] = $this->_choiceMatch("$join_name.category_id", $op, $ids);
 
-					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:ArticleCategory')->getNames((array)$choice);
-						return $titles;
-					});
+                    $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
+                        $titles = App::getEntityRepository('DeskPRO:ArticleCategory')->getNames((array)$choice);
 
-					break;
+                        return $titles;
+                    });
 
-				case self::TERM_VIEW_COUNT:
-					$wheres[] = $this->_rangeMatch('articles.view_count', $op, $choice);
-					break;
+                    break;
 
-				case self::TERM_POPULAR:
-					if (is_array($choice)) {
-						$choice = array_pop($choice);
-					}
-					if ($choice) {
-						$wheres[] = $this->_rangeMatch('articles.view_count', 'gte', App::getSetting('core_kb.popular_views'));
-					}
-					break;
+                case self::TERM_VIEW_COUNT:
+                    $wheres[] = $this->_rangeMatch('articles.view_count', $op, $choice);
+                    break;
 
-				case self::TERM_NEW:
-					if (is_array($choice)) {
-						$choice = array_pop($choice);
-					}
-					if ($choice) {
-						$date = new \DateTime(App::getSetting('core_kb.new_time'));
-						$wheres[] = $this->_dateMatch('articles.date_created', 'gte', array('date1' => $date));
-					}
-					break;
+                case self::TERM_POPULAR:
+                    if (is_array($choice)) {
+                        $choice = array_pop($choice);
+                    }
+                    if ($choice) {
+                        $wheres[] = $this->_rangeMatch('articles.view_count', 'gte', App::getSetting('core_kb.popular_views'));
+                    }
+                    break;
 
-				case self::TERM_DATE_CREATED:
-					$wheres[] = $this->_dateMatch('articles.date_created', $op, $choice);
-					$this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
-					break;
+                case self::TERM_NEW:
+                    if (is_array($choice)) {
+                        $choice = array_pop($choice);
+                    }
+                    if ($choice) {
+                        $date = new \DateTime(App::getSetting('core_kb.new_time'));
+                        $wheres[] = $this->_dateMatch('articles.date_created', 'gte', array('date1' => $date));
+                    }
+                    break;
 
-				case self::TERM_AGENT_LIST:
-					$wheres[] = "(articles.status IN ('published', 'archived') OR articles.hidden_status IN('unpublished'))";
-					break;
+                case self::TERM_DATE_CREATED:
+                    $wheres[] = $this->_dateMatch('articles.date_created', $op, $choice);
+                    $this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
+                    break;
 
-				case self::TERM_PENDING_TRANSLATE:
+                case self::TERM_AGENT_LIST:
+                    $wheres[] = "(articles.status IN ('published', 'archived') OR articles.hidden_status IN('unpublished'))";
+                    break;
 
-					$w = array();
+                case self::TERM_PENDING_TRANSLATE:
 
-					$langs = App::getContainer()->getLanguageData()->getAll();
+                    $w = array();
 
-					if (isset($choice['language_id']) && $choice['language_id'] && isset($langs[$choice['language_id']])) {
-						$langs = array($langs[$choice['language_id']]);
-					}
+                    $langs = App::getContainer()->getLanguageData()->getAll();
 
-					foreach ($langs as $lang) {
+                    if (isset($choice['language_id']) && $choice['language_id'] && isset($langs[$choice['language_id']])) {
+                        $langs = array($langs[$choice['language_id']]);
+                    }
 
-						$lang_id   = $lang->getId();
-						$join_id   = Util::requestUniqueId();
-						$join_name = "j_$join_id";
+                    foreach ($langs as $lang) {
 
-						$joins[] = array(
-							'object_lang',
-							"LEFT JOIN object_lang AS $join_name ON ($join_name.ref_type = 'articles' AND $join_name.ref_id = articles.id AND $join_name.language_id = $lang_id)"
-						);
+                        $lang_id   = $lang->getId();
+                        $join_id   = Util::requestUniqueId();
+                        $join_name = "j_$join_id";
 
-						$w[] = "(articles.language_id != $lang_id AND $join_name.id IS NULL)";
-					}
+                        $joins[] = array(
+                            'object_lang',
+                            "LEFT JOIN object_lang AS $join_name ON ($join_name.ref_type = 'articles' AND $join_name.ref_id = articles.id AND $join_name.language_id = $lang_id)"
+                        );
 
-					$wheres[] = implode(' OR ', $w);
+                        $w[] = "(articles.language_id != $lang_id AND $join_name.id IS NULL)";
+                    }
 
-					break;
+                    $wheres[] = implode(' OR ', $w);
 
-				case self::TERM_LABEL:
-					$this->_normalizeOpAndChoice($op, $choice);
+                    break;
 
-					$choices_in = array();
-					if (is_array($choice)) {
-						foreach ((array)$choice as $c) {
-							$choices_in[] = $db->quote($c);
-						}
-						$choices_in = implode(',', $choices_in);
-					}
+                case self::TERM_LABEL:
+                    $this->_normalizeOpAndChoice($op, $choice);
 
-					$this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
+                    $choices_in = array();
+                    if (is_array($choice)) {
+                        foreach ((array)$choice as $c) {
+                            $choices_in[] = $db->quote($c);
+                        }
+                        $choices_in = implode(',', $choices_in);
+                    }
 
-					switch ($op) {
-						case self::OP_IS:
-							$joins[] = array(
-								'labels_articles',
-								"LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)"
-							);
-							$wheres[] = "$join_name.label = " . $db->quote($choice);
-							break;
-						case self::OP_NOT:
-							$joins[] = array(
-								'labels_articles',
-								"LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label = '.$db->quote($choice).')"
-							);
-							$wheres[] = "$join_name.person_id IS NULL";
-							break;
-						case self::OP_CONTAINS:
-							$joins[] = array(
-								'labels_articles',
-								"LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)"
-							);
-							$wheres[] = "$join_name.label IN ($choices_in)";
-							break;
+                    $this->summary[] = $this->_choiceSummary($tr->phrase('agent.general.label'), $op, $choice);
 
-						case self::OP_NOTCONTAINS:
-							$joins[] = array(
-								'labels_articles',
-								"LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label IN ($choices_in)"
-							);
-							$wheres[] = "$join_name.person_id IS NULL";
-							break;
-					}
-					break;// end labels
-			}
-		}
+                    switch ($op) {
+                        case self::OP_IS:
+                            $joins[] = array(
+                                'labels_articles',
+                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)"
+                            );
+                            $wheres[] = "$join_name.label = " . $db->quote($choice);
+                            break;
+                        case self::OP_NOT:
+                            $joins[] = array(
+                                'labels_articles',
+                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label = '.$db->quote($choice).')"
+                            );
+                            $wheres[] = "$join_name.person_id IS NULL";
+                            break;
+                        case self::OP_CONTAINS:
+                            $joins[] = array(
+                                'labels_articles',
+                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)"
+                            );
+                            $wheres[] = "$join_name.label IN ($choices_in)";
+                            break;
 
-		$wheres = Arrays::removeEmptyString($wheres);
+                        case self::OP_NOTCONTAINS:
+                            $joins[] = array(
+                                'labels_articles',
+                                "LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label IN ($choices_in)"
+                            );
+                            $wheres[] = "$join_name.person_id IS NULL";
+                            break;
+                    }
+                    break;// end labels
+            }
+        }
 
-		$this->sql_parts = array(
-			'joins' => $joins,
+        $wheres = Arrays::removeEmptyString($wheres);
 
-			'wheres' => $wheres
-		);
+        $this->sql_parts = array(
+            'joins' => $joins,
 
-		return $this->sql_parts;
-	}
+            'wheres' => $wheres
+        );
+
+        return $this->sql_parts;
+    }
 }

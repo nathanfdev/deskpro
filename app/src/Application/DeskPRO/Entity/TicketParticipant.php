@@ -44,117 +44,117 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $ticket = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $ticket = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketAccessCode
-	 */
-	protected $access_code = null;
+    /**
+     * @var \Application\DeskPRO\Entity\TicketAccessCode
+     */
+    protected $access_code = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 */
-	protected $person_email = null;
+    /**
+     * @var \Application\DeskPRO\Entity\PersonEmail
+     */
+    protected $person_email = null;
 
-	/**
-	 * Default checkbox status of the user
-	 *
-	 * @var bool
-	 */
-	protected $default_on = true;
+    /**
+     * Default checkbox status of the user
+     *
+     * @var bool
+     */
+    protected $default_on = true;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function setPerson(Person $person)
-	{
-		if ($this->person == $person) {
-			return;
-		}
+    public function setPerson(Person $person)
+    {
+        if ($this->person == $person) {
+            return;
+        }
 
-		$this->_onPropertyChanged('person', $this->person, $person);
-		$this->person = $person;
+        $this->_onPropertyChanged('person', $this->person, $person);
+        $this->person = $person;
 
-		if (!$this->person_email && $this->person->primary_email) {
-			$this->setPersonEmail($this->person->primary_email);
-		}
-	}
+        if (!$this->person_email && $this->person->primary_email) {
+            $this->setPersonEmail($this->person->primary_email);
+        }
+    }
 
-	public function setPersonId($id)
-	{
-		$person = App::findEntity('DeskPRO:Person', $id);
-		$this->setPerson($person);
-	}
+    public function setPersonId($id)
+    {
+        $person = App::findEntity('DeskPRO:Person', $id);
+        $this->setPerson($person);
+    }
 
-	public function setPersonEmailId($id)
-	{
-		$person_email = App::findEntity('DeskPRO:PersonEmail', $id);
-		$this['person_email'] = $person_email;
-	}
+    public function setPersonEmailId($id)
+    {
+        $person_email = App::findEntity('DeskPRO:PersonEmail', $id);
+        $this['person_email'] = $person_email;
+    }
 
-	public function getEmailAddress()
-	{
-		return $this->person_email['email'];
-	}
+    public function getEmailAddress()
+    {
+        return $this->person_email['email'];
+    }
 
-	/**
-	 */
-	public function _setAccessCode()
-	{
-		if (!$this->access_code) {
+    /**
+     */
+    public function _setAccessCode()
+    {
+        if (!$this->access_code) {
 
-			// try to find an existing TAC for this person and ticket,
-			// ie agents may already have one from them getting notifications
+            // try to find an existing TAC for this person and ticket,
+            // ie agents may already have one from them getting notifications
 
-			$access_code = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByTicketAndPerson($this->ticket, $this->person);
-			if (!$access_code) {
-				$access_code = new TicketAccessCode();
-			}
+            $access_code = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByTicketAndPerson($this->ticket, $this->person);
+            if (!$access_code) {
+                $access_code = new TicketAccessCode();
+            }
 
-			$this['access_code'] = $access_code;
-		}
+            $this['access_code'] = $access_code;
+        }
 
-		$this->access_code->person = $this->person;
-		$this->access_code->ticket = $this->ticket;
-	}
+        $this->access_code->person = $this->person;
+        $this->access_code->ticket = $this->ticket;
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'tickets_participants', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->addLifecycleCallback('_setAccessCode', 'prePersist');
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'default_on', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'default_on', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'access_code', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAccessCode', 'cascade' => array('persist', 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'access_code_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(array( 'name' => 'tickets_participants', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->addLifecycleCallback('_setAccessCode', 'prePersist');
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'default_on', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'default_on', ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'access_code', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAccessCode', 'cascade' => array('persist', 'merge', ), 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'access_code_id', 'referencedColumnName' => 'id', 'unique' => false, 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person_email', 'targetEntity' => 'Application\\DeskPRO\\Entity\\PersonEmail', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_email_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+    }
 }

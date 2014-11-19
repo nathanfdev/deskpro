@@ -41,71 +41,71 @@ use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
 class InstallExtension extends Extension
 {
-	public function load(array $config, ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container)
     {
-	    ## NOTE: duplicated in config.php
-	    $definition = new Definition();
-	    $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
-	    $definition->setArguments(array());
-	    $container->setDefinition('cache.simple_array', $definition);
+        ## NOTE: duplicated in config.php
+        $definition = new Definition();
+        $definition->setClass('Application\\DeskPRO\\Cache\\Adapter\\SimpleArrayCache');
+        $definition->setArguments(array());
+        $container->setDefinition('cache.simple_array', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
-			DP_ROOT . '/sys/config/settings.php',
-			new Reference('database_connection')
-		));
-		$container->setDefinition('deskpro.core.settings', $definition);
+        $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
+            DP_ROOT . '/sys/config/settings.php',
+            new Reference('database_connection')
+        ));
+        $container->setDefinition('deskpro.core.settings', $definition);
 
-		$definition = new Definition('Application\\DeskPRO\\Search\\Adapter\\AbstractAdapter');
-		$definition->setFactoryClass('Application\\DeskPRO\\StaticLoader\\SearchAdapter');
-		$definition->setFactoryMethod('getSearchAdapter');
-		$container->setDefinition('deskpro.search_adapter', $definition);
+        $definition = new Definition('Application\\DeskPRO\\Search\\Adapter\\AbstractAdapter');
+        $definition->setFactoryClass('Application\\DeskPRO\\StaticLoader\\SearchAdapter');
+        $definition->setFactoryMethod('getSearchAdapter');
+        $container->setDefinition('deskpro.search_adapter', $definition);
 
-		$this->loadInputReader($container);
+        $this->loadInputReader($container);
     }
 
-	/**
-	 * Sets up the input reader
-	 */
-	protected function loadInputReader(ContainerBuilder $container)
-	{
-		// Init readers
-		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_REQUEST'));
-		$container->setDefinition('deskpro.core.input_reader_req', $definition);
+    /**
+     * Sets up the input reader
+     */
+    protected function loadInputReader(ContainerBuilder $container)
+    {
+        // Init readers
+        $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_REQUEST'));
+        $container->setDefinition('deskpro.core.input_reader_req', $definition);
 
-		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST'));
-		$container->setDefinition('deskpro.core.input_reader_post', $definition);
+        $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST'));
+        $container->setDefinition('deskpro.core.input_reader_post', $definition);
 
-		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_GET'));
-		$container->setDefinition('deskpro.core.input_reader_get', $definition);
+        $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_GET'));
+        $container->setDefinition('deskpro.core.input_reader_get', $definition);
 
-		$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_COOKIE'));
-		$container->setDefinition('deskpro.core.input_reader_cookie', $definition);
+        $definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_COOKIE'));
+        $container->setDefinition('deskpro.core.input_reader_cookie', $definition);
 
-		// Init cleaner
-		$definition = new Definition('Orb\Input\Cleaner\Cleaner');
-		$container->setDefinition('deskpro.core.input_cleaner', $definition);
+        // Init cleaner
+        $definition = new Definition('Orb\Input\Cleaner\Cleaner');
+        $container->setDefinition('deskpro.core.input_cleaner', $definition);
 
-		// Init reader
-		$definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
-		$definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
-		$definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
-		$definition->addMethodCall('addSource',array('get', new Reference('deskpro.core.input_reader_get')));
-		$definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
-		$definition->addMethodCall('setArrayStringSeparator', array('.'));
-		$container->setDefinition('deskpro.core.input_reader', $definition);
-	}
+        // Init reader
+        $definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
+        $definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
+        $definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
+        $definition->addMethodCall('addSource',array('get', new Reference('deskpro.core.input_reader_get')));
+        $definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
+        $definition->addMethodCall('setArrayStringSeparator', array('.'));
+        $container->setDefinition('deskpro.core.input_reader', $definition);
+    }
 
-	public function getXsdValidationBasePath()
-	{
-		return null;
-	}
+    public function getXsdValidationBasePath()
+    {
+        return null;
+    }
 
-	public function getNamespace()
-	{
-		return null;
-	}
+    public function getNamespace()
+    {
+        return null;
+    }
 
-	public function getAlias()
+    public function getAlias()
     {
         return 'install';
     }

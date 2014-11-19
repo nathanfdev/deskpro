@@ -59,91 +59,88 @@ use Application\DeskPRO\Entity\Brand;
  * Any service / controller that wants to work with a brand (settings/templating/etc) should simply depend on this
  * BrandStack and use getActive(). Pop in an out of different brands as necessary.
  */
-class BrandStack 
+class BrandStack
 {
-	/**
-	 * @var BrandContainerFactory
-	 */
-	private $factory;
+    /**
+     * @var BrandContainerFactory
+     */
+    private $factory;
 
-	/**
-	 * @var \array
-	 */
-	private $stack;
+    /**
+     * @var \array
+     */
+    private $stack;
 
-	/**
-	 * @var BrandContainer[] an array of constructed containers keyed by brand entity id
-	 */
-	private $brand_containers;
+    /**
+     * @var BrandContainer[] an array of constructed containers keyed by brand entity id
+     */
+    private $brand_containers;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Brand
-	 */
-	private $default_brand;
-
-
-	public function __construct(BrandContainerFactory $factory, Brand $default_brand)
-	{
-		$this->factory = $factory;
-		$this->stack = array();
-		$this->brand_containers = array();
-		$this->default_brand = $default_brand;
-	}
-
-	/**
-	 * Gives you the active BrandContainer
-	 *
-	 * @return BrandContainer
-	 */
-	public function getActive()
-	{
-		$brand_id = end($this->stack);
-
-		if (false !== $brand_id) {
-			return $this->brand_containers[$brand_id];
-		}
-
-		return null;
-	}
+    /**
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    private $default_brand;
 
 
-	public function getStack()
-	{
-		return $this->stack;
-	}
+    public function __construct(BrandContainerFactory $factory, Brand $default_brand)
+    {
+        $this->factory = $factory;
+        $this->stack = array();
+        $this->brand_containers = array();
+        $this->default_brand = $default_brand;
+    }
 
-	/**
-	 * Pushes the Brand into the stack, so that the brand's container is now active
-	 *
-	 * @param Brand $brand
-	 * @return BrandContainer
-	 */
-	public function push(Brand $brand)
-	{
-		$brand_id = $brand->getId();
+    /**
+     * Gives you the active BrandContainer
+     *
+     * @return BrandContainer
+     */
+    public function getActive()
+    {
+        $brand_id = end($this->stack);
 
-		array_push($this->stack, $brand_id);
+        if (false !== $brand_id) {
+            return $this->brand_containers[$brand_id];
+        }
 
-		if (!array_key_exists($brand_id, $this->brand_containers)) {
-			$this->brand_containers[$brand_id] = $this->factory->create($brand);
-		}
-
-		return $this->getActive();
-	}
-
-
-	/**
-	 * Reverts pops the state, making the previous brand container active.
-	 */
-	public function pop()
-	{
-		array_pop($this->stack);
-	}
+        return null;
+    }
 
 
-	public function getDefault()
-	{
-		return $this->default_brand;
-	}
+    public function getStack()
+    {
+        return $this->stack;
+    }
+
+    /**
+     * Pushes the Brand into the stack, so that the brand's container is now active
+     *
+     * @param  Brand          $brand
+     * @return BrandContainer
+     */
+    public function push(Brand $brand)
+    {
+        $brand_id = $brand->getId();
+
+        array_push($this->stack, $brand_id);
+
+        if (!array_key_exists($brand_id, $this->brand_containers)) {
+            $this->brand_containers[$brand_id] = $this->factory->create($brand);
+        }
+
+        return $this->getActive();
+    }
+
+    /**
+     * Reverts pops the state, making the previous brand container active.
+     */
+    public function pop()
+    {
+        array_pop($this->stack);
+    }
+
+    public function getDefault()
+    {
+        return $this->default_brand;
+    }
 }
- 

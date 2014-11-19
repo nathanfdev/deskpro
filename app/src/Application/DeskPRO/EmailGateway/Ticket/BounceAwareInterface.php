@@ -39,8 +39,8 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
  */
 interface BounceAwareInterface
 {
-	/**
-	 * @return void
-	 */
-	public function enableBouncedMode();
+    /**
+     * @return void
+     */
+    public function enableBouncedMode();
 }

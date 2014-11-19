@@ -39,11 +39,11 @@ use Doctrine\ORM\EntityManager;
 
 class UserRules
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\UserRule[]
@@ -51,80 +51,79 @@ class UserRules
 
     protected $user_rules;
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * Loads data from the database
-	 */
+    /**
+     * Loads data from the database
+     */
 
-	private function preload()
-	{
-		if ($this->user_rules !== null) {
+    private function preload()
+    {
+        if ($this->user_rules !== null) {
+            return;
+        }
 
-			return;
-		}
-
-		$this->user_rules = $this->em->getRepository('DeskPRO:UserRule')->getAllUserRules();
-	}
+        $this->user_rules = $this->em->getRepository('DeskPRO:UserRule')->getAllUserRules();
+    }
 
 
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
+    /**
+     * Resets this repository so the next time data is requested form it, it will
+     * be queried again.
+     */
 
-	public function reset()
-	{
-		$this->user_rules = null;
-	}
+    public function reset()
+    {
+        $this->user_rules = null;
+    }
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\UserRule
-	 */
+    /**
+     * @param  int                                  $id
+     * @return \Application\DeskPRO\Entity\UserRule
+     */
 
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:UserRule')->get($id);
-	}
+    public function getById($id)
+    {
+        return $this->em->getRepository('DeskPRO:UserRule')->get($id);
+    }
 
-	/**
-	 * @param int $id
-	 *
-	 * @return array
-	 */
+    /**
+     * @param int $id
+     *
+     * @return array
+     */
 
-	public function getWithUsergroup($id)
-	{
-		$user_rule = $this->em->getRepository('DeskPRO:UserRule')->get($id);
+    public function getWithUsergroup($id)
+    {
+        $user_rule = $this->em->getRepository('DeskPRO:UserRule')->get($id);
 
-		$resultData = array();
+        $resultData = array();
 
-		if ($user_rule) {
+        if ($user_rule) {
 
-			$data['id']             = $user_rule->id;
-			$data['email_patterns'] = $user_rule->email_patterns;
-			$data['run_order']      = $user_rule->run_order;
+            $data['id']             = $user_rule->id;
+            $data['email_patterns'] = $user_rule->email_patterns;
+            $data['run_order']      = $user_rule->run_order;
 
-			if (is_array($data['email_patterns'])) {
+            if (is_array($data['email_patterns'])) {
 
-				$data['email_patterns'] = implode("\n", $user_rule->email_patterns);
-			}
+                $data['email_patterns'] = implode("\n", $user_rule->email_patterns);
+            }
 
-			if ($user_rule->add_usergroup) {
+            if ($user_rule->add_usergroup) {
 
-				$data['usergroup']['id']    = $user_rule->add_usergroup->id;
-				$data['usergroup']['title'] = $user_rule->add_usergroup->title;
-			}
+                $data['usergroup']['id']    = $user_rule->add_usergroup->id;
+                $data['usergroup']['title'] = $user_rule->add_usergroup->title;
+            }
 
-			$resultData = $data;
-		}
+            $resultData = $data;
+        }
 
-		return $resultData;
-	}
+        return $resultData;
+    }
 
     /**
      * @return \Application\DeskPRO\Entity\UserRule[]
@@ -137,102 +136,101 @@ class UserRules
         return $this->user_rules;
     }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getAllAsArray()
-	{
-		return $this->em->getRepository('DeskPRO:UserRule')->getAllUserRulesAsArray();
-	}
+    public function getAllAsArray()
+    {
+        return $this->em->getRepository('DeskPRO:UserRule')->getAllUserRulesAsArray();
+    }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function count()
-	{
-		$this->preload();
+    public function count()
+    {
+        $this->preload();
 
-		return count($this->user_rules);
-	}
+        return count($this->user_rules);
+    }
 
-	/**
-	 * @return \Application\DeskPRO\Entity\UserRule
-	 */
+    /**
+     * @return \Application\DeskPRO\Entity\UserRule
+     */
 
-	public function createNew()
-	{
-		return UserRule::createUserRule();
-	}
+    public function createNew()
+    {
+        return UserRule::createUserRule();
+    }
 
-	/**
-	 * @param UserRule $user_rule
-	 * @param int      $page
-	 *
-	 * @return array
-	 */
+    /**
+     * @param UserRule $user_rule
+     * @param int      $page
+     *
+     * @return array
+     */
 
-	public function applyRuleToUsers(UserRule $user_rule, $page)
-	{
-		$per_page = 1;
-		$page = (int) $page;
+    public function applyRuleToUsers(UserRule $user_rule, $page)
+    {
+        $per_page = 1;
+        $page = (int) $page;
 
-		$email_to_user = App::getDb()->fetchAllKeyValue("
-			SELECT email, person_id
-			FROM people_emails
-			WHERE is_validated = 1
-			ORDER BY id ASC
-			LIMIT $page, $per_page
-		");
+        $email_to_user = App::getDb()->fetchAllKeyValue("
+            SELECT email, person_id
+            FROM people_emails
+            WHERE is_validated = 1
+            ORDER BY id ASC
+            LIMIT $page, $per_page
+        ");
 
-		if (!$email_to_user) {
+        if (!$email_to_user) {
+            return array('completed' => true);
+        }
 
-			return array('completed' => true);
-		}
+        $did_user = array();
+        $batch    = array();
 
-		$did_user = array();
-		$batch    = array();
+        foreach ($email_to_user as $email => $user_id) {
 
-		foreach ($email_to_user as $email => $user_id) {
+            if (isset($did_user[$user_id])) {
 
-			if (isset($did_user[$user_id])) {
+                continue;
+            }
 
-				continue;
-			}
+            if ($user_rule->isEmailMatch($email)) {
 
-			if ($user_rule->isEmailMatch($email)) {
+                $did_user[$user_id] = true;
 
-				$did_user[$user_id] = true;
+                if ($user_rule->add_organization) {
+                    App::getDb()->update(
+                        'people',
+                        array(
+                             'organization_id' => $user_rule->add_organization->id
+                        ),
+                        array('id' => $user_id)
+                    );
+                }
 
-				if ($user_rule->add_organization) {
-					App::getDb()->update(
-						'people',
-						array(
-							 'organization_id' => $user_rule->add_organization->id
-						),
-						array('id' => $user_id)
-					);
-				}
+                if ($user_rule->add_usergroup) {
 
-				if ($user_rule->add_usergroup) {
+                    $batch[] = array(
+                        'person_id'    => $user_id,
+                        'usergroup_id' => $user_rule->add_usergroup->id
+                    );
+                }
+            }
+        }
 
-					$batch[] = array(
-						'person_id'    => $user_id,
-						'usergroup_id' => $user_rule->add_usergroup->id
-					);
-				}
-			}
-		}
+        if ($batch) {
 
-		if ($batch) {
+            App::getDb()->batchInsert('person2usergroups', $batch, true);
+        }
 
-			App::getDb()->batchInsert('person2usergroups', $batch, true);
-		}
-
-		return array(
-			'completed' => false,
-			'success'   => true,
-		);
-	}
+        return array(
+            'completed' => false,
+            'success'   => true,
+        );
+    }
 }

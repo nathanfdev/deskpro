@@ -41,378 +41,377 @@ use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Monolog\NullLogger;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Monolog\Logger;
-use Orb\Util\Arrays;
 
 class FilterChangeDetector
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person[]
-	 */
-	private $agents;
-
-	/**
-	 * @var array
-	 */
-	private $team_to_agents;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketFilter[]
-	 */
-	private $filters;
-
-	/**
-	 * @var bool
-	 */
-	private $extended_log_info = false;
-
-	/**
-	 * @var array
-	 */
-	private $explicit_filter_scopes = array();
-
-	/**
-	 * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
-	 * @param \Application\DeskPRO\Entity\Person[] $agents
-	 */
-	public function __construct(array $filters, array $agents)
-	{
-		$this->filters = $filters;
-		$this->agents  = $agents;
-
-		$this->team_to_agents = array();
-		foreach ($this->agents as $agent) {
-			$agent->loadHelper('Agent');
-
-			$teams = $agent->getHelper('Agent')->getTeams();
-			foreach ($teams as $t) {
-				if (!isset($this->team_to_agents[$t->id])) {
-					$this->team_to_agents[$t->id] = array();
-				}
-
-				$this->team_to_agents[$t->id][] = $agent;
-			}
-		}
-	}
-
-
-	/**
-	 * Add a filter check for an agent explicitly. Usually this only goes through
-	 * detection for chagned filters, but sometimes you need to know if a ticket
-	 * was in an unaffected filter (e.g., for an 'updated' notification).
-	 *
-	 * @param TicketFilter $filter
-	 * @param Person       $agent
-	 */
-	public function addExplicitFilterScope(TicketFilter $filter, Person $agent)
-	{
-		if (!isset($this->explicit_filter_scopes[$filter->id])) {
-			$this->explicit_filter_scopes[$filter->id] = array('filter' => $filter, 'scopes' => array());
-		}
-
-		$this->explicit_filter_scopes[$filter->id]['scopes'][] = $agent;
-	}
-
-
-	/**
-	 * Goes through filters to determine which filters are affected
-	 * by the changes.
-	 *
-	 * @param Ticket $ticket
-	 * @param Logger $logger
-	 * @return \Application\DeskPRO\Entity\TicketFilter[]|array
-	 */
-	private function getAffectedFilters(Ticket $ticket, Logger $logger)
-	{
-
-		if (!$logger) {
-			$logger = new NullLogger();
-		}
-
-		$affected_filters = array();
-		$logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> Checking %d filters", $ticket->id, count($this->filters)));
-
-		$changed_fields = $ticket->getStateChangeRecorder()->getChangedFields();
-		$logger->debug(sprintf("[FilterChangeDetector] <Ticket:%d> Changed fields: %s", $ticket->id, implode(', ', $changed_fields)));
-
-		// Convert the detected changed fields into names
-		// the searcher defines
-		$changed_fields = array_map(function($field_name) {
-			switch ($field_name) {
-				case 'language': return 'ticket.language_id';
-				case 'agent': return 'ticket.agent_id';
-				case 'department': return 'ticket.department_id';
-				case 'category': return 'ticket.category_id';
-				case 'priority': return 'ticket.priority_id';
-				case 'workflow': return 'ticket.workflow_id';
-				case 'product': return 'ticket.product_id';
-				case 'person': return 'ticket.person_id';
-				case 'agent_team': return 'ticket.agent_team_id';
-				case 'organization': return 'ticket.organization_id';
-				default: return "ticket.$field_name";
-			}
-		}, $changed_fields);
-
-		if ($changed_fields) {
-			$changed_fields = array_combine($changed_fields, $changed_fields);
-		}
-
-		$is_hidden_change = false;
-		if (isset($changed_fields['ticket.hidden_status'])) {
-			$is_hidden_change = true;
-		}
-
-		$is_new_messages = false;
-		if (isset($changed_fields['ticket.message'])) {
-			$is_new_messages = true;
-		}
-
-		foreach ($this->filters as $f) {
-			if ($is_new_messages || $is_hidden_change || $f->getSearcher()->hasAnyAffectedFields($changed_fields)) {
-				$affected_filters[] = $f;
-			}
-		}
-
-		$logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> %d filters with affected fields", $ticket->id, count($affected_filters)));
-
-		return $affected_filters;
-	}
-
-
-	/**
-	 * @param array $affected_filters
-	 * @return array
-	 */
-	private function buildFilterCheckList(array $affected_filters)
-	{
-		$check_list = array();
-
-		foreach ($affected_filters as $filter) {
-			if ($filter->sys_name == 'archive_deleted') {
-				continue;
-			}
-
-			$agent_scopes = array();
-			if ($filter->is_global) {
-				$agent_scopes = $this->agents;
-			} else if ($filter->agent_team) {
-				$team_id = $filter->agent_team->id;
-				if (isset($this->team_to_agents[$team_id])) {
-					foreach ($this->team_to_agents[$team_id] as $agent) {
-						$agent_scopes[] = $agent;
-					}
-				}
-			} else if ($filter->person) {
-				$agent_scopes[] = $filter->person;
-			}
-
-			if (!$agent_scopes) {
-				continue;
-			}
-
-			$check_list[$filter->id] = array(
-				'filter' => $filter,
-				'scopes' => $agent_scopes
-			);
-		}
-
-		foreach ($this->explicit_filter_scopes as $sub) {
-			if (!isset($check_list[$sub['filter']->id])) {
-				$check_list[$sub['filter']->id] = $sub;
-			}
-		}
-
-		return array_values($check_list);
-	}
-
-
-	/**
-	 * @param Ticket $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return FilterChangeSet
-	 */
-	public function getFilterChangeSet(Ticket $ticket, ExecutorContextInterface $context = null)
-	{
-		$logger = $context->getLogger();
-		$state = $ticket->getStateChangeRecorder();
-
-		// See if theres a cached verson on the context
-		if ($context && $context->getVars()->has('filter_change_set')) {
-			$set = $context->getVars()->get('filter_change_set');
-			if ($set->getTicket()->id == $ticket->id && $set->getStateId() >= $state->getStateVersion()) {
-				return $set;
-			}
-		}
-
-		$old_dep_id = null;
-		$new_dep_id = null;
-		$is_dep_change = false;
-		$is_new_ticket = $state->isNewTicket();
-
-		if ($state->hasChangedField('department')) {
-			$old_dep = $state->getOriginalValueForField('department');
-			$is_dep_change = true;
-
-			if ($old_dep) {
-				$old_dep_id = $old_dep->id;
-			}
-			if ($ticket->department) {
-				$new_dep_id = $ticket->department->id;
-			}
-		}
-
-		$orig_ticket = $ticket->getOriginalStateClone();
-		$new_ticket  = $ticket;
-
-		$scope_counts = 0;
-		$time = microtime(true);
-
-		/** @var FilterChange[] $changed */
-		$changed = array();
-
-		$affected_filters = $this->getAffectedFilters($ticket, $logger);
-		$filter_checks = $this->buildFilterCheckList($affected_filters);
-
-		$logger->info(sprintf("[FilterChangeDetector] Checking %d filters", count($filter_checks)));
-
-		foreach ($filter_checks as $filter_check) {
-
-			$filter       = $filter_check['filter'];
-			$agent_scopes = $filter_check['scopes'];
-
-			$filter_ts = microtime(true);
-
-			$filter_change = new FilterChange($filter);
-			$changed[$filter->id] = $filter_change;
-
-			if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----", $filter->id, $filter->title, count($agent_scopes)));
-
-			foreach ($agent_scopes as $agent) {
-
-				// A filter could belong to an agent that isn't an agent anymore
-				if (!$agent->is_agent) {
-					continue;
-				}
-
-				// Or the agent might be soft deleted, in which case we sholudnt waste time
-				if ($agent->is_deleted || $agent->is_disabled) {
-					continue;
-				}
-
-				$reset_status = false;
-				if ($filter->sys_name) {
-					// System filters are special in that we ignore status/hold
-					// for notifications
-					$searcher = $filter->getSearcher(array(
-						array('type' => 'status', 'op' => 'ignore'),
-						array('type' => 'hidden_status', 'op' => 'ignore'),
-						array('type' => 'is_hold', 'op' => 'ignore')
-					));
-
-					// Reset because we have to re-run to get proper result for add/del lists
-					$reset_status = true;
-				} else {
-					$searcher = $filter->getSearcher();
-				}
-				$searcher->setPersonContext($agent);
-
-				$orig_match_failterm = null;
-				$new_match_failterm = null;
-
-				// testing check
-				// there is no mock for the PermissionsManager yet
-				if (!defined('DP_BOOT_MODE') || DP_BOOT_MODE != 'testing') {
-					if ($is_new_ticket && !$agent->PermissionsManager->TicketChecker->canView($ticket)) {
-						continue;
-					}
-				}
-
-				if ($is_dep_change) {
-					if (!$is_new_ticket && ($agent->isHelperLoader('AgentPermissions') && !$agent->AgentPermissions->isDepartmentAllowed($old_dep_id))) {
-						$orig_match = false;
-						$orig_match_failterm = 'ticket.department_id';
-					}
-
-					if ($agent->isHelperLoader('AgentPermissions') && !$agent->AgentPermissions->isDepartmentAllowed($new_dep_id)) {
-						$new_match = false;
-						$new_match_failterm = 'ticket.department_id';
-					}
-				}
-
-				if ($orig_match_failterm === null) {
-					if ($is_new_ticket) {
-						// there is no such thing as an original match with a new ticket
-						$orig_match = false;
-					} else {
-						$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm);
-					}
-				}
-
-				if ($new_match_failterm === null) {
-					$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
-				}
-
-				if ($orig_match && (!$agent->isHelperLoader('PermissionsManager') || $agent->PermissionsManager->TicketChecker->canView($orig_ticket))) {
-					$filter_change->originalMatchForAgent($agent);
-
-				}
-				if ($new_match && (!$agent->isHelperLoader('PermissionsManager') || $agent->PermissionsManager->TicketChecker->canView($new_ticket))) {
-					$filter_change->newMatchForAgent($agent);
-				}
-
-				if ($reset_status) {
-					$searcher = $filter->getSearcher();
-					$searcher->setPersonContext($agent);
-
-					if ($is_new_ticket) {
-						$orig_match = false;
-					} else {
-						$orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm);
-					}
-					$new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
-				}
-
-				if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] New match: %s -- Orig match: %s", $new_match ? 'yes' : 'no', $orig_match ? 'yes' : 'no'));
-
-				if (!$orig_match AND !$new_match) {
-					if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
-				} else if ($orig_match AND $new_match) {
-					if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent->id));
-				} else if ($orig_match AND !$new_match) {
-					if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent->id));
-					$filter_change->removeForAgent($agent);
-				} else if (!$orig_match AND $new_match) {
-					if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent->id));
-					$filter_change->addForAgent($agent);
-				}
-
-				if (!$orig_match) {
-					if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
-				}
-				if (!$new_match) {
-					if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
-				}
-
-				$scope_counts++;
-			}
-
-			if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
-		}
-
-		$changed_filters = array();
-		foreach ($changed as $fid => $filter_change) {
-			if ($filter_change->hasOriginalMatches() || $filter_change->hasNewMatches()) {
-				$changed_filters[$fid] = $filter_change;
-			}
-		}
-
-		$logger->info(sprintf("[FilterChangeDetector] Found %d filters in %d iterations taking %.4fs", count($changed_filters), $scope_counts, microtime(true)-$time));
-
-		$set = new FilterChangeSet($ticket, $state->getStateVersion(), $affected_filters, $changed_filters);
-
-		if ($context) {
-			$context->getVars()->set('filter_change_set', $set);
-		}
-
-		return $set;
-	}
+    /**
+     * @var \Application\DeskPRO\Entity\Person[]
+     */
+    private $agents;
+
+    /**
+     * @var array
+     */
+    private $team_to_agents;
+
+    /**
+     * @var \Application\DeskPRO\Entity\TicketFilter[]
+     */
+    private $filters;
+
+    /**
+     * @var bool
+     */
+    private $extended_log_info = false;
+
+    /**
+     * @var array
+     */
+    private $explicit_filter_scopes = array();
+
+    /**
+     * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
+     * @param \Application\DeskPRO\Entity\Person[]       $agents
+     */
+    public function __construct(array $filters, array $agents)
+    {
+        $this->filters = $filters;
+        $this->agents  = $agents;
+
+        $this->team_to_agents = array();
+        foreach ($this->agents as $agent) {
+            $agent->loadHelper('Agent');
+
+            $teams = $agent->getHelper('Agent')->getTeams();
+            foreach ($teams as $t) {
+                if (!isset($this->team_to_agents[$t->id])) {
+                    $this->team_to_agents[$t->id] = array();
+                }
+
+                $this->team_to_agents[$t->id][] = $agent;
+            }
+        }
+    }
+
+
+    /**
+     * Add a filter check for an agent explicitly. Usually this only goes through
+     * detection for chagned filters, but sometimes you need to know if a ticket
+     * was in an unaffected filter (e.g., for an 'updated' notification).
+     *
+     * @param TicketFilter $filter
+     * @param Person       $agent
+     */
+    public function addExplicitFilterScope(TicketFilter $filter, Person $agent)
+    {
+        if (!isset($this->explicit_filter_scopes[$filter->id])) {
+            $this->explicit_filter_scopes[$filter->id] = array('filter' => $filter, 'scopes' => array());
+        }
+
+        $this->explicit_filter_scopes[$filter->id]['scopes'][] = $agent;
+    }
+
+
+    /**
+     * Goes through filters to determine which filters are affected
+     * by the changes.
+     *
+     * @param  Ticket                                           $ticket
+     * @param  Logger                                           $logger
+     * @return \Application\DeskPRO\Entity\TicketFilter[]|array
+     */
+    private function getAffectedFilters(Ticket $ticket, Logger $logger)
+    {
+
+        if (!$logger) {
+            $logger = new NullLogger();
+        }
+
+        $affected_filters = array();
+        $logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> Checking %d filters", $ticket->id, count($this->filters)));
+
+        $changed_fields = $ticket->getStateChangeRecorder()->getChangedFields();
+        $logger->debug(sprintf("[FilterChangeDetector] <Ticket:%d> Changed fields: %s", $ticket->id, implode(', ', $changed_fields)));
+
+        // Convert the detected changed fields into names
+        // the searcher defines
+        $changed_fields = array_map(function ($field_name) {
+            switch ($field_name) {
+                case 'language': return 'ticket.language_id';
+                case 'agent': return 'ticket.agent_id';
+                case 'department': return 'ticket.department_id';
+                case 'category': return 'ticket.category_id';
+                case 'priority': return 'ticket.priority_id';
+                case 'workflow': return 'ticket.workflow_id';
+                case 'product': return 'ticket.product_id';
+                case 'person': return 'ticket.person_id';
+                case 'agent_team': return 'ticket.agent_team_id';
+                case 'organization': return 'ticket.organization_id';
+                default: return "ticket.$field_name";
+            }
+        }, $changed_fields);
+
+        if ($changed_fields) {
+            $changed_fields = array_combine($changed_fields, $changed_fields);
+        }
+
+        $is_hidden_change = false;
+        if (isset($changed_fields['ticket.hidden_status'])) {
+            $is_hidden_change = true;
+        }
+
+        $is_new_messages = false;
+        if (isset($changed_fields['ticket.message'])) {
+            $is_new_messages = true;
+        }
+
+        foreach ($this->filters as $f) {
+            if ($is_new_messages || $is_hidden_change || $f->getSearcher()->hasAnyAffectedFields($changed_fields)) {
+                $affected_filters[] = $f;
+            }
+        }
+
+        $logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> %d filters with affected fields", $ticket->id, count($affected_filters)));
+
+        return $affected_filters;
+    }
+
+
+    /**
+     * @param  array $affected_filters
+     * @return array
+     */
+    private function buildFilterCheckList(array $affected_filters)
+    {
+        $check_list = array();
+
+        foreach ($affected_filters as $filter) {
+            if ($filter->sys_name == 'archive_deleted') {
+                continue;
+            }
+
+            $agent_scopes = array();
+            if ($filter->is_global) {
+                $agent_scopes = $this->agents;
+            } elseif ($filter->agent_team) {
+                $team_id = $filter->agent_team->id;
+                if (isset($this->team_to_agents[$team_id])) {
+                    foreach ($this->team_to_agents[$team_id] as $agent) {
+                        $agent_scopes[] = $agent;
+                    }
+                }
+            } elseif ($filter->person) {
+                $agent_scopes[] = $filter->person;
+            }
+
+            if (!$agent_scopes) {
+                continue;
+            }
+
+            $check_list[$filter->id] = array(
+                'filter' => $filter,
+                'scopes' => $agent_scopes
+            );
+        }
+
+        foreach ($this->explicit_filter_scopes as $sub) {
+            if (!isset($check_list[$sub['filter']->id])) {
+                $check_list[$sub['filter']->id] = $sub;
+            }
+        }
+
+        return array_values($check_list);
+    }
+
+
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return FilterChangeSet
+     */
+    public function getFilterChangeSet(Ticket $ticket, ExecutorContextInterface $context = null)
+    {
+        $logger = $context->getLogger();
+        $state = $ticket->getStateChangeRecorder();
+
+        // See if theres a cached verson on the context
+        if ($context && $context->getVars()->has('filter_change_set')) {
+            $set = $context->getVars()->get('filter_change_set');
+            if ($set->getTicket()->id == $ticket->id && $set->getStateId() >= $state->getStateVersion()) {
+                return $set;
+            }
+        }
+
+        $old_dep_id = null;
+        $new_dep_id = null;
+        $is_dep_change = false;
+        $is_new_ticket = $state->isNewTicket();
+
+        if ($state->hasChangedField('department')) {
+            $old_dep = $state->getOriginalValueForField('department');
+            $is_dep_change = true;
+
+            if ($old_dep) {
+                $old_dep_id = $old_dep->id;
+            }
+            if ($ticket->department) {
+                $new_dep_id = $ticket->department->id;
+            }
+        }
+
+        $orig_ticket = $ticket->getOriginalStateClone();
+        $new_ticket  = $ticket;
+
+        $scope_counts = 0;
+        $time = microtime(true);
+
+        /** @var FilterChange[] $changed */
+        $changed = array();
+
+        $affected_filters = $this->getAffectedFilters($ticket, $logger);
+        $filter_checks = $this->buildFilterCheckList($affected_filters);
+
+        $logger->info(sprintf("[FilterChangeDetector] Checking %d filters", count($filter_checks)));
+
+        foreach ($filter_checks as $filter_check) {
+
+            $filter       = $filter_check['filter'];
+            $agent_scopes = $filter_check['scopes'];
+
+            $filter_ts = microtime(true);
+
+            $filter_change = new FilterChange($filter);
+            $changed[$filter->id] = $filter_change;
+
+            if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] ----- BEGIN #%d %s -- %d scopes -----", $filter->id, $filter->title, count($agent_scopes)));
+
+            foreach ($agent_scopes as $agent) {
+
+                // A filter could belong to an agent that isn't an agent anymore
+                if (!$agent->is_agent) {
+                    continue;
+                }
+
+                // Or the agent might be soft deleted, in which case we sholudnt waste time
+                if ($agent->is_deleted || $agent->is_disabled) {
+                    continue;
+                }
+
+                $reset_status = false;
+                if ($filter->sys_name) {
+                    // System filters are special in that we ignore status/hold
+                    // for notifications
+                    $searcher = $filter->getSearcher(array(
+                        array('type' => 'status', 'op' => 'ignore'),
+                        array('type' => 'hidden_status', 'op' => 'ignore'),
+                        array('type' => 'is_hold', 'op' => 'ignore')
+                    ));
+
+                    // Reset because we have to re-run to get proper result for add/del lists
+                    $reset_status = true;
+                } else {
+                    $searcher = $filter->getSearcher();
+                }
+                $searcher->setPersonContext($agent);
+
+                $orig_match_failterm = null;
+                $new_match_failterm = null;
+
+                // testing check
+                // there is no mock for the PermissionsManager yet
+                if (!defined('DP_BOOT_MODE') || DP_BOOT_MODE != 'testing') {
+                    if ($is_new_ticket && !$agent->PermissionsManager->TicketChecker->canView($ticket)) {
+                        continue;
+                    }
+                }
+
+                if ($is_dep_change) {
+                    if (!$is_new_ticket && ($agent->isHelperLoader('AgentPermissions') && !$agent->AgentPermissions->isDepartmentAllowed($old_dep_id))) {
+                        $orig_match = false;
+                        $orig_match_failterm = 'ticket.department_id';
+                    }
+
+                    if ($agent->isHelperLoader('AgentPermissions') && !$agent->AgentPermissions->isDepartmentAllowed($new_dep_id)) {
+                        $new_match = false;
+                        $new_match_failterm = 'ticket.department_id';
+                    }
+                }
+
+                if ($orig_match_failterm === null) {
+                    if ($is_new_ticket) {
+                        // there is no such thing as an original match with a new ticket
+                        $orig_match = false;
+                    } else {
+                        $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm);
+                    }
+                }
+
+                if ($new_match_failterm === null) {
+                    $new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
+                }
+
+                if ($orig_match && (!$agent->isHelperLoader('PermissionsManager') || $agent->PermissionsManager->TicketChecker->canView($orig_ticket))) {
+                    $filter_change->originalMatchForAgent($agent);
+
+                }
+                if ($new_match && (!$agent->isHelperLoader('PermissionsManager') || $agent->PermissionsManager->TicketChecker->canView($new_ticket))) {
+                    $filter_change->newMatchForAgent($agent);
+                }
+
+                if ($reset_status) {
+                    $searcher = $filter->getSearcher();
+                    $searcher->setPersonContext($agent);
+
+                    if ($is_new_ticket) {
+                        $orig_match = false;
+                    } else {
+                        $orig_match = $searcher->doesTicketMatch($orig_ticket, 'orig_match', $orig_match_failterm);
+                    }
+                    $new_match  = $searcher->doesTicketMatch($new_ticket, null, $new_match_failterm);
+                }
+
+                if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] New match: %s -- Orig match: %s", $new_match ? 'yes' : 'no', $orig_match ? 'yes' : 'no'));
+
+                if (!$orig_match AND !$new_match) {
+                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both no-match)", $agent->id));
+                } elseif ($orig_match AND $new_match) {
+                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: nochange (both match)", $agent->id));
+                } elseif ($orig_match AND !$new_match) {
+                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: removed from list", $agent->id));
+                    $filter_change->removeForAgent($agent);
+                } elseif (!$orig_match AND $new_match) {
+                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] Agent scope %d: added to list", $agent->id));
+                    $filter_change->addForAgent($agent);
+                }
+
+                if (!$orig_match) {
+                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] \tOrig failed term: %s", $orig_match_failterm));
+                }
+                if (!$new_match) {
+                    if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] \tNew failed term: %s", $new_match_failterm));
+                }
+
+                $scope_counts++;
+            }
+
+            if ($this->extended_log_info) $logger->debug(sprintf("[FilterChangeDetector] DONE FILTER #%d :: %.4fs", $filter->id, microtime(true)-$filter_ts));
+        }
+
+        $changed_filters = array();
+        foreach ($changed as $fid => $filter_change) {
+            if ($filter_change->hasOriginalMatches() || $filter_change->hasNewMatches()) {
+                $changed_filters[$fid] = $filter_change;
+            }
+        }
+
+        $logger->info(sprintf("[FilterChangeDetector] Found %d filters in %d iterations taking %.4fs", count($changed_filters), $scope_counts, microtime(true)-$time));
+
+        $set = new FilterChangeSet($ticket, $state->getStateVersion(), $affected_filters, $changed_filters);
+
+        if ($context) {
+            $context->getVars()->set('filter_change_set', $set);
+        }
+
+        return $set;
+    }
 }

@@ -42,218 +42,218 @@ use Orb\Validator\ValidatorInterface;
  */
 class CheckedOptionsArray extends OptionsArray
 {
-	/**
-	 * Array if name=>array(ValidatorInterface)
-	 *
-	 * @var array
-	 */
-	private $validators = array();
+    /**
+     * Array if name=>array(ValidatorInterface)
+     *
+     * @var array
+     */
+    private $validators = array();
 
-	/**
-	 * An array of the only valid names
-	 *
-	 * @var array
-	 */
-	private $valid_names = array();
+    /**
+     * An array of the only valid names
+     *
+     * @var array
+     */
+    private $valid_names = array();
 
-	/**
-	 * An array of required names
-	 *
-	 * @var array
-	 */
-	private $required_names = array();
-
-
-	/**
-	 * Add required names. If you are also using valid names, required names are automatically
-	 * considered valid names.
-	 *
-	 * @param string|string[] $name...
-	 */
-	public function addRequiredNames($name)
-	{
-		$args = func_get_args();
-
-		foreach ($args as $a) {
-			if (is_array($a)) {
-				foreach ($a as $a2) {
-					$this->required_names[$a2] = true;
-				}
-			} else {
-				$this->required_names[$a] = true;
-			}
-		}
-	}
+    /**
+     * An array of required names
+     *
+     * @var array
+     */
+    private $required_names = array();
 
 
-	/**
-	 * Add valid names
-	 *
-	 * @param string|string[] $name...
-	 */
-	public function addValidNames($name)
-	{
-		$args = func_get_args();
+    /**
+     * Add required names. If you are also using valid names, required names are automatically
+     * considered valid names.
+     *
+     * @param string|string[] $name...
+     */
+    public function addRequiredNames($name)
+    {
+        $args = func_get_args();
 
-		foreach ($args as $a) {
-			if (is_array($a)) {
-				foreach ($a as $a2) {
-					$this->valid_names[$a2] = true;
-				}
-			} else {
-				$this->valid_names[$a] = true;
-			}
-		}
-	}
-
-
-	/**
-	 * Ensures we have all the required options
-	 *
-	 * @throws CheckedOptionsException
-	 */
-	public function ensureRequired()
-	{
-		$required_names = array_keys($this->required_names);
-		$diff = array_diff($required_names, array_keys($this->options));
-		if ($diff) {
-			throw new CheckedOptionsException("Missing required options: " . implode(', ', $diff), array('required'), array('names' => $diff));
-		}
-	}
+        foreach ($args as $a) {
+            if (is_array($a)) {
+                foreach ($a as $a2) {
+                    $this->required_names[$a2] = true;
+                }
+            } else {
+                $this->required_names[$a] = true;
+            }
+        }
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getRequiredNames()
-	{
-		return array_keys($this->required_names);
-	}
+    /**
+     * Add valid names
+     *
+     * @param string|string[] $name...
+     */
+    public function addValidNames($name)
+    {
+        $args = func_get_args();
+
+        foreach ($args as $a) {
+            if (is_array($a)) {
+                foreach ($a as $a2) {
+                    $this->valid_names[$a2] = true;
+                }
+            } else {
+                $this->valid_names[$a] = true;
+            }
+        }
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getValidNames()
-	{
-		return array_keys($this->valid_names);
-	}
+    /**
+     * Ensures we have all the required options
+     *
+     * @throws CheckedOptionsException
+     */
+    public function ensureRequired()
+    {
+        $required_names = array_keys($this->required_names);
+        $diff = array_diff($required_names, array_keys($this->options));
+        if ($diff) {
+            throw new CheckedOptionsException("Missing required options: " . implode(', ', $diff), array('required'), array('names' => $diff));
+        }
+    }
 
 
-	/**
-	 * Adds a checked option. When $name is set, it will run through the validator.
-	 *
-	 * @param string $name
-	 * @param ValidatorInterface $validator
-	 */
-	public function addCheckedOption($name, ValidatorInterface $validator)
-	{
-		if (!isset($this->validators[$name])) {
-			$this->validators[$name] = array();
-		}
-
-		$this->validators[$name][] = $validator;
-	}
+    /**
+     * @return array
+     */
+    public function getRequiredNames()
+    {
+        return array_keys($this->required_names);
+    }
 
 
-	/**
-	 * Adds a checked option with a custom callback that does the checking.
-	 *
-	 * The callback sholud return an array of error codes or boolean false on error. Any other value is considered valid.
-	 *
-	 * $callback is passed $val, $name and $extra.
-	 *
-	 * @param string   $name      The name of the option
-	 * @param callback $callback  The callback to call
-	 * @param array    $extra     Extra info to pass to your callback
-	 */
-	public function addCallbackCheckedOption($name, $callback, array $extra = null)
-	{
-		$fn = function($val) use ($callback, $name, $extra) {
-			$ret = $callback($val, $name, $extra);
-			if (is_array($ret)) {
-				return $ret;
-			}
-
-			if ($ret === false) {
-				return array(array('invalid_value', array('expected_type' => 'callback')));
-			}
-
-			return null;
-		};
-
-		$validator = new CallbackValidator(array('callback_function' => $fn));
-		$this->addCheckedOption($name, $validator);
-	}
+    /**
+     * @return array
+     */
+    public function getValidNames()
+    {
+        return array_keys($this->valid_names);
+    }
 
 
-	/**
-	 * Add a not-null validator for $name.
-	 *
-	 * @param string $name
-	 */
-	public function addNotNullOption($name)
-	{
-		$fn = function($val) {
-			if ($val === null) {
-				return array(array('null_value', array('expected_type' => 'not_null')));
-			}
+    /**
+     * Adds a checked option. When $name is set, it will run through the validator.
+     *
+     * @param string             $name
+     * @param ValidatorInterface $validator
+     */
+    public function addCheckedOption($name, ValidatorInterface $validator)
+    {
+        if (!isset($this->validators[$name])) {
+            $this->validators[$name] = array();
+        }
 
-			return null;
-		};
-
-		$validator = new CallbackValidator(array('callback_function' => $fn));
-		$this->addCheckedOption($name, $validator);
-	}
+        $this->validators[$name][] = $validator;
+    }
 
 
-	/**
-	 * Ensure $name is an instance of $type
-	 *
-	 * @param string $name
-	 * @param string $type
-	 * @param bool   $allow_null
-	 */
-	public function addTypeCheckedOption($name, $type, $allow_null = false)
-	{
-		$fn = function($val) use ($name, $type, $allow_null) {
-			if ($val === null && $allow_null) {
-				return;
-			}
+    /**
+     * Adds a checked option with a custom callback that does the checking.
+     *
+     * The callback sholud return an array of error codes or boolean false on error. Any other value is considered valid.
+     *
+     * $callback is passed $val, $name and $extra.
+     *
+     * @param string   $name     The name of the option
+     * @param callback $callback The callback to call
+     * @param array    $extra    Extra info to pass to your callback
+     */
+    public function addCallbackCheckedOption($name, $callback, array $extra = null)
+    {
+        $fn = function ($val) use ($callback, $name, $extra) {
+            $ret = $callback($val, $name, $extra);
+            if (is_array($ret)) {
+                return $ret;
+            }
 
-			if (!is_object($val)) {
-				return array(array('null_value', array('expected_type' => $type)));
-			}
-			if (!($val instanceof $type)) {
-				return array(array('invalid_type', array('expected_type' => $type, 'got_type' => get_class($val))));
-			}
-		};
+            if ($ret === false) {
+                return array(array('invalid_value', array('expected_type' => 'callback')));
+            }
 
-		$validator = new CallbackValidator(array('callback_function' => $fn));
+            return null;
+        };
 
-		$this->addCheckedOption($name, $validator);
-	}
+        $validator = new CallbackValidator(array('callback_function' => $fn));
+        $this->addCheckedOption($name, $validator);
+    }
 
 
-	/**
-	 * @param string $name
-	 * @param mixed  $value
-	 * @throws CheckedOptionsException
-	 */
-	public function set($name, $value)
-	{
-		if ($this->valid_names && (!isset($this->valid_names[$name]) && !isset($this->required_names[$name]))) {
-			throw new CheckedOptionsException("Invalid option name: " . $name, array('invalid_name'), array('name' => $name));
-		}
+    /**
+     * Add a not-null validator for $name.
+     *
+     * @param string $name
+     */
+    public function addNotNullOption($name)
+    {
+        $fn = function ($val) {
+            if ($val === null) {
+                return array(array('null_value', array('expected_type' => 'not_null')));
+            }
 
-		if (isset($this->validators[$name])) {
-			foreach ($this->validators[$name] as $validator) {
-				if (!$validator->isValid($value)) {
-					throw new CheckedOptionsException("`$name` has an invalid option value", $validator->getErrors(), $validator->getErrorsInfo());
-				}
-			}
-		}
+            return null;
+        };
 
-		parent::set($name, $value);
-	}
+        $validator = new CallbackValidator(array('callback_function' => $fn));
+        $this->addCheckedOption($name, $validator);
+    }
+
+
+    /**
+     * Ensure $name is an instance of $type
+     *
+     * @param string $name
+     * @param string $type
+     * @param bool   $allow_null
+     */
+    public function addTypeCheckedOption($name, $type, $allow_null = false)
+    {
+        $fn = function ($val) use ($name, $type, $allow_null) {
+            if ($val === null && $allow_null) {
+                return;
+            }
+
+            if (!is_object($val)) {
+                return array(array('null_value', array('expected_type' => $type)));
+            }
+            if (!($val instanceof $type)) {
+                return array(array('invalid_type', array('expected_type' => $type, 'got_type' => get_class($val))));
+            }
+        };
+
+        $validator = new CallbackValidator(array('callback_function' => $fn));
+
+        $this->addCheckedOption($name, $validator);
+    }
+
+
+    /**
+     * @param  string                  $name
+     * @param  mixed                   $value
+     * @throws CheckedOptionsException
+     */
+    public function set($name, $value)
+    {
+        if ($this->valid_names && (!isset($this->valid_names[$name]) && !isset($this->required_names[$name]))) {
+            throw new CheckedOptionsException("Invalid option name: " . $name, array('invalid_name'), array('name' => $name));
+        }
+
+        if (isset($this->validators[$name])) {
+            foreach ($this->validators[$name] as $validator) {
+                if (!$validator->isValid($value)) {
+                    throw new CheckedOptionsException("`$name` has an invalid option value", $validator->getErrors(), $validator->getErrorsInfo());
+                }
+            }
+        }
+
+        parent::set($name, $value);
+    }
 }

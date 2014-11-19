@@ -43,93 +43,93 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class UrgencySetAction extends AbstractAction implements PermissionableAction
 {
-	/** @var int */
-	protected $num;
-	/** @var bool|null */
-	protected $allow_lower;
+    /** @var int */
+    protected $num;
+    /** @var bool|null */
+    protected $allow_lower;
 
-	public function __construct($num, $allow_lower = null)
-	{
-		$this->num = $num;
-		$this->allow_lower = $allow_lower;
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		if ($this->allow_lower || $ticket->urgency < $this->num) {
-			$ticket['urgency'] = $this->num;
-		}
-	}
+    public function __construct($num, $allow_lower = null)
+    {
+        $this->num = $num;
+        $this->allow_lower = $allow_lower;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function checkPermission(Ticket $ticket, Person $person)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return false;
-		}
-
-		return true;
-	}
-
-
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		if ($ticket['urgency'] == $this->num) {
-			return array();
-		}
-
-		return array(
-			array('action' => 'urgency', 'urgency' => $this->num)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        if ($this->allow_lower || $ticket->urgency < $this->num) {
+            $ticket['urgency'] = $this->num;
+        }
+    }
 
 
-	/**
-	 * Get the number modifier
-	 *
-	 * @return int
-	 */
-	public function getNum()
-	{
-		return $this->num;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function checkPermission(Ticket $ticket, Person $person)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return false;
+        }
+
+        return true;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		return $other_action;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        if ($ticket['urgency'] == $this->num) {
+            return array();
+        }
+
+        return array(
+            array('action' => 'urgency', 'urgency' => $this->num)
+        );
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
+    /**
+     * Get the number modifier
+     *
+     * @return int
+     */
+    public function getNum()
+    {
+        return $this->num;
+    }
+
+
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        return $other_action;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
         $tr = App::getTranslator();
 
-		if ($this->allow_lower) {
-			return $tr->phrase('admin.tickets.set_urgency_to_x', array('urgency' => $this->num));
-		} else {
-			return $tr->phrase('admin.tickets.set_urgency_to_x_when_lower', array('urgency' => $this->num));
-		}
-	}
+        if ($this->allow_lower) {
+            return $tr->phrase('admin.tickets.set_urgency_to_x', array('urgency' => $this->num));
+        } else {
+            return $tr->phrase('admin.tickets.set_urgency_to_x_when_lower', array('urgency' => $this->num));
+        }
+    }
 }

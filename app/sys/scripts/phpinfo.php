@@ -17,14 +17,14 @@ dp_load_config();
 
 // If not authed, the only way we render phpinfo is if not installed or we have the auth
 if (!isset($is_authed) || !$is_authed) {
-	$is_authed = false;
+    $is_authed = false;
 
-	$auth = isset($_GET['auth']) ? $_GET['auth'] : false;
-	if ($auth && dp_get_config('phpinfo_auth') && dp_get_config('phpinfo_auth') == $auth) {
-		$is_authed = true;
-	} elseif (!file_exists(dp_get_data_dir() . '/is_installed.dat') || dp_get_config('debug.dev')) {
-		$is_authed = true;
-	}
+    $auth = isset($_GET['auth']) ? $_GET['auth'] : false;
+    if ($auth && dp_get_config('phpinfo_auth') && dp_get_config('phpinfo_auth') == $auth) {
+        $is_authed = true;
+    } elseif (!file_exists(dp_get_data_dir() . '/is_installed.dat') || dp_get_config('debug.dev')) {
+        $is_authed = true;
+    }
 }
 
 if (!$is_authed) die('Invalid auth code.');
@@ -34,17 +34,16 @@ if (!$is_authed) die('Invalid auth code.');
 #------------------------------
 
 if (isset($_GET['cli'])) {
-	if (!file_exists(dp_get_data_dir() . '/cli-phpinfo.html')) {
-		die('CLI phpinfo has not been generated yet');
-	}
+    if (!file_exists(dp_get_data_dir() . '/cli-phpinfo.html')) {
+        die('CLI phpinfo has not been generated yet');
+    }
 
-	$phpinfo = file_get_contents(dp_get_data_dir() . '/cli-phpinfo.html');
-	if (strpos($phpinfo, '<body') === false) {
-		header('Content-Type: text/plain');
-		header('Content-Disposition: inline; filename=error.log.txt');
-	}
-	echo $phpinfo;
+    $phpinfo = file_get_contents(dp_get_data_dir() . '/cli-phpinfo.html');
+    if (strpos($phpinfo, '<body') === false) {
+        header('Content-Type: text/plain');
+        header('Content-Disposition: inline; filename=error.log.txt');
+    }
+    echo $phpinfo;
 } else {
-	phpinfo();
+    phpinfo();
 }
-

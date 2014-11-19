@@ -48,4 +48,3 @@ class LogoutHandler implements LogoutHandlerInterface
         $request->getSession()->set(self::RECENT_LOGOUT, time());
     }
 }
- 

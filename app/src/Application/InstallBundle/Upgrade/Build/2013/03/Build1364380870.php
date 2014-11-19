@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1364380870 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Enable RTE");
-		$this->execMutateSql("
-			DELETE FROM settings
-			WHERE name = 'core_tickets.enable_agent_rte'
-		");
-	}
+    public function run()
+    {
+        $this->out("Enable RTE");
+        $this->execMutateSql("
+            DELETE FROM settings
+            WHERE name = 'core_tickets.enable_agent_rte'
+        ");
+    }
 }

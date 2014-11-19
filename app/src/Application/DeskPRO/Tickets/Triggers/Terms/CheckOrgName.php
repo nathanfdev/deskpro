@@ -45,23 +45,25 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckOrgName extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('name');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('name');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		return $this->isStringMatch($ticket, $context, 'organization.name', $options['name']);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+
+        return $this->isStringMatch($ticket, $context, 'organization.name', $options['name']);
+    }
 }

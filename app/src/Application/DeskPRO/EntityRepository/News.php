@@ -34,137 +34,135 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Orb\Util\Strings;
 
 class News extends AbstractEntityRepository
 {
-	public function getBySlug($slug)
-	{
-		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
-		if (!$id) return null;
+    public function getBySlug($slug)
+    {
+        $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
+        if (!$id) return null;
+        return $this->find($id);
+    }
 
-		return $this->find($id);
-	}
+    /**
+     * Get a collection of posts by ID. If $person_context
+     * is supplied, only articles that this person is able to view will be returned.
+     *
+     * @return array
+     */
+    public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
+    {
+        if (!$ids) return array();
 
-	/**
-	 * Get a collection of posts by ID. If $person_context
-	 * is supplied, only articles that this person is able to view will be returned.
-	 *
-	 * @return array
-	 */
-	public function getByIdsWithContext(array $ids, PersonEntity $person_context = null)
-	{
-		if (!$ids) return array();
+        if ($person_context) {
 
-		if ($person_context) {
+            $cat_ids = $person_context->getPermissionsManager()->NewsCategories->getAllowedCategories();
+            if (!$cat_ids) {
+                return array();
+            }
 
-			$cat_ids = $person_context->getPermissionsManager()->NewsCategories->getAllowedCategories();
-			if (!$cat_ids) {
-				return array();
-			}
+            $posts = $this->getEntityManager()->createQuery("
+                SELECT p
+                FROM DeskPRO:News p INDEX BY p.id
+                WHERE p.id IN (?0) AND p.category IN (?1) AND p.status = 'published'
+                ORDER BY p.id DESC
+            ")->execute(array($ids, $cat_ids));
+        } else {
+            $posts = $this->getEntityManager()->createQuery("
+                SELECT p
+                FROM DeskPRO:News p INDEX BY p.id
+                WHERE p.id IN (?0) AND p.status = 'published'
+                ORDER BY p.id DESC
+            ")->execute(array($ids));
+        }
 
-			$posts = $this->getEntityManager()->createQuery("
-				SELECT p
-				FROM DeskPRO:News p INDEX BY p.id
-				WHERE p.id IN (?0) AND p.category IN (?1) AND p.status = 'published'
-				ORDER BY p.id DESC
-			")->execute(array($ids, $cat_ids));
-		} else {
-			$posts = $this->getEntityManager()->createQuery("
-				SELECT p
-				FROM DeskPRO:News p INDEX BY p.id
-				WHERE p.id IN (?0) AND p.status = 'published'
-				ORDER BY p.id DESC
-			")->execute(array($ids));
-		}
+        return $posts;
+    }
 
-		return $posts;
-	}
+    public function getByResultIds(array $ids)
+    {
+        if (!$ids) return array();
 
-	public function getByResultIds(array $ids)
-	{
-		if (!$ids) return array();
+        $unsorted_news = $this->getEntityManager()->createQuery("
+            SELECT n
+            FROM DeskPRO:News n INDEX BY n.id
+            WHERE n.id IN (?0)
+            ORDER BY n.id DESC
+        ")->execute(array($ids));
 
-		$unsorted_news = $this->getEntityManager()->createQuery("
-			SELECT n
-			FROM DeskPRO:News n INDEX BY n.id
-			WHERE n.id IN (?0)
-			ORDER BY n.id DESC
-		")->execute(array($ids));
+        $news = array();
 
-		$news = array();
+        foreach ($ids as $id) {
+            if (isset($unsorted_news[$id])) {
+                $news[$id] = $unsorted_news[$id];
+            }
+        }
 
-		foreach ($ids as $id) {
-			if (isset($unsorted_news[$id])) {
-				$news[$id] = $unsorted_news[$id];
-			}
-		}
+        return $news;
+    }
 
-		return $news;
-	}
+    public function getNews($node, $num = 20)
+    {
+        if ($node) {
+            $news = $this->getEntityManager()->createQuery("
+                SELECT n
+                FROM DeskPRO:News n
+                WHERE n.category = ?1
+                ORDER BY n.id DESC
+            ")->setParameter(1, $node)->setMaxResults($num)->execute();
+        } else {
+            $news = $this->getEntityManager()->createQuery("
+                SELECT n
+                FROM DeskPRO:News n
+                ORDER BY n.id DESC
+            ")->setMaxResults($num)->execute();
+        }
 
-	public function getNews($node, $num = 20)
-	{
-		if ($node) {
-			$news = $this->getEntityManager()->createQuery("
-				SELECT n
-				FROM DeskPRO:News n
-				WHERE n.category = ?1
-				ORDER BY n.id DESC
-			")->setParameter(1, $node)->setMaxResults($num)->execute();
-		} else {
-			$news = $this->getEntityManager()->createQuery("
-				SELECT n
-				FROM DeskPRO:News n
-				ORDER BY n.id DESC
-			")->setMaxResults($num)->execute();
-		}
-
-		return $news;
-	}
-
-
-	public function getNewest($num = 10, $node = false)
-	{
-		if ($node) {
-			$cat_ids = $node->getTreeIds(true);
-			$articles = $this->getEntityManager()->createQuery("
-				SELECT n
-				FROM DeskPRO:News n INDEX BY n.id
-				WHERE n.status = 'published' AND n.category IN (?0)
-				ORDER BY n.id DESC
-			")->setMaxResults($num)->execute(array($cat_ids));
-		} else {
-			$articles = $this->getEntityManager()->createQuery("
-				SELECT n
-				FROM DeskPRO:News n INDEX BY n.id
-				WHERE n.status = 'published'
-				ORDER BY n.id DESC
-			")->setMaxResults($num)->execute();
-		}
-
-		return $articles;
-	}
+        return $news;
+    }
 
 
-	public function countPublished()
-	{
-		return $this->getEntityManager()->createQuery("
-			SELECT COUNT(n) as cc
-			FROM DeskPRO:News n
-			WHERE n.status = 'published'
-		")->getSingleScalarResult();
-	}
+    public function getNewest($num = 10, $node = false)
+    {
+        if ($node) {
+            $cat_ids = $node->getTreeIds(true);
+            $articles = $this->getEntityManager()->createQuery("
+                SELECT n
+                FROM DeskPRO:News n INDEX BY n.id
+                WHERE n.status = 'published' AND n.category IN (?0)
+                ORDER BY n.id DESC
+            ")->setMaxResults($num)->execute(array($cat_ids));
+        } else {
+            $articles = $this->getEntityManager()->createQuery("
+                SELECT n
+                FROM DeskPRO:News n INDEX BY n.id
+                WHERE n.status = 'published'
+                ORDER BY n.id DESC
+            ")->setMaxResults($num)->execute();
+        }
 
-	public function getReportAssociations()
-	{
-		return array(
-			'views' => array(
-				'conditions' => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
-				'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
-			)
-		);
-	}
+        return $articles;
+    }
+
+
+    public function countPublished()
+    {
+        return $this->getEntityManager()->createQuery("
+            SELECT COUNT(n) as cc
+            FROM DeskPRO:News n
+            WHERE n.status = 'published'
+        ")->getSingleScalarResult();
+    }
+
+    public function getReportAssociations()
+    {
+        return array(
+            'views' => array(
+                'conditions' => '%1$s.object_type = 3 AND %1$s.object_id = %2$s.id',
+                'targetEntity' => 'Application\\DeskPRO\\Entity\\PageViewLog'
+            )
+        );
+    }
 }

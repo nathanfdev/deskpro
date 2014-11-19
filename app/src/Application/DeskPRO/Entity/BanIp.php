@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -48,130 +47,130 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class BanIp extends DomainObject
 {
-	/**
-	 * The banned IP address (human readable)
-	 *
-	 * @var string
-	 */
+    /**
+     * The banned IP address (human readable)
+     *
+     * @var string
+     */
 
-	protected $banned_ip;
+    protected $banned_ip;
 
-	/**
-	 * Start of the IP range
-	 *
-	 * @var int
-	 */
+    /**
+     * Start of the IP range
+     *
+     * @var int
+     */
 
-	protected $ip_start;
+    protected $ip_start;
 
-	/**
-	 * End of the IP range
-	 *
-	 * @var int
-	 */
+    /**
+     * End of the IP range
+     *
+     * @var int
+     */
 
-	protected $ip_end;
+    protected $ip_end;
 
-	/**
-	 * @return BanIp
-	 */
+    /**
+     * @return BanIp
+     */
 
-	public static function createBanIp()
-	{
-		return new self();
-	}
+    public static function createBanIp()
+    {
+        return new self();
+    }
 
-	public function setBannedIp($ip)
-	{
-		// Dont include wildcard at the ned
-		$ip = preg_replace('#\.\*$#', '', $ip);
+    public function setBannedIp($ip)
+    {
+        // Dont include wildcard at the ned
+        $ip = preg_replace('#\.\*$#', '', $ip);
 
-		// Remove bad chars
-		$ip = preg_replace('#[^0-9\.]#', '', $ip);
+        // Remove bad chars
+        $ip = preg_replace('#[^0-9\.]#', '', $ip);
 
-		// Remove trailin dots
-		$ip = trim($ip, '.');
+        // Remove trailin dots
+        $ip = trim($ip, '.');
 
-		$parts = explode('.', $ip);
+        $parts = explode('.', $ip);
 
-		if (count($parts) < 1 OR count($parts) > 4) {
+        if (count($parts) < 1 OR count($parts) > 4) {
 
-			throw new \InvalidArgumentException('Invalid IP address: `'.$ip.'`');
-		}
+            throw new \InvalidArgumentException('Invalid IP address: `'.$ip.'`');
+        }
 
-		$start = array();
-		$end   = array();
+        $start = array();
+        $end   = array();
 
-		foreach ($parts as $part) {
+        foreach ($parts as $part) {
 
-			$start[] = $part;
-			$end[]   = $part;
-		}
+            $start[] = $part;
+            $end[]   = $part;
+        }
 
-		// For wildcarded parts we're missing some octets,
-		// so we'll fill them in automatically
+        // For wildcarded parts we're missing some octets,
+        // so we'll fill them in automatically
 
-		while (count($start) < 4) {
+        while (count($start) < 4) {
 
-			$start[] = 0;
-			$end[]   = 255;
-		}
+            $start[] = 0;
+            $end[]   = 255;
+        }
 
-		if (count($parts) < 4) {
+        if (count($parts) < 4) {
 
-			$human = implode('.', $parts) . '.*';
+            $human = implode('.', $parts) . '.*';
 
-		} else {
+        } else {
 
-			$human = implode('.', $parts);
-		}
+            $human = implode('.', $parts);
+        }
 
-		$this->banned_ip = $human;
-		$this->ip_start  = sprintf("%u", ip2long(implode('.', $start)));
-		$this->ip_end    = sprintf("%u", ip2long(implode('.', $end)));
-	}
+        $this->banned_ip = $human;
+        $this->ip_start  = sprintf("%u", ip2long(implode('.', $start)));
+        $this->ip_end    = sprintf("%u", ip2long(implode('.', $end)));
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanIp';
-		$metadata->setPrimaryTable(array('name' => 'ban_ips',));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'banned_ip',
-				 'type'       => 'string',
-				 'length'     => 100,
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'banned_ip',
-				 'id'         => true,
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'ip_start',
-				 'type'       => 'bigint',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'ip_start',
-			)
-		);
-		$metadata->mapField(
-			array(
-				 'fieldName'  => 'ip_end',
-				 'type'       => 'bigint',
-				 'precision'  => 0,
-				 'scale'      => 0,
-				 'nullable'   => false,
-				 'columnName' => 'ip_end',
-			)
-		);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\BanIp';
+        $metadata->setPrimaryTable(array('name' => 'ban_ips',));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'banned_ip',
+                 'type'       => 'string',
+                 'length'     => 100,
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'banned_ip',
+                 'id'         => true,
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'ip_start',
+                 'type'       => 'bigint',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'ip_start',
+            )
+        );
+        $metadata->mapField(
+            array(
+                 'fieldName'  => 'ip_end',
+                 'type'       => 'bigint',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'nullable'   => false,
+                 'columnName' => 'ip_end',
+            )
+        );
+    }
 }

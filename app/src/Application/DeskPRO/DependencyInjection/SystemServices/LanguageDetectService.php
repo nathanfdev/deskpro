@@ -39,9 +39,10 @@ use Application\DeskPRO\Languages\Detect;
 
 class LanguageDetectService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$detect = new Detect($container->getDataService('Language'));
-		return $detect;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        $detect = new Detect($container->getDataService('Language'));
+
+        return $detect;
+    }
 }

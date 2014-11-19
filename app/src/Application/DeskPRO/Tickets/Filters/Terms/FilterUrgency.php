@@ -44,23 +44,25 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterUrgency extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('urgency');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('urgency');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
-		return $this->getIntMatchQuery('tickets.urgency', $options['urgency']);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
+
+        return $this->getIntMatchQuery('tickets.urgency', $options['urgency']);
+    }
 }

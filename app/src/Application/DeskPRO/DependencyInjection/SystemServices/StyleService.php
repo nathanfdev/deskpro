@@ -41,8 +41,8 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
  */
 class StyleService
 {
-	public static function create(DeskproContainer $container)
-	{
-		return null;
-	}
+    public static function create(DeskproContainer $container)
+    {
+        return null;
+    }
 }

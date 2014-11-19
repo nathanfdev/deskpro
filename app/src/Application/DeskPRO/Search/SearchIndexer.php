@@ -50,104 +50,105 @@ use Application\DeskPRO\Entity\ChatConversation;
  */
 class SearchIndexer
 {
-	/**
-	 * @var DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function __construct(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * @param DeskproContainer $container
+     */
+    public function __construct(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 
-	public function handle(array $updates, array $deletes)
-	{
-		#------------------------------
-		# Elastic
-		#------------------------------
+    public function handle(array $updates, array $deletes)
+    {
+        #------------------------------
+        # Elastic
+        #------------------------------
 
-		if ($this->container->getSetting('elastica.enabled')) {
-			$updates_by_type = array();
-			$deletes_by_type = array();
+        if ($this->container->getSetting('elastica.enabled')) {
+            $updates_by_type = array();
+            $deletes_by_type = array();
 
-			$get_persister = function($object) {
-				switch (true) {
-					case $object instanceof Article:
-						return 'fos_elastica.object_persister.deskpro.article';
-					case $object instanceof News:
-						return 'fos_elastica.object_persister.deskpro.news';
-					case $object instanceof Download:
-						return 'fos_elastica.object_persister.deskpro.download';
-					case $object instanceof Feedback:
-						return 'fos_elastica.object_persister.deskpro.feedback';
-					case $object instanceof Ticket:
-						return 'fos_elastica.object_persister.deskpro.ticket';
-					case $object instanceof Person:
-						return 'fos_elastica.object_persister.deskpro.person';
-					case $object instanceof Organization:
-						return 'fos_elastica.object_persister.deskpro.organization';
-					case $object instanceof ChatConversation:
-						return 'fos_elastica.object_persister.deskpro.chat_conversation';
-				}
-				return null;
-			};
+            $get_persister = function ($object) {
+                switch (true) {
+                    case $object instanceof Article:
+                        return 'fos_elastica.object_persister.deskpro.article';
+                    case $object instanceof News:
+                        return 'fos_elastica.object_persister.deskpro.news';
+                    case $object instanceof Download:
+                        return 'fos_elastica.object_persister.deskpro.download';
+                    case $object instanceof Feedback:
+                        return 'fos_elastica.object_persister.deskpro.feedback';
+                    case $object instanceof Ticket:
+                        return 'fos_elastica.object_persister.deskpro.ticket';
+                    case $object instanceof Person:
+                        return 'fos_elastica.object_persister.deskpro.person';
+                    case $object instanceof Organization:
+                        return 'fos_elastica.object_persister.deskpro.organization';
+                    case $object instanceof ChatConversation:
+                        return 'fos_elastica.object_persister.deskpro.chat_conversation';
+                }
 
-			foreach ($updates as $object) {
-				$persister_id = $get_persister($object);
-				if ($persister_id) {
-					if (!isset($updates_by_type[$persister_id])) {
-						$updates_by_type[$persister_id] = array();
-					}
-					$updates_by_type[$persister_id][] = $object;
-				}
-			}
-			foreach ($deletes as $object) {
-				$persister_id = $get_persister($object);
-				if ($persister_id) {
-					if (!isset($deletes_by_type[$persister_id])) {
-						$deletes_by_type[$persister_id] = array();
-					}
-					$deletes_by_type[$persister_id][] = $object;
-				}
-			}
+                return null;
+            };
 
-			foreach ($updates_by_type as $persister_id => $objects) {
-				$persister = $this->container->get($persister_id);
-				$persister->replaceMany($objects);
-			}
-			foreach ($deletes_by_type as $persister_id => $objects) {
-				$persister = $this->container->get($persister_id);
-				$persister->deleteMany($objects);
-			}
+            foreach ($updates as $object) {
+                $persister_id = $get_persister($object);
+                if ($persister_id) {
+                    if (!isset($updates_by_type[$persister_id])) {
+                        $updates_by_type[$persister_id] = array();
+                    }
+                    $updates_by_type[$persister_id][] = $object;
+                }
+            }
+            foreach ($deletes as $object) {
+                $persister_id = $get_persister($object);
+                if ($persister_id) {
+                    if (!isset($deletes_by_type[$persister_id])) {
+                        $deletes_by_type[$persister_id] = array();
+                    }
+                    $deletes_by_type[$persister_id][] = $object;
+                }
+            }
 
-		#------------------------------
-		# Default
-		#------------------------------
+            foreach ($updates_by_type as $persister_id => $objects) {
+                $persister = $this->container->get($persister_id);
+                $persister->replaceMany($objects);
+            }
+            foreach ($deletes_by_type as $persister_id => $objects) {
+                $persister = $this->container->get($persister_id);
+                $persister->deleteMany($objects);
+            }
 
-		} else {
-			foreach ($updates as $object) {
-				switch (true) {
-					case $object instanceof Article:
-					case $object instanceof News:
-					case $object instanceof Download:
-					case $object instanceof Feedback:
-						App::getContainer()->getSearchAdapter()->updateObjectsInIndex(array($object));
-						break;
-				}
-			}
-			foreach ($deletes as $object) {
-				switch (true) {
-					case $object instanceof Article:
-					case $object instanceof News:
-					case $object instanceof Download:
-					case $object instanceof Feedback:
-						App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex(array($object));
-						break;
-				}
-			}
-		}
-	}
+        #------------------------------
+        # Default
+        #------------------------------
+
+        } else {
+            foreach ($updates as $object) {
+                switch (true) {
+                    case $object instanceof Article:
+                    case $object instanceof News:
+                    case $object instanceof Download:
+                    case $object instanceof Feedback:
+                        App::getContainer()->getSearchAdapter()->updateObjectsInIndex(array($object));
+                        break;
+                }
+            }
+            foreach ($deletes as $object) {
+                switch (true) {
+                    case $object instanceof Article:
+                    case $object instanceof News:
+                    case $object instanceof Download:
+                    case $object instanceof Feedback:
+                        App::getContainer()->getSearchAdapter()->deleteObjectsFromIndex(array($object));
+                        break;
+                }
+            }
+        }
+    }
 }

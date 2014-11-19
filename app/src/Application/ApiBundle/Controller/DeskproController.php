@@ -40,52 +40,52 @@ namespace Application\ApiBundle\Controller;
  */
 class DeskproController extends AbstractController
 {
-	/**
-	 * Simple action to return the current server time.
-	 */
-	public function timeAction()
-	{
-		return $this->createApiResponse(array(
-			'timestamp' => time(),
-			'fulldate' => date('r')
-		));
-	}
+    /**
+     * Simple action to return the current server time.
+     */
+    public function timeAction()
+    {
+        return $this->createApiResponse(array(
+            'timestamp' => time(),
+            'fulldate' => date('r')
+        ));
+    }
 
 
 
-	/**
-	 * Gets the value of a setting.
-	 *
-	 * @param string $setting_name
-	 */
-	public function settingAction($setting_name)
-	{
-		$value = $this->settings[$setting_name];
+    /**
+     * Gets the value of a setting.
+     *
+     * @param string $setting_name
+     */
+    public function settingAction($setting_name)
+    {
+        $value = $this->settings[$setting_name];
 
-		if ($value === null) {
-			return $this->createApiErrorResponse('setting_not_found', 'No setting was found with that name', 404);
-		}
+        if ($value === null) {
+            return $this->createApiErrorResponse('setting_not_found', 'No setting was found with that name', 404);
+        }
 
-		return $this->createApiResponse(array('setting_value' => $value));
-	}
+        return $this->createApiResponse(array('setting_value' => $value));
+    }
 
 
 
-	/**
-	 * Sets a new value for a setting
-	 *
-	 * @param string $setting_name
-	 */
-	public function postSettingAction($setting_name)
-	{
-		$current_value = $this->settings[$setting_name];
+    /**
+     * Sets a new value for a setting
+     *
+     * @param string $setting_name
+     */
+    public function postSettingAction($setting_name)
+    {
+        $current_value = $this->settings[$setting_name];
 
-		if ($current_value === null) {
-			return $this->createApiErrorResponse('setting_not_found', 'No setting was found with that name', 404);
-		}
+        if ($current_value === null) {
+            return $this->createApiErrorResponse('setting_not_found', 'No setting was found with that name', 404);
+        }
 
-		$this->settings->setSetting($setting_name, isset($_POST['value']) ? $_POST['value'] : '');
+        $this->settings->setSetting($setting_name, isset($_POST['value']) ? $_POST['value'] : '');
 
-		return $this->createApiResponse(array('success' => 1));
-	}
+        return $this->createApiResponse(array('success' => 1));
+    }
 }

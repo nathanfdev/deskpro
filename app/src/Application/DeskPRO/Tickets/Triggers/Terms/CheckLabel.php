@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Tickets\Triggers\Terms;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Util as DeskPROUtil;
-use Orb\Util\Arrays;
 use Orb\Util\CheckedOptionsArray;
 
 /**
@@ -47,31 +46,32 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckLabel extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('labels');
-		$options->addCallbackCheckedOption('labels', function($v) {
-			return !empty($v);
-		});
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('labels');
+        $options->addCallbackCheckedOption('labels', function ($v) {
+            return !empty($v);
+        });
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$labels = DeskPROUtil::labelsArrayFromString($this->getTermOptions()->get('labels', ''));
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $labels = DeskPROUtil::labelsArrayFromString($this->getTermOptions()->get('labels', ''));
 
-		if (!$labels) {
-			return false;
-		}
+        if (!$labels) {
+            return false;
+        }
 
-		return $this->isEntityMatch($ticket, $context, 'labels', 'label', $labels);
-	}
+        return $this->isEntityMatch($ticket, $context, 'labels', 'label', $labels);
+    }
 }

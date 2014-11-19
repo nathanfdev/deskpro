@@ -43,149 +43,150 @@ use Orb\Util\Arrays;
 
 class AgentTeamsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listTeamsAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listTeamsAction');
+
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# list-teams
-	####################################################################################################################
+    ####################################################################################################################
+    # list-teams
+    ####################################################################################################################
 
-	public function listTeamsAction()
-	{
-		$data = array('agent_teams' => array());
+    public function listTeamsAction()
+    {
+        $data = array('agent_teams' => array());
 
-		foreach ($this->container->getDataService('AgentTeam')->getTeams() as $agent_team) {
-			$data['agent_teams'][] = $agent_team->toApiData();
-		}
+        foreach ($this->container->getDataService('AgentTeam')->getTeams() as $agent_team) {
+            $data['agent_teams'][] = $agent_team->toApiData();
+        }
 
-		return $this->createApiResponse($data);
-	}
-
-
-	####################################################################################################################
-	# get-team
-	####################################################################################################################
-
-	public function getTeamAction($id)
-	{
-		$team = $this->getContainer()->getAgentData()->getTeam($id);
-
-		if (!$team) {
-			throw $this->createNotFoundException();
-		}
-
-		$data = $team->toApiData();
-		$data['members'] = array();
-
-		foreach ($team->members as $agent) {
-			$data['members'][] = $agent->toBasicApiData();
-		}
-
-		return $this->createApiResponse(array('team' => $data));
-	}
+        return $this->createApiResponse($data);
+    }
 
 
-	####################################################################################################################
-	# delete-team
-	####################################################################################################################
+    ####################################################################################################################
+    # get-team
+    ####################################################################################################################
 
-	public function deleteTeamAction($id)
-	{
-		$team = $this->getContainer()->getAgentData()->getTeam($id);
+    public function getTeamAction($id)
+    {
+        $team = $this->getContainer()->getAgentData()->getTeam($id);
 
-		if (!$team) {
-			throw $this->createNotFoundException();
-		}
+        if (!$team) {
+            throw $this->createNotFoundException();
+        }
 
-		$old_id = $team->id;
-		$this->em->remove($team);
-		$this->em->flush();
+        $data = $team->toApiData();
+        $data['members'] = array();
 
-		return $this->createApiDeleteResponse(array(
-			'old_team_id' => $old_id
-		));
-	}
+        foreach ($team->members as $agent) {
+            $data['members'][] = $agent->toBasicApiData();
+        }
+
+        return $this->createApiResponse(array('team' => $data));
+    }
 
 
-	####################################################################################################################
-	# save-team
-	####################################################################################################################
+    ####################################################################################################################
+    # delete-team
+    ####################################################################################################################
 
-	public function saveTeamAction($id)
-	{
-		if ($id) {
-			if (!$team = $this->em->find('DeskPRO:AgentTeam', $id)) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$team = new AgentTeam();
-			$this->em->persist($team);
-		}
+    public function deleteTeamAction($id)
+    {
+        $team = $this->getContainer()->getAgentData()->getTeam($id);
 
-		$team->name = $this->in->getString('team.name');
+        if (!$team) {
+            throw $this->createNotFoundException();
+        }
 
-		// save avatar
-		if ($blobId = $this->in->getUint('team.avatar')) {
-			if ($team->avatar && $blobId != $team->avatar['id']) {
-				$this->em->remove($team->avatar);
-			}
-			$blob = $this->em->find('DeskPRO:Blob', $blobId);
-			if ($blob && $blob->isImage()) {
-				$team->avatar = $blob;
-			} else {
-				$team->avatar = null;
-			}
-		} elseif($team->avatar) {
-			$team->avatar && $this->em->remove($team->avatar);
-			$team->avatar = null;
-		}
+        $old_id = $team->id;
+        $this->em->remove($team);
+        $this->em->flush();
 
-		$errors = $this->container->getValidator()->validate($team);
-		if (count($errors)) {
-			return $this->createApiValidationErrorResponse($errors);
-		}
+        return $this->createApiDeleteResponse(array(
+            'old_team_id' => $old_id
+        ));
+    }
 
-		#------------------------------
-		# Save members
-		#------------------------------
 
-		$new_members = $this->in->getArrayOfUInts('team.person_ids');
-		$new_members = array_unique($new_members);
-		$new_members = Arrays::removeFalsey($new_members);
+    ####################################################################################################################
+    # save-team
+    ####################################################################################################################
 
-		if ($new_members) {
-			$agent_data = $this->container->getAgentData();
-			$new_members = array_filter($new_members, function($a) use ($agent_data) {
-				return $agent_data->get($a) ? true : false;
-			});
-		}
+    public function saveTeamAction($id)
+    {
+        if ($id) {
+            if (!$team = $this->em->find('DeskPRO:AgentTeam', $id)) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $team = new AgentTeam();
+            $this->em->persist($team);
+        }
 
-		$members = $this->em->getRepository('DeskPRO:Person')->findBy(array('id' => $new_members));
-		$team->members->clear();
-		foreach ($members as $person) {
-			/** @var $person Person */
-			$person->addTeam($team); // bidirectional
-		}
+        $team->name = $this->in->getString('team.name');
 
-		$is_new = (bool) $team['id'];
-		$this->em->flush();
+        // save avatar
+        if ($blobId = $this->in->getUint('team.avatar')) {
+            if ($team->avatar && $blobId != $team->avatar['id']) {
+                $this->em->remove($team->avatar);
+            }
+            $blob = $this->em->find('DeskPRO:Blob', $blobId);
+            if ($blob && $blob->isImage()) {
+                $team->avatar = $blob;
+            } else {
+                $team->avatar = null;
+            }
+        } elseif($team->avatar) {
+            $team->avatar && $this->em->remove($team->avatar);
+            $team->avatar = null;
+        }
 
-		if ($is_new) {
-			return $this->createApiCreateResponse(
-				array('team_id' => $team->id),
-				$this->generateUrl('api_agent_teams_get', array('id' => $team->id), true)
-			);
-		} else {
-			return $this->createApiSuccessResponse(array('team_id' => $team->id));
-		}
-	}
+        $errors = $this->container->getValidator()->validate($team);
+        if (count($errors)) {
+            return $this->createApiValidationErrorResponse($errors);
+        }
+
+        #------------------------------
+        # Save members
+        #------------------------------
+
+        $new_members = $this->in->getArrayOfUInts('team.person_ids');
+        $new_members = array_unique($new_members);
+        $new_members = Arrays::removeFalsey($new_members);
+
+        if ($new_members) {
+            $agent_data = $this->container->getAgentData();
+            $new_members = array_filter($new_members, function ($a) use ($agent_data) {
+                return $agent_data->get($a) ? true : false;
+            });
+        }
+
+        $members = $this->em->getRepository('DeskPRO:Person')->findBy(array('id' => $new_members));
+        $team->members->clear();
+        foreach ($members as $person) {
+            /** @var $person Person */
+            $person->addTeam($team); // bidirectional
+        }
+
+        $is_new = (bool) $team['id'];
+        $this->em->flush();
+
+        if ($is_new) {
+            return $this->createApiCreateResponse(
+                array('team_id' => $team->id),
+                $this->generateUrl('api_agent_teams_get', array('id' => $team->id), true)
+            );
+        } else {
+            return $this->createApiSuccessResponse(array('team_id' => $team->id));
+        }
+    }
 }

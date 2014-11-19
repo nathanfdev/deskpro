@@ -35,31 +35,29 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
-use Orb\Util\Util;
 
 /**
  * Handles the text field
  */
 class Textarea extends Text
 {
-	public function getRenderTemplateVars($context = 'html')
-	{
-		if ($context == 'html') {
-			return array('nl2br' => true);
-		}
+    public function getRenderTemplateVars($context = 'html')
+    {
+        if ($context == 'html') {
+            return array('nl2br' => true);
+        }
 
-		return array();
-	}
+        return array();
+    }
 
-	public function getFormField($data = null)
-	{
-		$setData = null;
-		if ($data AND !empty($data['value'])) {
-			$setData = $data['value'];
-		}
-		$field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'textarea', $setData, array('required' => false));
+    public function getFormField($data = null)
+    {
+        $setData = null;
+        if ($data AND !empty($data['value'])) {
+            $setData = $data['value'];
+        }
+        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'textarea', $setData, array('required' => false));
 
-		return $field;
-	}
+        return $field;
+    }
 }

@@ -43,64 +43,64 @@ use Application\DeskPRO\NewSettings\SettingsLoaderInterface;
  */
 class ConfigPhpFileLoader implements SettingsLoaderInterface
 {
-	const KEY_PREFIX = 'settings.loader.config_php_file.';
+    const KEY_PREFIX = 'settings.loader.config_php_file.';
 
-	/**
-	 * @var string the key we use for cache on this loader
-	 */
-	private $cacheKey;
+    /**
+     * @var string the key we use for cache on this loader
+     */
+    private $cacheKey;
 
-	/**
-	 * @var \Application\DeskPRO\Cache\ConvenientCache
-	 */
-	private $cache;
+    /**
+     * @var \Application\DeskPRO\Cache\ConvenientCache
+     */
+    private $cache;
 
-	/**
-	 * @var string absolute path to the config file that returns a php array
-	 */
-	private $absFilePath;
+    /**
+     * @var string absolute path to the config file that returns a php array
+     */
+    private $absFilePath;
 
-	public function __construct($absFilePath, CacheAdapterInterface $cache)
-	{
-		$this->cacheKey = static::KEY_PREFIX . $absFilePath;
-		$this->cache = new ConvenientCache($cache);
-		$this->absFilePath = $absFilePath;
-	}
+    public function __construct($absFilePath, CacheAdapterInterface $cache)
+    {
+        $this->cacheKey = static::KEY_PREFIX . $absFilePath;
+        $this->cache = new ConvenientCache($cache);
+        $this->absFilePath = $absFilePath;
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function load($force = false)
-	{
-		if (!is_readable($this->getAbsFilePath())) {
-			throw new \RuntimeException(sprintf('cannot read settings file "%s"', $this->getAbsFilePath()));
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function load($force = false)
+    {
+        if (!is_readable($this->getAbsFilePath())) {
+            throw new \RuntimeException(sprintf('cannot read settings file "%s"', $this->getAbsFilePath()));
+        }
 
-		if ($force) {
-			$this->cache->delete($this->cacheKey);
-		}
+        if ($force) {
+            $this->cache->delete($this->cacheKey);
+        }
 
-		$that = $this;
-		return $this->cache->get(
-			$this->cacheKey,
-			function() use ($that) { return require $that->getAbsFilePath(); }
-		);
-	}
+        $that = $this;
 
-	/**
-	 * @return string
-	 */
-	public function getAbsFilePath()
-	{
-		return $this->absFilePath;
-	}
+        return $this->cache->get(
+            $this->cacheKey,
+            function () use ($that) { return require $that->getAbsFilePath(); }
+        );
+    }
 
-	/**
-	 * @return string
-	 */
-	public function getCacheKey()
-	{
-		return $this->cacheKey;
-	}
+    /**
+     * @return string
+     */
+    public function getAbsFilePath()
+    {
+        return $this->absFilePath;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCacheKey()
+    {
+        return $this->cacheKey;
+    }
 }
- 

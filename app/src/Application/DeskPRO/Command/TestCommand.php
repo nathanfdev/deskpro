@@ -35,38 +35,36 @@
 
 namespace Application\DeskPRO\Command;
 
-use Application\DeskPRO\App;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
 class TestCommand extends ContainerAwareCommand
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function configure()
-	{
-		$this->setName('dp:test');
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure()
+    {
+        $this->setName('dp:test');
+    }
 
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return parent::getContainer();
+    }
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return parent::getContainer();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        echo DP_ROOT;
+        echo "\n";
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		echo DP_ROOT;
-		echo "\n";
-		return 0;
-	}
+        return 0;
+    }
 }

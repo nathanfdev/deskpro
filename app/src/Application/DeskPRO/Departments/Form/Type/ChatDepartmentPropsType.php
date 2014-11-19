@@ -41,56 +41,56 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ChatDepartmentPropsType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add(
-			'title',
-			'text',
-			array(
-				 'required' => false,
-			)
-		);
-		$builder->add(
-			'user_title',
-			'text',
-			array(
-				 'required' => false,
-			)
-		);
-		$builder->add(
-			'parent',
-			'entity',
-			array(
-				 'class'         => 'DeskPRO:Department',
-				 'required'      => false,
-				 'query_builder' => function (EntityRepository $er) {
-					 return $er->createQueryBuilder('d')->where(
-						 'd.is_chat_enabled = true AND d.parent IS NULL'
-					 )->orderBy(
-						 'd.display_order',
-						 'ASC'
-					 );
-				 }
-			)
-		);
-		$builder->add('avatar', 'entity', array(
-			'required'      => false,
-			'class'         => 'DeskPRO:Blob',
-		));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add(
+            'title',
+            'text',
+            array(
+                 'required' => false,
+            )
+        );
+        $builder->add(
+            'user_title',
+            'text',
+            array(
+                 'required' => false,
+            )
+        );
+        $builder->add(
+            'parent',
+            'entity',
+            array(
+                 'class'         => 'DeskPRO:Department',
+                 'required'      => false,
+                 'query_builder' => function (EntityRepository $er) {
+                     return $er->createQueryBuilder('d')->where(
+                         'd.is_chat_enabled = true AND d.parent IS NULL'
+                     )->orderBy(
+                         'd.display_order',
+                         'ASC'
+                     );
+                 }
+            )
+        );
+        $builder->add('avatar', 'entity', array(
+            'required'      => false,
+            'class'         => 'DeskPRO:Blob',
+        ));
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(
-			array(
-				 'data_class' => 'Application\\DeskPRO\\Entity\\Department',
-			)
-		);
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(
+            array(
+                 'data_class' => 'Application\\DeskPRO\\Entity\\Department',
+            )
+        );
+    }
 
-	public function getName()
-	{
-		return 'department';
-	}
+    public function getName()
+    {
+        return 'department';
+    }
 
 }

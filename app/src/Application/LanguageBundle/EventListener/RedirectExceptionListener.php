@@ -39,9 +39,7 @@ use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
-use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\Generator\UrlGeneratorInterface;
 use Application\LanguageBundle\Routing\RedirectToUrlException;
 
 
@@ -50,39 +48,38 @@ use Application\LanguageBundle\Routing\RedirectToUrlException;
  */
 class RedirectExceptionListener implements EventSubscriberInterface
 {
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	private $logger;
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
-	public function __construct(LoggerInterface $logger)
-	{
-		$this->logger        = $logger;
-	}
-
-
-	public function onKernelException(GetResponseForExceptionEvent $event)
-	{
-		$e = $event->getException();
-
-		// only interested in a particular exception here
-		if (!$e instanceof RedirectToUrlException) {
-			return;
-		}
-
-		$url = $e->getUrl();
-		$this->logger->info('RedirectToUrlException caught: 302 redirecting to "' . $url . '"');
-
-		$event->setResponse(new RedirectResponse($url, Response::HTTP_FOUND));
-		$event->stopPropagation();
-	}
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger        = $logger;
+    }
 
 
-	public static function getSubscribedEvents()
-	{
-		return array(
-			KernelEvents::EXCEPTION => array('onKernelException', 129) // very high priority
-		);
-	}
+    public function onKernelException(GetResponseForExceptionEvent $event)
+    {
+        $e = $event->getException();
+
+        // only interested in a particular exception here
+        if (!$e instanceof RedirectToUrlException) {
+            return;
+        }
+
+        $url = $e->getUrl();
+        $this->logger->info('RedirectToUrlException caught: 302 redirecting to "' . $url . '"');
+
+        $event->setResponse(new RedirectResponse($url, Response::HTTP_FOUND));
+        $event->stopPropagation();
+    }
+
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            KernelEvents::EXCEPTION => array('onKernelException', 129) // very high priority
+        );
+    }
 }
- 

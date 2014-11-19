@@ -39,143 +39,143 @@ use Orb\Util\Dates;
 
 class TicketsResponseTime extends AbstractSubgroupedTableOverviewStat
 {
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_start;
+    /**
+     * @var \DateTime
+     */
+    protected $date_start;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_end;
+    /**
+     * @var \DateTime
+     */
+    protected $date_end;
 
-	/**
-	 * @var int[]
-	 */
-	protected $values = null;
+    /**
+     * @var int[]
+     */
+    protected $values = null;
 
-	/**
-	 * @var array
-	 */
-	protected $titles = null;
+    /**
+     * @var array
+     */
+    protected $titles = null;
 
-	public function __construct(GroupingField $grouping_field = null, \DateTime $date_start, \DateTime $date_end)
-	{
-		$this->grouping_field = $grouping_field;
-		$this->date_start     = Dates::convertToUtcDateTime($date_start);
-		$this->date_end       = Dates::convertToUtcDateTime($date_end);
-	}
-
-
-	/**
-	 * @return string[]
-	 */
-	public function getTitles()
-	{
-		$largest = 0;
-		foreach ($this->getValues() as $time => $x) {
-			if ($time > $largest) {
-				$largest = $time;
-			}
-		}
-
-		$titles = array();
-
-		foreach (TimeTitles::$time_phrases as $time => $phrase) {
-			if ($time > $largest) {
-				break;
-			}
-
-			$titles[$time] = $phrase;
-		}
-
-		return $titles;
-	}
+    public function __construct(GroupingField $grouping_field = null, \DateTime $date_start, \DateTime $date_end)
+    {
+        $this->grouping_field = $grouping_field;
+        $this->date_start     = Dates::convertToUtcDateTime($date_start);
+        $this->date_end       = Dates::convertToUtcDateTime($date_end);
+    }
 
 
-	/**
-	 * @return string[]
-	 */
-	public function getSubgroupTitles()
-	{
-		if (!$this->grouping_field) {
-			return null;
-		}
+    /**
+     * @return string[]
+     */
+    public function getTitles()
+    {
+        $largest = 0;
+        foreach ($this->getValues() as $time => $x) {
+            if ($time > $largest) {
+                $largest = $time;
+            }
+        }
 
-		$collect = array();
-		foreach ($this->getValues() as $sub_groups) {
-			foreach ($sub_groups as $group_id => $count) {
-				$collect[$group_id] = $group_id;
-			}
-		}
+        $titles = array();
 
-		return $this->grouping_field->getTitles($collect);
-	}
+        foreach (TimeTitles::$time_phrases as $time => $phrase) {
+            if ($time > $largest) {
+                break;
+            }
+
+            $titles[$time] = $phrase;
+        }
+
+        return $titles;
+    }
 
 
-	/**
-	 * @return int[]
-	 */
-	public function getValues()
-	{
-		if ($this->values !== null) {
-			return $this->values;
-		}
+    /**
+     * @return string[]
+     */
+    public function getSubgroupTitles()
+    {
+        if (!$this->grouping_field) {
+            return null;
+        }
 
-		$d1 = $this->date_start->format('Y-m-d H:i:s');
-		$d2 = $this->date_end->format('Y-m-d H:i:s');
+        $collect = array();
+        foreach ($this->getValues() as $sub_groups) {
+            foreach ($sub_groups as $group_id => $count) {
+                $collect[$group_id] = $group_id;
+            }
+        }
 
-		$field = TimeTitles::makeTimeFieldSelect('tickets.total_to_first_reply');
+        return $this->grouping_field->getTitles($collect);
+    }
 
-		if ($this->grouping_field) {
-			$group_field = $this->grouping_field->getFieldInfo();
-			$sql         = "
-				SELECT {$group_field['select']}, $field, COUNT(*)
-				FROM tickets
-				{$group_field['join']}
-				WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0 {$group_field['where']}
-				GROUP BY {$group_field['group_by']}, time_group
-				ORDER BY time_group ASC
-			";
 
-			$this->logger->logDebug("[TicketsResponseTime (Grouped)] $sql");
-			$this->logger->startTimer('TicketsResponseTime');
-			$q = App::getDb()->executeQuery($sql);
-			$this->logger->logTotalTime('TicketsResponseTime');
+    /**
+     * @return int[]
+     */
+    public function getValues()
+    {
+        if ($this->values !== null) {
+            return $this->values;
+        }
 
-			$this->logger->startTimer('TicketsResponseTime.collecting');
+        $d1 = $this->date_start->format('Y-m-d H:i:s');
+        $d2 = $this->date_end->format('Y-m-d H:i:s');
 
-			$this->values = array();
-			while ($row = $q->fetch(\PDO::FETCH_NUM)) {
-				$group_id   = $row[0];
-				$time_group = $row[1];
-				$count      = $row[2];
-				if (!isset($this->values[$time_group])) {
-					$this->values[$time_group] = array();
-				}
+        $field = TimeTitles::makeTimeFieldSelect('tickets.total_to_first_reply');
 
-				if (!isset($this->values[$time_group][$group_id])) {
-					$this->values[$time_group][$group_id] = 0;
-				}
+        if ($this->grouping_field) {
+            $group_field = $this->grouping_field->getFieldInfo();
+            $sql         = "
+                SELECT {$group_field['select']}, $field, COUNT(*)
+                FROM tickets
+                {$group_field['join']}
+                WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0 {$group_field['where']}
+                GROUP BY {$group_field['group_by']}, time_group
+                ORDER BY time_group ASC
+            ";
 
-				$this->values[$time_group][$group_id] += $count;
-			}
+            $this->logger->logDebug("[TicketsResponseTime (Grouped)] $sql");
+            $this->logger->startTimer('TicketsResponseTime');
+            $q = App::getDb()->executeQuery($sql);
+            $this->logger->logTotalTime('TicketsResponseTime');
 
-			$this->logger->logTotalTime('TicketsResponseTime.collecting');
-		} else {
-			$sql = "
-				SELECT $field, COUNT(*)
-				FROM tickets
-				WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0
-				GROUP BY time_group
-			";
+            $this->logger->startTimer('TicketsResponseTime.collecting');
 
-			$this->logger->logDebug("[TicketsResponseTime] $sql");
-			$this->logger->startTimer('TicketsResponseTime');
-			$this->values = App::getDb()->fetchAllKeyValue($sql);
-			$this->logger->logTotalTime('TicketsResponseTime');
-		}
+            $this->values = array();
+            while ($row = $q->fetch(\PDO::FETCH_NUM)) {
+                $group_id   = $row[0];
+                $time_group = $row[1];
+                $count      = $row[2];
+                if (!isset($this->values[$time_group])) {
+                    $this->values[$time_group] = array();
+                }
 
-		return $this->values;
-	}
+                if (!isset($this->values[$time_group][$group_id])) {
+                    $this->values[$time_group][$group_id] = 0;
+                }
+
+                $this->values[$time_group][$group_id] += $count;
+            }
+
+            $this->logger->logTotalTime('TicketsResponseTime.collecting');
+        } else {
+            $sql = "
+                SELECT $field, COUNT(*)
+                FROM tickets
+                WHERE tickets.status != 'hidden' AND tickets.date_created BETWEEN '$d1' AND '$d2' AND tickets.total_to_first_reply != 0
+                GROUP BY time_group
+            ";
+
+            $this->logger->logDebug("[TicketsResponseTime] $sql");
+            $this->logger->startTimer('TicketsResponseTime');
+            $this->values = App::getDb()->fetchAllKeyValue($sql);
+            $this->logger->logTotalTime('TicketsResponseTime');
+        }
+
+        return $this->values;
+    }
 }

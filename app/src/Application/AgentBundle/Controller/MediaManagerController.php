@@ -34,47 +34,46 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
 
 class MediaManagerController extends AbstractController
 {
-	############################################################################
-	# window
-	############################################################################
+    ############################################################################
+    # window
+    ############################################################################
 
-	public function windowAction()
-	{
-		return $this->render('AgentBundle:MediaManager:media-window.html.twig', array(
+    public function windowAction()
+    {
+        return $this->render('AgentBundle:MediaManager:media-window.html.twig', array(
 
-		));
-	}
+        ));
+    }
 
-	############################################################################
-	# upload
-	############################################################################
+    ############################################################################
+    # upload
+    ############################################################################
 
-	public function uploadAction()
-	{
-		return $this->render('AgentBundle:MediaManager:upload.html.twig', array(
+    public function uploadAction()
+    {
+        return $this->render('AgentBundle:MediaManager:upload.html.twig', array(
 
-		));
-	}
+        ));
+    }
 
-	############################################################################
-	# browse
-	############################################################################
+    ############################################################################
+    # browse
+    ############################################################################
 
-	public function browseAction()
-	{
-		$blobs = $this->container->getEm()->createQuery("
-			SELECT b
-			FROM DeskPRO:Blob b
-			WHERE b.is_media_upload = true
-			ORDER BY b.id DESC
-		")->setMaxResults(150)->execute();
+    public function browseAction()
+    {
+        $blobs = $this->container->getEm()->createQuery("
+            SELECT b
+            FROM DeskPRO:Blob b
+            WHERE b.is_media_upload = true
+            ORDER BY b.id DESC
+        ")->setMaxResults(150)->execute();
 
-		return $this->render('AgentBundle:MediaManager:browse.html.twig', array(
-			'blobs' => $blobs,
-		));
-	}
+        return $this->render('AgentBundle:MediaManager:browse.html.twig', array(
+            'blobs' => $blobs,
+        ));
+    }
 }

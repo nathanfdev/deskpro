@@ -36,24 +36,24 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366140032 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Setting default value for modify_messages permissions");
+    public function run()
+    {
+        $this->out("Setting default value for modify_messages permissions");
 
-		$sel = $this->container->getDb()->fetchAllGrouped("
-			SELECT usergroup_id, name FROM permissions
-			WHERE person_id IS NULL AND name IN ('agent_tickets.modify_own', 'agent_tickets.modify_followed', 'agent_tickets.modify_unassigned', 'agent_tickets.modify_others')
-		", array(), 'usergroup_id', 'name', 'name');
+        $sel = $this->container->getDb()->fetchAllGrouped("
+            SELECT usergroup_id, name FROM permissions
+            WHERE person_id IS NULL AND name IN ('agent_tickets.modify_own', 'agent_tickets.modify_followed', 'agent_tickets.modify_unassigned', 'agent_tickets.modify_others')
+        ", array(), 'usergroup_id', 'name', 'name');
 
-		foreach ($sel as $ug_id => $names) {
-			foreach ($names as $n) {
-				$n = preg_replace('#^agent_tickets.modify_#', '', $n);
-				$this->container->getDb()->replace('permissions', array(
-					'usergroup_id' => $ug_id,
-					'name'         => "agent_tickets.modify_messages_$n",
-					'value'        => 1
-				));
-			}
-		}
-	}
+        foreach ($sel as $ug_id => $names) {
+            foreach ($names as $n) {
+                $n = preg_replace('#^agent_tickets.modify_#', '', $n);
+                $this->container->getDb()->replace('permissions', array(
+                    'usergroup_id' => $ug_id,
+                    'name'         => "agent_tickets.modify_messages_$n",
+                    'value'        => 1
+                ));
+            }
+        }
+    }
 }

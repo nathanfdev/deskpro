@@ -33,152 +33,150 @@
 
 namespace Application\DeskPRO\Routing\Generator\Dumper;
 
-use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Symfony\Component\Routing\Generator\Dumper\PhpGeneratorDumper as BasePhpGeneratorDumper;
 
 class PhpGeneratorDumper extends BasePhpGeneratorDumper
 {
-	/** @var string */
-	private $className;
+    /** @var string */
+    private $className;
 
     public function dump(array $options = array())
-	{
-		$this->className = $options['class'];
-		$class = trim(parent::dump($options));
+    {
+        $this->className = $options['class'];
+        $class = trim(parent::dump($options));
 
-		list($var_code, $method_code) = $this->getClassCode();
+        list($var_code, $method_code) = $this->getClassCode();
 
-		// First opening brace, as in class {
-		$pos = strpos($class, '{') + 1;
-		$class = Strings::inject($class, "\n" . $var_code . "\n", $pos);
+        // First opening brace, as in class {
+        $pos = strpos($class, '{') + 1;
+        $class = Strings::inject($class, "\n" . $var_code . "\n", $pos);
 
-		// Last closing brace, as in } at the end of the class
-		$pos = strrpos($class, '}');
-		$class = Strings::inject($class, "\n" . $method_code . "\n", $pos);
+        // Last closing brace, as in } at the end of the class
+        $pos = strrpos($class, '}');
+        $class = Strings::inject($class, "\n" . $method_code . "\n", $pos);
 
-		$class = str_replace("\$this->context = \$context;", "\$this->setContext(\$context);", $class);
+        $class = str_replace("\$this->context = \$context;", "\$this->setContext(\$context);", $class);
 
-		return $class;
-	}
+        return $class;
+    }
 
-	protected function getClassCode()
-	{
-		$route_patterns   = array();
-		$route_fragments  = array();
-		$fragment_names   = array();
-		$fragment_types   = array();
+    protected function getClassCode()
+    {
+        $route_patterns   = array();
+        $route_fragments  = array();
+        $fragment_names   = array();
+        $fragment_types   = array();
 
-		foreach ($this->getRoutes()->all() as $name => $route) {
+        foreach ($this->getRoutes()->all() as $name => $route) {
 
-			$route_patterns[$name] = $route->getPath();
+            $route_patterns[$name] = $route->getPath();
 
-			$a_name = $route->getOption('fragment_name');
-			$a_type = $route->getOption('fragment_type');
-			if ($a_name) {
-				$fragment_names[$a_name]  = $name;
-				$fragment_types[$a_name]  = $a_type ? $a_type : 'page';
-				$route_fragments[$name] = $a_name;
-			}
-		}
+            $a_name = $route->getOption('fragment_name');
+            $a_type = $route->getOption('fragment_type');
+            if ($a_name) {
+                $fragment_names[$a_name]  = $name;
+                $fragment_types[$a_name]  = $a_type ? $a_type : 'page';
+                $route_fragments[$name] = $a_name;
+            }
+        }
 
-		$var_code = array();
-		$var_code['routePatterns'] = 'static private $routePatterns = ' . var_export($route_patterns, true) . ';';
-		$var_code['routeFragments'] = 'static private $routeFragments = ' . var_export($route_fragments, true) . ';';
-		$var_code['fragmentNames']   = 'static private $fragmentNames = ' . var_export($fragment_names, true) . ';';
-		$var_code['fragmentTypes']   = 'static private $fragmentTypes = ' . var_export($fragment_types, true) . ';';
-		$var_code = implode("\n", $var_code);
+        $var_code = array();
+        $var_code['routePatterns'] = 'static private $routePatterns = ' . var_export($route_patterns, true) . ';';
+        $var_code['routeFragments'] = 'static private $routeFragments = ' . var_export($route_fragments, true) . ';';
+        $var_code['fragmentNames']   = 'static private $fragmentNames = ' . var_export($fragment_names, true) . ';';
+        $var_code['fragmentTypes']   = 'static private $fragmentTypes = ' . var_export($fragment_types, true) . ';';
+        $var_code = implode("\n", $var_code);
 
-		if (preg_match('#DevUrlGenerator$#', $this->className)) {
-			$env = 'dev';
-		} else {
-			$env = 'prod';
-		}
+        if (preg_match('#DevUrlGenerator$#', $this->className)) {
+            $env = 'dev';
+        } else {
+            $env = 'prod';
+        }
 
-		$method_code = <<<EOF
-	public function getRoutePattern(\$route_name)
-	{
-		return isset(self::\$routePatterns[\$route_name]) ? self::\$routePatterns[\$route_name] : null;
-	}
+        $method_code = <<<EOF
+    public function getRoutePattern(\$route_name)
+    {
+        return isset(self::\$routePatterns[\$route_name]) ? self::\$routePatterns[\$route_name] : null;
+    }
 
-	public function getRoutePatterns()
-	{
-		return self::\$routePatterns;
-	}
+    public function getRoutePatterns()
+    {
+        return self::\$routePatterns;
+    }
 
-	public function getFragmentNames()
-	{
-		return array_keys(self::\$fragmentNames);
-	}
+    public function getFragmentNames()
+    {
+        return array_keys(self::\$fragmentNames);
+    }
 
-	public function getTypeForFragment(\$fragment_name)
-	{
-		return isset(self::\$fragmentTypes[\$fragment_name]) ? self::\$fragmentTypes[\$fragment_name] : null;
-	}
+    public function getTypeForFragment(\$fragment_name)
+    {
+        return isset(self::\$fragmentTypes[\$fragment_name]) ? self::\$fragmentTypes[\$fragment_name] : null;
+    }
 
-	public function getRouteForFragment(\$fragment_name)
-	{
-		return isset(self::\$fragmentNames[\$fragment_name]) ? self::\$fragmentNames[\$fragment_name] : null;
-	}
+    public function getRouteForFragment(\$fragment_name)
+    {
+        return isset(self::\$fragmentNames[\$fragment_name]) ? self::\$fragmentNames[\$fragment_name] : null;
+    }
 
-	public function getPatternForFragment(\$fragment_name)
-	{
-		\$route_name = \$this->getRouteForFragment(\$fragment_name);
-		if (!\$route_name) return null;
+    public function getPatternForFragment(\$fragment_name)
+    {
+        \$route_name = \$this->getRouteForFragment(\$fragment_name);
+        if (!\$route_name) return null;
+        return \$this->getRoutePattern(\$route_name);
+    }
 
-		return \$this->getRoutePattern(\$route_name);
-	}
+    public function getFragmentPatternMap()
+    {
+        \$map = array();
+        foreach (\$this->getFragmentNames() as \$fragment_name) {
+            \$map[\$fragment_name] = \$this->getPatternForFragment(\$fragment_name);
+        }
 
-	public function getFragmentPatternMap()
-	{
-		\$map = array();
-		foreach (\$this->getFragmentNames() as \$fragment_name) {
-			\$map[\$fragment_name] = \$this->getPatternForFragment(\$fragment_name);
-		}
+        return \$map;
+    }
 
-		return \$map;
-	}
+    public function getFragmentInforArray()
+    {
+        \$map = array();
+        foreach (\$this->getFragmentNames() as \$fragment_name) {
+            \$map[\$fragment_name] = array(
+                'pattern' => \$this->getPatternForFragment(\$fragment_name),
+                'type'    => \$this->getTypeForFragment(\$fragment_name),
+            );
+        }
 
-	public function getFragmentInforArray()
-	{
-		\$map = array();
-		foreach (\$this->getFragmentNames() as \$fragment_name) {
-			\$map[\$fragment_name] = array(
-				'pattern' => \$this->getPatternForFragment(\$fragment_name),
-				'type'    => \$this->getTypeForFragment(\$fragment_name),
-			);
-		}
+        return \$map;
+    }
 
-		return \$map;
-	}
+    public function getFragmentForRoute(\$route_name)
+    {
+        return isset(self::\$routeFragments[\$route_name]) ? self::\$routeFragments[\$route_name] : null;
+    }
 
-	public function getFragmentForRoute(\$route_name)
-	{
-		return isset(self::\$routeFragments[\$route_name]) ? self::\$routeFragments[\$route_name] : null;
-	}
+    public function generateFragment(\$route_name, \$parameters = array())
+    {
+        \$fragment_name = \$this->getFragmentForRoute(\$route_name);
+        if (\$fragment_name === null) {
+            throw new \InvalidArgumentException(sprintf('Fragment "%s" does not exist.', \$route_name));
+        }
 
-	public function generateFragment(\$route_name, \$parameters = array())
-	{
-		\$fragment_name = \$this->getFragmentForRoute(\$route_name);
-		if (\$fragment_name === null) {
-			throw new \InvalidArgumentException(sprintf('Fragment "%s" does not exist.', \$route_name));
-		}
+        if (\$parameters) {
+            \$fragment = \$fragment_name . ':' . implode(':', \$parameters);
+        } else {
+            \$fragment = \$fragment_name;
+        }
 
-		if (\$parameters) {
-			\$fragment = \$fragment_name . ':' . implode(':', \$parameters);
-		} else {
-			\$fragment = \$fragment_name;
-		}
+        return \$fragment;
+    }
 
-		return \$fragment;
-	}
-
-	public function getEnvMode()
-	{
-		return '$env';
-	}
+    public function getEnvMode()
+    {
+        return '$env';
+    }
 EOF;
 
-		return array($var_code, $method_code);
-	}
+        return array($var_code, $method_code);
+    }
 }

@@ -36,16 +36,16 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1411643955 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("My Upgrade Class");
-		$this->execMutateSql("ALTER TABLE labels_articles CHANGE `label` `label` VARCHAR(255) NOT NULL");
-		$this->execMutateSql("ALTER TABLE labels_chat_conversations CHANGE `label` `label` VARCHAR(255) NOT NULL");
-		$this->execMutateSql("ALTER TABLE label_defs CHANGE `label` `label` VARCHAR(255) NOT NULL, CHANGE color color VARCHAR(255) NOT NULL");
-		$this->execMutateSql("ALTER TABLE labels_downloads CHANGE `label` `label` VARCHAR(255) NOT NULL");
-		$this->execMutateSql("ALTER TABLE labels_feedback CHANGE `label` `label` VARCHAR(255) NOT NULL");
-		$this->execMutateSql("ALTER TABLE labels_news CHANGE `label` `label` VARCHAR(255) NOT NULL");
-		$this->execMutateSql("ALTER TABLE labels_organizations CHANGE `label` `label` VARCHAR(255) NOT NULL");
-		$this->execMutateSql("ALTER TABLE labels_people CHANGE `label` `label` VARCHAR(255) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("My Upgrade Class");
+        $this->execMutateSql("ALTER TABLE labels_articles CHANGE `label` `label` VARCHAR(255) NOT NULL");
+        $this->execMutateSql("ALTER TABLE labels_chat_conversations CHANGE `label` `label` VARCHAR(255) NOT NULL");
+        $this->execMutateSql("ALTER TABLE label_defs CHANGE `label` `label` VARCHAR(255) NOT NULL, CHANGE color color VARCHAR(255) NOT NULL");
+        $this->execMutateSql("ALTER TABLE labels_downloads CHANGE `label` `label` VARCHAR(255) NOT NULL");
+        $this->execMutateSql("ALTER TABLE labels_feedback CHANGE `label` `label` VARCHAR(255) NOT NULL");
+        $this->execMutateSql("ALTER TABLE labels_news CHANGE `label` `label` VARCHAR(255) NOT NULL");
+        $this->execMutateSql("ALTER TABLE labels_organizations CHANGE `label` `label` VARCHAR(255) NOT NULL");
+        $this->execMutateSql("ALTER TABLE labels_people CHANGE `label` `label` VARCHAR(255) NOT NULL");
+    }
 }

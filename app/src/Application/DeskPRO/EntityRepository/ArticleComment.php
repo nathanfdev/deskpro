@@ -34,9 +34,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 
 class ArticleComment extends CommentAbstract
 {
-	const FIELD = 'article';
+    const FIELD = 'article';
 }

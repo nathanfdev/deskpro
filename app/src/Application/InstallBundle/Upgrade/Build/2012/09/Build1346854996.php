@@ -36,15 +36,15 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1346854996 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("My Upgrade Class");
+    public function run()
+    {
+        $this->out("My Upgrade Class");
 
-		try {
-			$this->execMutateSql("ALTER TABLE `news_categories` DROP FOREIGN KEY `FK_D68C9111727ACA70`");
-			$this->execMutateSql("ALTER TABLE news_categories ADD CONSTRAINT FK_D68C9111727ACA70 FOREIGN KEY (parent_id) REFERENCES news_categories (id) ON DELETE SET NULL");
-		} catch (\Exception $e) {
+        try {
+            $this->execMutateSql("ALTER TABLE `news_categories` DROP FOREIGN KEY `FK_D68C9111727ACA70`");
+            $this->execMutateSql("ALTER TABLE news_categories ADD CONSTRAINT FK_D68C9111727ACA70 FOREIGN KEY (parent_id) REFERENCES news_categories (id) ON DELETE SET NULL");
+        } catch (\Exception $e) {
 
-		}
-	}
+        }
+    }
 }

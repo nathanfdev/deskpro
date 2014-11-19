@@ -36,64 +36,63 @@ namespace Application\DeskPRO\WorkerProcess\Job;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\PageViewLog;
-use Application\DeskPRO\Mail\QueueProcessor\Database as DatabaseQueueProcessor;
 
 /**
  * Updates viewcounts on articles
  */
 class UpdateViewCounts extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 600; // 10 minutes
+    const DEFAULT_INTERVAL = 600; // 10 minutes
 
-	public function run()
-	{
-		// VIEW_COUNTER
-		return;
-		$time = time();
-		$last_time = App::getSetting('core.last_viewcount_update');
-		if (!$last_time) {
-			$last_time = time() - 600;
-		}
+    public function run()
+    {
+        // VIEW_COUNTER
+        return;
+        $time = time();
+        $last_time = App::getSetting('core.last_viewcount_update');
+        if (!$last_time) {
+            $last_time = time() - 600;
+        }
 
-		$update_objects = App::getDb()->fetchAll("
-			SELECT object_type, object_id, COUNT(*) AS count
-			FROM page_view_log
-			WHERE date_created > ?
-			GROUP BY object_type, object_id
-		", array(date('Y-m-d H:i:s', $last_time)));
+        $update_objects = App::getDb()->fetchAll("
+            SELECT object_type, object_id, COUNT(*) AS count
+            FROM page_view_log
+            WHERE date_created > ?
+            GROUP BY object_type, object_id
+        ", array(date('Y-m-d H:i:s', $last_time)));
 
-		App::getDb()->beginTransaction();
-		try {
-			foreach ($update_objects as $obj) {
-				switch ($obj['object_type']) {
-					case PageViewLog::TYPE_ARTICLE:  $table = 'articles';  break;
-					case PageViewLog::TYPE_DOWNLOAD: $table = 'downloads'; break;
-					case PageViewLog::TYPE_FEEDBACK: $table = 'feedback';  break;
-					case PageViewLog::TYPE_NEWS:     $table = 'news';      break;
-					default: $table = null;
-				}
+        App::getDb()->beginTransaction();
+        try {
+            foreach ($update_objects as $obj) {
+                switch ($obj['object_type']) {
+                    case PageViewLog::TYPE_ARTICLE:  $table = 'articles';  break;
+                    case PageViewLog::TYPE_DOWNLOAD: $table = 'downloads'; break;
+                    case PageViewLog::TYPE_FEEDBACK: $table = 'feedback';  break;
+                    case PageViewLog::TYPE_NEWS:     $table = 'news';      break;
+                    default: $table = null;
+                }
 
-				if (!$table) {
-					continue;
-				}
+                if (!$table) {
+                    continue;
+                }
 
-				App::getDb()->executeUpdate("
-					UPDATE $table
-					SET view_count = view_count + ?
-					WHERE id = ?
-				", array($obj['count'], $obj['object_id']));
-			}
+                App::getDb()->executeUpdate("
+                    UPDATE $table
+                    SET view_count = view_count + ?
+                    WHERE id = ?
+                ", array($obj['count'], $obj['object_id']));
+            }
 
-			App::getDb()->commit();
-		} catch (\Exception $e) {
-			App::getDb()->rollback();
-			throw $e;
-		}
+            App::getDb()->commit();
+        } catch (\Exception $e) {
+            App::getDb()->rollback();
+            throw $e;
+        }
 
-		if ($update_objects) {
-			$this->logStatus("Updated " . count($update_objects) . " view counts");
-		}
+        if ($update_objects) {
+            $this->logStatus("Updated " . count($update_objects) . " view counts");
+        }
 
-		App::get('deskpro.core.settings')->setSetting('core.last_viewcount_update', $time);
-	}
+        App::get('deskpro.core.settings')->setSetting('core.last_viewcount_update', $time);
+    }
 }

@@ -38,209 +38,213 @@ use Doctrine\ORM\EntityManager;
 
 class LatestContent
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var int
-	 */
-	protected $count = 10;
+    /**
+     * @var int
+     */
+    protected $count = 10;
 
-	/**
-	 * @var int
-	 */
-	protected $max_article = 10;
+    /**
+     * @var int
+     */
+    protected $max_article = 10;
 
-	/**
-	 * @var int
-	 */
-	protected $max_feedback = 10;
+    /**
+     * @var int
+     */
+    protected $max_feedback = 10;
 
-	/**
-	 * @var int
-	 */
-	protected $max_download = 10;
+    /**
+     * @var int
+     */
+    protected $max_download = 10;
 
-	/**
-	 * @var int
-	 */
-	protected $max_news = 10;
+    /**
+     * @var int
+     */
+    protected $max_news = 10;
 
-	/**
-	 * @var
-	 */
-	protected $use_selections;
-
-
-	/**
-	 * @param \Doctrine\ORM\EntityManager $em
-	 */
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    /**
+     * @var
+     */
+    protected $use_selections;
 
 
-	/**
-	 * @param array $use_selections
-	 */
-	public function useSelections(array $use_selections)
-	{
-		$this->use_selections = $use_selections;
-		$this->max_article = 100;
-		$this->max_download = 100;
-		$this->max_news = 100;
-		$this->max_feedback = 100;
-		$this->count = 100;
-	}
+    /**
+     * @param \Doctrine\ORM\EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
 
-	/**
-	 * @param $x
-	 * @return LatestContent
-	 */
-	public function setMaxCount($x)
-	{
-		$this->count = $x;
-
-		// They all have equal weight
-		$this->max_article = $this->max_feedback = $this->max_download = $this->max_news = $x;
-
-		return $this;
-	}
-
-
-	/**
-	 * @param $x
-	 * @return LatestContent
-	 */
-	public function setMaxArticles($x)
-	{
-		$this->max_article = $x;
-		return $this;
-	}
+    /**
+     * @param array $use_selections
+     */
+    public function useSelections(array $use_selections)
+    {
+        $this->use_selections = $use_selections;
+        $this->max_article = 100;
+        $this->max_download = 100;
+        $this->max_news = 100;
+        $this->max_feedback = 100;
+        $this->count = 100;
+    }
 
 
-	/**
-	 * @param $x
-	 * @return LatestContent
-	 */
-	public function setMaxFeedback($x)
-	{
-		$this->max_feedback = $x;
-		return $this;
-	}
+    /**
+     * @param $x
+     * @return LatestContent
+     */
+    public function setMaxCount($x)
+    {
+        $this->count = $x;
+
+        // They all have equal weight
+        $this->max_article = $this->max_feedback = $this->max_download = $this->max_news = $x;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param $x
-	 * @return LatestContent
-	 */
-	public function setMaxDownloads($x)
-	{
-		$this->max_download = $x;
-		return $this;
-	}
+    /**
+     * @param $x
+     * @return LatestContent
+     */
+    public function setMaxArticles($x)
+    {
+        $this->max_article = $x;
+
+        return $this;
+    }
 
 
-	/**
-	 * @param $x
-	 * @return LatestContent
-	 */
-	public function setMaxNews($x)
-	{
-		$this->max_news = $x;
-		return $this;
-	}
+    /**
+     * @param $x
+     * @return LatestContent
+     */
+    public function setMaxFeedback($x)
+    {
+        $this->max_feedback = $x;
+
+        return $this;
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getResults()
-	{
-		$results = array();
+    /**
+     * @param $x
+     * @return LatestContent
+     */
+    public function setMaxDownloads($x)
+    {
+        $this->max_download = $x;
 
-		if ($this->use_selections) {
-			if (!empty($this->use_selections['articles']) && $this->max_article !== 0) {
-				$res = $this->em->getRepository('DeskPRO:Article')->getByIds($this->use_selections['articles']);
-				foreach ($res as $r) {
-					$results[] = array('type' => 'article', 'item' => $r);
-				}
-			}
+        return $this;
+    }
 
-			if (!empty($this->use_selections['downloads']) && $this->max_download !== 0) {
-				$res = $this->em->getRepository('DeskPRO:Download')->getByIds($this->use_selections['downloads']);
-				foreach ($res as $r) {
-					$results[] = array('type' => 'download', 'item' => $r);
-				}
-			}
 
-			if (!empty($this->use_selections['news']) && $this->max_news !== 0) {
-				$res = $this->em->getRepository('DeskPRO:News')->getByIds($this->use_selections['news']);
-				foreach ($res as $r) {
-					$results[] = array('type' => 'news', 'item' => $r);
-				}
-			}
-		} else {
-			if ($this->max_article) {
-				$res = $this->em->getRepository('DeskPRO:Article')->getNewest($this->max_article);
-				foreach ($res as $r) {
-					$results[] = array('type' => 'article', 'item' => $r);
-				}
-			}
-			if ($this->max_feedback) {
-				$res = $this->em->getRepository('DeskPRO:Feedback')->getNewest(null, $this->max_feedback);
-				foreach ($res as $r) {
-					$results[] = array('type' => 'feedback', 'item' => $r);
-				}
-			}
-			if ($this->max_download) {
-				$res = $this->em->getRepository('DeskPRO:Download')->getNewest($this->max_download);
-				foreach ($res as $r) {
-					$results[] = array('type' => 'download', 'item' => $r);
-				}
-			}
-			if ($this->max_news) {
-				$res = $this->em->getRepository('DeskPRO:News')->getNewest($this->max_news);
-				foreach ($res as $r) {
-					$results[] = array('type' => 'news', 'item' => $r);
-				}
-			}
-		}
+    /**
+     * @param $x
+     * @return LatestContent
+     */
+    public function setMaxNews($x)
+    {
+        $this->max_news = $x;
 
-		usort($results, function($a, $b) {
-			return ($a['item']->date_created < $b['item']->date_created) ? -1 : 1;
-		});
+        return $this;
+    }
 
-		if (count($results) <= $this->count) {
-			$final_results = $results;
-		} else {
-			$final_results = array();
-			$counts = array();
 
-			foreach ($results as $r) {
-				if (!isset($counts[$r['type']])) {
-					$counts[$r['type']] = 0;
-				}
+    /**
+     * @return array
+     */
+    public function getResults()
+    {
+        $results = array();
 
-				$prop = 'max_' . $r['type'];
+        if ($this->use_selections) {
+            if (!empty($this->use_selections['articles']) && $this->max_article !== 0) {
+                $res = $this->em->getRepository('DeskPRO:Article')->getByIds($this->use_selections['articles']);
+                foreach ($res as $r) {
+                    $results[] = array('type' => 'article', 'item' => $r);
+                }
+            }
 
-				if ($counts[$r['type']] >= $this->$prop) {
-					continue;
-				}
+            if (!empty($this->use_selections['downloads']) && $this->max_download !== 0) {
+                $res = $this->em->getRepository('DeskPRO:Download')->getByIds($this->use_selections['downloads']);
+                foreach ($res as $r) {
+                    $results[] = array('type' => 'download', 'item' => $r);
+                }
+            }
 
-				$final_results[] = $r;
-				$counts[$r['type']]++;
+            if (!empty($this->use_selections['news']) && $this->max_news !== 0) {
+                $res = $this->em->getRepository('DeskPRO:News')->getByIds($this->use_selections['news']);
+                foreach ($res as $r) {
+                    $results[] = array('type' => 'news', 'item' => $r);
+                }
+            }
+        } else {
+            if ($this->max_article) {
+                $res = $this->em->getRepository('DeskPRO:Article')->getNewest($this->max_article);
+                foreach ($res as $r) {
+                    $results[] = array('type' => 'article', 'item' => $r);
+                }
+            }
+            if ($this->max_feedback) {
+                $res = $this->em->getRepository('DeskPRO:Feedback')->getNewest(null, $this->max_feedback);
+                foreach ($res as $r) {
+                    $results[] = array('type' => 'feedback', 'item' => $r);
+                }
+            }
+            if ($this->max_download) {
+                $res = $this->em->getRepository('DeskPRO:Download')->getNewest($this->max_download);
+                foreach ($res as $r) {
+                    $results[] = array('type' => 'download', 'item' => $r);
+                }
+            }
+            if ($this->max_news) {
+                $res = $this->em->getRepository('DeskPRO:News')->getNewest($this->max_news);
+                foreach ($res as $r) {
+                    $results[] = array('type' => 'news', 'item' => $r);
+                }
+            }
+        }
 
-				if (count($final_results) >= $this->count) {
-					break;
-				}
-			}
-		}
+        usort($results, function ($a, $b) {
+            return ($a['item']->date_created < $b['item']->date_created) ? -1 : 1;
+        });
 
-		return $final_results;
-	}
+        if (count($results) <= $this->count) {
+            $final_results = $results;
+        } else {
+            $final_results = array();
+            $counts = array();
+
+            foreach ($results as $r) {
+                if (!isset($counts[$r['type']])) {
+                    $counts[$r['type']] = 0;
+                }
+
+                $prop = 'max_' . $r['type'];
+
+                if ($counts[$r['type']] >= $this->$prop) {
+                    continue;
+                }
+
+                $final_results[] = $r;
+                $counts[$r['type']]++;
+
+                if (count($final_results) >= $this->count) {
+                    break;
+                }
+            }
+        }
+
+        return $final_results;
+    }
 }

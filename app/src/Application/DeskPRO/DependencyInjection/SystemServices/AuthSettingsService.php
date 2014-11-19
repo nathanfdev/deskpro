@@ -42,47 +42,43 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class AuthSettingsService
 {
-	public static function create(DeskproContainer $container, array $options = array())
-	{
-		$adapterFactory = $container->getSystemService('usersource_auth_adapter_factory');
+    public static function create(DeskproContainer $container, array $options = array())
+    {
+        $adapterFactory = $container->getSystemService('usersource_auth_adapter_factory');
 
-		/** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
-		$um = $container->getSystemService('usersource_manager');
+        /** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
+        $um = $container->getSystemService('usersource_manager');
 
+        ////////////////////////////////////////////////
+        // User Interface Auth Settings
+        $userAuthSettings = new AuthInterfaceSettings($adapterFactory);
 
-		////////////////////////////////////////////////
-		// User Interface Auth Settings
-		$userAuthSettings = new AuthInterfaceSettings($adapterFactory);
+        if ($usSsoBackground = $um->getAll()->configuredForUsers()->withBackgroundSso()->getFirstOrNull()) {
+            $userAuthSettings->setBackgroundSsoEnabled(true);
+            $userAuthSettings->setSsoUsersource($usSsoBackground);
+        }
 
+        if ($usSsoAuto = $um->getAll()->configuredForUsers()->withAutoSso()->getFirstOrNull()) {
+            $userAuthSettings->setAutoSsoEnabled(true);
+            $userAuthSettings->setSsoUsersource($usSsoAuto);
+        }
 
-		if ($usSsoBackground = $um->getAll()->configuredForUsers()->withBackgroundSso()->getFirstOrNull()) {
-			$userAuthSettings->setBackgroundSsoEnabled(true);
-			$userAuthSettings->setSsoUsersource($usSsoBackground);
-		}
+        ////////////////////////////////////////////////
+        // Agent Interface Auth Settings
+        $agentAuthSettings = new AuthInterfaceSettings($adapterFactory);
 
-		if ($usSsoAuto = $um->getAll()->configuredForUsers()->withAutoSso()->getFirstOrNull()) {
-			$userAuthSettings->setAutoSsoEnabled(true);
-			$userAuthSettings->setSsoUsersource($usSsoAuto);
-		}
+        if ($usSsoBackground = $um->getAll()->configuredForAgents()->withBackgroundSso()->getFirstOrNull()) {
+            $agentAuthSettings->setBackgroundSsoEnabled(true);
+            $agentAuthSettings->setSsoUsersource($usSsoBackground);
+        }
 
+        if ($usSsoAuto = $um->getAll()->configuredForAgents()->withAutoSso()->getFirstOrNull()) {
+            $agentAuthSettings->setAutoSsoEnabled(true);
+            $agentAuthSettings->setSsoUsersource($usSsoAuto);
+        }
 
-		////////////////////////////////////////////////
-		// Agent Interface Auth Settings
-		$agentAuthSettings = new AuthInterfaceSettings($adapterFactory);
-
-		if ($usSsoBackground = $um->getAll()->configuredForAgents()->withBackgroundSso()->getFirstOrNull()) {
-			$agentAuthSettings->setBackgroundSsoEnabled(true);
-			$agentAuthSettings->setSsoUsersource($usSsoBackground);
-		}
-
-		if ($usSsoAuto = $um->getAll()->configuredForAgents()->withAutoSso()->getFirstOrNull()) {
-			$agentAuthSettings->setAutoSsoEnabled(true);
-			$agentAuthSettings->setSsoUsersource($usSsoAuto);
-		}
-
-
-		////////////////////////////////////////////////
-		// App Auth Settings
-		return new AuthSettings($userAuthSettings, $agentAuthSettings);
-	}
+        ////////////////////////////////////////////////
+        // App Auth Settings
+        return new AuthSettings($userAuthSettings, $agentAuthSettings);
+    }
 }

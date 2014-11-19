@@ -42,114 +42,115 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class RemoveSlaAction extends AbstractAction
 {
-	/** @var array */
-	protected $sla_ids = array();
-	/** @var bool */
-	protected $remove_all = false;
+    /** @var array */
+    protected $sla_ids = array();
+    /** @var bool */
+    protected $remove_all = false;
 
-	public function __construct($sla_id)
-	{
-		if (!$sla_id) {
-			$this->remove_all = true;
-		} else {
-			$this->sla_ids = (array)$sla_id;
-		}
-	}
-
-
-	/**
-	 * Apply the property to the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function apply(Ticket $ticket)
-	{
-		if ($this->remove_all) {
-			$ticket->removeAllSlas();
-		} else {
-			foreach ($this->sla_ids AS $sla_id) {
-				$sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
-				if ($sla) {
-					$ticket->removeSla($sla);
-				}
-			}
-		}
-	}
+    public function __construct($sla_id)
+    {
+        if (!$sla_id) {
+            $this->remove_all = true;
+        } else {
+            $this->sla_ids = (array)$sla_id;
+        }
+    }
 
 
-	/**
-	 * Get an array of actions that would be performed on the ticket
-	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function getApplyActions(Ticket $ticket)
-	{
-		return array(
-			array('action' => 'remove_sla', 'sla_ids' => $this->sla_ids, 'remove_all' => $this->remove_all)
-		);
-	}
+    /**
+     * Apply the property to the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function apply(Ticket $ticket)
+    {
+        if ($this->remove_all) {
+            $ticket->removeAllSlas();
+        } else {
+            foreach ($this->sla_ids AS $sla_id) {
+                $sla = App::getEntityRepository('DeskPRO:Sla')->find($sla_id);
+                if ($sla) {
+                    $ticket->removeSla($sla);
+                }
+            }
+        }
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function getSlaIds()
-	{
-		return $this->sla_ids;
-	}
-
-	/**
-	 * @return bool
-	 */
-	public function getRemoveAll()
-	{
-		return $this->remove_all;
-	}
+    /**
+     * Get an array of actions that would be performed on the ticket
+     *
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function getApplyActions(Ticket $ticket)
+    {
+        return array(
+            array('action' => 'remove_sla', 'sla_ids' => $this->sla_ids, 'remove_all' => $this->remove_all)
+        );
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
-	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
-	 */
-	public function merge(ActionInterface $other_action)
-	{
-		if ($other_action->getRemoveAll()) {
-			$this->remove_all = true;
-		} else {
-			$this->sla_ids = array_merge($this->sla_ids, $other_action->getSlaIds());
-			$this->sla_ids = array_unique($this->sla_ids);
-		}
-		return $this;
-	}
+    /**
+     * @return array
+     */
+    public function getSlaIds()
+    {
+        return $this->sla_ids;
+    }
+
+    /**
+     * @return bool
+     */
+    public function getRemoveAll()
+    {
+        return $this->remove_all;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getDescription($as_html = true)
-	{
+    /**
+     * @param  \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+     * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+     */
+    public function merge(ActionInterface $other_action)
+    {
+        if ($other_action->getRemoveAll()) {
+            $this->remove_all = true;
+        } else {
+            $this->sla_ids = array_merge($this->sla_ids, $other_action->getSlaIds());
+            $this->sla_ids = array_unique($this->sla_ids);
+        }
+
+        return $this;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getDescription($as_html = true)
+    {
         $tr = App::getTranslator();
-		if ($this->remove_all) {
-			return $tr->phrase('agent.tickets.remove_all_slas_action');
-		} else {
-			$slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
-			$titles = array();
-			foreach ($slas AS $sla) {
-				$titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
-			}
+        if ($this->remove_all) {
+            return $tr->phrase('agent.tickets.remove_all_slas_action');
+        } else {
+            $slas = App::getEntityRepository('DeskPRO:Sla')->getByIds($this->sla_ids);
+            $titles = array();
+            foreach ($slas AS $sla) {
+                $titles[$sla->id] = $as_html ? htmlspecialchars($sla->title) : $sla->title;
+            }
 
-			foreach ($this->sla_ids as $id) {
-				if (!isset($titles[$id])) {
-					$titles[$id] = "<error>Unknown #$id</error>";
-				}
-			}
+            foreach ($this->sla_ids as $id) {
+                if (!isset($titles[$id])) {
+                    $titles[$id] = "<error>Unknown #$id</error>";
+                }
+            }
 
-			return $tr->phrase('agent.tickets.remove_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
-		}
-	}
+            return $tr->phrase('agent.tickets.remove_sla_action', array('sla' => $titles ? implode(', ', $titles) : '[unknown]'));
+        }
+    }
 
-	public function doPrepend()
-	{
-		return true;
-	}
+    public function doPrepend()
+    {
+        return true;
+    }
 }

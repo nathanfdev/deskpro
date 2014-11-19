@@ -1,13 +1,13 @@
 <header class="top-bar">
-	<div class="brand">
-		<a href="{{ path('portal_index') }}">
-			<h1>
-				{{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}
-			</h1>
-		</a>
-	</div>
+    <div class="brand">
+        <a href="{{ path('portal_index') }}">
+            <h1>
+                {{ global_settings.get('core.site_name')|default(global_settings.get('core.deskpro_name')) }}
+            </h1>
+        </a>
+    </div>
 
-	<ul id="menu">
+    <ul id="menu">
 
         {% if not is_granted('ROLE_USER') %}
 
@@ -32,18 +32,18 @@
 
         {% endif %}
 
-		{% if is_multi_language %}
-		<li>
-			<select onchange="location.href='/'+this.value" class="button button-dropdown button-dropdown-language">
-				{% for language in enabled_languages %}
-					<option value="{{ language.urlCode }}"
-						{% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
-						{{ language.title|capitalize }}
-					</option>
-				{% endfor %}
-			</select>
-		</li>
-		{% endif %}
+        {% if is_multi_language %}
+        <li>
+            <select onchange="location.href='/'+this.value" class="button button-dropdown button-dropdown-language">
+                {% for language in enabled_languages %}
+                    <option value="{{ language.urlCode }}"
+                        {% if language.urlCode == current_language.urlCode %}selected="selected"{% endif %}>
+                        {{ language.title|capitalize }}
+                    </option>
+                {% endfor %}
+            </select>
+        </li>
+        {% endif %}
 
-	</ul>
+    </ul>
 </header>

@@ -38,30 +38,30 @@ use Application\DeskPRO\DBAL\Connection;
 
 class Build1352486929 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Correct tickets who have departments set as chat departments");
+    public function run()
+    {
+        $this->out("Correct tickets who have departments set as chat departments");
 
-		$default_department = $this->container->getEm()->getRepository('DeskPRO:Department')->getDefaultDepartment('ticket');
-		$default_department = $default_department->id;
+        $default_department = $this->container->getEm()->getRepository('DeskPRO:Department')->getDefaultDepartment('ticket');
+        $default_department = $default_department->id;
 
-		$chat_deps = $this->container->getDb()->fetchAllCol("
-			SELECT id
-			FROM departments
-			WHERE is_chat_enabled = 1
-		");
+        $chat_deps = $this->container->getDb()->fetchAllCol("
+            SELECT id
+            FROM departments
+            WHERE is_chat_enabled = 1
+        ");
 
-		if ($chat_deps) {
-			$this->container->getDb()->executeUpdate("
-				UPDATE tickets
-				SET department_id = ?
-				WHERE department_id IN (?)
-			", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
-			$this->container->getDb()->executeUpdate("
-				UPDATE tickets_search_active
-				SET department_id = ?
-				WHERE department_id IN (?)
-			", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
-		}
-	}
+        if ($chat_deps) {
+            $this->container->getDb()->executeUpdate("
+                UPDATE tickets
+                SET department_id = ?
+                WHERE department_id IN (?)
+            ", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+            $this->container->getDb()->executeUpdate("
+                UPDATE tickets_search_active
+                SET department_id = ?
+                WHERE department_id IN (?)
+            ", array($default_department, $chat_deps), array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
+        }
+    }
 }

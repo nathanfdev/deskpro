@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1341308739 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add lang_code to languages table");
-		$this->execMutateSql("ALTER TABLE languages ADD lang_code VARCHAR(3) NOT NULL");
-		$this->execMutateSql("UPDATE languages SET lang_code = 'eng'");
-	}
+    public function run()
+    {
+        $this->out("Add lang_code to languages table");
+        $this->execMutateSql("ALTER TABLE languages ADD lang_code VARCHAR(3) NOT NULL");
+        $this->execMutateSql("UPDATE languages SET lang_code = 'eng'");
+    }
 }

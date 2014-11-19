@@ -38,24 +38,23 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class SetUserField extends AbstractSetCustomField
 {
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return \Application\DeskPRO\CustomFields\FieldManager
-	 */
-	function getFieldManager(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return $this->getContainer()->getPersonFieldManager();
-	}
+    /**
+     * @param  Ticket                                         $ticket
+     * @param  ExecutorContextInterface                       $context
+     * @return \Application\DeskPRO\CustomFields\FieldManager
+     */
+    public function getFieldManager(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return $this->getContainer()->getPersonFieldManager();
+    }
 
-
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return mixed
-	 */
-	function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return $ticket->person;
-	}
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return mixed
+     */
+    public function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return $ticket->person;
+    }
 }

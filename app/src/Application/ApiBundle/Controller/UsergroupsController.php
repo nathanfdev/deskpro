@@ -48,167 +48,168 @@ use Orb\Util\Numbers;
 
 class UsergroupsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
+
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction($type)
-	{
-		$data = array();
+    public function listAction($type)
+    {
+        $data = array();
 
-		if ($type == 'non_sys_user') {
-			$data['groups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		} else {
-			$ugs = $this->em->createQuery("
-				SELECT ug
-				FROM DeskPRO:Usergroup ug
-				WHERE ug.is_agent_group = false
-				ORDER BY ug.title ASC
-			")->execute();
+        if ($type == 'non_sys_user') {
+            $data['groups'] = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
+        } else {
+            $ugs = $this->em->createQuery("
+                SELECT ug
+                FROM DeskPRO:Usergroup ug
+                WHERE ug.is_agent_group = false
+                ORDER BY ug.title ASC
+            ")->execute();
 
-			$data['groups'] = $this->getApiData($ugs);
-		}
+            $data['groups'] = $this->getApiData($ugs);
+        }
 
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse($data);
+    }
 
-	###################################################################################################################
-	# get
-	####################################################################################################################
+    ###################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		$usergroups = $this->container->getUserGroups();
+    public function getAction($id)
+    {
+        $usergroups = $this->container->getUserGroups();
 
-		if (Numbers::isInteger($id)) {
-			$usergroup = $usergroups->getGroup($id);
-		} else {
-			$usergroup = $usergroups->getSysGroup($id);
-		}
+        if (Numbers::isInteger($id)) {
+            $usergroup = $usergroups->getGroup($id);
+        } else {
+            $usergroup = $usergroups->getSysGroup($id);
+        }
 
-		if (!$usergroup || $usergroup->is_agent_group) {
-			throw $this->createNotFoundException();
-		}
+        if (!$usergroup || $usergroup->is_agent_group) {
+            throw $this->createNotFoundException();
+        }
 
-		$perms = new GroupsDbLoader(array($usergroup), $this->em);
+        $perms = new GroupsDbLoader(array($usergroup), $this->em);
 
-		$data = $usergroup->toApiData();
-		$data['perms'] = $perms->getGroupPermissions($usergroup->id);
+        $data = $usergroup->toApiData();
+        $data['perms'] = $perms->getGroupPermissions($usergroup->id);
 
-		return $this->createApiResponse(array('group' => $data));
-	}
-
-
-	###################################################################################################################
-	# delete
-	####################################################################################################################
-
-	public function deleteAction($id)
-	{
-		$usergroups = $this->container->getUserGroups();
-		$usergroup  = $usergroups->getGroup($id);
-
-		if (!$usergroup || $usergroup->is_agent_group) {
-			throw $this->createNotFoundException();
-		}
-
-		if ($usergroup->sys_name) {
-			return $this->createApiErrorResponse('no_delete_sys', 'You cannot delete built-in user groups');
-		}
-
-		$this->em->remove($usergroup);
-		$this->em->flush();
-
-		$this->db->executeUpdate("DELETE FROM permissions_cache");
-
-		return $this->createApiDeleteResponse(array('old_group_id' => (int)$id));
-	}
+        return $this->createApiResponse(array('group' => $data));
+    }
 
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ###################################################################################################################
+    # delete
+    ####################################################################################################################
 
-	public function saveAction($id)
-	{
-		$usergroups = $this->container->getUserGroups();
+    public function deleteAction($id)
+    {
+        $usergroups = $this->container->getUserGroups();
+        $usergroup  = $usergroups->getGroup($id);
 
-		#------------------------------
-		# Get group
-		#------------------------------
+        if (!$usergroup || $usergroup->is_agent_group) {
+            throw $this->createNotFoundException();
+        }
 
-		if ($id) {
-			if (Numbers::isInteger($id)) {
-				$usergroup = $usergroups->getGroup($id);
-			} else {
-				$usergroup = $usergroups->getSysGroup($id);
-			}
+        if ($usergroup->sys_name) {
+            return $this->createApiErrorResponse('no_delete_sys', 'You cannot delete built-in user groups');
+        }
 
-			if (!$usergroup) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$usergroup = new Usergroup();
-		}
+        $this->em->remove($usergroup);
+        $this->em->flush();
 
-		#------------------------------
-		# Save form
-		#------------------------------
+        $this->db->executeUpdate("DELETE FROM permissions_cache");
 
-		$usergroup_edit = new UsergroupEdit($usergroup);
+        return $this->createApiDeleteResponse(array('old_group_id' => (int)$id));
+    }
 
-		$formData = array('group' => $this->in->getArrayValue('group'));
-		unset($formData['group']['perms']);
 
-		$form = $this->createForm(new UsergroupType(), $usergroup_edit, array('cascade_validation' => true));
-		$form->submit($formData, true);
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-		if (!$form->isValid()) {
-			throw ValidationException::create($this->getFormValidationErrorsString($form));
-		}
+    public function saveAction($id)
+    {
+        $usergroups = $this->container->getUserGroups();
 
-		$usergroup_edit->save($this->em);
+        #------------------------------
+        # Get group
+        #------------------------------
 
-		#------------------------------
-		# Save permissions
-		#------------------------------
+        if ($id) {
+            if (Numbers::isInteger($id)) {
+                $usergroup = $usergroups->getGroup($id);
+            } else {
+                $usergroup = $usergroups->getSysGroup($id);
+            }
 
-		// Save perms
-		$perms = new UserPermissions();
-		$perms->fromArray($this->in->getArrayValue('group.perms'));
+            if (!$usergroup) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $usergroup = new Usergroup();
+        }
 
-		$db_persister = new GroupDbPersister($this->em);
-		$db_persister->savePerms($usergroup, $perms);
+        #------------------------------
+        # Save form
+        #------------------------------
 
-		#------------------------------
-		# Clear permission cache
-		#------------------------------
+        $usergroup_edit = new UsergroupEdit($usergroup);
 
-		$this->db->executeUpdate("DELETE FROM permissions_cache");
+        $formData = array('group' => $this->in->getArrayValue('group'));
+        unset($formData['group']['perms']);
 
-		#------------------------------
-		# Result
-		#------------------------------
+        $form = $this->createForm(new UsergroupType(), $usergroup_edit, array('cascade_validation' => true));
+        $form->submit($formData, true);
 
-		if (!$id) {
-			return $this->createApiCreateResponse(
-				array('id' => $usergroup->id),
-				$this->generateUrl('api_user_groups_get', array('id' => $usergroup->id), true)
-			);
-		} else {
-			return $this->createApiSuccessResponse();
-		}
-	}
+        if (!$form->isValid()) {
+            throw ValidationException::create($this->getFormValidationErrorsString($form));
+        }
+
+        $usergroup_edit->save($this->em);
+
+        #------------------------------
+        # Save permissions
+        #------------------------------
+
+        // Save perms
+        $perms = new UserPermissions();
+        $perms->fromArray($this->in->getArrayValue('group.perms'));
+
+        $db_persister = new GroupDbPersister($this->em);
+        $db_persister->savePerms($usergroup, $perms);
+
+        #------------------------------
+        # Clear permission cache
+        #------------------------------
+
+        $this->db->executeUpdate("DELETE FROM permissions_cache");
+
+        #------------------------------
+        # Result
+        #------------------------------
+
+        if (!$id) {
+            return $this->createApiCreateResponse(
+                array('id' => $usergroup->id),
+                $this->generateUrl('api_user_groups_get', array('id' => $usergroup->id), true)
+            );
+        } else {
+            return $this->createApiSuccessResponse();
+        }
+    }
 }

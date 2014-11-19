@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -43,40 +42,40 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class EmailUid extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\EmailAccount
-	 */
-	protected $email_account = null;
+    /**
+     * @var \Application\DeskPRO\Entity\EmailAccount
+     */
+    protected $email_account = null;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	public function __construct()
-	{
-		$this->date_created = new \DateTime();
-	}
+    public function __construct()
+    {
+        $this->date_created = new \DateTime();
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array(
-			'name' => 'email_uids'
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'length' => 100, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'email_account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(array(
+            'name' => 'email_uids'
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'length' => 100, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'email_account', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailAccount', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_account_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

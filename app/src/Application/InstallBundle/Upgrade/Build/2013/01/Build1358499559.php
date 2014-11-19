@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358499559 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add tickets.count* fields");
-		$this->execMutateSql("ALTER TABLE tickets ADD count_agent_replies INT NOT NULL, ADD count_user_replies INT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add tickets.count* fields");
+        $this->execMutateSql("ALTER TABLE tickets ADD count_agent_replies INT NOT NULL, ADD count_user_replies INT NOT NULL");
+    }
 }

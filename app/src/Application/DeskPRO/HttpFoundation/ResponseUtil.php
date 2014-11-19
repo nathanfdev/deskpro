@@ -38,22 +38,22 @@ use Symfony\Component\HttpFoundation\Response;
 
 class ResponseUtil
 {
-	private function __construct() {}
+    private function __construct() {}
 
-	/**
-	 * Set headers on the response that indicate a response that doesnt expire.
-	 *
-	 * @param \Symfony\Component\HttpFoundation\Response $response
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 */
-	public static function setNeverExpireHeaders(Response $response)
-	{
-		$future_ts = mktime(0, 0, 0, 1, 1, 2020);
-		$past_ts   = mktime(0, 0, 0, 1, 1, 2010);
-		$future    = new \DateTime('@' . $future_ts);
-		$past      = new \DateTime('@' . $past_ts);
+    /**
+     * Set headers on the response that indicate a response that doesnt expire.
+     *
+     * @param  \Symfony\Component\HttpFoundation\Response $response
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public static function setNeverExpireHeaders(Response $response)
+    {
+        $future_ts = mktime(0, 0, 0, 1, 1, 2020);
+        $past_ts   = mktime(0, 0, 0, 1, 1, 2010);
+        $future    = new \DateTime('@' . $future_ts);
+        $past      = new \DateTime('@' . $past_ts);
 
-		$response->setExpires($future);
-		$response->setLastModified($past);
-	}
+        $response->setExpires($future);
+        $response->setLastModified($past);
+    }
 }

@@ -37,33 +37,33 @@ use Application\DeskPRO\App;
 
 class AuditDbWriter implements AuditWriterInterface
 {
-	/**
-	 * Write a log entry
-	 *
-	 * @param \Application\DeskPRO\Entity\AuditLog[] $logs
-	 * @throws \Exception
-	 * @return void
-	 */
-	public function writeLogs(array $logs)
-	{
-		$batch = array();
+    /**
+     * Write a log entry
+     *
+     * @param  \Application\DeskPRO\Entity\AuditLog[] $logs
+     * @throws \Exception
+     * @return void
+     */
+    public function writeLogs(array $logs)
+    {
+        $batch = array();
 
-		foreach ($logs as $log) {
-			$r = array(
-				'person_id'      => $log->person ? $log->person->getId() : null,
-				'person_name'    => $log->person_name ?: '',
-				'op'             => $log->op,
-				'object_type'    => $log->object_type,
-				'object_id'      => $log->object_id,
-				'data'           => $log->data ? serialize($log->data) : null,
-				'date_created'   => $log->date_created->format('Y-m-d H:i:s')
-			);
+        foreach ($logs as $log) {
+            $r = array(
+                'person_id'      => $log->person ? $log->person->getId() : null,
+                'person_name'    => $log->person_name ?: '',
+                'op'             => $log->op,
+                'object_type'    => $log->object_type,
+                'object_id'      => $log->object_id,
+                'data'           => $log->data ? serialize($log->data) : null,
+                'date_created'   => $log->date_created->format('Y-m-d H:i:s')
+            );
 
-			$batch[] = $r;
-		}
+            $batch[] = $r;
+        }
 
-		if ($batch) {
-			App::getDb()->batchInsert('auditlog', $batch);
-		}
-	}
+        if ($batch) {
+            App::getDb()->batchInsert('auditlog', $batch);
+        }
+    }
 }

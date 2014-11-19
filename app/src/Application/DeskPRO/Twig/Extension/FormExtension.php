@@ -39,19 +39,19 @@ use Symfony\Component\Form\FormView;
 
 class FormExtension extends \Symfony\Bridge\Twig\Extension\FormExtension
 {
-	public function __construct(array $resources = array())
-	{
-		$set_resources = array();
-		foreach ($resources as $r) {
-			if ($r != 'form_div_layout.html.twig') {
-				$set_resources[] = $r;
-			}
-		}
+    public function __construct(array $resources = array())
+    {
+        $set_resources = array();
+        foreach ($resources as $r) {
+            if ($r != 'form_div_layout.html.twig') {
+                $set_resources[] = $r;
+            }
+        }
 
-		parent::__construct($set_resources);
-	}
+        parent::__construct($set_resources);
+    }
 
-	protected function render(FormView $view, $section, array $variables = array())
+    protected function render(FormView $view, $section, array $variables = array())
     {
         $mainTemplate = in_array($section, array('widget', 'row'));
 

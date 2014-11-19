@@ -36,16 +36,16 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1412071356 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Fix email address assigned to ticket");
-		$this->execMutateSql("
-			UPDATE tickets
-			LEFT JOIN people_emails ON (people_emails.id = tickets.person_email_id)
-			SET tickets.person_email_id = NULL
-			WHERE
-				tickets.person_email_id IS NOT NULL
-				AND people_emails.person_id != tickets.person_id
-		");
-	}
+    public function run()
+    {
+        $this->out("Fix email address assigned to ticket");
+        $this->execMutateSql("
+            UPDATE tickets
+            LEFT JOIN people_emails ON (people_emails.id = tickets.person_email_id)
+            SET tickets.person_email_id = NULL
+            WHERE
+                tickets.person_email_id IS NOT NULL
+                AND people_emails.person_id != tickets.person_id
+        ");
+    }
 }

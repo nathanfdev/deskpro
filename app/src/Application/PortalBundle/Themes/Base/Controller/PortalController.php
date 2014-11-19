@@ -37,66 +37,67 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PortalController extends AbstractController
 {
-	public function indexAction()
-	{
-		return $this->render('Theme:Portal:index.html.twig');
-	}
+    public function indexAction()
+    {
+        return $this->render('Theme:Portal:index.html.twig');
+    }
 
 
-	public function getInTouchAction()
-	{
-		return $this->render('Theme:Portal:get_in_touch.html.twig');
-	}
+    public function getInTouchAction()
+    {
+        return $this->render('Theme:Portal:get_in_touch.html.twig');
+    }
 
 
-	public function alertsAction()
-	{
-		return $this->render('Theme:Portal:alerts.html.twig');
-	}
+    public function alertsAction()
+    {
+        return $this->render('Theme:Portal:alerts.html.twig');
+    }
 
 
-	public function topBarAction()
-	{
-		/** @var \Application\LanguageBundle\Language\LanguageManager $language_manager */
-		$language_manager = $this->get('language_manager');
+    public function topBarAction()
+    {
+        /** @var \Application\LanguageBundle\Language\LanguageManager $language_manager */
+        $language_manager = $this->get('language_manager');
 
-		return $this->render('Theme:Portal:top_bar.html.twig',
-			array(
-				'enabled_languages' => $language_manager->getEnabledLanguages(),
-				'current_language' => $language_manager->getLanguageStack()->getActive(),
-				'is_multi_language' => $language_manager->isMultiLanguagePortal(),
-				'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
-			)
-		);
-	}
-
-
-	public function topSearchAction()
-	{
-		return $this->render('Theme:Portal:top_search.html.twig');
-	}
+        return $this->render('Theme:Portal:top_bar.html.twig',
+            array(
+                'enabled_languages' => $language_manager->getEnabledLanguages(),
+                'current_language' => $language_manager->getLanguageStack()->getActive(),
+                'is_multi_language' => $language_manager->isMultiLanguagePortal(),
+                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
+            )
+        );
+    }
 
 
-	public function sidebarAction()
-	{
-		return $this->render('Theme:Portal:sidebar.html.twig');
-	}
+    public function topSearchAction()
+    {
+        return $this->render('Theme:Portal:top_search.html.twig');
+    }
 
 
-	public function topTabsAction(Request $request)
-	{
-		$path_parts = explode('/', ltrim($request->getPathInfo(), '/'));
+    public function sidebarAction()
+    {
+        return $this->render('Theme:Portal:sidebar.html.twig');
+    }
 
-		return $this->render(
-			'Theme:Portal:top_tabs.html.twig',
-			array(
-				'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null
-			)
-		);
-	}
+
+    public function topTabsAction(Request $request)
+    {
+        $path_parts = explode('/', ltrim($request->getPathInfo(), '/'));
+
+        return $this->render(
+            'Theme:Portal:top_tabs.html.twig',
+            array(
+                'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null
+            )
+        );
+    }
 
     public function loginAction(Request $request)
     {

@@ -39,98 +39,98 @@ use Psr\Log\LoggerInterface;
 
 class GeneratorFactory
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @var \Symfony\Component\Console\Input\InputInterface|null
-	 */
-	private $input;
+    /**
+     * @var \Symfony\Component\Console\Input\InputInterface|null
+     */
+    private $input;
 
-	/** @var array */
-	protected $generators_map = array(
-		'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket',
-		'csv'		=> 'Application\\ImportBundle\\Generator\\Csv',
-	);
-
-
-	/**
-	 * @param DeskproContainer $container
-	 * @param InputInterface   $input
-	 */
-	public function __construct(DeskproContainer $container, InputInterface $input = null)
-	{
-		$this->container = $container;
-		$this->input = $input;
-	}
+    /** @var array */
+    protected $generators_map = array(
+        'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket',
+        'csv'		=> 'Application\\ImportBundle\\Generator\\Csv',
+    );
 
 
-	/**
-	 * @return GeneratorConfig
-	 */
-	public function createGeneratorConfig()
-	{
-		$config = new GeneratorConfig();
-
-		$import_config = new OptionsArray(dp_get_config('import', array()));
-		$config->output_path	= $import_config->get('output_path');
-		$config->log_path	= $import_config->get('log_path', dp_get_log_dir() . '/export');
-		$config->mode		= $import_config->get('mode', 'test');
-		$config->mark_done	= $import_config->get('mark_done', true);
-
-		if ($this->input) {
-			if ($this->input->hasArgument('script')) {
-				$config->script = $this->input->getArgument('script');
-			}
-			
-			if ($this->input->hasOption('output-path')) {
-				$config->output_path = $this->input->getOption('output-path');
-			}
-			if ($this->input->hasOption('input-path')) {
-				$config->input_path = $this->input->getOption('input-path');
-			}
-			if ($this->input->hasOption('log-path')) {
-				$config->log_path = $this->input->getOption('log-path');
-			}
-			if ($this->input->hasOption('mode')) {
-				$config->mode = $this->input->getOption('mode');
-			}
-			if ($this->input->hasOption('live')) {
-				$config->mode = 'live';
-			}
-			if ($this->input->hasOption('mark-done')) {
-				$config->mark_done = (bool)$this->input->getOption('mark-done');
-			}
-		}
-
-		if (!is_dir($config->output_path)) {
-			throw new \InvalidArgumentException(sprintf("Invalid configuration: data_path is invalid (got %s)", $config->output_path));
-		}
-
-		return $config;
-	}
+    /**
+     * @param DeskproContainer $container
+     * @param InputInterface   $input
+     */
+    public function __construct(DeskproContainer $container, InputInterface $input = null)
+    {
+        $this->container = $container;
+        $this->input = $input;
+    }
 
 
-	/**
-	 * @param LoggerInterface $logger
-	 * @return Generator
-	 */
-	public function createGenerator(GeneratorConfig $config, LoggerInterface $logger = null)
-	{
-		$generator_class = $this->generators_map[$config->script];
-		
-		$generator = new $generator_class($config, $logger);
-		
-		if (!$generator instanceof GeneratorInterface) {
-			throw new \Exception($generator_class . ' is not a valid generator');
-		}
-		
-		if (!method_exists($generator,'generateJson')) {
-			throw new \Exception($generator_class . ' does not have a "generateJson" method');
-		}
-		
-		return $generator;
-	}
+    /**
+     * @return GeneratorConfig
+     */
+    public function createGeneratorConfig()
+    {
+        $config = new GeneratorConfig();
+
+        $import_config = new OptionsArray(dp_get_config('import', array()));
+        $config->output_path	= $import_config->get('output_path');
+        $config->log_path	= $import_config->get('log_path', dp_get_log_dir() . '/export');
+        $config->mode		= $import_config->get('mode', 'test');
+        $config->mark_done	= $import_config->get('mark_done', true);
+
+        if ($this->input) {
+            if ($this->input->hasArgument('script')) {
+                $config->script = $this->input->getArgument('script');
+            }
+
+            if ($this->input->hasOption('output-path')) {
+                $config->output_path = $this->input->getOption('output-path');
+            }
+            if ($this->input->hasOption('input-path')) {
+                $config->input_path = $this->input->getOption('input-path');
+            }
+            if ($this->input->hasOption('log-path')) {
+                $config->log_path = $this->input->getOption('log-path');
+            }
+            if ($this->input->hasOption('mode')) {
+                $config->mode = $this->input->getOption('mode');
+            }
+            if ($this->input->hasOption('live')) {
+                $config->mode = 'live';
+            }
+            if ($this->input->hasOption('mark-done')) {
+                $config->mark_done = (bool)$this->input->getOption('mark-done');
+            }
+        }
+
+        if (!is_dir($config->output_path)) {
+            throw new \InvalidArgumentException(sprintf("Invalid configuration: data_path is invalid (got %s)", $config->output_path));
+        }
+
+        return $config;
+    }
+
+
+    /**
+     * @param  LoggerInterface $logger
+     * @return Generator
+     */
+    public function createGenerator(GeneratorConfig $config, LoggerInterface $logger = null)
+    {
+        $generator_class = $this->generators_map[$config->script];
+
+        $generator = new $generator_class($config, $logger);
+
+        if (!$generator instanceof GeneratorInterface) {
+            throw new \Exception($generator_class . ' is not a valid generator');
+        }
+
+        if (!method_exists($generator,'generateJson')) {
+            throw new \Exception($generator_class . ' does not have a "generateJson" method');
+        }
+
+        return $generator;
+    }
 }

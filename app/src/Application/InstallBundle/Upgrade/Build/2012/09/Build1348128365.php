@@ -36,27 +36,27 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1348128365 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Reverting email templates. Backups will be stored in data/backups.");
-		$custom_emails = $this->container->getDb()->fetchAll("
-			SELECT name, template_code
-			FROM templates
-			WHERE name LIKE 'DeskPRO:emails%'
-		");
+    public function run()
+    {
+        $this->out("Reverting email templates. Backups will be stored in data/backups.");
+        $custom_emails = $this->container->getDb()->fetchAll("
+            SELECT name, template_code
+            FROM templates
+            WHERE name LIKE 'DeskPRO:emails%'
+        ");
 
-		// Save copy in backup dir
-		foreach ($custom_emails as $info) {
-			$filename = str_replace(':', '_', $info['name']);
-			$filepath = dp_get_backup_dir() . '/' . $filename;
+        // Save copy in backup dir
+        foreach ($custom_emails as $info) {
+            $filename = str_replace(':', '_', $info['name']);
+            $filepath = dp_get_backup_dir() . '/' . $filename;
 
-			@file_put_contents($filepath, $info['template_code']);
-		}
+            @file_put_contents($filepath, $info['template_code']);
+        }
 
-		// Delete them from db to revert
-		 $this->container->getDb()->executeUpdate("
-			DELETE FROM templates
-			WHERE name LIKE 'DeskPRO:emails%'
-		");
-	}
+        // Delete them from db to revert
+         $this->container->getDb()->executeUpdate("
+            DELETE FROM templates
+            WHERE name LIKE 'DeskPRO:emails%'
+        ");
+    }
 }

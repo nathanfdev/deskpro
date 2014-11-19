@@ -44,143 +44,144 @@ use Orb\Util\Strings;
  */
 class Phrase extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * The language this phrase belongs to
-	 *
-	 * @var Language
-	 */
-	protected $language;
+    /**
+     * The language this phrase belongs to
+     *
+     * @var Language
+     */
+    protected $language;
 
-	/**
-	 * The name of the phrase
-	 *
-	 * @var string
-	 */
-	protected $name = null;
+    /**
+     * The name of the phrase
+     *
+     * @var string
+     */
+    protected $name = null;
 
-	/**
-	 * Phrases can belong to groups. The group is the string
-	 * before the first dot in the name. deskpro.profile, the group is 'deskpro'
-	 *
-	 * @var string
-	 */
-	protected $groupname;
+    /**
+     * Phrases can belong to groups. The group is the string
+     * before the first dot in the name. deskpro.profile, the group is 'deskpro'
+     *
+     * @var string
+     */
+    protected $groupname;
 
-	/**
-	 * @var string
-	 */
-	protected $phrase;
+    /**
+     * @var string
+     */
+    protected $phrase;
 
-	/**
-	 * @var string
-	 */
-	protected $original_phrase = '';
+    /**
+     * @var string
+     */
+    protected $original_phrase = '';
 
-	/**
-	 * @var string
-	 */
-	protected $original_hash;
+    /**
+     * @var string
+     */
+    protected $original_hash;
 
-	/**
-	 * Is this phrase marked as outdated?
-	 *
-	 * This happens when we detect the original hash stored is different from what
-	 * is on the filesystem.
-	 *
-	 * @var bool
-	 */
-	protected $is_outdated = false;
+    /**
+     * Is this phrase marked as outdated?
+     *
+     * This happens when we detect the original hash stored is different from what
+     * is on the filesystem.
+     *
+     * @var bool
+     */
+    protected $is_outdated = false;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $created_at;
+    /**
+     * @var \DateTime
+     */
+    protected $created_at;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $updated_at;
+    /**
+     * @var \DateTime
+     */
+    protected $updated_at;
 
-	public function __construct()
-	{
-		$this->setModelField('created_at', $this->updated_at = new \DateTime());
-	}
+    public function __construct()
+    {
+        $this->setModelField('created_at', $this->updated_at = new \DateTime());
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function setName($name)
-	{
-		$this->setModelField('name', $name);
+    public function setName($name)
+    {
+        $this->setModelField('name', $name);
 
-		$groupname = self::getGroupFromName($name);
+        $groupname = self::getGroupFromName($name);
 
-		if ($groupname) {
-			$this->setModelField('groupname', $groupname);
-		}
-	}
+        if ($groupname) {
+            $this->setModelField('groupname', $groupname);
+        }
+    }
 
-	public function incUpdatedAt()
-	{
-		$this->setModelField('updated_at', new \DateTime());
-	}
+    public function incUpdatedAt()
+    {
+        $this->setModelField('updated_at', new \DateTime());
+    }
 
-	public function __toString()
-	{
-		return $this->phrase;
-	}
-
-
-	/**
-	 * @param string $name
-	 * @return string
-	 */
-	public static function getGroupFromName($name)
-	{
-		$groupname = Strings::rexplode('.', $name, 2);
-		$groupname = array_shift($groupname);
-		return $groupname;
-	}
+    public function __toString()
+    {
+        return $this->phrase;
+    }
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * @param  string $name
+     * @return string
+     */
+    public static function getGroupFromName($name)
+    {
+        $groupname = Strings::rexplode('.', $name, 2);
+        $groupname = array_shift($groupname);
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Phrase';
-		$metadata->setPrimaryTable(array(
-			'name' => 'phrases',
-			'indexes' => array(
-				'name_idx' => array('columns' => array('groupname', 'name'))
-			)
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->addLifecycleCallback('incUpdatedAt', 'preUpdate');
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-		$metadata->mapField(array( 'fieldName' => 'groupname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'groupname', ));
-		$metadata->mapField(array( 'fieldName' => 'phrase', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'phrase', ));
-		$metadata->mapField(array( 'fieldName' => 'original_phrase', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'original_phrase', ));
-		$metadata->mapField(array( 'fieldName' => 'original_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'original_hash', ));
-		$metadata->mapField(array( 'fieldName' => 'is_outdated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_outdated', ));
-		$metadata->mapField(array( 'fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
-		$metadata->mapField(array( 'fieldName' => 'updated_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'updated_at', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
-	}
+        return $groupname;
+    }
+
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Phrase';
+        $metadata->setPrimaryTable(array(
+            'name' => 'phrases',
+            'indexes' => array(
+                'name_idx' => array('columns' => array('groupname', 'name'))
+            )
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->addLifecycleCallback('incUpdatedAt', 'preUpdate');
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
+        $metadata->mapField(array( 'fieldName' => 'groupname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'groupname', ));
+        $metadata->mapField(array( 'fieldName' => 'phrase', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'phrase', ));
+        $metadata->mapField(array( 'fieldName' => 'original_phrase', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'original_phrase', ));
+        $metadata->mapField(array( 'fieldName' => 'original_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'original_hash', ));
+        $metadata->mapField(array( 'fieldName' => 'is_outdated', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_outdated', ));
+        $metadata->mapField(array( 'fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
+        $metadata->mapField(array( 'fieldName' => 'updated_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'updated_at', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'language', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Language', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
+    }
 }

@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\ApiBundle\ApiUser;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Log\Loggable;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -44,117 +43,117 @@ use Application\DeskPRO\Log\Event\Base as BaseLogEvent;
 
 class LogEvent extends DomainObject implements Loggable
 {
-	protected $id;
+    protected $id;
 
-	protected $timestamp;
+    protected $timestamp;
 
-	/** @var Person context person */
-	protected $person;
+    /** @var Person context person */
+    protected $person;
 
-	protected $parent;
+    protected $parent;
 
-	protected $children;
+    protected $children;
 
-	protected $event;
+    protected $event;
 
-	protected $subject;
+    protected $subject;
 
-	protected $subject_id;
+    protected $subject_id;
 
-	protected $details;
+    protected $details;
 
-	protected $api_key;
+    protected $api_key;
 
-	/** @var BaseLogEvent */
-	protected $_event;
+    /** @var BaseLogEvent */
+    protected $_event;
 
-	public function __construct(BaseLogEvent $event, Person $person = null, ApiKey $apiKey = null)
-	{
-		$this['timestamp'] = time();
-		$this['api_key'] = $apiKey ? $apiKey->code : null;
-		$this->person = $person;
-		$this->children = new ArrayCollection();
+    public function __construct(BaseLogEvent $event, Person $person = null, ApiKey $apiKey = null)
+    {
+        $this['timestamp'] = time();
+        $this['api_key'] = $apiKey ? $apiKey->code : null;
+        $this->person = $person;
+        $this->children = new ArrayCollection();
 
-		$this->_event = $event;
-	}
+        $this->_event = $event;
+    }
 
-	public function getEventObject()
-	{
-		return $this->_event;
-	}
+    public function getEventObject()
+    {
+        return $this->_event;
+    }
 
-	public function prepare()
-	{
-		$this['event'] = $this->_event->getName();
-		$this['details'] = $this->_event->getDetails();
+    public function prepare()
+    {
+        $this['event'] = $this->_event->getName();
+        $this['details'] = $this->_event->getDetails();
 
-		if ($subject = $this->_event->getSubject()) {
-			$class = explode('\\', get_class($subject));
-			$this['subject'] = end($class);
-			$this['subject_id'] = $subject['id'];
-		}
-	}
+        if ($subject = $this->_event->getSubject()) {
+            $class = explode('\\', get_class($subject));
+            $this['subject'] = end($class);
+            $this['subject_id'] = $subject['id'];
+        }
+    }
 
-	/**
-	 * todo
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return sprintf('Changelog event: ', $this['event']);
-	}
+    /**
+     * todo
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf('Changelog event: ', $this['event']);
+    }
 
-	public function context()
-	{
-		return array();
-	}
+    public function context()
+    {
+        return array();
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->setPrimaryTable(array(
-			'name' => 'log_event',
-			'indexes' => array(
-				'subject' => array('columns' => array('subject', 'subject_id')),
-			)
-		));
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'id' => true, 'options' => array('unsigned' => true)));
-		$metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'options' => array('unsigned' => true)));
-		$metadata->mapField(array( 'fieldName' => 'event', 'type' => 'string', 'nullable' => false));
-		$metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'nullable' => true));
-		$metadata->mapField(array( 'fieldName' => 'api_key', 'type' => 'string', 'nullable' => true));
-		$metadata->mapField(array( 'fieldName' => 'subject_id', 'type' => 'integer', 'nullable' => true, 'options' => array('unsigned' => true)));
-		$metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'nullable' => false));
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->setPrimaryTable(array(
+            'name' => 'log_event',
+            'indexes' => array(
+                'subject' => array('columns' => array('subject', 'subject_id')),
+            )
+        ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'id' => true, 'options' => array('unsigned' => true)));
+        $metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'options' => array('unsigned' => true)));
+        $metadata->mapField(array( 'fieldName' => 'event', 'type' => 'string', 'nullable' => false));
+        $metadata->mapField(array( 'fieldName' => 'subject', 'type' => 'string', 'nullable' => true));
+        $metadata->mapField(array( 'fieldName' => 'api_key', 'type' => 'string', 'nullable' => true));
+        $metadata->mapField(array( 'fieldName' => 'subject_id', 'type' => 'integer', 'nullable' => true, 'options' => array('unsigned' => true)));
+        $metadata->mapField(array( 'fieldName' => 'details', 'type' => 'array', 'nullable' => false));
 
-		$metadata->mapManyToOne(array(
-			'fieldName' => 'parent',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
-			'joinColumns' => array(0 => array(
-				'nullable' => true,
-				'onDelete' => 'cascade',
-			),),
-		));
+        $metadata->mapManyToOne(array(
+            'fieldName' => 'parent',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
+            'joinColumns' => array(0 => array(
+                'nullable' => true,
+                'onDelete' => 'cascade',
+            ),),
+        ));
 
-		$metadata->mapOneToMany(array(
-			'fieldName' => 'children',
-			'mappedBy'  => 'parent',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
-		));
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'children',
+            'mappedBy'  => 'parent',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\LogEvent',
+        ));
 
-		$metadata->mapManyToOne(array(
-			'fieldName' => 'person',
-			'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-			'joinColumns' => array(0 => array(
-				'nullable' => true,
-				'onDelete' => 'cascade',
-			),),
-		));
+        $metadata->mapManyToOne(array(
+            'fieldName' => 'person',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'joinColumns' => array(0 => array(
+                'nullable' => true,
+                'onDelete' => 'cascade',
+            ),),
+        ));
 
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+    }
 }

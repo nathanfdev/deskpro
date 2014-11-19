@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1415279012 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Remove old ticket_message_templates table (macros now work on newticket)");
-		$this->execMutateSql("DROP TABLE ticket_message_templates");
-	}
+    public function run()
+    {
+        $this->out("Remove old ticket_message_templates table (macros now work on newticket)");
+        $this->execMutateSql("DROP TABLE ticket_message_templates");
+    }
 }

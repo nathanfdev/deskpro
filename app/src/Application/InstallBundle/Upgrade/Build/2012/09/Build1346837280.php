@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1346837280 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add sessions.is_bot");
-		$this->execMutateSql("ALTER TABLE sessions ADD is_bot TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add sessions.is_bot");
+        $this->execMutateSql("ALTER TABLE sessions ADD is_bot TINYINT(1) NOT NULL");
+    }
 }

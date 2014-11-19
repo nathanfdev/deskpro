@@ -45,70 +45,70 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class FeedbackController extends AbstractController
 {
-	public function indexAction(Request $request)
-	{
-		$allFeedback = $this->getFeedbackRepo()->createQueryBuilder('f');
-		$pager       = new Pagerfanta(new DoctrineORMAdapter($allFeedback));
-		$pager->setMaxPerPage(3);
-		$pager->setCurrentPage($request->get('page', 1));
+    public function indexAction(Request $request)
+    {
+        $allFeedback = $this->getFeedbackRepo()->createQueryBuilder('f');
+        $pager       = new Pagerfanta(new DoctrineORMAdapter($allFeedback));
+        $pager->setMaxPerPage(3);
+        $pager->setCurrentPage($request->get('page', 1));
 
-		return $this->render(
-			'Theme:Feedback:index.html.twig',
-			array(
-				'pager'     => $pager,
-				'feedbacks' => $pager->getCurrentPageResults()
-			)
-		);
-	}
-
-
-	/**
-	 * @ParamConverter(name="feedback", converter="deskpro_slug")
-	 */
-	public function viewAction(Feedback $feedback)
-	{
-		return $this->render(
-			'Theme:Feedback:view.html.twig', array(
-				'feedback' => $feedback
-			)
-		);
-	}
-
-	public function listAction(Request $request)
-	{
-		$options_resolver = new OptionsResolver();
-		$options_resolver
-			->setDefaults(
-				array(
-					'style' => 'small',
-					'count' => 5
-				)
-			)
-			->setAllowedValues(
-				array(
-					'style' => array('small')
-				)
-			);
-		$options = $options_resolver->resolve($request->query->get('tag_options'));
-
-		$feedback  = $this->getFeedbackRepo()->getNewest(false, $options['count']);
-		$total = $this->getFeedbackRepo()->countNotClosedNotHidden();
-
-		return $this->render(
-			sprintf('Theme:Feedback:list_%s.html.twig', $options['style']),
-			array(
-				'count_feedback' => $total,
-				'feedback'    => $feedback
-			)
-		);
-	}
+        return $this->render(
+            'Theme:Feedback:index.html.twig',
+            array(
+                'pager'     => $pager,
+                'feedbacks' => $pager->getCurrentPageResults()
+            )
+        );
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\Feedback
-	 */
-	protected function getFeedbackRepo()
-	{
-		return $this->getDoctrine()->getRepository('DeskPRO:Feedback');
-	}
+    /**
+     * @ParamConverter(name="feedback", converter="deskpro_slug")
+     */
+    public function viewAction(Feedback $feedback)
+    {
+        return $this->render(
+            'Theme:Feedback:view.html.twig', array(
+                'feedback' => $feedback
+            )
+        );
+    }
+
+    public function listAction(Request $request)
+    {
+        $options_resolver = new OptionsResolver();
+        $options_resolver
+            ->setDefaults(
+                array(
+                    'style' => 'small',
+                    'count' => 5
+                )
+            )
+            ->setAllowedValues(
+                array(
+                    'style' => array('items', 'small')
+                )
+            );
+        $options = $options_resolver->resolve($request->query->get('tag_options'));
+
+        $feedback  = $this->getFeedbackRepo()->getNewest(false, $options['count']);
+        $total = $this->getFeedbackRepo()->countNotClosedNotHidden();
+
+        return $this->render(
+            sprintf('Theme:Feedback:list_%s.html.twig', $options['style']),
+            array(
+                'count_feedback' => $total,
+                'feedback'    => $feedback
+            )
+        );
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Feedback
+     */
+    protected function getFeedbackRepo()
+    {
+        return $this->getDoctrine()->getRepository('DeskPRO:Feedback');
+    }
 }

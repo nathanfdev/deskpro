@@ -46,78 +46,78 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetCategory extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('category_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('category_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_cat_id = $this->getActionOption('category_id');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_cat_id = $this->getActionOption('category_id');
 
-		if ($set_cat_id) {
-			$cat = $this->getContainer()->getTicketCategories()->getSettableById($set_cat_id);
-			if (!$cat) {
-				return; //invalid
-			}
-		} else {
-			$cat = null;
-		}
+        if ($set_cat_id) {
+            $cat = $this->getContainer()->getTicketCategories()->getSettableById($set_cat_id);
+            if (!$cat) {
+                return; //invalid
+            }
+        } else {
+            $cat = null;
+        }
 
-		$ticket->category = $cat;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_cat_id    = $this->getActionOption('category_id');
-		$ticket_cat_id = $ticket->category ? $ticket->category->id : 0;
-
-		if ($ticket_cat_id == $set_cat_id) {
-			return true;
-		}
-
-		if ($set_cat_id) {
-			$cat = $this->getContainer()->getTicketCategories()->getSettableById($set_cat_id);
-			if (!$cat) {
-				return true; //invalid
-			}
-		}
-
-		return false;
-	}
+        $ticket->category = $cat;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return array('fields');
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_cat_id    = $this->getActionOption('category_id');
+        $ticket_cat_id = $ticket->category ? $ticket->category->id : 0;
 
-		return null;
-	}
+        if ($ticket_cat_id == $set_cat_id) {
+            return true;
+        }
+
+        if ($set_cat_id) {
+            $cat = $this->getContainer()->getTicketCategories()->getSettableById($set_cat_id);
+            if (!$cat) {
+                return true; //invalid
+            }
+        }
+
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return array('fields');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

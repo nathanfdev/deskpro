@@ -36,108 +36,102 @@ namespace Orb\Util;
 
 class TimeUnit
 {
-	const SECONDS = 'seconds';
-	const MINUTES = 'minutes';
-	const HOURS   = 'hours';
-	const DAYS    = 'days';
-	const WEEKS   = 'weeks';
-	const MONTHS  = 'months';
-	const YEARS   = 'years';
+    const SECONDS = 'seconds';
+    const MINUTES = 'minutes';
+    const HOURS   = 'hours';
+    const DAYS    = 'days';
+    const WEEKS   = 'weeks';
+    const MONTHS  = 'months';
+    const YEARS   = 'years';
 
-	/**
-	 * @var string
-	 */
-	private $unit;
+    /**
+     * @var string
+     */
+    private $unit;
 
-	/**
-	 * @var int
-	 */
-	private $value;
+    /**
+     * @var int
+     */
+    private $value;
 
-	/**
-	 * @var int
-	 */
-	private $secs;
+    /**
+     * @var int
+     */
+    private $secs;
 
+    /**
+     * @param int    $value
+     * @param string $unit
+     */
+    public function __construct($value, $unit)
+    {
+        $this->value = $value;
+        $this->unit  = $unit;
 
-	/**
-	 * @param int $value
-	 * @param string $unit
-	 */
-	public function __construct($value, $unit)
-	{
-		$this->value = $value;
-		$this->unit  = $unit;
+        $this->secs = Dates::getUnitInSeconds($this->value, $this->unit);
+    }
 
-		$this->secs = Dates::getUnitInSeconds($this->value, $this->unit);
-	}
+    /**
+     * @return int
+     */
+    public function getSecs()
+    {
+        return $this->secs;
+    }
 
+    /**
+     * @return string
+     */
+    public function getUnit()
+    {
+        return $this->unit;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getSecs()
-	{
-		return $this->secs;
-	}
+    /**
+     * @return int
+     */
+    public function getValue()
+    {
+        return $this->value;
+    }
 
+    /**
+     * @param  int|TimeUnit              $val
+     * @return bool
+     * @throws \InvalidArgumentException
+     */
+    public function equals($val)
+    {
+        if (is_int($val)) {
+            $val_secs = $val;
+        } elseif ($val instanceof TimeUnit) {
+            $val_secs = $val->getSecs();
+        } else {
+            throw new \InvalidArgumentException("Can only compare integers and TimeUnit");
+        }
 
-	/**
-	 * @return string
-	 */
-	public function getUnit()
-	{
-		return $this->unit;
-	}
+        return $val_secs === $this->secs;
+    }
 
+    /**
+     * @param  int|TimeUnit              $val
+     * @return int
+     * @throws \InvalidArgumentException
+     */
+    public function compare($val)
+    {
+        if (is_int($val)) {
+            $val_secs = $val;
+        } elseif ($val instanceof TimeUnit) {
+            $val_secs = $val->getSecs();
+        } else {
+            throw new \InvalidArgumentException("Can only compare integers and TimeUnit");
+        }
 
-	/**
-	 * @return int
-	 */
-	public function getValue()
-	{
-		return $this->value;
-	}
+        if ($val_secs === $this->secs) {
+            return 0;
+        }
 
-
-	/**
-	 * @param int|TimeUnit $val
-	 * @return bool
-	 * @throws \InvalidArgumentException
-	 */
-	public function equals($val)
-	{
-		if (is_int($val)) {
-			$val_secs = $val;
-		} else if ($val instanceof TimeUnit) {
-			$val_secs = $val->getSecs();
-		} else {
-			throw new \InvalidArgumentException("Can only compare integers and TimeUnit");
-		}
-
-		return $val_secs === $this->secs;
-	}
-
-
-	/**
-	 * @param int|TimeUnit $val
-	 * @return int
-	 * @throws \InvalidArgumentException
-	 */
-	public function compare($val)
-	{
-		if (is_int($val)) {
-			$val_secs = $val;
-		} else if ($val instanceof TimeUnit) {
-			$val_secs = $val->getSecs();
-		} else {
-			throw new \InvalidArgumentException("Can only compare integers and TimeUnit");
-		}
-
-		if ($val_secs === $this->secs) {
-			return 0;
-		}
-
-		return $val_secs < $this->secs ? -1 : 1;
-	}
+        return $val_secs < $this->secs ? -1 : 1;
+    }
 }

@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1342435660 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Set existing tasks to public");
-		$this->execMutateSql("UPDATE tasks SET visibility = 1");
-	}
+    public function run()
+    {
+        $this->out("Set existing tasks to public");
+        $this->execMutateSql("UPDATE tasks SET visibility = 1");
+    }
 }

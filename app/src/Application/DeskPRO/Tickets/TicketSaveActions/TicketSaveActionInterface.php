@@ -39,10 +39,10 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 interface TicketSaveActionInterface
 {
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context);
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context);
 }

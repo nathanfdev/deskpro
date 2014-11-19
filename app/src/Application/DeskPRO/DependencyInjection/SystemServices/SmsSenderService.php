@@ -39,20 +39,20 @@ use Application\DeskPRO\Sms\DeskPROSmsSender;
 
 class SmsSenderService
 {
-	/**
-	 * @param DeskproContainer $container
-	 * @param array            $options
-	 * @return \Application\DeskPRO\Sms\DeskPROSmsSender
-	 */
-	public static function create(DeskproContainer $container, $options = array())
-	{
-		$sms_sender = new DeskPROSmsSender(
-			null,
-			null,
-			$container->getJobQueue(),
-			$container->getSettingsHandler()->get('core.max_sms_chunks')
-		);
+    /**
+     * @param  DeskproContainer                          $container
+     * @param  array                                     $options
+     * @return \Application\DeskPRO\Sms\DeskPROSmsSender
+     */
+    public static function create(DeskproContainer $container, $options = array())
+    {
+        $sms_sender = new DeskPROSmsSender(
+            null,
+            null,
+            $container->getJobQueue(),
+            $container->getSettingsHandler()->get('core.max_sms_chunks')
+        );
 
-		return $sms_sender;
-	}
+        return $sms_sender;
+    }
 }

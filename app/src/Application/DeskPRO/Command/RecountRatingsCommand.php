@@ -38,33 +38,33 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class RecountRatingsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:recount-ratings');
-	}
+    protected function configure()
+    {
+        $this->setName('dp:recount-ratings');
+    }
 
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$recount_ratings = new \Application\DeskPRO\Publish\RecountRatings($this->getContainer()->getEm());
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $recount_ratings = new \Application\DeskPRO\Publish\RecountRatings($this->getContainer()->getEm());
 
-		$status_fn = function($type, $info) use ($output) {
-			switch ($type) {
-				case 'start':
-					$output->writeln("Recounting ratings. Processing {$info['batch_size']} batches.");
-					break;
-				case 'batch_start':
-					$output->write("Processing batch {$info['batch']} ... ");
-					break;
-				case 'batch_end':
-					$output->writeln("Done");
-					break;
-				case 'end':
-					$output->writeln("Done all.");
-					break;
-			}
-		};
-		$recount_ratings->recountAll($status_fn);
+        $status_fn = function ($type, $info) use ($output) {
+            switch ($type) {
+                case 'start':
+                    $output->writeln("Recounting ratings. Processing {$info['batch_size']} batches.");
+                    break;
+                case 'batch_start':
+                    $output->write("Processing batch {$info['batch']} ... ");
+                    break;
+                case 'batch_end':
+                    $output->writeln("Done");
+                    break;
+                case 'end':
+                    $output->writeln("Done all.");
+                    break;
+            }
+        };
+        $recount_ratings->recountAll($status_fn);
 
-		return 0;
-	}
+        return 0;
+    }
 }

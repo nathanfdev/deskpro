@@ -8,228 +8,228 @@ require_once __DIR__ . '/../AbstractApiResultTest.php';
 
 class GetTicketTest extends AbstractApiResultTest
 {
-	public function testFindById()
-	{
-		$expectedTicketArray = $this->_getExpectedTicket();
+    public function testFindById()
+    {
+        $expectedTicketArray = $this->_getExpectedTicket();
 
-		$ticketId = 1;
+        $ticketId = 1;
 
-		$result = $this->getApi()->tickets->findById($ticketId);
+        $result = $this->getApi()->tickets->findById($ticketId);
 
-		$this->assertInstanceOf('DeskPRO\Api\Result', $result);
+        $this->assertInstanceOf('DeskPRO\Api\Result', $result);
 
-		$this->assertArrayHasKey('ticket', $result->getData());
+        $this->assertArrayHasKey('ticket', $result->getData());
 
-		$data = $result->getData();
+        $data = $result->getData();
 
-		$retrievedTicketArray = $data['ticket'];
+        $retrievedTicketArray = $data['ticket'];
 
-		foreach ($this->getDateTimeFields('ticket') as $field) {
-			$this->assertIsValidDateTime($retrievedTicketArray[$field]);
-		}
+        foreach ($this->getDateTimeFields('ticket') as $field) {
+            $this->assertIsValidDateTime($retrievedTicketArray[$field]);
+        }
 
-		foreach ($this->getDateTimeFields('person') as $field) {
-			$this->assertIsValidDateTime($retrievedTicketArray['person'][$field]);
-		}
+        foreach ($this->getDateTimeFields('person') as $field) {
+            $this->assertIsValidDateTime($retrievedTicketArray['person'][$field]);
+        }
 
-		foreach ($this->getDateTimeFields('person_email') as $field) {
-			$this->assertIsValidDateTime($retrievedTicketArray['person_email'][$field]);
-		}
+        foreach ($this->getDateTimeFields('person_email') as $field) {
+            $this->assertIsValidDateTime($retrievedTicketArray['person_email'][$field]);
+        }
 
-		foreach ($this->getTimestampFields('ticket') as $field) {
-			// 0 check because some times can be null
-			if ($retrievedTicketArray[$field] !== 0) {
-				$this->assertIsValidTimestamp($retrievedTicketArray[$field], "ticket.$field");
-			}
-		}
+        foreach ($this->getTimestampFields('ticket') as $field) {
+            // 0 check because some times can be null
+            if ($retrievedTicketArray[$field] !== 0) {
+                $this->assertIsValidTimestamp($retrievedTicketArray[$field], "ticket.$field");
+            }
+        }
 
-		foreach ($this->getTimestampFields('person') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketArray['person'][$field], "person.$field");
-		}
+        foreach ($this->getTimestampFields('person') as $field) {
+            $this->assertIsValidTimestamp($retrievedTicketArray['person'][$field], "person.$field");
+        }
 
-		foreach ($this->getTimestampFields('person_email') as $field) {
-			$this->assertIsValidTimestamp($retrievedTicketArray['person_email'][$field]);
-		}
+        foreach ($this->getTimestampFields('person_email') as $field) {
+            $this->assertIsValidTimestamp($retrievedTicketArray['person_email'][$field]);
+        }
 
-		foreach($this->_getIgnoreKeys('person') as $key) {
-			$this->assertArrayHasKey($key, $retrievedTicketArray['person']);
-			unset($retrievedTicketArray['person'][$key]);
-			unset($expectedTicketArray['person'][$key]);
-		}
+        foreach($this->_getIgnoreKeys('person') as $key) {
+            $this->assertArrayHasKey($key, $retrievedTicketArray['person']);
+            unset($retrievedTicketArray['person'][$key]);
+            unset($expectedTicketArray['person'][$key]);
+        }
 
-		foreach($this->_getIgnoreKeys('person_email') as $key) {
-			$this->assertArrayHasKey($key, $retrievedTicketArray['person_email']);
-			unset($retrievedTicketArray['person_email'][$key]);
-			unset($expectedTicketArray['person_email'][$key]);
-		}
+        foreach($this->_getIgnoreKeys('person_email') as $key) {
+            $this->assertArrayHasKey($key, $retrievedTicketArray['person_email']);
+            unset($retrievedTicketArray['person_email'][$key]);
+            unset($expectedTicketArray['person_email'][$key]);
+        }
 
-		foreach ($this->_getIgnoreKeys('ticket') as $key) {
-			$this->assertArrayHasKey($key, $retrievedTicketArray);
-			unset($retrievedTicketArray[$key]);
-			unset($expectedTicketArray[$key]);
-		}
+        foreach ($this->_getIgnoreKeys('ticket') as $key) {
+            $this->assertArrayHasKey($key, $retrievedTicketArray);
+            unset($retrievedTicketArray[$key]);
+            unset($expectedTicketArray[$key]);
+        }
 
-		$this->assertEquals($retrievedTicketArray, $expectedTicketArray);
-	}
+        $this->assertEquals($retrievedTicketArray, $expectedTicketArray);
+    }
 
-	public function testFindBySubject()
-	{
-		$testSubject = 'Test';
+    public function testFindBySubject()
+    {
+        $testSubject = 'Test';
 
-		$criteria = $this->getApi()->tickets->createCriteria();
+        $criteria = $this->getApi()->tickets->createCriteria();
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-		$criteria->addSubject($testSubject);
+        $criteria->addSubject($testSubject);
 
-		$result = $this->getApi()->tickets->find($criteria);
+        $result = $this->getApi()->tickets->find($criteria);
 
-		$this->assertArrayHasKey('tickets', $result->getData());
+        $this->assertArrayHasKey('tickets', $result->getData());
 
-		$data = $result->getData();
+        $data = $result->getData();
 
-		$retrievedTicketArray = $data['tickets'][1];
+        $retrievedTicketArray = $data['tickets'][1];
 
-		$this->assertEquals($retrievedTicketArray['subject'], $testSubject);
-	}
+        $this->assertEquals($retrievedTicketArray['subject'], $testSubject);
+    }
 
-	public function testFindByDepartment()
-	{
-		$testDepartmentId = 1;
+    public function testFindByDepartment()
+    {
+        $testDepartmentId = 1;
 
-		$criteria = $this->getApi()->tickets->createCriteria();
+        $criteria = $this->getApi()->tickets->createCriteria();
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-		$criteria->addDepartment($testDepartmentId);
+        $criteria->addDepartment($testDepartmentId);
 
-		$result = $this->getApi()->tickets->find($criteria);
+        $result = $this->getApi()->tickets->find($criteria);
 
-		$this->assertArrayHasKey('tickets', $result->getData());
+        $this->assertArrayHasKey('tickets', $result->getData());
 
-		$data = $result->getData();
+        $data = $result->getData();
 
-		$retrievedTicketArray = $data['tickets'][1];
+        $retrievedTicketArray = $data['tickets'][1];
 
-		$this->assertEquals($retrievedTicketArray['department']['id'], $testDepartmentId);
-	}
+        $this->assertEquals($retrievedTicketArray['department']['id'], $testDepartmentId);
+    }
 
-	public function testFindByAgent()
-	{
-		$testAgentId = 1;
+    public function testFindByAgent()
+    {
+        $testAgentId = 1;
 
-		$testTicketId = 1;
+        $testTicketId = 1;
 
-		$criteria = $this->getApi()->tickets->createCriteria();
+        $criteria = $this->getApi()->tickets->createCriteria();
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-		$criteria->addAgent($testAgentId);
+        $criteria->addAgent($testAgentId);
 
-		$result = $this->getApi()->tickets->find($criteria);
+        $result = $this->getApi()->tickets->find($criteria);
 
-		$data = $result->getData();
+        $data = $result->getData();
 
-		$this->assertArrayHasKey('tickets', $data);
+        $this->assertArrayHasKey('tickets', $data);
 
-		$matchingTickets = $data['tickets'];
+        $matchingTickets = $data['tickets'];
 
-		$this->assertEquals(0, count($matchingTickets));
+        $this->assertEquals(0, count($matchingTickets));
 
-		$ticketBuilder = $this->getApi()->tickets->createBuilder();
+        $ticketBuilder = $this->getApi()->tickets->createBuilder();
 
-		$this->assertInstanceOf('DeskPRO\Builder\Ticket', $ticketBuilder);
+        $this->assertInstanceOf('DeskPRO\Builder\Ticket', $ticketBuilder);
 
-		$ticketBuilder->setId($testTicketId)->assignToAgent($testAgentId);
+        $ticketBuilder->setId($testTicketId)->assignToAgent($testAgentId);
 
-		$result = $this->getApi()->tickets->save($ticketBuilder);
+        $result = $this->getApi()->tickets->save($ticketBuilder);
 
-		$this->assertFalse(!$result->getData());
+        $this->assertFalse(!$result->getData());
 
-		$criteria = $this->getApi()->tickets->createCriteria();
+        $criteria = $this->getApi()->tickets->createCriteria();
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-		$criteria->addAgent($testAgentId);
+        $criteria->addAgent($testAgentId);
 
-		$result = $this->getApi()->tickets->find($criteria);
+        $result = $this->getApi()->tickets->find($criteria);
 
-		$data = $result->getData();
+        $data = $result->getData();
 
-		$this->assertArrayHasKey('tickets', $data);
+        $this->assertArrayHasKey('tickets', $data);
 
-		$matchingTickets = $data['tickets'];
+        $matchingTickets = $data['tickets'];
 
-		$this->assertGreaterThanOrEqual(1, count($matchingTickets));
+        $this->assertGreaterThanOrEqual(1, count($matchingTickets));
 
-		$ticketBuilder->setId($testTicketId)->assignToAgent(0);
+        $ticketBuilder->setId($testTicketId)->assignToAgent(0);
 
-		$this->getApi()->tickets->save($ticketBuilder);
-	}
+        $this->getApi()->tickets->save($ticketBuilder);
+    }
 
-	public function testFindByCategory()
-	{
-		$testCategoryId = 1;
+    public function testFindByCategory()
+    {
+        $testCategoryId = 1;
 
-		$testTicketId = 1;
+        $testTicketId = 1;
 
-		$criteria = $this->getApi()->tickets->createCriteria();
+        $criteria = $this->getApi()->tickets->createCriteria();
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-		$criteria->addCategory($testCategoryId);
+        $criteria->addCategory($testCategoryId);
 
-		$result = $this->getApi()->tickets->find($criteria);
+        $result = $this->getApi()->tickets->find($criteria);
 
-		$data = $result->getData();
+        $data = $result->getData();
 
-		$this->assertArrayHasKey('tickets', $data);
+        $this->assertArrayHasKey('tickets', $data);
 
-		$matchingTickets = $data['tickets'];
+        $matchingTickets = $data['tickets'];
 
-		$this->assertEquals(0, count($matchingTickets));
+        $this->assertEquals(0, count($matchingTickets));
 
-		$ticketBuilder = $this->getApi()->tickets->createBuilder();
+        $ticketBuilder = $this->getApi()->tickets->createBuilder();
 
-		$ticketBuilder->setId($testTicketId)->setCategory($testCategoryId);
+        $ticketBuilder->setId($testTicketId)->setCategory($testCategoryId);
 
-		$result = $this->getApi()->tickets->save($ticketBuilder);
+        $result = $this->getApi()->tickets->save($ticketBuilder);
 
-		$this->assertFalse(!$result->getData());
+        $this->assertFalse(!$result->getData());
 
-		$result = $this->getApi()->tickets->find($criteria);
+        $result = $this->getApi()->tickets->find($criteria);
 
-		$data = $result->getData();
+        $data = $result->getData();
 
-		$this->assertArrayHasKey('tickets', $data);
+        $this->assertArrayHasKey('tickets', $data);
 
-		$matchingTickets = $data['tickets'];
+        $matchingTickets = $data['tickets'];
 
-		$this->assertEquals(1, count($matchingTickets));
+        $this->assertEquals(1, count($matchingTickets));
 
-		$ticketBuilder->setId($testTicketId)->setCategory(0);
+        $ticketBuilder->setId($testTicketId)->setCategory(0);
 
-		$this->getApi()->tickets->save($ticketBuilder);
-	}
+        $this->getApi()->tickets->save($ticketBuilder);
+    }
 
-	public function testFindByOrganization()
-	{
-		$testOrganizationId = 1;
+    public function testFindByOrganization()
+    {
+        $testOrganizationId = 1;
 
-		$criteria = $this->getApi()->tickets->createCriteria();
+        $criteria = $this->getApi()->tickets->createCriteria();
 
-		$this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
+        $this->assertInstanceOf('DeskPRO\Criteria\Ticket', $criteria);
 
-		$criteria->addOrganization($testOrganizationId);
+        $criteria->addOrganization($testOrganizationId);
 
-		$result = $this->getApi()->tickets->find($criteria);
+        $result = $this->getApi()->tickets->find($criteria);
 
-		$data = $result->getData();
+        $data = $result->getData();
 
-		$this->assertArrayHasKey('tickets', $data);
+        $this->assertArrayHasKey('tickets', $data);
 
-		$matchingTickets = $data['tickets'];
+        $matchingTickets = $data['tickets'];
 
-		$this->assertEquals(0, count($matchingTickets));
-	}
+        $this->assertEquals(0, count($matchingTickets));
+    }
 }

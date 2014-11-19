@@ -62,128 +62,125 @@ use Application\DeskPRO\Translate\SystemLanguage;
  */
 class LanguageStack
 {
-	/**
-	 * @var array
-	private $stack;
+    /**
+     * @var array
+    private $stack;
 
-	/**
-	 * @var Language[] an array of constructed languages keyed by language entity id
-	 */
-	private $languages;
+    /**
+     * @var Language[] an array of constructed languages keyed by language entity id
+     */
+    private $languages;
 
-	/**
-	 * @var SettingsResolver
-	 */
-	private $settings_resolver;
+    /**
+     * @var SettingsResolver
+     */
+    private $settings_resolver;
 
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\Language
-	 */
-	private $language_repo;
+    /**
+     * @var \Application\DeskPRO\EntityRepository\Language
+     */
+    private $language_repo;
 
-	/**
-	 * only stores the reference for quick access in the case of multiple calls to getDefaultLanguage(), do not
-	 * use this prop directly
-	 *
-	 * @var \Application\DeskPRO\Entity\Language|null
-	 */
-	private $default_language;
+    /**
+     * only stores the reference for quick access in the case of multiple calls to getDefaultLanguage(), do not
+     * use this prop directly
+     *
+     * @var \Application\DeskPRO\Entity\Language|null
+     */
+    private $default_language;
 
+    public function __construct(SettingsResolver $settings_resolver, LanguageRepo $language_repo)
+    {
+        $this->stack = array();
+        $this->languages = array();
+        $this->settings_resolver = $settings_resolver;
+        $this->language_repo = $language_repo;
+    }
 
-	public function __construct(SettingsResolver $settings_resolver, LanguageRepo $language_repo)
-	{
-		$this->stack = array();
-		$this->languages = array();
-		$this->settings_resolver = $settings_resolver;
-		$this->language_repo = $language_repo;
-	}
+    /**
+     * Gives you the active BrandContainer
+     *
+     * @return Language
+     */
+    public function getActive()
+    {
+        $language_id = end($this->stack);
 
-	/**
-	 * Gives you the active BrandContainer
-	 *
-	 * @return Language
-	 */
-	public function getActive()
-	{
-		$language_id = end($this->stack);
+        if (false !== $language_id) {
+            return $this->languages[$language_id];
+        }
 
-		if (false !== $language_id) {
-			return $this->languages[$language_id];
-		}
+        return null;
+    }
 
-		return null;
-	}
+    public function getStack()
+    {
+        return $this->stack;
+    }
 
+    /**
+     * Pushes the Brand into the stack, so that the language's container is now active
+     *
+     * @param  Language $language
+     * @return Language
+     */
+    public function push(Language $language)
+    {
+        $language_id = $language->getId();
 
-	public function getStack()
-	{
-		return $this->stack;
-	}
+        array_push($this->stack, $language_id);
 
-	/**
-	 * Pushes the Brand into the stack, so that the language's container is now active
-	 *
-	 * @param Language $language
-	 * @return Language
-	 */
-	public function push(Language $language)
-	{
-		$language_id = $language->getId();
+        if (!array_key_exists($language_id, $this->languages)) {
+            $this->languages[$language_id] = $language;
+        }
 
-		array_push($this->stack, $language_id);
-
-		if (!array_key_exists($language_id, $this->languages)) {
-			$this->languages[$language_id] = $language;
-		}
-
-		return $this->getActive();
-	}
+        return $this->getActive();
+    }
 
 
-	/**
-	 * A common use case is to switch to the default language (routing for ex.) quickly. This is a convenience method.
-	 *
-	 * @return Language
-	 */
-	public function pushDefault()
-	{
-		return $this->push($this->getDefaultLanguage());
-	}
+    /**
+     * A common use case is to switch to the default language (routing for ex.) quickly. This is a convenience method.
+     *
+     * @return Language
+     */
+    public function pushDefault()
+    {
+        return $this->push($this->getDefaultLanguage());
+    }
 
 
-	/**
-	 * Reverts pops the state, making the previous language container active.
-	 */
-	public function pop()
-	{
-		array_pop($this->stack);
-	}
+    /**
+     * Reverts pops the state, making the previous language container active.
+     */
+    public function pop()
+    {
+        array_pop($this->stack);
+    }
 
 
-	/**
-	 * Can find the default system language. You should use the stack directly, but if nothing is on the stack
-	 * and you need to find the set default language, use this.
-	 *
-	 * @return Language
-	 */
-	public function getDefaultLanguage()
-	{
-		if ($this->default_language) {
-			return $this->default_language;
-		}
+    /**
+     * Can find the default system language. You should use the stack directly, but if nothing is on the stack
+     * and you need to find the set default language, use this.
+     *
+     * @return Language
+     */
+    public function getDefaultLanguage()
+    {
+        if ($this->default_language) {
+            return $this->default_language;
+        }
 
-		$lang = null;
-		if ($id = $this->settings_resolver->getGlobalSettings()->get('core.default_language_id')) {
-			if ($lang = $this->language_repo->find($id)) {
-				return $this->default_language = $lang;
-			}
-		}
+        $lang = null;
+        if ($id = $this->settings_resolver->getGlobalSettings()->get('core.default_language_id')) {
+            if ($lang = $this->language_repo->find($id)) {
+                return $this->default_language = $lang;
+            }
+        }
 
-		if ($lang = $this->language_repo->find(1)) {
-			return $this->default_language = $lang;
-		}
+        if ($lang = $this->language_repo->find(1)) {
+            return $this->default_language = $lang;
+        }
 
-		return SystemLanguage::getInstance();
-	}
+        return SystemLanguage::getInstance();
+    }
 }
- 

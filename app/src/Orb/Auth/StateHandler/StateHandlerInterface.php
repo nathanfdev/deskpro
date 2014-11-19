@@ -40,10 +40,10 @@ namespace Orb\Auth\StateHandler;
  */
 interface StateHandlerInterface extends \ArrayAccess
 {
-	/**
-	 * Clears all state data, or resets back into its initial state.
-	 *
-	 * @return void
-	 */
-	public function clearState();
+    /**
+     * Clears all state data, or resets back into its initial state.
+     *
+     * @return void
+     */
+    public function clearState();
 }

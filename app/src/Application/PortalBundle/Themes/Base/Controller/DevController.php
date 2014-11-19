@@ -36,11 +36,22 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\HttpFoundation\Request;
 
 class DevController extends AbstractController
 {
-	public function devAction()
-	{
-		return $this->render('Theme:Dev:dev.html.twig');
-	}
+    public function devAction()
+    {
+        return $this->render('Theme:Dev:dev.html.twig');
+    }
+
+    public function renderAction(Request $request)
+    {
+        $options_resolver = new OptionsResolver();
+        $options_resolver->setRequired(array('tpl'));
+        $options = $options_resolver->resolve($request->query->get('tag_options'));
+
+        return $this->render($options['tpl']);
+    }
 }

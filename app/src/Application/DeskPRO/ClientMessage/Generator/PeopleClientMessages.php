@@ -40,33 +40,33 @@ use Application\DeskPRO\Entity\Person;
 
 class PeopleClientMessages
 {
-	public static function createNewPersonMessages(Person $person)
-	{
-		$cm = new ClientMessage();
-		$cm->fromArray(array(
-			'channel' => 'agent.person.added',
-			'data' => array(
-				'person_id'    => $person->id,
-				'person_name'  => $person->getDisplayName(),
-				'date_created' => $person->date_created->getTimestamp()
-			)
-		));
+    public static function createNewPersonMessages(Person $person)
+    {
+        $cm = new ClientMessage();
+        $cm->fromArray(array(
+            'channel' => 'agent.person.added',
+            'data' => array(
+                'person_id'    => $person->id,
+                'person_name'  => $person->getDisplayName(),
+                'date_created' => $person->date_created->getTimestamp()
+            )
+        ));
 
-		return array($cm);
-	}
+        return array($cm);
+    }
 
-	public static function createNewOrgMessages(Organization $org)
-	{
-		$cm = new ClientMessage();
-		$cm->fromArray(array(
-			'channel' => 'agent.org.added',
-			'data' => array(
-				'organization_id'    => $org->id,
-				'organization_name'  => $org->name,
-				'date_created'       => $org->date_created->getTimestamp()
-			)
-		));
+    public static function createNewOrgMessages(Organization $org)
+    {
+        $cm = new ClientMessage();
+        $cm->fromArray(array(
+            'channel' => 'agent.org.added',
+            'data' => array(
+                'organization_id'    => $org->id,
+                'organization_name'  => $org->name,
+                'date_created'       => $org->date_created->getTimestamp()
+            )
+        ));
 
-		return array($cm);
-	}
+        return array($cm);
+    }
 }

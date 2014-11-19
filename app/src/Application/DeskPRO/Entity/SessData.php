@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
@@ -47,34 +46,34 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  */
 class SessData extends \Application\DeskPRO\Domain\DomainObject
 {
-	protected $sess_id;
+    protected $sess_id;
 
-	protected $sess_data;
+    protected $sess_data;
 
-	protected $sess_time;
+    protected $sess_time;
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$builder = new ClassMetadataBuilder($metadata);
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $builder = new ClassMetadataBuilder($metadata);
 
-		$builder->setTable('sess_data');
+        $builder->setTable('sess_data');
 
-		$builder->createField('sess_id', 'string', array(
-				'nullable'  => false,
-			)
-		)->isPrimaryKey()->build();
-		$builder->addField('sess_time', 'integer', array(
-				'unsigned' => true,
-				'nullable'  => false,
-			)
-		);
-		$builder->addField('sess_data', 'text', array(
-				'nullable' => false
-			)
-		);
-	}
+        $builder->createField('sess_id', 'string', array(
+                'nullable'  => false,
+            )
+        )->isPrimaryKey()->build();
+        $builder->addField('sess_time', 'integer', array(
+                'unsigned' => true,
+                'nullable'  => false,
+            )
+        );
+        $builder->addField('sess_data', 'text', array(
+                'nullable' => false
+            )
+        );
+    }
 }

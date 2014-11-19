@@ -41,62 +41,59 @@ use Orb\Types\JsonObjectSerializer;
 
 class DpJsonObject extends Type
 {
-	const DP_JSON_OBJ = 'dp_json_obj';
+    const DP_JSON_OBJ = 'dp_json_obj';
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
+    {
+        return $platform->getClobTypeDeclarationSQL($fieldDeclaration);
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getSQLDeclaration(array $fieldDeclaration, AbstractPlatform $platform)
-	{
-		return $platform->getClobTypeDeclarationSQL($fieldDeclaration);
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToDatabaseValue($value, AbstractPlatform $platform)
+    {
+        if (null === $value) {
+            return null;
+        }
 
+        if (!is_object($value) || !($value instanceof JsonObjectSerializable)) {
+            throw new \InvalidArgumentException("Class is not JsonObjectSerializable");
+        }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function convertToDatabaseValue($value, AbstractPlatform $platform)
-	{
-		if (null === $value) {
-			return null;
-		}
+        return JsonObjectSerializer::serialize($value);
+    }
 
-		if (!is_object($value) || !($value instanceof JsonObjectSerializable)) {
-			throw new \InvalidArgumentException("Class is not JsonObjectSerializable");
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function convertToPHPValue($value, AbstractPlatform $platform)
+    {
+        if ($value === null) {
+            return null;
+        }
 
-		return JsonObjectSerializer::serialize($value);
-	}
+        $value = (is_resource($value)) ? stream_get_contents($value) : $value;
 
+        return JsonObjectSerializer::unserialize($value);
+    }
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function convertToPHPValue($value, AbstractPlatform $platform)
-	{
-		if ($value === null) {
-			return null;
-		}
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return self::DP_JSON_OBJ;
+    }
 
-		$value = (is_resource($value)) ? stream_get_contents($value) : $value;
-
-		return JsonObjectSerializer::unserialize($value);
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getName()
-	{
-		return self::DP_JSON_OBJ;
-	}
-
-	/**
-	 * {@inheritdoc}
-	 */
-	public function requiresSQLCommentHint(AbstractPlatform $platform)
-	{
-		return true;
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function requiresSQLCommentHint(AbstractPlatform $platform)
+    {
+        return true;
+    }
 }

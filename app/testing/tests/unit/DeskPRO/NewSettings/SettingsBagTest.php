@@ -39,89 +39,88 @@ use Application\DeskPRO\NewSettings\SettingsBag;
 
 class SettingsBagTest extends \DpUnitTestCase
 {
-	public function testIsLikeAnArrayObject()
-	{
-		$bag = new SettingsBag();
+    public function testIsLikeAnArrayObject()
+    {
+        $bag = new SettingsBag();
 
-		$this->assertInstanceOf('\ArrayAccess', $bag);
-		$this->assertInstanceOf('\IteratorAggregate', $bag);
-		$this->assertInstanceOf('\Countable', $bag);
-		$this->assertInstanceOf('\Serializable', $bag);
-	}
+        $this->assertInstanceOf('\ArrayAccess', $bag);
+        $this->assertInstanceOf('\IteratorAggregate', $bag);
+        $this->assertInstanceOf('\Countable', $bag);
+        $this->assertInstanceOf('\Serializable', $bag);
+    }
 
-	public function testEverythingAtOnceBecauseThisIsTrivial()
-	{
-		$inputArray = array(
-			'key'           => 'value',
-			'setting'       => 2,
-			'extra_setting' => 0.9
-		);
+    public function testEverythingAtOnceBecauseThisIsTrivial()
+    {
+        $inputArray = array(
+            'key'           => 'value',
+            'setting'       => 2,
+            'extra_setting' => 0.9
+        );
 
-		$bag = new SettingsBag($inputArray);
+        $bag = new SettingsBag($inputArray);
 
-		$this->assertEquals('value', $bag->get('key'));
-		$this->assertEquals(2, $bag->get('setting'));
-		$this->assertEquals(0.9, $bag->get('extra_setting'));
+        $this->assertEquals('value', $bag->get('key'));
+        $this->assertEquals(2, $bag->get('setting'));
+        $this->assertEquals(0.9, $bag->get('extra_setting'));
 
-		$this->assertEquals(null, $bag->get('does_not_exist'));
-		$this->assertEquals('default_works', $bag->get('does_not_exist', 'default_works'));
+        $this->assertEquals(null, $bag->get('does_not_exist'));
+        $this->assertEquals('default_works', $bag->get('does_not_exist', 'default_works'));
 
-		$this->assertEquals('value', $bag['key']);
-		$this->assertEquals(2, $bag['setting']);
-		$this->assertEquals(0.9, $bag['extra_setting']);
+        $this->assertEquals('value', $bag['key']);
+        $this->assertEquals(2, $bag['setting']);
+        $this->assertEquals(0.9, $bag['extra_setting']);
 
-		$this->assertSame(3, $bag->count());
-		$this->assertSame(3, count($bag));
+        $this->assertSame(3, $bag->count());
+        $this->assertSame(3, count($bag));
 
-		$this->assertTrue($bag->has('key'));
-		$this->assertFalse($bag->has('non_existant-key'));
+        $this->assertTrue($bag->has('key'));
+        $this->assertFalse($bag->has('non_existant-key'));
 
-		$this->assertSame($inputArray, $bag->toArray(), 'can get the settings as an array');
-	}
+        $this->assertSame($inputArray, $bag->toArray(), 'can get the settings as an array');
+    }
 
-	public function testGroups()
-	{
-		$inputArray = array(
-			'no_group'          => 'value',
-			'group_1.key'       => 'val',
-			'group_1.extra_num' => 2,
-			'group_2.key'       => 7.8,
-			'group_2.extra_num' => 99,
-			'group_2.deep.extra_num' => 301
-		);
+    public function testGroups()
+    {
+        $inputArray = array(
+            'no_group'          => 'value',
+            'group_1.key'       => 'val',
+            'group_1.extra_num' => 2,
+            'group_2.key'       => 7.8,
+            'group_2.extra_num' => 99,
+            'group_2.deep.extra_num' => 301
+        );
 
-		$bag = new SettingsBag($inputArray);
+        $bag = new SettingsBag($inputArray);
 
-		$this->assertEquals(
-			array(
-				'key' => 'val',
-				'extra_num' => 2
-			),
-			$bag->getGroup('group_1')
-		);
+        $this->assertEquals(
+            array(
+                'key' => 'val',
+                'extra_num' => 2
+            ),
+            $bag->getGroup('group_1')
+        );
 
-		$this->assertEquals(
-			array(
-				'key' => 7.8,
-				'extra_num' => 99,
-				'deep.extra_num' => 301
-			),
-			$bag->getGroup('group_2')
-		);
+        $this->assertEquals(
+            array(
+                'key' => 7.8,
+                'extra_num' => 99,
+                'deep.extra_num' => 301
+            ),
+            $bag->getGroup('group_2')
+        );
 
-		$this->assertEquals(
-			array(
-				'extra_num' => 301
-			),
-			$bag->getGroup('group_2.deep')
-		);
+        $this->assertEquals(
+            array(
+                'extra_num' => 301
+            ),
+            $bag->getGroup('group_2.deep')
+        );
 
-		$this->assertEquals(
-			array(
-				'group_2.deep.extra_num' => 301
-			),
-			$bag->getGroup('group_2.deep', false)
-		);
-	}
+        $this->assertEquals(
+            array(
+                'group_2.deep.extra_num' => 301
+            ),
+            $bag->getGroup('group_2.deep', false)
+        );
+    }
 }
- 

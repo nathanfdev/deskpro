@@ -38,22 +38,22 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class TextFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('default_value', 'text', array('required' => false));
-		$builder->add('min_length', 'text', array('required' => false));
-		$builder->add('max_length', 'text', array('required' => false));
-		$builder->add('regex', 'text', array('required' => false));
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('default_value', 'text', array('required' => false));
+        $builder->add('min_length', 'text', array('required' => false));
+        $builder->add('max_length', 'text', array('required' => false));
+        $builder->add('regex', 'text', array('required' => false));
 
-		$builder->add('agent_min_length', 'text', array('required' => false));
-		$builder->add('agent_max_length', 'text', array('required' => false));
-		$builder->add('agent_regex', 'text', array('required' => false));
-	}
+        $builder->add('agent_min_length', 'text', array('required' => false));
+        $builder->add('agent_max_length', 'text', array('required' => false));
+        $builder->add('agent_regex', 'text', array('required' => false));
+    }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\TextField',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\TextField',
+        );
+    }
 }

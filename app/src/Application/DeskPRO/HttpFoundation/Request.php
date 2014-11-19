@@ -33,110 +33,109 @@
 
 namespace Application\DeskPRO\HttpFoundation;
 
-use Symfony\Component\HttpFoundation\SessionStorage\NativeSessionStorage;
 
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
-	const PARTIAL_REQUEST_KEY = '_partial';
+    const PARTIAL_REQUEST_KEY = '_partial';
 
-	/** @var null */
-	protected $url_locale = null;
+    /** @var null */
+    protected $url_locale = null;
 
-	/**
-	 * When a client sends _partial in POST/GET data, they're requesting a partial result
-	 *
-	 * For example: more search results, or a page being put into an existing page etc. The actual
-	 * meaning of what "partial" is depends on the page.
-	 *
-	 * Returns either 'partial', or a string value of the _partial (which might be used to denote different
-	 * types of partial templates).
-	 *
-	 * @return bool|string
-	 */
-	public function isPartialRequest()
-	{
-		$val = false;
-
-		if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
-			$val = $this->query->get(self::PARTIAL_REQUEST_KEY);
-			if (!$val) $val = 'partial';
-		} elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
-			$val = $this->request->get(self::PARTIAL_REQUEST_KEY);
-			if (!$val) $val = 'partial';
-		}
-
-		return $val;
-	}
-
-	public function isPost()
-	{
-		return $this->getMethod() == 'POST';
-	}
-
-	public function isGet()
-	{
-		return $this->getMethod() == 'GET';
-	}
-
-	/**
-	 * Detect the locale in the URL. This is the first /en/ or /en_US/ part of the URL.
-	 *
-	 * @return string
-	 */
-	public function getUrlLocale()
-	{
-		if ($this->url_locale !== null) return $this->url_locale;
-
-		$this->url_locale = false;
-
-		#------------------------------
-		# We check for locale prefix in user section
-		#------------------------------
-
-		$nocheck_sections = array(
-			'/agent',
-			'/admin',
-			'/dev',
-			'/api'
-		);
-
-		$check_for_locale = true;
-		foreach ($nocheck_sections as $s) {
-			if (strpos($pathinfo, $s) === 0) {
-				$check_for_locale = false;
-			}
-		}
-
-		if ($check_for_locale) {
-			$locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
-			if ($locale) {
-				$locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $pathinfo, 1);
-			}
-
-			if ($locale) {
-				$this->url_locale = $locale;
-			}
-		}
-
-		$this->attributes->set('_locale', $this->url_locale);
-
-		return $this->url_locale;
-	}
-
-	/**
-	 * Same as parent, except directory matching is case-insensitive for Windows.
-	 *
-	 * @return mixed|null|string
-	 */
-	protected function prepareBaseUrl()
+    /**
+     * When a client sends _partial in POST/GET data, they're requesting a partial result
+     *
+     * For example: more search results, or a page being put into an existing page etc. The actual
+     * meaning of what "partial" is depends on the page.
+     *
+     * Returns either 'partial', or a string value of the _partial (which might be used to denote different
+     * types of partial templates).
+     *
+     * @return bool|string
+     */
+    public function isPartialRequest()
     {
-		// Not Windows (which is case insensitive), then do the normal
-		if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
-			return parent::prepareBaseUrl();
-		}
+        $val = false;
 
-		// Below is the same except for a few cases where
-		// strpos is replaced with stripos and some strtolowers
+        if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
+            $val = $this->query->get(self::PARTIAL_REQUEST_KEY);
+            if (!$val) $val = 'partial';
+        } elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
+            $val = $this->request->get(self::PARTIAL_REQUEST_KEY);
+            if (!$val) $val = 'partial';
+        }
+
+        return $val;
+    }
+
+    public function isPost()
+    {
+        return $this->getMethod() == 'POST';
+    }
+
+    public function isGet()
+    {
+        return $this->getMethod() == 'GET';
+    }
+
+    /**
+     * Detect the locale in the URL. This is the first /en/ or /en_US/ part of the URL.
+     *
+     * @return string
+     */
+    public function getUrlLocale()
+    {
+        if ($this->url_locale !== null) return $this->url_locale;
+
+        $this->url_locale = false;
+
+        #------------------------------
+        # We check for locale prefix in user section
+        #------------------------------
+
+        $nocheck_sections = array(
+            '/agent',
+            '/admin',
+            '/dev',
+            '/api'
+        );
+
+        $check_for_locale = true;
+        foreach ($nocheck_sections as $s) {
+            if (strpos($pathinfo, $s) === 0) {
+                $check_for_locale = false;
+            }
+        }
+
+        if ($check_for_locale) {
+            $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $pathinfo, 1);
+            if ($locale) {
+                $locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $pathinfo, 1);
+            }
+
+            if ($locale) {
+                $this->url_locale = $locale;
+            }
+        }
+
+        $this->attributes->set('_locale', $this->url_locale);
+
+        return $this->url_locale;
+    }
+
+    /**
+     * Same as parent, except directory matching is case-insensitive for Windows.
+     *
+     * @return mixed|null|string
+     */
+    protected function prepareBaseUrl()
+    {
+        // Not Windows (which is case insensitive), then do the normal
+        if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
+            return parent::prepareBaseUrl();
+        }
+
+        // Below is the same except for a few cases where
+        // strpos is replaced with stripos and some strtolowers
         $filename = strtolower(basename($this->server->get('SCRIPT_FILENAME')));
 
         if (strtolower(basename($this->server->get('SCRIPT_NAME'))) === $filename) {

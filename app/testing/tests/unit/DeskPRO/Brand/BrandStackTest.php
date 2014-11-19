@@ -39,42 +39,42 @@ use Application\DeskPRO\Brand\BrandStack;
 
 class BrandStackTest extends \DpUnitTestCase
 {
-	public function testTheStack()
-	{
-		$mockFactory = \Mockery::mock('Application\DeskPRO\Brand\BrandContainerFactory');
+    public function testTheStack()
+    {
+        $mockFactory = \Mockery::mock('Application\DeskPRO\Brand\BrandContainerFactory');
 
-		$mockBrand1    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
-		$mockBrand1->shouldReceive('getId')->andReturn(1);
-		$mockContainer1 = \Mockery::mock('Application\DeskPRO\Brand\BrandContainer');
+        $mockBrand1    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+        $mockBrand1->shouldReceive('getId')->andReturn(1);
+        $mockContainer1 = \Mockery::mock('Application\DeskPRO\Brand\BrandContainer');
 
-		$mockBrand2    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
-		$mockBrand2->shouldReceive('getId')->andReturn(2);
-		$mockContainer2 = \Mockery::mock('Application\DeskPRO\Brand\BrandContainer');
+        $mockBrand2    = \Mockery::mock('Application\DeskPRO\Entity\Brand');
+        $mockBrand2->shouldReceive('getId')->andReturn(2);
+        $mockContainer2 = \Mockery::mock('Application\DeskPRO\Brand\BrandContainer');
 
-		$mockFactory->shouldReceive('create')->with($mockBrand1)->andReturn($mockContainer1);
-		$mockFactory->shouldReceive('create')->with($mockBrand2)->andReturn($mockContainer2);
+        $mockFactory->shouldReceive('create')->with($mockBrand1)->andReturn($mockContainer1);
+        $mockFactory->shouldReceive('create')->with($mockBrand2)->andReturn($mockContainer2);
 
-		/**
-		 * As demonstrated below, the BrandStack lets you seamlessly move between different brand "containers" (eg. contexts)
-		 * through runtime. You can push(Brand entity) and pop() in an out of these container contexts.
-		 */
-		$stack = new BrandStack($mockFactory, $mockBrand1);
-		$this->assertSame(null, $stack->getActive());
+        /**
+         * As demonstrated below, the BrandStack lets you seamlessly move between different brand "containers" (eg. contexts)
+         * through runtime. You can push(Brand entity) and pop() in an out of these container contexts.
+         */
+        $stack = new BrandStack($mockFactory, $mockBrand1);
+        $this->assertSame(null, $stack->getActive());
 
-		$stack->push($mockBrand1);
-		$this->assertSame($mockContainer1, $stack->getActive());
+        $stack->push($mockBrand1);
+        $this->assertSame($mockContainer1, $stack->getActive());
 
-		$this->assertSame($mockContainer2, $stack->push($mockBrand2));
+        $this->assertSame($mockContainer2, $stack->push($mockBrand2));
 
-		$stack->pop();
-		$this->assertSame($mockContainer1, $stack->getActive());
+        $stack->pop();
+        $this->assertSame($mockContainer1, $stack->getActive());
 
-		$this->assertSame($mockContainer2, $stack->push($mockBrand2));
+        $this->assertSame($mockContainer2, $stack->push($mockBrand2));
 
-		$stack->pop();
-		$this->assertSame($mockContainer1, $stack->getActive());
+        $stack->pop();
+        $this->assertSame($mockContainer1, $stack->getActive());
 
-		$stack->pop();
-		$this->assertSame(null, $stack->getActive());
-	}
+        $stack->pop();
+        $this->assertSame(null, $stack->getActive());
+    }
 }

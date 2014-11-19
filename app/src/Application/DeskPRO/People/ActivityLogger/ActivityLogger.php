@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\People\ActivityLogger;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonActivity;
 use Application\DeskPRO\People\ActivityLogger\ActionType\ActionTypeAbstract;
@@ -43,62 +42,61 @@ use Orb\Util\Util;
 
 class ActivityLogger
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	public function __construct(\Doctrine\ORM\EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(\Doctrine\ORM\EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * Save any action details
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param string $action_type
-	 * @param array $details
-	 * @return \Application\DeskPRO\Entity\PersonActivity|array
-	 */
-	public function saveActionDetails(Person $person, $action_type, array $details)
-	{
-		$activity = new PersonActivity();
-		$activity->person = $person;
-		$activity['action_type'] = $action_type;
-		$activity['details'] = $details;
+    /**
+     * Save any action details
+     *
+     * @param  \Application\DeskPRO\Entity\Person               $person
+     * @param  string                                           $action_type
+     * @param  array                                            $details
+     * @return \Application\DeskPRO\Entity\PersonActivity|array
+     */
+    public function saveActionDetails(Person $person, $action_type, array $details)
+    {
+        $activity = new PersonActivity();
+        $activity->person = $person;
+        $activity['action_type'] = $action_type;
+        $activity['details'] = $details;
 
-		$this->em->getConnection()->beginTransaction();
-		try {
-			$this->em->persist($activity);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->persist($activity);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
 
-		return $activity;
-	}
+        return $activity;
+    }
 
+    /**
+     * Save an action object
+     *
+     * @param  \Application\DeskPRO\Entity\Person                            $person
+     * @param  \Application\DeskPRO\People\ActivityLogger\ActionTypeAbstract $action
+     * @return \Application\DeskPRO\Entity\PersonActivity|array
+     */
+    public function saveAction(ActionTypeAbstract $action)
+    {
+        $action_type = Util::getBaseClassname($action);
+        $action_type = Strings::camelCaseToUnderscore($action_type);
 
-	/**
-	 * Save an action object
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param \Application\DeskPRO\People\ActivityLogger\ActionTypeAbstract $action
-	 * @return \Application\DeskPRO\Entity\PersonActivity|array
-	 */
-	public function saveAction(ActionTypeAbstract $action)
-	{
-		$action_type = Util::getBaseClassname($action);
-		$action_type = Strings::camelCaseToUnderscore($action_type);
+        $details = $action->getDetails();
+        if ($details) {
+            return $this->saveActionDetails($action->getPersonContext(), $action_type, $details);
+        }
 
-		$details = $action->getDetails();
-		if ($details) {
-			return $this->saveActionDetails($action->getPersonContext(), $action_type, $details);
-		}
-
-		return null;
-	}
+        return null;
+    }
 }

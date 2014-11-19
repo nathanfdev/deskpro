@@ -39,8 +39,8 @@ use Application\PortalBundle\Controller\AbstractController;
 
 class NewTicketController extends AbstractController
 {
-	public function newTicketAction()
-	{
-		return $this->render('Theme:NewTicket:new_ticket.html.twig');
-	}
+    public function newTicketAction()
+    {
+        return $this->render('Theme:NewTicket:new_ticket.html.twig');
+    }
 }

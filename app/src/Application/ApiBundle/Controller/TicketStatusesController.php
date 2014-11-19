@@ -40,145 +40,146 @@ use Orb\Util\Arrays;
 
 class TicketStatusesController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
 
 
-	####################################################################################################################
-	# get-status
-	####################################################################################################################
+    ####################################################################################################################
+    # get-status
+    ####################################################################################################################
 
-	public function getStatsAction()
-	{
-		$stats = $this->db->fetchAllKeyValue("
-			SELECT status, COUNT(*)
-			FROM tickets
-			GROUP BY status
-		");
+    public function getStatsAction()
+    {
+        $stats = $this->db->fetchAllKeyValue("
+            SELECT status, COUNT(*)
+            FROM tickets
+            GROUP BY status
+        ");
 
-		$h_stats = $this->db->fetchAllKeyValue("
-			SELECT hidden_status, COUNT(*)
-			FROM tickets
-			WHERE status = 'hidden' AND hidden_status IS NOT NULL
-			GROUP BY hidden_status
-		");
-		foreach ($h_stats as $s => $c) {
-			$stats['hidden_' . $s] = $c;
-		}
+        $h_stats = $this->db->fetchAllKeyValue("
+            SELECT hidden_status, COUNT(*)
+            FROM tickets
+            WHERE status = 'hidden' AND hidden_status IS NOT NULL
+            GROUP BY hidden_status
+        ");
+        foreach ($h_stats as $s => $c) {
+            $stats['hidden_' . $s] = $c;
+        }
 
-		$stats = Arrays::castToType($stats, 'int', 'string');
+        $stats = Arrays::castToType($stats, 'int', 'string');
 
-		return $this->createApiResponse(array('status_stats' => $stats));
-	}
+        return $this->createApiResponse(array('status_stats' => $stats));
+    }
 
-	####################################################################################################################
-	# get-archived-info
-	####################################################################################################################
+    ####################################################################################################################
+    # get-archived-info
+    ####################################################################################################################
 
-	public function getArchivedInfoAction()
-	{
-		$info = array(
-			'enabled'           => (bool)$this->settings->get('core_tickets.use_archive'),
-			'auto_archive_time' => (int)$this->settings->get('core_tickets.auto_archive_time'),
-		);
+    public function getArchivedInfoAction()
+    {
+        $info = array(
+            'enabled'           => (bool)$this->settings->get('core_tickets.use_archive'),
+            'auto_archive_time' => (int)$this->settings->get('core_tickets.auto_archive_time'),
+        );
 
-		return $this->createApiResponse(array(
-			'archived_info' => $info
-		));
-	}
+        return $this->createApiResponse(array(
+            'archived_info' => $info
+        ));
+    }
 
-	####################################################################################################################
-	# save-archived-settings
-	####################################################################################################################
+    ####################################################################################################################
+    # save-archived-settings
+    ####################################################################################################################
 
-	public function saveArchivedSettingsAction()
-	{
-		$this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
-		$this->settings->setSetting('core_tickets.auto_archive_time', $this->in->getUint('auto_archive_time'));
+    public function saveArchivedSettingsAction()
+    {
+        $this->settings->setSetting('core_tickets.use_archive', $this->in->getBoolInt('enabled'));
+        $this->settings->setSetting('core_tickets.auto_archive_time', $this->in->getUint('auto_archive_time'));
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 
-	public function resetSearchTablesAction()
-	{
-		$this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
-		return $this->createSuccessResponse();
-	}
+    public function resetSearchTablesAction()
+    {
+        $this->em->getRepository('DeskPRO:Ticket')->fillSearchTable();
 
-	####################################################################################################################
-	# get-deleted-info
-	####################################################################################################################
+        return $this->createSuccessResponse();
+    }
 
-	public function getDeletedInfoAction()
-	{
-		$info = array(
-			'auto_purge_time' => (int)$this->settings->get('core_tickets.hard_delete_time'),
-		);
+    ####################################################################################################################
+    # get-deleted-info
+    ####################################################################################################################
 
-		return $this->createApiResponse(array(
-			'deleted_info' => $info
-		));
-	}
+    public function getDeletedInfoAction()
+    {
+        $info = array(
+            'auto_purge_time' => (int)$this->settings->get('core_tickets.hard_delete_time'),
+        );
 
-	public function purgeDeletedAction()
-	{
-		$purger = new TicketPurger($this->db);
-		$count = $purger->purgeDeletedAction();
+        return $this->createApiResponse(array(
+            'deleted_info' => $info
+        ));
+    }
 
-		return $this->createSuccessResponse(array(
-			'count' => $count
-		));
-	}
+    public function purgeDeletedAction()
+    {
+        $purger = new TicketPurger($this->db);
+        $count = $purger->purgeDeletedAction();
 
-	####################################################################################################################
-	# save-deleted-settings
-	####################################################################################################################
+        return $this->createSuccessResponse(array(
+            'count' => $count
+        ));
+    }
 
-	public function saveDeletedSettingsAction()
-	{
-		$this->settings->setSetting('core_tickets.hard_delete_time', $this->in->getUint('auto_purge_time'));
+    ####################################################################################################################
+    # save-deleted-settings
+    ####################################################################################################################
 
-		return $this->createSuccessResponse();
-	}
+    public function saveDeletedSettingsAction()
+    {
+        $this->settings->setSetting('core_tickets.hard_delete_time', $this->in->getUint('auto_purge_time'));
 
-	####################################################################################################################
-	# get-spam-info
-	####################################################################################################################
+        return $this->createSuccessResponse();
+    }
 
-	public function getSpamInfoAction()
-	{
-		$info = array(
-			'auto_purge_time' => (int)$this->settings->get('core_tickets.spam_delete_time'),
-		);
+    ####################################################################################################################
+    # get-spam-info
+    ####################################################################################################################
 
-		return $this->createApiResponse(array(
-			'spam_info' => $info
-		));
-	}
+    public function getSpamInfoAction()
+    {
+        $info = array(
+            'auto_purge_time' => (int)$this->settings->get('core_tickets.spam_delete_time'),
+        );
 
-	public function purgeSpamAction()
-	{
-		$purger = new TicketPurger($this->db);
-		$count = $purger->purgeSpamAction();
+        return $this->createApiResponse(array(
+            'spam_info' => $info
+        ));
+    }
 
-		return $this->createSuccessResponse(array(
-			'count' => $count
-		));
-	}
+    public function purgeSpamAction()
+    {
+        $purger = new TicketPurger($this->db);
+        $count = $purger->purgeSpamAction();
 
-	####################################################################################################################
-	# save-spam-settings
-	####################################################################################################################
+        return $this->createSuccessResponse(array(
+            'count' => $count
+        ));
+    }
 
-	public function saveSpamSettingsAction()
-	{
-		$this->settings->setSetting('core_tickets.spam_delete_time', $this->in->getUint('auto_purge_time'));
+    ####################################################################################################################
+    # save-spam-settings
+    ####################################################################################################################
 
-		return $this->createSuccessResponse();
-	}
+    public function saveSpamSettingsAction()
+    {
+        $this->settings->setSetting('core_tickets.spam_delete_time', $this->in->getUint('auto_purge_time'));
+
+        return $this->createSuccessResponse();
+    }
 }

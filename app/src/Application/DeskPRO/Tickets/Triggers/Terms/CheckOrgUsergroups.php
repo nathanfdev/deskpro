@@ -45,26 +45,28 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckOrgUsergroups extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('usergroup_ids');
-		$options->addCallbackCheckedOption('usergroup_ids', function($v) {
-			return (is_array($v) && !empty($v));
-		});
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('usergroup_ids');
+        $options->addCallbackCheckedOption('usergroup_ids', function ($v) {
+            return (is_array($v) && !empty($v));
+        });
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		return $this->isEntityMatch($ticket, $context, 'organization.usergroups[]', 'id', $options['usergroup_ids']);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+
+        return $this->isEntityMatch($ticket, $context, 'organization.usergroups[]', 'id', $options['usergroup_ids']);
+    }
 }

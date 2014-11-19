@@ -2,436 +2,436 @@
 
 {% block body %}
 
-	<style>
-		section {
-			margin-top: 20px;
-			margin-bottom: 70px;
-		}
+    <style>
+        section {
+            margin-top: 20px;
+            margin-bottom: 70px;
+        }
 
-		body {
-			background-color: #dcdcdc;
-		}
+        body {
+            background-color: #dcdcdc;
+        }
 
-		div.render {
-			background-color: white;
-		}
-	</style>
+        div.render {
+            background-color: white;
+        }
+    </style>
 
-	<h1>
-		DeskPRO Theme Tags
-	</h1>
-	<p>You'll want to setup a bunch of content in your DeskPRO database before viewing this to see all of the tags.</p>
-	<p>Load a small data fixtures file: php app/bin/portal-console doc:fix:lo --append
-		--fixtures=app/src/Application/PortalBundle/DataFixtures/ORM </p>
+    <h1>
+        DeskPRO Theme Tags
+    </h1>
+    <p>You'll want to setup a bunch of content in your DeskPRO database before viewing this to see all of the tags.</p>
+    <p>Load a small data fixtures file: php app/bin/portal-console doc:fix:lo --append
+        --fixtures=app/src/Application/PortalBundle/DataFixtures/ORM </p>
 
-	<ul>
-		<li><a href="#alerts">alerts</a></li>
-		<li><a href="#top_bar">top_bar</a></li>
-		<li><a href="#top_search">top_search</a></li>
-		<li><a href="#top_tabs">top_tabs</a></li>
-		<li><a href="#get_in_touch">get_in_touch</a></li>
+    <ul>
+        <li><a href="#alerts">alerts</a></li>
+        <li><a href="#top_bar">top_bar</a></li>
+        <li><a href="#top_search">top_search</a></li>
+        <li><a href="#top_tabs">top_tabs</a></li>
+        <li><a href="#get_in_touch">get_in_touch</a></li>
 
-		<li><a href="#kb_articles_forcat">kb_articles_forcat</a></li>
-		<li><a href="#kb_articles_small">kb_articles_small</a></li>
-		<li><a href="#kb_articles_xsmall">kb_articles_xsmall</a></li>
+        <li><a href="#kb_articles_forcat">kb_articles_forcat</a></li>
+        <li><a href="#kb_articles_small">kb_articles_small</a></li>
+        <li><a href="#kb_articles_xsmall">kb_articles_xsmall</a></li>
 
-		<li><a href="#kb_cats_home">kb_cats_home</a></li>
-		<li><a href="#kb_cats_summary">kb_cats_summary</a></li>
-		<li><a href="#kb_cats_small">kb_cats_small</a></li>
-		<li><a href="#kb_cats_expander">kb_cats_expander</a></li>
+        <li><a href="#kb_cats_home">kb_cats_home</a></li>
+        <li><a href="#kb_cats_summary">kb_cats_summary</a></li>
+        <li><a href="#kb_cats_small">kb_cats_small</a></li>
+        <li><a href="#kb_cats_expander">kb_cats_expander</a></li>
 
-		<li><a href="#news_list">news_list</a></li>
-		<li><a href="#news_list_small">news_list_small</a></li>
-		<li><a href="#news_cats_small">news_cats_small</a></li>
-		<li><a href="#news_cats_dropdown">news_cats_dropdown</a></li>
+        <li><a href="#news_list">news_list</a></li>
+        <li><a href="#news_list_small">news_list_small</a></li>
+        <li><a href="#news_cats_small">news_cats_small</a></li>
+        <li><a href="#news_cats_dropdown">news_cats_dropdown</a></li>
 
-		<li><a href="#downloads_list_small">downloads_list_small</a></li>
-		<li><a href="#download_cats_small">download_cats_small</a></li>
+        <li><a href="#downloads_list_small">downloads_list_small</a></li>
+        <li><a href="#downloads_cats_small">downloads_cats_small</a></li>
 
-		<li><a href="#feedback_list_small">feedback_list_small</a></li>
-	</ul>
+        <li><a href="#feedback_list_small">feedback_list_small</a></li>
+    </ul>
 
 
 
 
-	<section id="alerts">
-		<a name="alerts"></a>
+    <section id="alerts">
+        <a name="alerts"></a>
 
-		<h1>alerts()</h1>
+        <h1>alerts()</h1>
 
-		<p class="info">
-			Will display alerts, when necesary.
-		</p>
-		<dl class="info">
-			<dt>No arguments</dt>
-		</dl>
-		<div class="render">
-
-			{{ alerts() }}
-
-		</div>
-	</section>
-
-	<section id="top_bar">
-		<a name="top_bar"></a>
-
-		<h1>top_bar()</h1>
-
-		<p class="info">
-			Will render this themes "top bar"
-		</p>
-		<dl class="info">
-			<dt>No arguments</dt>
-		</dl>
-		<div class="render">
-
-			{{ top_bar() }}
-
-		</div>
-	</section>
+        <p class="info">
+            Will display alerts, when necesary.
+        </p>
+        <dl class="info">
+            <dt>No arguments</dt>
+        </dl>
+        <div class="render">
+
+            {{ alerts() }}
+
+        </div>
+    </section>
+
+    <section id="top_bar">
+        <a name="top_bar"></a>
+
+        <h1>page_top()</h1>
+
+        <p class="info">
+            Will render this themes "top bar"
+        </p>
+        <dl class="info">
+            <dt>No arguments</dt>
+        </dl>
+        <div class="render">
+
+            {{ page_top() }}
+
+        </div>
+    </section>
 
-	<section id="top_search">
-		<a name="top_search"></a>
-
-		<h1>top_search()</h1>
-
-		<p class="info">
-			Will render this theme's "top search bar"
-		</p>
-		<dl class="info">
-			<dt>No arguments</dt>
-		</dl>
-		<div class="render">
+    <section id="top_search">
+        <a name="top_search"></a>
+
+        <h1>page_search_box()</h1>
+
+        <p class="info">
+            Will render this theme's "top search bar"
+        </p>
+        <dl class="info">
+            <dt>No arguments</dt>
+        </dl>
+        <div class="render">
 
-			{{ top_search() }}
+            {{ page_search_box() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="top_tabs">
-		<a name="top_tabs"></a>
+    <section id="top_tabs">
+        <a name="top_tabs"></a>
 
-		<h1>top_tabs()</h1>
+        <h1>page_tabs()</h1>
 
-		<p class="info">
-			Will render "top tabs". These will auto activate the right tab based on request URI.
-		</p>
-		<dl class="info">
-			<dt>No arguments</dt>
-		</dl>
-		<div class="render">
+        <p class="info">
+            Will render "top tabs". These will auto activate the right tab based on request URI.
+        </p>
+        <dl class="info">
+            <dt>No arguments</dt>
+        </dl>
+        <div class="render">
 
-			{{ top_tabs() }}
+            {{ page_tabs() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="get_in_touch">
-		<a name="get_in_touch"></a>
+    <section id="get_in_touch">
+        <a name="get_in_touch"></a>
 
-		<h1>get_in_touch()</h1>
+        <h1>get_in_touch()</h1>
 
-		<p class="info">
-			Will render this theme's "get in touch" partial
-		</p>
-		<dl class="info">
-			<dt>No arguments</dt>
-		</dl>
-		<div class="render">
+        <p class="info">
+            Will render this theme's "get in touch" partial
+        </p>
+        <dl class="info">
+            <dt>No arguments</dt>
+        </dl>
+        <div class="render">
 
-			{{ get_in_touch() }}
+            {{ get_in_touch() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="kb_articles_forcat">
-		<a name="kb_articles_forcat"></a>
+    <section id="kb_articles_forcat">
+        <a name="kb_articles_forcat"></a>
 
-		<h1>kb_articles_forcat($category)</h1>
+        <h1>kb_articles_forcat($category)</h1>
 
-		<p class="info">
-			article list (Theme:Articles:list_forcat.html.twig)
-		</p>
-		{% set kb_articles_options %}
-		<dl class="info">
-			<dt>category</dt>
-			<dd>REQUIRED - the category to list articles for</dd>
-			<dt>count</dt>
-			<dd>number to show in list</dd>
-			<dt>labelled</dt>
-			<dd>a list of comma separated lable names (e.g. "important,tip,misc") - only articles tagged with at least
-				one of these labels will be included
-			</dd>
-			<dt>sort_by</dt>
-			<dd>a field to sort by. this can be any db field but is used in doctrine query language, so we need to
-				provide a list here. (E.g. "title" or "date_published")
-			</dd>
-			<dt>sort_direction</dt>
-			<dd>DESC for descending or ASC for ascending</dd>
-			<dt>sort</dt>
-			<dd>a shortcut for sorting rather than using both sort_ options - seperate by one space (e.g. "title ASC")
-			</dd>
-			<dt>include_subcategories</dt>
-			<dd>not yet implemented</dd>
-		</dl>
-		{% endset %}
-		<div class="render">
+        <p class="info">
+            article list (Theme:Articles:list_forcat.html.twig)
+        </p>
+        {% set kb_articles_options %}
+        <dl class="info">
+            <dt>category</dt>
+            <dd>REQUIRED - the category to list articles for</dd>
+            <dt>count</dt>
+            <dd>number to show in list</dd>
+            <dt>labelled</dt>
+            <dd>a list of comma separated lable names (e.g. "important,tip,misc") - only articles tagged with at least
+                one of these labels will be included
+            </dd>
+            <dt>sort_by</dt>
+            <dd>a field to sort by. this can be any db field but is used in doctrine query language, so we need to
+                provide a list here. (E.g. "title" or "date_published")
+            </dd>
+            <dt>sort_direction</dt>
+            <dd>DESC for descending or ASC for ascending</dd>
+            <dt>sort</dt>
+            <dd>a shortcut for sorting rather than using both sort_ options - seperate by one space (e.g. "title ASC")
+            </dd>
+            <dt>include_subcategories</dt>
+            <dd>not yet implemented</dd>
+        </dl>
+        {% endset %}
+        <div class="render">
 
-			{{ kb_articles_forcat({category:1}) }}
+            {{ kb_articles_forcat({category:1}) }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
 
 
-	<section id="kb_articles_small">
-		<a name="kb_articles_small"></a>
+    <section id="kb_articles_small">
+        <a name="kb_articles_small"></a>
 
-		<h1>kb_articles_small($category)</h1>
+        <h1>kb_articles_small($category)</h1>
 
-		<p class="info">
-			article list (Theme:Articles:list_small.html.twig)
-		</p>
-		{{ kb_articles_options }}
-		<div class="render">
+        <p class="info">
+            article list (Theme:Articles:list_small.html.twig)
+        </p>
+        {{ kb_articles_options }}
+        <div class="render">
 
-			{{ kb_articles_small({category:1}) }}
+            {{ kb_articles_small({category:1}) }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="kb_articles_xsmall">
-		<a name="kb_articles_xsmall"></a>
+    <section id="kb_articles_xsmall">
+        <a name="kb_articles_xsmall"></a>
 
-		<h1>kb_articles_small($category)</h1>
+        <h1>kb_articles_small($category)</h1>
 
-		<p class="info">
-			article list (Theme:Articles:list_xsmall.html.twig)
-		</p>
-		{{ kb_articles_options }}
-		<div class="render">
+        <p class="info">
+            article list (Theme:Articles:list_xsmall.html.twig)
+        </p>
+        {{ kb_articles_options }}
+        <div class="render">
 
-			{{ kb_articles_xsmall({category:1}) }}
+            {{ kb_articles_xsmall({category:1}) }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
 
 
-	<section id="kb_cats_home">
-		<a name="kb_cats_home"></a>
+    <section id="kb_cats_home">
+        <a name="kb_cats_home"></a>
 
-		<h1>kb_cats_home()</h1>
+        <h1>knowledgebase()</h1>
 
-		<p class="info">
-			article list (Theme:Articles:cats_home.html.twig)
-		</p>
-		{% set kb_cats_options %}
-		<dl class="info">
-			<dt>parent</dt>
-			<dd>a category ID - if you want the list to be for one speicifc category <strong>?</strong></dd>
-			<dt>articles</dt>
-			<dd>ARRAY - some options that you want to use in the "articles" tag (if one is rendered in the theme template it will pass these options)</dd>
-		</dl>
-		{% endset %}
-		<div class="render">
+        <p class="info">
+            article list (Theme:Articles:cats_home.html.twig)
+        </p>
+        {% set kb_cats_options %}
+        <dl class="info">
+            <dt>parent</dt>
+            <dd>a category ID - if you want the list to be for one speicifc category <strong>?</strong></dd>
+            <dt>articles</dt>
+            <dd>ARRAY - some options that you want to use in the "articles" tag (if one is rendered in the theme template it will pass these options)</dd>
+        </dl>
+        {% endset %}
+        <div class="render">
 
-			{{ kb_cats_home() }}
+            {{ knowledgebase() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
 
 
-	<section id="kb_cats_summary">
-		<a name="kb_cats_summary"></a>
+    <section id="kb_cats_summary">
+        <a name="kb_cats_summary"></a>
 
-		<h1>kb_cats_summary()</h1>
+        <h1>knowledgebase_compact()</h1>
 
-		<p class="info">
-			article list (Theme:Articles:cats_summary.html.twig)
-		</p>
-		{{ kb_cats_options }}
-		<div class="render">
+        <p class="info">
+            article list (Theme:Articles:cats_summary.html.twig)
+        </p>
+        {{ kb_cats_options }}
+        <div class="render">
 
-			{{ kb_cats_summary() }}
+            {{ knowledgebase_compact() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
 
 
 
-	<section id="kb_cats_small">
-		<a name="kb_cats_small"></a>
+    <section id="kb_cats_small">
+        <a name="kb_cats_small"></a>
 
-		<h1>kb_cats_small()</h1>
+        <h1>kb_cats_list()</h1>
 
-		<p class="info">
-			article list (Theme:Articles:cats_small.html.twig)
-		</p>
-		{{ kb_cats_options }}
-		<div class="render">
+        <p class="info">
+            article list (Theme:Articles:cats_small.html.twig)
+        </p>
+        {{ kb_cats_options }}
+        <div class="render">
 
-			{{ kb_cats_small() }}
+            {{ kb_cats_list() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
 
 
 
-	<section id="kb_cats_expander">
-		<a name="kb_cats_expander"></a>
+    <section id="kb_cats_expander">
+        <a name="kb_cats_expander"></a>
 
-		<h1>kb_cats_expander()</h1>
+        <h1>knowledgebase_list()</h1>
 
-		<p class="info">
-			article list (Theme:Articles:cats_expander.html.twig)
-		</p>
-		{{ kb_cats_options }}
-		<div class="render">
+        <p class="info">
+            article list (Theme:Articles:cats_expander.html.twig)
+        </p>
+        {{ kb_cats_options }}
+        <div class="render">
 
-			{{ kb_cats_expander() }}
+            {{ knowledgebase_list() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="news_list">
-		<a name="news_list"></a>
+    <section id="news_list">
+        <a name="news_list"></a>
 
-		<h1>news_list()</h1>
+        <h1>news_posts()</h1>
 
-		<p class="info">
-			news articles
-		</p>
-		<dl class="info">
-			<dt>count</dt>
-			<dd>number of latest news articles to show</dd>
-		</dl>
-		<div class="render">
+        <p class="info">
+            news articles
+        </p>
+        <dl class="info">
+            <dt>count</dt>
+            <dd>number of latest news articles to show</dd>
+        </dl>
+        <div class="render">
 
-			{{ news_list() }}
+            {{ news_posts() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="news_list_small">
-		<a name="news_list_small"></a>
+    <section id="news_list_small">
+        <a name="news_list_small"></a>
 
-		<h1>news_list_small()</h1>
+        <h1>news_posts_list()</h1>
 
-		<p class="info">
-			article list (Theme:News:list_small.html.twig)
-		</p>
-		<ul class="info">
-			<li>count - num to show, null for all</li>
-			<li>sort - NOT YET IMPLEMENTED</li>
-		</ul>
-		<div class="render">
+        <p class="info">
+            article list (Theme:News:list_small.html.twig)
+        </p>
+        <ul class="info">
+            <li>count - num to show, null for all</li>
+            <li>sort - NOT YET IMPLEMENTED</li>
+        </ul>
+        <div class="render">
 
-			{{ news_list_small() }}
+            {{ news_posts_list() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
 
-	<section id="news_cats_small">
-		<a name="news_cats_small"></a>
+    <section id="news_cats_small">
+        <a name="news_cats_small"></a>
 
-		<h1>news_cats_small()</h1>
+        <h1>news_posts_list()</h1>
 
-		<p class="info">
-			news categories plainly listed (Theme:News:cats_small.html.twig)
-		</p>
-		<ul class="info">
-			<li>parent - the parent category</li>
-			<li>sort - NOT YET IMPLEMENTED</li>
-		</ul>
-		<div class="render">
+        <p class="info">
+            news categories plainly listed (Theme:News:cats_small.html.twig)
+        </p>
+        <ul class="info">
+            <li>parent - the parent category</li>
+            <li>sort - NOT YET IMPLEMENTED</li>
+        </ul>
+        <div class="render">
 
-			{{ news_cats_small() }}
+            {{ news_list() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="news_cats_dropdown">
-		<a name="news_cats_dropdown"></a>
+    <section id="news_cats_dropdown">
+        <a name="news_cats_dropdown"></a>
 
-		<h1>news_cats_dropdown()</h1>
+        <h1>news_cats_dropdown()</h1>
 
-		<p class="info">
-			news categories listed in a dropdown that will change the page location on select (Theme:News:cats_dropdown.html.twig)
-		</p>
-		<ul class="info">
-			<li>parent - the parent category</li>
-			<li>sort - NOT YET IMPLEMENTED</li>
-		</ul>
-		<div class="render">
+        <p class="info">
+            news categories listed in a dropdown that will change the page location on select (Theme:News:cats_dropdown.html.twig)
+        </p>
+        <ul class="info">
+            <li>parent - the parent category</li>
+            <li>sort - NOT YET IMPLEMENTED</li>
+        </ul>
+        <div class="render">
 
-			{{ news_cats_dropdown() }}
+            {{ news_cats_dropdown() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="downloads_list_small">
-		<a name="downloads_list_small"></a>
+    <section id="downloads_list_small">
+        <a name="downloads_list_small"></a>
 
-		<h1>downloads_list_small()</h1>
+        <h1>files_list()</h1>
 
-		<p class="info">
-			downloads list (Theme:Downloads:list_small.html.twig)
-			<p>
-			The class will be used to make it differentiate between file types. For example a "something.pdf" file will be given the class "file-pdf", and the text ".pdf" in the element. There is a default if we don't know the file extension.
-			</p>
-		</p>
-		<ul class="info">
-			<li>count - num to show, null for all</li>
-			<li>sort - NOT YET IMPLEMENTED</li>
-		</ul>
-		<div class="render">
+        <p class="info">
+            downloads list (Theme:Downloads:list_small.html.twig)
+            <p>
+            The class will be used to make it differentiate between file types. For example a "something.pdf" file will be given the class "file-pdf", and the text ".pdf" in the element. There is a default if we don't know the file extension.
+            </p>
+        </p>
+        <ul class="info">
+            <li>count - num to show, null for all</li>
+            <li>sort - NOT YET IMPLEMENTED</li>
+        </ul>
+        <div class="render">
 
-			{{ downloads_list_small() }}
+            {{ files_list() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="download_cats_small">
-		<a name="download_cats_small"></a>
+    <section id="downloads_cats_small">
+        <a name="downloads_cats_small"></a>
 
-		<h1>download_cats_small()</h1>
+        <h1>download_cats_small()</h1>
 
-		<p class="info">
-			download categories plainly listed (Theme:Download:cats_small.html.twig)
-		</p>
-		<ul class="info">
-			<li>parent - the parent category</li>
-			<li>sort - NOT YET IMPLEMENTED</li>
-		</ul>
-		<div class="render">
+        <p class="info">
+            download categories plainly listed (Theme:Download:cats_small.html.twig)
+        </p>
+        <ul class="info">
+            <li>parent - the parent category</li>
+            <li>sort - NOT YET IMPLEMENTED</li>
+        </ul>
+        <div class="render">
 
-			{{ download_cats_small() }}
+            {{ downloads_cats_list() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
-	<section id="feedback_list_small">
-		<a name="feedback_list_small"></a>
+    <section id="feedback_list_small">
+        <a name="feedback_list_small"></a>
 
-		<h1>feedback_list_small()</h1>
+        <h1>feedback_list_small()</h1>
 
-		<p class="info">
-			feedback list (Theme:Feedback:list_small.html.twig)
-		</p>
-		<ul class="info">
-			<li>count - num to show, null for all</li>
-			<li>sort - NOT YET IMPLEMENTED</li>
-		</ul>
-		<div class="render">
+        <p class="info">
+            feedback list (Theme:Feedback:list_small.html.twig)
+        </p>
+        <ul class="info">
+            <li>count - num to show, null for all</li>
+            <li>sort - NOT YET IMPLEMENTED</li>
+        </ul>
+        <div class="render">
 
-			{{ feedback_list_small() }}
+            {{ feedback_list_small() }}
 
-		</div>
-	</section>
+        </div>
+    </section>
 
 {% endblock %}

@@ -46,396 +46,394 @@ use Orb\Util\Arrays;
  */
 class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Helper\ShortCallableInterface
 {
-	/** @var Entity\Person */
-	protected $person;
-	/** @var array|null */
-	protected $_access = null;
-	/** @var array|null */
-	protected $_agent_teams = null;
-	/** @var array|null */
-	protected $_agent_team_ids = null;
-	/** @var array */
-	protected $_snippets;
-	/** @var Entity\TicketMacro */
-	protected $_macros;
-
-	/** @var array|null */
-	protected $_dep_allowed_ids = null;
-	/** @var array|null */
-	protected $_dep_disallowed_ids = null;
-
-	public function __construct(Entity\Person $person)
-	{
-		$this->person = $person;
-
-		if (!$this->person['is_agent']) {
-			$this->person = null;
-			throw new \Exception('The agent helper is only applicable on agents');
-		}
-	}
-
-	public function _getThis()
-	{
-		return $this;
-	}
-
-	public function getShortCallableNames()
-	{
-		return array(
-			'getAgent' => '_getThis',
-			'agent' => '_getThis',
-
-			'teams' => 'getTeams',
-			'getTeams' => 'getTeams',
-
-			'team' => 'getTeam',
-			'getTeam' => 'getTeam',
-
-			'isSingleTeam' => 'isSingleTeam',
-			'getIsSingleTeam' => 'isSingleTeam',
-			'countTeams' => 'countTeams',
-			'getCountTeams' => 'countTeams',
-			'hasTeams' => 'hasTeams',
-			'getHasTeams' => 'hasTeams',
-
-			'getSignature' => 'getSignature',
-			'getSignatureHtml' => 'getSignatureHtml',
-			'getTweetSignature' => 'getTweetSignature'
-		);
-	}
-
-
-
-	/**
-	 * Get the permissions helper
-	 *
-	 * @return \Application\DeskPRO\People\Helpers\AgentPermissions
-	 */
-	public function getPermissions()
-	{
-		if ($this->_permissions !== null) return $this->_permissions;
-
-		$this->_permissions = new AgentPermissions($this->person);
-		return $this->_permissions;
-	}
-
-
-
-	/**
-	 * Get a collection of teams the user is part of
-	 *
-	 * @return \Doctrine\Common\Collections\ArrayCollection
-	 */
-	public function getTeams()
-	{
-		if ($this->_agent_teams !== null) return $this->_agent_teams;
-
-		try {
-			$this->_agent_teams = App::$container->getAgentData()->getTeamsForAgent($this->person);
-		} catch (\InvalidArgumentException $e) {
-			$this->_agent_teams = array();
-		}
-
-		return $this->_agent_teams;
-	}
-
-
-	/**
-	 * Get an array of team IDs the user is part of.
-	 *
-	 * @return array
-	 */
-	public function getTeamIds()
-	{
-		if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
-
-		$this->_agent_team_ids = array();
-		foreach ($this->getTeams() as $team) {
-			$this->_agent_team_ids[] = $team['id'];
-		}
-
-		return $this->_agent_team_ids;
-	}
-
-
-	/**
-	 * Count how many teams the user belongs to
-	 *
-	 * @return int
-	 */
-	public function countTeams()
-	{
-		return count($this->getTeams());
-	}
-
-
-	/**
-	 * Does the user belong to exactly 1 team?
-	 *
-	 * @return bool
-	 */
-	public function isSingleTeams()
-	{
-		if ($this->countTeams() == 1) {
-			return true;
-		}
-
-		return false;
-	}
-
-
-	/**
-	 * Does this user belong to at least one team?
-	 *
-	 * @return bool
-	 */
-	public function hasTeams()
-	{
-		return ($this->countTeams() > 0);
-	}
-
-
-	/**
-	 * Get the persons team. If a person has more than one team ID, then this
-	 * will return the first
-	 *
-	 * @return int
-	 */
-	public function getTeam()
-	{
-		$teams = $this->getTeams();
-		if (!$teams) {
-			return 0;
-		}
-
-		$t = array_shift($teams);
-		return $t;
-	}
-
-
-	/**
-	 * Check if the user is part of a specific team
-	 *
-	 * @param $team_id
-	 * @return bool
-	 */
-	public function isTeamMember($team_id)
-	{
-		$this->getTeams();
-		if (isset($this->_agent_teams[$team_id])) {
-			return true;
-		}
-
-		return false;
-	}
-
-
-	/**
-	 * Add the user to a team.
-	 *
-	 * @param \Application\DeskPRO\Entity\AgentTeam $team
-	 * @return void
-	 */
-	public function addToTeam(Entity\AgentTeam $team)
-	{
-		return $team->addPerson($this);
-	}
-
-
-
-	/**
-	 * Check if the user is allowed to use a particular department
-	 *
-	 * @param int|Department $dep
-	 * @return bool
-	 */
-	public function isDepartmentAllowed($dep)
-	{
-		if ($dep instanceof Entity\Department) {
-			$dep = $dep['id'];
-		}
-
-		return in_array($dep, $this->getAllowedDepartments());
-	}
-
-
-
-	/**
-	 * Get an array of departments the user isn't allowed to see
-	 *
-	 * @return array
-	 */
-	public function getDisallowedDepartmentIds()
-	{
-		if ($this->_dep_disallowed_ids !== null) return $this->_dep_disallowed_ids;
-
-		$all_ids = App::getDataService('Department')->getIds();
-		$allowed_ids = $this->getAllowedDepartments();
-
-		$disallowed_ids = array_diff($all_ids, $allowed_ids);
-
-		$this->_dep_disallowed_ids = $disallowed_ids;
-
-		return $this->_dep_disallowed_ids;
-	}
-
-
-
-	/**
-	 * Get an array of departments the user is allowed to see
-	 *
-	 * @return array
-	 */
-	public function getAllowedDepartmentIds()
-	{
-		if ($this->_dep_allowed_ids !== null) return $this->_dep_allowed_ids;
-
-		$this->_dep_allowed_ids = array();
-		foreach ($this->_access['departments'] as $dep) {
-			$this->_dep_allowed_ids[] = $dep['id'];
-		}
-
-		return $this->_dep_allowed_ids;
-	}
-
-	/**
-	 * Gets the agent's text signature
-	 *
-	 * @return string
-	 */
-	public function getSignature()
-	{
-		$sig = trim($this->person->getPref('agent.ticket_signature'));
-		if ($sig) {
-			return $sig;
-		}
-
-		$sig_html = $this->person->getPref('agent.ticket_signature_html');
-		if ($sig_html) {
-			return \Orb\Util\Strings::convertWysiwygHtmlToText($sig_html);
-		}
-
-		return '';
-	}
-
-	/**
-	 * Gets the agent's HTML signature
-	 *
-	 * @return string
-	 */
-	public function getSignatureHtml()
-	{
-		$sig_html = $this->person->getPref('agent.ticket_signature_html');
-		if (!$sig_html) {
-			$sig = $this->person->getPref('agent.ticket_signature');
-			if ($sig) {
-				$sig_html = '<p class="dp-signature-start">' . nl2br(htmlspecialchars(trim($sig))) . '</p>';
-			}
-		}
-
-		if ($sig_html) {
-			$fn = function($m) {
-				$url = App::getSetting('core.deskpro_url');
-				$url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[1], 'filename' => $m[2]), false), '/');
-
-				return sprintf('<img src="%s" title="%s" class="dp-signature-image" alt="%s" />',
-					$url, htmlspecialchars($m[2]), htmlspecialchars($m[0])
-				);
-			};
-
-			return preg_replace_callback('#\[attach:signature_image:(.*?):(.*?)\]#', $fn, $sig_html);
-		}
-
-		return '';
-	}
-
-	/**
-	 * @return array
-	 */
-	public function getGroupedSnippets($as_array = false)
-	{
-		if ($this->_snippets === null) {
-			$this->_snippets = App::getOrm()->getRepository('DeskPRO:TextSnippet')
-								  ->getSnippetsForAgent('tickets', $this->person);
-
-			$snippets_flat = array();
-			$cats_flat = array();
-			foreach ($this->_snippets as $group) {
-				$snippets_flat = array_merge($snippets_flat, $group['snippets']);
-				$cats_flat[] = $group['category'];
-			}
-			foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
-				App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $snippets_flat);
-				App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $cats_flat);
-			}
-		}
-
-		if ($as_array) {
-			$ret = array();
-			foreach ($this->_snippets as $group) {
-				$g_row = array('category' => array('id' => $group['category']->id, 'title' => $group['category']->title), 'snippets' => array());
-
-				foreach ($group['snippets'] as $s) {
-					$s_row = array('id' => $s->id, 'title' => $s->title);
-
-					if (empty($s_row['title'])) {
-						$s_langs = App::getContainer()->getObjectLangRepository()->getLoadedRecs($s);
-						if (!empty($s_langs['title'])) {
-							$s_row['title'] = Arrays::getFirstItem($s_langs['title'])->value;
-						}
-					}
-
-					if (!empty($s_row['title'])) {
-						$g_row['snippets'][] = $s_row;
-					}
-				}
-
-				if (!empty($g_row['snippets'])) {
-					usort($g_row['snippets'], function($a, $b) {
-						return strcmp($a['title'], $b['title']);
-					});
-					$ret[] = $g_row;
-				}
-			}
-
-			usort($ret, function($a, $b) {
-				return strcmp($a['category']['title'], $b['category']['title']);
-			});
-
-			return $ret;
-		}
-
-		return $this->_snippets;
-	}
-
-
-	/**
-	 * @return array
-	 */
-	public function getMacros()
-	{
-		if ($this->_macros !== null) {
-			return $this->_macros;
-		}
-
-		$this->_macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
-
-		return $this->_macros;
-	}
-
-
-	/**
-	 * Gets the agent's Tweet signature
-	 *
-	 * @return string
-	 */
-	public function getTweetSignature()
-	{
-		return (string)$this->person->getPref('agent.tweet_signature');
-	}
-
-	public function getPrimaryTeam()
-	{
-		return $this->person->getPrimaryTeam();
-	}
+    /** @var Entity\Person */
+    protected $person;
+    /** @var array|null */
+    protected $_access = null;
+    /** @var array|null */
+    protected $_agent_teams = null;
+    /** @var array|null */
+    protected $_agent_team_ids = null;
+    /** @var array */
+    protected $_snippets;
+    /** @var Entity\TicketMacro */
+    protected $_macros;
+
+    /** @var array|null */
+    protected $_dep_allowed_ids = null;
+    /** @var array|null */
+    protected $_dep_disallowed_ids = null;
+
+    public function __construct(Entity\Person $person)
+    {
+        $this->person = $person;
+
+        if (!$this->person['is_agent']) {
+            $this->person = null;
+            throw new \Exception('The agent helper is only applicable on agents');
+        }
+    }
+
+    public function _getThis()
+    {
+        return $this;
+    }
+
+    public function getShortCallableNames()
+    {
+        return array(
+            'getAgent' => '_getThis',
+            'agent' => '_getThis',
+
+            'teams' => 'getTeams',
+            'getTeams' => 'getTeams',
+
+            'team' => 'getTeam',
+            'getTeam' => 'getTeam',
+
+            'isSingleTeam' => 'isSingleTeam',
+            'getIsSingleTeam' => 'isSingleTeam',
+            'countTeams' => 'countTeams',
+            'getCountTeams' => 'countTeams',
+            'hasTeams' => 'hasTeams',
+            'getHasTeams' => 'hasTeams',
+
+            'getSignature' => 'getSignature',
+            'getSignatureHtml' => 'getSignatureHtml',
+            'getTweetSignature' => 'getTweetSignature'
+        );
+    }
+
+
+
+    /**
+     * Get the permissions helper
+     *
+     * @return \Application\DeskPRO\People\Helpers\AgentPermissions
+     */
+    public function getPermissions()
+    {
+        if ($this->_permissions !== null) return $this->_permissions;
+
+        $this->_permissions = new AgentPermissions($this->person);
+
+        return $this->_permissions;
+    }
+
+
+
+    /**
+     * Get a collection of teams the user is part of
+     *
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getTeams()
+    {
+        if ($this->_agent_teams !== null) return $this->_agent_teams;
+
+        try {
+            $this->_agent_teams = App::$container->getAgentData()->getTeamsForAgent($this->person);
+        } catch (\InvalidArgumentException $e) {
+            $this->_agent_teams = array();
+        }
+
+        return $this->_agent_teams;
+    }
+
+
+    /**
+     * Get an array of team IDs the user is part of.
+     *
+     * @return array
+     */
+    public function getTeamIds()
+    {
+        if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
+
+        $this->_agent_team_ids = array();
+        foreach ($this->getTeams() as $team) {
+            $this->_agent_team_ids[] = $team['id'];
+        }
+
+        return $this->_agent_team_ids;
+    }
+
+
+    /**
+     * Count how many teams the user belongs to
+     *
+     * @return int
+     */
+    public function countTeams()
+    {
+        return count($this->getTeams());
+    }
+
+
+    /**
+     * Does the user belong to exactly 1 team?
+     *
+     * @return bool
+     */
+    public function isSingleTeams()
+    {
+        if ($this->countTeams() == 1) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Does this user belong to at least one team?
+     *
+     * @return bool
+     */
+    public function hasTeams()
+    {
+        return ($this->countTeams() > 0);
+    }
+
+
+    /**
+     * Get the persons team. If a person has more than one team ID, then this
+     * will return the first
+     *
+     * @return int
+     */
+    public function getTeam()
+    {
+        $teams = $this->getTeams();
+        if (!$teams) {
+            return 0;
+        }
+
+        $t = array_shift($teams);
+
+        return $t;
+    }
+
+
+    /**
+     * Check if the user is part of a specific team
+     *
+     * @param $team_id
+     * @return bool
+     */
+    public function isTeamMember($team_id)
+    {
+        $this->getTeams();
+        if (isset($this->_agent_teams[$team_id])) {
+            return true;
+        }
+
+        return false;
+    }
+
+
+    /**
+     * Add the user to a team.
+     *
+     * @param  \Application\DeskPRO\Entity\AgentTeam $team
+     * @return void
+     */
+    public function addToTeam(Entity\AgentTeam $team)
+    {
+        return $team->addPerson($this);
+    }
+
+
+
+    /**
+     * Check if the user is allowed to use a particular department
+     *
+     * @param  int|Department $dep
+     * @return bool
+     */
+    public function isDepartmentAllowed($dep)
+    {
+        if ($dep instanceof Entity\Department) {
+            $dep = $dep['id'];
+        }
+
+        return in_array($dep, $this->getAllowedDepartments());
+    }
+
+
+
+    /**
+     * Get an array of departments the user isn't allowed to see
+     *
+     * @return array
+     */
+    public function getDisallowedDepartmentIds()
+    {
+        if ($this->_dep_disallowed_ids !== null) return $this->_dep_disallowed_ids;
+
+        $all_ids = App::getDataService('Department')->getIds();
+        $allowed_ids = $this->getAllowedDepartments();
+
+        $disallowed_ids = array_diff($all_ids, $allowed_ids);
+
+        $this->_dep_disallowed_ids = $disallowed_ids;
+
+        return $this->_dep_disallowed_ids;
+    }
+
+    /**
+     * Get an array of departments the user is allowed to see
+     *
+     * @return array
+     */
+    public function getAllowedDepartmentIds()
+    {
+        if ($this->_dep_allowed_ids !== null) return $this->_dep_allowed_ids;
+
+        $this->_dep_allowed_ids = array();
+        foreach ($this->_access['departments'] as $dep) {
+            $this->_dep_allowed_ids[] = $dep['id'];
+        }
+
+        return $this->_dep_allowed_ids;
+    }
+
+    /**
+     * Gets the agent's text signature
+     *
+     * @return string
+     */
+    public function getSignature()
+    {
+        $sig = trim($this->person->getPref('agent.ticket_signature'));
+        if ($sig) {
+            return $sig;
+        }
+
+        $sig_html = $this->person->getPref('agent.ticket_signature_html');
+        if ($sig_html) {
+            return \Orb\Util\Strings::convertWysiwygHtmlToText($sig_html);
+        }
+
+        return '';
+    }
+
+    /**
+     * Gets the agent's HTML signature
+     *
+     * @return string
+     */
+    public function getSignatureHtml()
+    {
+        $sig_html = $this->person->getPref('agent.ticket_signature_html');
+        if (!$sig_html) {
+            $sig = $this->person->getPref('agent.ticket_signature');
+            if ($sig) {
+                $sig_html = '<p class="dp-signature-start">' . nl2br(htmlspecialchars(trim($sig))) . '</p>';
+            }
+        }
+
+        if ($sig_html) {
+            $fn = function ($m) {
+                $url = App::getSetting('core.deskpro_url');
+                $url .= ltrim(App::getRouter()->getGenerator()->generatePath('serve_blob', array('blob_auth_id' => $m[1], 'filename' => $m[2]), false), '/');
+
+                return sprintf('<img src="%s" title="%s" class="dp-signature-image" alt="%s" />',
+                    $url, htmlspecialchars($m[2]), htmlspecialchars($m[0])
+                );
+            };
+
+            return preg_replace_callback('#\[attach:signature_image:(.*?):(.*?)\]#', $fn, $sig_html);
+        }
+
+        return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function getGroupedSnippets($as_array = false)
+    {
+        if ($this->_snippets === null) {
+            $this->_snippets = App::getOrm()->getRepository('DeskPRO:TextSnippet')
+                                  ->getSnippetsForAgent('tickets', $this->person);
+
+            $snippets_flat = array();
+            $cats_flat = array();
+            foreach ($this->_snippets as $group) {
+                $snippets_flat = array_merge($snippets_flat, $group['snippets']);
+                $cats_flat[] = $group['category'];
+            }
+            foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+                App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $snippets_flat);
+                App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $cats_flat);
+            }
+        }
+
+        if ($as_array) {
+            $ret = array();
+            foreach ($this->_snippets as $group) {
+                $g_row = array('category' => array('id' => $group['category']->id, 'title' => $group['category']->title), 'snippets' => array());
+
+                foreach ($group['snippets'] as $s) {
+                    $s_row = array('id' => $s->id, 'title' => $s->title);
+
+                    if (empty($s_row['title'])) {
+                        $s_langs = App::getContainer()->getObjectLangRepository()->getLoadedRecs($s);
+                        if (!empty($s_langs['title'])) {
+                            $s_row['title'] = Arrays::getFirstItem($s_langs['title'])->value;
+                        }
+                    }
+
+                    if (!empty($s_row['title'])) {
+                        $g_row['snippets'][] = $s_row;
+                    }
+                }
+
+                if (!empty($g_row['snippets'])) {
+                    usort($g_row['snippets'], function ($a, $b) {
+                        return strcmp($a['title'], $b['title']);
+                    });
+                    $ret[] = $g_row;
+                }
+            }
+
+            usort($ret, function ($a, $b) {
+                return strcmp($a['category']['title'], $b['category']['title']);
+            });
+
+            return $ret;
+        }
+
+        return $this->_snippets;
+    }
+
+    /**
+     * @return array
+     */
+    public function getMacros()
+    {
+        if ($this->_macros !== null) {
+            return $this->_macros;
+        }
+
+        $this->_macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+
+        return $this->_macros;
+    }
+
+    /**
+     * Gets the agent's Tweet signature
+     *
+     * @return string
+     */
+    public function getTweetSignature()
+    {
+        return (string)$this->person->getPref('agent.tweet_signature');
+    }
+
+    public function getPrimaryTeam()
+    {
+        return $this->person->getPrimaryTeam();
+    }
 }

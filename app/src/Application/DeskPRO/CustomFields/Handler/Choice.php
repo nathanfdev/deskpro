@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 /**
@@ -43,269 +42,271 @@ use Orb\Util\Arrays;
  */
 class Choice extends HandlerAbstract
 {
-	/** @var bool */
-	protected $multiple = false;
-	/** @var bool */
-	protected $expanded = false;
+    /** @var bool */
+    protected $multiple = false;
+    /** @var bool */
+    protected $expanded = false;
 
-	public function init()
-	{
-		$this->multiple = $this->field_def->getOption('multiple', false);
-		$this->expanded = $this->field_def->getOption('expanded', false);
-	}
+    public function init()
+    {
+        $this->multiple = $this->field_def->getOption('multiple', false);
+        $this->expanded = $this->field_def->getOption('expanded', false);
+    }
 
-	public function enableMultiple()
-	{
-		$this->multiple = true;
-	}
+    public function enableMultiple()
+    {
+        $this->multiple = true;
+    }
 
-	public function disableMultiple()
-	{
-		$this->multiple = false;
-	}
+    public function disableMultiple()
+    {
+        $this->multiple = false;
+    }
 
-	public function renderHtml($data = null, array $template_vars = array())
-	{
-		if ($data === null) return '';
+    public function renderHtml($data = null, array $template_vars = array())
+    {
+        if ($data === null) return '';
 
-		$data['value'] = $this->_getRenderableString($data);
-		return parent::renderHtml($data, $template_vars);
-	}
+        $data['value'] = $this->_getRenderableString($data);
 
-	public function renderText($data = null, array $template_vars = array())
-	{
-		if ($data === null) return '';
+        return parent::renderHtml($data, $template_vars);
+    }
 
-		$data['value'] = $this->_getRenderableString($data);
-		return  parent::renderText($data, $template_vars);
-	}
+    public function renderText($data = null, array $template_vars = array())
+    {
+        if ($data === null) return '';
 
-	protected function _getRenderableString($data)
-	{
-		$val = array();
+        $data['value'] = $this->_getRenderableString($data);
 
-		if ($this->field_def->field_manager) {
-			$children = $this->field_def->field_manager->getFieldChildren($this->field_def);
-		} else {
-			$children = $this->field_def['children'];
-		}
+        return  parent::renderText($data, $template_vars);
+    }
 
-		// Index array
-		$children = \Orb\Util\Arrays::keyFromData($children, 'id');
+    protected function _getRenderableString($data)
+    {
+        $val = array();
 
-		foreach ($children as $child) {
-			$id = $child['id'];
-			if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
-				$parent_title = '';
-				if ($child->getOption('parent_id')) {
-					$parent_title = $children[$child->getOption('parent_id')]->getTitle() . ' > ';
-				}
-				$val[] = $parent_title . $child['title'];
-			}
-		}
+        if ($this->field_def->field_manager) {
+            $children = $this->field_def->field_manager->getFieldChildren($this->field_def);
+        } else {
+            $children = $this->field_def['children'];
+        }
 
-		$val = implode(', ', $val);
+        // Index array
+        $children = \Orb\Util\Arrays::keyFromData($children, 'id');
 
-		return $val;
-	}
+        foreach ($children as $child) {
+            $id = $child['id'];
+            if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
+                $parent_title = '';
+                if ($child->getOption('parent_id')) {
+                    $parent_title = $children[$child->getOption('parent_id')]->getTitle() . ' > ';
+                }
+                $val[] = $parent_title . $child['title'];
+            }
+        }
 
-	public function getFormField($data = null)
-	{
-		$options = array();
+        $val = implode(', ', $val);
 
-		$selected_options = array();
+        return $val;
+    }
 
-		$children = $this->getFieldChildren();
+    public function getFormField($data = null)
+    {
+        $options = array();
 
-		// Add options
-		$has_children = array();
-		foreach ($children as $child) {
-			if ($child->getOption('parent_id')) {
-				$has_children[$child->getOption('parent_id')] = true;
-			}
-		}
+        $selected_options = array();
 
-		foreach ($children as $child) {
-			if (isset($has_children[$child->getId()])) {
-				if (!($this->multiple && $this->expanded)) {
-					$options[$child->getTitle()] = array();
-				}
-			} elseif ($child->getOption('parent_id')) {
-				if (!($this->multiple || $this->expanded)) {
-					$title = $children[$child->getOption('parent_id')]->getTitle();
-					if (!isset($options[$title])) {
-						$options[$title] = array();
-					}
-					$options[$title][$child->getId()] = $child->getTitle();
-				} else {
-					$title = $children[$child->getOption('parent_id')]->getTitle();
-					$options[$child->getId()] = $title . ' > ' . $child->getTitle();
-				}
-			} else {
-				$options[$child->getId()] = $child->getTitle();
-			}
-		}
+        $children = $this->getFieldChildren();
 
-		foreach ($children as $child) {
-			$id = $child['id'];
-			if (!$child['handler_class']) {
-				if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
-					$selected_options[] = $id;
-				}
-			}
-		}
+        // Add options
+        $has_children = array();
+        foreach ($children as $child) {
+            if ($child->getOption('parent_id')) {
+                $has_children[$child->getOption('parent_id')] = true;
+            }
+        }
 
-		$setData = $selected_options;
-		if (!$this->multiple && is_array($setData)) {
-			$setData = array_pop($setData);
-		}
+        foreach ($children as $child) {
+            if (isset($has_children[$child->getId()])) {
+                if (!($this->multiple && $this->expanded)) {
+                    $options[$child->getTitle()] = array();
+                }
+            } elseif ($child->getOption('parent_id')) {
+                if (!($this->multiple || $this->expanded)) {
+                    $title = $children[$child->getOption('parent_id')]->getTitle();
+                    if (!isset($options[$title])) {
+                        $options[$title] = array();
+                    }
+                    $options[$title][$child->getId()] = $child->getTitle();
+                } else {
+                    $title = $children[$child->getOption('parent_id')]->getTitle();
+                    $options[$child->getId()] = $title . ' > ' . $child->getTitle();
+                }
+            } else {
+                $options[$child->getId()] = $child->getTitle();
+            }
+        }
 
-		$field_opts = array(
-			'choices' => $options,
-			'required' => false,
-		);
-		if ($this->multiple) {
-			$field_opts['multiple'] = true;
-		}
-		if ($this->expanded) {
-			$field_opts['expanded'] = true;
-		}
+        foreach ($children as $child) {
+            $id = $child['id'];
+            if (!$child['handler_class']) {
+                if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
+                    $selected_options[] = $id;
+                }
+            }
+        }
 
-		$is_radio = false;
-		if ($this->expanded && !$this->multiple) {
-			$is_radio = true;
-		}
-		$is_check = false;
-		if ($this->expanded && $this->multiple) {
-			$is_check = true;
-		}
+        $setData = $selected_options;
+        if (!$this->multiple && is_array($setData)) {
+            $setData = array_pop($setData);
+        }
 
-		$req_opt = false;
-		if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-			$req_opt = $this->field_def->getOption('required');
-		} else if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
-			$req_opt = $this->field_def->getOption('agent_required');
-		}
-		if ($is_radio || $is_check) {
-			$field_opts['empty_value'] = false;
-		} else {
-			$field_opts['empty_value'] = '';
-		}
+        $field_opts = array(
+            'choices' => $options,
+            'required' => false,
+        );
+        if ($this->multiple) {
+            $field_opts['multiple'] = true;
+        }
+        if ($this->expanded) {
+            $field_opts['expanded'] = true;
+        }
 
-		$field_choice = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', null, $field_opts);
-		if ($setData) {
-			$field_choice->setData($setData);
-		}
+        $is_radio = false;
+        if ($this->expanded && !$this->multiple) {
+            $is_radio = true;
+        }
+        $is_check = false;
+        if ($this->expanded && $this->multiple) {
+            $is_check = true;
+        }
 
-		return $field_choice;
-	}
+        $req_opt = false;
+        if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
+            $req_opt = $this->field_def->getOption('required');
+        } elseif (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
+            $req_opt = $this->field_def->getOption('agent_required');
+        }
+        if ($is_radio || $is_check) {
+            $field_opts['empty_value'] = false;
+        } else {
+            $field_opts['empty_value'] = '';
+        }
 
-	public function getDataFromForm(array $form_data)
-	{
-		$name = $this->getFormFieldName();
+        $field_choice = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'choice', null, $field_opts);
+        if ($setData) {
+            $field_choice->setData($setData);
+        }
 
-		$value = null;
-		if (!empty($form_data[$name])) {
-			$value = $form_data[$name];
-		}
+        return $field_choice;
+    }
 
-		if ($value) {
-			if (is_array($value)) {
-				// Multiple selections in the form of field_1[] = childid
-				$ret = array();
-				foreach ($value as $k) {
-					$ret[] = array($k, 'value', 1);
-				}
-			} else {
-				// Single selections in the form of field_1 = childid
-				$ret = array(
-					array($value, 'value', 1)
-				);
-			}
+    public function getDataFromForm(array $form_data)
+    {
+        $name = $this->getFormFieldName();
 
-			return $ret;
-		}
+        $value = null;
+        if (!empty($form_data[$name])) {
+            $value = $form_data[$name];
+        }
 
-		return array();
-	}
+        if ($value) {
+            if (is_array($value)) {
+                // Multiple selections in the form of field_1[] = childid
+                $ret = array();
+                foreach ($value as $k) {
+                    $ret[] = array($k, 'value', 1);
+                }
+            } else {
+                // Single selections in the form of field_1 = childid
+                $ret = array(
+                    array($value, 'value', 1)
+                );
+            }
 
-	public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
-	{
-		$data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : array();
+            return $ret;
+        }
 
-		// Single-selections dont come in as arrays,
-		// but we treat them the same so need this casting
-		if (!is_array($data)) {
-			$data = array($data);
-		}
+        return array();
+    }
 
-		$data = Arrays::removeFalsey($data);
+    public function validateFormData(array $form_data, $context = self::CONTEXT_USER, $context_data = null)
+    {
+        $data = isset($form_data[$this->getFormFieldName()]) ? $form_data[$this->getFormFieldName()] : array();
 
-		#------------------------------
-		# Validate selections
-		#------------------------------
+        // Single-selections dont come in as arrays,
+        // but we treat them the same so need this casting
+        if (!is_array($data)) {
+            $data = array($data);
+        }
 
-		$children = $this->getFieldChildren();
-		$parent_option_ids = array();
+        $data = Arrays::removeFalsey($data);
 
-		foreach ($children as $c) {
-			if ($pid = $c->getOption('parent_id')) {
-				$parent_option_ids[$pid] = $pid;
-			}
-		}
+        #------------------------------
+        # Validate selections
+        #------------------------------
 
-		foreach ($data as $id) {
-			if (!is_numeric($id) || !isset($children[$id]) || isset($parent_option_ids[$id])) {
-				return $this->makeErrorArray(array('invalid_choice'));
-			}
-		}
+        $children = $this->getFieldChildren();
+        $parent_option_ids = array();
 
-		#------------------------------
-		# Validate options
-		#------------------------------
+        foreach ($children as $c) {
+            if ($pid = $c->getOption('parent_id')) {
+                $parent_option_ids[$pid] = $pid;
+            }
+        }
 
-		$opt_prefix = '';
-		if ($context == self::CONTEXT_AGENT) {
-			$opt_prefix = 'agent_';
-		}
+        foreach ($data as $id) {
+            if (!is_numeric($id) || !isset($children[$id]) || isset($parent_option_ids[$id])) {
+                return $this->makeErrorArray(array('invalid_choice'));
+            }
+        }
 
-		$options = array();
-		foreach (array('required', 'min_length', 'max_length') as $k) {
-			$options[$k] = $this->field_def->getOption($opt_prefix . $k);
-		}
+        #------------------------------
+        # Validate options
+        #------------------------------
 
-		// Without required there are no requirements
-		if (!$options['required']) {
-			return array();
-		}
+        $opt_prefix = '';
+        if ($context == self::CONTEXT_AGENT) {
+            $opt_prefix = 'agent_';
+        }
 
-		if ($options['min_length'] && count($data) < $options['min_length']) {
-			if ($options['min_length'] == 1) {
-				return $this->makeErrorArray(array('required'));
-			} else {
-				return $this->makeErrorArray(array('min_length'));
-			}
-		}
+        $options = array();
+        foreach (array('required', 'min_length', 'max_length') as $k) {
+            $options[$k] = $this->field_def->getOption($opt_prefix . $k);
+        }
 
-		if ($options['max_length'] && count($data) > $options['max_length']) {
-			return $this->makeErrorArray(array('max_length'));
-		}
+        // Without required there are no requirements
+        if (!$options['required']) {
+            return array();
+        }
 
-		return array();
-	}
+        if ($options['min_length'] && count($data) < $options['min_length']) {
+            if ($options['min_length'] == 1) {
+                return $this->makeErrorArray(array('required'));
+            } else {
+                return $this->makeErrorArray(array('min_length'));
+            }
+        }
 
-	public function getSearchCapabilities()
-	{
-		return array('is', 'not');
-	}
+        if ($options['max_length'] && count($data) > $options['max_length']) {
+            return $this->makeErrorArray(array('max_length'));
+        }
 
-	public function getFilterCapabilities()
-	{
-		return array('is', 'not');
-	}
+        return array();
+    }
 
-	public function getSearchType()
-	{
-		return 'id';
-	}
+    public function getSearchCapabilities()
+    {
+        return array('is', 'not');
+    }
+
+    public function getFilterCapabilities()
+    {
+        return array('is', 'not');
+    }
+
+    public function getSearchType()
+    {
+        return 'id';
+    }
 }

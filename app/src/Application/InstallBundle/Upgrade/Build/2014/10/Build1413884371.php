@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1413884371 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Upgrade News Entity");
-		$this->execMutateSql("ALTER TABLE news ADD date_end DATETIME DEFAULT NULL, ADD end_action VARCHAR(10) DEFAULT NULL;");
-	}
+    public function run()
+    {
+        $this->out("Upgrade News Entity");
+        $this->execMutateSql("ALTER TABLE news ADD date_end DATETIME DEFAULT NULL, ADD end_action VARCHAR(10) DEFAULT NULL;");
+    }
 }

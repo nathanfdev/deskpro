@@ -40,121 +40,121 @@ use Application\DeskPRO\People\PersonContextInterface;
 
 class FeedbackModerate implements PersonContextInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Mail\Mailer
-	 */
-	protected $mailer;
+    /**
+     * @var \Application\DeskPRO\Mail\Mailer
+     */
+    protected $mailer;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\Translate\Translate
-	 */
-	protected $translator;
+    /**
+     * @var \Application\DeskPRO\Translate\Translate
+     */
+    protected $translator;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person_context;
 
-	/**
-	 * @param DeskproContainer $container
-	 * @param Person $person
-	 */
-	public function __construct(DeskproContainer $container, Person $person)
-	{
-		$this->mailer      = $container->getMailer();
-		$this->em          = $container->getEm();
-		$this->translator  = $container->getTranslator();
+    /**
+     * @param DeskproContainer $container
+     * @param Person           $person
+     */
+    public function __construct(DeskproContainer $container, Person $person)
+    {
+        $this->mailer      = $container->getMailer();
+        $this->em          = $container->getEm();
+        $this->translator  = $container->getTranslator();
 
-		$this->setPersonContext($person);
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 */
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
+        $this->setPersonContext($person);
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Feedback $feedback
-	 */
-	public function approveFeedback(Feedback $feedback)
-	{
-		$feedback->status = 'new';
-
-		$this->em->getConnection()->beginTransaction();
-		try {
-			$this->em->persist($feedback);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
-
-		$agent  = $this->person_context;
-		$mailer = $this->mailer;
-
-		$this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function() use ($mailer, $feedback, $agent) {
-			$vars = array(
-				'feedback' => $feedback,
-				'agent' => $agent
-			);
-
-			$message = $mailer->createMessage();
-			$message->setToPerson($feedback->person);
-			$message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
-			$message->enableQueueHint();
-
-			$mailer->send($message);
-		});
-	}
+    /**
+     * @param \Application\DeskPRO\Entity\Person $person
+     */
+    public function setPersonContext(Person $person)
+    {
+        $this->person_context = $person;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Feedback $feedback
-	 * @param string $reason
-	 */
-	public function disapproveFeedback(Feedback $feedback, $reason = '')
-	{
-		if (!$reason) {
-			$reason = null;
-		}
+    /**
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     */
+    public function approveFeedback(Feedback $feedback)
+    {
+        $feedback->status = 'new';
 
-		$this->em->getConnection()->beginTransaction();
-		try {
-			$this->em->remove($feedback);
-			$this->em->flush();
-			$this->em->getConnection()->commit();
-		} catch (\Exception $e) {
-			$this->em->getConnection()->rollback();
-			throw $e;
-		}
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->persist($feedback);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
 
-		$agent  = $this->person_context;
-		$mailer = $this->mailer;
+        $agent  = $this->person_context;
+        $mailer = $this->mailer;
 
-		$this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function() use ($mailer, $feedback, $agent, $reason) {
-			$vars = array(
-				'feedback' => $feedback,
-				'agent'    => $agent,
-				'reason'   => $reason,
-			);
+        $this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function () use ($mailer, $feedback, $agent) {
+            $vars = array(
+                'feedback' => $feedback,
+                'agent' => $agent
+            );
 
-			$message = $mailer->createMessage();
-			$message->setToPerson($feedback->person);
-			$message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
-			$message->enableQueueHint();
+            $message = $mailer->createMessage();
+            $message->setToPerson($feedback->person);
+            $message->setTemplate('DeskPRO:emails_user:feedback-approved.html.twig', $vars);
+            $message->enableQueueHint();
 
-			$mailer->send($message);
-		});
-	}
+            $mailer->send($message);
+        });
+    }
+
+
+    /**
+     * @param \Application\DeskPRO\Entity\Feedback $feedback
+     * @param string                               $reason
+     */
+    public function disapproveFeedback(Feedback $feedback, $reason = '')
+    {
+        if (!$reason) {
+            $reason = null;
+        }
+
+        $this->em->getConnection()->beginTransaction();
+        try {
+            $this->em->remove($feedback);
+            $this->em->flush();
+            $this->em->getConnection()->commit();
+        } catch (\Exception $e) {
+            $this->em->getConnection()->rollback();
+            throw $e;
+        }
+
+        $agent  = $this->person_context;
+        $mailer = $this->mailer;
+
+        $this->translator->setTemporaryLanguage($feedback->person->getLanguage(), function () use ($mailer, $feedback, $agent, $reason) {
+            $vars = array(
+                'feedback' => $feedback,
+                'agent'    => $agent,
+                'reason'   => $reason,
+            );
+
+            $message = $mailer->createMessage();
+            $message->setToPerson($feedback->person);
+            $message->setTemplate('DeskPRO:emails_user:feedback-disapproved.html.twig', $vars);
+            $message->enableQueueHint();
+
+            $mailer->send($message);
+        });
+    }
 }

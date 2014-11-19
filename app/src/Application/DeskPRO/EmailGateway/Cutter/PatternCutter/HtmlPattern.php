@@ -35,90 +35,90 @@ namespace Application\DeskPRO\EmailGateway\Cutter\PatternCutter;
 
 class HtmlPattern
 {
-	/**
-	 * @var string
-	 */
-	protected $pattern;
+    /**
+     * @var string
+     */
+    protected $pattern;
 
-	/**
-	 * @var array
-	 */
-	protected $tokens;
+    /**
+     * @var array
+     */
+    protected $tokens;
 
-	/**
-	 * Example pattern: div p ?a b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p /div
-	 *
-	 * @param $pattern
-	 */
-	public function __construct($pattern)
-	{
-		$this->pattern = $pattern;
-	}
-
-
-	/**
-	 * @return string
-	 */
-	public function getPattern()
-	{
-		return $this->pattern;
-	}
+    /**
+     * Example pattern: div p ?a b span #from:#i /span /b span #.*# br /br b #sent:#i /b #.*# br /br b #to:#i /b #.*# br /br /span /p /div
+     *
+     * @param $pattern
+     */
+    public function __construct($pattern)
+    {
+        $this->pattern = $pattern;
+    }
 
 
-	/**
-	 * Get tokens for the pattern
-	 *
-	 * @return array
-	 */
-	public function getTokens()
-	{
-		if ($this->tokens !== null) {
-			return $this->tokens;
-		}
+    /**
+     * @return string
+     */
+    public function getPattern()
+    {
+        return $this->pattern;
+    }
 
-		$pattern = " {$this->pattern} ";
-		$pattern = str_replace('\\#', '__dp_esc_hash__', $pattern);
 
-		$segments = preg_split('/ (#(?:.*?)#(?:[imsxADUu]*)) /', $pattern, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
+    /**
+     * Get tokens for the pattern
+     *
+     * @return array
+     */
+    public function getTokens()
+    {
+        if ($this->tokens !== null) {
+            return $this->tokens;
+        }
 
-		$depth = 0;
-		foreach ($segments as $segment) {
+        $pattern = " {$this->pattern} ";
+        $pattern = str_replace('\\#', '__dp_esc_hash__', $pattern);
 
-			$segment = str_replace('__dp_esc_hash__', '\\#', $segment);
-			$segment = trim($segment);
+        $segments = preg_split('/ (#(?:.*?)#(?:[imsxADUu]*)) /', $pattern, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
-			// Match token is a regex string
-			if ($segment[0] == '#') {
-				$this->tokens[] = array('match', trim($segment));
+        $depth = 0;
+        foreach ($segments as $segment) {
 
-			// Tag token
-			} else {
+            $segment = str_replace('__dp_esc_hash__', '\\#', $segment);
+            $segment = trim($segment);
 
-				// Space on each side for easy anchoring
-				$segment = " $segment ";
+            // Match token is a regex string
+            if ($segment[0] == '#') {
+                $this->tokens[] = array('match', trim($segment));
 
-				// Split up tags into groups of tags, optional tags and closing tags
-				$tag_segments = preg_split('/ (\??\\/?(?:[a-zA-Z:]+)) /', $segment, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
+            // Tag token
+            } else {
 
-				foreach ($tag_segments as $tag) {
-					$tag = trim($tag);
-					if (!$tag) {
-						continue;
-					}
+                // Space on each side for easy anchoring
+                $segment = " $segment ";
 
-					// Closing tag: This just means :parent for us,
-					// its just telling the matcher to go up the tree again
-					if ($tag[0] == '/') {
-						$this->tokens[] = array('nav', ':close', $depth--);
+                // Split up tags into groups of tags, optional tags and closing tags
+                $tag_segments = preg_split('/ (\??\\/?(?:[a-zA-Z:]+)) /', $segment, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
-					// Normal tag, add it to the current tag bunch
-					} else {
-						$this->tokens[] = array('nav', $tag, $depth++);
-					}
-				}
-			}
-		}
+                foreach ($tag_segments as $tag) {
+                    $tag = trim($tag);
+                    if (!$tag) {
+                        continue;
+                    }
 
-		return $this->tokens;
-	}
+                    // Closing tag: This just means :parent for us,
+                    // its just telling the matcher to go up the tree again
+                    if ($tag[0] == '/') {
+                        $this->tokens[] = array('nav', ':close', $depth--);
+
+                    // Normal tag, add it to the current tag bunch
+                    } else {
+                        $this->tokens[] = array('nav', $tag, $depth++);
+                    }
+                }
+            }
+        }
+
+        return $this->tokens;
+    }
 }

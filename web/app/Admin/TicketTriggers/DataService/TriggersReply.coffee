@@ -1,10 +1,10 @@
 define [
-	'Admin/TicketTriggers/DataService/BaseTriggers'
+  'Admin/TicketTriggers/DataService/BaseTriggers'
 ], (
-	BaseTriggers,
+  BaseTriggers,
 )  ->
-	class Admin_TicketTriggers_DataService_TriggersReply extends BaseTriggers
-		@$inject = ['Api', '$q']
+  class Admin_TicketTriggers_DataService_TriggersReply extends BaseTriggers
+    @$inject = ['Api', '$q']
 
-		init: ->
-			@type = 'newreply'
+    init: ->
+      @type = 'newreply'

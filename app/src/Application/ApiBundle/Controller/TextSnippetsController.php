@@ -39,279 +39,280 @@ use Orb\Util\Strings;
 
 class TextSnippetsController extends AbstractController
 {
-	####################################################################################################################
-	# filter-snippets
-	####################################################################################################################
+    ####################################################################################################################
+    # filter-snippets
+    ####################################################################################################################
 
-	public function filterSnippetsAction($typename)
-	{
-		$category_id   = $this->in->getUint('category_id') ?: null;
-		$filter_string = $this->in->getString('filter_string');
-		$language_id   = $this->in->getUint('language_id');
+    public function filterSnippetsAction($typename)
+    {
+        $category_id   = $this->in->getUint('category_id') ?: null;
+        $filter_string = $this->in->getString('filter_string');
+        $language_id   = $this->in->getUint('language_id');
 
-		$lang_repos = $this->container->getObjectLangRepository();
+        $lang_repos = $this->container->getObjectLangRepository();
 
-		$snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent($typename, $this->person, 1, 500, $category_id);
-		foreach ($this->container->getLanguageData()->getAll() as $lang) {
-			$lang_repos->preloadObjectCollection($lang, $snippets);
-		}
+        $snippets = $this->em->getRepository('DeskPRO:TextSnippet')->getAllSnippetsForAgent($typename, $this->person, 1, 500, $category_id);
+        foreach ($this->container->getLanguageData()->getAll() as $lang) {
+            $lang_repos->preloadObjectCollection($lang, $snippets);
+        }
 
-		if ($filter_string || $language_id) {
-			$snippets_all = $snippets;
-			$snippets = array();
+        if ($filter_string || $language_id) {
+            $snippets_all = $snippets;
+            $snippets = array();
 
-			$filter_string = Strings::utf8_strtolower($filter_string);
+            $filter_string = Strings::utf8_strtolower($filter_string);
 
 
-			foreach ($snippets_all as $snippet) {
-				$match_lang   = false;
-				$match_filter = false;
+            foreach ($snippets_all as $snippet) {
+                $match_lang   = false;
+                $match_filter = false;
 
-				if ($language_id) {
-					foreach ($this->container->getLanguageData()->getAll() as $lang) {
-						if ($lang->getId() == $language_id) {
-							if ($snippet->getObjectTranslatable()->getObjectProp('title', $lang)) {
-								$match_lang = true;
-							}
-							break;
-						}
-					}
-				} else {
-					$match_lang = true;
-				}
+                if ($language_id) {
+                    foreach ($this->container->getLanguageData()->getAll() as $lang) {
+                        if ($lang->getId() == $language_id) {
+                            if ($snippet->getObjectTranslatable()->getObjectProp('title', $lang)) {
+                                $match_lang = true;
+                            }
+                            break;
+                        }
+                    }
+                } else {
+                    $match_lang = true;
+                }
 
-				if ($filter_string) {
-					foreach ($this->container->getLanguageData()->getAll() as $lang) {
-						$test = $snippet->getObjectTranslatable()->getObjectProp('title', $lang);
-						$test = Strings::utf8_strtolower($test);
-						if (strpos($test, $filter_string) !== false) {
-							$match_filter = true;
-							break;
-						}
-					}
+                if ($filter_string) {
+                    foreach ($this->container->getLanguageData()->getAll() as $lang) {
+                        $test = $snippet->getObjectTranslatable()->getObjectProp('title', $lang);
+                        $test = Strings::utf8_strtolower($test);
+                        if (strpos($test, $filter_string) !== false) {
+                            $match_filter = true;
+                            break;
+                        }
+                    }
 
-					if (!$match_filter) {
-						foreach ($this->container->getLanguageData()->getAll() as $lang) {
-							$test = $snippet->getObjectTranslatable()->getObjectProp('snippet', $lang);
-							$test = Strings::utf8_strtolower($test);
-							if (strpos($test, $filter_string) !== false) {
-								$match_filter = true;
-								break;
-							}
-						}
-					}
-				} else {
-					$match_filter = true;
-				}
+                    if (!$match_filter) {
+                        foreach ($this->container->getLanguageData()->getAll() as $lang) {
+                            $test = $snippet->getObjectTranslatable()->getObjectProp('snippet', $lang);
+                            $test = Strings::utf8_strtolower($test);
+                            if (strpos($test, $filter_string) !== false) {
+                                $match_filter = true;
+                                break;
+                            }
+                        }
+                    }
+                } else {
+                    $match_filter = true;
+                }
 
-				if ($match_lang && $match_filter) {
-					$snippets[] = $snippet;
-				}
-			}
-		}
+                if ($match_lang && $match_filter) {
+                    $snippets[] = $snippet;
+                }
+            }
+        }
 
-		$data = array('snippets' => array());
-		foreach ($snippets as $snippet) {
-			$data['snippets'][] = $snippet->toApiData();
-		}
+        $data = array('snippets' => array());
+        foreach ($snippets as $snippet) {
+            $data['snippets'][] = $snippet->toApiData();
+        }
 
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse($data);
+    }
 
-	####################################################################################################################
-	# get-snippet
-	####################################################################################################################
+    ####################################################################################################################
+    # get-snippet
+    ####################################################################################################################
 
-	public function getSnippetAction($typename, $id)
-	{
-		$snippet = $this->em->find('DeskPRO:TextSnippet', $id);
-		if (!$snippet) {
-			throw $this->createNotFoundException();
-		}
+    public function getSnippetAction($typename, $id)
+    {
+        $snippet = $this->em->find('DeskPRO:TextSnippet', $id);
+        if (!$snippet) {
+            throw $this->createNotFoundException();
+        }
 
-		foreach ($this->container->getLanguageData()->getAll() as $lang) {
-			$this->container->getObjectLangRepository()->preloadObject($lang, $snippet);
-		}
+        foreach ($this->container->getLanguageData()->getAll() as $lang) {
+            $this->container->getObjectLangRepository()->preloadObject($lang, $snippet);
+        }
 
-		$data = array('snippet' => $snippet->toApiData());
-		return $this->createApiResponse($data);
-	}
+        $data = array('snippet' => $snippet->toApiData());
 
-	####################################################################################################################
-	# save-snippet
-	####################################################################################################################
+        return $this->createApiResponse($data);
+    }
 
-	public function saveSnippetAction($typename, $id)
-	{
-		if ($id) {
-			$snippet = $this->em->find('DeskPRO:TextSnippet', $id);
-			if (!$snippet) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$snippet = new TextSnippet();
-		}
+    ####################################################################################################################
+    # save-snippet
+    ####################################################################################################################
 
-		if ($category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'))) {
-			$snippet->category = $category;
-		}
+    public function saveSnippetAction($typename, $id)
+    {
+        if ($id) {
+            $snippet = $this->em->find('DeskPRO:TextSnippet', $id);
+            if (!$snippet) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $snippet = new TextSnippet();
+        }
 
-		$this->em->persist($snippet);
-		$this->em->flush();
+        if ($category = $this->em->find('DeskPRO:TextSnippetCategory', $this->in->getUint('category_id'))) {
+            $snippet->category = $category;
+        }
 
-		foreach ($this->container->getLanguageData()->getAll() as $lang) {
-			$this->container->getObjectLangRepository()->preloadObject($lang, $snippet);
-		}
+        $this->em->persist($snippet);
+        $this->em->flush();
 
-		foreach ($this->container->getLanguageData()->getAll() as $lang) {
-			$lang_id = $lang->getId();
+        foreach ($this->container->getLanguageData()->getAll() as $lang) {
+            $this->container->getObjectLangRepository()->preloadObject($lang, $snippet);
+        }
 
-			$title   = $this->in->getString("title.$lang_id");
-			$snippet_val = $this->in->getString("snippet.$lang_id");
+        foreach ($this->container->getLanguageData()->getAll() as $lang) {
+            $lang_id = $lang->getId();
 
-			$rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'title', $title);
-			$this->em->persist($rec);
+            $title   = $this->in->getString("title.$lang_id");
+            $snippet_val = $this->in->getString("snippet.$lang_id");
 
-			$rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'snippet', $snippet_val);
-			$this->em->persist($rec);
-		}
+            $rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'title', $title);
+            $this->em->persist($rec);
 
-		$this->em->flush();
+            $rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'snippet', $snippet_val);
+            $this->em->persist($rec);
+        }
 
-		return $this->createApiCreateResponse(
-			array('snippet_id' => $snippet->id),
-			$this->generateUrl('api_ticketsnippets_get', array('id' => $snippet->id), true)
-		);
-	}
+        $this->em->flush();
 
-	####################################################################################################################
-	# delete-snippet
-	####################################################################################################################
+        return $this->createApiCreateResponse(
+            array('snippet_id' => $snippet->id),
+            $this->generateUrl('api_ticketsnippets_get', array('id' => $snippet->id), true)
+        );
+    }
 
-	public function deleteSnippetAction($typename, $id)
-	{
-		$snippet = $this->em->find('DeskPRO:TextSnippet', $id);
-		if (!$snippet) {
-			throw $this->createNotFoundException();
-		}
+    ####################################################################################################################
+    # delete-snippet
+    ####################################################################################################################
 
-		$this->em->remove($snippet);
-		$this->em->flush();
+    public function deleteSnippetAction($typename, $id)
+    {
+        $snippet = $this->em->find('DeskPRO:TextSnippet', $id);
+        if (!$snippet) {
+            throw $this->createNotFoundException();
+        }
 
-		return $this->createApiResponse(array('success' => true, 'snippet_id' => $id));
-	}
+        $this->em->remove($snippet);
+        $this->em->flush();
 
-	####################################################################################################################
-	# list-categories
-	####################################################################################################################
+        return $this->createApiResponse(array('success' => true, 'snippet_id' => $id));
+    }
 
-	public function listCategoriesAction($typename)
-	{
-		$snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
+    ####################################################################################################################
+    # list-categories
+    ####################################################################################################################
 
-		foreach ($this->container->getLanguageData()->getAll() as $lang) {
-			$this->container->getObjectLangRepository()->preloadObjectCollection($lang, $snippet_cats);
-		}
+    public function listCategoriesAction($typename)
+    {
+        $snippet_cats = $this->em->getRepository('DeskPRO:TextSnippetCategory')->getCatsForAgent($typename, $this->person);
 
-		$data = array(
-			'snippet_cats'   => array(),
-		);
+        foreach ($this->container->getLanguageData()->getAll() as $lang) {
+            $this->container->getObjectLangRepository()->preloadObjectCollection($lang, $snippet_cats);
+        }
 
-		foreach ($snippet_cats as $cat) {
-			$data['snippet_cats'][] = $cat->toApiData();
-		}
+        $data = array(
+            'snippet_cats'   => array(),
+        );
 
-		return $this->createApiResponse($data);
-	}
+        foreach ($snippet_cats as $cat) {
+            $data['snippet_cats'][] = $cat->toApiData();
+        }
 
-	####################################################################################################################
-	# get-category
-	####################################################################################################################
+        return $this->createApiResponse($data);
+    }
 
-	public function getCategoryAction($typename, $id)
-	{
-		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
+    ####################################################################################################################
+    # get-category
+    ####################################################################################################################
 
-		if (!$cat || $cat->typename != $typename) {
-			throw $this->createNotFoundException();
-		}
+    public function getCategoryAction($typename, $id)
+    {
+        $cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
 
-		$data = array('snippet_cat' => $cat->toApiData());
+        if (!$cat || $cat->typename != $typename) {
+            throw $this->createNotFoundException();
+        }
 
-		return $this->createApiResponse($data);
-	}
+        $data = array('snippet_cat' => $cat->toApiData());
 
-	####################################################################################################################
-	# save-category
-	####################################################################################################################
+        return $this->createApiResponse($data);
+    }
 
-	public function saveCategoryAction($typename, $id)
-	{
-		if ($id) {
-			$cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
-			if (!$cat) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$cat = new TextSnippetCategory();
-			$cat->typename = $typename;
-			$cat->person = $this->person;
-		}
+    ####################################################################################################################
+    # save-category
+    ####################################################################################################################
 
-		$cat->is_global = ($this->in->getString('perm_type') == 'global');
+    public function saveCategoryAction($typename, $id)
+    {
+        if ($id) {
+            $cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
+            if (!$cat) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $cat = new TextSnippetCategory();
+            $cat->typename = $typename;
+            $cat->person = $this->person;
+        }
 
-		$this->em->persist($cat);
-		$this->em->flush();
+        $cat->is_global = ($this->in->getString('perm_type') == 'global');
 
-		$global_title = $this->in->getString('title');
+        $this->em->persist($cat);
+        $this->em->flush();
 
-		foreach ($this->container->getLanguageData()->getAll() as $lang) {
-			$lang_id = $lang->getId();
+        $global_title = $this->in->getString('title');
 
-			$title = $this->in->getString("title.$lang_id");
-			if (!$title) {
-				$title = $global_title;
-			}
+        foreach ($this->container->getLanguageData()->getAll() as $lang) {
+            $lang_id = $lang->getId();
 
-			$rec = $this->container->getObjectLangRepository()->setRec($lang, $cat, 'title', $title);
-			$this->em->persist($rec);
-		}
+            $title = $this->in->getString("title.$lang_id");
+            if (!$title) {
+                $title = $global_title;
+            }
 
-		$this->em->flush();
+            $rec = $this->container->getObjectLangRepository()->setRec($lang, $cat, 'title', $title);
+            $this->em->persist($rec);
+        }
 
-		return $this->createApiCreateResponse(
-			array('category_id' => $cat->id),
-			$this->generateUrl('api_textsnippets_cats_get', array('id' => $cat->id), true)
-		);
-	}
+        $this->em->flush();
 
-	####################################################################################################################
-	# delete-category
-	####################################################################################################################
+        return $this->createApiCreateResponse(
+            array('category_id' => $cat->id),
+            $this->generateUrl('api_textsnippets_cats_get', array('id' => $cat->id), true)
+        );
+    }
 
-	public function deleteCategoryAction($typename, $id)
-	{
-		$cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
-		if (!$cat) {
-			throw $this->createNotFoundException();
-		}
+    ####################################################################################################################
+    # delete-category
+    ####################################################################################################################
 
-		$has_snippets = $this->db->fetchColumn("
-			SELECT COUNT(*)
-			FROM text_snippets
-			WHERE category_id = ?
-		", array($cat->getId()));
+    public function deleteCategoryAction($typename, $id)
+    {
+        $cat = $this->em->find('DeskPRO:TextSnippetCategory', $id);
+        if (!$cat) {
+            throw $this->createNotFoundException();
+        }
 
-		if ($has_snippets) {
-			return $this->createApiErrorResponse(409, 'The category is not empty. Delete existing snippets and try again.', 409);
-		}
+        $has_snippets = $this->db->fetchColumn("
+            SELECT COUNT(*)
+            FROM text_snippets
+            WHERE category_id = ?
+        ", array($cat->getId()));
 
-		$this->em->remove($cat);
-		$this->em->flush();
+        if ($has_snippets) {
+            return $this->createApiErrorResponse(409, 'The category is not empty. Delete existing snippets and try again.', 409);
+        }
 
-		return $this->createApiResponse(array(
-			'success' => true,
-			'category_id' => $id
-		));
-	}
+        $this->em->remove($cat);
+        $this->em->flush();
+
+        return $this->createApiResponse(array(
+            'success' => true,
+            'category_id' => $id
+        ));
+    }
 }

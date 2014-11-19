@@ -46,78 +46,78 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetEmailAccount extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('email_account_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('email_account_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_account_id = $this->getActionOption('email_account_id');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_account_id = $this->getActionOption('email_account_id');
 
-		if ($set_account_id) {
-			try {
-				$account = $this->getContainer()->getEmailAccountManager()->getActiveAccount($set_account_id);
-			} catch (\OutOfBoundsException $e) {
-				return false;
-			}
-		} else {
-			$account = null;
-		}
+        if ($set_account_id) {
+            try {
+                $account = $this->getContainer()->getEmailAccountManager()->getActiveAccount($set_account_id);
+            } catch (\OutOfBoundsException $e) {
+                return false;
+            }
+        } else {
+            $account = null;
+        }
 
-		$ticket->email_account = $account;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_account_id    = $this->getActionOption('email_account_id');
-		$ticket_account_id = $ticket->email_account ? $ticket->email_account->id : 0;
-
-		if ($ticket_account_id == $set_account_id) {
-			return true;
-		}
-
-		if ($set_account_id) {
-			if (!$this->getContainer()->getEmailAccountManager()->hasActiveAccount($set_account_id)) {
-				return true; //invalid
-			}
-		}
-
-		return false;
-	}
+        $ticket->email_account = $account;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return array('fields');
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_account_id    = $this->getActionOption('email_account_id');
+        $ticket_account_id = $ticket->email_account ? $ticket->email_account->id : 0;
 
-		return null;
-	}
+        if ($ticket_account_id == $set_account_id) {
+            return true;
+        }
+
+        if ($set_account_id) {
+            if (!$this->getContainer()->getEmailAccountManager()->hasActiveAccount($set_account_id)) {
+                return true; //invalid
+            }
+        }
+
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return array('fields');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

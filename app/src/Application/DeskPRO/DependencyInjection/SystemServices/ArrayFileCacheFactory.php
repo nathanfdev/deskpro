@@ -38,62 +38,62 @@ use Orb\Doctrine\Common\Cache\ArrayFileCache;
 
 class ArrayFileCacheFactory
 {
-	public static function create($cache_name)
-	{
-		if (!function_exists('dp_get_tmp_dir') || !is_writable(dp_get_tmp_dir())) {
-			return self::createNull();
-		}
+    public static function create($cache_name)
+    {
+        if (!function_exists('dp_get_tmp_dir') || !is_writable(dp_get_tmp_dir())) {
+            return self::createNull();
+        }
 
-		if (isset($GLOBALS['DP_CONFIG']['disable_caches']) && in_array($cache_name, $GLOBALS['DP_CONFIG']['disable_caches'])) {
-			return self::createNull();
-		}
+        if (isset($GLOBALS['DP_CONFIG']['disable_caches']) && in_array($cache_name, $GLOBALS['DP_CONFIG']['disable_caches'])) {
+            return self::createNull();
+        }
 
-		$cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
+        $cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
 
-		if ($cache_name == 'dql' && defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
-			$path = dp_get_cache_dir().'/' . $cache_name . '.cache';
-		} else {
-			$path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache';
-		}
+        if ($cache_name == 'dql' && defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
+            $path = dp_get_cache_dir().'/' . $cache_name . '.cache';
+        } else {
+            $path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache';
+        }
 
-		$version_id = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : null;
-		$cache = new ArrayFileCache($path, $version_id);
+        $version_id = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : null;
+        $cache = new ArrayFileCache($path, $version_id);
 
-		if ($cache_name == 'dql') {
-			// Filters out queries with 'IN' components that can pollute the cache
-			$cache->setFilter(function($data) {
-				if (!is_object($data)) return false;
-				/** @var $data \Doctrine\ORM\Query\ParserResult */
-				$s = $data->getSqlExecutor()->getSqlStatements();
-				if (is_string($s)) {
-					// Hard-coded IDs
-					if (preg_match('#IN \(\d#', $s)) {
-						return false;
-					// More than 10 segments
-					} elseif (preg_match('#IN \([?, ]{10,}#', $s)) {
-						return false;
-					}
-				}
+        if ($cache_name == 'dql') {
+            // Filters out queries with 'IN' components that can pollute the cache
+            $cache->setFilter(function ($data) {
+                if (!is_object($data)) return false;
+                /** @var $data \Doctrine\ORM\Query\ParserResult */
+                $s = $data->getSqlExecutor()->getSqlStatements();
+                if (is_string($s)) {
+                    // Hard-coded IDs
+                    if (preg_match('#IN \(\d#', $s)) {
+                        return false;
+                    // More than 10 segments
+                    } elseif (preg_match('#IN \([?, ]{10,}#', $s)) {
+                        return false;
+                    }
+                }
 
-				return true;
-			});
+                return true;
+            });
 
-			// Makes sure it doesnt get too big
-			$cache->setLimit(350);
-		}
+            // Makes sure it doesnt get too big
+            $cache->setLimit(350);
+        }
 
-		return $cache;
-	}
+        return $cache;
+    }
 
-	public static function createNull()
-	{
-		static $null_cache;
+    public static function createNull()
+    {
+        static $null_cache;
 
-		if (!$null_cache) {
-			$null_cache = new ArrayFileCache('/dev/null');
-			$null_cache->disable();
-		}
+        if (!$null_cache) {
+            $null_cache = new ArrayFileCache('/dev/null');
+            $null_cache->disable();
+        }
 
-		return $null_cache;
-	}
+        return $null_cache;
+    }
 }

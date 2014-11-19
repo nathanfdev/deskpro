@@ -48,69 +48,69 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  */
 class Setting extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id;
+    /**
+     * @var int
+     */
+    protected $id;
 
-	/**
-	 * The name of the setting
-	 *
-	 * @var string
-	 */
-	protected $name;
+    /**
+     * The name of the setting
+     *
+     * @var string
+     */
+    protected $name;
 
-	/**
-	 * The value of a setting
-	 *
-	 * @var string
-	 */
-	protected $value;
+    /**
+     * The value of a setting
+     *
+     * @var string
+     */
+    protected $value;
 
-	/**
-	 * The scope this settings is scoped to
-	 *
-	 * @var \Application\DeskPRO\Entity\Brand
-	 */
-	protected $brand;
+    /**
+     * The scope this settings is scoped to
+     *
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    protected $brand;
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
 
-		$builder = new ClassMetadataBuilder($metadata);
-		$builder->mapId();
-		$builder->setTable('settings');
-		$builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Setting');
-		$builder->addUniqueConstraint(array('name', 'brand_id'), 'unique_settings_per_brand');
+        $builder = new ClassMetadataBuilder($metadata);
+        $builder->mapId();
+        $builder->setTable('settings');
+        $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Setting');
+        $builder->addUniqueConstraint(array('name', 'brand_id'), 'unique_settings_per_brand');
 
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-				'nullable'  => false, 'columnName' => 'name'
-			)
-		);
-		$metadata->mapField(
-			array(
-				'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0,
-				'nullable'  => true, 'columnName' => 'value',
-			)
-		);
-		$metadata->mapManyToOne(
-			array(
-				'fieldName'  => 'brand', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand', 'mappedBy' => null,
-				'inversedBy' => null, 'joinColumns' => array(
-				0 => array(
-					'name'     => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => true,
-					'onDelete' => 'cascade', 'columnDefinition' => null,
-				),
-			),
-			)
-		);
-	}
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(
+            array(
+                'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
+                'nullable'  => false, 'columnName' => 'name'
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0,
+                'nullable'  => true, 'columnName' => 'value',
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'  => 'brand', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand', 'mappedBy' => null,
+                'inversedBy' => null, 'joinColumns' => array(
+                0 => array(
+                    'name'     => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => true,
+                    'onDelete' => 'cascade', 'columnDefinition' => null,
+                ),
+            ),
+            )
+        );
+    }
 }

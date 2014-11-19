@@ -41,224 +41,224 @@ use Application\DeskPRO\People\PersonContextInterface;
 
 class TicketDisplay implements PersonContextInterface
 {
-	/** @var \Application\DeskPRO\Entity\Ticket */
-	protected $ticket;
+    /** @var \Application\DeskPRO\Entity\Ticket */
+    protected $ticket;
 
-	/** @var PersonContextInterface */
-	protected $person_context;
-	/** @var string */
-	protected $person_type = 'user';
+    /** @var PersonContextInterface */
+    protected $person_context;
+    /** @var string */
+    protected $person_type = 'user';
 
-	/** @var array|null */
-	protected $user_participants;
-	/** @var array|null */
-	protected $agent_participants;
+    /** @var array|null */
+    protected $user_participants;
+    /** @var array|null */
+    protected $agent_participants;
 
-	/** @var array */
-	protected $notes;
-	/** @var array */
-	protected $messages;
-	/** @var array */
-	protected $attachments;
-	/** @var array */
-	protected $message_to_attach;
-	/** @var array */
-	protected $user_ratings;
-	/** @var array */
-	protected $ignore_attachments = array();
+    /** @var array */
+    protected $notes;
+    /** @var array */
+    protected $messages;
+    /** @var array */
+    protected $attachments;
+    /** @var array */
+    protected $message_to_attach;
+    /** @var array */
+    protected $user_ratings;
+    /** @var array */
+    protected $ignore_attachments = array();
 
-	public function __construct(Ticket $ticket, Person $person)
-	{
-		$this->ticket = $ticket;
-		$this->setPersonContext($person);
-	}
+    public function __construct(Ticket $ticket, Person $person)
+    {
+        $this->ticket = $ticket;
+        $this->setPersonContext($person);
+    }
 
-	public function setIgnoreAttachment(TicketAttachment $a)
-	{
-		$this->ignore_attachments[$a->id] = $a;
-	}
+    public function setIgnoreAttachment(TicketAttachment $a)
+    {
+        $this->ignore_attachments[$a->id] = $a;
+    }
 
-	public function setPersonContext(Person $person, $set_type = null)
-	{
-		$this->person_context = $person;
-		if ($person['is_agent']) {
-			$this->person_type = 'agent';
-		}
+    public function setPersonContext(Person $person, $set_type = null)
+    {
+        $this->person_context = $person;
+        if ($person['is_agent']) {
+            $this->person_type = 'agent';
+        }
 
-		if ($set_type) {
-			$this->person_type = $set_type;
-		}
-	}
+        if ($set_type) {
+            $this->person_type = $set_type;
+        }
+    }
 
-	public function getUserParticipants()
-	{
-		if ($this->user_participants !== null) return $this->user_participants;
+    public function getUserParticipants()
+    {
+        if ($this->user_participants !== null) return $this->user_participants;
 
-		$this->user_participants = array();
+        $this->user_participants = array();
 
-		foreach ($this->ticket->getParticipants() as $part) {
-			if (!$part->person['is_agent']) {
-				$this->user_participants[] = $part;
-			}
-		}
+        foreach ($this->ticket->getParticipants() as $part) {
+            if (!$part->person['is_agent']) {
+                $this->user_participants[] = $part;
+            }
+        }
 
-		return $this->user_participants;
-	}
+        return $this->user_participants;
+    }
 
-	public function getAgentParticipants()
-	{
-		if ($this->agent_participants !== null) return $this->agent_participants;
+    public function getAgentParticipants()
+    {
+        if ($this->agent_participants !== null) return $this->agent_participants;
 
-		$this->agent_participants = array();
+        $this->agent_participants = array();
 
-		foreach ($this->ticket->getParticipants() as $part) {
-			if ($part->person['is_agent']) {
-				$this->agent_participants[] = $part;
-			}
-		}
+        foreach ($this->ticket->getParticipants() as $part) {
+            if ($part->person['is_agent']) {
+                $this->agent_participants[] = $part;
+            }
+        }
 
-		return $this->agent_participants;
-	}
+        return $this->agent_participants;
+    }
 
-	public function getNotes()
-	{
-		if ($this->notes !== null) return $this->notes;
+    public function getNotes()
+    {
+        if ($this->notes !== null) return $this->notes;
 
-		$this->getMessages();
+        $this->getMessages();
 
-		$this->notes = array();
+        $this->notes = array();
 
-		foreach ($this->messages as $message) {
-			if ($message['is_agent_note']) {
-				$this->notes[] = $message;
-			}
-		}
+        foreach ($this->messages as $message) {
+            if ($message['is_agent_note']) {
+                $this->notes[] = $message;
+            }
+        }
 
-		return $this->notes;
-	}
+        return $this->notes;
+    }
 
-	public function getMessages()
-	{
-		if ($this->messages !== null) return $this->messages;
+    public function getMessages()
+    {
+        if ($this->messages !== null) return $this->messages;
 
-		if ($this->person_type == 'agent') {
-			$this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
-				$this->ticket,
-				array('with_notes' => true)
-			);
-		} else {
-			$this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
-				$this->ticket,
-				array('with_notes' => false)
-			);
-		}
+        if ($this->person_type == 'agent') {
+            $this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
+                $this->ticket,
+                array('with_notes' => true)
+            );
+        } else {
+            $this->messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
+                $this->ticket,
+                array('with_notes' => false)
+            );
+        }
 
-		return $this->messages;
-	}
+        return $this->messages;
+    }
 
-	public function getAttachments()
-	{
-		if ($this->attachments !== null) return $this->attachments;
+    public function getAttachments()
+    {
+        if ($this->attachments !== null) return $this->attachments;
 
-		$this->attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($this->ticket);
+        $this->attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($this->ticket);
 
-		return $this->attachments;
-	}
+        return $this->attachments;
+    }
 
-	public function getMessagesToAttachments($include_inline = false)
-	{
-		if ($this->message_to_attach !== null) return $this->message_to_attach;
+    public function getMessagesToAttachments($include_inline = false)
+    {
+        if ($this->message_to_attach !== null) return $this->message_to_attach;
 
-		$this->getMessages();
-		$this->getAttachments();
+        $this->getMessages();
+        $this->getAttachments();
 
-		$this->message_to_attach = array();
+        $this->message_to_attach = array();
 
-		foreach ($this->attachments as $attach) {
+        foreach ($this->attachments as $attach) {
 
-			if (!$include_inline && $attach->is_inline) {
-				continue;
-			}
+            if (!$include_inline && $attach->is_inline) {
+                continue;
+            }
 
-			if (!isset($this->message_to_attach[$attach['message']['id']])) {
-				$this->message_to_attach[$attach['message']['id']] = array();
-			}
+            if (!isset($this->message_to_attach[$attach['message']['id']])) {
+                $this->message_to_attach[$attach['message']['id']] = array();
+            }
 
-			$this->message_to_attach[$attach['message']['id']][] = $attach['id'];
-		}
+            $this->message_to_attach[$attach['message']['id']][] = $attach['id'];
+        }
 
-		return $this->message_to_attach;
-	}
+        return $this->message_to_attach;
+    }
 
-	public function getMessageAttachments($message, $include_inline = false)
-	{
-		$id = $message->getId();
-		$messagetoattach = $this->getMessagesToAttachments($include_inline);
+    public function getMessageAttachments($message, $include_inline = false)
+    {
+        $id = $message->getId();
+        $messagetoattach = $this->getMessagesToAttachments($include_inline);
 
-		if (!isset($messagetoattach[$id])) {
-			return null;
-		}
+        if (!isset($messagetoattach[$id])) {
+            return null;
+        }
 
-		$ret = array();
-		foreach ($messagetoattach[$id] as $aid) {
-			if (!isset($this->ignore_attachments[$aid])) {
-				$ret[$aid] = $this->attachments[$aid];
-			}
-		}
+        $ret = array();
+        foreach ($messagetoattach[$id] as $aid) {
+            if (!isset($this->ignore_attachments[$aid])) {
+                $ret[$aid] = $this->attachments[$aid];
+            }
+        }
 
-		return $ret;
-	}
+        return $ret;
+    }
 
-	public function getFeedbackRatings()
-	{
-		if ($this->user_ratings !== null) return $this->user_ratings;
+    public function getFeedbackRatings()
+    {
+        if ($this->user_ratings !== null) return $this->user_ratings;
 
-		$this->user_ratings = App::getDb()->fetchAllKeyValue("
-			SELECT message_id, rating
-			FROM ticket_feedback
-			WHERE ticket_id = ? AND person_id = ?
-		", array($this->ticket->getId(), $this->person_context->getId()));
+        $this->user_ratings = App::getDb()->fetchAllKeyValue("
+            SELECT message_id, rating
+            FROM ticket_feedback
+            WHERE ticket_id = ? AND person_id = ?
+        ", array($this->ticket->getId(), $this->person_context->getId()));
 
-		return $this->user_ratings;
-	}
+        return $this->user_ratings;
+    }
 
-	public function getDisplayArray()
-	{
-		$last_user_message = 0;
-		$last_agent_message = 0;
+    public function getDisplayArray()
+    {
+        $last_user_message = 0;
+        $last_agent_message = 0;
 
-		foreach ($this->getMessages() as $message) {
-			if ($message->person && $message->person->is_agent) {
-				$last_agent_message = $message->id;
-			} else {
-				$last_user_message = $message->id;
-			}
-		}
+        foreach ($this->getMessages() as $message) {
+            if ($message->person && $message->person->is_agent) {
+                $last_agent_message = $message->id;
+            } else {
+                $last_user_message = $message->id;
+            }
+        }
 
-		#------------------------------
-		# Custom fields
-		#------------------------------
+        #------------------------------
+        # Custom fields
+        #------------------------------
 
-		$field_manager = App::getSystemService('ticket_fields_manager');
-		$custom_fields = $field_manager->getDisplayArrayForObject($this->ticket);
+        $field_manager = App::getSystemService('ticket_fields_manager');
+        $custom_fields = $field_manager->getDisplayArrayForObject($this->ticket);
 
-		return array(
-			'ticket' => $this->ticket,
+        return array(
+            'ticket' => $this->ticket,
 
-			'user_participants'  => $this->getUserParticipants(),
-			'agent_participants' => $this->getAgentParticipants(),
+            'user_participants'  => $this->getUserParticipants(),
+            'agent_participants' => $this->getAgentParticipants(),
 
-			'notes' => $this->getNotes(),
-			'messages' => $this->getMessages(),
-			'attachments' => $this->getAttachments(),
-			'message_to_attach' => $this->getMessagesToAttachments(),
+            'notes' => $this->getNotes(),
+            'messages' => $this->getMessages(),
+            'attachments' => $this->getAttachments(),
+            'message_to_attach' => $this->getMessagesToAttachments(),
 
-			'last_user_message_id' => $last_user_message,
-			'last_agent_message_id' => $last_agent_message,
+            'last_user_message_id' => $last_user_message,
+            'last_agent_message_id' => $last_agent_message,
 
-			'user_ratings' => $this->getFeedbackRatings(),
+            'user_ratings' => $this->getFeedbackRatings(),
 
-			'custom_fields' => $custom_fields,
-		);
-	}
+            'custom_fields' => $custom_fields,
+        );
+    }
 }

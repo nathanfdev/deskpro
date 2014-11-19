@@ -29,5 +29,5 @@ namespace Application\DeskPRO\NewSearch\SearchEngine;
 
 interface SearchEngineInterface
 {
-	public function getUserSearch();
+    public function getUserSearch();
 }

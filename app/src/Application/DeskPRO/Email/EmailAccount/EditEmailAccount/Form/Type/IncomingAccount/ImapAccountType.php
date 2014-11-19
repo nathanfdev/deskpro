@@ -39,35 +39,35 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ImapAccountType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('user',        'text',     array('required' => false));
-		$builder->add('password',    'password', array('required' => false));
-		$builder->add('host',        'text',     array('required' => true));
-		$builder->add('port',        'text',     array('required' => true));
-		$builder->add('no_validation', 'checkbox', array('required' => true));
-		$builder->add('secure_mode', 'choice',   array(
-			'required'      => false,
-			'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
-			'empty_value'   => true,
-		));
-		$builder->add('mode', 'choice',   array(
-			'required'      => true,
-			'choices'       => array('read' => 'read', 'delete' => 'delete', 'archive' => 'archive'),
-		));
-		$builder->add('read_mailbox', 'text', array('required' => false));
-		$builder->add('archive_mailbox', 'text', array('required' => false));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('user',        'text',     array('required' => false));
+        $builder->add('password',    'password', array('required' => false));
+        $builder->add('host',        'text',     array('required' => true));
+        $builder->add('port',        'text',     array('required' => true));
+        $builder->add('no_validation', 'checkbox', array('required' => true));
+        $builder->add('secure_mode', 'choice',   array(
+            'required'      => false,
+            'choices'       => array('ssl' => 'ssl', 'tls' => 'tls'),
+            'empty_value'   => true,
+        ));
+        $builder->add('mode', 'choice',   array(
+            'required'      => true,
+            'choices'       => array('read' => 'read', 'delete' => 'delete', 'archive' => 'archive'),
+        ));
+        $builder->add('read_mailbox', 'text', array('required' => false));
+        $builder->add('archive_mailbox', 'text', array('required' => false));
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\ImapConfig',
-		));
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\ImapConfig',
+        ));
+    }
 
-	public function getName()
-	{
-		return 'in_imap_account';
-	}
+    public function getName()
+    {
+        return 'in_imap_account';
+    }
 }

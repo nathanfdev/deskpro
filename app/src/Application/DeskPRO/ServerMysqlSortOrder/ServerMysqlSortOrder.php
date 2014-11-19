@@ -37,187 +37,187 @@ use Application\DeskPRO\Settings\Settings;
 
 class ServerMysqlSortOrder
 {
-	/**
-	 * @var \Application\DeskPRO\Settings\Settings
-	 */
+    /**
+     * @var \Application\DeskPRO\Settings\Settings
+     */
 
-	private $settings;
+    private $settings;
 
-	/** @var string */
-	public $db_collation = 'utf8_general_ci';
-	/** @var string */
-	public $db_collation_change = '';
+    /** @var string */
+    public $db_collation = 'utf8_general_ci';
+    /** @var string */
+    public $db_collation_change = '';
 
-	/**
-	 * @param \Application\DeskPRO\Settings\Settings $settings
-	 */
+    /**
+     * @param \Application\DeskPRO\Settings\Settings $settings
+     */
 
-	public function __construct(Settings $settings)
-	{
-		$this->settings = $settings;
-		$this->reset();
-	}
+    public function __construct(Settings $settings)
+    {
+        $this->settings = $settings;
+        $this->reset();
+    }
 
-	/**
-	 * Resets based on stored values.
-	 */
+    /**
+     * Resets based on stored values.
+     */
 
-	public function reset()
-	{
-		$this->db_collation           = $this->settings->get('core.db_collation');
-		$this->db_collation_change    = $this->settings->get('core.db_collation_change');
-	}
+    public function reset()
+    {
+        $this->db_collation           = $this->settings->get('core.db_collation');
+        $this->db_collation_change    = $this->settings->get('core.db_collation_change');
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function toArray()
-	{
-		$export_settings = array();
+    public function toArray()
+    {
+        $export_settings = array();
 
-		foreach (
-			array(
-				'db_collation'
-			) as $s) {
+        foreach (
+            array(
+                'db_collation'
+            ) as $s) {
 
-			$export_settings[$s] = $this->$s;
-		}
+            $export_settings[$s] = $this->$s;
+        }
 
-		return $export_settings;
-	}
+        return $export_settings;
+    }
 
-	/**
-	 * @param array $new_values
-	 */
+    /**
+     * @param array $new_values
+     */
 
-	public function setArray(array $new_values)
-	{
-		foreach ($new_values as $v => $val) {
-			if (property_exists($this, $v)) {
-				$this->$v = $val;
-			}
-		}
-	}
+    public function setArray(array $new_values)
+    {
+        foreach ($new_values as $v => $val) {
+            if (property_exists($this, $v)) {
+                $this->$v = $val;
+            }
+        }
+    }
 
-	/**
-	 * Persists new values
-	 */
+    /**
+     * Persists new values
+     */
 
-	public function save()
-	{
-		if ($this->isCollationValid($this->db_collation)) {
+    public function save()
+    {
+        if ($this->isCollationValid($this->db_collation)) {
 
-			// notice this is 'db_collation_change', not 'db_collation'
+            // notice this is 'db_collation_change', not 'db_collation'
 
-			$this->settings->setSetting('core.db_collation_change', $this->db_collation);
-		}
-	}
+            $this->settings->setSetting('core.db_collation_change', $this->db_collation);
+        }
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getCollationsTable()
-	{
-		$collations = array(
-			'utf8_general_ci'          => 'General Purpose (Default)',
-			'utf8_unicode_ci'          => 'Unicode Default',
-			'utf8_icelandic_ci'        => 'Icelandic',
-			'utf8_latvian_ci'          => 'Latvian',
-			'utf8_romanian_ci'         => 'Romanian',
-			'utf8_slovenian_ci'        => 'Slovenian',
-			'utf8_polish_ci'           => 'Polish',
-			'utf8_estonian_ci'         => 'Estonian',
-			'utf8_spanish_ci'          => 'Spanish',
-			'utf8_spanish2_ci'         => 'Spanish (alternative)',
-			'utf8_swedish_ci'          => 'Swedish',
-			'utf8_turkish_ci'          => 'Turkish',
-			'utf8_czech_ci'            => 'Czech',
-			'utf8_danish_ci'           => 'Danish',
-			'utf8_lithuanian_ci'       => 'Lithuanian',
-			'utf8_slovak_ci'           => 'Slovak',
-			'utf8_roman_ci'            => 'Latin',
-			'utf8_persian_ci'          => 'Persian',
-			'utf8_esperanto_ci'        => 'Esperanto',
-			'utf8_hungarian_ci'        => 'Hungarian',
-			'utf8_sinhala_ci'          => 'Sinhalese',
-			'utf8_general_mysql500_ci' => 'General Purpose (MySQL 5.0)'
-		);
+    public function getCollationsTable()
+    {
+        $collations = array(
+            'utf8_general_ci'          => 'General Purpose (Default)',
+            'utf8_unicode_ci'          => 'Unicode Default',
+            'utf8_icelandic_ci'        => 'Icelandic',
+            'utf8_latvian_ci'          => 'Latvian',
+            'utf8_romanian_ci'         => 'Romanian',
+            'utf8_slovenian_ci'        => 'Slovenian',
+            'utf8_polish_ci'           => 'Polish',
+            'utf8_estonian_ci'         => 'Estonian',
+            'utf8_spanish_ci'          => 'Spanish',
+            'utf8_spanish2_ci'         => 'Spanish (alternative)',
+            'utf8_swedish_ci'          => 'Swedish',
+            'utf8_turkish_ci'          => 'Turkish',
+            'utf8_czech_ci'            => 'Czech',
+            'utf8_danish_ci'           => 'Danish',
+            'utf8_lithuanian_ci'       => 'Lithuanian',
+            'utf8_slovak_ci'           => 'Slovak',
+            'utf8_roman_ci'            => 'Latin',
+            'utf8_persian_ci'          => 'Persian',
+            'utf8_esperanto_ci'        => 'Esperanto',
+            'utf8_hungarian_ci'        => 'Hungarian',
+            'utf8_sinhala_ci'          => 'Sinhalese',
+            'utf8_general_mysql500_ci' => 'General Purpose (MySQL 5.0)'
+        );
 
-		natcasesort($collations);
+        natcasesort($collations);
 
-		return $collations;
-	}
+        return $collations;
+    }
 
-	/**
-	 * @param $collation
-	 *
-	 * @return bool
-	 */
+    /**
+     * @param $collation
+     *
+     * @return bool
+     */
 
-	public function isCollationValid($collation)
-	{
-		$collations = $this->getCollationsTable();
+    public function isCollationValid($collation)
+    {
+        $collations = $this->getCollationsTable();
 
-		return isset($collations[$collation]);
-	}
+        return isset($collations[$collation]);
+    }
 
-	/**
-	 * @return array
-	 */
+    /**
+     * @return array
+     */
 
-	public function getUpdateStatus()
-	{
-		$status    = 'completed';
-		$data      = null;
-		$collation = null;
+    public function getUpdateStatus()
+    {
+        $status    = 'completed';
+        $data      = null;
+        $collation = null;
 
-		if ($this->settings->get('core.db_collation_change')) {
+        if ($this->settings->get('core.db_collation_change')) {
 
-			$status    = 'pending';
-			$collation = $this->settings->get('core.db_collation_change');
-		}
+            $status    = 'pending';
+            $collation = $this->settings->get('core.db_collation_change');
+        }
 
-		if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
+        if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
 
-			$line = @file_get_contents(dp_get_tmp_dir() . '/db-collation-status.txt');
+            $line = @file_get_contents(dp_get_tmp_dir() . '/db-collation-status.txt');
 
-			if ($line && preg_match('/^\[(\d+)\|([a-z0-9_]+)]([a-z0-9_]+):(.*)$/si', $line, $match)) {
+            if ($line && preg_match('/^\[(\d+)\|([a-z0-9_]+)]([a-z0-9_]+):(.*)$/si', $line, $match)) {
 
-				$status    = $match[3];
-				$collation = $match[2];
-				$data      = array(
-					'time'    => $match[1],
-					'message' => $match[4]
-				);
-			}
-		}
+                $status    = $match[3];
+                $collation = $match[2];
+                $data      = array(
+                    'time'    => $match[1],
+                    'message' => $match[4]
+                );
+            }
+        }
 
-		switch ($status) {
+        switch ($status) {
 
-			case 'pending':
-				$message = 'Waiting to start...';
-				break;
+            case 'pending':
+                $message = 'Waiting to start...';
+                break;
 
-			case 'progress':
-				$message = 'Converting table ' . $data['message'] . '...';
-				break;
+            case 'progress':
+                $message = 'Converting table ' . $data['message'] . '...';
+                break;
 
-			case 'error':
-				$message = 'An error occurred: ' . $data['message'];
-				break;
+            case 'error':
+                $message = 'An error occurred: ' . $data['message'];
+                break;
 
-			default:
-				$message = 'Completed!';
-				break;
-		}
+            default:
+                $message = 'Completed!';
+                break;
+        }
 
-		return array(
-			'status'    => $status,
-			'collation' => $collation,
-			'data'      => $data,
-			'message'   => $message,
-		);
-	}
+        return array(
+            'status'    => $status,
+            'collation' => $collation,
+            'data'      => $data,
+            'message'   => $message,
+        );
+    }
 }

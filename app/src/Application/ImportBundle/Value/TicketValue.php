@@ -33,113 +33,113 @@ namespace Application\ImportBundle\Value;
 
 class TicketValue
 {
-	/**
-	 * @var int
-	 */
-	public $oid;
-	
-	/**
-	 * @var string
-	 */
-	public $ref;
+    /**
+     * @var int
+     */
+    public $oid;
 
-	/**
-	 * @var string
-	 */
-	public $language;
+    /**
+     * @var string
+     */
+    public $ref;
 
-	/**
-	 * @var string
-	 */
-	public $department;
+    /**
+     * @var string
+     */
+    public $language;
 
-	/**
-	 * @var string
-	 */
-	public $category;
+    /**
+     * @var string
+     */
+    public $department;
 
-	/**
-	 * @var string
-	 */
-	public $priority;
+    /**
+     * @var string
+     */
+    public $category;
 
-	/**
-	 * @var string
-	 */
-	public $workflow;
+    /**
+     * @var string
+     */
+    public $priority;
 
-	/**
-	 * @var string
-	 */
-	public $product;
+    /**
+     * @var string
+     */
+    public $workflow;
 
-	/**
-	 * @var string
-	 */
-	public $person;
+    /**
+     * @var string
+     */
+    public $product;
 
-	/**
-	 * @var string
-	 */
-	public $agent;
+    /**
+     * @var string
+     */
+    public $person;
 
-	/**
-	 * @var string
-	 */
-	public $agent_team;
+    /**
+     * @var string
+     */
+    public $agent;
 
-	/**
-	 * @var string
-	 */
-	public $organization;
+    /**
+     * @var string
+     */
+    public $agent_team;
 
-	/**
-	 * @var TicketMessageValue[]
-	 */
-	public $messages = array();
+    /**
+     * @var string
+     */
+    public $organization;
 
-	/**
-	 * @var string[]
-	 */
-	public $labels = array();
+    /**
+     * @var TicketMessageValue[]
+     */
+    public $messages = array();
 
-	/**
-	 * @var string
-	 */
-	public $status;
+    /**
+     * @var string[]
+     */
+    public $labels = array();
 
-	/**
-	 * @var bool
-	 */
-	public $is_hold = false;
+    /**
+     * @var string
+     */
+    public $status;
 
-	/**
-	 * @var int
-	 */
-	public $urgency = 1;
+    /**
+     * @var bool
+     */
+    public $is_hold = false;
 
-	/**
-	 * @var \DateTime
-	 */
-	public $date_created;
+    /**
+     * @var int
+     */
+    public $urgency = 1;
 
-	/**
-	 * @var \DateTime
-	 */
-	public $date_resolved;
+    /**
+     * @var \DateTime
+     */
+    public $date_created;
 
-	/**
-	 * @var \DateTime
-	 */
-	public $date_archived;
+    /**
+     * @var \DateTime
+     */
+    public $date_resolved;
 
-	/**
-	 * @var string
-	 */
-	public $subject;
+    /**
+     * @var \DateTime
+     */
+    public $date_archived;
 
-	/**
-	 * @var string
-	 */
-	public $participants;
+    /**
+     * @var string
+     */
+    public $subject;
+
+    /**
+     * @var string
+     */
+    public $participants;
 }

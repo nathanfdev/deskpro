@@ -33,18 +33,18 @@ namespace Application\ImportBundle\Value;
 
 class CustomDefValue
 {
-	/**
-	 * @var int
-	 */
-	public $oid;
-	
-	/**
-	 * @var string
-	 */
-	public $key;
-	
-	/**
-	 * @var mixed
-	 */
-	public $value;
+    /**
+     * @var int
+     */
+    public $oid;
+
+    /**
+     * @var string
+     */
+    public $key;
+
+    /**
+     * @var mixed
+     */
+    public $value;
 }

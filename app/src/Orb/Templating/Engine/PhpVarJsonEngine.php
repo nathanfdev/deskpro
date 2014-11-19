@@ -43,22 +43,22 @@ use \Symfony\Component\Templating\Storage\Storage;
  */
 class PhpVarJsonEngine extends PhpVarEngine
 {
-	protected function _preProcess(Storage $template, array $parameters = array())
-	{
-		return array();
-	}
+    protected function _preProcess(Storage $template, array $parameters = array())
+    {
+        return array();
+    }
 
-	protected function _postProcess($OUTPUT)
-	{
-		if (!is_array($OUTPUT)) {
-			$OUTPUT = array((string)$OUTPUT);
-		}
+    protected function _postProcess($OUTPUT)
+    {
+        if (!is_array($OUTPUT)) {
+            $OUTPUT = array((string)$OUTPUT);
+        }
 
-		return json_encode($OUTPUT);
-	}
+        return json_encode($OUTPUT);
+    }
 
-	public function supports($name)
-	{
-		return false !== strpos($name, '.jsonphp');
-	}
+    public function supports($name)
+    {
+        return false !== strpos($name, '.jsonphp');
+    }
 }

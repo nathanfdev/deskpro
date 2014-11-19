@@ -37,219 +37,215 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\TaskQueue;
 use Doctrine\ORM\EntityManager;
-use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
 use Application\DeskPRO\TaskQueueJob\CsvImport;
 
 class CsvUpload
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
-	/**
-	 * @param EntityManager $em
-	 */
+    /**
+     * @param EntityManager $em
+     */
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * @param UploadedFile $file
-	 *
-	 * @return array
-	 */
+    /**
+     * @param UploadedFile $file
+     *
+     * @return array
+     */
 
-	public function upload(UploadedFile $file, array $options = array())
-	{
-		if (!$file instanceof UploadedFile || !$file->getSize()) {
+    public function upload(UploadedFile $file, array $options = array())
+    {
+        if (!$file instanceof UploadedFile || !$file->getSize()) {
+            return array('error' => 'no_file');
+        }
 
-			return array('error' => 'no_file');
-		}
+        if (!is_uploaded_file($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename())) {
+            return array('error' => 'no_move');
+        }
 
-		if (!is_uploaded_file($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename())) {
+        $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
+            $file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(),
+            $file->getClientOriginalName(),
+            'text/csv'
+        );
 
-			return array('error' => 'no_move');
-		}
+        $csv_path = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
+        copy($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path);
 
-		$blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
-			$file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(),
-			$file->getClientOriginalName(),
-			'text/csv'
-		);
+        return $this->_returnUploadFileResponse($blob->getId(), $file->getClientOriginalName(), $options);
+    }
 
-		$csv_path = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
-		copy($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path);
+    /**
+     * @param array   $field_maps
+     * @param string  $filename
+     * @param string  $user_filename
+     * @param boolean $skip_first
+     *
+     * @return array
+     */
 
-		return $this->_returnUploadFileResponse($blob->getId(), $file->getClientOriginalName(), $options);
-	}
+    public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, array $options = array())
+    {
+        $has_email = false;
 
-	/**
-	 * @param array $field_maps
-	 * @param string $filename
-	 * @param string $user_filename
-	 * @param boolean $skip_first
-	 *
-	 * @return array
-	 */
+        foreach ($field_maps AS $map_field) {
+            if (!empty($map_field['map']) && $map_field['map'] == 'primary_email') {
+                $has_email = true;
+                break;
+            }
+        }
 
-	public function startImportTask($field_maps, $filename, $user_filename, $skip_first, $welcome_email, array $options = array())
-	{
-		$has_email = false;
+        if (!$has_email) {
+            return array('error' => 'no_email');
+        }
 
-		foreach ($field_maps AS $map_field) {
-			if (!empty($map_field['map']) && $map_field['map'] == 'primary_email') {
-				$has_email = true;
-				break;
-			}
-		}
+        $blob = App::getOrm()->find('DeskPRO:Blob', $filename);
 
-		if (!$has_email) {
-			return array('error' => 'no_email');
-		}
+        if (!$blob) {
+            return array('error' => 'no_move');
+        }
 
-		$blob = App::getOrm()->find('DeskPRO:Blob', $filename);
+        $task_data = array(
+            'blob_id'       => $blob->getId(),
+            'field_maps'    => $field_maps,
+            'skip_first'    => $skip_first,
+            'welcome_email' => $welcome_email,
+            'user_filename' => $user_filename,
+            'options'       => $options,
+        );
 
-		if (!$blob) {
-			return array('error' => 'no_move');
-		}
+        $this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
+            'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
+            $task_data,
+            'data_import'
+        );
 
-		$task_data = array(
-			'blob_id'       => $blob->getId(),
-			'field_maps'    => $field_maps,
-			'skip_first'    => $skip_first,
-			'welcome_email' => $welcome_email,
-			'user_filename' => $user_filename,
-			'options'       => $options,
-		);
+        return array('success' => 'task_started');
+    }
 
-		$this->em->getRepository('DeskPRO:TaskQueue')->enqueueTask(
-			'Application\\DeskPRO\\TaskQueueJob\\CsvImport',
-			$task_data,
-			'data_import'
-		);
+    /**
+     * @return array
+     */
 
-		return array('success' => 'task_started');
-	}
+    public function returnStatusOfImport()
+    {
+        $tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import', true);
 
-	/**
-	 * @return array
-	 */
+        if (!count($tasks)) {
+            return array(
+                'status'  => '',
+                'message' => 'No import data available.',
+            );
 
-	public function returnStatusOfImport()
-	{
-		$tasks = $this->em->getRepository('DeskPRO:TaskQueue')->getTasksInGroup('data_import', true);
+        } else {
 
-		if (!count($tasks)) {
+            /** @var TaskQueue $task */
+            $task   = end($tasks);
+            $data = $task['task_data'];
 
-			return array(
-				'status'  => '',
-				'message' => 'No import data available.',
-			);
+            if ('completed' === $task['status'] || 'errored' === $task['status']) {
+                /** @var Blob $logBlob */
+                $logBlob = $this->em->find('DeskPRO:Blob', $data['log_blob_id']);
 
-		} else {
+                return array(
+                    'status'  => 'completed',
+                    'message' => $task['run_status'],
+                    'imported' => $data['imported'],
+                    'failed' => $data['failed'],
+                    'log' => $logBlob ? $logBlob->getDownloadUrl(true) : null,
+                );
+            }
 
-			/** @var TaskQueue $task */
-			$task   = end($tasks);
-			$data = $task['task_data'];
+            return array(
+                'status'  => 'progress',
+                'message' => $task['run_status'] ?: 'Import will start in 1 minute',
+            );
+        }
+    }
 
-			if ('completed' === $task['status'] || 'errored' === $task['status']) {
-				/** @var Blob $logBlob */
-				$logBlob = $this->em->find('DeskPRO:Blob', $data['log_blob_id']);
-				return array(
-					'status'  => 'completed',
-					'message' => $task['run_status'],
-					'imported' => $data['imported'],
-					'failed' => $data['failed'],
-					'log' => $logBlob ? $logBlob->getDownloadUrl(true) : null,
-				);
-			}
+    /**
+     * @param string $filename
+     * @param string $user_filename
+     *
+     * @return array
+     */
 
-			return array(
-				'status'  => 'progress',
-				'message' => $task['run_status'] ?: 'Import will start in 1 minute',
-			);
-		}
-	}
+    protected function _returnUploadFileResponse($filename, $user_filename, array $options = array())
+    {
+        $csv_path = dp_get_tmp_dir() . '/blob-' . $filename . '.csv';
+        $blob     = App::getOrm()->find('DeskPRO:Blob', $filename);
 
-	/**
-	 * @param string $filename
-	 * @param string $user_filename
-	 *
-	 * @return array
-	 */
+        if (!$blob) {
+            return array('error' => 'no_move');
+        }
 
-	protected function _returnUploadFileResponse($filename, $user_filename, array $options = array())
-	{
-		$csv_path = dp_get_tmp_dir() . '/blob-' . $filename . '.csv';
-		$blob     = App::getOrm()->find('DeskPRO:Blob', $filename);
+        if (!is_file($csv_path)) {
 
-		if (!$blob) {
+            App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
+        }
 
-			return array('error' => 'no_move');
-		}
+        $originalOptions = $options;
+        $options = CsvImport::getOptions($options);
+        $fp           = fopen($csv_path, 'r');
+        $columns      = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
+        $column_count = count($columns);
 
-		if (!is_file($csv_path)) {
+        $examples      = array();
+        $example_total = 0;
 
-			App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
-		}
+        for ($i = 0; $i < 100; $i++) {
 
-		$originalOptions = $options;
-		$options = CsvImport::getOptions($options);
-		$fp           = fopen($csv_path, 'r');
-		$columns      = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
-		$column_count = count($columns);
+            $row = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 
-		$examples      = array();
-		$example_total = 0;
+            if (!$row) {
+                // eof or can't read properly
+                break;
+            }
 
-		for ($i = 0; $i < 100; $i++) {
+            if (isset($row[0]) && $row[0] === null) {
+                // empty row
+                continue;
+            }
 
-			$row = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
+            foreach ($row AS $id => $value) {
 
-			if (!$row) {
-				// eof or can't read properly
-				break;
-			}
+                if ($value !== '' && !isset($examples[$id])) {
 
-			if (isset($row[0]) && $row[0] === null) {
-				// empty row
-				continue;
-			}
+                    $examples[$id] = $value;
+                    $example_total++;
 
-			foreach ($row AS $id => $value) {
+                    if ($example_total == $column_count) {
+                        // have example for all columns
+                        break 2;
+                    }
+                }
+            }
+        }
 
-				if ($value !== '' && !isset($examples[$id])) {
+        fclose($fp);
 
-					$examples[$id] = $value;
-					$example_total++;
+        $custom_fields      = App::getApi('custom_fields.people')->getEnabledFields();
+        $show_welcome_email = !defined('DPC_IS_CLOUD');
 
-					if ($example_total == $column_count) {
-						// have example for all columns
-						break 2;
-					}
-				}
-			}
-		}
+        return array(
+            'filename'           => $filename,
+            'user_filename'      => $user_filename,
+            'columns'            => $columns,
+            'examples'           => $examples,
+            'custom_fields'      => $custom_fields,
+            'show_welcome_email' => $show_welcome_email,
+            'options'            => $originalOptions,
+        );
 
-		fclose($fp);
-
-		$custom_fields      = App::getApi('custom_fields.people')->getEnabledFields();
-		$show_welcome_email = !defined('DPC_IS_CLOUD');
-
-		return array(
-			'filename'           => $filename,
-			'user_filename'      => $user_filename,
-			'columns'            => $columns,
-			'examples'           => $examples,
-			'custom_fields'      => $custom_fields,
-			'show_welcome_email' => $show_welcome_email,
-			'options'            => $originalOptions,
-		);
-
-	}
+    }
 }

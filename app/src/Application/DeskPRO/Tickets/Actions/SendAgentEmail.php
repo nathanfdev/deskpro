@@ -51,249 +51,255 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SendAgentEmail extends AbstractEmailAction implements ActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('agent_ids');
-		$options->addValidNames('template', 'from_name', 'from_account', 'headers');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('agent_ids');
+        $options->addValidNames('template', 'from_name', 'from_account', 'headers');
 
-	/**
-	 * @param Ticket $ticket
-	 * @param array $agent_ids
-	 * @param ExecutorContextInterface $context
-	 * @return array
-	 */
-	private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
-	{
-		$agents = array();
+        return $options;
+    }
 
-		$person_context = $context->getPersonContext();
-		$is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
+    /**
+     * @param  Ticket                   $ticket
+     * @param  array                    $agent_ids
+     * @param  ExecutorContextInterface $context
+     * @return array
+     */
+    private function resolveAgents(Ticket $ticket, array $agent_ids, ExecutorContextInterface $context)
+    {
+        $agents = array();
 
-		foreach ($agent_ids as $aid) {
+        $person_context = $context->getPersonContext();
+        $is_notif_disabled = $this->getContainer()->getSetting('agent.disable_notifications');
 
-			if ('all_agents' === $aid) {
-				$agents = $this->getContainer()->getAgentData()->getAgents();
-				break;
-			}
+        foreach ($agent_ids as $aid) {
 
-			if ($aid == 'notify_list') {
+            if ('all_agents' === $aid) {
+                $agents = $this->getContainer()->getAgentData()->getAgents();
+                break;
+            }
 
-				if ($is_notif_disabled) continue;
+            if ($aid == 'notify_list') {
 
-				$change_detect = $this->getContainer()->getTicketFilterChangeDetector();
-				$change_set    = $change_detect->getFilterChangeSet($ticket, $context);
-				$list_builder  = new AgentNotifyListBuilder(
-					$ticket,
-					$change_set,
-					$this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
-				);
-				$list_builder->setLogger($context->getLogger());
+                if ($is_notif_disabled) continue;
 
-				$notify = $list_builder->genNotifyList();
+                $change_detect = $this->getContainer()->getTicketFilterChangeDetector();
+                $change_set    = $change_detect->getFilterChangeSet($ticket, $context);
+                $list_builder  = new AgentNotifyListBuilder(
+                    $ticket,
+                    $change_set,
+                    $this->getContainer()->getEm()->getRepository('DeskPRO:TicketFilterSubscription')
+                );
+                $list_builder->setLogger($context->getLogger());
 
-				foreach ($notify as $n) {
-					// dont send to self
-					if ($person_context && $person_context === $n['agent']) {
-						$override = false;
-						if ($person_context->getPref('agent_notify_override.all.email')) {
-							$override = true;
-						} else if ($person_context->getPref('agent_notify_override.forward.email') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
-							$override = true;
-						}
+                $notify = $list_builder->genNotifyList();
 
-						if (!$override) {
-							$context->getLogger()->debug("[SendAgentEmail] notify_list skipping self");
-							continue;
-						} else {
-							$context->getLogger()->debug("[SendAgentEmail] notify_list sending to self because got override preference");
-						}
-					}
-					if (in_array('email', $n['types'])) {
-						$agents[] = $n['agent'];
-					}
-				}
+                foreach ($notify as $n) {
+                    // dont send to self
+                    if ($person_context && $person_context === $n['agent']) {
+                        $override = false;
+                        if ($person_context->getPref('agent_notify_override.all.email')) {
+                            $override = true;
+                        } elseif ($person_context->getPref('agent_notify_override.forward.email') && $context->getEventType() == 'newticket' && $context->getEventMethod() == 'email') {
+                            $override = true;
+                        }
 
-				$force_list = $context->getVars()->get('agent_force_subscription_list', array());
-				if ($force_list) {
-					$context->getLogger()->debug("[SendAgentEmail] Appending force list");
-					$agents = array_merge($agents, $force_list);
-				}
+                        if (!$override) {
+                            $context->getLogger()->debug("[SendAgentEmail] notify_list skipping self");
+                            continue;
+                        } else {
+                            $context->getLogger()->debug("[SendAgentEmail] notify_list sending to self because got override preference");
+                        }
+                    }
+                    if (in_array('email', $n['types'])) {
+                        $agents[] = $n['agent'];
+                    }
+                }
 
-			} else {
-				$agent_data = $this->getContainer()->getAgentData();
-				$agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
-			}
-		}
+                $force_list = $context->getVars()->get('agent_force_subscription_list', array());
+                if ($force_list) {
+                    $context->getLogger()->debug("[SendAgentEmail] Appending force list");
+                    $agents = array_merge($agents, $force_list);
+                }
 
-		if ($context->getVars()->has('mention_agents')) {
-			$agents = array_merge($agents, array_values($context->getVars()->get('mention_agents')));
-		}
+            } else {
+                $agent_data = $this->getContainer()->getAgentData();
+                $agents = array_merge($agents, $agent_data->selectAgents($aid, $person_context, $ticket));
+            }
+        }
 
-		if (!$agents) {
-			return array();
-		}
+        if ($context->getVars()->has('mention_agents')) {
+            $agents = array_merge($agents, array_values($context->getVars()->get('mention_agents')));
+        }
 
-		$agents = array_unique($agents);
-		$agents = array_filter($agents, function($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
+        if (!$agents) {
+            return array();
+        }
 
-		return $agents;
-	}
+        $agents = array_unique($agents);
+        $agents = array_filter($agents, function ($a) { return $a->is_agent && !$a->is_deleted && !$a->is_disabled; });
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getLogger()->debug("[SendAgentEmail] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
-		$start_time = microtime(true);
-
-		$agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
-
-		if (!$agents) {
-			$context->getLogger()->debug("[SendAgentEmail] No agents to send to");
-			return;
-		}
-
-		try {
-			$from_account = $this->getFromEmailAccountOption($ticket, $context);
-		} catch (\InvalidArgumentException $e) {
-			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
-			return;
-		}
-
-		try {
-			$template = $this->getEmailTemplateOption($ticket, $context, false);
-		} catch (\InvalidArgumentException $e) {
-			$context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
-			return;
-		}
-
-		#-------------------------
-		# Vars
-		#-------------------------
-
-		$default_vars = $this->getStandardEmailVars($ticket, $context, 'agent');
-
-		#-------------------------
-		# Send emails
-		#-------------------------
-
-		$sent_count = 0;
-
-		$state = $ticket->getStateChangeRecorder();
-		$fn_check_new_part = function($agent) use ($state, $ticket) {
-			$has = false;
-			foreach ($ticket->participants as $p) {
-				if ($p->person === $agent) {
-					$has = true;
-					break;
-				}
-			}
-			if (!$has) {
-				return false;
-			}
-
-			foreach ($state->getChangesForField('participants') as $change) {
-				if ($change instanceof ChangeCollection) {
-					foreach ($change->getAddedElements() as $p) {
-						if ($p->person === $agent) {
-							return true;
-						}
-					}
-				}
-			}
-
-			return false;
-		};
-
-		if ($context->getVars()->has('mention_agents')) {
-			$mentioned_agents_map = array_fill_keys(array_keys($context->getVars()->get('mention_agents')), true);
-		} else {
-			$mentioned_agents_map = array();
-		}
-
-		foreach ($agents as $agent) {
-			$sent_count++;
-
-			$context->getLogger()->debug(sprintf("[SendAgentEmail] Sending to <Person:%d> %s", $agent->id, $agent->getDisplayName()));
-
-			$vars = $default_vars;
-
-			$type_flag = null;
-			if ($state->hasChangedField('agent') && $ticket->agent && $ticket->agent === $agent) {
-				$type_flag = 'assigned';
-			} else if ($state->hasChangedField('agent_team') && $ticket->agent_team && $agent->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
-				$type_flag = 'assigned_team';
-			} else if ($state->hasChangedField('participants') && $fn_check_new_part($agent)) {
-				$type_flag = 'added_part';
-			} else if ($state->hasChangedField('status')) {
-				$type_flag = 'status_changed';
-			}
-
-			if ($state->hasChangedField('ticket_sla_status')) {
-				$change = $state->getLastChangeForField('ticket_sla_status');
-				$new = $change->getNew();
-				$vars['sla'] = $new['sla'];
-				$vars['sla_status'] = $new['status'];
-			}
-
-			$vars['type_flag'] = $type_flag;
-
-			if (isset($mentioned_agents_map[$agent->id])) {
-				$vars['is_my_mention'] = true;
-			}
-
-			$ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
-				->setTicket($ticket)
-				->setToPerson($agent)
-				->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
-				->setFromEmailAccount($from_account)
-				->setAgentMode()
-				->setTemplateName($template)
-				->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
-				->setLogger($context->getLogger())
-				->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
-				->buildTicketEmail();
-
-			try {
-				$ticket_email->send($vars);
-				$this->recordEmailTicketLog($ticket_email, $ticket, $context);
-			} catch (\Exception $e) {
-				$context->getLogger()->error(
-					sprintf("[SendAgentEmail] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
-					array('exception' => $e)
-				);
-
-				throw $e;
-			}
-		}
-
-		$context->getLogger()->info(sprintf("[SendAgentEmail] Send %d messages in %.3fs", $sent_count, microtime(true)-$start_time));
-	}
+        return $agents;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
-			$context->getLogger()->debug("[SendUserEmail] no outgoing email accounts are defined");
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $context->getLogger()->debug("[SendAgentEmail] Begin :: agent_ids = " . implode(', ', $this->getActionOption('agent_ids')));
+        $start_time = microtime(true);
 
-		if ($context->getVars()->get('mute_agent_emails')) {
-			$context->getLogger()->debug("[SendAgentEmail] mute_agent_emails = true");
-			return true;
-		}
+        $agents = $this->resolveAgents($ticket, $this->getActionOption('agent_ids'), $context);
 
-		return false;
-	}
+        if (!$agents) {
+            $context->getLogger()->debug("[SendAgentEmail] No agents to send to");
+
+            return;
+        }
+
+        try {
+            $from_account = $this->getFromEmailAccountOption($ticket, $context);
+        } catch (\InvalidArgumentException $e) {
+            $context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+
+            return;
+        }
+
+        try {
+            $template = $this->getEmailTemplateOption($ticket, $context, false);
+        } catch (\InvalidArgumentException $e) {
+            $context->getLogger()->warn("[SendAgentEmail] Error {$e->getMessage()}");
+
+            return;
+        }
+
+        #-------------------------
+        # Vars
+        #-------------------------
+
+        $default_vars = $this->getStandardEmailVars($ticket, $context, 'agent');
+
+        #-------------------------
+        # Send emails
+        #-------------------------
+
+        $sent_count = 0;
+
+        $state = $ticket->getStateChangeRecorder();
+        $fn_check_new_part = function ($agent) use ($state, $ticket) {
+            $has = false;
+            foreach ($ticket->participants as $p) {
+                if ($p->person === $agent) {
+                    $has = true;
+                    break;
+                }
+            }
+            if (!$has) {
+                return false;
+            }
+
+            foreach ($state->getChangesForField('participants') as $change) {
+                if ($change instanceof ChangeCollection) {
+                    foreach ($change->getAddedElements() as $p) {
+                        if ($p->person === $agent) {
+                            return true;
+                        }
+                    }
+                }
+            }
+
+            return false;
+        };
+
+        if ($context->getVars()->has('mention_agents')) {
+            $mentioned_agents_map = array_fill_keys(array_keys($context->getVars()->get('mention_agents')), true);
+        } else {
+            $mentioned_agents_map = array();
+        }
+
+        foreach ($agents as $agent) {
+            $sent_count++;
+
+            $context->getLogger()->debug(sprintf("[SendAgentEmail] Sending to <Person:%d> %s", $agent->id, $agent->getDisplayName()));
+
+            $vars = $default_vars;
+
+            $type_flag = null;
+            if ($state->hasChangedField('agent') && $ticket->agent && $ticket->agent === $agent) {
+                $type_flag = 'assigned';
+            } elseif ($state->hasChangedField('agent_team') && $ticket->agent_team && $agent->getHelper('Agent')->isTeamMember($ticket->agent_team->id)) {
+                $type_flag = 'assigned_team';
+            } elseif ($state->hasChangedField('participants') && $fn_check_new_part($agent)) {
+                $type_flag = 'added_part';
+            } elseif ($state->hasChangedField('status')) {
+                $type_flag = 'status_changed';
+            }
+
+            if ($state->hasChangedField('ticket_sla_status')) {
+                $change = $state->getLastChangeForField('ticket_sla_status');
+                $new = $change->getNew();
+                $vars['sla'] = $new['sla'];
+                $vars['sla_status'] = $new['status'];
+            }
+
+            $vars['type_flag'] = $type_flag;
+
+            if (isset($mentioned_agents_map[$agent->id])) {
+                $vars['is_my_mention'] = true;
+            }
+
+            $ticket_email = TicketEmailBuilder::createFromContainer($this->getContainer())
+                ->setTicket($ticket)
+                ->setToPerson($agent)
+                ->setFromName($this->renderFromName($this->getActionOption('from_name'), $ticket, $context, 'agent'))
+                ->setFromEmailAccount($from_account)
+                ->setAgentMode()
+                ->setTemplateName($template)
+                ->setMaxAttachSize($this->getContainer()->getSetting('core.sendemail_attach_maxsize'))
+                ->setLogger($context->getLogger())
+                ->setHeaders($this->processHeaders($this->getActionOption('headers', array()), $ticket, $context))
+                ->buildTicketEmail();
+
+            try {
+                $ticket_email->send($vars);
+                $this->recordEmailTicketLog($ticket_email, $ticket, $context);
+            } catch (\Exception $e) {
+                $context->getLogger()->error(
+                    sprintf("[SendAgentEmail] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
+                    array('exception' => $e)
+                );
+
+                throw $e;
+            }
+        }
+
+        $context->getLogger()->info(sprintf("[SendAgentEmail] Send %d messages in %.3fs", $sent_count, microtime(true)-$start_time));
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$this->getContainer()->getEmailAccountManager()->countOutgoingAccounts()) {
+            $context->getLogger()->debug("[SendUserEmail] no outgoing email accounts are defined");
+
+            return true;
+        }
+
+        if ($context->getVars()->get('mute_agent_emails')) {
+            $context->getLogger()->debug("[SendAgentEmail] mute_agent_emails = true");
+
+            return true;
+        }
+
+        return false;
+    }
 }

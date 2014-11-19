@@ -41,39 +41,39 @@ use Application\DeskPRO\App;
  */
 class Staff extends PortalItemAbstract
 {
-	public function getCacheOptions()
-	{
-		return array(
-			'lifetime' => 1800, // 30 mins
-			'user_indifferent' => true
-		);
-	}
+    public function getCacheOptions()
+    {
+        return array(
+            'lifetime' => 1800, // 30 mins
+            'user_indifferent' => true
+        );
+    }
 
-	public function getHtml()
-	{
-		if ($this->section == 'sidebar') {
-			return $this->getSidebarHtml();
-		}
+    public function getHtml()
+    {
+        if ($this->section == 'sidebar') {
+            return $this->getSidebarHtml();
+        }
 
-		return '';
-	}
+        return '';
+    }
 
-	public function getSidebarHtml()
-	{
-		if ($this->getOption('show_all')) {
-			$staff = App::getEntityRepository('DeskPRO:Person')->getAgents();
-		} else {
-			$staff = App::getEntityRepository('DeskPRO:Person')->getActiveAgents();
-			if (App::getCurrentPerson() && App::getCurrentPerson()->is_agent) {
-				$staff[App::getCurrentPerson()->getId()] = App::getCurrentPerson();
-			}
-		}
+    public function getSidebarHtml()
+    {
+        if ($this->getOption('show_all')) {
+            $staff = App::getEntityRepository('DeskPRO:Person')->getAgents();
+        } else {
+            $staff = App::getEntityRepository('DeskPRO:Person')->getActiveAgents();
+            if (App::getCurrentPerson() && App::getCurrentPerson()->is_agent) {
+                $staff[App::getCurrentPerson()->getId()] = App::getCurrentPerson();
+            }
+        }
 
-		$html = $this->renderView('UserBundle:Portal:staff-sidebar.html.twig', array(
-			'staff' => $staff,
-			'title' => $this->getOption('title'),
-		));
+        $html = $this->renderView('UserBundle:Portal:staff-sidebar.html.twig', array(
+            'staff' => $staff,
+            'title' => $this->getOption('title'),
+        ));
 
-		return $html;
-	}
+        return $html;
+    }
 }

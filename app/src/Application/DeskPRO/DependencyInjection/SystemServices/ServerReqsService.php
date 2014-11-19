@@ -39,9 +39,10 @@ use Application\DeskPRO\ServerReqs\ServerReqs;
 
 class ServerReqsService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new ServerReqs($container->getEm());
+
         return $x;
-	}
+    }
 }

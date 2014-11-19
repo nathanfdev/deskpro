@@ -45,124 +45,125 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class DownloadsController extends AbstractController
 {
-	public function indexAction()
-	{
-		return $this->render('Theme:Downloads:index.html.twig');
-	}
+    public function indexAction()
+    {
+        return $this->render('Theme:Downloads:index.html.twig');
+    }
 
-	/**
-	 * @ParamConverter(name="category", converter="deskpro_slug")
-	 */
-	public function browseAction(DownloadCategory $category)
-	{
-		return $this->render('Theme:Downloads:browse.html.twig', array(
-				'cat' => $category
-			)
-		);
-	}
-
-
-	/**
-	 * @ParamConverter(name="download", converter="deskpro_slug")
-	 */
-	public function viewAction(Download $download)
-	{
-		return $this->render('Theme:Downloads:view.html.twig', array(
-				'download' => $download
-			)
-		);
-	}
+    /**
+     * @ParamConverter(name="category", converter="deskpro_slug")
+     */
+    public function browseAction(DownloadCategory $category)
+    {
+        return $this->render('Theme:Downloads:browse.html.twig', array(
+                'cat' => $category
+            )
+        );
+    }
 
 
-	/**
-	 * @ParamConverter(name="download", converter="deskpro_slug")
-	 */
-	public function downloadAction(Download $download)
-	{
-		return new Response('downlading file...');
-	}
+    /**
+     * @ParamConverter(name="download", converter="deskpro_slug")
+     */
+    public function viewAction(Download $download)
+    {
+        return $this->render('Theme:Downloads:view.html.twig', array(
+                'download' => $download
+            )
+        );
+    }
 
 
-	public function listAction(Request $request)
-	{
-		$options_resolver = new OptionsResolver();
-		$options_resolver
-			->setDefaults(
-				array(
-					'count' => 10,
-					'style' => 'small'
-				)
-			)
-			->setAllowedValues(
-				array(
-					'style' => array('small')
-				)
-			);
-		$options = $options_resolver->resolve($request->query->get('tag_options'));
-
-		$downloads  = $this->getDownloadsRepo()->getNewest($options['count']);
-		$total = $this->getDownloadsRepo()->countPublished();
-
-		return $this->render(
-			sprintf('Theme:Downloads:list_%s.html.twig', $options['style']),
-			array(
-				'count_downloads' => $total,
-				'downloads'    => $downloads
-			)
-		);
-	}
+    /**
+     * @ParamConverter(name="download", converter="deskpro_slug")
+     */
+    public function downloadAction(Download $download)
+    {
+        return new Response('downlading file...');
+    }
 
 
-	public function catsAction(Request $request)
-	{
-		$options_resolver = new OptionsResolver();
-		$options_resolver
-			->setDefaults(
-				array(
-					'parent' => null,
-					'style'  => 'small'
-				)
-			)
-			->setAllowedValues(
-				array(
-					'style' => array('small')
-				)
-			);
-		$options = $options_resolver->resolve($request->query->get('tag_options'));
+    public function listAction(Request $request)
+    {
+        $options_resolver = new OptionsResolver();
+        $options_resolver
+            ->setDefaults(
+                array(
+                    'category' => 0, //TODO
+                    'count' => 10,
+                    'style' => 'small'
+                )
+            )
+            ->setAllowedValues(
+                array(
+                    'style' => array('items', 'small', 'simple')
+                )
+            );
+        $options = $options_resolver->resolve($request->query->get('tag_options'));
 
-		if ($category = $options['parent']) {
-			if (!$category instanceof DownloadCategory) {
-				$category = $this->getDownloadCategoriesRepo()->find($category);
-			}
-			$categories = $category->children;
-		} else {
-			$categories = $this->getDownloadCategoriesRepo()->findBy(array('parent' => $category));
-		}
+        $downloads  = $this->getDownloadsRepo()->getNewest($options['count']);
+        $total = $this->getDownloadsRepo()->countPublished();
 
-		return $this->render(
-			sprintf('Theme:Downloads:cats_%s.html.twig', $options['style']),
-			array(
-				'cat'        => $category,
-				'child_cats' => $categories
-			)
-		);
-	}
+        return $this->render(
+            sprintf('Theme:Downloads:list_%s.html.twig', $options['style']),
+            array(
+                'count_downloads' => $total,
+                'downloads'    => $downloads
+            )
+        );
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\Download
-	 */
-	protected function getDownloadsRepo()
-	{
-		return $this->getDoctrine()->getRepository('DeskPRO:Download');
-	}
+    public function catsAction(Request $request)
+    {
+        $options_resolver = new OptionsResolver();
+        $options_resolver
+            ->setDefaults(
+                array(
+                    'parent' => null,
+                    'style'  => 'small'
+                )
+            )
+            ->setAllowedValues(
+                array(
+                    'style' => array('small', 'overview')
+                )
+            );
+        $options = $options_resolver->resolve($request->query->get('tag_options'));
+
+        if ($category = $options['parent']) {
+            if (!$category instanceof DownloadCategory) {
+                $category = $this->getDownloadCategoriesRepo()->find($category);
+            }
+            $categories = $category->children;
+        } else {
+            $categories = $this->getDownloadCategoriesRepo()->findBy(array('parent' => $category));
+        }
+
+        return $this->render(
+            sprintf('Theme:Downloads:cats_%s.html.twig', $options['style']),
+            array(
+                'cat'        => $category,
+                'child_cats' => $categories
+            )
+        );
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\EntityRepository\DownloadCategory
-	 */
-	protected function getDownloadCategoriesRepo()
-	{
-		return $this->getDoctrine()->getRepository('DeskPRO:DownloadCategory');
-	}
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Download
+     */
+    protected function getDownloadsRepo()
+    {
+        return $this->getDoctrine()->getRepository('DeskPRO:Download');
+    }
+
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\DownloadCategory
+     */
+    protected function getDownloadCategoriesRepo()
+    {
+        return $this->getDoctrine()->getRepository('DeskPRO:DownloadCategory');
+    }
 }

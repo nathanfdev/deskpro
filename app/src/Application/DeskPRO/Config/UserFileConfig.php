@@ -38,22 +38,22 @@ namespace Application\DeskPRO\Config;
  */
 class UserFileConfig extends \Orb\Util\OptionsArray
 {
-	public function __construct($name)
-	{
-		$array = array();
+    public function __construct($name)
+    {
+        $array = array();
 
-		$sys_file  = DP_ROOT . '/sys/config/config.' . $name . '.php';
-		$user_file = dirname(DP_CONFIG_FILE) . '/config.' . $name . '.php';
+        $sys_file  = DP_ROOT . '/sys/config/config.' . $name . '.php';
+        $user_file = dirname(DP_CONFIG_FILE) . '/config.' . $name . '.php';
 
-		if (file_exists($sys_file)) {
-			$array = require($sys_file);
-		}
+        if (file_exists($sys_file)) {
+            $array = require($sys_file);
+        }
 
-		if (file_exists($user_file)) {
-			$user_array = require($user_file);
-			$array = array_merge($array, $user_array);
-		}
+        if (file_exists($user_file)) {
+            $user_array = require($user_file);
+            $array = array_merge($array, $user_array);
+        }
 
-		parent::__construct($array);
-	}
+        parent::__construct($array);
+    }
 }

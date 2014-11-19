@@ -38,11 +38,11 @@ use Doctrine\ORM\EntityManager;
 
 class IpBans
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
 
-	protected $em;
+    protected $em;
 
     /**
      * @var \Application\DeskPRO\Entity\BanIp[]
@@ -50,111 +50,110 @@ class IpBans
 
     protected $ip_bans;
 
-	/**
-	 * @var int
-	 */
+    /**
+     * @var int
+     */
 
-	protected $per_page = 20;
+    protected $per_page = 20;
 
-	/**
-	 * @var int
-	 */
+    /**
+     * @var int
+     */
 
-	protected $from;
+    protected $from;
 
-	/**
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
 
-	protected $search_phrase;
+    protected $search_phrase;
 
-	/**
-	 * @param EntityManager $em
-	 */
+    /**
+     * @param EntityManager $em
+     */
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 * @param int $per_page
-	 *
-	 * @return $this
-	 */
+    /**
+     * @param int $per_page
+     *
+     * @return $this
+     */
 
-	public function setPerPage($per_page)
-	{
-		$this->per_page = $per_page;
+    public function setPerPage($per_page)
+    {
+        $this->per_page = $per_page;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param int $page
-	 *
-	 * @return $this
-	 */
+    /**
+     * @param int $page
+     *
+     * @return $this
+     */
 
-	public function setPage($page)
-	{
-		if ($page == 0) {
+    public function setPage($page)
+    {
+        if ($page == 0) {
 
-			$page = 1;
-		}
+            $page = 1;
+        }
 
-		$this->from = ($page - 1) * $this->per_page;
+        $this->from = ($page - 1) * $this->per_page;
 
-		return $this;
-	}
+        return $this;
+    }
 
-	/**
-	 * @param string $search_phrase
-	 */
+    /**
+     * @param string $search_phrase
+     */
 
-	public function setSearchPhrase($search_phrase)
-	{
-		$this->search_phrase = $search_phrase;
-	}
+    public function setSearchPhrase($search_phrase)
+    {
+        $this->search_phrase = $search_phrase;
+    }
 
-	/**
-	 * Loads ip bans data from the database
-	 */
+    /**
+     * Loads ip bans data from the database
+     */
 
-	private function preload()
-	{
-		if ($this->ip_bans !== null) {
+    private function preload()
+    {
+        if ($this->ip_bans !== null) {
+            return;
+        }
 
-			return;
-		}
-
-		$this->ip_bans = $this->em->getRepository('DeskPRO:BanIp')->getList(
-			$this->from,
-			$this->per_page,
-			$this->search_phrase
-		);
-	}
+        $this->ip_bans = $this->em->getRepository('DeskPRO:BanIp')->getList(
+            $this->from,
+            $this->per_page,
+            $this->search_phrase
+        );
+    }
 
 
-	/**
-	 * Resets this repository so the next time data is requested form it, it will
-	 * be queried again.
-	 */
+    /**
+     * Resets this repository so the next time data is requested form it, it will
+     * be queried again.
+     */
 
-	public function reset()
-	{
-		$this->ip_bans = null;
-	}
+    public function reset()
+    {
+        $this->ip_bans = null;
+    }
 
-	/**
-	 * @param int $id
-	 * @return \Application\DeskPRO\Entity\BanIp
-	 */
+    /**
+     * @param  int                               $id
+     * @return \Application\DeskPRO\Entity\BanIp
+     */
 
-	public function getById($id)
-	{
-		return $this->em->getRepository('DeskPRO:BanIp')->get($id);
-	}
+    public function getById($id)
+    {
+        return $this->em->getRepository('DeskPRO:BanIp')->get($id);
+    }
 
     /**
      * @return \Application\DeskPRO\Entity\BanIp[]
@@ -167,60 +166,60 @@ class IpBans
         return $this->ip_bans;
     }
 
-	/**
-	 *
-	 * @return array
-	 */
+    /**
+     *
+     * @return array
+     */
 
-	public function getAllAsNestedArray()
-	{
-		$this->preload();
+    public function getAllAsNestedArray()
+    {
+        $this->preload();
 
-		$result = array();
+        $result = array();
 
-		foreach ($this->ip_bans as $ip_ban) {
+        foreach ($this->ip_bans as $ip_ban) {
 
-			$result[] = array('banned_ip' => $ip_ban);
-		}
+            $result[] = array('banned_ip' => $ip_ban);
+        }
 
-		return $result;
-	}
+        return $result;
+    }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function getPageCount()
-	{
-		return $this->em->getRepository('DeskPRO:BanIp')->getPageCount($this->per_page, $this->search_phrase);
-	}
+    public function getPageCount()
+    {
+        return $this->em->getRepository('DeskPRO:BanIp')->getPageCount($this->per_page, $this->search_phrase);
+    }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function getCount()
-	{
-		return $this->em->getRepository('DeskPRO:BanIp')->getCount($this->search_phrase);
-	}
+    public function getCount()
+    {
+        return $this->em->getRepository('DeskPRO:BanIp')->getCount($this->search_phrase);
+    }
 
-	/**
-	 * @return int
-	 */
+    /**
+     * @return int
+     */
 
-	public function count()
-	{
-		$this->preload();
+    public function count()
+    {
+        $this->preload();
 
-		return count($this->ip_bans);
-	}
+        return count($this->ip_bans);
+    }
 
-	/**
-	 * @return BanIp
-	 */
+    /**
+     * @return BanIp
+     */
 
-	public function createNew()
-	{
-		return BanIp::createBanIp();
-	}
+    public function createNew()
+    {
+        return BanIp::createBanIp();
+    }
 }

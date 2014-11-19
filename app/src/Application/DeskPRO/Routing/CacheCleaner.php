@@ -42,102 +42,102 @@ namespace Application\DeskPRO\Routing;
  */
 class CacheCleaner
 {
-	/** @var array */
-	protected $routing_files;
-	/** @var array */
-	protected $gen_files;
-	/** @var int */
-	protected $oldest_cache_file;
-	/** @var int */
-	protected $newest_routing_file;
+    /** @var array */
+    protected $routing_files;
+    /** @var array */
+    protected $gen_files;
+    /** @var int */
+    protected $oldest_cache_file;
+    /** @var int */
+    protected $newest_routing_file;
 
-	public function isFresh()
-	{
-		if ($this->getRoutingTime() < $this->getCacheTime()) {
-			return true;
-		}
+    public function isFresh()
+    {
+        if ($this->getRoutingTime() < $this->getCacheTime()) {
+            return true;
+        }
 
-		return false;
-	}
+        return false;
+    }
 
-	public function clearCache()
-	{
-		foreach ($this->getCacheFiles() as $f) {
-			if (is_file($f)) {
-				unlink($f);
-			}
-		}
-	}
+    public function clearCache()
+    {
+        foreach ($this->getCacheFiles() as $f) {
+            if (is_file($f)) {
+                unlink($f);
+            }
+        }
+    }
 
-	public function getRoutingTime()
-	{
-		if ($this->newest_routing_file) {
-			return $this->newest_routing_file;
-		}
+    public function getRoutingTime()
+    {
+        if ($this->newest_routing_file) {
+            return $this->newest_routing_file;
+        }
 
-		$this->newest_routing_file = 0;
-		foreach ($this->getRoutingFiles() as $f) {
-			if (file_exists($f) && filemtime($f) > $this->newest_routing_file) {
-				$this->newest_routing_file = filemtime($f);
-			}
-		}
+        $this->newest_routing_file = 0;
+        foreach ($this->getRoutingFiles() as $f) {
+            if (file_exists($f) && filemtime($f) > $this->newest_routing_file) {
+                $this->newest_routing_file = filemtime($f);
+            }
+        }
 
-		return $this->newest_routing_file;
-	}
+        return $this->newest_routing_file;
+    }
 
-	public function getCacheTime()
-	{
-		if ($this->oldest_cache_file) {
-			$this->oldest_cache_file = 0;
-		}
+    public function getCacheTime()
+    {
+        if ($this->oldest_cache_file) {
+            $this->oldest_cache_file = 0;
+        }
 
-		$this->oldest_cache_file = time();
-		foreach ($this->getCacheFiles() as $f) {
-			if (file_exists($f) && filemtime($f) < $this->oldest_cache_file) {
-				$this->oldest_cache_file = filemtime($f);
-			}
-		}
+        $this->oldest_cache_file = time();
+        foreach ($this->getCacheFiles() as $f) {
+            if (file_exists($f) && filemtime($f) < $this->oldest_cache_file) {
+                $this->oldest_cache_file = filemtime($f);
+            }
+        }
 
-		return $this->oldest_cache_file;
-	}
+        return $this->oldest_cache_file;
+    }
 
-	public function getRoutingFiles()
-	{
-		if ($this->routing_files) {
-			return $this->routing_files;
-		}
+    public function getRoutingFiles()
+    {
+        if ($this->routing_files) {
+            return $this->routing_files;
+        }
 
-		$this->routing_files = array(
-			DP_ROOT  . '/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php',
-			DP_ROOT  . '/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php',
-			DP_ROOT  . '/src/Application/AgentBundle/Resources/config/agent-routing.php',
-			DP_ROOT  . '/src/Application/ApiBundle/Resources/config/api-routing.php',
-			DP_ROOT  . '/src/Application/UserBundle/Resources/config/user-routing.php',
-			DP_ROOT  . '/src/Application/InstallBundle/Resources/config/install-routing.php',
-			DP_ROOT  . '/src/Application/DeskPRO/Resources/config/dp-routing.php'
-		);
+        $this->routing_files = array(
+            DP_ROOT  . '/src/Application/AdminInterfaceBundle/Resources/config/admin-interface-routing.php',
+            DP_ROOT  . '/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php',
+            DP_ROOT  . '/src/Application/AgentBundle/Resources/config/agent-routing.php',
+            DP_ROOT  . '/src/Application/ApiBundle/Resources/config/api-routing.php',
+            DP_ROOT  . '/src/Application/UserBundle/Resources/config/user-routing.php',
+            DP_ROOT  . '/src/Application/InstallBundle/Resources/config/install-routing.php',
+            DP_ROOT  . '/src/Application/DeskPRO/Resources/config/dp-routing.php'
+        );
 
-		return $this->routing_files;
-	}
+        return $this->routing_files;
+    }
 
-	public function getCacheFiles()
-	{
-		if ($this->gen_files) {
-			return $this->gen_files;
-		}
+    public function getCacheFiles()
+    {
+        if ($this->gen_files) {
+            return $this->gen_files;
+        }
 
-		$this->gen_files = array();
-		foreach (array('DpKernel','Install') as $k) {
-			$this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KernelDevUrlGenerator.php';
-			$this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KernelDevUrlMatcher.php';
-			$this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KernelDevUrlGenerator.php';
-			$this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KernelDevUrlMatcher.php';
-			$this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KernelDevUrlGenerator.php';
-			$this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KernelDevUrlMatcher.php';
-			$this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KernelDevUrlGenerator.php';
-			$this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KernelDevUrlMatcher.php';
-		}
+        $this->gen_files = array();
+        foreach (array('DpKernel','Install') as $k) {
+            $this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KernelDevUrlGenerator.php';
+            $this->gen_files[] = dp_get_cache_dir().'/dev/'.$k.'KernelDevUrlMatcher.php';
+            $this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KernelDevUrlGenerator.php';
+            $this->gen_files[] = dp_get_cache_dir().'/prod/'.$k.'KernelDevUrlMatcher.php';
+            $this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KernelDevUrlGenerator.php';
+            $this->gen_files[] = dp_get_cache_dir().'/dev-cloud/'.$k.'KernelDevUrlMatcher.php';
+            $this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KernelDevUrlGenerator.php';
+            $this->gen_files[] = dp_get_cache_dir().'/prod-cloud/'.$k.'KernelDevUrlMatcher.php';
+        }
 
-		return $this->gen_files;
-	}
+        return $this->gen_files;
+    }
 }

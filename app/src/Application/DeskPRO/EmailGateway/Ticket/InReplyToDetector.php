@@ -45,117 +45,116 @@ use Application\DeskPRO\Entity\Ticket;
  */
 class InReplyToDetector implements TicketDetectorInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\TicketAccessCode
-	 */
-	protected $_found_person = null;
+    /**
+     * @var \Application\DeskPRO\Entity\TicketAccessCode
+     */
+    protected $_found_person = null;
 
 
-	/**
-	 * @param AbstractReader $reader
-	 * @return Ticket|null
-	 */
-	public function findExistingTicket(AbstractReader $reader)
-	{
-		$this->_found_person = null;
+    /**
+     * @param  AbstractReader $reader
+     * @return Ticket|null
+     */
+    public function findExistingTicket(AbstractReader $reader)
+    {
+        $this->_found_person = null;
 
-		#------------------------------
-		# Fetch message Ids from headers
-		#------------------------------
+        #------------------------------
+        # Fetch message Ids from headers
+        #------------------------------
 
-		$search_text = array();
+        $search_text = array();
 
-		// In-Reply-To should have the direct message
-		// being replied to
-		$in_reply_to = $reader->getHeader('In-Reply-To');
-		if ($in_reply_to) {
-			foreach ($in_reply_to->getAllParts() as $part) {
-				$search_text[] = $part;
-			}
-		}
+        // In-Reply-To should have the direct message
+        // being replied to
+        $in_reply_to = $reader->getHeader('In-Reply-To');
+        if ($in_reply_to) {
+            foreach ($in_reply_to->getAllParts() as $part) {
+                $search_text[] = $part;
+            }
+        }
 
-		// References may have other messages in a thread,
-		// so also a good place to look for the TAC
-		$references = $reader->getHeader('References');
-		if ($references) {
-			foreach ($references->getAllParts() as $part) {
-				$search_text[] = $part;
-			}
-		}
+        // References may have other messages in a thread,
+        // so also a good place to look for the TAC
+        $references = $reader->getHeader('References');
+        if ($references) {
+            foreach ($references->getAllParts() as $part) {
+                $search_text[] = $part;
+            }
+        }
 
-		$search_text = implode(' ', $search_text);
+        $search_text = implode(' ', $search_text);
 
-		#------------------------------
-		# Try to find TAC
-		#------------------------------
+        #------------------------------
+        # Try to find TAC
+        #------------------------------
 
-		$authcode_min_len = Ticket::TAC_AUTHCODE_LEN + 1;
-		$authcode_max_len = Ticket::TAC_AUTHCODE_LEN_MAX;
+        $authcode_min_len = Ticket::TAC_AUTHCODE_LEN + 1;
+        $authcode_max_len = Ticket::TAC_AUTHCODE_LEN_MAX;
 
-		$matches = null;
-		if (preg_match_all('#(?<!P)TAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+        $matches = null;
+        if (preg_match_all('#(?<!P)TAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
 
-			foreach ($matches as $m) {
-				$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
-				if (!$tac) continue;
+            foreach ($matches as $m) {
+                $tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
+                if (!$tac) continue;
 
-				$ticket = $tac->ticket;
-				if (!$ticket->isArchived()) {
-					$this->_found_person = $tac->person;
-					return $ticket;
-				}
+                $ticket = $tac->ticket;
+                if (!$ticket->isArchived()) {
+                    $this->_found_person = $tac->person;
 
-			}
-		}
+                    return $ticket;
+                }
 
-		#------------------------------
-		# Try to find PTAC
-		#------------------------------
+            }
+        }
 
-		$matches = null;
-		if (preg_match_all('#PTAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+        #------------------------------
+        # Try to find PTAC
+        #------------------------------
 
-			foreach ($matches as $m) {
-				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
+        $matches = null;
+        if (preg_match_all('#PTAC\-([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
 
-				if ($ticket && !$ticket->isArchived()) {
+            foreach ($matches as $m) {
+                $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
 
-					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+                if ($ticket && !$ticket->isArchived()) {
 
-					return $ticket;
-				}
-			}
-		}
+                    $this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
-		return null;
-	}
+                    return $ticket;
+                }
+            }
+        }
 
+        return null;
+    }
 
-	/**
-	 * @param Ticket $ticket
-	 * @param AbstractReader $reader
-	 * @return \Application\DeskPRO\Entity\Person|\Application\DeskPRO\Entity\TicketAccessCode|null
-	 */
-	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		if ($this->_found_person) {
-			return $this->_found_person;
-		}
+    /**
+     * @param  Ticket                                                                               $ticket
+     * @param  AbstractReader                                                                       $reader
+     * @return \Application\DeskPRO\Entity\Person|\Application\DeskPRO\Entity\TicketAccessCode|null
+     */
+    public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
+    {
+        if ($this->_found_person) {
+            return $this->_found_person;
+        }
 
-		return null;
-	}
+        return null;
+    }
 
-
-	/**
-	 * Add unknown users, the reply code in the address is the PTAC
-	 * so basically a passowrd
-	 *
-	 * @param Ticket $ticket
-	 * @param AbstractReader $reader
-	 * @return bool
-	 */
-	public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
-	{
-		return true;
-	}
+    /**
+     * Add unknown users, the reply code in the address is the PTAC
+     * so basically a passowrd
+     *
+     * @param  Ticket         $ticket
+     * @param  AbstractReader $reader
+     * @return bool
+     */
+    public function canAddUnknownPerson(Ticket $ticket, AbstractReader $reader)
+    {
+        return true;
+    }
 }

@@ -128,3 +128,12 @@ services:
     arguments: [@visitor_identification_provider, @logger]
     tags:
       - { name: kernel.event_subscriber }
+
+  ##
+  ## Misc
+  ##
+
+  pagerfanta.view.deskpro:
+      class: Application\PortalBundle\View\Pagerfanta\DeskproView
+      public: false
+      tags: [{ name: pagerfanta.view, alias: deskpro }]

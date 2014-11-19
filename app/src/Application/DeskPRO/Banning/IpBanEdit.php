@@ -39,68 +39,68 @@ use Doctrine\ORM\EntityManager;
 
 class IpBanEdit
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\BanIp
-	 */
+    /**
+     * @var \Application\DeskPRO\Entity\BanIp
+     */
 
-	public $ip_ban;
+    public $ip_ban;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
 
-	public $db;
+    public $db;
 
-	/**
-	 * @var string
-	 */
+    /**
+     * @var string
+     */
 
-	protected $old_ip;
+    protected $old_ip;
 
-	public function __construct(BanIp $ip_ban)
-	{
-		$this->ip_ban = $ip_ban;
-		$this->db     = App::getDb();
+    public function __construct(BanIp $ip_ban)
+    {
+        $this->ip_ban = $ip_ban;
+        $this->db     = App::getDb();
 
-		$this->old_ip = $this->ip_ban->banned_ip;
-	}
+        $this->old_ip = $this->ip_ban->banned_ip;
+    }
 
-	/**
-	 * @param EntityManager $em
-	 *
-	 * @throws \Exception
-	 */
+    /**
+     * @param EntityManager $em
+     *
+     * @throws \Exception
+     */
 
-	public function save(EntityManager $em)
-	{
-		$new_ip = $this->ip_ban->banned_ip;
+    public function save(EntityManager $em)
+    {
+        $new_ip = $this->ip_ban->banned_ip;
 
-		$this->db->beginTransaction();
+        $this->db->beginTransaction();
 
-		try {
+        try {
 
-			$this->db->executeUpdate(
-				"DELETE FROM ban_ips WHERE banned_ip = ?",
-				array($this->old_ip)
-			);
+            $this->db->executeUpdate(
+                "DELETE FROM ban_ips WHERE banned_ip = ?",
+                array($this->old_ip)
+            );
 
-			$this->db->executeUpdate(
-				"DELETE FROM ban_ips WHERE banned_ip = ?",
-				array($new_ip)
-			);
+            $this->db->executeUpdate(
+                "DELETE FROM ban_ips WHERE banned_ip = ?",
+                array($new_ip)
+            );
 
-			$ip_ban            = new BanIp();
-			$ip_ban->banned_ip = $new_ip;
+            $ip_ban            = new BanIp();
+            $ip_ban->banned_ip = $new_ip;
 
-			$em->persist($ip_ban);
-			$em->flush();
+            $em->persist($ip_ban);
+            $em->flush();
 
-			$this->db->commit();
+            $this->db->commit();
 
-		} catch(\Exception $e) {
+        } catch(\Exception $e) {
 
-			$this->db->rollback();
-			throw $e;
-		}
-	}
+            $this->db->rollback();
+            throw $e;
+        }
+    }
 }

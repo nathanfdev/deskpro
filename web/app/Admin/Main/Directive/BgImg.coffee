@@ -1,5 +1,5 @@
 define ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -8,18 +8,18 @@ define ->
     # Example
     # -------
     # <span bg-img="{{agent.picture_url}}"></span>
-	###
-	Admin_Main_Directive_BgImg = [ ->
-		return {
-			restrict: 'A',
-			scope: {
-				'bgImg': '&'
-			},
-			link: (scope, element, attrs) ->
-				element.css({
-					'background-image': 'url("' + scope.$eval(scope.bgImg) + '")'
-				})
-		}
-	]
+  ###
+  Admin_Main_Directive_BgImg = [ ->
+    return {
+      restrict: 'A',
+      scope: {
+        'bgImg': '&'
+      },
+      link: (scope, element, attrs) ->
+        element.css({
+          'background-image': 'url("' + scope.$eval(scope.bgImg) + '")'
+        })
+    }
+  ]
 
-	return Admin_Main_Directive_BgImg
+  return Admin_Main_Directive_BgImg

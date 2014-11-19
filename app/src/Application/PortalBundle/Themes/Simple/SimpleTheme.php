@@ -38,44 +38,43 @@ use Application\PortalBundle\Theme\AbstractTheme;
 
 class SimpleTheme extends AbstractTheme
 {
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getId()
-	{
-		return 'simple';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getId()
+    {
+        return 'simple';
+    }
 
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getName()
-	{
-		return 'Simple';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getName()
+    {
+        return 'Simple';
+    }
 
 
-	public function getTags()
-	{
-		return array();
-	}
+    public function getTags()
+    {
+        return array();
+    }
 
 
-	/**
-	 * {@inheritdoc}
-	 */
-	public function getBaseTemplateDir()
-	{
-		return __DIR__ . '/Resources/views';
-	}
+    /**
+     * {@inheritdoc}
+     */
+    public function getBaseTemplateDir()
+    {
+        return __DIR__ . '/Resources/views';
+    }
 
-
-	/**
-	 * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
-	 */
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
+    /**
+     * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
+     */
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
 }

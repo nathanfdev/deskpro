@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1347444434 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add labels_chat_conversations");
-		$this->execMutateSql("CREATE TABLE labels_chat_conversations (chat_id INT NOT NULL, `label` VARCHAR(255) NOT NULL, INDEX IDX_99205D121A9A7125 (chat_id), INDEX label_idx (label), PRIMARY KEY(chat_id, label)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE labels_chat_conversations ADD CONSTRAINT FK_99205D121A9A7125 FOREIGN KEY (chat_id) REFERENCES chat_conversations (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Add labels_chat_conversations");
+        $this->execMutateSql("CREATE TABLE labels_chat_conversations (chat_id INT NOT NULL, `label` VARCHAR(255) NOT NULL, INDEX IDX_99205D121A9A7125 (chat_id), INDEX label_idx (label), PRIMARY KEY(chat_id, label)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE labels_chat_conversations ADD CONSTRAINT FK_99205D121A9A7125 FOREIGN KEY (chat_id) REFERENCES chat_conversations (id) ON DELETE CASCADE");
+    }
 }

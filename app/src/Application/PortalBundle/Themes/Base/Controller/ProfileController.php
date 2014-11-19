@@ -38,13 +38,13 @@ use Application\PortalBundle\Controller\AbstractController;
 
 class ProfileController extends AbstractController
 {
-	public function registerAction()
-	{
-		return $this->render('Theme:Profile:register.html.twig');
-	}
+    public function registerAction()
+    {
+        return $this->render('Theme:Profile:register.html.twig');
+    }
 
-	public function editAction()
-	{
-		return $this->render('Theme:Profile:edit.html.twig');
-	}
+    public function editAction()
+    {
+        return $this->render('Theme:Profile:edit.html.twig');
+    }
 }

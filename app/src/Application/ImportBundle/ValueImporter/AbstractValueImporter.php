@@ -38,105 +38,100 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractValueImporter
 {
-	const MODE_LIVE = 'live';
-	const MODE_TEST = 'test';
+    const MODE_LIVE = 'live';
+    const MODE_TEST = 'test';
 
-	/**
-	 * @var string
-	 */
-	private $mode;
+    /**
+     * @var string
+     */
+    private $mode;
 
-	/**
-	 * @var \Doctrine\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * @var \Application\ImportBundle\RecordMapper\RecordMapperRegistry
-	 */
-	private $mappers;
+    /**
+     * @var \Application\ImportBundle\RecordMapper\RecordMapperRegistry
+     */
+    private $mappers;
 
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	private $logger;
-	
-	/**
-	 * @var DeskPROContainer $container
-	 */
-	private $container;
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
 
-	/**
-	 * @param string               $mode;
-	 * @param Connection           $db
-	 * @param LoggerInterface      $logger
-	 * @param RecordMapperRegistry $mappers
-	 */
-	public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers)
-	{
-		$this->mode    = $mode;
-		$this->container = $container;
-		$this->db      = $container->getDb();
-		$this->logger  = $logger;
-		$this->mappers = $mappers;
-	}
-	
-	/**
-	 * @return DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return $this->container;
-	}
+    /**
+     * @var DeskPROContainer $container
+     */
+    private $container;
 
+    /**
+     * @param string               $mode;
+     * @param Connection           $db
+     * @param LoggerInterface      $logger
+     * @param RecordMapperRegistry $mappers
+     */
+    public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers)
+    {
+        $this->mode    = $mode;
+        $this->container = $container;
+        $this->db      = $container->getDb();
+        $this->logger  = $logger;
+        $this->mappers = $mappers;
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isTestMode()
-	{
-		return $this->mode == self::MODE_TEST;
-	}
-	
-	/**
-	 * 
-	 * @return string
-	 */
-	public function getMode()
-	{
-		return $this->mode;
-	}
+    /**
+     * @return DeskproContainer
+     */
+    public function getContainer()
+    {
+        return $this->container;
+    }
 
+    /**
+     * @return bool
+     */
+    public function isTestMode()
+    {
+        return $this->mode == self::MODE_TEST;
+    }
 
-	/**
-	 * @return Connection
-	 */
-	public function getDb()
-	{
-		return $this->db;
-	}
+    /**
+     *
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
 
+    /**
+     * @return Connection
+     */
+    public function getDb()
+    {
+        return $this->db;
+    }
 
-	/**
-	 * @return LoggerInterface
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
+    /**
+     * @return LoggerInterface
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 
+    /**
+     * @return RecordMapperRegistry
+     */
+    public function getMappers()
+    {
+        return $this->mappers;
+    }
 
-	/**
-	 * @return RecordMapperRegistry
-	 */
-	public function getMappers()
-	{
-		return $this->mappers;
-	}
-
-
-	/**
-	 * @param mixed $value
-	 */
-	abstract public function importValue($value);
+    /**
+     * @param mixed $value
+     */
+    abstract public function importValue($value);
 }

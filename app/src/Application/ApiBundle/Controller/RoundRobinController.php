@@ -42,168 +42,168 @@ use Application\DeskPRO\Tickets\Triggers\TriggerActions;
 
 class RoundRobinController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new UserTypePermission(UserTypePermission::AGENT);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new UserTypePermission(UserTypePermission::AGENT);
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
-		$data = array();
-		/** @var $rr RoundRobin */
-		foreach ($this->em->getRepository('DeskPRO:RoundRobin')->findAll() as $rr) {
-			$data[] = $rr->toApiData();
-		}
+    public function listAction()
+    {
+        $data = array();
+        /** @var $rr RoundRobin */
+        foreach ($this->em->getRepository('DeskPRO:RoundRobin')->findAll() as $rr) {
+            $data[] = $rr->toApiData();
+        }
 
-		return $this->createApiResponse($data);
-	}
+        return $this->createApiResponse($data);
+    }
 
-	###################################################################################################################
-	# get RR
-	####################################################################################################################
+    ###################################################################################################################
+    # get RR
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		/** @var $rr RoundRobin */
-		if (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
-			throw $this->createNotFoundException();
-		}
+    public function getAction($id)
+    {
+        /** @var $rr RoundRobin */
+        if (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
+            throw $this->createNotFoundException();
+        }
 
-		return $this->createApiResponse($rr->toApiData());
-	}
+        return $this->createApiResponse($rr->toApiData());
+    }
 
-	###################################################################################################################
-	# save RR
-	####################################################################################################################
+    ###################################################################################################################
+    # save RR
+    ####################################################################################################################
 
-	public function setAction($id)
-	{
-		/** @var \Application\DeskPRO\EntityRepository\RoundRobin $rep */
-		$rep = $this->em->getRepository('DeskPRO:RoundRobin');
+    public function setAction($id)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\RoundRobin $rep */
+        $rep = $this->em->getRepository('DeskPRO:RoundRobin');
 
-		/** @var $rr RoundRobin */
-		if (!$id) {
-			$rr = new RoundRobin();
-			$this->em->persist($rr);
-		} elseif (!$rr = $rep->find($id)) {
-			throw $this->createNotFoundException();
-		}
+        /** @var $rr RoundRobin */
+        if (!$id) {
+            $rr = new RoundRobin();
+            $this->em->persist($rr);
+        } elseif (!$rr = $rep->find($id)) {
+            throw $this->createNotFoundException();
+        }
 
-		$data = $this->in->getAll('req');
-		unset($data['next']);
+        $data = $this->in->getAll('req');
+        unset($data['next']);
 
-		$agents = $data['agents'];
-		unset($data['agents']);
-		$rr->fromArray($data);
-		$rep->setAgents($rr, $agents);
+        $agents = $data['agents'];
+        unset($data['agents']);
+        $rr->fromArray($data);
+        $rep->setAgents($rr, $agents);
 
-		$this->em->flush();
+        $this->em->flush();
 
-		return $this->getAction($rr['id']);
-	}
+        return $this->getAction($rr['id']);
+    }
 
-	###################################################################################################################
-	# delete RR
-	####################################################################################################################
+    ###################################################################################################################
+    # delete RR
+    ####################################################################################################################
 
-	public function deleteAction($id)
-	{
-		/** @var $rr RoundRobin */
-		if (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
-			throw $this->createNotFoundException();
-		}
+    public function deleteAction($id)
+    {
+        /** @var $rr RoundRobin */
+        if (!$rr = $this->em->getRepository('DeskPRO:RoundRobin')->find($id)) {
+            throw $this->createNotFoundException();
+        }
 
-		$this->countRoundRobinTriggers(true, $rr['id']);
-		$this->em->remove($rr);
-		$this->em->flush();
+        $this->countRoundRobinTriggers(true, $rr['id']);
+        $this->em->remove($rr);
+        $this->em->flush();
 
-		return $this->createApiResponse(array());
-	}
+        return $this->createApiResponse(array());
+    }
 
-	###################################################################################################################
-	# setup RR
-	####################################################################################################################
+    ###################################################################################################################
+    # setup RR
+    ####################################################################################################################
 
-	public function settingsAction()
-	{
-		if ($this->request->isMethod('PUT')) {
-			$enabled = $this->in->getBool('enabled');
-			$this->settings->setSetting('core.round_robin.enabled', $enabled);
+    public function settingsAction()
+    {
+        if ($this->request->isMethod('PUT')) {
+            $enabled = $this->in->getBool('enabled');
+            $this->settings->setSetting('core.round_robin.enabled', $enabled);
 
-			if (!$enabled) {
-				$this->countRoundRobinTriggers(true);
-			}
-		}
+            if (!$enabled) {
+                $this->countRoundRobinTriggers(true);
+            }
+        }
 
-		return $this->createApiResponse(array(
-			'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false),
-		));
-	}
+        return $this->createApiResponse(array(
+            'enabled' => (bool) $this->settings->get('core.round_robin.enabled', false),
+        ));
+    }
 
-	/**
-	 * check triggers using round robin id, or all round robins if id is null
-	 * @param $id
-	 * @return Response
-	 */
-	public function checkTriggersAction($id)
-	{
-		return $this->createApiResponse(array('active_triggers' => $this->countRoundRobinTriggers(false, $id)));
-	}
+    /**
+     * check triggers using round robin id, or all round robins if id is null
+     * @param $id
+     * @return Response
+     */
+    public function checkTriggersAction($id)
+    {
+        return $this->createApiResponse(array('active_triggers' => $this->countRoundRobinTriggers(false, $id)));
+    }
 
-	protected function isTriggerActionClear($action, $roundRobinId = null)
-	{
-		if ($action instanceof SetRoundRobin) {
+    protected function isTriggerActionClear($action, $roundRobinId = null)
+    {
+        if ($action instanceof SetRoundRobin) {
 
-			if (!$roundRobinId || $action->getActionOption('id') == $roundRobinId) {
-				return false;
-			}
+            if (!$roundRobinId || $action->getActionOption('id') == $roundRobinId) {
+                return false;
+            }
 
-		} elseif ($action instanceof ActionComposite) {
-			foreach ($action as $subAction) {
-				if (!$this->isTriggerActionClear($subAction)) {
-					return false;
-				}
-			}
-		}
+        } elseif ($action instanceof ActionComposite) {
+            foreach ($action as $subAction) {
+                if (!$this->isTriggerActionClear($subAction)) {
+                    return false;
+                }
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	protected function countRoundRobinTriggers($disable = false, $roundRobinId = null)
-	{
-		$count = 0;
-		$triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers();
-		foreach ($triggers as $trigger) {
-			$newActions = new TriggerActions();
-			/** @var TriggerActions $actions */
-			$actions = $trigger->actions;
-			if (!$actions) continue;
+    protected function countRoundRobinTriggers($disable = false, $roundRobinId = null)
+    {
+        $count = 0;
+        $triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers();
+        foreach ($triggers as $trigger) {
+            $newActions = new TriggerActions();
+            /** @var TriggerActions $actions */
+            $actions = $trigger->actions;
+            if (!$actions) continue;
 
-			foreach ($actions as $action) {
-				if ($this->isTriggerActionClear($action, $roundRobinId)) {
-					$newActions->addAction($action);
-				}
-			}
+            foreach ($actions as $action) {
+                if ($this->isTriggerActionClear($action, $roundRobinId)) {
+                    $newActions->addAction($action);
+                }
+            }
 
-			if ($newActions->count() !== $actions->count()) {
-				$count++;
+            if ($newActions->count() !== $actions->count()) {
+                $count++;
 
-				if ($disable) {
-					$trigger->actions = $newActions;
-					$trigger['is_enabled'] = false;
-					$this->em->flush();
-				}
-			}
-		}
+                if ($disable) {
+                    $trigger->actions = $newActions;
+                    $trigger['is_enabled'] = false;
+                    $this->em->flush();
+                }
+            }
+        }
 
-		return $count;
-	}
+        return $count;
+    }
 }

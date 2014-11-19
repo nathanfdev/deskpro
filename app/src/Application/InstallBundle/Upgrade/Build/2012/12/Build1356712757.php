@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1356712757 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Record the last ID processed by the Twitter stream processor");
-		$this->execMutateSql("ALTER TABLE twitter_accounts ADD last_processed_id BIGINT NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Record the last ID processed by the Twitter stream processor");
+        $this->execMutateSql("ALTER TABLE twitter_accounts ADD last_processed_id BIGINT NOT NULL");
+    }
 }

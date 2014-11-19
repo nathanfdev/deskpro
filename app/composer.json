@@ -1,8 +1,8 @@
 {
 	"require": {
 		"doctrine/common": "v2.4.2",
-		"doctrine/dbal": "v2.4.2",
-		"doctrine/orm": "v2.4.4",
+		"doctrine/dbal": "v2.4.3",
+		"doctrine/orm": "v2.4.6",
 		"symfony/symfony": "2.5.4",
 		"twig/twig": "v1.16.0",
 		"swiftmailer/swiftmailer": "v4.3.1",
@@ -42,11 +42,8 @@
 		"google/apiclient": "1.0.*@dev",
 		"sensio/framework-extra-bundle": "~3.0",
 		"pagerfanta/pagerfanta": "~1.0",
-		"white-october/pagerfanta-bundle": "~1.0"
-	},
-	"scripts": {
-		"post-update-cmd": ["bin/clean-vendors.sh", "bin/hack-vendors.sh"],
-		"post-install-cmd": ["bin/clean-vendors.sh", "bin/hack-vendors.sh"]
+		"white-october/pagerfanta-bundle": "~1.0",
+		"leafo/scssphp": "0.0.12"
 	},
 	"preferred-install": "dist"
 }

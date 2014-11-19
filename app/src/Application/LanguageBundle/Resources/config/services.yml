@@ -48,3 +48,9 @@ services:
     arguments: [@language_stack, @logger]
     tags:
       - { name: kernel.event_subscriber }
+
+  language_extension.twig:
+      class: Application\LanguageBundle\Twig\LanguageExtension
+      arguments: [@language_manager]
+      tags:
+        - { name: twig.extension }

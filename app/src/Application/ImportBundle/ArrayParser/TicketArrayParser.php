@@ -38,97 +38,97 @@ use Application\ImportBundle\Value\CustomDefValue;
 
 class TicketArrayParser implements ArrayParserInterface
 {
-	/**
-	 * @param array $data
-	 * @return PersonValue
-	 */
-	public function parseArray(array $data)
-	{
-		$data = ArrayParserUtils::cleanArray($data);
+    /**
+     * @param  array       $data
+     * @return PersonValue
+     */
+    public function parseArray(array $data)
+    {
+        $data = ArrayParserUtils::cleanArray($data);
 
-		$value = new TicketValue();
+        $value = new TicketValue();
 
-		ArrayParserUtils::copyValueMapping(array(
-			'oid'           => 'raw',
-			'ref'           => 'string',
-			'language'      => 'string',
-			'department'    => 'string',
-			'category'      => 'string',
-			'priority'      => 'string',
-			'workflow'      => 'string',
-			'product'       => 'string',
-			'person'        => 'string',
-			'agent'         => 'string',
-			'agent_team'    => 'string',
-			'organization'  => 'string',
-			'labels'        => 'array',
-			'status'        => 'string',
-			'is_hold'       => 'bool',
-			'urgency'       => 'int',
-			'date_created'  => 'date',
-			'date_resolved' => 'date',
-			'date_archived'   => 'date',
-			'subject'       => 'string',
-			'participants'  => 'array',
-			'custom_fields' => 'array'
-		), $data, $value);
+        ArrayParserUtils::copyValueMapping(array(
+            'oid'           => 'raw',
+            'ref'           => 'string',
+            'language'      => 'string',
+            'department'    => 'string',
+            'category'      => 'string',
+            'priority'      => 'string',
+            'workflow'      => 'string',
+            'product'       => 'string',
+            'person'        => 'string',
+            'agent'         => 'string',
+            'agent_team'    => 'string',
+            'organization'  => 'string',
+            'labels'        => 'array',
+            'status'        => 'string',
+            'is_hold'       => 'bool',
+            'urgency'       => 'int',
+            'date_created'  => 'date',
+            'date_resolved' => 'date',
+            'date_archived'   => 'date',
+            'subject'       => 'string',
+            'participants'  => 'array',
+            'custom_fields' => 'array'
+        ), $data, $value);
 
-		if (!empty($data['messages'])) {
-			foreach ($data['messages'] as $message_data) {
-				$message_data = ArrayParserUtils::cleanArray($message_data);
-				$message_value = new TicketMessageValue();
+        if (!empty($data['messages'])) {
+            foreach ($data['messages'] as $message_data) {
+                $message_data = ArrayParserUtils::cleanArray($message_data);
+                $message_value = new TicketMessageValue();
 
-				ArrayParserUtils::copyValueMapping(array(
-					'oid'          => 'raw',
-					'person'       => 'string',
-					'date_created' => 'date',
-					'message_html' => 'string',
-					'message_text' => 'string',
-					'is_note'      => 'bool'
-				), $message_data, $message_value);
+                ArrayParserUtils::copyValueMapping(array(
+                    'oid'          => 'raw',
+                    'person'       => 'string',
+                    'date_created' => 'date',
+                    'message_html' => 'string',
+                    'message_text' => 'string',
+                    'is_note'      => 'bool'
+                ), $message_data, $message_value);
 
-				if (!empty($message_data['attachments'])) {
-					foreach ($message_data['attachments'] as $attachment_data) {
-						$attachment_data = ArrayParserUtils::cleanArray($attachment_data);
-						$attachment = new AttachmentValue();
+                if (!empty($message_data['attachments'])) {
+                    foreach ($message_data['attachments'] as $attachment_data) {
+                        $attachment_data = ArrayParserUtils::cleanArray($attachment_data);
+                        $attachment = new AttachmentValue();
 
-						ArrayParserUtils::copyValueMapping(array(
-							'oid'         => 'raw',
-							'blob_data'    => 'raw',
-							'blob_url'     => 'string',
-							'blob_path'    => 'string',
-							'filename'     => 'string',
-							'content_type' => 'string',
-							'is_inline'    => 'bool'
-						), $attachment_data, $attachment);
-						$message_value->attachments[] = $attachment;
-					}
-				}
-				
-				$value->messages[] = $message_value;
-			}
-		}
-		
-		if (!empty($data['custom_fields'])) {
-			$index = 1;
-			
-			foreach ($data['custom_fields'] as $custom_field_data) {
-				$custom_field_data = ArrayParserUtils::cleanArray($custom_field_data);
-				
-				$custom_def_value = new CustomDefValue();
-				
-				$keys = array_keys($custom_field_data);
-				
-				$custom_def_value->oid = $index++;
+                        ArrayParserUtils::copyValueMapping(array(
+                            'oid'         => 'raw',
+                            'blob_data'    => 'raw',
+                            'blob_url'     => 'string',
+                            'blob_path'    => 'string',
+                            'filename'     => 'string',
+                            'content_type' => 'string',
+                            'is_inline'    => 'bool'
+                        ), $attachment_data, $attachment);
+                        $message_value->attachments[] = $attachment;
+                    }
+                }
 
-				$custom_def_value->key = $keys[0];
-				
-				$custom_def_value->value = $custom_field_data[$keys[0]];
-				
-				$value->custom_def[] = $custom_def_value;
-			}
-		}
-		
-		return $value;
-	}
+                $value->messages[] = $message_value;
+            }
+        }
+
+        if (!empty($data['custom_fields'])) {
+            $index = 1;
+
+            foreach ($data['custom_fields'] as $custom_field_data) {
+                $custom_field_data = ArrayParserUtils::cleanArray($custom_field_data);
+
+                $custom_def_value = new CustomDefValue();
+
+                $keys = array_keys($custom_field_data);
+
+                $custom_def_value->oid = $index++;
+
+                $custom_def_value->key = $keys[0];
+
+                $custom_def_value->value = $custom_field_data[$keys[0]];
+
+                $value->custom_def[] = $custom_def_value;
+            }
+        }
+
+        return $value;
+    }
 }

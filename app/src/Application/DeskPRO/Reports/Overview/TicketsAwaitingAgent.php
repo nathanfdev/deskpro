@@ -38,60 +38,60 @@ use Application\DeskPRO\App;
 
 class TicketsAwaitingAgent extends AbstractTableOverviewStat
 {
-	/**
-	 * @var GroupingField
-	 */
-	protected $grouping_field;
+    /**
+     * @var GroupingField
+     */
+    protected $grouping_field;
 
-	/**
-	 * @var int[]
-	 */
-	protected $values = null;
+    /**
+     * @var int[]
+     */
+    protected $values = null;
 
-	/**
-	 * @var array
-	 */
-	protected $titles = null;
+    /**
+     * @var array
+     */
+    protected $titles = null;
 
-	public function __construct(GroupingField $grouping_field)
-	{
-		$this->grouping_field = $grouping_field;
-	}
-
-
-	/**
-	 * @return string[]
-	 */
-	public function getTitles()
-	{
-		return $this->grouping_field->getTitles($this->getValues());
-	}
+    public function __construct(GroupingField $grouping_field)
+    {
+        $this->grouping_field = $grouping_field;
+    }
 
 
-	/**
-	 * @return int[]
-	 */
-	public function getValues()
-	{
-		if ($this->values !== null) {
-			return $this->values;
-		}
+    /**
+     * @return string[]
+     */
+    public function getTitles()
+    {
+        return $this->grouping_field->getTitles($this->getValues());
+    }
 
-		$group_field = $this->grouping_field->getFieldInfo();
 
-		$sql = "
-			SELECT {$group_field['select']}, COUNT(*)
-			FROM tickets AS tickets
-			{$group_field['join']}
-			WHERE tickets.status = 'awaiting_agent' {$group_field['where']} AND tickets.is_hold = 0
-			GROUP BY {$group_field['group_by']}
-		";
+    /**
+     * @return int[]
+     */
+    public function getValues()
+    {
+        if ($this->values !== null) {
+            return $this->values;
+        }
 
-		$this->logger->logDebug("[TicketsAwaitingAgent] $sql");
-		$this->logger->startTimer('TicketsAwaitingAgent');
-		$this->values = App::getDb()->fetchAllKeyValue($sql);
-		$this->logger->logTotalTime('TicketsAwaitingAgent');
+        $group_field = $this->grouping_field->getFieldInfo();
 
-		return $this->values;
-	}
+        $sql = "
+            SELECT {$group_field['select']}, COUNT(*)
+            FROM tickets AS tickets
+            {$group_field['join']}
+            WHERE tickets.status = 'awaiting_agent' {$group_field['where']} AND tickets.is_hold = 0
+            GROUP BY {$group_field['group_by']}
+        ";
+
+        $this->logger->logDebug("[TicketsAwaitingAgent] $sql");
+        $this->logger->startTimer('TicketsAwaitingAgent');
+        $this->values = App::getDb()->fetchAllKeyValue($sql);
+        $this->logger->logTotalTime('TicketsAwaitingAgent');
+
+        return $this->values;
+    }
 }

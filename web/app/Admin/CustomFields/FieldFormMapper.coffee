@@ -1,350 +1,350 @@
 define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
-	class FieldFormMapper
-		###
-		# Get a form model for an existing field
-		#
-		# @param {Object} fieldModel The field model (eg as returned from the API)
-		# @return {Object}
-		###
-		getFormFromModel: (fieldModel) ->
+  class FieldFormMapper
+    ###
+    # Get a form model for an existing field
+    #
+    # @param {Object} fieldModel The field model (eg as returned from the API)
+    # @return {Object}
+    ###
+    getFormFromModel: (fieldModel) ->
 
-			fieldModel = fieldModel || {}
-			fieldModel.options = fieldModel.options || {}
+      fieldModel = fieldModel || {}
+      fieldModel.options = fieldModel.options || {}
 
-			# Default structure
-			form = {
-				title: '',
-				description: '',
-				is_enabled: true,
-				text: {
-					user_validation:          '0',
-					user_min_length:          '1',
-					user_max_length:          '',
-					user_regex:               '',
-					agent_validation:         '0',
-					agent_min_length:         '1',
-					agent_max_length:         '',
-					agent_regex:              '',
-					agent_validation_resolve: false,
-				},
-				toggle: {
-					label_text: '',
-					user_validation:           '0',
-					agent_validation:          '0',
-					agent_validation_resolve:  false
-				},
-				choice: {
-					field_type:              'select',
-					options:                  [],
-					user_validation:          '0',
-					agent_validation:         '0',
-					agent_validation_resolve: false
-				},
-				date: {
-					default_mode:              '0',
-					default_value:             '',
-					valid_weekdays:            [true, true, true, true, true, true, true],
-					valid_dates_mode:          '0',
-					valid_date_range_start:    '',
-					valid_date_range_end:      '',
-					valid_date_relrange_start: '',
-					valid_date_relrange_end:   '',
-					user_validation:           '0',
-					agent_validation:          '0',
-					agent_validation_resolve:  false
-				},
-				datetime: {
-					default_mode:              '0',
-					default_value:              new Date,
-					valid_weekdays:            [true, true, true, true, true, true, true],
-					valid_dates_mode:          '0',
-					valid_date_range_start:    '',
-					valid_date_range_end:      '',
-					valid_date_relrange_start: '',
-					valid_date_relrange_end:   '',
-					user_validation:           '0',
-					agent_validation:          '0',
-					agent_validation_resolve:  false
-				},
-				display: {
-					html: ''
-				},
-				hidden: {
-					cookie_name:   '',
-					param_name:    '',
-					default_value: ''
-				},
-				data: {
-					usersource_id: '0',
-					field_name: ''
-				}
-			}
+      # Default structure
+      form = {
+        title: '',
+        description: '',
+        is_enabled: true,
+        text: {
+          user_validation:          '0',
+          user_min_length:          '1',
+          user_max_length:          '',
+          user_regex:               '',
+          agent_validation:         '0',
+          agent_min_length:         '1',
+          agent_max_length:         '',
+          agent_regex:              '',
+          agent_validation_resolve: false,
+        },
+        toggle: {
+          label_text: '',
+          user_validation:           '0',
+          agent_validation:          '0',
+          agent_validation_resolve:  false
+        },
+        choice: {
+          field_type:              'select',
+          options:                  [],
+          user_validation:          '0',
+          agent_validation:         '0',
+          agent_validation_resolve: false
+        },
+        date: {
+          default_mode:              '0',
+          default_value:             '',
+          valid_weekdays:            [true, true, true, true, true, true, true],
+          valid_dates_mode:          '0',
+          valid_date_range_start:    '',
+          valid_date_range_end:      '',
+          valid_date_relrange_start: '',
+          valid_date_relrange_end:   '',
+          user_validation:           '0',
+          agent_validation:          '0',
+          agent_validation_resolve:  false
+        },
+        datetime: {
+          default_mode:              '0',
+          default_value:              new Date,
+          valid_weekdays:            [true, true, true, true, true, true, true],
+          valid_dates_mode:          '0',
+          valid_date_range_start:    '',
+          valid_date_range_end:      '',
+          valid_date_relrange_start: '',
+          valid_date_relrange_end:   '',
+          user_validation:           '0',
+          agent_validation:          '0',
+          agent_validation_resolve:  false
+        },
+        display: {
+          html: ''
+        },
+        hidden: {
+          cookie_name:   '',
+          param_name:    '',
+          default_value: ''
+        },
+        data: {
+          usersource_id: '0',
+          field_name: ''
+        }
+      }
 
-			if fieldModel
-				form.title = fieldModel.title
-				form.description = fieldModel.description
+      if fieldModel
+        form.title = fieldModel.title
+        form.description = fieldModel.description
 
-				if fieldModel.type_name == 'textarea'
-					formTypeOpts = form['text']
-				else
-					formTypeOpts = form[fieldModel.type_name]
+        if fieldModel.type_name == 'textarea'
+          formTypeOpts = form['text']
+        else
+          formTypeOpts = form[fieldModel.type_name]
 
-				if fieldModel.is_agent_field
-					form.is_agent_field = true
-				if fieldModel.is_enabled || not fieldModel.id
-					form.is_enabled = true
-				else
-					form.is_enabled = false
+        if fieldModel.is_agent_field
+          form.is_agent_field = true
+        if fieldModel.is_enabled || not fieldModel.id
+          form.is_enabled = true
+        else
+          form.is_enabled = false
 
-				switch fieldModel.type_name
-					when "text", "textarea"
-						if fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex
-							if fieldModel.options.min_length
-								formTypeOpts.user_validation = 'required'
-								formTypeOpts.min_length = fieldModel.options.min_length
-							if fieldModel.options.max_length
-								formTypeOpts.user_validation = 'required'
-								formTypeOpts.max_length = fieldModel.options.max_length
-							if fieldModel.options.regex
-								formTypeOpts.user_validation = 'regex'
-								formTypeOpts.regex = fieldModel.options.regex
+        switch fieldModel.type_name
+          when "text", "textarea"
+            if fieldModel.options.required || fieldModel.options.min_length || fieldModel.options.max_length || fieldModel.options.regex
+              if fieldModel.options.min_length
+                formTypeOpts.user_validation = 'required'
+                formTypeOpts.min_length = fieldModel.options.min_length
+              if fieldModel.options.max_length
+                formTypeOpts.user_validation = 'required'
+                formTypeOpts.max_length = fieldModel.options.max_length
+              if fieldModel.options.regex
+                formTypeOpts.user_validation = 'regex'
+                formTypeOpts.regex = fieldModel.options.regex
 
-						if fieldModel.options.agent_required || fieldModel.options.agent_min_length || fieldModel.options.agent_max_length || fieldModel.options.agent_regex
-							if fieldModel.options.agent_min_length
-								formTypeOpts.agent_validation = 'required'
-								formTypeOpts.agent_min_length = fieldModel.options.agent_min_length
-							if fieldModel.options.agent_max_length
-								formTypeOpts.agent_validation = 'required'
-								formTypeOpts.agent_max_length = fieldModel.options.agent_max_length
-							if fieldModel.options.agent_regex
-								formTypeOpts.agent_validation = 'regex'
-								formTypeOpts.agent_regex = fieldModel.options.agent_regex
+            if fieldModel.options.agent_required || fieldModel.options.agent_min_length || fieldModel.options.agent_max_length || fieldModel.options.agent_regex
+              if fieldModel.options.agent_min_length
+                formTypeOpts.agent_validation = 'required'
+                formTypeOpts.agent_min_length = fieldModel.options.agent_min_length
+              if fieldModel.options.agent_max_length
+                formTypeOpts.agent_validation = 'required'
+                formTypeOpts.agent_max_length = fieldModel.options.agent_max_length
+              if fieldModel.options.agent_regex
+                formTypeOpts.agent_validation = 'regex'
+                formTypeOpts.agent_regex = fieldModel.options.agent_regex
 
-						if fieldModel.default_value
-							formTypeOpts.default_value = fieldModel.default_value
+            if fieldModel.default_value
+              formTypeOpts.default_value = fieldModel.default_value
 
-					when "choice"
-						if fieldModel.options.expanded
-							if fieldModel.options.multiple
-								formTypeOpts.field_type = 'checkbox'
-							else
-								formTypeOpts.field_type = 'radio'
-						else
-							if fieldModel.options.multiple
-								formTypeOpts.field_type = 'multi_select'
-							else
-								formTypeOpts.field_type = 'select'
+          when "choice"
+            if fieldModel.options.expanded
+              if fieldModel.options.multiple
+                formTypeOpts.field_type = 'checkbox'
+              else
+                formTypeOpts.field_type = 'radio'
+            else
+              if fieldModel.options.multiple
+                formTypeOpts.field_type = 'multi_select'
+              else
+                formTypeOpts.field_type = 'select'
 
-						if fieldModel.options.required || fieldModel.options.min_length
-							formTypeOpts.user_validation = 'required'
-						if fieldModel.options.agent_required || fieldModel.options.agent_min_length
-							formTypeOpts.agent_validation = 'required'
-							if fieldModel.options.agent_validation_resolve
-								formTypeOpts.agent_validation_resolve = true
+            if fieldModel.options.required || fieldModel.options.min_length
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required || fieldModel.options.agent_min_length
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
 
-						if fieldModel.choices and fieldModel.choices.length
-							formTypeOpts.options = fieldModel.choices
+            if fieldModel.choices and fieldModel.choices.length
+              formTypeOpts.options = fieldModel.choices
 
-						formTypeOpts.default_value = fieldModel.default_value
+            formTypeOpts.default_value = fieldModel.default_value
 
-					when "toggle"
-						formTypeOpts.label_text = fieldModel.options.label_text || ''
+          when "toggle"
+            formTypeOpts.label_text = fieldModel.options.label_text || ''
 
-						if fieldModel.options.required
-							formTypeOpts.user_validation = 'required'
-						if fieldModel.options.agent_required
-							formTypeOpts.agent_validation = 'required'
-							if fieldModel.options.agent_validation_resolve
-								formTypeOpts.agent_validation_resolve = true
+            if fieldModel.options.required
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
 
-						if fieldModel.default_value
-							formTypeOpts.default_value = true
+            if fieldModel.default_value
+              formTypeOpts.default_value = true
 
-					when "date", "datetime"
-						if not Util.isBlank(fieldModel.default_value)
-							formTypeOpts.default_mode = 'date'
-							formTypeOpts.default_value = moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate()
+          when "date", "datetime"
+            if not Util.isBlank(fieldModel.default_value)
+              formTypeOpts.default_mode = 'date'
+              formTypeOpts.default_value = moment.utc(fieldModel.default_value, 'YYYY-MM-DD HH:mm:ss').toDate()
 
-						if not Util.isBlank(fieldModel.options.date_valid_dow)
-							formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false]
-							for day in fieldModel.options.date_valid_dow
-								formTypeOpts.valid_weekdays[day] = true
+            if not Util.isBlank(fieldModel.options.date_valid_dow)
+              formTypeOpts.valid_weekdays = [false, false, false, false, false, false, false]
+              for day in fieldModel.options.date_valid_dow
+                formTypeOpts.valid_weekdays[day] = true
 
-						if fieldModel.options.date_valid_type?
-							if fieldModel.options.date_valid_type == "date"
-								formTypeOpts.valid_dates_mode = 'date'
-								if not Util.isBlank(fieldModel.options.date_valid_date1)
-									formTypeOpts.date_valid_date1 = moment(fieldModel.options.date_valid_date1, 'YYYY-MM-DD').toDate()
-								if not Util.isBlank(fieldModel.options.date_valid_date2)
-									formTypeOpts.date_valid_date2 = moment(fieldModel.options.date_valid_date2, 'YYYY-MM-DD').toDate()
-							if fieldModel.options.date_valid_type == "range"
-								if not Util.isBlank(fieldModel.options.date_valid_date1)
-									formTypeOpts.date_valid_reldate1 = fieldModel.options.date_valid_date1
-								if not Util.isBlank(fieldModel.options.date_valid_date2)
-									formTypeOpts.date_valid_reldate2 = fieldModel.options.date_valid_date2
+            if fieldModel.options.date_valid_type?
+              if fieldModel.options.date_valid_type == "date"
+                formTypeOpts.valid_dates_mode = 'date'
+                if not Util.isBlank(fieldModel.options.date_valid_date1)
+                  formTypeOpts.date_valid_date1 = moment(fieldModel.options.date_valid_date1, 'YYYY-MM-DD').toDate()
+                if not Util.isBlank(fieldModel.options.date_valid_date2)
+                  formTypeOpts.date_valid_date2 = moment(fieldModel.options.date_valid_date2, 'YYYY-MM-DD').toDate()
+              if fieldModel.options.date_valid_type == "range"
+                if not Util.isBlank(fieldModel.options.date_valid_date1)
+                  formTypeOpts.date_valid_reldate1 = fieldModel.options.date_valid_date1
+                if not Util.isBlank(fieldModel.options.date_valid_date2)
+                  formTypeOpts.date_valid_reldate2 = fieldModel.options.date_valid_date2
 
-						if fieldModel.options.required
-							formTypeOpts.user_validation = 'required'
-						if fieldModel.options.agent_required
-							formTypeOpts.agent_validation = 'required'
-							if fieldModel.options.agent_validation_resolve
-								formTypeOpts.agent_validation_resolve = true
+            if fieldModel.options.required
+              formTypeOpts.user_validation = 'required'
+            if fieldModel.options.agent_required
+              formTypeOpts.agent_validation = 'required'
+              if fieldModel.options.agent_validation_resolve
+                formTypeOpts.agent_validation_resolve = true
 
-					when "display"
-						formTypeOpts.html = fieldModel.options.html
+          when "display"
+            formTypeOpts.html = fieldModel.options.html
 
-					when "hidden"
-						formTypeOpts.cookie_name   = fieldModel.options.cookie_name   || ''
-						formTypeOpts.param_name    = fieldModel.options.param_name    || ''
-						formTypeOpts.default_value = fieldModel.options.default_value || ''
+          when "hidden"
+            formTypeOpts.cookie_name   = fieldModel.options.cookie_name   || ''
+            formTypeOpts.param_name    = fieldModel.options.param_name    || ''
+            formTypeOpts.default_value = fieldModel.options.default_value || ''
 
-						if fieldModel.default_value
-							formTypeOpts.default_value = fieldModel.default_value
+            if fieldModel.default_value
+              formTypeOpts.default_value = fieldModel.default_value
 
-					when "data"
-						formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + ""
-						formTypeOpts.field_name    = fieldModel.options.field_name || ''
+          when "data"
+            formTypeOpts.usersource_id = (parseInt(fieldModel.options.usersource_id || '0') || 0) + ""
+            formTypeOpts.field_name    = fieldModel.options.field_name || ''
 
-			if fieldModel.options.agent_validation_resolve
-				formTypeOpts.agent_validation_resolve = true
+      if fieldModel.options.agent_validation_resolve
+        formTypeOpts.agent_validation_resolve = true
 
-			return form
+      return form
 
 
-		###
-		# Use a form model to construct a payload we can deliver to the API to save
-		# a field.
-		#
-		# @param {String} fieldType  The field type
-		# @param {Object} formModel  The form model
-		# @return {Object}
-		###
-		getPostDataFromForm: (fieldType, formModel) ->
-			postData = {
-				title: formModel.title,
-				description: formModel.description,
-				is_agent_field: formModel.is_agent_field,
-				is_enabled: formModel.is_enabled
-			}
+    ###
+    # Use a form model to construct a payload we can deliver to the API to save
+    # a field.
+    #
+    # @param {String} fieldType  The field type
+    # @param {Object} formModel  The form model
+    # @return {Object}
+    ###
+    getPostDataFromForm: (fieldType, formModel) ->
+      postData = {
+        title: formModel.title,
+        description: formModel.description,
+        is_agent_field: formModel.is_agent_field,
+        is_enabled: formModel.is_enabled
+      }
 
-			if fieldType == 'textarea'
-				formTypeOpts = formModel['text']
-			else
-				formTypeOpts = formModel[fieldType]
+      if fieldType == 'textarea'
+        formTypeOpts = formModel['text']
+      else
+        formTypeOpts = formModel[fieldType]
 
-			switch fieldType
-				when "text", "textarea"
-					if fieldType == 'text'
-						postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text'
-					else
-						postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea'
+      switch fieldType
+        when "text", "textarea"
+          if fieldType == 'text'
+            postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Text'
+          else
+            postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea'
 
-					postData.default_value = formTypeOpts.default_value
+          postData.default_value = formTypeOpts.default_value
 
-					if formTypeOpts.user_validation == 'required'
-						postData.validation_type = 'required'
-						postData.min_length = formTypeOpts.agent_min_length
-						postData.max_length = formTypeOpts.agent_max_length
-					else if formTypeOpts.user_validation == 'regex'
-						postData.validation_type = 'regex'
-						postData.regex = formTypeOpts.validation_regex
+          if formTypeOpts.user_validation == 'required'
+            postData.validation_type = 'required'
+            postData.min_length = formTypeOpts.agent_min_length
+            postData.max_length = formTypeOpts.agent_max_length
+          else if formTypeOpts.user_validation == 'regex'
+            postData.validation_type = 'regex'
+            postData.regex = formTypeOpts.validation_regex
 
-					if formTypeOpts.agent_validation == 'required'
-						postData.agent_validation_type = 'required'
-						postData.agent_min_length = formTypeOpts.agent_min_length
-						postData.agent_max_length = formTypeOpts.agent_max_length
-					else if formTypeOpts.agent_validation == 'regex'
-						postData.agent_validation_type = 'regex'
-						postData.agent_regex = formTypeOpts.agent_regex
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_validation_type = 'required'
+            postData.agent_min_length = formTypeOpts.agent_min_length
+            postData.agent_max_length = formTypeOpts.agent_max_length
+          else if formTypeOpts.agent_validation == 'regex'
+            postData.agent_validation_type = 'regex'
+            postData.agent_regex = formTypeOpts.agent_regex
 
-				when "choice"
-					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice'
-					postData.field_type = formTypeOpts.field_type
-					postData.choices_structure = formTypeOpts.options
-					postData.default_value = formTypeOpts.default_value
+        when "choice"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Choice'
+          postData.field_type = formTypeOpts.field_type
+          postData.choices_structure = formTypeOpts.options
+          postData.default_value = formTypeOpts.default_value
 
-					if formTypeOpts.user_validation == 'required'
-						postData.validation_type = 'required'
-						postData.min_length = 1
-					if formTypeOpts.agent_validation == 'required'
-						postData.agent_validation_type = 'required'
-						postData.agent_min_length = 1
+          if formTypeOpts.user_validation == 'required'
+            postData.validation_type = 'required'
+            postData.min_length = 1
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_validation_type = 'required'
+            postData.agent_min_length = 1
 
-				when "toggle"
-					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle'
-					postData.default_value = formTypeOpts.default_value
-					postData.label_text = formTypeOpts.label_text
+        when "toggle"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle'
+          postData.default_value = formTypeOpts.default_value
+          postData.label_text = formTypeOpts.label_text
 
-					if formTypeOpts.user_validation == 'required'
-						postData.validation_type = 'required'
-					if formTypeOpts.agent_validation == 'required'
-						postData.agent_validation_type = 'required'
+          if formTypeOpts.user_validation == 'required'
+            postData.validation_type = 'required'
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_validation_type = 'required'
 
-				when "date", "datetime"
-					format = 'YYYY-MM-DD'
-					if 'date' == fieldType
-						postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date'
-					else
-						postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime'
-						format += ' HH:mm'
+        when "date", "datetime"
+          format = 'YYYY-MM-DD'
+          if 'date' == fieldType
+            postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Date'
+          else
+            postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime'
+            format += ' HH:mm'
 
-					if formTypeOpts.default_mode == 'date'
-						postData.default_value = moment(formTypeOpts.default_value).utc().format(format)
+          if formTypeOpts.default_mode == 'date'
+            postData.default_value = moment(formTypeOpts.default_value).utc().format(format)
 
-					postData.date_valid_dow = []
-					for x, day in formTypeOpts.valid_weekdays
-						if x
-							postData.date_valid_dow.push(day)
+          postData.date_valid_dow = []
+          for x, day in formTypeOpts.valid_weekdays
+            if x
+              postData.date_valid_dow.push(day)
 
-					if formTypeOpts.user_validation == 'required'
-						postData.validation_type = 'required'
-					if formTypeOpts.agent_validation == 'required'
-						postData.agent_validation_type = 'required'
+          if formTypeOpts.user_validation == 'required'
+            postData.validation_type = 'required'
+          if formTypeOpts.agent_validation == 'required'
+            postData.agent_validation_type = 'required'
 
-					if formTypeOpts.valid_dates_mode == 'date'
-						postData.date_valid_type = 'date'
-						postData.date_valid_date1 = ''
-						postData.date_valid_date2 = ''
+          if formTypeOpts.valid_dates_mode == 'date'
+            postData.date_valid_type = 'date'
+            postData.date_valid_date1 = ''
+            postData.date_valid_date2 = ''
 
-						if not Util.isBlank(formTypeOpts.date_valid_date1)
-							postData.date_valid_date1 = moment(formTypeOpts.date_valid_date1).format('YYYY-MM-DD')
-						if not Util.isBlank(formTypeOpts.date_valid_date2)
-							postData.date_valid_date2 = moment(formTypeOpts.date_valid_date2).format('YYYY-MM-DD')
-					else if formTypeOpts.valid_dates_mode == 'range'
-						postData.date_valid_type = 'range'
-						postData.date_valid_range1 = ''
-						postData.date_valid_range2 = ''
+            if not Util.isBlank(formTypeOpts.date_valid_date1)
+              postData.date_valid_date1 = moment(formTypeOpts.date_valid_date1).format('YYYY-MM-DD')
+            if not Util.isBlank(formTypeOpts.date_valid_date2)
+              postData.date_valid_date2 = moment(formTypeOpts.date_valid_date2).format('YYYY-MM-DD')
+          else if formTypeOpts.valid_dates_mode == 'range'
+            postData.date_valid_type = 'range'
+            postData.date_valid_range1 = ''
+            postData.date_valid_range2 = ''
 
-						if not Util.isBlank(formTypeOpts.date_valid_reldate1)
-							postData.date_valid_range1 = formTypeOpts.date_valid_reldate1
-						if not Util.isBlank(formTypeOpts.date_valid_reldate2)
-							postData.date_valid_range2 = formTypeOpts.date_valid_reldate2
+            if not Util.isBlank(formTypeOpts.date_valid_reldate1)
+              postData.date_valid_range1 = formTypeOpts.date_valid_reldate1
+            if not Util.isBlank(formTypeOpts.date_valid_reldate2)
+              postData.date_valid_range2 = formTypeOpts.date_valid_reldate2
 
-				when "display"
-					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Display'
-					postData.html = formTypeOpts.html
+        when "display"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Display'
+          postData.html = formTypeOpts.html
 
-				when "hidden"
-					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden'
-					postData.cookie_name = formTypeOpts.cookie_name
-					postData.param_name = formTypeOpts.param_name
-					postData.default_value = formTypeOpts.default_value
+        when "hidden"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden'
+          postData.cookie_name = formTypeOpts.cookie_name
+          postData.param_name = formTypeOpts.param_name
+          postData.default_value = formTypeOpts.default_value
 
-				when "data"
-					postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Data'
-					postData.usersource_id = parseInt(formTypeOpts.usersource_id) || 0
-					postData.field_name    = formTypeOpts.field_name
+        when "data"
+          postData.handler_class = 'Application\\DeskPRO\\CustomFields\\Handler\\Data'
+          postData.usersource_id = parseInt(formTypeOpts.usersource_id) || 0
+          postData.field_name    = formTypeOpts.field_name
 
-			if formTypeOpts.agent_validation_resolve
-				postData.agent_validation_resolve = true
+      if formTypeOpts.agent_validation_resolve
+        postData.agent_validation_resolve = true
 
-			return postData
+      return postData
 
-		###
-		# Applies basic settings from form onto the real field model
-    	# so the list is showing correct data.
-		###
-		applyFormToModel: (fieldModel, formModel) ->
-			fieldModel.title = formModel.title
-			fieldModel.is_enabled = formModel.is_enabled
-			return fieldModel
+    ###
+    # Applies basic settings from form onto the real field model
+      # so the list is showing correct data.
+    ###
+    applyFormToModel: (fieldModel, formModel) ->
+      fieldModel.title = formModel.title
+      fieldModel.is_enabled = formModel.is_enabled
+      return fieldModel

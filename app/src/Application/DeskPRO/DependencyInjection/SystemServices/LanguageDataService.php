@@ -39,232 +39,226 @@ use Orb\Util\Arrays;
 
 class LanguageDataService extends BaseRepositoryService
 {
-	/**
-	 * @var bool
-	 */
-	protected $has_init = false;
+    /**
+     * @var bool
+     */
+    protected $has_init = false;
 
-	/**
-	 * @var int
-	 */
-	protected $default_lang_id = 1;
+    /**
+     * @var int
+     */
+    protected $default_lang_id = 1;
 
-	/**
-	 * Loaded langs
-	 * @var array
-	 */
-	protected $languages = array();
+    /**
+     * Loaded langs
+     * @var array
+     */
+    protected $languages = array();
 
-	/**
-	 * @var int
-	 */
-	protected $count = 1;
+    /**
+     * @var int
+     */
+    protected $count = 1;
 
-	public static function create(DeskproContainer $container, array $options = null)
-	{
-		if (!$options) $options = array();
-		$options['entity'] = 'Application\\DeskPRO\\Entity\\Language';
-		$options['default_lang_id'] = $container->getSetting('core.default_language_id');
+    public static function create(DeskproContainer $container, array $options = null)
+    {
+        if (!$options) $options = array();
+        $options['entity'] = 'Application\\DeskPRO\\Entity\\Language';
+        $options['default_lang_id'] = $container->getSetting('core.default_language_id');
 
-		$em = $container->getEm();
-		$o = new static($em, $options);
-		return $o;
-	}
+        $em = $container->getEm();
+        $o = new static($em, $options);
 
-	public function init()
-	{
-		$this->default_lang_id = (int)$this->options->get('default_lang_id');
-	}
+        return $o;
+    }
 
+    public function init()
+    {
+        $this->default_lang_id = (int)$this->options->get('default_lang_id');
+    }
 
-	/**
-	 * @return bool
-	 */
-	public function isLangSystemEnabled()
-	{
-		return $this->isMultiLang();
-	}
+    /**
+     * @return bool
+     */
+    public function isLangSystemEnabled()
+    {
+        return $this->isMultiLang();
+    }
 
+    /**
+     * True to enable multi-language interfaces. Languages might be enabled, but if only one
+     * lang exists then it effectively means that the interface should still act as though
+     * its disabled.
+     *
+     * @return bool
+     */
+    public function isMultiLang()
+    {
+        $this->preload();
 
-	/**
-	 * True to enable multi-language interfaces. Languages might be enabled, but if only one
-	 * lang exists then it effectively means that the interface should still act as though
-	 * its disabled.
-	 *
-	 * @return bool
-	 */
-	public function isMultiLang()
-	{
-		$this->preload();
-		return $this->count > 1;
-	}
+        return $this->count > 1;
+    }
 
+    /**
+     * Find a language by a lang code
+     *
+     * @param  string                                    $code
+     * @return \Application\DeskPRO\Entity\Language|null
+     */
+    public function findLangCode($code)
+    {
+        $this->preload();
+        foreach ($this->languages as $lang) {
+            if ($lang->lang_code == $code) {
+                return $lang;
+            }
+        }
 
-	/**
-	 * Find a language by a lang code
-	 *
-	 * @param string $code
-	 * @return \Application\DeskPRO\Entity\Language|null
-	 */
-	public function findLangCode($code)
-	{
-		$this->preload();
-		foreach ($this->languages as $lang) {
-			if ($lang->lang_code == $code) {
-				return $lang;
-			}
-		}
+        return null;
+    }
 
-		return null;
-	}
+    /**
+     * Get an array of lang codes
+     *
+     * @return string[]
+     */
+    public function getLangCodes()
+    {
+        $this->preload();
+        $codes = array();
 
+        foreach ($this->languages as $lang) {
+            $codes[] = $lang->lang_code;
+        }
 
-	/**
-	 * Get an array of lang codes
-	 *
-	 * @return string[]
-	 */
-	public function getLangCodes()
-	{
-		$this->preload();
-		$codes = array();
+        return $codes;
+    }
 
-		foreach ($this->languages as $lang) {
-			$codes[] = $lang->lang_code;
-		}
+    /**
+     * @return \Application\DeskPRO\Entity\Language
+     */
+    public function getDefault()
+    {
+        $this->preload();
 
-		return $codes;
-	}
+        return $this->get($this->default_lang_id);
+    }
 
+    /**
+     * @return int
+     */
+    public function getDefaultId()
+    {
+        return $this->default_lang_id;
+    }
 
-	/**
-	 * @return \Application\DeskPRO\Entity\Language
-	 */
-	public function getDefault()
-	{
-		$this->preload();
-		return $this->get($this->default_lang_id);
-	}
+    /**
+     * @param $id
+     * @return \Application\DeskPRO\Entity\Language
+     */
+    public function get($id)
+    {
+        $this->preload();
 
+        return isset($this->languages[$id]) ? $this->languages[$id] : null;
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getDefaultId()
-	{
-		return $this->default_lang_id;
-	}
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        $this->preload();
 
+        return $this->count;
+    }
 
-	/**
-	 * @param $id
-	 * @return \Application\DeskPRO\Entity\Language
-	 */
-	public function get($id)
-	{
-		$this->preload();
-		return isset($this->languages[$id]) ? $this->languages[$id] : null;
-	}
+    /**
+     * @param  int  $id
+     * @return bool
+     */
+    public function has($id)
+    {
+        $this->preload();
 
+        return isset($this->languages[$id]);
+    }
 
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		$this->preload();
-		return $this->count;
-	}
+    /**
+     * Loads the required data
+     *
+     * @return mixed
+     */
+    protected function preload()
+    {
+        if ($this->has_init) {
+            return;
+        }
+        $this->has_init = true;
 
+        $this->languages = $this->em->createQuery("
+            SELECT l
+            FROM DeskPRO:Language l INDEX BY l.id
+            ORDER BY l.title ASC
+        ")->execute();
 
-	/**
-	 * @param int $id
-	 * @return bool
-	 */
-	public function has($id)
-	{
-		$this->preload();
-		return isset($this->languages[$id]);
-	}
+        $this->count = count($this->languages);
+    }
 
+    /**
+     * Get languages by ID
+     *
+     * @param  array                                  $ids
+     * @param  bool                                   $keep_order
+     * @return \Application\DeskPRO\Entity\Language[]
+     */
+    public function getByIds(array $ids, $keep_order = false)
+    {
+        $this->preload();
+        $ret = array();
 
-	/**
-	 * Loads the required data
-	 *
-	 * @return mixed
-	 */
-	protected function preload()
-	{
-		if ($this->has_init) {
-			return;
-		}
-		$this->has_init = true;
+        foreach ($ids as $id) {
+            if (isset($this->languages[$id])) {
+                $ret[$id] = $this->languages[$id];
+            }
+        }
 
-		$this->languages = $this->em->createQuery("
-			SELECT l
-			FROM DeskPRO:Language l INDEX BY l.id
-			ORDER BY l.title ASC
-		")->execute();
+        if ($keep_order) {
+            Arrays::orderIdArray($ids, $ret);
+        }
 
-		$this->count = count($this->languages);
-	}
+        return $ret;
+    }
 
+    /**
+     * @return \Application\DeskPRO\Entity\Language[]
+     */
+    public function getAll()
+    {
+        $this->preload();
 
-	/**
-	 * Get languages by ID
-	 *
-	 * @param array $ids
-	 * @param bool $keep_order
-	 * @return \Application\DeskPRO\Entity\Language[]
-	 */
-	public function getByIds(array $ids, $keep_order = false)
-	{
-		$this->preload();
-		$ret = array();
+        return $this->languages;
+    }
 
-		foreach ($ids as $id) {
-			if (isset($this->languages[$id])) {
-				$ret[$id] = $this->languages[$id];
-			}
-		}
+    /**
+     * Get names of langs
+     *
+     * @param  array|null $for_ids
+     * @return string[]
+     */
+    public function getTitles(array $for_ids = null)
+    {
+        $this->preload();
+        $ret = array();
 
-		if ($keep_order) {
-			Arrays::orderIdArray($ids, $ret);
-		}
+        if (!$for_ids) {
+            $for_ids = array_keys($this->languages);
+        }
 
-		return $ret;
-	}
+        foreach ($for_ids as $id) {
+            $ret[$id] = $this->languages[$id]->getTitle();
+        }
 
-
-	/**
-	 * @return \Application\DeskPRO\Entity\Language[]
-	 */
-	public function getAll()
-	{
-		$this->preload();
-		return $this->languages;
-	}
-
-
-	/**
-	 * Get names of langs
-	 *
-	 * @param array|null $for_ids
-	 * @return string[]
-	 */
-	public function getTitles(array $for_ids = null)
-	{
-		$this->preload();
-		$ret = array();
-
-		if (!$for_ids) {
-			$for_ids = array_keys($this->languages);
-		}
-
-		foreach ($for_ids as $id) {
-			$ret[$id] = $this->languages[$id]->getTitle();
-		}
-
-		return $ret;
-	}
+        return $ret;
+    }
 }

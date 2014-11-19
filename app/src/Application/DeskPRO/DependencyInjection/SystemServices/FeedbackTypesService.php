@@ -39,9 +39,10 @@ use Application\DeskPRO\FeedbackTypes\FeedbackTypes;
 
 class FeedbackTypesService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new FeedbackTypes($container->getEm());
+
         return $x;
-	}
+    }
 }

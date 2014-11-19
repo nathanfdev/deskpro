@@ -38,89 +38,89 @@ use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 
 class TransportFactory
 {
-	/**
-	 * @param AccountConfigInterface $config
-	 * @return \Swift_Transport
-	 * @throws \InvalidArgumentException
-	 */
-	public function createTransport(AccountConfigInterface $config)
-	{
-		if (defined('DP_EMAIL_TRANSPORT_FACTORY') && DP_EMAIL_TRANSPORT_FACTORY) {
-			$tr = call_user_func(DP_EMAIL_TRANSPORT_FACTORY, 'default', $config, $config->getType(), $config);
-			if ($tr) {
-				return $tr;
-			}
-		}
+    /**
+     * @param  AccountConfigInterface    $config
+     * @return \Swift_Transport
+     * @throws \InvalidArgumentException
+     */
+    public function createTransport(AccountConfigInterface $config)
+    {
+        if (defined('DP_EMAIL_TRANSPORT_FACTORY') && DP_EMAIL_TRANSPORT_FACTORY) {
+            $tr = call_user_func(DP_EMAIL_TRANSPORT_FACTORY, 'default', $config, $config->getType(), $config);
+            if ($tr) {
+                return $tr;
+            }
+        }
 
-		switch ($config->getType()) {
-			case 'smtp':     return $this->createSmtpTransport($config);
-			case 'gmail':    return $this->createGmailTransport($config);
-			case 'php_mail': return $this->createPhpMailTransport($config);
-			case 'sendmail': return $this->createSendmailTransport($config);
-			default:
-				throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
-		}
-	}
-
-
-	/**
-	 * @param SmtpConfig $config
-	 * @return \Swift_SmtpTransport
-	 */
-	public function createSmtpTransport(SmtpConfig $config)
-	{
-		$tr = \Swift_SmtpTransport::newInstance(
-			$config->host ?: 'localhost',
-			$config->port ?: 25,
-			$config->secure_mode == 'none' ? null : $config->secure_mode
-		);
-
-		if (!empty($config->user)) {
-			$tr->setUsername($config->user);
-		}
-		if (!empty($config->password)) {
-			$tr->setPassword($config->password);
-		}
-
-		$tr->setTimeout(120);
-
-		return $tr;
-	}
+        switch ($config->getType()) {
+            case 'smtp':     return $this->createSmtpTransport($config);
+            case 'gmail':    return $this->createGmailTransport($config);
+            case 'php_mail': return $this->createPhpMailTransport($config);
+            case 'sendmail': return $this->createSendmailTransport($config);
+            default:
+                throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
+        }
+    }
 
 
-	/**
-	 * @param GmailConfig $config
-	 * @return \Swift_SmtpTransport
-	 */
-	public function createGmailTransport(GmailConfig $config)
-	{
-		$tr = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl');
-		$tr->setUsername($config->user);
-		$tr->setPassword($config->password);
-		$tr->setTimeout(120);
+    /**
+     * @param  SmtpConfig           $config
+     * @return \Swift_SmtpTransport
+     */
+    public function createSmtpTransport(SmtpConfig $config)
+    {
+        $tr = \Swift_SmtpTransport::newInstance(
+            $config->host ?: 'localhost',
+            $config->port ?: 25,
+            $config->secure_mode == 'none' ? null : $config->secure_mode
+        );
 
-		return $tr;
-	}
+        if (!empty($config->user)) {
+            $tr->setUsername($config->user);
+        }
+        if (!empty($config->password)) {
+            $tr->setPassword($config->password);
+        }
+
+        $tr->setTimeout(120);
+
+        return $tr;
+    }
 
 
-	/**
-	 * @param PhpMailConfig $conifg
-	 * @return \Swift_MailTransport
-	 */
-	public function createPhpMailTransport(PhpMailConfig $conifg)
-	{
-		$tr = \Swift_MailTransport::newInstance();
-		return $tr;
-	}
+    /**
+     * @param  GmailConfig          $config
+     * @return \Swift_SmtpTransport
+     */
+    public function createGmailTransport(GmailConfig $config)
+    {
+        $tr = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl');
+        $tr->setUsername($config->user);
+        $tr->setPassword($config->password);
+        $tr->setTimeout(120);
 
+        return $tr;
+    }
 
-	/**
-	 * @param SendmailConfig $config
-	 * @return \Swift_SendmailTransport
-	 */
-	public function createSendmailTransport(SendmailConfig $config)
-	{
-		$tr = \Swift_SendmailTransport::newInstance("{$config->sendmail_path} -bs");
-		return $tr;
-	}
+    /**
+     * @param  PhpMailConfig        $conifg
+     * @return \Swift_MailTransport
+     */
+    public function createPhpMailTransport(PhpMailConfig $conifg)
+    {
+        $tr = \Swift_MailTransport::newInstance();
+
+        return $tr;
+    }
+
+    /**
+     * @param  SendmailConfig           $config
+     * @return \Swift_SendmailTransport
+     */
+    public function createSendmailTransport(SendmailConfig $config)
+    {
+        $tr = \Swift_SendmailTransport::newInstance("{$config->sendmail_path} -bs");
+
+        return $tr;
+    }
 }

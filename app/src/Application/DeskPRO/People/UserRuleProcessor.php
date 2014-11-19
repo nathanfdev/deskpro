@@ -39,75 +39,75 @@ use Application\DeskPRO\ORM\EntityManager;
 
 class UserRuleProcessor
 {
-	/**
-	 * @var \Application\DeskPRO\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Application\DeskPRO\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @param \Application\DeskPRO\ORM\EntityManager $em
-	 */
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
-
-
-	/**
-	 * @param Person $person
-	 */
-	public function newRegister(Person $person)
-	{
-		$email = $person->getPrimaryEmail();
-
-		if ($email) {
-			$this->newEmail($person, $email);
-		}
-	}
+    /**
+     * @param \Application\DeskPRO\ORM\EntityManager $em
+     */
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @param \Application\DeskPRO\Entity\PersonEmail $email
-	 */
-	public function newEmail(Person $person, PersonEmail $email)
-	{
-		$change = false;
-		$email_address = $email->email;
-		$domain = $email->getEmailDomain();
+    /**
+     * @param Person $person
+     */
+    public function newRegister(Person $person)
+    {
+        $email = $person->getPrimaryEmail();
 
-		$rules = $this->em->getRepository('DeskPRO:UserRule')->getMatching($email_address);
-		if ($rules) {
-			foreach ($rules as $r) {
-				if ($r->add_usergroup) {
-					$change = true;
-					$person->addUsergroup($r->add_usergroup);
-				}
-				if ($r->add_organization && !$person->organization) {
-					$change = true;
-					$person->setOrganization($r->add_organization);
-				}
-			}
-		}
+        if ($email) {
+            $this->newEmail($person, $email);
+        }
+    }
 
-		// And check orgs with domain assocs
-		if (!$person->organization) {
-			$orgem = $this->em->createQuery("
-				SELECT od, org
-				FROM DeskPRO:OrganizationEmailDomain od
-				LEFT JOIN od.organization org
-				WHERE od.domain = ?1
-			")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
 
-			if ($orgem) {
-				$change = true;
-				$person->setOrganization($orgem->organization);
-			}
+    /**
+     * @param \Application\DeskPRO\Entity\Person      $person
+     * @param \Application\DeskPRO\Entity\PersonEmail $email
+     */
+    public function newEmail(Person $person, PersonEmail $email)
+    {
+        $change = false;
+        $email_address = $email->email;
+        $domain = $email->getEmailDomain();
 
-			if ($change) {
-				$this->em->persist($person);
-				$this->em->flush();
-			}
-		}
-	}
+        $rules = $this->em->getRepository('DeskPRO:UserRule')->getMatching($email_address);
+        if ($rules) {
+            foreach ($rules as $r) {
+                if ($r->add_usergroup) {
+                    $change = true;
+                    $person->addUsergroup($r->add_usergroup);
+                }
+                if ($r->add_organization && !$person->organization) {
+                    $change = true;
+                    $person->setOrganization($r->add_organization);
+                }
+            }
+        }
+
+        // And check orgs with domain assocs
+        if (!$person->organization) {
+            $orgem = $this->em->createQuery("
+                SELECT od, org
+                FROM DeskPRO:OrganizationEmailDomain od
+                LEFT JOIN od.organization org
+                WHERE od.domain = ?1
+            ")->setParameter(1, $domain)->setMaxResults(1)->getOneOrNullResult();
+
+            if ($orgem) {
+                $change = true;
+                $person->setOrganization($orgem->organization);
+            }
+
+            if ($change) {
+                $this->em->persist($person);
+                $this->em->flush();
+            }
+        }
+    }
 }

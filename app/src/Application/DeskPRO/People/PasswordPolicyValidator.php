@@ -40,108 +40,114 @@ use Orb\Util\Strings;
 
 class PasswordPolicyValidator
 {
-	/**
-	 * @var \Application\DeskPRO\Settings\PasswordPolicy
-	 */
-	private $user_policy;
+    /**
+     * @var \Application\DeskPRO\Settings\PasswordPolicy
+     */
+    private $user_policy;
 
-	/**
-	 * @var \Application\DeskPRO\Settings\PasswordPolicy
-	 */
-	private $agent_policy;
+    /**
+     * @var \Application\DeskPRO\Settings\PasswordPolicy
+     */
+    private $agent_policy;
 
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\PasswordHistory
-	 */
-	private $history_repos;
-
-
-	/**
-	 * @param PasswordPolicy       $user_policy
-	 * @param PasswordPolicy       $agent_policy
-	 * @param PasswordHistoryRepos $history_repos
-	 */
-	public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos)
-	{
-		$this->user_policy   = $user_policy;
-		$this->agent_policy  = $agent_policy;
-		$this->history_repos = $history_repos;
-	}
+    /**
+     * @var \Application\DeskPRO\EntityRepository\PasswordHistory
+     */
+    private $history_repos;
 
 
-	/**
-	 * @param string $password    The password to check
-	 * @param Person $person      The user to check on
-	 * @param string   $error
-	 * @return bool
-	 */
-	public function checkPassword($password, Person $person = null, &$error = null)
-	{
-		if ($person->is_agent) {
-			$policy = $this->agent_policy;
-		} else {
-			$policy = $this->user_policy;
-		}
-
-		if ($policy->min_length && Strings::utf8_strlen($password) < $policy->min_length) {
-			$error = 'min_length';
-			return false;
-		}
-
-		$m = null;
-		if ($policy->require_num_uppercase && preg_match_all('#[A-Z]#', $password, $m) < $policy->require_num_uppercase) {
-			$error = 'require_num_uppercase';
-			return false;
-		}
-
-		$m = null;
-		if ($policy->require_num_lowercase && preg_match_all('#[a-z]#', $password, $m) < $policy->require_num_lowercase) {
-			$error = 'require_num_lowercase';
-			return false;
-		}
-
-		$m = null;
-		if ($policy->require_num_number && preg_match_all('#[0-9]#', $password, $m) < $policy->require_num_number) {
-			$error = 'require_num_number';
-			return false;
-		}
-
-		$m = null;
-		if ($policy->require_num_symbol && preg_match_all('#[\-!$%^&*()_+|~=`{}\[\]:";\'<>?,./\#]#', $password, $m) < $policy->require_num_symbol) {
-			$error = 'require_num_symbol';
-			return false;
-		}
-
-		if ($policy->forbid_reuse && $person && $person->id && $this->history_repos->isUsedPassword($person, $password)) {
-			$error = 'forbid_reuse';
-			return false;
-		}
-
-		return true;
-	}
+    /**
+     * @param PasswordPolicy       $user_policy
+     * @param PasswordPolicy       $agent_policy
+     * @param PasswordHistoryRepos $history_repos
+     */
+    public function __construct(PasswordPolicy $user_policy, PasswordPolicy $agent_policy, PasswordHistoryRepos $history_repos)
+    {
+        $this->user_policy   = $user_policy;
+        $this->agent_policy  = $agent_policy;
+        $this->history_repos = $history_repos;
+    }
 
 
-	/**
-	 * @param Person $person
-	 * @return bool
-	 */
-	public function isPasswordExpired(Person $person)
-	{
-		if (!$person->date_password_set) {
-			return false;
-		}
+    /**
+     * @param  string $password The password to check
+     * @param  Person $person   The user to check on
+     * @param  string $error
+     * @return bool
+     */
+    public function checkPassword($password, Person $person = null, &$error = null)
+    {
+        if ($person->is_agent) {
+            $policy = $this->agent_policy;
+        } else {
+            $policy = $this->user_policy;
+        }
 
-		if ($person->is_agent) {
-			$policy = $this->agent_policy;
-		} else {
-			$policy = $this->user_policy;
-		}
+        if ($policy->min_length && Strings::utf8_strlen($password) < $policy->min_length) {
+            $error = 'min_length';
 
-		if (!$policy->max_age) {
-			return false;
-		}
+            return false;
+        }
 
-		$days = floor((time() - $person->date_password_set->getTimestamp()) / 86400);
-		return $days > $policy->max_age;
-	}
+        $m = null;
+        if ($policy->require_num_uppercase && preg_match_all('#[A-Z]#', $password, $m) < $policy->require_num_uppercase) {
+            $error = 'require_num_uppercase';
+
+            return false;
+        }
+
+        $m = null;
+        if ($policy->require_num_lowercase && preg_match_all('#[a-z]#', $password, $m) < $policy->require_num_lowercase) {
+            $error = 'require_num_lowercase';
+
+            return false;
+        }
+
+        $m = null;
+        if ($policy->require_num_number && preg_match_all('#[0-9]#', $password, $m) < $policy->require_num_number) {
+            $error = 'require_num_number';
+
+            return false;
+        }
+
+        $m = null;
+        if ($policy->require_num_symbol && preg_match_all('#[\-!$%^&*()_+|~=`{}\[\]:";\'<>?,./\#]#', $password, $m) < $policy->require_num_symbol) {
+            $error = 'require_num_symbol';
+
+            return false;
+        }
+
+        if ($policy->forbid_reuse && $person && $person->id && $this->history_repos->isUsedPassword($person, $password)) {
+            $error = 'forbid_reuse';
+
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * @param  Person $person
+     * @return bool
+     */
+    public function isPasswordExpired(Person $person)
+    {
+        if (!$person->date_password_set) {
+            return false;
+        }
+
+        if ($person->is_agent) {
+            $policy = $this->agent_policy;
+        } else {
+            $policy = $this->user_policy;
+        }
+
+        if (!$policy->max_age) {
+            return false;
+        }
+
+        $days = floor((time() - $person->date_password_set->getTimestamp()) / 86400);
+
+        return $days > $policy->max_age;
+    }
 }

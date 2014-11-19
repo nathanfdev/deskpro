@@ -120,7 +120,6 @@ class AuthTwigExtension extends \Twig_Extension
         // needs to stay because Magento native app still uses this
         $legacyOutput = $this->legacyMagentoPluginCode($interface);
 
-
         return $iFrameOutput.$legacyOutput;
     }
 
@@ -165,4 +164,3 @@ class AuthTwigExtension extends \Twig_Extension
         return 'auth_twig_extension';
     }
 }
- 

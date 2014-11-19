@@ -37,45 +37,45 @@ use Orb\Util\Strings;
 
 class UrlMatcher extends \Symfony\Component\Routing\Matcher\UrlMatcher
 {
-	/** @var bool|null  */
-	protected $got_locale = null;
+    /** @var bool|null  */
+    protected $got_locale = null;
 
-	public function match($path_info)
-	{
-		#------------------------------
-		# We check for locale prefix in user section
-		#------------------------------
+    public function match($path_info)
+    {
+        #------------------------------
+        # We check for locale prefix in user section
+        #------------------------------
 
-		$this->got_locale = null;
+        $this->got_locale = null;
 
-		$nocheck_sections = array(
-			'/agent',
-			'/admin',
-			'/dev',
-			'/api'
-		);
+        $nocheck_sections = array(
+            '/agent',
+            '/admin',
+            '/dev',
+            '/api'
+        );
 
-		$check_for_locale = true;
-		foreach ($nocheck_sections as $s) {
-			if (strpos($path_info, $s) === 0) {
-				$check_for_locale = false;
-			}
-		}
+        $check_for_locale = true;
+        foreach ($nocheck_sections as $s) {
+            if (strpos($path_info, $s) === 0) {
+                $check_for_locale = false;
+            }
+        }
 
-		if ($check_for_locale) {
-			$locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $path_info, 1);
-			if ($locale) {
-				$locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $path_info, 1);
-			}
+        if ($check_for_locale) {
+            $locale = Strings::extractRegexMatch('#^/([a-z]{2})/#', $path_info, 1);
+            if ($locale) {
+                $locale = Strings::extractRegexMatch('#^/([a-z]{2}_[A-Z]{2}/#', $path_info, 1);
+            }
 
-			if ($locale) {
-				$this->got_locale = $locale;
+            if ($locale) {
+                $this->got_locale = $locale;
 
-				// Remove it from the
-				$path_info = preg_replace('#^/(.*?)/#', '/', $path_info);
-			}
-		}
+                // Remove it from the
+                $path_info = preg_replace('#^/(.*?)/#', '/', $path_info);
+            }
+        }
 
-		return parent::match($path_info);
-	}
+        return parent::match($path_info);
+    }
 }

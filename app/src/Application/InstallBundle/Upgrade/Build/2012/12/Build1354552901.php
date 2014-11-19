@@ -36,26 +36,26 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1354552901 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add task reminder notifications");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_due.email', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.task_assign_self.email'
-		");
-		$this->execMutateSql("
-			INSERT IGNORE INTO people_prefs
-				(person_id, name, value_str, value_array)
-			SELECT person_id, 'agent_notif.task_due.alert', '1', 'N;'
-			FROM people_prefs
-			WHERE name = 'agent_notif.task_assign_self.alert'
-		");
-		$this->execMutateSql("
-			INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
-			VALUES ('task_reminders', 'task_reminders', 'Task Reminders', 'Sends task reminder notifications', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\TaskReminders', X'613A303A7B7D', '3600', NULL, NULL)
-		");
-	}
+    public function run()
+    {
+        $this->out("Add task reminder notifications");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.task_due.email', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.task_assign_self.email'
+        ");
+        $this->execMutateSql("
+            INSERT IGNORE INTO people_prefs
+                (person_id, name, value_str, value_array)
+            SELECT person_id, 'agent_notif.task_due.alert', '1', 'N;'
+            FROM people_prefs
+            WHERE name = 'agent_notif.task_assign_self.alert'
+        ");
+        $this->execMutateSql("
+            INSERT INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
+            VALUES ('task_reminders', 'task_reminders', 'Task Reminders', 'Sends task reminder notifications', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\TaskReminders', X'613A303A7B7D', '3600', NULL, NULL)
+        ");
+    }
 }

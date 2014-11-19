@@ -40,262 +40,266 @@ use Psr\Log\LoggerInterface;
 
 abstract class AbstractBuild
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	protected $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    protected $container;
 
-	/**
-	 * @var bool
-	 */
-	protected $rerun = false;
+    /**
+     * @var bool
+     */
+    protected $rerun = false;
 
-	/**
-	 * @var \Psr\Log\LoggerInterface
-	 */
-	protected $logger;
-
-
-	/**
-	 * @param DeskproContainer $container
-	 * @param LoggerInterface  $logger
-	 */
-	public function __construct(DeskproContainer $container, LoggerInterface $logger = null)
-	{
-		if ($logger === null) {
-			$logger = new NullLogger();
-		}
-
-		$this->logger = $logger;
-
-		$this->container = $container;
-		$this->init();
-	}
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    protected $logger;
 
 
-	/**
-	 * Saves data to the filesystem (into the tmp dir). Will be overwritten if it already exists.
-	 *
-	 * @param string $tag
-	 * @param string $name
-	 * @param string|array $data Array data will be json_encoded, string data will be written as-is
-	 * @return string|false Filename written when successful, or false if failed to write
-	 */
-	public function saveUpgradeData($tag, $name, $data, $throw_exception = true)
-	{
-		if (is_array($data)) {
-			$fname = 'updata-' . $tag . '.' . $name . '.json';
-			$path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
-			$data = json_encode($data);
-			if (file_put_contents($path, $data) === false) {
-				if ($throw_exception) {
-					throw new \RuntimeException("Failed to write upgrade data file to: $path");
-				}
-				return false;
-			}
-		} else {
-			$fname = 'updata-' . $tag . '.' . $name . '.dat';
-			$path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
-			$data = (string)$data;
-			if (file_put_contents($path, $data) === false) {
-				if ($throw_exception) {
-					throw new \RuntimeException("Failed to write upgrade data file to: $path");
-				}
-				return false;
-			}
-		}
+    /**
+     * @param DeskproContainer $container
+     * @param LoggerInterface  $logger
+     */
+    public function __construct(DeskproContainer $container, LoggerInterface $logger = null)
+    {
+        if ($logger === null) {
+            $logger = new NullLogger();
+        }
 
-		@chmod($path, 0777);
+        $this->logger = $logger;
 
-		return $path;
-	}
+        $this->container = $container;
+        $this->init();
+    }
 
 
-	/**
-	 * Read previously saved upgrade data.
-	 *
-	 * @param string $tag
-	 * @param string $name
-	 * @return array|null|string  Array for JSON-encoded array data, string for string data or null if file could not be found
-	 */
-	public function getUpgradeData($tag, $name)
-	{
-		$name_part = 'updata-' . $tag . '.' . $name . '.';
-		$path_part = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $name_part;
+    /**
+     * Saves data to the filesystem (into the tmp dir). Will be overwritten if it already exists.
+     *
+     * @param  string       $tag
+     * @param  string       $name
+     * @param  string|array $data Array data will be json_encoded, string data will be written as-is
+     * @return string|false Filename written when successful, or false if failed to write
+     */
+    public function saveUpgradeData($tag, $name, $data, $throw_exception = true)
+    {
+        if (is_array($data)) {
+            $fname = 'updata-' . $tag . '.' . $name . '.json';
+            $path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
+            $data = json_encode($data);
+            if (file_put_contents($path, $data) === false) {
+                if ($throw_exception) {
+                    throw new \RuntimeException("Failed to write upgrade data file to: $path");
+                }
 
-		if (file_exists($path_part.'json')) {
-			$data = file_get_contents($path_part.'json');
-			$data = json_decode($data, true);
-			return $data;
-		} else if (file_exists($path_part.'dat')) {
-			$data = file_get_contents($path_part.'dat');
-			return $data;
-		} else {
-			return null;
-		}
-	}
+                return false;
+            }
+        } else {
+            $fname = 'updata-' . $tag . '.' . $name . '.dat';
+            $path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $fname;
+            $data = (string)$data;
+            if (file_put_contents($path, $data) === false) {
+                if ($throw_exception) {
+                    throw new \RuntimeException("Failed to write upgrade data file to: $path");
+                }
 
+                return false;
+            }
+        }
 
-	/**
-	 * Empty hook into the constructor.
-	 */
-	protected function init() { }
+        @chmod($path, 0777);
 
-
-	/**
-	 * Run through the upgrade
-	 *
-	 * @return void
-	 */
-	abstract public function run();
-
-
-	/**
-	 * Set this build handler to run again.
-	 * This allows "pages" to run. The "runcount" (fetch with getStatus('runcount')) will be
-	 * incremented automatically.
-	 *
-	 * @param bool $rerun
-	 * @return bool
-	 */
-	public function setRerun($rerun = true)
-	{
-		return $this->rerun = (bool)$rerun;
-	}
+        return $path;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function shouldRerun()
-	{
-		return $this->rerun;
-	}
+    /**
+     * Read previously saved upgrade data.
+     *
+     * @param  string            $tag
+     * @param  string            $name
+     * @return array|null|string Array for JSON-encoded array data, string for string data or null if file could not be found
+     */
+    public function getUpgradeData($tag, $name)
+    {
+        $name_part = 'updata-' . $tag . '.' . $name . '.';
+        $path_part = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $name_part;
+
+        if (file_exists($path_part.'json')) {
+            $data = file_get_contents($path_part.'json');
+            $data = json_decode($data, true);
+
+            return $data;
+        } elseif (file_exists($path_part.'dat')) {
+            $data = file_get_contents($path_part.'dat');
+
+            return $data;
+        } else {
+            return null;
+        }
+    }
 
 
-	/**
-	 * Write to output
-	 *
-	 * @param string $string
-	 */
-	public function out($string)
-	{
-		$this->logger->info($string);
-	}
+    /**
+     * Empty hook into the constructor.
+     */
+    protected function init() { }
 
 
-	/**
-	 * @param $sql
-	 */
-	public function execMutateSql($sql, $ignore_err = false)
-	{
-		$sql = preg_replace('#^\s*#m', '', $sql);
-		try {
-			$this->container->getDb()->exec($sql);
-		} catch (\Exception $e) {
-			$this->logger->info("SQL: " . $sql);
-			$this->logger->info("Ignored: " . $e->getMessage());
-			if (!$ignore_err) {
-				throw $e;
-			}
-		}
-	}
+    /**
+     * Run through the upgrade
+     *
+     * @return void
+     */
+    abstract public function run();
 
 
-	/**
-	 * Save status data (ex. steps completed etc)
-	 *
-	 * @param $key
-	 * @param $val
-	 */
-	public function saveStatus($key, $val)
-	{
-		$this->container->getDb()->replace('import_datastore', array(
-			'typename' => 'up.' . $this->getBuildId() . '.' . $key,
-			'data' => $val
-		));
-	}
+    /**
+     * Set this build handler to run again.
+     * This allows "pages" to run. The "runcount" (fetch with getStatus('runcount')) will be
+     * incremented automatically.
+     *
+     * @param  bool $rerun
+     * @return bool
+     */
+    public function setRerun($rerun = true)
+    {
+        return $this->rerun = (bool)$rerun;
+    }
 
 
-	/**
-	 * @param string $key
-	 * @param mixed $default
-	 * @return mixed
-	 */
-	public function getStatus($key, $default = null)
-	{
-		$val = $this->container->getDb()->fetchArray("
-			SELECT data
-			FROM import_datastore
-			WHERE typename = ?
-		", array('up.' . $this->getBuildId() . '.' . $key));
-
-		if (!$val) {
-			return $default;
-		}
-
-		return $val[0];
-	}
-
-	public function recompileCustomTemplates()
-	{
-		$templates = $this->container->getDb()->fetchAll("
-			SELECT id, name, template_code
-			FROM templates
-		");
-
-		$twig = $this->container->get('twig');
-
-		foreach ($templates as $tpl) {
-			$name         = $tpl['name'];
-			$compile_code = $tpl['template_code'];
-
-			try {
-				if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
-					$proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
-					$compile_code = $proc->process($compile_code, $name);
-				}
-
-				$compile_code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $compile_code);
-				$compiled = $twig->compileSource($compile_code, $name);
-
-				$this->container->getDb()->update('templates', array(
-					'template_compiled' => $compiled,
-				), array('id' => $tpl['id']));
-			} catch (\Exception $e) {
-				@file_put_contents(
-					dp_get_backup_dir() . DIRECTORY_SEPARATOR . 'tpl-backup-' . str_replace(':', '_', $tpl['name']),
-					$tpl['template_code']
-				);
-				$this->container->getDb()->delete('templates', array('id' => $tpl['id']));
-			}
-		}
-	}
-
-	public function getDefaultCollation()
-	{
-		try {
-			$collation = \Application\DeskPRO\App::getSetting('core.db_collation');
-		} catch (\Exception $e) {
-			$collation = null;
-		}
-
-		return $collation ?: 'utf8_general_ci';
-	}
+    /**
+     * @return bool
+     */
+    public function shouldRerun()
+    {
+        return $this->rerun;
+    }
 
 
-	/**
-	 * @static
-	 * @return string
-	 */
-	public function getBuildId()
-	{
-		$name = get_class($this);
-		$base = \Orb\Util\Util::getBaseClassname($name);
+    /**
+     * Write to output
+     *
+     * @param string $string
+     */
+    public function out($string)
+    {
+        $this->logger->info($string);
+    }
 
-		// Build1293243423 becomes just 1293243423
-		$build_id = str_replace('Build', '', $base);
 
-		return $build_id;
-	}
+    /**
+     * @param $sql
+     */
+    public function execMutateSql($sql, $ignore_err = false)
+    {
+        $sql = preg_replace('#^\s*#m', '', $sql);
+        try {
+            $this->container->getDb()->exec($sql);
+        } catch (\Exception $e) {
+            $this->logger->info("SQL: " . $sql);
+            $this->logger->info("Ignored: " . $e->getMessage());
+            if (!$ignore_err) {
+                throw $e;
+            }
+        }
+    }
+
+
+    /**
+     * Save status data (ex. steps completed etc)
+     *
+     * @param $key
+     * @param $val
+     */
+    public function saveStatus($key, $val)
+    {
+        $this->container->getDb()->replace('import_datastore', array(
+            'typename' => 'up.' . $this->getBuildId() . '.' . $key,
+            'data' => $val
+        ));
+    }
+
+
+    /**
+     * @param  string $key
+     * @param  mixed  $default
+     * @return mixed
+     */
+    public function getStatus($key, $default = null)
+    {
+        $val = $this->container->getDb()->fetchArray("
+            SELECT data
+            FROM import_datastore
+            WHERE typename = ?
+        ", array('up.' . $this->getBuildId() . '.' . $key));
+
+        if (!$val) {
+            return $default;
+        }
+
+        return $val[0];
+    }
+
+    public function recompileCustomTemplates()
+    {
+        $templates = $this->container->getDb()->fetchAll("
+            SELECT id, name, template_code
+            FROM templates
+        ");
+
+        $twig = $this->container->get('twig');
+
+        foreach ($templates as $tpl) {
+            $name         = $tpl['name'];
+            $compile_code = $tpl['template_code'];
+
+            try {
+                if (strpos($name, 'DeskPRO:emails_') !== false || strpos($name, 'DeskPRO:custom_emails_') !== false) {
+                    $proc = new \Application\DeskPRO\Twig\PreProcessor\EmailPreProcessor();
+                    $compile_code = $proc->process($compile_code, $name);
+                }
+
+                $compile_code = preg_replace('#\{%\s*include\s+(.*?)\s*%\}#', '{% include $1 ignore missing %}', $compile_code);
+                $compiled = $twig->compileSource($compile_code, $name);
+
+                $this->container->getDb()->update('templates', array(
+                    'template_compiled' => $compiled,
+                ), array('id' => $tpl['id']));
+            } catch (\Exception $e) {
+                @file_put_contents(
+                    dp_get_backup_dir() . DIRECTORY_SEPARATOR . 'tpl-backup-' . str_replace(':', '_', $tpl['name']),
+                    $tpl['template_code']
+                );
+                $this->container->getDb()->delete('templates', array('id' => $tpl['id']));
+            }
+        }
+    }
+
+    public function getDefaultCollation()
+    {
+        try {
+            $collation = \Application\DeskPRO\App::getSetting('core.db_collation');
+        } catch (\Exception $e) {
+            $collation = null;
+        }
+
+        return $collation ?: 'utf8_general_ci';
+    }
+
+
+    /**
+     * @static
+     * @return string
+     */
+    public function getBuildId()
+    {
+        $name = get_class($this);
+        $base = \Orb\Util\Util::getBaseClassname($name);
+
+        // Build1293243423 becomes just 1293243423
+        $build_id = str_replace('Build', '', $base);
+
+        return $build_id;
+    }
 }

@@ -40,113 +40,113 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class ImapConfig implements AccountConfigInterface
 {
-	/**
-	 * @var string
-	 */
-	public $host;
+    /**
+     * @var string
+     */
+    public $host;
 
-	/**
-	 * Pop3 default is 143, secure 993
-	 * @var int
-	 */
-	public $port = 143;
+    /**
+     * Pop3 default is 143, secure 993
+     * @var int
+     */
+    public $port = 143;
 
-	/**
-	 * @var string
-	 */
-	public $user;
+    /**
+     * @var string
+     */
+    public $user;
 
-	/**
-	 * @var string
-	 */
-	public $password;
+    /**
+     * @var string
+     */
+    public $password;
 
-	/**
-	 * 'ssl' or 'tls'
-	 * @var null|string
-	 */
-	public $secure_mode = null;
+    /**
+     * 'ssl' or 'tls'
+     * @var null|string
+     */
+    public $secure_mode = null;
 
-	/**
-	 * disable certificate validation (validate by default)
-	 * @var bool
-	 */
-	public $no_validation = false;
+    /**
+     * disable certificate validation (validate by default)
+     * @var bool
+     */
+    public $no_validation = false;
 
-	/**
-	 * 'read', 'delete', 'archive'
-	 * @var string
-	 */
-	public $mode = 'read';
+    /**
+     * 'read', 'delete', 'archive'
+     * @var string
+     */
+    public $mode = 'read';
 
-	/**
-	 * The mailbox to read from. Default blank means inbox.
-	 * @var string
-	 */
-	public $read_mailbox = null;
+    /**
+     * The mailbox to read from. Default blank means inbox.
+     * @var string
+     */
+    public $read_mailbox = null;
 
-	/**
-	 * If using the 'archive' method, this is the mailbox name.
-	 * @var string
-	 */
-	public $archive_mailbox = null;
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function serializeJsonArray()
-	{
-		return array(
-			'host'            => $this->host,
-			'port'            => $this->port,
-			'user'            => $this->user,
-			'password'        => $this->password,
-			'secure_mode'     => $this->secure_mode,
-			'no_validation'   => $this->no_validation,
-			'mode'            => $this->mode,
-			'read_mailbox'    => $this->read_mailbox,
-			'archive_mailbox' => $this->archive_mailbox
-		);
-	}
+    /**
+     * If using the 'archive' method, this is the mailbox name.
+     * @var string
+     */
+    public $archive_mailbox = null;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		foreach ($data as $k => $v) {
-			$obj->$k = $v;
-		}
-
-		return $obj;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType()
-	{
-		return 'imap';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
+    {
+        return array(
+            'host'            => $this->host,
+            'port'            => $this->port,
+            'user'            => $this->user,
+            'password'        => $this->password,
+            'secure_mode'     => $this->secure_mode,
+            'no_validation'   => $this->no_validation,
+            'mode'            => $this->mode,
+            'read_mailbox'    => $this->read_mailbox,
+            'archive_mailbox' => $this->archive_mailbox
+        );
+    }
 
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data as $k => $v) {
+            $obj->$k = $v;
+        }
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		$metadata->addPropertyConstraint('host', new Constraints\NotBlank());
-		$metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
-		$metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
-			'choices' => array('none', 'ssl', 'tls')
-		)));
-		$metadata->addPropertyConstraint('mode', new Constraints\Choice(array(
-			'choices' => array('read', 'delete', 'archive')
-		)));
-	}
+        return $obj;
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+        return 'imap';
+    }
+
+
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('host', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('port', new Constraints\GreaterThan(array('value' => 1)));
+        $metadata->addPropertyConstraint('secure_mode', new Constraints\Choice(array(
+            'choices' => array('none', 'ssl', 'tls')
+        )));
+        $metadata->addPropertyConstraint('mode', new Constraints\Choice(array(
+            'choices' => array('read', 'delete', 'archive')
+        )));
+    }
 }

@@ -34,37 +34,35 @@
 
 namespace Application\DeskPRO\WorkerProcess\Job;
 
-use Application\DeskPRO\App;
-
 /**
  * This cleans up various temporary data
  */
 class SearchIndexUpdate extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 60; // 1 min
+    const DEFAULT_INTERVAL = 60; // 1 min
 
-	/**
-	 * @var \Application\DeskPRO\Queue\Queue
-	 */
-	protected $queue;
+    /**
+     * @var \Application\DeskPRO\Queue\Queue
+     */
+    protected $queue;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	public function run()
-	{
+    public function run()
+    {
 
-	}
+    }
 
-	public function processUpdates()
-	{
+    public function processUpdates()
+    {
 
-	}
+    }
 }

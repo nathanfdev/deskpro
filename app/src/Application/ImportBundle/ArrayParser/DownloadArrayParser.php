@@ -39,60 +39,60 @@ use Orb\Util\Strings;
 class DownloadArrayParser implements ArrayParserInterface
 {
 
-	/**
-	 * @param array $data
-	 * @return PersonValue
-	 */
-	public function parseArray(array $data)
-	{
-		$data = ArrayParserUtils::cleanArray($data);
+    /**
+     * @param  array       $data
+     * @return PersonValue
+     */
+    public function parseArray(array $data)
+    {
+        $data = ArrayParserUtils::cleanArray($data);
 
-		$value = new DownloadValue();
+        $value = new DownloadValue();
 
-		ArrayParserUtils::copyValueMapping(array(
-			'oid'			=> 'raw',
-			'person'		=> 'string',
-			'language'		=> 'string',
-			'num_downloads'		=> 'int',
-			'slug'			=> 'string',
-			'title'			=> 'string',
-			'content'		=> 'string',
-			'view_count'		=> 'int',
-			'total_rating'		=> 'int',
-			'num_comments'		=> 'int',
-			'num_ratings'		=> 'int',
-			'status'		=> 'string',
-			'date_created'		=> 'date',
-			'date_published'	=> 'date',
-			'category'		=> 'string',
-			'labels'		=> 'array',
-		), $data, $value);
+        ArrayParserUtils::copyValueMapping(array(
+            'oid'			=> 'raw',
+            'person'		=> 'string',
+            'language'		=> 'string',
+            'num_downloads'		=> 'int',
+            'slug'			=> 'string',
+            'title'			=> 'string',
+            'content'		=> 'string',
+            'view_count'		=> 'int',
+            'total_rating'		=> 'int',
+            'num_comments'		=> 'int',
+            'num_ratings'		=> 'int',
+            'status'		=> 'string',
+            'date_created'		=> 'date',
+            'date_published'	=> 'date',
+            'category'		=> 'string',
+            'labels'		=> 'array',
+        ), $data, $value);
 
-		if ($value->title && !$value->slug) {
-			$value->slug = Strings::slugifyTitle($value->title);
-		}
-		
-		if (isset($data['attachment']) && !empty($data['attachment'])) {
-			$attach_data = $data['attachment'];
-			
-			$attach_data = ArrayParserUtils::cleanArray($attach_data);
-			
-			$attach_value = new AttachmentValue();
+        if ($value->title && !$value->slug) {
+            $value->slug = Strings::slugifyTitle($value->title);
+        }
 
-			ArrayParserUtils::copyValueMapping(array(
-				'oid'         => 'raw',
-				'blob_data'    => 'raw',
-				'blob_url'     => 'string',
-				'blob_path'    => 'string',
-				'file_name'     => 'string',
-				'content_type' => 'string',
-				'is_inline'    => 'bool'
-			), $attach_data, $attach_value);
+        if (isset($data['attachment']) && !empty($data['attachment'])) {
+            $attach_data = $data['attachment'];
 
-			$value->attachment = $attach_value;
-		}
+            $attach_data = ArrayParserUtils::cleanArray($attach_data);
 
-		return $value;
-	}
+            $attach_value = new AttachmentValue();
+
+            ArrayParserUtils::copyValueMapping(array(
+                'oid'         => 'raw',
+                'blob_data'    => 'raw',
+                'blob_url'     => 'string',
+                'blob_path'    => 'string',
+                'file_name'     => 'string',
+                'content_type' => 'string',
+                'is_inline'    => 'bool'
+            ), $attach_data, $attach_value);
+
+            $value->attachment = $attach_value;
+        }
+
+        return $value;
+    }
 
 }

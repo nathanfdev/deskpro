@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1414747927 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add blobs.storage_loc_specific");
-		$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_specific VARCHAR(50) DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add blobs.storage_loc_specific");
+        $this->execMutateSql("ALTER TABLE blobs ADD storage_loc_specific VARCHAR(50) DEFAULT NULL");
+    }
 }

@@ -27,128 +27,126 @@
 
 class DpTestEnv
 {
-	/**
-	 * @var array
-	 */
-	private static $reset_db_sets = array();
+    /**
+     * @var array
+     */
+    private static $reset_db_sets = array();
 
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private static $last_container = null;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private static $last_container = null;
 
-	/**
-	 * @var int
-	 */
-	private static $container_count = 0;
+    /**
+     * @var int
+     */
+    private static $container_count = 0;
 
-	public static function init()
-	{
-		static $has_init;
-		if ($has_init) return;
+    public static function init()
+    {
+        static $has_init;
+        if ($has_init) return;
 
-		@file_put_contents(DP_WEB_ROOT.'/running_tests.trigger', time());
-		register_shutdown_function(function() {
-			@unlink(DP_WEB_ROOT.'/running_tests.trigger');
-		});
-	}
-
-
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public static function getContainer()
-	{
-		if (self::$last_container !== null) {
-			return self::$last_container;
-		}
-		$kernel = new \DeskPRO\Kernel\DpKernel('dev', true, 'sys');
-		$kernel->boot('cli');
-
-		self::$last_container = $kernel->getContainer();
-		self::$container_count++;
-
-		return $kernel->getContainer();
-	}
+        @file_put_contents(DP_WEB_ROOT.'/running_tests.trigger', time());
+        register_shutdown_function(function () {
+            @unlink(DP_WEB_ROOT.'/running_tests.trigger');
+        });
+    }
 
 
-	public static function getMockBuilder($name)
-	{
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public static function getContainer()
+    {
+        if (self::$last_container !== null) {
+            return self::$last_container;
+        }
+        $kernel = new \DeskPRO\Kernel\DpKernel('dev', true, 'sys');
+        $kernel->boot('cli');
 
-	}
+        self::$last_container = $kernel->getContainer();
+        self::$container_count++;
 
-
-	/**
-	 * @return int
-	 */
-	public static function getCountainerCounter()
-	{
-		return self::$container_count;
-	}
-
-
-	/**
-	 * Resets the container so next time it'll be re-created.
-	 */
-	public static function resetContainer()
-	{
-		self::$last_container = null;
-	}
+        return $kernel->getContainer();
+    }
 
 
-	/**
-	 * Enables the current database set. $reset will reset the database if it already exists.
-	 *
-	 * @param string $set_name     The set name to restore
-	 * @param bool   $reset        Force reset the database even if it already exists
-	 * @param bool   $reset_after  Reset the database after (eg next time it is used). Use this to reset the db after a destructive test.
-	 */
-	public static function enableDatabaseSet($set_name = 'FreshDb', $reset = false, $reset_after = false)
-	{
-		self::resetContainer();
+    public static function getMockBuilder($name)
+    {
 
-		require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
-		if (file_exists(DP_ROOT . '/testing/data/DpDbSets/'.$set_name.'.php')) {
-			require_once(DP_ROOT . '/testing/data/DpDbSets/'.$set_name.'.php');
-		}
-
-		$cache_path = DP_ROOT.'/testing/data/dbset-cache';
-		if (!is_dir($cache_path)) {
-			mkdir($cache_path, 0777, true);
-			chmod($cache_path, 0777);
-		}
-
-		$set_class = "DpDbSets\\$set_name";
-		if (!class_exists($set_class)) {
-			throw new \InvalidArgumentException("Invalid set name: $set_name ($set_class)");
-		}
-
-		$GLOBALS['DP_TESTING_USEDB'] = 'dp_test_' . strtolower($set_name);
-
-		$set = new $set_class(self::getContainer());
-		$set->enableCache(
-			$cache_path,
-			'mysql',
-			'mysqldump'
-		);
-		$set->install($reset, $reset_after);
-
-		@file_put_contents(DP_WEB_ROOT.'/testing_db_name', $GLOBALS['DP_TESTING_USEDB']);
-		register_shutdown_function(function() {
-			@unlink(DP_WEB_ROOT.'/testing_db_name');
-		});
-	}
+    }
 
 
-	/**
-	 * This just resets the 'active' db pointer to use
-	 * whatever is set in config.testing.php (DP_DATABASE_NAME).
-	 * So the next time you fetch the container, you'll get a conn
-	 * to the default db.
-	 */
-	public static function enableDefaultDb()
-	{
-		unset($GLOBALS['DP_TESTING_USEDB']);
-		@unlink(DP_WEB_ROOT.'/testing_db_name');
-	}
+    /**
+     * @return int
+     */
+    public static function getCountainerCounter()
+    {
+        return self::$container_count;
+    }
+
+
+    /**
+     * Resets the container so next time it'll be re-created.
+     */
+    public static function resetContainer()
+    {
+        self::$last_container = null;
+    }
+
+    /**
+     * Enables the current database set. $reset will reset the database if it already exists.
+     *
+     * @param string $set_name    The set name to restore
+     * @param bool   $reset       Force reset the database even if it already exists
+     * @param bool   $reset_after Reset the database after (eg next time it is used). Use this to reset the db after a destructive test.
+     */
+    public static function enableDatabaseSet($set_name = 'FreshDb', $reset = false, $reset_after = false)
+    {
+        self::resetContainer();
+
+        require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
+        if (file_exists(DP_ROOT . '/testing/data/DpDbSets/'.$set_name.'.php')) {
+            require_once(DP_ROOT . '/testing/data/DpDbSets/'.$set_name.'.php');
+        }
+
+        $cache_path = DP_ROOT.'/testing/data/dbset-cache';
+        if (!is_dir($cache_path)) {
+            mkdir($cache_path, 0777, true);
+            chmod($cache_path, 0777);
+        }
+
+        $set_class = "DpDbSets\\$set_name";
+        if (!class_exists($set_class)) {
+            throw new \InvalidArgumentException("Invalid set name: $set_name ($set_class)");
+        }
+
+        $GLOBALS['DP_TESTING_USEDB'] = 'dp_test_' . strtolower($set_name);
+
+        $set = new $set_class(self::getContainer());
+        $set->enableCache(
+            $cache_path,
+            'mysql',
+            'mysqldump'
+        );
+        $set->install($reset, $reset_after);
+
+        @file_put_contents(DP_WEB_ROOT.'/testing_db_name', $GLOBALS['DP_TESTING_USEDB']);
+        register_shutdown_function(function () {
+            @unlink(DP_WEB_ROOT.'/testing_db_name');
+        });
+    }
+
+    /**
+     * This just resets the 'active' db pointer to use
+     * whatever is set in config.testing.php (DP_DATABASE_NAME).
+     * So the next time you fetch the container, you'll get a conn
+     * to the default db.
+     */
+    public static function enableDefaultDb()
+    {
+        unset($GLOBALS['DP_TESTING_USEDB']);
+        @unlink(DP_WEB_ROOT.'/testing_db_name');
+    }
 }

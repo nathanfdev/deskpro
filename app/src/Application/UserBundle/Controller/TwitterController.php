@@ -39,63 +39,64 @@ use Application\DeskPRO\App;
 
 class TwitterController extends AbstractController
 {
-	public function viewLongAction($long_id)
-	{
-		$long = $this->em->find('DeskPRO:TwitterStatusLong', $long_id);
-		if (!$long) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-		}
+    public function viewLongAction($long_id)
+    {
+        $long = $this->em->find('DeskPRO:TwitterStatusLong', $long_id);
+        if (!$long) {
+            throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+        }
 
-		if (\Application\DeskPRO\Service\Twitter::getUserConsumerKey()) {
-			if ($this->in->getBool('start')) {
-				$api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi();
-				$api->setCallback($this->generateUrl('user_long_tweet_view', array('long_id' => $long->id), true));
-				return $this->redirect($api->getAuthenticateUrl());
-			} else if ($this->in->getString('oauth_token')) {
-				$api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi();
-				$api->setToken($this->in->getString('oauth_token'));
-				$access = $api->getAccessToken();
+        if (\Application\DeskPRO\Service\Twitter::getUserConsumerKey()) {
+            if ($this->in->getBool('start')) {
+                $api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi();
+                $api->setCallback($this->generateUrl('user_long_tweet_view', array('long_id' => $long->id), true));
 
-				$this->session->set('twitter_user_id', $access->user_id);
-				$this->session->set('twitter_screen_name', $access->screen_name);
-				$this->session->set('twitter_oauth_token', $access->oauth_token);
-				$this->session->set('twitter_oauth_token_secret', $access->oauth_token_secret);
+                return $this->redirect($api->getAuthenticateUrl());
+            } elseif ($this->in->getString('oauth_token')) {
+                $api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi();
+                $api->setToken($this->in->getString('oauth_token'));
+                $access = $api->getAccessToken();
 
-				return $this->redirectRoute('user_long_tweet_view', array('long_id' => $long->id));
-			}
-		}
+                $this->session->set('twitter_user_id', $access->user_id);
+                $this->session->set('twitter_screen_name', $access->screen_name);
+                $this->session->set('twitter_oauth_token', $access->oauth_token);
+                $this->session->set('twitter_oauth_token_secret', $access->oauth_token_secret);
 
-		// todo: more than just session checking - may be stored with a user
-		if ($long->is_public) {
-			$can_view = true;
-		} else {
-			$can_view = (
-				App::getSession()->get('twitter_user_id')
-				&& App::getSession()->get('twitter_user_id') == $long->for_user->id
-			);
-		}
+                return $this->redirectRoute('user_long_tweet_view', array('long_id' => $long->id));
+            }
+        }
 
-		$is_user = (
-			$long->for_user
-			&& App::getSession()->get('twitter_user_id')
-			&& App::getSession()->get('twitter_user_id') == $long->for_user->id
-		);
-		if (!$long->is_read && $is_user) {
-			$long->is_read = true;
-			$long->date_read = new \DateTime();
-			$this->em->persist($long);
-			$this->em->flush();
-		}
+        // todo: more than just session checking - may be stored with a user
+        if ($long->is_public) {
+            $can_view = true;
+        } else {
+            $can_view = (
+                App::getSession()->get('twitter_user_id')
+                && App::getSession()->get('twitter_user_id') == $long->for_user->id
+            );
+        }
 
-		$response = $this->render('UserBundle:Twitter:view-long.html.twig', array(
-			'long' => $long,
-			'can_view' => $can_view
-		));
+        $is_user = (
+            $long->for_user
+            && App::getSession()->get('twitter_user_id')
+            && App::getSession()->get('twitter_user_id') == $long->for_user->id
+        );
+        if (!$long->is_read && $is_user) {
+            $long->is_read = true;
+            $long->date_read = new \DateTime();
+            $this->em->persist($long);
+            $this->em->flush();
+        }
 
-		if (!$long->is_public) {
-			$response->headers->set('X-DeskPRO-Private', 'true');
-		}
+        $response = $this->render('UserBundle:Twitter:view-long.html.twig', array(
+            'long' => $long,
+            'can_view' => $can_view
+        ));
 
-		return $response;
-	}
+        if (!$long->is_public) {
+            $response->headers->set('X-DeskPRO-Private', 'true');
+        }
+
+        return $response;
+    }
 }
