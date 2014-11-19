@@ -15,8 +15,8 @@
         return this.options_data = null;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, opt, options, set_options, typeFunc, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref10, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getOptionsForTypes = function(types, typesData, mode) {
+        var f, opt, options, set_options, typeFunc, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref10, _ref11, _ref12, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
         if (types == null) {
           types = [];
         }
@@ -167,15 +167,17 @@
           title: 'Send Email',
           subOptions: options
         });
-        options = [];
-        options.push({
-          title: 'Add Comment to linked JIRA issues',
-          value: 'AddJIRAComment'
-        });
-        set_options.push({
-          title: 'JIRA Actions',
-          subOptions: options
-        });
+        if (((_ref2 = this.options_data) != null ? (_ref3 = _ref2.jira_settings) != null ? _ref3.enabled : void 0 : void 0) && 'TriggersUpdate' === mode) {
+          options = [];
+          options.push({
+            title: 'Add Comment to linked JIRA issues',
+            value: 'AddJIRAComment'
+          });
+          set_options.push({
+            title: 'JIRA Actions',
+            subOptions: options
+          });
+        }
         options = [];
         options.push({
           title: 'Stop Processing Triggers',
@@ -202,20 +204,20 @@
           subOptions: options
         });
         options = [];
-        if ((_ref2 = this.options_data) != null ? _ref2.ticket_fields : void 0) {
-          _ref3 = this.options_data.ticket_fields;
-          for (_i = 0, _len = _ref3.length; _i < _len; _i++) {
-            f = _ref3[_i];
+        if ((_ref4 = this.options_data) != null ? _ref4.ticket_fields : void 0) {
+          _ref5 = this.options_data.ticket_fields;
+          for (_i = 0, _len = _ref5.length; _i < _len; _i++) {
+            f = _ref5[_i];
             options.push({
               title: f.title,
               value: this.initFieldGetter('SetTicketField', f)
             });
           }
         }
-        if ((_ref4 = this.options_data) != null ? _ref4.contextual_fields : void 0) {
-          _ref5 = this.options_data.contextual_fields;
-          for (_j = 0, _len1 = _ref5.length; _j < _len1; _j++) {
-            f = _ref5[_j];
+        if ((_ref6 = this.options_data) != null ? _ref6.contextual_fields : void 0) {
+          _ref7 = this.options_data.contextual_fields;
+          for (_j = 0, _len1 = _ref7.length; _j < _len1; _j++) {
+            f = _ref7[_j];
             options.push({
               title: f.title,
               value: this.initFieldGetter('SetTicketContextualField', f)
@@ -228,11 +230,11 @@
             subOptions: options
           });
         }
-        if ((_ref6 = this.options_data) != null ? _ref6.user_fields : void 0) {
+        if ((_ref8 = this.options_data) != null ? _ref8.user_fields : void 0) {
           options = [];
-          _ref7 = this.options_data.user_fields;
-          for (_k = 0, _len2 = _ref7.length; _k < _len2; _k++) {
-            f = _ref7[_k];
+          _ref9 = this.options_data.user_fields;
+          for (_k = 0, _len2 = _ref9.length; _k < _len2; _k++) {
+            f = _ref9[_k];
             options.push({
               title: f.title,
               value: this.initFieldGetter('SetUserField', f)
@@ -245,7 +247,7 @@
             });
           }
         }
-        if ((_ref8 = this.options_data) != null ? (_ref9 = _ref8.tasks) != null ? _ref9.enabled : void 0 : void 0) {
+        if ((_ref10 = this.options_data) != null ? (_ref11 = _ref10.tasks) != null ? _ref11.enabled : void 0 : void 0) {
           options = [];
           options.push({
             title: 'Create Task',
@@ -258,9 +260,9 @@
         }
         if ((typesData != null ? typesData.dynamicOptions : void 0) != null) {
           options = [];
-          _ref10 = typesData.dynamicOptions;
-          for (_l = 0, _len3 = _ref10.length; _l < _len3; _l++) {
-            opt = _ref10[_l];
+          _ref12 = typesData.dynamicOptions;
+          for (_l = 0, _len3 = _ref12.length; _l < _len3; _l++) {
+            opt = _ref12[_l];
             options.push({
               title: opt.action_title,
               value: opt.action_name
@@ -503,7 +505,8 @@
               round_robin: '/round_robin/settings',
               round_robins: '/round_robin',
               tasks: '/tasks/settings',
-              contextual_fields: '/custom_fields'
+              contextual_fields: '/custom_fields',
+              'jira_settings': '/apps/jira'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _k, _len, _len1, _len2, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -528,6 +531,7 @@
                 options_data['round_robins'] = data.round_robins;
                 options_data['tasks'] = data.tasks;
                 options_data['contextual_fields'] = data.contextual_fields;
+                options_data['jira_settings'] = data.jira_settings;
                 options_data['ticket_dep_options'] = _this.standardOptionsFormatter(options_data['ticket_deps']);
                 _this.options_data = options_data;
                 if ((_ref6 = _this.options_data) != null ? _ref6.ticket_fields : void 0) {
