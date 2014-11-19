@@ -95,7 +95,7 @@ class DownloadsController extends AbstractController
             )
             ->setAllowedValues(
                 array(
-                    'style' => array('small')
+                    'style' => array('items', 'small')
                 )
             );
         $options = $options_resolver->resolve($request->query->get('tag_options'));

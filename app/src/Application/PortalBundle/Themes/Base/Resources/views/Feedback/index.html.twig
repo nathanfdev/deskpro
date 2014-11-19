@@ -1,5 +1,4 @@
 {% extends 'Theme::layout.html.twig' %}
-{% import 'Theme:Feedback:_macros.html.twig' as macros %}
 
 {# TODO #}
 
@@ -14,7 +13,7 @@
 
         {% include 'Theme:Feedback:controls.html.twig' %}
 
-        {{ feedback_list() }}
+        {{ feedback_items() }}
 
         {% if pager.haveToPaginate %}
             {{ pagerfanta(pager) }}

@@ -1,6 +1,16 @@
 {% extends 'Theme::layout.html.twig' %}
 
+{# TODO #}
+
 {% block inner_content %}
-<h1>Downloads Centre</h1>
-{{ downloads_cats_list() }}
+    <div class="downloads main-downloads">
+        <header class="section-header">
+            <h1>{{ phrase('portal.downloads.section-title') }}</h1>
+            <p>
+                {{ phrase('portal.downloads.section-desc') }}
+            </p>
+        </header>
+
+        {{ file_items() }}
+    </div>
 {% endblock inner_content %}

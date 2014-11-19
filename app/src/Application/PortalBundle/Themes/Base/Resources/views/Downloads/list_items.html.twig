@@ -1,0 +1,13 @@
+<ul>
+    {% for dl in downloads %}
+        <li>
+            {% if dl.blob and dl.blob.extension %}
+                <span class="text-tag file-tag file-{{ dl.blob.extension }}">.{{ dl.blob.extension }}</span>
+            {% else %}
+                {# this is the default if we cant decide what the fie extension is #}
+                <span class="text-tag file-tag">&nbsp;</span>
+            {% endif %}
+            <a href="{{ path('portal_downloads_view', { slug:dl.slug } ) }}">{{ dl.title }}</a>
+        </li>
+    {% endfor %}
+</ul>

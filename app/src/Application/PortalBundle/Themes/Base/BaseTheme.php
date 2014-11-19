@@ -67,10 +67,10 @@ class BaseTheme extends AbstractTheme
             new Tag('news_cats_list',           'Theme:News:cats',                  array('style' => 'small')),
             new Tag('news_cats_dropdown',       'Theme:News:cats',                  array('style' => 'dropdown')),
 
-            new Tag('files_list',               'Theme:Downloads:list',             array('style' => 'small')),
+            new Tag('file_items',               'Theme:Downloads:list',             array('style' => 'items')),
             new Tag('downloads_cats_list',      'Theme:Downloads:cats',             array('style' => 'small')),
 
-            new Tag('feedback_list',            'Theme:Feedback:list',              array('style' => 'items')),
+            new Tag('feedback_items',           'Theme:Feedback:list',              array('style' => 'items')),
             new Tag('feedback_list_small',      'Theme:Feedback:list',              array('style' => 'small')),
         );
     }
