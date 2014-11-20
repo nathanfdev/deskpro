@@ -34,11 +34,22 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Application\DeskPRO\App\Native\NativeAppsSync;
+use Application\DeskPRO\App\Package\PackageInstaller;
+
 class Build1416163131 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Upgrade JIRA Issues");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD status_id INT DEFAULT NULL");
+		$this->out("Resync App Packages");
+		$app_syncer = new NativeAppsSync(
+			$this->container,
+			$this->container->getAppManager(),
+			new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
+			null
+		);
+
+		$app_syncer->runUpdates();
+		$app_syncer->runSync();
 	}
 }

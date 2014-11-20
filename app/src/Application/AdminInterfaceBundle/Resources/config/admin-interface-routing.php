@@ -130,9 +130,4 @@ $collection->create('jira_token', array(
 	'controller'  => 'AdminInterfaceBundle:Jira:token',
 ));
 
-$collection->create('jira_test', array(
-	'path'        => '/jira/call',
-	'controller'  => 'AdminInterfaceBundle:Jira:test',
-));
-
 return $collection;
