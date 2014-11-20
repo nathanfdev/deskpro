@@ -40,9 +40,7 @@ class Build1415056082 extends AbstractBuild
 	{
 		$this->out("Upgrade JIRA Issues");
 		$this->execMutateSql("ALTER TABLE jira_issues DROP FOREIGN KEY FK_88385CE2700047D2");
-		$this->execMutateSql("DROP INDEX issue_id_idx ON jira_issues");
-		$this->execMutateSql("ALTER TABLE jira_issues DROP issue_id, DROP last_synced;");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD CONSTRAINT FK_88385CE2700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD issue_id VARCHAR(255) NOT NULL, CHANGE created created DATETIME NOT NULL;");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD status_id INT DEFAULT NULL, DROP last_synced, CHANGE created created DATETIME NOT NULL");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD CONSTRAINT FK_88385CE2700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE;");
 	}
 }

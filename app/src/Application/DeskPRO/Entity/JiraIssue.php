@@ -64,7 +64,7 @@ class JiraIssue extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->setPrimaryTable(array('name' => 'jira_issues'));
 
 		$metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'columnName' => 'id', 'id' => true));
-		$metadata->mapField(array('fieldName' => 'issue_id', 'type' => 'string', 'columnName' => 'issue_id'));
+		$metadata->mapField(array('fieldName' => 'issue_id', 'type' => 'integer', 'columnName' => 'issue_id'));
 		$metadata->mapField(array('fieldName' => 'status_id', 'type' => 'integer', 'columnName' => 'status_id', 'nullable' => true));
 		$metadata->mapField(array('fieldName' => 'created', 'type' => 'datetime', 'columnName' => 'created'));
 		$metadata->mapManyToOne(array(
