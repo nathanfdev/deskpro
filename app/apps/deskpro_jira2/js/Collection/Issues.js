@@ -83,9 +83,17 @@ define(function(){
 					.success(function (data, status, headers, config) {
 						if (data) {
 							if (issue) {
-								issue.fields.comment && issue.fields.comment.comments.push(data);
+								if (issue.fields.comment) {
+									issue.fields.comment.comments.push(data);
+									issue.fields.comment.total++;
+								}
 							} else {
-								self.each(function(issue){ issue.fields.comment && issue.fields.comment.comments.push(data); });
+								self.each(function(issue){
+									if (issue.fields.comment) {
+										issue.fields.comment.comments.push(data);
+										issue.fields.comment.total++;
+									}
+								});
 							}
 						}
 

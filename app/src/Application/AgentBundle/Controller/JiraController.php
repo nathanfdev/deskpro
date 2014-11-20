@@ -137,8 +137,10 @@ class JiraController extends AbstractController
 		$ticket = null;
 
 		foreach ($issues as $issue) {
-			$message = '[' . $this->person->getDisplayName() . ' via DeskPRO]: ' . $message;
-			$response = $js->createComment($issue['issue_id'], $message);
+			$response = $js->createComment(
+				$issue['issue_id'],
+				'[' . $this->person->getDisplayName() . ' via DeskPRO]: ' . $message
+			);
 
 			$ticket = $ticket ?: $issue->ticket;
 		}
