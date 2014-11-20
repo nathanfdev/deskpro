@@ -1,6 +1,6 @@
-Orb.createNamespace('DeskPRO.Admin.ElementHandler');
+Orb.createNamespace('DeskPRO.Agent.ElementHandler');
 
-DeskPRO.Admin.ElementHandler.RadioExpander = new Orb.Class({
+DeskPRO.Agent.ElementHandler.RadioExpander = new Orb.Class({
 	Extends: DeskPRO.ElementHandler,
 
 	init: function() {
