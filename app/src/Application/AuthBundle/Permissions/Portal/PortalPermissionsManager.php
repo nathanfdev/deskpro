@@ -123,8 +123,30 @@ class PortalPermissionsManager
      */
     public function getPermissionsBagForPerson(Person $person)
     {
+        if ($this->isCacheDisabled()) {
+            return $this->generatePermissionsMapForPerson($person);
+        }
+
         return new PermissionsBag(
             $this->cache->get($this->getCacheKeyForPerson($person), $this->generatePermissionsMapForPerson($person))
+        );
+    }
+
+    /**
+     * Returns the PermissionBag for a guest
+     *
+     * @return PermissionsBag
+     */
+    public function getPermissionsBagForGuest()
+    {
+        if ($this->isCacheDisabled()) {
+            return $this->generatePermissionsMapForGuest();
+        }
+
+        $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
+
+        return new PermissionsBag(
+            $this->cache->get($this->getCacheKeyForPerson($this->getCacheKeyForUsergroupIds($usergoupIds)), $this->generatePermissionsMapForGuest())
         );
     }
 
@@ -210,10 +232,15 @@ class PortalPermissionsManager
         return $this->permissionsLoader->loadPermissionsForGroupSet($usergoupIds);
     }
 
-    public function getPermissionsBagForGuest()
+    protected function generatePermissionsMapForGuest()
     {
         $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
 
         return $this->permissionsLoader->loadPermissionsForGroupSet($usergoupIds);
+    }
+
+    protected function isCacheDisabled()
+    {
+        return $this->settingsResolver->getGlobalSettings()->get('disable_permissions_cache', false);
     }
 }
