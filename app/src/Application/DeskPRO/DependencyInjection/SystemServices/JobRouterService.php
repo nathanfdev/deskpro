@@ -47,8 +47,8 @@ class JobRouterService
 {
     public static function create(DeskproContainer $container)
     {
-        $conn = $container->get('doctrine.dbal.default_connection');
-        $em = $container->getEm();
+        $conn  = $container->get('doctrine.dbal.default_connection');
+        $em    = $container->getEm();
         $queue = $container->getJobQueue();
 
         $router = new JobRouter($conn);
@@ -62,7 +62,6 @@ class JobRouterService
                 $queue
             )
         );
-
 
         /*************************************
          * incoming_sms

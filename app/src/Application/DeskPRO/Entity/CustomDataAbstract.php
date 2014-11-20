@@ -93,8 +93,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         return $this->id;
     }
 
-
-
     /**
      * Get the value or input.
      *
@@ -104,7 +102,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     {
         return $this->value ? $this->value : $this->input;
     }
-
 
     public function getFieldId()
     {

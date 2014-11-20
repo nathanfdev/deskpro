@@ -50,7 +50,6 @@ class GmailConfig implements AccountConfigInterface
      */
     public $password;
 
-
     /**
      * {@inheritDoc}
      */
@@ -61,7 +60,6 @@ class GmailConfig implements AccountConfigInterface
             'password'    => $this->password,
         );
     }
-
 
     /**
      * {@inheritDoc}
@@ -76,7 +74,6 @@ class GmailConfig implements AccountConfigInterface
         return $obj;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -84,7 +81,6 @@ class GmailConfig implements AccountConfigInterface
     {
         return 'gmail';
     }
-
 
     ############################################################################
     # Validation Metadata

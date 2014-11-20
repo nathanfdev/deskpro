@@ -44,7 +44,7 @@ class ToggleField extends CustomFieldAbstract
     public function init()
     {
         $this->default_value = $this->_field->default_value == '1' ? true : false;
-        $this->label_text = $this->_field->getOption('label_text') ?: '';
+        $this->label_text    = $this->_field->getOption('label_text') ?: '';
     }
 
     protected function setFieldProperties()

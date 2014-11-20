@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\Controller;
 
-
 class BlobController extends AbstractController
 {
     /**
@@ -42,17 +41,17 @@ class BlobController extends AbstractController
     public function faviconAction()
     {
         $favicon_id = $this->container->getSetting('core.favicon_blob_id');
-        $blob = null;
+        $blob       = null;
         if ($favicon_id) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->find($favicon_id);
         }
 
         if ($blob) {
             $response = $this->container->get('response');
-            $file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+            $file     = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
             $response->setContent($file);
         } else {
-            $file = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/favicon.ico');
+            $file = file_get_contents(DP_ROOT.'/src/Application/DeskPRO/Resources/assets/favicon.ico');
 
             $response = $this->container->get('response');
             $response->headers->set('Content-Length', strlen($file));

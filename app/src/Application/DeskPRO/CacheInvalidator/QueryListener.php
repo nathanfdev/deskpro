@@ -52,7 +52,8 @@ class QueryListener
     {
         try {
             $this->sendUpdates();
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
     }
 
     public function sendUpdates()
@@ -61,7 +62,7 @@ class QueryListener
             return;
         }
 
-        $updates = array_flip($this->updates);
+        $updates       = array_flip($this->updates);
         $this->updates = array();
 
         $this->is_executing = true;
@@ -83,7 +84,9 @@ class QueryListener
 
     public function handleQuery($sql, array $params)
     {
-        if ($this->is_executing) return;
+        if ($this->is_executing) {
+            return;
+        }
         $this->is_executing = true;
 
         $query_id = $this->getQueryIdent($sql, $params);
@@ -159,7 +162,6 @@ class QueryListener
         $this->is_executing = false;
     }
 
-
     /**
      * Get the ID of a query that we can try to match against caches.
      *
@@ -190,7 +192,7 @@ class QueryListener
                 return null; // unknown table
             }
 
-            $query_name = $query_type . '_' . $query_table;
+            $query_name = $query_type.'_'.$query_table;
         }
 
         return strtolower($query_name);

@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
-use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -59,8 +59,7 @@ class Alias extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 2) {
             throw new Exception('ALIAS() can only accept 2 arguments');
         }
@@ -68,8 +67,8 @@ class Alias extends AbstractFunc
         $childStack = $stack;
         array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
-        $arg = reset($this->_arguments);
-        $format = next($this->_arguments);
+        $arg           = reset($this->_arguments);
+        $format        = next($this->_arguments);
         $formatLiteral = $this->_toLiteral($format);
 
         $prepped = $arg->prepare($statement, $section, $childStack, $select, $result);

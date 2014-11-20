@@ -54,7 +54,6 @@ class DefaultBrandFinder
      */
     private $brand_repo;
 
-
     /**
      * @param SettingsResolver $settings_resolver
      * @param Brand            $brand_repo
@@ -62,9 +61,8 @@ class DefaultBrandFinder
     public function __construct(SettingsResolver $settings_resolver, Brand $brand_repo)
     {
         $this->settings_resolver = $settings_resolver;
-        $this->brand_repo = $brand_repo;
+        $this->brand_repo        = $brand_repo;
     }
-
 
     /**
      * @return BrandEntity

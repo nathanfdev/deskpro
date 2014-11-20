@@ -49,7 +49,7 @@ class Tomorrow extends AbstractDateRange
      */
     protected function _getDateRange()
     {
-        $tz = App::getCurrentPerson()->getTimezone();
+        $tz   = App::getCurrentPerson()->getTimezone();
         $date = new \DateTime('+1 day', new \DateTimeZone($tz));
 
         $day = $date->format('Y-m-d');

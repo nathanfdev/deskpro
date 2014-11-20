@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\App;
 
-
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
@@ -61,14 +60,12 @@ class AppManipulator
      */
     private $em;
 
-
     public function __construct(AppManager $manager, EntityManager $em, DeskproContainer $container)
     {
-        $this->manager = $manager;
+        $this->manager   = $manager;
         $this->container = $container;
-        $this->em = $em;
+        $this->em        = $em;
     }
-
 
     public function installInstance(AppPackage $package, AppManipulatorContext $context)
     {
@@ -84,14 +81,13 @@ class AppManipulator
         return $app;
     }
 
-
     /**
      * @param AppInstance           $app
      * @param AppManipulatorContext $context
      */
     public function updateInstance(AppInstance $app, AppManipulatorContext $context)
     {
-        $settings = $context->getSettings();
+        $settings   = $context->getSettings();
         $inputTitle = $context->getInputTitle();
         $saveAssets = $context->getSaveAssets();
 

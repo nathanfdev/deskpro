@@ -66,9 +66,8 @@ class OutgoingAccountTester
     public function __construct(AccountConfigInterface $account_config)
     {
         $this->swift_arraylogger = new \Swift_Plugins_Loggers_ArrayLogger();
-        $this->account_config = $account_config;
+        $this->account_config    = $account_config;
     }
-
 
     /**
      * Runs the test
@@ -108,7 +107,7 @@ class OutgoingAccountTester
                     $this->_testMail($this->account_config);
                 } else {
                     $this->is_success = false;
-                    $this->swift_arraylogger->add("Unknown account type: " . get_class($this->account_config));
+                    $this->swift_arraylogger->add("Unknown account type: ".get_class($this->account_config));
                 }
             }
         } catch (\Exception $e) {
@@ -118,7 +117,6 @@ class OutgoingAccountTester
         return $this->is_success;
     }
 
-
     /**
      * @return bool
      */
@@ -127,7 +125,6 @@ class OutgoingAccountTester
         return $this->is_success;
     }
 
-
     /**
      * @return \Exception
      */
@@ -135,7 +132,6 @@ class OutgoingAccountTester
     {
         return $this->exception;
     }
-
 
     /**
      * @param \Swift_Transport $transport
@@ -153,7 +149,6 @@ class OutgoingAccountTester
             $this->is_success = true;
         }
     }
-
 
     /**
      * Test with SMTP
@@ -183,7 +178,6 @@ class OutgoingAccountTester
         $this->sendWithTransport($transport);
     }
 
-
     /**
      * Test with gmail
      */
@@ -198,7 +192,7 @@ class OutgoingAccountTester
             'password'    => $account_config->password,
             'host'        => 'smtp.gmail.com',
             'port'        => 465,
-            'secure_mode' => 'ssl'
+            'secure_mode' => 'ssl',
         );
         foreach ($data as $k => $v) {
             $smtp->$k = $v;

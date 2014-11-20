@@ -83,7 +83,7 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
         if (!$new) {
             return false;
         // Not changed, nothing to verify
-        } elseif ( ($old && $new && $old == $new) || (!$old && !$new)) {
+        } elseif (($old && $new && $old == $new) || (!$old && !$new)) {
             return false;
         // New enabled
         } elseif (!$old && $new) {
@@ -96,7 +96,6 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
 
         return false;
     }
-
 
     /**
      * @param EntityManager $em
@@ -123,7 +122,6 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
             $em->getConnection()->delete('ticket_triggers', array('department_id' => $this->department->parent->id));
         }
     }
-
 
     /**
      * @param EntityManager                           $em
@@ -175,7 +173,7 @@ class TicketDepartmentEdit implements HasValidationMetadataInterface
         // The constraint Symfony\Component\Validator\Constraints\Callback cannot be put on properties or getters
 
         $metadata->addConstraint(new Callback(array(
-            'methods' => array('validateParent')
+            'methods' => array('validateParent'),
         )));
     }
 }

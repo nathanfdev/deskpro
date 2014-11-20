@@ -64,7 +64,6 @@ class TextPatternCutter implements QuoteDef
      */
     protected $limit = 0;
 
-
     /**
      * @param array $translate_map
      */
@@ -72,7 +71,6 @@ class TextPatternCutter implements QuoteDef
     {
         $this->translate_map = $translate_map;
     }
-
 
     /**
      * Sets which email addresses must match in a matched pattern for the pattern to really match.
@@ -85,7 +83,6 @@ class TextPatternCutter implements QuoteDef
         $this->require_from = $require_from;
     }
 
-
     /**
      * How many quotes to remove (counts from bottom). 0 is unlimited.
      *
@@ -95,7 +92,6 @@ class TextPatternCutter implements QuoteDef
     {
         $this->limit = $limit;
     }
-
 
     /**
      * @return array
@@ -109,7 +105,6 @@ class TextPatternCutter implements QuoteDef
 
         return $this->translate_map;
     }
-
 
     /**
      * @param \Application\DeskPRO\EmailGateway\Cutter\TextPatternCutter\TextPattern|string $pattern
@@ -128,18 +123,17 @@ class TextPatternCutter implements QuoteDef
                         $pattern = str_replace($f, $r, $pattern);
                     }
 
-                    $pattern = new TextPattern($pattern);
+                    $pattern          = new TextPattern($pattern);
                     $this->patterns[] = $pattern;
                 }
             } else {
-                $pattern = new TextPattern($pattern);
+                $pattern          = new TextPattern($pattern);
                 $this->patterns[] = $pattern;
             }
         } else {
             $this->patterns[] = $pattern;
         }
     }
-
 
     /**
      * Add an array of patterns
@@ -152,7 +146,6 @@ class TextPatternCutter implements QuoteDef
             $this->addPattern($pattern);
         }
     }
-
 
     /**
      * Cut out the quote block
@@ -170,7 +163,6 @@ class TextPatternCutter implements QuoteDef
         foreach ($this->patterns as $pattern) {
             $matcher = new TextMatcher($body, $pattern);
             if ($matcher->isMatch()) {
-
                 if ($this->require_from) {
                     $do_add = false;
 
@@ -188,21 +180,19 @@ class TextPatternCutter implements QuoteDef
                             break;
                         }
                     }
-
                 } else {
                     $do_add = true;
                 }
 
                 if ($do_add) {
                     $this->matched_patterns[] = $pattern;
-                    $body = $matcher->getMarkedDocument();
+                    $body                     = $matcher->getMarkedDocument();
                 }
             }
         }
 
         // Limiting how many we are trimming from the end
         if ($this->limit) {
-
             $pos = strrpos($body, TextMatcher::CUT_MARK);
             if ($pos !== false) {
                 $body = trim(substr($body, 0, $pos));

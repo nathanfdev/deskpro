@@ -60,11 +60,11 @@ class FragmentRouter
             $js_classname = 'window.DeskPRO_FragmentRouter';
         }
 
-        $js = array();
+        $js   = array();
         $js[] = "$js_classname = {\n\n";
 
         $js[] = "\tbaseUrl: '',\n\n";
-        $js[] = "\tfragments: " . json_encode($this->generator->getFragmentInforArray()) . ",\n\n";
+        $js[] = "\tfragments: ".json_encode($this->generator->getFragmentInforArray()).",\n\n";
 
         $js[] = <<<EOF
     setBaseUrl: function (baseUrl) {

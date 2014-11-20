@@ -67,7 +67,7 @@ abstract class CustomFieldAbstract
     public $is_agent_field = false;
     /** @var bool */
     public $agent_validation_resolve = false;
-    public $display_order = 0;
+    public $display_order            = 0;
 
     /** @var \Application\DeskPRO\Entity\CustomDefAbstract|null */
     protected $_field = null;
@@ -81,15 +81,15 @@ abstract class CustomFieldAbstract
 
     public function __construct(CustomDefAbstract $field)
     {
-        $this->_field = $field;
-        $this->title = $field->title;
-        $this->description = $field->description;
-        $this->handler_class = $field->handler_class;
-        $this->custom_css_classname = $field->getOption('custom_css_classname');
-        $this->is_agent_field = $field->is_agent_field;
-        $this->is_enabled = $field->is_enabled;
+        $this->_field                   = $field;
+        $this->title                    = $field->title;
+        $this->description              = $field->description;
+        $this->handler_class            = $field->handler_class;
+        $this->custom_css_classname     = $field->getOption('custom_css_classname');
+        $this->is_agent_field           = $field->is_agent_field;
+        $this->is_enabled               = $field->is_enabled;
         $this->agent_validation_resolve = $field->getOption('agent_validation_resolve', false);
-        $this->default_value = $field->default_value;
+        $this->default_value            = $field->default_value;
 
         if ($field->getOption('required')) {
             $this->required = true;
@@ -104,7 +104,9 @@ abstract class CustomFieldAbstract
         $this->init();
     }
 
-    protected function init() {}
+    protected function init()
+    {
+    }
 
     public function isNewField()
     {
@@ -119,11 +121,11 @@ abstract class CustomFieldAbstract
             $this->title = 'Untitled';
         }
 
-        $field->title = $this->title;
-        $field->description = $this->description ?: '';
-        $field->is_enabled = $this->is_enabled;
+        $field->title          = $this->title;
+        $field->description    = $this->description ?: '';
+        $field->is_enabled     = $this->is_enabled;
         $field->is_agent_field = $this->is_agent_field;
-        $field->default_value = $this->default_value ?: null;
+        $field->default_value  = $this->default_value ?: null;
 
         if ($this->isNewField()) {
             $field->handler_class = $this->handler_class;
@@ -149,6 +151,10 @@ abstract class CustomFieldAbstract
         }
     }
 
-    protected function setFieldProperties() {}
-    protected function saveAdditional() {}
+    protected function setFieldProperties()
+    {
+    }
+    protected function saveAdditional()
+    {
+    }
 }

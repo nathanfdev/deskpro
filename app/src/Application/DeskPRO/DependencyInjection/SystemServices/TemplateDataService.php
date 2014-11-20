@@ -43,11 +43,13 @@ class TemplateDataService extends BaseRepositoryService
 
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
+        if (!$options) {
+            $options = array();
+        }
         $options['entity'] = 'Application\\DeskPRO\\Entity\\Template';
 
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }

@@ -69,17 +69,17 @@ class Address extends AbstractContactData
                 $contact_record->field_3,
                 $contact_record->field_4,
             ))),
-            $contact_record->field_5
+            $contact_record->field_5,
         );
         $address_txt = Arrays::removeFalsey($segs);
         $address_txt = implode("\n", $address_txt);
 
         $params = array(
             'sensor' => 'false',
-            'size' => '200x200',
-            'center' => str_replace("\n", " ", Strings::standardEol($address_txt))
+            'size'   => '200x200',
+            'center' => str_replace("\n", " ", Strings::standardEol($address_txt)),
         );
-        $google_url = 'https://maps.googleapis.com/maps/api/staticmap?' . http_build_query($params, null, '&amp;');
+        $google_url = 'https://maps.googleapis.com/maps/api/staticmap?'.http_build_query($params, null, '&amp;');
 
         return array(
             'comment'      => $contact_record->comment,

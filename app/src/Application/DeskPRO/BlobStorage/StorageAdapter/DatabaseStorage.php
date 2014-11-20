@@ -80,16 +80,15 @@ class DatabaseStorage extends AbstractStorageAdapter
 
     protected function init()
     {
-        $this->db           = $this->options->get('db');
-        $this->table        = $this->options->get('table');
-        $this->data_field   = $this->options->get('field_name.data');
-        $this->path_field   = $this->options->get('field_name.path');
-        $this->order_field  = $this->options->get('field_name.order');
-        $this->seg_size     = $this->options->get('segment_size', 256000);
-        $this->manual_order = $this->options->get('manual_order', false);
+        $this->db                   = $this->options->get('db');
+        $this->table                = $this->options->get('table');
+        $this->data_field           = $this->options->get('field_name.data');
+        $this->path_field           = $this->options->get('field_name.path');
+        $this->order_field          = $this->options->get('field_name.order');
+        $this->seg_size             = $this->options->get('segment_size', 256000);
+        $this->manual_order         = $this->options->get('manual_order', false);
         $this->metadata_id_property = $this->options->get('metadata_id_property', null);
     }
-
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -104,7 +103,7 @@ class DatabaseStorage extends AbstractStorageAdapter
 
         try {
             $num = $this->db->delete($this->table, array(
-                $path_field => $id
+                $path_field => $id,
             ));
         } catch (\Exception $e) {
             $this->logger->logError("[DatabaseStorage] (deleteBlob) Failed: {$e->getCode()} {$e->getMessage()}");
@@ -115,7 +114,6 @@ class DatabaseStorage extends AbstractStorageAdapter
 
         return true;
     }
-
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -130,7 +128,6 @@ class DatabaseStorage extends AbstractStorageAdapter
         return $blob->getPath();
     }
 
-
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
      * @return bool
@@ -138,18 +135,17 @@ class DatabaseStorage extends AbstractStorageAdapter
     public function checkBlobExists(Blob $blob)
     {
         $id = $this->getDbPathId($blob);
-        $x = $this->db->fetchColumn("
+        $x  = $this->db->fetchColumn("
             SELECT COUNT(*)
             FROM `{$this->table}`
             WHERE `{$this->path_field}` = ?
             LIMIT 1
         ", array($this->getDbPathId($blob)));
 
-        $this->logger->logInfo("[DatabaseStorage] (checkBlobExists) Blob $id " . ($x ? 'exists' : 'no exist'));
+        $this->logger->logInfo("[DatabaseStorage] (checkBlobExists) Blob $id ".($x ? 'exists' : 'no exist'));
 
         return $x ? true : false;
     }
-
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -170,8 +166,8 @@ class DatabaseStorage extends AbstractStorageAdapter
         foreach ($data as $k => $d) {
             if ($this->manual_order) {
                 $this->db->insert($this->table, array(
-                    $path_field => $path,
-                    $data_field => $d,
+                    $path_field  => $path,
+                    $data_field  => $d,
                     $order_field => $k,
                 ));
             } else {
@@ -182,11 +178,10 @@ class DatabaseStorage extends AbstractStorageAdapter
             }
         }
 
-        $this->logger->logInfo("[DatabaseStorage] (writeBlobString) Blob $path: Wrote " . Numbers::filesizeDisplay($size) . " in " . count($data) . " segments");
+        $this->logger->logInfo("[DatabaseStorage] (writeBlobString) Blob $path: Wrote ".Numbers::filesizeDisplay($size)." in ".count($data)." segments");
 
         return $size;
     }
-
 
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
@@ -198,7 +193,6 @@ class DatabaseStorage extends AbstractStorageAdapter
         return $this->writeBlobFromStream($blob, stream_get_contents($fp_source));
     }
 
-
     /**
      * @param  \Application\DeskPRO\BlobStorage\Blob $blob
      * @param  string                                $source_path
@@ -208,7 +202,6 @@ class DatabaseStorage extends AbstractStorageAdapter
     {
         return $this->writeBlobString($blob, file_get_contents($source_path));
     }
-
 
     /**
      * Loads the entire blob into a string
@@ -228,7 +221,7 @@ class DatabaseStorage extends AbstractStorageAdapter
         ");
         $q->execute(array($id));
 
-        $data = '';
+        $data  = '';
         $count = 0;
         while ($d = $q->fetchColumn(0)) {
             $count++;
@@ -237,7 +230,7 @@ class DatabaseStorage extends AbstractStorageAdapter
 
         $q->closeCursor();
 
-        $this->logger->logInfo("[DatabaseStorage] (readBlobString) Blob $id: Read " . Numbers::filesizeDisplay(strlen($data)) . " in " . $count . " segments");
+        $this->logger->logInfo("[DatabaseStorage] (readBlobString) Blob $id: Read ".Numbers::filesizeDisplay(strlen($data))." in ".$count." segments");
 
         return $data;
     }

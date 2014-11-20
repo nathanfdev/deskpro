@@ -61,11 +61,10 @@ class PackageInstaller
 
     public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage, ImagineInterface $imagine)
     {
-        $this->em = $em;
+        $this->em           = $em;
         $this->blob_storage = $blob_storage;
-        $this->imagine = $imagine;
+        $this->imagine      = $imagine;
     }
-
 
     /**
      * Install or update a package.
@@ -86,9 +85,9 @@ class PackageInstaller
         # Get app icons
         #------------------------------
 
-        $sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
+        $sizes      = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
         $have_sizes = array();
-        $largest = null;
+        $largest    = null;
 
         $has_icon_filechange = false;
 
@@ -98,7 +97,7 @@ class PackageInstaller
                 continue;
             }
 
-            $tag = "icons.app.$size";
+            $tag  = "icons.app.$size";
             $name = "app_$size.png";
 
             if ($this->isAssetBlobChanged($def, $name, $path)) {
@@ -113,10 +112,10 @@ class PackageInstaller
                 $has_icon_filechange = true;
             } else {
                 $asset = $def->getAsset($name);
-                $blob = $asset->blob;
+                $blob  = $asset->blob;
             }
 
-            $largest = array($path, $size, $blob);
+            $largest           = array($path, $size, $blob);
             $have_sizes[$size] = $blob;
         }
 
@@ -125,7 +124,7 @@ class PackageInstaller
             $path = DP_ROOT.'/src/Application/DeskPRO/App/Package/Resources/no-icon.png';
             $size = 256;
 
-            $tag = "icons.app.$size";
+            $tag  = "icons.app.$size";
             $name = "app_$size.png";
 
             if ($this->isAssetBlobChanged($def, $name, $path)) {
@@ -140,10 +139,10 @@ class PackageInstaller
                 $has_icon_filechange = true;
             } else {
                 $asset = $def->getAsset($name);
-                $blob = $asset->blob;
+                $blob  = $asset->blob;
             }
 
-            $largest = array($path, $size, $blob);
+            $largest           = array($path, $size, $blob);
             $have_sizes[$size] = $blob;
         }
 
@@ -154,7 +153,7 @@ class PackageInstaller
                 continue;
             }
 
-            $tag = "icons.app.$size";
+            $tag  = "icons.app.$size";
             $name = "app_$size.png";
 
             // If no main icon has changed, we only need to do the image
@@ -321,11 +320,11 @@ class PackageInstaller
         if ($tag == 'html') {
             $content = file_get_contents($asset_info['real_path']);
             $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
-                $path = @realpath($package->getPath() . '/html/' . $m[1]);
+                $path = @realpath($package->getPath().'/html/'.$m[1]);
                 $path_std = str_replace('\\', '/', $path);
 
                 if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
-                    return '<!-- Invalid include file: ' . $m[1] . ' -->';
+                    return '<!-- Invalid include file: '.$m[1].' -->';
                 }
 
                 $inc_content = @file_get_contents($path);
@@ -381,7 +380,7 @@ class PackageInstaller
         }
 
         $asset->name = $filename;
-        $asset->tag = $tag;
+        $asset->tag  = $tag;
 
         return $asset;
     }

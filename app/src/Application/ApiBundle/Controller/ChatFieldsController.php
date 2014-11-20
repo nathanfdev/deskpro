@@ -58,7 +58,7 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
         /** @var \Application\DeskPRO\CustomFields\ChatFieldManager $field_manager */
         $field_manager = $this->container->getSystemService('chat_fields_manager');
 
-        $custom_fields = $field_manager->getDefinedFields();
+        $custom_fields         = $field_manager->getDefinedFields();
         $data['custom_fields'] = $this->getApiData($custom_fields, false);
 
         return $this->createApiResponse($data);
@@ -75,7 +75,7 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
-        $data = array();
+        $data          = array();
         $data['field'] = $field->toApiData();
 
         return $this->createApiResponse($data);
@@ -96,7 +96,7 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
                 throw $this->createNotFoundException();
             }
         } else {
-            $field = $field_manager->createNewDefEntity();
+            $field                = $field_manager->createNewDefEntity();
             $field->handler_class = $this->in->getString('handler_class');
         }
 
@@ -108,14 +108,14 @@ class ChatFieldsController extends AbstractController implements ProtectedContro
         if ($id) {
             return $this->createSuccessResponse(
                 array(
-                     'field_id' => $field->id
+                     'field_id' => $field->id,
                 )
             );
         } else {
             return $this->createSuccessResponse(
                 array(
                      'field_id' => $field->id,
-                     $this->generateUrl('api_chat_fields_get', array('id' => $field->id))
+                     $this->generateUrl('api_chat_fields_get', array('id' => $field->id)),
                 )
             );
         }

@@ -61,7 +61,7 @@ class StatusCheck
     public function __construct($conversation, $session)
     {
         $this->conversation = $conversation;
-        $this->session = $session;
+        $this->session      = $session;
 
         if ($session->person) {
             $this->person = $session->person;
@@ -99,7 +99,6 @@ class StatusCheck
         }
 
         if ($last < $cut_close) {
-
             $this->conversation->addSystemMessage(
                 App::getTranslator()->phrase('agent.general.msg_user_timeout'),
                 true
@@ -123,7 +122,6 @@ class StatusCheck
         }
     }
 
-
     /**
      * The checks run by the user:
      * - Check if agent has tiemdout
@@ -135,7 +133,7 @@ class StatusCheck
         // Get the users session
         $user_sess = $this->conversation->session;
 
-        $cut = time() - App::getSetting('core_chat.agent_timeout');
+        $cut  = time() - App::getSetting('core_chat.agent_timeout');
         $last = $user_sess['date_last']->getTimestamp();
 
         if ($last < $cut) {
@@ -148,8 +146,7 @@ class StatusCheck
 
             // And need to insert a "new chat" event for agents
             if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
-
-                $assign_agent = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
+                $assign_agent        = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
                 $conversation->agent = $assign_agent;
 
                 $client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatRoundRobinMessages(
@@ -158,7 +155,6 @@ class StatusCheck
                     $msg
                 ));
             } else {
-
                 $client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
                     'sys',
                     $this->conversation,

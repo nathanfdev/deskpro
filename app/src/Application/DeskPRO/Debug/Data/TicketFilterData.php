@@ -48,8 +48,8 @@ class TicketFilterData implements DataInterface
 
         $subs_data = App::getDb()->fetchAll("SELECT * FROM ticket_filter_subscriptions ORDER BY person_id ASC");
 
-        $data = array();
-        $data['filters'] = $filter_data;
+        $data                = array();
+        $data['filters']     = $filter_data;
         $data['filter_subs'] = $subs_data;
 
         return $data;

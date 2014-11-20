@@ -46,7 +46,7 @@ use Orb\Util\Util;
 class Session extends \Application\DeskPRO\Domain\DomainObject
 {
     const STATUS_AVAILABLE = 'available';
-    const STATUS_AWAY = 'away';
+    const STATUS_AWAY      = 'away';
 
     /**
      * The unique ID.
@@ -154,7 +154,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $this->_is_new = true;
     }
 
-
     /**
      * @return bool
      */
@@ -171,8 +170,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-
-
     /**
      * Gets the session ID for this session. It's an encoded ID and an authcode.
      *
@@ -182,7 +179,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     {
         $id_enc = Util::baseEncode($this->id, Util::BASE36_ALPHABET);
 
-        return $id_enc . '-' . $this->auth;
+        return $id_enc.'-'.$this->auth;
     }
 
     /**
@@ -240,7 +237,7 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
             return $this->visitor->getVisitorSecret($name);
         }
 
-        return md5($this->id . $this->auth . App::getAppSecret() . $name);
+        return md5($this->id.$this->auth.App::getAppSecret().$name);
     }
 
     /**
@@ -281,9 +278,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 
     public static function getIdFromCode($sess_code)
     {
-        if (!strpos($sess_code, '-')) return null;
+        if (!strpos($sess_code, '-')) {
+            return null;
+        }
 
-        list ($session_id, ) = explode('-', $sess_code, 2);
+        list($session_id,) = explode('-', $sess_code, 2);
 
         $session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
 
@@ -298,24 +297,24 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Session';
-        $metadata->setPrimaryTable(array( 'name' => 'sessions', 'indexes' => array( 'date_last_idx' => array( 'columns' => array( 0 => 'date_last', 1 => 'is_person', ), ), ), ));
+        $metadata->setPrimaryTable(array( 'name' => 'sessions', 'indexes' => array( 'date_last_idx' => array( 'columns' => array( 0 => 'date_last', 1 => 'is_person')))));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-        $metadata->mapField(array( 'fieldName' => 'interface', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'interface', ));
-        $metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_agent', ));
-        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ip_address', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-        $metadata->mapField(array( 'fieldName' => 'is_person', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_person', ));
-        $metadata->mapField(array( 'fieldName' => 'is_bot', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_bot', ));
-        $metadata->mapField(array( 'fieldName' => 'is_helpdesk', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_helpdesk', ));
-        $metadata->mapField(array( 'fieldName' => 'active_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'active_status', ));
-        $metadata->mapField(array( 'fieldName' => 'is_chat_available', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_chat_available', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last', ));
-        $metadata->mapField(array( 'fieldName' => 'date_last_page', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last_page', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
+        $metadata->mapField(array( 'fieldName' => 'interface', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'interface'));
+        $metadata->mapField(array( 'fieldName' => 'user_agent', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'user_agent'));
+        $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'ip_address'));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
+        $metadata->mapField(array( 'fieldName' => 'is_person', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_person'));
+        $metadata->mapField(array( 'fieldName' => 'is_bot', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_bot'));
+        $metadata->mapField(array( 'fieldName' => 'is_helpdesk', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_helpdesk'));
+        $metadata->mapField(array( 'fieldName' => 'active_status', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'active_status'));
+        $metadata->mapField(array( 'fieldName' => 'is_chat_available', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_chat_available'));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array( 'fieldName' => 'date_last', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last'));
+        $metadata->mapField(array( 'fieldName' => 'date_last_page', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last_page'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
     }
 }

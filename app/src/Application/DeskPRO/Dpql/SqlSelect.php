@@ -127,7 +127,7 @@ class SqlSelect
      */
     public function addSelectField($string)
     {
-        $this->_fields[] = $string;
+        $this->_fields[]       = $string;
         $this->_lastFieldAdded = true;
 
         end($this->_fields);
@@ -286,20 +286,20 @@ class SqlSelect
     public function toSql()
     {
         if ($this->_limitAmount) {
-            $limit = $this->_limitAmount . ($this->_limitOffset ? " OFFSET " . $this->_limitOffset : '');
+            $limit = $this->_limitAmount.($this->_limitOffset ? " OFFSET ".$this->_limitOffset : '');
         } elseif ($this->_limitOffset) {
-            $limit = '999999 OFFSET ' . $this->_limitOffset;
+            $limit = '999999 OFFSET '.$this->_limitOffset;
         } else {
             $limit = false;
         }
 
-        return 'SELECT ' . implode(', ', $this->_fields)
-            . "\nFROM `$this->_table`"
-            . ($this->_joins ? "\n" . implode("\n", $this->_joins) : '')
-            . ($this->_conditions ? "\nWHERE " . implode(' AND ', $this->_conditions) : '')
-            . ($this->_groupBy ? "\nGROUP BY " . implode(', ', $this->_groupBy) : '')
-            . ($this->_orderBy ? "\nORDER BY " . implode(', ', $this->_orderBy) : '')
-            . ($limit ? "\nLIMIT $limit" : '');
+        return 'SELECT '.implode(', ', $this->_fields)
+            ."\nFROM `$this->_table`"
+            .($this->_joins ? "\n".implode("\n", $this->_joins) : '')
+            .($this->_conditions ? "\nWHERE ".implode(' AND ', $this->_conditions) : '')
+            .($this->_groupBy ? "\nGROUP BY ".implode(', ', $this->_groupBy) : '')
+            .($this->_orderBy ? "\nORDER BY ".implode(', ', $this->_orderBy) : '')
+            .($limit ? "\nLIMIT $limit" : '');
     }
 
     /**

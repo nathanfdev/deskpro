@@ -60,14 +60,14 @@ class PeopleSearchController extends AbstractController
         if ($people_count < 10000) {
             $people_count = $this->em->getRepository('DeskPRO:Person')->getCount(true);
         }
-        $validating_count = $this->em->getRepository('DeskPRO:Person')->getValidatingCount();
+        $validating_count       = $this->em->getRepository('DeskPRO:Person')->getValidatingCount();
         $validating_count_agent = $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount();
 
-        $label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
-        $cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $label_counts     = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
+        $cloud_gen        = new \Application\DeskPRO\UI\TagCloud($label_counts);
         $people_tag_cloud = $cloud_gen->getCloud();
 
-        $label_lister = new \Application\DeskPRO\Labels\LabelLister('people');
+        $label_lister     = new \Application\DeskPRO\Labels\LabelLister('people');
         $people_tag_index = $label_lister->getIndexList();
 
         #------------------------------
@@ -84,11 +84,11 @@ class PeopleSearchController extends AbstractController
 
         $org_count = $this->em->getRepository('DeskPRO:Organization')->getCount();
 
-        $label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
-        $cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $label_counts  = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
+        $cloud_gen     = new \Application\DeskPRO\UI\TagCloud($label_counts);
         $org_tag_cloud = $cloud_gen->getCloud();
 
-        $label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
+        $label_lister  = new \Application\DeskPRO\Labels\LabelLister('organizations');
         $org_tag_index = $label_lister->getIndexList();
 
         $usergroup_names      = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
@@ -102,14 +102,14 @@ class PeopleSearchController extends AbstractController
             'team_counts'  => $team_counts,
             'agent_count'  => $agent_count,
 
-            'people_count'     => $people_count,
-            'validating_count' => $validating_count,
+            'people_count'           => $people_count,
+            'validating_count'       => $validating_count,
             'validating_count_agent' => $validating_count_agent,
-            'people_tag_cloud' => $people_tag_cloud,
-            'people_tag_index' => $people_tag_index,
-            'org_tag_cloud'    => $org_tag_cloud,
-            'org_tag_index'    => $org_tag_index,
-            'org_count'        => $org_count
+            'people_tag_cloud'       => $people_tag_cloud,
+            'people_tag_index'       => $people_tag_index,
+            'org_tag_cloud'          => $org_tag_cloud,
+            'org_tag_index'          => $org_tag_index,
+            'org_count'              => $org_count,
         ));
 
         return $this->createJsonResponse($data);
@@ -126,7 +126,7 @@ class PeopleSearchController extends AbstractController
             'people_count'           => $people_count,
             'usergroup_counts'       => $this->em->getRepository('DeskPRO:Usergroup')->getCountsForAll(),
             'validating_count'       => $this->em->getRepository('DeskPRO:Person')->getValidatingCount(),
-            'validating_count_agent' => $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount()
+            'validating_count_agent' => $this->em->getRepository('DeskPRO:Person')->getAgentValidatingCount(),
         );
 
         return $this->createJsonResponse($data);
@@ -135,26 +135,26 @@ class PeopleSearchController extends AbstractController
     public function reloadLabelDataAction()
     {
         // People
-        $label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
-        $cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $label_counts     = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
+        $cloud_gen        = new \Application\DeskPRO\UI\TagCloud($label_counts);
         $people_tag_cloud = $cloud_gen->getCloud();
 
-        $label_lister = new \Application\DeskPRO\Labels\LabelLister('people');
+        $label_lister     = new \Application\DeskPRO\Labels\LabelLister('people');
         $people_tag_index = $label_lister->getIndexList();
 
         // Orgs
-        $label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
-        $cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $label_counts  = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
+        $cloud_gen     = new \Application\DeskPRO\UI\TagCloud($label_counts);
         $org_tag_cloud = $cloud_gen->getCloud();
 
-        $label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
+        $label_lister  = new \Application\DeskPRO\Labels\LabelLister('organizations');
         $org_tag_index = $label_lister->getIndexList();
 
-        $data = array();
+        $data                       = array();
         $data['people_label_cloud'] = $this->renderView('AgentBundle:PeopleSearch:window-people-label-cloud.html.twig', array('people_tag_cloud' => $people_tag_cloud));
-        $data['people_label_list'] = $this->renderView('AgentBundle:PeopleSearch:window-people-label-list.html.twig', array('people_tag_index' => $people_tag_index));
-        $data['org_label_cloud'] = $this->renderView('AgentBundle:PeopleSearch:window-org-label-cloud.html.twig', array('org_tag_cloud' => $org_tag_cloud));
-        $data['org_label_list'] = $this->renderView('AgentBundle:PeopleSearch:window-org-label-list.html.twig', array('org_tag_index' => $org_tag_index));
+        $data['people_label_list']  = $this->renderView('AgentBundle:PeopleSearch:window-people-label-list.html.twig', array('people_tag_index' => $people_tag_index));
+        $data['org_label_cloud']    = $this->renderView('AgentBundle:PeopleSearch:window-org-label-cloud.html.twig', array('org_tag_cloud' => $org_tag_cloud));
+        $data['org_label_list']     = $this->renderView('AgentBundle:PeopleSearch:window-org-label-list.html.twig', array('org_tag_index' => $org_tag_index));
 
         return $this->createJsonResponse($data);
     }
@@ -162,15 +162,15 @@ class PeopleSearchController extends AbstractController
     protected function _getResponseForPeople($type, $type_id, PeopleResults $results_helper, array $vars = array())
     {
         $view_type = $this->in->getString('view_type');
-        if (!$view_type OR !in_array($view_type, array('list', 'simple', 'json'))) {
+        if (!$view_type or !in_array($view_type, array('list', 'simple', 'json'))) {
             $view_type = 'simple';
         }
 
         $is_partial = false;
-        $tpl = 'AgentBundle:PeopleSearch:'.$type . ($view_type != 'simple' ? '-'.$view_type : '') .'.html.twig';
+        $tpl        = 'AgentBundle:PeopleSearch:'.$type.($view_type != 'simple' ? '-'.$view_type : '').'.html.twig';
         if ($this->in->getBool('partial')) {
             $is_partial = true;
-            $tpl = 'AgentBundle:PeopleSearch:' . $type . '-page' . ($view_type != 'simple' ? '-'.$view_type : '') . '.html.twig';
+            $tpl        = 'AgentBundle:PeopleSearch:'.$type.'-page'.($view_type != 'simple' ? '-'.$view_type : '').'.html.twig';
         }
 
         #------------------------------
@@ -178,10 +178,11 @@ class PeopleSearchController extends AbstractController
         #------------------------------
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $people = $results_helper->getPeopleForPage($page);
-
 
         #------------------------------
         # Send results
@@ -195,24 +196,24 @@ class PeopleSearchController extends AbstractController
         $vars['display_fields'] = array_unique($vars['display_fields']);
 
         $alphabet = $this->getAlphabet();
-        $letters = array();
+        $letters  = array();
 
-        $params = $_GET;
+        $params           = $_GET;
         $params['letter'] = '*';
-        $letters[] = array('title'=>'*', 'params' => $params);
+        $letters[]        = array('title' => '*', 'params' => $params);
         $params['letter'] = '#';
-        $letters[] = array('title'=>'#', 'params' => $params);
+        $letters[]        = array('title' => '#', 'params' => $params);
 
-        foreach($alphabet as $letter) {
+        foreach ($alphabet as $letter) {
             $params['letter'] = $letter;
-            $letters[] = array(
-                'title' => $letter,
-                'params' => $params
+            $letters[]        = array(
+                'title'  => $letter,
+                'params' => $params,
             );
         }
 
         $person_display = new PeopleResultsDisplay($people);
-        $renderer = new PeopleListRenderer($this->container);
+        $renderer       = new PeopleListRenderer($this->container);
 
         $vars = array_merge($vars, array(
             'type'                    => $type,
@@ -222,9 +223,8 @@ class PeopleSearchController extends AbstractController
             'page'                    => $page,
             'per_page'                => $results_helper->getPerPageCount(),
             'load_first'              => $this->in->getBool('load_first'),
-            'alphabet'                => $letters
+            'alphabet'                => $letters,
         ));
-
 
         if ('json' === $view_type) {
             return $this->createJsonpResponse($vars);
@@ -260,15 +260,15 @@ class PeopleSearchController extends AbstractController
         $display_fields = array_unique($display_fields);
 
         $user_field_manager = $this->container->getSystemService('person_fields_manager');
-        $person_field_defs = $user_field_manager->getFields();
+        $person_field_defs  = $user_field_manager->getFields();
 
         $view_type = $this->in->getString('view_type');
-        $tpl = 'list-page.html.twig';
+        $tpl       = 'list-page.html.twig';
         if ('list' === $view_type) {
             $tpl = 'list-list-page.html.twig';
         } elseif ('json' === $view_type) {
             $person_display = new PeopleResultsDisplay($people);
-            $renderer = new PeopleListRenderer($this->container);
+            $renderer       = new PeopleListRenderer($this->container);
 
             return $this->createJsonResponse($renderer->renderArray($person_display));
         }
@@ -283,7 +283,6 @@ class PeopleSearchController extends AbstractController
         ));
     }
 
-
     ############################################################################
     # search
     ############################################################################
@@ -293,7 +292,7 @@ class PeopleSearchController extends AbstractController
         $result_cache = false;
         if ($this->in->getUint('cache_id')) {
             $result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
-            if (!$result_cache OR $result_cache['person_id'] != $this->person['id']) {
+            if (!$result_cache or $result_cache['person_id'] != $this->person['id']) {
                 $result_cache = false;
             }
         }
@@ -305,17 +304,16 @@ class PeopleSearchController extends AbstractController
         #------------------------------
 
         if (!$result_cache || $user_letter != $result_cache['criteria']['selected_letter']) {
-
             $old_result_cache = false;
             if ($this->in->getUint('copy_display_options')) {
                 $old_result_cache = $this->em->getRepository('DeskPRO:ResultCache')->find($this->in->getUint('copy_display_options'));
-                if (!$old_result_cache OR $old_result_cache['person_id'] != $this->person['id']) {
+                if (!$old_result_cache or $old_result_cache['person_id'] != $this->person['id']) {
                     $old_result_cache = false;
                 }
             }
 
             $term_rules = RuleBuilder::newTermsBuilder();
-            $terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+            $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
             $set_terms_map = array(
                 'person_organization'       => array('op' => 'contains', 'options' => array()),
@@ -340,7 +338,7 @@ class PeopleSearchController extends AbstractController
                     $in_val = Arrays::removeEmptyString($in_val);
                 }
                 if ($in_val || isset($use_terms[$name])) {
-                    $new_term = $info;
+                    $new_term            = $info;
                     $new_term['options'] = $in_val;
                     Arrays::unshiftAssoc($new_term, 'type', $name);
                     $terms[] = $new_term;
@@ -364,9 +362,9 @@ class PeopleSearchController extends AbstractController
                 }
 
                 $new_term = array(
-                    'type' => "person_field[$id]",
-                    'op' => 'is',
-                    'options' => array('value' => $field_value)
+                    'type'    => "person_field[$id]",
+                    'op'      => 'is',
+                    'options' => array('value' => $field_value),
                 );
 
                 $terms[] = $new_term;
@@ -424,10 +422,10 @@ class PeopleSearchController extends AbstractController
 
             $results = $searcher->getMatches();
 
-            $result_cache = new Entity\ResultCache();
-            $result_cache['person'] = $this->person;
-            $result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by, 'selected_letter' => $selected_letter);
-            $result_cache['results'] = $results;
+            $result_cache                = new Entity\ResultCache();
+            $result_cache['person']      = $this->person;
+            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by, 'selected_letter' => $selected_letter);
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
             $result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
@@ -447,14 +445,14 @@ class PeopleSearchController extends AbstractController
         // the order_by in criteria, that means the user changed it
         // and we have to re-do the search
 
-        $order_pref = $this->person->getPref('agent.ui.people-filter-order-by.' . 0);
+        $order_pref = $this->person->getPref('agent.ui.people-filter-order-by.'. 0);
 
         if (($order_pref && $order_pref != $result_cache['criteria']['order_by'])
         ||  $user_letter != $result_cache['criteria']['selected_letter']) {
             $searcher = new \Application\DeskPRO\Searcher\PersonSearch();
 
-            $criteria = $result_cache['criteria'];
-            $criteria['order_by'] = $order_pref;
+            $criteria                    = $result_cache['criteria'];
+            $criteria['order_by']        = $order_pref;
             $criteria['selected_letter'] = $this->applyLetterToSearcher($user_letter, $searcher);
 
             $result_cache['criteria'] = $criteria;
@@ -462,8 +460,8 @@ class PeopleSearchController extends AbstractController
             $searcher->setTerms($result_cache['criteria']['terms']);
             $searcher->setOrderByCode($result_cache['criteria']['order_by']);
 
-            $results = $searcher->getMatches();
-            $result_cache['results'] = $results;
+            $results                     = $searcher->getMatches();
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
             $result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
@@ -478,22 +476,22 @@ class PeopleSearchController extends AbstractController
         $results_helper = Helper\PeopleResults::newFromResultCache($this, $result_cache);
 
         $vars = array(
-            'cache' => $result_cache,
-            'cache_id' => $result_cache['id'],
-            'person_ids' => $result_cache['results'],
-            'terms_summary' => $result_cache->getExtraData('terms_summary'),
-            'selected_letter' => $result_cache['criteria']['selected_letter']
+            'cache'           => $result_cache,
+            'cache_id'        => $result_cache['id'],
+            'person_ids'      => $result_cache['results'],
+            'terms_summary'   => $result_cache->getExtraData('terms_summary'),
+            'selected_letter' => $result_cache['criteria']['selected_letter'],
         );
 
         if (!empty($result_cache['extra']['display_fields'])) {
             $vars['display_fields'] = $result_cache['extra']['display_fields'];
         }
 
-        $pref_display_fields = $this->person->getPref('agent.ui.people-filter-display-fields.' . $result_cache['id']);
+        $pref_display_fields = $this->person->getPref('agent.ui.people-filter-display-fields.'.$result_cache['id']);
         if ($pref_display_fields) {
             $vars['display_fields'] = $pref_display_fields;
         } else {
-            $pref_display_fields = $this->person->getPref('agent.ui.people-filter-display-fields.0');
+            $pref_display_fields    = $this->person->getPref('agent.ui.people-filter-display-fields.0');
             $vars['display_fields'] = $pref_display_fields;
         }
 
@@ -506,10 +504,10 @@ class PeopleSearchController extends AbstractController
         }
 
         $vars['preselect_terms'] = $result_cache['criteria'];
-        $vars['num_results'] = $result_cache['num_results'];
+        $vars['num_results']     = $result_cache['num_results'];
 
         // Used in the search form again
-        $titles = array();
+        $titles                  = array();
         $titles['organizations'] = $this->container->getDataService('Organization')->getOrganizationNames();
         $titles['usergroups']    = $this->container->getDataService('Usergroup')->getUsergroupNames();
 
@@ -527,9 +525,9 @@ class PeopleSearchController extends AbstractController
             $vars['view_name'] = $set_view_name;
 
             if (strpos($vars['view_name'], '.') !== false) {
-                list ($view_name_type, $view_name_data) = explode('.', $vars['view_name'], 2);
-                $vars['view_name_type'] = $view_name_type;
-                $vars['view_name_data'] = (int)$view_name_data;
+                list($view_name_type, $view_name_data) = explode('.', $vars['view_name'], 2);
+                $vars['view_name_type']                = $view_name_type;
+                $vars['view_name_data']                = (int) $view_name_data;
             }
         }
 
@@ -543,7 +541,7 @@ class PeopleSearchController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->searchAction('*', array('person_usergroup' => $id), 'usergroup.' . $id);
+        return $this->searchAction('*', array('person_usergroup' => $id), 'usergroup.'.$id);
     }
 
     public function showOrganizationMembersAction($id)
@@ -553,7 +551,7 @@ class PeopleSearchController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        return $this->searchAction('*', array('person_organization' => $id, 'any_mode' => 1), 'organization.' . $id);
+        return $this->searchAction('*', array('person_organization' => $id, 'any_mode' => 1), 'organization.'.$id);
     }
 
     protected function applyLetterToSearcher($letter, $searcher)
@@ -577,7 +575,7 @@ class PeopleSearchController extends AbstractController
 
     protected function getLetterFromUser($letter = null)
     {
-        if($letter === null) {
+        if ($letter === null) {
             $letter = $this->in->getString('letter');
         }
 
@@ -601,16 +599,18 @@ class PeopleSearchController extends AbstractController
         if ($numbers) {
             $numbers = array();
 
-            for($i = 0; $i < 10; $i++)
+            for ($i = 0; $i < 10; $i++) {
                 $numbers[] = $i;
+            }
 
             return $numbers;
         }
 
         $letters = array();
 
-        for ($i = ord('A'); $i <= ord('Z'); $i++)
+        for ($i = ord('A'); $i <= ord('Z'); $i++) {
             $letters[] = chr($i);
+        }
 
         return $letters;
     }
@@ -696,7 +696,7 @@ class PeopleSearchController extends AbstractController
     public function quickFindSearchAction()
     {
         $term_rules = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
-        $terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+        $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
         $searcher = new \Application\DeskPRO\Searcher\PersonSearch();
         foreach ($terms as $term) {
@@ -719,7 +719,7 @@ class PeopleSearchController extends AbstractController
 
             $data['html'] = $this->renderView('AgentBundle:PeopleSearch:quick-find-results.html.twig', array(
                 'people' => $people,
-                'page' => 1
+                'page'   => 1,
             ));
         }
 
@@ -756,7 +756,7 @@ class PeopleSearchController extends AbstractController
             $results = array_slice($results, 0, $limit);
 
             $output = array();
-            foreach ($results AS $p) {
+            foreach ($results as $p) {
                 if (!$with_agents && $p->is_agent) {
                     continue;
                 }
@@ -768,7 +768,7 @@ class PeopleSearchController extends AbstractController
                     'id'            => $p->id,
                     'first_name'    => $p->first_name,
                     'last_name'     => $p->last_name,
-                    'email'         => $p->getPrimaryEmailAddress()
+                    'email'         => $p->getPrimaryEmailAddress(),
                 );
             }
 
@@ -786,7 +786,7 @@ class PeopleSearchController extends AbstractController
                         'id'         => $person->getId(),
                         'first_name' => $person->first_name,
                         'last_name'  => $person->last_name,
-                        'email'      => $person->getPrimaryEmailAddress()
+                        'email'      => $person->getPrimaryEmailAddress(),
                     );
                 }
             }
@@ -794,7 +794,7 @@ class PeopleSearchController extends AbstractController
 
         $format = $this->in->getString('format');
 
-        if ($format == 'json' OR (!$format AND $this->in->getBool('ajax'))) {
+        if ($format == 'json' or (!$format and $this->in->getBool('ajax'))) {
             $tpl = "AgentBundle:PeopleSearch:search_results.json.jsonphp";
         } else {
             $tpl = "AgentBundle:PeopleSearch:search_results.html.twig";
@@ -804,7 +804,7 @@ class PeopleSearchController extends AbstractController
         }
 
         return $this->render($tpl, array(
-            'people_list' => $people_list
+            'people_list' => $people_list,
         ));
     }
 
@@ -816,11 +816,11 @@ class PeopleSearchController extends AbstractController
     {
         if ($this->in->getString('email_validating')) {
             return $this->searchAction(null, array(
-                'is_confirmed' => 0
+                'is_confirmed' => 0,
             ), 'awaiting_validation');
         } else {
             return $this->searchAction(null, array(
-                'is_agent_confirmed' => 0
+                'is_agent_confirmed' => 0,
             ), 'awaiting_validation');
         }
     }
@@ -828,7 +828,7 @@ class PeopleSearchController extends AbstractController
     public function validateApproveAction()
     {
         $people_ids = $this->in->getCleanValueArray('people_ids', 'uint', 'discard');
-        $people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
+        $people     = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
 
         $email_ids = array();
 
@@ -837,9 +837,9 @@ class PeopleSearchController extends AbstractController
             $ids = array();
             foreach ($people as $person) {
                 if (!$person->is_agent) {
-                    $ids[] = $person->getId();
+                    $ids[]                      = $person->getId();
                     $person->is_agent_confirmed = true;
-                    $person->is_confirmed = true;
+                    $person->is_confirmed       = true;
                     $this->em->persist($person);
 
                     if ($person->primary_email) {
@@ -900,7 +900,7 @@ class PeopleSearchController extends AbstractController
     public function validateDeleteAction()
     {
         $people_ids = $this->in->getCleanValueArray('people_ids', 'uint', 'discard');
-        $people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
+        $people     = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
 
         $this->db->beginTransaction();
         try {

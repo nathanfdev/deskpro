@@ -54,7 +54,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         }
     }
 
-
     /**
      * @param  ApiPackageRequestContext                   $context
      * @return \Symfony\Component\HttpFoundation\Response
@@ -63,7 +62,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     {
         return $context->createJsonResponse(array('soap_support' => class_exists('\SoapClient')));
     }
-
 
     /**
      * @param  ApiPackageRequestContext                   $context
@@ -75,15 +73,15 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $password = $context->getIn()->getString('api_password');
         $token    = $context->getIn()->getString('api_security_token');
 
-        $error = false;
+        $error  = false;
         $client = null;
 
-        $log = array();
+        $log   = array();
         $log[] = "user: $user";
         $log[] = "password: $password";
         $log[] = "token: $token";
 
-        $tests = array();
+        $tests   = array();
         $tests[] = function () use (&$log) {
             $log[] = "Verifying SoapClient is available...";
             if (!class_exists('\SoapClient')) {
@@ -109,11 +107,11 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         };
 
         $get_client = function ($url) use (&$log, $user, $password, $token) {
-            require_once(DP_ROOT . '/vendor-src/salesforce/SforcePartnerClient.php');
+            require_once DP_ROOT.'/vendor-src/salesforce/SforcePartnerClient.php';
 
             try {
                 $sforce = new \SforcePartnerClient();
-                $sforce->createConnection(DP_ROOT . '/vendor-src/salesforce/partner.wsdl.xml');
+                $sforce->createConnection(DP_ROOT.'/vendor-src/salesforce/partner.wsdl.xml');
             } catch (\Exception $e) {
                 $log[] = "Failed to create partner client";
 
@@ -121,7 +119,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
 
             try {
-                $sforce->login($user, $password . $token);
+                $sforce->login($user, $password.$token);
             } catch (\Exception $e) {
                 $log[] = "Failed to log in: Invalid API user, password or token, or network connection failed";
                 if ($e->getMessage()) {
@@ -160,7 +158,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $result_data = array(
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
-            'error_code' => $error ? $error[0] : false
+            'error_code' => $error ? $error[0] : false,
         );
 
         return $context->createJsonResponse($result_data);

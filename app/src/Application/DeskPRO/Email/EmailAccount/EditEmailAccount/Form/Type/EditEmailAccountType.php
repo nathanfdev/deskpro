@@ -48,7 +48,7 @@ class EditEmailAccountType extends AbstractType
 
         $builder->add('incoming_type', 'choice', array(
             'choices'  => array('gmail' => 'gmail', 'pop3' => 'pop3', 'imap' => 'imap', 'exchange' => 'exchange', 'noop' => 'noop'),
-            'required' => true
+            'required'                  => true,
         ));
         $builder->add('in_gmail_account',    new IncomingAccount\GmailAccountType());
         $builder->add('in_pop3_account',     new IncomingAccount\Pop3AccountType());
@@ -57,7 +57,7 @@ class EditEmailAccountType extends AbstractType
 
         $builder->add('outgoing_type', 'choice', array(
             'choices'  => array('gmail' => 'gmail', 'smtp' => 'smtp', 'php_mail' => 'php_mail'),
-            'required' => true
+            'required'                  => true,
         ));
         $builder->add('out_gmail_account', new OutgoingAccount\GmailAccountType());
         $builder->add('out_smtp_account',  new OutgoingAccount\SmtpAccountType());

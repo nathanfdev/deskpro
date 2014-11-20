@@ -49,10 +49,10 @@ class Past24Hours extends AbstractDateRange
      */
     protected function _getDateRange()
     {
-        $tz = App::getCurrentPerson()->getTimezone();
+        $tz   = App::getCurrentPerson()->getTimezone();
         $date = new \DateTime('now', new \DateTimeZone($tz));
 
-        $now = $date->format('Y-m-d H:i:s');
+        $now   = $date->format('Y-m-d H:i:s');
         $today = $date->format('Y-m-d');
 
         $date->modify('-1 day');

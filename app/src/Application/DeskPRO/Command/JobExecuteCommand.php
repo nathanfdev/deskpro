@@ -50,9 +50,9 @@ class JobExecuteCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $connection = $this->getContainer()->get('doctrine.dbal.default_connection');
-        $router = $this->getContainer()->getSystemService('job_router');
-        $queue = $this->getContainer()->getSystemService('job_queue');
-        $worker = new JobWorker($connection, $router, $queue);
+        $router     = $this->getContainer()->getSystemService('job_router');
+        $queue      = $this->getContainer()->getSystemService('job_queue');
+        $worker     = new JobWorker($connection, $router, $queue);
 
         $res = $worker->executeJobById($input->getArgument('job'));
 

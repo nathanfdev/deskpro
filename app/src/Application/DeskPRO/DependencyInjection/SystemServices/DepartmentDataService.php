@@ -73,14 +73,16 @@ class DepartmentDataService extends BaseRepositoryService
 
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
-        $options['entity'] = 'Application\\DeskPRO\\Entity\\Department';
+        if (!$options) {
+            $options = array();
+        }
+        $options['entity']     = 'Application\\DeskPRO\\Entity\\Department';
         $options['translator'] = $container->getTranslator();
         $options['default_id'] = $container->getSetting('core.default_ticket_dep');
         $options['container']  = $container;
 
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }
@@ -129,9 +131,9 @@ class DepartmentDataService extends BaseRepositoryService
             $c->__dp_is_preloaded_repos = $this;
 
             $cats[$c->getId()] = array(
-                'id' => $c->getId(),
+                'id'        => $c->getId(),
                 'parent_id' => $c->parent ? $c->parent->getId() : 0,
-                'title' => $c->getTitle()
+                'title'     => $c->getTitle(),
             );
 
             if (!$c->parent) {
@@ -141,7 +143,7 @@ class DepartmentDataService extends BaseRepositoryService
         foreach ($this->cats as $c) {
             foreach ($c->children as $sc) {
                 $this->nodes_with_children[$c->getId()] = true;
-                $this->leaf_node_ids[] = $sc->getId();
+                $this->leaf_node_ids[]                  = $sc->getId();
             }
         }
 
@@ -198,7 +200,7 @@ class DepartmentDataService extends BaseRepositoryService
 
     public function getPersonDepartments(\Application\DeskPRO\Entity\Person $person_context, $app, array $allow_ids = array(), $permission = 'full')
     {
-        $key = md5($person_context->getId() . '.' . $app);
+        $key = md5($person_context->getId().'.'.$app);
 
         if (isset($this->filtered_nodes[$key])) {
             return $this->filtered_nodes[$key];
@@ -248,7 +250,9 @@ class DepartmentDataService extends BaseRepositoryService
         $agents_online_ids = $this->em->getRepository('DeskPRO:Session')->getAvailableAgentIds();
         foreach ($agents_online_ids as $aid) {
             $agent = $this->continer->getDataService('Agent')->get($aid);
-            if (!$agent) continue;
+            if (!$agent) {
+                continue;
+            }
 
             $agent->loadHelper('AgentPermissions');
 
@@ -264,7 +268,7 @@ class DepartmentDataService extends BaseRepositoryService
 
         // We only want these specific IDs
         if ($only_ids) {
-            $only_ids = Arrays::castToType($only_ids, 'int');
+            $only_ids       = Arrays::castToType($only_ids, 'int');
             $online_dep_ids = array_intersect($online_dep_ids, $only_ids);
         }
 
@@ -373,7 +377,6 @@ class DepartmentDataService extends BaseRepositoryService
     {
         $names = array();
         foreach ($this->getRootNodes() as $dep) {
-
             if (!$dep->isType($type)) {
                 continue;
             }
@@ -389,7 +392,7 @@ class DepartmentDataService extends BaseRepositoryService
                     continue;
                 }
 
-                $names[$subdep->getId()] = $dep->title . ' > ' . $subdep->title;
+                $names[$subdep->getId()] = $dep->title.' > '.$subdep->title;
             }
         }
 

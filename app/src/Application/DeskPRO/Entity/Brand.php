@@ -68,7 +68,6 @@ class Brand extends DomainObject
      */
     protected $logo_blob;
 
-
     public function getId()
     {
         return $this->id;
@@ -76,17 +75,16 @@ class Brand extends DomainObject
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
+        $data              = parent::toApiData($primary, $deep, $visited);
         $data['logo_blob'] = $this->logo_blob ? $this->logo_blob->toApiData() : null;
 
         return $data;
     }
 
-
     public function __construct($name = 'Default Brand', $theme_id = 'standard')
     {
-        $this->id = 0;
-        $this->name = $name;
+        $this->id       = 0;
+        $this->name     = $name;
         $this->theme_id = $theme_id;
     }
 

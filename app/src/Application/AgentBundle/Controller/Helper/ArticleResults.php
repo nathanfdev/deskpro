@@ -96,14 +96,12 @@ class ArticleResults
                     array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
                     array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
                 );
-
             } elseif (isset($options['pending_translate'])) {
-
                 $terms = array(
                     array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
                     array('type' => 'pending_translate', 'op' => 'id', 'options' => array(
-                        'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0
-                    ))
+                        'language_id' => isset($options['pending_translate_lang']) ? $options['pending_translate_lang'] : 0,
+                    )),
                 );
 
             // "all" is published but no category term
@@ -114,7 +112,7 @@ class ArticleResults
 
             // Otherwise its a user filter with custom terms
             } else {
-                $form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
+                $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
 
                 $terms = $term_rules->readForm($form_terms);
@@ -137,11 +135,11 @@ class ArticleResults
 
             $results = $searcher->getMatches();
 
-            $result_cache = new ResultCache();
-            $result_cache['person'] = $controller->person;
-            $result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['extra'] = array('summary' => $searcher->getSummary());
-            $result_cache['results'] = $results;
+            $result_cache                = new ResultCache();
+            $result_cache['person']      = $controller->person;
+            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+            $result_cache['extra']       = array('summary' => $searcher->getSummary());
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
             $controller->em->persist($result_cache);
@@ -162,7 +160,6 @@ class ArticleResults
         return $helper;
     }
 
-
     public function __construct($controller, ResultCache $result_cache = null)
     {
         $this->controller = $controller;
@@ -173,7 +170,6 @@ class ArticleResults
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\ResultCache
      */
@@ -181,7 +177,6 @@ class ArticleResults
     {
         return $this->result_cache;
     }
-
 
     /**
      * @param array $article_ids
@@ -191,7 +186,6 @@ class ArticleResults
         $this->article_ids = $article_ids;
     }
 
-
     /**
      * @return array
      */
@@ -199,7 +193,6 @@ class ArticleResults
     {
         return $this->article_ids;
     }
-
 
     /**
      * @return array
@@ -214,11 +207,10 @@ class ArticleResults
         return $this->_getPageFromArticleIds($this->getArticleIds(), $page, $per_page);
     }
 
-
     protected function _getPageFromArticleIds(array $article_ids, $page, $per_page)
     {
         $page_article_ids = Arrays::getPageChunk($article_ids, $page, $per_page);
-        $articles_raw = App::getEntityRepository('DeskPRO:Article')->getByResultIds($page_article_ids);
+        $articles_raw     = App::getEntityRepository('DeskPRO:Article')->getByResultIds($page_article_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.

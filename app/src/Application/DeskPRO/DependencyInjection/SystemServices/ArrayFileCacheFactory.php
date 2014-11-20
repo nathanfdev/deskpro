@@ -51,18 +51,20 @@ class ArrayFileCacheFactory
         $cache_name = preg_replace('#[^a-zA-Z0-9\-_\.]#', '_', $cache_name);
 
         if ($cache_name == 'dql' && defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
-            $path = dp_get_cache_dir().'/' . $cache_name . '.cache';
+            $path = dp_get_cache_dir().'/'.$cache_name.'.cache';
         } else {
-            $path = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . $cache_name . '.cache';
+            $path = dp_get_tmp_dir().DIRECTORY_SEPARATOR.$cache_name.'.cache';
         }
 
         $version_id = defined('DP_BUILD_TIME') ? DP_BUILD_TIME : null;
-        $cache = new ArrayFileCache($path, $version_id);
+        $cache      = new ArrayFileCache($path, $version_id);
 
         if ($cache_name == 'dql') {
             // Filters out queries with 'IN' components that can pollute the cache
             $cache->setFilter(function ($data) {
-                if (!is_object($data)) return false;
+                if (!is_object($data)) {
+                    return false;
+                }
                 /** @var $data \Doctrine\ORM\Query\ParserResult */
                 $s = $data->getSqlExecutor()->getSqlStatements();
                 if (is_string($s)) {

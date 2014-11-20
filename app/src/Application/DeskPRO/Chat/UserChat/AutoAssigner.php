@@ -54,7 +54,7 @@ class AutoAssigner
 
     public function __construct($mode, EntityManager $em)
     {
-        $this->em = $em;
+        $this->em   = $em;
         $this->mode = $mode;
     }
 

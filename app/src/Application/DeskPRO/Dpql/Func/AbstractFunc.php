@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
-use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -50,34 +50,34 @@ abstract class AbstractFunc
      * @var array
      */
     protected static $_functionMap = array(
-        'ALIAS' => 'Alias',
-        'COUNT' => 'Count',
-        'COUNT_DISTINCT' => 'CountDistinct',
-        'CURDATE' => 'CurDate',
-        'CURTIME' => 'CurTime',
+        'ALIAS'             => 'Alias',
+        'COUNT'             => 'Count',
+        'COUNT_DISTINCT'    => 'CountDistinct',
+        'CURDATE'           => 'CurDate',
+        'CURTIME'           => 'CurTime',
         'DATE_OFFSET_GROUP' => 'DateOffsetGroup',
-        'DATE' => 'Date',
-        'DAYNAME' => 'DayName',
-        'DAYOFMONTH' => 'DayOfMonth',
-        'DAYOFWEEK' => 'DayOfWeek',
-        'FORMAT' => 'Format',
-        'HOUR' => 'Hour',
-        'LINK' => 'Link',
-        'MATRIX' => 'Matrix',
-        'MINUTE' => 'Minute',
-        'MONTH' => 'Month',
-        'MONTHNAME' => 'MonthName',
-        'NOW' => 'Now',
-        'PERCENT' => 'Percent',
-        'PRINT' => 'Printable',
-        'TIME_LENGTH' => 'TimeLength',
-        'STACK_GROUP' => 'StackGroup',
-        'TO_UTC' => 'ToUtc',
-        'TOTAL' => 'Total',
-        'UTC' => 'Utc',
-        'X' => 'X',
-        'Y' => 'Y',
-        'YEAR' => 'Year'
+        'DATE'              => 'Date',
+        'DAYNAME'           => 'DayName',
+        'DAYOFMONTH'        => 'DayOfMonth',
+        'DAYOFWEEK'         => 'DayOfWeek',
+        'FORMAT'            => 'Format',
+        'HOUR'              => 'Hour',
+        'LINK'              => 'Link',
+        'MATRIX'            => 'Matrix',
+        'MINUTE'            => 'Minute',
+        'MONTH'             => 'Month',
+        'MONTHNAME'         => 'MonthName',
+        'NOW'               => 'Now',
+        'PERCENT'           => 'Percent',
+        'PRINT'             => 'Printable',
+        'TIME_LENGTH'       => 'TimeLength',
+        'STACK_GROUP'       => 'StackGroup',
+        'TO_UTC'            => 'ToUtc',
+        'TOTAL'             => 'Total',
+        'UTC'               => 'Utc',
+        'X'                 => 'X',
+        'Y'                 => 'Y',
+        'YEAR'              => 'Year',
     );
 
     /**
@@ -119,7 +119,7 @@ abstract class AbstractFunc
      */
     protected function __construct($name, array $arguments = array())
     {
-        $this->_name = $name;
+        $this->_name      = $name;
         $this->_arguments = $arguments;
     }
 
@@ -135,7 +135,7 @@ abstract class AbstractFunc
     {
         $name = strtoupper($name);
         if (isset(self::$_functionMap[$name])) {
-            $map = __NAMESPACE__ . '\\' . self::$_functionMap[$name];
+            $map = __NAMESPACE__.'\\'.self::$_functionMap[$name];
 
             return new $map($name, $arguments);
         } else {
@@ -159,7 +159,7 @@ abstract class AbstractFunc
         } elseif ($part instanceof \Application\DeskPRO\Dpql\Statement\Part\Number) {
             return $part->number;
         } else {
-            throw new DpqlException('Only literal values may be used for ' . $this->_name . '() parameters.');
+            throw new DpqlException('Only literal values may be used for '.$this->_name.'() parameters.');
         }
     }
 }

@@ -36,9 +36,9 @@ namespace deskpro_us_joomla\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
-use deskpro_us_joomla\Usersource\Auth\Joomla;
 use Orb\Log\Logger;
 use Orb\Log\Writer\ArrayWriter;
+use deskpro_us_joomla\Usersource\Auth\Joomla;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -55,7 +55,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 throw $context->createNotFoundException();
         }
     }
-
 
     /**
      * @param  ApiPackageRequestContext                   $context
@@ -75,9 +74,9 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $joomla->setLogger($logger);
 
         $result_data = array(
-            'log' => '',
-            'error' => false,
-            'error_code' => 0
+            'log'        => '',
+            'error'      => false,
+            'error_code' => 0,
         );
 
         try {
@@ -93,7 +92,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 $result_data['error_code'] = $result->getMessages('error_code') ?: 'general';
             }
         } catch (\Exception $e) {
-            $result_data['error'] = $e->getMessage();
+            $result_data['error']      = $e->getMessage();
             $result_data['error_code'] = $e->getCode();
         }
 

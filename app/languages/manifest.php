@@ -9,7 +9,7 @@
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => true,
-        'is_managed' => false
+        'is_managed' => false,
     ),
 
     'arabic' => array(
@@ -22,7 +22,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'danish' => array(
@@ -35,7 +35,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'dutch' => array(
@@ -48,7 +48,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'french' => array(
@@ -61,7 +61,7 @@
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'german' => array(
@@ -74,7 +74,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'hungarian' => array(
@@ -87,7 +87,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'italian' => array(
@@ -100,7 +100,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'japanese' => array(
@@ -113,7 +113,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'korean' => array(
@@ -126,7 +126,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'norwegian' => array(
@@ -139,7 +139,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'persian' => array(
@@ -152,7 +152,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'polish' => array(
@@ -165,7 +165,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'portuguese' => array(
@@ -178,7 +178,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'romanian' => array(
@@ -191,7 +191,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'russian' => array(
@@ -204,7 +204,7 @@
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'slovak' => array(
@@ -217,7 +217,7 @@
         'has_user'   => true,
         'has_agent'  => true,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'spanish' => array(
@@ -230,7 +230,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'swedish' => array(
@@ -243,7 +243,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     'turkish' => array(
@@ -256,7 +256,7 @@
         'has_user'   => true,
         'has_agent'  => false,
         'has_admin'  => false,
-        'is_managed' => true
+        'is_managed' => true,
     ),
 
     // ensure an appropriate flag_image has been specified when adding a language

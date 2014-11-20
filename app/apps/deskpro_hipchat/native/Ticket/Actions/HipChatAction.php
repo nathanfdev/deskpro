@@ -38,8 +38,8 @@ use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\Actions\AbstractContainerAwareAction;
 use Application\DeskPRO\Tickets\Actions\ActionInterface;
-use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\Tickets\Actions\AppActionInterface;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -59,9 +59,9 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
             return $this->app;
         }
 
-        $this->app = false;
+        $this->app   = false;
         $app_manager = $this->getContainer()->getAppManager();
-        $app_id = $this->getMetaData()->get('app_id', 0);
+        $app_id      = $this->getMetaData()->get('app_id', 0);
 
         if ($app_manager->hasApp($app_id)) {
             $this->app = $app_manager->getApp($app_id);
@@ -69,7 +69,6 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
 
         return $this->app === false ? null : $this->app;
     }
-
 
     /**
      * {@inheritDoc}
@@ -102,17 +101,16 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
                 'app_title'     => $app->title,
                 'package_name'  => $app->package->name,
                 'package_title' => $app->package->title,
-                'message'       => "Send message to room \"$room_id\""
+                'message'       => "Send message to room \"$room_id\"",
             ));
         } catch (\Exception $e) {
             $context->getLogger()->notice("[HipChatAction] Error sending HipChat message: {$e->getMessage()}");
 
             $ticket->getStateChangeRecorder()->recordData('app_message',
             array( 'app_id'        => $app->id, 'app_title' => $app->title, 'package_name' => $app->package->name,
-                   'package_title' => $app->package->title, 'message' => "Failed sending message to room \"$room_id\"" ));
+                   'package_title' => $app->package->title, 'message' => "Failed sending message to room \"$room_id\"", ));
         }
     }
-
 
     /**
      * @param  Ticket                   $ticket
@@ -123,7 +121,7 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
     {
         $statechange = $ticket->getStateChangeRecorder();
 
-        $message = '#' . $ticket->id . ' <a href="' . $this->getContainer()->getSetting('core.deskpro_url') . 'agent/#app.tickets,t:' . $ticket->id . '">';
+        $message = '#'.$ticket->id.' <a href="'.$this->getContainer()->getSetting('core.deskpro_url').'agent/#app.tickets,t:'.$ticket->id.'">';
         $message .= htmlspecialchars($ticket->subject);
         $message .= "</a><br/>";
 
@@ -141,7 +139,7 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
             $message .= 'Ticket updated';
         }
         if ($context->getPersonContext()) {
-            $message .= ' by ' . htmlspecialchars($context->getPersonContext()->getDisplayContact());
+            $message .= ' by '.htmlspecialchars($context->getPersonContext()->getDisplayContact());
         } else {
             $message .= ' by system';
         }
@@ -152,12 +150,11 @@ class HipChatAction extends AbstractContainerAwareAction implements ActionInterf
         return $message;
     }
 
-
     /**
      * @return string
      */
     public function getActionType()
     {
-        return Util::getBaseClassname($this) . $this->getMetaData()->get('app_id', 0);
+        return Util::getBaseClassname($this).$this->getMetaData()->get('app_id', 0);
     }
 }

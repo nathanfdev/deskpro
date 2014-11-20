@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 use Doctrine\ORM\Mapping\ClassMetadata;
+use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
 
 /**
  * A job
@@ -61,20 +61,20 @@ use Doctrine\ORM\Mapping\ClassMetadata;
  */
 class Job extends \Application\DeskPRO\Domain\DomainObject
 {
-    const STATUS_INSERTING = 'inserting';
-    const STATUS_WAITING = 'waiting';
-    const STATUS_RESERVED = 'reserved';
+    const STATUS_INSERTING  = 'inserting';
+    const STATUS_WAITING    = 'waiting';
+    const STATUS_RESERVED   = 'reserved';
     const STATUS_PROCESSING = 'processing';
-    const STATUS_COMPLETE = 'complete';
-    const STATUS_ERROR = 'error';
-    const STATUS_REJECTED = 'rejected';
-    const STATUS_DELEGATED = 'delegated';
-    const STATUS_ABORTED = 'aborted';
+    const STATUS_COMPLETE   = 'complete';
+    const STATUS_ERROR      = 'error';
+    const STATUS_REJECTED   = 'rejected';
+    const STATUS_DELEGATED  = 'delegated';
+    const STATUS_ABORTED    = 'aborted';
 
-    const STATUS_CODE_SUCCESS = 'success'; // completed successfully
-    const STATUS_CODE_RESCHEDULED = 'rescheduled'; // a job we depend on is not yet done, we will retry
-    const STATUS_CODE_RETRYING = 'retrying'; // failed but we are retrying
-    const STATUS_CODE_EXHAUSTED = 'exhausted'; // retried it a bunch of times, won't retry again
+    const STATUS_CODE_SUCCESS      = 'success'; // completed successfully
+    const STATUS_CODE_RESCHEDULED  = 'rescheduled'; // a job we depend on is not yet done, we will retry
+    const STATUS_CODE_RETRYING     = 'retrying'; // failed but we are retrying
+    const STATUS_CODE_EXHAUSTED    = 'exhausted'; // retried it a bunch of times, won't retry again
     const STATUS_CODE_INVALID_DATA = 'invalid_data'; // the job data (payload) was invalid in some way, or couldn't be processed
 
     /**
@@ -225,14 +225,14 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct($type, array $data = array())
     {
-        $this->date_created = new \DateTime();
+        $this->date_created  = new \DateTime();
         $this->date_next_try = new \DateTime();
-        $this->has_warning = false;
-        $this->status = self::STATUS_INSERTING;
-        $this->priority = 0;
-        $this->num_tries = 0;
-        $this->type = $type;
-        $this->data = $data;
+        $this->has_warning   = false;
+        $this->status        = self::STATUS_INSERTING;
+        $this->priority      = 0;
+        $this->num_tries     = 0;
+        $this->type          = $type;
+        $this->data          = $data;
     }
 
     ############################################################################
@@ -241,7 +241,6 @@ class Job extends \Application\DeskPRO\Domain\DomainObject
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-
         $builder = new ClassMetadataBuilder($metadata);
         $builder
             ->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\WorkerJob')

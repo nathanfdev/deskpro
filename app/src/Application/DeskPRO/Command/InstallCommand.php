@@ -70,7 +70,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $this->createDatabase();
         $this->getLogger()->log('Install::createTables', 'debug');
 
-        $db = $this->getDb();
+        $db    = $this->getDb();
         $check = $db->fetchColumn("SHOW TABLES LIKE 'install_data'");
 
         if ($check != 'install_data') {
@@ -84,7 +84,7 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                     ) ENGINE=InnoDB DEFAULT CHARSET=latin1
                 ");
             } catch (\Exception $e) {
-                $this->getLogger()->log('Failed to craete install_data: ' . $e->getCode() . ' ' . $e->getMessage(), 'err');
+                $this->getLogger()->log('Failed to craete install_data: '.$e->getCode().' '.$e->getMessage(), 'err');
 
                 return;
             }
@@ -142,19 +142,19 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             }
         }
 
-        $agent = new \Application\DeskPRO\Entity\Person();
+        $agent             = new \Application\DeskPRO\Entity\Person();
         $agent->first_name = 'Admin';
-        $agent->last_name = 'Admin';
+        $agent->last_name  = 'Admin';
         $agent->setEmail($initial_email, true);
         $agent->setPassword($initial_password);
-        $agent->is_user = true;
-        $agent->is_confirmed = true;
+        $agent->is_user            = true;
+        $agent->is_confirmed       = true;
         $agent->is_agent_confirmed = true;
-        $agent->is_agent = true;
-        $agent->can_agent = true;
-        $agent->can_admin = true;
-        $agent->can_billing = true;
-        $agent->can_reports = true;
+        $agent->is_agent           = true;
+        $agent->can_agent          = true;
+        $agent->can_admin          = true;
+        $agent->can_billing        = true;
+        $agent->can_reports        = true;
 
         $this->getOrm()->persist($agent);
         $this->getOrm()->flush();
@@ -162,15 +162,15 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $this->getDb()->insert('permissions', array('person_id' => $agent->id, 'name' => 'admin.use', 'value' => 1));
 
         // Install data stuff
-        $AGENTGROUP_ALL = null; // should be defined by the time we finish processing data.php
+        $AGENTGROUP_ALL     = null; // should be defined by the time we finish processing data.php
         $USERGROUP_EVERYONE = null; // should be defined by the time we finish processing data.php
-        $AGENT = $agent; // can be used in data.php
-        $WEB_INSTALL = true;
-        $IMPORT_INSTALL = false;
+        $AGENT              = $agent; // can be used in data.php
+        $WEB_INSTALL        = true;
+        $IMPORT_INSTALL     = false;
 
         $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-        $em = $this->getOrm();
-        $translate = $this->getContainer()->get('deskpro.core.translate');
+        $em           = $this->getOrm();
+        $translate    = $this->getContainer()->get('deskpro.core.translate');
 
         foreach ($install_data as $php) {
             eval($php);
@@ -198,20 +198,20 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         if ($USERGROUP_EVERYONE) {
             $scanner = new \Application\InstallBundle\Data\UserGroupPermScanner();
             foreach ($scanner->getNames() as $p_name) {
-                $p = new \Application\DeskPRO\Entity\Permission();
+                $p            = new \Application\DeskPRO\Entity\Permission();
                 $p->usergroup = $USERGROUP_EVERYONE;
-                $p->name = $p_name;
-                $p->value = 1;
+                $p->name      = $p_name;
+                $p->value     = 1;
                 $this->getOrm()->persist($p);
             }
             $this->getOrm()->flush();
         }
 
-        $data_init = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
+        $data_init             = new \Application\InstallBundle\Data\DataInitializer($this->getContainer());
         $data_init->admin_user = $agent;
         $data_init->run();
         App::getDb()->replace('settings', array(
-            'name' => 'core.done_data_initializer',
+            'name'  => 'core.done_data_initializer',
             'value' => 1,
         ));
 
@@ -233,37 +233,37 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         App::getDb()->replace('install_data', array(
             'build' => 'default',
-            'name' => 'install_build',
-            'data' => DP_BUILD_TIME
+            'name'  => 'install_build',
+            'data'  => DP_BUILD_TIME,
         ));
 
         App::getDb()->replace('settings', array(
-            'name' => 'core.deskpro_build',
+            'name'  => 'core.deskpro_build',
             'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.deskpro_build_num',
+            'name'  => 'core.deskpro_build_num',
             'value' => defined('DP_BUILD_NUM') ? DP_BUILD_NUM : 0,
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_build',
+            'name'  => 'core.install_build',
             'value' => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : time(),
         ));
 
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_timestamp',
+            'name'  => 'core.install_timestamp',
             'value' => time(),
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_key',
+            'name'  => 'core.install_key',
             'value' => Strings::random(20, Strings::CHARS_KEY),
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.deskpro_version',
+            'name'  => 'core.deskpro_version',
             'value' => date('YmdHis'),
         ));
         App::getDb()->replace('settings', array(
-            'name' => 'core.install_via_cmd',
+            'name'  => 'core.install_via_cmd',
             'value' => 1,
         ));
     }
@@ -275,7 +275,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         } catch (\Exception $e) {
             if ($e instanceof DBALException || $e instanceof \PDOException) {
                 if ($e->getCode() == '1049') {
-
                     // Attempt to create an empty database
                     try {
                         global $DP_CONFIG;
@@ -299,7 +298,6 @@ class InstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
             if ($installed) {
                 return false;
             }
-
         } catch (\Exception $e) {
             return true;
         }

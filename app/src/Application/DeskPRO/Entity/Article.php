@@ -204,7 +204,6 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                 } else {
                     $cats[] = $cat->getFullTitle();
                 }
-
             } else {
                 $cats[] = $cat['title'];
             }
@@ -217,10 +216,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         $path = array();
 
-        $cat = $this->categories[$index];
+        $cat    = $this->categories[$index];
         $path[] = $cat;
         while ($cat['parent']) {
-            $cat = $cat['parent'];
+            $cat    = $cat['parent'];
             $path[] = $cat;
         }
 
@@ -247,17 +246,15 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     public function _invalidatePageCache()
     {
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_kb(-|_articles_' . intval($this->getId()) . '-|_\d+)/');
+        $cache->invalidateRegex('/_kb(-|_articles_'.intval($this->getId()).'-|_\d+)/');
     }
-
-
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
-            foreach ($this->labels AS $label) {
+            foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
         }
@@ -309,7 +306,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         return array(
             'with_lang_prop' => 'language',
-            'fields' => array('title', 'content')
+            'fields'         => array('title', 'content'),
         );
     }
 
@@ -352,7 +349,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
             array(
                 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0,
                 'nullable'  => false, 'columnName' => 'slug',
-                'unique'    => true
+                'unique'    => true,
             )
         );
         $metadata->mapField(
@@ -431,7 +428,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         $metadata->mapManyToMany(
             array(
                 'fieldName' => 'categories', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'joinTable' => array(
+                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'joinTable' => array(
                 'name'                  => 'article_to_categories', 'schema' => null, 'joinColumns' => array(
                     0 => array(
                         'name'     => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true,
@@ -443,13 +440,13 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapManyToMany(
             array(
                 'fieldName' => 'products', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'joinTable' => array(
+                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'joinTable' => array(
                 'name'                  => 'article_to_product', 'schema' => null, 'joinColumns' => array(
                     0 => array(
                         'name'     => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true,
@@ -461,33 +458,33 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleRevision',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'article',
+                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleAttachment',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'article',
+                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName'     => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataArticle',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'article',
-                'orphanRemoval' => true, 'dpApi' => true
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
+                'orphanRemoval'            => true, 'dpApi'            => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelArticle',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'article',
-                'orphanRemoval' => true,
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article',
+                'orphanRemoval'            => true,
             )
         );
         $metadata->mapManyToOne(
@@ -498,7 +495,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                     'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete'         => 'set null', 'columnDefinition' => null,
                 ),
-            ), 'dpApi'       => true
+            ), 'dpApi'       => true,
             )
         );
         $metadata->mapManyToOne(
@@ -509,7 +506,7 @@ class Article extends ContentAbstract implements HighlightableModelInterface
                     'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'cascade', 'columnDefinition' => null,
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
 

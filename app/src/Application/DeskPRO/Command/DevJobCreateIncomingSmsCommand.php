@@ -56,9 +56,9 @@ class DevJobCreateIncomingSmsCommand extends \Symfony\Bundle\FrameworkBundle\Com
         $queue = $this->getContainer()->getSystemService('job_queue');
 
         $queue->add(IncomingSmsProcessor::JOB_TYPE, array(
-                'message' => $input->getArgument('message'),
-                'to_number' => $input->getOption('to'),
-                'from_number' => $input->getOption('from')
+                'message'     => $input->getArgument('message'),
+                'to_number'   => $input->getOption('to'),
+                'from_number' => $input->getOption('from'),
             )
         );
     }

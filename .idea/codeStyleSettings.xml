@@ -6,21 +6,19 @@
         <CoffeeScriptCodeStyleSettings>
           <option name="SPACE_WITHIN_OBJECT_BRACES" value="true" />
         </CoffeeScriptCodeStyleSettings>
-        <JSON>
-          <option name="OBJECT_WRAPPING" value="1" />
-          <option name="ARRAY_WRAPPING" value="1" />
-        </JSON>
         <PHPCodeStyleSettings>
           <option name="ALIGN_KEY_VALUE_PAIRS" value="true" />
           <option name="ALIGN_PHPDOC_PARAM_NAMES" value="true" />
           <option name="ALIGN_PHPDOC_COMMENTS" value="true" />
           <option name="CONCAT_SPACES" value="false" />
           <option name="PHPDOC_BLANK_LINE_BEFORE_TAGS" value="true" />
-          <option name="PHPDOC_WRAP_LONG_LINES" value="true" />
           <option name="LOWER_CASE_BOOLEAN_CONST" value="true" />
           <option name="LOWER_CASE_NULL_CONST" value="true" />
           <option name="BLANK_LINE_BEFORE_RETURN_STATEMENT" value="true" />
         </PHPCodeStyleSettings>
+        <XML>
+          <option name="XML_LEGACY_SETTINGS_IMPORTED" value="true" />
+        </XML>
         <codeStyleSettings language="CoffeeScript">
           <option name="KEEP_FIRST_COLUMN_COMMENT" value="false" />
           <option name="CALL_PARAMETERS_WRAP" value="0" />
@@ -53,3 +51,4 @@
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
 </project>
+

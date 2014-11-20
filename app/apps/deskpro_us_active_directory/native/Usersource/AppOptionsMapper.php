@@ -50,7 +50,7 @@ class AppOptionsMapper
             $settings = $app_or_settings->getSettings();
         } else {
             if (!is_array($app_or_settings)) {
-                throw new \InvalidArgumentException;
+                throw new \InvalidArgumentException();
             }
             $settings = $app_or_settings;
         }

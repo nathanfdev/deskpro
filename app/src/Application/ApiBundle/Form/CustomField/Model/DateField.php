@@ -65,13 +65,13 @@ class DateField extends CustomFieldAbstract
     public function init()
     {
         $this->default_value = $this->_field->default_value;
-        $this->default_mode = $this->_field->getOption('default_mode');
+        $this->default_mode  = $this->_field->getOption('default_mode');
 
-        if(empty($this->default_value)) {
+        if (empty($this->default_value)) {
             $this->default_value = date('m/d/Y');
         }
 
-        if(empty($this->default_mode)) {
+        if (empty($this->default_mode)) {
             $this->default_mode = 'current';
         }
 
@@ -108,12 +108,12 @@ class DateField extends CustomFieldAbstract
 
     protected function setFieldProperties()
     {
-        $field = $this->_field;
+        $field                = $this->_field;
         $field->default_value = $this->default_value;
         $field->setOption('default_mode', $this->default_mode);
 
-        $field->setOption('required', (bool)$this->required);
-        $field->setOption('agent_required', (bool)$this->agent_required);
+        $field->setOption('required', (bool) $this->required);
+        $field->setOption('agent_required', (bool) $this->agent_required);
 
         if ($this->date_valid_dow && count($this->date_valid_dow) != 7) {
             $field->setOption('date_valid_dow', $this->date_valid_dow);
@@ -127,8 +127,8 @@ class DateField extends CustomFieldAbstract
         $field->setOption('date_valid_range1', null);
         $field->setOption('date_valid_range2', null);
 
-        $this->date_valid_range1 = (int)$this->date_valid_range1;
-        $this->date_valid_range2 = (int)$this->date_valid_range2;
+        $this->date_valid_range1 = (int) $this->date_valid_range1;
+        $this->date_valid_range2 = (int) $this->date_valid_range2;
 
         // Date range
         if ($this->date_valid_type == 'date' && ($this->date_valid_date1 || $this->date_valid_date2)) {
@@ -141,7 +141,9 @@ class DateField extends CustomFieldAbstract
                     if (!$d1) {
                         $this->date_valid_date1 = null;
                     }
-                } catch (\Exception $e) { $this->date_valid_date1 = null; }
+                } catch (\Exception $e) {
+                    $this->date_valid_date1 = null;
+                }
             }
 
             if ($this->date_valid_date2) {
@@ -150,14 +152,15 @@ class DateField extends CustomFieldAbstract
                     if (!$d2) {
                         $this->date_valid_date2 = null;
                     }
-                } catch (\Exception $e) { $this->date_valid_date2 = null; }
+                } catch (\Exception $e) {
+                    $this->date_valid_date2 = null;
+                }
             }
 
             if ($this->date_valid_date1 || $this->date_valid_date2) {
-
                 if ($this->date_valid_date1 && $this->date_valid_date2) {
                     if ($d1 > $d2) {
-                        $tmp = $this->date_valid_date1;
+                        $tmp                    = $this->date_valid_date1;
                         $this->date_valid_date1 = $this->date_valid_date2;
                         $this->date_valid_date2 = $tmp;
                     }
@@ -172,7 +175,7 @@ class DateField extends CustomFieldAbstract
         } elseif ($this->date_valid_type == 'range' && ($this->date_valid_range1 || $this->date_valid_range2)) {
             if ($this->date_valid_range1 && $this->date_valid_range2) {
                 if ($this->date_valid_range1 > $this->date_valid_range2) {
-                    $tmp = $this->date_valid_range1;
+                    $tmp                     = $this->date_valid_range1;
                     $this->date_valid_range1 = $this->date_valid_range2;
                     $this->date_valid_range2 = $tmp;
                 }

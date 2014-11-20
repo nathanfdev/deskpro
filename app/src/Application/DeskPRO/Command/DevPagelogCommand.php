@@ -92,7 +92,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             /** @var $conn \Application\DeskPRO\DBAL\Connection */
             $conn = \Doctrine\DBAL\DriverManager::getConnection(array(
                 'driver'       => 'pdo_sqlite',
-                'path'         => dp_get_data_dir() . '/log-analytics.sqlite'
+                'path'         => dp_get_data_dir().'/log-analytics.sqlite',
             ));
 
             if (!$conn->getSchemaManager()->tablesExist('pagelog')) {
@@ -125,9 +125,9 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         }
 
         switch ($url_type) {
-            case 'raw': $url_field = 'url'; break;
-            case 'noparams': $url_field = 'url_noparams'; break;
-            case 'noaccount': $url_field = 'url_noaccount'; break;
+            case 'raw': $url_field                = 'url'; break;
+            case 'noparams': $url_field           = 'url_noparams'; break;
+            case 'noaccount': $url_field          = 'url_noaccount'; break;
             case 'noaccount_noparams': $url_field = 'url_noaccount_noparams'; break;
             default:
                 echo "Invalid type";
@@ -141,17 +141,19 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         }
 
         switch ($group_var) {
-            case 'time': $group_field = 'time_total'; break;
+            case 'time': $group_field     = 'time_total'; break;
             case 'time_php': $group_field = 'time_php'; break;
-            case 'time_db': $group_field = 'time_db'; break;
-            case 'queries': $group_field = 'query_count'; break;
-            case 'memory': $group_field = 'peak_memory'; break;
-            case 'count': $group_field = 'COUNT(*)'; break;
-            default: echo "Invalid var."; return 1;
+            case 'time_db': $group_field  = 'time_db'; break;
+            case 'queries': $group_field  = 'query_count'; break;
+            case 'memory': $group_field   = 'peak_memory'; break;
+            case 'count': $group_field    = 'COUNT(*)'; break;
+            default: echo "Invalid var.";
+
+return 1;
         }
 
         $query = "SELECT $url_field AS urlfield, $group_field AS groupfield FROM pagelog GROUP BY urlfield ORDER BY groupfield DESC LIMIT 2000";
-        $data = $this->getSqliteConnection()->fetchAll($query);
+        $data  = $this->getSqliteConnection()->fetchAll($query);
 
         foreach ($data as $r) {
             echo sprintf("%-10s %s\n", $r['groupfield'], $r['urlfield']);
@@ -177,7 +179,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         while (!feof($fh)) {
             $count++;
             $line = fgets($fh);
-            $m = null;
+            $m    = null;
 
             if (!preg_match('#^\[(.*?)\]\s+Time: (\d+\.\d+)\s+PHP_Time: (\d+\.\d+)\s+DB_Time: (\d+\.\d+)\s+Query_Count: (\d+)\s+Peak_Memory: (\d+)\s+URL: (.*?)$#', $line, $m)) {
                 continue;
@@ -204,7 +206,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 $url_no_nums = preg_replace('#/[0-9]+\-[a-zA-Z0-9_\-]+$#', '', $url_no_nums);
             }
 
-            $url_noaccount = preg_replace('#^https?://(.*?)/(.*?)$#', '$2', $url);
+            $url_noaccount        = preg_replace('#^https?://(.*?)/(.*?)$#', '$2', $url);
             $url_noaccount_nonums = preg_replace('#^https?://(.*?)/(.*?)$#', '$2', $url_no_nums);
 
             $this->getSqliteConnection()->insert('pagelog', array(
@@ -217,7 +219,7 @@ class DevPagelogCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 'time_db'                => $time_db,
                 'query_count'            => $query_count,
                 'peak_memory'            => $peak_memory,
-                'hit_at'                 => $date
+                'hit_at'                 => $date,
             ));
 
             if ($count % 1000 == 0) {

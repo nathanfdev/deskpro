@@ -44,6 +44,6 @@ class DefaultSettingsLoaderService
         $simple_array_cache = $container->get('cache.simple_array');
 
         // the loader that represents the "default" values in the system
-        return new ConfigPhpFileLoader(DP_ROOT . '/sys/config/settings.php', $simple_array_cache);
+        return new ConfigPhpFileLoader(DP_ROOT.'/sys/config/settings.php', $simple_array_cache);
     }
 }

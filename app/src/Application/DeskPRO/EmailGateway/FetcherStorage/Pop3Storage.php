@@ -74,7 +74,6 @@ class Pop3Storage implements FetcherStorageInterface
      */
     private $logger;
 
-
     /**
      * @param string      $host
      * @param string      $port
@@ -101,7 +100,6 @@ class Pop3Storage implements FetcherStorageInterface
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\EmailGateway\Storage\Pop3
      */
@@ -111,7 +109,7 @@ class Pop3Storage implements FetcherStorageInterface
             return $this->storage;
         }
 
-        $options = array();
+        $options             = array();
         $options['host']     = $this->host;
         $options['port']     = $this->port;
         $options['user']     = $this->user ?: '';

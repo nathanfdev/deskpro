@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Parser;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -74,25 +74,25 @@ class BinaryInterval extends AbstractPart
      * @var array
      */
     protected static $_operatorMap = array(
-        Parser::T_OP_PLUS => '+',
+        Parser::T_OP_PLUS  => '+',
         Parser::T_OP_MINUS => '-',
     );
 
     protected static $_typeMap = array(
         'seconds' => 'SECOND',
-        'second' => 'SECOND',
+        'second'  => 'SECOND',
         'minutes' => 'MINUTE',
-        'minute' => 'MINUTE',
-        'hours' => 'HOUR',
-        'hour' => 'HOUR',
-        'days' => 'DAY',
-        'day' => 'DAY',
-        'weeks' => 'WEEK',
-        'week' => 'WEEK',
-        'months' => 'MONTH',
-        'month' => 'MONTH',
-        'years' => 'YEAR',
-        'year' => 'YEAR'
+        'minute'  => 'MINUTE',
+        'hours'   => 'HOUR',
+        'hour'    => 'HOUR',
+        'days'    => 'DAY',
+        'day'     => 'DAY',
+        'weeks'   => 'WEEK',
+        'week'    => 'WEEK',
+        'months'  => 'MONTH',
+        'month'   => 'MONTH',
+        'years'   => 'YEAR',
+        'year'    => 'YEAR',
     );
 
     /**
@@ -109,9 +109,9 @@ class BinaryInterval extends AbstractPart
         }
 
         $this->operator = $operator;
-        $this->lhs = $lhs;
-        $this->amount = $amount;
-        $this->unit = $unit;
+        $this->lhs      = $lhs;
+        $this->amount   = $amount;
+        $this->unit     = $unit;
 
         $lowerUnit = strtolower($this->unit);
         if (!isset(self::$_typeMap[$lowerUnit])) {
@@ -134,17 +134,16 @@ class BinaryInterval extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $placeholder = $this->_findPlaceholder();
         if ($placeholder) {
             return $placeholder[0]->prepareWithIntervals(
                 $statement, $section, $this->getChildStack($stack), $select, $result, $placeholder[1]
             );
         } else {
-            $lhs = $this->lhs->prepare($statement, $section, $this->getChildStack($stack), $select, $result);
+            $lhs      = $this->lhs->prepare($statement, $section, $this->getChildStack($stack), $select, $result);
             $operator = self::$_operatorMap[$this->operator];
-            $sqlUnit = self::$_typeMap[strtolower($this->unit)];
+            $sqlUnit  = self::$_typeMap[strtolower($this->unit)];
 
             $sql = "({$lhs->sql()} $operator INTERVAL $this->amount $sqlUnit)";
 
@@ -164,7 +163,7 @@ class BinaryInterval extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->lhs->toDpql($statement, $section, $stack)
-            . ' ' . self::$_operatorMap[$this->operator] . " INTERVAL $this->amount $this->unit";
+            .' '.self::$_operatorMap[$this->operator]." INTERVAL $this->amount $this->unit";
     }
 
     /**
@@ -186,8 +185,7 @@ class BinaryInterval extends AbstractPart
     public function prepareComparison(
         AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
         Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $placeholder = $this->_findPlaceholder();
         if (!$placeholder) {
             return false;
@@ -200,7 +198,7 @@ class BinaryInterval extends AbstractPart
 
     protected function _findPlaceholder()
     {
-        $stack = $this->lhs;
+        $stack     = $this->lhs;
         $intervals = array($this);
 
         do {
@@ -208,7 +206,7 @@ class BinaryInterval extends AbstractPart
                 return array($stack, $intervals);
             } elseif ($stack instanceof BinaryInterval) {
                 $intervals[] = $stack;
-                $stack = $stack->lhs;
+                $stack       = $stack->lhs;
             } else {
                 return false;
             }

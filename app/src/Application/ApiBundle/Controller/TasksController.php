@@ -41,7 +41,7 @@ use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPers
 
 class TasksController extends AbstractController implements ProtectedControllerInterface
 {
-    const KEY_ENABLED = 'core.apps_tasks';
+    const KEY_ENABLED  = 'core.apps_tasks';
     const KEY_REMINDER = 'task_reminder_time';
 
     /**
@@ -62,10 +62,10 @@ class TasksController extends AbstractController implements ProtectedControllerI
         $agents = array();
 
         foreach ($this->container->getAgentData()->getAgents() as $agent) {
-            $agent_data = $agent->toApiData();
-            $perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
+            $agent_data          = $agent->toApiData();
+            $perm_loader         = new AgentPermsPersonDbLoader($agent, $this->em);
             $agent_data['perms'] = $perm_loader->getEffectivePermissions()->toArray();
-            $agents[] = $agent_data;
+            $agents[]            = $agent_data;
         }
 
         $ugs = $this->em->createQuery("
@@ -76,22 +76,24 @@ class TasksController extends AbstractController implements ProtectedControllerI
             ")->execute();
 
         $groups = $this->getApiData($ugs);
-        $ids = array_map(function ($g) { return $g['id']; }, $groups);
+        $ids    = array_map(function ($g) { return $g['id']; }, $groups);
 
         $loader = new GroupsDbLoader($ids, $this->em);
         foreach ($groups as &$group) {
             $group['perms'] = $loader->getGroupPermissions($group['id'])->toArray();
             if ($group['sys_name'] == 'agent_all_perms' || $group['sys_name'] == 'agent_all_safe_perms') {
-                if (!isset($group['perms']['tasks'])) $group['perms']['tasks'] = array();
+                if (!isset($group['perms']['tasks'])) {
+                    $group['perms']['tasks'] = array();
+                }
                 $group['perms']['tasks']['use'] = true;
             }
         }
 
         return $this->createApiResponse(array(
-            'enabled' => $this->settings->get(self::KEY_ENABLED, 0),
+            'enabled'          => $this->settings->get(self::KEY_ENABLED, 0),
             self::KEY_REMINDER => $this->settings->get(self::KEY_REMINDER, '09:00'),
-            'agents' => $agents,
-            'groups' => $groups,
+            'agents'           => $agents,
+            'groups'           => $groups,
         ));
     }
 

@@ -106,7 +106,7 @@ class AvailableTrigger
             }
         }
 
-        $trigger_File = dp_get_data_dir() . '/chat_is_available.trigger';
+        $trigger_File = dp_get_data_dir().'/chat_is_available.trigger';
         if ($is_chat_available) {
             file_put_contents($trigger_File, time());
             @chmod($trigger_File, 0777);
@@ -118,13 +118,12 @@ class AvailableTrigger
             $val = $is_chat_available ? '1' : '0';
 
             foreach ($update_urls as $url) {
-
                 $url = str_replace('%CHAT_STATUS%', $val, $url);
 
                 $context = stream_context_create(array(
                     'http' => array(
-                        'timeout' => 5
-                    )
+                        'timeout' => 5,
+                    ),
                 ));
                 $res = file_get_contents($url, false, $context);
 

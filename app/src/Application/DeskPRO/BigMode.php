@@ -35,7 +35,7 @@ namespace Application\DeskPRO;
 
 class BigMode
 {
-    const PERSON_AUTOCOMPLETE = 'person_autocomplete';
+    const PERSON_AUTOCOMPLETE           = 'person_autocomplete';
     const PERSON_SEARCH_PREFIX_WILDCARD = 'person_search_prefix_wildcard';
 
     public static function isBigMode($context)

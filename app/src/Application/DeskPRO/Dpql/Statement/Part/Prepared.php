@@ -98,10 +98,10 @@ class Prepared
      */
     public function __construct($sqlExpr = 'NULL', $name = '', $sqlExprPrint = false, $renderer = null)
     {
-        $this->_sqlExpr = $sqlExpr;
-        $this->_name = $name;
+        $this->_sqlExpr      = $sqlExpr;
+        $this->_name         = $name;
         $this->_sqlExprPrint = $sqlExprPrint;
-        $this->_renderer = $renderer;
+        $this->_renderer     = $renderer;
     }
 
     /**
@@ -219,7 +219,7 @@ class Prepared
      */
     public function setTotal($total)
     {
-        $this->_total = (bool)$total;
+        $this->_total = (bool) $total;
     }
 
     /**

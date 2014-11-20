@@ -80,7 +80,7 @@ class Jwt extends AbstractAdapter
     {
         $capabilities = array(
             UsersourceInfo::CAPABILITY_SSO,
-            UsersourceInfo::CAPABILITY_SSO_JS
+            UsersourceInfo::CAPABILITY_SSO_JS,
         );
 
         if ($custom_button_text = $this->usersource->options['login_custom_text']) {

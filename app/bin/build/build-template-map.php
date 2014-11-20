@@ -7,11 +7,11 @@ if (php_sapi_name() != 'cli') {
 }
 
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
-require DP_ROOT . '/bin/build/inc.php';
+require DP_ROOT.'/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
 $paths = array(
@@ -38,12 +38,12 @@ foreach ($paths as $bundle => $dir) {
 
         $filepath = $file->getRealPath();
 
-        $tplname = str_replace($dir . '/', ':', $filepath);
+        $tplname = str_replace($dir.'/', ':', $filepath);
         $tplname = str_replace('/', ':', $tplname);
         if (substr_count($tplname, ':') < 2) {
-            $tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+            $tplname = ':'.$tplname; // for layouts that are in top dir, MyBundle::layout
         }
-        $tplname = $bundle . $tplname;
+        $tplname = $bundle.$tplname;
 
         if (!$bogus) {
             exec("git log --date=short -s -1 -- {$filepath}", $out);
@@ -65,7 +65,7 @@ foreach ($paths as $bundle => $dir) {
         }
 
         $tpl_info[$tplname] = array(
-            'path' => $path,
+            'path'         => $path,
             'last_updated' => $time,
         );
 

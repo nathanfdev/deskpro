@@ -62,7 +62,6 @@ class TransportFactory
         }
     }
 
-
     /**
      * @param  SmtpConfig           $config
      * @return \Swift_SmtpTransport
@@ -86,7 +85,6 @@ class TransportFactory
 
         return $tr;
     }
-
 
     /**
      * @param  GmailConfig          $config

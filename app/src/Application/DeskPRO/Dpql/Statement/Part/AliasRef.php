@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -71,14 +71,13 @@ class AliasRef extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (!in_array($section, array('split', 'group', 'order'))) {
             throw new Exception('Alias references may only be used in SPLIT BY, GROUP BY, and ORDER BY sections.');
         }
 
         $fieldId = $statement->getSqlSelectFieldId($this->alias);
-        $sql = ($fieldId !== false ? $select->getSelectField($fieldId) : 'NULL');
+        $sql     = ($fieldId !== false ? $select->getSelectField($fieldId) : 'NULL');
 
         return new Prepared($sql, $this->alias);
     }
@@ -94,6 +93,6 @@ class AliasRef extends AbstractPart
      */
     public function toDpql(Display $statement, $section, array $stack)
     {
-        return '@' . $statement->quoteDpqlString($this->alias);
+        return '@'.$statement->quoteDpqlString($this->alias);
     }
 }

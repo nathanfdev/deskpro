@@ -49,7 +49,7 @@ class TicketPersonData implements DataInterface
 
     public function getData()
     {
-        $data = array();
+        $data           = array();
         $data['person'] = $this->ticket->person->toApiData(true, true);
 
         return $data;

@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -60,8 +60,7 @@ class Printable extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (!in_array($section, array('split', 'group'))) {
             throw new Exception('PRINT() may only be used in SPLIT BY and GROUP BY sections.');
         }
@@ -73,11 +72,11 @@ class Printable extends AbstractFunc
         $childStack = $stack;
         array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
-        $sql = reset($this->_arguments);
+        $sql   = reset($this->_arguments);
         $print = next($this->_arguments);
 
         $printPrepped = $print->prepare($statement, $section, $childStack, $select, $result);
-        $sqlPrepped = $sql->prepare($statement, $section, $childStack, $select, $result);
+        $sqlPrepped   = $sql->prepare($statement, $section, $childStack, $select, $result);
 
         return new Prepared(
             $sqlPrepped->sql(), $printPrepped->name(), $printPrepped->printed(), $printPrepped->renderer()

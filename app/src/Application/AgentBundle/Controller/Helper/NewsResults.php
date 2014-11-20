@@ -105,7 +105,7 @@ class NewsResults
 
             // Otherwise its a user filter with custom terms
             } else {
-                $form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
+                $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
 
                 $terms = $term_rules->readForm($form_terms);
@@ -124,11 +124,11 @@ class NewsResults
 
             $results = $searcher->getMatches();
 
-            $result_cache = new ResultCache();
-            $result_cache['person'] = $controller->person;
-            $result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['extra'] = array('summary' => $searcher->getSummary());
-            $result_cache['results'] = $results;
+            $result_cache                = new ResultCache();
+            $result_cache['person']      = $controller->person;
+            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+            $result_cache['extra']       = array('summary' => $searcher->getSummary());
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
             $controller->em->persist($result_cache);
@@ -149,7 +149,6 @@ class NewsResults
         return $helper;
     }
 
-
     public function __construct($controller, ResultCache $result_cache = null)
     {
         $this->controller = $controller;
@@ -160,7 +159,6 @@ class NewsResults
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\ResultCache
      */
@@ -168,7 +166,6 @@ class NewsResults
     {
         return $this->result_cache;
     }
-
 
     /**
      * @param array $news_ids
@@ -178,7 +175,6 @@ class NewsResults
         $this->news_ids = $news_ids;
     }
 
-
     /**
      * @return array
      */
@@ -186,7 +182,6 @@ class NewsResults
     {
         return $this->news_ids;
     }
-
 
     /**
      * @return array
@@ -201,11 +196,10 @@ class NewsResults
         return $this->_getPageFromNewsIds($this->getNewsIds(), $page, $per_page);
     }
 
-
     protected function _getPageFromNewsIds(array $news_ids, $page, $per_page)
     {
         $page_news_ids = Arrays::getPageChunk($news_ids, $page, $per_page);
-        $news_raw = App::getEntityRepository('DeskPRO:News')->getByResultIds($page_news_ids);
+        $news_raw      = App::getEntityRepository('DeskPRO:News')->getByResultIds($page_news_ids);
 
         // Real order that we got when executing the search
         $news = array();

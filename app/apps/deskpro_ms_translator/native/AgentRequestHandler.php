@@ -57,7 +57,6 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         }
     }
 
-
     /**
      * @param AgentRequestContext $context
      */
@@ -94,7 +93,6 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         $message_translated = $context->getEm()->getRepository('DeskPRO:TicketMessageTranslated')->getForMessage($message, $to);
 
         if ($message_translated) {
-
             // The translated text is only good if it matches the 'from' or if the user chose 'auto'
             if ($from == 'auto' || $from == $message_translated->from_lang_code) {
                 return $context->createJsonResponse(array(
@@ -128,7 +126,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         $message_translated = new TicketMessageTranslated();
         $message_translated->setTicketMessage($message);
         $message_translated->from_lang_code = $from;
-        $message_translated->lang_code = $to;
+        $message_translated->lang_code      = $to;
 
         try {
             $message_translated->message = $api->translate($message_text, $from, $to, 'text/html');
@@ -148,7 +146,6 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             'to_lang_code'          => $message_translated->lang_code,
         ));
     }
-
 
     /**
      * @param AgentRequestContext $context

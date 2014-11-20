@@ -78,7 +78,7 @@ class NewArticle
     {
         $this->_em->beginTransaction();
 
-        $article = new Article();
+        $article         = new Article();
         $article->person = $this->_person_context;
         $article->setStatusCode($this->status);
 
@@ -86,7 +86,7 @@ class NewArticle
             $article->setStatusCode('hidden.validating');
         }
 
-        $article->title = $this->title;
+        $article->title   = $this->title;
         $article->content = $this->content ?: '';
 
         $lang = null;
@@ -112,8 +112,8 @@ class NewArticle
         foreach ($this->attach as $blob_id) {
             $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
             if ($blob) {
-                $attach = new ArticleAttachment();
-                $attach['blob'] = $blob;
+                $attach           = new ArticleAttachment();
+                $attach['blob']   = $blob;
                 $attach['person'] = $this->_person_context;
                 $this->_em->persist($attach);
                 $article->addAttachment($attach);

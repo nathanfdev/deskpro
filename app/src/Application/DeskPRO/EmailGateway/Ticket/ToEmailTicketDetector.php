@@ -80,9 +80,8 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 
         $account_pattern = str_replace('TAC', '(?P<auth>[A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})', $account_pattern);
 
-        $this->account_pattern = '#^' . $account_pattern . '#$';
+        $this->account_pattern = '#^'.$account_pattern.'#$';
     }
-
 
     /**
      * {@inheritDoc}
@@ -98,10 +97,12 @@ class ToEmailTicketDetector implements TicketDetectorInterface
         }
 
         // Easier to run regex on all at once
-        $search_addr = ' ' . implode(' ', $search_addr) . ' ';
+        $search_addr = ' '.implode(' ', $search_addr).' ';
 
         $match_ptac = Strings::extractRegexMatch($this->account_pattern, $search_addr, 'auth');
-        if (!$match_ptac) return null;
+        if (!$match_ptac) {
+            return null;
+        }
 
         #------------------------------
         # Try to find the ticket and user now
@@ -110,7 +111,6 @@ class ToEmailTicketDetector implements TicketDetectorInterface
         $ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($match_ptac);
 
         if ($ticket && !$ticket->isArchived()) {
-
             $this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
 
             return $ticket;

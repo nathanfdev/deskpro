@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -206,16 +206,15 @@ class SqlPass extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
-        $name = $this->_name;
+    ) {
+        $name       = $this->_name;
         $lookupName = strtoupper($name);
 
         if (!isset(self::$_functions[$lookupName])) {
             throw new Exception("Invalid DPQL function $name.");
         }
 
-        $info = self::$_functions[$lookupName];
+        $info      = self::$_functions[$lookupName];
         $givenArgs = count($this->_arguments);
 
         if (isset($info[2])) {
@@ -232,16 +231,16 @@ class SqlPass extends AbstractFunc
             throw new Exception("DPQL function $name expects $info[1] argument(s).");
         }
 
-        $valuesSql = array();
+        $valuesSql   = array();
         $valuesNames = array();
-        foreach ($this->_arguments AS $arg) {
-            $prepped = $arg->prepare($statement, $section, $stack, $select, $result);
-            $valuesSql[] = $prepped->sql();
+        foreach ($this->_arguments as $arg) {
+            $prepped       = $arg->prepare($statement, $section, $stack, $select, $result);
+            $valuesSql[]   = $prepped->sql();
             $valuesNames[] = $prepped->name();
         }
 
-        $sql = strtoupper($this->_name) . '(' . implode(', ', $valuesSql) . ')';
+        $sql = strtoupper($this->_name).'('.implode(', ', $valuesSql).')';
 
-        return new Prepared($sql, "$this->_name(" . implode(', ', $valuesNames) . ')', false, $info[0]);
+        return new Prepared($sql, "$this->_name(".implode(', ', $valuesNames).')', false, $info[0]);
     }
 }

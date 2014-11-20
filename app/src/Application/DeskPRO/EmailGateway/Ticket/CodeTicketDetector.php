@@ -83,7 +83,6 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         $this->is_bounce_mode = true;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -93,7 +92,7 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
 
         $this->_found_person = null;
 
-        $search_text = array();
+        $search_text   = array();
         $search_text[] = $reader->getSubject()->subject;
         $search_text[] = $reader->getBodyText()->getBody();
         $search_text[] = $reader->getBodyHtml()->getBody();
@@ -121,12 +120,12 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
             if (preg_match_all('#(P?)TAC\-([A-Za-z0-9]+)\.#', $body, $m, \PREG_SET_ORDER)) {
                 foreach ($m as $match) {
                     if ($match[1]) {
-                        $this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in body-headers: " . $match[2]);
+                        $this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in body-headers: ".$match[2]);
                     } else {
-                        $this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in body-headers: " . $match[2]);
+                        $this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in body-headers: ".$match[2]);
                     }
 
-                    $search_text[] = '(#' . $match[2] . ')';
+                    $search_text[] = '(#'.$match[2].')';
                 }
             }
         }
@@ -136,12 +135,12 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
             $m = null;
             if (preg_match('#(P?)TAC\-([A-Za-z0-9]+)\.#', $header, $m)) {
                 if ($m[1]) {
-                    $this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in headers: " . $m[2]);
+                    $this->getLogger()->logDebug("[CodeTicketDetector] Found PTAC in headers: ".$m[2]);
                 } else {
-                    $this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in headers: " . $m[2]);
+                    $this->getLogger()->logDebug("[CodeTicketDetector] Found TAC in headers: ".$m[2]);
                 }
 
-                $search_text[] = '(#' . $m[2] . ')';
+                $search_text[] = '(#'.$m[2].')';
             }
         }
 
@@ -168,7 +167,6 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         $matches = null;
         if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
-
                 if (isset($already_checked[$m[1]])) {
                     continue;
                 }
@@ -218,7 +216,6 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
         $matches = null;
         if (preg_match_all('/\(#([A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})\)/', $search_text, $matches, PREG_SET_ORDER)) {
             foreach ($matches as $m) {
-
                 if (isset($already_checked[$m[1]])) {
                     continue;
                 }

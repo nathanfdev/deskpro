@@ -53,7 +53,6 @@ class UserFieldsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -65,7 +64,7 @@ class UserFieldsController extends AbstractController implements ProtectedContro
         /** @var \Application\DeskPRO\CustomFields\PersonFieldManager $field_manager */
         $field_manager = $this->container->getPersonFieldManager();
 
-        $custom_fields = $field_manager->getDefinedFields();
+        $custom_fields         = $field_manager->getDefinedFields();
         $data['custom_fields'] = $this->getApiData($custom_fields, false);
 
         return $this->createApiResponse($data);
@@ -82,7 +81,7 @@ class UserFieldsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
-        $data = array();
+        $data          = array();
         $data['field'] = $field->toApiData();
 
         return $this->createApiResponse($data);
@@ -115,14 +114,14 @@ class UserFieldsController extends AbstractController implements ProtectedContro
         if ($id) {
             return $this->createSuccessResponse(
                 array(
-                     'field_id' => $field->id
+                     'field_id' => $field->id,
                 )
             );
         } else {
             return $this->createSuccessResponse(
                 array(
                      'field_id' => $field->id,
-                     $this->generateUrl('api_user_fields_get', array('id' => $field->id))
+                     $this->generateUrl('api_user_fields_get', array('id' => $field->id)),
                 )
             );
         }

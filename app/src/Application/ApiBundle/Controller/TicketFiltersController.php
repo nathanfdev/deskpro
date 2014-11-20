@@ -49,7 +49,6 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -76,7 +75,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         }
 
         return $this->createApiResponse(array(
-            'filters' => $data
+            'filters' => $data,
         ));
     }
 
@@ -93,13 +92,13 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         }
 
         $trans = new LegacyTermsTransformer();
-        $crit = $trans->toFilterTerms($filter->terms);
+        $crit  = $trans->toFilterTerms($filter->terms);
 
-        $filter = $this->getApiData($filter);
+        $filter          = $this->getApiData($filter);
         $filter['terms'] = $crit->exportToArray();
 
         return $this->createApiResponse(array(
-            'filter' => $filter
+            'filter' => $filter,
         ));
     }
 
@@ -116,11 +115,11 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
                 throw $this->createNotFoundException();
             }
         } else {
-            $filter = new TicketFilter();
+            $filter         = new TicketFilter();
             $filter->person = $this->person;
         }
 
-        $filter->title = $this->in->getString('filter.title');
+        $filter->title     = $this->in->getString('filter.title');
         $filter->is_global = $this->in->getBool('filter.is_global');
 
         $filter->person = null;
@@ -129,7 +128,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         }
 
         $filter->agent_team = null;
-        if ($this->in->getUint('filter.agent_team_id')){
+        if ($this->in->getUint('filter.agent_team_id')) {
             $filter->agent_team = $this->container->getAgentData()->getTeam($this->in->getUint('filter.agent_team_id'));
         }
 
@@ -137,10 +136,11 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         foreach ($this->in->getArrayValue('filter.terms') as $term_info) {
             try {
                 $crit->addTermFromArray($term_info);
-            } catch (\Exception $e) {}
+            } catch (\Exception $e) {
+            }
         }
 
-        $trans = new LegacyTermsTransformer();
+        $trans         = new LegacyTermsTransformer();
         $filter->terms = $trans->toLegacyTerms($crit);
 
         $this->em->persist($filter);
@@ -172,7 +172,7 @@ class TicketFiltersController extends AbstractController implements ProtectedCon
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'old_id' => $id
+            'old_id' => $id,
         ));
     }
 

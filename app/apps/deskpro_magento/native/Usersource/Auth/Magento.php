@@ -38,10 +38,9 @@ use Doctrine\DBAL\DriverManager;
 use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
-use Orb\Util\Arrays;
-
-use Orb\Log\Logger;
 use Orb\Log\Loggable;
+use Orb\Log\Logger;
+use Orb\Util\Arrays;
 
 class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterface,
     Adapter\JsSsoInterface, Adapter\UserInfoFetchableInterface, Loggable
@@ -75,13 +74,13 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
     protected function initOptions()
     {
         $this->options = new \Orb\Util\OptionsArray(array(
-            'url' => '',
-            'api_user' => '',
-            'api_key' => '',
-            'website_id' => 1,
-            'sso_cookie' => false,
+            'url'          => '',
+            'api_user'     => '',
+            'api_key'      => '',
+            'website_id'   => 1,
+            'sso_cookie'   => false,
             'magento_path' => '',
-            'sso_js' => false
+            'sso_js'       => false,
         ));
     }
 
@@ -90,8 +89,8 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
      */
     public function setFormData(array $form_data)
     {
-        $this->set_username = !empty($form_data['username']) ? (string)$form_data['username'] : '';
-        $this->set_password = !empty($form_data['password']) ? (string)$form_data['password'] : '';
+        $this->set_username = !empty($form_data['username']) ? (string) $form_data['username'] : '';
+        $this->set_password = !empty($form_data['password']) ? (string) $form_data['password'] : '';
     }
 
     public function authenticate()
@@ -106,12 +105,12 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
         $time_start = microtime(true);
         if ($this->logger) {
             $this->logger->log("START Magento::authenticate", Logger::DEBUG);
-            $this->logger->log("Options: " . trim(Arrays::implodeTemplate("{KEY}({VAL}) ")), Logger::DEBUG);
+            $this->logger->log("Options: ".trim(Arrays::implodeTemplate("{KEY}({VAL}) ")), Logger::DEBUG);
             $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
         }
 
         try {
-            $pass = false;
+            $pass     = false;
             $userinfo = $this->getUserInfoForEmail($this->set_username);
             if ($userinfo) {
                 $pass = $this->isValidPassword($userinfo, $this->set_password);
@@ -133,7 +132,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
         $identity = $this->getIdentityFromUserInfo($userinfo);
 
         if ($this->logger) {
-            $this->logger->log("Found user " . $identity->getIdentity(), Logger::DEBUG);
+            $this->logger->log("Found user ".$identity->getIdentity(), Logger::DEBUG);
             $this->logger->log(sprintf("END Magento::authenticate (took %.4fs)", microtime(true)-$time_start), Logger::DEBUG);
         }
 
@@ -179,7 +178,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
             return false;
         }
 
-        return (md5($parts[1] . $password_input) === $parts[0]);
+        return (md5($parts[1].$password_input) === $parts[0]);
     }
 
     /**
@@ -212,8 +211,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
         \Application\DeskPRO\Twig\Extension\TemplatingExtension $extension,
         \Application\DeskPRO\Entity\Person $person,
         $is_first_page
-    )
-    {
+    ) {
         if (!$this->options->get('sso_js')) {
             return '';
         }
@@ -227,12 +225,12 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
                         if (window.DeskPRO_Window && window.DeskPRO_Window.showAutoSignInOverlay) {
                             window.DeskPRO_Window.showAutoSignInOverlay();
                         }
-                        login(BASE_URL + \'login/usersource-sso/\' + ' . $source->id . '+ \'/\');
+                        login(BASE_URL + \'login/usersource-sso/\' + '.$source->id.'+ \'/\');
                     };
                     (function (d) {
                         var s = d.createElement(\'script\'), ref = d.getElementsByTagName(\'script\')[0];
                         s.async = true;
-                        s.src = \'' . $magento_url . '/dpsso/\';
+                        s.src = \''.$magento_url.'/dpsso/\';
                         ref.parentNode.insertBefore(s, ref);
                     })(document);
                 }
@@ -241,7 +239,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 
     public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller = null)
     {
-        $id = intval($_REQUEST['id']);
+        $id  = intval($_REQUEST['id']);
         $key = strval($_REQUEST['key']);
 
         $record = $this->_callMagentoApi('dp_sso.validate', array('id' => $id, 'key' => $key));
@@ -249,10 +247,10 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
         if (!empty($record['customer_id'])) {
             $results = array(
                 'customer_id' => $record['customer_id'],
-                'email' => $record['email'],
-                'password' => $record['password_hash'],
-                'first_name' => $record['firstname'],
-                'last_name' => $record['lastname']
+                'email'       => $record['email'],
+                'password'    => $record['password_hash'],
+                'first_name'  => $record['firstname'],
+                'last_name'   => $record['lastname'],
             );
 
             $identity = $this->getIdentityFromUserInfo($results);
@@ -267,14 +265,14 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 
     protected function _callMagentoApi($method, array $params = array())
     {
-        $url = $this->options['url'];
+        $url  = $this->options['url'];
         $user = $this->options['api_user'];
-        $key = $this->options['api_key'];
+        $key  = $this->options['api_key'];
 
         try {
             $error = error_reporting();
             error_reporting($error & ~E_WARNING);
-            $client = new \SoapClient($url . '/api?wsdl');
+            $client = new \SoapClient($url.'/api?wsdl');
             error_reporting($error);
         } catch (\SoapFault $e) {
             return false;
@@ -297,10 +295,10 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 
             return array(
                 'customer_id' => $record['customer_id'],
-                'email' => $record['email'],
-                'password' => $record['password_hash'],
-                'first_name' => $record['firstname'],
-                'last_name' => $record['lastname']
+                'email'       => $record['email'],
+                'password'    => $record['password_hash'],
+                'first_name'  => $record['firstname'],
+                'last_name'   => $record['lastname'],
             );
         }
 
@@ -313,10 +311,10 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
         if ($record && is_array($record)) {
             return array(
                 'customer_id' => $record['customer_id'],
-                'email' => $record['email'],
-                'password' => $record['password_hash'],
-                'first_name' => $record['firstname'],
-                'last_name' => $record['lastname']
+                'email'       => $record['email'],
+                'password'    => $record['password_hash'],
+                'first_name'  => $record['firstname'],
+                'last_name'   => $record['lastname'],
             );
         }
 
@@ -341,13 +339,13 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 
         $session_data = false;
 
-        $session = preg_replace('/[^a-z0-9_]/i', '', $cookies[$cookie_name]);
-        $session_file = $magento_path . '/var/session/sess_' . $session;
+        $session      = preg_replace('/[^a-z0-9_]/i', '', $cookies[$cookie_name]);
+        $session_file = $magento_path.'/var/session/sess_'.$session;
 
         if (file_exists($session_file) && is_readable($session_file)) {
             $session_data = file_get_contents($session_file);
         } else {
-            $config_file = $magento_path . '/app/etc/local.xml';
+            $config_file = $magento_path.'/app/etc/local.xml';
             if (file_exists($config_file) && is_readable($config_file)) {
                 $config = file_get_contents($config_file);
 
@@ -357,33 +355,34 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
                 );
 
                 $parts = array(
-                    'host' => 'localhost',
-                    'username' => 'root',
-                    'password' => '',
-                    'dbname' => '',
-                    'table_prefix' => ''
+                    'host'         => 'localhost',
+                    'username'     => 'root',
+                    'password'     => '',
+                    'dbname'       => '',
+                    'table_prefix' => '',
                 );
-                foreach ($matches AS $match) {
+                foreach ($matches as $match) {
                     $parts[$match[1]] = $match[3];
                 }
 
                 try {
                     $conn = DriverManager::getConnection(array(
-                        'dbname' => $parts['dbname'],
-                        'user' => $parts['username'],
+                        'dbname'   => $parts['dbname'],
+                        'user'     => $parts['username'],
                         'password' => $parts['password'],
-                        'host' => $parts['host'],
-                        'driver' => 'pdo_mysql',
+                        'host'     => $parts['host'],
+                        'driver'   => 'pdo_mysql',
                     ));
 
                     $qb = $conn->createQueryBuilder()
                         ->select('s.session_date')
-                        ->from($parts['table_prefix'] . 'core_session', 's')
+                        ->from($parts['table_prefix'].'core_session', 's')
                         ->where('s.session_id = ?')
                         ->setParameter(0, $session);
 
                     $session_data = $qb->execute()->fetchColumn();
-                } catch (\Exception $e) {}
+                } catch (\Exception $e) {
+                }
             }
         }
 
@@ -399,7 +398,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
 
             if (!empty($data['core']['visitor_data']['customer_id'])) {
                 $customer_id = intval($data['core']['visitor_data']['customer_id']);
-                $userinfo = $this->getUserInfoForId($customer_id);
+                $userinfo    = $this->getUserInfoForId($customer_id);
             }
         }
 

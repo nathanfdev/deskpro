@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -59,8 +59,7 @@ class StackGroup extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 2) {
             throw new Exception('STACK_GROUP() can only accept 2 arguments.');
         }
@@ -69,10 +68,10 @@ class StackGroup extends AbstractFunc
         array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
         $expression = reset($this->_arguments);
-        $prepped = $expression->prepare($statement, $section, $childStack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $childStack, $select, $result);
 
         if ($section == 'group' && !$childStack) {
-            $grouper = next($this->_arguments);
+            $grouper      = next($this->_arguments);
             $preppedGroup = $grouper->prepare($statement, $section, $childStack, $select, $result);
 
             if ($preppedGroup->hasValue()) {
@@ -89,7 +88,7 @@ class StackGroup extends AbstractFunc
 
             $sql = $prepped->sql();
 
-            return new Prepared($sql, 'STACK_GROUP(' . $prepped->name() . ', ' . $preppedGroup->name() . ')', $prepped->printed());
+            return new Prepared($sql, 'STACK_GROUP('.$prepped->name().', '.$preppedGroup->name().')', $prepped->printed());
         } else {
             return $prepped;
         }

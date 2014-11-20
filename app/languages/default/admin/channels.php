@@ -68,5 +68,5 @@
     'admin.channels.facebook_import_direct_messages'              => 'Import Direct Messages',
 
     'admin.channels.facebook_app_setup_instructions'              => 'Facebook requires that a Facebook app be used to manage your page on your behalf. Creating a Facebook app is free, and you can do this in the Facebook Developer Dashboard. Once you create an app and get your App ID and App Secret, fill in the details blow and click "Connect".',
-    'admin.channels.facebook_app_setup_instructions_note'         => 'The Facebook App you use is important because your users may see it\'s name when interacting with your Facebook Page.'
+    'admin.channels.facebook_app_setup_instructions_note'         => 'The Facebook App you use is important because your users may see it\'s name when interacting with your Facebook Page.',
 );

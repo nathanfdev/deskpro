@@ -170,13 +170,13 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
     public function __construct()
     {
-        $this->children = new ArrayCollection();
-        $this->description = '';
-        $this->display_order = 0;
-        $this->options = array();
-        $this->is_enabled = true;
+        $this->children        = new ArrayCollection();
+        $this->description     = '';
+        $this->display_order   = 0;
+        $this->options         = array();
+        $this->is_enabled      = true;
         $this->is_user_enabled = true;
-        $this->is_agent_field = false;
+        $this->is_agent_field  = false;
     }
 
     /**
@@ -199,10 +199,10 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
             throw new \Exception('form_type must be specified');
         }
 
-        $type = substr($this->form_type, strrpos($this->form_type, '\\') + 1);
-        $class = 'Application\DeskPRO\Form\Type\CustomFields\Definitions\\' . str_replace('Type', 'DefinitionType', $type);
+        $type  = substr($this->form_type, strrpos($this->form_type, '\\') + 1);
+        $class = 'Application\DeskPRO\Form\Type\CustomFields\Definitions\\'.str_replace('Type', 'DefinitionType', $type);
 
-        return new $class;
+        return new $class();
     }
 
     /**
@@ -213,7 +213,6 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return App::getTranslator()->getPhraseObject($this, 'title');
     }
 
-
     /**
      * @return string
      */
@@ -222,7 +221,6 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return $this->title;
     }
 
-
     /**
      * @return string
      */
@@ -230,7 +228,6 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     {
         return App::getTranslator()->getPhraseObject($this, 'description');
     }
-
 
     /**
      * @return string
@@ -253,7 +250,7 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
 
         $name = strtolower(\Orb\Util\Util::getBaseClassname($this));
 
-        $phrase_name = 'obj_'.$name.'.' . $this->id . '_' . $property;
+        $phrase_name = 'obj_'.$name.'.'.$this->id.'_'.$property;
 
         return $phrase_name;
     }
@@ -272,9 +269,6 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         return $this->title;
     }
 
-
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -282,32 +276,32 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setPrimaryTable(array(
-            'name' => 'custom_field_definition',
+            'name'    => 'custom_field_definition',
             'indexes' => array(
-                'context_idx' => array('columns' => array('context_class', 'context_id'))
-            )
+                'context_idx' => array('columns' => array('context_class', 'context_id')),
+            ),
         ));
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldDefinition';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true));
 
         // todo is these columns required?
-        $metadata->mapField(array( 'fieldName' => 'js_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'js_class', ));
-        $metadata->mapField(array( 'fieldName' => 'has_form_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_form_template', ));
-        $metadata->mapField(array( 'fieldName' => 'has_display_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_display_template', ));
+        $metadata->mapField(array( 'fieldName' => 'js_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'js_class'));
+        $metadata->mapField(array( 'fieldName' => 'has_form_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_form_template'));
+        $metadata->mapField(array( 'fieldName' => 'has_display_template', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_display_template'));
 
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'nullable' => false, 'columnName' => 'title', ));
-        $metadata->mapField(array( 'fieldName' => 'description', 'type' => 'text', 'nullable' => false, 'columnName' => 'description', ));
-        $metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'nullable' => false, 'columnName' => 'options', ));
-        $metadata->mapField(array( 'fieldName' => 'default_value', 'type' => 'string', 'length' => 500, 'nullable' => true, 'columnName' => 'default_value', ));
-        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'nullable' => false, 'columnName' => 'display_order', ));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array( 'fieldName' => 'description', 'type' => 'text', 'nullable' => false, 'columnName' => 'description'));
+        $metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'nullable' => false, 'columnName' => 'options'));
+        $metadata->mapField(array( 'fieldName' => 'default_value', 'type' => 'string', 'length' => 500, 'nullable' => true, 'columnName' => 'default_value'));
+        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'nullable' => false, 'columnName' => 'display_order'));
 
-        $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_enabled', ));
-        $metadata->mapField(array( 'fieldName' => 'is_user_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_user_enabled', ));
-        $metadata->mapField(array( 'fieldName' => 'is_agent_field', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_agent_field', ));
+        $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_enabled'));
+        $metadata->mapField(array( 'fieldName' => 'is_user_enabled', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_user_enabled'));
+        $metadata->mapField(array( 'fieldName' => 'is_agent_field', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_agent_field'));
 
         $metadata->mapField(array( 'fieldName' => 'form_type', 'type' => 'string', 'nullable' => false, 'columnName' => 'form_type'));
         $metadata->mapField(array( 'fieldName' => 'owner_class', 'type' => 'string', 'nullable' => false, 'columnName' => 'owner_class'));
@@ -315,43 +309,43 @@ class CustomFieldDefinition extends DomainObject implements HasPhraseName
         $metadata->mapField(array( 'fieldName' => 'context_id', 'type' => 'integer', 'nullable' => true, 'columnName' => 'context_id'));
 
         $metadata->mapManyToOne(array(
-            'fieldName' => 'parent',
+            'fieldName'    => 'parent',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
-            'mappedBy' => NULL,
-            'inversedBy' => 'children',
-            'joinColumns' => array(
+            'mappedBy'     => NULL,
+            'inversedBy'   => 'children',
+            'joinColumns'  => array(
                 0 => array(
-                    'name' => 'parent_id',
+                    'name'                 => 'parent_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => true,
-                    'onDelete' => 'cascade',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
                 ),
             ),
         ));
 
         $metadata->mapOneToMany(array(
-            'fieldName' => 'children',
+            'fieldName'    => 'children',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomFieldDefinition',
-            'cascade' => array('remove', 'persist', 'merge'),
+            'cascade'      => array('remove', 'persist', 'merge'),
             'mappedBy' => 'parent',
-            'orderBy' => array(
+            'orderBy'  => array(
                 'display_order' => 'ASC',
             ),
         ));
 
         $metadata->mapManyToOne(array(
-            'fieldName' => 'app',
+            'fieldName'    => 'app',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppInstance',
-            'mappedBy' => NULL,
-            'inversedBy' => NULL,
-            'joinColumns' => array(
+            'mappedBy'     => NULL,
+            'inversedBy'   => NULL,
+            'joinColumns'  => array(
                 0 => array(
-                    'name' => 'app_id',
+                    'name'                 => 'app_id',
                     'referencedColumnName' => 'id',
-                    'unique' => false,
-                    'nullable' => true,
-                    'onDelete' => 'set null',
-                    'columnDefinition' => NULL,
+                    'unique'               => false,
+                    'nullable'             => true,
+                    'onDelete'             => 'set null',
+                    'columnDefinition'     => NULL,
                 ),
             ),
         ));

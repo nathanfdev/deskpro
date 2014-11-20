@@ -82,24 +82,24 @@ class NewTicket extends AbstractType
         $builder->add('billing_comment', 'hidden', array('required' => false));
 
         $builder->add('add_cc_person', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
 
         $builder->add('add_cc_newperson', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
 
         $builder->add('attach', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
     }
 

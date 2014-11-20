@@ -59,10 +59,10 @@ class Magento extends AbstractAdapter
      */
     protected function _createAuthAdapterObject()
     {
-        $options = $this->usersource->options;
-        $options['url'] = App::getSetting("Magento.url");
+        $options             = $this->usersource->options;
+        $options['url']      = App::getSetting("Magento.url");
         $options['api_user'] = App::getSetting("Magento.api_user");
-        $options['api_key'] = App::getSetting("Magento.api_key");
+        $options['api_key']  = App::getSetting("Magento.api_key");
 
         return new \deskpro_magento\Usersource\Auth\Magento($options);
     }
@@ -95,7 +95,7 @@ class Magento extends AbstractAdapter
             UsersourceInfo::CAPABILITY_GET_USER_INFO,
             UsersourceInfo::CAPABILITY_FIND_IDENTITY,
             UsersourceInfo::CAPABILITY_COOKIE_LOGIN,
-            UsersourceInfo::CAPABILITY_SSO_JS
+            UsersourceInfo::CAPABILITY_SSO_JS,
         );
     }
 }

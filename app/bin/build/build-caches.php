@@ -8,12 +8,12 @@ if (php_sapi_name() != 'cli') {
 
 chdir(__DIR__);
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
-require DP_ROOT . '/bin/build/inc.php';
-require DP_ROOT . '/bin/build/php-path.php';
+require DP_ROOT.'/bin/build/inc.php';
+require DP_ROOT.'/bin/build/php-path.php';
 require DP_ROOT.'/sys/system.php';
 
 $proc_kernel = null;
@@ -34,7 +34,7 @@ if ($proc_kernel === null) {
         echo "Warming {$kernel_class} ... ";
         $time = microtime(true);
 
-        $cmd = DP_PHP_PATH . ' ./build-caches.php --knum ' . $k;
+        $cmd  = DP_PHP_PATH.' ./build-caches.php --knum '.$k;
         $proc = new Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin/build');
         $proc->setTimeout(600);
         $proc->run(function ($type, $buffer) {
@@ -58,12 +58,11 @@ if ($proc_kernel === null) {
 
     exit(0);
 } else {
-
     @ini_set('memory_limit', -1);
 
-    require_once DP_ROOT . '/sys/load_config.php';
+    require_once DP_ROOT.'/sys/load_config.php';
 
-    $class = $kernel_classes[$proc_kernel];
+    $class  = $kernel_classes[$proc_kernel];
     $kernel = new $class('prod', false);
 
     $_SERVER['argv'] = array('xx', 'cache:warmup', '--verbose');

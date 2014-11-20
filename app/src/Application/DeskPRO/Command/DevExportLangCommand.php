@@ -116,8 +116,8 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
         $langpack = new \Application\DeskPRO\Languages\LangPackInfo();
 
         foreach ($langpack->getDefaultSections() as $section) {
-            $section_dir = DP_ROOT.'/languages/default/' . $section;
-            $export_dir = $section_dir . '/export';
+            $section_dir = DP_ROOT.'/languages/default/'.$section;
+            $export_dir  = $section_dir.'/export';
 
             if (is_dir($export_dir)) {
                 $fileutil->remove($export_dir);
@@ -128,34 +128,32 @@ class DevExportLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
             }
 
             foreach ($langpack->getDefaultCategories($section) as $category) {
-                $cat_path = $section_dir . '/' . $category . '.php';
+                $cat_path = $section_dir.'/'.$category.'.php';
                 if (!is_file($cat_path)) {
-                    die('MISSING: ' . $cat_path);
+                    die('MISSING: '.$cat_path);
                 }
 
-                $phrases = include($cat_path);
+                $phrases = include $cat_path;
 
-                $outfile = $export_dir . '/' . $category . '.po';
-                $fs = fopen($outfile, 'w');
+                $outfile = $export_dir.'/'.$category.'.po';
+                $fs      = fopen($outfile, 'w');
 
-                fwrite($fs, 'msgid ""' . "\n");
-                fwrite($fs, 'msgstr ""' . "\n");
-                fwrite($fs, '"MIME-Version: 1.0\n"' . "\n");
-                fwrite($fs, '"Content-Type: text/plain; charset=UTF-8\n"' . "\n");
-                fwrite($fs, '"Content-Transfer-Encoding: 8bit\n"' . "\n");
+                fwrite($fs, 'msgid ""'."\n");
+                fwrite($fs, 'msgstr ""'."\n");
+                fwrite($fs, '"MIME-Version: 1.0\n"'."\n");
+                fwrite($fs, '"Content-Type: text/plain; charset=UTF-8\n"'."\n");
+                fwrite($fs, '"Content-Transfer-Encoding: 8bit\n"'."\n");
 
-                foreach($phrases as $source => $target) {
-
+                foreach ($phrases as $source => $target) {
                     fwrite($fs, "\nmsgid \"{$source}\"\n");
                     fwrite($fs, "msgstr ");
 
                     $parts = explode("\n", $target);
-                    foreach($parts as $i=>$part) {
-
+                    foreach ($parts as $i => $part) {
                         // escape " for PO format
-                        fwrite($fs, '"'. str_replace('"', '\\"', $part));
+                        fwrite($fs, '"'.str_replace('"', '\\"', $part));
 
-                        if($i != count($parts) -1) {
+                        if ($i != count($parts) -1) {
                             fwrite($fs, '\n');
                         }
 

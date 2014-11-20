@@ -1,5 +1,5 @@
 <?php return array(
     'install' => array(
-        'handler' => 'deskpro_us_facebook\\InstallerHandler'
-    )
+        'handler' => 'deskpro_us_facebook\\InstallerHandler',
+    ),
 );

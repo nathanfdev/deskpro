@@ -35,16 +35,14 @@
 namespace Application\AuthBundle\EventListener;
 
 use Application\AuthBundle\Handler\LogoutHandler;
-use Application\DeskPRO\Auth\AuthenticationManager;
 use Application\DeskPRO\Auth\AuthInterfaceSettings;
-use Orb\Auth\Adapter\SsoLoginActionInterface;
+use Application\DeskPRO\Auth\AuthenticationManager;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
-use Symfony\Component\Routing\RouterInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class SsoListener implements EventSubscriberInterface
@@ -67,8 +65,8 @@ class SsoListener implements EventSubscriberInterface
     public function __construct(SecurityContextInterface $security_context, AuthenticationManager $auth_manager, LoggerInterface $logger)
     {
         $this->security_context = $security_context;
-        $this->auth_manager = $auth_manager;
-        $this->logger = $logger;
+        $this->auth_manager     = $auth_manager;
+        $this->logger           = $logger;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -83,23 +81,21 @@ class SsoListener implements EventSubscriberInterface
 
         // if we need to return a redirect from the auth system, do so now
         if ($res = $this->checkAuthSystemForResponse($this->auth_manager->getSettings(), $event->getRequest())) {
-            $this->logger->info('Automatic SSO is detected, redirecting to ' . $res->getTargetUrl());
+            $this->logger->info('Automatic SSO is detected, redirecting to '.$res->getTargetUrl());
             $event->setResponse($res);
         }
-
     }
 
     /**
      * Returns a RedirectResponse if SSO says it needs to redirect
      *
-     * @param AuthInterfaceSettings $authInterfaceSettings
-     * @param Request               $request
+     * @param  AuthInterfaceSettings                              $authInterfaceSettings
+     * @param  Request                                            $request
      * @return \Symfony\Component\HttpFoundation\RedirectResponse
      */
     protected function checkAuthSystemForResponse(
         AuthInterfaceSettings $authInterfaceSettings, Request $request
-    )
-    {
+    ) {
         $session = $request->getSession();
         if (
             $session->has(LogoutHandler::RECENT_LOGOUT)
@@ -113,7 +109,6 @@ class SsoListener implements EventSubscriberInterface
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-
                 $return = $request->get('return');
                 $session->set('auth_return', $return);
 
@@ -123,7 +118,7 @@ class SsoListener implements EventSubscriberInterface
     }
 
     /**
-     * @param AuthInterfaceSettings $authInterfaceSettings
+     * @param  AuthInterfaceSettings $authInterfaceSettings
      * @return null|\Orb\Auth\Result an auth result is returned if the sso redirect is enabled
      */
     protected function handleAutomaticSso(AuthInterfaceSettings $authInterfaceSettings)
@@ -138,7 +133,7 @@ class SsoListener implements EventSubscriberInterface
     public static function getSubscribedEvents()
     {
         return array(
-            KernelEvents::REQUEST => 'onKernelRequest'
+            KernelEvents::REQUEST => 'onKernelRequest',
         );
     }
 }

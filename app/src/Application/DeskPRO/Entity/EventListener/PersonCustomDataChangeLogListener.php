@@ -29,8 +29,8 @@ namespace Application\DeskPRO\Entity\EventListener;
 
 use Application\DeskPRO\CustomFields\PersonFieldManager;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Log\Event\EntityUpdated;
 use Application\DeskPRO\ORM\StateChange\ChangeArray;
 use Doctrine\ORM\Event\PreUpdateEventArgs;
@@ -50,7 +50,7 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
     public function __construct(DeskproContainer $container)
     {
         parent::__construct($container);
-        $this->person_log_listener = $container->get('dp.entity_lister.person_changelog');
+        $this->person_log_listener  = $container->get('dp.entity_lister.person_changelog');
         $this->custom_field_manager = $container->getPersonFieldManager();
     }
 
@@ -65,9 +65,9 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
             $old[$field] = $change[0];
         }
 
-        $val = $this->custom_field_manager->renderTextForData($data);
-        $change = new ChangeArray('custom_data', null, $val);
-        $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
+        $val                                          = $this->custom_field_manager->renderTextForData($data);
+        $change                                       = new ChangeArray('custom_data', null, $val);
+        $entry                                        = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
         $this->queued_updates[spl_object_hash($data)] = $entry;
     }
 
@@ -84,9 +84,9 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPrePersist(CustomDataPerson $data)
     {
-        $val = $this->custom_field_manager->renderTextForData($data);
-        $change = new ChangeArray('custom_data', null, $val);
-        $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
+        $val                                          = $this->custom_field_manager->renderTextForData($data);
+        $change                                       = new ChangeArray('custom_data', null, $val);
+        $entry                                        = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
         $this->queued_inserts[spl_object_hash($data)] = $entry;
     }
 
@@ -104,19 +104,19 @@ class PersonCustomDataChangeLogListener extends EntityChangeLogListener
      */
     protected function doFlush($oid, $type)
     {
-        if (!isset($this->{'queued_' . $type}[$oid])) {
+        if (!isset($this->{'queued_'.$type}[$oid])) {
             return;
         }
 
         /** @var LogEvent $entry */
-        $entry = $this->{'queued_' . $type}[$oid];
-        $person = $entry->getEventObject()->getSubject();
+        $entry       = $this->{'queued_'.$type}[$oid];
+        $person      = $entry->getEventObject()->getSubject();
         $parentEntry = $this->person_log_listener->getUpdateLogEntry($person);
 
         $parentEntry->children->add($entry);
         $entry->parent = $parentEntry;
 
-        unset($this->{'queued_' . $type}[$oid]);
+        unset($this->{'queued_'.$type}[$oid]);
 
         /**
          * we do only one single flush, and only when all queued actions added as child to $parentEntry

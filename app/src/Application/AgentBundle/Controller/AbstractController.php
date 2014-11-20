@@ -77,12 +77,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if (!$this->person['id']) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
-                    'error' => 'session_expired',
-                    'redirect_login' => $this->generateUrl('agent_login')
+                    'error'          => 'session_expired',
+                    'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
                 return $this->createJsonResponse($data, 403);
-
             } else {
                 if ($this->isPostRequest()) {
                     $return = $this->get('router')->generate('agent');
@@ -91,7 +90,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 }
 
                 return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
-                    'return' => $return
+                    'return' => $return,
                 ));
             }
         }
@@ -103,19 +102,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
-                    'error' => 'invalid_request_token',
-                    'redirect_login' => $this->generateUrl('agent_login')
+                    'error'          => 'invalid_request_token',
+                    'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
                 return $this->createJsonResponse($data, 403);
             } else {
-                throw new AccessDeniedException;
+                throw new AccessDeniedException();
             }
         }
 
         if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address()
+                'ip' => dp_get_user_ip_address(),
             ));
         }
 
@@ -135,8 +134,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         return false;
     }
-
-
 
     /**
      * Create a reponse that indicates a permissions error.

@@ -68,7 +68,7 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         $chat_deps   = $this->container->getSystemService('chat_departments');
         $flat_array  = $chat_deps->getFlatArray();
 
-        $ag = $this->container->getAgentGroups();
+        $ag         = $this->container->getAgentGroups();
         $with_perms = $this->in->getBool('with_perms');
 
         if ($with_perms) {
@@ -90,12 +90,12 @@ class ChatDepsController extends AbstractController implements ProtectedControll
 
                 if ($p['usergroup_id']) {
                     if ($ug->getAgentGroup($p['usergroup_id'])) {
-                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
                     } else {
-                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
                     }
                 } else {
-                    $perms[$p['department_id']]['users'][] = array('id' => (int)$p['person_id'], 'name' => $p['name']);
+                    $perms[$p['department_id']]['users'][] = array('id' => (int) $p['person_id'], 'name' => $p['name']);
                 }
             }
         }
@@ -103,7 +103,7 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         $deps = array();
 
         foreach ($flat_array as $row) {
-            $r = $row['object']->toApiData(true, false);
+            $r          = $row['object']->toApiData(true, false);
             $r['depth'] = $row['depth'];
 
             if ($with_perms) {
@@ -142,7 +142,6 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         $dep       = $chat_deps->getById($id);
 
         if (!$dep || !$dep->is_chat_enabled) {
-
             throw $this->createNotFoundException();
         }
 
@@ -150,13 +149,12 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         $data['department']  = $this->getApiData($dep);
         $data['permissions'] = $chat_deps->getPermissionsInfo($dep);
 
-        $ag = $this->container->getAgentGroups();
+        $ag                                   = $this->container->getAgentGroups();
         $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
         $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # save
@@ -165,7 +163,6 @@ class ChatDepsController extends AbstractController implements ProtectedControll
     public function saveAction($id)
     {
         if ($id) {
-
             /**
              * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
              */
@@ -174,11 +171,9 @@ class ChatDepsController extends AbstractController implements ProtectedControll
             $dep       = $chat_deps->getById($id);
 
             if (!$dep || !$dep->is_chat_enabled) {
-
                 throw $this->createNotFoundException();
             }
         } else {
-
             $dep = Department::createChatDepartment();
         }
 
@@ -191,7 +186,6 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, array('department', 'permissions')), true);
 
         if ($form->isValid()) {
-
             $chat_edit->save($this->em);
 
             $chat_edit->savePermissions(
@@ -199,9 +193,7 @@ class ChatDepsController extends AbstractController implements ProtectedControll
                 $this->container->getAgentData()->getAgents(),
                 $this->container->getDataService('Usergroup')->getAll()
             );
-
         } else {
-
             throw ValidationException::create($this->getFormValidationErrorsString($form));
         }
 
@@ -228,14 +220,12 @@ class ChatDepsController extends AbstractController implements ProtectedControll
         $dep       = $chat_deps->getById($id);
 
         if (!$dep) {
-
             throw $this->createNotFoundException();
         }
 
         $move_to_dep = $chat_deps->getById($this->in->getUint('move_to'));
 
         if (!$move_to_dep) {
-
             throw ValidationException::create("department.move_chat.dep_not_valid");
         }
 

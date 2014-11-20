@@ -127,12 +127,12 @@ class NewTicket
      */
     public $exist_ticket;
 
-    protected $_blob_inline_ids = array();
+    protected $_blob_inline_ids  = array();
     public $suppress_user_notify = false;
 
     public function __construct(EntityManager $em, Person $person_context)
     {
-        $this->_em = $em;
+        $this->_em             = $em;
         $this->_person_context = $person_context;
 
         // TODO
@@ -140,7 +140,6 @@ class NewTicket
 
         $this->person = new NewTicketPerson();
     }
-
 
     /**
      * @return Ticket
@@ -231,15 +230,15 @@ class NewTicket
         }
 
         if (!$person) {
-            $person = new Person();
-            $email_obj = $person->addEmailAddressString($this->person->email_address);
+            $person                = new Person();
+            $email_obj             = $person->addEmailAddressString($this->person->email_address);
             $person->primary_email = $email_obj;
         }
 
         if ($this->person->organization) {
             $org = $this->_em->getRepository('DeskPRO:Organization')->findOneByName($this->person->organization);
             if (!$org) {
-                $org = new Organization();
+                $org         = new Organization();
                 $org['name'] = $this->person->organization;
                 $this->_em->persist($org);
             }
@@ -266,7 +265,7 @@ class NewTicket
         #------------------------------
 
         $add_cc_peopleids = $this->add_cc_person;
-        $add_cc_people = $this->add_cc_newpeople;
+        $add_cc_people    = $this->add_cc_newpeople;
 
         foreach ($this->add_cc_newperson as $info) {
             if (empty($info['email']) || !\Orb\Validator\StringEmail::isValueValid($info['email']) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($info['email'])) {
@@ -280,7 +279,7 @@ class NewTicket
                 // New person, coming right up
                 $new_cc_person = Person::newContactPerson(array(
                     'email' => $info['email'],
-                    'name' => !empty($info['name']) ? $info['name'] : ''
+                    'name'  => !empty($info['name']) ? $info['name'] : '',
                 ));
                 $this->_em->persist($new_cc_person);
 
@@ -309,7 +308,7 @@ class NewTicket
         $ticket_context = $this->_ticket_manager->createAgentExecutorContext($this->_person_context, 'newticket', 'web');
 
         $ticket['creation_system'] = Ticket::CREATED_WEB_AGENT_PORTAL;
-        $ticket['language'] = $person->getRealLanguage();
+        $ticket['language']        = $person->getRealLanguage();
 
         if ($this->suppress_user_notify) {
             $ticket_context->getVars()->set('mute_user_emails', true);
@@ -323,7 +322,7 @@ class NewTicket
         $standard = array(
             'subject', 'status', 'agent_id', 'agent_team_id',
             'department_id', 'category_id', 'priority_id', 'workflow_id',
-            'product_id', 'notify_template'
+            'product_id', 'notify_template',
         );
         if (!$this->status) {
             $this->status = 'awaiting_agent';
@@ -335,24 +334,23 @@ class NewTicket
 
         $ticket->person = $person;
 
-
         #------------------------------
         # Message
         #------------------------------
 
         // Message
-        $message = new TicketMessage();
+        $message         = new TicketMessage();
         $message->person = $this->_person_context;
         $message->setVisitorFromRequest();
 
         $message_text = $this->message;
-        $formatter = new SnippetFormatter(App::getContainer()->get('twig'));
+        $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));
         $message_text = $formatter->formatText($message_text, $ticket);
 
         if ($this->is_html_reply) {
-            $message_text = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
-            $message_text = \Orb\Util\Strings::trimHtml($message_text);
-            $message_text = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
+            $message_text     = App::get('deskpro.core.input_cleaner')->clean($message_text, 'html_core');
+            $message_text     = \Orb\Util\Strings::trimHtml($message_text);
+            $message_text     = \Orb\Util\Strings::prepareWysiwygHtml($message_text);
             $message->message = $message_text;
         } else {
             $message->setMessageText($message_text);
@@ -360,11 +358,10 @@ class NewTicket
 
         // Message Attachments
         foreach ($this->attach as $blob_id) {
-
             $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
 
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
+            $attach           = new TicketAttachment();
+            $attach['blob']   = $blob;
             $attach['person'] = $this->_person_context;
 
             $message->addAttachment($attach);
@@ -374,9 +371,9 @@ class NewTicket
         foreach ($this->_blob_inline_ids as $blob_id) {
             $blob = $this->_em->getRepository('DeskPRO:Blob')->find($blob_id);
 
-            $attach = new TicketAttachment();
-            $attach['blob'] = $blob;
-            $attach['person'] = $this->_person_context;
+            $attach            = new TicketAttachment();
+            $attach['blob']    = $blob;
+            $attach['person']  = $this->_person_context;
             $attach->is_inline = true;
 
             $message->addAttachment($attach);
@@ -407,7 +404,7 @@ class NewTicket
             call_user_func_array($this->_pre_save_callback, array($ticket, $message, $person));
         }
 
-        $field_manager = App::getSystemService('ticket_fields_manager');
+        $field_manager      = App::getSystemService('ticket_fields_manager');
         $post_custom_fields = $this->ticket_fields;
         if (!empty($post_custom_fields)) {
             $field_manager->saveFormToObject($post_custom_fields, $ticket);

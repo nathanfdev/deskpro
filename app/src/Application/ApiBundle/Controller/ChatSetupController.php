@@ -59,7 +59,7 @@ class ChatSetupController extends AbstractController implements ProtectedControl
 
         return $this->createApiResponse(
             array(
-                 'chat_setup' => $chat_setup->getChatInfo()
+                 'chat_setup' => $chat_setup->getChatInfo(),
             )
         );
     }

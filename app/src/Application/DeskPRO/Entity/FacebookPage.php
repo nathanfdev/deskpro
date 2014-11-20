@@ -36,8 +36,8 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Domain\DomainObject;
 use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-use \Doctrine\ORM\Mapping\ClassMetadata;
 use Orb\Util\Strings;
+use \Doctrine\ORM\Mapping\ClassMetadata;
 
 /**
  * @property int $id
@@ -147,31 +147,27 @@ class FacebookPage extends DomainObject
      */
     protected $date_created;
 
-
     public function __construct()
     {
-        $this->date_created = new \DateTime();
-        $this->verify_token = Strings::random(8);
-        $this->import_wall_posts = false;
+        $this->date_created           = new \DateTime();
+        $this->verify_token           = Strings::random(8);
+        $this->import_wall_posts      = false;
         $this->disable_own_wall_posts = false;
         $this->import_direct_messages = false;
-        $this->is_enabled = false;
-        $this->is_connected = false;
-        $this->is_tested = false;
-        $this->user_token_expires = null;
-        $this->page_token_expires = null;
+        $this->is_enabled             = false;
+        $this->is_connected           = false;
+        $this->is_tested              = false;
+        $this->user_token_expires     = null;
+        $this->page_token_expires     = null;
     }
-
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
+        $data        = parent::toApiData($primary, $deep, $visited);
         $data['app'] = $this->app->toApiData();
 
         return $data;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata

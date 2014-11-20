@@ -116,9 +116,9 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 
     public function setTemplate($code, $compiled)
     {
-        $this['template_code'] = $code;
+        $this['template_code']     = $code;
         $this['template_compiled'] = $compiled;
-        $this['date_updated'] = new \DateTime();
+        $this['date_updated']      = new \DateTime();
     }
 
     public function isCustom()
@@ -129,8 +129,8 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     public function getBaseName()
     {
         $parts = explode(':', $this->name);
-        $name = array_pop($parts);
-        $name = str_replace('.html.twig', '', $name);
+        $name  = array_pop($parts);
+        $name  = str_replace('.html.twig', '', $name);
 
         return $name;
     }
@@ -143,14 +143,14 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Template';
-        $metadata->setPrimaryTable(array( 'name' => 'templates', ));
+        $metadata->setPrimaryTable(array( 'name' => 'templates'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-        $metadata->mapField(array( 'fieldName' => 'template_code', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_code', ));
-        $metadata->mapField(array( 'fieldName' => 'template_compiled', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_compiled', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name'));
+        $metadata->mapField(array( 'fieldName' => 'template_code', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_code'));
+        $metadata->mapField(array( 'fieldName' => 'template_compiled', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'template_compiled'));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
+        $metadata->mapField(array( 'fieldName' => 'date_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_updated'));
 
         $builder = new ClassMetadataBuilder($metadata);
         $builder->addManyToOne('brand', 'Application\DeskPRO\Entity\Brand');

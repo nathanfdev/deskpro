@@ -64,7 +64,7 @@ abstract class AbstractReader
 
     public function resetAll()
     {
-        $this->vals = array();
+        $this->vals       = array();
         $this->properties = array();
     }
 
@@ -250,20 +250,27 @@ abstract class AbstractReader
      */
     public function getReceivedAddresses()
     {
-        $to = $this->getToAddresses();
-        $cc = $this->getCcAddresses();
+        $to      = $this->getToAddresses();
+        $cc      = $this->getCcAddresses();
         $orig_to = null;
 
         if ($orig_to_email = $this->getOriginalTo()) {
-            $eml = new EmailAddress();
+            $eml        = new EmailAddress();
             $eml->email = strtolower($orig_to_email);
-            $orig_to = array($eml);
+            $orig_to    = array($eml);
         }
 
         $all = array();
-        if ($to) $all = array_merge($all, $to);
-        if ($cc) $all = array_merge($all, $cc);
-        if ($orig_to) $all = array_merge($all, $orig_to);
+        if ($to) {
+            $all = array_merge($all, $to);
+        }
+        if ($cc) {
+            $all = array_merge($all, $cc);
+        }
+        if ($orig_to) {
+            $all = array_merge($all, $orig_to);
+        }
+
         return $all;
     }
 
@@ -286,8 +293,8 @@ abstract class AbstractReader
      */
     public function getDeliveredAddresses()
     {
-        $to = $this->getToAddresses();
-        $cc = $this->getCcAddresses();
+        $to   = $this->getToAddresses();
+        $cc   = $this->getCcAddresses();
         $from = $this->getFromAddress();
 
         $all = array_merge($to, $cc);
@@ -335,7 +342,9 @@ abstract class AbstractReader
     public function getHeader($header)
     {
         if (!isset($this->vals['headers']) || !isset($this->vals['headers'][$header])) {
-            if (!isset($this->vals['headers'])) $this->vals['headers'] = array();
+            if (!isset($this->vals['headers'])) {
+                $this->vals['headers'] = array();
+            }
             $this->vals['headers'][$header] = $this->_getHeader($header);
         }
 
@@ -393,7 +402,6 @@ abstract class AbstractReader
         return false;
     }
 
-
     /**
      * Checks if the email was sent via outlook
      *
@@ -423,7 +431,6 @@ abstract class AbstractReader
         return $this->vals['is_outlook'];
     }
 
-
     /**
      * Gets a Date object representing the Date header or null if there is no Date header.
      * If there are multiple Date headers, the latest (closest to now) date is used.
@@ -439,7 +446,7 @@ abstract class AbstractReader
         $this->vals['date'] = false;
 
         $use_date = null;
-        $date = null;
+        $date     = null;
 
         $date_header = $this->getHeader('Date');
         if (!$date_header || !count($date_header->header_parts)) {

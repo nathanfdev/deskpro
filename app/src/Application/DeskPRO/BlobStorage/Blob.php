@@ -65,9 +65,9 @@ class Blob
 
     public function __construct($filename, $content_type, array $meta = array())
     {
-        $this->filename = $filename;
+        $this->filename     = $filename;
         $this->content_type = $content_type;
-        $this->meta = $meta;
+        $this->meta         = $meta;
 
         // Automatically detect disposition if none provided
         if (!isset($this->meta['content_disposition'])) {
@@ -79,7 +79,6 @@ class Blob
         }
     }
 
-
     /**
      * @param $path
      */
@@ -87,7 +86,6 @@ class Blob
     {
         $this->path = $path;
     }
-
 
     /**
      * @return string
@@ -97,7 +95,6 @@ class Blob
         return $this->path;
     }
 
-
     /**
      * @return string
      */
@@ -106,7 +103,6 @@ class Blob
         return $this->content_type;
     }
 
-
     /**
      * @return string
      */
@@ -114,7 +110,6 @@ class Blob
     {
         return $this->filename;
     }
-
 
     /**
      * @return string

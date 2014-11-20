@@ -99,7 +99,6 @@ class IpBans
     public function setPage($page)
     {
         if ($page == 0) {
-
             $page = 1;
         }
 
@@ -133,7 +132,6 @@ class IpBans
             $this->search_phrase
         );
     }
-
 
     /**
      * Resets this repository so the next time data is requested form it, it will
@@ -178,7 +176,6 @@ class IpBans
         $result = array();
 
         foreach ($this->ip_bans as $ip_ban) {
-
             $result[] = array('banned_ip' => $ip_ban);
         }
 

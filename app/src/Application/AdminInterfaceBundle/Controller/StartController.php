@@ -52,15 +52,15 @@ class StartController extends AbstractController
 
     public function indexAction()
     {
-        $token = new ApiToken();
-        $token->scope = ApiToken::SCOPE_SESSION;
-        $token->person = $this->person;
+        $token               = new ApiToken();
+        $token->scope        = ApiToken::SCOPE_SESSION;
+        $token->person       = $this->person;
         $token->date_expires = new \DateTime("+1 hour");
 
         $this->em->persist($token);
         $this->em->flush();
 
-        $php_path = $this->container->getPhpBinaryPath();
+        $php_path     = $this->container->getPhpBinaryPath();
         $php_path_set = dp_get_config('php_path');
 
         return $this->render('AdminInterfaceBundle:Start:layout.html.twig', array(

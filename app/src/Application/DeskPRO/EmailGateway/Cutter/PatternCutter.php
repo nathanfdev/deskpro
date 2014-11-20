@@ -70,7 +70,6 @@ class PatternCutter implements QuoteDef
      */
     private $require_from = array();
 
-
     /**
      * How many quotes to remove (counts from bottom). 0 is unlimited.
      *
@@ -80,7 +79,6 @@ class PatternCutter implements QuoteDef
     {
         $this->limit = $limit;
     }
-
 
     /**
      * Sets how many lines from the end of the document a section can be before it is not considered.
@@ -98,7 +96,6 @@ class PatternCutter implements QuoteDef
     {
         $this->max_lines_from_end = $max;
     }
-
 
     /**
      * Sets which email addresses must match in a matched pattern for the pattern to really match.
@@ -153,11 +150,11 @@ class PatternCutter implements QuoteDef
                         $pattern = str_replace($f, $r, $pattern);
                     }
 
-                    $pattern = new HtmlPattern($pattern);
+                    $pattern          = new HtmlPattern($pattern);
                     $this->patterns[] = $pattern;
                 }
             } else {
-                $pattern = new HtmlPattern($pattern);
+                $pattern          = new HtmlPattern($pattern);
                 $this->patterns[] = $pattern;
             }
         } else {
@@ -197,19 +194,17 @@ class PatternCutter implements QuoteDef
             $matcher = new HtmlMatcher($body, $pattern);
             if ($matcher->isMatch()) {
                 $this->matched_patterns[] = $pattern;
-                $body = $matcher->getMarkedDocument();
+                $body                     = $matcher->getMarkedDocument();
             }
         }
 
         // Limiting how many we are trimming from the end
         if ($this->limit) {
-
             $parts = explode(HtmlMatcher::CUT_MARK, $body);
             if (count($parts) > 1) {
-
                 $do_pop = true;
-                $last = $parts[count($parts) - 1];
-                $last = trim(Strings::html2Text($last));
+                $last   = $parts[count($parts) - 1];
+                $last   = trim(Strings::html2Text($last));
 
                 // We want to verify its at the end
                 if ($this->max_lines_from_end) {
@@ -221,10 +216,10 @@ class PatternCutter implements QuoteDef
 
                 if ($do_pop && $this->require_from) {
                     $do_pop = false;
-                    $lines = explode("\n", $last);
-                    $lines = array_slice($lines, 0, 10);
-                    $lines = implode("\n", $lines);
-                    $lines = strtolower($lines);
+                    $lines  = explode("\n", $last);
+                    $lines  = array_slice($lines, 0, 10);
+                    $lines  = implode("\n", $lines);
+                    $lines  = strtolower($lines);
                     foreach ($this->require_from as $from) {
                         $from = strtolower($from);
                         if (strpos($lines, $from) !== false) {

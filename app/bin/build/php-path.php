@@ -7,7 +7,7 @@ if (isset($DP_CONFIG['php_path']) && $DP_CONFIG['php_path']) {
 } else {
     $config_file = __DIR__.'/../../config.php';
     if (file_exists($config_file)) {
-        require_once($config_file);
+        require_once $config_file;
     }
 
     if (isset($DP_CONFIG['php_path']) && $DP_CONFIG['php_path']) {
@@ -21,13 +21,13 @@ if (!$php_path) {
     $paths = explode(PATH_SEPARATOR, getenv('PATH'));
 
     foreach ($paths as $path) {
-        $php_executable = $path . DIRECTORY_SEPARATOR . "php";
+        $php_executable = $path.DIRECTORY_SEPARATOR."php";
 
         if (file_exists($php_executable) && is_file($php_executable)) {
             $php_paths = array($php_executable);
         }
 
-        $php_executable = $path . DIRECTORY_SEPARATOR . "php.exe";
+        $php_executable = $path.DIRECTORY_SEPARATOR."php.exe";
 
         if (file_exists($php_executable) && is_file($php_executable)) {
             $php_paths = array($php_executable);

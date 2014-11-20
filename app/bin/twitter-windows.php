@@ -38,10 +38,12 @@ if (strtoupper(substr(PHP_OS, 0, 3)) !== 'WIN') {
 
 ini_set('display_errors', true);
 error_reporting(E_ALL | E_STRICT);
-define('DP_ROOT', realpath(__DIR__ . '/../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_ROOT', realpath(__DIR__.'/../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../'));
 define('DP_BOOT_MODE', 'cli');
-if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+if (!defined('DP_CONFIG_FILE')) {
+    define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
+}
 setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
@@ -57,7 +59,7 @@ dp_load_config();
 set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
 set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
 
-$file = escapeshellarg(dirname(__FILE__) . '\\twitter.php');
+$file     = escapeshellarg(dirname(__FILE__).'\\twitter.php');
 $php_path = dp_get_php_path(true);
 
 // this is needed as we need a fake window to hide the process

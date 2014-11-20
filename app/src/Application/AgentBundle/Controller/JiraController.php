@@ -23,7 +23,7 @@ class JiraController extends AbstractController
 
     public function exportAction($ticket_id)
     {
-        try	{
+        try {
             $ticket = $this->getTicketOr404($ticket_id);
         } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
             // try to find a delete log
@@ -39,7 +39,7 @@ class JiraController extends AbstractController
             return $this->_processPost($ticket);
         }
 
-        $meta = $this->getMeta();
+        $meta     = $this->getMeta();
         $projects = array();
 
         foreach ($meta[$meta['expand']] as $projectParams) {
@@ -59,37 +59,37 @@ class JiraController extends AbstractController
                 $personType = 'System';
             }
 
-            $person = $message->person . '(' . $personType . ')';
+            $person = $message->person.'('.$personType.')';
 
-            $divider = PHP_EOL . PHP_EOL . str_repeat('-', 60) . PHP_EOL . PHP_EOL;
+            $divider = PHP_EOL.PHP_EOL.str_repeat('-', 60).PHP_EOL.PHP_EOL;
 
-            $description[] = $person . ' at ' .
-                    $created['date'] . PHP_EOL .
-                    str_repeat('-', 60) . PHP_EOL . PHP_EOL .
-                    strip_tags($message->message) .
+            $description[] = $person.' at '.
+                    $created['date'].PHP_EOL.
+                    str_repeat('-', 60).PHP_EOL.PHP_EOL.
+                    strip_tags($message->message).
                     $divider;
         }
 
         return $this->render('AgentBundle:Jira:export-overlay.html.twig', array(
-            'ticket'		=> $ticket,
-            'description'	=> implode('', $description),
-            'projects'		=> $projects,
+            'ticket'          => $ticket,
+            'description'     => implode('', $description),
+            'projects'        => $projects,
         ));
     }
 
     protected function _getService()
     {
-        $baseUrl	= \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl');
+        $baseUrl    = \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl');
 
-        $username	= \Application\DeskPRO\App::getSetting('core.apps_jira.username');
+        $username    = \Application\DeskPRO\App::getSetting('core.apps_jira.username');
 
-        $password	= \Application\DeskPRO\App::getSetting('core.apps_jira.password');
+        $password    = \Application\DeskPRO\App::getSetting('core.apps_jira.password');
 
         $service = new \Orb\Jira\Service($baseUrl, array(
-            'username'	=> $username,
-            'password'	=> $password,
-            'debug'		=> DP_DEBUG,
-            'reg_enabled' => $this->settings->get('core.reg_enabled'),
+            'username'     => $username,
+            'password'     => $password,
+            'debug'        => DP_DEBUG,
+            'reg_enabled'  => $this->settings->get('core.reg_enabled'),
         ), $this->em);
 
         return $service;
@@ -98,21 +98,21 @@ class JiraController extends AbstractController
     public function lookupAction()
     {
         //$param		= $this->request->get('param');
-        $projectKey	= $this->request->get('projectkey');
+        $projectKey    = $this->request->get('projectkey');
 
-        $assignee	= $this->_lookupAssignee($projectKey);
-        $issueTypes	= $this->_lookupIssueType($projectKey);
-        $priorities	= $this->_lookupPriorities($projectKey);
+        $assignee      = $this->_lookupAssignee($projectKey);
+        $issueTypes    = $this->_lookupIssueType($projectKey);
+        $priorities    = $this->_lookupPriorities($projectKey);
 
         $payload = array(
-            'assignee'		=> $assignee,
-            'issuetypes'	=> $issueTypes,
-            'priorities'	=> $priorities,
+            'assignee'        => $assignee,
+            'issuetypes'      => $issueTypes,
+            'priorities'      => $priorities,
         );
 
         //echo json_encode($payload); die;
         return $this->render('AgentBundle:Jira:lookup.html.twig', array(
-            'payload'	=> $payload
+            'payload'    => $payload,
         ));
     }
 
@@ -121,15 +121,15 @@ class JiraController extends AbstractController
         // init memory
         $meta = $this->getMeta($projectKey);
 
-        if( ! isset($meta['assignee']) ) {
-            $service = $this->_getService();
+        if (! isset($meta['assignee'])) {
+            $service          = $this->_getService();
             $meta['assignee'] = array();
 
-            foreach($service->lookupAssignees($projectKey) as $assignee) {
-                $assignee['avatarUrls']['xsmall']	= $assignee['avatarUrls']['16x16'];
-                $assignee['avatarUrls']['small']	= $assignee['avatarUrls']['24x24'];
-                $assignee['avatarUrls']['medium']	= $assignee['avatarUrls']['32x32'];
-                $meta['assignee'][$assignee['key']] = $assignee;
+            foreach ($service->lookupAssignees($projectKey) as $assignee) {
+                $assignee['avatarUrls']['xsmall']    = $assignee['avatarUrls']['16x16'];
+                $assignee['avatarUrls']['small']     = $assignee['avatarUrls']['24x24'];
+                $assignee['avatarUrls']['medium']    = $assignee['avatarUrls']['32x32'];
+                $meta['assignee'][$assignee['key']]  = $assignee;
             }
 
             $this->meta['projects'][$projectKey] = $meta;
@@ -149,12 +149,14 @@ class JiraController extends AbstractController
         // init memory
         $meta = $this->getMeta($projectKey);
 
-        if( ! isset($meta['issuetypes']) ) {
-            $service = $this->_getService();
+        if (! isset($meta['issuetypes'])) {
+            $service            = $this->_getService();
             $meta['issuetypes'] = array();
 
-            foreach( $service->lookupIssueType($projectKey) as $issueType ) {
-                if( $issueType['subtask'] ) continue;
+            foreach ($service->lookupIssueType($projectKey) as $issueType) {
+                if ($issueType['subtask']) {
+                    continue;
+                }
                 $meta['issuetypes'][$issueType['id']] = $issueType;
             }
 
@@ -170,11 +172,12 @@ class JiraController extends AbstractController
         // init memory
         $meta = $this->getMeta($projectKey);
 
-        if( ! isset($meta['priorities']) ) {
+        if (! isset($meta['priorities'])) {
             $meta['priorities'] = array();
-            $service = $this->_getService();
-            foreach( $service->lookupPriorities($projectKey) as $priority )
+            $service            = $this->_getService();
+            foreach ($service->lookupPriorities($projectKey) as $priority) {
                 $meta['priorities'][$priority['id']] = $priority;
+            }
 
             $this->meta['projects'][$projectKey] = $meta;
             $this->saveMeta();
@@ -187,21 +190,22 @@ class JiraController extends AbstractController
     {
         /** @var \Application\DeskPRO\EntityRepository\Cache $cache */
         $cache = $this->em->getRepository('DeskPRO:Cache');
-        $key = 'jira.meta';
+        $key   = 'jira.meta';
 
         // memory
-        if( $this->meta ) {
+        if ($this->meta) {
             $meta = $this->meta;
         // file
-        } else if( ! $meta = $cache->load($key) ) {
-            $meta = $this->_getService()->getCreateMeta();
+        } elseif (! $meta = $cache->load($key)) {
+            $meta     = $this->_getService()->getCreateMeta();
             $projects = array();
-            foreach( $meta['projects'] as $project ) {
+            foreach ($meta['projects'] as $project) {
                 $issues = array();
-                foreach( $project['issuetypes'] as $issueType )
+                foreach ($project['issuetypes'] as $issueType) {
                     $issues[$issueType['id']] = $issueType;
+                }
 
-                $project['issuetypes'] = $issues;
+                $project['issuetypes']     = $issues;
                 $projects[$project['key']] = $project;
             }
 
@@ -211,9 +215,9 @@ class JiraController extends AbstractController
 
         $this->meta = $meta;
 
-        if( null === $projectKey )
-
+        if (null === $projectKey) {
             return $this->meta;
+        }
 
         return isset($this->meta['projects'][$projectKey]) ? $this->meta['projects'][$projectKey] : null;
     }
@@ -223,7 +227,7 @@ class JiraController extends AbstractController
         $this->meta = $meta ?: $this->meta;
         /** @var \Doctrine\Common\Cache\FilesystemCache $cache */
         $cache = $this->em->getRepository('DeskPRO:Cache');
-        $key = 'jira.meta';
+        $key   = 'jira.meta';
         $cache->save($key, $this->meta, 86400);
     }
 
@@ -280,12 +284,11 @@ class JiraController extends AbstractController
             $em->flush();
 
             return $this->createJsonResponse($response);
-
         }
 
         return $this->createJsonResponse(
             array(
-                'message'	=> 'There was an error in creatign the issue, please try again'
+                'message'    => 'There was an error in creatign the issue, please try again',
         ), 500);
     }
 
@@ -350,19 +353,19 @@ class JiraController extends AbstractController
     {
         $service = $this->_getService();
 
-        $ticket	 = $this->_getTicketById($ticket_id);
+        $ticket     = $this->_getTicketById($ticket_id);
 
         $repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 
         $jiraIssues = $repository->findBy(
-            array('ticket' => $ticket
+            array('ticket' => $ticket,
         ));
 
         if (!count($jiraIssues)) {
             return $this->render('AgentBundle:Jira:issues-table.html.twig', array(
-                'ticket'		=> $ticket,
-                'jirabaseurl'	=> \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl'),
-                'issues'		=> array()
+                'ticket'         => $ticket,
+                'jirabaseurl'    => \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl'),
+                'issues'         => array(),
             ));
         }
 
@@ -373,9 +376,9 @@ class JiraController extends AbstractController
         }
 
         return $this->render('AgentBundle:Jira:issues-table.html.twig', array(
-            'ticket'		=> $ticket,
-            'jirabaseurl'	=> \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl'),
-            'issues'		=> $transformedIssues
+            'ticket'         => $ticket,
+            'jirabaseurl'    => \Application\DeskPRO\App::getSetting('core.apps_jira.baseUrl'),
+            'issues'         => $transformedIssues,
         ));
     }
 
@@ -413,7 +416,7 @@ class JiraController extends AbstractController
      */
     public function getCommentsAction($ticket_id = null)
     {
-        try	{
+        try {
             $ticket = $this->getTicketOr404($ticket_id);
         } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
             // try to find a delete log
@@ -429,7 +432,7 @@ class JiraController extends AbstractController
         $jiraIssueRepository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 
         $jiraIssues = $jiraIssueRepository->findBy(
-            array('ticket' => $ticket
+            array('ticket' => $ticket,
         ));
 
         foreach ($jiraIssues as $jiraIssue) {
@@ -456,11 +459,10 @@ class JiraController extends AbstractController
         $success = 0;
 
         $jiraIssues = $repository->findOneBy(
-            array('issue' => $issue_id
+            array('issue' => $issue_id,
         ));
 
         if ($jiraIssues && $jiraIssues instanceof \Application\DeskPRO\Entity\JiraIssue) {
-
             if ('POST' === $this->request->getMethod()) {
                 $postParams = $this->request->request->all();
 
@@ -470,9 +472,9 @@ class JiraController extends AbstractController
 
                 $comment = $postParams['comment'];
 
-                $repository	= $service->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
+                $repository    = $service->getRepository('\Orb\Jira\Entity\Repository\IssueRepository');
 
-                $issue		= $service->findIssue($issue_id);
+                $issue        = $service->findIssue($issue_id);
 
                 $response = $repository->postComment($issue, $comment);
 
@@ -483,12 +485,12 @@ class JiraController extends AbstractController
                 }
 
                 return $this->createJsonResponse(array(
-                    'success'	=> $success
+                    'success'    => $success,
                 ));
             }
 
             return $this->render('AgentBundle:Jira:post-comment.html.twig', array(
-                'issue_id'	=> $issue_id
+                'issue_id'    => $issue_id,
             ));
         }
 
@@ -508,12 +510,12 @@ class JiraController extends AbstractController
         $repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 
         $jiraIssue = $repository->findOneBy(array(
-            'ticket'	=> $ticket,
-            'issue'		=> $issue_id
+            'ticket'       => $ticket,
+            'issue'        => $issue_id,
         ));
 
         if (!$jiraIssue) {
-            throw $this->createNotFoundException('We couldn\'t find any associated JIRA issues with ticket ID: ' . $ticket_id);
+            throw $this->createNotFoundException('We couldn\'t find any associated JIRA issues with ticket ID: '.$ticket_id);
         }
 
         if ('POST' === $this->request->getMethod()) {
@@ -524,13 +526,13 @@ class JiraController extends AbstractController
             if ($jiraServiceRepository && $jiraServiceRepository instanceof \Orb\Jira\Repository) {
                 $comment = $this->request->request->get('comment');
 
-                $issue		= $service->findIssue($issue_id);
+                $issue        = $service->findIssue($issue_id);
 
                 if (!empty($comment)) {
                     $jiraServiceRepository->postComment($issue, $comment);
                 }
 
-                $jiraServiceRepository->postComment($issue, 'Issue unlinked from DeskPRO by ' . $this->person->name);
+                $jiraServiceRepository->postComment($issue, 'Issue unlinked from DeskPRO by '.$this->person->name);
 
                 $issue->addLabel('Unlinked');
 
@@ -541,25 +543,25 @@ class JiraController extends AbstractController
                 $this->em->flush();
 
                 return $this->createJsonResponse(array(
-                    'message'	=> 'Issue unlinked successfully!',
-                    'issue_id'	=> $issue_id
+                    'message'     => 'Issue unlinked successfully!',
+                    'issue_id'    => $issue_id,
                 ));
             } else {
                 return $this->createJsonResponse(array(
-                    'message'	=> 'There was a problem in processing your request, please try again'
+                    'message'    => 'There was a problem in processing your request, please try again',
                 ), 500);
             }
         }
 
         return $this->render('AgentBundle:Jira:unlink.html.twig', array(
-            'ticket'	=> $ticket,
-            'issue_id'	=> $issue_id
+            'ticket'      => $ticket,
+            'issue_id'    => $issue_id,
         ));
     }
 
     protected function _getTicketById($ticket_id)
     {
-        try	{
+        try {
             $ticket = $this->getTicketOr404($ticket_id);
         } catch (\Symfony\Component\HttpKernel\Exception\NotFoundHttpException $e) {
             // try to find a delete log
@@ -576,12 +578,12 @@ class JiraController extends AbstractController
 
     protected function _getAssociatedIssues($ticket_id)
     {
-        $ticket	 = $this->_getTicketById($ticket_id);
+        $ticket     = $this->_getTicketById($ticket_id);
 
         $repository = $this->em->getRepository('Application\DeskPRO\Entity\JiraIssue');
 
         return $repository->findBy(
-            array('ticket' => $ticket
+            array('ticket' => $ticket,
         ));
     }
 
@@ -591,7 +593,7 @@ class JiraController extends AbstractController
             '@agent',
             '@customer',
             '@department',
-            '@ticket'
+            '@ticket',
         );
     }
 
@@ -610,18 +612,18 @@ class JiraController extends AbstractController
          * @customer: The customer</li>
          */
 
-        switch($tag) {
+        switch ($tag) {
             case '@agent':
-                return $this->person->name . '(' . $this->person->primary_email->email . ')';
+                return $this->person->name.'('.$this->person->primary_email->email.')';
 
             case '@department':
                 return $ticket->department->title;
 
             case '@customer':
-                return $ticket->person->name . '(' . $ticket->person->primary_email->email . ')';
+                return $ticket->person->name.'('.$ticket->person->primary_email->email.')';
 
             case '@ticket':
-                return $ticket->subject . '(' . $ticket->ref . ')';
+                return $ticket->subject.'('.$ticket->ref.')';
         }
     }
 }

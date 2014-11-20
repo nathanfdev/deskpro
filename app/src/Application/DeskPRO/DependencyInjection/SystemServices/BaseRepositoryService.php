@@ -77,11 +77,10 @@ class BaseRepositoryService
     public static function create(DeskproContainer $container, array $options = null)
     {
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }
-
 
     /**
      * @param \Doctrine\ORM\EntityManager $em
@@ -103,9 +102,7 @@ class BaseRepositoryService
 
     protected function init()
     {
-
     }
-
 
     /**
      * The entity class
@@ -117,7 +114,6 @@ class BaseRepositoryService
         return $this->entity_name;
     }
 
-
     /**
      * Reset the saved state
      */
@@ -125,7 +121,6 @@ class BaseRepositoryService
     {
         $this->call_result = array();
     }
-
 
     public function __call($method, array $args = array())
     {
@@ -135,7 +130,7 @@ class BaseRepositoryService
             foreach ($args as $k => $a) {
                 if (is_scalar($a)) {
                     $hash_seg[] = $k.':';
-                    $hash_seg[] = (string)$a;
+                    $hash_seg[] = (string) $a;
                 } else {
                     return call_user_func_array(array($this->repos, $method), $args);
                 }

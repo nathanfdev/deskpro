@@ -39,5 +39,4 @@ namespace Application\DeskPRO\CustomFields\Handler;
  */
 class Hidden extends Text
 {
-
 }

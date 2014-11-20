@@ -53,7 +53,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         }
     }
 
-
     /**
      * @param  ApiPackageRequestContext                   $context
      * @return \Symfony\Component\HttpFoundation\Response
@@ -64,15 +63,15 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $user = $context->getIn()->getString('api_user');
         $key  = $context->getIn()->getString('api_key');
 
-        $error = false;
+        $error  = false;
         $client = null;
 
-        $log = array();
+        $log   = array();
         $log[] = "url: $url";
         $log[] = "user: $user";
         $log[] = "key: $key";
 
-        $tests = array();
+        $tests   = array();
         $tests[] = function () use (&$log) {
             $log[] = "Verifying SoapClient is available...";
             if (!class_exists('\SoapClient')) {
@@ -100,16 +99,16 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $get_client = function ($url) {
             $url .= '/api?wsdl';
             $handle = @curl_init($url);
-            @curl_setopt($handle,  CURLOPT_RETURNTRANSFER, TRUE);
+            @curl_setopt($handle,  CURLOPT_RETURNTRANSFER, true);
 
             $response = @curl_exec($handle);
             $httpCode = @curl_getinfo($handle, CURLINFO_HTTP_CODE);
             @curl_close($handle);
-            if($httpCode != 200) {
+            if ($httpCode != 200) {
                 return null;
             }
 
-            return new \SoapClient($url . '/api?wsdl');
+            return new \SoapClient($url.'/api?wsdl');
         };
 
         $tests[] = function () use (&$log, &$client, $url, $get_client) {
@@ -139,7 +138,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             $log[] = "Testing API user and key...";
             try {
                 $session = $client->login($user, $key);
-                $log[] = "API user and key are correct";
+                $log[]   = "API user and key are correct";
             } catch (\SoapFault $e) {
                 $log[] = "API user and/or key is incorrect";
                 $log[] = "(Exception: {$e->getCode()} {$e->getMessage()}";
@@ -158,7 +157,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $result_data = array(
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
-            'error_code' => $error ? $error[0] : false
+            'error_code' => $error ? $error[0] : false,
         );
 
         return $context->createJsonResponse($result_data);

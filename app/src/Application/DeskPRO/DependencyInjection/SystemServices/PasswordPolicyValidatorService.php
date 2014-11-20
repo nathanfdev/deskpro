@@ -42,7 +42,7 @@ class PasswordPolicyValidatorService
 {
     public static function create(DeskproContainer $container)
     {
-        $settings = $container->getSettingsHandler();
+        $settings          = $container->getSettingsHandler();
         $password_settings = new PasswordSettings($settings);
 
         return new PasswordPolicyValidator(

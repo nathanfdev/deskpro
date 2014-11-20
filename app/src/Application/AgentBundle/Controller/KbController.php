@@ -59,13 +59,13 @@ class KbController extends AbstractController
 
     public function viewArticleAction($article_id)
     {
-        $is_pdf = $this->in->getBool('pdf');
+        $is_pdf  = $this->in->getBool('pdf');
         $article = $this->em->find('DeskPRO:Article', $article_id);
         if (!$article) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
         }
 
-        if ($this->in->getBool('do_validate') AND $article['status_code'] == 'hidden.validating' && $this->person->hasPerm('agent_publish.validate')) {
+        if ($this->in->getBool('do_validate') and $article['status_code'] == 'hidden.validating' && $this->person->hasPerm('agent_publish.validate')) {
             $article['status_code'] = Article::STATUS_PUBLISHED;
             $this->em->persist($article);
             $this->em->flush();
@@ -88,14 +88,14 @@ class KbController extends AbstractController
 
         $article_revisions = $article->getRevisions();
 
-        $related_finder = new RelatedContentFinder($this->person, $article);
+        $related_finder  = new RelatedContentFinder($this->person, $article);
         $related_content = $related_finder->getRelatedEntities();
 
-        $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
-        $content = $article->content;
+        $glossary       = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+        $content        = $article->content;
         $glossary_words = $glossary->findWords($content);
 
-        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle.' . $article->getId(), $this->person->id);
+        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle.'.$article->getId(), $this->person->id);
 
         $sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($article);
 
@@ -105,7 +105,7 @@ class KbController extends AbstractController
         $article_products    = $this->em->getRepository('DeskPRO:Product')->getInHierarchy();
 
         $perms = array(
-            'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($article),
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($article),
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($article),
         );
 
@@ -116,9 +116,9 @@ class KbController extends AbstractController
         ", array($article->id));
 
         // Existing translations
-        $trans_langs = $this->db->fetchAllCol('SELECT language_id FROM object_lang WHERE ref = ?', array('articles.'.$article['id']));
+        $trans_langs   = $this->db->fetchAllCol('SELECT language_id FROM object_lang WHERE ref = ?', array('articles.'.$article['id']));
         $trans_langs[] = $article->language->getId();
-        $trans_langs = array_combine($trans_langs,$trans_langs);
+        $trans_langs   = array_combine($trans_langs, $trans_langs);
 
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $this->container->getObjectLangRepository()->preloadObject($lang, $article);
@@ -129,7 +129,7 @@ class KbController extends AbstractController
 
         if (!count($article->categories)) {
             $first = Arrays::getFirstKey($article_categories);
-            $cat = $this->em->getRepository('DeskPRO:ArticleCategory')->find($first);
+            $cat   = $this->em->getRepository('DeskPRO:ArticleCategory')->find($first);
             $article->addToCategory($cat);
             $this->em->persist($article);
             $this->em->flush($article);
@@ -154,11 +154,11 @@ class KbController extends AbstractController
             'user_view_count'      => $user_view_count,
         );
 
-        if($is_pdf) {
+        if ($is_pdf) {
             $content_html = $this->renderView('DeskPRO:pdf_agent:view_article.html.twig', $vars);
 
             if (!defined('_MPDF_TEMP_PATH')) {
-                define('_MPDF_TEMP_PATH', dp_get_tmp_dir() . '/pdf');
+                define('_MPDF_TEMP_PATH', dp_get_tmp_dir().'/pdf');
                 if (!is_dir(_MPDF_TEMP_PATH)) {
                     @mkdir(_MPDF_TEMP_PATH, 0777, true);
                 }
@@ -177,14 +177,14 @@ class KbController extends AbstractController
                 'P' // Orientation
             );
 
-            $mpdf->SetBasePath($this->container->getSetting('core.deskpro_url') . '/');
+            $mpdf->SetBasePath($this->container->getSetting('core.deskpro_url').'/');
             $mpdf->WriteHTML($content_html);
 
-            if($this->in->getBool('html')) {
+            if ($this->in->getBool('html')) {
                 $response = new Response();
                 $response->setContent($content_html);
             } else {
-                $mpdf->Output($article->title . '.pdf', 'D');
+                $mpdf->Output($article->title.'.pdf', 'D');
                 exit;
             }
         }
@@ -229,13 +229,13 @@ class KbController extends AbstractController
 
     public function ajaxMassSaveAction()
     {
-        $articles = $this->in->getCleanValueArray('result_ids', 'int', 'discard');
+        $articles      = $this->in->getCleanValueArray('result_ids', 'int', 'discard');
         $from_category = $this->in->getInt('from_category');
-        $action = $this->in->getString('action');
+        $action        = $this->in->getString('action');
 
-        $data = array('success' => 1, 'category' => $from_category);
-        $skip = false;
-        $tr = App::getTranslator();
+        $data  = array('success' => 1, 'category' => $from_category);
+        $skip  = false;
+        $tr    = App::getTranslator();
         $error = null;
 
         switch ($action) {
@@ -244,7 +244,7 @@ class KbController extends AbstractController
 
                 if ($from_category && $from_category == $to_category) {
                     $error = $tr->phrase('agent.publish.error_kb_cats_same');
-                    $skip = true;
+                    $skip  = true;
                     break;
                 }
 
@@ -256,25 +256,25 @@ class KbController extends AbstractController
 
                 $to = $this->em->find('DeskPRO:ArticleCategory', $to_category);
 
-                if(($from_category && !$from) || !$to) {
+                if (($from_category && !$from) || !$to) {
                     $error = $tr->phrase('agent.publish.error_kb_not_in_db');
-                    $skip = true;
+                    $skip  = true;
                     break;
                 }
 
                 break;
         }
 
-        if(!$skip) {
-            $affected = 0;
+        if (!$skip) {
+            $affected      = 0;
             $perm_failures = 0;
-            $missing = 0;
+            $missing       = 0;
             $this->em->beginTransaction();
 
             foreach ($articles as $article_id) {
                 $article = $this->em->find('DeskPRO:Article', $article_id);
 
-                if(!$article) {
+                if (!$article) {
                     $missing++;
                     continue;
                 }
@@ -316,7 +316,7 @@ class KbController extends AbstractController
                             }
                         }
 
-                        if(!$article->isInCategory($to)) {
+                        if (!$article->isInCategory($to)) {
                             $article->addToCategory($to);
                         }
 
@@ -330,17 +330,17 @@ class KbController extends AbstractController
             $this->em->flush();
             $this->em->commit();
 
-            if($affected < count($articles)) {
+            if ($affected < count($articles)) {
                 $error = $tr->phrase('agent.publish.error_kb_unaffected');
                 $error .= "<br />\n";
 
                 $errors = array();
 
-                if($missing) {
+                if ($missing) {
                     $errors[] = $tr->phrase('agent.publish.error_kb_missing', array('count' => $missing));
                 }
 
-                if($perm_failures) {
+                if ($perm_failures) {
                     $errors[] = $tr->phrase('agent.publish.error_kb_perm_denied', array('count' => $perm_failures));
                 }
 
@@ -391,13 +391,13 @@ class KbController extends AbstractController
 
             case 'title':
                 $article['title'] = $this->in->getString('title');
-                $rev = ContentRevisionUtil::findOrCreate($article, 'title', $this->person);
-                $rev['title'] = $article['title'];
+                $rev              = ContentRevisionUtil::findOrCreate($article, 'title', $this->person);
+                $rev['title']     = $article['title'];
                 break;
 
             case 'slug':
                 $article['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
-                $data['slug'] = $article['slug'];
+                $data['slug']    = $article['slug'];
                 break;
 
             case 'delete':
@@ -410,7 +410,7 @@ class KbController extends AbstractController
 
             case 'categories':
                 $cat_ids = $this->in->getCleanValueArray('category_ids', 'uint', 'discard');
-                $cats = $this->em->getRepository('DeskPRO:ArticleCategory')->getByIds($cat_ids);
+                $cats    = $this->em->getRepository('DeskPRO:ArticleCategory')->getByIds($cat_ids);
 
                 $article->setCategories($cats);
 
@@ -427,20 +427,20 @@ class KbController extends AbstractController
                 break;
 
             case 'remove-auto-unpub':
-                $article->date_end = null;
+                $article->date_end   = null;
                 $article->end_action = null;
                 break;
 
             case 'auto-unpub':
-                $date = date_create('@' . $this->in->getUint('end_timestamp'));
+                $date   = date_create('@'.$this->in->getUint('end_timestamp'));
                 $action = $this->in->getString('end_action');
 
-                $article->date_end = $date;
+                $article->date_end   = $date;
                 $article->end_action = $action;
                 break;
 
             case 'auto-pub':
-                $date = date_create('@' . $this->in->getUint('pub_timestamp'));
+                $date = date_create('@'.$this->in->getUint('pub_timestamp'));
 
                 $article->date_published = $date;
                 break;
@@ -506,12 +506,12 @@ class KbController extends AbstractController
 
                 $article['content'] = $content_info['string'];
 
-                $rev = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
+                $rev            = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
                 $rev['content'] = $article['content'];
 
                 $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
-                $content = $article->content;
-                $content = $glossary->processText($content);
+                $content  = $article->content;
+                $content  = $glossary->processText($content);
 
                 if ($lang_id = $this->in->getUint('language_id')) {
                     $lang = $this->container->getLanguageData()->get($lang_id);
@@ -524,7 +524,7 @@ class KbController extends AbstractController
 
                 $data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', array(
                     'article' => $article,
-                    'content' => $content
+                    'content' => $content,
                 ));
                 break;
 
@@ -542,7 +542,7 @@ class KbController extends AbstractController
                     }
 
                     $title       = $this->in->getString("title.$lang_id");
-                    $content_val = (string)$this->in->getRaw("content.$lang_id");
+                    $content_val = (string) $this->in->getRaw("content.$lang_id");
 
                     if (!$title && !$content_val) {
                         continue;
@@ -590,7 +590,7 @@ class KbController extends AbstractController
         $this->em->beginTransaction();
 
         try {
-            $field_manager = $this->container->getSystemService('article_fields_manager');
+            $field_manager      = $this->container->getSystemService('article_fields_manager');
             $post_custom_fields = $this->request->request->get('custom_fields', array());
             if (!empty($post_custom_fields)) {
                 $field_manager->saveFormToObject($post_custom_fields, $article);
@@ -606,7 +606,7 @@ class KbController extends AbstractController
         $custom_fields = $field_manager->getDisplayArrayForObject($article);
 
         return $this->render('AgentBundle:Kb:view-customfields-rendered-rows.html.twig', array(
-            'article' => $article,
+            'article'       => $article,
             'custom_fields' => $custom_fields,
         ));
     }
@@ -619,11 +619,11 @@ class KbController extends AbstractController
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
         }
 
-        $comment = new ArticleComment();
-        $comment->article = $article;
-        $comment->person = $this->person;
-        $comment['content'] = $this->in->getString('content');
-        $comment['status'] = 'visible';
+        $comment                  = new ArticleComment();
+        $comment->article         = $article;
+        $comment->person          = $this->person;
+        $comment['content']       = $this->in->getString('content');
+        $comment['status']        = 'visible';
         $comment['date_created']  = new \DateTime();
 
         if ($this->person->hasPerm('agent_publish.validate')) {
@@ -634,7 +634,7 @@ class KbController extends AbstractController
         $this->em->flush();
 
         return $this->render('AgentBundle:Kb:view-comment.html.twig', array(
-            'comment' => $comment
+            'comment' => $comment,
         ));
     }
 
@@ -684,7 +684,7 @@ class KbController extends AbstractController
      */
     public function newPendingArticleAction()
     {
-        $pending_article = new ArticlePendingCreate();
+        $pending_article         = new ArticlePendingCreate();
         $pending_article->person = $this->person;
 
         if ($this->in->getUint('ticket_id')) {
@@ -702,8 +702,8 @@ class KbController extends AbstractController
         $row_html = $this->renderView('AgentBundle:Kb:pending-articles-page.html.twig', array('pending_articles' => array($pending_article)));
 
         return $this->createJsonResponse(array(
-            'row_html' => $row_html,
-            'pending_article_id' => $pending_article['id']
+            'row_html'           => $row_html,
+            'pending_article_id' => $pending_article['id'],
         ));
     }
 
@@ -725,7 +725,7 @@ class KbController extends AbstractController
         $this->em->flush();
 
         return $this->createJsonResponse(array(
-            'success' => true,
+            'success'            => true,
             'pending_article_id' => $pending_article_id,
         ));
     }
@@ -738,31 +738,31 @@ class KbController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $data = array();
-        $data['id'] = $pending_article_id;
+        $data            = array();
+        $data['id']      = $pending_article_id;
         $data['comment'] = $pending_article['comment'];
 
-        $data['person_id'] = $pending_article->person['id'];
+        $data['person_id']   = $pending_article->person['id'];
         $data['person_name'] = $pending_article->person->getDisplayName();
 
         $ticket = null;
         if ($pending_article->ticket) {
-            $ticket = $pending_article->ticket;
-            $data['ticket_id'] = $pending_article->ticket->id;
+            $ticket                 = $pending_article->ticket;
+            $data['ticket_id']      = $pending_article->ticket->id;
             $data['ticket_subject'] = $pending_article->ticket->subject;
-            $data['ticket_url'] = $this->get('router')->generate('agent_ticket_view', array('ticket_id' => $pending_article->ticket->id));
+            $data['ticket_url']     = $this->get('router')->generate('agent_ticket_view', array('ticket_id' => $pending_article->ticket->id));
         }
         if ($pending_article->message) {
-            $ticket = $pending_article->message->ticket;
-            $data['message_id'] = $pending_article->message->id;
+            $ticket                       = $pending_article->message->ticket;
+            $data['message_id']           = $pending_article->message->id;
             $data['message_content_html'] = $pending_article->message->getMessageHtml();
         }
 
         // First message
         if ($ticket) {
-            $first_message = $this->em->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
+            $first_message                = $this->em->getRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
             $data['initial_message_html'] = $first_message->getMessageHtml();
-            $data['initial_message_id'] = $first_message->id;
+            $data['initial_message_id']   = $first_message->id;
         }
 
         return $this->createJsonResponse($data);
@@ -789,7 +789,7 @@ class KbController extends AbstractController
         $this->em->commit();
 
         return $this->createJsonResponse(array(
-            'success' => 1
+            'success' => 1,
         ));
     }
 
@@ -813,30 +813,31 @@ class KbController extends AbstractController
         $trans_lang_id = null;
 
         if ($this->in->getBool('pending_translate')) {
-
             $is_trans_view = true;
             $trans_lang_id = $this->in->getUint('language_id');
 
             $result_helper = ArticleResults::newFromRequest($this, array(
                 'pending_translate'      => true,
-                'pending_translate_lang' => $this->in->getUint('language_id')
+                'pending_translate_lang' => $this->in->getUint('language_id'),
             ));
         } else {
             $result_helper = ArticleResults::newFromRequest($this, array(
                 'category' => $category,
-                'show_all' => $show_all
+                'show_all' => $show_all,
             ));
         }
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
-        $results = $result_helper->getArticlesForPage($page);
+        $results      = $result_helper->getArticlesForPage($page);
         $result_cache = $result_helper->getResultCache();
 
         $total_results = count($result_helper->getArticleIds());
-        $num_pages = ceil($total_results / 50);
-        $showing_to = min(($page) * 50, $total_results);
+        $num_pages     = ceil($total_results / 50);
+        $showing_to    = min(($page) * 50, $total_results);
 
         $display_fields = $this->person->getPref('agent.ui.kb-filter-display-fields.0');
         if (!$display_fields) {
@@ -860,7 +861,7 @@ class KbController extends AbstractController
             ', array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
         }
 
-        $cat_usergroups = array();
+        $cat_usergroups     = array();
         $cat_structure_data = array();
         if ($category) {
             $cat_usergroups = $this->db->fetchAllCol("
@@ -870,7 +871,7 @@ class KbController extends AbstractController
             ", array($category->getId()));
 
             $cat_structure_data = $article_categories;
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
+            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);
             $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
             $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
         }
@@ -885,18 +886,18 @@ class KbController extends AbstractController
             'trans_lang_id'      => $trans_lang_id,
 
             'total_results' => $total_results,
-            'num_pages' => $num_pages,
-            'cur_page' => $page,
-            'showing_to' => $showing_to,
+            'num_pages'     => $num_pages,
+            'cur_page'      => $page,
+            'showing_to'    => $showing_to,
 
             'search_form'        => array('terms' => $result_cache['criteria']['terms']),
-            'cache'              => $result_cache,
-            'terms_summary'      => $result_cache['extra']['summary'],
-            'category'           => $category,
-            'cat_usergroups'     => $cat_usergroups,
-            'cat_structure_data' => $cat_structure_data,
+            'cache'                               => $result_cache,
+            'terms_summary'                       => $result_cache['extra']['summary'],
+            'category'                            => $category,
+            'cat_usergroups'                      => $cat_usergroups,
+            'cat_structure_data'                  => $cat_structure_data,
 
-            'article_categories' => $article_categories
+            'article_categories' => $article_categories,
         ));
     }
 
@@ -940,7 +941,7 @@ class KbController extends AbstractController
 
         return $this->render('AgentBundle:Kb:newarticle.html.twig', array(
             'article_categories' => $article_categories,
-            'state' => $state
+            'state'              => $state,
         ));
     }
 
@@ -949,7 +950,7 @@ class KbController extends AbstractController
         $newarticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewArticle();
-        $form = $this->get('form.factory')->create($formType, $newarticle);
+        $form     = $this->get('form.factory')->create($formType, $newarticle);
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newarticle' AND person_id = ?", array($this->person->id));
 
@@ -960,8 +961,8 @@ class KbController extends AbstractController
             $validator = new \Application\AgentBundle\Validator\NewArticleValidator();
             if (!$validator->isValid($newarticle)) {
                 return $this->createJsonResponse(array(
-                    'error' => true,
-                    'error_codes' => $validator->getErrorGroups()
+                    'error'       => true,
+                    'error_codes' => $validator->getErrorGroups(),
                 ));
             }
 
@@ -986,8 +987,8 @@ class KbController extends AbstractController
             $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
             return $this->createJsonResponse(array(
-                'success' => true,
-                'article_id' => $article['id']
+                'success'    => true,
+                'article_id' => $article['id'],
             ));
         } else {
             return $this->createJsonResponse(array(

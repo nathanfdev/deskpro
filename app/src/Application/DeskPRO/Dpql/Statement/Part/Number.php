@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -71,8 +71,7 @@ class Number extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (!$stack && in_array($section, array('group', 'order'))) {
             throw new Exception('Numbers may not be referenced directly at the root of the GROUP BY or ORDER BY sections.');
         }

@@ -76,24 +76,24 @@ class ChoiceField extends CustomFieldAbstract
 
         if ($this->_field->getOption('min_length')) {
             $this->validation_type = 'required';
-            $this->required = true;
-            $this->min_length = $this->_field->getOption('min_length');
+            $this->required        = true;
+            $this->min_length      = $this->_field->getOption('min_length');
         }
         if ($this->_field->getOption('max_length')) {
             $this->validation_type = 'required';
-            $this->required = true;
-            $this->max_length = $this->_field->getOption('max_length');
+            $this->required        = true;
+            $this->max_length      = $this->_field->getOption('max_length');
         }
 
         if ($this->_field->getOption('agent_min_length')) {
             $this->agent_validation_type = 'required';
-            $this->agent_required = true;
-            $this->agent_min_length = $this->_field->getOption('agent_min_length');
+            $this->agent_required        = true;
+            $this->agent_min_length      = $this->_field->getOption('agent_min_length');
         }
         if ($this->_field->getOption('agent_max_length')) {
             $this->agent_validation_type = 'required';
-            $this->agent_required = true;
-            $this->agent_max_length = $this->_field->getOption('agent_max_length');
+            $this->agent_required        = true;
+            $this->agent_max_length      = $this->_field->getOption('agent_max_length');
         }
 
         if ($this->_field->getOption('agent_validation_resolve')) {
@@ -199,7 +199,7 @@ class ChoiceField extends CustomFieldAbstract
         $choices_structure = $this->choices_structure;
         $choices_structure = Arrays::keyFromData($choices_structure, 'id');
 
-        $choices = array();
+        $choices     = array();
         $removed_ids = array();
         foreach ($this->_field->children as $ch) {
             if (!isset($choices_structure[$ch->id])) {
@@ -218,12 +218,14 @@ class ChoiceField extends CustomFieldAbstract
                 if ($ch->getOption('parent_id') && isset($removed_ids[$ch->getOption('parent_id')])) {
                     $this->_em->remove($ch);
                     $removed_id[$ch->id] = true;
-                    $changed = true;
+                    $changed             = true;
                 }
             }
         } while ($changed);
 
-        foreach ($removed_ids as $rid) unset($choices[$rid]);
+        foreach ($removed_ids as $rid) {
+            unset($choices[$rid]);
+        }
 
         // Now add new ones
         foreach ($choices_structure as $cinfo) {
@@ -254,7 +256,7 @@ class ChoiceField extends CustomFieldAbstract
                 $ch->title = $cinfo['title'];
             }
 
-            $ch->display_order = (int)$cinfo['display_order'];
+            $ch->display_order = (int) $cinfo['display_order'];
             $this->_em->persist($ch);
         }
 

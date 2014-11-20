@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Placeholder;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -69,8 +69,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $range = $this->_getDateRange();
 
         return new Prepared($select->quoteForSql($range[0]));
@@ -92,8 +91,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
      */
     public function prepareWithIntervals(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
-    )
-    {
+    ) {
         $range = $this->_getDateRange();
 
         return new Prepared($select->quoteForSql($this->_adjustForIntervals($range[0], $intervals)));
@@ -119,13 +117,12 @@ abstract class AbstractDateRange extends AbstractPlaceholder
     public function prepareComparison(
         AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
         Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
-    )
-    {
+    ) {
         $lhsRes = $lhs->prepare($statement, $section, $stack, $select, $result);
 
-        $lhsSql = $lhsRes->sql();
-        $lhsName = $lhsRes->name();
-        $dpql = $this->_toDpql();
+        $lhsSql     = $lhsRes->sql();
+        $lhsName    = $lhsRes->name();
+        $dpql       = $this->_toDpql();
         $outputName = "$lhsName $comparison $dpql";
 
         $range = $this->_getDateRange();
@@ -134,7 +131,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
         }
 
         $rangeStart = $this->_adjustForIntervals($range[1], $intervals);
-        $rangeEnd = $this->_adjustForIntervals($range[2], $intervals);
+        $rangeEnd   = $this->_adjustForIntervals($range[2], $intervals);
 
         switch ($comparison) {
             case '=':
@@ -175,7 +172,7 @@ abstract class AbstractDateRange extends AbstractPlaceholder
             $format = 'Y-m-d H:i:s';
         }
         $dt = new \DateTime($date);
-        foreach ($intervals AS $interval) {
+        foreach ($intervals as $interval) {
             $operator = $interval->operator == \Application\DeskPRO\Dpql\Parser::T_OP_PLUS ? '+' : '-';
             $dt->modify("$operator $interval->amount $interval->unit");
         }

@@ -55,7 +55,6 @@ class HtmlPattern
         $this->pattern = $pattern;
     }
 
-
     /**
      * @return string
      */
@@ -63,7 +62,6 @@ class HtmlPattern
     {
         return $this->pattern;
     }
-
 
     /**
      * Get tokens for the pattern
@@ -79,11 +77,10 @@ class HtmlPattern
         $pattern = " {$this->pattern} ";
         $pattern = str_replace('\\#', '__dp_esc_hash__', $pattern);
 
-        $segments = preg_split('/ (#(?:.*?)#(?:[imsxADUu]*)) /', $pattern, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
+        $segments = preg_split('/ (#(?:.*?)#(?:[imsxADUu]*)) /', $pattern, null, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
         $depth = 0;
         foreach ($segments as $segment) {
-
             $segment = str_replace('__dp_esc_hash__', '\\#', $segment);
             $segment = trim($segment);
 
@@ -93,12 +90,11 @@ class HtmlPattern
 
             // Tag token
             } else {
-
                 // Space on each side for easy anchoring
                 $segment = " $segment ";
 
                 // Split up tags into groups of tags, optional tags and closing tags
-                $tag_segments = preg_split('/ (\??\\/?(?:[a-zA-Z:]+)) /', $segment, NULL, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
+                $tag_segments = preg_split('/ (\??\\/?(?:[a-zA-Z:]+)) /', $segment, null, \PREG_SPLIT_DELIM_CAPTURE | \PREG_SPLIT_NO_EMPTY);
 
                 foreach ($tag_segments as $tag) {
                     $tag = trim($tag);

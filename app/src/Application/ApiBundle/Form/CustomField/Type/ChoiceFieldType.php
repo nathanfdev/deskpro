@@ -41,10 +41,10 @@ class ChoiceFieldType extends CustomFieldTypeAbstract
     protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('field_type', 'choice', array('choices' => array(
-            'select' => 'Select box (single selection)',
+            'select'       => 'Select box (single selection)',
             'multi_select' => 'Mutli-Select box (multiple selection)',
-            'radio' => 'Radio buttons (single selection)',
-            'checkbox' => 'Checkboxes (multiple selection)',
+            'radio'        => 'Radio buttons (single selection)',
+            'checkbox'     => 'Checkboxes (multiple selection)',
         )));
 
         $builder->add('min_length', 'text', array('required' => false));

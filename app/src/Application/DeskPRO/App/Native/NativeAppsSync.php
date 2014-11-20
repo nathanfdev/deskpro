@@ -65,7 +65,6 @@ class NativeAppsSync
      */
     private $package_installer;
 
-
     /**
      * @param DeskproContainer $container
      * @param AppManager       $manager
@@ -85,7 +84,6 @@ class NativeAppsSync
         $this->logger = $logger;
     }
 
-
     /**
      * Updates apps already installed
      */
@@ -97,7 +95,6 @@ class NativeAppsSync
             }
         }
     }
-
 
     /**
      * @param  AppPackage                                $package
@@ -119,17 +116,16 @@ class NativeAppsSync
         // Updates any apps
         foreach ($this->manager->getPackageApps($package) as $app) {
             $native_app = $this->manager->getNativeApp($app);
-            $class = $native_app->getConfig()->getInstallerHandlerClass();
+            $class      = $native_app->getConfig()->getInstallerHandlerClass();
             if ($class) {
                 $this->logger->debug("... running update for app #{$app->id}");
                 $context = new InstallerContext($this->container, $native_app);
-                $obj = new $class($package['settings_def']);
+                $obj     = new $class($package['settings_def']);
                 $obj->updatePackage($context);
                 $this->logger->debug("... done");
             }
         }
     }
-
 
     /**
      * Syncs new apps from the filesystem
@@ -140,7 +136,6 @@ class NativeAppsSync
             $this->_syncAppsDir($path);
         }
     }
-
 
     /**
      * @param string $path

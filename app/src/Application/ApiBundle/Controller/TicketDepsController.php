@@ -58,7 +58,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -68,9 +67,9 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         $data = array();
 
         $ticket_deps = $this->container->getSystemService('ticket_departments');
-        $flat_array = $ticket_deps->getFlatArray();
+        $flat_array  = $ticket_deps->getFlatArray();
 
-        $ag = $this->container->getAgentGroups();
+        $ag         = $this->container->getAgentGroups();
         $with_perms = $this->in->getBool('with_perms');
 
         if ($with_perms) {
@@ -92,12 +91,12 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
                 if ($p['usergroup_id']) {
                     if ($ug->getAgentGroup($p['usergroup_id'])) {
-                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
                     } else {
-                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int) $p['usergroup_id'], 'name' => $p['name']);
                     }
                 } else {
-                    $perms[$p['department_id']]['users'][] = array('id' => (int)$p['person_id'], 'name' => $p['name']);
+                    $perms[$p['department_id']]['users'][] = array('id' => (int) $p['person_id'], 'name' => $p['name']);
                 }
             }
         }
@@ -114,7 +113,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         $deps = array();
         foreach ($flat_array as $row) {
-            $r = $row['object']->toApiData(true, false);
+            $r          = $row['object']->toApiData(true, false);
             $r['depth'] = $row['depth'];
 
             if ($with_perms) {
@@ -145,7 +144,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-
     ####################################################################################################################
     # get
     ####################################################################################################################
@@ -158,7 +156,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
-        $data = array();
+        $data               = array();
         $data['department'] = $this->getApiData($dep);
 
         $perms = $this->db->fetchAll("SELECT usergroup_id, person_id, name FROM department_permissions WHERE department_id = ?", array($dep->id));
@@ -166,31 +164,31 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         $data['permissions'] = array(
             'usergroups'  => array(),
             'agentgroups' => array(),
-            'agents'      => array()
+            'agents'      => array(),
         );
 
         foreach ($perms as $perm) {
             if ($perm['usergroup_id']) {
                 if ($this->container->getDataService('Usergroup')->get($perm['usergroup_id'])->is_agent_group) {
                     $data['permissions']['agentgroups'][] = array(
-                        'usergroup_id' => (int)$perm['usergroup_id'],
+                        'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
                     );
                 } else {
                     $data['permissions']['usergroups'][] = array(
-                        'usergroup_id' => (int)$perm['usergroup_id'],
+                        'usergroup_id' => (int) $perm['usergroup_id'],
                         'perm_name'    => $perm['name'],
                     );
                 }
             } elseif ($perm['person_id']) {
                 $data['permissions']['agents'][] = array(
-                    'agent_id'  => (int)$perm['person_id'],
-                    'perm_name' => $perm['name']
+                    'agent_id'  => (int) $perm['person_id'],
+                    'perm_name' => $perm['name'],
                 );
             }
         }
 
-        $ag = $this->container->getAgentGroups();
+        $ag                                   = $this->container->getAgentGroups();
         $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
         $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
 
@@ -206,7 +204,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # save
@@ -230,7 +227,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
             new TicketDepartmentType(),
             $dep_edit,
             array(
-                'cascade_validation' => true
+                'cascade_validation' => true,
             )
         );
 
@@ -238,7 +235,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         $form->submit($data, true);
 
         if ($form->isValid() || 1) {
-
             if ($avatar_blob_id = $this->in->getUInt('department.avatar')) {
                 $blob = $this->em->find('DeskPRO:Blob', $avatar_blob_id);
                 if ($blob && $blob->isImage()) {
@@ -273,7 +269,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         }
     }
 
-
     ####################################################################################################################
     # remove
     ####################################################################################################################
@@ -281,7 +276,7 @@ class TicketDepsController extends AbstractController implements ProtectedContro
     public function removeAction($id)
     {
         $editor = $this->_getDepartmentEditor();
-        $dep = $this->container->getSystemService('ticket_departments')->getById($id);
+        $dep    = $this->container->getSystemService('ticket_departments')->getById($id);
 
         if (!$dep) {
             throw $this->createNotFoundException();
@@ -297,7 +292,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse(array('old_id' => $old_id, 'success' => true));
     }
 
-
     ####################################################################################################################
     # save-display-order
     ####################################################################################################################
@@ -312,7 +306,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
         return $this->createSuccessResponse();
     }
 
-
     ####################################################################################################################
     # get-settings
     ####################################################################################################################
@@ -323,7 +316,6 @@ class TicketDepsController extends AbstractController implements ProtectedContro
 
         return $this->createApiResponse($settings);
     }
-
 
     ####################################################################################################################
     # save-settings

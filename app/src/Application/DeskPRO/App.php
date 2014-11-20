@@ -71,7 +71,6 @@ class App
      */
     protected static $_current_person = null;
 
-
     /**
      * Set the person who is making the request, or the person who is authorizing
      * the request.
@@ -86,7 +85,6 @@ class App
         self::$_current_person = $person;
     }
 
-
     /**
      * Get the person who is making the curent request.
      *
@@ -96,7 +94,6 @@ class App
     {
         return self::$_current_person;
     }
-
 
     /**
      * Get a registered container.
@@ -108,7 +105,6 @@ class App
         return self::$container;
     }
 
-
     /**
      * @param $service_name
      * @return object
@@ -117,7 +113,6 @@ class App
     {
         return self::$container->get($service_name);
     }
-
 
     /**
      * @param $service_name
@@ -128,16 +123,14 @@ class App
         return self::$container->getSystemService($service_name);
     }
 
-
     /**
      * @param  string                                                                        $id
      * @return \Application\DeskPRO\DependencyInjection\SystemServices\BaseRepositoryService
      */
     public static function getDataService($id)
     {
-        return self::$container->getSystemService($id . 'Data');
+        return self::$container->getSystemService($id.'Data');
     }
-
 
     /**
      * @param $service_name
@@ -149,7 +142,6 @@ class App
         return self::$container->getSystemObject($service_name, $options);
     }
 
-
     /**
      * @param $service_name
      * @return bool
@@ -159,7 +151,6 @@ class App
         return self::$container->has($service_name);
     }
 
-
     /**
      * @return object
      */
@@ -168,7 +159,6 @@ class App
         return self::$container->get('deskpro.search_adapter');
     }
 
-
     /**
      * @return DBAL\Connection
      */
@@ -176,7 +166,6 @@ class App
     {
         return self::$container->getDb();
     }
-
 
     /**
      * @param  string          $type
@@ -187,7 +176,6 @@ class App
         return self::getContainer()->getDbRead($type, $context);
     }
 
-
     /**
      * @return \Doctrine\ORM\EntityManager
      */
@@ -195,7 +183,6 @@ class App
     {
         return self::$container->getEm();
     }
-
 
     /**
      * @return \Symfony\Component\HttpFoundation\Request
@@ -205,7 +192,6 @@ class App
         return self::$container->getRequest();
     }
 
-
     /**
      * @return \Symfony\Component\HttpFoundation\Response
      */
@@ -213,7 +199,6 @@ class App
     {
         return self::$container->getResponse();
     }
-
 
     /**
      * Get the session
@@ -225,7 +210,6 @@ class App
         return self::$container->getSession();
     }
 
-
     /**
      * @return Mail\Mailer
      */
@@ -233,7 +217,6 @@ class App
     {
         return self::$container->getMailer();
     }
-
 
     /**
      * @return Translate\Translate
@@ -243,7 +226,6 @@ class App
         return self::$container->getTranslator();
     }
 
-
     /**
      * @return Entity\Language
      */
@@ -251,7 +233,6 @@ class App
     {
         return self::getTranslator()->getLanguage();
     }
-
 
     /**
      * @return object
@@ -261,7 +242,6 @@ class App
         return self::$container->get('templating');
     }
 
-
     /**
      * @return Routing\Router
      */
@@ -270,7 +250,6 @@ class App
         return self::$container->getRouter();
     }
 
-
     /**
      * @return \Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher
      */
@@ -278,7 +257,6 @@ class App
     {
         return self::$container->getEventDispatcher();
     }
-
 
     /**
      * Get the form factory
@@ -290,7 +268,6 @@ class App
         return self::$container->getFormFactory();
     }
 
-
     /**
      * Get the person activity logger
      *
@@ -300,7 +277,6 @@ class App
     {
         return self::$container->getPersonActivityLogger();
     }
-
 
     /**
      * True if this is an http request. We should have a request and response object if so.
@@ -313,13 +289,12 @@ class App
             return false;
         }
 
-        if (self::has('response') AND self::has('response')) {
+        if (self::has('response') and self::has('response')) {
             return true;
         }
 
         return false;
     }
-
 
     /**
      * @param $entity
@@ -329,7 +304,6 @@ class App
     {
         return self::$container->getEm()->getRepository($entity);
     }
-
 
     /**
      * @param $entity
@@ -341,20 +315,18 @@ class App
         return self::getEntityRepository($entity)->find($id);
     }
 
-
     /**
      * @param $entity
      * @return string
      */
     public static function getEntityClass($entity)
     {
-        list ($namespace, $entity) = explode(':', $entity, 2);
+        list($namespace, $entity) = explode(':', $entity, 2);
 
         $class = "Application\\$namespace\\Entity\\$entity";
 
         return $class;
     }
-
 
     /**
      * Get a secret key used for various hashing.
@@ -371,7 +343,6 @@ class App
         return $secret;
     }
 
-
     /**
      * Get the reference generator
      *
@@ -381,7 +352,6 @@ class App
     {
         return self::getContainer()->getSystemService('RefGenerator');
     }
-
 
     /**
      * Get the value of a setting.
@@ -400,14 +370,14 @@ class App
      * @var array
      */
     protected static $_api_handler_names = array(
-        'tickets'                    => 'Application\\DeskPRO\\Tickets\\Tickets',
-        'tickets.filters'            => 'Application\\DeskPRO\\Tickets\\Filters',
-        'tickets.edit'               => 'Application\\DeskPRO\\Tickets\\TicketEdit',
-        'tickets.search'             => 'Application\\DeskPRO\\Tickets\\TicketSearch',
-        'custom_fields.chats'        => 'Application\\DeskPRO\\CustomFields\\ChatFields',
-        'custom_fields.people'       => 'Application\\DeskPRO\\CustomFields\\PeopleFields',
-        'custom_fields.tickets'      => 'Application\\DeskPRO\\CustomFields\\TicketFields',
-        'custom_fields.articles'     => 'Application\\DeskPRO\\CustomFields\\ArticleFields',
+        'tickets'                     => 'Application\\DeskPRO\\Tickets\\Tickets',
+        'tickets.filters'             => 'Application\\DeskPRO\\Tickets\\Filters',
+        'tickets.edit'                => 'Application\\DeskPRO\\Tickets\\TicketEdit',
+        'tickets.search'              => 'Application\\DeskPRO\\Tickets\\TicketSearch',
+        'custom_fields.chats'         => 'Application\\DeskPRO\\CustomFields\\ChatFields',
+        'custom_fields.people'        => 'Application\\DeskPRO\\CustomFields\\PeopleFields',
+        'custom_fields.tickets'       => 'Application\\DeskPRO\\CustomFields\\TicketFields',
+        'custom_fields.articles'      => 'Application\\DeskPRO\\CustomFields\\ArticleFields',
         'custom_fields.feedback'      => 'Application\\DeskPRO\\CustomFields\\FeedbackFields',
         'custom_fields.organizations' => 'Application\\DeskPRO\\CustomFields\\OrganizationFields',
         'custom_fields.products'      => 'Application\\DeskPRO\\CustomFields\\ProductFields',
@@ -437,12 +407,11 @@ class App
             throw new \OutOfBoundsException("API handler does not exist");
         }
 
-        $classname = self::$_api_handler_names[$name];
+        $classname                  = self::$_api_handler_names[$name];
         self::$_api_handlers[$name] = new $classname();
 
         return self::$_api_handlers[$name];
     }
-
 
     /**
      * Loads userconfig from the filesystem
@@ -452,11 +421,11 @@ class App
     protected static function _loadConfig($name = null)
     {
         if ($name != self::DEFAULT_NAME) {
-            $name = preg_replace('#[^a-zA-Z0-9\-_]#', '', $name);
-            $filename = 'config.' . $name . '.php';
-            $filepath = DP_ROOT . "/sys/config/$filename";
+            $name     = preg_replace('#[^a-zA-Z0-9\-_]#', '', $name);
+            $filename = 'config.'.$name.'.php';
+            $filepath = DP_ROOT."/sys/config/$filename";
 
-            require($filepath);
+            require $filepath;
             if (!isset($CONFIG)) {
                 throw new \UnexpectedValueException("$filename does not define \$CONFIG");
             }
@@ -464,11 +433,10 @@ class App
             self::$_fileconfig[$name] = $CONFIG;
         } else {
             global $DP_CONFIG;
-            $name = self::DEFAULT_NAME;
+            $name                     = self::DEFAULT_NAME;
             self::$_fileconfig[$name] = $DP_CONFIG;
         }
     }
-
 
     /**
      * Read a config array from a standardly named config file.
@@ -479,27 +447,26 @@ class App
      */
     public static function getConfigFromFile($name)
     {
-        if (!$name OR $name != self::DEFAULT_NAME) {
-            $name = preg_replace('#[^a-zA-Z0-9\-_]#', '', $name);
-            $filename = 'config.' . $name . '.php';
+        if (!$name or $name != self::DEFAULT_NAME) {
+            $name     = preg_replace('#[^a-zA-Z0-9\-_]#', '', $name);
+            $filename = 'config.'.$name.'.php';
         } else {
             $filename = 'config.php';
         }
 
-        $filepath = DP_ROOT . "/sys/config/$filename";
+        $filepath = DP_ROOT."/sys/config/$filename";
 
         if (!file_exists($filepath)) {
             throw new \RuntimeException("$filename does not exist");
         }
 
-        require($filepath);
+        require $filepath;
         if (!isset($CONFIG)) {
             throw new \UnexpectedValueException("$filename does not define \$CONFIG");
         }
 
         return $CONFIG;
     }
-
 
     /**
      * Get a config value from config.
@@ -523,10 +490,12 @@ class App
         }
 
         $value = Arrays::getValue(self::$_fileconfig[$file_name], $config_name);
-        if ($value === null) $value = $default;
+        if ($value === null) {
+            $value = $default;
+        }
+
         return $value;
     }
-
 
     /**
      * Get a new logger for some kind of thing/session

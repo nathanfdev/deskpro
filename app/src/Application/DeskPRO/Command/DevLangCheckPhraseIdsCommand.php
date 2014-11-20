@@ -48,10 +48,10 @@ class DevLangCheckPhraseIdsCommand extends \Symfony\Bundle\FrameworkBundle\Comma
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $phrase_loader = new AllPhrases(DP_ROOT.'/languages/default');
-        $phrase_ids = $phrase_loader->getPhraseIds();
+        $phrase_ids    = $phrase_loader->getPhraseIds();
         unset($phrase_loader);
 
-        $phrase_ids = array_combine($phrase_ids,$phrase_ids);
+        $phrase_ids = array_combine($phrase_ids, $phrase_ids);
 
         #------------------------------
         # Read all DeskPRO files to try and find
@@ -68,7 +68,7 @@ class DevLangCheckPhraseIdsCommand extends \Symfony\Bundle\FrameworkBundle\Comma
         $finder = Finder::create()->files()->name('*.php')->name('*.twig')->in($search_dirs);
         foreach ($finder as $file) {
             /** @var $file \SplFileInfo */
-            $path = $file->getRealPath();
+            $path         = $file->getRealPath();
             $file_content = file_get_contents($path);
 
             $missing = array();

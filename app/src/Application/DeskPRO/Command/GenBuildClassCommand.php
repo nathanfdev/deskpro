@@ -62,13 +62,12 @@ class GenBuildClassCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
             $defaultcode = array();
 
             foreach ($diff as $sql) {
-                $sql = str_replace("\\'", "'", addslashes($sql));
-                $sql = str_replace('$', '\\$', $sql);
+                $sql           = str_replace("\\'", "'", addslashes($sql));
+                $sql           = str_replace('$', '\\$', $sql);
                 $defaultcode[] = "\t\t\$this->execMutateSql(\"".$sql."\");";
             }
 
             $defaultcode = implode("\n", $defaultcode);
-
         } else {
             $defaultcode = "\t\t//\$this->execMutateSql(\"...\");";
         }
@@ -120,7 +119,7 @@ $defaultcode
 }
 CODE;
 
-        $path_dir = DP_ROOT . "/src/Application/InstallBundle/Upgrade/Build/" . date('Y/m', $time);
+        $path_dir = DP_ROOT."/src/Application/InstallBundle/Upgrade/Build/".date('Y/m', $time);
 
         if (!is_dir($path_dir)) {
             mkdir($path_dir, 0744, true);

@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Parser;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -71,12 +71,12 @@ class BinaryComparison extends AbstractPart
      * @var array
      */
     protected static $_operatorMap = array(
-        Parser::T_OP_EQ => '=',
-        Parser::T_OP_NE => '<>',
-        Parser::T_OP_GT => '>',
+        Parser::T_OP_EQ   => '=',
+        Parser::T_OP_NE   => '<>',
+        Parser::T_OP_GT   => '>',
         Parser::T_OP_GTEQ => '>=',
-        Parser::T_OP_LT => '<',
-        Parser::T_OP_LTEQ => '<='
+        Parser::T_OP_LT   => '<',
+        Parser::T_OP_LTEQ => '<=',
     );
 
     /**
@@ -87,12 +87,12 @@ class BinaryComparison extends AbstractPart
      * @var array
      */
     protected static $_operatorOrderFlipped = array(
-        '=' => '=',
+        '='  => '=',
         '<>' => '<>',
-        '>' => '<',
+        '>'  => '<',
         '>=' => '<=',
-        '<' => '>',
-        '<=' => '>='
+        '<'  => '>',
+        '<=' => '>=',
     );
 
     /**
@@ -109,8 +109,8 @@ class BinaryComparison extends AbstractPart
         }
 
         $this->operator = $operator;
-        $this->lhs = $lhs;
-        $this->rhs = $rhs;
+        $this->lhs      = $lhs;
+        $this->rhs      = $rhs;
     }
 
     /**
@@ -128,19 +128,18 @@ class BinaryComparison extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $childStack = $this->getChildStack($stack);
 
-        $lhs = $this->lhs;
-        $rhs = $this->rhs;
+        $lhs      = $this->lhs;
+        $rhs      = $this->rhs;
         $operator = self::$_operatorMap[$this->operator];
 
         if ($lhs instanceof Placeholder || $lhs instanceof BinaryInterval) {
             // flip as placeholder/interval comparison expects placeholder/interval on RHS
-            $temp = $lhs;
-            $lhs = $rhs;
-            $rhs = $temp;
+            $temp     = $lhs;
+            $lhs      = $rhs;
+            $rhs      = $temp;
             $operator = self::$_operatorOrderFlipped[$operator];
         }
 
@@ -167,7 +166,7 @@ class BinaryComparison extends AbstractPart
         }
 
         return new Prepared("({$lhsRes->sql()} $operator {$rhsRes->sql()})", $title, false, 'boolean');
-     }
+    }
 
     /**
      * Renders a part back to DPQL.
@@ -181,7 +180,7 @@ class BinaryComparison extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->lhs->toDpql($statement, $section, $stack)
-            . ' ' . self::$_operatorMap[$this->operator] . ' '
-            . $this->rhs->toDpql($statement, $section, $stack);
+            .' '.self::$_operatorMap[$this->operator].' '
+            .$this->rhs->toDpql($statement, $section, $stack);
     }
 }

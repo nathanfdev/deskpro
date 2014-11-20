@@ -33,6 +33,7 @@
  */
 
 namespace Application\ApiBundle\Controller;
+
 use Application\DeskPRO\App;
 
 /**
@@ -48,7 +49,6 @@ class TestController extends AbstractController
 
         return parent::preAction($action, $arguments);
     }
-
 
     /**
      * This action simply returns a message to indicate that the API is working
@@ -71,10 +71,9 @@ class TestController extends AbstractController
         return $this->createApiResponse(array(
             'success'     => true,
             'api_version' => DP_BUILD_TIME,
-            'api_url'     => $api_url
+            'api_url'     => $api_url,
         ));
     }
-
 
     /**
      * This returns info about the helpdesk. It's meant to verify the existence of DeskPRO (eg mobile app)
@@ -84,15 +83,15 @@ class TestController extends AbstractController
     {
         $request = $this->container->getRequest();
 
-        $data = array();
+        $data                 = array();
         $data['helpdesk_url'] = App::getSetting('core.deskpro_url');
         $data['helpdesk_url'] = str_replace('/index.php', '', $data['helpdesk_url']);
-        $data['helpdesk_url'] = rtrim($data['helpdesk_url'], '/') . '/';
+        $data['helpdesk_url'] = rtrim($data['helpdesk_url'], '/').'/';
 
-        $url_info = @parse_url($data['helpdesk_url']);
+        $url_info              = @parse_url($data['helpdesk_url']);
         $data['helpdesk_path'] = @$url_info['path'];
 
-        $data['api_url'] = $data['helpdesk_url'] . '/index.php/api/';
+        $data['api_url'] = $data['helpdesk_url'].'/index.php/api/';
 
         // If this request itself is secure then we know ssl works
         // so we sholud prefer it
@@ -100,7 +99,7 @@ class TestController extends AbstractController
             $data['api_url'] = preg_replace('#^http://#', 'https', $data['api_url']);
         }
 
-        $url_info = @parse_url($data['api_url']);
+        $url_info         = @parse_url($data['api_url']);
         $data['api_path'] = @$url_info['path'];
 
         $data['api_version'] = DP_BUILD_TIME;

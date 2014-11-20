@@ -76,7 +76,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return ($this->get('request')->getMethod() == 'POST');
     }
 
-
     /**
      * Checks a request token in a form
      *
@@ -90,7 +89,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             return true;
         }
 
-        $header_name = "HTTP_" . str_replace('-', '_', strtoupper('X-DeskPRO-' . trim($field_name, '_-')));
+        $header_name = "HTTP_".str_replace('-', '_', strtoupper('X-DeskPRO-'.trim($field_name, '_-')));
 
         if (!empty($_REQUEST[$field_name])) {
             $in_token = $_REQUEST[$field_name];
@@ -117,7 +116,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->session->getEntity()->checkSecurityToken($name, $in_token);
     }
 
-
     /**
      * Checks the standard request token.
      *
@@ -128,7 +126,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->checkRequestToken('request_token', '_rt');
     }
 
-
     /**
      * Protects against double-submitted requests. If an exact form is submitted a second time, then this method
      * returns true.
@@ -138,9 +135,9 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
      */
     public function consumeRequest($name = '')
     {
-        $hash = md5($name . App::getRequest()->getUri());
+        $hash = md5($name.App::getRequest()->getUri());
         if (App::getRequest()->getMethod() == 'POST') {
-            $hash = md5($hash . serialize($_GET + $_POST));
+            $hash = md5($hash.serialize($_GET + $_POST));
         }
 
         $used = $this->session->get('consumed_tokens', array());
@@ -160,7 +157,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return true;
     }
 
-
     /**
      * Just like checkRequestToken but this shows an error for you if its bad
      *
@@ -174,7 +170,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         }
     }
 
-
     /**
      * Just like checkRequestToken but this shows an error for you if its bad
      *
@@ -185,7 +180,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
     {
         return $this->ensureRequestToken('request_token', '_rt');
     }
-
 
     /**
      * Checks a request token $token
@@ -203,7 +197,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $this->session->getEntity()->checkSecurityToken($name, $token);
     }
 
-
     /**
      * Just like checkAuthToken but this shows an error for you if its bad
      *
@@ -216,7 +209,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('invalid_auth_token');
         }
     }
-
 
     /**
      * Just enables 'smart view resoltion' when the at sign is used.
@@ -238,7 +230,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             }
 
             if ($m[1] == 'Cloud') {
-                $bundle = 'Cloud' . $m[2];
+                $bundle = 'Cloud'.$m[2];
             } else {
                 $bundle = $m[2];
             }
@@ -248,7 +240,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
                 $pre = "$bundle:";
             } else {
                 $controller = \Orb\Util\Strings::extractRegexMatch('#\\\\([A-Za-z0-9_\-]+)Controller$#', get_class($this), 1);
-                $pre = "$bundle:$controller:";
+                $pre        = "$bundle:$controller:";
             }
 
             $view = preg_replace('#^@#', $pre, $view);
@@ -256,7 +248,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         return parent::render($view, $parameters, $response);
     }
-
 
     /**
      * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
@@ -269,7 +260,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
         return $auth->getUserInterfaceSettings();
     }
 
-
     /**
      * @return \Application\DeskPRO\Auth\AuthInterfaceSettings
      */
@@ -280,7 +270,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         return $auth->getAgentInterfaceSettings();
     }
-
 
     /**
      * Returns a RedirectResponse if SSO says it needs to redirect
@@ -300,7 +289,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 
         if ($sso_result = $this->handleAutomaticSso($authInterfaceSettings)) {
             if ($sso_result->isRedirectRequired()) {
-
                 $return = $this->in->getString('return');
                 $this->session->set('auth_return', $return);
                 $this->session->save();

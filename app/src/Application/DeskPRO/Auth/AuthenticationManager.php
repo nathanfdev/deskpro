@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Auth;
 
-
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\NewSettings\SettingsBag;
 use Application\DeskPRO\Settings\Settings;
@@ -118,10 +117,10 @@ class AuthenticationManager
         $this->authSettings       = $authSettings;
         $this->authAdapterFactory = $auth_adapter_factory;
         $this->interface          = $interface;
-        $this->appSettings = $appSettings;
+        $this->appSettings        = $appSettings;
 
         $this->usersourcesForInterface = $this->usersourceManager->getAll()->forInterface($interface);
-        $this->settings = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
+        $this->settings                = $interface === 'user' ? $authSettings->getUserInterfaceSettings() : $authSettings->getAgentInterfaceSettings();
     }
 
     /**
@@ -206,7 +205,7 @@ class AuthenticationManager
                 $adapter->setFormData(
                     array(
                         'username' => $identifier,
-                        'password' => $password
+                        'password' => $password,
                     )
                 );
 
@@ -365,7 +364,7 @@ class AuthenticationManager
                         UsersourceInfo::CAPABILITY_LOGIN_TEXT_BTN,
                         UsersourceInfo::CAPABILITY_FORM_LOGIN,
                         UsersourceInfo::CAPABILITY_WIDGET_OVERLAY_BTN,
-                        UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB
+                        UsersourceInfo::CAPABILITY_NEW_COMMENT_TAB,
                     )
 
                 )

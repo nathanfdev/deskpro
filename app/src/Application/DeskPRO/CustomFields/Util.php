@@ -51,13 +51,11 @@ class Util
     {
         $data = $this->createDataHierarchy($field_datas, $field_defs);
         $data = Arrays::walkKeys($data, function (&$k) {
-            $k = 'field_' . $k;
+            $k = 'field_'.$k;
         });
 
         return $data;
     }
-
-
 
     /**
      * This converts a collection of data items into an array structure
@@ -103,8 +101,6 @@ class Util
         return $structure;
     }
 
-
-
     /**
      * Use this to get a structured "data array" used with form handlers render(). This essentially emulates
      * created all the data records, and then returns the structured array. So if you need the correct array format,
@@ -119,15 +115,15 @@ class Util
     public function getRenderableDataArrayFromForm(array $form_data, $field_id, $entity_def, $entity_data)
     {
         $field_defs = App::getEntityRepository($entity_def)->getFields();
-        $field = App::getEntityRepository($entity_def)->find($field_id);
+        $field      = App::getEntityRepository($entity_def)->find($field_id);
 
         $action_custm_datas = array();
 
         $data_classname = App::getEntityRepository($entity_data)->getEntityName();
 
         foreach ($field->getHandler()->getDataFromForm($form_data) as $info) {
-            $custom_data = new $data_classname();
-            $custom_data['field'] = $field;
+            $custom_data           = new $data_classname();
+            $custom_data['field']  = $field;
             $custom_data[$info[1]] = $info[2];
 
             $action_custm_datas[] = $custom_data;

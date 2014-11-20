@@ -36,8 +36,8 @@ namespace Application\ApiBundle\Controller;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
-use Application\DeskPRO\Form\Type\ApiKeyType;
 use Application\DeskPRO\Entity\ApiKey;
+use Application\DeskPRO\Form\Type\ApiKeyType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -62,7 +62,6 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
 
         return $multi;
     }
-
 
     ###################################################################################################################
     # list
@@ -166,7 +165,6 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         return $this->createSuccessResponse(array('old_id' => $old_id));
     }
 
-
     ####################################################################################################################
     # get-logs
     ####################################################################################################################
@@ -183,10 +181,9 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         $logs = $this->getApiData($logs);
 
         return $this->createSuccessResponse(array(
-            'logs' => $logs
+            'logs' => $logs,
         ));
     }
-
 
     ####################################################################################################################
     # regenerate
@@ -216,19 +213,19 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
     {
         /** @var $entry \Application\DeskPRO\Entity\ApiKeyLog */
         if (!$entry = $this->em->find('DeskPRO:ApiKeyLog', $logEntryId)) {
-            throw new NotFoundHttpException;
+            throw new NotFoundHttpException();
         }
         /** @var ApiKey $key */
-        $key = $entry->key;
+        $key     = $entry->key;
         $request = $entry['request'];
 
-        $api = new \DeskPRO\Api($this->settings->get('core.deskpro_url'), $key->getKeyString(), $key->person['id']);
+        $api  = new \DeskPRO\Api($this->settings->get('core.deskpro_url'), $key->getKeyString(), $key->person['id']);
         $path = 0 === strpos($request['path'], '/api') ? substr($request['path'], 4) : $request['path'];
         /** @var \DeskPRO\Api\Result $response */
         $response = $api->call($request['method'], $path, $request['payload']);
 
         $result = array(
-            'status' => $response->getResponseCode(),
+            'status'  => $response->getResponseCode(),
             'content' => $response->getData(),
         );
 

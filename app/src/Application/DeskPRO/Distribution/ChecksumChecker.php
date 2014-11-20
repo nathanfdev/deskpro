@@ -70,7 +70,6 @@ class ChecksumChecker extends \Orb\File\ChecksumChecker
         return $this->compareWithDump(DP_ROOT.'/sys/Resources/distro-checksums.php');
     }
 
-
     /**
      * Dump current hashes to standard checksum file for deskpro
      */

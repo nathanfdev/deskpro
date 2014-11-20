@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Article categories
@@ -92,13 +92,10 @@ class ArticleCategory extends CategoryAbstract
      */
     protected $template_suffix = '';
 
-
     public function __construct()
     {
         $this->articles = new ArrayCollection();
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -108,7 +105,7 @@ class ArticleCategory extends CategoryAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ArticleCategory';
-        $metadata->setPrimaryTable(array('name' => 'article_categories',));
+        $metadata->setPrimaryTable(array('name' => 'article_categories'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -143,7 +140,7 @@ class ArticleCategory extends CategoryAbstract
         $metadata->mapField(
             array(
                 'fieldName' => 'slug', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'slug', 'unique' => true
+                'nullable'  => false, 'columnName' => 'slug', 'unique' => true,
             )
         );
         $metadata->mapField(
@@ -172,13 +169,13 @@ class ArticleCategory extends CategoryAbstract
                 0 => array(
                     'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null',
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory',
-                'mappedBy'  => 'parent', 'orderBy' => array('display_order' => 'ASC',),
+                'mappedBy'  => 'parent', 'orderBy' => array('display_order' => 'ASC'),
             )
         );
         $metadata->mapManyToMany(
@@ -196,13 +193,13 @@ class ArticleCategory extends CategoryAbstract
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapManyToMany(
             array(
                 'fieldName' => 'articles', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Article',
-                'mappedBy'  => 'categories'
+                'mappedBy'  => 'categories',
             )
         );
     }

@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Func\AbstractFunc;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Func\AbstractFunc;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -59,7 +59,7 @@ class FunctionCall extends AbstractPart
      */
     public function __construct($name, array $arguments = array())
     {
-        $this->name = $name;
+        $this->name      = $name;
         $this->arguments = $arguments;
     }
 
@@ -78,8 +78,7 @@ class FunctionCall extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $childStack = $this->getChildStack($stack);
 
         $func = AbstractFunc::create($this->name, $this->arguments);
@@ -99,10 +98,10 @@ class FunctionCall extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         $arguments = array();
-        foreach ($this->arguments AS $argument) {
+        foreach ($this->arguments as $argument) {
             $arguments[] = $argument->toDpql($statement, $section, $stack);
         }
 
-        return $this->name . '(' . implode(', ', $arguments) . ')';
+        return $this->name.'('.implode(', ', $arguments).')';
     }
 }

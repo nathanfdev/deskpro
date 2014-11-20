@@ -33,8 +33,8 @@
 
 namespace Application\DeskPRO;
 
-use Application\DeskPRO\DependencyInjection\DoctrineEntityListenerPass;
 use Application\DeskPRO\DependencyInjection\CoreExtension;
+use Application\DeskPRO\DependencyInjection\DoctrineEntityListenerPass;
 use Application\DeskPRO\DependencyInjection\ElasticaClientPass;
 use Application\DeskPRO\DependencyInjection\SearchExtension;
 use Symfony\Component\Console\Application;
@@ -112,7 +112,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         );
 
         foreach ($commands as $cmd) {
-            $application->add(new $cmd);
+            $application->add(new $cmd());
         }
     }
 

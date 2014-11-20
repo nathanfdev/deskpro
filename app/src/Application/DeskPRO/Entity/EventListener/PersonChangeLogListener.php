@@ -35,19 +35,19 @@ use Doctrine\ORM\Event\PreUpdateEventArgs;
 class PersonChangeLogListener extends EntityChangeLogListener
 {
     protected $fields = array(
-        'first_name' => true,
-        'last_name' => true,
-        'password' => true,
-        'is_disabled' => true,
+        'first_name'   => true,
+        'last_name'    => true,
+        'password'     => true,
+        'is_disabled'  => true,
         'title_prefix' => true,
 
-        'picture_blob' => true,
-        'organization' => true,
+        'picture_blob'  => true,
+        'organization'  => true,
         'primary_email' => true,
 
-        'emails' => true,
-        'labels' => true,
-        'notes' => true,
+        'emails'     => true,
+        'labels'     => true,
+        'notes'      => true,
         'usergroups' => true,
     );
 

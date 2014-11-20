@@ -77,7 +77,6 @@ class TicketActionDef extends DomainObject
      */
     private $_def;
 
-
     /**
      * Set settings
      *
@@ -92,7 +91,6 @@ class TicketActionDef extends DomainObject
         }
     }
 
-
     /**
      * Override because we need to unset the cached $_def if a setting changed.
      *
@@ -106,7 +104,6 @@ class TicketActionDef extends DomainObject
         return parent::setModelField($field, $value);
     }
 
-
     /**
      * Get settings
      *
@@ -116,7 +113,6 @@ class TicketActionDef extends DomainObject
     {
         return $this->settings ? $this->settings : array();
     }
-
 
     /**
      * @param  string $name
@@ -128,7 +124,6 @@ class TicketActionDef extends DomainObject
         return isset($this->settings[$name]) ? $this->settings[$name] : $default;
     }
 
-
     /**
      * @return \Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef
      */
@@ -138,19 +133,18 @@ class TicketActionDef extends DomainObject
             return $this->_def;
         }
 
-        $class = $this->def_class;
+        $class      = $this->def_class;
         $this->_def = new $class($this);
 
         return $this->_def;
     }
-
 
     /**
      * {@inheritDoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = array();
+        $data                     = array();
         $data['id']               = $this->id;
         $data['action_name']      = $this->action_name;
         $data['def_class']        = $this->def_class;
@@ -164,7 +158,6 @@ class TicketActionDef extends DomainObject
         return $data;
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -177,8 +170,8 @@ class TicketActionDef extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_actions_def',
-            'uniqueConstraints' => array('action_name_idx' => array('columns' => array('action_name')))
+            'name'              => 'ticket_actions_def',
+            'uniqueConstraints' => array('action_name_idx' => array('columns' => array('action_name'))),
         ));
 
         $metadata->mapField(array(
@@ -220,7 +213,7 @@ class TicketActionDef extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => true,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
     }
 }

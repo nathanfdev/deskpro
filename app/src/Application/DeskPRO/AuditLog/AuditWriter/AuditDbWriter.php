@@ -56,7 +56,7 @@ class AuditDbWriter implements AuditWriterInterface
                 'object_type'    => $log->object_type,
                 'object_id'      => $log->object_id,
                 'data'           => $log->data ? serialize($log->data) : null,
-                'date_created'   => $log->date_created->format('Y-m-d H:i:s')
+                'date_created'   => $log->date_created->format('Y-m-d H:i:s'),
             );
 
             $batch[] = $r;

@@ -60,7 +60,7 @@ class DataReportGenerator
         $data = array();
 
         foreach ($this->datas as $d) {
-            $name = get_class($d);
+            $name        = get_class($d);
             $data[$name] = $d->getData();
         }
 
@@ -74,13 +74,13 @@ class DataReportGenerator
         $encode = 'plain';
         if ($this->enable_gzip && function_exists('gzencode')) {
             $encode = 'gzip';
-            $data = gzencode($data);
+            $data   = gzencode($data);
         }
 
         return array(
             'data'        => $data,
             'data_encode' => $type,
-            'file_encode' => $encode
+            'file_encode' => $encode,
         );
     }
 }

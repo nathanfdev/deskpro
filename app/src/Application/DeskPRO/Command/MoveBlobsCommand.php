@@ -26,7 +26,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
@@ -44,7 +43,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
     protected function configure()
@@ -59,13 +57,13 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $bs = App::getContainer()->getBlobStorage();
+        $bs           = App::getContainer()->getBlobStorage();
         $ignore_error = $input->getOption('ignore-error');
-        $limit = $input->getOption('limit');
+        $limit        = $input->getOption('limit');
 
         if ($input->getOption('set-storage-loc')) {
             $set_aid = $input->getOption('set-storage-loc');
-            $aids = $bs->getAdapterIds();
+            $aids    = $bs->getAdapterIds();
             if (!in_array($set_aid, $aids)) {
                 $output->writeln("<error>Adapter is not installed: $set_aid</error>");
 
@@ -85,8 +83,8 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             // Cancel any automatic one currently running
             App::getOrm()->getRepository('DeskPRO:Setting')->updateSetting('core.filesystem_move_from_id', null);
 
-            $t = array('Adapter', 'Count', 'Waiting Count', 'Is Installed');
-            $counts = App::getDb()->fetchAllKeyValue("SELECT storage_loc, COUNT(*) AS count FROM blobs GROUP BY storage_loc");
+            $t       = array('Adapter', 'Count', 'Waiting Count', 'Is Installed');
+            $counts  = App::getDb()->fetchAllKeyValue("SELECT storage_loc, COUNT(*) AS count FROM blobs GROUP BY storage_loc");
             $counts2 = App::getDb()->fetchAllKeyValue("SELECT storage_loc_pref, COUNT(*) AS count FROM blobs WHERE storage_loc_pref IS NOT NULL GROUP BY storage_loc_pref");
 
             $aids = $bs->getAdapterIds();
@@ -95,13 +93,13 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
             $rows = array();
             foreach ($aids as $aid) {
-                $r = array();
+                $r   = array();
                 $r[] = $aid;
                 $r[] = isset($counts[$aid]) ? $counts[$aid] : 0;
                 $r[] = isset($counts2[$aid]) ? $counts2[$aid] : 0;
 
                 if (in_array($aid, $bs->getAdapterIds())) {
-                    $r[] = 'Yes' . ($aid == $bs->getPreferredAdapterId() ? ' *' : '');
+                    $r[] = 'Yes'.($aid == $bs->getPreferredAdapterId() ? ' *' : '');
                 } else {
                     $r[] = 'No';
                 }
@@ -118,9 +116,9 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             return 0;
         }
 
-        $mover = new MoveBlobsUtil(App::getOrm(), App::getContainer()->getBlobStorage());
+        $mover  = new MoveBlobsUtil(App::getOrm(), App::getContainer()->getBlobStorage());
         $logger = new Logger();
-        $wr = new ConsoleOutputWriter($output);
+        $wr     = new ConsoleOutputWriter($output);
         $logger->addWriter($wr);
 
         $mover->setLogger($logger);
@@ -133,7 +131,7 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         $count = $mover->getCount();
 
-        $output->writeln("Enabled adapters: " . implode(', ', $bs->getAdapterIds()));
+        $output->writeln("Enabled adapters: ".implode(', ', $bs->getAdapterIds()));
         $output->writeln("<info>Blobs waiting to be moved: $count</info>");
         if (!$count) {
             $output->writeln("Nothing to do.");

@@ -56,7 +56,7 @@ class BrandContainerFactory
     public function __construct(SettingsResolver $settings_resolver, ThemeResolver $theme_resolver)
     {
         $this->settings_resolver = $settings_resolver;
-        $this->theme_resolver = $theme_resolver;
+        $this->theme_resolver    = $theme_resolver;
     }
 
     public function create(Brand $brand)

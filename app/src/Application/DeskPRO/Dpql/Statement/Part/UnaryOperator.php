@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Parser;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Parser;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -61,20 +61,20 @@ class UnaryOperator extends AbstractPart
      * @var array
      */
     protected static $_operatorMap = array(
-        Parser::T_OP_BANG => '!',
+        Parser::T_OP_BANG    => '!',
         Parser::T_OP_U_MINUS => '-',
-        Parser::T_OP_MINUS => '-',
-        Parser::T_OP_NOT => 'NOT ', // space after is important
+        Parser::T_OP_MINUS   => '-',
+        Parser::T_OP_NOT     => 'NOT ', // space after is important
     );
 
     /**
      * @var array
      */
     protected static $_operatorTypeMap = array(
-        Parser::T_OP_BANG => 'boolean',
+        Parser::T_OP_BANG    => 'boolean',
         Parser::T_OP_U_MINUS => 'number',
-        Parser::T_OP_MINUS => 'number',
-        Parser::T_OP_NOT => 'boolean',
+        Parser::T_OP_MINUS   => 'number',
+        Parser::T_OP_NOT     => 'boolean',
     );
 
     /**
@@ -84,7 +84,7 @@ class UnaryOperator extends AbstractPart
     public function __construct($operator, AbstractPart $value)
     {
         $this->operator = $operator;
-        $this->value = $value;
+        $this->value    = $value;
     }
 
     /**
@@ -102,12 +102,11 @@ class UnaryOperator extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $childStack = $this->getChildStack($stack);
 
-        $value = $this->value->prepare($statement, $section, $childStack, $select, $result);
-        $operator = self::$_operatorMap[$this->operator];
+        $value        = $this->value->prepare($statement, $section, $childStack, $select, $result);
+        $operator     = self::$_operatorMap[$this->operator];
         $operatorType = self::$_operatorTypeMap[$this->operator];
 
         return new Prepared("($operator{$value->sql()})", "$operator{$value->name()}", false, $operatorType);
@@ -125,6 +124,6 @@ class UnaryOperator extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return self::$_operatorMap[$this->operator]
-            . $this->value->toDpql($statement, $section, $stack);
+            .$this->value->toDpql($statement, $section, $stack);
     }
 }

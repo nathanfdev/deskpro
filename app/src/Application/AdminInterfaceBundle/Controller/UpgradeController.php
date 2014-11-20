@@ -52,18 +52,18 @@ class UpgradeController extends AbstractController
 
     public function indexAction()
     {
-        $token = new ApiToken();
-        $token->scope = ApiToken::SCOPE_SESSION;
-        $token->person = $this->person;
+        $token               = new ApiToken();
+        $token->scope        = ApiToken::SCOPE_SESSION;
+        $token->person       = $this->person;
         $token->date_expires = new \DateTime("+1 hour");
 
         $this->em->persist($token);
         $this->em->flush();
 
         return $this->render('AdminInterfaceBundle:Upgrade:layout.html.twig', array(
-            'api_token'     => $token,
-            'session'       => $this->session->getEntity(),
-            'is_wincache'   => extension_loaded('wincache'),
+            'api_token'             => $token,
+            'session'               => $this->session->getEntity(),
+            'is_wincache'           => extension_loaded('wincache'),
             'initial_request_token' => $this->session->generateSecurityToken('request_token', 600),
         ));
     }

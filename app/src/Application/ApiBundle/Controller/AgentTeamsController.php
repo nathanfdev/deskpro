@@ -55,7 +55,6 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         return $multi;
     }
 
-
     ####################################################################################################################
     # list-teams
     ####################################################################################################################
@@ -71,7 +70,6 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         return $this->createApiResponse($data);
     }
 
-
     ####################################################################################################################
     # get-team
     ####################################################################################################################
@@ -84,7 +82,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
             throw $this->createNotFoundException();
         }
 
-        $data = $team->toApiData();
+        $data            = $team->toApiData();
         $data['members'] = array();
 
         foreach ($team->members as $agent) {
@@ -93,7 +91,6 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
 
         return $this->createApiResponse(array('team' => $data));
     }
-
 
     ####################################################################################################################
     # delete-team
@@ -112,10 +109,9 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         $this->em->flush();
 
         return $this->createApiDeleteResponse(array(
-            'old_team_id' => $old_id
+            'old_team_id' => $old_id,
         ));
     }
-
 
     ####################################################################################################################
     # save-team
@@ -145,7 +141,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
             } else {
                 $team->avatar = null;
             }
-        } elseif($team->avatar) {
+        } elseif ($team->avatar) {
             $team->avatar && $this->em->remove($team->avatar);
             $team->avatar = null;
         }
@@ -164,7 +160,7 @@ class AgentTeamsController extends AbstractController implements ProtectedContro
         $new_members = Arrays::removeFalsey($new_members);
 
         if ($new_members) {
-            $agent_data = $this->container->getAgentData();
+            $agent_data  = $this->container->getAgentData();
             $new_members = array_filter($new_members, function ($a) use ($agent_data) {
                 return $agent_data->get($a) ? true : false;
             });

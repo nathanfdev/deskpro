@@ -65,8 +65,6 @@ class NewsCategory extends CategoryAbstract
      */
     protected $usergroups;
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -75,7 +73,7 @@ class NewsCategory extends CategoryAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\NewsCategory';
-        $metadata->setPrimaryTable(array('name' => 'news_categories',));
+        $metadata->setPrimaryTable(array('name' => 'news_categories'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -92,7 +90,7 @@ class NewsCategory extends CategoryAbstract
         $metadata->mapField(
             array(
                 'fieldName' => 'slug', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'slug', 'unique' => true
+                'nullable'  => false, 'columnName' => 'slug', 'unique' => true,
             )
         );
         $metadata->mapField(
@@ -119,15 +117,15 @@ class NewsCategory extends CategoryAbstract
                 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
                 'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
                 0 => array(
-                    'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null'
+                    'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null',
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\NewsCategory',
-                'mappedBy'  => 'parent', 'orderBy' => array('display_order' => 'ASC',),
+                'mappedBy'  => 'parent', 'orderBy' => array('display_order' => 'ASC'),
             )
         );
         $metadata->mapManyToMany(
@@ -145,13 +143,13 @@ class NewsCategory extends CategoryAbstract
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'articles', 'targetEntity' => 'Application\\DeskPRO\\Entity\\News',
-                'mappedBy'  => 'category'
+                'mappedBy'  => 'category',
             )
         );
     }

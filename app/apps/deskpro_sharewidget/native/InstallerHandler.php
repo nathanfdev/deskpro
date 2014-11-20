@@ -34,8 +34,8 @@
 
 namespace deskpro_sharewidget;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
@@ -46,7 +46,6 @@ class InstallerHandler extends AbstractInstallerHandler
     {
         $this->_doInstall($context);
     }
-
 
     /**
      * {@inheritDoc}
@@ -60,7 +59,6 @@ class InstallerHandler extends AbstractInstallerHandler
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    null);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -73,7 +71,6 @@ class InstallerHandler extends AbstractInstallerHandler
         $context->getContainer()->getSettingsHandler()->setSetting('core.show_share_gplus',    $context->getApp()->getSetting('show_share_gplus')    ?: null);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -81,7 +78,6 @@ class InstallerHandler extends AbstractInstallerHandler
     {
         $this->_doInstall($context);
     }
-
 
     /**
      * @param InstallerContext $context

@@ -71,7 +71,7 @@ class AppManipulatorContext
 
     public function __construct(array $settings, $inputTitle)
     {
-        $this->settings = $settings;
+        $this->settings   = $settings;
         $this->inputTitle = $inputTitle;
     }
 

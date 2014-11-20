@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
-use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface;
 use Application\DeskPRO\EmailGateway\FetcherStorage\Pop3Storage;
+use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 
 //TODO this is not actually used in the Runner
 class FetcherStorageFactory
@@ -70,7 +70,6 @@ class FetcherStorageFactory
             $config->secure_mode
         );
     }
-
 
     /**
      * @param  GmailConfig $config

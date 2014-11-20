@@ -53,14 +53,13 @@ class SmsTwilioAction extends AbstractSmsAction
             return $this->twilio_provider;
         }
 
-        $sid = $this->getApp()->getSetting('account_sid');
+        $sid   = $this->getApp()->getSetting('account_sid');
         $token = $this->getApp()->getSetting('auth_token');
 
         $this->twilio_provider = new TwilioSmsProvider($sid, $token);
 
         return $this->twilio_provider;
     }
-
 
     /**
      * {@inheritDoc}

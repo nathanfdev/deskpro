@@ -36,8 +36,8 @@ namespace Application\DeskPRO\Brand;
 
 use Application\DeskPRO\Entity\Brand;
 use Application\DeskPRO\NewSettings\SettingsBag;
-use Application\PortalBundle\Theme\ThemeResolver;
 use Application\PortalBundle\Theme\ThemeInterface;
+use Application\PortalBundle\Theme\ThemeResolver;
 
 /**
  * The BrandContainer is a hub that holds all of the information that might be needed in the system that relate to a

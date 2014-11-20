@@ -111,10 +111,9 @@ class TicketEscalation extends DomainObject
 
     public function __construct()
     {
-        $this->actions = new TriggerActions();
+        $this->actions      = new TriggerActions();
         $this->date_created = new \DateTime();
     }
-
 
     /**
      * @return int
@@ -123,7 +122,6 @@ class TicketEscalation extends DomainObject
     {
         return $this->id;
     }
-
 
     /**
      * Gets the relevant time field on ticket for a particular ticket trigger.
@@ -152,21 +150,18 @@ class TicketEscalation extends DomainObject
         return null;
     }
 
-
-
     /**
      * {@inheritDoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
+        $data              = parent::toApiData($primary, $deep, $visited);
         $data['terms']     = $this->terms;
         $data['terms_any'] = $this->terms_any;
         $data['actions']   = $this->actions->exportToArray();
 
         return $data;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -180,7 +175,7 @@ class TicketEscalation extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'ticket_escalations'
+            'name' => 'ticket_escalations',
         ));
 
         $metadata->mapField(array(

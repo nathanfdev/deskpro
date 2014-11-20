@@ -94,14 +94,12 @@ class DownloadResults
                     array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
                     array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
                 );
-
             } elseif (isset($options['show_all'])) {
                 $terms = array(
                     array('type' => 'agent_list', 'op' => 'is', 'options' => 1),
                 );
-
             } else {
-                $form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
+                $form_terms = $controller->in->getCleanValueArray('terms', 'raw', 'string');
                 $form_terms = Arrays::removeFalsey($form_terms);
 
                 $terms = $term_rules->readForm($form_terms);
@@ -128,11 +126,11 @@ class DownloadResults
 
             $results = $searcher->getMatches();
 
-            $result_cache = new ResultCache();
-            $result_cache['person'] = $controller->person;
-            $result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['extra'] = array('summary' => $searcher->getSummary());
-            $result_cache['results'] = $results;
+            $result_cache                = new ResultCache();
+            $result_cache['person']      = $controller->person;
+            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+            $result_cache['extra']       = array('summary' => $searcher->getSummary());
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
             $controller->em->persist($result_cache);
@@ -153,7 +151,6 @@ class DownloadResults
         return $helper;
     }
 
-
     public function __construct($controller, ResultCache $result_cache = null)
     {
         $this->controller = $controller;
@@ -164,7 +161,6 @@ class DownloadResults
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\ResultCache
      */
@@ -172,7 +168,6 @@ class DownloadResults
     {
         return $this->result_cache;
     }
-
 
     /**
      * @param array $download_ids
@@ -182,7 +177,6 @@ class DownloadResults
         $this->download_ids = $download_ids;
     }
 
-
     /**
      * @return array
      */
@@ -190,7 +184,6 @@ class DownloadResults
     {
         return $this->download_ids;
     }
-
 
     /**
      * @return array
@@ -205,11 +198,10 @@ class DownloadResults
         return $this->_getPageFromDownloadIds($this->getDownloadIds(), $page, $per_page);
     }
 
-
     protected function _getPageFromDownloadIds(array $download_ids, $page, $per_page)
     {
         $page_download_ids = Arrays::getPageChunk($download_ids, $page, $per_page);
-        $downloads_raw = App::getEntityRepository('DeskPRO:Download')->getByResultIds($page_download_ids);
+        $downloads_raw     = App::getEntityRepository('DeskPRO:Download')->getByResultIds($page_download_ids);
 
         $downloads = array();
         foreach ($download_ids as $tid) {

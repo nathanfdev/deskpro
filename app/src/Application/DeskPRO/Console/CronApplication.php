@@ -34,8 +34,8 @@
 namespace Application\DeskPRO\Console;
 
 use Application\DeskPRO\Command\InternalUpgradeRunnerCommand;
-use Symfony\Component\Console\Application as BaseApplication;
 use Application\DeskPRO\Command\WorkerJobCommand;
+use Symfony\Component\Console\Application as BaseApplication;
 use Symfony\Component\Console\Helper\HelperSet;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputDefinition;
@@ -43,8 +43,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\DependencyInjection\ContainerAwareInterface;
-use Symfony\Component\HttpKernel\KernelInterface;
 use Symfony\Component\HttpKernel\Kernel;
+use Symfony\Component\HttpKernel\KernelInterface;
 
 class CronApplication extends BaseApplication
 {

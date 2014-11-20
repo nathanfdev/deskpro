@@ -79,7 +79,6 @@ class LoginProcessor
      */
     private $test_mode;
 
-
     /**
      * @param Usersource $usersource
      * @param Identity   $identity
@@ -87,10 +86,10 @@ class LoginProcessor
      */
     public function __construct(Usersource $usersource, Identity $identity, $testMode = false)
     {
-        $this->identity = $identity;
+        $this->identity   = $identity;
         $this->usersource = $usersource;
         $this->new_person = false;
-        $this->test_mode = $testMode;
+        $this->test_mode  = $testMode;
     }
 
     /**
@@ -98,7 +97,9 @@ class LoginProcessor
      */
     public function getPerson()
     {
-        if ($this->person !== null) return $this->person;
+        if ($this->person !== null) {
+            return $this->person;
+        }
 
         #------------------------------
         # Figure if we have an existing Person mapped, or if its
@@ -125,7 +126,6 @@ class LoginProcessor
         #------------------------------
 
         if (!$this->assoc) {
-
             $this->person = null;
 
             // If we can trust the email address and there already exists a person
@@ -133,7 +133,7 @@ class LoginProcessor
             $set_email = false;
             if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
                 $set_email = $mapped_fields->get('email');
-                $email = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
+                $email     = App::getEntityRepository('DeskPRO:PersonEmail')->getEmail($mapped_fields->get('email'));
                 if ($email) {
                     $this->person = $email->person;
                 }
@@ -141,14 +141,14 @@ class LoginProcessor
 
             // if someone has already associated this twitter account with them, then connect with them
             if ($mapped_fields->has('twitter')) {
-                $twitter = $mapped_fields->get('twitter');
+                $twitter      = $mapped_fields->get('twitter');
                 $this->person = App::getEntityRepository('DeskPRO:PersonTwitterUser')->getVerifiedPersonForTwitterUser($twitter['user_id']);
             }
 
             if (!$this->person) {
-                $this->new_person = true;
-                $this->person = new Person();
-                $this->person->is_user = true;
+                $this->new_person              = true;
+                $this->person                  = new Person();
+                $this->person->is_user         = true;
                 $this->person->creation_system = 'web.usersource';
             }
 
@@ -160,7 +160,7 @@ class LoginProcessor
 
             if ($mapped_fields->has('picture_data') && !$this->person->picture_blob) {
                 $filename = tempnam(dp_get_tmp_dir(), 'picture');
-                $fp = @fopen($filename, 'w');
+                $fp       = @fopen($filename, 'w');
                 if ($fp) {
                     @fwrite($fp, $mapped_fields->get('picture_data'));
                     @fclose($fp);
@@ -168,17 +168,17 @@ class LoginProcessor
                     $mime_map = array(
                         IMAGETYPE_GIF => array('gif', 'image/gif'),
                         IMAGETYPE_JPEG => array('jpg', 'image/jpeg'),
-                        IMAGETYPE_PNG => array('png', 'image/png')
+                        IMAGETYPE_PNG => array('png', 'image/png'),
                     );
                     $image_info = getimagesize($filename);
                     if ($image_info && $image_info[0] && $image_info[1] && isset($mime_map[$image_info[2]])) {
                         $mime = $mime_map[$image_info[2]];
                         $file = new \Symfony\Component\HttpFoundation\File\UploadedFile(
-                            $filename, 'picture.' . $mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
+                            $filename, 'picture.'.$mime[0], $mime[1], strlen($mapped_fields->get('picture_data'))
                         );
 
                         $accept = App::getContainer()->getAttachmentAccepter();
-                        $blob = $accept->accept($file);
+                        $blob   = $accept->accept($file);
                         $this->person->setPictureBlob($blob);
                     }
                 }
@@ -189,10 +189,10 @@ class LoginProcessor
 
             // TODO: we need to update this to the person phone_number field when we deprecate the contact data phone number
             if ($mapped_fields->has('phone')) {
-                $contact_data = new PersonContactData();
+                $contact_data               = new PersonContactData();
                 $contact_data->contact_type = 'phone';
                 $contact_data->applyFormData(array(
-                    'number' => $mapped_fields->get('phone')
+                    'number' => $mapped_fields->get('phone'),
                 ));
 
                 $contact_data->person = $this->person;
@@ -224,7 +224,7 @@ class LoginProcessor
                 ", array($this->person->id, $twitter['user_id'], $twitter['screen_name'], $twitter['oauth_token'], $twitter['oauth_token_secret']));
 
                 $has_account = false;
-                foreach ($this->person->getContactData('twitter') AS $twitter_details) {
+                foreach ($this->person->getContactData('twitter') as $twitter_details) {
                     if ($twitter_details->field_1 == $twitter['screen_name'] || ($twitter_details->field_3 && $twitter_details->field_3 == $twitter['user_id'])) {
                         $twitter_details->field_10 = '1';
                         $this->persist($em, $twitter_details);
@@ -233,13 +233,13 @@ class LoginProcessor
                 }
 
                 if (!$has_account) {
-                    $twitter_details = new \Application\DeskPRO\Entity\PersonContactData();
+                    $twitter_details               = new \Application\DeskPRO\Entity\PersonContactData();
                     $twitter_details->contact_type = 'twitter';
-                    $twitter_details->person = $this->person;
-                    $twitter_details->field_1 = $twitter['screen_name'];
-                    $twitter_details->field_2 = '0';
-                    $twitter_details->field_3 = $twitter['user_id'];
-                    $twitter_details->field_10 = '1';
+                    $twitter_details->person       = $this->person;
+                    $twitter_details->field_1      = $twitter['screen_name'];
+                    $twitter_details->field_2      = '0';
+                    $twitter_details->field_3      = $twitter['user_id'];
+                    $twitter_details->field_10     = '1';
                     $this->persist($em, $twitter_details);
                 }
 
@@ -247,7 +247,7 @@ class LoginProcessor
             }
 
             // New assoc
-            $this->assoc = new PersonUsersourceAssoc();
+            $this->assoc                      = new PersonUsersourceAssoc();
             $this->assoc['person']            = $this->person;
             $this->assoc['usersource']        = $this->usersource;
             $this->assoc['identity']          = $this->identity->getIdentity();
@@ -259,7 +259,6 @@ class LoginProcessor
         #------------------------------
         # The assoc exists
         #------------------------------
-
         } else {
             $this->person = $this->assoc['person'];
 
@@ -310,28 +309,33 @@ class LoginProcessor
         return $this->person;
     }
 
-
     public function beginTransaction(EntityManager $em)
     {
-        if (!$this->test_mode) $em->beginTransaction();
+        if (!$this->test_mode) {
+            $em->beginTransaction();
+        }
     }
 
     public function commit(EntityManager $em)
     {
-        if (!$this->test_mode) $em->commit();
+        if (!$this->test_mode) {
+            $em->commit();
+        }
     }
-
 
     public function persist(EntityManager $em, $entity)
     {
-        if (!$this->test_mode) $em->persist($entity);
+        if (!$this->test_mode) {
+            $em->persist($entity);
+        }
     }
 
     public function flush(EntityManager $em)
     {
-        if (!$this->test_mode) $em->flush();
+        if (!$this->test_mode) {
+            $em->flush();
+        }
     }
-
 
     protected function sendAgentWelcomeEmail()
     {
@@ -343,11 +347,11 @@ class LoginProcessor
                     'DeskPRO:emails_agent:agent-welcome-usersource.html.twig',
                     array(
                         'agent'      => $this->person,
-                        'usersource' => $this->usersource
+                        'usersource' => $this->usersource,
                     )
                 );
                 $attach = \Swift_Attachment::fromPath(
-                    DP_ROOT . '/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
+                    DP_ROOT.'/src/Application/AgentBundle/Resources/assets/agent-quickstart/en_US.pdf',
                     'application/pdf'
                 );
                 $attach->setFilename('Getting Started with DeskPRO.pdf');

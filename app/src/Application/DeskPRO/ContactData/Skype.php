@@ -57,9 +57,9 @@ class Skype extends AbstractContactData
     public function getTemplateVars(ContactDataAbstract $contact_record)
     {
         return array(
-            'comment' => $contact_record->comment,
-            'username' => $contact_record->field_1,
-            'call_link' => 'skype:' + urlencode($contact_record->field_1)
+            'comment'   => $contact_record->comment,
+            'username'  => $contact_record->field_1,
+            'call_link' => 'skype:' + urlencode($contact_record->field_1),
         );
     }
 

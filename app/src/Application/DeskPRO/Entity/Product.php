@@ -66,7 +66,6 @@ class Product extends CategoryAbstract implements HasPhraseName
         $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
-
     /**
      * @return string
      */
@@ -74,7 +73,6 @@ class Product extends CategoryAbstract implements HasPhraseName
     {
         return App::getTranslator()->getPhraseObject($this, 'title');
     }
-
 
     /**
      * @return string
@@ -95,11 +93,10 @@ class Product extends CategoryAbstract implements HasPhraseName
         if (!$property) {
             $property = 'title';
         }
-        $phrase_name = 'obj_product.' . $this->id . '_' . $property;
+        $phrase_name = 'obj_product.'.$this->id.'_'.$property;
 
         return $phrase_name;
     }
-
 
     /**
      * Get the default value phrase for the object
@@ -115,7 +112,6 @@ class Product extends CategoryAbstract implements HasPhraseName
 
         return $this->title;
     }
-
 
     /**
      * @return array
@@ -133,7 +129,6 @@ class Product extends CategoryAbstract implements HasPhraseName
 
         return $children;
     }
-
 
     /**
      * Find an existing data record for a field id.
@@ -156,7 +151,6 @@ class Product extends CategoryAbstract implements HasPhraseName
         return null;
     }
 
-
     /**
      * Set custom field data for a particular field.
      *
@@ -167,10 +161,12 @@ class Product extends CategoryAbstract implements HasPhraseName
     public function setCustomData($field_id, $value_type, $value)
     {
         $custom_data = $this->getCustomDataForField($field_id);
-        $is_new = false;
+        $is_new      = false;
 
         if (!$custom_data) {
-            if ($value === null) return null;
+            if ($value === null) {
+                return null;
+            }
 
             $is_new = true;
 
@@ -178,7 +174,7 @@ class Product extends CategoryAbstract implements HasPhraseName
             if (!$field) {
                 throw new \Exception("Invalid field_id `$field_id`");
             }
-            $custom_data = new CustomDataProduct();
+            $custom_data        = new CustomDataProduct();
             $custom_data->field = $field;
         }
 
@@ -202,7 +198,6 @@ class Product extends CategoryAbstract implements HasPhraseName
         }
 
         if ($field->getTypeName() == 'choice') {
-
         }
 
         $custom_data[$value_type] = $value;
@@ -221,13 +216,13 @@ class Product extends CategoryAbstract implements HasPhraseName
     public function removeCustomDataForField($field)
     {
         $parent_id = null;
-        $field_id = $field['id'];
+        $field_id  = $field['id'];
         if ($field->parent) {
             $parent_id = $field->parent['id'];
         }
 
         foreach ($this->custom_data as $data) {
-            if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+            if ($data['field_id'] == $field_id or $data['field_id'] == $parent_id) {
                 $this->custom_data->removeElement($data);
                 $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
             }
@@ -245,7 +240,6 @@ class Product extends CategoryAbstract implements HasPhraseName
         $data['product'] = $this;
     }
 
-
     /**
      * Check if this product has a custom field.
      *
@@ -261,14 +255,13 @@ class Product extends CategoryAbstract implements HasPhraseName
         }
 
         foreach ($this->custom_data as $data) {
-            if ($data->field->parent AND $data->field->parent['id'] == $field_id) {
+            if ($data->field->parent and $data->field->parent['id'] == $field_id) {
                 return true;
             }
         }
 
         return false;
     }
-
 
     /**
      * @return array
@@ -279,8 +272,6 @@ class Product extends CategoryAbstract implements HasPhraseName
 
         return $field_manager->getDisplayArrayForObject($this);
     }
-
-
 
     /**
      * @param  bool  $primary
@@ -309,7 +300,6 @@ class Product extends CategoryAbstract implements HasPhraseName
         return $data;
     }
 
-
     /**
      * @return string
      */
@@ -317,8 +307,6 @@ class Product extends CategoryAbstract implements HasPhraseName
     {
         return $this->getFullTitle();
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -328,16 +316,16 @@ class Product extends CategoryAbstract implements HasPhraseName
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Product';
-        $metadata->setPrimaryTable(array( 'name' => 'products', ));
+        $metadata->setPrimaryTable(array( 'name' => 'products'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
-        $metadata->mapField(array( 'fieldName' => 'depth', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'depth', ));
-        $metadata->mapField(array( 'fieldName' => 'root', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'root', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField(array( 'fieldName' => 'depth', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'depth'));
+        $metadata->mapField(array( 'fieldName' => 'root', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'root'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', ), ),  ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC', ), ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataProduct', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'product', 'orphanRemoval' => true,  'dpApi' => false));
+        $metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => NULL, 'inversedBy' => 'children', 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id'))));
+        $metadata->mapOneToMany(array( 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Product', 'mappedBy' => 'parent',  'orderBy' => array( 'display_order' => 'ASC')));
+        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataProduct', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'product', 'orphanRemoval' => true,  'dpApi' => false));
     }
 }

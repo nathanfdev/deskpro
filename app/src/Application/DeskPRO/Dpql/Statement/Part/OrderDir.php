@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -57,7 +57,7 @@ class OrderDir extends AbstractPart
 
     public function __construct(AbstractPart $order, $orderDir)
     {
-        $this->order = $order;
+        $this->order    = $order;
         $this->orderDir = $orderDir;
     }
 
@@ -76,8 +76,7 @@ class OrderDir extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         throw new Exception('Order direction prepare() cannot not be called');
     }
 
@@ -92,6 +91,6 @@ class OrderDir extends AbstractPart
      */
     public function toDpql(Display $statement, $section, array $stack)
     {
-        return $this->order->toDpql($statement, $section, $stack) . ' ' . $this->orderDir;
+        return $this->order->toDpql($statement, $section, $stack).' '.$this->orderDir;
     }
 }

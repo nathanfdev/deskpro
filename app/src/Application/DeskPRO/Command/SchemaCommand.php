@@ -55,7 +55,7 @@ class SchemaCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwa
         $schemadiff = \Application\DeskPRO\ORM\Util\Util::getUpdateSchemaSql();
         if ($schemadiff) {
             foreach ($schemadiff as $line) {
-                $output->writeln($line . ";");
+                $output->writeln($line.";");
 
                 if ($do_execute) {
                     $t1 = microtime(true);

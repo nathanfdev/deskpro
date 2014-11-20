@@ -57,7 +57,6 @@ class MultiPermissions implements PermissionStrategyInterface
         $this->fn = $fn;
     }
 
-
     /**
      * @param PermissionStrategyInterface $p
      * @param string                      $type
@@ -69,7 +68,6 @@ class MultiPermissions implements PermissionStrategyInterface
         }
         $this->perms[$type][] = $p;
     }
-
 
     /**
      * {@inheritDoc}

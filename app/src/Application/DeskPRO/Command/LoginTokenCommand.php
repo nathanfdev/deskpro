@@ -60,8 +60,8 @@ class LoginTokenCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             return 1;
         }
 
-        $secret = sha1($person->secret_string . $person->salt);
-        $token = Util::generateStaticSecurityToken($secret, 300);
+        $secret = sha1($person->secret_string.$person->salt);
+        $token  = Util::generateStaticSecurityToken($secret, 300);
 
         $output->writeln("Log in with:");
         $output->writeln("<info>Email: $email</info>");
@@ -69,15 +69,15 @@ class LoginTokenCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
 
         if ($person->is_agent) {
             if ($person->can_admin) {
-                $url = App::getRouter()->generateUrl('user') . 'agent/login?tok=' . $person->getId() . '-' . $token;
+                $url = App::getRouter()->generateUrl('user').'agent/login?tok='.$person->getId().'-'.$token;
                 $output->writeln("<info>Admin Quick Login: $url</info>");
             }
 
-            $url = App::getRouter()->generateUrl('user') . 'agent/login?tok=' . $person->getId() . '-' . $token;
+            $url = App::getRouter()->generateUrl('user').'agent/login?tok='.$person->getId().'-'.$token;
             $output->writeln("<info>Agent Quick Login: $url</info>");
         }
 
-        $url = App::getRouter()->generateUrl('user') . 'login?tok=' . $person->getId() . '-' . $token;
+        $url = App::getRouter()->generateUrl('user').'login?tok='.$person->getId().'-'.$token;
         $output->writeln("<info>User Quick Login: $url</info>");
 
         $output->writeln("Note: This token will only work for the next 5 minutes.");

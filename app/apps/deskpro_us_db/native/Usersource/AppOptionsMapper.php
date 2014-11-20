@@ -51,7 +51,7 @@ class AppOptionsMapper
             $settings = $app_or_settings->getSettings();
         } else {
             if (!is_array($app_or_settings)) {
-                throw new \InvalidArgumentException;
+                throw new \InvalidArgumentException();
             }
             $settings = $app_or_settings;
         }
@@ -59,7 +59,7 @@ class AppOptionsMapper
         $settings = new OptionsArray($settings);
 
         $connection_options = array();
-        $options = array();
+        $options            = array();
 
         switch ($settings->get('db_type')) {
             case 'pdo_mysql':
@@ -113,18 +113,18 @@ class AppOptionsMapper
                 break;
             case 'pdo_odbc':
                 $options['db_custom_options'] = $settings->get('db_odbc_dsn', '');
-                $odbc_settings = Strings::parseEqualsLines($settings->get('db_odbc_dsn'));
+                $odbc_settings                = Strings::parseEqualsLines($settings->get('db_odbc_dsn'));
 
                 $connection_options['driverClass'] = 'Orb\\Doctrine\\DBAL\\Driver\\PDOODBC\\SQLServerDriver';
-                $connection_options['dsn'] = @$odbc_settings['dsn'];
-                $connection_options['user'] = @$odbc_settings['user'];
-                $connection_options['password'] = @$odbc_settings['password'];
+                $connection_options['dsn']         = @$odbc_settings['dsn'];
+                $connection_options['user']        = @$odbc_settings['user'];
+                $connection_options['password']    = @$odbc_settings['password'];
                 break;
         }
 
         if ($settings->get('db_with_options') && ($custom_settings = trim($settings->get('db_custom_options', '')))) {
             $options['db_custom_options'] = $settings->get('db_custom_options', '');
-            $custom_settings = Strings::parseEqualsLines($custom_settings);
+            $custom_settings              = Strings::parseEqualsLines($custom_settings);
             if ($custom_settings) {
                 $connection_options['driverOptions'] = $custom_settings;
             }

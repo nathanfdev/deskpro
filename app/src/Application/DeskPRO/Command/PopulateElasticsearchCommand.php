@@ -3,17 +3,15 @@
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
-use Symfony\Component\Process\Process;
-use Symfony\Component\Console\Input\InputOption;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-
-use FOS\ElasticaBundle\Resetter;
+use Application\DeskPRO\NewSearch\Provider\Doctrine as DoctrineProvider;
 use FOS\ElasticaBundle\IndexManager;
 use FOS\ElasticaBundle\Provider\ProviderRegistry;
-
-use Application\DeskPRO\NewSearch\Provider\Doctrine as DoctrineProvider;
+use FOS\ElasticaBundle\Resetter;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\Process\Process;
 
 /**
  * Populate Elasticsearch Command
@@ -70,16 +68,16 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
      */
     protected function initialize(InputInterface $input, OutputInterface $output)
     {
-        $this->log_file = dp_get_log_dir() . '/es-indexer.log';
+        $this->log_file = dp_get_log_dir().'/es-indexer.log';
         if (file_exists($this->log_file)) {
             @unlink($this->log_file);
         }
         @touch($this->log_file);
         @chmod($this->log_file, 0777);
 
-        $this->indexManager = $this->getContainer()->get('fos_elastica.index_manager');
+        $this->indexManager     = $this->getContainer()->get('fos_elastica.index_manager');
         $this->providerRegistry = $this->getContainer()->get('fos_elastica.provider_registry');
-        $this->resetter = $this->getContainer()->get('fos_elastica.resetter');
+        $this->resetter         = $this->getContainer()->get('fos_elastica.resetter');
     }
 
     /**
@@ -107,7 +105,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         }
 
         $indexes = array_keys($this->indexManager->getAllIndexes());
-        $em = App::$container->getEm();
+        $em      = App::$container->getEm();
 
         $es_status = $em->getRepository('DeskPRO:DataStore')->getByName('sys.es_indexer', true);
         $es_status->setData('date_created', new \DateTime());
@@ -122,12 +120,12 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             $providers = $this->providerRegistry->getIndexProviders($index);
 
             foreach ($providers as $type => $provider) {
-                $provider_id = $index . '_' . $type;
-                $total = $provider->getCounts();
+                $provider_id              = $index.'_'.$type;
+                $total                    = $provider->getCounts();
                 $all_totals[$provider_id] = $total;
 
-                $es_status->setData($provider_id . '_total', $total);
-                $es_status->setData($provider_id . '_done', 0);
+                $es_status->setData($provider_id.'_total', $total);
+                $es_status->setData($provider_id.'_done', 0);
             }
         }
 
@@ -135,7 +133,6 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
         $em->flush();
 
         foreach ($indexes as $index) {
-
             /** @var $providers DoctrineProvider[] */
             $providers = $this->providerRegistry->getIndexProviders($index);
 
@@ -145,11 +142,10 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
             }
 
             foreach ($providers as $type => $provider) {
+                $provider_id = $index.'_'.$type;
 
-                $provider_id = $index . '_' . $type;
-
-                $total = $all_totals[$provider_id];
-                $offset = $input->getOption('offset');
+                $total     = $all_totals[$provider_id];
+                $offset    = $input->getOption('offset');
                 $batchSize = $input->getOption('batch-size');
 
                 for (; $offset < $total; $offset += $batchSize) {
@@ -157,7 +153,7 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
                     $this->runCommand($arguments, $output);
 
                     $done = min($total, $offset + $batchSize);
-                    $es_status->setData($provider_id . '_done', $done);
+                    $es_status->setData($provider_id.'_done', $done);
                     $es_status->setData('date_last', new \DateTime());
 
                     $em->persist($es_status);
@@ -175,24 +171,24 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     private function runCommand($arguments, OutputInterface $output)
     {
         $php_path = dp_get_php_path(false);
-        $file = escapeshellarg(realpath(DP_ROOT . '/../cmd.php'));
+        $file     = escapeshellarg(realpath(DP_ROOT.'/../cmd.php'));
 
         if (defined('DPC_IS_CLOUD')) {
-            $file .= ' --dpc-site-id ' . DPC_SITE_ID;
+            $file .= ' --dpc-site-id '.DPC_SITE_ID;
         }
 
-        $command = $php_path . ' ' . $file . ' dp:elastica:index ' . implode(' ', $arguments);
+        $command = $php_path.' '.$file.' dp:elastica:index '.implode(' ', $arguments);
         $process = new Process($command);
         $process->setTimeout(600);
 
         $log_file = $this->log_file;
         $process->run(function ($type, $buffer) use ($output, $log_file) {
-            $time_prefix = '[' . date('Y-m-d H:i:s') . '] ';
+            $time_prefix = '['.date('Y-m-d H:i:s').'] ';
             if (Process::ERR === $type) {
-                file_put_contents($log_file, $time_prefix . 'ERROR: ' . trim($buffer). "\n", FILE_APPEND);
+                file_put_contents($log_file, $time_prefix.'ERROR: '.trim($buffer)."\n", FILE_APPEND);
                 $output->write("<error>$buffer</error>");
             } else {
-                file_put_contents($log_file, $time_prefix . trim($buffer) ."\n", FILE_APPEND);
+                file_put_contents($log_file, $time_prefix.trim($buffer)."\n", FILE_APPEND);
                 $output->write($buffer);
             }
         });
@@ -202,15 +198,15 @@ class PopulateElasticsearchCommand extends ContainerAwareCommand
     {
         $arguments = array();
 
-        $arguments[] = '--index="' . $index . '"';
-        $arguments[] = '--type="' . $type . '"';
-        $arguments[] = '--offset="' . $offset . '"';
-        $arguments[] = '--limit="' . $limit . '"';
-        $arguments[] = '--batch-size="' . $batchSize . '"';
+        $arguments[] = '--index="'.$index.'"';
+        $arguments[] = '--type="'.$type.'"';
+        $arguments[] = '--offset="'.$offset.'"';
+        $arguments[] = '--limit="'.$limit.'"';
+        $arguments[] = '--batch-size="'.$batchSize.'"';
         $arguments[] = '--no-reset ';
 
         if ($input->hasOption('sleep')) {
-            $arguments[] = '--sleep="' . $input->getOption('sleep') . '"';
+            $arguments[] = '--sleep="'.$input->getOption('sleep').'"';
         }
 
         if ($input->hasOption('ignore-errors')) {

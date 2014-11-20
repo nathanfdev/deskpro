@@ -41,9 +41,9 @@ abstract class AbstractRenderer
 {
     /** @var array */
     protected static $_rendererMap = array(
-        'csv' => 'Csv',
+        'csv'  => 'Csv',
         'html' => 'Html',
-        'pdf' => 'Pdf'
+        'pdf'  => 'Pdf',
     );
 
     /**
@@ -160,10 +160,10 @@ abstract class AbstractRenderer
             $outputFormat = array_unique($outputFormat);
         }
 
-        $this->_typeName = $typeName;
-        $this->_outputFormat = $outputFormat;
-        $this->_handler = $resultHandler;
-        $this->_results = $results;
+        $this->_typeName      = $typeName;
+        $this->_outputFormat  = $outputFormat;
+        $this->_handler       = $resultHandler;
+        $this->_results       = $results;
         $this->_valueRenderer = $this->_getDefaultValueRenderer();
     }
 
@@ -177,7 +177,7 @@ abstract class AbstractRenderer
         $name = preg_replace('/[^a-zA-Z0-9_ -]/', '', $name);
         $name = str_replace(' ', '-', $name);
 
-        return strtolower($name) . '.' . $this->getExtension();
+        return strtolower($name).'.'.$this->getExtension();
     }
 
     /**
@@ -191,11 +191,11 @@ abstract class AbstractRenderer
 
         if ($splitColumns) {
             $output = array();
-            foreach ($this->_results->getSplitResults() AS $splitResult) {
+            foreach ($this->_results->getSplitResults() as $splitResult) {
                 $result = $this->_renderFormatsWithFallback($this->_outputFormat, $splitResult[0]);
                 if ($result) {
                     $splitPrint = array();
-                    foreach ($this->_handler->getSplitColumns() AS $splitColumn) {
+                    foreach ($this->_handler->getSplitColumns() as $splitColumn) {
                         $splitPrint[] = $this->_renderCellValue($splitResult[1], $splitColumn);
                     }
 
@@ -213,10 +213,10 @@ abstract class AbstractRenderer
 
     protected function _renderFormatsWithFallback(array $formats, array $rows)
     {
-        $final = array();
+        $final   = array();
         $success = false;
 
-        foreach ($formats AS $format) {
+        foreach ($formats as $format) {
             $result = $this->_render($format, $rows);
             if ($result !== false) {
                 $success = true;
@@ -321,32 +321,32 @@ abstract class AbstractRenderer
         $selectColumns = $this->_handler->getSelectColumns();
 
         $distinctXValues = array();
-        $distinctXSort = array();
+        $distinctXSort   = array();
         $distinctYValues = array();
-        $distinctYSort = array();
-        $lookup = array();
+        $distinctYSort   = array();
+        $lookup          = array();
 
-        foreach ($rows AS $row) {
+        foreach ($rows as $row) {
             $xPath = array('root');
-            foreach ($groupXColumns AS $column) {
+            foreach ($groupXColumns as $column) {
                 $pathString = $this->_getGroupPathKey($xPath);
                 $groupValue = $this->getColumnValue($row, $column['groupResultId']);
-                $rendered = $this->_renderCellValue($row, $column);
+                $rendered   = $this->_renderCellValue($row, $column);
 
                 $distinctXValues[$pathString][$groupValue] = $rendered;
-                $distinctXSort[$pathString][$groupValue] = $groupValue === null ? null : $this->getColumnValue($row, $column);
+                $distinctXSort[$pathString][$groupValue]   = $groupValue === null ? null : $this->getColumnValue($row, $column);
 
                 $xPath[] = $groupValue;
             }
 
             $yPath = array('root');
-            foreach ($groupYColumns AS $column) {
+            foreach ($groupYColumns as $column) {
                 $pathString = $this->_getGroupPathKey($yPath);
                 $groupValue = $this->getColumnValue($row, $column['groupResultId']);
-                $rendered = $this->_renderCellValue($row, $column);
+                $rendered   = $this->_renderCellValue($row, $column);
 
                 $distinctYValues[$pathString][$groupValue] = $rendered;
-                $distinctYSort[$pathString][$groupValue] = $groupValue === null ? null : $this->getColumnValue($row, $column);
+                $distinctYSort[$pathString][$groupValue]   = $groupValue === null ? null : $this->getColumnValue($row, $column);
 
                 $yPath[] = $groupValue;
             }
@@ -355,21 +355,21 @@ abstract class AbstractRenderer
                 $this->_renderMatrixCell($row, $selectColumns);
         }
 
-        foreach ($distinctXSort AS $path => $sortValues) {
+        foreach ($distinctXSort as $path => $sortValues) {
             uasort($sortValues, 'strnatcasecmp');
 
-            $values = $distinctXValues[$path];
+            $values                 = $distinctXValues[$path];
             $distinctXValues[$path] = array();
-            foreach ($sortValues AS $key => $null) {
+            foreach ($sortValues as $key => $null) {
                 $distinctXValues[$path][$key] = $values[$key];
             }
         }
-        foreach ($distinctYSort AS $path => $sortValues) {
+        foreach ($distinctYSort as $path => $sortValues) {
             uasort($sortValues, 'strnatcasecmp');
 
-            $values = $distinctYValues[$path];
+            $values                 = $distinctYValues[$path];
             $distinctYValues[$path] = array();
-            foreach ($sortValues AS $key => $null) {
+            foreach ($sortValues as $key => $null) {
                 $distinctYValues[$path][$key] = $values[$key];
             }
         }
@@ -377,7 +377,7 @@ abstract class AbstractRenderer
         return array(
             'xDistinct' => $distinctXValues,
             'yDistinct' => $distinctYValues,
-            'lookup' => $lookup
+            'lookup'    => $lookup,
         );
     }
 
@@ -397,8 +397,8 @@ abstract class AbstractRenderer
         }
 
         $output = array();
-        foreach ($distinct[$pathString] AS $value => $null) {
-            $localPath = $path;
+        foreach ($distinct[$pathString] as $value => $null) {
+            $localPath   = $path;
             $localPath[] = $value;
 
             $children = $this->_getFinalMatrixPaths($localPath, $distinct);
@@ -431,11 +431,11 @@ abstract class AbstractRenderer
 
         $output = array();
 
-        foreach ($distinctValues[$pathLookup] AS $key => $value) {
-            $localPath = $path;
+        foreach ($distinctValues[$pathLookup] as $key => $value) {
+            $localPath   = $path;
             $localPath[] = $key;
 
-            $localPrintPath = $printPath;
+            $localPrintPath   = $printPath;
             $localPrintPath[] = $value;
 
             $childOutput = $this->_getFinalMatrixPathsWithPrintable($localPath, $distinctValues, $localPrintPath);
@@ -461,7 +461,7 @@ abstract class AbstractRenderer
     protected function _renderMatrixCell(array $row, array $selectColumns)
     {
         $values = array();
-        foreach ($selectColumns AS $column) {
+        foreach ($selectColumns as $column) {
             $values[] = $this->_renderCellValue($row, $column);
         }
 
@@ -487,7 +487,7 @@ abstract class AbstractRenderer
             throw new \Exception("Invalid DPQL renderer type $type");
         }
 
-        $class = __NAMESPACE__ . '\\' . self::$_rendererMap[$type];
+        $class = __NAMESPACE__.'\\'.self::$_rendererMap[$type];
 
         return new $class($type, $outputFormat, $resultHandler, $results);
     }

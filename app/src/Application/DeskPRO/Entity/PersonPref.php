@@ -44,7 +44,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 {
-
     /**
      * @var Application\DeskPRO\Entity\Person
      */
@@ -76,8 +75,6 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $date_expire = null;
 
-
-
     public function getValue()
     {
         return is_array($this->value_array) ? $this->value_array : $this->value_str;
@@ -88,13 +85,13 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
         $old_val_str = $this->value_str;
         $old_val_arr = $this->value_array;
 
-        $this->value_str = null;
+        $this->value_str   = null;
         $this->value_array = null;
 
         if (is_array($val)) {
             $this->value_array = $val;
         } else {
-            $this->value_str = (string)$val;
+            $this->value_str = (string) $val;
         }
 
         $this->_onPropertyChanged('value_str', $old_val_str, $this->value_str);
@@ -201,8 +198,6 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
         return $this->person;
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -211,13 +206,13 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PersonPref';
-        $metadata->setPrimaryTable(array( 'name' => 'people_prefs', ));
+        $metadata->setPrimaryTable(array( 'name' => 'people_prefs'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'value_str', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_str', ));
-        $metadata->mapField(array( 'fieldName' => 'value_array', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_array', ));
-        $metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expire', ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'preferences', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'value_str', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_str'));
+        $metadata->mapField(array( 'fieldName' => 'value_array', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value_array'));
+        $metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expire'));
         $metadata->setIdentifier(array('person', 'name'));
     }
 }

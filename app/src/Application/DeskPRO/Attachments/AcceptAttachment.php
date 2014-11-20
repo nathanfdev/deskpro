@@ -66,10 +66,9 @@ class AcceptAttachment
 
     public function __construct(EntityManager $em, DeskproBlobStorage $blobstorage)
     {
-        $this->em = $em;
+        $this->em          = $em;
         $this->blobstorage = $blobstorage;
     }
-
 
     /**
      * @param $id
@@ -79,7 +78,6 @@ class AcceptAttachment
     {
         $this->restriction_sets[$id] = $set;
     }
-
 
     /**
      * @param $id
@@ -94,7 +92,6 @@ class AcceptAttachment
 
         return $this->restriction_sets[$id];
     }
-
 
     /**
      * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
@@ -122,49 +119,49 @@ class AcceptAttachment
         }
 
         $log_error = false;
-        $error = array(
-            'error_code' => null,
-            'error_detail' => null
+        $error     = array(
+            'error_code'   => null,
+            'error_detail' => null,
         );
 
         if (!$file->isValid()) {
             switch ($file->getError()) {
                 case \UPLOAD_ERR_INI_SIZE:
-                    $error['error_code'] = self::ERR_SIZE;
+                    $error['error_code']   = self::ERR_SIZE;
                     $error['error_detail'] = Numbers::filesizeDisplay($max_size);
                     break;
 
                 case \UPLOAD_ERR_PARTIAL:
-                    $error['error_code'] = self::ERR_FAILED;
+                    $error['error_code']   = self::ERR_FAILED;
                     $error['error_detail'] = '';
                     break;
 
                 case \UPLOAD_ERR_NO_FILE:
-                    $error['error_code'] = self::ERR_NO_FILE;
+                    $error['error_code']   = self::ERR_NO_FILE;
                     $error['error_detail'] = '';
                     break;
 
                 case \UPLOAD_ERR_NO_TMP_DIR:
-                    $log_error = true;
-                    $error['error_code'] = self::ERR_SERVER;
+                    $log_error             = true;
+                    $error['error_code']   = self::ERR_SERVER;
                     $error['error_detail'] = 'bad_tmp_dir';
                     break;
 
                 case \UPLOAD_ERR_CANT_WRITE:
-                    $log_error = true;
-                    $error['error_code'] = self::ERR_SERVER;
+                    $log_error             = true;
+                    $error['error_code']   = self::ERR_SERVER;
                     $error['error_detail'] = 'failed_write';
                     break;
 
                 case \UPLOAD_ERR_EXTENSION:
-                    $log_error = true;
-                    $error['error_code'] = self::ERR_SERVER;
+                    $log_error             = true;
+                    $error['error_code']   = self::ERR_SERVER;
                     $error['error_detail'] = 'ext_stopped';
                     break;
 
                 default:
-                    $log_error = true;
-                    $error['error_code'] = self::ERR_SERVER;
+                    $log_error             = true;
+                    $error['error_code']   = self::ERR_SERVER;
                     $error['error_detail'] = $file->getError();
                     break;
             }
@@ -172,7 +169,7 @@ class AcceptAttachment
 
         if (!$error['error_code']) {
             if (!is_uploaded_file($file->getRealPath()) || !file_exists($file->getRealPath())) {
-                $error['error_code'] = self::ERR_NO_FILE;
+                $error['error_code']   = self::ERR_NO_FILE;
                 $error['error_detail'] = '';
             }
         }
@@ -192,12 +189,12 @@ class AcceptAttachment
         if ($log_error) {
             $info = "Upload of {$file->getClientOriginalName()} failed because {$error['error_code']}\n";
             $info .= Arrays::implodeTemplate(array(
-                'error_code' => $error['error_code'],
-                'error_detail' => $error['error_detail'],
-                'filename' => $file->getClientOriginalName(),
-                'type' => $file->getClientMimeType(),
-                'size' => $file->getClientSize(),
-                'file_err_code' => $file->getError()
+                'error_code'    => $error['error_code'],
+                'error_detail'  => $error['error_detail'],
+                'filename'      => $file->getClientOriginalName(),
+                'type'          => $file->getClientMimeType(),
+                'size'          => $file->getClientSize(),
+                'file_err_code' => $file->getError(),
             ), "{KEY}: {VAL}\n");
 
             $e = new \Exception($info, 0);
@@ -206,7 +203,6 @@ class AcceptAttachment
 
         return $error;
     }
-
 
     /**
      * @param  \Symfony\Component\HttpFoundation\File\UploadedFile $file
@@ -231,10 +227,10 @@ class AcceptAttachment
 
         $filename = $file->getClientOriginalName();
         if (!$filename) {
-            $filename = crc32(mt_rand(1111,9999) . mt_rand(1111,9999) . mt_rand(1111,9999) . mt_rand(1111,9999));
-            $ext = ContentTypes::findExtensionForContentType($mime_type);
+            $filename = crc32(mt_rand(1111, 9999).mt_rand(1111, 9999).mt_rand(1111, 9999).mt_rand(1111, 9999));
+            $ext      = ContentTypes::findExtensionForContentType($mime_type);
             if ($ext) {
-                $filename .= '.' . $ext;
+                $filename .= '.'.$ext;
             }
         }
 

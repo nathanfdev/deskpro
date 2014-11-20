@@ -72,12 +72,11 @@ class InterfaceController extends AbstractController
         $rendered = $this->renderTemplateView($tpl_name);
 
         if ($load_data) {
-            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
+            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">".$load_data."</script>$rendered";
         }
 
         return $this->createResponse($rendered);
     }
-
 
     ####################################################################################################################
     # multi-load-view
@@ -88,7 +87,7 @@ class InterfaceController extends AbstractController
         $views = array();
 
         foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
-            $id = $view_name;
+            $id       = $view_name;
             $tpl_name = $this->getRealViewName($view_name);
 
             $rendered = null;
@@ -97,13 +96,12 @@ class InterfaceController extends AbstractController
             $views[] = array(
                 'id'       => $id,
                 'template' => $tpl_name,
-                'source'   => $rendered
+                'source'   => $rendered,
             );
         }
 
         return $this->createJsonResponse($views);
     }
-
 
     ####################################################################################################################
     # load-lang
@@ -113,7 +111,7 @@ class InterfaceController extends AbstractController
     {
         $js_exporter = new JsExporter($this->container->getTranslator());
 
-        $get_phrases = include(DP_ROOT.'/languages/expose-js.php');
+        $get_phrases = include DP_ROOT.'/languages/expose-js.php';
         $get_phrases = $get_phrases['admin'];
 
         if ($_format == 'js') {
@@ -156,7 +154,7 @@ class InterfaceController extends AbstractController
                 if ($package->native_name) {
                     $native_package = $app_manager->getNativePackageConfig($package);
 
-                    $real_path = @realpath($native_package->getNativeDir() . '/Resources/views/' . $tpl_name);
+                    $real_path = @realpath($native_package->getNativeDir().'/Resources/views/'.$tpl_name);
                     if ($real_path && strpos($real_path, $native_package->getNativeDir()) === 0 && file_exists($real_path)) {
                         return file_get_contents($real_path);
                     }
@@ -176,11 +174,11 @@ class InterfaceController extends AbstractController
             $view_name = Strings::strReplaceOne('/', ':', $view_name);
             $view_name = str_replace('.html', '.html.twig', $view_name);
             $view_name = str_replace('.html.twig.twig', '.html.twig', $view_name);
-            $tpl_name = "AdminInterfaceBundle:$view_name";
+            $tpl_name  = "AdminInterfaceBundle:$view_name";
         }
 
         if (defined('DPC_IS_CLOUD')) {
-            if ($this->tpl->exists('Cloud'.$tpl_name)){
+            if ($this->tpl->exists('Cloud'.$tpl_name)) {
                 $tpl_name = 'Cloud'.$tpl_name;
             }
         }
@@ -193,7 +191,7 @@ class InterfaceController extends AbstractController
         switch ($tpl_name) {
             case 'AdminInterfaceBundle:PortalEditor:frame.html.twig':
                 return array(
-                    'default_portal_style' => $this->settings->getDefaultGroup('user_style', false)
+                    'default_portal_style' => $this->settings->getDefaultGroup('user_style', false),
                 );
             default:
                 return array();

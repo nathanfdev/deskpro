@@ -55,7 +55,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         }
     }
 
-
     /**
      * @param  ApiPackageRequestContext                   $context
      * @return \Symfony\Component\HttpFoundation\Response
@@ -68,7 +67,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 
         if (defined('DPC_IS_CLOUD')) {
             if ($app_id = $context->getIn()->getString('app_id')) {
-                $app = $context->getContainer()->getAppManager()->getApp($app_id);
+                $app                     = $context->getContainer()->getAppManager()->getApp($app_id);
                 $options['password_php'] = $app->getSetting('php_code');
             } else {
                 $options['password_php'] = '';

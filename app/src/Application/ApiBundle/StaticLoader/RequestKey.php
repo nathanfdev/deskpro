@@ -40,7 +40,7 @@ class RequestKey
 {
     public static function getApiKeyFromRequest()
     {
-        $em = App::getOrm();
+        $em      = App::getOrm();
         $request = App::getRequest();
 
         static $api_key = null;
@@ -55,7 +55,7 @@ class RequestKey
             $key_str = $request->headers->get('X-DeskPRO-API-Key', null, true);
         } elseif (!empty($_REQUEST['API-KEY'])) {
             $key_str = $_REQUEST['API-KEY'];
-        } elseif (!empty($headers['PHP_AUTH_USER']) AND !empty($headers['PHP_AUTH_PW'])) {
+        } elseif (!empty($headers['PHP_AUTH_USER']) and !empty($headers['PHP_AUTH_PW'])) {
             $key_str = $headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW'];
         }
 
@@ -77,7 +77,7 @@ class RequestKey
 
     public static function getApiTokenFromRequest()
     {
-        $em = App::getOrm();
+        $em      = App::getOrm();
         $request = App::getRequest();
 
         static $api_token = null;
@@ -86,13 +86,13 @@ class RequestKey
             return $api_token;
         }
 
-        $headers = $request->server->getHeaders();
+        $headers   = $request->server->getHeaders();
         $token_str = false;
         if ($request->headers->get('X-DeskPRO-API-Token', null, true)) {
             $token_str = $request->headers->get('X-DeskPRO-API-Token', null, true);
         } elseif (!empty($_REQUEST['API-TOKEN'])) {
             $token_str = $_REQUEST['API-TOKEN'];
-        } elseif (!empty($headers['PHP_AUTH_USER']) AND !empty($headers['PHP_AUTH_PW'])) {
+        } elseif (!empty($headers['PHP_AUTH_USER']) and !empty($headers['PHP_AUTH_PW'])) {
             $token_str = $headers['PHP_AUTH_USER'].':'.$headers['PHP_AUTH_PW'];
         }
 

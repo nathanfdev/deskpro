@@ -106,9 +106,9 @@ class CustomFieldData extends DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setPrimaryTable(array(
-            'name' => 'custom_field_data',
+            'name'              => 'custom_field_data',
             'uniqueConstraints' => array(
-                'unique_idx' => array('columns' => array('owner_id', 'definition_id'))
+                'unique_idx' => array('columns' => array('owner_id', 'definition_id')),
             ),
         ));
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomFieldData';
@@ -118,55 +118,55 @@ class CustomFieldData extends DomainObject
         $metadata->addLifecycleCallback('preFlush', 'preFlush');
 
         $metadata->mapField(array(
-            'fieldName' => 'id',
-            'type' => 'integer',
-            'nullable' => false,
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
             'columnName' => 'id',
-            'id' => true,
+            'id'         => true,
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'owner_id',
-            'type' => 'integer',
-            'nullable' => false,
+            'fieldName'  => 'owner_id',
+            'type'       => 'integer',
+            'nullable'   => false,
             'columnName' => 'owner_id',
         ));
 
         $metadata->mapManyToOne(array(
-            'fieldName' => 'definition',
+            'fieldName'    => 'definition',
             'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-            'joinColumns' => array(
+            'joinColumns'  => array(
                 array(
-                    'name' => 'definition_id',
+                    'name'                 => 'definition_id',
                     'referencedColumnName' => 'id',
-                    'onDelete' => 'cascade',
+                    'onDelete'             => 'cascade',
                 ),
             ),
         ));
 
         $metadata->mapManyToOne(array(
-            'fieldName' => 'root_definition',
+            'fieldName'    => 'root_definition',
             'targetEntity' => 'Application\DeskPRO\Entity\CustomFieldDefinition',
-            'joinColumns' => array(
+            'joinColumns'  => array(
                 array(
-                    'name' => 'root_definition_id',
+                    'name'                 => 'root_definition_id',
                     'referencedColumnName' => 'id',
-                    'onDelete' => 'cascade',
+                    'onDelete'             => 'cascade',
                 ),
             ),
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'value',
-            'type' => 'integer',
-            'nullable' => false,
+            'fieldName'  => 'value',
+            'type'       => 'integer',
+            'nullable'   => false,
             'columnName' => 'value',
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'input',
-            'type' => 'text',
-            'nullable' => false,
+            'fieldName'  => 'input',
+            'type'       => 'text',
+            'nullable'   => false,
             'columnName' => 'input',
         ));
     }

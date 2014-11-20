@@ -42,7 +42,6 @@ class IndexFactory
      */
     private $client;
 
-
     /**
      * @param Client $client
      */
@@ -51,7 +50,6 @@ class IndexFactory
         $this->client = $client;
     }
 
-
     /**
      * @param  string          $index_name
      * @return \Elastica\Index
@@ -59,7 +57,7 @@ class IndexFactory
     public function getIndex($index_name)
     {
         if (defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
-            return $this->client->getIndex($index_name . '_' . DPC_SITE_ID);
+            return $this->client->getIndex($index_name.'_'.DPC_SITE_ID);
         } elseif (defined('DP_ELASTIC_INDEX')) {
             return $this->client->getIndex(DP_ELASTIC_INDEX);
         } else {

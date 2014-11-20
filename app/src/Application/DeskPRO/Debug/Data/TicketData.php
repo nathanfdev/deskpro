@@ -50,7 +50,7 @@ class TicketData implements DataInterface
 
     public function getData()
     {
-        $data = array();
+        $data                = array();
         $data['ticket']      = $this->ticket->toApiData(true, true);
         $data['ticket_slas'] = App::getDb()->fetchAssoc("SELECT * FROM ticket_slas WHERE ticket_id = ?", array($this->ticket->id));
 

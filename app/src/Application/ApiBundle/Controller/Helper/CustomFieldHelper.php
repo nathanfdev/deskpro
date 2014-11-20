@@ -58,8 +58,8 @@ class CustomFieldHelper
     public function __construct(AbstractController $controller)
     {
         $this->controller = $controller;
-        $this->em = $controller->getContainer()->getEm();
-        $this->in = $controller->getContainer()->getIn();
+        $this->em         = $controller->getContainer()->getEm();
+        $this->in         = $controller->getContainer()->getIn();
     }
 
     /**
@@ -70,8 +70,8 @@ class CustomFieldHelper
     public function saveFormToField(CustomDefAbstract $field, array $form_data)
     {
         $basetype    = Util::getBaseClassname($field['handler_class']);
-        $model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\' . $basetype . 'Field';
-        $type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\' . $basetype . 'FieldType';
+        $model_class = 'Application\\ApiBundle\\Form\\CustomField\\Model\\'.$basetype.'Field';
+        $type_class  = 'Application\\ApiBundle\\Form\\CustomField\\Type\\'.$basetype.'FieldType';
 
         $editfield = new $model_class($field);
         $formtype  = new $type_class();
@@ -81,7 +81,7 @@ class CustomFieldHelper
         try {
             if ($field['handler_class'] == 'Application\\DeskPRO\\CustomFields\\Handler\\Choice') {
                 $editfield->choices_structure = $this->in->getArrayValue('choices_structure');
-                $editfield->default_option = $this->in->getString('default_option');
+                $editfield->default_option    = $this->in->getString('default_option');
             }
 
             // todo

@@ -100,7 +100,6 @@ class AppInstance extends DomainObject
         return $this->id;
     }
 
-
     /**
      * Set settings
      *
@@ -115,7 +114,6 @@ class AppInstance extends DomainObject
         }
     }
 
-
     /**
      * Get settings
      *
@@ -126,7 +124,6 @@ class AppInstance extends DomainObject
         return $this->settings ? $this->settings : array();
     }
 
-
     /**
      * @param  string $name
      * @param  mixed  $default
@@ -136,7 +133,6 @@ class AppInstance extends DomainObject
     {
         return isset($this->settings[$name]) ? $this->settings[$name] : $default;
     }
-
 
     /**
      * Get settings that we will output to JS (eg non-native only)
@@ -169,7 +165,6 @@ class AppInstance extends DomainObject
         return $ret;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -193,7 +188,6 @@ class AppInstance extends DomainObject
         return $data;
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -205,7 +199,7 @@ class AppInstance extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AppInstance';
         $metadata->setPrimaryTable(array(
-            'name' => 'app_instances'
+            'name' => 'app_instances',
         ));
 
         $metadata->mapField(array(
@@ -263,7 +257,7 @@ class AppInstance extends DomainObject
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
                 'fetch'                => 'EAGER',
-            ))
+            )),
         ));
     }
 }

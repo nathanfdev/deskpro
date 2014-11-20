@@ -73,7 +73,7 @@ class AuthTwigExtension extends \Twig_Extension
         ///////////////////////////////////////////////////////////////////////
         // Settings
         /** @var \Application\DeskPRO\Auth\AuthSettings $auth_settings */
-        $auth_settings = $this->container->get('dp_auth_settings');
+        $auth_settings           = $this->container->get('dp_auth_settings');
         $auth_interface_settings = $interface == 'user' ? $auth_settings->getUserInterfaceSettings() : $auth_settings->getAgentInterfaceSettings();
         /** @var \Symfony\Component\HttpFoundation\RequestStack $request_stack */
         $request_stack = $this->container->get('request_stack');
@@ -103,7 +103,7 @@ class AuthTwigExtension extends \Twig_Extension
                 $vars = array_merge(
                     array(
                         'iframe_url' => '',
-                        'render'     => true
+                        'render'     => true,
                     ),
                     $adapter->getIframeTemplateParams($is_first_page = false)
                 );
@@ -141,14 +141,14 @@ class AuthTwigExtension extends \Twig_Extension
         /** @var \Application\DeskPRO\Auth\AuthenticationManager $auth_manager */
         /** @var \Application\DeskPRO\Usersource\UsersourceManager $us_manager */
         $auth_manager = $this->container->get('dp_authentication_manager.user');
-        $us_manager = $auth_manager->getUsersourceManager();
-        $sources = $us_manager->getAll()->forInterface($interface)->withCapability(
+        $us_manager   = $auth_manager->getUsersourceManager();
+        $sources      = $us_manager->getAll()->forInterface($interface)->withCapability(
             UsersourceInfo::CAPABILITY_SSO_JS
         );
         $output = array();
         /** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $factory */
         $factory = $auth_manager->getAuthAdapterFactory();
-        foreach ($sources AS $source) {
+        foreach ($sources as $source) {
             $adapter = $factory->getAuthAdapter($source, SsoLoginActionInterface::CONTEXT_BACKGROUND);
 
             if ($adapter instanceof JsSsoInterface) {

@@ -32,6 +32,7 @@
  */
 
 namespace Application\DeskPRO\Departments;
+
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Exception\ValidationException;
 use Doctrine\ORM\EntityManager;
@@ -87,13 +88,12 @@ class TicketDepartmentEditor
         return $old_id;
     }
 
-
     /**
      * @param array $orders
      */
     public function updateDisplayOrders($orders)
     {
-        $x = 10;
+        $x    = 10;
         $deps = $this->em->getRepository('DeskPRO:Department')->getByIds($orders);
 
         foreach ($orders as $dep_id) {
@@ -101,7 +101,7 @@ class TicketDepartmentEditor
                 continue;
             }
 
-            $dep = $deps[$dep_id];
+            $dep                = $deps[$dep_id];
             $dep->display_order = $x;
             $this->em->persist($dep);
 

@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Parser;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -71,10 +71,10 @@ class BinaryMath extends AbstractPart
      * @var array
      */
     protected static $_operatorMap = array(
-        Parser::T_OP_PLUS => '+',
-        Parser::T_OP_MINUS => '-',
+        Parser::T_OP_PLUS     => '+',
+        Parser::T_OP_MINUS    => '-',
         Parser::T_OP_MULTIPLY => '*',
-        Parser::T_OP_DIVIDE => '/'
+        Parser::T_OP_DIVIDE   => '/',
     );
 
     /**
@@ -91,8 +91,8 @@ class BinaryMath extends AbstractPart
         }
 
         $this->operator = $operator;
-        $this->lhs = $lhs;
-        $this->rhs = $rhs;
+        $this->lhs      = $lhs;
+        $this->rhs      = $rhs;
     }
 
     /**
@@ -110,12 +110,11 @@ class BinaryMath extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $childStack = $this->getChildStack($stack);
 
-        $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
-        $rhs = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
+        $lhs      = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
+        $rhs      = $this->rhs->prepare($statement, $section, $childStack, $select, $result);
         $operator = self::$_operatorMap[$this->operator];
 
         $sql = "({$lhs->sql()} $operator {$rhs->sql()})";
@@ -135,7 +134,7 @@ class BinaryMath extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->lhs->toDpql($statement, $section, $stack)
-            . ' ' . self::$_operatorMap[$this->operator] . ' '
-            . $this->rhs->toDpql($statement, $section, $stack);
+            .' '.self::$_operatorMap[$this->operator].' '
+            .$this->rhs->toDpql($statement, $section, $stack);
     }
 }

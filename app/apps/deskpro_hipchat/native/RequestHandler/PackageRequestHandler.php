@@ -71,13 +71,13 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
     {
         $token = $context->getIn()->getString('api_token');
 
-        $error = false;
+        $error  = false;
         $client = null;
 
-        $log = array();
-        $log[] = 'token: ' . $token;
+        $log   = array();
+        $log[] = 'token: '.$token;
 
-        $tests = array();
+        $tests   = array();
         $tests[] = function () use (&$log, $token) {
             $log[] = 'Verifying HipChat API is accessible...';
 
@@ -102,7 +102,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $result_data = array(
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
-            'error_code' => $error ? $error[0] : false
+            'error_code' => $error ? $error[0] : false,
         );
 
         return $context->createJsonResponse($result_data);

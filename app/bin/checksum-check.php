@@ -1,11 +1,11 @@
 <?php
-define('DP_ROOT', realpath(dirname(__FILE__) . '/../'));
+define('DP_ROOT', realpath(dirname(__FILE__).'/../'));
 
 require_once DP_ROOT.'/vendor/symfony/symfony/src/Symfony/Component/Finder/Finder.php';
 require_once DP_ROOT.'/src/Application/DeskPRO/Distribution/VerifyChecksums.php';
 
 $t_start = microtime(true);
-$verify = new \Application\DeskPRO\Distribution\VerifyChecksums(150);
+$verify  = new \Application\DeskPRO\Distribution\VerifyChecksums(150);
 
 echo "Will now check {$verify->countFiles()} files.\n\n";
 

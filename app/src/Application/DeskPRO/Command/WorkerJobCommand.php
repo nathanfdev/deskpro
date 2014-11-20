@@ -76,7 +76,6 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         }
 
         if ($input->getOption('info')) {
-
             $jobs = App::getOrm()->createQuery("
                 SELECT j
                 FROM DeskPRO:WorkerJob j
@@ -84,10 +83,12 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             ")->execute();
 
             $last_run = App::getSetting('core.last_cron_run');
-            if (!$last_run) $last_run = 0;
+            if (!$last_run) {
+                $last_run = 0;
+            }
 
             $time_since_run = time() - $last_run;
-            $is_problem = false;
+            $is_problem     = false;
             if ($time_since_run > 301) {
                 $is_problem = true;
             }
@@ -141,71 +142,72 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         $time_start = microtime(true);
         if (!defined('DP_DISABLE_DBCRONLOG')) {
             App::getDb()->insert('log_items', array(
-                'log_name' => 'worker_job.cron_runner',
-                'session_name' => 'cron_runner.' . $time_start,
-                'flag' => 'cron_start',
-                'priority' => 6,
+                'log_name'      => 'worker_job.cron_runner',
+                'session_name'  => 'cron_runner.'.$time_start,
+                'flag'          => 'cron_start',
+                'priority'      => 6,
                 'priority_name' => 'INFO',
-                'message' => 'Cron runner started',
-                'date_created' => date('Y-m-d H:i:s')
+                'message'       => 'Cron runner started',
+                'date_created'  => date('Y-m-d H:i:s'),
             ));
         }
         App::getDb()->replace('settings', array('name' => 'core.last_cron_start', 'value' => time()));
 
         $cron_id = 'dp-cron';
         if ($input->getOption('job')) {
-            $cron_id .= '-' . $input->getOption('job');
+            $cron_id .= '-'.$input->getOption('job');
         } elseif ($input->getOption('group')) {
-            $cron_id .= '-g-' . $input->getOption('group');
+            $cron_id .= '-g-'.$input->getOption('group');
         }
 
         $GLOBALS['DP_CRON_ID'] = $cron_id;
 
         if (!$input->getOption('ignore-interval')) {
-            $check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.' . $cron_id));
+            $check = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = ?", array('core.croncheck.'.$cron_id));
             if ($check) {
-                $date = (int)$check;
+                $date     = (int) $check;
                 $date_cut = time() - 900;
-                $diff = \Orb\Util\Dates::secsToReadable(time() - $date_cut, 5);
+                $diff     = \Orb\Util\Dates::secsToReadable(time() - $date_cut, 5);
 
                 if ($date_cut < $date) {
-                    if ($input->getOption('verbose')) { $output->writeln("$cron_id is still active. Running for {$diff} (since " . date('Y-m-d H:i:s', $date) . ")"); }
+                    if ($input->getOption('verbose')) {
+                        $output->writeln("$cron_id is still active. Running for {$diff} (since ".date('Y-m-d H:i:s', $date).")");
+                    }
                     App::getDb()->insert('log_items', array(
-                        'log_name' => 'worker_job.cron_runner',
-                        'session_name' => 'cron_runner.' . $time_start,
-                        'flag' => 'cron_abort',
-                        'priority' => 6,
+                        'log_name'      => 'worker_job.cron_runner',
+                        'session_name'  => 'cron_runner.'.$time_start,
+                        'flag'          => 'cron_abort',
+                        'priority'      => 6,
                         'priority_name' => 'INFO',
-                        'message' => 'Cron runner aborted (still running)',
-                        'date_created' => date('Y-m-d H:i:s')
+                        'message'       => 'Cron runner aborted (still running)',
+                        'date_created'  => date('Y-m-d H:i:s'),
                     ));
 
                     return 0;
                 } else {
-
                     App::getDb()->insert('log_items', array(
-                        'log_name' => 'worker_job.cron_runner',
-                        'session_name' => 'cron_runner.' . $time_start,
-                        'flag' => 'cron_resume',
-                        'priority' => 3,
+                        'log_name'      => 'worker_job.cron_runner',
+                        'session_name'  => 'cron_runner.'.$time_start,
+                        'flag'          => 'cron_resume',
+                        'priority'      => 3,
                         'priority_name' => 'ERR',
-                        'message' => "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.",
-                        'date_created' => date('Y-m-d H:i:s')
+                        'message'       => "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.",
+                        'date_created'  => date('Y-m-d H:i:s'),
                     ));
 
                     $title = "WARNING: Cron ($cron_id) has been active for {$diff}. Assuming crashed process, resuming.";
 
-                    $text = "Cron ($cron_id) has been marked as active for {$diff} (since " . date('Y-m-d H:i:s', $date) . ").\n\n"
-                            . "This is most likely caused by a fatal error that prevented the runner from resetting the timer.\n\n"
-                            . "Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com."
-                            . "\n\n"
-                            . "More information about this error can be found here: https://support.deskpro.com/kb/articles/170\n";
+                    $text = "Cron ($cron_id) has been marked as active for {$diff} (since ".date('Y-m-d H:i:s', $date).").\n\n"
+                            ."This is most likely caused by a fatal error that prevented the runner from resetting the timer.\n\n"
+                            ."Cron will now resume, but this is a problem you should investigate. Refer to the error log files and contact support@deskpro.com."
+                            ."\n\n"
+                            ."More information about this error can be found here: https://support.deskpro.com/kb/articles/170\n";
 
                     $output->writeln($title);
                     $output->writeln($text);
 
-                    $e = new Exception\CronRunningException($title);
-                    $e_info = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
+                    $e                           = new Exception\CronRunningException($title);
+                    $e_info                      = \DeskPRO\Kernel\KernelErrorHandler::getExceptionInfo($e);
                     $e_info['email']             = true;
                     $e_info['email_subject']     = $title;
                     $e_info['email_body']        = $text;
@@ -217,8 +219,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
         }
 
         App::getDb()->replace('settings', array(
-            'name'  => 'core.croncheck.' . $cron_id,
-            'value' => time()
+            'name'  => 'core.croncheck.'.$cron_id,
+            'value' => time(),
         ));
 
         \DpShutdown::add(function () {
@@ -234,18 +236,19 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 }
 
                 if ($last_error) {
-                    $e = new \Exception("Cron did not shut down cleanly. Last error: " . implode("\n", $last_error));
+                    $e = new \Exception("Cron did not shut down cleanly. Last error: ".implode("\n", $last_error));
                     \DeskPRO\Kernel\KernelErrorHandler::logException($e, false);
                 } else {
                     $e = new \Exception("Cron did not shut down cleanly");
                     \DeskPRO\Kernel\KernelErrorHandler::logException($e, false);
                 }
 
-                App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $GLOBALS['DP_CRON_ID']));
-            } catch (\Exception $e) {}
+                App::getDb()->delete('settings', array('name' => 'core.croncheck.'.$GLOBALS['DP_CRON_ID']));
+            } catch (\Exception $e) {
+            }
         });
 
-        $step = (int)App::getSetting('core.setup_initial');
+        $step = (int) App::getSetting('core.setup_initial');
 
         // Only run crom if we've passed initial setup
         // This command will just execute nothing and set the last run time
@@ -256,19 +259,19 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             $ret = 0;
         }
 
-        App::getDb()->delete('settings', array('name' => 'core.croncheck.' . $cron_id));
+        App::getDb()->delete('settings', array('name' => 'core.croncheck.'.$cron_id));
         App::getDb()->replace('settings', array('name' => 'core.last_cron_run', 'value' => time()));
 
         $done_time = microtime(true);
         if (!defined('DP_DISABLE_DBCRONLOG')) {
             App::getDb()->insert('log_items', array(
-                'log_name' => 'worker_job.cron_runner',
-                'session_name' => 'cron_runner.' . $time_start,
-                'flag' => 'cron_end',
-                'priority' => 6,
+                'log_name'      => 'worker_job.cron_runner',
+                'session_name'  => 'cron_runner.'.$time_start,
+                'flag'          => 'cron_end',
+                'priority'      => 6,
                 'priority_name' => 'INFO',
-                'message' => sprintf('Cron runner done. Took %.4f seconds.', $done_time-$time_start),
-                'date_created' => date('Y-m-d H:i:s')
+                'message'       => sprintf('Cron runner done. Took %.4f seconds.', $done_time-$time_start),
+                'date_created'  => date('Y-m-d H:i:s'),
             ));
         }
 
@@ -306,10 +309,9 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             return 0;
         }
 
-
         $ignore_interval = false;
         if ($input->getOption('ignore-interval')) {
-            $ignore_interval = true;
+            $ignore_interval                    = true;
             $GLOBALS['DP_CRON_IGNORE_INTERVAL'] = true;
         }
 
@@ -327,8 +329,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
             // Reset the cron timer so we dont try and restart while we still run
             if (isset($GLOBALS['DP_CRON_ID']) && $GLOBALS['DP_CRON_ID']) {
                 App::getDb()->replace('settings', array(
-                    'name'  => 'core.croncheck.' . $GLOBALS['DP_CRON_ID'],
-                    'value' => time()
+                    'name'  => 'core.croncheck.'.$GLOBALS['DP_CRON_ID'],
+                    'value' => time(),
                 ));
             }
         });
@@ -340,7 +342,6 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 
         // A specific job
         if ($input->getOption('job')) {
-
             $job = App::getEntityRepository('DeskPRO:WorkerJob')->findOneById($input->getOption('job'));
             if (!$job) {
                 $output->writeln('<error>No such job exists</error>');
@@ -348,7 +349,7 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
                 return 1;
             }
 
-            if (!$ignore_interval AND !$job->isReady()) {
+            if (!$ignore_interval and !$job->isReady()) {
                 if ($verbose) {
                     $output->writeln('Job does not need to run');
                 }

@@ -45,7 +45,6 @@ class SendmailConfig implements AccountConfigInterface
      */
     public $sendmail_path;
 
-
     /**
      * {@inheritDoc}
      */
@@ -55,7 +54,6 @@ class SendmailConfig implements AccountConfigInterface
             'sendmail_path' => $this->sendmail_path,
         );
     }
-
 
     /**
      * {@inheritDoc}
@@ -70,7 +68,6 @@ class SendmailConfig implements AccountConfigInterface
         return $obj;
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -78,7 +75,6 @@ class SendmailConfig implements AccountConfigInterface
     {
         return 'sendmail';
     }
-
 
     ############################################################################
     # Validation Metadata

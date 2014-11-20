@@ -34,8 +34,8 @@
 
 namespace deskpro_hipchat;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
@@ -47,7 +47,6 @@ class InstallerHandler extends AbstractInstallerHandler
         $this->refreshTriggerAction($context);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -57,7 +56,6 @@ class InstallerHandler extends AbstractInstallerHandler
         $context->getDb()->executeUpdate("DELETE FROM ticket_actions_def WHERE action_name = ?", array($action_name));
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -65,7 +63,6 @@ class InstallerHandler extends AbstractInstallerHandler
     {
         $this->refreshTriggerAction($context);
     }
-
 
     /**
      * {@inheritDoc}
@@ -75,18 +72,17 @@ class InstallerHandler extends AbstractInstallerHandler
         $this->refreshTriggerAction($context);
     }
 
-
     /**
      * @param InstallerContext $context
      */
     private function refreshTriggerAction(InstallerContext $context)
     {
         $action_name = $this->getActionName($context);
-        $rec = array(
+        $rec         = array(
             'app_id'      => $context->getApp()->id,
             'action_name' => $action_name,
             'def_class'   => 'deskpro_hipchat\\Ticket\\Actions\\ActionDef\\HipChatActionDef',
-            'settings'    => null
+            'settings'    => null,
         );
 
         $exist_id = $context->getDb()->fetchColumn("SELECT id FROM ticket_actions_def WHERE action_name = ?", array($action_name));
@@ -96,7 +92,6 @@ class InstallerHandler extends AbstractInstallerHandler
             $context->getDb()->insert('ticket_actions_def', $rec);
         }
     }
-
 
     /**
      * @param InstallerContext $context

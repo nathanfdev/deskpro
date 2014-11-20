@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Dpql\Renderer;
 
-
 /**
  * Renders DPQL results to HTML.
  */
@@ -108,7 +107,7 @@ class Html extends AbstractRenderer
      */
     public function _renderSplitOutputWithHeader($header, $body)
     {
-        return '<h3 class="report-split-header">' . $header . '</h3>' . "\n$body";
+        return '<h3 class="report-split-header">'.$header.'</h3>'."\n$body";
     }
 
     /**
@@ -130,8 +129,8 @@ class Html extends AbstractRenderer
 
         return $this->_renderTableWrapper(
             $this->_renderHeader($rows)
-            . $this->_renderBody($rows)
-            . $this->_renderFooter($rows)
+            .$this->_renderBody($rows)
+            .$this->_renderFooter($rows)
         );
     }
 
@@ -158,14 +157,14 @@ class Html extends AbstractRenderer
     protected function _renderHeader(array $rows)
     {
         $columnHtml = array();
-        foreach ($this->_handler->getGroupYColumns() AS $column) {
-            $columnHtml[] = '<th>' . $this->_valueRenderer->escapeValue($column['title']) . '</th>';
+        foreach ($this->_handler->getGroupYColumns() as $column) {
+            $columnHtml[] = '<th>'.$this->_valueRenderer->escapeValue($column['title']).'</th>';
         }
-        foreach ($this->_handler->getSelectColumns() AS $column) {
-            $columnHtml[] = '<th>' . $this->_valueRenderer->escapeValue($column['title']) . '</th>';
+        foreach ($this->_handler->getSelectColumns() as $column) {
+            $columnHtml[] = '<th>'.$this->_valueRenderer->escapeValue($column['title']).'</th>';
         }
 
-        return '<thead><tr class="row-header">' . implode("\n\t", $columnHtml) . '</tr></thead>';
+        return '<thead><tr class="row-header">'.implode("\n\t", $columnHtml).'</tr></thead>';
     }
 
     /**
@@ -177,26 +176,26 @@ class Html extends AbstractRenderer
      */
     protected function _renderBody(array $rows)
     {
-        $groupColumns = $this->_handler->getGroupYColumns();
+        $groupColumns  = $this->_handler->getGroupYColumns();
         $selectColumns = $this->_handler->getSelectColumns();
-        $rows = array_values($rows); // need continuous keys
+        $rows          = array_values($rows); // need continuous keys
 
         $rowsHtml = array();
         $rowCount = 0;
 
         $groupSkipCount = array();
-        foreach ($groupColumns AS $groupId => $groupColumn) {
+        foreach ($groupColumns as $groupId => $groupColumn) {
             $groupSkipCount[$groupId] = 0;
         }
 
-        foreach ($rows AS $rowId => $row) {
+        foreach ($rows as $rowId => $row) {
             $cells = array();
 
             if ($groupColumns) {
                 $myGroupSkipCount = $groupSkipCount;
 
                 $groupValues = array();
-                foreach ($groupColumns AS $groupId => $groupColumn) {
+                foreach ($groupColumns as $groupId => $groupColumn) {
                     $groupValues[$groupId] = $this->getColumnValue($row, $groupColumn['groupResultId']);
                 }
 
@@ -207,7 +206,7 @@ class Html extends AbstractRenderer
                         $nextRow = $rows[$nextRowId];
                         $matched = 0;
 
-                        foreach ($groupColumns AS $groupId => $groupColumn) {
+                        foreach ($groupColumns as $groupId => $groupColumn) {
                             if ($firstNonMatch !== null && $firstNonMatch == $groupId) {
                                 // can't go any further as this column doesn't match from before
                                 break;
@@ -233,14 +232,14 @@ class Html extends AbstractRenderer
                     }
                 }
 
-                foreach ($groupColumns AS $groupId => $groupColumn) {
+                foreach ($groupColumns as $groupId => $groupColumn) {
                     if ($myGroupSkipCount[$groupId]) {
                         $groupSkipCount[$groupId]--;
                         continue;
                     }
 
                     $rowSpan = ($groupSkipCount[$groupId]
-                        ? ' rowspan="' . ($groupSkipCount[$groupId] + 1) . '"'
+                        ? ' rowspan="'.($groupSkipCount[$groupId] + 1).'"'
                         : ''
                     );
                     $rendered = $this->_renderCellValue($row, $groupColumn);
@@ -249,18 +248,18 @@ class Html extends AbstractRenderer
                 }
             }
 
-            foreach ($selectColumns AS $column) {
-                $cells[] = '<td>' . $this->_renderCellValue($row, $column) . '</td>';
+            foreach ($selectColumns as $column) {
+                $cells[] = '<td>'.$this->_renderCellValue($row, $column).'</td>';
             }
 
             $rowCount++;
             $class = ($rowCount % 2 ? 'odd' : 'even');
 
-            $rowsHtml[] = '<tr class="row-body ' . $class . '">' . implode("\n\t", $cells) . '</tr>';
+            $rowsHtml[] = '<tr class="row-body '.$class.'">'.implode("\n\t", $cells).'</tr>';
         }
 
         if ($rowsHtml) {
-            return '<tbody>' . implode("\n", $rowsHtml) . '</tbody>';
+            return '<tbody>'.implode("\n", $rowsHtml).'</tbody>';
         } else {
             return '';
         }
@@ -273,17 +272,17 @@ class Html extends AbstractRenderer
             return '';
         }
 
-        $cells = array();
+        $cells         = array();
         $groupYColumns = $this->_handler->getGroupYColumns();
         $selectColumns = $this->_handler->getSelectColumns();
 
         if ($groupYColumns) {
-            $cells[] = '<th colspan="' . count($groupYColumns) . '">Total</th>';
+            $cells[] = '<th colspan="'.count($groupYColumns).'">Total</th>';
         }
 
         $columnTotals = array();
-        foreach ($rows AS $row) {
-            foreach ($totalColumns AS $id) {
+        foreach ($rows as $row) {
+            foreach ($totalColumns as $id) {
                 if ($this->getColumnValue($row, $id) === null) {
                     continue;
                 }
@@ -296,20 +295,20 @@ class Html extends AbstractRenderer
         }
 
         $firstRow = reset($rows);
-        $fakeRow = array_fill_keys(array_keys($firstRow), null);
-        foreach ($columnTotals AS $id => $value) {
+        $fakeRow  = array_fill_keys(array_keys($firstRow), null);
+        foreach ($columnTotals as $id => $value) {
             $fakeRow[$id - 1] = $value;
         }
 
-        foreach ($selectColumns AS $column) {
+        foreach ($selectColumns as $column) {
             if (isset($columnTotals[$column['resultId']])) {
-                $cells[] = '<td>' . $this->_renderCellValue($fakeRow, $column) . '</td>';
+                $cells[] = '<td>'.$this->_renderCellValue($fakeRow, $column).'</td>';
             } else {
                 $cells[] = '<td>&nbsp;</td>';
             }
         }
 
-        return '<tfoot><tr class="row-body total-row">' . implode('', $cells) . '</tr></tfoot>';
+        return '<tfoot><tr class="row-body total-row">'.implode('', $cells).'</tr></tfoot>';
     }
 
     /**
@@ -324,7 +323,7 @@ class Html extends AbstractRenderer
         $prepared = $this->_prepareMatrixTable($rows);
 
         $select = $this->_handler->getSelectColumns();
-        $first = reset($select);
+        $first  = reset($select);
         if (count($select) == 1 && in_array($first['renderer'], array('number', 'numberraw'), true)) {
             $totalType = $first['renderer'];
         } else {
@@ -332,7 +331,7 @@ class Html extends AbstractRenderer
         }
 
         return $this->_renderTableWrapper(
-            $this->_renderMatrixHeader($prepared, $totalType) . $this->_renderMatrixBody($prepared, $totalType),
+            $this->_renderMatrixHeader($prepared, $totalType).$this->_renderMatrixBody($prepared, $totalType),
             'matrix'
         );
     }
@@ -351,37 +350,37 @@ class Html extends AbstractRenderer
         $colSkipCount = count($this->_handler->getGroupYColumns());
 
         $header = $this->_renderMatrixHeaderRecur(array('root'), $prepared['xDistinct']);
-        $rows = $header['depth'];
+        $rows   = $header['depth'];
         ksort($rows);
 
         $output = array();
 
         $row = array();
         if ($colSkipCount) {
-            $row[] = '<th' . ($colSkipCount > 1 ? " colspan=\"$colSkipCount\"" : '') . '>&nbsp;</th>';
+            $row[] = '<th'.($colSkipCount > 1 ? " colspan=\"$colSkipCount\"" : '').'>&nbsp;</th>';
         }
         $parts = array();
-        foreach ($this->_handler->getGroupXColumns() AS $column) {
+        foreach ($this->_handler->getGroupXColumns() as $column) {
             $parts[] = $column['title'];
         }
-        $row[] = '<th colspan="' . $header['colSpan'] . '" class="label">'
-            . $this->_valueRenderer->escapeValue(implode(' / ', $parts))
-            . '</th>';
+        $row[] = '<th colspan="'.$header['colSpan'].'" class="label">'
+            .$this->_valueRenderer->escapeValue(implode(' / ', $parts))
+            .'</th>';
         if ($totalType) {
             $row[] = '<th>&nbsp;</th>';
         }
-        $output[] = "<tr class=\"row-header\">" . implode('', $row) . "</tr>";
+        $output[] = "<tr class=\"row-header\">".implode('', $row)."</tr>";
 
-        foreach ($rows AS $depth => $row) {
+        foreach ($rows as $depth => $row) {
             if ($depth === 0) {
                 $rowSpan = ($rowSkipCount > 1 ? " rowspan=\"$rowSkipCount\"" : '');
 
                 if ($colSkipCount) {
                     $prefix = '';
-                    foreach ($this->_handler->getGroupYColumns() AS $column) {
-                        $prefix .= '<th' . $rowSpan . ' class="label">' . $this->_valueRenderer->escapeValue($column['title']) . '</th>';
+                    foreach ($this->_handler->getGroupYColumns() as $column) {
+                        $prefix .= '<th'.$rowSpan.' class="label">'.$this->_valueRenderer->escapeValue($column['title']).'</th>';
                     }
-                    $row = $prefix . $row;
+                    $row = $prefix.$row;
                 }
                 if ($totalType) {
                     $row .= "<th class=\"column-total\"$rowSpan>Total</th>";
@@ -391,7 +390,7 @@ class Html extends AbstractRenderer
         }
 
         if ($output) {
-            return '<thead>' . implode("\n\t", $output) . '</thead>';
+            return '<thead>'.implode("\n\t", $output).'</thead>';
         } else {
             return '';
         }
@@ -417,19 +416,19 @@ class Html extends AbstractRenderer
             return array('colSpan' => 0, 'depth' => array());
         }
 
-        $colSpan = 0;
+        $colSpan  = 0;
         $siblings = array();
 
         $nextDepth = $depth + 1;
         $depthHtml = array();
 
-        foreach ($distinctValues[$pathLookup] AS $groupValue => $printValue) {
-            $localPath = $path;
+        foreach ($distinctValues[$pathLookup] as $groupValue => $printValue) {
+            $localPath   = $path;
             $localPath[] = $groupValue;
 
             $child = $this->_renderMatrixHeaderRecur($localPath, $distinctValues, $nextDepth);
 
-            foreach ($child['depth'] AS $level => $childDepthHtml) {
+            foreach ($child['depth'] as $level => $childDepthHtml) {
                 if (!isset($depthHtml[$level])) {
                     $depthHtml[$level] = '';
                 }
@@ -438,8 +437,8 @@ class Html extends AbstractRenderer
 
             $colSpan += max(1, $child['colSpan']);
 
-            $colSpanHtml = ($child['colSpan'] > 1 ? ' colspan="' . $child['colSpan'] . '"' : '');
-            $valueHtml = "<th$colSpanHtml>$printValue</th>";
+            $colSpanHtml = ($child['colSpan'] > 1 ? ' colspan="'.$child['colSpan'].'"' : '');
+            $valueHtml   = "<th$colSpanHtml>$printValue</th>";
 
             $siblings[] = $valueHtml;
         }
@@ -448,7 +447,7 @@ class Html extends AbstractRenderer
 
         return array(
             'colSpan' => $colSpan,
-            'depth' => $depthHtml
+            'depth'   => $depthHtml,
         );
     }
 
@@ -470,16 +469,16 @@ class Html extends AbstractRenderer
         }
 
         $matrixPaths = $this->_getFinalMatrixPaths(array('root'), $prepared['xDistinct']);
-        $lookup = $prepared['lookup'];
+        $lookup      = $prepared['lookup'];
 
-        $rows = array();
+        $rows         = array();
         $columnTotals = array();
-        $rowCount = 0;
+        $rowCount     = 0;
 
-        foreach ($rowKeys AS $yPath => $html) {
-            $cells = array();
+        foreach ($rowKeys as $yPath => $html) {
+            $cells    = array();
             $rowTotal = 0;
-            foreach ($matrixPaths AS $xPath) {
+            foreach ($matrixPaths as $xPath) {
                 if (isset($lookup[$yPath][$xPath])) {
                     $value = $lookup[$yPath][$xPath];
                 } else {
@@ -497,31 +496,31 @@ class Html extends AbstractRenderer
             }
 
             if ($totalType) {
-                $cells[] = '<td class="column-total">' . $this->_valueRenderer->renderValue($rowTotal, $totalType) . '</td>';
+                $cells[] = '<td class="column-total">'.$this->_valueRenderer->renderValue($rowTotal, $totalType).'</td>';
             }
 
             $rowCount++;
             $class = ($rowCount % 2 ? 'odd' : 'even');
 
-            $rows[] = '<tr class="row-body ' . $class . '">' . $html . implode('', $cells) . '</tr>';
+            $rows[] = '<tr class="row-body '.$class.'">'.$html.implode('', $cells).'</tr>';
         }
 
         if ($totalType && $this->_handler->getGroupYColumns()) {
-            $cells = array();
-            $cells[] = '<th colspan="' . count($this->_handler->getGroupYColumns()) . '">Total</th>';
-            foreach ($columnTotals AS $value) {
-                $cells[] = '<td>' . $this->_valueRenderer->renderValue($value, $totalType) . '</td>';
+            $cells   = array();
+            $cells[] = '<th colspan="'.count($this->_handler->getGroupYColumns()).'">Total</th>';
+            foreach ($columnTotals as $value) {
+                $cells[] = '<td>'.$this->_valueRenderer->renderValue($value, $totalType).'</td>';
             }
-            $cells[] = '<td class="column-total">' . $this->_valueRenderer->renderValue(array_sum($columnTotals), $totalType) . '</td>';
+            $cells[] = '<td class="column-total">'.$this->_valueRenderer->renderValue(array_sum($columnTotals), $totalType).'</td>';
 
             $rowCount++;
             $class = ($rowCount % 2 ? 'odd' : 'even');
 
-            $rows[] = '<tr class="row-body ' . $class . ' total-row">' . implode('', $cells) . '</tr>';
+            $rows[] = '<tr class="row-body '.$class.' total-row">'.implode('', $cells).'</tr>';
         }
 
         if ($rows) {
-            return '<tbody>' . implode("\n\t", $rows) . '</tbody>';
+            return '<tbody>'.implode("\n\t", $rows).'</tbody>';
         } else {
             return '';
         }
@@ -544,22 +543,22 @@ class Html extends AbstractRenderer
         }
 
         $output = array();
-        foreach ($yDistinct[$pathString] AS $groupValue => $printValue) {
-            $localPath = $path;
+        foreach ($yDistinct[$pathString] as $groupValue => $printValue) {
+            $localPath   = $path;
             $localPath[] = $groupValue;
 
             $children = $this->_getMatrixRowGroups($localPath, $yDistinct);
             if (!$children) {
-                $output[$this->_getGroupPathKey($localPath)] = '<th>' . $printValue . '</th>';
+                $output[$this->_getGroupPathKey($localPath)] = '<th>'.$printValue.'</th>';
             } else {
-                $rowSpan = count($children);
+                $rowSpan     = count($children);
                 $rowSpanHtml = ($rowSpan > 1 ? " rowspan=\"$rowSpan\"" : '');
 
-                $first = '<th' . $rowSpanHtml . '>' . $printValue . '</th>';
+                $first = '<th'.$rowSpanHtml.'>'.$printValue.'</th>';
 
-                foreach ($children AS $key => $child) {
-                    $output[$key] = $first . $child;
-                    $first = '';
+                foreach ($children as $key => $child) {
+                    $output[$key] = $first.$child;
+                    $first        = '';
                 }
             }
         }
@@ -595,7 +594,7 @@ class Html extends AbstractRenderer
                 graph.bulletSize = 4;
                 graph.fillAlphas = 0.6;
             ',
-            'pie' => ''
+            'pie' => '',
         );
         if (!isset($optionMap[$type])) {
             return false;
@@ -606,24 +605,24 @@ class Html extends AbstractRenderer
         }
 
         $originalValueRenderer = $this->_valueRenderer;
-        $this->_valueRenderer = new \Application\DeskPRO\Dpql\Renderer\Values\Text();
+        $this->_valueRenderer  = new \Application\DeskPRO\Dpql\Renderer\Values\Text();
 
         $selectColumns = $this->_handler->getSelectColumns();
         $groupYColumns = $this->_handler->getGroupYColumns();
         $groupXColumns = $this->_handler->getGroupXColumns();
 
-        $chartData = array();
-        $graphs = array();
-        $isStacked = false;
+        $chartData         = array();
+        $graphs            = array();
+        $isStacked         = false;
         $maxCategoryLength = 0;
 
-        $firstSel = reset($selectColumns);
+        $firstSel       = reset($selectColumns);
         $valueAxisTitle = $firstSel['title'];
 
         if ($groupXColumns) {
             // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
             $prepared = $this->_prepareMatrixTable($rows);
-            $lookup = $prepared['lookup'];
+            $lookup   = $prepared['lookup'];
 
             $rowGroups = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
             if (!$rowGroups) {
@@ -632,20 +631,20 @@ class Html extends AbstractRenderer
             }
             $headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
-            foreach ($headerCols AS $xPath => $printable) {
-                $category = implode(' / ', $printable);
+            foreach ($headerCols as $xPath => $printable) {
+                $category          = implode(' / ', $printable);
                 $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
                 $rowData = array('category' => $category);
 
                 $i = 0;
-                foreach ($rowGroups AS $yPath => $null) {
+                foreach ($rowGroups as $yPath => $null) {
                     if (isset($lookup[$yPath][$xPath])) {
                         $value = $this->_filterGraphValue($lookup[$yPath][$xPath]);
                     } else {
                         $value = '';
                     }
-                    $rowData['value' . $i] = $value;
+                    $rowData['value'.$i] = $value;
                     $i++;
                 }
 
@@ -653,30 +652,30 @@ class Html extends AbstractRenderer
             }
 
             $i = 0;
-            foreach ($rowGroups AS $printable) {
+            foreach ($rowGroups as $printable) {
                 $graphs[$i] = array(
                     'title' => implode(' / ', $printable),
-                    'value' => "value$i"
+                    'value' => "value$i",
                 );
                 $i++;
             }
 
             $hasCategory = true;
-            $isStacked = ($type == 'bar' || $type == 'area');
+            $isStacked   = ($type == 'bar' || $type == 'area');
 
             $parts = array();
-            foreach ($groupXColumns AS $column) {
+            foreach ($groupXColumns as $column) {
                 $parts[] = $column['title'];
             }
             $categoryAxisTitle = implode(' / ', $parts);
         } else {
             if (count($groupYColumns) > 1) {
                 $rowGroups = array();
-                foreach ($rows AS $row) {
+                foreach ($rows as $row) {
                     $categories = array();
-                    $grouper = '';
-                    $i = 0;
-                    foreach ($groupYColumns AS $column) {
+                    $grouper    = '';
+                    $i          = 0;
+                    foreach ($groupYColumns as $column) {
                         $i++;
                         if ($i == 1) {
                             $grouper = $this->_renderCellValue($row, $column);
@@ -689,8 +688,8 @@ class Html extends AbstractRenderer
 
                     $rowData = array();
 
-                    foreach ($selectColumns AS $i => $column) {
-                        $rowData['value' . $i] = $this->_filterGraphValue($this->getColumnValue($row, $column));
+                    foreach ($selectColumns as $i => $column) {
+                        $rowData['value'.$i] = $this->_filterGraphValue($this->getColumnValue($row, $column));
                     }
 
                     $rowGroups[$grouper][$category] = $rowData;
@@ -698,13 +697,13 @@ class Html extends AbstractRenderer
 
                 $uniqueGraphs = array();
 
-                foreach ($rowGroups AS $grouper => $values) {
+                foreach ($rowGroups as $grouper => $values) {
                     $maxCategoryLength = max($maxCategoryLength, strlen($grouper));
 
                     $data = array('category' => $grouper);
-                    foreach ($values AS $categoryName => $groupValues) {
+                    foreach ($values as $categoryName => $groupValues) {
                         $uniqueGraphs[$categoryName] = true;
-                        foreach ($groupValues AS $valueId => $value) {
+                        foreach ($groupValues as $valueId => $value) {
                             $data["$categoryName-$valueId"] = $value;
                         }
                     }
@@ -712,34 +711,34 @@ class Html extends AbstractRenderer
                     $chartData[] = $data;
                 }
 
-                foreach ($uniqueGraphs AS $categoryName => $null) {
+                foreach ($uniqueGraphs as $categoryName => $null) {
                     $graphs[] = array(
                         'title' => "$categoryName",
-                        'value' => "$categoryName-value0"
+                        'value' => "$categoryName-value0",
                     );
                 }
 
                 $isStacked = ($type == 'bar' || $type == 'area');
 
-                $firstY = reset($groupYColumns);
+                $firstY            = reset($groupYColumns);
                 $categoryAxisTitle = $firstY['title'];
             } elseif ($this->_handler->getGroupStackColumns() && $type == 'bar') {
                 $stackColumns = $this->_handler->getGroupStackColumns();
 
                 $rowGroups = array();
-                foreach ($rows AS $row) {
+                foreach ($rows as $row) {
                     $categories = array();
-                    $grouper = $this->_valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string');
-                    $i = 0;
-                    foreach ($groupYColumns AS $column) {
+                    $grouper    = $this->_valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string');
+                    $i          = 0;
+                    foreach ($groupYColumns as $column) {
                         $categories[] = $this->_renderCellValue($row, $column);
                     }
                     $category = implode(' / ', $categories);
 
                     $rowData = array();
 
-                    foreach ($selectColumns AS $i => $column) {
-                        $rowData['value' . $i] = $this->_filterGraphValue($this->getColumnValue($row, $column));
+                    foreach ($selectColumns as $i => $column) {
+                        $rowData['value'.$i] = $this->_filterGraphValue($this->getColumnValue($row, $column));
                     }
 
                     $rowGroups[$grouper][$category] = $rowData;
@@ -747,13 +746,13 @@ class Html extends AbstractRenderer
 
                 $uniqueGraphs = array();
 
-                foreach ($rowGroups AS $grouper => $values) {
+                foreach ($rowGroups as $grouper => $values) {
                     $maxCategoryLength = max($maxCategoryLength, strlen($grouper));
 
                     $data = array('category' => $grouper);
-                    foreach ($values AS $categoryName => $groupValues) {
+                    foreach ($values as $categoryName => $groupValues) {
                         $uniqueGraphs[$categoryName] = true;
-                        foreach ($groupValues AS $valueId => $value) {
+                        foreach ($groupValues as $valueId => $value) {
                             $data["$categoryName-$valueId"] = $value;
                         }
                     }
@@ -761,23 +760,23 @@ class Html extends AbstractRenderer
                     $chartData[] = $data;
                 }
 
-                foreach ($uniqueGraphs AS $categoryName => $null) {
+                foreach ($uniqueGraphs as $categoryName => $null) {
                     $graphs[] = array(
                         'title' => "$categoryName",
-                        'value' => "$categoryName-value0"
+                        'value' => "$categoryName-value0",
                     );
                 }
 
                 $isStacked = ($type == 'bar' || $type == 'area');
 
-                $firstY = reset($groupYColumns);
+                $firstY            = reset($groupYColumns);
                 $categoryAxisTitle = $firstY['title'];
             } else {
                 $sel = reset($selectColumns);
 
-                foreach ($rows AS $row) {
+                foreach ($rows as $row) {
                     $categories = array();
-                    foreach ($groupYColumns AS $column) {
+                    foreach ($groupYColumns as $column) {
                         $categories[] = $this->_renderCellValue($row, $column);
                     }
                     $category = implode(' / ', $categories);
@@ -793,11 +792,11 @@ class Html extends AbstractRenderer
 
                 $graphs[] = array(
                     'title' => $sel['title'],
-                    'value' => "value"
+                    'value' => "value",
                 );
 
                 $parts = array();
-                foreach ($groupYColumns AS $column) {
+                foreach ($groupYColumns as $column) {
                     $parts[] = $column['title'];
                 }
                 $categoryAxisTitle = implode(' / ', $parts);
@@ -822,68 +821,68 @@ class Html extends AbstractRenderer
             $pieData = array();
 
             if (count($graphs) > 1) {
-                foreach ($chartData AS $key => $info) {
+                foreach ($chartData as $key => $info) {
                     $data = array();
-                    foreach ($graphs AS $graph) {
+                    foreach ($graphs as $graph) {
                         if (isset($info[$graph['value']])) {
                             $data[] = array(
                                 'category' => $graph['title'],
-                                'value' => $info[$graph['value']]
+                                'value'    => $info[$graph['value']],
                             );
                         }
                     }
 
                     $pieData[] = array(
                         'title' => $info['category'],
-                        'data' => $data
+                        'data'  => $data,
                     );
                 }
 
                 // let's add a graph for the first level of grouping
                 $data = array();
-                foreach ($pieData AS $pie) {
+                foreach ($pieData as $pie) {
                     $sum = 0;
-                    foreach ($pie['data'] AS $info) {
+                    foreach ($pie['data'] as $info) {
                         $sum += $info['value'];
                     }
                     $data[] = array(
                         'category' => $pie['title'],
-                        'value' => $sum
+                        'value'    => $sum,
                     );
                 }
 
                 array_unshift($pieData, array(
                     'title' => 'Overall',
-                    'data' => $data
+                    'data'  => $data,
                 ));
             } else {
                 $graph = reset($graphs);
 
                 $pieData = array(array(
                     'title' => $graph['title'],
-                    'data' => $chartData
+                    'data'  => $chartData,
                 ));
             }
 
             $showTitle = count($pieData) > 1;
 
-            foreach ($pieData AS $pie) {
-                $id = 'report_chart_' . md5(uniqid());
+            foreach ($pieData as $pie) {
+                $id = 'report_chart_'.md5(uniqid());
 
                 $output .= '
-                    <div id="' . $id . '" class="report-chart" style="height: ' . $height . 'px"></div>
+                    <div id="'.$id.'" class="report-chart" style="height: '.$height.'px"></div>
                     <script type="text/javascript">
                     $(function () {
                         var chart = new AmCharts.AmPieChart();
-                        chart.dataProvider = ' . json_encode($pie['data']) . ';
+                        chart.dataProvider = '.json_encode($pie['data']).';
                         chart.titleField = "category";
                         chart.valueField = "value";
                         chart.startDuration = 0;
-                        ' . (count($pie['data']) >= 25 ? 'chart.labelsEnabled = false;' : '') . '
+                        '.(count($pie['data']) >= 25 ? 'chart.labelsEnabled = false;' : '').'
                         chart.addLegend(new AmCharts.AmLegend());
-                        ' . ($showTitle ? 'chart.addTitle(' . json_encode($pie['title']) . ');' : '') . '
+                        '.($showTitle ? 'chart.addTitle('.json_encode($pie['title']).');' : '').'
 
-                        chart.write("' . $id . '");
+                        chart.write("'.$id.'");
                     });
                     </script>
                 ';
@@ -918,13 +917,13 @@ class Html extends AbstractRenderer
             }
 
             $graphCode = array();
-            foreach ($graphs AS $graph) {
+            foreach ($graphs as $graph) {
                 $graphCode[] = '
                     graph = new AmCharts.AmGraph();
-                    graph.valueField = "' . $graph['value'] . '";
-                    graph.title = "' . $this->_jsEscapeValue($graph['title']) . '";
-                    graph.balloonText = "' . $balloonText .'";
-                    ' . $optionMap[$type] . '
+                    graph.valueField = "'.$graph['value'].'";
+                    graph.title = "'.$this->_jsEscapeValue($graph['title']).'";
+                    graph.balloonText = "'.$balloonText.'";
+                    '.$optionMap[$type].'
                     chart.addGraph(graph);
                 ';
             }
@@ -938,11 +937,11 @@ class Html extends AbstractRenderer
             $height = 430 + count($graphs) * 25;
 
             if ($maxCategoryLength > 10) {
-                $labelHeight = $maxCategoryLength * 4;
+                $labelHeight    = $maxCategoryLength * 4;
                 $verticalLabels = '
                     chart.categoryAxis.labelRotation = 45;
-                    chart.categoryAxis.gridCount = ' . min(15, count($rows)) . ';
-                    chart.marginBottom = ' . $labelHeight . ';
+                    chart.categoryAxis.gridCount = '.min(15, count($rows)).';
+                    chart.marginBottom = '.$labelHeight.';
                 ';
                 $height += $labelHeight;
             } else {
@@ -953,42 +952,42 @@ class Html extends AbstractRenderer
                 $chartData = $this->_fillInGraphValues($chartData);
             }
 
-            $is_percent = false;
+            $is_percent   = false;
             $percent_code = '';
             if (isset($selectColumns[0]) && isset($selectColumns[0]['renderer']) && $selectColumns[0]['renderer'] == 'percent') {
-                $is_percent = true;
+                $is_percent   = true;
                 $percent_code = '
                     valueAxis.maximum = 100;
                     valueAxis.minimum = 0;
                 ';
             }
 
-            $id = 'report_chart_' . md5(uniqid());
+            $id     = 'report_chart_'.md5(uniqid());
             $output = '
-                <div id="' . $id . '" class="report-chart" style="height: ' . $height . 'px"></div>
+                <div id="'.$id.'" class="report-chart" style="height: '.$height.'px"></div>
                 <script type="text/javascript">
                 $(function () {
                     var chart = new AmCharts.AmSerialChart();
-                    chart.dataProvider = ' . json_encode($chartData) . ';
+                    chart.dataProvider = '.json_encode($chartData).';
                     chart.categoryField = "category";
                     chart.addLegend(new AmCharts.AmLegend());
 
                     chart.categoryAxis.fontSize = 9;
-                    chart.categoryAxis.title = \'' . $this->_jsEscapeValue($categoryAxisTitle) . '\';
-                    ' . $verticalLabels . '
+                    chart.categoryAxis.title = \''.$this->_jsEscapeValue($categoryAxisTitle).'\';
+                    '.$verticalLabels.'
 
                     var valueAxis = new AmCharts.ValueAxis();
                     '.$percent_code.'
 
                     chart.addValueAxis(valueAxis);
                     chart.valueAxes[0].integersOnly = true;
-                    chart.valueAxes[0].title = \'' . $this->_jsEscapeValue($valueAxisTitle) . '\';
-                    ' . $stacked . '
+                    chart.valueAxes[0].title = \''.$this->_jsEscapeValue($valueAxisTitle).'\';
+                    '.$stacked.'
 
                     var graph;
-                    ' . implode("\n", $graphCode) . '
+                    '.implode("\n", $graphCode).'
 
-                    chart.write("' . $id . '");
+                    chart.write("'.$id.'");
                     chart.invalidateSize();
                 });
                 </script>
@@ -1003,15 +1002,15 @@ class Html extends AbstractRenderer
     protected function _fillInGraphValues($chartData)
     {
         $uniqueValues = array();
-        foreach ($chartData AS $values) {
-            foreach ($values AS $value => $null) {
+        foreach ($chartData as $values) {
+            foreach ($values as $value => $null) {
                 if (!isset($uniqueValues[$value])) {
                     $uniqueValues[$value] = true;
                 }
             }
         }
-        foreach ($chartData AS &$values) {
-            foreach ($uniqueValues AS $value => $null) {
+        foreach ($chartData as &$values) {
+            foreach ($uniqueValues as $value => $null) {
                 if (!isset($values[$value])) {
                     $values[$value] = 0;
                 }
@@ -1024,10 +1023,10 @@ class Html extends AbstractRenderer
     protected function _jsEscapeValue($value)
     {
         return strtr($value, array(
-            '"' => '\\"',
-            "'" => "\\'",
-            '\\' => '\\\\',
-            '</script>' => '<\\/script>'
+            '"'         => '\\"',
+            "'"         => "\\'",
+            '\\'        => '\\\\',
+            '</script>' => '<\\/script>',
         ));
     }
 

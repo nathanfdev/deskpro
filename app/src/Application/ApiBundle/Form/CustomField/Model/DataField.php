@@ -44,7 +44,7 @@ class DataField extends CustomFieldAbstract
     public function init()
     {
         $this->usersource_id = $this->_field->getOption('usersource_id');
-        $this->field_name = $this->_field->getOption('field_name');
+        $this->field_name    = $this->_field->getOption('field_name');
     }
 
     protected function setFieldProperties()

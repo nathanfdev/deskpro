@@ -48,7 +48,6 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # get-status
     ####################################################################################################################
@@ -68,7 +67,7 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
             GROUP BY hidden_status
         ");
         foreach ($h_stats as $s => $c) {
-            $stats['hidden_' . $s] = $c;
+            $stats['hidden_'.$s] = $c;
         }
 
         $stats = Arrays::castToType($stats, 'int', 'string');
@@ -83,12 +82,12 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     public function getArchivedInfoAction()
     {
         $info = array(
-            'enabled'           => (bool)$this->settings->get('core_tickets.use_archive'),
-            'auto_archive_time' => (int)$this->settings->get('core_tickets.auto_archive_time'),
+            'enabled'           => (bool) $this->settings->get('core_tickets.use_archive'),
+            'auto_archive_time' => (int) $this->settings->get('core_tickets.auto_archive_time'),
         );
 
         return $this->createApiResponse(array(
-            'archived_info' => $info
+            'archived_info' => $info,
         ));
     }
 
@@ -118,21 +117,21 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     public function getDeletedInfoAction()
     {
         $info = array(
-            'auto_purge_time' => (int)$this->settings->get('core_tickets.hard_delete_time'),
+            'auto_purge_time' => (int) $this->settings->get('core_tickets.hard_delete_time'),
         );
 
         return $this->createApiResponse(array(
-            'deleted_info' => $info
+            'deleted_info' => $info,
         ));
     }
 
     public function purgeDeletedAction()
     {
         $purger = new TicketPurger($this->db);
-        $count = $purger->purgeDeletedAction();
+        $count  = $purger->purgeDeletedAction();
 
         return $this->createSuccessResponse(array(
-            'count' => $count
+            'count' => $count,
         ));
     }
 
@@ -154,21 +153,21 @@ class TicketStatusesController extends AbstractController implements ProtectedCo
     public function getSpamInfoAction()
     {
         $info = array(
-            'auto_purge_time' => (int)$this->settings->get('core_tickets.spam_delete_time'),
+            'auto_purge_time' => (int) $this->settings->get('core_tickets.spam_delete_time'),
         );
 
         return $this->createApiResponse(array(
-            'spam_info' => $info
+            'spam_info' => $info,
         ));
     }
 
     public function purgeSpamAction()
     {
         $purger = new TicketPurger($this->db);
-        $count = $purger->purgeSpamAction();
+        $count  = $purger->purgeSpamAction();
 
         return $this->createSuccessResponse(array(
-            'count' => $count
+            'count' => $count,
         ));
     }
 

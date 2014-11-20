@@ -76,8 +76,13 @@ class Results
     {
         $total = count($this->_results);
 
-        if ($total > 1) return true;
-        if ($total < 1) return false;
+        if ($total > 1) {
+            return true;
+        }
+        if ($total < 1) {
+            return false;
+        }
+
         return ($this->_results[0][1] !== null);
     }
 

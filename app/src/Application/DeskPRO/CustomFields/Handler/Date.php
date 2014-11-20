@@ -36,7 +36,6 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 
-
 /**
  * Handles the date field
  */
@@ -44,26 +43,30 @@ class Date extends HandlerAbstract
 {
     public function renderHtml($data = null, array $template_vars = array())
     {
-        if ($data === null) return '';
+        if ($data === null) {
+            return '';
+        }
 
         if (!ctype_digit($data['value'])) {
             $data['value'] = time();
         }
 
-        $data['value'] = new \DateTime('@' . $data['value']);
+        $data['value'] = new \DateTime('@'.$data['value']);
 
         return parent::renderText($data, $template_vars);
     }
 
     public function renderText($data = null, array $template_vars = array())
     {
-        if ($data === null) return '';
+        if ($data === null) {
+            return '';
+        }
 
         if (!ctype_digit($data['value'])) {
             $data['value'] = time();
         }
 
-        $data['value'] = new \DateTime('@' . $data['value']);
+        $data['value'] = new \DateTime('@'.$data['value']);
 
         return  parent::renderText($data, $template_vars);
     }
@@ -89,17 +92,17 @@ class Date extends HandlerAbstract
         $date = \Orb\Util\Dates::convertToUtcDateTime($date);
 
         return array(
-            array($this->field_def['id'], 'value', $date->getTimestamp())
+            array($this->field_def['id'], 'value', $date->getTimestamp()),
         );
     }
 
     public function getFormField($data = null)
     {
         $setData = null;
-        if ($data AND !empty($data['value'])) {
+        if ($data and !empty($data['value'])) {
             try {
                 if (ctype_digit($data['value'])) {
-                    $date = new \DateTime('@' . $data['value']);
+                    $date = new \DateTime('@'.$data['value']);
                     if ($date) {
                         $date->setTimezone(App::getCurrentPerson()->getDateTimezone());
                         $setData = $date->format('Y-m-d');
@@ -117,7 +120,7 @@ class Date extends HandlerAbstract
         }
 
         $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'text', $setData, array(
-            'required' => false
+            'required' => false,
         ));
 
         return $field;
@@ -147,7 +150,7 @@ class Date extends HandlerAbstract
 
         $options = array();
         foreach (array('required') as $k) {
-            $options[$k] = $this->field_def->getOption($opt_prefix . $k);
+            $options[$k] = $this->field_def->getOption($opt_prefix.$k);
         }
 
         if ($options['required']) {
@@ -173,7 +176,7 @@ class Date extends HandlerAbstract
             } catch (\Exception $e) {
                 $admin_tz = App::getCurrentPerson()->getDateTimezone();
             }
-            $date = \DateTime::createFromFormat('Y-m-d', $data, App::getCurrentPerson()->getDateTimezone());
+            $date       = \DateTime::createFromFormat('Y-m-d', $data, App::getCurrentPerson()->getDateTimezone());
             $date_admin = clone $date;
             $date_admin->setTimezone($admin_tz);
 
@@ -193,7 +196,7 @@ class Date extends HandlerAbstract
 
                 if ($d1) {
                     $d1 = \DateTime::createFromFormat('Y-m-d', $d1, $admin_tz);
-                    $d1->setTime(0,0,0);
+                    $d1->setTime(0, 0, 0);
 
                     if ($date_admin < $d1) {
                         return $this->makeErrorArray(array('invalid_date_range'));
@@ -201,7 +204,7 @@ class Date extends HandlerAbstract
                 }
                 if ($d2) {
                     $d2 = \DateTime::createFromFormat('Y-m-d', $d2, $admin_tz);
-                    $d2->setTime(23,59,59);
+                    $d2->setTime(23, 59, 59);
 
                     if ($date_admin > $d2) {
                         return $this->makeErrorArray(array('invalid_date_range'));
@@ -223,7 +226,7 @@ class Date extends HandlerAbstract
                 if ($days1) {
                     $d1 = clone $now;
                     $d1->modify("{$days1} days");
-                    $d1->setTime(0,0,0);
+                    $d1->setTime(0, 0, 0);
 
                     // Go back if we hit on a unselectable date
                     if ($valid_dow) {
@@ -245,7 +248,7 @@ class Date extends HandlerAbstract
                 if ($days2) {
                     $d2 = clone $now;
                     $d2->modify("{$days1} days");
-                    $d2->setTime(23,59,59);
+                    $d2->setTime(23, 59, 59);
 
                     // Go back if we hit on a unselectable date
                     if ($valid_dow) {

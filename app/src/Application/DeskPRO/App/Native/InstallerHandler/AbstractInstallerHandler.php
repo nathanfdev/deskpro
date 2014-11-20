@@ -70,7 +70,6 @@ abstract class AbstractInstallerHandler implements InstallerHandlerInterface
      */
     public function install(InstallerContext $context)
     {
-
     }
 
     /**
@@ -79,7 +78,6 @@ abstract class AbstractInstallerHandler implements InstallerHandlerInterface
      */
     public function uninstall(InstallerContext $context)
     {
-
     }
 
     /**
@@ -88,7 +86,6 @@ abstract class AbstractInstallerHandler implements InstallerHandlerInterface
      */
     public function updateSettings(InstallerContext $context)
     {
-
     }
 
     /**
@@ -97,6 +94,5 @@ abstract class AbstractInstallerHandler implements InstallerHandlerInterface
      */
     public function updatePackage(InstallerContext $context)
     {
-
     }
 }

@@ -47,7 +47,6 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -72,7 +71,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         }
 
         return $this->createApiResponse(array(
-            'macros' => $data
+            'macros' => $data,
         ));
     }
 
@@ -90,7 +89,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         $data = $this->getApiData($macro);
 
         return $this->createApiResponse(array(
-            'macro' => $data
+            'macro' => $data,
         ));
     }
 
@@ -115,7 +114,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
             $macro->is_global = true;
         } else {
             $macro->is_global = false;
-            $macro->person = $this->container->getAgentData()->get($this->in->getUint('person_id'));
+            $macro->person    = $this->container->getAgentData()->get($this->in->getUint('person_id'));
         }
 
         if (!$macro->person) {
@@ -131,7 +130,7 @@ class TicketMacrosController extends AbstractController implements ProtectedCont
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'macro_id' => $macro->id
+            'macro_id' => $macro->id,
         ));
     }
 

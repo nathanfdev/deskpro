@@ -82,7 +82,7 @@ class NewTicketValidator extends AbstractValidator
      */
     protected function checkIsValid($newticket)
     {
-        $this->newticket = $newticket;
+        $this->newticket   = $newticket;
         $this->is_resolved = $newticket->status == 'resolved';
 
         $this->mock_ticket = new \Application\DeskPRO\Entity\Ticket(false);
@@ -130,7 +130,7 @@ class NewTicketValidator extends AbstractValidator
                 if (App::getSetting('core.use_product')) {
                     $validator = new \Application\DeskPRO\Validator\GenericCategory(array(
                         'category_repository' => App::getEntityRepository('DeskPRO:Product'),
-                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_prod_agent_required')
+                        'allow_none'          => !App::getSetting('core_tickets.field_validation_ticket_prod_agent_required'),
                     ));
                     if (!$validator->isValid($this->newticket->product_id)) {
                         $this->addError('ticket.product_id', array('message' => 'Select a product'));
@@ -142,7 +142,7 @@ class NewTicketValidator extends AbstractValidator
                 if (App::getSetting('core.use_ticket_category')) {
                     $validator = new \Application\DeskPRO\Validator\GenericCategory(array(
                         'category_repository' => App::getEntityRepository('DeskPRO:TicketCategory'),
-                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_cat_agent_required')
+                        'allow_none'          => !App::getSetting('core_tickets.field_validation_ticket_cat_agent_required'),
                     ));
                     if (!$validator->isValid($this->newticket->category_id)) {
                         $this->addError('ticket.category_id', array('message' => 'Select a category'));
@@ -153,7 +153,7 @@ class NewTicketValidator extends AbstractValidator
             case 'priority':
                 if (App::getSetting('core.use_ticket_priority')) {
                     $validator = new \Application\DeskPRO\Validator\TicketPriority(array(
-                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_agent_required')
+                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_pri_agent_required'),
                     ));
                     if (!$validator->isValid($this->newticket->priority_id)) {
                         $this->addError('ticket.priority_id', array('message' => 'Select a priority'));
@@ -164,7 +164,7 @@ class NewTicketValidator extends AbstractValidator
             case 'workflow':
                 if (App::getSetting('core.use_ticket_workflow')) {
                     $validator = new \Application\DeskPRO\Validator\TicketWorkflow(array(
-                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_work_agent_required')
+                        'allow_none' => !App::getSetting('core_tickets.field_validation_ticket_work_agent_required'),
                     ));
                     if (!$validator->isValid($this->newticket->workflow_id)) {
                         $this->addError('ticket.workflow_id', array('message' => 'Select a workflow'));
@@ -185,8 +185,8 @@ class NewTicketValidator extends AbstractValidator
                         }
                         foreach ($errors as $code) {
                             $title = $field->getTitle();
-                            $str = "Please correct $title";
-                            $code = str_replace('field_' . $field->getId() . '.', '', $code);
+                            $str   = "Please correct $title";
+                            $code  = str_replace('field_'.$field->getId().'.', '', $code);
                             switch ($code) {
                                 case 'required':
                                     $str = "$title is required";
@@ -202,7 +202,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('ticket.' . $code, array('message' => $str));
+                            $this->addError('ticket.'.$code, array('message' => $str));
                         }
                     }
                 }
@@ -221,8 +221,8 @@ class NewTicketValidator extends AbstractValidator
                         }
                         foreach ($errors as $code) {
                             $title = $field->getTitle();
-                            $str = "Please correct $title";
-                            $code = str_replace('field_' . $field->getId() . '.', '', $code);
+                            $str   = "Please correct $title";
+                            $code  = str_replace('field_'.$field->getId().'.', '', $code);
                             switch ($code) {
                                 case 'required':
                                     $str = "$title is required";
@@ -238,7 +238,7 @@ class NewTicketValidator extends AbstractValidator
                                     break;
                             }
 
-                            $this->addError('person.' . $code, array('message' => $str));
+                            $this->addError('person.'.$code, array('message' => $str));
                         }
                     }
                 }

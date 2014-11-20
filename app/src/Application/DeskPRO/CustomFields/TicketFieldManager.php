@@ -59,10 +59,9 @@ class TicketFieldManager extends FieldManager
     {
         if ($this->fields === null) {
             $this->fields = array();
-            $all_fields = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
+            $all_fields   = $this->em->getRepository($this->options->get('entity_name'))->getEnabledFields();
 
             foreach ($all_fields as $f) {
-
                 $this->all_fields[$f->getId()] = $f;
 
                 if (!$f->getParentId()) {
@@ -94,7 +93,6 @@ class TicketFieldManager extends FieldManager
         return $this->fields;
     }
 
-
     /**
      * Get an array of all defined fields (by doing a query).
      *
@@ -116,7 +114,7 @@ class TicketFieldManager extends FieldManager
         $old_value = null;
 
         if (isset($all_display_data[$field_def->id])) {
-            $handler = $all_display_data[$field_def->id]['handler'];
+            $handler   = $all_display_data[$field_def->id]['handler'];
             $old_value = $handler->renderText($all_display_data[$field_def->id]['value']);
 
             if ($old_value) {
@@ -129,8 +127,8 @@ class TicketFieldManager extends FieldManager
         $new_value = null;
         if ($return) {
             $all_display_data = $this->getDisplayArrayForObject($ticket);
-            $handler = $all_display_data[$field_def->id]['handler'];
-            $new_value = $handler->renderText($all_display_data[$field_def->id]['value']);
+            $handler          = $all_display_data[$field_def->id]['handler'];
+            $new_value        = $handler->renderText($all_display_data[$field_def->id]['value']);
             if ($new_value) {
                 $new_value = trim(str_replace(array("\n", "\r\n"), ' ', strip_tags($new_value)));
             }
@@ -147,78 +145,69 @@ class TicketFieldManager extends FieldManager
         return $new_value;
     }
 
-
     /**
      * @return bool
      */
     public function isProductEnabled()
     {
-        return (bool)$this->settings->get('core.use_product');
+        return (bool) $this->settings->get('core.use_product');
     }
-
 
     /**
      * @return bool
      */
     public function isPriorityEnabled()
     {
-        return (bool)$this->settings->get('core.use_ticket_priority');
+        return (bool) $this->settings->get('core.use_ticket_priority');
     }
-
 
     /**
      * @return bool
      */
     public function isWorkflowEnabled()
     {
-        return (bool)$this->settings->get('core.use_ticket_workflow');
+        return (bool) $this->settings->get('core.use_ticket_workflow');
     }
-
 
     /**
      * @return bool
      */
     public function isCategoryEnabled()
     {
-        return (bool)$this->settings->get('core.use_ticket_category');
+        return (bool) $this->settings->get('core.use_ticket_category');
     }
-
 
     /**
      * @param $enabled bool
      */
     public function setIsProductEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_product', intval((bool)$enabled));
+        $this->settings->setSetting('core.use_product', intval((bool) $enabled));
     }
-
 
     /**
      * @param $enabled bool
      */
     public function setIsPriorityEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_priority', intval((bool)$enabled));
+        $this->settings->setSetting('core.use_ticket_priority', intval((bool) $enabled));
     }
-
 
     /**
      * @param $enabled bool
      */
     public function setIsWorkflowEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_workflow', intval((bool)$enabled));
+        $this->settings->setSetting('core.use_ticket_workflow', intval((bool) $enabled));
     }
-
 
     /**
      * @param $enabled bool
      */
     public function setIsCategoryEnabled($enabled = true)
     {
-        $this->settings->setSetting('core.use_ticket_category', intval((bool)$enabled));
+        $this->settings->setSetting('core.use_ticket_category', intval((bool) $enabled));
     }
-
 
     /**
      * @param  string                                          $id
@@ -228,11 +217,10 @@ class TicketFieldManager extends FieldManager
     public function setFieldEnabledById($id, $enabled = true)
     {
         if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
-            $field = $this->em->find('DeskPRO:CustomDefTicket', $custom_field_id);
+            $field             = $this->em->find('DeskPRO:CustomDefTicket', $custom_field_id);
             $field->is_enabled = $enabled;
             $this->em->persist($field);
             $this->em->flush($field);
-
         } else {
             switch ($id) {
                 case 'product':  $this->setIsProductEnabled($enabled); break;

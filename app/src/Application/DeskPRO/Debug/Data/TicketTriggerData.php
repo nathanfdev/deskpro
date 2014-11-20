@@ -53,7 +53,7 @@ class TicketTriggerData implements DataInterface
         unset($d);
         $ret['triggers'] = $data;
 
-        $data = App::getDb()->fetchAll("SELECT * FROM slas ORDER BY id ASC");
+        $data        = App::getDb()->fetchAll("SELECT * FROM slas ORDER BY id ASC");
         $ret['slas'] = $data;
 
         $data = App::getDb()->fetchAll("SELECT * FROM ticket_escalations ORDER BY id ASC");

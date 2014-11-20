@@ -41,7 +41,6 @@ use DeskPRO\Kernel\License;
 use Orb\Util\Dates;
 use Orb\Validator\StringEmail;
 
-
 class LicenseController extends AbstractController implements ProtectedControllerInterface
 {
     /**
@@ -52,7 +51,6 @@ class LicenseController extends AbstractController implements ProtectedControlle
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # get-license
     ####################################################################################################################
@@ -61,14 +59,14 @@ class LicenseController extends AbstractController implements ProtectedControlle
     {
         $lic = License::getLicense();
 
-        $is_expired = false;
+        $is_expired     = false;
         $expire_in_days = 0;
 
         if ($lic->getExpireDate()) {
             $is_expired = $lic->getExpireDate()->format('U') < time();
             if (!$is_expired) {
                 $lic_expire_parts = Dates::secsToPartsArray($lic->getExpireDate()->format('U') - time());
-                $expire_in_days = $lic_expire_parts['days'];
+                $expire_in_days   = $lic_expire_parts['days'];
                 $expire_in_days += $lic_expire_parts['years'] * 365;
             }
         }
@@ -92,18 +90,18 @@ class LicenseController extends AbstractController implements ProtectedControlle
         $limits = array(
             'max_agents'    => $lic->getMaxAgents() ?: -1,
             'count_agents'  => $active_agents,
-            'remain_agents' => $lic->getMaxAgents() ? max(0, $lic->getMaxAgents() - $active_agents) : -1
+            'remain_agents' => $lic->getMaxAgents() ? max(0, $lic->getMaxAgents() - $active_agents) : -1,
         );
 
         $ma_token = TmpData::create(
             'ma_login', array(
-                'email_address' => $this->person->getPrimaryEmailAddress()
+                'email_address' => $this->person->getPrimaryEmailAddress(),
             ), '+1 hour'
         );
         $this->em->persist($ma_token);
         $this->em->flush($ma_token);
 
-        $ma_login_url = License::getLicServer() . '/login_check_license';
+        $ma_login_url = License::getLicServer().'/login_check_license';
         if (strpos($ma_login_url, 'www.deskpro.com') && strpos($ma_login_url, 'https://') === 0) {
             $ma_login_url = str_replace('http://', 'https://', $ma_login_url);
         }
@@ -111,7 +109,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
         return $this->createApiResponse(array(
             'license'          => $lic_info,
             'limits'           => $limits,
-            'lic_set_callback' => License::getLicServer() . '/api/license/set-license.json',
+            'lic_set_callback' => License::getLicServer().'/api/license/set-license.json',
             'ma_token'         => $ma_token->toApiData(),
             'ma_login_url'     => $ma_login_url,
         ));
@@ -140,7 +138,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
         }
 
         return $this->createApiResponse(array(
-            'success' => true
+            'success' => true,
         ));
     }
 
@@ -155,7 +153,7 @@ class LicenseController extends AbstractController implements ProtectedControlle
             $email_address = $this->person->getPrimaryEmailAddress();
         }
 
-        $install_data = array();
+        $install_data                          = array();
         $install_data['install_key']           = $this->settings->get('core.install_key');
         $install_data['install_token']         = $this->settings->get('core.install_token');
         $install_data['request_email_address'] = $this->person->getPrimaryEmailAddress();
@@ -186,11 +184,10 @@ FILE;
                 'filename'     => 'deskpro-keyfile.txt',
                 'filesize'     => strlen($file),
                 'content_type' => 'plain/text',
-                'data'         => $file
+                'data'         => $file,
             ));
         }
     }
-
 
     ####################################################################################################################
     # send-support-request
@@ -217,7 +214,6 @@ FILE;
         }
     }
 
-
     ####################################################################################################################
     # get-version-info
     ####################################################################################################################
@@ -228,7 +224,7 @@ FILE;
             'build'          => DP_BUILD_TIME,
             'build_name'     => defined('DP_BUILD_NUM') && DP_BUILD_NUM ? DP_BUILD_NUM : 'DEV',
             'build_num_base' => defined('DP_BUILD_NUM_BASE') ? DP_BUILD_NUM_BASE : 0,
-            'build_num_rev'  => defined('DP_BUILD_NUM_REV') ? DP_BUILD_NUM_REV : 0
+            'build_num_rev'  => defined('DP_BUILD_NUM_REV') ? DP_BUILD_NUM_REV : 0,
         ));
     }
 

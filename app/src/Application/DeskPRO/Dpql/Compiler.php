@@ -55,10 +55,14 @@ class Compiler
      */
     public function __construct(Lexer $lexer = null, Parser $parser = null)
     {
-        if (!$lexer) $lexer = new Lexer();
-        if (!$parser) $parser = new Parser();
+        if (!$lexer) {
+            $lexer = new Lexer();
+        }
+        if (!$parser) {
+            $parser = new Parser();
+        }
 
-        $this->_lexer = $lexer;
+        $this->_lexer  = $lexer;
         $this->_parser = $parser;
     }
 
@@ -72,7 +76,7 @@ class Compiler
      */
     public function compile($input, array $placeholders = array())
     {
-        $input = $this->replacePlaceholders($input, $placeholders);
+        $input     = $this->replacePlaceholders($input, $placeholders);
         $statement = $this->lexAndParse($input);
         $statement->prepare();
 

@@ -50,7 +50,7 @@ class DepartmentPermissionMatrix extends PermissionMatrix
     {
         $recs = array();
         foreach ($this->getPermsArray() as $row) {
-            $rec = new DepartmentPermission();
+            $rec             = new DepartmentPermission();
             $rec->department = $department;
             $rec->name       = $row['name'];
             $rec->value      = 1;
@@ -77,7 +77,6 @@ class DepartmentPermissionMatrix extends PermissionMatrix
         return $recs;
     }
 
-
     /**
      * Get a diff of DepartmentPermission records that should be added/removed to make the current permissions set live.
      *
@@ -98,7 +97,6 @@ class DepartmentPermissionMatrix extends PermissionMatrix
         }
 
         if ($department->is_tickets_enabled) {
-
             $existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment(
                 $department,
                 'tickets'
@@ -106,7 +104,6 @@ class DepartmentPermissionMatrix extends PermissionMatrix
         }
 
         if ($department->is_chat_enabled) {
-
             $existing = $em->getRepository('DeskPRO:DepartmentPermission')->getRecordsForDepartment(
                 $department,
                 'chat'
@@ -130,10 +127,9 @@ class DepartmentPermissionMatrix extends PermissionMatrix
 
         return array(
             'create'  => $add,
-            'remove'  => $remove
+            'remove'  => $remove,
         );
     }
-
 
     /**
      * Applies the current permission set to the database.

@@ -63,10 +63,10 @@ class BrandController extends AbstractController
     public function saveAction($id = 0)
     {
         if ($id) {
-            $brand = $this->getBrandRepo()->find($id);
+            $brand       = $this->getBrandRepo()->find($id);
             $http_status = 200;
         } else {
-            $brand = new Brand();
+            $brand       = new Brand();
             $http_status = 201;
         }
 
@@ -80,7 +80,7 @@ class BrandController extends AbstractController
         if ($this->in->getBool('unset_logo')) {
             if ($brand->logo_blob) {
                 $old_blob             = $brand->logo_blob;
-                $brand->logo_blob = null;
+                $brand->logo_blob     = null;
 
                 try {
                     $this->container->getBlobStorage()->deleteBlobRecord($old_blob);
@@ -90,7 +90,7 @@ class BrandController extends AbstractController
         } elseif ($blobAuthCode = $this->in->getString('set_logo_blob')) {
             if ($brand->logo_blob) {
                 $old_blob             = $brand->logo_blob;
-                $brand->logo_blob = null;
+                $brand->logo_blob     = null;
 
                 try {
                     $this->container->getBlobStorage()->deleteBlobRecord($old_blob);
@@ -130,7 +130,7 @@ class BrandController extends AbstractController
         }
 
         if (!$brand) {
-            throw $this->createNotFoundException('brand not found for id = "' . $id . '"');
+            throw $this->createNotFoundException('brand not found for id = "'.$id.'"');
         }
 
         $this->container->getEm()->remove($brand);
@@ -138,7 +138,6 @@ class BrandController extends AbstractController
 
         return $this->createApiSuccessResponse();
     }
-
 
     /**
      * @return \Application\DeskPRO\EntityRepository\Brand

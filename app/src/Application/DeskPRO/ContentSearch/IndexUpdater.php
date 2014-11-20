@@ -59,17 +59,17 @@ class IndexUpdater
         App::getDb()->delete('content_search_attributes', array('id' => $this->entity->getSearchId()));
 
         App::getDb()->insert('content_search', array(
-            'id' => $this->entity->getSearchId(),
-            'content' => $this->entity->getSearchContent()
+            'id'      => $this->entity->getSearchId(),
+            'content' => $this->entity->getSearchContent(),
         ));
 
         $attr = $this->entity->getSearchAttributes();
         if ($attr) {
             foreach ($attr as $k => $v) {
                 App::getDb()->insert('content_search', array(
-                    'search_id' => $this->entity->getSearchId(),
+                    'search_id'    => $this->entity->getSearchId(),
                     'attribute_id' => $k,
-                    'content' => $v
+                    'content'      => $v,
                 ));
             }
         }

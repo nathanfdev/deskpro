@@ -137,7 +137,7 @@ class LogRequestStat extends \Application\DeskPRO\Domain\DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->setPrimaryTable(array(
-            'name' => 'log_request_stats',
+            'name'    => 'log_request_stats',
             'indexes' => array(
                 'date_created_idx' => array('columns' => array('date_created', 'request_id')),
             ),
@@ -222,7 +222,7 @@ class LogRequestStat extends \Application\DeskPRO\Domain\DomainObject
             'type'       => 'decimal',
             'precision'  => 8,
             'scale'      => 4,
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'time_db',
@@ -230,7 +230,7 @@ class LogRequestStat extends \Application\DeskPRO\Domain\DomainObject
             'type'       => 'decimal',
             'precision'  => 8,
             'scale'      => 4,
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'time_end',
@@ -238,7 +238,7 @@ class LogRequestStat extends \Application\DeskPRO\Domain\DomainObject
             'type'       => 'decimal',
             'precision'  => 8,
             'scale'      => 4,
-            'nullable'   => false
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'time_userend',
@@ -246,7 +246,7 @@ class LogRequestStat extends \Application\DeskPRO\Domain\DomainObject
             'type'       => 'decimal',
             'precision'  => 8,
             'scale'      => 4,
-            'nullable'   => false
+            'nullable'   => false,
         ));
     }
 }

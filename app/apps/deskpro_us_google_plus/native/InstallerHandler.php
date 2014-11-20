@@ -46,11 +46,11 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
      */
     protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
     {
-        $us->title = $app->title;
+        $us->title             = $app->title;
         $us->options           = array(
-            'client_id' => $app->getSetting('client_id') ? : null,
-            'client_secret' => $app->getSetting('client_secret') ? : null,
-            'google_apps_domain' => $app->getSetting('google_apps_domain') ? : null,
+            'client_id'          => $app->getSetting('client_id') ?: null,
+            'client_secret'      => $app->getSetting('client_secret') ?: null,
+            'google_apps_domain' => $app->getSetting('google_apps_domain') ?: null,
         );
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\GooglePlus';

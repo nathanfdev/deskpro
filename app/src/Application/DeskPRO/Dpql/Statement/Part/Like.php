@@ -66,8 +66,8 @@ class Like extends AbstractPart
      */
     public function __construct(AbstractPart $lhs, AbstractPart $rhs, $positive = true)
     {
-        $this->lhs = $lhs;
-        $this->rhs = $rhs;
+        $this->lhs      = $lhs;
+        $this->rhs      = $rhs;
         $this->positive = $positive;
     }
 
@@ -86,8 +86,7 @@ class Like extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $childStack = $this->getChildStack($stack);
 
         $lhs = $this->lhs->prepare($statement, $section, $childStack, $select, $result);
@@ -113,7 +112,7 @@ class Like extends AbstractPart
         $not = ($this->positive ? '' : ' NOT');
 
         return $this->lhs->toDpql($statement, $section, $stack)
-            . $not . ' LIKE '
-            . $this->rhs->toDpql($statement, $section, $stack);
+            .$not.' LIKE '
+            .$this->rhs->toDpql($statement, $section, $stack);
     }
 }

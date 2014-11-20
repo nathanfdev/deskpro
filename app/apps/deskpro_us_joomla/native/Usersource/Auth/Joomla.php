@@ -37,12 +37,11 @@ namespace deskpro_us_joomla\Usersource\Auth;
 use Orb\Auth\Adapter;
 use Orb\Auth\Identity;
 use Orb\Auth\Result;
+use Orb\Log\Loggable;
+use Orb\Log\Logger;
 use Orb\Util\Arrays;
 
-use Orb\Log\Logger;
-use Orb\Log\Loggable;
-
-class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInterface, Loggable
+class Joomla implements Adapter\FormLoginInterface,    Adapter\UserInfoFetchableInterface, Loggable
 {
     /**
      * @var \Orb\Log\Logger
@@ -73,7 +72,7 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
     protected function initOptions()
     {
         $this->options = new \Orb\Util\OptionsArray(array(
-            'joomla_url' => '',
+            'joomla_url'    => '',
             'joomla_secret' => '',
         ));
     }
@@ -84,8 +83,8 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
      */
     public function setFormData(array $form_data)
     {
-        $this->set_username = !empty($form_data['username']) ? (string)$form_data['username'] : '';
-        $this->set_password = !empty($form_data['password']) ? (string)$form_data['password'] : '';
+        $this->set_username = !empty($form_data['username']) ? (string) $form_data['username'] : '';
+        $this->set_password = !empty($form_data['password']) ? (string) $form_data['password'] : '';
     }
 
     public function authenticate()
@@ -100,7 +99,7 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
         $time_start = microtime(true);
         if ($this->logger) {
             $this->logger->log("START Joomla::authenticate", Logger::DEBUG);
-            $this->logger->log("Options: " . trim(Arrays::implodeTemplate($this->options, "{KEY}({VAL}) ")), Logger::DEBUG);
+            $this->logger->log("Options: ".trim(Arrays::implodeTemplate($this->options, "{KEY}({VAL}) ")), Logger::DEBUG);
             $this->logger->log("Request: {$this->set_username}:{$this->set_password}", Logger::DEBUG);
         }
 
@@ -124,13 +123,12 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
         $identity = $this->getIdentityFromUserInfo($userinfo);
 
         if ($this->logger) {
-            $this->logger->log("Found user " . $identity->getIdentity(), Logger::DEBUG);
+            $this->logger->log("Found user ".$identity->getIdentity(), Logger::DEBUG);
             $this->logger->log(sprintf("END Joomla::authenticate (took %.4fs)", microtime(true)-$time_start), Logger::DEBUG);
         }
 
         return new Result(Result::SUCCESS, $identity);
     }
-
 
     /**
      * Get an Identity from a userinfo array
@@ -146,7 +144,6 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
 
         return $identity;
     }
-
 
     /**
      * @param  mixed       $id
@@ -179,7 +176,6 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
         return $userinfo;
     }
 
-
     /**
      * @param $id
      * @return array|null
@@ -193,7 +189,6 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
 
         return null;
     }
-
 
     /**
      * @param $id
@@ -209,7 +204,6 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
         return null;
     }
 
-
     /**
      * @param $id
      * @return array|null
@@ -224,20 +218,18 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
         return null;
     }
 
-
     public function getSsoShareSessionHtml($user_id)
     {
-        $time = time();
+        $time   = time();
         $params = array('action' => 'init_session', 'user_id' => $user_id);
         $params = base64_encode(json_encode($params));
-        $params = $time . '_' . sha1($time . $params . $this->options->get('joomla_secret')) . '_' . $params;
+        $params = $time.'_'.sha1($time.$params.$this->options->get('joomla_secret')).'_'.$params;
 
         $req_params = array('DATA' => $params, '__dp_call' => 1);
-        $url = $this->options->get('joomla_url') . '/index.php?' . http_build_query($req_params);
+        $url        = $this->options->get('joomla_url').'/index.php?'.http_build_query($req_params);
 
         return '<iframe width="1" height="0" border="0" frameborder="0" style="width:1px; height: 1px; overflow: hidden; border: none; opacity: 0; position: absolute; top: 0; left: 0; margin: 0; padding: 0; background: transparent;" src="'.$url.'"></iframe>';
     }
-
 
     /**
      * @param $id
@@ -245,15 +237,15 @@ class Joomla implements Adapter\FormLoginInterface,	Adapter\UserInfoFetchableInt
      */
     public function _callJoomlaPlugin(array $params)
     {
-        $time = time();
+        $time   = time();
         $params = base64_encode(json_encode($params));
-        $params = $time . '_' . sha1($time . $params . $this->options->get('joomla_secret')) . '_' . $params;
+        $params = $time.'_'.sha1($time.$params.$this->options->get('joomla_secret')).'_'.$params;
 
         $req_params = array('DATA' => $params, '__dp_call' => 1);
 
         try {
-            require_once(DP_ROOT . '/src/Application/DeskPRO/LowUtil/RemoteRequest.php');
-            $result = \DeskPRO_LowUtil_RemoteRequester::create()->request($this->options->get('joomla_url') . '/index.php', $req_params);
+            require_once DP_ROOT.'/src/Application/DeskPRO/LowUtil/RemoteRequest.php';
+            $result = \DeskPRO_LowUtil_RemoteRequester::create()->request($this->options->get('joomla_url').'/index.php', $req_params);
             $result = @json_decode($result, true);
             if (!$result) {
                 $result = array();

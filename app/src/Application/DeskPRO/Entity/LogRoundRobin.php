@@ -56,11 +56,11 @@ class LogRoundRobin extends DomainObject implements Loggable
 
     public function __construct($robinId, $agentId, $ticketId, $triggerId)
     {
-        $this['timestamp'] = time();
+        $this['timestamp']    = time();
         $this['roundRobinId'] = (int) $robinId;
-        $this['agentId'] = (int) $agentId;
-        $this['ticketId'] = (int) $ticketId;
-        $this['triggerId'] = (int) $triggerId;
+        $this['agentId']      = (int) $agentId;
+        $this['ticketId']     = (int) $ticketId;
+        $this['triggerId']    = (int) $triggerId;
     }
 
     /**
@@ -85,9 +85,9 @@ class LogRoundRobin extends DomainObject implements Loggable
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->setPrimaryTable(array( 'name' => 'log_round_robin', ));
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true,));
-        $metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'columnName' => 'timestamp',));
+        $metadata->setPrimaryTable(array( 'name' => 'log_round_robin'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'columnName' => 'timestamp'));
         $metadata->mapField(array( 'fieldName' => 'roundRobinId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'round_robin_id'));
         $metadata->mapField(array( 'fieldName' => 'agentId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'agent_id'));
         $metadata->mapField(array( 'fieldName' => 'ticketId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'ticket_id'));

@@ -75,13 +75,13 @@ class NewFeedback
     {
         $this->em->beginTransaction();
 
-        $feedback = new Feedback();
+        $feedback         = new Feedback();
         $feedback->person = $this->_person_context;
         $feedback->setStatusCode($this->status_code);
-        $feedback->title = $this->title;
+        $feedback->title   = $this->title;
         $feedback->content = $this->content ?: '';
 
-        $cat = $this->em->find('DeskPRO:FeedbackCategory', $this->category_id);
+        $cat                = $this->em->find('DeskPRO:FeedbackCategory', $this->category_id);
         $feedback->category = $cat;
         $this->em->persist($feedback);
         $this->em->flush();
@@ -95,7 +95,7 @@ class NewFeedback
             foreach ($this->attach_ids as $aid) {
                 $blob = $this->em->getRepository('DeskPRO:Blob')->find($aid);
                 if ($blob) {
-                    $attach = new \Application\DeskPRO\Entity\FeedbackAttachment();
+                    $attach           = new \Application\DeskPRO\Entity\FeedbackAttachment();
                     $attach->person   = $feedback->person;
                     $attach->feedback = $feedback;
                     $attach->blob     = $blob;

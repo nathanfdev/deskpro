@@ -57,8 +57,7 @@ class NullValue extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         return new Prepared('NULL', 'NULL');
     }
 

@@ -105,17 +105,16 @@ class NewPerson
         if ($this->organization_id) {
             $org = $this->_em->find('DeskPRO:Organization', $this->organization_id);
             if ($org) {
-                $person->organization = $org;
+                $person->organization          = $org;
                 $person->organization_position = $this->organization_position;
             }
         } elseif ($this->new_organization) {
-            $org = new Organization();
+            $org       = new Organization();
             $org->name = $this->new_organization;
             $this->_em->persist($org);
 
-            $person->organization = $org;
+            $person->organization          = $org;
             $person->organization_position = $this->organization_position;
-
         }
 
         foreach ($this->usergroup_ids as $ug_id) {

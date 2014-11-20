@@ -65,17 +65,15 @@ class RequestAuth
      */
     protected $log_entry;
 
-
     /**
      * @param EntityManager $em
      * @param Request       $request
      */
     public function __construct(EntityManager $em, Request $request)
     {
-        $this->em = $em;
+        $this->em      = $em;
         $this->request = $request;
     }
-
 
     /**
      * @return \Application\ApiBundle\ApiUser
@@ -83,7 +81,7 @@ class RequestAuth
     public function getApiUser()
     {
         if ($this->api_user == null) {
-            $this->api_user = new ApiUser();
+            $this->api_user                = new ApiUser();
             $this->api_user->request_token = $this->getRequestToken();
 
             #------------------------------
@@ -121,7 +119,6 @@ class RequestAuth
                 }
 
                 $this->createApiLogEntry();
-
             } elseif ($this->api_user->api_token) {
                 $this->api_user->person = $this->api_user->api_token->person;
             }
@@ -129,7 +126,6 @@ class RequestAuth
 
         return $this->api_user;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\ApiKey|null
@@ -144,7 +140,6 @@ class RequestAuth
         return $this->em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\ApiToken|null
      */
@@ -157,7 +152,6 @@ class RequestAuth
 
         return $this->em->getRepository('DeskPRO:ApiToken')->findByTokenString($token_str);
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Session|null
@@ -172,7 +166,6 @@ class RequestAuth
         return $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
     }
 
-
     /**
      * @return null|string
      */
@@ -185,7 +178,6 @@ class RequestAuth
 
         return $tok;
     }
-
 
     /**
      * @param  string      $header_name   The name to look for in headers
@@ -221,15 +213,15 @@ class RequestAuth
             return;
         }
 
-        $log = new ApiKeyLog();
-        $log->key = $key;
+        $log          = new ApiKeyLog();
+        $log->key     = $key;
         $log->request = array(
-            'path' => $this->request->getPathInfo(),
-            'method' => $this->request->getMethod(),
+            'path'    => $this->request->getPathInfo(),
+            'method'  => $this->request->getMethod(),
             'payload' => $this->request->request->all(),
         );
         $log->response = array(
-            'status' => null,
+            'status'  => null,
             'content' => null, // parse json to array?
         );
 

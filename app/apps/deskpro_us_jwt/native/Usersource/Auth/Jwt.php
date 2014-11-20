@@ -60,13 +60,11 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
      */
     protected $logout_url;
 
-
     public function __construct(array $options)
     {
         $this->initOptions();
         $this->options->setArray($options);
     }
-
 
     protected function initOptions()
     {
@@ -74,11 +72,10 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
             array(
                 'url'               => '',
                 'secret'            => '',
-                'login_custom_text' => 'Login (JWT)'
+                'login_custom_text' => 'Login (JWT)',
             )
         );
     }
-
 
     /**
      * {@inheritdoc}
@@ -100,7 +97,6 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
         }
     }
 
-
     /**
      * {@inheritdoc}
      */
@@ -120,7 +116,6 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
             );
         }
     }
-
 
     /**
      * {@inheritdoc}
@@ -162,7 +157,6 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
         return $this->logout_url ?: '';
     }
 
-
     /**
      * Allow external processes to determine and set the logout URL if needed. Should override any internal logic for
      * logout URL.
@@ -179,10 +173,9 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
     {
         return array(
             'iframe_url' => $this->getFullRedirectUrl(),
-            'render' => true
+            'render'     => true,
         );
     }
-
 
     /**
      * @param  array  $callback_data
@@ -202,7 +195,7 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
             $payload_array = Arrays::fromStdClass($payload);
 
             if ($this->logger) {
-                $op['jwt'] = $jwt;
+                $op['jwt']    = $jwt;
                 $op['secret'] = $secret;
                 $this->logger->log(
                     "Given JWT (Token): $jwt", Logger::DEBUG
@@ -211,10 +204,10 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
                     "Decoding with secret: $secret", Logger::DEBUG
                 );
                 $this->logger->log(
-                    "Payload contents: \n" . trim(Arrays::implodeTemplate($payload_array, "{KEY}: {VAL}\n")), Logger::DEBUG
+                    "Payload contents: \n".trim(Arrays::implodeTemplate($payload_array, "{KEY}: {VAL}\n")), Logger::DEBUG
                 );
                 $this->logger->log(
-                    "Identity: " . $payload_array['id'], Logger::DEBUG
+                    "Identity: ".$payload_array['id'], Logger::DEBUG
                 );
             }
 
@@ -230,15 +223,14 @@ class Jwt extends AbstractCallbackAdatper implements Adapter\SsoCapableInterface
             $result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
         }
 
-       if ($this->logger) {
-           $this->logger->log(
+        if ($this->logger) {
+            $this->logger->log(
                sprintf("END Jwt::tryJwtAuth (took %.4fs)", microtime(true) - $time_start), Logger::DEBUG
            );
-       }
+        }
 
         return $result;
     }
-
 
     /**
      * @return string

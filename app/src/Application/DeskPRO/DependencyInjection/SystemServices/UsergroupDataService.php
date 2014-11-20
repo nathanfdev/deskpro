@@ -68,22 +68,22 @@ class UsergroupDataService extends BaseRepositoryService
      */
     protected $continer;
 
-
     /**
      * {@inheritDoc}
      */
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
-        $options['entity'] = 'Application\\DeskPRO\\Entity\\Usergroup';
+        if (!$options) {
+            $options = array();
+        }
+        $options['entity']     = 'Application\\DeskPRO\\Entity\\Usergroup';
         $options['container']  = $container;
 
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }
-
 
     /**
      * {@inheritDoc}
@@ -92,7 +92,6 @@ class UsergroupDataService extends BaseRepositoryService
     {
         $this->continer = $this->options['container'];
     }
-
 
     /**
      * Loads data

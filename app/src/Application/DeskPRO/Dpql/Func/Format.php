@@ -35,11 +35,11 @@
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -62,35 +62,34 @@ class Format extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) < 2) {
             throw new Exception('FORMAT() requires at least 2 arguments.');
         }
 
-        $arguments = $this->_arguments;
-        $value = array_shift($arguments);
-        $type = array_shift($arguments);
+        $arguments   = $this->_arguments;
+        $value       = array_shift($arguments);
+        $type        = array_shift($arguments);
         $typeLiteral = $this->_toLiteral($type);
 
-        $argNames = array();
+        $argNames    = array();
         $argLiterals = array();
-        foreach ($arguments AS $argument) {
-            $prepped = $argument->prepare($statement, $section, $stack, $select, $result);
-            $argNames[] = $prepped->name();
+        foreach ($arguments as $argument) {
+            $prepped       = $argument->prepare($statement, $section, $stack, $select, $result);
+            $argNames[]    = $prepped->name();
             $argLiterals[] = $this->_toLiteral($argument);
         }
 
         $preppedValue = $value->prepare($statement, $section, $stack, $select, $result);
-        $preppedType = $type->prepare($statement, $section, $stack, $select, $result);
+        $preppedType  = $type->prepare($statement, $section, $stack, $select, $result);
 
         if ($argNames) {
-            $argNameOutput = ', ' . implode(', ', $argNames);
+            $argNameOutput = ', '.implode(', ', $argNames);
         } else {
             $argNameOutput = '';
         }
 
-        $name = 'FORMAT(' . $preppedValue->name() . ', ' . $preppedType->name() . $argNameOutput . ')';
+        $name = 'FORMAT('.$preppedValue->name().', '.$preppedType->name().$argNameOutput.')';
 
         $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($typeLiteral, $argLiterals) {
             if ($value === null) {
@@ -120,7 +119,7 @@ class Format extends AbstractFunc
                 case 'percent':
                     $decimals = isset($argLiterals[0]) ? $argLiterals[0] : 2;
 
-                    return $valueRenderer->escapeValue(number_format($value * 100, $decimals) . '%');
+                    return $valueRenderer->escapeValue(number_format($value * 100, $decimals).'%');
             }
 
             return $valueRenderer->renderValue($value, $typeLiteral);

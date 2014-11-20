@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -78,8 +78,7 @@ class Alias extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         throw new Exception('Alias prepare() cannot not be called');
     }
 
@@ -95,6 +94,6 @@ class Alias extends AbstractPart
     public function toDpql(Display $statement, $section, array $stack)
     {
         return $this->value->toDpql($statement, $section, $stack)
-            . ' AS ' . $statement->quoteDpqlString($this->alias);
+            .' AS '.$statement->quoteDpqlString($this->alias);
     }
 }

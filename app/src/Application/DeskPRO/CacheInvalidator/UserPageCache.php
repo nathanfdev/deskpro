@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\CacheInvalidator;
 
-
 class UserPageCache
 {
     /** @var string */
@@ -43,7 +42,7 @@ class UserPageCache
     public function __construct($cache_dir = null)
     {
         if (!$cache_dir) {
-            $cache_dir = dp_get_tmp_dir() . '/page-cache';
+            $cache_dir = dp_get_tmp_dir().'/page-cache';
         }
 
         $this->_cache_dir = $cache_dir;
@@ -99,10 +98,10 @@ class UserPageCache
 
         $cache_dir = $this->_cache_dir;
         if (is_dir($cache_dir)) {
-            $files = array();
-            $sizes = array();
+            $files      = array();
+            $sizes      = array();
             $total_size = 0;
-            $dir = opendir($cache_dir);
+            $dir        = opendir($cache_dir);
             while (($file = readdir($dir)) !== false) {
                 if ($file == 'index.html') {
                     continue;
@@ -121,7 +120,7 @@ class UserPageCache
 
             asort($files);
 
-            foreach ($files AS $path => $mtime) {
+            foreach ($files as $path => $mtime) {
                 if ($mtime < $cutoff || $total_size >= $max_size) {
                     @unlink($path);
                     $size = $sizes[$path];
@@ -137,6 +136,6 @@ class UserPageCache
 
     public function invalidateLanguageCache()
     {
-        @unlink(dp_get_data_dir() . '/languages.cache');
+        @unlink(dp_get_data_dir().'/languages.cache');
     }
 }

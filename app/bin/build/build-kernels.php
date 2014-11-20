@@ -9,13 +9,13 @@ if (php_sapi_name() != 'cli') {
 chdir(__DIR__);
 
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
-require DP_ROOT . '/bin/build/inc.php';
-require_once DP_ROOT . '/sys/load_config.php';
-require DP_ROOT . '/bin/build/php-path.php';
+require DP_ROOT.'/bin/build/inc.php';
+require_once DP_ROOT.'/sys/load_config.php';
+require DP_ROOT.'/bin/build/php-path.php';
 
 $proc_kernel = null;
 if (($k = array_search('--knum', $_SERVER['argv'])) !== false) {
@@ -48,7 +48,7 @@ if ($proc_kernel === null) {
         echo "Building {$kernel_class} ... ";
         $time = microtime(true);
 
-        $cmd = DP_PHP_PATH . ' ./build-kernels.php --knum ' . $k;
+        $cmd  = DP_PHP_PATH.' ./build-kernels.php --knum '.$k;
         $proc = new Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin/build');
         $proc->run(function ($type, $buffer) {
             if ($type === 'err') {
@@ -69,10 +69,9 @@ if ($proc_kernel === null) {
 
     exit(0);
 } else {
-
     require_once DP_ROOT.'/sys/system.php';
 
-    $class = $kernel_classes[$proc_kernel];
+    $class  = $kernel_classes[$proc_kernel];
     $kernel = new $class('prod', false);
     $kernel->boot();
 

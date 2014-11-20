@@ -67,12 +67,12 @@ class SessData extends \Application\DeskPRO\Domain\DomainObject
             )
         )->isPrimaryKey()->build();
         $builder->addField('sess_time', 'integer', array(
-                'unsigned' => true,
+                'unsigned'  => true,
                 'nullable'  => false,
             )
         );
         $builder->addField('sess_data', 'text', array(
-                'nullable' => false
+                'nullable' => false,
             )
         );
     }

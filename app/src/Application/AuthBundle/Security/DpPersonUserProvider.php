@@ -34,8 +34,8 @@
 
 namespace Application\AuthBundle\Security;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
+use Application\DeskPRO\Entity\Person;
 use Orb\Auth\Identity;
 use Symfony\Component\Security\Core\Exception\UnsupportedUserException;
 use Symfony\Component\Security\Core\Exception\UsernameNotFoundException;

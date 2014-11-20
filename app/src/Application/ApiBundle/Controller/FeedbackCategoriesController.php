@@ -53,7 +53,6 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -68,7 +67,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
         return $this->createApiResponse(
             array(
-                 'feedback_categories' => $feedback_categories->getAll()
+                 'feedback_categories' => $feedback_categories->getAll(),
             )
         );
     }
@@ -84,10 +83,9 @@ class FeedbackCategoriesController extends AbstractController implements Protect
          */
 
         $feedback_categories = $this->container->getSystemService('feedback_categories');
-        $feedback_category = $feedback_categories->getById($id);
+        $feedback_category   = $feedback_categories->getById($id);
 
         if (!$feedback_category) {
-
             throw $this->createNotFoundException();
         }
 
@@ -95,7 +93,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
 
         return $this->createApiResponse(
             array(
-                 'feedback_category' => $returnedData
+                 'feedback_category' => $returnedData,
             )
         );
     }
@@ -113,22 +111,18 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         $feedback_categories = $this->container->getSystemService('feedback_categories');
 
         if ($id) {
-
             $feedback_category = $feedback_categories->getById($id);
 
             if (!$feedback_category) {
-
                 throw $this->createNotFoundException();
             }
         } else {
-
             $feedback_category = $feedback_categories->createNew();
         }
 
         $this->em->getConnection()->beginTransaction();
 
         try {
-
             $postData  = $this->in->getAll('post');
 
             // @TODO should be refactored to usage of symfony form mechanism later, this one is quite ugly
@@ -145,9 +139,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
             $this->em->flush();
 
             $this->em->getConnection()->commit();
-
         } catch (\Exception $e) {
-
             $this->em->getConnection()->rollback();
             throw $e;
         }
@@ -174,7 +166,6 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         $feedback_category   = $feedback_categories->getById($id);
 
         if (!$feedback_category) {
-
             throw $this->createNotFoundException();
         }
 
@@ -184,12 +175,10 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         $skip_moving = false;
 
         if (!$move_to_feedback_category) {
-
             $skip_moving = true;
         }
 
         if (!$skip_moving && $move_to_feedback_category->getId() == $feedback_category->getId()) {
-
             throw ValidationException::create(
                 "feedback_type.remove.move_feedback_categories",
                 "You must choose a different feedback category"
@@ -201,9 +190,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
         $this->db->beginTransaction();
 
         try {
-
-            if(!$skip_moving) {
-
+            if (!$skip_moving) {
                 $this->db->executeUpdate(
                     "UPDATE custom_data_feedback SET field_id = ? WHERE field_id = ?",
                     array($move_to, $old_id)
@@ -214,9 +201,7 @@ class FeedbackCategoriesController extends AbstractController implements Protect
             $this->em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }

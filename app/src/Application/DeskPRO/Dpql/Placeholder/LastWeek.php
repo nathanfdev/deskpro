@@ -50,18 +50,18 @@ class LastWeek extends AbstractDateRange
     protected function _getDateRange()
     {
         $person = App::getCurrentPerson();
-        $tz = new \DateTimeZone($person->getTimezone());
-        $date = new \DateTime('now', $tz);
+        $tz     = new \DateTimeZone($person->getTimezone());
+        $date   = new \DateTime('now', $tz);
 
         // find start of this week
         $currentDayOfWeek = $date->format('N');
-        $startAdjust = $currentDayOfWeek - $person->getStartOfWeek();
+        $startAdjust      = $currentDayOfWeek - $person->getStartOfWeek();
 
         if ($startAdjust) {
             if ($startAdjust > 0) {
-                $date->modify('-' . $startAdjust . ' days');
+                $date->modify('-'.$startAdjust.' days');
             } else {
-                $date->modify('-' . (7 + $startAdjust) . ' days');
+                $date->modify('-'.(7 + $startAdjust).' days');
             }
         }
 

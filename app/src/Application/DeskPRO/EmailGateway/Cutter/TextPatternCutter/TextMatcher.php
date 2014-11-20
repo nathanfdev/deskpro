@@ -87,7 +87,6 @@ class TextMatcher
         $this->pattern = $pattern;
     }
 
-
     /**
      * Given a tokenized pattern, process it against the body to find matching results
      */
@@ -99,13 +98,13 @@ class TextMatcher
 
         $this->pattern_match = false;
         $this->marked_body   = $this->body;
-        $m = null;
+        $m                   = null;
 
         if (preg_match($this->pattern->getPattern(), $this->body, $m)) {
             $this->matched_patterns = $m;
-            $this->matched_text = $m[0];
-            $this->marked_body = preg_replace($this->pattern->getPattern(), self::CUT_MARK . '$0', $this->body);
-            $this->pattern_match = true;
+            $this->matched_text     = $m[0];
+            $this->marked_body      = preg_replace($this->pattern->getPattern(), self::CUT_MARK.'$0', $this->body);
+            $this->pattern_match    = true;
         }
     }
 

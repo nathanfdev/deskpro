@@ -58,8 +58,8 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
             $old[$field] = $change[0];
         }
 
-        $change = new ChangeObject('contact_data', $old, $data);
-        $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
+        $change                                       = new ChangeObject('contact_data', $old, $data);
+        $entry                                        = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
         $this->queued_updates[spl_object_hash($data)] = $entry;
     }
 
@@ -76,8 +76,8 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPrePersist(PersonContactData $data)
     {
-        $change = new ChangeObject('contact_data', null, $data);
-        $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
+        $change                                       = new ChangeObject('contact_data', null, $data);
+        $entry                                        = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
         $this->queued_inserts[spl_object_hash($data)] = $entry;
     }
 
@@ -94,8 +94,8 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
      */
     public function onPreRemove(PersonContactData $data)
     {
-        $change = new ChangeObject('contact_data', $data, null);
-        $entry = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
+        $change                                         = new ChangeObject('contact_data', $data, null);
+        $entry                                          = $this->createLogEntry(new EntityUpdated($data->person, $change), $data->person);
         $this->queued_deletions[spl_object_hash($data)] = $entry;
     }
 
@@ -113,19 +113,19 @@ class PersonContactDataChangeLogListener extends EntityChangeLogListener
      */
     protected function doFlush($oid, $type)
     {
-        if (!isset($this->{'queued_' . $type}[$oid])) {
+        if (!isset($this->{'queued_'.$type}[$oid])) {
             return;
         }
 
         /** @var LogEvent $entry */
-        $entry = $this->{'queued_' . $type}[$oid];
-        $person = $entry->getEventObject()->getSubject();
+        $entry       = $this->{'queued_'.$type}[$oid];
+        $person      = $entry->getEventObject()->getSubject();
         $parentEntry = $this->person_log_listener->getUpdateLogEntry($person);
 
         $parentEntry->children->add($entry);
         $entry->parent = $parentEntry;
 
-        unset($this->{'queued_' . $type}[$oid]);
+        unset($this->{'queued_'.$type}[$oid]);
 
         /**
          * we do only one single flush, and only when all queued actions added as child to $parentEntry

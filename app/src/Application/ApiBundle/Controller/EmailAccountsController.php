@@ -64,7 +64,6 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -80,7 +79,6 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # get
@@ -115,7 +113,6 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # save
@@ -165,7 +162,6 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
     }
 
-
     /**
      * @param  EmailAccount $account
      * @return array
@@ -174,7 +170,6 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
     {
         return $this->in->getAll('post');
     }
-
 
     ####################################################################################################################
     # remove
@@ -194,14 +189,13 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         return $this->createApiDeleteResponse(array('old_id' => $old_id));
     }
 
-
     ####################################################################################################################
     # test-account
     ####################################################################################################################
 
     public function testAccountAction()
     {
-        $account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+        $account      = new EmailAccount(EmailAccount::TYPE_TICKETS);
         $edit_account = new EditEmailAccount($account);
 
         $form = $this->createForm(
@@ -218,7 +212,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         return $this->createApiResponse(array(
             'is_success'    => $tester->isSuccess(),
             'log'           => $tester->getLog(),
-            'message_count' => $tester->getMessageCount()
+            'message_count' => $tester->getMessageCount(),
         ));
     }
 
@@ -228,7 +222,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
 
     public function testOutgoingAccountAction()
     {
-        $account = new EmailAccount(EmailAccount::TYPE_TICKETS);
+        $account      = new EmailAccount(EmailAccount::TYPE_TICKETS);
         $edit_account = new EditEmailAccount($account);
 
         $form = $this->createForm(
@@ -289,7 +283,7 @@ class EmailAccountsController extends AbstractController implements ProtectedCon
         }
 
         $data = array(
-            'email_settings' => $this->emailSettings->toArray(),
+            'email_settings'   => $this->emailSettings->toArray(),
             'max_filesize'     => Env::getEffectiveMaxUploadSize(),
         );
 

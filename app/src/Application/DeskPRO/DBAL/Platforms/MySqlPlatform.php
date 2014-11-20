@@ -42,11 +42,11 @@ class MySqlPlatform extends \Doctrine\DBAL\Platforms\MySqlPlatform
     {
         parent::initializeDoctrineTypeMappings();
 
-        $this->doctrineTypeMapping['longblob'] = 'dpblob_file';
-        $this->doctrineTypeMapping['blob'] = 'dpblob_file';
+        $this->doctrineTypeMapping['longblob']   = 'dpblob_file';
+        $this->doctrineTypeMapping['blob']       = 'dpblob_file';
         $this->doctrineTypeMapping['mediumblob'] = 'dpblob_file';
-        $this->doctrineTypeMapping['tinyblob'] = 'dpblob_file';
-        $this->doctrineTypeMapping['varbinary'] = 'dpblob';
+        $this->doctrineTypeMapping['tinyblob']   = 'dpblob_file';
+        $this->doctrineTypeMapping['varbinary']  = 'dpblob';
     }
 
     public function getIndexDeclarationSQL($name, Index $index)

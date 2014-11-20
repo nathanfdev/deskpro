@@ -61,14 +61,12 @@ class PeopleListRenderer
      */
     private $cache_orgs;
 
-
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
-        $this->em = $container->getEm();
-        $this->db = $container->getDb();
+        $this->em        = $container->getEm();
+        $this->db        = $container->getDb();
     }
-
 
     /**
      * @param  PeopleResultsDisplay $display
@@ -119,7 +117,6 @@ class PeopleListRenderer
         return $json_array;
     }
 
-
     /**
      * @param  PeopleResultsDisplay $display
      * @return string
@@ -166,22 +163,22 @@ class PeopleListRenderer
         $data['organization_manager']  = $entity->organization_manager;
         $data['timezone']              = $entity->timezone;
 
-        $data['date_created'] = $entity->date_created->format('Y-m-d H:i:s');
+        $data['date_created']    = $entity->date_created->format('Y-m-d H:i:s');
         $data['date_created_ts'] = $entity->date_created->getTimestamp();
 
         $data['display_name']  = $entity->getDisplayName();
         if ($entity->primary_email) {
             $data['primary_email'] = array(
                 'id'    => $entity->primary_email->id,
-                'email' => $entity->primary_email->email
+                'email' => $entity->primary_email->email,
             );
         }
 
-        $email = $display->getEmail($entity);
-        $data['email'] = $email ? $email['email'] : null;
-        $data['usernames'] = $display->getPersonUsernames($entity);
-        $data['language'] = $entity->language ? $entity->language->title : null;
-        $data['labels'] = $display->getPersonLabels($entity);
+        $email                 = $display->getEmail($entity);
+        $data['email']         = $email ? $email['email'] : null;
+        $data['usernames']     = $display->getPersonUsernames($entity);
+        $data['language']      = $entity->language ? $entity->language->title : null;
+        $data['labels']        = $display->getPersonLabels($entity);
         $data['tickets_count'] = $display->getPersonTicketCount($entity);
 
         $data['picture_url']    = $entity->getPictureUrl();
@@ -193,14 +190,13 @@ class PeopleListRenderer
         $data['picture_url_22'] = $entity->getPictureUrl(22);
         $data['picture_url_16'] = $entity->getPictureUrl(16);
 
-
         $custom_data = $display->getUserFieldData($entity);
         if ($custom_data) {
             $field_manager = $this->container->getPersonFieldManager();
 
             $rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
             foreach ($rendered_data as $fid => $v) {
-                $data['person_fields[' . $fid . ']'] = array(
+                $data['person_fields['.$fid.']'] = array(
                     'title' => $v['title'],
                     'value' => $v['rendered'],
                 );

@@ -62,7 +62,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
     public function __construct(DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider)
     {
-        $this->dp_auth_manager = $dp_auth_manager;
+        $this->dp_auth_manager    = $dp_auth_manager;
         $this->dp_person_provider = $dp_person_provider;
     }
 
@@ -83,12 +83,12 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
 
         /** @var Usersource $usersource */
         /** @var Result $authResult */
-        $auth_manager = $this->dp_auth_manager;
+        $auth_manager                  = $this->dp_auth_manager;
         list($authResult, $usersource) = $this->getDpAuthResultForGivenUsersources($token, $auth_manager);
 
         // if its the user interface and we failed, please try agent usersources as well
         if (!$authResult->isValid() && 'user' === $this->dp_auth_manager->getInterface()) {
-            $auth_manager = $this->dp_auth_manager->cloneForInterface('agent');
+            $auth_manager                  = $this->dp_auth_manager->cloneForInterface('agent');
             list($authResult, $usersource) = $this->getDpAuthResultForGivenUsersources($token, $auth_manager);
         }
 
@@ -101,7 +101,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             // TODO: for now, we are actually using the LoginProcessor class here, but we will change this to be in
             // some sort of UserProviderInterface eventually....
             $login_processor = new LoginProcessor($usersource, $authResult->getIdentity());
-            $person = $login_processor->getPerson();
+            $person          = $login_processor->getPerson();
 
             $authenticatedToken = new DpFormLoginToken($person, $person->getPassword(), array_merge(array('ROLE_USER'), $person->getRoles()));
             $authenticatedToken->setAttributes($token->getAttributes());
@@ -109,7 +109,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
             return $authenticatedToken;
         }
 
-        throw new BadCredentialsException;
+        throw new BadCredentialsException();
     }
 
     /**
@@ -138,7 +138,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 $adapter->setFormData(
                     array(
                         'username' => $token->getUsername(),
-                        'password' => $token->getCredentials()
+                        'password' => $token->getCredentials(),
                     )
                 );
 
@@ -147,7 +147,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
                 } catch (\Exception $e) {
                     KernelErrorHandler::logException($e, false);
                     $GLOBALS['DP_AUTH_EXCEPTION_ADAPTER'] = $adapter;
-                    $GLOBALS['DP_AUTH_EXCEPTION'] = $e;
+                    $GLOBALS['DP_AUTH_EXCEPTION']         = $e;
                     continue;
                 }
 

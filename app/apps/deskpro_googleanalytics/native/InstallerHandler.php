@@ -34,8 +34,8 @@
 
 namespace deskpro_googleanalytics;
 
-use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
@@ -46,7 +46,6 @@ class InstallerHandler extends AbstractInstallerHandler
     {
         $this->_doInstall($context);
     }
-
 
     /**
      * {@inheritDoc}
@@ -59,11 +58,10 @@ class InstallerHandler extends AbstractInstallerHandler
         }
         foreach ($this->settingsDef as $set) {
             if (isset($set['name'])) {
-                $handler->setSetting('core.' . $set['name'], null);
+                $handler->setSetting('core.'.$set['name'], null);
             }
         }
     }
-
 
     /**
      * {@inheritDoc}
@@ -73,7 +71,6 @@ class InstallerHandler extends AbstractInstallerHandler
         $this->_doInstall($context);
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -81,7 +78,6 @@ class InstallerHandler extends AbstractInstallerHandler
     {
         $this->_doInstall($context);
     }
-
 
     /**
      * @param InstallerContext $context
@@ -94,7 +90,7 @@ class InstallerHandler extends AbstractInstallerHandler
         }
         foreach ($this->settingsDef as $set) {
             if (isset($set['name'])) {
-                $handler->setSetting('core.' . $set['name'], $context->getApp()->getSetting($set['name']));
+                $handler->setSetting('core.'.$set['name'], $context->getApp()->getSetting($set['name']));
             }
         }
     }

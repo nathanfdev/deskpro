@@ -35,11 +35,11 @@
 namespace Application\DeskPRO\Dpql\Func;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -62,22 +62,21 @@ class Link extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) < 2) {
             throw new Exception('LINK() requires at least 2 arguments.');
         }
 
-        $arguments = $this->_arguments;
-        $print = array_shift($arguments);
-        $format = array_shift($arguments);
+        $arguments     = $this->_arguments;
+        $print         = array_shift($arguments);
+        $format        = array_shift($arguments);
         $formatLiteral = $this->_toLiteral($format);
 
-        $argNames = array();
+        $argNames  = array();
         $argSelect = array();
-        foreach ($arguments AS $argument) {
-            $prepped = $argument->prepare($statement, $section, $stack, $select, $result);
-            $argNames[] = $prepped->name();
+        foreach ($arguments as $argument) {
+            $prepped     = $argument->prepare($statement, $section, $stack, $select, $result);
+            $argNames[]  = $prepped->name();
             $argSelect[] = $select->addSelectField($prepped->printed());
         }
 
@@ -92,8 +91,7 @@ class Link extends AbstractFunc
 
     public static function formatLink($print, $format, array $argSelect, array $row,
         AbstractValues $valueRenderer, AbstractRenderer $renderer
-    )
-    {
+    ) {
         $breakEarly = (
             $print === null
                 || !($valueRenderer instanceof \Application\DeskPRO\Dpql\Renderer\Values\Html)
@@ -106,18 +104,18 @@ class Link extends AbstractFunc
         }
 
         switch ($format) {
-            case 'ticket': $format = 'agent/#app.tickets,t:%d'; break;
-            case 'person': $format = 'agent/#app.people,p:%d'; break;
+            case 'ticket': $format       = 'agent/#app.tickets,t:%d'; break;
+            case 'person': $format       = 'agent/#app.people,p:%d'; break;
             case 'organization': $format = 'agent/#app.people,o:%d'; break;
         }
 
         $argValues = array();
-        foreach ($argSelect AS $key) {
+        foreach ($argSelect as $key) {
             $argValues[] = urlencode($renderer->getColumnValue($row, $key));
         }
 
-        $link = App::getRequest()->getUriForPath('') . '/' . vsprintf($format, $argValues);
+        $link = App::getRequest()->getUriForPath('').'/'.vsprintf($format, $argValues);
 
-        return '<a href="' . htmlspecialchars($link) . '" target="_blank">' . $print . '</a>';
+        return '<a href="'.htmlspecialchars($link).'" target="_blank">'.$print.'</a>';
     }
 }

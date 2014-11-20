@@ -7,11 +7,11 @@ if (php_sapi_name() != 'cli') {
 }
 
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
-require DP_ROOT . '/bin/build/inc.php';
+require DP_ROOT.'/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
 /**
@@ -30,31 +30,31 @@ class VendorMutate
     {
         $do_unprivate_classes = array(
             array(
-                'class_file' => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/Proxy/ProxyFactory.php',
-                'target_file' => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateProxyFactory.php',
+                'class_file'       => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/Proxy/ProxyFactory.php',
+                'target_file'      => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateProxyFactory.php',
                 'target_namespace' => 'Application\\DeskPRO\\ORM\\Unprivate',
                 'target_classname' => 'UnprivateProxyFactory',
-                'custom_pre' => array(
-                    'use Doctrine\ORM\Proxy\ProxyException;'
-                )
+                'custom_pre'       => array(
+                    'use Doctrine\ORM\Proxy\ProxyException;',
+                ),
             ),
             array(
-                'class_file' => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/EntityManager.php',
-                'target_file' => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateEntityManager.php',
+                'class_file'       => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/EntityManager.php',
+                'target_file'      => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateEntityManager.php',
                 'target_namespace' => 'Application\\DeskPRO\\ORM\\Unprivate',
                 'target_classname' => 'UnprivateEntityManager',
-                'custom_pre' => array(
-                    'use Doctrine\ORM\Configuration, Doctrine\ORM\ORMException, Doctrine\ORM\UnitOfWork, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder;'
+                'custom_pre'       => array(
+                    'use Doctrine\ORM\Configuration, Doctrine\ORM\ORMException, Doctrine\ORM\UnitOfWork, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder;',
                 ),
                 'callback' => array($this, '_doctrineEmFixCreate'),
             ),
             array(
-                'class_file' => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php',
-                'target_file' => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateUnitOfWork.php',
+                'class_file'       => DP_ROOT.'/vendor/doctrine/orm/lib/Doctrine/ORM/UnitOfWork.php',
+                'target_file'      => DP_ROOT.'/src/Application/DeskPRO/ORM/Unprivate/UnprivateUnitOfWork.php',
                 'target_namespace' => 'Application\\DeskPRO\\ORM\\Unprivate',
                 'target_classname' => 'UnprivateUnitOfWork',
-                'custom_pre' => array(
-                    'use Doctrine\ORM\Configuration, Doctrine\ORM\Persisters, Doctrine\ORM\EntityManager, Doctrine\ORM\Events, Doctrine\ORM\Event, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder, Doctrine\ORM\PersistentCollection, Doctrine\ORM\ORMInvalidArgumentException, Doctrine\ORM\ORMException, Doctrine\ORM\OptimisticLockException, Doctrine\ORM\TransactionRequiredException, Doctrine\ORM\EntityNotFoundException;'
+                'custom_pre'       => array(
+                    'use Doctrine\ORM\Configuration, Doctrine\ORM\Persisters, Doctrine\ORM\EntityManager, Doctrine\ORM\Events, Doctrine\ORM\Event, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder, Doctrine\ORM\PersistentCollection, Doctrine\ORM\ORMInvalidArgumentException, Doctrine\ORM\ORMException, Doctrine\ORM\OptimisticLockException, Doctrine\ORM\TransactionRequiredException, Doctrine\ORM\EntityNotFoundException;',
                 ),
                 'callback' => array($this, '_doctrineEmFixCreate'),
             ),
@@ -62,7 +62,7 @@ class VendorMutate
 
         foreach ($do_unprivate_classes as $unprivate_class) {
             if (!file_exists($unprivate_class['class_file'])) {
-                throw new \InvalidArgumentException("Class file does not exist: " . $unprivate_class['class_file']);
+                throw new \InvalidArgumentException("Class file does not exist: ".$unprivate_class['class_file']);
             }
 
             $source = file_get_contents($unprivate_class['class_file']);
@@ -74,7 +74,7 @@ class VendorMutate
             $source = preg_replace('#<\?php#', "$0\n\n/* This file has been auto-generated. See build-vendors-mutate.php */\n\n", $source, 1);
 
             if ($unprivate_class['custom_pre']) {
-                $unprivate_class['custom_pre'] = "\n" . implode("\n", $unprivate_class['custom_pre']) . "\n";
+                $unprivate_class['custom_pre'] = "\n".implode("\n", $unprivate_class['custom_pre'])."\n";
             } else {
                 $unprivate_class['custom_pre'] = '';
             }
@@ -82,7 +82,7 @@ class VendorMutate
             preg_match('#namespace(.*?);#', $source, $m);
             $orig_ns = trim($m[1]);
 
-            $source = preg_replace('#class ([a-zA-Z0-9_])#', 'class ' . $unprivate_class['target_classname'] . ' extends \\\\' . $orig_ns . '\\\\$1', $source, 1);
+            $source = preg_replace('#class ([a-zA-Z0-9_])#', 'class '.$unprivate_class['target_classname'].' extends \\\\'.$orig_ns.'\\\\$1', $source, 1);
             if ($unprivate_class['target_classname'] != 'UnprivateProxyFactory') {
                 // proxy factory needs to create proxies that implement the doctrine Proxy class
                 $source = preg_replace('#\s+implements.*#', '', $source, 1);

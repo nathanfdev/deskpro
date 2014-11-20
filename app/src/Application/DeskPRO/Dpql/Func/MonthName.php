@@ -34,11 +34,11 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -61,16 +61,15 @@ class MonthName extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 1) {
             throw new Exception('MONTHNAME() can only accept 1 argument.');
         }
 
         $expression = reset($this->_arguments);
-        $prepped = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
 
-        $sql = 'MONTH(' . $prepped->sql() . ')';
+        $sql      = 'MONTH('.$prepped->sql().')';
         $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
             switch ($value) {
                 case 1: return 'January';
@@ -87,7 +86,7 @@ class MonthName extends AbstractFunc
                 case 12: return 'December';
             }
         };
-        $res = new Prepared($sql, 'MONTHNAME(' . $prepped->name() . ')', false, $renderer);
+        $res = new Prepared($sql, 'MONTHNAME('.$prepped->name().')', false, $renderer);
 
         $res->setGroupFill(function ($min, $max) {
             $fills = array();

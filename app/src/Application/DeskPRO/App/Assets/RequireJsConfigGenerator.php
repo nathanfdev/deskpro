@@ -43,17 +43,17 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
     {
         foreach ($manager->getAllPackages() as $package) {
             if ($native_file_root && $package->native_name) {
-                $native_baseurl = $native_file_root . '/' . $package->native_name;
+                $native_baseurl = $native_file_root.'/'.$package->native_name;
             } else {
                 $native_baseurl = null;
             }
 
             $appAsset = $package->getTaggedAsset('app_js');
-            $name = "{$package->name}/app";
+            $name     = "{$package->name}/app";
 
             if ($appAsset) {
                 if ($native_baseurl) {
-                    $appjs_path = preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js');
+                    $appjs_path = preg_replace('#\.js$#', '', $native_baseurl.'/app/app.js');
                 } else {
                     $appjs_path = preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl(false, false));
                 }
@@ -62,14 +62,14 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
 
             // If its a native app, then we can get away with just using the prefix path
             if ($native_baseurl) {
-                $name = $package->name;
-                $asset_path = $native_baseurl . '/js';
+                $name       = $package->name;
+                $asset_path = $native_baseurl.'/js';
                 $this->addPath($name, $asset_path);
 
             // Otherwise, we need to use the download URL that will contain unique auth codes
             } else {
                 foreach ($package->getTaggedAssets('js') as $asset) {
-                    $name = $package->name . '/js/' . str_replace('.js', '', $asset->name);
+                    $name       = $package->name.'/js/'.str_replace('.js', '', $asset->name);
                     $asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl(false, false));
 
                     $this->addPath($name, $asset_path);

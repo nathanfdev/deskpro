@@ -63,7 +63,6 @@ class ManifestReader
      */
     private $error_details = array();
 
-
     /**
      * @param  array          $data
      * @return ManifestReader
@@ -72,7 +71,6 @@ class ManifestReader
     {
         return new self($data);
     }
-
 
     /**
      * @param  string         $path
@@ -89,7 +87,6 @@ class ManifestReader
         return self::newFromJson($json);
     }
 
-
     /**
      * @param  string         $json
      * @return ManifestReader
@@ -104,7 +101,6 @@ class ManifestReader
         return new self($data);
     }
 
-
     /**
      * @param array $data
      * @param null  $set_error
@@ -112,7 +108,7 @@ class ManifestReader
      */
     private function __construct(array $data, $set_error = null, array $set_error_detail = null)
     {
-        $this->data = $data;
+        $this->data     = $data;
         $this->manifest = new Manifest();
 
         if ($set_error) {
@@ -140,8 +136,8 @@ class ManifestReader
             $docheck = array();
 
             foreach ($fields as $f) {
-                $setter = Strings::underscoreToCamelCase('set_' . str_replace('.', '_', $f));
-                $value = Arrays::getValue($this->data, $f, '___dp_unset___');
+                $setter = Strings::underscoreToCamelCase('set_'.str_replace('.', '_', $f));
+                $value  = Arrays::getValue($this->data, $f, '___dp_unset___');
                 if ($value === '___dp_unset___') {
                     if ($f == 'tags' || $f == 'is_native') {
                         // allowed to be unset
@@ -161,14 +157,14 @@ class ManifestReader
                         $this->manifest->$setter($value);
                     }
                 } elseif ($f == 'api_version') {
-                    $value = (int)$value;
+                    $value = (int) $value;
                     if ($value != 1) {
                         $this->error_details[] = array('invalid', $f);
                     } else {
                         $this->manifest->$setter($value);
                     }
                 } elseif ($f == 'is_native') {
-                    $value = (bool)$value;
+                    $value = (bool) $value;
                     $this->manifest->setIsNative($value);
                 } else {
                     if (!is_scalar($value)) {
@@ -191,15 +187,14 @@ class ManifestReader
         }
     }
 
-
     /**
      * @param array $fields
      */
     private function validate(array $fields)
     {
         foreach ($fields as $f) {
-            $getter = Strings::underscoreToCamelCase('get_' . str_replace('.', '_', $f));
-            $value = $this->manifest->$getter();
+            $getter = Strings::underscoreToCamelCase('get_'.str_replace('.', '_', $f));
+            $value  = $this->manifest->$getter();
 
             switch ($f) {
                 case 'api_version':

@@ -49,7 +49,7 @@ class TicketLayoutsData implements DataInterface
             }
         }
 
-        $data = array();
+        $data                   = array();
         $data['ticket_layouts'] = $filter_data;
 
         return $data;

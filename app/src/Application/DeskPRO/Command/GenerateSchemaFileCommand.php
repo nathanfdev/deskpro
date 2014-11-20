@@ -51,7 +51,7 @@ class GenerateSchemaFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\
     {
         $em = $this->getContainer()->get('doctrine.orm.entity_manager');
 
-        $sc = new \Application\InstallBundle\Data\GenerateSchema($em);
+        $sc  = new \Application\InstallBundle\Data\GenerateSchema($em);
         $php = $sc->getPhpFile();
 
         $do_save = $input->getOption('save');

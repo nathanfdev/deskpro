@@ -53,7 +53,7 @@ use Orb\Util\Strings;
 class ApiKey extends DomainObject
 {
     const FLAG_ADMIN_MANAGE = 'admin_manage';
-    const FLAG_SUPER_KEY = 'super';
+    const FLAG_SUPER_KEY    = 'super';
 
     /**
      * @var int
@@ -87,13 +87,11 @@ class ApiKey extends DomainObject
      */
     protected $logs;
 
-
     public function __construct()
     {
         $this->regenerateApiKey();
         $this->logs = new ArrayCollection();
     }
-
 
     /**
      * Regenerate the API key
@@ -103,7 +101,6 @@ class ApiKey extends DomainObject
         $this['code'] = Strings::random(25, Strings::CHARS_KEY);
     }
 
-
     /**
      * Get a "key string". This is a combined ID and code like id:code
      * that is used in auth lookup.
@@ -112,9 +109,8 @@ class ApiKey extends DomainObject
      */
     public function getKeyString()
     {
-        return $this->id . ':' . $this->code;
+        return $this->id.':'.$this->code;
     }
-
 
     /**
      * @param  string $flag
@@ -133,16 +129,15 @@ class ApiKey extends DomainObject
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, false, $visited);
+        $data              = parent::toApiData($primary, false, $visited);
         $data['keyString'] = $this->getKeyString();
-        $data['person'] = $this->person ? $this->person['id'] : null;
+        $data['person']    = $this->person ? $this->person['id'] : null;
         foreach ($this->flags as $f) {
             $data[$f] = true;
         }
 
         return $data;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -156,7 +151,7 @@ class ApiKey extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'api_keys'
+            'name' => 'api_keys',
         ));
 
         $metadata->mapField(array(
@@ -206,7 +201,7 @@ class ApiKey extends DomainObject
             'mappedBy'     => 'key',
             'inversedBy'   => null,
             'orderBy'      => array('id' => 'DESC'),
-            'cascade'      => array('persist', 'remove'), // doesn't work
+            'cascade'                    => array('persist', 'remove'), // doesn't work
         ));
     }
 }

@@ -41,9 +41,9 @@ class IndexController extends AbstractController
 {
     public function interfaceAction()
     {
-        $token = new ApiToken();
-        $token->scope = ApiToken::SCOPE_SESSION;
-        $token->person = $this->person;
+        $token               = new ApiToken();
+        $token->scope        = ApiToken::SCOPE_SESSION;
+        $token->person       = $this->person;
         $token->date_expires = new \DateTime("+1 hour");
 
         $this->em->persist($token);
@@ -58,13 +58,13 @@ class IndexController extends AbstractController
 
         $inhelp_states = array();
         foreach ($help_states as $k => $v) {
-            $k = preg_replace('#^inhelp\.#', '', $k);
+            $k                 = preg_replace('#^inhelp\.#', '', $k);
             $inhelp_states[$k] = $v;
         }
 
         $rjs_apps = new AppsRequireJsConfigGenerator(
             $this->container->getAppManager(),
-            $this->generateUrl('serve_file_root') . '/apps'
+            $this->generateUrl('serve_file_root').'/apps'
         );
         $rjs_apps_config = $rjs_apps->generateRequireJsConfigCode();
 

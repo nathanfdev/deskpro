@@ -56,7 +56,6 @@ class TicketEscalationsController extends AbstractController implements Protecte
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -79,7 +78,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         }
 
         return $this->createApiResponse(array(
-            'escalations' => $data
+            'escalations' => $data,
         ));
     }
 
@@ -96,15 +95,15 @@ class TicketEscalationsController extends AbstractController implements Protecte
         }
 
         $trans = new LegacyTermsTransformer();
-        $crit = $trans->toFilterTerms($esc->terms);
+        $crit  = $trans->toFilterTerms($esc->terms);
         $crit2 = $trans->toFilterTerms($esc->terms_any);
 
-        $esc = $this->getApiData($esc);
-        $esc['terms'] = $crit->exportToArray();
+        $esc              = $this->getApiData($esc);
+        $esc['terms']     = $crit->exportToArray();
         $esc['terms_any'] = $crit2->exportToArray();
 
         return $this->createApiResponse(array(
-            'escalation' => $esc
+            'escalation' => $esc,
         ));
     }
 
@@ -124,8 +123,8 @@ class TicketEscalationsController extends AbstractController implements Protecte
             $esc = new TicketEscalation();
         }
 
-        $esc->title = $this->in->getString('title');
-        $esc->event_trigger = $this->in->getString('event_trigger');
+        $esc->title              = $this->in->getString('title');
+        $esc->event_trigger      = $this->in->getString('event_trigger');
         $esc->event_trigger_time = $this->in->getUint('event_trigger_time') ?: 1;
 
         $crit = new FilterTerms();
@@ -133,7 +132,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
             $crit->addTermFromArray($term_info);
         }
 
-        $trans = new LegacyTermsTransformer();
+        $trans      = new LegacyTermsTransformer();
         $esc->terms = $trans->toLegacyTerms($crit);
 
         $crit = new FilterTerms();
@@ -141,7 +140,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
             $crit->addTermFromArray($term_info);
         }
 
-        $trans = new LegacyTermsTransformer();
+        $trans          = new LegacyTermsTransformer();
         $esc->terms_any = $trans->toLegacyTerms($crit);
 
         $actions = new TriggerActions();
@@ -156,7 +155,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'escalation_id' => $esc->id
+            'escalation_id' => $esc->id,
         ));
     }
 
@@ -176,7 +175,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'old_id' => $id
+            'old_id' => $id,
         ));
     }
 

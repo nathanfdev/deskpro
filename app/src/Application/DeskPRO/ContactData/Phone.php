@@ -51,7 +51,7 @@ class Phone extends AbstractContactData
         $contact_record->field_3 = isset($input['type']) ? $input['type'] : 'phone';
 
         // Searchable value without punctuation etc
-        $contact_record->field_10 = preg_replace('#[^0-9a-zA-Z]#', '', $contact_record->field_1 . $contact_record->field_2);
+        $contact_record->field_10 = preg_replace('#[^0-9a-zA-Z]#', '', $contact_record->field_1.$contact_record->field_2);
     }
 
     /**
@@ -62,13 +62,12 @@ class Phone extends AbstractContactData
     public function getTemplateVars(ContactDataAbstract $contact_record)
     {
         return array(
-            'comment' => $contact_record->comment,
+            'comment'              => $contact_record->comment,
             'country_calling_code' => $contact_record->field_1,
-            'number' => $contact_record->field_2,
-            'type' => $contact_record->field_3,
+            'number'               => $contact_record->field_2,
+            'type'                 => $contact_record->field_3,
         );
     }
-
 
     /**
      * Return an array of values that are useful to the API
@@ -79,8 +78,8 @@ class Phone extends AbstractContactData
     {
         return array(
             'country_calling_code' => $contact_record->field_1,
-            'number' => $contact_record->field_2,
-            'type' => $contact_record->field_3,
+            'number'               => $contact_record->field_2,
+            'type'                 => $contact_record->field_3,
         );
     }
 }

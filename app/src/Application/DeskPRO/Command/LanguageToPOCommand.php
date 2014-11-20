@@ -54,16 +54,16 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
         $packages = array('user', 'agent', 'admin');
 
-        foreach($packages as $package) {
-            $files = array();
+        foreach ($packages as $package) {
+            $files  = array();
             $folder = DP_ROOT.'/languages/default/'.$package;
 
             $dh = opendir($folder);
 
-            while(($file = readdir($dh)) !== false) {
+            while (($file = readdir($dh)) !== false) {
                 $file = $folder.'/'.$file;
 
-                if(is_file($file)) {
+                if (is_file($file)) {
                     $files[] = $file;
                 }
             }
@@ -72,7 +72,7 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
             $strings = array();
 
-            foreach($files as $file) {
+            foreach ($files as $file) {
                 $strings = array_merge(require($file), $strings);
             }
 
@@ -80,15 +80,15 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
             echo "Exporting: {$file}\n";
             $fs = fopen($file, 'w');
 
-            foreach($strings as $source => $target) {
+            foreach ($strings as $source => $target) {
                 fwrite($fs, "\nmsgid \"{$source}\"\n");
                 fwrite($fs, "msgstr ");
                 $parts = explode("\n", $target);
 
-                foreach($parts as $i=>$part) {
+                foreach ($parts as $i => $part) {
                     fwrite($fs, '"'.$part);
 
-                    if($i != count($parts) -1) {
+                    if ($i != count($parts) -1) {
                         fwrite($fs, '\n');
                     }
 
@@ -98,6 +98,5 @@ class LanguageToPOCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
 
             fclose($fs);
         }
-
     }
 }

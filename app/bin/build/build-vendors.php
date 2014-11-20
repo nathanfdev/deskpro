@@ -7,9 +7,9 @@ if (php_sapi_name() != 'cli') {
 }
 
 define('DP_BUILDING', true);
-define('DP_ROOT', realpath(__DIR__ . '/../../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../../'));
-define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+define('DP_ROOT', realpath(__DIR__.'/../../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../../'));
+define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
 
 $only_vendor_id = false;
 if (($k = array_search('--vendor-id', $_SERVER['argv'])) !== false) {
@@ -42,7 +42,13 @@ function deskpro_build_exec_exit_error($cmd, $dir = null)
     return true;
 }
 
-class Output { function writeln($line) { echo "$line\n"; } }
+class Output
+{
+    public function writeln($line)
+    {
+        echo "$line\n";
+    }
+}
 
 class Process
 {
@@ -64,7 +70,7 @@ class Process
         }
 
         $this->commandline = $commandline;
-        $this->cwd = null === $cwd ? getcwd() : $cwd;
+        $this->cwd         = null === $cwd ? getcwd() : $cwd;
         if (null !== $env) {
             $this->env = array();
             foreach ($env as $key => $value) {
@@ -73,7 +79,7 @@ class Process
         } else {
             $this->env = null;
         }
-        $this->stdin = $stdin;
+        $this->stdin   = $stdin;
         $this->timeout = $timeout;
         $this->options = array_merge(array('suppress_errors' => true, 'binary_pipes' => true, 'bypass_shell' => false), $options);
     }
@@ -82,8 +88,8 @@ class Process
     {
         $this->stdout = '';
         $this->stderr = '';
-        $that = $this;
-        $callback = function ($type, $data) use ($that, $callback) {
+        $that         = $this;
+        $callback     = function ($type, $data) use ($that, $callback) {
             if ('out' == $type) {
                 $that->addOutput($data);
             } else {
@@ -111,8 +117,8 @@ class Process
             fclose($pipes[0]);
             $writePipes = null;
         } else {
-            $writePipes = array($pipes[0]);
-            $stdinLen = strlen($this->stdin);
+            $writePipes  = array($pipes[0]);
+            $stdinLen    = strlen($this->stdin);
             $stdinOffset = 0;
         }
         unset($pipes[0]);
@@ -400,7 +406,7 @@ function deskpro_build_cleanvendors_symfony($dir)
     deskpro_build_exec_exit_error("rm -rf tests .gitignore .travis.yml autoload.php.dist CHANGELOG-2.0.md check_cs composer.json CONTRIBUTORS.md phpunit.xml.dist README.md UPDATE.ja.md UPDATE.md vendors.php", $dir);
 
     // Need to add a newline to this file to fix Windows/PHP < 5.3.10/Apache bug where a crash happens on files of exactly 4096 size
-    $fp = fopen($dir . '/src/Symfony/Bundle/TwigBundle/TwigEngine.php', 'a');
+    $fp = fopen($dir.'/src/Symfony/Bundle/TwigBundle/TwigEngine.php', 'a');
     fwrite($fp, "\n// --\n");
     fclose($fp);
 }
@@ -510,7 +516,7 @@ function deskpro_build_cleanvendors_zend($dir)
     );
 
     foreach ($remove_modules as $d) {
-        deskpro_build_exec_exit_error('rm -rf library/Zend/' . $d, $dir);
+        deskpro_build_exec_exit_error('rm -rf library/Zend/'.$d, $dir);
     }
 }
 
@@ -527,7 +533,6 @@ $output = new \Output();
 
 $all_vendors_config = require DP_ROOT.'/sys/config/vendors.php';
 foreach ($all_vendors_config as $vendor_id => $vendors_config) {
-
     if ($only_vendor_id && $vendor_id != $only_vendor_id) {
         continue;
     }

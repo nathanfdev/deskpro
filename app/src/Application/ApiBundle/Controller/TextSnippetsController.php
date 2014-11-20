@@ -58,10 +58,9 @@ class TextSnippetsController extends AbstractController
 
         if ($filter_string || $language_id) {
             $snippets_all = $snippets;
-            $snippets = array();
+            $snippets     = array();
 
             $filter_string = Strings::utf8_strtolower($filter_string);
-
 
             foreach ($snippets_all as $snippet) {
                 $match_lang   = false;
@@ -167,7 +166,7 @@ class TextSnippetsController extends AbstractController
         foreach ($this->container->getLanguageData()->getAll() as $lang) {
             $lang_id = $lang->getId();
 
-            $title   = $this->in->getString("title.$lang_id");
+            $title       = $this->in->getString("title.$lang_id");
             $snippet_val = $this->in->getString("snippet.$lang_id");
 
             $rec = $this->container->getObjectLangRepository()->setRec($lang, $snippet, 'title', $title);
@@ -254,9 +253,9 @@ class TextSnippetsController extends AbstractController
                 throw $this->createNotFoundException();
             }
         } else {
-            $cat = new TextSnippetCategory();
+            $cat           = new TextSnippetCategory();
             $cat->typename = $typename;
-            $cat->person = $this->person;
+            $cat->person   = $this->person;
         }
 
         $cat->is_global = ($this->in->getString('perm_type') == 'global');
@@ -311,8 +310,8 @@ class TextSnippetsController extends AbstractController
         $this->em->flush();
 
         return $this->createApiResponse(array(
-            'success' => true,
-            'category_id' => $id
+            'success'     => true,
+            'category_id' => $id,
         ));
     }
 }

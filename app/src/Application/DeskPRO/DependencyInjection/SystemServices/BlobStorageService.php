@@ -56,7 +56,7 @@ class BlobStorageService
             $logger->addFilter(new \Orb\Log\Filter\PriorityFilter(Logger::WARN));
         }
 
-        $wr = new \Orb\Log\Writer\Stream($container->getLogDir() . DIRECTORY_SEPARATOR . 'blob_storage.log');
+        $wr = new \Orb\Log\Writer\Stream($container->getLogDir().DIRECTORY_SEPARATOR.'blob_storage.log');
         $logger->addWriter($wr);
 
         #------------------------------
@@ -80,12 +80,16 @@ class BlobStorageService
 
         $s3_adapter = null;
         if ($container->getSetting('core.filestorage_s3_key') && $container->getSetting('core.filestorage_s3_secret') && $container->getSetting('core.filestorage_s3_bucket')) {
-            if (!defined('CURLOPT_CONNECTTIMEOUT')) define(CURLOPT_CONNECTTIMEOUT, 78);
-            if (!defined('CURLOPT_TIMEOUT')) define(CURLOPT_TIMEOUT, 13);
+            if (!defined('CURLOPT_CONNECTTIMEOUT')) {
+                define(CURLOPT_CONNECTTIMEOUT, 78);
+            }
+            if (!defined('CURLOPT_TIMEOUT')) {
+                define(CURLOPT_TIMEOUT, 13);
+            }
 
             $client = S3Client::factory(array(
-                'key'          => $container->getSetting('core.filestorage_s3_key'),
-                'secret'       => $container->getSetting('core.filestorage_s3_secret'),
+                'key'             => $container->getSetting('core.filestorage_s3_key'),
+                'secret'          => $container->getSetting('core.filestorage_s3_secret'),
                 'request.options' => array(
                     'connect_timeout' => 15,
                     'timeout'         => 120,
@@ -93,7 +97,7 @@ class BlobStorageService
                 'curl.options' => array(
                     CURLOPT_CONNECTTIMEOUT => 15,
                     CURLOPT_TIMEOUT        => 120,
-                )
+                ),
             ));
             $s3_adapter = new AmazonS3Storage(array(
                 's3_client'       => $client,
@@ -114,7 +118,7 @@ class BlobStorageService
             'field_name.data'      => 'data',
             'field_name.path'      => 'blob_id',
             'field_name.order'     => 'id',
-            'metadata_id_property' => 'blob_id'
+            'metadata_id_property' => 'blob_id',
         ));
         $db_adapter->setLogger($logger);
 

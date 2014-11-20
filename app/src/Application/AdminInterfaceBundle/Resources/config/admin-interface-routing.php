@@ -1,7 +1,9 @@
-<?php if (!defined('DP_ROOT')) exit('No access');
+<?php if (!defined('DP_ROOT')) {
+    exit('No access');
+}
 
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php');
-require_once(DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php');
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/RouteCollection.php';
+require_once DP_ROOT.'/src/Application/DeskPRO/Routing/Route.php';
 
 use Application\DeskPRO\Routing\RouteCollection;
 
@@ -68,7 +70,7 @@ $collection->create('admin_portaleditor_custom_sideblock_simple_save', array(
     'path'        => '/portal-editor/sideblock-simple/{pid}/save.json',
     'controller'  => 'AdminInterfaceBundle:PortalEditor:saveCustomBlockSimple',
     'defaults'    => array('pid' => '0'),
-    'methods'     => array('POST'),
+    'methods'                    => array('POST'),
 ));
 
 $collection->create('admin_portaleditor_custom_sideblock_simple_delete', array(

@@ -61,7 +61,6 @@ class PersonFieldManager extends FieldManager
     public function setFieldEnabledById($id, $enabled = true)
     {
         if ($custom_field_id = Strings::extractRegexMatch('#^field_(\d+)$#', $id)) {
-
             $field             = $this->em->find('DeskPRO:CustomDefPerson', $custom_field_id);
             $field->is_enabled = $enabled;
 
@@ -112,7 +111,7 @@ class PersonFieldManager extends FieldManager
                 $val = implode("\n\n", $val);
             }
 
-            $save_data['field_' . $field->getId()] = $val;
+            $save_data['field_'.$field->getId()] = $val;
         }
 
         if ($save_data) {

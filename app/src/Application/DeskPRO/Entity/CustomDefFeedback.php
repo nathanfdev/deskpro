@@ -78,7 +78,6 @@ class CustomDefFeedback extends CustomDefAbstract
         return $category;
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -87,7 +86,7 @@ class CustomDefFeedback extends CustomDefAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\CustomDefFeedback';
-        $metadata->setPrimaryTable(array('name' => 'custom_def_feedback',));
+        $metadata->setPrimaryTable(array('name' => 'custom_def_feedback'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -257,9 +256,9 @@ class CustomDefFeedback extends CustomDefAbstract
             array(
                  'fieldName'    => 'children',
                  'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDefFeedback',
-                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge',),
-                 'mappedBy'     => 'parent',
-                 'orderBy'      => array('display_order' => 'ASC',),
+                 'cascade'      => array(0 => 'remove', 1 => 'persist', 3 => 'merge'),
+                 'mappedBy'                => 'parent',
+                 'orderBy'                 => array('display_order' => 'ASC'),
             )
         );
         $metadata->mapManyToOne(

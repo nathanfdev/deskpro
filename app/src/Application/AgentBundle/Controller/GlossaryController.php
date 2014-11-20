@@ -34,7 +34,6 @@
 
 namespace Application\AgentBundle\Controller;
 
-
 /**
  * Glossary listing and editing
  */
@@ -44,9 +43,9 @@ class GlossaryController extends AbstractController
     {
         $words = $this->in->getCleanValueArray('words', 'string');
 
-        $definition = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
+        $definition             = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
         $definition->definition = $this->in->getString('definition');
-        foreach ($words AS $word) {
+        foreach ($words as $word) {
             $definition->addWord($word);
         }
 
@@ -59,8 +58,8 @@ class GlossaryController extends AbstractController
 
         return $this->createJsonResponse(array(
             'definition_id' => $definition['id'],
-            'words' => $words,
-            'definition' => $definition['definition']
+            'words'         => $words,
+            'definition'    => $definition['definition'],
         ));
     }
 
@@ -90,8 +89,8 @@ class GlossaryController extends AbstractController
 
         return $this->createJsonResponse(array(
             'definition_id' => $definition['id'],
-            'words' => $words,
-            'definition' => $definition['definition']
+            'words'         => $words,
+            'definition'    => $definition['definition'],
         ));
     }
 
@@ -105,7 +104,7 @@ class GlossaryController extends AbstractController
         $definition = $word->definition;
 
         $words = array();
-        foreach ($definition->words AS $word) {
+        foreach ($definition->words as $word) {
             $words[] = $word->word;
         }
 
@@ -114,8 +113,8 @@ class GlossaryController extends AbstractController
 
         return $this->createJsonResponse(array(
             'definition_id' => $definition['id'],
-            'words' => $words,
-            'definition' => $definition['definition']
+            'words'         => $words,
+            'definition'    => $definition['definition'],
         ));
     }
 
@@ -129,15 +128,15 @@ class GlossaryController extends AbstractController
         $definition = $word->definition;
 
         $words = array();
-        foreach ($definition->words AS $def_word) {
+        foreach ($definition->words as $def_word) {
             $words[] = $def_word->word;
         }
 
         return $this->createJsonResponse(array(
-            'id' => $word['id'],
+            'id'            => $word['id'],
             'definition_id' => $definition['id'],
-            'words' => $words,
-            'definition' => $definition['definition']
+            'words'         => $words,
+            'definition'    => $definition['definition'],
         ));
     }
 
@@ -145,7 +144,7 @@ class GlossaryController extends AbstractController
     {
         try {
             $word = $this->em->getRepository('DeskPRO:GlossaryWord')->findOneByWord($word);
-            $def = $word->definition->definition;
+            $def  = $word->definition->definition;
         } catch (\Exception $e) {
             $def = '';
         }

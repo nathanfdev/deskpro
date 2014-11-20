@@ -48,7 +48,6 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -61,7 +60,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
         $twitter_accounts = $this->container->getSystemService('twitter_accounts');
 
         return $this->createApiResponse(array(
-            'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray()
+            'twitter_accounts' => $twitter_accounts->getAllWithUserAsArray(),
         ));
     }
 
@@ -85,7 +84,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
         $returnedData['all_agents'] = $twitter_accounts->getAllAgents();
 
         return $this->createApiResponse(array(
-            'twitter_account' => $returnedData
+            'twitter_account' => $returnedData,
         ));
     }
 
@@ -152,7 +151,7 @@ class TwitterAccountsController extends AbstractController implements ProtectedC
             $this->em->remove($twitter_account);
             $this->em->flush();
             $this->db->commit();
-        } catch(\Exception $e) {
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }

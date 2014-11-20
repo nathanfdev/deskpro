@@ -58,7 +58,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $this->addOption('preview', null, InputOption::VALUE_NONE, 'Preview');
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -66,7 +65,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
     {
         return parent::getContainer();
     }
-
 
     /**
      * @param  InputInterface  $input
@@ -94,22 +92,21 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         }
     }
 
-
     private function testdbSafeAction(InputInterface $input, OutputInterface $output)
     {
         $db = $this->getContainer()->getDb();
 
         $output->writeln("Nulling email accounts -> Blank POP3 account with mailcatcher smtp");
 
-        $incoming = new Pop3Config();
+        $incoming       = new Pop3Config();
         $incoming->host = 'localhost';
         $incoming->port = '110';
-        $incoming = JsonObjectSerializer::serialize($incoming);
+        $incoming       = JsonObjectSerializer::serialize($incoming);
 
-        $out = new SmtpConfig();
+        $out       = new SmtpConfig();
         $out->host = 'localhost';
         $out->port = '1025';
-        $out = JsonObjectSerializer::serialize($out);
+        $out       = JsonObjectSerializer::serialize($out);
 
         $db->executeUpdate("UPDATE email_accounts SET incoming_account = ?, outgoing_account = ?", array($incoming, $out));
 
@@ -174,7 +171,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $output->writeln("-> OK");
     }
 
-
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -207,7 +203,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         return 0;
     }
 
-
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -218,7 +213,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         $manifest_path = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build/build-manifest.php';
         $builds_path   = DP_ROOT.'/src/Application/InstallBundle/Upgrade/Build';
 
-        $gen = new GenBuildManifest($builds_path);
+        $gen  = new GenBuildManifest($builds_path);
         $file = $gen->getContents();
 
         if ($input->getOption('preview')) {
@@ -238,7 +233,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         }
     }
 
-
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -246,7 +240,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
      */
     private function touchBuildTimeAction(InputInterface $input, OutputInterface $output)
     {
-        $time = time();
+        $time       = time();
         $build_file = DP_ROOT.'/sys/config/build-time.php';
         file_put_contents($build_file, '<?php define("DP_BUILD_TIME", '.$time.'); ');
 
@@ -254,7 +248,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
 
         return 0;
     }
-
 
     /**
      * @param  InputInterface  $input
@@ -298,7 +291,6 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
         return 0;
     }
 
-
     /**
      * @param  InputInterface  $input
      * @param  OutputInterface $output
@@ -314,11 +306,11 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
             $y = @date('Y', $v);
             $m = @date('m', $v);
 
-            return $builds_root . "/$y/$m/Build$v.php";
+            return $builds_root."/$y/$m/Build$v.php";
         };
 
         foreach ($build_ids_raw as $bid) {
-            $b = preg_replace('/[^0-9]/', '', $bid);
+            $b    = preg_replace('/[^0-9]/', '', $bid);
             $file = $get_file_path($b);
             if (!$b || !$file) {
                 $output->writeln("<error>Invalid build script: $bid</error>");
@@ -347,7 +339,7 @@ class DevCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareC
             $start++;
             $new_bid = $start;
 
-            $file = $get_file_path($bid);
+            $file     = $get_file_path($bid);
             $new_file = $get_file_path($new_bid);
 
             $output->writeln("<info>$bid -> $new_bid</info>");

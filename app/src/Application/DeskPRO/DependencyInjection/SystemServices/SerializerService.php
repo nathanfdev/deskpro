@@ -36,8 +36,8 @@ namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Serializer\PersonSerializer;
-use Application\DeskPRO\Serializer\ToApiDataMethodSerializer;
 use Application\DeskPRO\Serializer\SerializerRegistry;
+use Application\DeskPRO\Serializer\ToApiDataMethodSerializer;
 use Orb\Serializer\Serializer\ArraySerializer;
 
 class SerializerService

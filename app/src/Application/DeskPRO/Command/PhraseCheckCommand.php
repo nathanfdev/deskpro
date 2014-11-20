@@ -26,7 +26,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
@@ -68,19 +67,19 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             $col = Finder::create()->files()->name('*.php')->in(DP_ROOT.'/languages/default/'.$opt_files);
             foreach ($col as $f) {
                 /** @var \SplFileInfo $f */
-                $file_phrases = include($f->getRealPath());
-                $file_phrases = array_keys($file_phrases);
+                $file_phrases  = include $f->getRealPath();
+                $file_phrases  = array_keys($file_phrases);
                 $check_phrases = array_merge($check_phrases, $file_phrases);
             }
         } else {
-            $opt_files = str_replace('-', DIRECTORY_SEPARATOR, $opt_files) . '.php';
+            $opt_files = str_replace('-', DIRECTORY_SEPARATOR, $opt_files).'.php';
             if (!is_file(DP_ROOT.'/languages/default/'.$opt_files)) {
                 $output->writeln("<error>Invalid langfiles argument.</error>");
 
                 return 1;
             }
 
-            $check_phrases = include($opt_files);
+            $check_phrases = include $opt_files;
             $check_phrases = array_keys($check_phrases);
         }
 
@@ -133,7 +132,7 @@ class PhraseCheckCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contain
             }
 
             if (!$found) {
-                echo "* " . $phrase . "\n";
+                echo "* ".$phrase."\n";
             }
         }
 

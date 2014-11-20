@@ -52,8 +52,8 @@ class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $build_transifex = $input->getOption('transifex');
-        $build_onesky = $input->getOption('onesky');
-        $done_any = false;
+        $build_onesky    = $input->getOption('onesky');
+        $done_any        = false;
 
         if ($build_transifex) {
             $done_any = true;
@@ -77,7 +77,6 @@ class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
             $build->getLogger()->addWriter($wr);
 
             if ($input->getOption('lang-id')) {
-
                 if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
                     $output->writeln("Invalid language ID");
 
@@ -115,7 +114,6 @@ class DevBuildLangCommand extends \Symfony\Bundle\FrameworkBundle\Command\Contai
             $build->getLogger()->addWriter($wr);
 
             if ($input->getOption('lang-id')) {
-
                 if (!$build->getLangPackInfo()->hasLang($input->getOption('lang-id'))) {
                     $output->writeln("Invalid language ID");
 

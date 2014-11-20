@@ -130,7 +130,7 @@ class Manifest
      */
     public function setIsNative($is_native)
     {
-        $this->is_native = (bool)$is_native;
+        $this->is_native = (bool) $is_native;
     }
 
     /**
@@ -138,7 +138,7 @@ class Manifest
      */
     public function setApiVersion($api_version)
     {
-        $this->api_version = (int)$api_version;
+        $this->api_version = (int) $api_version;
     }
 
     /**
@@ -282,7 +282,7 @@ class Manifest
      */
     public function setVersion($version)
     {
-        $this->version = (int)$version;
+        $this->version = (int) $version;
         if (!$this->version_name) {
             $this->version_name = "v$version";
         }

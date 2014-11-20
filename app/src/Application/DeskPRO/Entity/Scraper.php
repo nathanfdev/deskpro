@@ -91,7 +91,7 @@ abstract class Scraper
     {
         $metadata->isMappedSuperclass = true;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'Scraper', ));
+        $metadata->setPrimaryTable(array( 'name' => 'Scraper'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
     }
 }

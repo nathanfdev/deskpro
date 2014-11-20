@@ -92,11 +92,14 @@ class PlainMailDir extends AbstractFetcher
     public function __destruct()
     {
         if ($this->storage && is_resource($this->storage->handle)) {
-            try { @$this->storage->close(); } catch (\Exception $e) {}
+            try {
+                @$this->storage->close();
+            } catch (\Exception $e) {
+            }
         }
 
         $this->storage = null;
-        $this->dir = null;
+        $this->dir     = null;
     }
 
     /**
@@ -153,7 +156,7 @@ class PlainMailDir extends AbstractFetcher
             return null;
         }
 
-        $mailfile = $this->maildir . '/' . $next;
+        $mailfile = $this->maildir.'/'.$next;
 
         if (!is_writable($mailfile)) {
             error_log("Skipping mailfile $mailfile because it is not writable so we cant delete it after");
@@ -163,8 +166,8 @@ class PlainMailDir extends AbstractFetcher
         }
 
         if (dp_get_config('plainmaildir_track_read')) {
-            $check_name = md5('plainmaildir::' . $mailfile);
-            $check = App::getDb()->fetchColumn("
+            $check_name = md5('plainmaildir::'.$mailfile);
+            $check      = App::getDb()->fetchColumn("
                 SELECT data
                 FROM install_data
                 WHERE build = ? AND name = ?
@@ -181,7 +184,7 @@ class PlainMailDir extends AbstractFetcher
             App::getDb()->insert('install_data', array(
                 'build' => DP_BUILD_TIME,
                 'name'  => $check_name,
-                'data'  => 1
+                'data'  => 1,
             ));
         }
 
@@ -191,22 +194,22 @@ class PlainMailDir extends AbstractFetcher
 
         $this->logger->log("Fetching message $next", 'debug');
 
-        $raw_message = new RawMessage();
-        $raw_message->id = $next;
+        $raw_message       = new RawMessage();
+        $raw_message->id   = $next;
         $raw_message->size = $message_size;
 
         $raw_message->content = file_get_contents($mailfile);
-        $headers = null;
+        $headers              = null;
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL . $EOL)) {
-            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
+        if (strpos($raw_message->content, $EOL.$EOL)) {
+            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers, ) = explode("\n\n", $raw_message->content, 2);
+            list($headers,) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -229,10 +232,10 @@ class PlainMailDir extends AbstractFetcher
     {
         $this->logger->log("Marking message as deleted: $id", 'debug');
 
-        if (is_file($this->maildir . '/' . $id) && !@unlink($this->maildir . '/' . $id)) {
+        if (is_file($this->maildir.'/'.$id) && !@unlink($this->maildir.'/'.$id)) {
             sleep(1);
-            if (is_file($this->maildir . '/' . $id) && !unlink($this->maildir . '/' . $id)) {
-                $this->logger->logError("Failed to delete source file: " . $this->maildir . '/' . $id);
+            if (is_file($this->maildir.'/'.$id) && !unlink($this->maildir.'/'.$id)) {
+                $this->logger->logError("Failed to delete source file: ".$this->maildir.'/'.$id);
             }
         }
     }

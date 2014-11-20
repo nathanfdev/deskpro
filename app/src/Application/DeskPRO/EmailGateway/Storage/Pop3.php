@@ -41,7 +41,7 @@ use Zend\Mail\Protocol\Exception;
 class Pop3 extends \Zend\Mail\Storage\Pop3
 {
     const ERR_CONNECT = 1;
-    const ERR_LOGIN = 2;
+    const ERR_LOGIN   = 2;
 
     /**
      * @var array
@@ -51,7 +51,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
     public function __construct($params)
     {
         if (is_array($params)) {
-            $params = (object)$params;
+            $params = (object) $params;
         }
 
         $this->has['fetchPart'] = false;
@@ -64,12 +64,12 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
             return;
         }
 
-        $host     = isset($params->host)     ? $params->host     : 'localhost';
-        $password = isset($params->password) ? $params->password : '';
-        $user     = isset($params->user)     ? $params->user     : '';
-        $port     = isset($params->port)     ? $params->port     : null;
-        $ssl      = isset($params->ssl)      ? strtoupper($params->ssl) : false;
-        $logger   = isset($params->logger)   ? $params->logger   : null;
+        $host      = isset($params->host)     ? $params->host     : 'localhost';
+        $password  = isset($params->password) ? $params->password : '';
+        $user      = isset($params->user)     ? $params->user     : '';
+        $port      = isset($params->port)     ? $params->port     : null;
+        $ssl       = isset($params->ssl)      ? strtoupper($params->ssl) : false;
+        $logger    = isset($params->logger)   ? $params->logger   : null;
         $test_mode = isset($params->test_mode) && $params->test_mode;
 
         $this->protocol = new Pop3Protocol();
@@ -81,7 +81,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
                 'user'     => $user,
                 'password' => $test_mode ? $password : 'xxxxxx',
                 'port'     => $port,
-                'ssl'      => $ssl
+                'ssl'      => $ssl,
             ), "[options] {KEY}: {VAL}\n"));
         }
 
@@ -92,9 +92,9 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
             }
         } catch (Exception\RuntimeException $e) {
             if ($logger) {
-                $logger->logError("[error:protocol] " . $e->getMessage());
+                $logger->logError("[error:protocol] ".$e->getMessage());
             }
-            $new_e = new Exception\RuntimeException('There was an error connecting to the server: ' . $e->getMessage(), self::ERR_CONNECT, $e);
+            $new_e = new Exception\RuntimeException('There was an error connecting to the server: '.$e->getMessage(), self::ERR_CONNECT, $e);
             throw $new_e;
         }
 
@@ -105,7 +105,7 @@ class Pop3 extends \Zend\Mail\Storage\Pop3
             }
         } catch (Exception\RuntimeException $e) {
             if ($logger) {
-                $logger->logError("[error:protocol] ({$e->getCode()}) " . $e->getMessage() . " <" . get_class($e) . ">");
+                $logger->logError("[error:protocol] ({$e->getCode()}) ".$e->getMessage()." <".get_class($e).">");
             }
             $new_e = new Exception\RuntimeException('Your username or password is invalid', self::ERR_LOGIN, $e);
             throw $new_e;

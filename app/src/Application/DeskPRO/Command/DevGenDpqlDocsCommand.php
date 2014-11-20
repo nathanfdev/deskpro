@@ -40,7 +40,6 @@ use Orb\Util\Util;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 
-
 class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
     protected function configure()
@@ -51,39 +50,39 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $tableDescriptions = array(
-            'articles' => 'Articles and information in the knowledgebase',
-            'article_attachments' => 'Attachments to knowledgebase articles',
-            'article_comments' => 'Comments for each knowledgebase article',
-            'chat_conversations' => 'Records for each chat',
-            'chat_messages' => 'Individual messages in each chat',
-            'downloads' => 'Information about each file that has been specified as a download',
-            'download_comments' => 'Individual comments for each download',
-            'feedback' => 'Customer feedback and suggestion records',
-            'feedback_attachments' => 'Attachments to feedback and suggestions',
-            'feedback_comments' => 'Comments for feedback and suggestions',
-            'labels_articles' => 'Labels for knowledgebase articles',
+            'articles'                  => 'Articles and information in the knowledgebase',
+            'article_attachments'       => 'Attachments to knowledgebase articles',
+            'article_comments'          => 'Comments for each knowledgebase article',
+            'chat_conversations'        => 'Records for each chat',
+            'chat_messages'             => 'Individual messages in each chat',
+            'downloads'                 => 'Information about each file that has been specified as a download',
+            'download_comments'         => 'Individual comments for each download',
+            'feedback'                  => 'Customer feedback and suggestion records',
+            'feedback_attachments'      => 'Attachments to feedback and suggestions',
+            'feedback_comments'         => 'Comments for feedback and suggestions',
+            'labels_articles'           => 'Labels for knowledgebase articles',
             'labels_chat_conversations' => 'Labels for chats',
-            'labels_downloads' => 'Labels for downloads',
-            'labels_feedback' => 'Labels for feedback and suggestions',
-            'labels_news' => 'Labels for news entries',
-            'labels_organizations' => 'Labels for organizations',
-            'labels_people' => 'Labels for registered people',
-            'labels_tasks' => 'Labels for tasks',
-            'labels_tickets' => 'Labels for tickets',
-            'news' => 'News entries',
-            'news_comments' => 'Comments on news entries',
-            'organizations' => 'Organizations',
-            'people' => 'Registered people (users)',
-            'people_emails' => 'Email addresses in use by registered people',
-            'tasks' => 'Tasks',
-            'task_comments' => 'Comments on tasks',
-            'tickets' => 'Tickets',
-            'tickets_log' => 'Ticket change log entries',
-            'tickets_messages' => 'Individual messages in tickets',
-            'ticket_attachments' => 'Attachments to tickets',
-            'ticket_charges' => 'Ticket billing charges',
-            'ticket_feedback' => 'Feedback on ticket responses',
-            'ticket_slas' => 'SLA status records for tickets'
+            'labels_downloads'          => 'Labels for downloads',
+            'labels_feedback'           => 'Labels for feedback and suggestions',
+            'labels_news'               => 'Labels for news entries',
+            'labels_organizations'      => 'Labels for organizations',
+            'labels_people'             => 'Labels for registered people',
+            'labels_tasks'              => 'Labels for tasks',
+            'labels_tickets'            => 'Labels for tickets',
+            'news'                      => 'News entries',
+            'news_comments'             => 'Comments on news entries',
+            'organizations'             => 'Organizations',
+            'people'                    => 'Registered people (users)',
+            'people_emails'             => 'Email addresses in use by registered people',
+            'tasks'                     => 'Tasks',
+            'task_comments'             => 'Comments on tasks',
+            'tickets'                   => 'Tickets',
+            'tickets_log'               => 'Ticket change log entries',
+            'tickets_messages'          => 'Individual messages in tickets',
+            'ticket_attachments'        => 'Attachments to tickets',
+            'ticket_charges'            => 'Ticket billing charges',
+            'ticket_feedback'           => 'Feedback on ticket responses',
+            'ticket_slas'               => 'SLA status records for tickets',
         );
 
         $conditionResolvers = array(
@@ -103,9 +102,9 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         while ($entityName = array_shift($toProcess)) {
             /** @var $repository \Application\DeskPRO\EntityRepository\AbstractEntityRepository */
             $repository = App::getEntityRepository($entityName);
-            $fields = array();
+            $fields     = array();
 
-            foreach ($repository->getFieldMappings() AS $key => $field) {
+            foreach ($repository->getFieldMappings() as $key => $field) {
                 if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
                     continue;
                 }
@@ -145,13 +144,13 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
                 $fields[$key] = array('type' => $type);
             }
 
-            foreach ($repository->getAssociationMappings() AS $association) {
+            foreach ($repository->getAssociationMappings() as $association) {
                 if (empty($association['joinColumns'])) {
                     // need to know how to make the join; ignore this
                     continue;
                 }
 
-                foreach ($association['joinColumns'] AS $joinColumn) {
+                foreach ($association['joinColumns'] as $joinColumn) {
                     if (!isset($fields[$joinColumn['name']])) {
                         $fields[$joinColumn['name']] = array('type' => 'number');
                     }
@@ -160,8 +159,8 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
             $associations = array();
 
-            foreach ($repository->getAssociationMappings() AS $association) {
-                $target = $association['targetEntity'];
+            foreach ($repository->getAssociationMappings() as $association) {
+                $target          = $association['targetEntity'];
                 $childRepository = $target::getRepository();
 
                 if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
@@ -186,13 +185,13 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
                 $childTable = $childRepository->getTableName();
                 if (isset($conditionResolvers[$childTable])) {
-                    $condition = $conditionResolvers[$childTable];
-                    $associations[$association['fieldName'] . "[$condition[0]]"] = array($target, $condition[1]);
+                    $condition                                                 = $conditionResolvers[$childTable];
+                    $associations[$association['fieldName']."[$condition[0]]"] = array($target, $condition[1]);
                 }
             }
 
-            foreach ($repository->getReportAssociations() AS $name => $association) {
-                $target = $association['targetEntity'];
+            foreach ($repository->getReportAssociations() as $name => $association) {
+                $target          = $association['targetEntity'];
                 $childRepository = $target::getRepository();
 
                 if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
@@ -203,8 +202,8 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
 
                 $childTable = $childRepository->getTableName();
                 if (isset($conditionResolvers[$childTable])) {
-                    $condition = $conditionResolvers[$childTable];
-                    $associations[$name . "[$condition[0]]"] = array($target, $condition[1]);
+                    $condition                             = $conditionResolvers[$childTable];
+                    $associations[$name."[$condition[0]]"] = array($target, $condition[1]);
                 }
             }
 
@@ -212,12 +211,12 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             uksort($associations, 'strnatcasecmp');
 
             $entityMap[$repository->getName()] = array(
-                'repository' => $repository,
-                'fields' => $fields,
-                'associations' => $associations
+                'repository'   => $repository,
+                'fields'       => $fields,
+                'associations' => $associations,
             );
 
-            foreach ($associations AS $toProcessAssociation) {
+            foreach ($associations as $toProcessAssociation) {
                 if (is_array($toProcessAssociation)) {
                     $toProcessAssociation = $toProcessAssociation[0];
                 }
@@ -231,48 +230,48 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
         uksort($tableEntities, 'strnatcasecmp');
 
         $tableList = array();
-        foreach ($tableEntities AS $table => $entityName) {
+        foreach ($tableEntities as $table => $entityName) {
             /** @var $repository \Application\DeskPRO\EntityRepository\AbstractEntityRepository */
-            $repository = App::getEntityRepository($entityName);
-            $entityName = $repository->getName();
+            $repository  = App::getEntityRepository($entityName);
+            $entityName  = $repository->getName();
             $description = isset($tableDescriptions[$table]) ? $tableDescriptions[$table] : '';
-            $tableList[] = '<tr><td><a href="#dp-user-' . $this->_getEntityHtmlId($entityName)
-                . '">' . htmlspecialchars($table) . '</a></td><td>' . $description . '</td></tr>';
+            $tableList[] = '<tr><td><a href="#dp-user-'.$this->_getEntityHtmlId($entityName)
+                .'">'.htmlspecialchars($table).'</a></td><td>'.$description.'</td></tr>';
         }
 
-        $html = "<table class=\"dpql-table-list\"><tr><th>Table Name</th><th>Description</th></tr>\n" . implode("\n", $tableList) . "\n</table>\n\n"
-            . "<div class=\"dpql-data-types\"><h2>Data Types</h2>\n\n";
+        $html = "<table class=\"dpql-table-list\"><tr><th>Table Name</th><th>Description</th></tr>\n".implode("\n", $tableList)."\n</table>\n\n"
+            ."<div class=\"dpql-data-types\"><h2>Data Types</h2>\n\n";
 
-        foreach ($entityMap AS $info) {
+        foreach ($entityMap as $info) {
             /** @var $repository \Application\DeskPRO\EntityRepository\AbstractEntityRepository */
             $repository = $info['repository'];
             $entityName = $repository->getName();
 
             $columnList = array();
-            foreach ($info['fields'] AS $fieldId => $fieldInfo) {
-                $columnList[] = '<tr><td>' . $fieldId . '</td><td>' . $fieldInfo['type'] . '</td></tr>';
+            foreach ($info['fields'] as $fieldId => $fieldInfo) {
+                $columnList[] = '<tr><td>'.$fieldId.'</td><td>'.$fieldInfo['type'].'</td></tr>';
             }
-            foreach ($info['associations'] AS $fieldId => $associationEntity) {
+            foreach ($info['associations'] as $fieldId => $associationEntity) {
                 if (is_array($associationEntity)) {
                     list($associationEntity, $append) = $associationEntity;
                 } else {
                     $append = '';
                 }
 
-                $columnList[] = '<tr><td>' . $fieldId . '</td><td><a href="#dp-user-' . $this->_getEntityHtmlId($associationEntity) . '">'
-                    . $this->_getDataTypeName($associationEntity) . '</a>' . $append . '</td></tr>';
+                $columnList[] = '<tr><td>'.$fieldId.'</td><td><a href="#dp-user-'.$this->_getEntityHtmlId($associationEntity).'">'
+                    .$this->_getDataTypeName($associationEntity).'</a>'.$append.'</td></tr>';
             }
 
-            $html .= '<div class="dpql-data-type"><h3 id="' . $this->_getEntityHtmlId($entityName) . '">'
-                . $this->_getDataTypeName($entityName) . '</h3>' . "\n"
-                . "<table><tr><th>Field Name</th><th>Data Type</th></tr>\n" . implode("\n", $columnList) . "\n</table></div>\n\n";
+            $html .= '<div class="dpql-data-type"><h3 id="'.$this->_getEntityHtmlId($entityName).'">'
+                .$this->_getDataTypeName($entityName).'</h3>'."\n"
+                ."<table><tr><th>Field Name</th><th>Data Type</th></tr>\n".implode("\n", $columnList)."\n</table></div>\n\n";
         }
 
         $html .= '</div>';
 
-        $html = '<div class="dpql-field-list">' . "\n" . $html . '</div>';
+        $html = '<div class="dpql-field-list">'."\n".$html.'</div>';
 
-        $writePath = DP_WEB_ROOT . '/data/tmp/dpql-docs.html';
+        $writePath = DP_WEB_ROOT.'/data/tmp/dpql-docs.html';
         file_put_contents($writePath, $html);
 
         $output->writeln("Output written to $writePath");
@@ -284,7 +283,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
     {
         $name = Util::getBaseClassname($entityName);
 
-        return 'dp-entity-' . preg_replace('/[^a-z0-9_]/', '_', strtolower($name));
+        return 'dp-entity-'.preg_replace('/[^a-z0-9_]/', '_', strtolower($name));
     }
 
     protected function _getDataTypeName($entityName)

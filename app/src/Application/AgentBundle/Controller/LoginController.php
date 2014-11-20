@@ -54,13 +54,16 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
     public function indexAction()
     {
         $return = $this->in->getStringFromGet('return');
-        if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
+        if ($return and ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
             $return = '';
         }
 
         if ($this->loginViaToken()) {
-            if ($return) return $this->redirect($return);
-            else return $this->redirectRoute('agent');
+            if ($return) {
+                return $this->redirect($return);
+            } else {
+                return $this->redirectRoute('agent');
+            }
         }
 
         $has_logged_out = $this->in->checkIsset('o');
@@ -74,20 +77,23 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
 
         // Already logged in
         if (($this->session->getPerson() && $this->session->getPerson()->is_agent)) {
-            if ($return) return $this->redirect($return);
-            else return $this->redirectRoute($this->route_prefix);
+            if ($return) {
+                return $this->redirect($return);
+            } else {
+                return $this->redirectRoute($this->route_prefix);
+            }
         }
 
         $has_done_reset = false;
 
         if ($code = $this->in->getString('reset_code')) {
             $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
-            $person = null;
+            $person    = null;
             if ($code_data) {
                 $person = $this->em->find('DeskPRO:Person', $code_data->getData('person_id', 0));
             }
 
-            if ($code_data AND $person) {
+            if ($code_data and $person) {
                 if ($this->in->getString('new_password')) {
                     $has_done_reset = true;
 
@@ -152,10 +158,10 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         if ($switch_to_https && (!$return || strpos($return, 'admin') === false)) {
             $now_path = $request->getPathInfo();
             if (strpos($request->getRequestUri(), '/index.php/') !== false) {
-                $now_path = '/index.php' . $now_path;
+                $now_path = '/index.php'.$now_path;
             }
 
-            $url = App::getSetting('core.deskpro_url') . ltrim($now_path, '/');
+            $url      = App::getSetting('core.deskpro_url').ltrim($now_path, '/');
             $response = new RedirectResponse($url, 301);
             $response->headers->setCookie(new Cookie('dp_autocorrect_url', '1', 0, '/'));
 
@@ -171,7 +177,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'failed_login_name'        => $failed_login_name,
             'browser_warnings'         => $browser_warnings,
             'switch_to_https'          => $switch_to_https,
-            'timeout'                  => $this->in->getBool('timeout')
+            'timeout'                  => $this->in->getBool('timeout'),
         ));
     }
 
@@ -189,7 +195,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $browser = $this->container->get('browser_sniffer');
 
         return $this->render('AgentBundle:Login:browser-requirements.html.twig', array(
-            'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE)
+            'is_ie' => $browser->isBrowser(\Browser::BROWSER_IE),
         ));
     }
 
@@ -207,7 +213,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             throw $this->createNotFoundException();
         }
 
-        $admin = $this->container->getAgentData()->get($tmp->getData('admin_id'));
+        $admin  = $this->container->getAgentData()->get($tmp->getData('admin_id'));
         $person = $this->container->getAgentData()->get($tmp->getData('agent_id'));
 
         if (!$admin || !$admin->can_admin || !$person || !$person->is_agent) {
@@ -229,7 +235,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             'hostname'     => @gethostbyaddr(dp_get_user_ip_address()) ?: '',
             'user_agent'   => empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'],
             'note'         => "Admin login by Admin #{$admin->id} {$admin->display_name} <{$admin->email_address}>",
-            'date_created' => date('Y-m-d H:i:s')
+            'date_created' => date('Y-m-d H:i:s'),
         ));
 
         return $this->redirectRoute('agent');

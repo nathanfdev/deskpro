@@ -58,7 +58,7 @@ class CsvUploadController extends AbstractController implements ProtectedControl
          */
 
         $csv_upload = $this->container->getSystemService('csv_upload');
-        $options = $this->in->getArrayValue('options');
+        $options    = $this->in->getArrayValue('options');
 
         $result = $csv_upload->upload($file, $options);
 

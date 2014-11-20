@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-
 /**
  * Base labels associations class
  *
@@ -52,14 +51,13 @@ abstract class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     protected $label;
 
-
     /**
      * @param string $label
      */
     public function setLabel($label)
     {
-        $label = trim($label);
-        $label = str_replace(',', '', $label);
+        $label       = trim($label);
+        $label       = str_replace(',', '', $label);
         $this->label = $label;
     }
 

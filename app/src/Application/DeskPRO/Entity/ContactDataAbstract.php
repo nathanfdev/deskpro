@@ -144,12 +144,13 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      */
     public function getHandler()
     {
-        if ($this->_handler !== null) return $this->_handler;
+        if ($this->_handler !== null) {
+            return $this->_handler;
+        }
         $this->_handler = ContactData::getHandler($this->contact_type);
 
         return $this->_handler;
     }
-
 
     /**
      * @param  array $input
@@ -160,7 +161,6 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
         $this->getHandler()->applyFormData($input, $this);
     }
 
-
     /**
      * Get values that will be useful in a template.
      *
@@ -168,14 +168,13 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
      */
     public function getTemplateVars()
     {
-        $vars = $this->getHandler()->getTemplateVars($this);
+        $vars                 = $this->getHandler()->getTemplateVars($this);
         $vars['contact_type'] = $this->getHandler()->getContactType();
-        $vars['id'] = $this->id;
-        $vars['rec'] = $this;
+        $vars['id']           = $this->id;
+        $vars['rec']          = $this;
 
         return $vars;
     }
-
 
     /**
      * Gets a collapsed string that can be tried for searches
@@ -186,7 +185,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
     {
         $pieces = array();
         for ($i = 1; $i <= 10; $i++) {
-            $field = 'field_' . $i;
+            $field = 'field_'.$i;
             if ($this->$field) {
                 $pieces[] = $this->$field;
             }
@@ -198,7 +197,6 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
         return $pieces;
     }
-
 
     /**
      * @param $string
@@ -219,7 +217,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
     public function _preSave()
     {
-        foreach ($this->_save_callbacks AS $callback) {
+        foreach ($this->_save_callbacks as $callback) {
             $callback($this);
         }
     }

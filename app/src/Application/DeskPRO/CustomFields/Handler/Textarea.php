@@ -53,7 +53,7 @@ class Textarea extends Text
     public function getFormField($data = null)
     {
         $setData = null;
-        if ($data AND !empty($data['value'])) {
+        if ($data and !empty($data['value'])) {
             $setData = $data['value'];
         }
         $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'textarea', $setData, array('required' => false));

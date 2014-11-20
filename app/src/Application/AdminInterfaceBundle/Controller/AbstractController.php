@@ -91,15 +91,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             }
 
             return $this->render('AgentBundle:Login:redirect-login.html.twig', array(
-                'return' => $return
+                'return' => $return,
             ));
         }
 
         if ($this->requireRequestToken($action, $arguments) && !$this->checkRequestToken('request_token', '_rt')) {
             if ($this->request->isXmlHttpRequest()) {
                 $data = array(
-                    'error' => 'invalid_request_token',
-                    'redirect_login' => $this->generateUrl('agent_login')
+                    'error'          => 'invalid_request_token',
+                    'redirect_login' => $this->generateUrl('agent_login'),
                 );
 
                 return $this->createJsonResponse($data, 403);
@@ -110,7 +110,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
         if (!CheckWhitelistedIP::checkIP($this->container, $this->person)) {
             return $this->render('AgentBundle:Login:whitelist-ip.html.twig', array(
-                'ip' => dp_get_user_ip_address()
+                'ip' => dp_get_user_ip_address(),
             ));
         }
 
@@ -137,7 +137,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         $vars = array_merge(
             $vars, array(
                 'error_message' => $error_message,
-                'error_title'   => $error_title
+                'error_title'   => $error_title,
             )
         );
 

@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
-use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -58,8 +58,7 @@ class Total extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if ($section != 'select') {
             throw new Exception('TOTAL() may only be used in SELECT.');
         }
@@ -75,7 +74,7 @@ class Total extends AbstractFunc
         array_shift($childStack); // pop this off the stack - it doesn't exist to the children
 
         $expression = reset($this->_arguments);
-        $prepped = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
         $prepped->setTotal(true);
 
         return $prepped;

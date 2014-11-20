@@ -57,8 +57,8 @@ class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
      */
     protected function _createAuthAdapterObject()
     {
-        $options = $this->usersource->options;
-        $options['joomla_url'] = App::getSetting("Joomla.joomla_url");
+        $options                  = $this->usersource->options;
+        $options['joomla_url']    = App::getSetting("Joomla.joomla_url");
         $options['joomla_secret'] = App::getSetting("Joomla.joomla_secret");
 
         return new \deskpro_us_joomla\Usersource\Auth\Joomla($options);
@@ -91,7 +91,7 @@ class Joomla extends \Application\DeskPRO\Usersource\Adapter\AbstractAdapter
             UsersourceInfo::CAPABILITY_FORM_LOGIN,
             UsersourceInfo::CAPABILITY_GET_USER_INFO,
             UsersourceInfo::CAPABILITY_FIND_IDENTITY,
-            UsersourceInfo::CAPABILITY_SHARE_SESSION
+            UsersourceInfo::CAPABILITY_SHARE_SESSION,
         );
     }
 }

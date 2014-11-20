@@ -35,9 +35,9 @@
 namespace Application\DeskPRO\Dpql\Statement;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Results;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\AbstractPart;
 
 /**
@@ -168,101 +168,101 @@ class Display
      * @var array
      */
     protected static $_tableEntityMap = array(
-        'agent_teams' => 'DeskPRO:AgentTeam',
-        'articles' => 'DeskPRO:Article',
-        'article_categories' => 'DeskPRO:ArticleCategory',
-        'article_attachments' => 'DeskPRO:ArticleAttachment',
-        'article_comments' => 'DeskPRO:ArticleComment',
-        'article_pending_create' => 'DeskPRO:ArticlePendingCreate',
-        'auditlog' => 'DeskPRO:AuditLog',
-        'ban_emails' => 'DeskPRO:BanEmail',
-        'ban_ips' => 'DeskPRO:BanIp',
-        'blobs' => 'DeskPRO:Blob',
-        'chat_conversations' => 'DeskPRO:ChatConversation',
-        'chat_messages' => 'DeskPRO:ChatMessage',
-        'custom_data_article' => 'DeskPRO:CustomDataArticle',
-        'custom_data_chat' => 'DeskPRO:CustomDataChat',
-        'custom_data_feedback' => 'DeskPRO:CustomDataFeedback',
-        'custom_data_organizations' => 'DeskPRO:CustomDataOrganization',
-        'custom_data_person' => 'DeskPRO:CustomDataPerson',
-        'custom_data_product' => 'DeskPRO:CustomDataProduct',
-        'custom_data_ticket' => 'DeskPRO:CustomDataTicket',
-        'custom_def_article' => 'DeskPRO:CustomDefArticle',
-        'custom_def_chat' => 'DeskPRO:CustomDefChat',
-        'custom_def_feedback' => 'DeskPRO:CustomDefFeedback',
-        'custom_def_organizations' => 'DeskPRO:CustomDefOrganization',
-        'custom_def_people' => 'DeskPRO:CustomDefPerson',
-        'custom_def_products' => 'DeskPRO:CustomDefProduct',
-        'custom_def_ticket' => 'DeskPRO:CustomDefTicket',
-        'departments' => 'DeskPRO:Department',
-        'downloads' => 'DeskPRO:Download',
-        'download_categories' => 'DeskPRO:DownloadCategory',
-        'download_comments' => 'DeskPRO:DownloadComment',
-        'email_accounts' => 'DeskPRO:EmailAccount',
-        'email_sources' => 'DeskPRO:EmailSource',
-        'feedback' => 'DeskPRO:Feedback',
-        'feedback_attachments' => 'DeskPRO:FeedbackAttachment',
-        'feedback_comments' => 'DeskPRO:FeedbackComment',
-        'glossary_words' => 'DeskPRO:GlossaryWord',
-        'glossary_word_definitions' => 'DeskPRO:GlossaryWordDefinition',
-        'labels_articles' => 'DeskPRO:LabelArticle',
-        'labels_chat_conversations' => 'DeskPRO:LabelChatConversation',
-        'labels_downloads' => 'DeskPRO:LabelDownload',
-        'labels_feedback' => 'DeskPRO:LabelFeedback',
-        'labels_news' => 'DeskPRO:LabelNews',
-        'labels_organizations' => 'DeskPRO:LabelOrganization',
-        'labels_people' => 'DeskPRO:LabelPerson',
-        'labels_tasks' => 'DeskPRO:LabelTask',
-        'labels_tickets' => 'DeskPRO:LabelTicket',
-        'languages' => 'DeskPRO:Language',
-        'news' => 'DeskPRO:News',
-        'news_categories' => 'DeskPRO:NewsCategory',
-        'news_comments' => 'DeskPRO:NewsComment',
-        'organizations' => 'DeskPRO:Organization',
-        'organization_email_domains' => 'DeskPRO:OrganizationEmailDomain',
-        'organization_files' => 'DeskPRO:OrganizationFile',
-        'organization_notes' => 'DeskPRO:OrganizationNote',
-        'organizations_contact_data' => 'DeskPRO:OrganizationContactData',
-        'page_view_log' => 'DeskPRO:PageViewLog',
-        'people' => 'DeskPRO:Person',
-        'people_contact_data' => 'DeskPRO:PersonContactData',
-        'people_emails' => 'DeskPRO:PersonEmail',
-        'people_files' => 'DeskPRO:PersonFile',
-        'people_notes' => 'DeskPRO:PersonNote',
-        'phone_numbers' => 'DeskPRO:PhoneNumber',
-        'products' => 'DeskPRO:Product',
-        'related_content' => 'DeskPRO:RelatedContent',
-        'searchlog' => 'DeskPRO:SearchLog',
-        'sms_accounts' => 'DeskPRO:SmsAccount',
-        'tasks' => 'DeskPRO:Task',
-        'task_comments' => 'DeskPRO:TaskComment',
-        'text_snippets' => 'DeskPRO:TextSnippet',
-        'text_snippet_categories' => 'DeskPRO:TextSnippetCategory',
-        'text_snippet_logs' => 'DeskPRO:TextSnippetLog',
-        'tickets' => 'DeskPRO:Ticket',
-        'ticket_categories' => 'DeskPRO:TicketCategory',
-        'ticket_escalation_logs' => 'DeskPRO:TicketEscalationLog',
-        'ticket_escalations' => 'DeskPRO:TicketEscalation',
-        'ticket_filters' => 'DeskPRO:TicketFilter',
+        'agent_teams'                 => 'DeskPRO:AgentTeam',
+        'articles'                    => 'DeskPRO:Article',
+        'article_categories'          => 'DeskPRO:ArticleCategory',
+        'article_attachments'         => 'DeskPRO:ArticleAttachment',
+        'article_comments'            => 'DeskPRO:ArticleComment',
+        'article_pending_create'      => 'DeskPRO:ArticlePendingCreate',
+        'auditlog'                    => 'DeskPRO:AuditLog',
+        'ban_emails'                  => 'DeskPRO:BanEmail',
+        'ban_ips'                     => 'DeskPRO:BanIp',
+        'blobs'                       => 'DeskPRO:Blob',
+        'chat_conversations'          => 'DeskPRO:ChatConversation',
+        'chat_messages'               => 'DeskPRO:ChatMessage',
+        'custom_data_article'         => 'DeskPRO:CustomDataArticle',
+        'custom_data_chat'            => 'DeskPRO:CustomDataChat',
+        'custom_data_feedback'        => 'DeskPRO:CustomDataFeedback',
+        'custom_data_organizations'   => 'DeskPRO:CustomDataOrganization',
+        'custom_data_person'          => 'DeskPRO:CustomDataPerson',
+        'custom_data_product'         => 'DeskPRO:CustomDataProduct',
+        'custom_data_ticket'          => 'DeskPRO:CustomDataTicket',
+        'custom_def_article'          => 'DeskPRO:CustomDefArticle',
+        'custom_def_chat'             => 'DeskPRO:CustomDefChat',
+        'custom_def_feedback'         => 'DeskPRO:CustomDefFeedback',
+        'custom_def_organizations'    => 'DeskPRO:CustomDefOrganization',
+        'custom_def_people'           => 'DeskPRO:CustomDefPerson',
+        'custom_def_products'         => 'DeskPRO:CustomDefProduct',
+        'custom_def_ticket'           => 'DeskPRO:CustomDefTicket',
+        'departments'                 => 'DeskPRO:Department',
+        'downloads'                   => 'DeskPRO:Download',
+        'download_categories'         => 'DeskPRO:DownloadCategory',
+        'download_comments'           => 'DeskPRO:DownloadComment',
+        'email_accounts'              => 'DeskPRO:EmailAccount',
+        'email_sources'               => 'DeskPRO:EmailSource',
+        'feedback'                    => 'DeskPRO:Feedback',
+        'feedback_attachments'        => 'DeskPRO:FeedbackAttachment',
+        'feedback_comments'           => 'DeskPRO:FeedbackComment',
+        'glossary_words'              => 'DeskPRO:GlossaryWord',
+        'glossary_word_definitions'   => 'DeskPRO:GlossaryWordDefinition',
+        'labels_articles'             => 'DeskPRO:LabelArticle',
+        'labels_chat_conversations'   => 'DeskPRO:LabelChatConversation',
+        'labels_downloads'            => 'DeskPRO:LabelDownload',
+        'labels_feedback'             => 'DeskPRO:LabelFeedback',
+        'labels_news'                 => 'DeskPRO:LabelNews',
+        'labels_organizations'        => 'DeskPRO:LabelOrganization',
+        'labels_people'               => 'DeskPRO:LabelPerson',
+        'labels_tasks'                => 'DeskPRO:LabelTask',
+        'labels_tickets'              => 'DeskPRO:LabelTicket',
+        'languages'                   => 'DeskPRO:Language',
+        'news'                        => 'DeskPRO:News',
+        'news_categories'             => 'DeskPRO:NewsCategory',
+        'news_comments'               => 'DeskPRO:NewsComment',
+        'organizations'               => 'DeskPRO:Organization',
+        'organization_email_domains'  => 'DeskPRO:OrganizationEmailDomain',
+        'organization_files'          => 'DeskPRO:OrganizationFile',
+        'organization_notes'          => 'DeskPRO:OrganizationNote',
+        'organizations_contact_data'  => 'DeskPRO:OrganizationContactData',
+        'page_view_log'               => 'DeskPRO:PageViewLog',
+        'people'                      => 'DeskPRO:Person',
+        'people_contact_data'         => 'DeskPRO:PersonContactData',
+        'people_emails'               => 'DeskPRO:PersonEmail',
+        'people_files'                => 'DeskPRO:PersonFile',
+        'people_notes'                => 'DeskPRO:PersonNote',
+        'phone_numbers'               => 'DeskPRO:PhoneNumber',
+        'products'                    => 'DeskPRO:Product',
+        'related_content'             => 'DeskPRO:RelatedContent',
+        'searchlog'                   => 'DeskPRO:SearchLog',
+        'sms_accounts'                => 'DeskPRO:SmsAccount',
+        'tasks'                       => 'DeskPRO:Task',
+        'task_comments'               => 'DeskPRO:TaskComment',
+        'text_snippets'               => 'DeskPRO:TextSnippet',
+        'text_snippet_categories'     => 'DeskPRO:TextSnippetCategory',
+        'text_snippet_logs'           => 'DeskPRO:TextSnippetLog',
+        'tickets'                     => 'DeskPRO:Ticket',
+        'ticket_categories'           => 'DeskPRO:TicketCategory',
+        'ticket_escalation_logs'      => 'DeskPRO:TicketEscalationLog',
+        'ticket_escalations'          => 'DeskPRO:TicketEscalation',
+        'ticket_filters'              => 'DeskPRO:TicketFilter',
         'ticket_filter_subscriptions' => 'DeskPRO:TicketFilterSubscription',
-        'ticket_layouts' => 'DeskPRO:TicketLayout',
-        'ticket_macros' => 'DeskPRO:TicketMacro',
-        'ticket_priorities' => 'DeskPRO:TicketPriority',
-        'ticket_triggers' => 'DeskPRO:TicketTrigger',
-        'ticket_workflows' => 'DeskPRO:TicketWorkflow',
-        'tickets_attachments' => 'DeskPRO:TicketAttachment',
-        'tickets_deleted' => 'DeskPRO:TicketDeleted',
-        'tickets_flagged' => 'DeskPRO:TicketFlagged',
-        'tickets_participants' => 'DeskPRO:TicketParticipant',
-        'tickets_logs' => 'DeskPRO:TicketLog',
-        'tickets_messages' => 'DeskPRO:TicketMessage',
-        'ticket_attachments' => 'DeskPRO:TicketAttachment',
-        'ticket_charges' => 'DeskPRO:TicketCharge',
-        'ticket_feedback' => 'DeskPRO:TicketFeedback',
-        'ticket_slas' => 'DeskPRO:TicketSla',
-        'user_rules' => 'DeskPRO:UserRule',
-        'usergroups' => 'DeskPRO:Usergroup',
-        'usersources' => 'DeskPRO:Usersource',
+        'ticket_layouts'              => 'DeskPRO:TicketLayout',
+        'ticket_macros'               => 'DeskPRO:TicketMacro',
+        'ticket_priorities'           => 'DeskPRO:TicketPriority',
+        'ticket_triggers'             => 'DeskPRO:TicketTrigger',
+        'ticket_workflows'            => 'DeskPRO:TicketWorkflow',
+        'tickets_attachments'         => 'DeskPRO:TicketAttachment',
+        'tickets_deleted'             => 'DeskPRO:TicketDeleted',
+        'tickets_flagged'             => 'DeskPRO:TicketFlagged',
+        'tickets_participants'        => 'DeskPRO:TicketParticipant',
+        'tickets_logs'                => 'DeskPRO:TicketLog',
+        'tickets_messages'            => 'DeskPRO:TicketMessage',
+        'ticket_attachments'          => 'DeskPRO:TicketAttachment',
+        'ticket_charges'              => 'DeskPRO:TicketCharge',
+        'ticket_feedback'             => 'DeskPRO:TicketFeedback',
+        'ticket_slas'                 => 'DeskPRO:TicketSla',
+        'user_rules'                  => 'DeskPRO:UserRule',
+        'usergroups'                  => 'DeskPRO:Usergroup',
+        'usersources'                 => 'DeskPRO:Usersource',
     );
 
     /**
@@ -276,7 +276,7 @@ class Display
         $this->setSelect($select);
         $this->setFrom($from);
 
-        $this->_sql = new Dpql\SqlSelect();
+        $this->_sql           = new Dpql\SqlSelect();
         $this->_resultHandler = new Dpql\ResultHandler();
     }
 
@@ -304,7 +304,7 @@ class Display
     public function getResults()
     {
         $results = new Results();
-        $db = App::getDbRead('reports');
+        $db      = App::getDbRead('reports');
 
         $db->query("SET time_zone = '+0:00'");
 
@@ -315,14 +315,14 @@ class Display
                 $this->_splitSql->setConditions($this->_sql->getConditions());
 
                 $splitResults = $db->executeQuery($this->_splitSql->toSql())->fetchAll(\PDO::FETCH_NUM);
-                foreach ($splitResults AS $splitResult) {
+                foreach ($splitResults as $splitResult) {
                     $sql = clone $this->_sql;
-                    foreach ($this->_splitColumnMap AS $splitCondition => $splitColumn) {
+                    foreach ($this->_splitColumnMap as $splitCondition => $splitColumn) {
                         $splitValue = $splitResult[$splitColumn - 1];
                         if ($splitValue === null) {
                             $sql->addCondition("$splitCondition IS NULL");
                         } else {
-                            $sql->addCondition("$splitCondition = " . $db->quote($splitValue));
+                            $sql->addCondition("$splitCondition = ".$db->quote($splitValue));
                         }
                     }
 
@@ -351,38 +351,38 @@ class Display
         }
 
         $first = reset($results);
-        $last = end($results);
+        $last  = end($results);
 
         $base = array();
-        foreach ($this->_sql->getSelectFields() AS $key => $sel) {
+        foreach ($this->_sql->getSelectFields() as $key => $sel) {
             $base[$key] = null;
         }
 
-        foreach ($this->_groupFills AS $fill) {
+        foreach ($this->_groupFills as $fill) {
             $closure = $fill['fill'];
-            $print = $fill['print'] - 1;
-            $sql = $fill['sql'] - 1;
-            $order = $fill['order'] - 1;
+            $print   = $fill['print'] - 1;
+            $sql     = $fill['sql'] - 1;
+            $order   = $fill['order'] - 1;
 
-            $firstValue = $first[$order];
-            $lastValue = $last[$order];
-            $ascending = ($lastValue > $firstValue);
+            $firstValue    = $first[$order];
+            $lastValue     = $last[$order];
+            $ascending     = ($lastValue > $firstValue);
             $previousValue = null;
             $startRowValue = null;
-            $startRow = 0;
-            $rowSets = array();
+            $startRow      = 0;
+            $rowSets       = array();
 
-            foreach ($results AS $rowKey => $row) {
+            foreach ($results as $rowKey => $row) {
                 if ($previousValue !== null) {
                     if (($ascending && ($row[$order] + 0) < $previousValue) ||
                         (!$ascending && ($row[$order] + 0) > $previousValue)
                     ) {
                         if ($rowKey - 1 > $startRow) {
                             $rowSets[] = array(
-                                'start' => $startRow,
-                                'end' => $rowKey - 1,
+                                'start'      => $startRow,
+                                'end'        => $rowKey - 1,
                                 'startValue' => $startRowValue,
-                                'endValue' => $previousValue
+                                'endValue'   => $previousValue,
                             );
                         }
                         $previousValue = null;
@@ -394,29 +394,29 @@ class Display
                 if ($previousValue === null) {
                     $previousValue = $row[$order] + 0;
                     $startRowValue = $row[$order] + 0;
-                    $startRow = $rowKey;
+                    $startRow      = $rowKey;
                 }
             }
 
             if ($startRow < $rowKey || !$rowSets) {
                 $rowSets[] = array(
-                    'start' => $startRow,
-                    'end' => $rowKey,
+                    'start'      => $startRow,
+                    'end'        => $rowKey,
                     'startValue' => $startRowValue,
-                    'endValue' => $previousValue
+                    'endValue'   => $previousValue,
                 );
             }
 
             $newResults = array();
-            $seenRow = 0;
-            foreach ($rowSets AS $set) {
+            $seenRow    = 0;
+            foreach ($rowSets as $set) {
                 if ($set['start'] > $seenRow) {
                     $newResults = array_merge($newResults, array_slice($results, $seenRow, $set['start'] - $seenRow));
                 }
 
-                $rows = array_slice($results, $set['start'], $set['end'] - $set['start'] + 1);
+                $rows     = array_slice($results, $set['start'], $set['end'] - $set['start'] + 1);
                 $setFirst = reset($rows);
-                $setLast = end($rows);
+                $setLast  = end($rows);
 
                 if ($ascending) {
                     $min = $setFirst[$order];
@@ -437,15 +437,15 @@ class Display
                     if ($fills) {
                         $fillRow = array_shift($fills);
 
-                        foreach ($rows AS $row) {
+                        foreach ($rows as $row) {
                             while ($fillRow && (
                                 ($ascending && $fillRow[2] < $row[$print]) || (!$ascending && $fillRow[2] > $row[$print])
                             )) {
-                                $copyRow = $base;
+                                $copyRow         = $base;
                                 $copyRow[$print] = $fillRow[0];
-                                $copyRow[$sql] = $fillRow[1];
+                                $copyRow[$sql]   = $fillRow[1];
                                 $copyRow[$order] = $fillRow[2];
-                                $newResults[] = $copyRow;
+                                $newResults[]    = $copyRow;
 
                                 $fillRow = array_shift($fills);
                             }
@@ -459,11 +459,11 @@ class Display
                             array_unshift($fills, $fillRow);
                         }
                         while ($fillRow = array_shift($fills)) {
-                            $copyRow = $base;
+                            $copyRow         = $base;
                             $copyRow[$print] = $fillRow[0];
-                            $copyRow[$sql] = $fillRow[1];
+                            $copyRow[$sql]   = $fillRow[1];
                             $copyRow[$order] = $fillRow[2];
-                            $newResults[] = $copyRow;
+                            $newResults[]    = $copyRow;
                         }
                     } else {
                         $newResults = array_merge($newResults, $rows);
@@ -521,22 +521,22 @@ class Display
     public function getDpqlParts()
     {
         $selectFields = array();
-        foreach ($this->_select AS $field) {
+        foreach ($this->_select as $field) {
             $selectFields[] = $field->toDpql($this, 'select', array());
         }
 
         $splitFields = array();
-        foreach ($this->_splitBy AS $field) {
+        foreach ($this->_splitBy as $field) {
             $splitFields[] = $field->toDpql($this, 'split', array());
         }
 
         $groupFields = array();
-        foreach ($this->_groupBy AS $field) {
+        foreach ($this->_groupBy as $field) {
             $groupFields[] = $field->toDpql($this, 'group', array());
         }
 
         $orderFields = array();
-        foreach ($this->_orderBy AS $field) {
+        foreach ($this->_orderBy as $field) {
             $orderFields[] = $field->toDpql($this, 'order', array());
         }
 
@@ -544,14 +544,14 @@ class Display
 
         return array(
             'DISPLAY' => $display,
-            'SELECT' => implode(', ', $selectFields),
-            'FROM' => $this->_from,
-            'WHERE' => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
-            'SPLIT' => implode(', ', $splitFields),
-            'GROUP' => implode(', ', $groupFields),
-            'ORDER' => implode(', ', $orderFields),
-            'LIMIT' => $this->_limitAmount,
-            'OFFSET' => $this->_limitOffset
+            'SELECT'  => implode(', ', $selectFields),
+            'FROM'    => $this->_from,
+            'WHERE'   => ($this->_where ? $this->_where->toDpql($this, 'where', array()) : ''),
+            'SPLIT'  => implode(', ', $splitFields),
+            'GROUP'  => implode(', ', $groupFields),
+            'ORDER'  => implode(', ', $orderFields),
+            'LIMIT'  => $this->_limitAmount,
+            'OFFSET' => $this->_limitOffset,
         );
     }
 
@@ -562,7 +562,9 @@ class Display
      */
     public function prepare()
     {
-        if ($this->_prepared) return;
+        if ($this->_prepared) {
+            return;
+        }
         $this->_prepared = true;
 
         $repository = $this->getFromEntityRepository();
@@ -605,7 +607,7 @@ class Display
     {
         $sql = $this->_sql;
 
-        foreach ($this->_select AS $field) {
+        foreach ($this->_select as $field) {
             if ($field instanceof Part\Alias) {
                 $alias = $field->alias;
                 $field = $field->value;
@@ -654,10 +656,10 @@ class Display
             return;
         }
 
-        $splitSql = new Dpql\SqlSelect();
+        $splitSql        = new Dpql\SqlSelect();
         $this->_splitSql = $splitSql;
 
-        foreach ($this->_splitBy AS $group) {
+        foreach ($this->_splitBy as $group) {
             $groupBy = $group->prepare($this, 'split', array(), $this->_sql, $this->_resultHandler);
             if ($groupBy->hasValue()) {
                 $splitSql->addGroupBy($groupBy->sql());
@@ -689,7 +691,7 @@ class Display
     {
         $sql = $this->_sql;
 
-        foreach ($this->_groupBy AS $group) {
+        foreach ($this->_groupBy as $group) {
             if ($group instanceof Part\Alias) {
                 $alias = $group->alias;
                 $group = $group->value;
@@ -750,17 +752,17 @@ class Display
     {
         $sql = $this->_sql;
 
-        foreach ($this->_orderBy AS $order) {
+        foreach ($this->_orderBy as $order) {
             if ($order instanceof Part\OrderDir) {
-                $direction = ' ' . $order->orderDir;
-                $order = $order->order;
+                $direction = ' '.$order->orderDir;
+                $order     = $order->order;
             } else {
                 $direction = false;
             }
 
             $orderSql = $order->prepare($this, 'order', array(), $sql, $this->_resultHandler);
             if ($orderSql->hasValue()) {
-                $sql->addOrderBy($orderSql->ordered() . $direction);
+                $sql->addOrderBy($orderSql->ordered().$direction);
             }
         }
     }
@@ -781,10 +783,10 @@ class Display
         }
 
         $this->_groupFills[] = array(
-            'fill' => $fill,
+            'fill'  => $fill,
             'print' => $printId,
-            'sql' => $sqlId,
-            'order' => $orderId
+            'sql'   => $sqlId,
+            'order' => $orderId,
         );
 
         return true;
@@ -840,7 +842,7 @@ class Display
         }
 
         $repositoryName = self::$_tableEntityMap[$table];
-        $repository = App::getEntityRepository($repositoryName);
+        $repository     = App::getEntityRepository($repositoryName);
 
         if (!method_exists($repository, 'getTableName')) {
             throw new Exception("$repositoryName does not extend AbstractEntityRepository so cannot be queried.");
@@ -870,7 +872,7 @@ class Display
      */
     public function stackForcedUtc(array $stack)
     {
-        foreach ($stack AS $element) {
+        foreach ($stack as $element) {
             if ($element instanceof \Application\DeskPRO\Dpql\Statement\Part\FunctionCall
                 && strtoupper($element->name) == 'UTC'
             ) {
@@ -1090,7 +1092,7 @@ class Display
 
         $error = false;
         try {
-            $compiler = new \Application\DeskPRO\Dpql\Compiler();
+            $compiler  = new \Application\DeskPRO\Dpql\Compiler();
             $statement = $compiler->compile($query, $params);
 
             return $statement->getRenderer($renderer)->render();
@@ -1125,7 +1127,7 @@ class Display
                     $parts['display'] = array_unique($parts['display']);
                     $display          = $parts['display'][0];
                     if (!empty($parts['display'][1])) {
-                        $display .= ', ' . $parts['display'][1];
+                        $display .= ', '.$parts['display'][1];
                     }
                 } else {
                     $display = $parts['display'];
@@ -1133,13 +1135,13 @@ class Display
             }
 
             return "DISPLAY $display"
-                . "\nSELECT $parts[select]"
-                . "\nFROM $parts[from]"
-                . (!empty($parts['where'])   ? "\nWHERE $parts[where]"        : '')
-                . (!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]"   : '')
-                . (!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]"   : '')
-                . (!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]"   : '')
-                . (!empty($parts['limit'])   ? "\nLIMIT $parts[limit]$offset" : '');
+                ."\nSELECT $parts[select]"
+                ."\nFROM $parts[from]"
+                .(!empty($parts['where'])   ? "\nWHERE $parts[where]"        : '')
+                .(!empty($parts['splitBy']) ? "\nSPLIT BY $parts[splitBy]"   : '')
+                .(!empty($parts['groupBy']) ? "\nGROUP BY $parts[groupBy]"   : '')
+                .(!empty($parts['orderBy']) ? "\nORDER BY $parts[orderBy]"   : '')
+                .(!empty($parts['limit'])   ? "\nLIMIT $parts[limit]$offset" : '');
         }
     }
 

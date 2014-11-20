@@ -55,14 +55,12 @@ class OrganizationListRenderer
      */
     private $db;
 
-
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
-        $this->em = $container->getEm();
-        $this->db = $container->getDb();
+        $this->em        = $container->getEm();
+        $this->db        = $container->getDb();
     }
-
 
     /**
      * @param  OrgResultsDisplay $display
@@ -94,7 +92,6 @@ class OrganizationListRenderer
         return $json_array;
     }
 
-
     /**
      * @param  OrgResultsDisplay $display
      * @return string
@@ -118,14 +115,13 @@ class OrganizationListRenderer
         $data['picture_url_15']        = $entity->getPictureUrl(15);
         $data['labels']                = $display->getOrgLabels($entity);
 
-
         $custom_data = $display->getFieldsData($entity);
         if ($custom_data) {
             $field_manager = $this->container->getOrgFieldManager();
 
             $rendered_data = $field_manager->getRenderedToText($field_manager->createFieldDataFromArray($custom_data));
             foreach ($rendered_data as $fid => $v) {
-                $data['organization_fields[' . $fid . ']'] = array(
+                $data['organization_fields['.$fid.']'] = array(
                     'title' => $v['title'],
                     'value' => $v['rendered'],
                 );

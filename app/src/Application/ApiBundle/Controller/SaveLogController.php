@@ -53,22 +53,22 @@ class SaveLogController extends AbstractController
         }
 
         $einfo = array(
-            'type'          => 'error',
-            'pri'           => 'NOTICE',
-            'summary'       => $message,
-            'errname'       => 'JSError',
-            'errfile'       => $script_file,
-            'errline'       => $script_line,
-            'errstr'        => $message,
-            'time_to_error' => '0',
-            'url'           => $url,
+            'type'              => 'error',
+            'pri'               => 'NOTICE',
+            'summary'           => $message,
+            'errname'           => 'JSError',
+            'errfile'           => $script_file,
+            'errline'           => $script_line,
+            'errstr'            => $message,
+            'time_to_error'     => '0',
+            'url'               => $url,
             'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
-            'context_data'  => print_r($context, true),
-            'trace'         => $trace,
-            'session_name'  => DP_REQUEST_ID,
-            'die'           => false,
-            'display'       => false,
-            'process_log'   => ''
+            'context_data'      => print_r($context, true),
+            'trace'             => $trace,
+            'session_name'      => DP_REQUEST_ID,
+            'die'               => false,
+            'display'           => false,
+            'process_log'       => '',
         );
 
         @KernelErrorHandler::logErrorInfo($einfo);

@@ -86,7 +86,7 @@ class NewDownload
     {
         $this->_em->beginTransaction();
 
-        $download = new Download();
+        $download          = new Download();
         $download->person  = $this->_person_context;
         $download->title   = $this->title;
         $download->content = $this->content ?: '';
@@ -96,11 +96,11 @@ class NewDownload
             $download->setStatusCode('hidden.validating');
         }
 
-        $cat = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);
+        $cat                = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);
         $download->category = $cat;
 
         if ($this->attach) {
-            $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+            $blob           = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
             $download->blob = $blob;
 
             if (!$download->title) {

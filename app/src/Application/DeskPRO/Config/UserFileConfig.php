@@ -42,16 +42,16 @@ class UserFileConfig extends \Orb\Util\OptionsArray
     {
         $array = array();
 
-        $sys_file  = DP_ROOT . '/sys/config/config.' . $name . '.php';
-        $user_file = dirname(DP_CONFIG_FILE) . '/config.' . $name . '.php';
+        $sys_file  = DP_ROOT.'/sys/config/config.'.$name.'.php';
+        $user_file = dirname(DP_CONFIG_FILE).'/config.'.$name.'.php';
 
         if (file_exists($sys_file)) {
-            $array = require($sys_file);
+            $array = require $sys_file;
         }
 
         if (file_exists($user_file)) {
-            $user_array = require($user_file);
-            $array = array_merge($array, $user_array);
+            $user_array = require $user_file;
+            $array      = array_merge($array, $user_array);
         }
 
         parent::__construct($array);

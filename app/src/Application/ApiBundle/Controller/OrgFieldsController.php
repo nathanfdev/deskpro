@@ -53,7 +53,6 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -65,7 +64,7 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         /** @var \Application\DeskPRO\CustomFields\OrganizationFieldManager $field_manager */
         $field_manager = $this->container->getSystemService('org_fields_manager');
 
-        $custom_fields = $field_manager->getDefinedFields();
+        $custom_fields         = $field_manager->getDefinedFields();
         $data['custom_fields'] = $this->getApiData($custom_fields, false);
 
         return $this->createApiResponse($data);
@@ -82,7 +81,7 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
             throw $this->createNotFoundException();
         }
 
-        $data = array();
+        $data          = array();
         $data['field'] = $field->toApiData();
 
         return $this->createApiResponse($data);
@@ -115,14 +114,14 @@ class OrgFieldsController extends AbstractController implements ProtectedControl
         if ($id) {
             return $this->createSuccessResponse(
                 array(
-                     'field_id' => $field->id
+                     'field_id' => $field->id,
                 )
             );
         } else {
             return $this->createSuccessResponse(
                 array(
                      'field_id' => $field->id,
-                     $this->generateUrl('api_org_fields_get', array('id' => $field->id))
+                     $this->generateUrl('api_org_fields_get', array('id' => $field->id)),
                 )
             );
         }

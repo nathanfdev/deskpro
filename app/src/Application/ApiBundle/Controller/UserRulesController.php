@@ -48,7 +48,6 @@ class UserRulesController extends AbstractController implements ProtectedControl
         return new AdminManagePermission();
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -82,13 +81,12 @@ class UserRulesController extends AbstractController implements ProtectedControl
         $user_rule  = $user_rules->getWithUsergroup($id);
 
         if (!$user_rule) {
-
             throw $this->createNotFoundException();
         }
 
         return $this->createApiResponse(
             array(
-                 'user_rule' => $user_rule
+                 'user_rule' => $user_rule,
             )
         );
     }
@@ -106,15 +104,12 @@ class UserRulesController extends AbstractController implements ProtectedControl
         $user_rules = $this->container->getSystemService('user_rules');
 
         if ($id) {
-
             $user_rule = $user_rules->getById($id);
 
             if (!$user_rule) {
-
                 throw $this->createNotFoundException();
             }
         } else {
-
             $user_rule = $user_rules->createNew();
         }
 
@@ -126,11 +121,8 @@ class UserRulesController extends AbstractController implements ProtectedControl
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'user_rule'), true);
 
         if ($form->isValid()) {
-
             $user_rule_edit->save($this->em);
-
         } else {
-
             throw ValidationException::create($this->getFormValidationErrorsString($form));
         }
 
@@ -156,7 +148,6 @@ class UserRulesController extends AbstractController implements ProtectedControl
         $user_rule  = $user_rules->getById($id);
 
         if (!$user_rule) {
-
             throw $this->createNotFoundException();
         }
 
@@ -165,14 +156,11 @@ class UserRulesController extends AbstractController implements ProtectedControl
         $this->db->beginTransaction();
 
         try {
-
             $this->em->remove($user_rule);
             $this->em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }
@@ -194,7 +182,6 @@ class UserRulesController extends AbstractController implements ProtectedControl
         $user_rule  = $user_rules->getById($id);
 
         if (!$user_rule) {
-
             throw $this->createNotFoundException();
         }
 

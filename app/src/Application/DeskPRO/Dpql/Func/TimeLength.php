@@ -34,11 +34,11 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -61,16 +61,15 @@ class TimeLength extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 1) {
             throw new Exception('TIME_LENGTH() can only accept 1 argument.');
         }
 
         $expression = reset($this->_arguments);
-        $prepped = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
 
-        $sql = $prepped->sql();
+        $sql      = $prepped->sql();
         $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
             if ($value === null) {
                 return $valueRenderer->renderValue(null, 'string');
@@ -79,6 +78,6 @@ class TimeLength extends AbstractFunc
             return \Application\DeskPRO\Util::getPrintableTimeLength($value);
         };
 
-        return new Prepared($sql, 'TIME_LENGTH(' . $prepped->name() . ')', false, $renderer);
+        return new Prepared($sql, 'TIME_LENGTH('.$prepped->name().')', false, $renderer);
     }
 }

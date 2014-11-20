@@ -62,19 +62,21 @@ class LanguageDataService extends BaseRepositoryService
 
     public static function create(DeskproContainer $container, array $options = null)
     {
-        if (!$options) $options = array();
-        $options['entity'] = 'Application\\DeskPRO\\Entity\\Language';
+        if (!$options) {
+            $options = array();
+        }
+        $options['entity']          = 'Application\\DeskPRO\\Entity\\Language';
         $options['default_lang_id'] = $container->getSetting('core.default_language_id');
 
         $em = $container->getEm();
-        $o = new static($em, $options);
+        $o  = new static($em, $options);
 
         return $o;
     }
 
     public function init()
     {
-        $this->default_lang_id = (int)$this->options->get('default_lang_id');
+        $this->default_lang_id = (int) $this->options->get('default_lang_id');
     }
 
     /**

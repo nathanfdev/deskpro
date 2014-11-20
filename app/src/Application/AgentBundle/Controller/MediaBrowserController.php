@@ -34,7 +34,6 @@
 
 namespace Application\AgentBundle\Controller;
 
-
 /**
  * The mediabrowser does everything via ajax.
  */
@@ -61,9 +60,9 @@ class MediaBrowserController extends AbstractController
             $blob_id = $blob->getId();
 
             $data[] = array(
-                'blob_id' => $blob_id,
+                'blob_id'  => $blob_id,
                 'is_image' => $blob->isImage(),
-                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob))
+                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob)),
             );
         }
 
@@ -91,14 +90,14 @@ class MediaBrowserController extends AbstractController
 
         $im = new \Imagick();
         $im->readImageBlob($file, $blob['filename']);
-        $im->cropimage($this->in->getInt('w'),$this->in->getInt('h'),$this->in->getInt('x'),$this->in->getInt('y'));
+        $im->cropimage($this->in->getInt('w'), $this->in->getInt('h'), $this->in->getInt('x'), $this->in->getInt('y'));
 
         $new_blob = $this->container->getBlobStorage()->createBlobRecordFromString(
             $im->getImageBlob(),
             $blob['filename'],
             $blob['content_type']
         );
-        $new_blob_id = $blob->getId();
+        $new_blob_id               = $blob->getId();
         $new_blob['original_blob'] = $blob;
 
         $this->em->persist($new_blob);
@@ -126,7 +125,6 @@ class MediaBrowserController extends AbstractController
         ));
     }
 
-
     ############################################################################
     # get-recent
     ############################################################################
@@ -140,11 +138,10 @@ class MediaBrowserController extends AbstractController
         }
 
         return $this->renderView('AgentBundle:MediaBrowser:recent.html.twig', array(
-            'type' => $type,
+            'type'                => $type,
             'recent_blob_objects' => $recent_blob_objects,
         ));
     }
-
 
     ############################################################################
     # update-blob
@@ -155,7 +152,7 @@ class MediaBrowserController extends AbstractController
         /** @var $blob \Application\DeskPRO\Entity\Blob */
         $blob = $this->em->find('DeskPRO:Blob', $blob_id);
 
-        $blob['title'] = $this->in->getString('title');
+        $blob['title']           = $this->in->getString('title');
         $blob['is_media_upload'] = true;
         $blob->getLabelManager()->setLabelsArray($this->in->getCleanValueArray('labels', 'string', 'discard'));
 
@@ -173,7 +170,7 @@ class MediaBrowserController extends AbstractController
 
     public function libraryAction($page = 1)
     {
-        $types = $this->in->getCleanValueArray('types', 'string', 'discard');
+        $types  = $this->in->getCleanValueArray('types', 'string', 'discard');
         $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
         $qp = new \Application\DeskPRO\ORM\QueryPartial();
@@ -182,8 +179,8 @@ class MediaBrowserController extends AbstractController
         $blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getLibraryResults($types, $labels, $qp);
 
         return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
-            'types' => $types,
-            'labels' => $labels,
+            'types'        => $types,
+            'labels'       => $labels,
             'blob_objects' => $blob_objects,
         ));
     }
@@ -198,7 +195,7 @@ class MediaBrowserController extends AbstractController
 
         /** @var $category \Application\DeskPRO\Entity\ArticleCategory */
         $category = $this->em->find('DeskPRO:ArticleCategory', $category_id);
-        $cat_ids = $category->getTreeIds(true);
+        $cat_ids  = $category->getTreeIds(true);
 
         $qp = new \Application\DeskPRO\ORM\QueryPartial();
         $qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page-1) * 50);
@@ -209,8 +206,8 @@ class MediaBrowserController extends AbstractController
 
         return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
             'category_hierarchy' => $category_hierarchy,
-            'labels' => $labels,
-            'blob_objects' => $blob_objects,
+            'labels'             => $labels,
+            'blob_objects'       => $blob_objects,
         ));
     }
 }

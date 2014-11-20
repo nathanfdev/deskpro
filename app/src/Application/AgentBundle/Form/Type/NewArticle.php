@@ -53,17 +53,17 @@ class NewArticle extends AbstractType
         $builder->add('slug', 'text');
 
         $builder->add('labels', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
 
         $builder->add('attach', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
     }
 

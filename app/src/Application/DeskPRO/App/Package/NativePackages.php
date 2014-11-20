@@ -66,15 +66,14 @@ class NativePackages
      */
     public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage, $root_path = null)
     {
-        $this->em = $em;
+        $this->em           = $em;
         $this->blob_storage = $blob_storage;
 
         if (!$root_path) {
-            $root_path = DP_ROOT . '/apps';
+            $root_path = DP_ROOT.'/apps';
         }
         $this->root_path = $root_path;
     }
-
 
     /**
      * @return string[]
@@ -86,10 +85,10 @@ class NativePackages
         }
 
         $this->native_names = array();
-        $dir = dir($this->root_path);
+        $dir                = dir($this->root_path);
 
         while (($f = $dir->read()) !== false) {
-            $manifest_path = $this->root_path . '/' . $f . '/manifest.json';
+            $manifest_path = $this->root_path.'/'.$f.'/manifest.json';
             if (file_exists($manifest_path)) {
                 $this->native_names[] = $f;
             }

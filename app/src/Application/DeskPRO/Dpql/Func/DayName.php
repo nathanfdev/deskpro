@@ -34,11 +34,11 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -61,16 +61,15 @@ class DayName extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (count($this->_arguments) != 1) {
             throw new Exception('DAYNAME() can only accept 1 argument.');
         }
 
         $expression = reset($this->_arguments);
-        $prepped = $expression->prepare($statement, $section, $stack, $select, $result);
+        $prepped    = $expression->prepare($statement, $section, $stack, $select, $result);
 
-        $sql = 'DAYOFWEEK(' . $prepped->sql() . ')';
+        $sql      = 'DAYOFWEEK('.$prepped->sql().')';
         $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
             switch ($value) {
                 case 1: return 'Sunday';
@@ -83,7 +82,7 @@ class DayName extends AbstractFunc
             }
         };
 
-        $res = new Prepared($sql, 'DAYNAME(' . $prepped->name() . ')', false, $renderer);
+        $res = new Prepared($sql, 'DAYNAME('.$prepped->name().')', false, $renderer);
 
         $res->setGroupFill(function ($min, $max) {
             if ($min == $max) {

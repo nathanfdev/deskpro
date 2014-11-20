@@ -49,7 +49,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
     {
         $us->title             = $app->title;
         $us->options           = AppOptionsMapper::getOptions($app);
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\EzPublish';
 

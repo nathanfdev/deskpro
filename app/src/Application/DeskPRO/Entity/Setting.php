@@ -80,7 +80,6 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 
     public static function loadMetadata(ClassMetadata $metadata)
     {
-
         $builder = new ClassMetadataBuilder($metadata);
         $builder->mapId();
         $builder->setTable('settings');
@@ -92,7 +91,7 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(
             array(
                 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'name'
+                'nullable'  => false, 'columnName' => 'name',
             )
         );
         $metadata->mapField(

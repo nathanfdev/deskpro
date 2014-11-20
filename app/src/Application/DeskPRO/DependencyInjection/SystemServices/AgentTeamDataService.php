@@ -65,7 +65,7 @@ class AgentTeamDataService
     public static function create(DeskproContainer $container, array $options = null)
     {
         $em = $container->getEm();
-        $o = new static($em);
+        $o  = new static($em);
 
         return $o;
     }
@@ -89,7 +89,6 @@ class AgentTeamDataService
         }
     }
 
-
     /**
      * @return \Application\DeskPRO\Entity\AgentTeam[]
      */
@@ -99,7 +98,6 @@ class AgentTeamDataService
 
         return $this->agent_teams;
     }
-
 
     /**
      * @param array $for_ids
@@ -117,7 +115,6 @@ class AgentTeamDataService
         return $ret;
     }
 
-
     /**
      * @return int[]
      */
@@ -127,7 +124,6 @@ class AgentTeamDataService
 
         return $this->ids;
     }
-
 
     /**
      * @return \Application\DeskPRO\Entity\Person
@@ -142,7 +138,6 @@ class AgentTeamDataService
 
         return null;
     }
-
 
     public function __call($name, $args)
     {

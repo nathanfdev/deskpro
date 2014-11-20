@@ -82,7 +82,7 @@ class AgentReplyCodes implements Loggable
     public function __construct($body, $is_html)
     {
         $this->orig_body = $body;
-        $this->is_html = $is_html;
+        $this->is_html   = $is_html;
     }
 
     /**
@@ -103,18 +103,18 @@ class AgentReplyCodes implements Loggable
         }
 
         $this->new_body = $this->orig_body;
-        $this->props = array();
+        $this->props    = array();
 
         $this->getLogger()->logInfo(sprintf('[AgentReplyCodes] Getting properties from body of %d bytes (%s)', strlen($this->orig_body), $this->is_html ? 'html' : 'plaintext'));
 
         $text = $this->orig_body;
         if ($this->is_html) {
             if ($this->cleaner) {
-                $text = $this->cleaner->clean($text, 'html_email_preclean');
-                $text = $this->cleaner->clean($text, 'html_email_basicclean');
-                $text = $this->cleaner->clean($text, 'html_email');
-                $text = Strings::trimHtmlAdvanced($text);
-                $text = $this->cleaner->clean($text, 'html_email_postclean');
+                $text            = $this->cleaner->clean($text, 'html_email_preclean');
+                $text            = $this->cleaner->clean($text, 'html_email_basicclean');
+                $text            = $this->cleaner->clean($text, 'html_email');
+                $text            = Strings::trimHtmlAdvanced($text);
+                $text            = $this->cleaner->clean($text, 'html_email_postclean');
                 $this->orig_body = $text;
             }
 
@@ -175,11 +175,11 @@ class AgentReplyCodes implements Loggable
                     }
 
                     // Then use a random token so we can anchor a regex to remove surrounding whitespace easily
-                    $tok = '__' . Strings::random(10, Strings::CHARS_ALPHANUM_IU) . '__';
+                    $tok            = '__'.Strings::random(10, Strings::CHARS_ALPHANUM_IU).'__';
                     $this->new_body = Strings::inject($this->new_body, $tok, $code_pos);
                     $this->new_body = preg_replace("#\\s*$tok\\s*#s", '', $this->new_body);
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Could not find tokens to clean: '. $m[0]);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Could not find tokens to clean: '.$m[0]);
                 }
             } else {
                 $this->new_body = Strings::strReplaceOne($m[0], '', $this->new_body);
@@ -189,7 +189,6 @@ class AgentReplyCodes implements Loggable
         return $this->props;
     }
 
-
     /**
      * @return string
      */
@@ -197,7 +196,6 @@ class AgentReplyCodes implements Loggable
     {
         return $this->new_body;
     }
-
 
     /**
      * Get the original body that we scanned for codes. This is the original body string but may be
@@ -209,7 +207,6 @@ class AgentReplyCodes implements Loggable
     {
         return $this->orig_body;
     }
-
 
     /**
      * @param string $code
@@ -237,13 +234,13 @@ class AgentReplyCodes implements Loggable
 
             case 'hold':
                 $this->getLogger()->logDebug('[AgentReplyCodes] Enable hold');
-                $this->props['status'] = 'awaiting_agent';
+                $this->props['status']  = 'awaiting_agent';
                 $this->props['is_hold'] = true;
                 break;
 
             case 'unhold':
                 $this->getLogger()->logDebug('[AgentReplyCodes] Disable hold');
-                $this->props['status'] = 'awaiting_agent';
+                $this->props['status']  = 'awaiting_agent';
                 $this->props['is_hold'] = false;
                 break;
 
@@ -271,7 +268,7 @@ class AgentReplyCodes implements Loggable
 
                     case 'hold':
                         $this->getLogger()->logDebug('[AgentReplyCodes] Set status to awaiting_agent with hold');
-                        $this->props['status'] = 'awaiting_agent';
+                        $this->props['status']  = 'awaiting_agent';
                         $this->props['is_hold'] = true;
                         break;
 
@@ -292,10 +289,10 @@ class AgentReplyCodes implements Loggable
                 if (StringEmail::isValueValid($param)) {
                     $agent = App::getDataService('Agent')->getByEmail($param);
                     if ($agent) {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent ' . $agent->id);
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent '.$agent->id);
                         $this->props['assign_agent'] = $agent;
                     } else {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: ' . $param);
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: '.$param);
                     }
                 } else {
                     $test_param = preg_replace('#\s#', '', $param);
@@ -319,10 +316,10 @@ class AgentReplyCodes implements Loggable
                     }
 
                     if ($use_agent) {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent ' . $agent->id . ' (found via name match)');
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Assign agent '.$agent->id.' (found via name match)');
                         $this->props['assign_agent'] = $agent;
                     } else {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: ' . $param);
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Could not find agent: '.$param);
                     }
                 }
                 break;
@@ -330,23 +327,23 @@ class AgentReplyCodes implements Loggable
             case 'user':
                 if (StringEmail::isValueValid($param)) {
                     $person_processor = new PersonFromEmailProcessor();
-                    $email = new EmailAddress();
-                    $email->email = $param;
-                    $email->name = '';
+                    $email            = new EmailAddress();
+                    $email->email     = $param;
+                    $email->name      = '';
 
                     $person = $person_processor->findPerson($email);
 
                     if ($person) {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Set user to ' . $person->id);
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Set user to '.$person->id);
                         $this->props['user'] = $person;
                     } else {
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Creating new person: ' . $param);
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Creating new person: '.$param);
                         $person = $person_processor->createPerson($email, true);
-                        $this->getLogger()->logDebug('[AgentReplyCodes] Creating person #' . $person->id);
+                        $this->getLogger()->logDebug('[AgentReplyCodes] Creating person #'.$person->id);
                         $this->props['user'] = $person;
                     }
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] User must be an email: ' . $param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] User must be an email: '.$param);
                 }
                 break;
 
@@ -367,10 +364,10 @@ class AgentReplyCodes implements Loggable
                 }
 
                 if ($use_team) {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Assign team ' . $use_team->id);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Assign team '.$use_team->id);
                     $this->props['assign_agent_team'] = $use_team;
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown agent team: ' . $param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown agent team: '.$param);
                 }
 
                 break;
@@ -386,7 +383,7 @@ class AgentReplyCodes implements Loggable
                         $this->props['labels'] = array();
                     }
 
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Add labels: ' . implode(', ', $param));
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Add labels: '.implode(', ', $param));
 
                     $this->props['labels'] = array_merge($this->props['labels'], $param);
                     $this->props['labels'] = array_unique($this->props['labels']);
@@ -408,10 +405,10 @@ class AgentReplyCodes implements Loggable
                 );
 
                 if ($obj) {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Set department: ' . $obj->id);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Set department: '.$obj->id);
                     $this->props['department'] = $obj;
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown department: ' . $param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown department: '.$param);
                 }
                 break;
 
@@ -424,10 +421,10 @@ class AgentReplyCodes implements Loggable
                 );
 
                 if ($obj) {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Set category: ' . $obj->id);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Set category: '.$obj->id);
                     $this->props['category'] = $obj;
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown category: ' . $param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown category: '.$param);
                 }
                 break;
 
@@ -440,10 +437,10 @@ class AgentReplyCodes implements Loggable
                 );
 
                 if ($obj) {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Set priority: ' . $obj->id);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Set priority: '.$obj->id);
                     $this->props['priority'] = $obj;
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown priority: ' . $param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown priority: '.$param);
                 }
                 break;
 
@@ -456,10 +453,10 @@ class AgentReplyCodes implements Loggable
                 );
 
                 if ($obj) {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Set workflow: ' . $obj->id);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Set workflow: '.$obj->id);
                     $this->props['workflow'] = $obj;
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown workflow: ' . $param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown workflow: '.$param);
                 }
                 break;
 
@@ -472,10 +469,10 @@ class AgentReplyCodes implements Loggable
                 );
 
                 if ($obj) {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Set category: ' . $obj->id);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Set category: '.$obj->id);
                     $this->props['category'] = $obj;
                 } else {
-                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown priority: ' . $param);
+                    $this->getLogger()->logDebug('[AgentReplyCodes] Unknown priority: '.$param);
                 }
                 break;
 
@@ -486,7 +483,7 @@ class AgentReplyCodes implements Loggable
             default:
                 // check if its a ticket field
                 $fields = App::getSystemService('ticket_fields_manager');
-                $field = null;
+                $field  = null;
                 foreach ($fields as $test_field) {
                     $test_name = $test_field->name;
                     $test_name = preg_replace('#[^a-z0-9]#i', '', $test_name);
@@ -516,9 +513,9 @@ class AgentReplyCodes implements Loggable
                     );
 
                     if ($child_opt) {
-                        $set = isset($this->props['ticket_fields'][$field->id]) ? $this->props['ticket_fields'][$field->id] : array();
+                        $set   = isset($this->props['ticket_fields'][$field->id]) ? $this->props['ticket_fields'][$field->id] : array();
                         $set[] = $child_opt;
-                        $set = array_unique($set);
+                        $set   = array_unique($set);
 
                         $this->props['ticket_fields'][$field->id] = $set;
                     }

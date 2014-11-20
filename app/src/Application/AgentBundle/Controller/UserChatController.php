@@ -78,15 +78,15 @@ class UserChatController extends AbstractController
             ORDER BY m.id DESC
         ")->setParameter(1, $convo)->execute();
 
-        $session = $convo->session;
-        $visitor = $convo->visitor;
+        $session     = $convo->session;
+        $visitor     = $convo->visitor;
         $other_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($visitor);
 
         // For selector
         $agents = $this->em->getRepository('DeskPRO:Person')->getAgents();
 
         $convo_api = array();
-        foreach (array('id', 'subject', 'person_name', 'person_email', 'status', 'ended_by') AS $key) {
+        foreach (array('id', 'subject', 'person_name', 'person_email', 'status', 'ended_by') as $key) {
             $convo_api[$key] = $convo->$key;
         }
         if ($convo->person) {
@@ -117,7 +117,6 @@ class UserChatController extends AbstractController
             'custom_fields'  => $custom_fields,
         ));
     }
-
 
     /**
      * Reassign a chat
@@ -152,25 +151,27 @@ class UserChatController extends AbstractController
 
     public function getGroupByCountsAction()
     {
-        $user_groups = $this->in->getArrayValue('filters');
-        $filters = $this->getFilters();
-        $groups = $this->getGroups();
+        $user_groups  = $this->in->getArrayValue('filters');
+        $filters      = $this->getFilters();
+        $groups       = $this->getGroups();
         $group_counts = array();
 
-        foreach($user_groups as $filter_id => $group_id) {
-            if(!$filter_id || !in_array($filter_id, $filters))
+        foreach ($user_groups as $filter_id => $group_id) {
+            if (!$filter_id || !in_array($filter_id, $filters)) {
                 $filter_id = $filters[0];
+            }
 
-            if(!$group_id || !in_array($group_id, $groups))
+            if (!$group_id || !in_array($group_id, $groups)) {
                 $group_id = $groups[0];
+            }
 
             $searcher = new ChatConversationSearch();
             $searcher->setPersonContext($this->person);
             $searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
             $this->updateSearcherFilter($searcher, $filter_id);
 
-            $grouper = new GroupingCounter($group_id);
-            $counts = $grouper->getCounts($searcher);
+            $grouper                  = new GroupingCounter($group_id);
+            $counts                   = $grouper->getCounts($searcher);
             $group_counts[$filter_id] = $this->renderView('AgentBundle:UserChat:window-filter-groupresult.html.twig',
                 array('groups' => $counts, 'filter_id' => $filter_id, 'group_by' => $group_id));
         }
@@ -196,10 +197,10 @@ class UserChatController extends AbstractController
 
         $cm = new ClientMessage();
         $cm->fromArray(array(
-            'channel' => 'chat.invited',
-            'data' => $convo->getInfo(),
-            'for_person' => $agent,
-            'created_by_client' => $this->session->getId()
+            'channel'           => 'chat.invited',
+            'data'              => $convo->getInfo(),
+            'for_person'        => $agent,
+            'created_by_client' => $this->session->getId(),
         ));
         $this->em->persist($cm);
         $this->em->flush();
@@ -226,7 +227,7 @@ class UserChatController extends AbstractController
 
         $props = $this->in->getCleanValueArray('props', 'raw', 'string');
 
-        if (isset($props['department_id'])){
+        if (isset($props['department_id'])) {
             $dep = null;
             if ($props['department_id']) {
                 $dep = $this->em->find('DeskPRO:Department', $props['department_id']);
@@ -236,7 +237,6 @@ class UserChatController extends AbstractController
 
         return $this->createJsonCmResponse();
     }
-
 
     /**
      * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
@@ -256,11 +256,10 @@ class UserChatController extends AbstractController
         $custom_fields = $field_manager->getDisplayArrayForObject($convo);
 
         return $this->render('AgentBundle:UserChat:view-page-display-holders.html.twig', array(
-            'convo' => $convo,
+            'convo'          => $convo,
             'custom_fields'  => $custom_fields,
         ));
     }
-
 
     /**
      * Add a participant
@@ -277,7 +276,7 @@ class UserChatController extends AbstractController
         }
 
         $agent = $this->em->find('DeskPRO:Person', $agent_id);
-        if (!$agent OR $convo->hasParticipant($agent)) {
+        if (!$agent or $convo->hasParticipant($agent)) {
             return $this->createJsonResponse(array());
         }
 
@@ -312,10 +311,9 @@ class UserChatController extends AbstractController
         });
 
         return $this->createJsonCmResponse(array(
-            'client_messages' => $client_messages
+            'client_messages' => $client_messages,
         ));
     }
-
 
     /**
      * @param $conversation_id
@@ -381,10 +379,9 @@ class UserChatController extends AbstractController
         }
 
         return $this->createJsonCmResponse(array(
-            'client_messages' => $client_messages
+            'client_messages' => $client_messages,
         ));
     }
-
 
     /**
      * End a chat
@@ -406,7 +403,6 @@ class UserChatController extends AbstractController
         return $this->createJsonCmResponse();
     }
 
-
     /**
      * Accepts a POST of a new message to a conversation
      */
@@ -421,7 +417,6 @@ class UserChatController extends AbstractController
 
         $other_data = array();
         if ($this->in->getString('content')) {
-
             $metadata = array();
             if ($this->in->getBool('is_html')) {
                 $metadata['is_html'] = true;
@@ -434,7 +429,7 @@ class UserChatController extends AbstractController
 
             /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
             $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
-            $message = $chat_manager->addMessage(
+            $message      = $chat_manager->addMessage(
                 $convo,
                 $this->person,
                 $content,
@@ -446,7 +441,6 @@ class UserChatController extends AbstractController
 
         return $this->createJsonCmResponse($other_data);
     }
-
 
     /**
      * End a chat
@@ -482,7 +476,6 @@ class UserChatController extends AbstractController
         return $this->createJsonCmResponse();
     }
 
-
     public function sendFileAction($conversation_id)
     {
         if ($conversation_id instanceof ChatConversation) {
@@ -498,9 +491,9 @@ class UserChatController extends AbstractController
             return $this->createJsonCmResponse();
         }
 
-        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">" . htmlspecialchars($blob->filename) . "</a> (" . $blob->getReadableFilesize() . ")";
+        $msg = "File: <a href=\"{$blob->getDownloadUrl(true)}\" target=\"_blank\">".htmlspecialchars($blob->filename)."</a> (".$blob->getReadableFilesize().")";
         if ($blob->isImage()) {
-            $msg .= '<div class="file-thumb"><img src="' . $blob->getThumbnailUrl(50, true) . '" /></div>';
+            $msg .= '<div class="file-thumb"><img src="'.$blob->getThumbnailUrl(50, true).'" /></div>';
         }
 
         /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
@@ -515,7 +508,6 @@ class UserChatController extends AbstractController
         return $this->createJsonCmResponse();
     }
 
-
     /**
      * List the articles
      */
@@ -524,42 +516,42 @@ class UserChatController extends AbstractController
         $agent_names = $this->em->getRepository('DeskPRO:Person')->getAgentNames();
 
         $filters = array();
-        $tr = App::getTranslator();
+        $tr      = App::getTranslator();
 
-        foreach($this->getFilters() as $filter_id) {
+        foreach ($this->getFilters() as $filter_id) {
             $searcher = new ChatConversationSearch();
             $searcher->setPersonContext($this->person);
             $searcher->setColumns('COUNT(*)');
             $searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'ended');
             $this->updateSearcherFilter($searcher, $filter_id);
 
-            $filter = array();
+            $filter       = array();
             $filter['id'] = $filter_id;
 
-            $filter['count'] = $this->container->getDb()->fetchColumn($searcher->getSQL());
-            $filter['title'] = $tr->phrase('agent.chat.filter_title_' . $filter_id);
+            $filter['count']      = $this->container->getDb()->fetchColumn($searcher->getSQL());
+            $filter['title']      = $tr->phrase('agent.chat.filter_title_'.$filter_id);
             $filter['disallowed'] = implode(',', $this->getDisallowedGroupsForFilter($filter_id));
-            $filters[] = $filter;
+            $filters[]            = $filter;
         }
 
         $groupers = array();
 
-        foreach($this->getGroups() as $grouper_id) {
-            $grouper = array();
-            $grouper['id'] = $grouper_id;
-            $grouper['title'] = $tr->hasPhrase('agent.general.group_' . $grouper_id) ? $tr->hasPhrase('agent.general.group_' . $grouper_id) : $grouper_id;
-            $groupers[] = $grouper;
+        foreach ($this->getGroups() as $grouper_id) {
+            $grouper          = array();
+            $grouper['id']    = $grouper_id;
+            $grouper['title'] = $tr->hasPhrase('agent.general.group_'.$grouper_id) ? $tr->hasPhrase('agent.general.group_'.$grouper_id) : $grouper_id;
+            $groupers[]       = $grouper;
         }
 
         $label_lister = new \Application\DeskPRO\Labels\LabelLister('chat_conversations');
-        $index = $label_lister->getIndexList();
+        $index        = $label_lister->getIndexList();
 
         $label_counts = $this->em->getRepository('DeskPRO:LabelDef')->getLabelCounts('chat_conversations', 25);
-        $cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-        $cloud = $cloud_gen->getCloud();
+        $cloud_gen    = new \Application\DeskPRO\UI\TagCloud($label_counts);
+        $cloud        = $cloud_gen->getCloud();
 
         // Departments
-        $departments = $this->container->getDataService('Department')->getInHierarchy();
+        $departments     = $this->container->getDataService('Department')->getInHierarchy();
         $single_dep_mode = false;
         if ($this->em->getRepository('DeskPRO:Department')->countAll() == 1) {
             $single_dep_mode = true;
@@ -588,8 +580,8 @@ class UserChatController extends AbstractController
         list($initial_counts, $dep_counts) = $this->getCounts();
 
         return $this->createJsonResponse(array(
-            'counts' => $initial_counts,
-            'dep_counts' => $dep_counts
+            'counts'     => $initial_counts,
+            'dep_counts' => $dep_counts,
         ));
     }
 
@@ -602,11 +594,11 @@ class UserChatController extends AbstractController
         $searcher->addTerm(ChatConversationSearch::TERM_STATUS, SearcherAbstract::OP_IS, 'open');
 
         // Initial counts
-        $initial_counts = $this->db->fetchAllKeyValue($searcher->getSql());
-        $initial_counts['total'] = array_sum(array_values($initial_counts));
+        $initial_counts           = $this->db->fetchAllKeyValue($searcher->getSql());
+        $initial_counts['total']  = array_sum(array_values($initial_counts));
         $initial_counts['active'] = $initial_counts['total'];
 
-        if(isset($initial_counts[-1])) {
+        if (isset($initial_counts[-1])) {
             $initial_counts['active'] -= $initial_counts[-1];
         }
 
@@ -620,7 +612,7 @@ class UserChatController extends AbstractController
         $dep_counts = $this->db->fetchAllKeyValue($searcher->getSql());
 
         $dep_counts['none_total'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
-        $dep_counts['none'] = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
+        $dep_counts['none']       = isset($dep_counts[-1]) ? $dep_counts[-1] : 0;
 
         $dep_counts['0_total'] = $dep_counts['none'];
 
@@ -628,17 +620,17 @@ class UserChatController extends AbstractController
         $departments = $this->container->getDataService('Department')->getInHierarchy();
 
         foreach ($departments as $dep) {
-            $c_id = $dep['id'];
+            $c_id  = $dep['id'];
             $total = 0;
             if (isset($dep_counts[$c_id])) {
                 $total = $dep_counts[$c_id];
             }
 
             foreach ($dep['children'] as $child_dep) {
-                $child_id = $child_dep['id'];
-                $dep_counts[$child_id . '_total'] = 0;
+                $child_id                       = $child_dep['id'];
+                $dep_counts[$child_id.'_total'] = 0;
                 if (isset($dep_counts[$child_id])) {
-                    $dep_counts[$child_id . '_total'] = $dep_counts[$child_id];
+                    $dep_counts[$child_id.'_total'] = $dep_counts[$child_id];
                     $total += $dep_counts[$child_id];
                 }
             }
@@ -649,10 +641,9 @@ class UserChatController extends AbstractController
 
         return array(
             $initial_counts,
-            $dep_counts
+            $dep_counts,
         );
     }
-
 
     public function listNewChatsAction($department_id)
     {
@@ -671,10 +662,10 @@ class UserChatController extends AbstractController
         $convos = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment(0, $department);
 
         return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
-            'convos' => $convos,
+            'convos'        => $convos,
             'department_id' => $department_id,
-            'department' => $department,
-            'filter_type' => 'new',
+            'department'    => $department,
+            'filter_type'   => 'new',
         ));
     }
 
@@ -695,9 +686,9 @@ class UserChatController extends AbstractController
         $convos = $this->em->getRepository('DeskPRO:ChatConversation')->getOpenForAgentAndDepartment($agent, -1);
 
         return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
-            'agent' => $agent,
-            'agent_id' => $agent_id,
-            'convos' => $convos,
+            'agent'       => $agent,
+            'agent_id'    => $agent_id,
+            'convos'      => $convos,
             'filter_type' => 'active',
         ));
     }
@@ -759,7 +750,6 @@ class UserChatController extends AbstractController
         return $this->createJsonResponse($other_data);
     }
 
-
     /**
      * Lists previously closed chats
      *
@@ -778,7 +768,7 @@ class UserChatController extends AbstractController
         if ($filter_id == 'label' && $filter_param) {
             $searcher->addTerm(ChatConversationSearch::TERM_LABEL, SearcherAbstract::OP_IS, $filter_param);
         } else {
-            if(!$filter_id || !in_array($filter_id, $filters)) {
+            if (!$filter_id || !in_array($filter_id, $filters)) {
                 $filter_id = $filters[0];
             }
 
@@ -786,31 +776,33 @@ class UserChatController extends AbstractController
             $this->updateSearcherFilter($searcher, $filter_id);
         }
 
-        $groups = $this->getGroups();
+        $groups   = $this->getGroups();
         $group_by = $this->in->getString('group_var');
         $group_id = '';
 
-        if($group_by && in_array($group_by, $groups)) {
-            switch($group_by) {
+        if ($group_by && in_array($group_by, $groups)) {
+            switch ($group_by) {
                 case 'agent':
                     $group_id = $this->in->getInt('group_val');
                     $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, $group_id);
                     break;
                 case 'date_created':
-                    $group_id = $this->in->getString('group_val');
-                    $month_year = explode('-',$group_id,2);
+                    $group_id   = $this->in->getString('group_val');
+                    $month_year = explode('-', $group_id, 2);
 
-                    if(count($month_year) != 2)
+                    if (count($month_year) != 2) {
                         break;
+                    }
 
-                    $month = (int)$month_year[0];
-                    $year = (int)$month_year[1];
+                    $month = (int) $month_year[0];
+                    $year  = (int) $month_year[1];
 
-                    if(!checkdate($month, 1, $year))
+                    if (!checkdate($month, 1, $year)) {
                         break;
+                    }
 
                     $beginning = Dates::firstDayInMonth($month, $year);
-                    $end = Dates::lastDayInMonth($month, $year);
+                    $end       = Dates::lastDayInMonth($month, $year);
                     $searcher->addTerm(ChatConversationSearch::TERM_DATE_CREATED, SearcherAbstract::OP_BETWEEN, array('date1' => $beginning, 'date2' => $end));
 
                     break;
@@ -827,11 +819,13 @@ class UserChatController extends AbstractController
 
         $total = $this->container->getDb()->fetchColumn($searcher->getSql());
 
-        $limit = 50;
+        $limit    = 50;
         $max_page = ceil($total / $limit);
 
         $page = $this->in->getUint('p');
-        if (!$page || $page > $max_page) $page = 1;
+        if (!$page || $page > $max_page) {
+            $page = 1;
+        }
 
         $start = ($page - 1) * $limit;
 
@@ -851,7 +845,7 @@ class UserChatController extends AbstractController
             'filter_id'      => $filter_id,
             'filter_param'   => $filter_param,
             'group_var'      => $group_by,
-            'group_val'      => $group_id
+            'group_val'      => $group_id,
         ));
     }
 
@@ -867,10 +861,10 @@ class UserChatController extends AbstractController
         $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
         if ($convo->visitor) {
-            $block = new ChatBlock();
-            $block->visitor = $convo->visitor;
+            $block            = new ChatBlock();
+            $block->visitor   = $convo->visitor;
             $block->by_person = $this->person;
-            $block->reason = $this->in->getString('reason');
+            $block->reason    = $this->in->getString('reason');
 
             if ($this->in->getBool('block_ip') && $convo->visitor->ip_address) {
                 $block->ip_address = $convo->visitor->ip_address;
@@ -926,9 +920,9 @@ class UserChatController extends AbstractController
 
     protected function updateSearcherFilter($searcher, $filter)
     {
-        switch($filter) {
+        switch ($filter) {
             case 'mine':
-                $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS,$this->person['id']);
+                $searcher->addTerm(ChatConversationSearch::TERM_AGENT_ID, SearcherAbstract::OP_IS, $this->person['id']);
                 break;
 
             case 'assigned':
@@ -945,11 +939,12 @@ class UserChatController extends AbstractController
     {
         $groups = array();
 
-        foreach($this->groups as $group) {
-            if($group == 'agent'
+        foreach ($this->groups as $group) {
+            if ($group == 'agent'
             && !$this->person->hasPerm('agent_tickets.view_others')
-            && !$this->person->hasPerm('agent_tickets.view_unassigned'))
+            && !$this->person->hasPerm('agent_tickets.view_unassigned')) {
                 continue;
+            }
 
             $groups[] = $group;
         }
@@ -961,7 +956,7 @@ class UserChatController extends AbstractController
     {
         $disallowed = array();
 
-        if($filter == 'mine') {
+        if ($filter == 'mine') {
             $disallowed[] = 'agent';
         }
 
@@ -972,8 +967,8 @@ class UserChatController extends AbstractController
     {
         $filters = array();
 
-        foreach($this->filters as $filter) {
-            if($filter == 'assigned' && !$this->person->hasPerm('agent_chat.view_others') && !$this->person->hasPerm('agent_chat.view_unassigned')) {
+        foreach ($this->filters as $filter) {
+            if ($filter == 'assigned' && !$this->person->hasPerm('agent_chat.view_others') && !$this->person->hasPerm('agent_chat.view_unassigned')) {
                 continue;
             }
 

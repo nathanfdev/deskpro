@@ -58,28 +58,28 @@ class TextField extends CustomFieldAbstract
 
         if ($this->_field->getOption('min_length')) {
             $this->validation_type = 'required';
-            $this->min_length = $this->_field->getOption('min_length');
+            $this->min_length      = $this->_field->getOption('min_length');
         }
         if ($this->_field->getOption('max_length')) {
             $this->validation_type = 'required';
-            $this->max_length = $this->_field->getOption('max_length');
+            $this->max_length      = $this->_field->getOption('max_length');
         }
         if ($this->_field->getOption('regex')) {
             $this->validation_type = 'regex';
-            $this->regex = $this->_field->getOption('regex');
+            $this->regex           = $this->_field->getOption('regex');
         }
 
         if ($this->_field->getOption('agent_min_length')) {
             $this->agent_validation_type = 'required';
-            $this->agent_min_length = $this->_field->getOption('agent_min_length');
+            $this->agent_min_length      = $this->_field->getOption('agent_min_length');
         }
         if ($this->_field->getOption('agent_max_length')) {
             $this->agent_validation_type = 'required';
-            $this->agent_max_length = $this->_field->getOption('agent_max_length');
+            $this->agent_max_length      = $this->_field->getOption('agent_max_length');
         }
         if ($this->_field->getOption('agent_regex')) {
             $this->agent_validation_type = 'regex';
-            $this->agent_regex = $this->_field->getOption('agent_regex');
+            $this->agent_regex           = $this->_field->getOption('agent_regex');
         }
         if ($this->_field->getOption('agent_validation_resolve')) {
             $this->agent_validation_resolve = true;
@@ -101,7 +101,7 @@ class TextField extends CustomFieldAbstract
         } elseif ($this->regex) {
             // No delims
             if ($this->regex[0] != substr($this->regex, -1, 1)) {
-                $this->regex = '/' . $this->regex . '/';
+                $this->regex = '/'.$this->regex.'/';
             }
 
             $this->validation_type = 'regex';
@@ -128,7 +128,7 @@ class TextField extends CustomFieldAbstract
 
             // No delims
             if ($this->agent_regex[0] != substr($this->agent_regex, -1, 1)) {
-                $this->agent_regex = '/' . $this->agent_regex . '/';
+                $this->agent_regex = '/'.$this->agent_regex.'/';
             }
 
             $field->setOption('agent_required', null);

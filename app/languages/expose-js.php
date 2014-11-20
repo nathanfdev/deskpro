@@ -12,6 +12,6 @@
         'agent.tickets.*',
         'adm.general.*',
         'adm.departments.*',
-        'adm.tickets.*'
-    )
+        'adm.tickets.*',
+    ),
 );

@@ -60,7 +60,7 @@ class ChatSetup
     public function getChatInfo()
     {
         $chat_online = ChatAvailableCheck::getAvailableTime();
-        $chat_online = (bool)$chat_online;
+        $chat_online = (bool) $chat_online;
 
         $chat_enabled = (bool) $this->settings->get('core.apps_chat');
 

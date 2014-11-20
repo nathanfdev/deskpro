@@ -47,7 +47,7 @@ class SettingsProfile extends AbstractType
         $builder->add('override_display_name', 'text', array('required' => false));
         $builder->add('email', 'text', array('required' => false));
         $builder->add('timezone', 'choice', array(
-            'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
+            'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers()),
         ));
 
         $lang_names = array();
@@ -58,7 +58,7 @@ class SettingsProfile extends AbstractType
         }
 
         $builder->add('language_id', 'choice', array(
-            'choices' => $lang_names
+            'choices' => $lang_names,
         ));
         $builder->add('password', 'password', array('required' => false));
         $builder->add('password2', 'password', array('required' => false));
@@ -77,20 +77,20 @@ class SettingsProfile extends AbstractType
 
         $builder->add('auto_dismiss_notifications', 'choice', array(
             'choices' => array(
-                5 => '5 seconds',
-                10 => '10 seconds',
-                15 => '15 seconds',
-                30 => '30 seconds',
-                60 => '1 minute',
-                120 => '2 minutes',
-                300 => '5 minutes',
-                900 => '15 minutes',
+                5    => '5 seconds',
+                10   => '10 seconds',
+                15   => '15 seconds',
+                30   => '30 seconds',
+                60   => '1 minute',
+                120  => '2 minutes',
+                300  => '5 minutes',
+                900  => '15 minutes',
                 1800 => '30 minutes',
                 3600 => '1 hour',
-                0 => 'Never'
+                0    => 'Never',
             ),
             'expanded' => false,
-            'multiple' => false
+            'multiple' => false,
         ));
     }
 

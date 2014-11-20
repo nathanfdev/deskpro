@@ -120,7 +120,6 @@ class EditEmailAccount
         $this->outgoing_type   = $account->outgoing_account ? $account->outgoing_account->getType() : '';
     }
 
-
     /**
      * Applies form to the entities.
      */
@@ -132,7 +131,7 @@ class EditEmailAccount
 
         if ($this->other_addresses) {
             $emails_arr = array();
-            $emails = explode(',', $this->other_addresses);
+            $emails     = explode(',', $this->other_addresses);
             foreach ($emails as $email) {
                 $email = trim(strtolower($email));
                 if (StringEmail::isValueValid($email)) {
@@ -172,7 +171,7 @@ class EditEmailAccount
         }
 
         if (!$trigger) {
-            $trigger = new TicketTrigger();
+            $trigger                = new TicketTrigger();
             $trigger->email_account = $this->account;
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = array('email');
@@ -182,13 +181,14 @@ class EditEmailAccount
         $actions = new TriggerActions();
         try {
             $actions->importFromArray(array('actions' => $trigger_actions));
-        } catch (\Exception $e) {}
+        } catch (\Exception $e) {
+        }
 
         $terms = new TriggerTerms();
         $terms->addTermFromArray(array(
             'type'    => 'CheckEmailAccount',
             'op'      => 'is',
-            'options' => array('email_account_ids' => array($this->account->id))
+            'options' => array('email_account_ids' => array($this->account->id)),
         ));
 
         $trigger->title     = "New Ticket";
@@ -227,7 +227,6 @@ class EditEmailAccount
                 return null;
         }
     }
-
 
     /**
      * @return \Application\DeskPRO\Email\EmailAccount\AccountConfigInterface

@@ -68,18 +68,18 @@ class Generic implements ForwardDef, QuoteDef
     {
         $body = Strings::standardEol($body);
 
-        $found = 0;
+        $found      = 0;
         $start_line = null;
 
         // - Try to fix From that has [email address] on a new line after From:
         // - Normalise labels that have starts around them: *From:* which can happen when clients convert html to text (eg postboxapp)
         foreach ($this->translate_map as $set) {
-            $pattern = '#^(%From%): ([^\n\r]+)\s*(\[|<)(.*?)(\]|>)#m';
+            $pattern  = '#^(%From%): ([^\n\r]+)\s*(\[|<)(.*?)(\]|>)#m';
             $pattern2 = '#^\*(%From%|%Sent%|%To%|%Date%|%Subject%|%CC%|%BCC%):\*#mi';
             $pattern3 = '#^(\s*>+\s*)\*(%From%|%Sent%|%To%|%Date%|%Subject%|%CC%|%BCC%):\*#mi';
 
             foreach ($set as $f => $r) {
-                $pattern = str_replace($f, $r, $pattern);
+                $pattern  = str_replace($f, $r, $pattern);
                 $pattern2 = str_replace($f, $r, $pattern2);
                 $pattern3 = str_replace($f, $r, $pattern3);
             }
@@ -105,9 +105,11 @@ class Generic implements ForwardDef, QuoteDef
                         $start_line = $ln;
                     }
                     $found++;
-                    if ($found >= 2) break;
+                    if ($found >= 2) {
+                        break;
+                    }
                 } else {
-                    $found = 0;
+                    $found      = 0;
                     $start_line = null;
                 }
             }
@@ -116,7 +118,7 @@ class Generic implements ForwardDef, QuoteDef
                 break;
             }
             $start_line = null;
-            $found = 0;
+            $found      = 0;
         }
 
         // If we didnt find at least two of the four headers,
@@ -135,7 +137,6 @@ class Generic implements ForwardDef, QuoteDef
 
         return $parts;
     }
-
 
     /**
      * Get an array of info from the forwarded block
@@ -210,7 +211,7 @@ class Generic implements ForwardDef, QuoteDef
 
         if ($is_html) {
             $fwd_message_body = str_replace(array('<br />', '<br/>'), '<br>', $fwd_message_body);
-            $fwd_parts = preg_split('#<br>\s*<br>#i', $fwd_message_body, 2);
+            $fwd_parts        = preg_split('#<br>\s*<br>#i', $fwd_message_body, 2);
         } else {
             $fwd_parts = preg_split('#\n{2}#i', $fwd_message_body, 2);
         }
@@ -242,29 +243,29 @@ class Generic implements ForwardDef, QuoteDef
         }
 
         $from_str = substr($forward_data['fwd_message_headers'], $pos, $pos2-$pos);
-        $m = null;
+        $m        = null;
 
         if (preg_match('#mailto:(.*?)@([a-zA-Z0-9\.\-_]+)#', $from_str.' ', $m)) {
-            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
+            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
         } elseif (preg_match('#(<|\[|\()(.*?)@([a-zA-Z0-9\.\-_]+)(>|\]|\))#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[2] . '@' . $m[3];
+            $forward_data['fwd_from_email'] = $m[2].'@'.$m[3];
         } elseif (preg_match('#[\w]+:\s*?(.*?)@([a-zA-Z0-9\.\-_]+)#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
+            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
         } elseif (preg_match('#\s(.*?)@([a-zA-Z0-9\.\-]+)\s#i', $from_str, $m)) {
-            $forward_data['fwd_from_email'] = $m[1] . '@' . $m[2];
+            $forward_data['fwd_from_email'] = $m[1].'@'.$m[2];
         }
 
         if ($forward_data['fwd_from_email']) {
             $forward_data['fwd_from_email'] = trim($forward_data['fwd_from_email']);
 
-            $pos = strpos($from_str, $forward_data['fwd_from_email']);
+            $pos  = strpos($from_str, $forward_data['fwd_from_email']);
             $name = substr($from_str, 0, $pos);
             if (preg_match('#^[\w]+:(.*?)(<|\[|\()#', $name, $m)) {
                 $name = $m[1];
             } elseif (preg_match('#^[\w]+:(.*?)#', $name, $m)) {
                 $name = $m[1];
             }
-            $name = trim($name);
+            $name                          = trim($name);
             $forward_data['fwd_from_name'] = $name;
         }
 
@@ -279,7 +280,7 @@ class Generic implements ForwardDef, QuoteDef
                 $forward_data['fwd_cc_addresses'] = array();
                 foreach ($emails as $e) {
                     $forward_data['fwd_cc_addresses'][] = array(
-                        'name' => $e->name,
+                        'name'  => $e->name,
                         'email' => $e->email,
                     );
                 }
@@ -308,7 +309,7 @@ class Generic implements ForwardDef, QuoteDef
                 // Try to detect '=== REPLY ABOVE THIS LINE ===' bits
                 $langs = App::getDataService('Language')->getAll();
                 foreach ($langs as $l) {
-                    $re = preg_quote(App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l), '#');
+                    $re      = preg_quote(App::getTranslator()->getPhraseText('agent.emails.reply_above_line', $l), '#');
                     $matches = null;
                     if (preg_match('#===(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*===#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
                         $pos = $matches[0][1];
@@ -357,7 +358,7 @@ class Generic implements ForwardDef, QuoteDef
 
         // Have cuts in the form of <div class="DP_BOTTOM_MARK"> or <!--DP_BOTTOM_MARK-->
         $body_btm = '';
-        $pos = strpos($body, 'DP_BOTTOM_MARK');
+        $pos      = strpos($body, 'DP_BOTTOM_MARK');
         if ($pos !== false) {
             $body_btm = substr($body, $pos);
             if ($is_html) {
@@ -378,7 +379,7 @@ class Generic implements ForwardDef, QuoteDef
         }
 
         if ($body_btm && (!$is_html || strip_tags($body_btm))) {
-            $body_btm = "\n\n" . $body_btm;
+            $body_btm = "\n\n".$body_btm;
         } else {
             $body_btm = '';
         }

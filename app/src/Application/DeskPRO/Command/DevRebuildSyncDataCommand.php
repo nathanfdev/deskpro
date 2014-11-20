@@ -61,7 +61,7 @@ class DevRebuildSyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\
             $start = microtime(true);
 
             $classes = AbstractDataSync::getAvailableSyncClasses();
-            foreach ($classes AS $name => $class) {
+            foreach ($classes as $name => $class) {
                 /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
                 $sync = new $class();
                 $sync->writeToBase();
@@ -73,7 +73,7 @@ class DevRebuildSyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 
             return 0;
         } elseif ($input->getOption('rebuild')) {
-            $name = $input->getOption('rebuild');
+            $name    = $input->getOption('rebuild');
             $classes = AbstractDataSync::getAvailableSyncClasses();
 
             if (isset($classes[$name])) {

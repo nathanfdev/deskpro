@@ -44,7 +44,7 @@ use Orb\Util\Util;
 abstract class DomainObject extends BasicDomainObject
 {
     const API_MODE_OPT_OUT = 1;
-    const API_MODE_OPT_IN = 2;
+    const API_MODE_OPT_IN  = 2;
 
     /** @var int */
     protected $_api_mode = self::API_MODE_OPT_OUT;
@@ -61,7 +61,6 @@ abstract class DomainObject extends BasicDomainObject
      */
     public $_presave_state = array();
 
-
     /**
      * @return \Doctrine\ORM\EntityRepository
      */
@@ -76,7 +75,6 @@ abstract class DomainObject extends BasicDomainObject
         return $em->getRepository("DeskPRO:$entity");
     }
 
-
     /**
      * Get the table name for this entity
      *
@@ -86,7 +84,6 @@ abstract class DomainObject extends BasicDomainObject
     {
         return App::getOrm()->getClassMetadata(get_called_class())->getTableName();
     }
-
 
     /**
      * @return string
@@ -98,11 +95,10 @@ abstract class DomainObject extends BasicDomainObject
             $name = $m[1];
         }
 
-        $name = 'DeskPRO:' . $name;
+        $name = 'DeskPRO:'.$name;
 
         return $name;
     }
-
 
     /**
      * Get an object ref for this entity. This is the table name and the entity ID.
@@ -114,14 +110,13 @@ abstract class DomainObject extends BasicDomainObject
     public function getObjectRef()
     {
         if (method_exists($this, 'getId')) {
-            return $this->getTableName() . '.' . $this->getId();
+            return $this->getTableName().'.'.$this->getId();
         } elseif (method_exists($this, 'getRef')) {
-            return $this->getTableName() . '.' . $this->getRef();
+            return $this->getTableName().'.'.$this->getRef();
         } else {
             throw new \RuntimeException("Object does not implement getObjectRef");
         }
     }
-
 
     /**
      * Sets the value of a field, and calls the property changed tracker
@@ -167,20 +162,18 @@ abstract class DomainObject extends BasicDomainObject
         $this->_onPropertyChanged($field, $old, $value);
     }
 
-
     /**
      * {@inheritDoc}
      */
     public function offsetSet($offset, $value)
     {
-        $func = "set" . str_replace('_', '', $offset);
+        $func = "set".str_replace('_', '', $offset);
         if (method_exists($this, $func) || $this->_isCustomCallable(strtolower($func))) {
             $this->$func($value);
         } else {
             $this->setModelField($offset, $value);
         }
     }
-
 
     /**
      * Sets a model field value but does not mark it as changed so it wont be persisted.
@@ -192,7 +185,6 @@ abstract class DomainObject extends BasicDomainObject
     {
         $this->$field = $value;
     }
-
 
     /**
      * @param  bool  $primary
@@ -207,10 +199,10 @@ abstract class DomainObject extends BasicDomainObject
             return array();
         }
 
-        $values = array();
+        $values    = array();
         $visited[] = $this;
 
-        foreach ($repository->getFieldMappings() AS $name => $field) {
+        foreach ($repository->getFieldMappings() as $name => $field) {
             if ($this->_api_mode == self::API_MODE_OPT_IN && empty($field['dpApi'])) {
                 continue;
             } elseif ($this->_api_mode == self::API_MODE_OPT_OUT && isset($field['dpApi']) && !$field['dpApi']) {
@@ -229,12 +221,12 @@ abstract class DomainObject extends BasicDomainObject
 
             if ($val instanceof \DateTime || $field['type'] == 'datetime') {
                 if ($val) {
-                    $values[$name] = $val->format('Y-m-d H:i:s');
-                    $values["{$name}_ts"] = $val->getTimestamp();
+                    $values[$name]           = $val->format('Y-m-d H:i:s');
+                    $values["{$name}_ts"]    = $val->getTimestamp();
                     $values["{$name}_ts_ms"] = $val->getTimestamp() * 1000;
                 } else {
-                    $values[$name] = null;
-                    $values["{$name}_ts"] = 0;
+                    $values[$name]           = null;
+                    $values["{$name}_ts"]    = 0;
                     $values["{$name}_ts_ms"] = 0;
                 }
             } else {
@@ -249,14 +241,14 @@ abstract class DomainObject extends BasicDomainObject
                         }
                     }
                     if ($translated) {
-                        $values[$name . '_translated'] = $translated;
+                        $values[$name.'_translated'] = $translated;
                     }
                 }
             }
         }
 
         if ($deep) {
-            foreach ($repository->getAssociationMappings() AS $name => $association) {
+            foreach ($repository->getAssociationMappings() as $name => $association) {
                 if (empty($association['dpApi'])) {
                     continue;
                 }
@@ -277,7 +269,7 @@ abstract class DomainObject extends BasicDomainObject
                 } elseif (is_array($val) || $val instanceof \Traversable) {
                     $output = array();
 
-                    foreach ($val AS $key => $sub) {
+                    foreach ($val as $key => $sub) {
                         if ($sub instanceof \Application\DeskPRO\Domain\DomainObject) {
                             $output[$key] = $sub->toApiData(false, $subDeep, $visited);
                         }
@@ -293,7 +285,6 @@ abstract class DomainObject extends BasicDomainObject
         return $values;
     }
 
-
     /**
      * @return array
      */
@@ -306,7 +297,7 @@ abstract class DomainObject extends BasicDomainObject
 
         $values = array();
 
-        foreach ($repository->getFieldMappings() AS $name => $field) {
+        foreach ($repository->getFieldMappings() as $name => $field) {
             $val = $this[$name];
 
             if ($val instanceof \DateTime) {
@@ -321,7 +312,6 @@ abstract class DomainObject extends BasicDomainObject
         return $values;
     }
 
-
     /**
      * Sets the special no persist flag that causes an error if this object is persisted
      */
@@ -329,7 +319,6 @@ abstract class DomainObject extends BasicDomainObject
     {
         $this->_no_persist = true;
     }
-
 
     /**
      * Check the current status of the no persist flag
@@ -351,12 +340,12 @@ abstract class DomainObject extends BasicDomainObject
 
         if (property_exists($this, 'id')) {
             if ($this->id) {
-                return "<$me:#" . $this->id . ">";
+                return "<$me:#".$this->id.">";
             } else {
-                return "<$me:#0:" . spl_object_hash($this) . ">";
+                return "<$me:#0:".spl_object_hash($this).">";
             }
         } else {
-            return "<$me:" . spl_object_hash($this) . ">";
+            return "<$me:".spl_object_hash($this).">";
         }
     }
 }

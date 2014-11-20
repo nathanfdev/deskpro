@@ -1,5 +1,5 @@
 <?php
-define('DP_ROOT', realpath(dirname(__FILE__) . '/../'));
+define('DP_ROOT', realpath(dirname(__FILE__).'/../'));
 
 @ini_set('memory_limit', -1);
 @ini_set('memory_limit', 268435456);
@@ -10,9 +10,9 @@ setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
 
-require_once DP_ROOT . '/src/Application/InstallBundle/Install/server_check_functions.php';
-require_once DP_ROOT . '/src/Orb/Util/Numbers.php';
-require_once DP_ROOT . '/src/Orb/Util/Env.php';
+require_once DP_ROOT.'/src/Application/InstallBundle/Install/server_check_functions.php';
+require_once DP_ROOT.'/src/Orb/Util/Numbers.php';
+require_once DP_ROOT.'/src/Orb/Util/Env.php';
 
 $fatal = array();
 
@@ -29,7 +29,7 @@ if (!$fatal) {
 }
 
 if ($fatal) {
-    echo "Errors detected: " . implode(',', $fatal);
+    echo "Errors detected: ".implode(',', $fatal);
 } else {
     echo "OKAY";
 }

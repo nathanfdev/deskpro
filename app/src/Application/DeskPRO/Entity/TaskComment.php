@@ -47,7 +47,6 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 {
-
     /**
      * The unique ID.
      *
@@ -101,7 +100,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
      */
     public function __construct(Person $creator, $content)
     {
-        $this['person'] = $creator;
+        $this['person']  = $creator;
         $this['content'] = $content;
 
         $this['date_created'] = new \DateTime();
@@ -125,8 +124,6 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         return $this->person['id'];
     }
 
-
-
     /**
      * Sets the task comment's creator id.
      *
@@ -143,7 +140,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         $person = App::getEntityRepository('DeskPRO:Person')->find($id);
 
         if (! $person) {
-            throw new \InvalidArgumentException('No person for id ' . $id);
+            throw new \InvalidArgumentException('No person for id '.$id);
         }
 
         $this->person->taskComments->remove($this);
@@ -177,7 +174,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines = array();
+        $lines     = array();
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }
@@ -196,13 +193,13 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'task_comments', ));
+        $metadata->setPrimaryTable(array( 'name' => 'task_comments'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content', ));
-        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'content', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'content'));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => 'comments', 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => NULL, 'inversedBy' => 'task_comments', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => NULL, 'inversedBy' => 'comments', 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => NULL, 'inversedBy' => 'task_comments', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL)), 'dpApi' => true  ));
     }
 }

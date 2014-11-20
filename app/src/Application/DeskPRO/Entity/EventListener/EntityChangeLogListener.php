@@ -27,17 +27,16 @@
 
 namespace Application\DeskPRO\Entity\EventListener;
 
-
+use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Domain\DomainObject;
-use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\HttpFoundation\Session;
+use Application\DeskPRO\Log\Event\Base as BaseLogEvent;
 use Application\DeskPRO\ORM\StateChange\StateChangeRecorder;
 use Application\DeskPRO\People\PersonGuest;
 use Symfony\Component\DependencyInjection\Exception\InactiveScopeException;
-use Application\DeskPRO\Log\Event\Base as BaseLogEvent;
 
 abstract class EntityChangeLogListener
 {
@@ -59,7 +58,7 @@ abstract class EntityChangeLogListener
     public function __construct(DeskproContainer $container)
     {
         $this->container = $container;
-        $this->logger = $container->get('deskpro.logger.changelog');
+        $this->logger    = $container->get('deskpro.logger.changelog');
     }
 
     /**
@@ -148,7 +147,7 @@ abstract class EntityChangeLogListener
     protected function createLogEntry(BaseLogEvent $event, Person $performer = null)
     {
         $performer = $this->getContextPerson() ?: $performer;
-        $key = $this->tryToGetApiKeyFromContext();
+        $key       = $this->tryToGetApiKeyFromContext();
 
         return new LogEvent($event, $performer, $key);
     }
@@ -171,16 +170,16 @@ abstract class EntityChangeLogListener
      */
     protected function doFlush($oid, $type)
     {
-        if (!isset($this->{'queued_' . $type}[$oid])) {
+        if (!isset($this->{'queued_'.$type}[$oid])) {
             return;
         }
 
-        $entry = $this->{'queued_' . $type}[$oid];
+        $entry = $this->{'queued_'.$type}[$oid];
         $this->logger->info($entry);
         foreach ($entry->children as $child) {
             $this->logger->info($child);
         }
 
-        unset($this->{'queued_' . $type}[$oid]);
+        unset($this->{'queued_'.$type}[$oid]);
     }
 }

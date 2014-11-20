@@ -50,7 +50,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             'app_key'    => $app->getSetting('app_key'),
             'app_secret' => $app->getSetting('app_secret'),
         );
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->title             = $app->title;
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Facebook';

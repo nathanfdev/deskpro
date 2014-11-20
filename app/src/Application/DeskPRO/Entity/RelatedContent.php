@@ -72,8 +72,6 @@ class RelatedContent extends \Application\DeskPRO\Domain\DomainObject
         $this['rel_object_id']    = $entity2->getId();
     }
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -82,11 +80,11 @@ class RelatedContent extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\RelatedContent';
-        $metadata->setPrimaryTable(array( 'name' => 'related_content', ));
+        $metadata->setPrimaryTable(array( 'name' => 'related_content'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'rel_object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'rel_object_type', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'rel_object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'rel_object_id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'rel_object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'rel_object_type', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'rel_object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'rel_object_id', 'id' => true));
     }
 }

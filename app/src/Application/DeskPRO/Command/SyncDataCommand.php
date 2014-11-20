@@ -55,10 +55,10 @@ class SyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerA
             $start = microtime(true);
 
             $classes = \Application\DeskPRO\DataSync\AbstractDataSync::getAvailableSyncClasses();
-            foreach ($classes AS $name => $class) {
+            foreach ($classes as $name => $class) {
                 /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
                 $sync = new $class();
-                $res = $sync->syncBaseToLive();
+                $res  = $sync->syncBaseToLive();
                 $output->writeln(sprintf("\tImported %s data (%d insert, %d updated, %d deleted).",
                     $name, $res['insert'], $res['update'], $res['delete']
                 ));
@@ -69,7 +69,7 @@ class SyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerA
 
             return 0;
         } elseif ($input->getOption('sync')) {
-            $name = $input->getOption('sync');
+            $name    = $input->getOption('sync');
             $classes = AbstractDataSync::getAvailableSyncClasses();
 
             if (isset($classes[$name])) {
@@ -77,7 +77,7 @@ class SyncDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerA
 
                 /* @var $sync \Application\DeskPRO\DataSync\AbstractDataSync */
                 $sync = new $class();
-                $res = $sync->syncBaseToLive();
+                $res  = $sync->syncBaseToLive();
                 $output->writeln(sprintf("\tImported %s data (%d insert, %d updated, %d deleted).",
                     $name, $res['insert'], $res['update'], $res['delete']
                 ));

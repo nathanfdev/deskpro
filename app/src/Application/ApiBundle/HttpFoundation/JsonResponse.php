@@ -49,7 +49,7 @@ class JsonResponse extends Response
     {
         if (is_array($content)) {
             $this->data = $content;
-            $content = $this->__toString();
+            $content    = $this->__toString();
         }
 
         parent::setContent($content);

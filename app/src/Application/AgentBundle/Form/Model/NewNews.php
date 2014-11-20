@@ -76,9 +76,9 @@ class NewNews
     {
         $this->_em->beginTransaction();
 
-        $news = new News();
-        $news->person = $this->_person_context;
-        $news->title = $this->title;
+        $news          = new News();
+        $news->person  = $this->_person_context;
+        $news->title   = $this->title;
         $news->content = $this->content ?: '';
         $news->setStatusCode($this->status);
 
@@ -86,7 +86,7 @@ class NewNews
             $news->setStatusCode('hidden.validating');
         }
 
-        $cat = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
+        $cat            = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
         $news->category = $cat;
 
         $this->_em->persist($news);

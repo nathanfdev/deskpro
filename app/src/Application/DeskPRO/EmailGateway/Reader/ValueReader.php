@@ -33,7 +33,6 @@
 
 namespace Application\DeskPRO\EmailGateway\Reader;
 
-
 class ValueReader extends AbstractReader
 {
     /** @var array  */
@@ -59,7 +58,6 @@ class ValueReader extends AbstractReader
 
     public function _kill()
     {
-
     }
 
     public function setRawSource($source)
@@ -84,8 +82,8 @@ class ValueReader extends AbstractReader
 
     protected function _getHeader($name)
     {
-        $name = strtolower($name);
-        $header = new Item\Header();
+        $name         = strtolower($name);
+        $header       = new Item\Header();
         $header->name = $name;
 
         $parts = isset($this->values['headers'][$name]) ? $this->values['headers'][$name] : array();
@@ -105,10 +103,10 @@ class ValueReader extends AbstractReader
         $val_emails = isset($this->values['ccs']) ? $this->values['ccs'] : array();
 
         foreach ($val_emails as $name => $eml) {
-            $email = new Item\EmailAddress();
-            $email->name = $name;
-            $email->name_utf8 = $name;
-            $email->email = $eml;
+            $email                   = new Item\EmailAddress();
+            $email->name             = $name;
+            $email->name_utf8        = $name;
+            $email->email            = $eml;
             $email->original_charset = 'UTF-8';
 
             $emails[] = $email;
@@ -124,10 +122,10 @@ class ValueReader extends AbstractReader
         $val_emails = isset($this->values['tos']) ? $this->values['tos'] : array();
 
         foreach ($val_emails as $name => $eml) {
-            $email = new Item\EmailAddress();
-            $email->name = $name;
-            $email->name_utf8 = $name;
-            $email->email = $eml;
+            $email                   = new Item\EmailAddress();
+            $email->name             = $name;
+            $email->name_utf8        = $name;
+            $email->email            = $eml;
             $email->original_charset = 'UTF-8';
 
             $emails[] = $email;
@@ -139,10 +137,10 @@ class ValueReader extends AbstractReader
     protected function _getFromAddress()
     {
         if (!isset($this->values['from'])) {
-            $email = new Item\EmailAddress();
-            $email->name = '';
+            $email            = new Item\EmailAddress();
+            $email->name      = '';
             $email->name_utf8 = '';
-            $email->email = '';
+            $email->email     = '';
 
             return $email;
         }
@@ -150,20 +148,20 @@ class ValueReader extends AbstractReader
         if (is_array($this->values['from'])) {
             if (isset($this->values['from'][0])) {
                 $name = $this->values['from'][0];
-                $eml = $this->values['from'][1];
+                $eml  = $this->values['from'][1];
             } else {
                 $name = $this->values['from']['name'];
-                $eml = $this->values['from']['email'];
+                $eml  = $this->values['from']['email'];
             }
         } else {
             $name = '';
-            $eml = $this->values['from'];
+            $eml  = $this->values['from'];
         }
 
-        $email = new Item\EmailAddress();
-        $email->name = $name;
+        $email            = new Item\EmailAddress();
+        $email->name      = $name;
         $email->name_utf8 = $name;
-        $email->email = $eml;
+        $email->email     = $eml;
 
         return $email;
     }
@@ -181,17 +179,17 @@ class ValueReader extends AbstractReader
     protected function _getSubject()
     {
         if (!isset($this->values['subject'])) {
-            $subject = new Item\Subject();
-            $subject->subject = '';
-            $subject->subject_utf8 = '';
+            $subject                   = new Item\Subject();
+            $subject->subject          = '';
+            $subject->subject_utf8     = '';
             $subject->original_charset = 'UTF-8';
 
             return $subject;
         }
 
-        $subject = new Item\Subject();
-        $subject->subject = $this->values['subject'];
-        $subject->subject_utf8 = $this->values['subject'];
+        $subject                   = new Item\Subject();
+        $subject->subject          = $this->values['subject'];
+        $subject->subject_utf8     = $this->values['subject'];
         $subject->original_charset = 'UTF-8';
 
         return $subject;
@@ -204,9 +202,9 @@ class ValueReader extends AbstractReader
             return null;
         }
 
-        $subject = new Item\Subject();
-        $subject->subject = $header->getHeader();
-        $subject->subject_utf8 = $subject->subject;
+        $subject                   = new Item\Subject();
+        $subject->subject          = $header->getHeader();
+        $subject->subject_utf8     = $subject->subject;
         $subject->original_charset = 'UTF-8';
 
         return $subject;
@@ -220,9 +218,9 @@ class ValueReader extends AbstractReader
 
     protected function _getBodyHtml()
     {
-        $body = new Item\BodyHtml();
-        $body->body = isset($this->values['body_html']) ? $this->values['body_html'] : '';
-        $body->body_utf8 = $body->body;
+        $body                   = new Item\BodyHtml();
+        $body->body             = isset($this->values['body_html']) ? $this->values['body_html'] : '';
+        $body->body_utf8        = $body->body;
         $body->original_charset = 'UTF-8';
 
         return $body;
@@ -230,9 +228,9 @@ class ValueReader extends AbstractReader
 
     protected function _getBodyText()
     {
-        $body = new Item\BodyHtml();
-        $body->body = isset($this->values['body_text']) ? $this->values['body_text'] : '';
-        $body->body_utf8 = $body->body;
+        $body                   = new Item\BodyHtml();
+        $body->body             = isset($this->values['body_text']) ? $this->values['body_text'] : '';
+        $body->body_utf8        = $body->body;
         $body->original_charset = 'UTF-8';
 
         return $body;

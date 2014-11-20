@@ -65,10 +65,10 @@ class PreProcessor extends AbstractGatewayProcessor
         $validator = new \Orb\Validator\StringEmail();
 
         if (!$validator->isValid($from)) {
-            $this->error = EmailSource::ERR_FROM_INVALID;
-            $this->source_info = array();
-            $this->source_info[] = "Read from address: " . $from;
-            $this->source_info[] = "Errors:\n\n" . $validator->getErrorsDebug();
+            $this->error         = EmailSource::ERR_FROM_INVALID;
+            $this->source_info   = array();
+            $this->source_info[] = "Read from address: ".$from;
+            $this->source_info[] = "Errors:\n\n".$validator->getErrorsDebug();
 
             return;
         }
@@ -79,10 +79,10 @@ class PreProcessor extends AbstractGatewayProcessor
 
         $account_manager = App::$container->getEmailAccountManager();
         if ($found_account = $account_manager->findAccountForEmailAddress($from)) {
-            $this->error = EmailSource::ERR_FROM_GATEWAY;
-            $this->source_info[] = "Read from address: " . $from;
-            $this->source_info[] = "Matched account: " . $found_account->id;
-            $this->source_info[] = "Account addresses: " . implode(', ', $found_account->getAllAddresses());
+            $this->error         = EmailSource::ERR_FROM_GATEWAY;
+            $this->source_info[] = "Read from address: ".$from;
+            $this->source_info[] = "Matched account: ".$found_account->id;
+            $this->source_info[] = "Account addresses: ".implode(', ', $found_account->getAllAddresses());
 
             return;
         }
@@ -93,9 +93,9 @@ class PreProcessor extends AbstractGatewayProcessor
 
         $match = null;
         if (App::getOrm()->getRepository('DeskPRO:BanEmail')->isEmailBanned($from, $match)) {
-            $this->error = EmailSource::ERR_FROM_BANNED;
-            $this->source_info[] = "Read from address: " . $from;
-            $this->source_info[] = "Matched banned email: " . $match;
+            $this->error         = EmailSource::ERR_FROM_BANNED;
+            $this->source_info[] = "Read from address: ".$from;
+            $this->source_info[] = "Matched banned email: ".$match;
 
             return;
         }
@@ -104,10 +104,10 @@ class PreProcessor extends AbstractGatewayProcessor
         # Check for empty message
         #------------------------------
 
-        $subj = trim($this->reader->getSubject()->getSubject());
-        $message = trim($this->reader->getBodyHtml()->getBody());
+        $subj     = trim($this->reader->getSubject()->getSubject());
+        $message  = trim($this->reader->getBodyHtml()->getBody());
         $message2 = trim($this->reader->getBodyText()->getBody());
-        $attach = $this->reader->getAttachments();
+        $attach   = $this->reader->getAttachments();
 
         if (!$subj && !$message && !$message2 && !$attach) {
             $this->error = EmailSource::ERR_EMPTY;
@@ -122,9 +122,9 @@ class PreProcessor extends AbstractGatewayProcessor
 
         if ($this->account->date_read_start && $email_date = $this->reader->getDate() && App::getSetting('core_email.enable_date_limit_rejection')) {
             if ($email_date < $this->account->date_read_start) {
-                $this->error = EmailSource::ERR_DATE_LIMIT;
-                $this->source_info[] = "Gateway date limit: " . $this->account->date_read_start->format(\DateTime::RFC2822);
-                $this->source_info[] = "Message date: " . $email_date->format(\DateTime::RFC2822);
+                $this->error         = EmailSource::ERR_DATE_LIMIT;
+                $this->source_info[] = "Gateway date limit: ".$this->account->date_read_start->format(\DateTime::RFC2822);
+                $this->source_info[] = "Message date: ".$email_date->format(\DateTime::RFC2822);
 
                 return;
             }

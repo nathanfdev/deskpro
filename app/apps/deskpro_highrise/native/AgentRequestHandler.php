@@ -67,13 +67,13 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
         }
 
         $parts = parse_url($url);
-        $url = $parts['scheme'] . '://' . $parts['host'];
+        $url   = $parts['scheme'].'://'.$parts['host'];
 
         $matches = array();
 
         $email = $context->getIn()->getString('email');
         if ($email) {
-            $highrise = new Highrise($url, $token);
+            $highrise  = new Highrise($url, $token);
             $personApi = new HighrisePerson($highrise);
             try {
                 $error = error_reporting();
@@ -86,9 +86,9 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 return $context->createJsonResponse(array('error' => 'Invalid Highrise API URL or token.', 'error_type' => get_class($e), 'error_code' => $e->getCode(), 'error_message' => $e->getMessage()));
             }
 
-            foreach ($output AS $person) {
+            foreach ($output as $person) {
                 if (isset($person['first-name'], $person['last-name'])) {
-                    $name = $person['first-name'] . ' ' . $person['last-name'];
+                    $name = $person['first-name'].' '.$person['last-name'];
                 } elseif (isset($person['first-name'])) {
                     $name = $person['first-name'];
                 } elseif (isset($person['last-name'])) {
@@ -104,7 +104,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 }
 
                 if (isset($person['title'], $person['company-name'])) {
-                    $companyTitle = $person['title'] . ' @ ' . $person['company-name'];
+                    $companyTitle = $person['title'].' @ '.$person['company-name'];
                 } elseif (isset($person['title'])) {
                     $companyTitle = $person['title'];
                 } elseif (isset($person['company-name'])) {
@@ -114,12 +114,12 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
                 }
 
                 $matches[] = array(
-                    'id' => $person['id'],
-                    'name' => $name,
-                    'email' => $email,
-                    'title' => isset($person['title']) ? $person['title'] : '',
+                    'id'      => $person['id'],
+                    'name'    => $name,
+                    'email'   => $email,
+                    'title'   => isset($person['title']) ? $person['title'] : '',
                     'company' => isset($person['company-name']) ? $person['company-name'] : '',
-                    'profile' => $url . '/people/' . $person['id']
+                    'profile' => $url.'/people/'.$person['id'],
                 );
             }
         }

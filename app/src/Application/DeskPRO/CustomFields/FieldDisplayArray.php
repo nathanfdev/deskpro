@@ -93,7 +93,6 @@ class FieldDisplayArray implements \ArrayAccess
             } else {
                 $value = array('value' => $default_value);
             }
-
         }
         if (!$field_def->isFormField()) {
             $value = array();
@@ -103,7 +102,7 @@ class FieldDisplayArray implements \ArrayAccess
             'elId'            => \Orb\Util\Util::requestUniqueIdString(),
             'hasValue'        => ($value !== null),
             'id'              => $field_def->getId(),
-            'name'            => 'field_' . $field_def->getId(),
+            'name'            => 'field_'.$field_def->getId(),
             'title'           => $field_def->getTitle(),
             'value'           => $value,
             'field_handler'   => strtolower(\Orb\Util\Util::getBaseClassname($field_def->getHandler())),
@@ -137,7 +136,7 @@ class FieldDisplayArray implements \ArrayAccess
                         $field_group->add($f);
                     }
 
-                    $form = $field_group->getForm();
+                    $form     = $field_group->getForm();
                     $formView = $form->createView();
                     $formView = $formView[$this->data['name']];
 
@@ -146,7 +145,7 @@ class FieldDisplayArray implements \ArrayAccess
                         $field_group->remove($f->getName());
                     }
                 } else {
-                    $form = $f->getForm();
+                    $form     = $f->getForm();
                     $formView = $form->createView();
                 }
 
@@ -171,11 +170,11 @@ class FieldDisplayArray implements \ArrayAccess
                             $field_group->add($f);
                         }
 
-                        $form = $field_group->getForm();
+                        $form     = $field_group->getForm();
                         $formView = $form->createView();
                         $formView = $formView[$this->data['name']];
                     } else {
-                        $form = $f->getForm();
+                        $form     = $f->getForm();
                         $formView = $form->createView();
                     }
 

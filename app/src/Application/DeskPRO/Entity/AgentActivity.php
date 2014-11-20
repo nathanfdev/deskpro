@@ -55,9 +55,9 @@ class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $date_active = new \DateTime();
+        $date_active         = new \DateTime();
         list($hour, $minute) = explode(':', $date_active->format('H:i'));
-        $minute = intval($minute / 5) * 5;
+        $minute              = intval($minute / 5) * 5;
         $date_active->setTime($hour, $minute, 0);
 
         $this->setModelField('date_active', $date_active);
@@ -72,14 +72,14 @@ class AgentActivity extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AgentActivity';
         $metadata->setPrimaryTable(array(
-            'name' => 'agent_activity',
+            'name'    => 'agent_activity',
             'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_active'))
-            )
+                'date_created_idx' => array('columns' => array('date_active')),
+            ),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'date_active', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_active', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'date_active', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_active', 'id' => true));
         //$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'id' => true,  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'agent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'agent_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'id' => true));
     }
 }

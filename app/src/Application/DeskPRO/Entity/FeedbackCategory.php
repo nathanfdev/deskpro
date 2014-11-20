@@ -60,12 +60,10 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
 
     protected $usergroups;
 
-
     public function __construct()
     {
         $this->usergroups = new ArrayCollection();
     }
-
 
     /**
      * @return FeedbackCategory
@@ -78,7 +76,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
         return $category;
     }
 
-
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
@@ -88,7 +85,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
         return $this->usergroups;
     }
 
-
     /**
      * @param \Application\DeskPRO\Entity\Usergroup $usergroup
      */
@@ -96,11 +92,9 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     public function addUsergroup(Usergroup $usergroup)
     {
         if (!$this->usergroups->contains($usergroup)) {
-
             $this->usergroups->add($usergroup);
         }
     }
-
 
     /**
      * @param \Application\DeskPRO\Entity\Usergroup $usergroup
@@ -128,7 +122,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\FeedbackCategory';
-        $metadata->setPrimaryTable(array('name' => 'feedback_categories',));
+        $metadata->setPrimaryTable(array('name' => 'feedback_categories'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -155,7 +149,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
         $metadata->mapField(
             array(
                 'fieldName' => 'slug', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'slug', 'unique' => true
+                'nullable'  => false, 'columnName' => 'slug', 'unique' => true,
             )
         );
         $metadata->mapField(
@@ -199,7 +193,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                     0 => array(
                         'name'                 => 'parent_id',
                         'referencedColumnName' => 'id',
-                        'onDelete'             => 'set null'
+                        'onDelete'             => 'set null',
                     ),
                 ),
             )
@@ -209,7 +203,7 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                 'fieldName'    => 'children',
                 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
                 'mappedBy'     => 'parent',
-                'orderBy'      => array('display_order' => 'ASC',),
+                'orderBy'      => array('display_order' => 'ASC'),
             )
         );
         $metadata->mapManyToMany(

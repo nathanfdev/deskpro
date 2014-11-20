@@ -71,7 +71,6 @@ class InstanceInstaller
         $this->em      = $em;
     }
 
-
     /**
      * @param  string           $title
      * @param  array            $settings
@@ -80,8 +79,8 @@ class InstanceInstaller
      */
     public function install($title, array $settings, DeskproContainer $container, $usersource_type = '')
     {
-        $app = new AppInstance();
-        $app->title = $title ?: $this->package->title;
+        $app          = new AppInstance();
+        $app->title   = $title ?: $this->package->title;
         $app->package = $this->package;
 
         // Need to persist now so we have an actual app record
@@ -90,8 +89,8 @@ class InstanceInstaller
         $this->em->flush();
 
         $settings = self::readAppSettings($this->package, $settings);
-        $context = $this->createInstallContext($this->package, $app, $settings, $container, $usersource_type);
-        $handler = $this->createInstallHandler($this->package, $app);
+        $context  = $this->createInstallContext($this->package, $app, $settings, $container, $usersource_type);
+        $handler  = $this->createInstallHandler($this->package, $app);
 
         $settings = $handler->processSettings($context, $settings);
         $app->setSettings($settings ?: array());
@@ -108,7 +107,6 @@ class InstanceInstaller
         return $app;
     }
 
-
     /**
      * @param  AppPackage       $package
      * @param  AppInstance      $app
@@ -124,10 +122,10 @@ class InstanceInstaller
             $usersource = null;
 
             if ($package->isUsersource()) {
-                $usersource = new Usersource(); // this method only creates the installcontext for NEW app instances
-                $usersource->app = $app;
+                $usersource        = new Usersource(); // this method only creates the installcontext for NEW app instances
+                $usersource->app   = $app;
                 $usersource->title = $app->title;
-                $usersource->type = $usersource_type;
+                $usersource->type  = $usersource_type;
             }
 
             return new InstallerContext($container, $native_app, $settings, $usersource);
@@ -135,7 +133,6 @@ class InstanceInstaller
 
         return new InstallerContext($container, null, $settings);
     }
-
 
     /**
      * Native apps have their own install handler (usually), but we always return the NoopInstallerHandler so we always have a handler
@@ -155,7 +152,6 @@ class InstanceInstaller
 
         return new NoopInstallerHandler();
     }
-
 
     /**
      * @param  AppPackage $package

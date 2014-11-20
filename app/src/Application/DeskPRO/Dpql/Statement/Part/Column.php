@@ -35,12 +35,12 @@
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Func\Link;
 use Application\DeskPRO\Dpql\Renderer\AbstractRenderer;
 use Application\DeskPRO\Dpql\Renderer\Values\AbstractValues;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
@@ -78,23 +78,23 @@ class Column extends AbstractPart
         'tickets' => array('id', 'subject', 'ticket'),
         'ticket_categories' => array('id', 'title'),
         'ticket_priorities' => array('id', 'title'),
-        'ticket_workflows' => array('id', 'title')
+        'ticket_workflows' => array('id', 'title'),
     );
 
     /**
      * @var array
      */
     protected static $_autoLink = array(
-        'tickets.id' => array('ticket')
+        'tickets.id' => array('ticket'),
     );
 
     protected static $_conditionResolver = array(
-        'custom_data_article' => '%1$s.root_field_id = %2$s',
-        'custom_data_feedback' => '%1$s.root_field_id = %2$s',
+        'custom_data_article'       => '%1$s.root_field_id = %2$s',
+        'custom_data_feedback'      => '%1$s.root_field_id = %2$s',
         'custom_data_organizations' => '%1$s.root_field_id = %2$s',
-        'custom_data_person' => '%1$s.root_field_id = %2$s',
-        'custom_data_ticket' => '%1$s.root_field_id = %2$s',
-        'ticket_slas' => '%1$s.sla_id = %2$s',
+        'custom_data_person'        => '%1$s.root_field_id = %2$s',
+        'custom_data_ticket'        => '%1$s.root_field_id = %2$s',
+        'ticket_slas'               => '%1$s.sla_id = %2$s',
     );
 
     /**
@@ -120,8 +120,7 @@ class Column extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $parts = $this->parts;
         $table = array_shift($parts);
 
@@ -133,34 +132,34 @@ class Column extends AbstractPart
             throw new Exception('Missing column/join name in column reference.');
         }
 
-        $sql = false;
+        $sql        = false;
         $printedSql = false;
-        $name = false;
-        $renderer = null;
+        $name       = false;
+        $renderer   = null;
 
         end($parts);
         $lastPartKey = key($parts);
 
         // represents the repository of what we're joining from
         $repository = $statement->getFromEntityRepository();
-        $sqlTable = $repository->getTableName();
+        $sqlTable   = $repository->getTableName();
 
-        $partsSoFar = array($table);
+        $partsSoFar          = array($table);
         $extraConditionValue = false;
 
-        foreach ($parts AS $partKey => $part) {
+        foreach ($parts as $partKey => $part) {
             $partsSoFar[] = $part;
-            $partsString = implode('.', $partsSoFar);
+            $partsString  = implode('.', $partsSoFar);
 
             if (preg_match('/\[(.+)\]$/', $part, $match)) {
                 $extraConditionValue = $match[1];
-                $part = substr($part, 0, -strlen($match[0]));
+                $part                = substr($part, 0, -strlen($match[0]));
             } else {
                 $extraConditionValue = false;
             }
 
             // are we referencing a field?
-            foreach ($repository->getFieldMappings() AS $key => $field) {
+            foreach ($repository->getFieldMappings() as $key => $field) {
                 if (strtolower($key) == $part) {
                     if (isset($field['dpqlAccess']) && !$field['dpqlAccess']) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");
@@ -170,7 +169,7 @@ class Column extends AbstractPart
                         throw new Exception("$partsString contains an unexpected extra condition");
                     }
 
-                    $sql = '`' . $sqlTable . '`.`' . $field['columnName'] . '`';
+                    $sql = '`'.$sqlTable.'`.`'.$field['columnName'].'`';
 
                     if ($repository->getTableName() == 'tickets' && $field['columnName'] == 'total_user_waiting') {
                         $sql = "($sql + IF(`$sqlTable`.date_user_waiting AND `$sqlTable`.status = 'awaiting_agent', UNIX_TIMESTAMP() - UNIX_TIMESTAMP(`$sqlTable`.date_user_waiting), 0))";
@@ -216,7 +215,7 @@ class Column extends AbstractPart
                         $renderer = 'id';
                     }
 
-                    $linkLookup = $repository->getTableName() . '.' . $part;
+                    $linkLookup = $repository->getTableName().'.'.$part;
 
                     if (isset(self::$_autoLink[$linkLookup])) {
                         $lookup = self::$_autoLink[$linkLookup];
@@ -237,37 +236,37 @@ class Column extends AbstractPart
                 }
             }
 
-            foreach ($repository->getAssociationMappings() AS $association) {
+            foreach ($repository->getAssociationMappings() as $association) {
                 if (empty($association['joinColumns'])) {
                     // need to know how to make the join; ignore this
                     continue;
                 }
 
-                foreach ($association['joinColumns'] AS $joinColumn) {
+                foreach ($association['joinColumns'] as $joinColumn) {
                     // are we referencing a field that is only listed in an association?
                     if (strtolower($joinColumn['name']) == $part) {
                         if ($extraConditionValue !== false) {
                             throw new Exception("$partsString contains an unexpected extra condition");
                         }
 
-                        $sql = '`' . $sqlTable . '`.`' . $joinColumn['name'] . '`';
+                        $sql  = '`'.$sqlTable.'`.`'.$joinColumn['name'].'`';
                         $name = $part;
                         break 3; // break $parts loop
                     }
                 }
             }
 
-            foreach ($repository->getReportAssociations() AS $name => $association) {
+            foreach ($repository->getReportAssociations() as $name => $association) {
                 if (strtolower($name) == $part) {
-                    $target = $association['targetEntity'];
+                    $target          = $association['targetEntity'];
                     $childRepository = $target::getRepository();
 
                     if (!($childRepository instanceof \Application\DeskPRO\EntityRepository\AbstractEntityRepository)) {
                         throw new Exception("$partsString cannot be accessed via DPQL.");
                     }
 
-                    $childSqlTable = $childRepository->getTableName();
-                    $joinAlias = "{$sqlTable}_{$name}";
+                    $childSqlTable  = $childRepository->getTableName();
+                    $joinAlias      = "{$sqlTable}_{$name}";
                     $joinConditions = sprintf($association['conditions'], $joinAlias, $sqlTable);
 
                     $select->addJoin(
@@ -276,16 +275,16 @@ class Column extends AbstractPart
                     );
 
                     $repository = $childRepository; // now references come from this table
-                    $sqlTable = $joinAlias;
+                    $sqlTable   = $joinAlias;
 
                     continue 2; // continue $parts loop
                 }
             }
 
-            foreach ($repository->getAssociationMappings() AS $association) {
+            foreach ($repository->getAssociationMappings() as $association) {
                 // are we referencing an association?
                 if (strtolower($association['fieldName']) == $part) {
-                    $target = $association['targetEntity'];
+                    $target          = $association['targetEntity'];
                     $childRepository = $target::getRepository();
 
                     if ((isset($association['dpqlAccess']) && !$association['dpqlAccess'])
@@ -296,28 +295,28 @@ class Column extends AbstractPart
                     }
 
                     $childSqlTable = $childRepository->getTableName();
-                    $joinAlias = "{$sqlTable}_{$association['fieldName']}";
+                    $joinAlias     = "{$sqlTable}_{$association['fieldName']}";
 
                     if ($extraConditionValue !== false) {
                         if (!isset(self::$_conditionResolver[$childSqlTable])) {
                             throw new Exception("$partsString contains an unexpected extra condition");
                         }
 
-                        $joinAlias .= '_' . preg_replace('/[^a-zA-Z0-9_]/', '_', $extraConditionValue);
+                        $joinAlias .= '_'.preg_replace('/[^a-zA-Z0-9_]/', '_', $extraConditionValue);
                     }
 
                     if (!empty($association['joinColumns'])) {
                         // join can be resolved directly
                         $joinColumns = $association['joinColumns'];
                         $sourceTable = $sqlTable;
-                        $joinTable = $joinAlias;
+                        $joinTable   = $joinAlias;
                     } else {
                         $childAssociations = $childRepository->getAssociationMappings();
                         if (!empty($childAssociations[$association['mappedBy']]['joinColumns'])) {
                             // join details are on the other table
                             $joinColumns = $childAssociations[$association['mappedBy']]['joinColumns'];
                             $sourceTable = $joinAlias;
-                            $joinTable = $sqlTable;
+                            $joinTable   = $sqlTable;
                         } else {
                             $joinColumns = array();
                         }
@@ -328,10 +327,10 @@ class Column extends AbstractPart
                     }
 
                     $joinConditions = array();
-                    foreach ($joinColumns AS $joinColumn) {
+                    foreach ($joinColumns as $joinColumn) {
                         $joinConditions[] =
                             "`$sourceTable`.`$joinColumn[name]` = "
-                            . "`$joinTable`.`$joinColumn[referencedColumnName]`";
+                            ."`$joinTable`.`$joinColumn[referencedColumnName]`";
                     }
 
                     if ($extraConditionValue !== false) {
@@ -342,11 +341,11 @@ class Column extends AbstractPart
 
                     $select->addJoin(
                         "$joinAlias",
-                        "LEFT JOIN `$childSqlTable` AS `$joinAlias` ON (" . implode(' AND ', $joinConditions) . ")"
+                        "LEFT JOIN `$childSqlTable` AS `$joinAlias` ON (".implode(' AND ', $joinConditions).")"
                     );
 
                     $repository = $childRepository; // now references come from this table
-                    $sqlTable = $joinAlias;
+                    $sqlTable   = $joinAlias;
 
                     continue 2; // continue $parts loop
                 }
@@ -361,7 +360,7 @@ class Column extends AbstractPart
 
         if ($sql === false) {
             $assocTable = $repository->getTableName();
-            $name = $part;
+            $name       = $part;
             if ($assocTable == 'departments') {
                 $call = new FunctionCall('if', array(
                     new Column(array_merge($this->parts, array('parent', 'id'))),
@@ -370,24 +369,23 @@ class Column extends AbstractPart
                         new String(' > '),
                         new Column(array_merge($this->parts, array('title'))),
                     )),
-                    new Column(array_merge($this->parts, array('title')))
+                    new Column(array_merge($this->parts, array('title'))),
                 ));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                 return new Prepared("`$sqlTable`.`id`", $this->_prettifyColumnName($name), $prepped->sql());
             } elseif ($assocTable == 'ticket_slas') {
-                $call = new Column(array_merge($this->parts, array('sla')));
+                $call    = new Column(array_merge($this->parts, array('sla')));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                 return new Prepared($prepped->sql(), $this->_prettifyColumnName($name), $prepped->printed());
             } elseif (preg_match('/^custom_data_/', $assocTable)) {
-
                 $custom_def_table = str_replace('_data_', '_def_', $assocTable);
                 switch ($custom_def_table) {
-                    case 'custom_def_ticket': $manager = App::getContainer()->getSystemService('TicketFieldsManager'); break;
-                    case 'custom_def_people': $manager = App::getContainer()->getSystemService('PersonFieldsManager'); break;
+                    case 'custom_def_ticket': $manager        = App::getContainer()->getSystemService('TicketFieldsManager'); break;
+                    case 'custom_def_people': $manager        = App::getContainer()->getSystemService('PersonFieldsManager'); break;
                     case 'custom_def_organizations': $manager = App::getContainer()->getSystemService('OrgFieldsManager'); break;
-                    default: $manager = null; break;
+                    default: $manager                         = null; break;
                 }
 
                 $field = null;
@@ -397,7 +395,7 @@ class Column extends AbstractPart
 
                 $renderer = null;
                 if ($field && $field->getTypeName() == 'date') {
-                    $call = new Column(array_merge($this->parts, array('value')));
+                    $call    = new Column(array_merge($this->parts, array('value')));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 
                     $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) {
@@ -405,7 +403,7 @@ class Column extends AbstractPart
                             return $valueRenderer->renderValue(null, 'date');
                         }
 
-                        $date = new \DateTime('@' . $value);
+                        $date = new \DateTime('@'.$value);
                         if (!$date) {
                             return $valueRenderer->renderValue(null, 'date');
                         }
@@ -416,7 +414,7 @@ class Column extends AbstractPart
                     $call = new FunctionCall('if', array(
                         new Column(array_merge($this->parts, array('value'))),
                         new Column(array_merge($this->parts, array('field', 'title'))),
-                        new Column(array_merge($this->parts, array('input')))
+                        new Column(array_merge($this->parts, array('input'))),
                     ));
                     $prepped = $call->prepare($statement, $section, $stack, $select, $result);
                 }
@@ -426,7 +424,7 @@ class Column extends AbstractPart
                 $call = new FunctionCall('if', array(
                     new Column(array_merge($this->parts, array('parent', 'id'))),
                     new Column(array_merge($this->parts, array('parent', 'title'))),
-                    new Column(array_merge($this->parts, array('title')))
+                    new Column(array_merge($this->parts, array('title'))),
                 ));
                 $prepped = $call->prepare($statement, $section, $stack, $select, $result);
 

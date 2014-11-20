@@ -49,34 +49,34 @@ class SearchReindexCommand extends \Symfony\Bundle\FrameworkBundle\Command\Conta
     {
         $content_type = $input->getArgument('content-type');
 
-        $table = null;
+        $table  = null;
         $entity = null;
-        $ids = null;
+        $ids    = null;
 
         switch ($content_type) {
             case 'article':
                 $entity = 'DeskPRO:Article';
-                $table = 'articles';
+                $table  = 'articles';
                 break;
 
             case 'download':
                 $entity = 'DeskPRO:Download';
-                $table = 'downloads';
+                $table  = 'downloads';
                 break;
 
             case 'feedback':
                 $entity = 'DeskPRO:Feedback';
-                $table = 'feedback';
+                $table  = 'feedback';
                 break;
 
             case 'news':
                 $entity = 'DeskPRO:News';
-                $table = 'news';
+                $table  = 'news';
                 break;
 
             case 'ticket':
                 $entity = 'DeskPRO:Ticket';
-                $table = 'tickets';
+                $table  = 'tickets';
                 break;
 
             default:

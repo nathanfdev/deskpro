@@ -43,9 +43,9 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
  */
 class RestrictionSet
 {
-    const ERR_SIZE = 'size';
+    const ERR_SIZE          = 'size';
     const ERR_FAIL_MUST_EXT = 'not_in_allowed_exts';
-    const ERR_FAIL_NOT_EXT = 'not_allowed_exts';
+    const ERR_FAIL_NOT_EXT  = 'not_allowed_exts';
 
     /**
      * The max size to accept
@@ -68,7 +68,6 @@ class RestrictionSet
      */
     protected $disallowed_exts = null;
 
-
     /**
      * @param  \Symfony\Component\HttpFoundation\File\File $file
      * @return array|null
@@ -84,10 +83,9 @@ class RestrictionSet
 
         return $this->getErrorForProperties(array(
             'size' => $size,
-            'ext'  => $ext
+            'ext'  => $ext,
         ));
     }
-
 
     /**
      * Check properties against this restriction set. $props can be:
@@ -103,7 +101,7 @@ class RestrictionSet
             if ($this->max_size && $props['size'] > $this->max_size) {
                 return array(
                     'error_code'   => self::ERR_SIZE,
-                    'error_detail' => $this->max_size
+                    'error_detail' => $this->max_size,
                 );
             }
         }
@@ -112,21 +110,20 @@ class RestrictionSet
             if ($this->allowed_exts && !in_array($props['ext'], $this->allowed_exts)) {
                 return array(
                     'error_code'   => self::ERR_FAIL_MUST_EXT,
-                    'error_detail' => implode(',', $this->allowed_exts)
+                    'error_detail' => implode(',', $this->allowed_exts),
                 );
             }
 
             if ($this->disallowed_exts && in_array($props['ext'], $this->disallowed_exts)) {
                 return array(
                     'error_code'   => self::ERR_FAIL_NOT_EXT,
-                    'error_detail' => implode(',', $this->disallowed_exts)
+                    'error_detail' => implode(',', $this->disallowed_exts),
                 );
             }
         }
 
         return null;
     }
-
 
     /**
      * @param  array $allowed_exts
@@ -142,7 +139,6 @@ class RestrictionSet
         return $this;
     }
 
-
     /**
      * @return array
      */
@@ -150,7 +146,6 @@ class RestrictionSet
     {
         return $this->allowed_exts;
     }
-
 
     /**
      * @param  array $disallowed_exts
@@ -180,7 +175,7 @@ class RestrictionSet
      */
     public function setMaxSize($max_size = null)
     {
-        $this->max_size = (int)$max_size;
+        $this->max_size = (int) $max_size;
 
         return $this;
     }

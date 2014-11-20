@@ -118,7 +118,7 @@ class PortalPageDisplay extends PageDisplayAbstract
 
     public function addData($key, $value)
     {
-        $old = $this->data;
+        $old              = $this->data;
         $this->data[$key] = $value;
         $this->_onPropertyChanged('data', $old, $this->data);
     }
@@ -132,12 +132,11 @@ class PortalPageDisplay extends PageDisplayAbstract
 
     public function deleteCachedPages()
     {
-        $cache_id = "d.portal.block.block.portal_{$this->section}_" . str_replace('\\', '', get_class($this));
+        $cache_id = "d.portal.block.block.portal_{$this->section}_".str_replace('\\', '', get_class($this));
         App::getDb()->executeUpdate('
             DELETE FROM cache WHERE id LIKE ?
         ', array("$cache_id%"));
     }
-
 
     /**
      * @param  string|null      $k Specific key to fetch
@@ -146,14 +145,15 @@ class PortalPageDisplay extends PageDisplayAbstract
     public function getData($k = null)
     {
         if ($k !== null) {
-            if (!$this->data) return null;
+            if (!$this->data) {
+                return null;
+            }
+
             return isset($this->data[$k]) ? $this->data[$k] : null;
         }
 
         return $this->data;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -163,14 +163,14 @@ class PortalPageDisplay extends PageDisplayAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PortalPageDisplay';
-        $metadata->setPrimaryTable(array( 'name' => 'portal_page_display', ));
+        $metadata->setPrimaryTable(array( 'name' => 'portal_page_display'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'type', ));
-        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
-        $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled', ));
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'section', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'section', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'type', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'type'));
+        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order'));
+        $metadata->mapField(array( 'fieldName' => 'is_enabled', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_enabled'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'section', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'section'));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

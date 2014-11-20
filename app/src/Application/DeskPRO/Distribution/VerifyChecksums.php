@@ -49,8 +49,8 @@ class VerifyChecksums
         } else {
             $standard_hashes = require DP_ROOT.'/sys/Resources/distro-checksums.php';
         }
-        $this->count_all = count($standard_hashes);
-        $standard_hashes = array_chunk($standard_hashes, $chunk_size, true);
+        $this->count_all       = count($standard_hashes);
+        $standard_hashes       = array_chunk($standard_hashes, $chunk_size, true);
         $this->standard_hashes = $standard_hashes;
     }
 
@@ -63,15 +63,15 @@ class VerifyChecksums
     public function compareChunk($chunk = 0)
     {
         $standard_chunk_hashes = $this->getStandardChunk($chunk);
-        $chunk_files = array_keys($standard_chunk_hashes);
-        $chunk_hashes = array();
+        $chunk_files           = array_keys($standard_chunk_hashes);
+        $chunk_hashes          = array();
 
         $uproot = realpath(DP_ROOT.'/../');
 
         foreach ($chunk_files as $f) {
             $filepath = $uproot.$f;
             if (file_exists($filepath)) {
-                $file_contents = $this->normalizeFileString(file_get_contents($filepath));
+                $file_contents    = $this->normalizeFileString(file_get_contents($filepath));
                 $chunk_hashes[$f] = md5($file_contents);
             } else {
                 $chunk_hashes[$f] = null;
@@ -82,7 +82,7 @@ class VerifyChecksums
             'added' => array(),
             'removed' => array(),
             'changed' => array(),
-            'okay' => array()
+            'okay' => array(),
         );
 
         foreach ($chunk_hashes as $path => $checksum) {

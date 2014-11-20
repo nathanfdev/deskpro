@@ -83,14 +83,14 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
         if ($existing) {
             return;
         }
-        foreach ($this->words AS $existing_word) {
+        foreach ($this->words as $existing_word) {
             if (strtolower($word) == strtolower($existing_word->word)) {
                 return;
             }
         }
 
-        $obj = new GlossaryWord();
-        $obj->word = $word;
+        $obj             = new GlossaryWord();
+        $obj->word       = $word;
         $obj->definition = $this;
 
         $this->words->add($obj);
@@ -106,7 +106,7 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
 
         $words_test = array_map('strtolower', $words);
 
-        foreach ($this->words AS $existing_key => $existing_word) {
+        foreach ($this->words as $existing_key => $existing_word) {
             $key = array_search(strtolower($existing_word->word), $words_test);
             if ($key !== false) {
                 unset($words_test[$key]);
@@ -115,16 +115,16 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
             }
         }
 
-        foreach (array_keys($words_test) AS $key) {
+        foreach (array_keys($words_test) as $key) {
             $this->addWord($words[$key]);
         }
     }
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
+        $data          = parent::toApiData($primary, $deep, $visited);
         $data['words'] = array();
-        foreach ($this->words AS $word) {
+        foreach ($this->words as $word) {
             $data['words'][$word->id] = $word->word;
         }
 
@@ -139,11 +139,11 @@ class GlossaryWordDefinition extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
-        $metadata->setPrimaryTable(array( 'name' => 'glossary_word_definitions', ));
+        $metadata->setPrimaryTable(array( 'name' => 'glossary_word_definitions'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'definition', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'definition', ));
-        $metadata->mapOneToMany(array( 'fieldName' => 'words', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWord', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'definition', 'orphanRemoval' => true ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'definition', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'definition'));
+        $metadata->mapOneToMany(array( 'fieldName' => 'words', 'targetEntity' => 'Application\\DeskPRO\\Entity\\GlossaryWord', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'definition', 'orphanRemoval' => true ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

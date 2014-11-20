@@ -33,30 +33,32 @@ if (php_sapi_name() != 'cli') {
 
 ini_set('display_errors', true);
 error_reporting(E_ALL | E_STRICT);
-define('DP_ROOT', realpath(__DIR__ . '/../'));
-define('DP_WEB_ROOT', realpath(__DIR__ . '/../../'));
+define('DP_ROOT', realpath(__DIR__.'/../'));
+define('DP_WEB_ROOT', realpath(__DIR__.'/../../'));
 define('DP_BOOT_MODE', 'cli');
-if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', DP_WEB_ROOT . '/config.php');
+if (!defined('DP_CONFIG_FILE')) {
+    define('DP_CONFIG_FILE', DP_WEB_ROOT.'/config.php');
+}
 setlocale(LC_CTYPE, 'C');
 date_default_timezone_set('UTC');
 ini_set('default_charset', 'UTF-8');
 set_time_limit(0);
 
-require DP_ROOT . '/sys/load_config.php';
+require DP_ROOT.'/sys/load_config.php';
 dp_load_config();
 
 if (!empty($argv[1])) {
     // need to be able to get settings
-    require DP_ROOT . '/sys/KernelBooter.php';
+    require DP_ROOT.'/sys/KernelBooter.php';
     \DeskPRO\Kernel\KernelBooter::bootstrapLib(true);
 
     define('DP_INTERFACE', 'sys');
 
-    $env = 'prod';
+    $env   = 'prod';
     $debug = false;
 
     if (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev']) {
-        $env = 'dev';
+        $env   = 'dev';
         $debug = true;
     }
 
@@ -81,10 +83,10 @@ if (defined('DPC_IS_CLOUD')) {
     exit(3);
 }
 
-$db_conf = $DP_CONFIG['db'];
+$db_conf           = $DP_CONFIG['db'];
 $db_conf['driver'] = 'pdo_mysql';
 
-$pid_file = dp_get_data_dir() . '/twitter.pid';
+$pid_file   = dp_get_data_dir().'/twitter.pid';
 $is_windows = strtoupper(substr(PHP_OS, 0, 3)) === 'WIN';
 
 $get_db = function () use ($db_conf) {
@@ -93,7 +95,7 @@ $get_db = function () use ($db_conf) {
 
 $check_runner_active = function (&$pid = null) use ($pid_file, $is_windows) {
     $running = false;
-    $pid = null;
+    $pid     = null;
 
     if (file_exists($pid_file)) {
         $pid = intval(file_get_contents($pid_file));
@@ -102,7 +104,7 @@ $check_runner_active = function (&$pid = null) use ($pid_file, $is_windows) {
             if ($is_windows) {
                 $running = false;
                 exec('start "tasklist" /B tasklist.exe', $processes);
-                foreach ($processes AS $process_line) {
+                foreach ($processes as $process_line) {
                     if (preg_match('/^.*\s(\d+)\s/U', $process_line, $match)) {
                         if ($pid == intval($match[1])) {
                             $running = true;
@@ -123,7 +125,7 @@ $check_runner_active = function (&$pid = null) use ($pid_file, $is_windows) {
     return $running;
 };
 
-$log_file = dp_get_log_dir() . '/twitter.log';
+$log_file   = dp_get_log_dir().'/twitter.log';
 $log_status = function ($status, $print = true) use ($log_file, $DP_CONFIG) {
     $log = sprintf("[%s] %s\n", gmdate('Y-m-d H:i:s'), $status);
     if ($print) {
@@ -147,7 +149,7 @@ if ($is_windows) {
 
 $start_process = function ($account_id, $rest = false) use ($php_path, $is_windows) {
     $rest_arg = ($rest ? ' rest' : '');
-    $pipes = array();
+    $pipes    = array();
 
     // todo: windows doesn't like the arguments being quoted for some reason...
     $file = basename(__FILE__);
@@ -160,7 +162,7 @@ $start_process = function ($account_id, $rest = false) use ($php_path, $is_windo
     return proc_open("$php_path $file $account_id$rest_arg", array(), $pipes, __DIR__);
 };
 
-$runner_pid = null;
+$runner_pid    = null;
 $runner_active = $check_runner_active($runner_pid);
 
 if (!empty($argv[1])) {
@@ -194,7 +196,8 @@ if (!empty($argv[1])) {
         if ($result->rate_limit_context) {
             $verified = true;
         }
-    } catch (\Exception $e) {}
+    } catch (\Exception $e) {
+    }
 
     if (!$verified) {
         $log_status("[Account $account[id]] Twitter auth could not be verified. Waiting 60 seconds before exiting.");
@@ -213,18 +216,18 @@ if (!empty($argv[1])) {
     $consumer->setAccount($account);
 
     if (!empty($argv[2]) && $argv[2] == 'rest') {
-        $log_status("[Account $account[id] REST] Processor starting with PID " . getmypid() . ". Last processed: $account[last_processed_id]");
+        $log_status("[Account $account[id] REST] Processor starting with PID ".getmypid().". Last processed: $account[last_processed_id]");
 
         if ($account['last_processed_id']) {
             $max_id = false;
 
             try {
                 $results = $api->get('/statuses/home_timeline.json', array(
-                    'count' => 200,
-                    'since_id' => $account['last_processed_id']
+                    'count'    => 200,
+                    'since_id' => $account['last_processed_id'],
                 ));
                 $total = 0;
-                foreach ($results AS $result) {
+                foreach ($results as $result) {
                     if (!$max_id || $result->id_str > $max_id) {
                         $max_id = $result->id_str;
                     }
@@ -234,16 +237,17 @@ if (!empty($argv[1])) {
                 }
                 $log_status("[Account $account[id] REST] Missed home timeline: $total");
             } catch (EpiOAuthException $e) {
-            } catch (EpiTwitterException $e) {}
+            } catch (EpiTwitterException $e) {
+            }
 
             try {
                 $results = $api->get('/statuses/mentions_timeline.json', array(
-                    'count' => 200,
+                    'count'       => 200,
                     'include_rts' => 1,
-                    'since_id' => $account['last_processed_id']
+                    'since_id'    => $account['last_processed_id'],
                 ));
                 $total = 0;
-                foreach ($results AS $result) {
+                foreach ($results as $result) {
                     if (!$max_id || $result->id_str > $max_id) {
                         $max_id = $result->id_str;
                     }
@@ -253,20 +257,21 @@ if (!empty($argv[1])) {
                 }
                 $log_status("[Account $account[id] REST] Missed mentions: $total");
             } catch (EpiOAuthException $e) {
-            } catch (EpiTwitterException $e) {}
+            } catch (EpiTwitterException $e) {
+            }
 
             try {
                 $results = $api->get('/direct_messages.json', array(
-                    'count' => 200,
-                    'since_id' => $account['last_processed_id']
+                    'count'    => 200,
+                    'since_id' => $account['last_processed_id'],
                 ));
                 $total = 0;
-                foreach ($results AS $result) {
+                foreach ($results as $result) {
                     if (!$max_id || $result->id_str > $max_id) {
                         $max_id = $result->id_str;
                     }
 
-                    $res = new StdClass();
+                    $res                 = new StdClass();
                     $res->direct_message = $result;
 
                     $consumer->enqueueStatus(json_encode($res));
@@ -274,20 +279,21 @@ if (!empty($argv[1])) {
                 }
                 $log_status("[Account $account[id] REST] Missed received DMs: $total");
             } catch (EpiOAuthException $e) {
-            } catch (EpiTwitterException $e) {}
+            } catch (EpiTwitterException $e) {
+            }
 
             try {
                 $results = $api->get('/direct_messages/sent.json', array(
-                    'count' => 200,
-                    'since_id' => $account['last_processed_id']
+                    'count'    => 200,
+                    'since_id' => $account['last_processed_id'],
                 ));
                 $total = 0;
-                foreach ($results AS $result) {
+                foreach ($results as $result) {
                     if (!$max_id || $result->id_str > $max_id) {
                         $max_id = $result->id_str;
                     }
 
-                    $res = new StdClass();
+                    $res                 = new StdClass();
                     $res->direct_message = $result;
 
                     $consumer->enqueueStatus(json_encode($res));
@@ -295,7 +301,8 @@ if (!empty($argv[1])) {
                 }
                 $log_status("[Account $account[id] REST] Missed sent DMs: $total");
             } catch (EpiOAuthException $e) {
-            } catch (EpiTwitterException $e) {}
+            } catch (EpiTwitterException $e) {
+            }
 
             if ($max_id) {
                 $db->executeUpdate("
@@ -316,10 +323,10 @@ if (!empty($argv[1])) {
     $db = null;
     \Application\DeskPRO\App::getDb()->close();
 
-    $log_status("[Account $account[id]] Processor starting with PID " . getmypid() . ".");
+    $log_status("[Account $account[id]] Processor starting with PID ".getmypid().".");
 
     if (!$runner_active) {
-        $log_status("[Account $account[id], PID " . getmypid() . "] Started without parent runner. Can only be terminated manually.");
+        $log_status("[Account $account[id], PID ".getmypid()."] Started without parent runner. Can only be terminated manually.");
     }
 
     $consumer->setCallback(function ($status) use ($check_runner_active, $runner_active, $runner_pid, $log_status, $account, $get_db, $start_process) {
@@ -333,7 +340,7 @@ if (!empty($argv[1])) {
         );
         $log_status("[Account $account[id], PID $my_pid] $log");
         if (trim($status)) {
-            $log_status("\t\t" . trim($status), false);
+            $log_status("\t\t".trim($status), false);
         }
 
         /** @var $db \Doctrine\DBAL\Connection */
@@ -402,9 +409,9 @@ if (!empty($argv[1])) {
     try {
         $consumer->consume();
     } catch (PhirehoseConnectLimitExceeded $e) {
-        $log_status("[Account $account[id], PID $my_pid] Connection limit exceeded: " . $e->getMessage() . ". Likely no permission.");
+        $log_status("[Account $account[id], PID $my_pid] Connection limit exceeded: ".$e->getMessage().". Likely no permission.");
     } catch (Exception $e) {
-        $log_status("[Account $account[id], PID $my_pid] General processor exception: " . $e->getMessage() . " at " . $e->getFile() . ':' . $e->getLine());
+        $log_status("[Account $account[id], PID $my_pid] General processor exception: ".$e->getMessage()." at ".$e->getFile().':'.$e->getLine());
     }
 
     $log_status("[Account $account[id], PID $my_pid] Exiting Normally.");
@@ -412,11 +419,11 @@ if (!empty($argv[1])) {
     exit(0);
 }
 
-$timer = 0;
-$max_timer = 0;
+$timer        = 0;
+$max_timer    = 0;
 $sleep_length = 1; // needs to be divisible by 30
-$children = array();
-$my_pid = getmypid();
+$children     = array();
+$my_pid       = getmypid();
 
 if ($runner_active) {
     $log_status("[Runner, PID $my_pid] PID file already exists ($pid_file) with PID $runner_pid. Cannot start new service until this is killed.");
@@ -428,17 +435,17 @@ if ($runner_active) {
 
 file_put_contents($pid_file, getmypid());
 
-$log_status("[Runner, PID $my_pid] Starting with PID " . getmypid() . ".");
+$log_status("[Runner, PID $my_pid] Starting with PID ".getmypid().".");
 
 if (function_exists('pcntl_signal')) {
-    declare(ticks = 1);
+    declare (ticks = 1);
     pcntl_signal(SIGTERM,  function () { exit; });
 }
 
 register_shutdown_function(function () use ($log_status, $my_pid) {
     global $children;
 
-    foreach ($children AS $account_id => $process) {
+    foreach ($children as $account_id => $process) {
         $info = proc_get_status($process);
         @proc_terminate($process);
         $log_status("[Runner, PID $my_pid] Terminated child PID $info[pid] for account $account_id during normal shutdown.");
@@ -456,7 +463,7 @@ register_shutdown_function(function () use ($log_status, $my_pid) {
 while (true) {
     if ($timer % 30 == 0 && $timer > 0) {
         $running_pids = array();
-        foreach ($children AS $account_id => $process) {
+        foreach ($children as $account_id => $process) {
             $info = proc_get_status($process);
             if (!$info['running']) {
                 @proc_close($process);
@@ -492,7 +499,7 @@ while (true) {
         }
 
         if ($kill) {
-            foreach ($children AS $account_id => $process) {
+            foreach ($children as $account_id => $process) {
                 @proc_terminate($process);
             }
 
@@ -513,7 +520,7 @@ while (true) {
             $matched[] = $account_id;
         }
 
-        foreach ($children AS $account_id => $process) {
+        foreach ($children as $account_id => $process) {
             if (!in_array($account_id, $matched)) {
                 // has been deleted
                 $log_status("[Runner, PID $my_pid] Terminating processor for account $account_id - account no longer to be processed.");

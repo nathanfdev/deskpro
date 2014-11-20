@@ -59,8 +59,6 @@ class ImportMap extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $new_id = 0;
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -69,10 +67,10 @@ class ImportMap extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ImportMap';
-        $metadata->setPrimaryTable(array( 'name' => 'import_map', ));
+        $metadata->setPrimaryTable(array( 'name' => 'import_map'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'old_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'new_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'new_id', ));
+        $metadata->mapField(array( 'fieldName' => 'typename', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'typename', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'old_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'old_id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'new_id', 'type' => 'dpblob', 'length' => 80, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'new_id'));
     }
 }

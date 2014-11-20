@@ -56,12 +56,10 @@ class DownloadCategory extends CategoryAbstract
      */
     protected $downloads;
 
-
     /**
      * @var Doctrine\Common\Collections\ArrayCollection
      */
     protected $usergroups;
-
 
     ############################################################################
     # Doctrine Metadata
@@ -71,7 +69,7 @@ class DownloadCategory extends CategoryAbstract
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DownloadCategory';
-        $metadata->setPrimaryTable(array('name' => 'download_categories',));
+        $metadata->setPrimaryTable(array('name' => 'download_categories'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->mapField(
             array(
@@ -88,7 +86,7 @@ class DownloadCategory extends CategoryAbstract
         $metadata->mapField(
             array(
                 'fieldName' => 'slug', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'slug', 'unique' => true
+                'nullable'  => false, 'columnName' => 'slug', 'unique' => true,
             )
         );
         $metadata->mapField(
@@ -115,15 +113,15 @@ class DownloadCategory extends CategoryAbstract
                 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
                 'mappedBy'  => null, 'inversedBy' => 'children', 'joinColumns' => array(
                 0 => array(
-                    'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null'
+                    'name' => 'parent_id', 'referencedColumnName' => 'id', 'onDelete' => 'set null',
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'children', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory',
-                'mappedBy'  => 'parent', 'orderBy' => array('display_order' => 'ASC',),
+                'mappedBy'  => 'parent', 'orderBy' => array('display_order' => 'ASC'),
             )
         );
         $metadata->mapManyToMany(
@@ -141,13 +139,13 @@ class DownloadCategory extends CategoryAbstract
                         'onDelete' => 'cascade', 'columnDefinition' => null,
                     ),
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'downloads', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download',
-                'mappedBy'  => 'category'
+                'mappedBy'  => 'category',
             )
         );
     }

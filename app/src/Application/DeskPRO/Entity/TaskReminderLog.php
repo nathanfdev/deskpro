@@ -67,7 +67,6 @@ class TaskReminderLog extends \Application\DeskPRO\Domain\DomainObject
         $this['date_sent'] = new \DateTime();
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -77,9 +76,9 @@ class TaskReminderLog extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->setPrimaryTable(array( 'name' => 'task_reminder_logs', ));
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'date_sent', 'type' => 'date', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_sent', ));
+        $metadata->setPrimaryTable(array( 'name' => 'task_reminder_logs'));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'date_sent', 'type' => 'date', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_sent'));
         $metadata->mapManyToOne(array( 'fieldName' => 'task', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Task', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'task_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
     }

@@ -71,7 +71,7 @@ class AppsController extends AbstractController
         );
 
         $handler = new $handler_class();
-        $result = $handler->handleAgentRequest($context);
+        $result  = $handler->handleAgentRequest($context);
 
         return $result;
     }

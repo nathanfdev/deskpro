@@ -34,12 +34,12 @@
 
 namespace Application\DeskPRO\Email\EmailAccount;
 
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Exception\MissingConfigurationException;
 use Orb\Util\Arrays;
@@ -88,7 +88,6 @@ class EmailAccountManager
      */
     private $default_out_account = null;
 
-
     /**
      * @param EmailAccountRepository $repos
      * @param TransportFactory       $transport_factory
@@ -100,7 +99,6 @@ class EmailAccountManager
         $this->transport_factory       = $transport_factory;
         $this->fetcher_storage_factory = $fetcher_storage_factory;
     }
-
 
     ####################################################################################################################
     # Working with EmailAccounts
@@ -121,7 +119,6 @@ class EmailAccountManager
         return $acc;
     }
 
-
     /**
      * @param $id
      * @return \Application\DeskPRO\Entity\EmailAccount|null
@@ -137,7 +134,6 @@ class EmailAccountManager
         throw new \OutOfBoundsException();
     }
 
-
     /**
      * @param  int|string                                 $criteria Standard criteria filter
      * @return \Application\DeskPRO\Entity\EmailAccount[]
@@ -150,7 +146,6 @@ class EmailAccountManager
             return $this->repos->getAccounts();
         }
     }
-
 
     /**
      * @param  int|string                                 $criteria Standard criteria filter
@@ -165,7 +160,6 @@ class EmailAccountManager
         }
     }
 
-
     /**
      * @param  int  $id
      * @return bool
@@ -174,7 +168,6 @@ class EmailAccountManager
     {
         return $acc = $this->repos->getAccount($id) !== null;
     }
-
 
     /**
      * @param  string $id
@@ -190,7 +183,6 @@ class EmailAccountManager
 
         return $acc->is_enabled;
     }
-
 
     /**
      * Find an email account for a given email address
@@ -218,7 +210,6 @@ class EmailAccountManager
         return null;
     }
 
-
     /**
      * @param  array $accounts
      * @param  int   $criteria
@@ -235,7 +226,6 @@ class EmailAccountManager
         return array_filter($accounts, function ($a) use ($self, $criteria) { return $self->checkAccountCriteriaMatch($a, $criteria); });
     }
 
-
     /**
      * @param  EmailAccount $account
      * @param $criteria
@@ -244,12 +234,12 @@ class EmailAccountManager
     public function checkAccountCriteriaMatch(EmailAccount $account, $criteria)
     {
         if ($criteria && is_string($criteria)) {
-            $parts = explode('|', $criteria);
+            $parts    = explode('|', $criteria);
             $criteria = 0;
             foreach ($parts as $p) {
-                $p = trim($p);
-                $p_name = 'Application\\DeskPRO\\Email\\EmailAccount\\EmailAccountManager::' . strtoupper($p);
-                $p_val = constant($p_name);
+                $p      = trim($p);
+                $p_name = 'Application\\DeskPRO\\Email\\EmailAccount\\EmailAccountManager::'.strtoupper($p);
+                $p_val  = constant($p_name);
                 if ($p_val) {
                     $criteria = $criteria | $p_val;
                 }
@@ -273,7 +263,6 @@ class EmailAccountManager
 
         return true;
     }
-
 
     /**
      * @return array
@@ -303,7 +292,6 @@ class EmailAccountManager
         return $map;
     }
 
-
     /**
      * "primary" just means the first account that has an outgoing.
      *
@@ -317,9 +305,8 @@ class EmailAccountManager
             }
         }
 
-        throw new MissingConfigurationException;
+        throw new MissingConfigurationException();
     }
-
 
     /**
      * Just like getPrimaryTicketAccount except will fallback on a non-ticket account.
@@ -335,7 +322,6 @@ class EmailAccountManager
         }
     }
 
-
     /**
      * Count how many outgoing email accounts are defined
      *
@@ -345,7 +331,6 @@ class EmailAccountManager
     {
         return count($this->getAllActiveAccounts('with_transport'));
     }
-
 
     ####################################################################################################################
     # Working with Transports
@@ -365,7 +350,6 @@ class EmailAccountManager
         $this->default_out_account = $default;
     }
 
-
     /**
      * @return EmailAccount
      */
@@ -381,9 +365,8 @@ class EmailAccountManager
             }
         }
 
-        throw new MissingConfigurationException;
+        throw new MissingConfigurationException();
     }
-
 
     /**
      * Just like getDefaultOutAccount except will create an anonymous mail() mailer when none exists.
@@ -398,20 +381,19 @@ class EmailAccountManager
             $acc = new EmailAccount('outgoing');
 
             if (!empty($_SERVER['HOST_NAME'])) {
-                $acc->address = 'deskpro@' . $_SERVER['HOST_NAME'];
+                $acc->address = 'deskpro@'.$_SERVER['HOST_NAME'];
             } elseif (@php_uname('n')) {
-                $acc->address = 'deskpro@' . php_uname('n');
+                $acc->address = 'deskpro@'.php_uname('n');
             } else {
                 $acc->address = 'deskpro@localhost';
             }
 
-            $acc->is_enabled = true;
+            $acc->is_enabled       = true;
             $acc->outgoing_account = new PhpMailConfig();
 
             return $acc;
         }
     }
-
 
     /**
      * @return TransportFactory
@@ -420,7 +402,6 @@ class EmailAccountManager
     {
         return $this->transport_factory;
     }
-
 
     /**
      * @param  int|EmailAccount $acc
@@ -432,7 +413,6 @@ class EmailAccountManager
 
         return $acc->outgoing_account !== null;
     }
-
 
     /**
      * @param  int|EmailAccount      $acc
@@ -452,12 +432,11 @@ class EmailAccountManager
             return $this->loaded_transports[$key];
         }
 
-        $tr = $this->transport_factory->createTransport($acc->outgoing_account);
+        $tr                            = $this->transport_factory->createTransport($acc->outgoing_account);
         $this->loaded_transports[$key] = $tr;
 
         return $tr;
     }
-
 
     /**
      * Stops/closes the transport.
@@ -484,7 +463,6 @@ class EmailAccountManager
         $tr->stop();
     }
 
-
     /**
      * Closes all loaded transports
      *
@@ -505,7 +483,6 @@ class EmailAccountManager
         $this->loaded_transports = array();
     }
 
-
     ####################################################################################################################
     # Working with Fetchers
     ####################################################################################################################
@@ -518,7 +495,6 @@ class EmailAccountManager
         return $this->fetcher_storage_factory;
     }
 
-
     /**
      * @param  int|EmailAccount $acc
      * @return bool
@@ -529,7 +505,6 @@ class EmailAccountManager
 
         return $acc->incoming_account !== null;
     }
-
 
     /**
      * @param  int|EmailAccount                                                         $acc
@@ -549,12 +524,11 @@ class EmailAccountManager
             return $this->loaded_fetcher_storages[$key];
         }
 
-        $fethcer = $this->fetcher_storage_factory->createFetcherStorage($acc->incoming_account);
+        $fethcer                             = $this->fetcher_storage_factory->createFetcherStorage($acc->incoming_account);
         $this->loaded_fetcher_storages[$key] = $fethcer;
 
         return $fethcer;
     }
-
 
     /**
      * Stops/closes the fethcer.
@@ -581,7 +555,6 @@ class EmailAccountManager
         $fetcher->closeStorage();
     }
 
-
     /**
      * Closes all loaded fethcers
      *
@@ -601,7 +574,6 @@ class EmailAccountManager
 
         $this->loaded_fetcher_storages = array();
     }
-
 
     ####################################################################################################################
     # Working with processors

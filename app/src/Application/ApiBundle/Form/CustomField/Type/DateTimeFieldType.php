@@ -54,7 +54,7 @@ class DateTimeFieldType extends CustomFieldTypeAbstract
             'multiple' => true,
             'expanded' => true,
             'required' => false,
-            'choices' => array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday')
+            'choices'  => array('Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday'),
         ));
     }
 

@@ -50,7 +50,6 @@ class RoundRobinController extends AbstractController implements ProtectedContro
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -161,11 +160,9 @@ class RoundRobinController extends AbstractController implements ProtectedContro
     protected function isTriggerActionClear($action, $roundRobinId = null)
     {
         if ($action instanceof SetRoundRobin) {
-
             if (!$roundRobinId || $action->getActionOption('id') == $roundRobinId) {
                 return false;
             }
-
         } elseif ($action instanceof ActionComposite) {
             foreach ($action as $subAction) {
                 if (!$this->isTriggerActionClear($subAction)) {
@@ -179,13 +176,15 @@ class RoundRobinController extends AbstractController implements ProtectedContro
 
     protected function countRoundRobinTriggers($disable = false, $roundRobinId = null)
     {
-        $count = 0;
+        $count    = 0;
         $triggers = $this->em->getRepository('DeskPRO:TicketTrigger')->getTriggers();
         foreach ($triggers as $trigger) {
             $newActions = new TriggerActions();
             /** @var TriggerActions $actions */
             $actions = $trigger->actions;
-            if (!$actions) continue;
+            if (!$actions) {
+                continue;
+            }
 
             foreach ($actions as $action) {
                 if ($this->isTriggerActionClear($action, $roundRobinId)) {
@@ -197,7 +196,7 @@ class RoundRobinController extends AbstractController implements ProtectedContro
                 $count++;
 
                 if ($disable) {
-                    $trigger->actions = $newActions;
+                    $trigger->actions      = $newActions;
                     $trigger['is_enabled'] = false;
                     $this->em->flush();
                 }

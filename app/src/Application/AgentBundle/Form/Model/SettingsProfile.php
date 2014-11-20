@@ -106,25 +106,25 @@ class SettingsProfile
 
         // store the text, for the user to operate on, but keep track of the PhoneNumber object (or create a new one)
         // this is acting like a DataTransformer.
-        $this->primary_phone_number_text = $person->primary_phone_number ? $person->primary_phone_number->number : '';
-        $this->primary_phone_number = $person->primary_phone_number ?: new PhoneNumber();
+        $this->primary_phone_number_text   = $person->primary_phone_number ? $person->primary_phone_number->number : '';
+        $this->primary_phone_number        = $person->primary_phone_number ?: new PhoneNumber();
         $this->primary_phone_number_region = $person->primary_phone_number_region ?: $defaultCountryCode;
         //
 
         $this->override_display_name = $person->override_display_name;
-        $this->email = $person->getPrimaryEmailAddress();
-        $this->timezone = $person->timezone;
-        $this->language_id = $person->getLanguage()->getId();
+        $this->email                 = $person->getPrimaryEmailAddress();
+        $this->timezone              = $person->timezone;
+        $this->language_id           = $person->getLanguage()->getId();
 
-        $this->ticket_close_reply = (bool)$person->getPref('agent.ticket_close_reply', true);
-        $this->ticket_close_note = (bool)$person->getPref('agent.ticket_close_note', false);
-        $this->ticket_go_next_reply = (bool)$person->getPref('agent.ticket_go_next_reply', false);
-        $this->hide_claimed_chat = (bool)$person->getPref('agent.hide_claimed_chat', false);
-        $this->default_team_id = $person->getPref('agent.ticket_default_team_id');
-        $this->ticket_reverse_order = (bool)$person->getPref('agent.ticket_reverse_order');
+        $this->ticket_close_reply   = (bool) $person->getPref('agent.ticket_close_reply', true);
+        $this->ticket_close_note    = (bool) $person->getPref('agent.ticket_close_note', false);
+        $this->ticket_go_next_reply = (bool) $person->getPref('agent.ticket_go_next_reply', false);
+        $this->hide_claimed_chat    = (bool) $person->getPref('agent.hide_claimed_chat', false);
+        $this->default_team_id      = $person->getPref('agent.ticket_default_team_id');
+        $this->ticket_reverse_order = (bool) $person->getPref('agent.ticket_reverse_order');
         if ($this->default_team_id === null) {
-            $teams = $person->getAgent()->getTeams();
-            $last_team = end($teams);
+            $teams                 = $person->getAgent()->getTeams();
+            $last_team             = end($teams);
             $this->default_team_id = $last_team ? $last_team->id : 0;
         }
         $this->auto_dismiss_notifications = $person->getPref('agent.ui.auto_dismiss_notification', 60);
@@ -159,7 +159,7 @@ class SettingsProfile
         }
 
         $person->override_display_name = $this->override_display_name;
-        $person->timezone = $this->timezone;
+        $person->timezone              = $this->timezone;
 
         if ($this->new_picture_blob_id) {
             $blob = $this->em->getRepository('DeskPRO:Blob')->getByAuthId($this->new_picture_blob_id);
@@ -170,13 +170,12 @@ class SettingsProfile
 
         $primary_email = $person->getPrimaryEmail();
         if ($primary_email->email != $this->email) {
-
             $found_email = $person->findEmailAddress($this->email);
             if ($found_email) {
                 $new_primary_email = $found_email;
             } else {
-                $new_primary_email = new \Application\DeskPRO\Entity\PersonEmail();
-                $new_primary_email->email = $this->email;
+                $new_primary_email               = new \Application\DeskPRO\Entity\PersonEmail();
+                $new_primary_email->email        = $this->email;
                 $new_primary_email->is_validated = true;
                 $person->addEmailAddress($new_primary_email);
                 $this->em->persist($new_primary_email);
@@ -192,10 +191,10 @@ class SettingsProfile
             $person->setPassword($this->password);
 
             if ($this->person->password && $this->person->password_scheme == 'bcrypt') {
-                $history = new PasswordHistory();
-                $history->person = $this->person;
+                $history                  = new PasswordHistory();
+                $history->person          = $this->person;
                 $history->password_scheme = $this->person->password_scheme;
-                $history->password = $this->person->password;
+                $history->password        = $this->person->password;
                 $this->em->persist($history);
             }
         }
@@ -237,7 +236,6 @@ class SettingsProfile
         try {
             $this->em->flush();
             $this->em->commit();
-
         } catch (\Exception $e) {
             $this->em->rollback();
             throw $e;

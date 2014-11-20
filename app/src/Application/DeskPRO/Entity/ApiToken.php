@@ -90,12 +90,10 @@ class ApiToken extends DomainObject
      */
     protected $person;
 
-
     public function __construct()
     {
         $this['token'] = Strings::random(25, Strings::CHARS_KEY);
     }
-
 
     /**
      * Regenerates a new token
@@ -105,7 +103,6 @@ class ApiToken extends DomainObject
         $this['token'] = Strings::random(25, Strings::CHARS_KEY);
     }
 
-
     /**
      * Get a "key string". This is a combined ID and code like id:code
      * that is used in auth lookups.
@@ -114,9 +111,8 @@ class ApiToken extends DomainObject
      */
     public function getKeyString()
     {
-        return $this->id . ':' . $this->token;
+        return $this->id.':'.$this->token;
     }
-
 
     ############################################################################
     # Doctrine Metadata
@@ -130,7 +126,7 @@ class ApiToken extends DomainObject
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
 
         $metadata->setPrimaryTable(array(
-            'name' => 'api_token'
+            'name' => 'api_token',
         ));
 
         $metadata->mapField(array(
@@ -170,7 +166,7 @@ class ApiToken extends DomainObject
                 'referencedColumnName' => 'id',
                 'nullable'             => false,
                 'onDelete'             => 'cascade',
-            ))
+            )),
         ));
     }
 }

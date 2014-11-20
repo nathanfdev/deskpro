@@ -62,8 +62,6 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $data;
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -71,11 +69,11 @@ class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'blobs_storage', 'indexes' => array( 'blob_id_idx' => array( 'columns' => array( 0 => 'blob_id', ), ), ), ));
+        $metadata->setPrimaryTable(array( 'name' => 'blobs_storage', 'indexes' => array( 'blob_id_idx' => array( 'columns' => array( 0 => 'blob_id')))));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'blob_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'blob_id', ));
-        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'blob_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'blob_id'));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'dpblob_file', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }

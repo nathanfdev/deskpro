@@ -55,7 +55,7 @@ class AgentChat
 
     public function __construct(Person $person, Session $session)
     {
-        $this->person = $person;
+        $this->person  = $person;
         $this->session = $session;
     }
 
@@ -76,7 +76,7 @@ class AgentChat
         );
 
         $client_messages = array();
-        $channel = 'chat.message';
+        $channel         = 'chat.message';
         if ($conversation['is_agent']) {
             $channel = 'agent_chat.new-message';
         }
@@ -103,17 +103,17 @@ class AgentChat
             $cm = new ClientMessage();
             $cm->fromArray(array(
                 'channel' => $channel,
-                'data' => array(
+                'data'    => array(
                     'conversation_id'   => $conversation['id'],
                     'participant_ids'   => $part_ids,
                     'message_id'        => $chat_message['id'],
                     'author_id'         => $chat_message->author['id'],
                     'message'           => $chat_message['content'],
                     'date_created'      => $chat_message['date_created']->getTimestamp(),
-                    'time'              => $time
+                    'time'              => $time,
                 ),
                 'created_by_client' => $this->session['id'],
-                'for_person' => $part
+                'for_person'        => $part,
             ));
 
             $client_messages[] = $cm;
@@ -137,7 +137,7 @@ class AgentChat
                 if (!$session && $part->getPref('agent_notif.chat_message.email')) {
                     $email_message = App::getMailer()->createMessage();
                     $email_message->setTemplate('DeskPRO:emails_agent:new-agent-chat-message.html.twig', array(
-                        'message' => $chat_message
+                        'message' => $chat_message,
                     ));
                     $email_message->setToPerson($part);
                     $email_message->enableQueueHint();
@@ -148,7 +148,7 @@ class AgentChat
 
         return array(
             'conversation' => $conversation,
-            'new_message'  => $chat_message
+            'new_message'  => $chat_message,
         );
     }
 
@@ -161,7 +161,7 @@ class AgentChat
         $conversation = null;
         if ($convo_id) {
             $conversation = $em->find('DeskPRO:ChatConversation', $convo_id);
-            if ($conversation AND !$conversation->hasParticipant($this->person)) {
+            if ($conversation and !$conversation->hasParticipant($this->person)) {
                 // invalid convo if we're not part of it
                 // sneaky hobitses
                 $conversation = null;
@@ -172,14 +172,14 @@ class AgentChat
         if (!$conversation) {
             $date_cut = new \DateTime('-5 hours');
 
-            $find_agent_ids = $agent_ids;
+            $find_agent_ids   = $agent_ids;
             $find_agent_ids[] = $this->person['id'];
 
             $conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople($find_agent_ids, $date_cut);
         }
 
         if (!$conversation) {
-            $conversation = new ChatConversation();
+            $conversation             = new ChatConversation();
             $conversation['is_agent'] = true;
             $conversation->addParticipant($this->person);
             foreach ($agent_ids as $aid) {

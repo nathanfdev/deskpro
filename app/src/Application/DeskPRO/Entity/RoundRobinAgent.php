@@ -69,15 +69,13 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-//		$data = parent::toApiData($primary, $deep, $visited);
+        //		$data = parent::toApiData($primary, $deep, $visited);
         $data = array(
             'id' => $this->agent ? $this->agent['id'] : null,
         );
 
         return $data;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -86,42 +84,42 @@ class RoundRobinAgent extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'round_robin_agents', ));
+        $metadata->setPrimaryTable(array( 'name' => 'round_robin_agents'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\RoundRobinAgent';
 
-        $metadata->mapField(array( 'fieldName' => 'sort', 'type' => 'integer', 'nullable' => false, 'columnName' => 'sort',));
+        $metadata->mapField(array( 'fieldName' => 'sort', 'type' => 'integer', 'nullable' => false, 'columnName' => 'sort'));
 
         $metadata->mapOneToOne(array(
-            'id' => true,
-            'fieldName' => 'agent',
+            'id'           => true,
+            'fieldName'    => 'agent',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-            'mappedBy' => NULL,
-            'inversedBy' => NULL,
-            'joinColumns' => array(
+            'mappedBy'     => NULL,
+            'inversedBy'   => NULL,
+            'joinColumns'  => array(
                 0 => array(
-                    'name' => 'agent_id',
+                    'name'                 => 'agent_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'cascade',
-                    'columnDefinition' => NULL,
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => NULL,
                 ),
             ),
         ));
 
         $metadata->mapManyToOne(array(
-            'id' => true,
-            'fieldName' => 'robin',
+            'id'           => true,
+            'fieldName'    => 'robin',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\RoundRobin',
-            'mappedBy' => NULL,
-            'inversedBy' => 'agents',
-            'joinColumns' => array(
+            'mappedBy'     => NULL,
+            'inversedBy'   => 'agents',
+            'joinColumns'  => array(
                 0 => array(
-                    'name' => 'robin_id',
+                    'name'                 => 'robin_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'cascade',
-                    'columnDefinition' => NULL,
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => NULL,
                 ),
             ),
         ));

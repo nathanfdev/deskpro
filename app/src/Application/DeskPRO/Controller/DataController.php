@@ -41,8 +41,7 @@ class DataController extends AbstractController
     {
         $js = array();
 
-
-        $js = implode("\n", $js);
+        $js       = implode("\n", $js);
         $response = App::getResponse();
         $response->headers->set('Content-Type', 'application/javascript');
         $response->setContent($js);
@@ -67,7 +66,7 @@ class DataController extends AbstractController
         \Application\DeskPRO\Service\ErrorReporter::reportJsError($info);
 
         return $this->createJsonResponse(array(
-            'logged' => true
+            'logged' => true,
         ));
     }
 
@@ -81,12 +80,12 @@ class DataController extends AbstractController
         $hash       = $this->in->getString('hash');
 
         $info = array(
-            'hash' => $this->in->getString('hash'),
+            'hash'       => $this->in->getString('hash'),
             'ip_address' => $ip_address,
             'user_agent' => $user_agent,
-            'referrer' => $referrer,
-            'fragment' => $hash,
-            'comment' => $this->in->getString('comment'),
+            'referrer'   => $referrer,
+            'fragment'   => $hash,
+            'comment'    => $this->in->getString('comment'),
             'error_text' => $error_text,
         );
 

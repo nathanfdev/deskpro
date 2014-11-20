@@ -58,14 +58,14 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
      */
     protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
     {
-        $us->title = $app->title;
+        $us->title             = $app->title;
         $us->options           = array(
             'url'      => $app->getSetting('url'),
             'api_user' => $app->getSetting('api_user'),
             'api_key'  => $app->getSetting('api_key'),
             'sso_js'   => $app->getSetting('enable_sso') ? true : false,
         );
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type       = 'deskpro_magento\\Usersource\\Adapter\\Magento';
 

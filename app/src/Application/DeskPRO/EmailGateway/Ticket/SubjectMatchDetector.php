@@ -69,7 +69,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
      */
     protected $is_bounce_mode = false;
 
-
     /**
      * Enable bounce mode if the message is or is suspected ot be a bounced message.
      * This will look for PTAC/TAC 'headers' in the body text.
@@ -79,7 +78,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         $this->is_bounce_mode = true;
     }
 
-
     /**
      * @param int $time_cutoff Max age of a ticket before the subject match wont work
      */
@@ -87,7 +85,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
     {
         $this->_time_cutoff = date('Y-m-d H:i:s', time()-$time_cutoff);
     }
-
 
     /**
      * {@inheritDoc}
@@ -112,7 +109,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         return $ticket;
     }
 
-
     public function _findExistingTicket(AbstractReader $reader, $subject)
     {
         $ticket = $this->_findExistingTicketStandard($reader, $subject);
@@ -122,7 +118,6 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         return $ticket;
     }
-
 
     /**
      * Tries to find a subject by stripping off standard subject prefixes.
@@ -137,7 +132,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         $this->_found_person = null;
 
-        $subject = trim($subject);
+        $subject      = trim($subject);
         $subject_orig = $subject;
 
         // Common prefixes
@@ -149,7 +144,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         // Strip off Re: prefix (and alternatives in some other langs)
         // The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
         $last_subject = $subject_orig;
-        $ticket_ids = array();
+        $ticket_ids   = array();
         while (true) {
             $subject_re   = preg_replace('#^(RE|VS|AW|SV|FW|FWD|VL|WG|FS|VB|RV|VS):\s*#i', '', trim($last_subject));
             $subject_re   = trim($subject_re);
@@ -160,7 +155,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
             $last_subject = $subject_re;
 
-            $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
+            $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: ".$subject_re);
 
             // Now lets try to find it...
             $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
@@ -180,21 +175,21 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
             return null;
         }
 
-        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: " . implode(', ', $ticket_ids));
+        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: ".implode(', ', $ticket_ids));
 
         $tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-        $from = $reader->getFromAddress()->getEmail();
+        $from    = $reader->getFromAddress()->getEmail();
 
         foreach ($tickets as $ticket) {
             if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
-                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id . " " . $p->getDisplayContact());
+                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket ".$ticket->id." with user ".$p->id." ".$p->getDisplayContact());
                 $this->_found_person = $p;
 
                 return $ticket;
             }
         }
 
-        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: " . $from);
+        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: ".$from);
 
         return null;
     }
@@ -212,7 +207,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
         $this->_found_person = null;
 
-        $subject = trim($subject);
+        $subject      = trim($subject);
         $subject_orig = $subject;
 
         if (strpos($subject, ':') === false) {
@@ -222,7 +217,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
         // Strip off Re: prefix (and alternatives in some other langs)
         // The loop is so we can catch emails with multiple prefixes like RE: RE: RE:
         $last_subject = $subject_orig;
-        $ticket_ids = array();
+        $ticket_ids   = array();
         while (true) {
             $subject_re   = preg_replace('#^.*?:\s*#i', '', trim($last_subject));
             $subject_re   = trim($subject_re);
@@ -233,7 +228,7 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
 
             $last_subject = $subject_re;
 
-            $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: " . $subject_re);
+            $this->getLogger()->logDebug("[SubjectMatchDetector] -- Trying to find subject: ".$subject_re);
 
             // Now lets try to find it...
             $ticket_ids = array_merge($ticket_ids, App::getDb()->fetchAllCol("
@@ -253,21 +248,21 @@ class SubjectMatchDetector implements TicketDetectorInterface, BounceAwareInterf
             return null;
         }
 
-        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: " . implode(', ', $ticket_ids));
+        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Matching tickets: ".implode(', ', $ticket_ids));
 
         $tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-        $from = $reader->getFromAddress()->getEmail();
+        $from    = $reader->getFromAddress()->getEmail();
 
         foreach ($tickets as $ticket) {
             if (($p = $ticket->findUserByEmail($from)) || ($p = $ticket->findAgentByEmail($from))) {
-                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket " . $ticket->id . " with user " . $p->id);
+                $this->getLogger()->logDebug("[SubjectMatchDetector] -- Found ticket ".$ticket->id." with user ".$p->id);
                 $this->_found_person = $p;
 
                 return $ticket;
             }
         }
 
-        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: " . $from);
+        $this->getLogger()->logDebug("[SubjectMatchDetector] -- Could not match user email address on ticket: ".$from);
 
         return null;
     }

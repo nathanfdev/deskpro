@@ -56,7 +56,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
         $us->title             = $app->title;
         $us->options           = AppOptionsMapper::getOptions($app);
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->source_type       = $type;
 
         $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));

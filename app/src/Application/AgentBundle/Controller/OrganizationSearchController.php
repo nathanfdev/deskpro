@@ -50,10 +50,10 @@ class OrganizationSearchController extends AbstractController
     protected function _getResponseForOrgs($type, $type_id, OrganizationResults $results_helper, array $vars = array())
     {
         $is_partial = false;
-        $tpl = 'AgentBundle:OrganizationSearch:filter.html.twig';
+        $tpl        = 'AgentBundle:OrganizationSearch:filter.html.twig';
         if ($this->in->getBool('partial')) {
             $is_partial = true;
-            $tpl = 'AgentBundle:OrganizationSearch:filter-page.html.twig';
+            $tpl        = 'AgentBundle:OrganizationSearch:filter-page.html.twig';
         }
 
         #------------------------------
@@ -61,7 +61,9 @@ class OrganizationSearchController extends AbstractController
         #------------------------------
 
         $page = $this->in->getUint('page');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
         $organizations = $results_helper->getOrgsForPage($page);
 
@@ -69,9 +71,9 @@ class OrganizationSearchController extends AbstractController
         # Send results
         #------------------------------
 
-        $renderer = new OrganizationListRenderer($this->container);
+        $renderer       = new OrganizationListRenderer($this->container);
         $result_display = new \Application\DeskPRO\Organizations\OrgResultsDisplay($organizations);
-        $vars = array_merge($vars, array(
+        $vars           = array_merge($vars, array(
             'type'               => $type,
             'type_id'            => $type_id,
             'organizations'      => $organizations,
@@ -112,12 +114,12 @@ class OrganizationSearchController extends AbstractController
 
         $org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 
-        $tpl = 'filter-page.html.twig';
+        $tpl       = 'filter-page.html.twig';
         $view_type = $this->in->getString('view_type');
         if ('list' === $view_type) {
             $tpl = 'filter-list-page.html.twig';
         } elseif ('json' === $view_type) {
-            $display = new OrgResultsDisplay($organizations);
+            $display  = new OrgResultsDisplay($organizations);
             $renderer = new OrganizationListRenderer($this->container);
 
             return $this->createJsonResponse($renderer->renderArray($display));
@@ -132,7 +134,6 @@ class OrganizationSearchController extends AbstractController
             'result_display'   => $result_display,
         ));
     }
-
 
     ############################################################################
     # search
@@ -155,9 +156,8 @@ class OrganizationSearchController extends AbstractController
         #------------------------------
 
         if (!$result_cache) {
-
             $term_rules = RuleBuilder::newTermsBuilder();
-            $terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+            $terms      = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw', 'discard'));
 
             $set_terms_map = array(
                 'org_name'              => array('op' => 'contains', 'options' => array()),
@@ -173,7 +173,7 @@ class OrganizationSearchController extends AbstractController
                     $in_val = Arrays::removeEmptyString($in_val);
                 }
                 if ($in_val) {
-                    $new_term = $info;
+                    $new_term            = $info;
                     $new_term['options'] = $in_val;
                     Arrays::unshiftAssoc($new_term, 'type', $name);
                     $terms[] = $new_term;
@@ -207,10 +207,10 @@ class OrganizationSearchController extends AbstractController
 
             $results = $searcher->getMatches();
 
-            $result_cache = new Entity\ResultCache();
-            $result_cache['person'] = $this->person;
-            $result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
-            $result_cache['results'] = $results;
+            $result_cache                = new Entity\ResultCache();
+            $result_cache['person']      = $this->person;
+            $result_cache['criteria']    = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
             $this->em->persist($result_cache);
@@ -226,7 +226,7 @@ class OrganizationSearchController extends AbstractController
         // and we have to re-do the search
 
         if ($order_by && (empty($result_cache['criteria']['order_by']) || $result_cache['criteria']['order_by'] != $order_by)) {
-            $criteria = $result_cache['criteria'];
+            $criteria             = $result_cache['criteria'];
             $criteria['order_by'] = $order_by;
 
             $result_cache['criteria'] = $criteria;
@@ -235,8 +235,8 @@ class OrganizationSearchController extends AbstractController
             $searcher->setTerms($result_cache['criteria']['terms']);
             $searcher->setOrderByCode($order_by);
 
-            $results = $searcher->getMatches();
-            $result_cache['results'] = $results;
+            $results                     = $searcher->getMatches();
+            $result_cache['results']     = $results;
             $result_cache['num_results'] = count($results);
 
             $this->em->persist($result_cache);
@@ -250,9 +250,9 @@ class OrganizationSearchController extends AbstractController
         $results_helper = Helper\OrganizationResults::newFromResultCache($this, $result_cache);
 
         $vars = array(
-            'cache' => $result_cache,
+            'cache'    => $result_cache,
             'cache_id' => $result_cache['id'],
-            'org_ids' => $result_cache['results'],
+            'org_ids'  => $result_cache['results'],
         );
 
         $pref_display_fields = $this->person->getPref('agent.ui.org-filter-display-fields.0');
@@ -273,7 +273,9 @@ class OrganizationSearchController extends AbstractController
     public function performQuickNameSearchAction()
     {
         $limit = $this->in->getUint('limit');
-        if (!$limit) $limit = 20;
+        if (!$limit) {
+            $limit = 20;
+        }
 
         $q = $this->in->getString('q');
         if (!$q) {
@@ -308,10 +310,10 @@ class OrganizationSearchController extends AbstractController
 
         foreach ($orgs_list as $org) {
             $json['results'][] = array(
-                'id' => $org['id'],
-                'name' => $org['name'],
+                'id'    => $org['id'],
+                'name'  => $org['name'],
                 'value' => $org['name'],
-                'label' => $org['name']
+                'label' => $org['name'],
             );
         }
 

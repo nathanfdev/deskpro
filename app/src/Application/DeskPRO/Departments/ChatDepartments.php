@@ -80,7 +80,6 @@ class ChatDepartments extends LazyPreloadedHierarchy
         return parent::getParent($obj_or_id);
     }
 
-
     /**
      * @param      $obj_or_id
      * @param bool $keyed
@@ -92,7 +91,6 @@ class ChatDepartments extends LazyPreloadedHierarchy
     {
         return parent::getParentPath($obj_or_id, $keyed);
     }
-
 
     /**
      * @param                                           $obj_or_id

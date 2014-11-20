@@ -108,9 +108,9 @@ class ResultHandler
     public function addSelectColumn($title, $resultId, $renderer = null)
     {
         $this->_columns[] = array(
-            'title' => $title,
+            'title'    => $title,
             'resultId' => $resultId,
-            'renderer' => $renderer
+            'renderer' => $renderer,
         );
     }
 
@@ -137,10 +137,10 @@ class ResultHandler
     public function addGroupYColumn($title, $groupResultId, $resultId, $renderer = null)
     {
         $this->_groupYColumns[] = array(
-            'title' => $title,
+            'title'         => $title,
             'groupResultId' => $groupResultId,
-            'resultId' => $resultId,
-            'renderer' => $renderer
+            'resultId'      => $resultId,
+            'renderer'      => $renderer,
         );
     }
 
@@ -166,10 +166,10 @@ class ResultHandler
     public function addGroupXColumn($title, $groupResultId, $resultId, $renderer = null)
     {
         $this->_groupXColumns[] = array(
-            'title' => $title,
+            'title'         => $title,
             'groupResultId' => $groupResultId,
-            'resultId' => $resultId,
-            'renderer' => $renderer
+            'resultId'      => $resultId,
+            'renderer'      => $renderer,
         );
     }
 
@@ -187,7 +187,7 @@ class ResultHandler
     {
         $this->_groupStackColumns[] = array(
             'groupId' => $groupId,
-            'printId' => $printId
+            'printId' => $printId,
         );
     }
 
@@ -206,7 +206,7 @@ class ResultHandler
     {
         $this->_splitColumns[] = array(
             'resultId' => $resultId,
-            'renderer' => $renderer
+            'renderer' => $renderer,
         );
     }
 

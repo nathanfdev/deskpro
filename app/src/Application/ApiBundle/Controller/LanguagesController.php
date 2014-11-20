@@ -58,7 +58,6 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $multi;
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -72,16 +71,18 @@ class LanguagesController extends AbstractController implements ProtectedControl
         ")->execute();
 
         $installed_packs = array();
-        foreach ($langs as $l) $installed_packs[$l->getSysName()] = $l;
+        foreach ($langs as $l) {
+            $installed_packs[$l->getSysName()] = $l;
+        }
 
-        $langpacks = new \Application\DeskPRO\Languages\LangPackInfo();
-        $pack_titles = $langpacks->getLangTitles();
+        $langpacks         = new \Application\DeskPRO\Languages\LangPackInfo();
+        $pack_titles       = $langpacks->getLangTitles();
         $pack_local_titles = $langpacks->getLangTitles(true);
 
         foreach ($pack_titles as $id => $title) {
             $lang = isset($installed_packs[$id]) ? $installed_packs[$id] : null;
             $info = $langpacks->getLangInfo($id);
-            $r = array(
+            $r    = array(
                 'id'                    => $id,
                 'title'                 => $title,
                 'show_title'            => $lang ? $lang->title : $pack_local_titles[$id],
@@ -119,14 +120,13 @@ class LanguagesController extends AbstractController implements ProtectedControl
             if (!$lang) {
                 throw $this->createNotFoundException();
             }
-
         } else {
             if (!$langpacks->hasLang($id)) {
                 throw $this->createNotFoundException();
             }
 
             $lang_info = $langpacks->getLangInfo($id);
-            $lang = null;
+            $lang      = null;
 
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
@@ -166,7 +166,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
             }
 
             $lang_info = $langpacks->getLangInfo($id);
-            $lang = null;
+            $lang      = null;
 
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
@@ -180,19 +180,18 @@ class LanguagesController extends AbstractController implements ProtectedControl
             $lang_info['is_installed'] = true;
         }
 
-        $flag = $langpacks->getLangInfo($id, 'flag_image');
-        $pack_local_titles = $langpacks->getLangTitles(true);
+        $flag                     = $langpacks->getLangInfo($id, 'flag_image');
+        $pack_local_titles        = $langpacks->getLangTitles(true);
         $lang_info['show_title']  = $lang ? $lang->title : $pack_local_titles[$lang_info['id']];
         $lang_info['local_title'] = $pack_local_titles[$id];
         $lang_info['flag']        = $flag;
         $lang_info['show_flag']   = $lang ? $lang->flag_image : $lang_info['flag'];
 
         return $this->createApiResponse(array(
-            'pack' => $lang_info,
+            'pack'     => $lang_info,
             'language' => $lang ? $lang->toApiData() : null,
         ));
     }
-
 
     ####################################################################################################################
     # get-phrase
@@ -213,7 +212,6 @@ class LanguagesController extends AbstractController implements ProtectedControl
             } else {
                 $data['phrase'] = null;
             }
-
         } else {
             $langs = $this->em->createQuery("
                 SELECT l
@@ -266,11 +264,10 @@ class LanguagesController extends AbstractController implements ProtectedControl
         }
 
         return $this->createApiCreateResponse(array(
-            'pack_id' => $id,
-            'language_id' => $lang->id
+            'pack_id'     => $id,
+            'language_id' => $lang->id,
         ), $this->generateUrl('api_langs_getinfo', array('id' => $lang->id)));
     }
-
 
     ####################################################################################################################
     # uninstall-lang
@@ -287,14 +284,13 @@ class LanguagesController extends AbstractController implements ProtectedControl
             }
 
             $lang_info = $langpacks->getLangInfo($lang->sys_name);
-
         } else {
             if (!$langpacks->hasLang($id)) {
                 throw $this->createNotFoundException();
             }
 
             $lang_info = $langpacks->getLangInfo($id);
-            $lang = null;
+            $lang      = null;
 
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
@@ -319,11 +315,10 @@ class LanguagesController extends AbstractController implements ProtectedControl
         $this->em->flush();
 
         return $this->createSuccessResponse(array(
-            'old_pack_id'    => $lang_info['id'],
-            'old_language_id'=> $old_lang_id
+            'old_pack_id'     => $lang_info['id'],
+            'old_language_id' => $old_lang_id,
         ));
     }
-
 
     ####################################################################################################################
     # save-lang
@@ -340,14 +335,13 @@ class LanguagesController extends AbstractController implements ProtectedControl
             }
 
             $lang_info = $langpacks->getLangInfo($lang->sys_name);
-
         } else {
             if (!$langpacks->hasLang($id)) {
                 throw $this->createNotFoundException();
             }
 
             $lang_info = $langpacks->getLangInfo($id);
-            $lang = null;
+            $lang      = null;
 
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
@@ -365,7 +359,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
         $lang->locale     = $this->in->getString('language.locale') ?: $lang['locale'];
         $lang->flag_image = $this->in->getString('language.flag_image') ?: $lang['flag_image'];
 
-        if (!file_exists(DP_WEB_ROOT.'/web/images/flags/' . $lang->flag_image)) {
+        if (!file_exists(DP_WEB_ROOT.'/web/images/flags/'.$lang->flag_image)) {
             $lang->flag_image = $lang['flag_image'];
         }
 
@@ -374,7 +368,6 @@ class LanguagesController extends AbstractController implements ProtectedControl
 
         return $this->createSuccessResponse();
     }
-
 
     ####################################################################################################################
     # save-phrase
@@ -405,16 +398,16 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 }
             } else {
                 if (!$phrase) {
-                    $phrase = new \Application\DeskPRO\Entity\Phrase();
-                    $phrase->language = $lang;
-                    $phrase->name = $phrase_id;
+                    $phrase                  = new \Application\DeskPRO\Entity\Phrase();
+                    $phrase->language        = $lang;
+                    $phrase->name            = $phrase_id;
                     $phrase->original_phrase = '';
-                    $phrase->original_hash = md5(null);
+                    $phrase->original_hash   = md5(null);
                 }
 
                 if (!$phrase->original_phrase) {
                     $phrase->original_phrase = '';
-                    $phrase->original_hash = md5(null);
+                    $phrase->original_hash   = md5(null);
                 }
                 $phrase->phrase = $phrase_text;
                 $this->em->persist($phrase);
@@ -437,7 +430,6 @@ class LanguagesController extends AbstractController implements ProtectedControl
             if (!$lang) {
                 throw $this->createNotFoundException();
             }
-
         } else {
             $langpacks = new LangPackInfo();
             if (!$langpacks->hasLang($id)) {
@@ -445,7 +437,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
             }
 
             $lang_info = $langpacks->getLangInfo($id);
-            $lang = null;
+            $lang      = null;
 
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
@@ -459,7 +451,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
             }
         }
 
-        $adds = array();
+        $adds       = array();
         $phrase_ids = array();
 
         foreach ($this->in->getArrayValue('phrases') as $phrase_info) {
@@ -487,7 +479,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
                     'phrase'          => $p->phrase,
                     'original_phrase' => $p->original_phrase,
                     'original_hash'   => $p->original_hash,
-                    'is_outdated'     => (int)$p->is_outdated,
+                    'is_outdated'     => (int) $p->is_outdated,
                     'created_at'      => $p->created_at ? $p->created_at->format('Y-m-d H:i:s') : null,
                     'updated_at'      => $p->updated_at ? $p->updated_at->format('Y-m-d H:i:s') : null,
                 );
@@ -505,7 +497,6 @@ class LanguagesController extends AbstractController implements ProtectedControl
         return $this->createSuccessResponse();
     }
 
-
     ############################################################################
     # get-phrase-groups
     ############################################################################
@@ -516,7 +507,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
         # Special object groups
         #------------------------------
 
-        $object_groups = array();
+        $object_groups   = array();
         $object_groups[] = array('id' => 'ticket_departments',  'title' => 'Ticket Departments');
         $object_groups[] = array('id' => 'chat_departments',    'title' => 'Chat Departments');
 
@@ -552,7 +543,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
         #------------------------------
 
         $groups_reader = new LanguagePhrases();
-        $tr = $this->container->getTranslator();
+        $tr            = $this->container->getTranslator();
         $phrase_groups = array();
 
         foreach ($groups_reader->getGroups() as $type => $groups) {
@@ -560,7 +551,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
 
             foreach ($groups as $group) {
                 $phrase_id = "admin.languages.phrasegroup_{$type}_{$group}";
-                $title = $tr->hasPhrase($phrase_id) ? $tr->phrase($phrase_id) : ucfirst("$type $group");
+                $title     = $tr->hasPhrase($phrase_id) ? $tr->phrase($phrase_id) : ucfirst("$type $group");
 
                 $phrase_groups[$type][] = array('id' => "{$type}.{$group}", 'title' => $title);
             }
@@ -572,10 +563,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
                 'user'   => $phrase_groups['user'],
                 'agent'  => $phrase_groups['agent'],
                 'admin'  => $phrase_groups['admin'],
-            )
+            ),
         ));
     }
-
 
     ############################################################################
     # get-phrases
@@ -588,7 +578,6 @@ class LanguagesController extends AbstractController implements ProtectedControl
             if (!$lang) {
                 throw $this->createNotFoundException();
             }
-
         } else {
             $langpacks = new LangPackInfo();
             if (!$langpacks->hasLang($id)) {
@@ -596,7 +585,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
             }
 
             $lang_info = $langpacks->getLangInfo($id);
-            $lang = null;
+            $lang      = null;
 
             foreach ($this->container->getLanguageData()->getAll() as $l) {
                 if ($l->sys_name == $lang_info['id']) {
@@ -682,7 +671,7 @@ class LanguagesController extends AbstractController implements ProtectedControl
 
             case 'kb_categories':
                 /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $repos */
-                $repos = $this->em->getRepository('DeskPRO:ArticleCategory');
+                $repos   = $this->em->getRepository('DeskPRO:ArticleCategory');
                 $phrases = $phrase_data->getKbCategoryPhrases($repos, $lang);
                 break;
 
@@ -696,10 +685,9 @@ class LanguagesController extends AbstractController implements ProtectedControl
         }
 
         return $this->createJsonResponse(array(
-            'phrases' => $phrases
+            'phrases' => $phrases,
         ));
     }
-
 
     ############################################################################
     # mass-update-tickets
@@ -723,15 +711,19 @@ class LanguagesController extends AbstractController implements ProtectedControl
         }
 
         $sql = "UPDATE tickets SET language_id = $use_to_id";
-        if ($from_lang_id) $sql .= " WHERE language_id = $from_lang_id";
+        if ($from_lang_id) {
+            $sql .= " WHERE language_id = $from_lang_id";
+        }
         $count = $this->db->executeUpdate($sql);
 
         $sql = "UPDATE tickets_search_active SET language_id = $use_to_id";
-        if ($from_lang_id) $sql .= " WHERE language_id = $from_lang_id";
+        if ($from_lang_id) {
+            $sql .= " WHERE language_id = $from_lang_id";
+        }
         $this->db->executeUpdate($sql);
 
         return $this->createSuccessResponse(array(
-            'count' => $count
+            'count' => $count,
         ));
     }
 
@@ -757,11 +749,13 @@ class LanguagesController extends AbstractController implements ProtectedControl
         }
 
         $sql = "UPDATE people SET language_id = $use_to_id";
-        if ($from_lang_id) $sql .= " WHERE language_id = $from_lang_id";
+        if ($from_lang_id) {
+            $sql .= " WHERE language_id = $from_lang_id";
+        }
         $count = $this->db->executeUpdate($sql);
 
         return $this->createSuccessResponse(array(
-            'count' => $count
+            'count' => $count,
         ));
     }
 }

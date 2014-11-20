@@ -100,12 +100,10 @@ class ReportBuilder extends DomainObject
      */
     protected $display_order = 0;
 
-
     public function __construct()
     {
         $this->favorited_by = new ArrayCollection();
     }
-
 
     /**
      * @return ReportBuilder
@@ -114,7 +112,6 @@ class ReportBuilder extends DomainObject
     {
         return new self();
     }
-
 
     /**
      * @param  string       $type
@@ -129,12 +126,12 @@ class ReportBuilder extends DomainObject
             return preg_replace('/\[(.+?)\]/', '$1',  $this->title);
         }
 
-        $repository = $this->getRepository();
+        $repository  = $this->getRepository();
         $groupParams = $repository->getReportGroupParams();
 
         if (!is_array($params)) {
             $newParams = array();
-            foreach ($params ? explode(',', $params) : array() AS $k => $v) {
+            foreach ($params ? explode(',', $params) : array() as $k => $v) {
                 $newParams[$k + 1] = $v;
             }
             $params = $newParams;
@@ -241,10 +238,10 @@ class ReportBuilder extends DomainObject
                     return '';
                 } elseif ($firstMatch == 'nothing') {
                     // first group is nothing, but second on something
-                    return $match[1] . $match[2] . ' ' . $match[4];
+                    return $match[1].$match[2].' '.$match[4];
                 } elseif ($secondMatch == 'nothing') {
                     // first group is something, but second on nothing
-                    return $match[1] . $match[2] . ' ' . $match[3];
+                    return $match[1].$match[2].' '.$match[3];
                 }
 
                 return $match[0];
@@ -256,7 +253,6 @@ class ReportBuilder extends DomainObject
         return $title;
     }
 
-
     /**
      * Gets the DPQL parts for this report's query
      *
@@ -264,7 +260,7 @@ class ReportBuilder extends DomainObject
      */
     public function getParts()
     {
-        $compiler = new \Application\DeskPRO\Dpql\Compiler();
+        $compiler  = new \Application\DeskPRO\Dpql\Compiler();
         $statement = $compiler->compile($this->query);
 
         return $statement->getDpqlParts();
@@ -296,7 +292,7 @@ class ReportBuilder extends DomainObject
      */
     public function isQueryDifferent($query)
     {
-        $query = preg_replace('/\s/', '', $query);
+        $query     = preg_replace('/\s/', '', $query);
         $thisQuery = preg_replace('/\s/', '', $this->query);
 
         return ($query != $thisQuery);
@@ -333,11 +329,11 @@ class ReportBuilder extends DomainObject
             array(
                  'name'              => 'report_builder',
                  'indexes'           => array(
-                     'parent_id_idx' => array('columns' => array('parent_id'))
+                     'parent_id_idx' => array('columns' => array('parent_id')),
                  ),
                  'uniqueConstraints' => array(
-                     'unique_key_idx' => array('columns' => array('unique_key'))
-                 )
+                     'unique_key_idx' => array('columns' => array('unique_key')),
+                 ),
             )
         );
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);

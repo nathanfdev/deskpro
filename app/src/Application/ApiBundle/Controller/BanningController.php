@@ -56,7 +56,6 @@ class BanningController extends AbstractController implements ProtectedControlle
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-
     ####################################################################################################################
     # list
     ####################################################################################################################
@@ -105,7 +104,7 @@ class BanningController extends AbstractController implements ProtectedControlle
                      ),
                      'ip_bans'    => $ip_bans->getAllAsNestedArray(),
                      'email_bans' => $email_bans->getAllAsNestedArray(),
-                 )
+                 ),
             )
         );
     }
@@ -124,13 +123,12 @@ class BanningController extends AbstractController implements ProtectedControlle
         $ip_ban  = $ip_bans->getById($id);
 
         if (!$ip_ban) {
-
             throw $this->createNotFoundException();
         }
 
         return $this->createApiResponse(
             array(
-                 'ip_ban' => $this->getApiData($ip_ban)
+                 'ip_ban' => $this->getApiData($ip_ban),
             )
         );
     }
@@ -149,13 +147,12 @@ class BanningController extends AbstractController implements ProtectedControlle
         $email_ban  = $email_bans->getById($id);
 
         if (!$email_ban) {
-
             throw $this->createNotFoundException();
         }
 
         return $this->createApiResponse(
             array(
-                 'email_ban' => $this->getApiData($email_ban)
+                 'email_ban' => $this->getApiData($email_ban),
             )
         );
     }
@@ -173,15 +170,12 @@ class BanningController extends AbstractController implements ProtectedControlle
         $ip_bans = $this->container->getSystemService('ip_bans');
 
         if ($id) {
-
             $ip_ban = $ip_bans->getById($id);
 
             if (!$ip_ban) {
-
                 throw $this->createNotFoundException();
             }
         } else {
-
             $ip_ban = $ip_bans->createNew();
         }
 
@@ -193,18 +187,15 @@ class BanningController extends AbstractController implements ProtectedControlle
         $form->submit($this->deleteExtraDataFromRequest($form, $postData, 'ip_ban'), true);
 
         if ($form->isValid()) {
-
             $ip_ban_edit->save($this->em);
-
         } else {
-
             throw ValidationException::create($this->getFormValidationErrorsString($form));
         }
 
         return $this->createApiResponse(
             array(
                  'success'   => true,
-                 'banned_ip' => $ip_ban->banned_ip
+                 'banned_ip' => $ip_ban->banned_ip,
             )
         );
     }
@@ -222,15 +213,12 @@ class BanningController extends AbstractController implements ProtectedControlle
         $email_bans = $this->container->getSystemService('email_bans');
 
         if ($id) {
-
             $email_ban = $email_bans->getById($id);
 
             if (!$email_ban) {
-
                 throw $this->createNotFoundException();
             }
         } else {
-
             $email_ban = $email_bans->createNew();
         }
 
@@ -240,7 +228,7 @@ class BanningController extends AbstractController implements ProtectedControlle
         return $this->createApiResponse(
             array(
                  'success'      => true,
-                 'banned_email' => $email_ban->banned_email
+                 'banned_email' => $email_ban->banned_email,
             )
         );
     }
@@ -265,7 +253,6 @@ class BanningController extends AbstractController implements ProtectedControlle
         $ip_ban  = $ip_bans->getById($id);
 
         if (!$ip_ban) {
-
             throw $this->createNotFoundException();
         }
 
@@ -274,14 +261,11 @@ class BanningController extends AbstractController implements ProtectedControlle
         $this->db->beginTransaction();
 
         try {
-
             $this->em->remove($ip_ban);
             $this->em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }
@@ -309,7 +293,6 @@ class BanningController extends AbstractController implements ProtectedControlle
         $email_ban  = $email_bans->getById($id);
 
         if (!$email_ban) {
-
             throw $this->createNotFoundException();
         }
 
@@ -318,14 +301,11 @@ class BanningController extends AbstractController implements ProtectedControlle
         $this->db->beginTransaction();
 
         try {
-
             $this->em->remove($email_ban);
             $this->em->flush();
 
             $this->db->commit();
-
-        } catch(\Exception $e) {
-
+        } catch (\Exception $e) {
             $this->db->rollback();
             throw $e;
         }
@@ -343,14 +323,16 @@ class BanningController extends AbstractController implements ProtectedControlle
         $rep = $this->em->getRepository('DeskPRO:BanEmail');
 
         $response = new StreamedResponse();
-        $disp = $response->headers->makeDisposition(
+        $disp     = $response->headers->makeDisposition(
             ResponseHeaderBag::DISPOSITION_ATTACHMENT,
             'banned_emails.txt'
         );
         $response->headers->set('Content-Disposition', $disp);
         $response->setCallback(function () use ($rep) {
             foreach ($rep->getAll() as $k => $email) {
-                if ($k > 0) echo ',';
+                if ($k > 0) {
+                    echo ',';
+                }
                 echo $email['banned_email'];
             }
         });
@@ -391,7 +373,7 @@ class BanningController extends AbstractController implements ProtectedControlle
 
         /** @var EmailBans $email_bans */
         $email_bans = $this->container->getSystemService('email_bans');
-        $content = file_get_contents($file->getPath() . '/' . $file->getFilename());
+        $content    = file_get_contents($file->getPath().'/'.$file->getFilename());
 
         foreach (explode(',', $content) as $email) {
             try {

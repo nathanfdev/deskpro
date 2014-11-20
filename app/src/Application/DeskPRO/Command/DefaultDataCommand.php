@@ -56,10 +56,10 @@ class DefaultDataCommand extends ContainerAwareCommand
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $action = strtolower($input->getArgument('action'));
+        $action    = strtolower($input->getArgument('action'));
         $classname = $input->getArgument('classname') ?: null;
 
-        $logger = new Logger('defaultdata');
+        $logger          = new Logger('defaultdata');
         $console_handler = new ConsoleHandler($output);
         $logger->pushHandler($console_handler);
 

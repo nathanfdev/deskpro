@@ -78,13 +78,13 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
     {
         $params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
 
-        $host = $params['host'];
-        $m = null;
-        $dp_global_key = null;
+        $host           = $params['host'];
+        $m              = null;
+        $dp_global_key  = null;
         $recreate_retry = false;
 
         if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
-            $key = $m[1];
+            $key           = $m[1];
             $dp_global_key = $key;
             unset($params['host']);
 
@@ -104,7 +104,7 @@ class ConnectionFactory extends \Doctrine\Bundle\DoctrineBundle\ConnectionFactor
             // When in testing mode, the db might be changed by overwriting a var
             if (defined('DP_BOOT_MODE') && DP_BOOT_MODE == 'testing' && !empty($GLOBALS['DP_TESTING_USEDB'])) {
                 $params['dbname'] = $GLOBALS['DP_TESTING_USEDB'];
-                $recreate_retry = true;
+                $recreate_retry   = true;
 
             // When testing a web request (eg selenium), there might exist a file that contains a different db name
             } elseif (isset($GLOBALS['DP_USING_TESTING_CONFIG']) && $GLOBALS['DP_USING_TESTING_CONFIG'] && file_exists(DP_WEB_ROOT.'/testing_db_name')) {

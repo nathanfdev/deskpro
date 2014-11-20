@@ -45,7 +45,7 @@ class Data extends HandlerAbstract
     public function getFormField($data = null)
     {
         $setData = null;
-        if ($data AND !empty($data['value'])) {
+        if ($data and !empty($data['value'])) {
             $setData = $data['value'];
         }
 
@@ -58,7 +58,7 @@ class Data extends HandlerAbstract
     {
         if (isset($form_data[$this->getFormFieldName()])) {
             return array(
-                array($this->field_def->getId(), 'input', $form_data[$this->getFormFieldName()])
+                array($this->field_def->getId(), 'input', $form_data[$this->getFormFieldName()]),
             );
         }
 

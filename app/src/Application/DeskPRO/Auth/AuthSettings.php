@@ -50,7 +50,7 @@ class AuthSettings
         AuthInterfaceSettings $userInterfaceSettings,
         AuthInterfaceSettings $agentInterfaceSettings
     ) {
-        $this->userInterfaceSettings = $userInterfaceSettings;
+        $this->userInterfaceSettings  = $userInterfaceSettings;
         $this->agentInterfaceSettings = $agentInterfaceSettings;
     }
 

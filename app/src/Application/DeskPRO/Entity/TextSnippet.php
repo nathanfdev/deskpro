@@ -87,7 +87,6 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-
     /**
      * @param string $sc
      */
@@ -100,26 +99,23 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
+        $data                = parent::toApiData($primary, $deep, $visited);
         $data['category_id'] = $this->category ? $this->category->getId() : 0;
-        $data['title'] = array();
-        $data['snippet'] = array();
+        $data['title']       = array();
+        $data['snippet']     = array();
 
         foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
             $title   = $this->getObjectTranslatable()->getObjectProp('title', $lang);
             $snippet = $this->getObjectTranslatable()->getObjectProp('snippet', $lang);
 
-            $data['title'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
+            $data['title'][]   = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $title);
             $data['snippet'][] = array('language_id' => $lang->getId(), 'locale' => $lang->getLocale(), 'value' => $snippet);
         }
 
         return $data;
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -139,13 +135,13 @@ class TextSnippet extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TextSnippet';
-        $metadata->setPrimaryTable(array( 'name' => 'text_snippets', ));
+        $metadata->setPrimaryTable(array( 'name' => 'text_snippets'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'shortcut_code', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'shortcut_code', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'shortcut_code', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'shortcut_code'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippetCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippetCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
 
         ObjectTranslatable::loadEntityMetadata($metadata);
     }

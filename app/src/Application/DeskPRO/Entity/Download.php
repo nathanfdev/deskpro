@@ -130,7 +130,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
-
     /**
      * @param $url
      * @param $filesize
@@ -179,7 +178,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $this->setModelField('filename', $filename);
     }
 
-
     /**
      * @return string
      */
@@ -196,7 +194,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $this->blob['filename'];
     }
 
-
     /**
      * @return string
      */
@@ -208,7 +205,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
         return $filename_safe;
     }
-
 
     /**
      * @return int|string
@@ -226,7 +222,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $this->blob['filesize'];
     }
 
-
     /**
      * @return string
      */
@@ -243,7 +238,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $this->blob->getReadableFilesize();
     }
 
-
     /**
      * @return string
      */
@@ -253,7 +247,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
         return $url;
     }
-
 
     /**
      * @return string
@@ -265,7 +258,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $url;
     }
 
-
     /**
      * @return array
      */
@@ -273,16 +265,15 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     {
         $path = array();
 
-        $cat = $this->category;
+        $cat    = $this->category;
         $path[] = $cat;
         while ($cat['parent']) {
-            $cat = $cat['parent'];
+            $cat    = $cat['parent'];
             $path[] = $cat;
         }
 
         return $path;
     }
-
 
     /**
      * Add a label
@@ -293,7 +284,6 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $label['download'] = $this;
         $this->labels->add($label);
     }
-
 
     /**
      * @return string
@@ -306,7 +296,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $content = preg_replace('# {2,}#', ' ', $content);
 
         if (strlen($content) > 120) {
-            $content = substr($content, 0, 120) . '...';
+            $content = substr($content, 0, 120).'...';
         }
 
         return $content;
@@ -315,17 +305,15 @@ class Download extends ContentAbstract implements HighlightableModelInterface
     public function _invalidatePageCache()
     {
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->invalidateRegex('/_downloads(-|_files_' . intval($this->getId()) . '-|_\d+)/');
+        $cache->invalidateRegex('/_downloads(-|_files_'.intval($this->getId()).'-|_\d+)/');
     }
-
-
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
-            foreach ($this->labels AS $label) {
+            foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
         }
@@ -384,9 +372,9 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             array(
                 'name'    => 'downloads',
                 'indexes' => array(
-                    'date_published_idx' => array('columns' => array(0 => 'date_published',)),
-                    'status_idx'         => array('columns' => array('status')),
-                )
+                    'date_published_idx' => array('columns' => array(0 => 'date_published')),
+                    'status_idx'                                       => array('columns' => array('status')),
+                ),
             )
         );
         $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
@@ -406,7 +394,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $metadata->mapField(
             array(
                 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'slug', 'unique' => true
+                'nullable'  => false, 'columnName' => 'slug', 'unique' => true,
             )
         );
         $metadata->mapField(
@@ -428,7 +416,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             )
         );
         $metadata->mapField(
-            array('fieldName' => 'filesize', 'type' => 'integer', 'nullable' => true, 'columnName' => 'filesize',)
+            array('fieldName' => 'filesize', 'type' => 'integer', 'nullable' => true, 'columnName' => 'filesize')
         );
         $metadata->mapField(
             array(
@@ -499,13 +487,13 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                     'name'     => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'set null', 'columnDefinition' => null,
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadRevision',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'download',
+                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download',
             )
         );
         $metadata->mapManyToOne(
@@ -522,8 +510,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $metadata->mapOneToMany(
             array(
                 'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelDownload',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'download',
-                'orphanRemoval' => true,
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download',
+                'orphanRemoval'            => true,
             )
         );
         $metadata->mapManyToOne(
@@ -534,7 +522,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                     'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete'         => 'set null', 'columnDefinition' => null,
                 ),
-            ), 'dpApi'       => true
+            ), 'dpApi'       => true,
             )
         );
         $metadata->mapManyToOne(
@@ -545,7 +533,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                     'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'cascade', 'columnDefinition' => null,
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
 

@@ -86,7 +86,6 @@ class Imap extends AbstractFetcher
      */
     private $read_mailbox;
 
-
     /**
      * Initiates the connection
      *
@@ -109,7 +108,7 @@ class Imap extends AbstractFetcher
                 $options['read_mailbox'] = $imap_config->read_mailbox;
 
                 if ($imap_config->secure_mode) {
-                    $options['secure'] = $imap_config->secure_mode;
+                    $options['secure']        = $imap_config->secure_mode;
                     $options['no_validation'] = $imap_config->no_validation;
                 }
 
@@ -132,10 +131,10 @@ class Imap extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unknown account type: " . $this->account->incoming_account->getType());
+                throw new \InvalidArgumentException("Unknown account type: ".$this->account->incoming_account->getType());
         }
 
-        $this->mode = $options['mode'];
+        $this->mode            = $options['mode'];
         $this->archive_mailbox = !empty($options['archive_mailbox']) ? $options['archive_mailbox'] : 'DP_Archive';
         $this->read_mailbox    = !empty($options['read_mailbox']) ? $options['read_mailbox'] : null;
 
@@ -164,11 +163,10 @@ class Imap extends AbstractFetcher
             $this->message_uids = $this->storage->getAllMessageUids();
         }
 
-        $this->logger->log("Read IDs: " . implode(', ', $this->message_uids), 'debug');
+        $this->logger->log("Read IDs: ".implode(', ', $this->message_uids), 'debug');
 
         return $this->storage;
     }
-
 
     /**
      * Gets the next message
@@ -182,7 +180,6 @@ class Imap extends AbstractFetcher
 
         return array_shift($this->message_uids);
     }
-
 
     /**
      * {@inheritdoc}
@@ -200,7 +197,7 @@ class Imap extends AbstractFetcher
             return null;
         }
 
-        $raw_message = new RawMessage();
+        $raw_message       = new RawMessage();
         $raw_message->id   = $message_uid;
         $raw_message->uid  = $message_uid;
         $raw_message->size = $this->storage->getMessageSize($message_uid) ?: 0;
@@ -211,7 +208,7 @@ class Imap extends AbstractFetcher
         if ($this->max_size && $raw_message->size && $raw_message->size > $this->max_size) {
             // If we are here, it means that message is larger than the max size
             // So, we won't store the whole message, only the headers.
-            $raw_message->content = $this->storage->getRawHeaders($message_uid) . "\n\n";
+            $raw_message->content = $this->storage->getRawHeaders($message_uid)."\n\n";
             $this->logger->log("Message too big, only fetching headers", 'debug');
         } else {
             // Otherwise store the whole message
@@ -221,14 +218,14 @@ class Imap extends AbstractFetcher
         $headers = null;
 
         $EOL = "\n";
-        if (strpos($raw_message->content, $EOL . $EOL)) {
-            list($headers, ) = explode($EOL . $EOL, $raw_message->content, 2);
+        if (strpos($raw_message->content, $EOL.$EOL)) {
+            list($headers,) = explode($EOL.$EOL, $raw_message->content, 2);
         } elseif ($EOL != "\r\n" && strpos($raw_message->content, "\r\n\r\n")) {
-            list($headers, ) = explode("\r\n\r\n", $raw_message->content, 2);
+            list($headers,) = explode("\r\n\r\n", $raw_message->content, 2);
         } elseif ($EOL != "\n" && strpos($raw_message->content, "\n\n")) {
-            list($headers, ) = explode("\n\n", $raw_message->content, 2);
+            list($headers,) = explode("\n\n", $raw_message->content, 2);
         } else {
-            @list($headers, ) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
+            @list($headers,) = @preg_split("%([\r\n]+)\\1%U", $raw_message->content, 2);
         }
 
         $raw_message->headers = $headers;
@@ -262,7 +259,7 @@ class Imap extends AbstractFetcher
                 break;
 
             default:
-                throw new \InvalidArgumentException("Unvalid mode: " . $this->mode);
+                throw new \InvalidArgumentException("Unvalid mode: ".$this->mode);
         }
     }
 }

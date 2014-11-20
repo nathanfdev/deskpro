@@ -61,7 +61,6 @@ class AppServiceContainer
      */
     private $app_services = array();
 
-
     /**
      * @param DeskproContainer $container
      */
@@ -70,14 +69,13 @@ class AppServiceContainer
         $this->container = $container;
     }
 
-
     /**
      * @param NativeApp $native_app
      */
     public function registerNativeApp(NativeApp $native_app)
     {
         $package = $native_app->getPackage();
-        $app = $native_app->getApp();
+        $app     = $native_app->getApp();
 
         if (isset($this->package_service_names[$package->name])) {
             return;
@@ -88,9 +86,10 @@ class AppServiceContainer
         // Set up services
         $app_services = $native_app->getConfig()->getServices();
         if ($app_services) {
-
             $app_services = Arrays::keyFromData($app_services, 'id');
-            $app_services = array_map(function ($x) use ($app) { $x['app'] = $app; return $x; }, $app_services);
+            $app_services = array_map(function ($x) use ($app) { $x['app'] = $app;
+
+return $x; }, $app_services);
             $this->package_service_names[$package->name] = $app_services;
 
             if ($package->is_single) {
@@ -102,7 +101,6 @@ class AppServiceContainer
             }
         }
     }
-
 
     /**
      * @param  string                    $name The name of the service
@@ -127,9 +125,9 @@ class AppServiceContainer
                     throw new \InvalidArgumentException("Unknown service $name for app package {$package->name}");
                 }
 
-                $service_info = $this->package_service_names[$package->name][$name];
+                $service_info    = $this->package_service_names[$package->name][$name];
                 $service_factory = $service_info['class'];
-                $service = $service_factory::create($this->container, $app, isset($service_info['options']) ? $service_info['options'] : null);
+                $service         = $service_factory::create($this->container, $app, isset($service_info['options']) ? $service_info['options'] : null);
 
                 if (!isset($this->app_services[$app->id])) {
                     $this->app_services[$app->id] = array();
@@ -157,9 +155,9 @@ class AppServiceContainer
                 throw new \InvalidArgumentException("Unknown service $name for app package @single");
             }
 
-            $service_info = $this->package_service_names['@single'][$name];
+            $service_info    = $this->package_service_names['@single'][$name];
             $service_factory = $service_info['class'];
-            $service = $service_factory::create($this->container, $service_info['app'], isset($service_info['options']) ? $service_info['options'] : null);
+            $service         = $service_factory::create($this->container, $service_info['app'], isset($service_info['options']) ? $service_info['options'] : null);
 
             if (!isset($this->app_services['@single'])) {
                 $this->app_services['@single'] = array();

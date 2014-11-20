@@ -81,13 +81,12 @@ class BrandStack
      */
     private $default_brand;
 
-
     public function __construct(BrandContainerFactory $factory, Brand $default_brand)
     {
-        $this->factory = $factory;
-        $this->stack = array();
+        $this->factory          = $factory;
+        $this->stack            = array();
         $this->brand_containers = array();
-        $this->default_brand = $default_brand;
+        $this->default_brand    = $default_brand;
     }
 
     /**
@@ -105,7 +104,6 @@ class BrandStack
 
         return null;
     }
-
 
     public function getStack()
     {

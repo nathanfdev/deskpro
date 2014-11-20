@@ -45,7 +45,7 @@ class CarryAdminSession
 
     public function __construct($controller, $cookie_name = 'dpsid-agent')
     {
-        $this->controller = $controller;
+        $this->controller  = $controller;
         $this->cookie_name = $cookie_name;
     }
 
@@ -53,7 +53,7 @@ class CarryAdminSession
     {
         if (!$this->controller->person->id) {
             $admin_session_code = !empty($_COOKIE[$this->cookie_name]) ? $_COOKIE[$this->cookie_name] : false;
-            $admin_session = null;
+            $admin_session      = null;
             if ($admin_session_code) {
                 $admin_session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($admin_session_code);
                 if (!$admin_session || !$admin_session->person || !$admin_session->person->is_agent) {

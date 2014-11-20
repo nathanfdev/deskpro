@@ -44,16 +44,16 @@ class NewOrganization extends AbstractType
         $builder->add('name', 'text', array('required' => false));
 
         $builder->add('labels', 'collection', array(
-            'type' => 'text',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'text',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
         $builder->add('usergroup_ids', 'collection', array(
-            'type' => 'text',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'text',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
     }
 

@@ -52,7 +52,7 @@ class SettingsResolverService
         $loaders = array(
             $container->getSystemService('default_settings_loader'),
             new DbGlobalSettingsTableLoader($container->getEm()->getConnection(), $simple_array_cache),
-            new GlobalsArrayLoader($simple_array_cache)
+            new GlobalsArrayLoader($simple_array_cache),
         );
 
         // brand settings loader is a special loader, injected directly
@@ -61,7 +61,6 @@ class SettingsResolverService
             $simple_array_cache,
             new BrandSettingsLoader($container->getEm()->getConnection(), $simple_array_cache)
         );
-
 
         // virtual settings
         $resolver->setVirtual(

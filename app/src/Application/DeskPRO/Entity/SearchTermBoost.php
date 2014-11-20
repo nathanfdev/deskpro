@@ -54,8 +54,6 @@ class SearchTermBoost extends \Application\DeskPRO\Domain\DomainObject
      */
     const METHOD_AGENT = 'agent';
 
-
-
     /**
      * @var string
      */
@@ -80,8 +78,6 @@ class SearchTermBoost extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $boosted_terms;
 
-
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -89,11 +85,11 @@ class SearchTermBoost extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'search_term_boosters', ));
+        $metadata->setPrimaryTable(array( 'name' => 'search_term_boosters'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'boosted_method', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user', ));
-        $metadata->mapField(array( 'fieldName' => 'boosted_terms', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'boosted_terms', ));
+        $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'boosted_method', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_user'));
+        $metadata->mapField(array( 'fieldName' => 'boosted_terms', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'boosted_terms'));
     }
 }

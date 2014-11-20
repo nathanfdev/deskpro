@@ -79,7 +79,6 @@ class IncomingAccountTester
         $this->logger->addWriter($this->logger_writer);
     }
 
-
     /**
      * Run the test
      *
@@ -108,7 +107,6 @@ class IncomingAccountTester
         return $this->is_success;
     }
 
-
     /**
      * @return bool
      */
@@ -117,7 +115,6 @@ class IncomingAccountTester
         return $this->is_success;
     }
 
-
     /**
      * @return \Exception
      */
@@ -125,7 +122,6 @@ class IncomingAccountTester
     {
         return $this->exception;
     }
-
 
     /**
      * As part of the test, we fetch the count of messages.
@@ -136,7 +132,6 @@ class IncomingAccountTester
     {
         return $this->message_count;
     }
-
 
     /**
      * Tests Pop3
@@ -150,12 +145,12 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-                'host'     => $account_config->host,
-                'user'     => $account_config->user,
-                'password' => $account_config->password,
-                'port'     => $account_config->port,
-                'ssl'      => $account_config->secure_mode,
-                'logger'   => $this->logger,
+                'host'      => $account_config->host,
+                'user'      => $account_config->user,
+                'password'  => $account_config->password,
+                'port'      => $account_config->port,
+                'ssl'       => $account_config->secure_mode,
+                'logger'    => $this->logger,
                 'test_mode' => true,
             ));
 
@@ -170,7 +165,6 @@ class IncomingAccountTester
         }
     }
 
-
     private function _testImap()
     {
         /** @var \Application\DeskPRO\Email\EmailAccount\IncomingAccount\ImapConfig $account_config */
@@ -180,14 +174,14 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Imap(array(
-                'host'     => $account_config->host,
-                'user'     => $account_config->user,
-                'password' => $account_config->password,
-                'port'     => $account_config->port,
-                'secure'   => $account_config->secure_mode,
+                'host'          => $account_config->host,
+                'user'          => $account_config->user,
+                'password'      => $account_config->password,
+                'port'          => $account_config->port,
+                'secure'        => $account_config->secure_mode,
                 'no_validation' => $account_config->no_validation,
-                'logger'   => $this->logger,
-                'test_mode' => true,
+                'logger'        => $this->logger,
+                'test_mode'     => true,
             ));
             if ($account_config->read_mailbox) {
                 $storage->ensureMailboxExists($account_config->read_mailbox);
@@ -200,7 +194,7 @@ class IncomingAccountTester
                 $ids = $storage->getAllMessageUids();
             }
 
-            $this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+            $this->logger->logInfo("Read IDs: ".implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
@@ -211,7 +205,6 @@ class IncomingAccountTester
             $this->is_success = false;
         }
     }
-
 
     private function _testExchange()
     {
@@ -222,11 +215,11 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Exchange(array(
-                'host'     => $account_config->host,
-                'user'     => $account_config->user,
-                'password' => $account_config->password,
-                'port'     => $account_config->port,
-                'logger'   => $this->logger,
+                'host'      => $account_config->host,
+                'user'      => $account_config->user,
+                'password'  => $account_config->password,
+                'port'      => $account_config->port,
+                'logger'    => $this->logger,
                 'test_mode' => true,
             ));
             if ($account_config->read_mailbox) {
@@ -234,7 +227,7 @@ class IncomingAccountTester
             }
 
             $unread_only = false;
-            $folder = null;
+            $folder      = null;
 
             if ($account_config->mode == 'read') {
                 $unread_only = true;
@@ -245,7 +238,7 @@ class IncomingAccountTester
 
             $ids = $storage->searchIds(100, $unread_only, $folder);
 
-            $this->logger->logInfo("Read IDs: " . implode(', ', $ids));
+            $this->logger->logInfo("Read IDs: ".implode(', ', $ids));
             $this->message_count = count($ids);
 
             $this->is_success = true;
@@ -256,7 +249,6 @@ class IncomingAccountTester
             $this->is_success = false;
         }
     }
-
 
     /**
      * Tests Gmail
@@ -270,12 +262,12 @@ class IncomingAccountTester
 
         try {
             $storage = new \Application\DeskPRO\EmailGateway\Storage\Pop3(array(
-                'host'     => 'pop.gmail.com',
-                'user'     => $account_config->user,
-                'password' => $account_config->password,
-                'port'     => 995,
-                'ssl'      => 'ssl',
-                'logger'   => $this->logger,
+                'host'      => 'pop.gmail.com',
+                'user'      => $account_config->user,
+                'password'  => $account_config->password,
+                'port'      => 995,
+                'ssl'       => 'ssl',
+                'logger'    => $this->logger,
                 'test_mode' => true,
             ));
 

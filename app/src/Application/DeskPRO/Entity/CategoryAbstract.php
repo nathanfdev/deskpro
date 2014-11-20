@@ -145,13 +145,11 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->title;
     }
 
-
     public function updateSlug()
     {
         $this->slug = Strings::slugifyTitle($this->title);
         $this->setModelField('slug', $this->slug);
     }
-
 
     public function setTitle($title)
     {
@@ -161,12 +159,10 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         $this->updateSlug();
     }
 
-
     public function getUrlSlug()
     {
-        return $this->id . '-' . Strings::slugifyTitle($this->title);
+        return $this->id.'-'.Strings::slugifyTitle($this->title);
     }
-
 
     /**
      * Get an array of titles from parents down to this.
@@ -184,7 +180,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $titles;
     }
 
-
     /**
      * Get the full display title for the category with all parents parts, separated
      * by $sep. Example: Category > Subcategory
@@ -197,7 +192,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return implode($sep, $this->getTitleParts());
     }
 
-
     /**
      * Gets all parents in the tree, in order (left to right, aka, top to bottom)
      *
@@ -205,21 +199,21 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
      */
     public function getTreeParents()
     {
-        if (isset($this->_structure['all_parents'])) return $this->_structure['all_parents'];
+        if (isset($this->_structure['all_parents'])) {
+            return $this->_structure['all_parents'];
+        }
 
         $this->_structure['all_parents'] = array();
-        $cat = $this;
+        $cat                             = $this;
         while ($cat->getParent()) {
             $this->_structure['all_parents'][$cat->getParent()->id] = $cat->getParent();
-            $cat = $cat->parent;
+            $cat                                                    = $cat->parent;
         }
 
         $this->_structure['all_parents'] = array_reverse($this->_structure['all_parents'], true);
 
         return $this->_structure['all_parents'];
     }
-
-
 
     /**
      * Get all IDs of this tree, from this node and downwards.
@@ -230,9 +224,8 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     public function getTreeIds($including_this = true)
     {
         if (!isset($this->_structure['all_child_ids'])) {
-
             $all_ids = array();
-            $r = function ($cat) use (&$r, &$all_ids) {
+            $r       = function ($cat) use (&$r, &$all_ids) {
                 foreach ($cat->getChildren() as $c) {
                     $all_ids[] = $c->id;
                     if ($c->getChildren()) {
@@ -271,7 +264,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->parent;
     }
 
-
     /**
      * Return a unique ID that we can use to look up translations for this object
      *
@@ -283,12 +275,11 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         if (!$property) {
             $property = 'title';
         }
-        $name = strtolower(Util::getBaseClassname($this));
-        $phrase_name = 'obj_'.$name.'.' . $this->id . '_' . $property;
+        $name        = strtolower(Util::getBaseClassname($this));
+        $phrase_name = 'obj_'.$name.'.'.$this->id.'_'.$property;
 
         return $phrase_name;
     }
-
 
     /**
      * Get the default value phrase for the object
@@ -305,23 +296,19 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $this->title;
     }
 
-
     public function getSelectTitle()
     {
         if ($this->depth) {
-            return str_repeat('--', $this->depth) . ' ' . $this->title;
+            return str_repeat('--', $this->depth).' '.$this->title;
         } else {
             return $this->title;
         }
     }
 
-
     public function __toString()
     {
         return $this->getFullTitle();
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -331,7 +318,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     {
         $metadata->isMappedSuperclass = true;
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setPrimaryTable(array( 'name' => 'CategoryAbstract', ));
+        $metadata->setPrimaryTable(array( 'name' => 'CategoryAbstract'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
     }
 }

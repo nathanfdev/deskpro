@@ -50,15 +50,13 @@ class PersonFromEmailProcessor
      */
     public function passPerson(EmailAddress $from, Entity\Person $person)
     {
-        if (!$person['first_name'] AND !$person['last_name']) {
+        if (!$person['first_name'] and !$person['last_name']) {
             if ($from->getName()) {
                 $person['name'] = $from->getName();
                 App::getOrm()->persist($person);
             }
         }
     }
-
-
 
     /**
      * Finds a person based on the From in the email address.
@@ -80,7 +78,6 @@ class PersonFromEmailProcessor
         return null;
     }
 
-
     /**
      * Finds a person based on the From in the email address.
      *
@@ -89,13 +86,11 @@ class PersonFromEmailProcessor
      */
     public function findPersonByEmailAddress($email_address)
     {
-        $email = new EmailAddress();
+        $email        = new EmailAddress();
         $email->email = $email_address;
 
         return $this->findPerson($email);
     }
-
-
 
     /**
      * Creates a person based on the From email address.
@@ -119,14 +114,14 @@ class PersonFromEmailProcessor
         $email = new Entity\PersonEmail();
         $email->setEmail($from->getEmail());
 
-        $person = Entity\Person::newContactPerson();
+        $person                  = Entity\Person::newContactPerson();
         $person->creation_system = 'gateway.person';
-        $person->name = $from->getNameUtf8();
+        $person->name            = $from->getNameUtf8();
 
         $email->person = $person;
         $person->addEmailAddress($email);
 
-        $email->is_validated = true;
+        $email->is_validated  = true;
         $person->is_confirmed = true;
 
         if (App::getSetting('core.agent_validation')) {

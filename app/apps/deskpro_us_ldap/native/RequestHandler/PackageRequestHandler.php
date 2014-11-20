@@ -57,7 +57,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         }
     }
 
-
     /**
      * @param  ApiPackageRequestContext                   $context
      * @return \Symfony\Component\HttpFoundation\Response

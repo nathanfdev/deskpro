@@ -36,7 +36,6 @@ namespace Application\AgentBundle\Controller\Helper;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ResultCache;
-use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 
 /**
@@ -77,20 +76,16 @@ class OrganizationResults
         return $helper;
     }
 
-
-
     public function __construct($controller, $perPage = self::PER_PAGE_DEFAULT)
     {
         $this->controller = $controller;
-        $this->perPage = $perPage;
+        $this->perPage    = $perPage;
     }
 
     public function getPerPage()
     {
         return $this->perPage;
     }
-
-
 
     /**
      * Set people IDs for the search results
@@ -100,8 +95,6 @@ class OrganizationResults
     {
         $this->organization_ids = $people_ids;
     }
-
-
 
     /**
      * Get people IDs
@@ -113,7 +106,6 @@ class OrganizationResults
         return $this->organization_ids;
     }
 
-
     /**
      * Get people for a particular page
      *
@@ -124,12 +116,10 @@ class OrganizationResults
         return $this->_getPageFromOrgsIds($this->getOrganizationIds(), $page, $this->getPerPage());
     }
 
-
-
     protected function _getPageFromOrgsIds(array $org_ids, $page, $per_page)
     {
         $page_org_ids = Arrays::getPageChunk($org_ids, $page, $per_page);
-        $orgs_raw = App::getEntityRepository('DeskPRO:Organization')->getOrganizationsFromIds($page_org_ids);
+        $orgs_raw     = App::getEntityRepository('DeskPRO:Organization')->getOrganizationsFromIds($page_org_ids);
 
         // - We'll get a page of results, but that actual page isn't going to be
         // sorted the way we want, because MySQL was just sent a list of ID's.

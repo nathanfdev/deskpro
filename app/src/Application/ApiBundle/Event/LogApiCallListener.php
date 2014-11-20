@@ -27,13 +27,11 @@
 
 namespace Application\ApiBundle\Event;
 
-
-use \Application\ApiBundle\Request\RequestAuth;
-use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
 use Application\DeskPRO\ORM\EntityManager;
 use Symfony\Component\EventDispatcher\ContainerAwareEventDispatcher;
 use Symfony\Component\HttpFoundation\Response;
+use \Application\ApiBundle\Request\RequestAuth;
 
 class LogApiCallListener
 {
@@ -65,7 +63,7 @@ class LogApiCallListener
         }
 
         $log->response = array(
-            'status' => $response->getStatusCode(),
+            'status'  => $response->getStatusCode(),
             'content' => $response->getContent(), // parse json to array?
         );
 

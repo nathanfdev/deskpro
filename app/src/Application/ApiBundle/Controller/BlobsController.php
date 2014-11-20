@@ -34,7 +34,6 @@
 
 namespace Application\ApiBundle\Controller;
 
-
 class BlobsController extends AbstractController
 {
     ####################################################################################################################
@@ -47,7 +46,7 @@ class BlobsController extends AbstractController
      */
     public function uploadAction()
     {
-        $file = $this->request->files->get('upfile');
+        $file   = $this->request->files->get('upfile');
         $accept = $this->container->getAttachmentAccepter();
 
         $context = 'agent';
@@ -57,7 +56,7 @@ class BlobsController extends AbstractController
 
         $error = $accept->getError($file, $context);
         if ($error) {
-            $message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+            $message = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
             return $this->createApiErrorResponse($error['error_code'], $message);
         }
@@ -65,10 +64,9 @@ class BlobsController extends AbstractController
         $blob = $accept->accept($file, true);
 
         return $this->createApiCreateResponse(array(
-            'blob' => $blob->toApiData()
+            'blob' => $blob->toApiData(),
         ), $this->generateUrl('api'));
     }
-
 
     ####################################################################################################################
     # get-info
@@ -82,7 +80,7 @@ class BlobsController extends AbstractController
         }
 
         return $this->createApiResponse(array(
-            'blob' => $blob->toApiData()
+            'blob' => $blob->toApiData(),
         ));
     }
 }

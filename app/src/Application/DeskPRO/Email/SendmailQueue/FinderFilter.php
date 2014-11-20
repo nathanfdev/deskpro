@@ -93,7 +93,7 @@ class FinderFilter
      */
     public function setPage($page)
     {
-        $this->page = max(1, (int)$page);
+        $this->page = max(1, (int) $page);
 
         return $this;
     }
@@ -104,7 +104,7 @@ class FinderFilter
      */
     public function setPerPage($per_page)
     {
-        $this->per_page = max(1, (int)$per_page);
+        $this->per_page = max(1, (int) $per_page);
 
         return $this;
     }

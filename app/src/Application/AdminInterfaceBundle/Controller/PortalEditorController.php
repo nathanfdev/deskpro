@@ -79,7 +79,7 @@ class PortalEditorController extends AbstractController
                         if (!$gd) {
                             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Please upload a valid image");
                         }
-                        $width = imagesx($gd);
+                        $width  = imagesx($gd);
                         $height = imagesy($gd);
 
                         $gd_dest = imagecreatetruecolor(16, 16);
@@ -136,24 +136,25 @@ class PortalEditorController extends AbstractController
                 }
 
                 if (!empty($data['token']) && !empty($data['secret'])) {
-                    $api = \Application\DeskPRO\Service\Twitter::getUserTwitterApi($data['token'], $data['secret']);
+                    $api      = \Application\DeskPRO\Service\Twitter::getUserTwitterApi($data['token'], $data['secret']);
                     $oauth_ok = false;
                     try {
                         $res = $api->get_accountVerify_credentials();
                         if (!empty($res->id_str)) {
                             $oauth_ok = true;
                         }
-                    } catch (\Exception $e) {}
+                    } catch (\Exception $e) {
+                    }
 
                     if (!$oauth_ok) {
-                        $data['token'] = false;
+                        $data['token']  = false;
                         $data['secret'] = false;
                     }
                 }
 
                 return $this->render('AdminInterfaceBundle:PortalEditor:twitter-sidebar-editor.html.twig', array(
-                    'data' => $data,
-                    'consumer_key' => \Application\DeskPRO\Service\Twitter::getUserConsumerKey()
+                    'data'         => $data,
+                    'consumer_key' => \Application\DeskPRO\Service\Twitter::getUserConsumerKey(),
                 ));
                 break;
         }
@@ -167,7 +168,7 @@ class PortalEditorController extends AbstractController
             case 'css_var':
                 $css_vars = $this->in->getCleanValueArray('vars', 'string', 'string');
                 foreach ($css_vars as $name => $value) {
-                    $setting_name = 'user_style.' . $name;
+                    $setting_name = 'user_style.'.$name;
                     $this->container->getSettingsHandler()->setSetting($setting_name, $value);
                 }
 
@@ -224,7 +225,7 @@ class PortalEditorController extends AbstractController
                 }
 
                 $app = $this->in->getStrSimple('tab');
-                $this->container->getSettingsHandler()->setSetting('user.portal_tab_' . $app, $val);
+                $this->container->getSettingsHandler()->setSetting('user.portal_tab_'.$app, $val);
 
                 // If the tab is turned on, we need to make sure the app itself is on as well
                 if ($val) {
@@ -233,7 +234,7 @@ class PortalEditorController extends AbstractController
                         $app_name = 'kb';
                     }
 
-                    $this->container->getSettingsHandler()->setSetting('core.apps_' . $app_name, 1);
+                    $this->container->getSettingsHandler()->setSetting('core.apps_'.$app_name, 1);
                 }
 
                 break;
@@ -281,7 +282,8 @@ class PortalEditorController extends AbstractController
                     $this->em->flush();
                     $this->em->commit();
                 }
-            } catch (\EpiOAuthException $e) {}
+            } catch (\EpiOAuthException $e) {
+            }
         }
 
         return $this->redirectRoute('admin_portal');
@@ -302,26 +304,26 @@ class PortalEditorController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'pid'     => $pd->getId()
+            'pid'     => $pd->getId(),
         ));
     }
 
     public function saveCustomBlockAction($name)
     {
         if ($name == 'UserBundle:Portal:new-sidebar-block.html.twig') {
-            $name = 'DeskPRO:CustomBlocks:Sidebar_' . mt_rand(1000,9999) . '_' . time() . '.html.twig';
-            $block = new \Application\DeskPRO\Entity\PortalPageDisplay();
-            $block->type = 'template';
-            $block->data = array('tpl' => $name);
+            $name              = 'DeskPRO:CustomBlocks:Sidebar_'.mt_rand(1000, 9999).'_'.time().'.html.twig';
+            $block             = new \Application\DeskPRO\Entity\PortalPageDisplay();
+            $block->type       = 'template';
+            $block->data       = array('tpl' => $name);
             $block->is_enabled = true;
-            $block->section = 'sidebar';
+            $block->section    = 'sidebar';
         } elseif ($pid = \Orb\Util\Strings::extractRegexMatch('#^EDIT_SIDEBAR_BLOCK:(.*?)$#', $name)) {
             $page_display = $this->em->find('DeskPRO:PortalPageDisplay', $pid);
             if (!$page_display || $page_display->type != 'template') {
-                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+                throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
             }
 
-            $name = $page_display->data['tpl'];
+            $name  = $page_display->data['tpl'];
             $block = null;
         }
 
@@ -329,34 +331,34 @@ class PortalEditorController extends AbstractController
 
         try {
             /** @var $twig \Application\DeskPRO\Twig\Environment */
-            $twig = $this->container->get('twig');
+            $twig     = $this->container->get('twig');
             $compiled = $twig->compileSource($template_code, $name);
         } catch (\Twig_Error_Syntax $e) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_syntax' => true,
-                'error_code' => $e->getCode(),
+                'error'         => true,
+                'error_syntax'  => true,
+                'error_code'    => $e->getCode(),
                 'error_message' => $e->getMessage(),
-                'error_line' => $e->getTemplateLine(),
-                'source' => $template_code
+                'error_line'    => $e->getTemplateLine(),
+                'source'        => $template_code,
             ));
         } catch (\Twig_Error $e) {
             return $this->createJsonResponse(array(
-                'error' => true,
-                'error_code' => $e->getCode(),
+                'error'         => true,
+                'error_code'    => $e->getCode(),
                 'error_message' => $e->getMessage(),
-                'source' => $template_code
+                'source'        => $template_code,
             ));
         }
 
-        $template = new Template();
+        $template        = new Template();
         $template->style = $this->container->getSystemService('style');
-        $template->name = $name;
+        $template->name  = $name;
         $template->setTemplate($template_code, $compiled);
 
         $ret_data = array(
             'success' => true,
-            'name' => $name,
+            'name'    => $name,
         );
 
         $this->db->beginTransaction();
@@ -397,10 +399,10 @@ class PortalEditorController extends AbstractController
         $pd->type = 'sidebar_block_simple';
         $pd->data = array(
             'title'   => $this->in->getString('title'),
-            'content' => $this->in->getString('content')
+            'content' => $this->in->getString('content'),
         );
         $pd->is_enabled = true;
-        $pd->section = 'sidebar';
+        $pd->section    = 'sidebar';
 
         $this->em->persist($pd);
         $this->em->flush();
@@ -410,7 +412,7 @@ class PortalEditorController extends AbstractController
 
         return $this->createJsonResponse(array(
             'success' => true,
-            'pid'     => $pd->getId()
+            'pid'     => $pd->getId(),
         ));
     }
 
@@ -475,7 +477,7 @@ class PortalEditorController extends AbstractController
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
         $cache->invalidateAll();
 
-        return $this->createJsonResponse(array('success'=>1));
+        return $this->createJsonResponse(array('success' => 1));
     }
 
     public function deleteTemplateBlockAction($pid)
@@ -503,7 +505,7 @@ class PortalEditorController extends AbstractController
         $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
         $cache->invalidateAll();
 
-        return $this->createJsonResponse(array('success'=>1));
+        return $this->createJsonResponse(array('success' => 1));
     }
 
     ############################################################################
@@ -522,7 +524,7 @@ class PortalEditorController extends AbstractController
 
         if ($this->in->getBool('save_selections')) {
             $set_selections = $this->in->getCleanValueArray('selections', 'raw', 'raw');
-            $ds = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links', true);
+            $ds             = App::getEntityRepository('DeskPRO:DataStore')->getByName('portal_widget_default_links', true);
             $ds->setData('selections', $set_selections);
 
             $this->em->persist($ds);
@@ -546,11 +548,11 @@ class PortalEditorController extends AbstractController
 
         $widget_url = $this->container->getSetting('core.deskpro_url');
         if (defined('DPC_SITE_DOMAIN')) {
-            $widget_url = 'http://' . DPC_SITE_DOMAIN . '/';
+            $widget_url = 'http://'.DPC_SITE_DOMAIN.'/';
         }
 
         $chat_online = ChatAvailableCheck::getAvailableTime();
-        $chat_online = (bool)$chat_online;
+        $chat_online = (bool) $chat_online;
 
         return $this->render('AdminInterfaceBundle:PortalEditor:website-widgets.html.twig', array(
             'articles'    => $articles,
@@ -565,7 +567,7 @@ class PortalEditorController extends AbstractController
 
             'article_cat_map'   => $article_cat_map,
             'download_cat_map'  => $download_cat_map,
-            'news_cat_map'      => $news_cat_map
+            'news_cat_map'      => $news_cat_map,
         ));
     }
 
@@ -583,7 +585,7 @@ class PortalEditorController extends AbstractController
             $error = $accept->getError($file, 'only_images');
         }
         if ($error) {
-            $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
+            $error['error'] = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
 
             return $this->createJsonResponse(array($error));
         }
@@ -599,8 +601,8 @@ class PortalEditorController extends AbstractController
                 case 'article':
                     $article = $this->em->find('DeskPRO:Article', $this->in->getUint('object_id'));
 
-                    $attach = new \Application\DeskPRO\Entity\ArticleAttachment();
-                    $attach['blob'] = $blob;
+                    $attach           = new \Application\DeskPRO\Entity\ArticleAttachment();
+                    $attach['blob']   = $blob;
                     $attach['person'] = $this->person;
 
                     $article->addAttachment($attach);
@@ -613,12 +615,12 @@ class PortalEditorController extends AbstractController
         }
 
         return $this->createJsonResponse(array(array(
-            'blob_id' => $blob['id'],
-            'blob_auth' => $blob->authcode,
-            'blob_auth_id' => $blob->id . '-' . $blob->authcode,
-            'download_url' => $blob->getDownloadUrl(true),
-            'filename' => $blob['filename'],
-            'filesize_readable' => $blob->getReadableFilesize()
+            'blob_id'           => $blob['id'],
+            'blob_auth'         => $blob->authcode,
+            'blob_auth_id'      => $blob->id.'-'.$blob->authcode,
+            'download_url'      => $blob->getDownloadUrl(true),
+            'filename'          => $blob['filename'],
+            'filesize_readable' => $blob->getReadableFilesize(),
         )));
     }
 

@@ -56,15 +56,15 @@ class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
         }
 
         $start = microtime(true);
-        $db = App::getDb();
+        $db    = App::getDb();
 
         set_time_limit(0);
 
-        if (file_exists(dp_get_tmp_dir() . '/db-collation-status.txt')) {
-            @unlink(dp_get_tmp_dir() . '/db-collation-status.txt');
+        if (file_exists(dp_get_tmp_dir().'/db-collation-status.txt')) {
+            @unlink(dp_get_tmp_dir().'/db-collation-status.txt');
         }
         $write_status = function ($table, $type = 'table') use ($collation) {
-            $fp = @fopen(dp_get_tmp_dir() . '/db-collation-status.txt', 'w');
+            $fp = @fopen(dp_get_tmp_dir().'/db-collation-status.txt', 'w');
             if (!$fp) {
                 return false;
             }
@@ -83,13 +83,13 @@ class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
 
             return 2;
         }
-        @chmod(dp_get_tmp_dir() . '/db-collation-status.txt', 0777);
+        @chmod(dp_get_tmp_dir().'/db-collation-status.txt', 0777);
 
         $db->executeQuery('SET foreign_key_checks = 0');
 
         $tables = $db->fetchAll('SHOW TABLE STATUS');
-        foreach ($tables AS $table) {
-            echo str_pad("Updating $table[Name]...", 50) . "\r";
+        foreach ($tables as $table) {
+            echo str_pad("Updating $table[Name]...", 50)."\r";
             $write_status($table['Name']);
 
             $changes = array();
@@ -98,21 +98,21 @@ class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
             }
 
             $columns = $db->fetchAll("SHOW FULL COLUMNS FROM `$table[Name]`");
-            foreach ($columns AS $column) {
+            foreach ($columns as $column) {
                 if (!empty($column['Collation']) && $column['Collation'] != $collation) {
                     $def = "$column[Type] "
-                        . " CHARACTER SET utf8 COLLATE $collation "
-                        . ($column['Null'] == 'NO' ? ' NOT NULL ' : ' NULL ')
-                        . ($column['Default'] !== null ? ' DEFAULT ' . $db->quote($column['Default']) : '')
-                        . ($column['Extra'] ? " $column[Extra] " : '')
-                        . ($column['Comment'] ? ' COMMENT ' . $db->quote($column['Comment']) : '');
+                        ." CHARACTER SET utf8 COLLATE $collation "
+                        .($column['Null'] == 'NO' ? ' NOT NULL ' : ' NULL ')
+                        .($column['Default'] !== null ? ' DEFAULT '.$db->quote($column['Default']) : '')
+                        .($column['Extra'] ? " $column[Extra] " : '')
+                        .($column['Comment'] ? ' COMMENT '.$db->quote($column['Comment']) : '');
                     $changes[] = "CHANGE  `$column[Field]` `$column[Field]` $def";
                 }
             }
 
             if ($changes) {
                 $db->executequery("
-                    ALTER TABLE `$table[Name]` " . implode(', ', $changes)
+                    ALTER TABLE `$table[Name]` ".implode(', ', $changes)
                 );
             }
         }
@@ -120,9 +120,9 @@ class DbCollationChangeCommand extends \Symfony\Bundle\FrameworkBundle\Command\C
         $db->executeQuery('SET foreign_key_checks = 1');
 
         App::getContainer()->getSettingsHandler()->setSetting('core.db_collation', $collation);
-        @unlink(dp_get_tmp_dir() . '/db-collation-status.txt');
+        @unlink(dp_get_tmp_dir().'/db-collation-status.txt');
 
-        echo str_pad("", 50) . "\r";
+        echo str_pad("", 50)."\r";
         $output->writeln(sprintf("Completed in %.4f seconds.", microtime(true) - $start));
     }
 }

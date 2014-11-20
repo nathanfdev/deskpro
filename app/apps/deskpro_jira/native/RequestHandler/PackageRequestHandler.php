@@ -54,7 +54,6 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         }
     }
 
-
     /**
      * @param  ApiPackageRequestContext                   $context
      * @return \Symfony\Component\HttpFoundation\Response
@@ -70,35 +69,34 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
      */
     public function testSettingsAction(ApiPackageRequestContext $context)
     {
-        $user = $context->getIn()->getString('jira_username');
-        $password = $context->getIn()->getString('jira_password');
-        $url = $context->getIn()->getString('jira_url');
-        $em = $context->getEm();
+        $user       = $context->getIn()->getString('jira_username');
+        $password   = $context->getIn()->getString('jira_password');
+        $url        = $context->getIn()->getString('jira_url');
+        $em         = $context->getEm();
         $regEnabled = $context->getContainer()->getSetting('core.reg_enabled');
 
-        $error = false;
+        $error  = false;
         $client = null;
 
-        $log = array();
-        $log[] = 'username: ' . $user;
-        $log[] = 'password: ' . $password;
-        $log[] = 'url: ' . $url;
+        $log   = array();
+        $log[] = 'username: '.$user;
+        $log[] = 'password: '.$password;
+        $log[] = 'url: '.$url;
 
-
-        $tests = array();
+        $tests   = array();
         $tests[] = function () use (&$log, $url, $user, $password, $em, $regEnabled) {
 
             $log[] = "Verifying JIRA API...";
 
             $service = new \Orb\Jira\Service($url, array(
-                'username'	=> $user,
-                'password'	=> $password,
-                'debug'		=> DP_DEBUG,
-                'reg_enabled' => $regEnabled,
+                'username'     => $user,
+                'password'     => $password,
+                'debug'        => DP_DEBUG,
+                'reg_enabled'  => $regEnabled,
             ), $em);
 
             try {
-                $meta = $service->getCreateMeta();
+                $meta  = $service->getCreateMeta();
                 $log[] = 'Everything is ok';
             } catch (\Exception $e) {
                 $log[] = $e->getMessage();
@@ -117,7 +115,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
         $result_data = array(
             'log'        => implode("\n", $log),
             'error'      => $error ? $error[1] : false,
-            'error_code' => $error ? $error[0] : false
+            'error_code' => $error ? $error[0] : false,
         );
 
         return $context->createJsonResponse($result_data);

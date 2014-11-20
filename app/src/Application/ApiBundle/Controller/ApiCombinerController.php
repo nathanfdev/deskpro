@@ -52,14 +52,13 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
         $returned_data = array();
 
         foreach ($this->in->getCleanValueArray('load_data', 'string', 'string') as $k => $load_data_id) {
-
             // Cut out everything before the /api/ which will could be the base-path
             $load_data_id = preg_replace('#^(.*?)\/api\/#', '/api/', $load_data_id);
 
             // Cut off the query string
             $req_data = array();
             if (($q_pos = strpos($load_data_id, '?')) !== false) {
-                list ($load_data_id, $qs) = explode('?', $load_data_id, 2);
+                list($load_data_id, $qs) = explode('?', $load_data_id, 2);
                 parse_str($qs, $req_data);
             }
 
@@ -71,11 +70,11 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
 
             $ctrl_name = null;
             $ctrl_path = $route_info['_controller'];
-            $m = null;
+            $m         = null;
             if (preg_match('#^(Application|Cloud)\\\\(.*?)\\\\Controller\\\\(.*?)Controller::(.*?)Action$#', $ctrl_path, $m)) {
-                $ctrl_name = $m[2] . ':' . $m[3] . ':' . $m[4];
+                $ctrl_name = $m[2].':'.$m[3].':'.$m[4];
                 if ($m[1] == 'Cloud') {
-                    $ctrl_name = 'Cloud' . $ctrl_name;
+                    $ctrl_name = 'Cloud'.$ctrl_name;
                 }
             }
 
@@ -89,7 +88,7 @@ class ApiCombinerController extends AbstractController implements ProtectedContr
                 if ($req_data) {
                     foreach ($req_data as $rk => $rv) {
                         $_REQUEST[$rk] = $rv;
-                        $_GET[$rk] = $rv;
+                        $_GET[$rk]     = $rv;
                     }
                     $this->in->resetSources();
                 }

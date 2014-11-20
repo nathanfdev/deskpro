@@ -72,7 +72,7 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $len = Ticket::TAC_AUTHCODE_LEN;
+        $len        = Ticket::TAC_AUTHCODE_LEN;
         $this->auth = Strings::random($len, Strings::CHARS_KEY);
     }
 
@@ -83,7 +83,6 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->id;
     }
-
 
     /**
      * Encodes the ticket ID and the auth into a single string.
@@ -98,7 +97,6 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
         return $str;
     }
 
-
     /**
      * Get the Message-ID field for an email regarding this ticket, witht he
      * embedded TAC code.
@@ -107,13 +105,12 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getUniqueEmailMessageId()
     {
-        $uid = 'TAC-' . $this->getAccessCode() . '.';
-        $uid .= uniqid('', true) . '-' . App::getSetting('core.site_id');
-        $uid .= '@' . md5(App::getSetting('core.site_url', 'deskpro'));
+        $uid = 'TAC-'.$this->getAccessCode().'.';
+        $uid .= uniqid('', true).'-'.App::getSetting('core.site_id');
+        $uid .= '@'.md5(App::getSetting('core.site_url', 'deskpro'));
 
         return $uid;
     }
-
 
     /**
      * Decoes an access code into a ticket id and the standalone code. You can look
@@ -126,22 +123,24 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
     {
         $len = Ticket::TAC_AUTHCODE_LEN;
 
-        if (strlen($access_code) < ($len+1)) return false;
+        if (strlen($access_code) < ($len+1)) {
+            return false;
+        }
 
         $matches = Strings::extractRegexMatch('#^(.+)(.{'.$len.'})$#', $access_code, -1);
-        if (!$matches) return false;
+        if (!$matches) {
+            return false;
+        }
 
-        list (, $access_code_id, $auth) = $matches;
+        list(, $access_code_id, $auth) = $matches;
 
         $access_code_id = Util::baseDecode($access_code_id, 'letters');
 
         return array(
             'access_code_id' => $access_code_id,
-            'auth'           => $auth
+            'auth'           => $auth,
         );
     }
-
-
 
     ############################################################################
     # Doctrine Metadata
@@ -151,12 +150,12 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketAccessCode';
-        $metadata->setPrimaryTable(array( 'name' => 'ticket_access_codes', ));
+        $metadata->setPrimaryTable(array( 'name' => 'ticket_access_codes'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
     }
 }

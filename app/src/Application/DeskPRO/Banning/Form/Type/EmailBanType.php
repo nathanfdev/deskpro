@@ -49,7 +49,7 @@ class EmailBanType extends AbstractType
         $resolver->setDefaults(
             array(
                  'data_class'         => 'Application\\DeskPRO\\Banning\\EmailBanEdit',
-                 'cascade_validation' => true
+                 'cascade_validation' => true,
             )
         );
     }
@@ -58,5 +58,4 @@ class EmailBanType extends AbstractType
     {
         return 'email_ban_edit';
     }
-
 }

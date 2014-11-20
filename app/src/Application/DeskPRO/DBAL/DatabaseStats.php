@@ -73,7 +73,7 @@ class DatabaseStats
         $this->stats['content_download_count']    = $this->db->fetchColumn("SELECT COUNT(*) FROM downloads");
         $this->stats['content_news_count']        = $this->db->fetchColumn("SELECT COUNT(*) FROM news");
         $this->stats['daily_visitor_count']       = $this->db->fetchColumn("SELECT COUNT(*) FROM visitors WHERE date_last >= ?", array(date('Y-m-d H:i:s', strtotime('-24 hours'))));
-        $this->stats['age_last_agent_login'] = $this->db->fetchColumn("
+        $this->stats['age_last_agent_login']      = $this->db->fetchColumn("
             SELECT UNIX_TIMESTAMP() - UNIX_TIMESTAMP(people.date_last_login)
             FROM people
             WHERE people.is_agent = 1 AND people.date_last_login IS NOT NULL

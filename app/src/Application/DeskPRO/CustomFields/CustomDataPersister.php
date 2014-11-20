@@ -44,7 +44,7 @@ class CustomDataPersister
 
     public function __construct()
     {
-        $this->toAdd = array();
+        $this->toAdd    = array();
         $this->toRemove = array();
     }
 

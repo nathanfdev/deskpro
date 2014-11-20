@@ -60,7 +60,7 @@ class InstantMessage extends AbstractContactData
         return array(
             'username' => $contact_record->field_1,
             'service'  => $contact_record->field_2,
-            'comment'  => $contact_record->comment
+            'comment'  => $contact_record->comment,
         );
     }
 

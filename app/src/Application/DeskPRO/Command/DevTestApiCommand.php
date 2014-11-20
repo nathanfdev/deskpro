@@ -65,7 +65,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         #------------------------------
 
         $data_arg = $input->getArgument('data');
-        $data = null;
+        $data     = null;
         if ($data_arg) {
             $req_type = 'POST';
             if ($data_arg[0] === '@') {
@@ -76,7 +76,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                     return 1;
                 }
 
-                $data = require($data_arg);
+                $data = require $data_arg;
                 if (!is_array($data)) {
                     $output->writeln("<error>Data file did not return array: $data_arg</error>");
 
@@ -107,8 +107,8 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         # Get the path and api token
         #------------------------------
 
-        $base_url = trim(App::getSetting('core.deskpro_url'), '/') . '/index.php/api/';
-        $path = trim($input->getArgument('path'), '/');
+        $base_url = trim(App::getSetting('core.deskpro_url'), '/').'/index.php/api/';
+        $path     = trim($input->getArgument('path'), '/');
 
         $api_key = $input->getOption('api-key');
         if (!$api_key) {
@@ -123,9 +123,9 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
                 ")->setMaxResults(1)->getOneOrNullResult();
 
                 if ($first_admin) {
-                    $key = new ApiKey();
+                    $key         = new ApiKey();
                     $key->person = $first_admin;
-                    $key->note=  '[dpdev:test-api]';
+                    $key->note   =  '[dpdev:test-api]';
                     App::getOrm()->persist($key);
                     App::getOrm()->flush();
                 }
@@ -145,10 +145,10 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         #------------------------------
 
         $http_client = new \Guzzle\Http\Client($base_url, array(
-            'ssl.certificate_authority' => false
+            'ssl.certificate_authority' => false,
         ));
         $http_client->setDefaultHeaders(array(
-            'X-DeskPRO-API-Key' => $api_key
+            'X-DeskPRO-API-Key' => $api_key,
         ));
 
         switch ($req_type) {
@@ -206,12 +206,12 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
             } else {
                 $output->write("<info>Success</info>\n");
             }
-            $output->writeln("<info>Request URI:    " . $request->getUrl() . "</info>");
-            $output->writeln("<info>Request Method: " . $request->getMethod() . "</info>");
-            $output->writeln("<info>Status Code:    " . $response->getStatusCode() . "</info>");
-            $output->writeln("<info>Content Type:   " . $response->getContentType() . "</info>");
+            $output->writeln("<info>Request URI:    ".$request->getUrl()."</info>");
+            $output->writeln("<info>Request Method: ".$request->getMethod()."</info>");
+            $output->writeln("<info>Status Code:    ".$response->getStatusCode()."</info>");
+            $output->writeln("<info>Content Type:   ".$response->getContentType()."</info>");
 
-            $res = $response->getBody(true);
+            $res  = $response->getBody(true);
             $json = @json_decode($res, true);
 
             if ($json) {
@@ -234,18 +234,17 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         return 0;
     }
 
-
-    private function _jsonpp($json, $istr='  ')
+    private function _jsonpp($json, $istr = '  ')
     {
         $result = '';
-        for($p=$q=$i=0; isset($json[$p]); $p++) {
-            $json[$p] == '"' && ($p>0?$json[$p-1]:'') != '\\' && $q=!$q;
-            if(strchr('}]', $json[$p]) && !$q && $i--) {
+        for ($p = $q = $i = 0; isset($json[$p]); $p++) {
+            $json[$p] == '"' && ($p>0 ? $json[$p-1] : '') != '\\' && $q = !$q;
+            if (strchr('}]', $json[$p]) && !$q && $i--) {
                 strchr('{[', $json[$p-1]) || $result .= "\n".str_repeat($istr, $i);
             }
             $result .= $json[$p];
-            if(strchr(',{[', $json[$p]) && !$q) {
-                $i += strchr('{[', $json[$p])===FALSE?0:1;
+            if (strchr(',{[', $json[$p]) && !$q) {
+                $i += strchr('{[', $json[$p]) === FALSE ? 0 : 1;
                 strchr('}]', $json[$p+1]) || $result .= "\n".str_repeat($istr, $i);
             }
         }

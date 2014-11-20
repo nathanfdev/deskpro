@@ -52,17 +52,17 @@ class NewFeedback extends AbstractType
         $builder->add('status_code', 'text');
 
         $builder->add('labels', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
 
         $builder->add('attach_ids', 'collection', array(
-            'type' => 'hidden',
-            'required' => false,
-            'allow_add' => true,
-            'allow_delete' => true
+            'type'         => 'hidden',
+            'required'     => false,
+            'allow_add'    => true,
+            'allow_delete' => true,
         ));
     }
 

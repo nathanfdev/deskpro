@@ -61,8 +61,8 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         set_time_limit(0);
 
         if ($input->getOption('reset')) {
-            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            @unlink(DP_WEB_ROOT.'/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir().'/auto-upgrade-started');
             $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
             $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
             $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
@@ -78,22 +78,22 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 
         // Clear caches, including doctrine query caches
         App::getDb()->exec("TRUNCATE TABLE cache");
-        @unlink(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache');
+        @unlink(dp_get_tmp_dir().DIRECTORY_SEPARATOR.'dql.cache');
 
         $output->setVerbosity(4);
 
-        $logger = new Logger('upgrade');
+        $logger          = new Logger('upgrade');
         $console_handler = new ConsoleHandler($output);
         $logger->pushHandler($console_handler);
 
-        $stream_handler = new StreamHandler(dp_get_log_dir() . '/upgrade.log');
+        $stream_handler = new StreamHandler(dp_get_log_dir().'/upgrade.log');
         $logger->pushHandler($stream_handler);
 
         try {
             $this->getContainer()->getDb()->exec("SET SESSION wait_timeout = 86400");
             $logger->debug("Set wait_timeout to 86400");
         } catch (\Exception $e) {
-            $logger->warn("Failed to set wait_timeout: " . $e->getMessage());
+            $logger->warn("Failed to set wait_timeout: ".$e->getMessage());
         }
 
         $manager = new \Application\InstallBundle\Upgrade\Manager(
@@ -106,7 +106,6 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         #------------------------------
 
         if ($input->getOption('info')) {
-
             $next_id = $manager->getNextBuildId();
             $output->writeln(sprintf("\tInstalled version:   %d (%s)", $manager->getCurrentBuild(),  $manager->formatBuildId($manager->getCurrentBuild())));
             if (!$next_id) {
@@ -123,9 +122,9 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
                 $output->writeln("You are all up to date!");
             } else {
                 $output->writeln("Builds that need to be executed:");
-                    foreach ($manager->getWaitingBuildIds() as $build_id) {
-                        $output->writeln(sprintf("\t%d (%s)", $build_id, $manager->formatBuildId($build_id)));
-                    }
+                foreach ($manager->getWaitingBuildIds() as $build_id) {
+                    $output->writeln(sprintf("\t%d (%s)", $build_id, $manager->formatBuildId($build_id)));
+                }
             }
 
             return 0;
@@ -161,7 +160,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         # The main executor loop
         #------------------------------
 
-        chdir(DP_ROOT . '/../');
+        chdir(DP_ROOT.'/../');
 
         while ($next_id = $manager->getNextBuildId()) {
             $logger->info("Build #$next_id");
@@ -188,7 +187,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
         $manager->postUpgrade();
 
         if (defined('DP_BUILD_TIME')) {
-            $logger->info("Setting deskpro_build = " . DP_BUILD_TIME);
+            $logger->info("Setting deskpro_build = ".DP_BUILD_TIME);
             $current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
             if ($current < DP_BUILD_TIME) {
                 App::getDb()->replace('settings', array('value' => DP_BUILD_TIME, 'name' => 'core.deskpro_build'));

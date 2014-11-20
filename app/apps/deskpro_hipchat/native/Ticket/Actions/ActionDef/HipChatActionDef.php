@@ -54,7 +54,6 @@ class HipChatActionDef extends AbstractActionDef
         return 'deskpro_hipchat\\Ticket\\Actions\\HipChatAction';
     }
 
-
     /**
      * {@inheritDoc}
      */
@@ -62,7 +61,6 @@ class HipChatActionDef extends AbstractActionDef
     {
         return 'Apps:deskpro_hipchat:type-actions-input.html';
     }
-
 
     /**
      * Makes sure 'room' key is set, and adds 'app_id'

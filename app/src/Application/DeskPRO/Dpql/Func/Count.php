@@ -34,9 +34,9 @@
 
 namespace Application\DeskPRO\Dpql\Func;
 
+use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Exception;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Dpql;
 use Application\DeskPRO\Dpql\Statement\Part\Prepared;
 
 /**
@@ -61,8 +61,7 @@ class Count extends AbstractFunc
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         if (!in_array($section, array('select', 'split', 'group', 'order'))) {
             throw new Exception('COUNT() may only be used in SELECT, SPLIT BY, GROUP BY, and ORDER BY sections.');
         }
@@ -75,10 +74,10 @@ class Count extends AbstractFunc
             }
 
             $condition = reset($this->_arguments);
-            $prepped = $condition->prepare($statement, $section, $stack, $select, $result);
+            $prepped   = $condition->prepare($statement, $section, $stack, $select, $result);
 
-            $sql = 'SUM(IF(' . $prepped->sql() . ', 1, 0))';
-            $res = new Prepared($sql, 'COUNT(' . $prepped->name() . ')', false, 'number');
+            $sql = 'SUM(IF('.$prepped->sql().', 1, 0))';
+            $res = new Prepared($sql, 'COUNT('.$prepped->name().')', false, 'number');
         }
 
         return $res;

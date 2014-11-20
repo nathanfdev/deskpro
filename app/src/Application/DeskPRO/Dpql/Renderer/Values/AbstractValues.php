@@ -118,8 +118,8 @@ abstract class AbstractValues
             case 'time':
                 $settingMap = array(
                     'datetime' => 'core.date_fulltime',
-                    'date' => 'core.date_full',
-                    'time' => 'core.date_time'
+                    'date'     => 'core.date_full',
+                    'time'     => 'core.date_time',
                 );
 
                 $tz = App::getCurrentPerson()->getTimezone();

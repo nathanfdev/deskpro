@@ -100,12 +100,12 @@ class DocsController extends AbstractController
             if ($apikey->isFlagSet('super')) {
                 $agents = $this->container->getAgentData()->getNames();
             } else {
-                $agents = array();
+                $agents                      = array();
                 $agents[$apikey->person->id] = $apikey->person->getDisplayName();
             }
             $default_id = $apikey->person ? $apikey->person->id : 0;
         } else {
-            $agents = array();
+            $agents     = array();
             $default_id = 0;
         }
 
@@ -119,7 +119,7 @@ class DocsController extends AbstractController
 
     private function getResourcePath($res)
     {
-        return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/' . ltrim($res, '/') . '.json';
+        return DP_ROOT.'/src/Application/ApiBundle/Resources/views/SwaggerDocs/'.ltrim($res, '/').'.json';
     }
 
     private function serveResource($res)

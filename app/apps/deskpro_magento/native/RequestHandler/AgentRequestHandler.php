@@ -76,7 +76,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             try {
                 $error = error_reporting();
                 error_reporting($error & ~E_WARNING);
-                $client = new \SoapClient($url . '/api?wsdl');
+                $client = new \SoapClient($url.'/api?wsdl');
                 error_reporting($error);
             } catch (\SoapFault $e) {
                 return $context->createJsonResponse(array('error' => 'Invalid Magento URL'));
@@ -89,33 +89,33 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             }
 
             $results = $client->call($session, 'customer.list', array(
-                array('email' => $email)
+                array('email' => $email),
             ));
 
-            foreach ($results AS $record) {
+            foreach ($results as $record) {
                 $sales = $client->call($session, 'sales_order.list', array(
-                    array('customer_id' => $record['customer_id'])
+                    array('customer_id' => $record['customer_id']),
                 ));
 
                 $orders = array();
-                foreach ($sales AS $sale) {
+                foreach ($sales as $sale) {
                     $orders[] = array(
-                        'id' => $sale['increment_id'],
-                        'order_id' => $sale['order_id'],
-                        'created_at' => $sale['created_at'],
+                        'id'          => $sale['increment_id'],
+                        'order_id'    => $sale['order_id'],
+                        'created_at'  => $sale['created_at'],
                         'grand_total' => number_format($sale['grand_total'], 2),
-                        'currency' => $sale['order_currency_code'],
-                        'status' => $sale['status'],
-                        'url' => $url . '/admin/sales_order/view/order_id/' . $sale['order_id'] . '/',
+                        'currency'    => $sale['order_currency_code'],
+                        'status'      => $sale['status'],
+                        'url'         => $url.'/admin/sales_order/view/order_id/'.$sale['order_id'].'/',
                     );
                 }
 
                 $matches[] = array(
-                    'id' => $record['customer_id'],
-                    'name' => $record['firstname'] . ' ' . $record['lastname'],
-                    'email' => $record['email'],
-                    'profile' => $url . '/admin/customer/edit/id/' . $record['customer_id'] . '/',
-                    'orders' => $orders
+                    'id'      => $record['customer_id'],
+                    'name'    => $record['firstname'].' '.$record['lastname'],
+                    'email'   => $record['email'],
+                    'profile' => $url.'/admin/customer/edit/id/'.$record['customer_id'].'/',
+                    'orders'  => $orders,
                 );
             }
 

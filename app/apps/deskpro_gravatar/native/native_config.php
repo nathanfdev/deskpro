@@ -1,5 +1,5 @@
 <?php return array(
     'install' => array(
-        'handler' => 'deskpro_gravatar\\InstallerHandler'
-    )
+        'handler' => 'deskpro_gravatar\\InstallerHandler',
+    ),
 );

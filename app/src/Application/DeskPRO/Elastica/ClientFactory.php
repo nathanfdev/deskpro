@@ -45,7 +45,6 @@ class ClientFactory
      */
     private $settings;
 
-
     /**
      * @param Settings $settings
      */
@@ -53,7 +52,6 @@ class ClientFactory
     {
         $this->settings = $settings;
     }
-
 
     /**
      * @param  array  $config
@@ -68,7 +66,6 @@ class ClientFactory
         }
     }
 
-
     /**
      * @param  string $id
      * @return Client
@@ -76,27 +73,24 @@ class ClientFactory
     public function createClientById($id)
     {
         if ($this->settings->get("elastica.clients.$id.url")) {
-
             $config = self::createConfigFromUrl($this->settings->get("elastica.clients.$id.url"));
-
         } else {
             $config = array(
                 'host'      => $this->settings->get("elastica.clients.$id.host"),
                 'port'      => $this->settings->get("elastica.clients.$id.port"),
-                'path'      => $this->settings->get("elastica.clients.$id.path") ? : null,
-                'transport' => $this->settings->get("elastica.clients.$id.transport") ? : null
+                'path'      => $this->settings->get("elastica.clients.$id.path") ?: null,
+                'transport' => $this->settings->get("elastica.clients.$id.transport") ?: null,
             );
         }
 
         if (!$config['host'] || !$config['port']) {
-            throw new MissingConfigurationException;
+            throw new MissingConfigurationException();
         }
 
         $config = Arrays::removeFalsey($config);
 
         return $this->createClientByConfig($config);
     }
-
 
     /**
      * @param  string                                                       $url
@@ -110,7 +104,7 @@ class ClientFactory
         }
 
         if (!preg_match('#^\w+://#', $url)) {
-            $url = 'http://' . $url;
+            $url = 'http://'.$url;
         }
 
         $url_info = parse_url($url);
@@ -127,16 +121,15 @@ class ClientFactory
             'host'      => $url_info->host,
             'port'      => $url_info->port ?: 9200,
             'path'      => $url_info->path ?: null,
-            'transport' => strtolower($url_info->get('scheme', 'http')) == 'https' ? 'Https' : 'Http'
+            'transport' => strtolower($url_info->get('scheme', 'http')) == 'https' ? 'Https' : 'Http',
         );
 
         if ($url_info->user && $url_info->pass) {
-            $config['headers'] = array('Authorization'=> 'Basic '.  base64_encode($url_info->user .':'. $url_info->pass));
+            $config['headers'] = array('Authorization' => 'Basic '.base64_encode($url_info->user.':'.$url_info->pass));
         }
 
         return $config;
     }
-
 
     /**
      * @param  array  $config
@@ -152,7 +145,7 @@ class ClientFactory
             'path'      => $config->get('path', null),
             'transport' => $config->get('transport', null),
             'headers'   => $config->get('headers', array()),
-            'log'       => $config->get('log', null)
+            'log'       => $config->get('log', null),
         );
 
         if ($config->get('transport') == 'Https') {

@@ -46,7 +46,7 @@ class Display extends HandlerAbstract
     public function getFormField($data = null)
     {
         $setData = '';
-        $field = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'hidden', $setData, array('required' => false));
+        $field   = App::getFormFactory()->createNamedBuilder($this->getFormFieldName(), 'hidden', $setData, array('required' => false));
 
         return $field;
     }

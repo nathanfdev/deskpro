@@ -77,7 +77,6 @@ class HtmlMatcher
      */
     protected $reverse = true;
 
-
     /**
      * @param string             $body
      * @param string|HtmlPattern $pattern
@@ -92,7 +91,6 @@ class HtmlMatcher
 
         $this->pattern = $pattern;
     }
-
 
     /**
      * Given a tokenized pattern, process it against the body to find matching results
@@ -123,7 +121,7 @@ class HtmlMatcher
             }
 
             if (preg_match($first_token[1], $this->body, $m)) {
-                $this->body = $try;
+                $this->body        = $try;
                 $this->marked_body = str_replace($m[0], self::CUT_MARK, $this->body);
 
                 $this->pattern_match = 'SIMPLE_MATCH';
@@ -154,11 +152,11 @@ class HtmlMatcher
         foreach ($roots as $id => $root) {
             $use_tokens = $tokens;
 
-            $branch = $root->branch()->first();
+            $branch                = $root->branch()->first();
             $this->root_state[$id] = array(
-                'closed' => false,
-                'mark_spot' => null,
-                'mark_pattern' => null
+                'closed'       => false,
+                'mark_spot'    => null,
+                'mark_pattern' => null,
             );
 
             while ($use_tokens) {
@@ -173,7 +171,7 @@ class HtmlMatcher
             }
 
             if ($branch) {
-                $this->pattern_match = $root;
+                $this->pattern_match    = $root;
                 $this->pattern_match_id = $id;
 
                 return $this->pattern_match;
@@ -242,12 +240,12 @@ class HtmlMatcher
             $piece2 = substr($this->marked_body, $wrap_pos);
 
             if (preg_match($this->root_state[$this->pattern_match_id]['mark_pattern'], $piece1)) {
-                $piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK . '$0', $piece2, 1);
+                $piece2 = preg_replace($this->root_state[$this->pattern_match_id]['mark_pattern'], self::CUT_MARK.'$0', $piece2, 1);
             } else {
-                $piece2 = self::CUT_MARK . $piece2;
+                $piece2 = self::CUT_MARK.$piece2;
             }
 
-            $this->marked_body = $piece1 . $piece2;
+            $this->marked_body = $piece1.$piece2;
         }
 
         $this->marked_body = trim($this->marked_body);
@@ -257,7 +255,6 @@ class HtmlMatcher
 
         return $this->marked_body;
     }
-
 
     /**
      * Cut at the first cut mark
@@ -277,7 +274,6 @@ class HtmlMatcher
         return substr($body, 0, $pos);
     }
 
-
     /**
      * Consume  all navigate finds and return a new array of branches that match
      *
@@ -290,7 +286,6 @@ class HtmlMatcher
         $current = $branch->branch()->first();
 
         while ($token = array_shift($tokens)) {
-
             // Next token isnt a match
             if ($token[0] != 'nav') {
                 array_unshift($tokens, $token);
@@ -323,7 +318,6 @@ class HtmlMatcher
         return $current;
     }
 
-
     /**
      * Process all match requirements on the result set and return a new array of branches that match.
      *
@@ -334,7 +328,6 @@ class HtmlMatcher
     public function consumeMatches($id, $branch, array &$tokens)
     {
         while ($token = array_shift($tokens)) {
-
             // Next token isnt a match
             if ($token[0] != 'match') {
                 array_unshift($tokens, $token);
@@ -348,7 +341,6 @@ class HtmlMatcher
 
             $m = null;
             if (!preg_match($token[0], $text, $m)) {
-
                 // Check entire contents
                 $html = $branch->innerHTML();
                 $text = str_replace(array('<br />', '<br/>', '<br>'), "\n", $html);
@@ -361,7 +353,7 @@ class HtmlMatcher
             }
 
             if (!$this->root_state[$id]['mark_spot']) {
-                $this->root_state[$id]['mark_spot'] = $m[0];
+                $this->root_state[$id]['mark_spot']    = $m[0];
                 $this->root_state[$id]['mark_pattern'] = $token[0];
                 $branch->addClass('DP_MARK_EL');
             }
@@ -369,7 +361,6 @@ class HtmlMatcher
 
         return $branch;
     }
-
 
     /**
      * Used internally by the PatternCutter to fetch the qp and set it on the next pattern when
@@ -383,7 +374,6 @@ class HtmlMatcher
     {
         $this->qp = $qp;
     }
-
 
     /**
      * @return \QueryPath\DOMQuery

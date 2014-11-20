@@ -36,9 +36,9 @@ namespace Application\DeskPRO\CsvUpload;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\TaskQueue;
+use Application\DeskPRO\TaskQueueJob\CsvImport;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\HttpFoundation\File\UploadedFile;
-use Application\DeskPRO\TaskQueueJob\CsvImport;
 
 class CsvUpload
 {
@@ -69,18 +69,18 @@ class CsvUpload
             return array('error' => 'no_file');
         }
 
-        if (!is_uploaded_file($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename())) {
+        if (!is_uploaded_file($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename())) {
             return array('error' => 'no_move');
         }
 
         $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
-            $file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(),
+            $file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(),
             $file->getClientOriginalName(),
             'text/csv'
         );
 
-        $csv_path = dp_get_tmp_dir() . '/blob-' . $blob->getId() . '.csv';
-        copy($file->getPath() . DIRECTORY_SEPARATOR . $file->getFilename(), $csv_path);
+        $csv_path = dp_get_tmp_dir().'/blob-'.$blob->getId().'.csv';
+        copy($file->getPath().DIRECTORY_SEPARATOR.$file->getFilename(), $csv_path);
 
         return $this->_returnUploadFileResponse($blob->getId(), $file->getClientOriginalName(), $options);
     }
@@ -98,7 +98,7 @@ class CsvUpload
     {
         $has_email = false;
 
-        foreach ($field_maps AS $map_field) {
+        foreach ($field_maps as $map_field) {
             if (!empty($map_field['map']) && $map_field['map'] == 'primary_email') {
                 $has_email = true;
                 break;
@@ -146,23 +146,21 @@ class CsvUpload
                 'status'  => '',
                 'message' => 'No import data available.',
             );
-
         } else {
-
             /** @var TaskQueue $task */
             $task   = end($tasks);
-            $data = $task['task_data'];
+            $data   = $task['task_data'];
 
             if ('completed' === $task['status'] || 'errored' === $task['status']) {
                 /** @var Blob $logBlob */
                 $logBlob = $this->em->find('DeskPRO:Blob', $data['log_blob_id']);
 
                 return array(
-                    'status'  => 'completed',
-                    'message' => $task['run_status'],
+                    'status'   => 'completed',
+                    'message'  => $task['run_status'],
                     'imported' => $data['imported'],
-                    'failed' => $data['failed'],
-                    'log' => $logBlob ? $logBlob->getDownloadUrl(true) : null,
+                    'failed'   => $data['failed'],
+                    'log'      => $logBlob ? $logBlob->getDownloadUrl(true) : null,
                 );
             }
 
@@ -182,7 +180,7 @@ class CsvUpload
 
     protected function _returnUploadFileResponse($filename, $user_filename, array $options = array())
     {
-        $csv_path = dp_get_tmp_dir() . '/blob-' . $filename . '.csv';
+        $csv_path = dp_get_tmp_dir().'/blob-'.$filename.'.csv';
         $blob     = App::getOrm()->find('DeskPRO:Blob', $filename);
 
         if (!$blob) {
@@ -190,21 +188,19 @@ class CsvUpload
         }
 
         if (!is_file($csv_path)) {
-
             App::getContainer()->getBlobStorage()->copyBlobRecordToFile($csv_path, $blob);
         }
 
         $originalOptions = $options;
-        $options = CsvImport::getOptions($options);
-        $fp           = fopen($csv_path, 'r');
-        $columns      = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
-        $column_count = count($columns);
+        $options         = CsvImport::getOptions($options);
+        $fp              = fopen($csv_path, 'r');
+        $columns         = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
+        $column_count    = count($columns);
 
         $examples      = array();
         $example_total = 0;
 
         for ($i = 0; $i < 100; $i++) {
-
             $row = @fgetcsv($fp, null, $options['delimeter'], $options['enclosure']);
 
             if (!$row) {
@@ -217,10 +213,8 @@ class CsvUpload
                 continue;
             }
 
-            foreach ($row AS $id => $value) {
-
+            foreach ($row as $id => $value) {
                 if ($value !== '' && !isset($examples[$id])) {
-
                     $examples[$id] = $value;
                     $example_total++;
 
@@ -246,6 +240,5 @@ class CsvUpload
             'show_welcome_email' => $show_welcome_email,
             'options'            => $originalOptions,
         );
-
     }
 }

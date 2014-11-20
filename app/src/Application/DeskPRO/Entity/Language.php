@@ -44,8 +44,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 // doctrine will try to load this source file. But the Language class
 // is compiled in to bootstrap.php so we'd end up with a dupe error
 if (!class_exists('Application\DeskPRO\Entity\Language', false)) {
-
-/**
+    /**
  * A language groups phrases and defines a locale code.
  *
  */
@@ -142,7 +141,6 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
         }
     }
 
-
     public function getTwoLetterLanguageCode()
     {
         return substr($this->locale, 0, 2);
@@ -153,7 +151,6 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
         return $this->getTwoLetterLanguageCode();
     }
 
-
     /**
      * Return a unique ID that we can use to look up translations for this object
      *
@@ -163,9 +160,8 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
      */
     public function getPhraseName($property = null, Translate $translate)
     {
-        return 'user.lang.lang_title_' . $this->sys_name;
+        return 'user.lang.lang_title_'.$this->sys_name;
     }
-
 
     /**
      * Get the default value phrase for the object
@@ -179,7 +175,6 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
         return $this->title;
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -188,22 +183,21 @@ class Language extends \Application\DeskPRO\Domain\DomainObject implements HasPh
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Language';
-        $metadata->setPrimaryTable(array('name' => 'languages',));
+        $metadata->setPrimaryTable(array('name' => 'languages'));
         $metadata->addLifecycleCallback('_invalidateLanguageCache', 'preFlush');
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true,));
-        $metadata->mapField(array('fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name',));
-        $metadata->mapField(array('fieldName' => 'lang_code', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lang_code',));
-        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title',));
-        $metadata->mapField(array('fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath',));
-        $metadata->mapField(array('fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale',));
-        $metadata->mapField(array('fieldName' => 'flag_image', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'flag_image',));
-        $metadata->mapField(array('fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl',));
-        $metadata->mapField(array('fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user',));
-        $metadata->mapField(array('fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent',));
-        $metadata->mapField(array('fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin',));
+        $metadata->mapField(array('fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
+        $metadata->mapField(array('fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'sys_name'));
+        $metadata->mapField(array('fieldName' => 'lang_code', 'type' => 'string', 'length' => 3, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'lang_code'));
+        $metadata->mapField(array('fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title'));
+        $metadata->mapField(array('fieldName' => 'base_filepath', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'base_filepath'));
+        $metadata->mapField(array('fieldName' => 'locale', 'type' => 'string', 'length' => 8, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'locale'));
+        $metadata->mapField(array('fieldName' => 'flag_image', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'flag_image'));
+        $metadata->mapField(array('fieldName' => 'is_rtl', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_rtl'));
+        $metadata->mapField(array('fieldName' => 'has_user', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_user'));
+        $metadata->mapField(array('fieldName' => 'has_agent', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_agent'));
+        $metadata->mapField(array('fieldName' => 'has_admin', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'has_admin'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
     }
 }
-
 } // end class_exists

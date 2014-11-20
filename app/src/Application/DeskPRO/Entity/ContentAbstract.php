@@ -48,13 +48,13 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     const STATUS_ARCHIVED    = 'archived';
     const STATUS_HIDDEN      = 'hidden';
 
-    const HIDDEN_STATUS_UNPUBLISHED   = 'unpublished';
-    const HIDDEN_STATUS_VALIDATING    = 'validating';
+    const HIDDEN_STATUS_UNPUBLISHED     = 'unpublished';
+    const HIDDEN_STATUS_VALIDATING      = 'validating';
     const HIDDEN_STATUS_USER_VALIDATING = 'user_validating';
-    const HIDDEN_STATUS_DELETED       = 'deleted';
-    const HIDDEN_STATUS_SPAM          = 'spam';
-    const HIDDEN_STATUS_DRAFT         = 'draft';
-    const HIDDEN_STATUS_TEMP          = 'temp';
+    const HIDDEN_STATUS_DELETED         = 'deleted';
+    const HIDDEN_STATUS_SPAM            = 'spam';
+    const HIDDEN_STATUS_DRAFT           = 'draft';
+    const HIDDEN_STATUS_TEMP            = 'temp';
 
     /**
      * @var int
@@ -160,10 +160,10 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
-        $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->revisions      = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
 
-        $this['status'] = self::STATUS_HIDDEN;
+        $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
     }
 
@@ -228,7 +228,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getStatusCode()
     {
         if ($this->hidden_status) {
-            return 'hidden.' . $this->hidden_status;
+            return 'hidden.'.$this->hidden_status;
         } else {
             return $this->status;
         }
@@ -238,7 +238,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         // Find attach replacements: ![attach:{$blob['authcode']}:{$blob['filename']}]
         $fn = function ($m) {
-            return App::getSetting('core.deskpro_url') . 'file.php/' . $m[1] . '/' . urlencode($m[2]);
+            return App::getSetting('core.deskpro_url').'file.php/'.$m[1].'/'.urlencode($m[2]);
         };
         $content = preg_replace_callback('#!\[attach:([0-9A-Z]+):(.*?)\]#', $fn, $content);
 
@@ -286,7 +286,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $content = trim($content);
 
         $lines_raw = explode("\n", $content);
-        $lines = array();
+        $lines     = array();
         foreach ($lines_raw as $l) {
             $lines[] = trim($l);
         }
@@ -307,7 +307,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         $content = str_replace(array("\r\n", "\n"), " ", $content);
 
         if (Strings::utf8_strlen($content) > $length) {
-            $content = Strings::utf8_substr($content, 0, $length) . '...';
+            $content = Strings::utf8_substr($content, 0, $length).'...';
         }
 
         return $content;
@@ -315,7 +315,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function getUrlSlug()
     {
-        return $this->id . '-' . $this->slug;
+        return $this->id.'-'.$this->slug;
     }
 
     abstract public function getLink();
@@ -339,7 +339,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
             $this->_authors[$this->person['id']] = $this->person;
         }
 
-        $ent = $this->getEntityName() . 'Revision';
+        $ent   = $this->getEntityName().'Revision';
         $field = strtolower(str_replace('DeskPRO:', '', $this->getEntityName()));
 
         $revs = App::getOrm()->createQuery("
@@ -413,7 +413,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function addRating($rating)
     {
-        $this['num_ratings'] = $this->num_ratings + 1;
+        $this['num_ratings']  = $this->num_ratings + 1;
         $this['total_rating'] = $this->total_rating + $rating->rating;
         $rating->setContentObject($this);
     }
@@ -421,7 +421,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function removeRating($rating)
     {
         $this['num_ratings']   = $this->num_ratings - 1;
-        $this['total_rating'] = $this->total_rating - $rating->rating;
+        $this['total_rating']  = $this->total_rating - $rating->rating;
     }
 
     public function addComment($comment)
@@ -441,13 +441,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function getLabelManager()
     {
         if ($this->_label_manager === null) {
-            $name = Util::getBaseClassname($this);
-            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:Label' . $name);
+            $name                 = Util::getBaseClassname($this);
+            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:Label'.$name);
         }
 
         return $this->_label_manager;
     }
-
 
     /**
      * @return string
@@ -464,7 +463,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $name;
     }
 
-
     /**
      * @return string
      */
@@ -472,7 +470,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->title;
     }
-
 
     /**
      * @return string
@@ -489,7 +486,6 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('title', $title);
     }
-
 
     /**
      * @return string

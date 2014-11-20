@@ -39,7 +39,7 @@ class TemplatePathsCacheWarmer extends \Symfony\Bundle\FrameworkBundle\CacheWarm
     protected function writeCacheFile($file, $content)
     {
         // Re-write absolute paths to use DP_ROOT instead
-        $content = str_replace("'" . DP_ROOT, 'DP_ROOT.\'', $content);
+        $content = str_replace("'".DP_ROOT, 'DP_ROOT.\'', $content);
 
         return parent::writeCacheFile($file, $content);
     }

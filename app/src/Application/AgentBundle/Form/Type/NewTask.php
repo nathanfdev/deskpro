@@ -39,7 +39,6 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class NewTask extends AbstractType
 {
-
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         #------------------------------
@@ -48,33 +47,33 @@ class NewTask extends AbstractType
 
         $builder->add('title', 'text');
         $builder->add('date_due', 'datetime', array(
-            'widget' => 'single_text',
+            'widget'      => 'single_text',
             'empty_value' => '',
-            'date_format'=>'M/d/y',
-            'required' => false,
+            'date_format' => 'M/d/y',
+            'required'    => false,
         ));
 
         $builder->add('visibility', 'choice', array(
             'choices' => array(0 => 'Public', 2 => 'Private'),
-            'required' => true,
+            'required'           => true,
         ));
         $builder->add('assigned_agent_team', 'entity', array(
-            'class' => 'Application\DeskPRO\Entity\AgentTeam',
-            'property' => 'name',
-            'required' => false,
-            'empty_value'=> '--Agent Team--'
+            'class'       => 'Application\DeskPRO\Entity\AgentTeam',
+            'property'    => 'name',
+            'required'    => false,
+            'empty_value' => '--Agent Team--',
         ));
 
         $builder->add('assigned_agent', 'entity', array(
-            'class' => 'Application\DeskPRO\Entity\Person',
+            'class'         => 'Application\DeskPRO\Entity\Person',
             'query_builder' => function (\Doctrine\ORM\EntityRepository $er) {
                 return $er->createQueryBuilder('p')
                         ->where('p.is_agent = true')
                         ->orderBy('p.name', 'ASC');
             },
-            'property' => 'name',
-            'required' => false,
-            'empty_value'=> '--Agent--'
+            'property'    => 'name',
+            'required'    => false,
+            'empty_value' => '--Agent--',
         ));
     }
 

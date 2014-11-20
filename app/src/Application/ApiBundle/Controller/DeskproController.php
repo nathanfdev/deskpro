@@ -47,11 +47,9 @@ class DeskproController extends AbstractController
     {
         return $this->createApiResponse(array(
             'timestamp' => time(),
-            'fulldate' => date('r')
+            'fulldate'  => date('r'),
         ));
     }
-
-
 
     /**
      * Gets the value of a setting.
@@ -68,8 +66,6 @@ class DeskproController extends AbstractController
 
         return $this->createApiResponse(array('setting_value' => $value));
     }
-
-
 
     /**
      * Sets a new value for a setting

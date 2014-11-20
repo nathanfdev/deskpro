@@ -50,15 +50,15 @@ class AppOptionsMapper
             $settings = $app_or_settings->getSettings();
         } else {
             if (!is_array($app_or_settings)) {
-                throw new \InvalidArgumentException;
+                throw new \InvalidArgumentException();
             }
             $settings = $app_or_settings;
         }
 
         $settings = new OptionsArray($settings);
 
-        $options = array();
-        $options['db_dsn'] = $settings->get('db_dsn');
+        $options                = array();
+        $options['db_dsn']      = $settings->get('db_dsn');
         $options['db_username'] = $settings->get('db_username');
         $options['db_password'] = $settings->get('db_password');
 

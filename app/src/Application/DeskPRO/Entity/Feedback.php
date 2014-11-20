@@ -149,7 +149,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
-
     /**
      * Find an existing data record for a field id.
      *
@@ -171,7 +170,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return null;
     }
 
-
     /**
      * @param CustomDataFeedback $data
      */
@@ -180,7 +178,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->custom_data->add($data);
         $data['feedback'] = $this;
     }
-
 
     /**
      * @param $rating
@@ -191,11 +188,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->recalculatePopularity();
     }
 
-
     public function recalculatePopularity()
     {
         $days = (time() - $this->date_created->getTimestamp()) / 86400;
-        if (!$days) $days = 1;
+        if (!$days) {
+            $days = 1;
+        }
 
         $pop = ceil($this->total_rating / sqrt($days));
 
@@ -204,7 +202,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     public function recalculateVoteStats(array $votes)
     {
-        $this->num_ratings = count($votes);
+        $this->num_ratings  = count($votes);
         $this->total_rating = 0;
         foreach ($votes as $v) {
             $this->total_rating += $v->getRating();
@@ -254,7 +252,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
         switch ($status) {
             case self::STATUS_NEW:
-                $this['hidden_status'] = null;
+                $this['hidden_status']   = null;
                 $this['status_category'] = null;
                 break;
 
@@ -276,9 +274,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function setStatusCode($status_code)
     {
         if (strpos($status_code, '.') !== false) {
-            list ($status, $sub_status) = explode('.', $status_code, 2);
+            list($status, $sub_status) = explode('.', $status_code, 2);
         } else {
-            $status = $status_code;
+            $status     = $status_code;
             $sub_status = null;
         }
 
@@ -299,7 +297,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 break;
 
             case self::STATUS_HIDDEN:
-                $this['status'] = $status;
+                $this['status']        = $status;
                 $this['hidden_status'] = $sub_status;
                 break;
         }
@@ -307,14 +305,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
     public function getStatusCode()
     {
-        if ($this->status == self::STATUS_ACTIVE OR $this->status == self::STATUS_CLOSED) {
-            if($this->status_category) {
-                return $this->status . '.' . $this->status_category->id;
+        if ($this->status == self::STATUS_ACTIVE or $this->status == self::STATUS_CLOSED) {
+            if ($this->status_category) {
+                return $this->status.'.'.$this->status_category->id;
             } else {
                 return $this->status;
             }
         } elseif ($this->status == self::STATUS_HIDDEN) {
-            return $this->status . '.' . $this->hidden_status;
+            return $this->status.'.'.$this->hidden_status;
         } else {
             return $this->status;
         }
@@ -334,7 +332,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         if ($cat) {
             $path[] = $cat;
             while ($cat['parent']) {
-                $cat = $cat['parent'];
+                $cat    = $cat['parent'];
                 $path[] = $cat;
             }
         }
@@ -342,13 +340,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
-
     public function addLabel($label)
     {
         $label['feedback'] = $this;
         $this->labels->add($label);
     }
-
 
     /**
      * @return \Application\DeskPRO\Labels\LabelManager
@@ -361,7 +357,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 
         return $this->_label_manager;
     }
-
 
     /**
      * Add an attachment
@@ -380,15 +375,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $cache->invalidateRegex('/_feedback(-|_)/');
     }
 
-
-
-
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
         $data = parent::toApiData($primary, $deep, $visited);
         if ($deep) {
             $data['labels'] = array();
-            foreach ($this->labels AS $label) {
+            foreach ($this->labels as $label) {
                 $data['labels'][] = $label['label'];
             }
         }
@@ -436,10 +428,10 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Feedback';
         $metadata->setPrimaryTable(array(
-            'name' => 'feedback',
+            'name'    => 'feedback',
             'indexes' => array(
                 'date_published_idx' => array('columns' => array( 0 => 'date_published' )),
-                'status_idx' => array('columns' => array('status')),
+                'status_idx'                                        => array('columns' => array('status')),
             ),
         ));
         $metadata->addLifecycleCallback('_invalidatePageCache', 'preFlush');
@@ -471,7 +463,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $metadata->mapField(
             array(
                 'fieldName' => 'slug', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'slug', 'unique' => true
+                'nullable'  => false, 'columnName' => 'slug', 'unique' => true,
             )
         );
         $metadata->mapField(
@@ -538,41 +530,41 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                     'name'     => 'status_category_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'set null', 'columnDefinition' => null,
                 ),
-            ), 'dpApi'         => true
+            ), 'dpApi'         => true,
             )
         );
         $metadata->mapManyToOne(
             array(
                 'fieldName'   => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackCategory',
                 'mappedBy'    => null, 'inversedBy' => null,
-                'joinColumns' => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id',),),
-                'dpApi'       => true
+                'joinColumns' => array(0 => array('name' => 'category_id', 'referencedColumnName' => 'id')),
+                'dpApi'                                  => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'revisions', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackRevision',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'feedback',
+                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'comments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackComment',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'feedback',
+                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName'     => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelFeedback',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'feedback',
-                'orphanRemoval' => true,
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
+                'orphanRemoval'            => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName'     => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataFeedback',
-                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'feedback',
-                'orphanRemoval' => true, 'dpApi' => true
+                'cascade'       => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
+                'orphanRemoval'            => true, 'dpApi'            => true,
             )
         );
         $metadata->mapManyToOne(
@@ -583,7 +575,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                     'name'             => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete'         => 'set null', 'columnDefinition' => null,
                 ),
-            ), 'dpApi'       => true
+            ), 'dpApi'       => true,
             )
         );
         $metadata->mapManyToOne(
@@ -594,14 +586,14 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                     'name'     => 'language_id', 'referencedColumnName' => 'id', 'nullable' => true,
                     'onDelete' => 'cascade', 'columnDefinition' => null,
                 ),
-            ), 'dpApi'      => true
+            ), 'dpApi'      => true,
             )
         );
         $metadata->mapOneToMany(
             array(
                 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\FeedbackAttachment',
-                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge',), 'mappedBy' => 'feedback',
-                'dpApi'     => true, 'dpApiDeep' => true, 'dpApiPrimary' => true
+                'cascade'   => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback',
+                'dpApi'                => true, 'dpApiDeep'            => true, 'dpApiPrimary'            => true,
             )
         );
     }

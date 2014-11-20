@@ -49,7 +49,7 @@ class ThisMonth extends AbstractDateRange
      */
     protected function _getDateRange()
     {
-        $tz = new \DateTimeZone(App::getCurrentPerson()->getTimezone());
+        $tz   = new \DateTimeZone(App::getCurrentPerson()->getTimezone());
         $date = new \DateTime('now', $tz);
 
         $start = $date->format('Y-m');

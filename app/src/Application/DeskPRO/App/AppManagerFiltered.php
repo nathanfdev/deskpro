@@ -58,7 +58,7 @@ class AppManagerFiltered implements AppManagerInterface
     public function __construct(AppManagerInterface $app_manager, $filter)
     {
         $this->app_manager = $app_manager;
-        $this->filter = $filter;
+        $this->filter      = $filter;
     }
 
     /**

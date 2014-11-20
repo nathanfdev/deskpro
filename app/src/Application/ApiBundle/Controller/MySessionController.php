@@ -56,7 +56,7 @@ class MySessionController extends AbstractController implements ProtectedControl
         if ($session_id) {
             $session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
             if ($session) {
-                $session->date_last = new \DateTime();
+                $session->date_last      = new \DateTime();
                 $session->date_last_page = new \DateTime();
                 $this->em->persist($session);
                 $this->em->flush();
@@ -64,7 +64,7 @@ class MySessionController extends AbstractController implements ProtectedControl
         }
 
         return $this->createApiResponse(array(
-            'request_token' => $this->api_user->session->generateSecurityToken('request_token', self::TOKEN_LIFETIME)
+            'request_token' => $this->api_user->session->generateSecurityToken('request_token', self::TOKEN_LIFETIME),
         ));
     }
 }

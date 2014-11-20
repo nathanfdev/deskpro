@@ -73,7 +73,6 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
         $this->permissions = new ArrayCollection(); // this is needed for proper validation of 'permissions'
 
         if ($department->parent) {
-
             $this->old_parent = $department->parent;
         }
     }
@@ -87,7 +86,6 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
         $em->persist($this->department);
         $em->flush();
     }
-
 
     /**
      * @param EntityManager                           $em
@@ -112,10 +110,8 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
 
     public function validateChangingOfParent(ExecutionContextInterface $context)
     {
-        if(!$this->old_parent) {
-
+        if (!$this->old_parent) {
             if (sizeof($this->department->getChildren()) > 0 && $this->department->getParentId() != 0) {
-
                 $context->addViolationAt(
                     'edit_department',
                     'department.edit_chat.changing_parent_when_have_children'
@@ -133,7 +129,7 @@ class ChatDepartmentEdit implements HasValidationMetadataInterface
         $metadata->addConstraint(
             new Callback(
                 array(
-                     'methods' => array('validateChangingOfParent')
+                     'methods' => array('validateChangingOfParent'),
                 )
             )
         );

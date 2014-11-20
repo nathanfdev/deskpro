@@ -59,7 +59,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class AppPackage extends DomainObject
 {
-    const SCOPE_AGENT = 'agent';
+    const SCOPE_AGENT     = 'agent';
     const TAG_USERSOURCES = 'usersources';
 
     /**
@@ -152,18 +152,15 @@ class AppPackage extends DomainObject
         $this->assets = new ArrayCollection();
     }
 
-
     public function getTags()
     {
         return $this->tags;
     }
 
-
     public function hasTag($tag)
     {
         return in_array($tag, $this->tags);
     }
-
 
     public function isUsersource()
     {
@@ -179,7 +176,6 @@ class AppPackage extends DomainObject
         $asset->package = $this;
     }
 
-
     /**
      * @param  Blob     $blob
      * @param  string   $filename
@@ -187,15 +183,14 @@ class AppPackage extends DomainObject
      */
     public function addAssetFromBlob(Blob $blob, $filename = null)
     {
-        $asset = new AppAsset();
-        $asset->name = $filename ? $filename : $blob->filename;
-        $asset->blob = $blob;
+        $asset          = new AppAsset();
+        $asset->name    = $filename ? $filename : $blob->filename;
+        $asset->blob    = $blob;
         $asset->package = $this;
         $this->assets->add($asset);
 
         return $asset;
     }
-
 
     /**
      * Get one asset tagged with some name
@@ -213,7 +208,6 @@ class AppPackage extends DomainObject
 
         return null;
     }
-
 
     /**
      * Get an array of all assets tagged with a name
@@ -233,7 +227,6 @@ class AppPackage extends DomainObject
 
         return $assets;
     }
-
 
     /**
      * Get the asset with the filename $name
@@ -260,23 +253,22 @@ class AppPackage extends DomainObject
     {
         return array(
             'package_name' => $this['name'],
-            'title' => $this['title'],
-            'description' => $this['description'],
-            'tags' => $this['tags'],
-            'api_version' => $this['api_version'],
-            'version' => $this['version'],
+            'title'        => $this['title'],
+            'description'  => $this['description'],
+            'tags'         => $this['tags'],
+            'api_version'  => $this['api_version'],
+            'version'      => $this['version'],
             'version_name' => $this['version_name'],
-            'is_single' => (bool) $this['is_single'],
-            'is_native' => null !== $this['native_name'],
-            'author' => array(
-                'name' => $this['author_name'],
+            'is_single'    => (bool) $this['is_single'],
+            'is_native'    => null !== $this['native_name'],
+            'author'       => array(
+                'name'  => $this['author_name'],
                 'email' => $this['author_email'],
-                'link' => $this['author_link'],
+                'link'  => $this['author_link'],
             ),
-            'settings_def' => $this['settings_def']
+            'settings_def' => $this['settings_def'],
         );
     }
-
 
     /**
      * {@inheritDoc}
@@ -321,7 +313,7 @@ class AppPackage extends DomainObject
         $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->setPrimaryTable(array(
-            'name' => 'app_packages'
+            'name' => 'app_packages',
         ));
 
         $metadata->mapField(array(
@@ -440,7 +432,7 @@ class AppPackage extends DomainObject
         $metadata->mapOneToMany(array(
             'fieldName'    => 'assets',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\AppAsset',
-            'mappedBy'     => 'package'
+            'mappedBy'     => 'package',
         ));
     }
 }

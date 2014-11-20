@@ -36,8 +36,8 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use libphonenumber\PhoneNumberUtil;
 use Orb\Util\PhoneNumbers;
+use libphonenumber\PhoneNumberUtil;
 
 /**
  * A Phone Number that is registered somewhere in the system (people can have many phone numbers).
@@ -107,7 +107,6 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
-
     /**
      * We do logic here (with the help of Google's libphonenumber) to
      * get the region code, and validate/format the number.
@@ -120,7 +119,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
             throw new \InvalidArgumentException("Phone number is invalid");
         }
 
-        $region = PhoneNumbers::getRegionForNumber($number);
+        $region    = PhoneNumbers::getRegionForNumber($number);
         $formatted = PhoneNumbers::toE164Format($number);
         if ($region && $formatted) {
             $guessed_type = PhoneNumbers::getTypeCode($formatted);
@@ -161,7 +160,7 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\PhoneNumber';
 
         $metadata->setPrimaryTable(array( 'name'    => 'phone_numbers',
-                                          'indexes' => array( 'phone_number_idx' => array( 'columns' => array( 'number' ) ), ), ));
+                                          'indexes' => array( 'phone_number_idx' => array( 'columns' => array( 'number' ) )), ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
         $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0,
@@ -187,6 +186,6 @@ class PhoneNumber extends \Application\DeskPRO\Domain\DomainObject
                                                                             'referencedColumnName' => 'id',
                                                                             'nullable'             => true,
                                                                             'onDelete'             => 'cascade',
-                                                                            'columnDefinition'     => null, ), ), ));
+                                                                            'columnDefinition'     => null, )), ));
     }
 }

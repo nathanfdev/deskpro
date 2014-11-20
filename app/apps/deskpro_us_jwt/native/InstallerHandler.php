@@ -58,7 +58,7 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
      */
     protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
     {
-        $us->title = $app->title;
+        $us->title   = $app->title;
         $us->options = array(
             'url'               => $app->getSetting('url'),
             'secret'            => $app->getSetting('secret'),
@@ -66,9 +66,9 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
             'logout_agent_url'  => $app->getSetting('logout_agent_url'),
             'logout_user_url'   => $app->getSetting('logout_user_url'),
         );
-        $us->is_enabled = $app->getSetting('enable_usersource') ? 1 : 0;
+        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->lost_password_url = $app->getSetting('url') ?: '';
-        $us->source_type = 'deskpro_us_jwt\\Usersource\\Adapter\\Jwt';
+        $us->source_type       = 'deskpro_us_jwt\\Usersource\\Adapter\\Jwt';
 
         $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 

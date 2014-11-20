@@ -57,7 +57,6 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
         return $multi;
     }
 
-
     ####################################################################################################################
     # list facebook pages
     ####################################################################################################################
@@ -71,7 +70,6 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
         return $this->createApiResponse(array('facebook_pages' => $data));
     }
 
-
     ####################################################################################################################
     # create a facebook page
     ####################################################################################################################
@@ -84,7 +82,7 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
             return $this->createApiErrorResponse('invalid_argument', 'graph_id of a page is required');
         }
 
-        $fb_app_repo  = $this->container->getEm()->getRepository('DeskPRO:FacebookPage');
+        $fb_app_repo   = $this->container->getEm()->getRepository('DeskPRO:FacebookPage');
         $existing_page = $fb_app_repo->findOneBy(array('graph_id' => $page_postdata['graph_id']));
 
         if ($existing_page) {
@@ -99,7 +97,7 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
             }
 
             $page      = new FacebookPage();
-            $page->app = $existing_app ? : new FacebookApp();
+            $page->app = $existing_app ?: new FacebookApp();
 
             $model = new EditPage($page);
             $form  = $this->createForm(new EditPageType(), $model);
@@ -117,7 +115,6 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
         }
     }
 
-
     ####################################################################################################################
     # get facebook page
     ####################################################################################################################
@@ -134,7 +131,6 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
 
         return $this->createApiResponse($data);
     }
-
 
     ####################################################################################################################
     # save facebook page
@@ -182,7 +178,6 @@ class ChannelFacebookController extends AbstractController implements ProtectedC
 
         return $this->createApiSuccessResponse();
     }
-
 
     /**
      * @return \Doctrine\ORM\EntityRepository

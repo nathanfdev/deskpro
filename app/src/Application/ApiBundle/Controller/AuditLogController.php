@@ -70,7 +70,9 @@ class AuditLogController extends AbstractController implements ProtectedControll
         ");
 
         $people_ids = array();
-        foreach ($recs as $r) $people_ids[] = $r['person_id'] ?: null;
+        foreach ($recs as $r) {
+            $people_ids[] = $r['person_id'] ?: null;
+        }
         $people_ids = Arrays::removeFalsey($people_ids);
 
         $people = $this->em->getRepository('DeskPRO:Person')->getByIds($people_ids);
@@ -81,16 +83,25 @@ class AuditLogController extends AbstractController implements ProtectedControll
 
             $new_val = null;
             if ($rec['op'] == 'update') {
-                $data = unserialize($rec['data']);
+                $data    = unserialize($rec['data']);
                 $new_val = array();
                 foreach ($data as $r) {
-                    $v = $r['new_val'];;
-                    if ($v === true) $v = 'true';
-                    if ($v === false) $v = 'false';
-                    if ($v === null) $v = 'null';
+                    $v = $r['new_val'];
+                    if ($v === true) {
+                        $v = 'true';
+                    }
+                    if ($v === false) {
+                        $v = 'false';
+                    }
+                    if ($v === null) {
+                        $v = 'null';
+                    }
                     if (is_array($v)) {
-                        if (empty($v)) $v = '[]';
-                        else $v = '[' . implode(',', $v) . ']';
+                        if (empty($v)) {
+                            $v = '[]';
+                        } else {
+                            $v = '['.implode(',', $v).']';
+                        }
                     }
                     $new_val[$r['field_id']] = $v;
                 }
@@ -99,10 +110,10 @@ class AuditLogController extends AbstractController implements ProtectedControll
             $row = $rec;
             unset($row['data']);
             $row['change_data'] = $new_val;
-            $row['person'] = $person ? $person->toApiData(true, false) : null;
+            $row['person']      = $person ? $person->toApiData(true, false) : null;
 
-            $d = \DateTime::createFromFormat('Y-m-d H:i:s', $rec['date_created']);
-            $row['date_created_ts'] = $d->getTimestamp();
+            $d                         = \DateTime::createFromFormat('Y-m-d H:i:s', $rec['date_created']);
+            $row['date_created_ts']    = $d->getTimestamp();
             $row['date_created_ts_ms'] = $d->getTimestamp() * 1000;
 
             $rec_data[] = $row;
@@ -113,7 +124,7 @@ class AuditLogController extends AbstractController implements ProtectedControll
             'total'     => $total,
             'per_page'  => $per_page,
             'page'      => $page,
-            'num_pages' => $num_pages
+            'num_pages' => $num_pages,
         ));
     }
 

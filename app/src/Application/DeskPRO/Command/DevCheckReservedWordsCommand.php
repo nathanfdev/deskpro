@@ -54,17 +54,17 @@ class DevCheckReservedWordsCommand extends \Symfony\Bundle\FrameworkBundle\Comma
 
         echo "Checking database tables for fields named after reserved words ... ";
 
-        $time_start = microtime(true);
+        $time_start     = microtime(true);
         $reserved_check = new \Application\DeskPRO\DBAL\ReservedWords(App::getDb()->getSchemaManager());
-        $bad = $reserved_check->getBadTables();
-        $time_end = microtime(true);
+        $bad            = $reserved_check->getBadTables();
+        $time_end       = microtime(true);
 
         echo sprintf("Done (%.4fs)\n", $time_end-$time_start);
 
         if ($bad) {
             $output->writeln(sprintf("<error>There are %d tables using reserved words</error>", count($bad)));
             foreach ($bad as $table => $c) {
-                echo "$table: " . implode(', ', $c) . "\n";
+                echo "$table: ".implode(', ', $c)."\n";
             }
         } else {
             $output->writeln(sprintf("<info>All tables check out fine</info>"));

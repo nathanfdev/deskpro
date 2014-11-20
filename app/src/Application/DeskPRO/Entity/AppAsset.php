@@ -79,7 +79,6 @@ class AppAsset extends DomainObject
      */
     protected $metadata = null;
 
-
     /**
      * Set metadata
      *
@@ -94,7 +93,6 @@ class AppAsset extends DomainObject
         }
     }
 
-
     /**
      * Get metadata
      *
@@ -105,13 +103,12 @@ class AppAsset extends DomainObject
         return $this->metadata ? $this->metadata : array();
     }
 
-
     /**
      * {@inheritDoc}
      */
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = array();
+        $data             = array();
         $data['id']       = $this->id;
         $data['name']     = $this->name;
         $data['tag']      = $this->tag;
@@ -130,7 +127,6 @@ class AppAsset extends DomainObject
         return $data;
     }
 
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -141,7 +137,7 @@ class AppAsset extends DomainObject
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
         $metadata->setPrimaryTable(array(
-            'name' => 'app_assets'
+            'name' => 'app_assets',
         ));
 
         $metadata->mapField(array(
@@ -185,7 +181,7 @@ class AppAsset extends DomainObject
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
                 'fetch'                => 'EAGER',
-            ))
+            )),
         ));
 
         $metadata->mapOneToOne(array(
@@ -197,7 +193,7 @@ class AppAsset extends DomainObject
                 'nullable'             => true,
                 'onDelete'             => 'CASCADE',
                 'fetch'                => 'EAGER',
-            ))
+            )),
         ));
     }
 }

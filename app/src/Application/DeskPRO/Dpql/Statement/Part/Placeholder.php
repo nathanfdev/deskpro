@@ -34,8 +34,8 @@
 
 namespace Application\DeskPRO\Dpql\Statement\Part;
 
-use Application\DeskPRO\Dpql\Placeholder\AbstractPlaceholder;
 use Application\DeskPRO\Dpql;
+use Application\DeskPRO\Dpql\Placeholder\AbstractPlaceholder;
 use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
@@ -71,12 +71,11 @@ class Placeholder extends AbstractPart
      */
     public function prepare(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-    )
-    {
+    ) {
         $prepared = AbstractPlaceholder::create($this->name)->prepare(
             $statement, $section, $stack, $select, $result
         );
-        $prepared->setName('%' . $this->name . '%');
+        $prepared->setName('%'.$this->name.'%');
 
         return $prepared;
     }
@@ -97,19 +96,18 @@ class Placeholder extends AbstractPart
      */
     public function prepareWithIntervals(
         Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
-    )
-    {
+    ) {
         $prepared = AbstractPlaceholder::create($this->name)->prepareWithIntervals(
             $statement, $section, $stack, $select, $result, $intervals
         );
 
         $append = '';
-        foreach ($intervals AS $interval) {
+        foreach ($intervals as $interval) {
             $operator = $interval->operator == \Application\DeskPRO\Dpql\Parser::T_OP_PLUS ? '+' : '-';
             $append .= " $operator INTERVAL $interval->amount $interval->unit";
         }
 
-        $prepared->setName('%' . $this->name . '%' . $append);
+        $prepared->setName('%'.$this->name.'%'.$append);
 
         return $prepared;
     }
@@ -125,7 +123,7 @@ class Placeholder extends AbstractPart
      */
     public function toDpql(Display $statement, $section, array $stack)
     {
-        return '%' . $this->name . '%';
+        return '%'.$this->name.'%';
     }
 
     /**
@@ -149,8 +147,7 @@ class Placeholder extends AbstractPart
     public function prepareComparison(
         AbstractPart $lhs, $comparison, Display $statement, $section, array $stack,
         Dpql\SqlSelect $select, Dpql\ResultHandler $result, array $intervals = array()
-    )
-    {
+    ) {
         return AbstractPlaceholder::create($this->name)->prepareComparison(
             $lhs, $comparison, $statement, $section, $stack, $select, $result, $intervals
         );

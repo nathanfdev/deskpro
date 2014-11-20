@@ -39,5 +39,4 @@ namespace Application\DeskPRO\App\Native\InstallerHandler;
  */
 class NoopInstallerHandler extends AbstractInstallerHandler
 {
-
 }

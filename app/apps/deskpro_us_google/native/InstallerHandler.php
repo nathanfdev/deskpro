@@ -46,11 +46,11 @@ class InstallerHandler extends AbstractUsersourceInstallerHandler
      */
     protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
     {
-        $us->title = $app->title;
+        $us->title             = $app->title;
         $us->options           = array(
-            'apps_domain' => $app->getSetting('google_apps_domain') ? : null
+            'apps_domain' => $app->getSetting('google_apps_domain') ?: null,
         );
-        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+        $us->lost_password_url = $app->getSetting('lost_pwd_url') ?: '';
         $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
         $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\Google';
 

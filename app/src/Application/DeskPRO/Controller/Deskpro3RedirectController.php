@@ -94,14 +94,14 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function feedbackAction()
     {
-        $cat_id = isset($_GET['cat']) ? $_GET['cat'] : 0;
+        $cat_id   = isset($_GET['cat']) ? $_GET['cat'] : 0;
         $idea_str = Arrays::getFirstKey($_GET);
 
         if ($cat_id) {
             // Ignore (go to home)
             // We dont filter on cats anymore
         } elseif ($idea_str) {
-            $id = Strings::extractRegexMatch('#^([0-9]+)#', $idea_str);
+            $id     = Strings::extractRegexMatch('#^([0-9]+)#', $idea_str);
             $new_id = $this->getNewId('dp3_ideaid_'.$id);
             if ($new_id) {
                 $obj = $this->em->find('DeskPRO:Feedback', $new_id);
@@ -113,7 +113,6 @@ class Deskpro3RedirectController extends AbstractController
 
         return $this->redirectRoute('user_feedback', array(), 301);
     }
-
 
     ############################################################################
     # Articles
@@ -233,7 +232,7 @@ class Deskpro3RedirectController extends AbstractController
             $new_id = $this->getNewId('dp3_ticketref_'.$id);
             if ($new_id) {
                 $new_id = $new_id['new_id'];
-                $obj = $this->em->find('DeskPRO:Ticket', $new_id);
+                $obj    = $this->em->find('DeskPRO:Ticket', $new_id);
                 if ($obj) {
                     return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $obj->getRef()), 301);
                 }
@@ -293,7 +292,6 @@ class Deskpro3RedirectController extends AbstractController
         }
     }
 
-
     /**
      * manual.php
      * manual.php?m=2
@@ -304,13 +302,13 @@ class Deskpro3RedirectController extends AbstractController
      */
     public function manualsAction()
     {
-        $data_dir = dp_get_data_dir() . '/manuals';
+        $data_dir = dp_get_data_dir().'/manuals';
         if (!is_dir($data_dir)) {
             return $this->redirectRoute('user', array(), 301);
         }
 
-        if (!isset($_GET['m']) && !isset($_GET['p']) && is_file($data_dir . '/index.html')) {
-            $html = file_get_contents($data_dir . '/index.html');
+        if (!isset($_GET['m']) && !isset($_GET['p']) && is_file($data_dir.'/index.html')) {
+            $html = file_get_contents($data_dir.'/index.html');
 
             return $this->createResponse($html);
         }
@@ -320,10 +318,10 @@ class Deskpro3RedirectController extends AbstractController
         $index_data = array();
 
         if (isset($_GET['m'])) {
-            $manual_dir = $data_dir . '/manual' . (int)$_GET['m'];
+            $manual_dir = $data_dir.'/manual'.(int) $_GET['m'];
             if (is_file($manual_dir.'/index-data.php')) {
-                $index_data = include($manual_dir.'/index-data.php');
-                $manual_id = $_GET['m'];
+                $index_data = include $manual_dir.'/index-data.php';
+                $manual_id  = $_GET['m'];
             } else {
                 $manual_dir = null;
             }
@@ -331,14 +329,16 @@ class Deskpro3RedirectController extends AbstractController
             $dir = dir($data_dir);
 
             while (($f = $dir->read()) !== false) {
-                if ($f == '.' || $f == '..') continue;
+                if ($f == '.' || $f == '..') {
+                    continue;
+                }
 
-                $path = $data_dir . '/' . $f;
+                $path = $data_dir.'/'.$f;
                 if (is_dir($path) && is_file($path.'/index-data.php')) {
-                    $index_data = include($path.'/index-data.php');
+                    $index_data = include $path.'/index-data.php';
                     if (isset($index_data[$_GET['p']])) {
                         $manual_dir = $path;
-                        $manual_id = str_replace('manual', '', $f);
+                        $manual_id  = str_replace('manual', '', $f);
                         break;
                     }
                 }
@@ -350,46 +350,45 @@ class Deskpro3RedirectController extends AbstractController
         }
 
         if (isset($_GET['img'])) {
-            $file_path = realpath($manual_dir . '/images/' . $_GET['img']);
+            $file_path = realpath($manual_dir.'/images/'.$_GET['img']);
             if (strpos($file_path, $manual_dir) !== 0 || !is_file($file_path)) {
                 return $this->redirectRoute('user', array(), 301);
             }
 
-            $file = file_get_contents($file_path);
+            $file     = file_get_contents($file_path);
             $mimetype = \Orb\Data\ContentTypes::getContentTypeFromFilename($_GET['img']);
 
             $res = new \Symfony\Component\HttpFoundation\Response($file, 200, array(
-                'Content-Type' => $mimetype,
-                'Content-Disposition' => 'inline; filename=' . $_GET['img'],
+                'Content-Type'        => $mimetype,
+                'Content-Disposition' => 'inline; filename='.$_GET['img'],
             ));
 
             return $res;
         }
 
         if (!isset($_GET['p'])) {
-            $html = file_get_contents($manual_dir . '/index.html');
+            $html = file_get_contents($manual_dir.'/index.html');
         } else {
             if (!isset($index_data[$_GET['p']])) {
                 return $this->redirectRoute('dp3_redirect_manual_php', array('m' => $manual_id));
             }
-            $page_file = $manual_dir . '/pages/' . $index_data[$_GET['p']];
-            $html = file_get_contents($page_file);
+            $page_file = $manual_dir.'/pages/'.$index_data[$_GET['p']];
+            $html      = file_get_contents($page_file);
         }
 
         foreach ($index_data as $pid => $page) {
-            $html = str_replace('pages/'.$page, 'manual.php?m='.$manual_id.'&p=' . $pid, $html);
+            $html = str_replace('pages/'.$page, 'manual.php?m='.$manual_id.'&p='.$pid, $html);
         }
 
         $html = preg_replace('#../images/(.*?)\b#', 'manual.php?m='.$manual_id.'&img=$1', $html);
 
         if (dp_get_config('legacy_manual_custom_header')) {
             $header_markup = file_get_contents(dp_get_config('legacy_manual_custom_header'));
-            $html = str_replace('<body>', $header_markup, $html);
+            $html          = str_replace('<body>', $header_markup, $html);
         }
 
         return $this->createResponse($html);
     }
-
 
     /**
      * troubleshooter.php

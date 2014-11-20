@@ -55,7 +55,7 @@ class SmsClickatellAction extends AbstractSmsAction
 
         $username = $this->getApp()->getSetting('username');
         $password = $this->getApp()->getSetting('password');
-        $api_id = $this->getApp()->getSetting('api_id');
+        $api_id   = $this->getApp()->getSetting('api_id');
 
         $this->clickatell_provider = new ClickatellSmsProvider($username, $password, $api_id);
 

@@ -1,5 +1,5 @@
 <?php return array(
     'install' => array(
-        'handler' => 'deskpro_us_twitter\\InstallerHandler'
-    )
+        'handler' => 'deskpro_us_twitter\\InstallerHandler',
+    ),
 );

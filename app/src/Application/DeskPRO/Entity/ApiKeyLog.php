@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-
 /**
  * A log of API requests per key
  *
@@ -73,8 +72,8 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
 
     public function __construct()
     {
-        $this['time'] = time();
-        $this['request'] = array();
+        $this['time']     = time();
+        $this['request']  = array();
         $this['response'] = array();
     }
 
@@ -88,7 +87,7 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
 
     public function toApiData($primary = true, $deep = true, array $visited = array())
     {
-        $data = parent::toApiData($primary, $deep, $visited);
+        $data         = parent::toApiData($primary, $deep, $visited);
         $data['time'] = date('Y-m-d H:i:s', $data['time']);
 
         return $data;
@@ -111,45 +110,45 @@ class ApiKeyLog extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 
         $metadata->mapField(array(
-            'fieldName' => 'id',
-            'type' => 'integer',
-            'nullable' => false,
+            'fieldName'  => 'id',
+            'type'       => 'integer',
+            'nullable'   => false,
             'columnName' => 'id',
-            'id' => true,
+            'id'         => true,
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'time',
-            'type' => 'integer',
-            'nullable' => false,
+            'fieldName'  => 'time',
+            'type'       => 'integer',
+            'nullable'   => false,
             'columnName' => 'time',
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'request',
-            'type' => 'array',
-            'nullable' => false,
+            'fieldName'  => 'request',
+            'type'       => 'array',
+            'nullable'   => false,
             'columnName' => 'request',
         ));
 
         $metadata->mapField(array(
-            'fieldName' => 'response',
-            'type' => 'array',
-            'nullable' => false,
+            'fieldName'  => 'response',
+            'type'       => 'array',
+            'nullable'   => false,
             'columnName' => 'response',
         ));
 
         $metadata->mapManyToOne(array(
-            'fieldName' => 'key',
+            'fieldName'    => 'key',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\ApiKey',
-            'mappedBy' => null,
-            'inversedBy' => 'logs',
-            'joinColumns' => array(
+            'mappedBy'     => null,
+            'inversedBy'   => 'logs',
+            'joinColumns'  => array(
                 0 => array(
-                    'name' => 'key_id',
+                    'name'                 => 'key_id',
                     'referencedColumnName' => 'id',
-                    'nullable' => false,
-                    'onDelete' => 'cascade',
+                    'nullable'             => false,
+                    'onDelete'             => 'cascade',
                 ),
             ),
         ));

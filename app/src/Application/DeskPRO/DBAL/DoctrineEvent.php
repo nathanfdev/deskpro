@@ -69,7 +69,7 @@ class DoctrineEvent extends \Symfony\Component\EventDispatcher\Event
         $this->entity_manager = $doctrine_event->getEntityManager();
         $this->entity         = null;
 
-        if ($doctrine_event instanceof LifecycleEventArgs OR $doctrine_event instanceof PreUpdateEventArgs) {
+        if ($doctrine_event instanceof LifecycleEventArgs or $doctrine_event instanceof PreUpdateEventArgs) {
             $this->entity = $doctrine_event->getEntity();
         }
     }
