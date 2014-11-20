@@ -1,0 +1,10 @@
+services:
+    portal_permissions_manager:
+        class: Application\AuthBundle\Permissions\Portal\PortalPermissionsManager
+        arguments: [@settings_resolver, @doctrine.orm.default_entity_manager, @cache.simple_array, @portal_usergroup_decider, @portal_permissions_loader]
+    portal_permissions_loader:
+        class: Application\AuthBundle\Permissions\Portal\PortalPermissionsLoader
+        arguments: [@doctrine.dbal.default_connection]
+    portal_usergroup_decider:
+        class: Application\AuthBundle\Permissions\Portal\PortalUsergroupDecider
+        arguments: [@doctrine.orm.default_entity_manager]
