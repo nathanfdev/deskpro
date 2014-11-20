@@ -42,8 +42,20 @@ define(function(){
 							return types[schema.items] ? types[schema.items](val) : val;
 						}
 					},
-					datetime: function(val) { return new Date(val).toString() },
-					date: function(val) { return new Date(val).toString() },
+					datetime: function(val) {
+						var date = new Date(val);
+						if ('[object Date]' === Object.prototype.toString.call(date)) {
+							return isNaN(date.getTime()) ? val : date.toString();
+						}
+						return val;
+					},
+					date: function(val) {
+						var date = new Date(val);
+						if ('[object Date]' === Object.prototype.toString.call(date)) {
+							return isNaN(date.getTime()) ? val : date.toString();
+						}
+						return val;
+					},
 
 					project: function(val) { if (val) return val.name; },
 					issuetype: function(val) { if (val) return val.name; },

@@ -84,7 +84,6 @@ define(function() {
 
 		$scope.toggleField = function(field, isSummary) {
 			var arr = $scope.meta_defaults['default_fields_' + (isSummary ? 'summary' : 'list')];
-            console.info(arr);
 			var idx = arr.indexOf(field.id);
 			idx > -1
 				? arr.splice(idx, 1)
