@@ -1,0 +1,6 @@
+services:
+    use_section.voter:
+        class: Application\AuthBundle\Voter\Portal\UseSectionVoter
+        arguments: [@service_container]
+        tags:
+            - { name: security.voter }

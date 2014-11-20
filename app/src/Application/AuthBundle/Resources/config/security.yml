@@ -1,3 +1,5 @@
+imports:
+    - { resource: @AuthBundle/Resources/config/portal_voters.yml }
 
 security:
     providers:
