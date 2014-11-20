@@ -118,16 +118,14 @@ class JiraController extends AbstractController
 		$rep = $this->em->getRepository('DeskPRO:JiraIssue');
 
 		if (!$issueId) {
-			$issues = $rep->findBy(array('ticket' => $ticketId));
+			if (!$issues = $rep->findBy(array('ticket' => $ticketId))) {
+				throw new NotFoundHttpException;
+			}
 		} else {
 			if (!$issue = $rep->findOneBy(array('ticket' => $ticketId, 'issue_id' => $issueId))) {
 				throw new NotFoundHttpException;
 			}
 			$issues = array($issue);
-		}
-
-		if (!$issues) {
-			throw new NotFoundHttpException;
 		}
 
 		$js = $this->service();

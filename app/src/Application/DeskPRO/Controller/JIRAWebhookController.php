@@ -109,17 +109,22 @@ class JIRAWebhookController extends AbstractController
 
 		    if (isset($data['changelog'])) {
 			    foreach ($data['changelog']['items'] as $change) {
-				    if ('status' === $change['field']) {
+				    // skip comments as handled above
+				    if ('comment' === $change['field']) continue;
+
+				    // store new status if exists
+				    if ('status' === $change['field'] && $issue['status_id'] != $change['to']) {
 					    $issue['status_id'] = $change['to'];
 					    $em->flush($issue);
 				    }
+
 				    $state->recordData('jira.' . $change['field'], $change);
 			    }
 		    }
+	    }
 
-		    if (!$state->isTrivialChangeSet()) {
-			    $manager->saveTicket($issue->ticket, $context);
-		    }
+	    if (!$state->isTrivialChangeSet()) {
+		    $manager->saveTicket($issue->ticket, $context);
 	    }
     }
 
@@ -135,11 +140,14 @@ class JIRAWebhookController extends AbstractController
 
 		foreach ($issues as $issue) {
 			$ticket = $issue->ticket;
+			if (!$performer = $ticket->agent) {
+				$performer = $em->getRepository('DeskPRO:Person')->findOneBy(array('is_agent' => true, 'is_deleted' => false));
+			}
 			$em->remove($issue);
 			$em->flush($issue);
 
 			$context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_API);
-			$context->setPersonContext($ticket->agent);
+			$context->setPersonContext($performer);
 			$manager->saveTicket($ticket, $context);
 		}
 	}
