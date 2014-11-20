@@ -60,7 +60,7 @@ class DownloadsController extends AbstractController
 
         $download_comments = $this->em->getRepository('DeskPRO:DownloadComment')->getComments($download);
 
-        $related_finder = new RelatedContentFinder($this->person, $download);
+        $related_finder  = new RelatedContentFinder($this->person, $download);
         $related_content = $related_finder->getRelatedEntities();
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editdownload', $this->person->id);
@@ -72,7 +72,7 @@ class DownloadsController extends AbstractController
         $download_categories = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();
 
         $perms = array(
-            'can_edit' => $this->person->PermissionsManager->PublishChecker->canEdit($download),
+            'can_edit'   => $this->person->PermissionsManager->PublishChecker->canEdit($download),
             'can_delete' => $this->person->PermissionsManager->PublishChecker->canDelete($download),
         );
 
@@ -105,14 +105,14 @@ class DownloadsController extends AbstractController
     public function infoAction($download_id)
     {
         $download = $this->em->find('DeskPRO:Download', $download_id);
-        $blob = $download->blob;
+        $blob     = $download->blob;
 
         $data = array(
-            'blob_id' => $blob['id'],
-            'download_url' => $blob->getDownloadUrl(true),
-            'filename' => $blob['filename'],
+            'blob_id'           => $blob['id'],
+            'download_url'      => $blob->getDownloadUrl(true),
+            'filename'          => $blob['filename'],
             'filesize_readable' => $blob->getReadableFilesize(),
-            'permalink' => $download->getLink()
+            'permalink'         => $download->getLink(),
         );
 
         return $this->createJsonResponse($data);
@@ -153,11 +153,11 @@ class DownloadsController extends AbstractController
             throw $this->createNotFoundException();
         }
 
-        $comment = new DownloadComment();
-        $comment->download = $download;
-        $comment->person = $this->person;
-        $comment['content'] = $this->in->getString('content');
-        $comment['status'] = 'visible';
+        $comment                  = new DownloadComment();
+        $comment->download        = $download;
+        $comment->person          = $this->person;
+        $comment['content']       = $this->in->getString('content');
+        $comment['status']        = 'visible';
         $comment['date_created']  = new \DateTime();
 
         if ($this->person->hasPerm('agent_publish.validate')) {
@@ -168,14 +168,14 @@ class DownloadsController extends AbstractController
         $this->em->flush();
 
         return $this->render('AgentBundle:Downloads:view-comment.html.twig', array(
-            'comment' => $comment
+            'comment' => $comment,
         ));
     }
 
     public function ajaxSaveAction($download_id)
     {
         $download = $this->em->find('DeskPRO:Download', $download_id);
-        $rev = null;
+        $rev      = null;
 
         if (!$download) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
@@ -216,13 +216,13 @@ class DownloadsController extends AbstractController
 
             case 'title':
                 $download['title'] = $this->in->getString('title');
-                $rev = ContentRevisionUtil::findOrCreate($download, 'title', $this->person);
-                $rev['title'] = $download['title'];
+                $rev               = ContentRevisionUtil::findOrCreate($download, 'title', $this->person);
+                $rev['title']      = $download['title'];
                 break;
 
             case 'slug':
                 $download['slug'] = Strings::slugifyTitle($this->in->getString('slug')) ?: 'view';
-                $data['slug'] = $download['slug'];
+                $data['slug']     = $download['slug'];
                 break;
 
             case 'add-related':
@@ -259,7 +259,7 @@ class DownloadsController extends AbstractController
                     $this->em->persist($blob);
 
                     $rev['title'] = $title;
-                    $rev->blob = $download->blob;
+                    $rev->blob    = $download->blob;
                 } elseif ($this->in->getString('download.fileurl')) {
                     $fileurl  = $this->in->getString('download.fileurl');
                     $filesize = $this->in->getString('download.filesize');
@@ -286,7 +286,7 @@ class DownloadsController extends AbstractController
                 }
 
                 $data['file_html'] = $this->renderView('AgentBundle:Downloads:view-fileinfo.html.twig', array(
-                    'download' => $download
+                    'download' => $download,
                 ));
 
                 break;
@@ -297,12 +297,12 @@ class DownloadsController extends AbstractController
 
                 $changed_content = false;
                 if ($this->in->getString('content') != $download['content']) {
-                    $changed_content = true;
+                    $changed_content     = true;
                     $download['content'] = $this->in->getCleanValue('content', 'string', null, array('noclean' => true));
                 }
 
                 $data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', array(
-                    'download' => $download
+                    'download' => $download,
                 ));
 
                 $rev = ContentRevisionUtil::findOrCreate($download, array('content'), $this->person);
@@ -314,9 +314,9 @@ class DownloadsController extends AbstractController
                 break;
 
             case 'category':
-                $cat = $this->em->find('DeskPRO:DownloadCategory', $this->in->getUint('category_id'));
+                $cat                  = $this->em->find('DeskPRO:DownloadCategory', $this->in->getUint('category_id'));
                 $download['category'] = $cat;
-                $data['category_id'] = $cat['id'];
+                $data['category_id']  = $cat['id'];
                 break;
         }
 
@@ -375,18 +375,20 @@ class DownloadsController extends AbstractController
 
         $result_helper = DownloadResults::newFromRequest($this, array(
             'category' => $category,
-            'show_all' => $show_all
+            'show_all' => $show_all,
         ));
 
         $page = $this->in->getUint('p');
-        if (!$page) $page = 1;
+        if (!$page) {
+            $page = 1;
+        }
 
-        $results = $result_helper->getDownloadsForPage($page);
+        $results      = $result_helper->getDownloadsForPage($page);
         $result_cache = $result_helper->getResultCache();
 
         $total_results = count($result_helper->getDownloadIds());
-        $num_pages = ceil($total_results / 50);
-        $showing_to = min(($page) * 50, $total_results);
+        $num_pages     = ceil($total_results / 50);
+        $showing_to    = min(($page) * 50, $total_results);
 
         $display_fields = $this->person->getPref('agent.ui.download-filter-display-fields.0');
         if (!$display_fields) {
@@ -408,7 +410,7 @@ class DownloadsController extends AbstractController
             ", array(array_keys($results)), array(Connection::PARAM_INT_ARRAY));
         }
 
-        $cat_usergroups = array();
+        $cat_usergroups     = array();
         $cat_structure_data = array();
         if ($category) {
             $cat_usergroups = $this->db->fetchAllCol("
@@ -417,8 +419,8 @@ class DownloadsController extends AbstractController
                 WHERE category_id = ?
             ", array($category->getId()));
 
-            $cat_structure_data = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();;
-            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id' , 'title', 'children'), true, true);
+            $cat_structure_data = $this->em->getRepository('DeskPRO:DownloadCategory')->getInHierarchy();
+            $cat_structure_data = Arrays::removeButKey($cat_structure_data, array('id', 'title', 'children'), true, true);
             $cat_structure_data = Arrays::multiRenameKey($cat_structure_data, 'title', 'label');
             $cat_structure_data = Arrays::assocToNumericArray($cat_structure_data, 'children');
         }
@@ -446,11 +448,11 @@ class DownloadsController extends AbstractController
     public function newDownloadAction()
     {
         $download_categories = $this->em->getRepository('DeskPRO:DownloadCategory')->getFlatHierarchy();
-        $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
+        $state               = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
         return $this->render('AgentBundle:Downloads:newdownload.html.twig', array(
             'download_categories' => $download_categories,
-            'state' => $state,
+            'state'               => $state,
         ));
     }
 
@@ -459,7 +461,7 @@ class DownloadsController extends AbstractController
         $newdownload = new \Application\AgentBundle\Form\Model\NewDownload($this->person);
 
         $formType = new \Application\AgentBundle\Form\Type\NewDownload();
-        $form = $this->get('form.factory')->create($formType, $newdownload);
+        $form     = $this->get('form.factory')->create($formType, $newdownload);
 
         $this->db->executeUpdate("DELETE FROM people_prefs WHERE name = 'agent.ui.state.newdownload' AND person_id = ?", array($this->person->id));
 
@@ -470,8 +472,8 @@ class DownloadsController extends AbstractController
             $validator = new \Application\AgentBundle\Validator\NewDownloadValidator();
             if (!$validator->isValid($newdownload)) {
                 return $this->createJsonResponse(array(
-                    'error' => true,
-                    'error_codes' => $validator->getErrorGroups()
+                    'error'       => true,
+                    'error_codes' => $validator->getErrorGroups(),
                 ));
             }
             $newdownload->save();
@@ -487,8 +489,8 @@ class DownloadsController extends AbstractController
             $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
             return $this->createJsonResponse(array(
-                'success' => true,
-                'download_id' => $download['id']
+                'success'     => true,
+                'download_id' => $download['id'],
             ));
         } else {
             return $this->createJsonResponse(array(
