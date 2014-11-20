@@ -51,4 +51,18 @@
 {# Old classname (e.g., class="icon-xyz") that were used from FA 3x #}
 <link rel="stylesheet" href="{{ asset('fonts/font-awesome.compat-names.min.css') }}" type="text/css" />
 
-<script	type="text/javascript" data-main="{{ path('agent_requirejs_loader') }}?v={{ app.getBuildTime() }}" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+<script type="text/javascript">
+	window.name = "NG_DEFER_BOOTSTRAP!";
+	window.DP_INTERFACE_LOADER = 'AgentLoad';
+</script>
+<script	type="text/javascript" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
+<script	type="text/javascript" src="{{ path('agent_requirejs_loader') }}?v={{ app.getBuildTime() }}"></script>
+<script	type="text/javascript">
+	// Otherwise will try to re-load jquery
+	// which will be 2.11 which doesnt support ie8
+	// and some plugins in the agent interface dont support it either
+	define("jquery", function() {
+		return window.jQuery;
+	});
+</script>
+<script	type="text/javascript" src="{{ asset('loader-build/requirejs-config.js') }}?v={{ app.getBuildTime() }}"></script>

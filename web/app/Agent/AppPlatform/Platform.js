@@ -1,7 +1,7 @@
 define([
-	'DeskPRO/App/Context/AppContext',
-	'DeskPRO/App/Context/TabContext/TabContext',
-	'DeskPRO/App/Context/TabContext/TicketTabContext',
+	'Agent/AppPlatform/Context/AppContext',
+	'Agent/AppPlatform/Context/TabContext/TabContext',
+	'Agent/AppPlatform/Context/TabContext/TicketTabContext',
 ], function(AppContext) {
 	return new Orb.Class({
 		initialize: function(ngModule, appsConfig) {

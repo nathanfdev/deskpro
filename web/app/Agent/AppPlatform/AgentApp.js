@@ -3,7 +3,7 @@ define([
 	'angularAnimate',
 	'angularBootstrap',
 	'angularSelect2',
-	'angularUISortable',
+	'angularUiSortable',
 	'DeskPRO/Util/Functions',
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',

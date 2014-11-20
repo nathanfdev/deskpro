@@ -89,7 +89,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				container.parent().attr('dp-label', "");
 				container.parent().attr('dp-label-string', name);
 				container.parent().attr('dp-label-type', self.options.type);
-				angular.element(document).injector().invoke(['$compile', function($compile) {
+				window.AppPlatform.getNgInjector().invoke(['$compile', function($compile) {
 					$compile(container.parent())(DeskPRO_Window.$scope);
 				}]);
 				return name;

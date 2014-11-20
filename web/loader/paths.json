@@ -53,6 +53,7 @@
   "ngClip":                          "bower_components/ng-clip/src/ngClip",
 
   "AdminLoad":                       "app/Admin/AdminLoad",
+  "AgentLoad":                       "app/Agent/AgentLoad",
   "CloudAdminLoad":                  "app/Admin/Cloud/CloudAdminLoad",
   "AdminUpgradeLoad":                "app/AdminUpgrade/AdminUpgradeLoad",
   "AdminStartLoad":                  "app/AdminStart/AdminStartLoad",
@@ -63,6 +64,7 @@
   "AdminRouting":                    "app/Admin/Resources/config/routing",
   "AdminUpgrade":                    "app-build/AdminUpgrade",
   "AdminStart":                      "app-build/AdminStart",
+  "Agent":                           "app-build/Agent",
   "Reports":                         "app-build/Reports",
   "ReportsRouting":                  "app/Reports/Resources/config/routing"
 }

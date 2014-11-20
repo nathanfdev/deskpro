@@ -974,50 +974,16 @@ JS;
             $rjs->setUrlArgsExpr('"v=' . DP_BUILD_TIME . '"');
         }
 
-        $rjs->addPath('AppPlatform', 'javascripts/DeskPRO/App/Platform');
+        $rjs->addPath('AppPlatform', 'app-build/Agent/AppPlatform/Platform');
         $rjs->addPath('AppPlatformConfig', str_replace('.js', '', $this->generateUrl('agent_apps_config_js')));
-        $rjs->addPath('DeskPRO', 'app-build/DeskPRO');
-        $rjs->addPath('DeskPRO/App', 'javascripts/DeskPRO/App');
-        $rjs->addPath('AgentApp', 'javascripts/DeskPRO/App/AgentApp');
-        $rjs->addPathExpr('angular', 'ASSETS_BASE_URL+"/bower_components/angular/angular.min"');
-        $rjs->addPathExpr('angularAnimate', 'ASSETS_BASE_URL+"/bower_components/angular-animate/angular-animate.min"');
-        $rjs->addPathExpr('angularSanitize', 'ASSETS_BASE_URL+"/bower_components/angular-sanitize/angular-sanitize"');
-        $rjs->addPathExpr('angularBootstrap', 'ASSETS_BASE_URL+"/bower_components/angular-bootstrap/ui-bootstrap"');
-
-        $rjs->addPathExpr('angularUISortable', 'ASSETS_BASE_URL+"/bower_components/angular-ui-sortable/src/sortable"');
-        $rjs->addPathExpr('ngContextMenu', 'ASSETS_BASE_URL+"/vendor/ng-context-menu/src/ng-context-menu"');
-        $rjs->addPathExpr('angularSelect2', 'ASSETS_BASE_URL+"/bower_components/angular-ui-select2/src/select2"');
-
-        $rjs->addShim('angular', array('exports' => 'angular'));
-        $rjs->addShim('angularAnimate', array('angular'));
-        $rjs->addShim('angularSanitize', array('angular'));
-        $rjs->addShim('angularBootstrap', array('angular'));
-        $rjs->addShim('angularSelect2', array('angular'));
-        $rjs->addShim('angularUISortable', array('angular'));
-        $rjs->addShim('ngContextMenu', array('angular'));
+        $rjs->addPath('AgentApp', 'app-build/Agent/App/AgentModule');
 
         $rjs_apps = new AppsRequireJsConfigGenerator($manager, $this->generateUrl('serve_file_root') . '/apps');
         $rjs->addPathsFromGenerator($rjs_apps);
 
         $rjs_config = $rjs->generateRequireJsConfigCode();
 
-        $js = <<<JS
-$rjs_config
-requirejs(['AppPlatform', 'AppPlatformConfig', 'AgentApp', 'angular'], function (AppPlatform, AppPlatformConfig, AgentApp, angular) {
-    angular.element(document).ready(function () {
-        angular.bootstrap(document, ['AgentApp']);
-
-        AgentApp.dpInjector = angular.element(document).injector();
-        window.AppPlatform = new AppPlatform(AgentApp, AppPlatformConfig);
-
-        window.DP_ONLOAD();
-
-        if (window.DeskPRO_Window) {
-            window.DeskPRO_Window.initAppPlatform(window.AppPlatform);
-        }
-    });
-})
-JS;
+        $js = $rjs_config;
 
         $response = $this->response;
         $response->headers->set('Content-Type', 'application/javascript');
@@ -1029,7 +995,7 @@ JS;
     public function getAppsConfigAction()
     {
         $js = array();
-        $require_paths = array('DeskPRO/App/Context/AppContext');
+        $require_paths = array('Agent/AppPlatform/Context/AppContext');
         $require_names = array('AppContext');
 
         $manager = $this->container->getAppManager()->getScopeFilter('agent');

@@ -1,7 +1,7 @@
 define([
-	'DeskPRO/App/Context/TabContext/TicketTabContext',
-	'DeskPRO/App/Context/TabContext/UserTabContext',
-	'DeskPRO/App/Context/TabContext/OrgTabContext',
+	'Agent/AppPlatform/Context/TabContext/TicketTabContext',
+	'Agent/AppPlatform/Context/TabContext/UserTabContext',
+	'Agent/AppPlatform/Context/TabContext/OrgTabContext',
 ], function(
 	TicketTabContext,
 	UserTabContext,
