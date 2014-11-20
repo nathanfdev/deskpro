@@ -530,7 +530,15 @@
     # portal
     ####################################################################################################################
 
+    /**
+     * The default brand
+     */
     'portal.default_brand' => 1,
+
+    /**
+     * A timestamp used in generating cache keys (updates automatically in the db)
+     */
+    'portal.default_permissions_timestamp' => 0,
 
     ####################################################################################################################
     # core_misc
