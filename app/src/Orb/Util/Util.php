@@ -737,4 +737,32 @@ class Util
     {
         return $value ? 1 : 0;
     }
+
+
+	/**
+	 * Map a function over a collection and flatten the result by one-level.
+	 *
+	 * - Returns null if $val is null.
+	 * - Returns $fn($val) if $val is not a collection (makes a useful one-liner to apply $fn($val) when $val may be null)
+	 *
+	 * @param mixed $val
+	 * @param callable $fn
+	 * @return mixed|null
+	 */
+	public static function flatMap($val, $fn)
+	{
+		if ($val !== null) {
+			if (is_array($val) || $val instanceof \Traversable) {
+				$ret = array();
+				foreach ($val as $v) {
+					$ret[] = self::flatMap($v, $fn);
+				}
+				return $ret;
+			} else {
+				return call_user_func($fn, $val);
+			}
+		}
+
+		return null;
+	}
 }

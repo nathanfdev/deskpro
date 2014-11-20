@@ -78,6 +78,6 @@ class CheckOrgField extends AbstractCheckCustomField
      */
     public function getTermType()
     {
-        return 'CheckTicketField' . $this->getTermOptions()->get('field_id');
+		return 'CheckOrgField' . $this->getTermOptions()->get('field_id');
     }
 }

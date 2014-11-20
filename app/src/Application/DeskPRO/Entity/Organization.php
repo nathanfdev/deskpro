@@ -241,6 +241,23 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
 
+	public function removeCustomDataForField(CustomDefOrganization $field)
+	{
+		$parent_id = null;
+		$field_id = $field['id'];
+		if ($field->parent) {
+			$parent_id = $field->parent['id'];
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+				$this->custom_data->removeElement($data);
+				$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+			}
+		}
+	}
+
+
 
     /**
      * Set custom field data for a particular field.

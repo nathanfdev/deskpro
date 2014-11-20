@@ -76,7 +76,34 @@
 {% elseif log.action_type == 'participant_removed' %}
 	<span class="type">{{ phrase('agent.tickets.participant_removed') }}</span>: <span class="old-val">{{log.details.email}}</span>
 {% elseif log.action_type == 'ticket_created' %}
-	{{ phrase('agent.general.ticket') }} <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.ticket_id}}</span> {{ phrase('agent.tickets.lc_created') }}
+	{% if log.details.event_performer == 'agent' %}
+		{% if log.details.event_method == 'email' %}
+			{{ phrase('agent.tickets.log_new_email_agent') }}
+		{% elseif log.details.event_method == 'api' %}
+			{{ phrase('agent.tickets.log_new_api_agent') }}
+		{% elseif log.details.event_method == 'web' %}
+			{{ phrase('agent.tickets.log_new_web_agent_portal') }}
+		{% elseif log.details.event_method %}
+			{{ log.details.event_method }}
+		{% endif %}
+	{% elseif log.details.event_performer == 'user' %}
+		{% if log.details.event_method == 'email' %}
+			{{ phrase('agent.tickets.log_new_email_user') }}
+		{% elseif log.details.event_method == 'api' %}
+			{{ phrase('agent.tickets.log_new_api_user') }}
+		{% elseif log.details.event_method == 'portal' %}
+			{{ phrase('agent.tickets.log_new_web_user_portal') }}
+		{% elseif log.details.event_method == 'form' %}
+			{{ phrase('agent.tickets.log_new_web_user_embed') }}
+		{% elseif log.details.event_method == 'widget' %}
+			{{ phrase('agent.tickets.log_new_web_user_widget') }}
+		{% elseif log.details.event_method %}
+			{{ log.details.event_method }}
+		{% endif %}
+	{% else %}
+		{{ phrase('agent.tickets.lc_created') }}
+	{% endif %}
+	&mdash; Ticket <span class="new-val">{{ phrase('agent.general.id') }} {{log.details.ticket_id}}</span>
 	{% if log.details.via_comment %}
 		<div stye="font-size:11px;">
 			&bull;
