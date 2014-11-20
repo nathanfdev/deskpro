@@ -995,8 +995,6 @@ JS;
     public function getAppsConfigAction()
     {
         $js = array();
-        $require_paths = array('Agent/AppPlatform/Context/AppContext');
-        $require_names = array('AppContext');
 
         $manager = $this->container->getAppManager()->getScopeFilter('agent');
 
@@ -1006,11 +1004,9 @@ JS;
             $name = "{$package->name}/app";
 
             if ($appAsset) {
-                $class_name = ucfirst(Strings::underscoreToCamelCase(str_replace(array('.', '/'), '_', $name)));
-                $require_paths[] = $name;
-                $require_names[] = $class_name;
+                $class_name = $name;
             } else {
-                $class_name = "AppContext";
+                $class_name = "Agent/AppPlatform/Context/AppContext";
             }
 
             if ($package->native_name) {
@@ -1044,10 +1040,13 @@ JS;
                 $asset_files_js = "{}";
             }
 
+            $module_asset = $package->getTaggedAsset('module_js');
+
             $infoJson = '';
             $infoJson .= "\t\t\"id\": {$app->id},\n";
             $infoJson .= "\t\t\"packageName\": \"{$package->name}\",\n";
-            $infoJson .= "\t\t\"contextClass\": $class_name,\n";
+            $infoJson .= "\t\t\"moduleName\": " . ($module_asset ? "\"{$package->name}/module\"" : 'null') . ",\n";
+            $infoJson .= "\t\t\"contextName\": \"$class_name\",\n";
             $infoJson .= "\t\t\"scope\": \"agent\",\n";
             $infoJson .= "\t\t\"settings\": ".json_encode($app->getOutputSettings(), JSON_FORCE_OBJECT).",\n";
             $infoJson .= "\t\t\"assets\": $asset_files_js\n";
@@ -1059,10 +1058,7 @@ JS;
             $js[] = $js_row;
         }
 
-        $require_paths = "\t'" . implode("',\n\t'", $require_paths) . "'";
-        $require_names = "\t" . implode(",\n\t", $require_names);
-
-        array_unshift($js, "define([\n$require_paths\n], function (\n$require_names\n) {\n\tvar apps = [];");
+        array_unshift($js, "define(function() {\n\tvar apps = [];");
 
         $js[] = "\treturn apps;\n});\n";
 

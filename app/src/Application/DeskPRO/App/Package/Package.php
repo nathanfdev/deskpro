@@ -157,6 +157,20 @@ class Package
 
 
     /**
+     * @return string|null
+     */
+    public function getModuleJsFilePath()
+    {
+        $path = $this->path . '/module.js';
+        if (!file_exists($path)) {
+            return null;
+        }
+
+        return $path;
+    }
+
+
+    /**
      * @return array
      */
     public function getJsAssets()

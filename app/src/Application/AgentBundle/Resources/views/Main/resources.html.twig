@@ -54,6 +54,10 @@
 <script type="text/javascript">
 	window.name = "NG_DEFER_BOOTSTRAP!";
 	window.DP_INTERFACE_LOADER = 'AgentLoad';
+
+	// Instructs the main loader (which gets paths from paths.json) from overwriting
+	// our dynamically added paths
+	window.DP_RJS_PATHS_IGNORE = ['AgentApp', 'AppPlatform', 'AppPlatformConfig'];
 </script>
 <script	type="text/javascript" src="{{ asset('bower_components/requirejs/require.js') }}"></script>
 <script	type="text/javascript" src="{{ path('agent_requirejs_loader') }}?v={{ app.getBuildTime() }}"></script>

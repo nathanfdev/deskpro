@@ -52,6 +52,10 @@
   "ZeroClipboard":                   "bower_components/zeroclipboard/dist/ZeroClipboard",
   "ngClip":                          "bower_components/ng-clip/src/ngClip",
 
+  "AgentApp":                        "empty:",
+  "AppPlatform":                     "empty:",
+  "AppPlatformConfig":               "empty:",
+
   "AdminLoad":                       "app/Admin/AdminLoad",
   "AgentLoad":                       "app/Agent/AgentLoad",
   "CloudAdminLoad":                  "app/Admin/Cloud/CloudAdminLoad",

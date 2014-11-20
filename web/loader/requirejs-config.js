@@ -30,6 +30,20 @@
     }
   }
 
+  if (window.DP_RJS_PATHS_IGNORE) {
+    for (var i = 0; i < DP_RJS_PATHS_IGNORE.length; i++) {
+      if (config.paths[DP_RJS_PATHS_IGNORE[i]]) {
+        delete config.paths[DP_RJS_PATHS_IGNORE[i]];
+      }
+    }
+  }
+
+  for (var i in config.paths) {
+    if (config.paths[i] == 'empty:') {
+      delete config.paths[i];
+    }
+  }
+
   requirejs.config(config);
 
   if (window.DP_INTERFACE_LOADER) {

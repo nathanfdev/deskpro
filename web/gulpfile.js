@@ -256,6 +256,7 @@ gulp.task('loader', ['clean'], function () {
 gulp.task('rjs', ['coffee', 'loader'], function () {
   var loadFiles = [
     './app/Admin/AdminLoad.js',
+    './app/Agent/AgentLoad.js',
     './app/Admin/Cloud/CloudAdminLoad.js',
     './app/AdminUpgrade/AdminUpgradeLoad.js',
     './app/AdminStart/AdminStartLoad.js',
@@ -271,6 +272,9 @@ gulp.task('rjs', ['coffee', 'loader'], function () {
       switch (path.basename.replace(/\.js$/, '')) {
         case 'AdminLoad':
           path.dirname = 'Admin';
+          break;
+        case 'AgentLoad':
+          path.dirname = 'Agent';
           break;
         case 'CloudAdminLoad':
           path.dirname = 'Admin/Cloud';

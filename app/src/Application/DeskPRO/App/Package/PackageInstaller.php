@@ -233,6 +233,22 @@ class PackageInstaller
         }
 
         #------------------------------
+        # Main module.js
+        #------------------------------
+
+        $modulejs_path = $package->getModuleJsFilePath();
+        if ($modulejs_path && $this->isAssetBlobChanged($def, 'module.js', $modulejs_path)) {
+            $blob = $this->blob_storage->createBlobRecordFromFile(
+                $modulejs_path,
+                'module.js',
+                'text/javascript'
+            );
+
+            $asset = $this->_addAssetBlob($def, $blob, 'module_js', null, $old_blobs);
+            $this->em->persist($asset);
+        }
+
+        #------------------------------
         # Save assets
         #------------------------------
 

@@ -1344,7 +1344,7 @@ class FilestorageLoader extends LoaderAbstract
      */
     public function handleAppsRequest($app_name, $type, $filename)
     {
-        if ($type == 'app' && $filename == 'app.js') {
+        if ($type == 'app' && ($filename == 'app.js' || $filename == 'module.js')) {
             $type_f = "";
         } else {
             $type_f = "{$type}/";

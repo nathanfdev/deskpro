@@ -60,6 +60,18 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
                 $this->addPath($name, $appjs_path);
             }
 
+            $moduleAsset = $package->getTaggedAsset('module_js');
+            $name = "{$package->name}/module";
+
+            if ($moduleAsset) {
+                if ($native_baseurl) {
+                    $modulejs_path = preg_replace('#\.js$#', '', $native_baseurl . '/app/module.js');
+                } else {
+                    $modulejs_path = preg_replace('#\.js$#', '', $moduleAsset->blob->getDownloadUrl(false, false));
+                }
+                $this->addPath($name, $modulejs_path);
+            }
+
             // If its a native app, then we can get away with just using the prefix path
             if ($native_baseurl) {
                 $name = $package->name;
