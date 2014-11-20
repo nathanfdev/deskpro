@@ -750,6 +750,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->getHelperManager()->hasHelper($name);
     }
 
+    public function getUsergroups()
+    {
+        return $this->usergroups;
+    }
+
     protected function _onNotCallable($name, $arguments)
     {
         if ($this->_helper_manager) {
