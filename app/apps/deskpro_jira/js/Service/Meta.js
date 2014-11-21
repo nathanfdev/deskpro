@@ -89,6 +89,11 @@ define(function(){
 		$http.get('/agent/jira/meta')
 			.success(function(data, status, headers, config) {
 
+				if (!data) {
+					console.error('JIRA App is not configured properly');
+					return;
+				}
+
 				// fields metadata
 				if (data.fields) {
                     //var commentIdx = data.default_fields_list.indexOf('comment');
@@ -116,7 +121,7 @@ define(function(){
 				console.info(meta);
 			})
 			.error(function(data, status, headers, config) {
-				console.error(data);
+				console.error('Loading meta: ', status, {data: data});
 			});
 
 		return meta;

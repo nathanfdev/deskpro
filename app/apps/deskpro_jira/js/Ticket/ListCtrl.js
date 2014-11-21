@@ -1,6 +1,6 @@
 define([
 	'angular',
-	'deskpro_jira2/Ticket/CreateIssueCtrl'
+	'deskpro_jira/Ticket/CreateIssueCtrl'
 ], function(
 	angular,
 	CreateIssueCtrl
@@ -37,7 +37,7 @@ define([
 					var $parent = $scope;
 
 					$modal.open({
-						templateUrl: 'deskpro_jira2/Ticket/link-issue-modal.html',
+						templateUrl: 'deskpro_jira/Ticket/link-issue-modal.html',
 						controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
 							$scope.meta = $meta;
@@ -86,7 +86,7 @@ define([
 		 */
 		$scope.createIssueModal = function() {
 			$modal.open({
-				templateUrl: 'deskpro_jira2/Ticket/create-issue-modal.html',
+				templateUrl: 'deskpro_jira/Ticket/create-issue-modal.html',
 				controller: CreateIssueCtrl,
 				resolve: {
 					$ticket: function() { return $ticket; },
@@ -103,7 +103,7 @@ define([
 		 */
 		$scope.issueModal = function(issue) {
 			$modal.open({
-				templateUrl: 'deskpro_jira2/Ticket/issue-details-modal.html',
+				templateUrl: 'deskpro_jira/Ticket/issue-details-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 
 					$scope.meta = $meta;
@@ -136,7 +136,7 @@ define([
 		 */
 		$scope.sendCommentModal = function() {
 			$modal.open({
-				templateUrl: 'deskpro_jira2/Ticket/send-comment-modal.html',
+				templateUrl: 'deskpro_jira/Ticket/send-comment-modal.html',
 				controller: ['$scope', '$modalInstance', function($scope, $modalInstance) {
 					$scope.confirm = function(msg) {
 						issues.sendComment(msg);

@@ -155,7 +155,7 @@ class JIRA
 	{
 		$rep = $this->container->getEm()->getRepository('DeskPRO:AppInstance');
 		if (false === $this->app) {
-			$this->app = $rep->getInstanceByName('deskpro_jira2');
+			$this->app = $rep->getInstanceByName('deskpro_jira');
 		}
 
 		return $this->app;

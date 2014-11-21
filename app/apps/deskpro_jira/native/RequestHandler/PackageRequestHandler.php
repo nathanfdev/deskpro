@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace deskpro_jira2\RequestHandler;
+namespace deskpro_jira\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;

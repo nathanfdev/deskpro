@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace deskpro_jira2;
+namespace deskpro_jira;
 
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
 use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;

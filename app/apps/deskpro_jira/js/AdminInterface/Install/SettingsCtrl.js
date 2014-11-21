@@ -31,7 +31,7 @@ define(function() {
             $scope.meta_defaults = {};
 			$scope.Ctrl.startSpinner('saving_settings');
 
-			return Api.sendPostJson('/apps/packages/deskpro_jira2/get-meta', data).then(
+			return Api.sendPostJson('/apps/packages/deskpro_jira/get-meta', data).then(
 				function(res) {
 					$scope.loading_meta = false;
 					$scope.Ctrl.stopSpinner('saving_settings');

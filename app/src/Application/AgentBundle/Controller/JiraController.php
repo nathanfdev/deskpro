@@ -45,9 +45,13 @@ class JiraController extends AbstractController
 	 */
 	public function getMetaAction()
 	{
-		$meta = $this->service()->getMeta();
+		try {
+			$meta = $this->service()->getMeta();
+		} catch (\Exception $e) {
+			$meta = null;
+		}
 
-		return $this->createJsonResponse($meta->toArray());
+		return $this->createJsonResponse($meta ? $meta->toArray() : null);
 	}
 
 	/**

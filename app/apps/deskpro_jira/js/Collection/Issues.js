@@ -35,7 +35,7 @@ define(function(){
 					})
 					.error(function(data, status, headers, config){
 						self.loading = false;
-						console.error(data);
+						console.error('Load JIRA Issues: ', status, {data: data});
 						d.resolve(self);
 					});
 
@@ -61,7 +61,7 @@ define(function(){
 						d.resolve(data);
 					})
 					.error(function (data, status, headers, config) {
-						console.error(data);
+						console.error('Create JIRA Issue: ', status, {data: data});
 						d.reject(data);
 					});
 
@@ -100,7 +100,7 @@ define(function(){
 						d.resolve(data);
 					})
 					.error(function (data, status, headers, config) {
-						console.error(data);
+						console.error('Create JIRA Comment: ', status, {data: data});
 						d.resolve();
 					});
 
@@ -128,7 +128,7 @@ define(function(){
 						d.resolve(data);
 					})
 					.error(function (data, status, headers, config) {
-						console.error(data);
+						console.error('Search JIRA Issue: ', status, {data: data});
 						d.resolve();
 					});
 
@@ -152,7 +152,7 @@ define(function(){
 						d.resolve(data);
 					})
 					.error(function (data, status, headers, config) {
-						console.error(data);
+						console.error('Link JIRA Issue: ', status, {data: data});
 						d.reject(status);
 					});
 

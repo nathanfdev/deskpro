@@ -1,5 +1,5 @@
 {
-	"package_name": "deskpro_jira2",
+	"package_name": "deskpro_jira",
 	"is_native": true,
 	"title": "JIRA",
 	"description": "Enables agents to link DeskPRO tickets to Jira tickets.",
