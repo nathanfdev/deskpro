@@ -9,6 +9,14 @@ define([
     var issues = $scope.issues = new Issues($ticket);
     $scope.meta = $meta;
 
+    $scope.$watch('issues.length', function(l) {
+      if (!l || l < 1) {
+        $tabScope.btnBadge = null;
+      } else {
+        $tabScope.btnBadge = l+"";
+      }
+    });
+
 
     /**
      * search issue for linking
