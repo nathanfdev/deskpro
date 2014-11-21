@@ -10,6 +10,10 @@ define([
           meta = $inj.instantiate(Meta),
           Issues = $inj.instantiate(IssuesCollection);
 
+      $('<link rel="stylesheet" type="text/css" />')
+        .attr('href', this.getResourcePath('style.css'))
+        .appendTo('body');
+
       this.registerAppWidget('ticket', 'Ticket/list.html', ListCtrl, {
         '$meta': meta,
         'Issues': Issues

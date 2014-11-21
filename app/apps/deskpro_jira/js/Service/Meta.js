@@ -24,6 +24,10 @@ define(function () {
 
         return 'object' === typeof val ? val.toString() : val;
       },
+      fieldHasValue: function(id, val) {
+        if (!val || val === null || val === false || val === "") return false;
+        return true;
+      },
       renderSchema: function (schema, val) {
         var types = {
           string: function (val) {

@@ -1,0 +1,87 @@
+/*******************************************************/
+/* JIRA ISSUES LIST */
+/*******************************************************/
+
+ul.jira-issues-list {
+    background: #EEEFF1;
+    margin: 0;
+    padding: 8px;
+}
+
+ul.jira-issues-list .issue-header {
+    padding: 6px;
+    background: #DCDDE0;
+    border-bottom: 1px solid #ADAEB4;
+}
+
+    ul.jira-issues-list .issue-header .unlink-btn {
+        float: right;
+        font-size: 11px;
+        color: #888;
+        cursor: pointer;
+        margin-right: 8px;
+    }
+
+    ul.jira-issues-list .issue-header .unlink-btn:hover {
+        color: #000;
+    }
+
+    ul.jira-issues-list .issue-header .details-btn {
+        float: right;
+        font-size: 11px;
+        color: #888;
+        cursor: pointer;
+    }
+
+    ul.jira-issues-list .issue-header .details-btn:hover {
+        color: #000;
+    }
+
+ul.jira-issues-list > li {
+    margin: 7px 0;
+    background: #fff;
+    border: 1px solid #ADAEB4;
+    border-radius: 3px;
+}
+
+
+/*******************************************************/
+/* JIRA FIELDS LIST */
+/*******************************************************/
+
+ul.jira-fields {
+    margin: 0;
+    padding: 0;
+}
+
+    ul.jira-fields > li {
+        border-top: 1px solid #ddd;
+        padding: 1px 4px;
+    }
+    ul.jira-fields > li:first-child {
+        border-top: none;
+    }
+
+        ul.jira-fields > li .field-title {
+            font-size: 11px;
+            font-weight: bold;
+            color: #aaa;
+        }
+
+        ul.jira-fields > li .field-value {
+            font-size: 11px;
+        }
+
+/*******************************************************/
+/* MISC */
+/*******************************************************/
+
+textarea.jira-comment-textarea {
+    margin-top: 4px;
+    width: 98%;
+    height: 35px;
+}
+
+    textarea.jira-comment-textarea.ng-dirty, textarea.jira-comment-textarea:focus, textarea.jira-comment-textarea.full {
+        height: 130px;
+    }

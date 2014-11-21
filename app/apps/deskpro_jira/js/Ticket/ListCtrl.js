@@ -48,7 +48,6 @@ define([
               $scope.meta = $meta;
               $scope.issue = issue;
               $scope.names = issues.names;
-              $parent.search_issue_state = 1;
 
               if (!issue.filtered_fields) {
                 issue.filtered_fields = [];
@@ -67,6 +66,7 @@ define([
                 issues.link(issue).then(
                   function () {
                     $parent.search_issue_state = 0;
+                    $scope.link_search_mode = false;
                   },
                   function (status) {
                     $parent.search_issue_state = status;

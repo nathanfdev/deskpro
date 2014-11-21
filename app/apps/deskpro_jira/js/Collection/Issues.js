@@ -9,8 +9,6 @@ define(function () {
 
       this.loading = false;
 
-      // todo? add map to ids
-
       /**
        * loads list of issues according to current ticket
        * @returns {*}
@@ -29,9 +27,6 @@ define(function () {
                 self.push(issue);
               });
             }
-
-            // todo sort
-            console.info(self);
 
             d.resolve(self);
           })
@@ -126,7 +121,6 @@ define(function () {
 
         $http.get('/agent/jira/search?q=' + window.encodeURI(q))
           .success(function (data, status, headers, config) {
-            console.info(data);
             if (data) {
               data.issues && data.issues.each(function (issue) {
                 data = issue;
