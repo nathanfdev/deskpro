@@ -1,5 +1,5 @@
 <?php return array(
-	'user.lang.lang_title'                                                 => 'Inglés',
+	'user.lang.lang_title'                                                 => 'Español',
 	'user.lang.lang_title_arabic'                                          => 'Árabe',
 	'user.lang.lang_title_danish'                                          => 'Dánes',
 	'user.lang.lang_title_default'                                         => 'Inglés',

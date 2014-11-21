@@ -552,7 +552,8 @@ class ServerChecks
 				$msg = sprintf('We recommend installing the %s for PHP to dramatically improve performance', $recommendOpcache);
 				$this->getLogger()->log($msg, Logger::INFO);
 				$this->server_errors['apc_check'] = array(
-					'level' => 'recommended'
+					'level'   => 'recommended',
+					'opcache' => version_compare(phpversion(), '5.5.0', '>=')
 				);
 			}
 		}

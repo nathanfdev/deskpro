@@ -27,6 +27,7 @@
 
 namespace Application\DeskPRO\Entity\EventListener;
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\LogEvent;
 use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Log\Event\EntityUpdated;

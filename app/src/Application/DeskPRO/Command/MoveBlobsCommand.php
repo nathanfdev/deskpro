@@ -75,7 +75,7 @@ class MoveBlobsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Container
 			$t = microtime(true);
 			$c = App::getDb()->executeUpdate("
 				UPDATE blobs
-				SET storage_loc_pref = ? WHERE storage_loc != ?
+				SET storage_loc_pref = ? WHERE storage_loc != ? AND storage_loc_specific IS NULL
 			", array($set_aid, $set_aid));
 			$output->writeln(sprintf("<info>$c records updated in %.3fs</info>", microtime(true)-$t));
 		}

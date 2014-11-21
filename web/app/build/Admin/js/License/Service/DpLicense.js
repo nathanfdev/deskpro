@@ -98,7 +98,12 @@
               timeout: 25000,
               cache: false
             }).then(function(x) {
-              return d.resolve(x.data, x);
+              var _ref;
+              if ((_ref = x.data) != null ? _ref.error_code : void 0) {
+                return d.reject(x.data, x);
+              } else {
+                return d.resolve(x.data, x);
+              }
             }, function(x) {
               return d.reject(x.data, x);
             });

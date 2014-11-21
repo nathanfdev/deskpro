@@ -148,8 +148,12 @@ class TaskController extends AbstractController
 				$task_data['ticket'] = $task_data['ticket_id'];
 			}
 
-			if (!empty($task_data['date_due']) && !empty($task_data['time_due'])) {
-				$task_data['date_due'] .= ' ' . $task_data['time_due'];
+			if (!empty($task_data['date_due'])) {
+				if (!empty($task_data['time_due'])) {
+					$task_data['date_due'] .= ' ' . $task_data['time_due'];
+				} else {
+					$task_data['date_due'] .= ' 23:59:59';
+				}
 			}
 
 			// remove extra

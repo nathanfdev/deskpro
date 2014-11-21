@@ -44,6 +44,7 @@ use Application\DeskPRO\Entity\Session;
 use Application\DeskPRO\People\ActivityLogger\ActivityLogger;
 use Application\DeskPRO\Translate\Translate;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Arrays;
 use Orb\Validator\StringEmail;
 
 /**
@@ -142,6 +143,15 @@ class UserChatManager
 				if ($dep) {
 					$convo->department = $dep;
 				}
+			}
+
+			// Spam trap
+			$traps = array(@$chat_options['full_name'], @$chat_options['email_address']);
+			$traps = Arrays::func($traps, 'trim');
+			$traps = Arrays::removeEmptyString($traps);
+			if (count($traps) || @$chat_options['email_address2'] != "yes") {
+				$error_code = 'person_disabled';
+				return null;
 			}
 
 			$chat_options['name']  = empty($chat_options['name']) ? '' : $chat_options['name'];

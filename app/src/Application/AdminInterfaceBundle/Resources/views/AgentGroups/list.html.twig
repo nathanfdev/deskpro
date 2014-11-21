@@ -35,9 +35,21 @@
 	</header>
 	<article>
 		<section>
-			<p>Agent <strong>permissions</strong> control what each agent is allowed to do. You can use these groups to quickly control permissions for many agents at once. The permissions for the group are applied to all agents who are members.</p>
-			<p>Click the permission groups to edit them and set which agents are members.</p>
-			<p>By default, the "All Permissions" group enables agents who are members to do everything. "All Non-Destructive Permissions" lets agents do everything but delete content (and a few other potentially damaging actions, like writing mass replies to users).</p>
+
+			
+			<p>There are two built-in permission groups:</p>
+			
+			 <ul>
+			 <li><strong>All Permissions</strong>  group enables agents who are members to do everything.</li>
+			 
+			 
+			 <li><strong>All Non-Destructive Permissions</strong> lets agents do everything but delete content (and a few other potentially damaging actions, like writing mass replies to users).</li>
+			</ul>
+			
+			<p>Click the permission groups to set which agents are members.</p>
+			
+			<p>You can add new groups and set which permissions they grant.</p>
+			
 			<p>Use the <strong>Departments</strong> tab to control access to tickets in each department:</p>
 			<ul>
 				<li><strong>Full</strong> means the agent can view and work on tickets in that department</li>
@@ -57,7 +69,7 @@
 		<dl>
 			<dt><em>Q:</em>How do I remove permissions from an agent?</dt>
 			<dd><em>A:</em>
-				Groups and overrides always <em>add</em> permissions; you can't use an override to take away a permission granted by one of an agent's groups. To limit an agent's permissions, make sure that none of their groups (including Everyone and Registered) grant the permission you want to remove.
+				Groups and overrides always <em>add</em> permissions; you can't use an override to take away a permission granted by one of an agent's groups. To limit an agent's permissions, make sure that they are not a member of any groups which grant the permission you want to remove (including Everyone and Registered) .
 			</dd>
 		</dl>
 </section>

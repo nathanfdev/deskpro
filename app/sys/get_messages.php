@@ -428,7 +428,6 @@ class AgentMessagesLoader extends LoaderAbstract
 			foreach ($all_messages as $message) {
 				$msg_data = unserialize($message['data']);
 				$msg_data['from_client'] = $message['created_by_client'];
-				$msg_data['alert_id'] = (int)$message['id'];
 
 				$info = array(
 					(int)$message['id'],

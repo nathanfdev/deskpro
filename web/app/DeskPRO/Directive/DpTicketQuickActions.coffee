@@ -85,6 +85,9 @@ define ->
 					if isAllowed('assign_self') && (!t.agent || t.agent.id != $scope.$root.app_person_id)
 						$scope.actions.push {title: 'Assign Me', params: {agent_id: me} }
 
+					if isAllowed('assign_agent') && t.agent
+						$scope.actions.push {title: 'Unassign', params: {agent_id: 0} }
+
 					if isAllowed('assign_agent')
 						$scope.actions.push {title: 'Assign Agent', prop: 'agent_id', params: {}, select2: agentsSelectOptions }
 
@@ -120,6 +123,18 @@ define ->
 				$preview.dotdotdot {elipsis: '...', wrap: 'word', height: options.preview_text_height}
 				$actions = $el.find 'footer > ul.actions:first'
 
+				# custom mask used to take clicks because the default select2 prevents
+				# event bubbling that we need to detemine if a click happened on the overlay or outside of it
+				$mask = $('<div></div>').addClass('select2-drop-mask').css({bottom: 0, right: 0}).hide().appendTo('body')
+
+				isOpenSelect = false
+				isClicked = false
+
+				$mask.on 'click', (e) ->
+					$('#select2-drop-mask').trigger('mousedown', e)
+
+				$el.on 'click', -> isClicked = true
+
 				$scope.updateWidth = () ->
 					$el.css 'max-width', '650px'
 					$timeout (-> $el.css 'max-width', $actions.outerWidth(true) + 'px'), 1
@@ -128,6 +143,7 @@ define ->
 
 				# events
 				$scope.$root.$on 'tickets.quick_actions.show', (angularEvent, e, ticket, delay) ->
+					isClicked = false
 					promise && $timeout.cancel promise
 					return if !ticket?.previews?.length
 
@@ -135,14 +151,22 @@ define ->
 					showTimeout = null
 
 					showTimeout = $timeout(->
-						# show and update position
-						$el.show()
+						$scope.setTicket ticket
+						$preview.text(ticket.previews[0].message?.preview_text)
+
+						$el.show().css('visibility', 'hidden')
 						offset = $(e.target).offset()
 						offset.top += $(e.target).height()
+
 						$el.css offset
 
-						$scope.setTicket ticket
-						$preview.text(ticket.previews[0].message?.preview_text).trigger 'update'
+						$timeout(->
+							if (offset.top + $el.outerHeight()) > $(window).height()
+								offset.top -= $el.outerHeight() + $(e.target).height()
+								$el.css offset
+
+							$el.css('visibility', 'visible')
+						)
 					, delay)
 
 				$scope.showDropdown = (action, $event) ->
@@ -155,13 +179,26 @@ define ->
 							$input.off 'select2-open'
 							$input.off 'select2-close'
 							$input.on 'select2-open', ->
-								$timeout (-> promise && $timeout.cancel promise), 10 # prevent mouseleave in FF
+								promise && $timeout.cancel promise
+								isOpenSelect = true
+								isClicked = false
 								$(document).on 'mousemove.quick-actions-select2', '#select2-drop-mask, #select2-drop', (e) ->
 									$el.trigger e
-							$input.on 'select2-close', ->
-								$scope.$root.$emit 'tickets.quick_actions.hide'
+
+								$('#select2-drop-mask').hide();
+								$mask.show()
+
+							$input.on 'select2-close', (e) ->
+								promise && $timeout.cancel promise
+								isOpenSelect = false
+								$mask.hide()
 								$(document).off 'mousemove.quick-actions-select2'
 								$(document).off 'click.quick-actions-select2'
+								$scope.visible = null
+
+								# If clicked outside of the element, then it should
+								# close the overlay
+								$timeout(-> !isClicked && $el.trigger 'mouseleave', 10)
 
 							$input.select2 'open'
 						1
@@ -176,5 +213,8 @@ define ->
 					promise && $timeout.cancel promise
 
 				$el.on 'mouseleave', (e) ->
-					promise = $timeout (=> $el.hide()), options.widget_hide_delay
+					promise = $timeout (=>
+						!isOpenSelect && $el.hide()
+						isClicked = false
+					), options.widget_hide_delay
 		}

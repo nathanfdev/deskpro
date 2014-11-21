@@ -143,12 +143,12 @@ class NewTicketValidator extends AbstractValidator
 		#   basic validations on message etc too, but not much!
 		#------------------------------
 
-		if (!$this->display_fields || isset($this->display_fields['ticket_department'])) {
+		if (!$this->display_fields || isset($this->display_fields['department'])) {
 			$department_validator = new \Application\DeskPRO\Validator\Department();
 
 			$department_id = $newticket->ticket->department_id;
 
-			if (isset($this->display_fields['ticket_department']) && !$department_validator->isValid($department_id)) {
+			if (isset($this->display_fields['department']) && !$department_validator->isValid($department_id)) {
 				$this->addError('ticket.department_id.invalid');
 			} else {
 
@@ -174,7 +174,7 @@ class NewTicketValidator extends AbstractValidator
 		# Standard ticket fields
 		#------------------------------
 
-		if (!$this->display_fields || isset($this->display_fields['ticket_subject'])) {
+		if (!$this->display_fields || isset($this->display_fields['subject'])) {
 			$validator = new \Orb\Validator\StringLength(array('min' => 5));
 			if (!$validator->isValid($this->newticket->ticket->subject)) {
 				$this->addError('ticket.subject.short');
@@ -182,7 +182,7 @@ class NewTicketValidator extends AbstractValidator
 		}
 
 		if (!$edit_mode) {
-			if (!$this->display_fields || isset($this->display_fields['ticket_message'])) {
+			if (!$this->display_fields || isset($this->display_fields['message'])) {
 				$validator = new \Orb\Validator\StringLength(array('min' => 10));
 				if (!$validator->isValid($this->newticket->ticket->message)) {
 					$this->addError('ticket.message.short');

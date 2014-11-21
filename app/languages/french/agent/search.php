@@ -11,5 +11,13 @@
 	'agent.search.person_id'                                               => 'ID personne',
 	'agent.search.select'                                                  => 'Sélectionner',
 	'agent.search.simple'                                                  => 'Simple',
+	'agent.search.type_article'                                            => 'Article',
+	'agent.search.type_chat_conversation'                                  => 'Chats',
+	'agent.search.type_download'                                           => 'Télécharger',
+	'agent.search.type_feedback'                                           => 'Remarques',
+	'agent.search.type_news'                                               => 'Actualités',
+	'agent.search.type_organization'                                       => 'Organisations',
+	'agent.search.type_person'                                             => 'Personnes',
+	'agent.search.type_ticket'                                             => 'Tickets',
 	'agent.search.view_all_results'                                        => 'Voir tous les résultats',
 );

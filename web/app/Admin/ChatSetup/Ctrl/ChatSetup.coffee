@@ -92,8 +92,14 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 					DpChatWidget_Options.languageId = #{lang_id};
 
 					/**
-						* Style for the chat button
-						*/
+					 * Specify department IDs that should be the only options the user can select.
+					 * Note: If only one department is available, the Department field will be hidden completely.
+					 */
+					//DpChatWidget_Options.onlyShowDepartments = [];
+
+					/**
+					 * Style for the chat button
+					 */
 					DpChatWidget_Options.btnStyle = {
 						bgColor: '#3F3F3F',
 						border: '2px solid #727272',
@@ -103,9 +109,9 @@ define ['DeskPRO/Util/Strings', 'Admin/Main/Ctrl/Base'], (Strings, Admin_Ctrl_Ba
 					},
 
 					/**
-							* Style for the chat border/frame that goes
-							* around the chat window.
-							*/
+					 * Style for the chat border/frame that goes
+					 * around the chat window.
+					 */
 					DpChatWidget_Options.frameStyle = {
 						bgColor: '#2A69A9',
 						textColor: '#FFFFFF'

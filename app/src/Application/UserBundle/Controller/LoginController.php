@@ -629,7 +629,7 @@ HTML;
 		# -----------------------------
 
 		if (!$usersource_test && !$this->auth_manager->isUsableUsersource($usersource)) {
-			throw new \LogicException('it is illegal to use this usersource in this context');
+			throw $this->createNotFoundException('it is illegal to use this usersource in this context');
 		}
 
 		#------------------------------

@@ -1233,6 +1233,7 @@ nav.dp-blocktabs {
 }
 
 nav.dp-tabletabs {
+	position: relative;
 	ul {
 		list-style-type: none;
 		margin: 0 16px;
@@ -1273,6 +1274,26 @@ nav.dp-tabletabs {
 					border-bottom-color: #fff;
 				}
 			}
+		}
+	}
+
+	.toggle-all-button {
+		display: block;
+		position: absolute;
+		bottom: 5px;
+		right: 7px;
+		text-align: center;
+
+		em {
+			display: block;
+			font-size: 11px;
+			margin-bottom: 1px;
+			font-style: normal;
+			color: #888;
+			cursor: pointer;
+		}
+		input {
+			display: none;
 		}
 	}
 }
@@ -2819,6 +2840,14 @@ ul.dp-display-list {
 
 		label {
 			margin-left: 21px;
+		}
+	}
+
+	&.switch-some {
+		background-color: #E0C787;
+
+		label {
+			margin-left: 12px;
 		}
 	}
 
@@ -4835,6 +4864,10 @@ input.invisible-copytext {
 		visibility: hidden;
 		font-style: normal;
 		margin-left: 3px;
+	}
+
+	&.expanded em {
+		visibility: visible;
 	}
 
 	&:hover {

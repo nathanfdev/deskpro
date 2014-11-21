@@ -278,7 +278,7 @@ pageMeta.baseId = '{{ baseId }}';
         </section>
 </div>
 
-{% if app.getSetting('core_tickets.enable_billing') %}
+{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
 <div class="profile-box-container reply-box-wrap" style="position: relative">
 	<header>
 		<h4>{{ phrase('agent.tickets.billing') }}</h4>
@@ -286,33 +286,46 @@ pageMeta.baseId = '{{ baseId }}';
 	<section class="ticketreply">
 		<article id="{{baseId}}_headerbox_box_billing" class="headerbox">
 			<table cellspacing="0" cellpadding="0" width="100%" class="field-holders-table billing-form" id="{{ baseId }}_billing_form">
-			<tr>
-				<th width="80">{{ phrase('agent.tickets.billing_charge') }}</th>
-				<td>
-					<ul class="billing-types">
-						<li>
-							<label><input type="radio" name="{{ baseId }}_billing_type" value="amount" />{{ phrase('agent.tickets.billing_amount') }}:</label>
-							<input type="text" id="{{ baseId }}_billing_amount" name="newticket[billing_amount]" size="7" placeholder="0.00" class="billing-form-amount" /> {{ app.getSetting('core_tickets.billing_currency') }}
-						</li>
-						<li>
-							<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />{{ phrase('agent.tickets.billing_time') }}:</label>
-							<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
-								<input type="text" id="{{ baseId }}_billing_hours" name="newticket[billing_hours]" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="newticket[billing_minutes]" size="2" placeholder="M" maxlength="2" />:<input type="text" id="{{ baseId }}_billing_seconds" name="newticket[billing_seconds]" size="2" placeholder="S" maxlength="2" />
-							</span>
-							<span class="billing-form-buttons">
-								<button class="clean-white" id="{{ baseId }}_billing_start">{{ phrase('agent.general.start') }}</button>
-								<button class="clean-white" id="{{ baseId }}_billing_stop">{{ phrase('agent.general.pause') }}</button>
-								<button class="clean-white" id="{{ baseId }}_billing_reset">{{ phrase('agent.general.reset') }}</button>
-							</span>
-						</li>
-						<input type="hidden" id="{{ baseId }}_billing_type_hidden" name="newticket[billing_type]" value="time" />
-					</ul>
-				</td>
-			</tr>
-			<tr>
-				<th>{{ phrase('agent.general.comment') }}</th>
-				<td><input type="text" id="{{ baseId }}_billing_comment" name="newticket[billing_comment]" style="width: 98%" maxlength="255" /></td>
-			</tr>
+				<tr>
+					<th width="80">{{ phrase('agent.tickets.billing_charge') }}</th>
+					<td>
+						<ul class="billing-types">
+							{% if app.getSetting('core_tickets.enable_billing') %}
+								<li>
+									{% if not app.getSetting('core_tickets.enable_timelog') %}
+										<label><input type="hidden" name="{{ baseId }}_billing_type" value="amount" />{{ phrase('agent.tickets.billing_amount') }}:</label>
+									{% else %}
+										<label><input type="radio" name="{{ baseId }}_billing_type" value="amount" />{{ phrase('agent.tickets.billing_amount') }}:</label>
+									{% endif %}
+									<input type="text" id="{{ baseId }}_billing_amount" name="amount" size="7" placeholder="0.00" class="billing-form-amount" /> {{ app.getSetting('core_tickets.billing_currency') }}
+								</li>
+							{% endif %}
+							{% if app.getSetting('core_tickets.enable_timelog') %}
+								<li>
+									{% if not app.getSetting('core_tickets.enable_billing') %}
+										<label><input type="hidden" name="{{ baseId }}_billing_type" value="time" />{{ phrase('agent.tickets.billing_time') }}:</label>
+									{% else %}
+										<label><input type="radio" name="{{ baseId }}_billing_type" value="time" checked="checked" />{{ phrase('agent.tickets.billing_time') }}:</label>
+									{% endif %}
+									<span id="{{ baseId }}_billing_inputs" class="billing-form-time">
+						<input type="text" id="{{ baseId }}_billing_hours" name="hours" size="2" placeholder="H" />:<input type="text" id="{{ baseId }}_billing_minutes" name="{{ phrase('agent.general.minutes') }}" size="2" placeholder="M" maxlength="2" />:<input type="text" id="{{ baseId }}_billing_seconds" name="{{ phrase('agent.general.seconds') }}" size="2" placeholder="S" maxlength="2" />
+					</span>
+					<span class="billing-form-buttons">
+						<button class="clean-white" id="{{ baseId }}_billing_start">{{ phrase('agent.general.start') }}</button>
+						<button class="clean-white" id="{{ baseId }}_billing_stop">{{ phrase('agent.general.pause') }}</button>
+						<button class="clean-white" id="{{ baseId }}_billing_reset">{{ phrase('agent.general.reset') }}</button>
+					</span>
+								</li>
+							{% endif %}
+						</ul>
+						<input type="hidden" id="{{ baseId }}_billing_type_hidden" name="billing_type" value="time" />
+						<input type="hidden" id="{{ baseId }}_billing_id_hidden" name="billing_id" value="" />
+					</td>
+				</tr>
+				<tr>
+					<th>{{ phrase('agent.general.comment') }}</th>
+					<td><input type="text" id="{{ baseId }}_billing_comment" name="billing_comment" style="width: 98%" maxlength="255" /></td>
+				</tr>
 			</table>
 		</article>
 	</section>
@@ -382,27 +395,6 @@ pageMeta.baseId = '{{ baseId }}';
 							<ul></ul>
 							<br class="clear"/>
 						</li>
-						{% if app.getDataService('TicketMessageTemplate').getTitles() %}
-						<li class="with-select2" id="{{ baseId }}_message_template_holder_row">
-							<label>{{ phrase('agent.general.template') }}:</label>
-							<div id="{{baseId}}_message_template_holder" style="visibility: hidden;">
-								<div style="display: none">
-									<select id="{{baseId}}_message_template_orig">
-										<option value="0">{{ phrase('agent.general.blank') }}</option>
-										{% for tpl in app.getDataService('TicketMessageTemplate').getAll() %}
-											<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title|default('Untitled #' ~ tpl.id) }}</option>
-										{% endfor %}
-									</select>
-								</div>
-								<select id="{{baseId}}_message_template" name="using_template">
-									<option value="0">{{ phrase('agent.general.blank') }}</option>
-									{% for tpl in app.getDataService('TicketMessageTemplate').getAll() %}
-										<option value="{{ tpl.id }}" class="department_{{ tpl.department_id }}">{{ tpl.title|default('Untitled #' ~ tpl.id) }}</option>
-									{% endfor %}
-								</select>
-							</div>
-						</li>
-						{% endif %}
 						<li class="subject-row">
 							<label>{{ phrase('agent.general.subject') }}:</label>
 							<div>

@@ -47,6 +47,15 @@
 	<!--[if IE ]><link href="{{ asset('stylesheets/user/main-ie.css') }}" rel="stylesheet" type="text/css"><![endif]-->
     {{ dp_asset_html('agent_vendor_out_css') }}
 
+	<style>
+		#dp_chat_spamtrap {
+			visibility: hidden;
+			height: 1px;
+			width: 1px;
+			overflow: hidden;
+		}
+	</style>
+
 	<script src="{{ asset('javascripts/DeskPRO/TouchCaller.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('javascripts/DeskPRO/WordHighlighter.js') }}" type="text/javascript"></script>
 	<script src="{{ asset('javascripts/DeskPRO/User/ChatWidget/ChatWin.js') }}" type="text/javascript"></script>
@@ -111,6 +120,14 @@
 	</header>
 	<article id="dp_chat_start_form">
 		<div class="inner-wrapper">
+
+			{# Spam trap #}
+			<div id="dp_chat_spamtrap">
+				<input type="text" name="full_name" id="st_name" value="" autocomplete="off" />
+				<input type="text" name="email_address" id="st_email" value="" autocomplete="off" />
+				<input type="text" name="email_address2" id="st_email2" value="" autocomplete="off" />
+			</div>
+
 			{% if app.user.id %}
 				<div class="dp-control-group">
 					<div class="dp-control-label">

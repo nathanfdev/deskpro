@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,28 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class TicketMessageTemplate extends AbstractEntityRepository
+class Build1416563468 extends AbstractBuild
 {
-	public function getTitles()
+	public function run()
 	{
-		return $this->_em->getConnection()->fetchAllKeyValue("
-			SELECT id, title
-			FROM ticket_message_templates
-			ORDER BY title ASC
-		");
-	}
-
-	public function getAll()
-	{
-		return $this->_em->createQuery("
-			SELECT t
-			FROM DeskPRO:TIcketMessageTemplate t
-			ORDER BY t.title ASC
-		")->execute();
+		$this->out("Upgrade JIRA Issues");
+		$this->execMutateSql("ALTER TABLE jira_issues DROP FOREIGN KEY FK_88385CE2700047D2");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD status_id INT DEFAULT NULL, DROP last_synced, CHANGE created created DATETIME NOT NULL");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD CONSTRAINT FK_88385CE2700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+		$this->execMutateSql("DELETE FROM app_packages WHERE name = 'deskpro_jira'");
+		$this->execMutateSql("DROP TABLE IF EXISTS `jira_issue_comments`");
 	}
 }

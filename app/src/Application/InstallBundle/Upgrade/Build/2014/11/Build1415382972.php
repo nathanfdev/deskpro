@@ -34,15 +34,11 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1415056082 extends AbstractBuild
+class Build1415382972 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Upgrade JIRA Issues");
-		$this->execMutateSql("ALTER TABLE jira_issues DROP FOREIGN KEY FK_88385CE2700047D2");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD status_id INT DEFAULT NULL, DROP last_synced, CHANGE created created DATETIME NOT NULL");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD CONSTRAINT FK_88385CE2700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE;");
-		$this->execMutateSql("DELETE FROM app_packages WHERE name = 'deskpro_jira';");
-		$this->execMutateSql("DROP TABLE IF EXISTS `jira_issue_comments`;");
+		$this->out("fixing user usersource auto_agent");
+		$this->execMutateSql("UPDATE usersources SET auto_agent = 0 WHERE type = 'user'");
 	}
 }

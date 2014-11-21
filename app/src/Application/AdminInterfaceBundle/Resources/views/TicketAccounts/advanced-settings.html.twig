@@ -12,6 +12,32 @@
 			<h3>{{ phrase('adm.ticket_accounts.advanced_settings') }}</h3>
 		</header>
         <article class="form-horizontal dp-form">
+			<div class="row">
+				<div class="col-lg-10">
+					<div class="panel panel-innertable">
+						<div class="inner-group">
+							<label>
+								<h4>
+									Maximum collective size of attachments in <em>outgoing</em> emails sent by DeskPRO.
+								</h4>
+							</label>
+							<div>
+								<dp-filesize-with-unit ng-model="settings.sendemail_attach_maxsize"></dp-filesize-with-unit>
+								<span class="help-block">
+									If an email message contains attachments
+									that collectively go over this limit, DeskPRO will insert <em>links</em> to the attachments instead of
+									attaching them directly to the email message.
+								</span>
+								<span class="help-block">
+									Note that your mail server may impose certain limits, and target mailservers used by your users may
+									also have their own limits. Since you cannot control those limits, it's suggested that you leave
+									the value here quite low (generally below 15MB).
+								</span>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
             <div class="row">
 
                 <div class="col-lg-6">

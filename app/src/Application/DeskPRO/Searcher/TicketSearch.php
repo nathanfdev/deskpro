@@ -1556,6 +1556,7 @@ class TicketSearch extends SearcherAbstract
 							$w .= '(';
 							$w .= "$tickets_table.status = 'hidden' AND ";
 							$w .= $this->_choiceMatch("$tickets_table.hidden_status", $op, $hidden_status);
+							$this->enableArchiveSearch();
 							$w .= ')';
 						}
 						$w .= ')';
@@ -2208,9 +2209,12 @@ class TicketSearch extends SearcherAbstract
 
 					$choice_labels = array();
 					if (!empty($choice['labels'])) {
+						if (!is_array($choice['labels'])) {
+							$choice['labels'] = explode(',', $choice['labels']);
+						}
 						foreach ($choice['labels'] as $l) {
 							$l = Strings::utf8_strtolower($l);
-							$choice_labels[$l] = $l;
+							$choice_labels[$l] = trim($l);
 						}
 					}
 

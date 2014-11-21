@@ -15,6 +15,7 @@ define [
 		init: ->
 			data = @$state.current.data
 			@service = @DataService.get 'CustomFields', data.owner, data.context
+			@$scope.context = data.context
 
 			@$scope.definition =
 				form_type: 'contextual_choice'
