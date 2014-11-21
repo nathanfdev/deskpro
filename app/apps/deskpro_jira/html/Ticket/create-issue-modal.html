@@ -1,45 +1,59 @@
 <form name="create_issue_form" ng-submit="create_issue_form.$valid && confirm()">
     <div class="modal-header">
-        <h3 class="modal-title">New JIRA Issue:</h3>
+        <h3 class="modal-title">New Issue</h3>
     </div>
-    <div class="modal-body">
-
-        <label style="display: block; margin: 10px 0;">
-            {{ meta.fieldName('project') }}*:
-            <select name="issuetype" ui-select2 ng-model="issue.project.id" required style="min-width: 200px;">
-                <option ng-repeat="project in meta.projects" value="{{ project.id }}">{{ project.name }}</option>
-            </select>
-        </label>
-        <div class="text-danger" ng-if="errors.project">{{ errors.project }}</div>
-
-        <label style="display: block; margin: 10px 0;">
-            {{ meta.fieldName('issuetype') }}*:
-            <select name="issuetype" ui-select2 ng-model="issue.issuetype.id" required style="min-width: 200px;">
-                <option ng-repeat="type in project.issuetypes" value="{{ type.id }}">{{ type.name }}</option>
-            </select>
-        </label>
-        <div class="text-danger" ng-if="errors.issuetype">{{ errors.issuetype }}</div>
-
-        <label style="display: block; margin: 10px 0;">
-            {{ meta.fieldName('summary') }}*:
-            <input name="summary" type="text" ng-model="issue.summary" required />
-        </label>
-        <div class="text-danger" ng-if="errors.summary">{{ errors.summary }}</div>
-
-        <div ng-repeat="field in fields">
-            <jira-form-widget field="field" ng-model="issue[field.id]" error="errors[field.id]" />
+    <div class="modal-body jira-form">
+        <div class="extended-merge">
+            <div class="merge-data-wrap" style="margin: 0;">
+                <table class="merge-data" width="100%">
+                    <tbody>
+                        <tr>
+                            <th style="text-align: left; text-wrap: none;" nowrap="nowrap">{{ meta.fieldName('project') }}*:</th>
+                            <td>
+                                <select name="issuetype" ui-select2 ng-model="issue.project.id" required style="min-width: 200px;">
+                                    <option ng-repeat="project in meta.projects" value="{{ project.id }}">{{ project.name }}</option>
+                                </select>
+                                <div class="text-danger" ng-if="errors.project">{{ errors.project }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: left; text-wrap: none;" nowrap="nowrap">{{ meta.fieldName('issuetype') }}*:</th>
+                            <td>
+                                <select name="issuetype" ui-select2 ng-model="issue.issuetype.id" required style="min-width: 200px;">
+                                    <option ng-repeat="type in project.issuetypes" value="{{ type.id }}">{{ type.name }}</option>
+                                </select>
+                                <div class="text-danger" ng-if="errors.issuetype">{{ errors.issuetype }}</div>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th style="text-align: left; text-wrap: none;" nowrap="nowrap">{{ meta.fieldName('summary') }}*:</th>
+                            <td>
+                                <input name="summary" type="text" ng-model="issue.summary" required />
+                                <div class="text-danger" ng-if="errors.summary">{{ errors.summary }}</div>
+                            </td>
+                        </tr>
+                    </tbody>
+                    <tbody ng-repeat="field in fields">
+                        <tr>
+                            <th style="text-align: left; text-wrap: none;" nowrap="nowrap">{{ field.name }}{{ field.required ? '*' : '' }}:</th>
+                            <td>
+                                <jira-form-widget field="field" ng-model="issue[field.id]" error="errors[field.id]" />
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
-        <br />
 
-        <div ng-show="sending">->spinner<-</div>
         <div class="text-danger" ng-if="errors">
             Please correct the following error(s):
             <div ng-repeat="error in errors">{{ error }}</div>
         </div>
-        <button class="btn btn-primary" type="button" dp-submit-form style="display: block; margin: 0 auto;"
-                ng-show="!sending">
-            Create JIRA Issue
+    </div>
+    <div class="modal-footer" style="text-align: center;">
+        <button class="dp-btn" type="button" dp-submit-form ng-show="!sending">
+            Create Issue
         </button>
-
+        <i class="flat-spinner" ng-show="sending"></i>
     </div>
 </form>

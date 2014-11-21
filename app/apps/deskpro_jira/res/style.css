@@ -85,3 +85,11 @@ textarea.jira-comment-textarea {
     textarea.jira-comment-textarea.ng-dirty, textarea.jira-comment-textarea:focus, textarea.jira-comment-textarea.full {
         height: 130px;
     }
+
+
+.jira-form input[type="text"], .jira-form textarea {
+    width: 98%;
+}
+.jira-form textarea {
+    height: 120px;
+}
