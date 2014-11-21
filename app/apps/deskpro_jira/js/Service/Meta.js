@@ -149,11 +149,11 @@ define(function () {
         meta.user = data.api_username;
 		    
 		    console.info(meta);
-	    })
-		.error(function(data, status, headers, config) {
-			meta.error = true;
-			console.error('Loading meta: ', status, {data: data});
-		});
+      })
+	    .error(function(data, status, headers, config) {
+				meta.error = true;
+				console.error('Loading meta: ', status, {data: data});
+	    });
 
     return meta;
   };

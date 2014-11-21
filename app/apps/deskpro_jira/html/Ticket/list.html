@@ -2,7 +2,7 @@
     <header>
         <h4>JIRA</h4>
     </header>
-    <header class="sub-header centered" ng-show="!link_search_mode">
+    <header class="sub-header centered" ng-show="!link_search_mode" ng-if="!meta.error">
         <button class="dp-btn" ng-click="createIssueModal()" type="button" style="margin-right: 8px;">
             <i class="fa fa-plus"></i> Create Issue
         </button>
@@ -10,7 +10,7 @@
             <i class="fa fa-search-plus"></i> Link Existing Issue
         </button>
     </header>
-    <header class="sub-header" ng-show="link_search_mode">
+    <header class="sub-header" ng-show="link_search_mode" ng-if="!meta.error">
         <input type="text" placeholder="Enter Issue ID" ng-model="search_issue" style="display: block; width: 95%;" />
         <div style="text-align: center; margin: 8px 0;">
             <div ng-show="search_issue_state != 1">
@@ -28,7 +28,7 @@
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="404 === search_issue_state">Issue not found. Please enter a valid issue ID.</div>
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="407 === search_issue_state">Issue already linked.</div>
     </header>
-    <article>
+    <article ng-if="!meta.error">
         <div ng-show="issues.loading" style="margin: 10px;">
             <i class="flat-spinner"></i>
         </div>
@@ -69,6 +69,10 @@
         </button>
 
 	</article>
+
+    <article ng-if="meta.error">
+        <h3 class="text-danger">An error occurred. Please contact your Administrator.</h3>
+    </article>
 </section>
 
 <script type="text/ng-template" id="deskpro_jira/Ticket/create-issue-modal.html">
