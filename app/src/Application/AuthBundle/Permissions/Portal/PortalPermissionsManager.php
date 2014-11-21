@@ -146,7 +146,7 @@ class PortalPermissionsManager
         $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
 
         return new PermissionsBag(
-            $this->cache->get($this->getCacheKeyForPerson($this->getCacheKeyForUsergroupIds($usergoupIds)), $this->generatePermissionsMapForGuest())
+            $this->cache->get($this->getCacheKeyForUsergroupIds($usergoupIds), $this->generatePermissionsMapForGuest())
         );
     }
 
