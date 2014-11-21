@@ -84,9 +84,6 @@ class ArticlesController extends AbstractController
         return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
     }
 
-    /**
-     * @Security("is_granted('USE_ARTICLES')")
-     */
     public function listAction(Request $request)
     {
         $options_resolver = new OptionsResolver();
@@ -131,9 +128,6 @@ class ArticlesController extends AbstractController
         );
     }
 
-    /**
-     * @Security("is_granted('USE_ARTICLES')")
-     */
     public function categoriesAction(Request $request)
     {
         $options_resolver = new OptionsResolver();
