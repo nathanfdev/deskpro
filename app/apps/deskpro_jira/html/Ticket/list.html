@@ -2,7 +2,7 @@
 	<header>
 		<h4>JIRA</h4>
 	</header>
-	<article>
+	<article ng-if="!meta.error">
 
         <button style="display:block; margin: 0 auto;" ng-click="createIssueModal()">
             Create JIRA Issue
@@ -32,6 +32,10 @@
         </button>
 
 	</article>
+
+    <article ng-if="meta.error">
+        <h3 class="text-danger">An error occurred. Please contact your Administrator.</h3>
+    </article>
 </section>
 
 <script type="text/ng-template" id="deskpro_jira/Ticket/create-issue-modal.html">

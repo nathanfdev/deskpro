@@ -121,6 +121,7 @@ define(function(){
 				console.info(meta);
 			})
 			.error(function(data, status, headers, config) {
+				meta.error = true;
 				console.error('Loading meta: ', status, {data: data});
 			});
 
