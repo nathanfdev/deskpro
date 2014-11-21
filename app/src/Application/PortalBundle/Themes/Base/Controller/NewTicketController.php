@@ -35,12 +35,30 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class NewTicketController extends AbstractController
 {
-    public function newTicketAction()
+    public function newTicketAction(Request $request)
     {
-        return $this->render('Theme:NewTicket:new_ticket.html.twig');
+        $form = $this->createForm(
+            'ticket',
+            $ticket = new Ticket(),
+            array(
+                'ticket_layout' => $this->getDoctrine()->getManager()->getRepository('DeskPRO:TicketLayout')->find(1)
+            )
+        );
+
+        $form->submit($request);
+
+        if ($form->isValid()) {
+            var_dump($ticket);
+        }
+
+        return $this->render('Theme:NewTicket:new_ticket.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
 }

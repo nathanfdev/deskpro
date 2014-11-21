@@ -4,6 +4,18 @@
     {# this page wants to use its own sidebar. how will we deal with that when there is a sidebar in the layout already? #}
     <div class="wrapper">
 
+
+
+
+        {{ form(form) }}
+
+
+
+
+
+
+        <hr style="margin-top:225px;"/>
+
         <div class="column-half-plus">
             <!-- Every ticket item -->
             <form class="form-ticket">
@@ -147,17 +159,5 @@
             </form>
         </div>
         <!-- end .column-half-plus -->
-
-
-        <!-- Sidebar -->
-        <aside class="sidebar">
-            <div class="row">
-                <div>
-                    {{ get_in_touch() }}
-                </div>
-            </div>
-        </aside>
-
-
     </div>
 {% endblock inner_content %}
