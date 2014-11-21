@@ -8064,6 +8064,9 @@ nav.dp-blocktabs menu button span i {
     display: none;
   }
 }
+nav.dp-tabletabs {
+  position: relative;
+}
 nav.dp-tabletabs ul {
   list-style-type: none;
   margin: 0 16px;
@@ -8114,6 +8117,24 @@ nav.dp-tabletabs ul li:hover a {
   background: #fff;
   border: 1px solid #bbb;
   border-bottom-color: #fff;
+}
+nav.dp-tabletabs .toggle-all-button {
+  display: block;
+  position: absolute;
+  bottom: 5px;
+  right: 7px;
+  text-align: center;
+}
+nav.dp-tabletabs .toggle-all-button em {
+  display: block;
+  font-size: 11px;
+  margin-bottom: 1px;
+  font-style: normal;
+  color: #888;
+  cursor: pointer;
+}
+nav.dp-tabletabs .toggle-all-button input {
+  display: none;
 }
 .dp-tabletabs-contentwrap {
   border: 1px solid #bbb;
@@ -9411,6 +9432,12 @@ ul.dp-display-list li i {
 }
 .dp-switch.switch-on label {
   margin-left: 21px;
+}
+.dp-switch.switch-some {
+  background-color: #E0C787;
+}
+.dp-switch.switch-some label {
+  margin-left: 12px;
 }
 .dp-switch.locked label span {
   display: block;
@@ -11467,6 +11494,9 @@ input.invisible-copytext {
   visibility: hidden;
   font-style: normal;
   margin-left: 3px;
+}
+.inline-edit-link.expanded em {
+  visibility: visible;
 }
 .inline-edit-link:hover {
   text-decoration: none;

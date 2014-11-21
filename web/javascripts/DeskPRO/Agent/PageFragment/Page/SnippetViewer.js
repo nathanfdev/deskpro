@@ -504,18 +504,18 @@ DeskPRO.Agent.PageFragment.Page.SnippetViewer = new Orb.Class({
 						if (catEl[0]) {
 							catEl.find('.label').text(catTitle);
 							if (shareOpt == 'global') {
-								catEl.data('is-global', 1);
+								catEl.data('is-global', 1).attr('data-is-global', '1');
 							} else {
-								catEl.data('is-global', null);
+								catEl.data('is-global', null).attr('data-is-global', null);
 							}
 
 							self.getEl('editsnippet_category_select').find('option[value="' + catId + '"]').text(catTitle);
 						} else {
 							catEl = $('<li><a><span class="label"></span></a><span class="trigger-edit-cat"><i class="icon-cog"></i></span></li>');
 							catEl.addClass('category category-' + cat.id);
-							catEl.data('category-id', cat.id);
+							catEl.data('category-id', cat.id).attr('data-category-id', cat.id);
 							if (shareOpt == 'global') {
-								catEl.data('is-global', 1);
+								catEl.data('is-global', 1).attr('data-is-global', '1');
 							} else {
 								catEl.data('is-global', null);
 							}

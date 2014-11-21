@@ -1,189 +1,193 @@
-define(function(){
+define(function () {
 
-	return function($http, $q) {
+  return function ($http, $q) {
 
-		function Issues($ticket) {
+    function Issues($ticket) {
 
-			if (!$ticket) throw '$ticket is required';
-			var self = this;
+      if (!$ticket) throw '$ticket is required';
+      var self = this;
 
-			this.loading = false;
+      this.loading = false;
 
-			// todo? add map to ids
+      /**
+       * loads list of issues according to current ticket
+       * @returns {*}
+       */
+      this.load = function () {
+        self.length = 0;
+        self.loading = true;
+        var d = $q.defer();
 
-			/**
-			 * loads list of issues according to current ticket
-			 * @returns {*}
-			 */
-			this.load = function() {
-				self.length = 0;
-				self.loading = true;
-				var d = $q.defer();
+        $http.get('/agent/jira/ticket/' + $ticket.id + '/issue')
+          .success(function (data, status, headers, config) {
+            self.loading = false;
 
-				$http.get('/agent/jira/ticket/' + $ticket.id + '/issue')
-					.success(function(data, status, headers, config){
-						self.loading = false;
+            if (data) {
+              data.issues && data.issues.each(function (issue) {
+                self.push(issue);
+              });
+            }
 
-						if (data) {
-							data.issues && data.issues.each(function(issue){ self.push(issue); });
-						}
+            d.resolve(self);
+          })
+          .error(function (data, status, headers, config) {
+            self.loading = false;
+            console.error('Load JIRA Issues: ', status, {data: data});
+            d.resolve(self);
+          });
 
-						// todo sort
-						console.info(self);
+        return d.promise;
+      };
 
-						d.resolve(self);
-					})
-					.error(function(data, status, headers, config){
-						self.loading = false;
-						console.error('Load JIRA Issues: ', status, {data: data});
-						d.resolve(self);
-					});
+      /**
+       * creates new issue and returns data
+       * @param data
+       * @returns {*}
+       */
+      this.create = function (data) {
+        var d = $q.defer();
 
-				return d.promise;
-			};
+        $http.post('/agent/jira/ticket/' + $ticket.id + '/issue', data)
+          .success(function (data, status, headers, config) {
+            console.info(data);
 
-			/**
-			 * creates new issue and returns data
-			 * @param data
-			 * @returns {*}
-			 */
-			this.create = function(data) {
-				var d = $q.defer();
+            if (data) {
+              data.issues && data.issues.each(function (issue) {
+                self.push(issue);
+                data = issue;
+              });
+            }
 
-				$http.post('/agent/jira/ticket/' + $ticket.id + '/issue', data)
-					.success(function (data, status, headers, config) {
-						console.info(data);
+            d.resolve(data);
+          })
+          .error(function (data, status, headers, config) {
+            console.error('Create JIRA Issue: ', status, {data: data});
+            d.reject(data);
+          });
 
-						if (data) {
-							data.issues && data.issues.each(function(issue){ self.push(issue); data = issue; });
-						}
+        return d.promise;
+      };
 
-						d.resolve(data);
-					})
-					.error(function (data, status, headers, config) {
-						console.error('Create JIRA Issue: ', status, {data: data});
-						d.reject(data);
-					});
+      /**
+       * send a comment to exact issue, or to all linked issues
+       * @param msg
+       * @param issue
+       * @returns {*}
+       */
+      this.sendComment = function (msg, issue) {
+        var d = $q.defer();
+        issueId = issue ? issue.id : 0;
 
-				return d.promise;
-			};
+        console.info(msg);
+        $http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg)
+          .success(function (data, status, headers, config) {
+            if (data) {
+              if (issue) {
+                if (issue.fields.comment) {
+                  issue.fields.comment.comments.push(data);
+                  issue.fields.comment.total++;
+                }
+              } else {
+                self.each(function (issue) {
+                  if (issue.fields.comment) {
+                    issue.fields.comment.comments.push(data);
+                    issue.fields.comment.total++;
+                  }
+                });
+              }
+            }
 
-			/**
-			 * send a comment to exact issue, or to all linked issues
-			 * @param msg
-			 * @param issue
-			 * @returns {*}
-			 */
-			this.sendComment = function(msg, issue) {
-				var d = $q.defer();
-				issueId = issue ? issue.id : 0;
+            d.resolve(data);
+          })
+          .error(function (data, status, headers, config) {
+            console.error('Create JIRA Comment: ', status, {data: data});
+            d.resolve();
+          });
 
-				console.info(msg);
-				$http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg)
-					.success(function (data, status, headers, config) {
-						if (data) {
-							if (issue) {
-								if (issue.fields.comment) {
-									issue.fields.comment.comments.push(data);
-									issue.fields.comment.total++;
-								}
-							} else {
-								self.each(function(issue){
-									if (issue.fields.comment) {
-										issue.fields.comment.comments.push(data);
-										issue.fields.comment.total++;
-									}
-								});
-							}
-						}
+        return d.promise;
+      };
 
-						d.resolve(data);
-					})
-					.error(function (data, status, headers, config) {
-						console.error('Create JIRA Comment: ', status, {data: data});
-						d.resolve();
-					});
+      /**
+       * search issue by string containing issue key
+       * @param q
+       * @returns {*}
+       */
+      this.search = function (q) {
+        var d = $q.defer();
+        if (!q) {
+          d.resolve();
+          return d.promise;
+        }
 
-				return d.promise;
-			};
+        $http.get('/agent/jira/search?q=' + window.encodeURI(q))
+          .success(function (data, status, headers, config) {
+            if (data) {
+              data.issues && data.issues.each(function (issue) {
+                data = issue;
+              });
+            }
+            d.resolve(data);
+          })
+          .error(function (data, status, headers, config) {
+            console.error('Search JIRA Issue: ', status, {data: data});
+            d.resolve();
+          });
 
-			/**
-			 * search issue by string containing issue key
-			 * @param q
-			 * @returns {*}
-			 */
-			this.search = function(q) {
-				var d = $q.defer();
-				if (!q) {
-					d.resolve();
-					return d.promise;
-				}
+        return d.promise;
+      };
 
-				$http.get('/agent/jira/search?q=' + window.encodeURI(q))
-					.success(function (data, status, headers, config) {
-						console.info(data);
-						if (data) {
-							data.issues && data.issues.each(function(issue){ data = issue; });
-						}
-						d.resolve(data);
-					})
-					.error(function (data, status, headers, config) {
-						console.error('Search JIRA Issue: ', status, {data: data});
-						d.resolve();
-					});
+      /**
+       * link issue
+       * @param issue
+       * @returns {*}
+       */
+      this.link = function (issue) {
+        var d = $q.defer();
 
-				return d.promise;
-			};
+        $http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
+          .success(function (data, status, headers, config) {
+            console.info(data);
+            if (data) {
+              data.issues && data.issues.each(function (issue) {
+                self.push(issue);
+                data = issue;
+              });
+            }
+            d.resolve(data);
+          })
+          .error(function (data, status, headers, config) {
+            console.error('Link JIRA Issue: ', status, {data: data});
+            d.reject(status);
+          });
 
-			/**
-			 * link issue
-			 * @param issue
-			 * @returns {*}
-			 */
-			this.link = function(issue) {
-				var d = $q.defer();
+        return d.promise;
+      };
 
-				$http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
-					.success(function (data, status, headers, config) {
-						console.info(data);
-						if (data) {
-							data.issues && data.issues.each(function(issue){ self.push(issue); data = issue; });
-						}
-						d.resolve(data);
-					})
-					.error(function (data, status, headers, config) {
-						console.error('Link JIRA Issue: ', status, {data: data});
-						d.reject(status);
-					});
+      /**
+       * unlink issue
+       * @param issue
+       * @returns {*}
+       */
+      this.unlink = function (issue) {
+        var d = $q.defer();
 
-				return d.promise;
-			};
+        $http.delete('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
+          .success(function (data, status, headers, config) {
+            self.splice(self.indexOf(issue), 1);
+            d.resolve();
+          })
+          .error(function (data, status, headers, config) {
+            console.error(data);
+            d.resolve();
+          });
 
-			/**
-			 * unlink issue
-			 * @param issue
-			 * @returns {*}
-			 */
-			this.unlink = function(issue) {
-				var d = $q.defer();
+        return d.promise;
+      };
 
-				$http.delete('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
-					.success(function (data, status, headers, config) {
-						self.splice(self.indexOf(issue), 1);
-						d.resolve();
-					})
-					.error(function (data, status, headers, config) {
-						console.error(data);
-						d.resolve();
-					});
+      this.load();
+    };
+    Issues.prototype = new Array;
 
-				return d.promise;
-			};
-
-			this.load();
-		};
-		Issues.prototype = new Array;
-
-		return Issues;
-	};
+    return Issues;
+  };
 });

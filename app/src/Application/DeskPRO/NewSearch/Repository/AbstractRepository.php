@@ -12,6 +12,8 @@ use Elastica\Util as ElasticaUtil;
  */
 abstract class AbstractRepository extends Repository
 {
+	const MAX_LEN = 315;
+
     /**
      * Tag to be placed before highlight
      *
@@ -83,6 +85,10 @@ abstract class AbstractRepository extends Repository
      */
     protected function getQuery($q)
     {
+		if (isset($q[self::MAX_LEN])) {
+			$q = substr($q, 0, self::MAX_LEN);
+		}
+
 		$l = Strings::extractRegexMatch('#^\[(.*?)\]$#', $q);
 		if ($l && $this instanceof WithLabelsInterface) {
 			$queryString = new Query\QueryString(ElasticaUtil::escapeTerm($l));
@@ -137,6 +143,10 @@ abstract class AbstractRepository extends Repository
      */
 	protected function getQueryString($q)
     {
+		if (isset($q[self::MAX_LEN])) {
+			$q = substr($q, 0, self::MAX_LEN);
+		}
+		
 		$term = $this->escapeQueryStringTerm($q);
 
 		// If we have an equal number of quotes, then

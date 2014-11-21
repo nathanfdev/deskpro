@@ -252,8 +252,9 @@ class AgentsController extends AbstractController implements ProtectedController
 			array_unshift($set_emails, $agent_postdata['email']);
 		}
 
-		$set_emails = array_unique($set_emails);
 		$set_emails = Arrays::removeFalsey($set_emails);
+		$set_emails = Arrays::func($set_emails, 'strtolower');
+		$set_emails = array_unique($set_emails);
 
 		$email_account_manager = $this->container->getEmailAccountManager();
 		$system_addresses = array_filter($set_emails, function($e) use ($email_account_manager) {
@@ -314,15 +315,19 @@ class AgentsController extends AbstractController implements ProtectedController
 				$agent = new Person();
 
 				// Check license
-				$max_agents = License::getLicense()->getMaxAgents();
-				if ($max_agents && $max_agents < 100) {
-					$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
+				if (!defined('DPC_IS_CLOUD')) {
+					$max_agents = License::getLicense()->getMaxAgents();
+					if ($max_agents && $max_agents < 100) {
+						$active_agents = $this->em->getRepository('DeskPRO:Person')->getActiveAgentsCount();
 
-					if ($active_agents >= $max_agents) {
-						return $this->createApiErrorInfoResponse('license_exceeded', 'You have used all available agent seats that your license allows', array(
-							'agent_seats'    => $max_agents,
-							'agents_created' => $active_agents,
-						));
+						if ($active_agents >= $max_agents) {
+							return $this->createApiErrorInfoResponse(
+								'license_exceeded', 'You have used all available agent seats that your license allows', array(
+									'agent_seats' => $max_agents,
+									'agents_created' => $active_agents,
+								)
+							);
+						}
 					}
 				}
 			}

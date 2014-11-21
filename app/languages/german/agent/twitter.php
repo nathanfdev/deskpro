@@ -1,0 +1,18 @@
+<?php return array(
+	'agent.twitter.add_note'                                               => 'Notiz hinzufügen',
+	'agent.twitter.all_tweets'                                             => 'Alle Tweets',
+	'agent.twitter.char_remaining'                                         => '{{num_chars}} verbleibend',
+	'agent.twitter.count_selected'                                         => '{{count}} ausgewählt',
+	'agent.twitter.direct'                                                 => 'Direkt',
+	'agent.twitter.direct_messages'                                        => 'Direktnachricht',
+	'agent.twitter.example'                                                => '#beispiel',
+	'agent.twitter.follow'                                                 => 'Folgen',
+	'agent.twitter.followers'                                              => 'Beobachter',
+	'agent.twitter.in_reply_to'                                            => 'Antwort zu',
+	'agent.twitter.interactions'                                           => 'Interaktionen',
+	'agent.twitter.new_followers'                                          => 'Neue Beobachter',
+	'agent.twitter.new_search'                                             => 'Neue Suche',
+	'agent.twitter.no_followed'                                            => 'Keine beobachtende Benutzer',
+	'agent.twitter.no_followers'                                           => 'Keine Beobachter,',
+	'agent.twitter.searches'                                               => 'Suchen',
+);

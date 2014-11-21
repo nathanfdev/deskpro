@@ -75,9 +75,8 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	{
 		$account_pattern = preg_quote($account_pattern, '#');
 
-		$auth_len = Ticket::TAC_AUTHCODE_LEN;
-		$authcode_min_len = $auth_len + 1;
-		$authcode_max_len = $auth_len + 7;
+		$authcode_min_len = Ticket::TAC_AUTHCODE_LEN + 1;
+		$authcode_max_len = Ticket::TAC_AUTHCODE_LEN_MAX;
 
 		$account_pattern = str_replace('TAC', '(?P<auth>[A-Z0-9]{'.$authcode_min_len.','.$authcode_max_len.'})', $account_pattern);
 

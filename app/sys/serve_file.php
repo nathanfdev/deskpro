@@ -1023,9 +1023,9 @@ class FilestorageLoader extends LoaderAbstract
 				$fp = @fopen($blob['file_url'], 'r', false, $context);
 				while (!@feof($fp)) {
 					$buf .= @fread($fp, 1024);
-					if ($max_time > (time() - $time_start)) {
-						break;
+					if ((time() - $time_start) > $max_time) {
 						$fail = true;
+						break;
 					}
 				}
 				@fclose($fp);
@@ -1384,14 +1384,9 @@ class FilestorageLoader extends LoaderAbstract
 
 		header('Content-Type: ' . $mimetype . '; filename="' . addslashes($filename) . '"');
 		header('Content-Length: ' . $filesize);
-		header('Last-Modified: ' . date('D, d M Y H:i:s', time()-3600).' GMT');
-
-		// if not in dev mode, cache assets
-		$is_dev = dp_get_config('debug.dev');
-		if (!$is_dev) {
-			header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
-			header('Cache-Control: max-age=31556926,private');
-		}
+		header('Last-Modified: ' . date('D, d M Y H:i:s', time() - 3600).' GMT');
+		header('Expires: ' . date('D, d M Y H:i:s', time() - 3600) . ' GMT');
+		header('Cache-Control: max-age=31556926,private');
 
 		if ($content !== null) {
 			echo $content;

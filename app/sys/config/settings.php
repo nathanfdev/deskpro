@@ -369,12 +369,7 @@
 	/**
 	 * Max size of attachments to send in email notifications
 	 */
-	'core.sendemail_attach_maxsize' => 10485760,
-
-	/**
-	 * Max size of an embedded image in an email
-	 */
-	'core.sendemail_embed_maxsize' => 256000,
+	'core.sendemail_attach_maxsize' => 7340032,
 
 	/**
 	 * Automatically install new languages on upgrade

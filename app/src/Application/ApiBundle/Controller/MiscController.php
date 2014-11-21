@@ -118,7 +118,13 @@ class MiscController extends AbstractController
 		$result = $adapter->authenticate();
 
 		if ($result->isValid()) {
-			return $result;
+			$person = $this->em->getRepository('DeskPRO:Person')->find($result->getIdentity()->getIdentity());
+
+			if ($person) {
+				$identity = new \Orb\Auth\Identity($person->id, array('person' => $person));
+				$result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
+				return $result;
+			}
 		}
 
 		#------------------------------
@@ -188,9 +194,9 @@ class MiscController extends AbstractController
 
 		$identity = $result->getIdentity();
 
-		$person = $identity['person'];
+		$person = isset($identity['person']) ? $identity['person'] : null;
 
-		if ($person->is_disabled || !$person->is_agent) {
+		if (!$person || $person->is_disabled || !$person->is_agent) {
 			return $this->createApiErrorResponse('invalid_login', 'Cannot use the API with that person', 403);
 		}
 

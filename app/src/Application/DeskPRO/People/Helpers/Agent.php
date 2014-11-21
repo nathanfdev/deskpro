@@ -36,6 +36,7 @@ namespace Application\DeskPRO\People\Helpers;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Arrays;
 
 /**
  * Helper added to People who are agents, works with agent-specific stuff.
@@ -351,23 +352,57 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	/**
 	 * @return array
 	 */
-	public function getGroupedSnippets()
+	public function getGroupedSnippets($as_array = false)
 	{
-		if ($this->_snippets !== null) {
-			return $this->_snippets;
+		if ($this->_snippets === null) {
+			$this->_snippets = App::getOrm()->getRepository('DeskPRO:TextSnippet')
+								  ->getSnippetsForAgent('tickets', $this->person);
+
+			$snippets_flat = array();
+			$cats_flat = array();
+			foreach ($this->_snippets as $group) {
+				$snippets_flat = array_merge($snippets_flat, $group['snippets']);
+				$cats_flat[] = $group['category'];
+			}
+			foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+				App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $snippets_flat);
+				App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $cats_flat);
+			}
 		}
 
-		$this->_snippets = App::getOrm()->getRepository('DeskPRO:TextSnippet')->getSnippetsForAgent('tickets', $this->person);
+		if ($as_array) {
+			$ret = array();
+			foreach ($this->_snippets as $group) {
+				$g_row = array('category' => array('id' => $group['category']->id, 'title' => $group['category']->title), 'snippets' => array());
 
-		$snippets_flat = array();
-		$cats_flat = array();
-		foreach ($this->_snippets as $group) {
-			$snippets_flat = array_merge($snippets_flat, $group['snippets']);
-			$cats_flat[] = $group['category'];
-		}
-		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
-			App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $snippets_flat);
-			App::getContainer()->getObjectLangRepository()->preloadObjectCollection($lang, $cats_flat);
+				foreach ($group['snippets'] as $s) {
+					$s_row = array('id' => $s->id, 'title' => $s->title);
+
+					if (empty($s_row['title'])) {
+						$s_langs = App::getContainer()->getObjectLangRepository()->getLoadedRecs($s);
+						if (!empty($s_langs['title'])) {
+							$s_row['title'] = Arrays::getFirstItem($s_langs['title'])->value;
+						}
+					}
+
+					if (!empty($s_row['title'])) {
+						$g_row['snippets'][] = $s_row;
+					}
+				}
+
+				if (!empty($g_row['snippets'])) {
+					usort($g_row['snippets'], function($a, $b) {
+						return strcmp($a['title'], $b['title']);
+					});
+					$ret[] = $g_row;
+				}
+			}
+
+			usort($ret, function($a, $b) {
+				return strcmp($a['category']['title'], $b['category']['title']);
+			});
+
+			return $ret;
 		}
 
 		return $this->_snippets;

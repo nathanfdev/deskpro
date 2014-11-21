@@ -1,19 +1,11 @@
 <form name="comment_form" ng-submit="comment_form.$valid && confirm(message); message = null;">
-
     <div class="modal-header">
         <h3 class="modal-title">Send Comment:</h3>
     </div>
-
     <div class="modal-body">
-
-        <textarea name="message" ng-model="message" required></textarea>
-
-        <br />
-
-        <button dp-submit-form>
-            Send
-        </button>
-
+        <textarea name="message" ng-model="message" required class="jira-comment-textarea full"></textarea>
     </div>
-
+    <div class="modal-footer" style="text-align: center;">
+        <button dp-submit-form class="dp-btn">Add Comments</button>
+    </div>
 </form>

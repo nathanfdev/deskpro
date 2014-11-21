@@ -189,7 +189,12 @@
 						Could not connect to Elasticsearch server. Is it down?
 					</p>
 					<p ng-if="info.error == 'no_index'">
-						The Elasticsearch server has no DeskPRO index. You should reset the search index above to initialize the index.
+						The Elasticsearch server is available, but no DeskPRO index was found.
+						<br><br/>
+						This can happen if you have not initialized the index yet. Try clicking the "reset" button above to do that now.
+						<br><br/>
+						Alternatively, this could mean that the index is hidden or otherwise protected (for example, some services
+						offer ACLs). You will need to contact your service provider for more information.
 					</p>
 				</div>
 

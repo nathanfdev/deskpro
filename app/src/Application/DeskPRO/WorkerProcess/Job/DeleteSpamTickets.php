@@ -52,7 +52,6 @@ class DeleteSpamTickets extends AbstractJob
 			return;
 		}
 
-		$secs = 0;
 		$date_cut = new \DateTime('@' . (time() - $secs));
 
 		#------------------------------

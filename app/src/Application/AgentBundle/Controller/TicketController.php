@@ -1025,6 +1025,10 @@ class TicketController extends AbstractController
 
 		$action_type = $this->in->getString('options.action');
 		$macro_id = Strings::extractRegexMatch('#macro:(\d+)#', $action_type, 1);
+		if ($this->in->getBool('options.is_note')) {
+			$macro_id = null;
+			$action_type = null;
+		}
 		if ($macro_id) {
 			$action_type = 'macro';
 		} else {
@@ -3101,15 +3105,10 @@ class TicketController extends AbstractController
 
 		$attach_attachments = array();
 		$max = App::getSetting('core.sendemail_attach_maxsize');
-		$max_embed = App::getSetting('core.sendemail_embed_maxsize');
 		$size = 0;
 		$attachments = $ticketdisplay->getMessageAttachments($message, true);
 		if ($attachments) {
 			foreach ($attachments as $attach) {
-				if ($attach->is_inline && $attach->blob->filesize > $max_embed) {
-					continue;
-				}
-
 				if ($size + $attach->blob->filesize > $max) {
 					break;
 				}
@@ -3570,6 +3569,32 @@ class TicketController extends AbstractController
 				$this->em->flush();
 
 				#------------------------------
+				# Billing/time
+				#------------------------------
+
+				if ($this->settings->get('core_tickets.enable_billing') || $this->settings->get('core_tickets.enable_timelog')) {
+					if ($this->in->getString('billing_type') == 'amount') {
+						$amount = $this->in->getFloat('amount');
+						$time = null;
+					} else {
+						$amount = null;
+						$time = (
+							3600 * $this->in->getUint('hours')
+							+ 60 * $this->in->getUint('minutes')
+							+ $this->in->getUint('seconds')
+						);
+					}
+
+					if ($amount || $time) {
+						$charge = $ticket->addCharge($this->person, $time, $amount, $this->in->getString('billing_comment'));
+						if ($charge) {
+							$this->em->persist($ticket);
+							$this->em->flush();
+						}
+					}
+				}
+
+				#------------------------------
 				# Add CC's
 				#------------------------------
 
@@ -3764,20 +3789,6 @@ class TicketController extends AbstractController
 
 		return $this->render('AgentBundle:Ticket:newticket-custom-fields-row.html.twig', array(
 			'new_custom_fields' => $new_custom_fields->createView(),
-		));
-	}
-
-	public function getTicketMessageTemplateAction($id)
-	{
-		$message_template = $this->em->find('DeskPRO:TicketMessageTemplate', $id);
-		if (!$message_template) {
-			$message_template = new \Application\DeskPRO\Entity\TicketMessageTemplate();
-		}
-
-		return $this->createJsonResponse(array(
-			'id' => $message_template->getId(),
-			'message' => $message_template->message,
-			'subject' => $message_template->subject
 		));
 	}
 

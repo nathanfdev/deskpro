@@ -148,9 +148,8 @@ class CodeTicketDetector implements TicketDetectorInterface, BounceAwareInterfac
 		$search_text = array_unique($search_text);
 		$search_text = implode(' ', $search_text);
 
-		$auth_len = Ticket::TAC_AUTHCODE_LEN;
-		$authcode_min_len = $auth_len + 1;
-		$authcode_max_len = $auth_len + 7;
+		$authcode_min_len = Ticket::TAC_AUTHCODE_LEN + 1;
+		$authcode_max_len = Ticket::TAC_AUTHCODE_LEN_MAX;
 
 		#------------------------------
 		# TAC

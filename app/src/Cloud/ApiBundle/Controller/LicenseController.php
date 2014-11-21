@@ -61,14 +61,28 @@ class LicenseController extends BaseLicenseController
 			}
 		}
 
+		$current_agents = $this->db->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+			WHERE is_agent = 1 AND is_deleted = 0
+		");
+
+		$max_agents = License::getLicense()->getMaxAgents();
+
 		return $this->createApiResponse(array(
 			'license' => array(
 				'expireDate'  => $lic->getExpireDate() ? $lic->getExpireDate()->format($this->settings->get('core.date_full')) : null,
 				'isExpired'   => $is_expired,
 				'expireDays'  => $expire_in_days,
 				'isDemo'      => $lic->isDemo() ? true : false,
-				'maxAgents'   => $lic->getMaxAgents()
-			)
+				'maxAgents'   => $lic->getMaxAgents(),
+				'licenseCode' => '',
+			),
+			'limits' => array(
+				'max_agents'    => $max_agents,
+				'count_agents'  => $current_agents,
+				'remain_agents' => 1 // override for cloud because we handle it automatically
+			),
 		));
 	}
 

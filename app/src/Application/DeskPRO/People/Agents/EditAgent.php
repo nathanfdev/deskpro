@@ -250,7 +250,14 @@ class EditAgent
 
 		$primary_email_address = strtolower(Arrays::getFirstItem($this->emails));
 		foreach ($agent->emails as $email) {
-			if (strtolower($email->email) == $primary_email_address && !$agent->primary_email) {
+			if (strtolower($email->email) == $primary_email_address) {
+				$agent->primary_email = $email;
+				break;
+			}
+		}
+
+		if (!$agent->primary_email) {
+			foreach ($agent->emails as $email) {
 				$agent->primary_email = $email;
 				break;
 			}

@@ -681,6 +681,19 @@ class Person extends DomainObject implements HighlightableModelInterface
 
 
 	/**
+	 * @param bool $yesno
+	 */
+	public function setCanAdmin($yesno)
+	{
+		if ($yesno) {
+			$this['can_reports'] = true;
+		}
+
+		$this->setModelField('can_admin', $yesno);
+	}
+
+
+	/**
 	 * @return bool|int
 	 */
 	public function getCanBilling()
@@ -2733,12 +2746,14 @@ class Person extends DomainObject implements HighlightableModelInterface
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postPersist');
 		$metadata->addLifecycleCallback('_savePersonLogs', 'postUpdate');
 
-		foreach (array(Events::prePersist, Events::postPersist, Events::preUpdate, Events::postUpdate) as $event) {
-			$metadata->addEntityListener(
-				$event,
-				'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
-				'on' . ucfirst($event)
-			);
+		if (defined('DP_INTERFACE') && DP_INTERFACE != 'install') {
+			foreach (array(Events::prePersist, Events::postPersist, Events::preUpdate, Events::postUpdate) as $event) {
+				$metadata->addEntityListener(
+					$event,
+					'Application\DeskPRO\Entity\EventListener\PersonChangeLogListener',
+					'on' . ucfirst($event)
+				);
+			}
 		}
 
 		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

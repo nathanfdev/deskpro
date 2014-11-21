@@ -973,6 +973,16 @@ define [
 							, ->
 								$scope.is_creating = false
 							)
+
+					$scope.editTemplate = ->
+						$modal.open({
+							templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+							controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+							resolve: {
+								templateName: ->
+									return $scope.model.template
+							}
+						})
 				]
 
 				getDataFormatter: ->
@@ -1068,6 +1078,16 @@ define [
 							, ->
 								$scope.is_creating = false
 							)
+
+					$scope.editTemplate = ->
+						$modal.open({
+							templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+							controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+							resolve: {
+								templateName: ->
+									return $scope.model.template
+							}
+						})
 				]
 
 				getDataFormatter: ->
@@ -1167,6 +1187,16 @@ define [
 						, ->
 							$scope.is_creating = false
 						)
+
+				$scope.editTemplate = ->
+					$modal.open({
+						templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+						controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+						resolve: {
+							templateName: ->
+								return $scope.model.template
+						}
+					})
 			]
 
 			getDataFormatter: ->

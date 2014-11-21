@@ -13,6 +13,7 @@ define ->
     #
     # * is-locked:    Expression to evaluate when checking if the locked symbol is on
     # * is-on:        Expression to evaluate when showing this as 'on'. When ng-model is true or when this is true, then it shows on
+    # * is-some:      Expression to evaluate when showing if a sub-option is one. Use this to show 'half on' status.
     # * ng-model:     The on/off model
     # * locked-tip:   A string for the locked tooltop
     # * locked-top-e: An expression that returns a string
@@ -43,9 +44,12 @@ define ->
 					val = ngModel.$viewValue || { checked: false, on: false, locked: false }
 					if val.on || val.checked
 						element.addClass('switch-on')
-						element.removeClass('switch-off')
+						element.removeClass('switch-off switch-some')
+					else if val.some
+						element.removeClass('switch-on switch-off')
+						element.addClass('switch-some')
 					else
-						element.removeClass('switch-on')
+						element.removeClass('switch-on switch-some')
 						element.addClass('switch-off')
 
 					if val.locked
@@ -97,6 +101,14 @@ define ->
 					scope.$watch(attrs.isOn, (newVal) ->
 						val = ngModel.$viewValue || { checked: false, on: false, locked: false }
 						val.on = newVal
+						ngModel.$setViewValue(val)
+						ngModel.$render()
+					)
+
+				if attrs.isSome
+					scope.$watch(attrs.isSome, (newVal) ->
+						val = ngModel.$viewValue || { checked: false, on: false, locked: false }
+						val.some = !!newVal
 						ngModel.$setViewValue(val)
 						ngModel.$render()
 					)

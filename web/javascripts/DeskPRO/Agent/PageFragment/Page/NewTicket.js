@@ -133,7 +133,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var messageEl = this.getEl('message');
 		var subjectEl = this.getEl('subject');
-		var appliedMsgTpl = null;
 		var sig = $.trim(self.getEl('signature_value').val());
 
 		messageEl.on('keydown', function() {
@@ -141,67 +140,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		});
 		subjectEl.on('keydown', function() {
 			subjectEl.addClass('editted');
-		});
-		this.getEl('message_template').on('change', function() {
-			var id = $(this).val();
-
-			if (appliedMsgTpl == id) {
-				return;
-			}
-
-			if (!id) {
-				if (!messageEl.hasClass('editted')) {
-					self.setMessageText('');
-				}
-				if (!subjectEl.hasClass('editted')) {
-					subjectEl.val('');
-				}
-				return;
-			}
-
-			appliedMsgTpl = id;
-
-			$.ajax({
-				url: BASE_URL + 'agent/tickets/get-message-template/'+id+'.json',
-				type: 'GET',
-				cache: false,
-				dataType: 'json',
-				success: function(data) {
-					if (messageEl.hasClass('editted')) {
-						var msgCmp = data.message.replace(/(\r\n|\n|\r)/gm, " ");
-						var valCmp = messageEl.val().replace(/(\r\n|\n|\r)/gm, " ");
-						if (valCmp.indexOf(msgCmp) === -1) {
-							self.insertMessageText(data.message);
-						}
-					} else {
-						var val = data.message;
-
-						if (sig) {
-							val += "\n\n";
-							val += sig;
-						}
-
-						self.setMessageText(val);
-					}
-
-					if (subjectEl.hasClass('editted')) {
-						if (subjectEl.val().indexOf(data.subject) === -1) {
-							subjectEl.insertAtCaret(data.subject);
-						}
-					} else {
-						subjectEl.val(data.subject);
-					}
-				}
-			});
-		});
-
-		// This is so the select2 box has proper width for the longest template title
-		var w = this.getEl('message_template').width() + 55;
-		if (w > 350) w = 350;
-		this.getEl('message_template').css('width', w);
-		this.getEl('message_template_holder').css({
-			visibility: 'visible',
-			display: 'none'
 		});
 
 		window.setTimeout(function() {
@@ -253,10 +191,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			}
 		};
 
-		var tplHolder = this.getEl('message_template_holder');
-		var tplSel = this.getEl('message_template');
-		var tplSelOrig = this.getEl('message_template_orig');
-
 		var fieldDisplayFetch = new DeskPRO.Agent.PageHelper.TicketFieldDisplay(ticketReader, 'create');
 		self._updateFields = function() {
 			$('.ticket-field', self.getEl('fields_container')).removeClass('item-on').hide();
@@ -277,30 +211,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			});
 
 			var depId = depSel.val();
-			var opts = tplSelOrig.find('option.department_' + depId +', option.department_0').clone();
-			if (opts[0]) {
-
-				var selected = tplSel.val();
-
-				tplSel.empty();
-				tplSel.append('<option value="0" selected="selected">Blank</option>');
-				tplSel.append(opts);
-				tplHolder.show();
-				self.getEl('message_template_holder_row').show();
-
-				var selectedOpt = tplSel.find('[value="'+selected+'"]');
-
-				if (selectedOpt[0]) {
-					tplSel.select2('val', selected);
-				} else {
-					tplSel.select2('val', 0);
-					tplSel.change();
-				}
-			} else {
-				tplSel.empty();
-				tplHolder.hide();
-				self.getEl('message_template_holder_row').hide();
-			}
 
 			self.getEl('fields_container').find('tbody').removeClass('last').filter(':visible').last().addClass('last');
 
@@ -1036,6 +946,8 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 		var personId = this.getEl('user_searchbox').find('input.person-id').val(),
 			depId = this.getEl('dep').val() || 0,
 			self = this;
+
+		self._updateFields();
 
 		if (!personId || !parseInt(personId)) {
 			return;

@@ -233,8 +233,15 @@ class PublishController extends AbstractController
 		}
 
 		$entity = $this->_getCommentEntityName($typename);
+		if (!$entity) {
+			throw $this->createNotFoundException();
+		}
 
 		$comment = $this->em->find($entity, $comment_id);
+		if (!$comment) {
+			throw $this->createNotFoundException();
+		}
+
 		$this->em->remove($comment);
 		$this->em->flush();
 

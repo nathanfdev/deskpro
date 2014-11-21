@@ -117,6 +117,7 @@ use Orb\Util\WorkHoursSetAll;
 class Ticket extends DomainObject implements HighlightableModelInterface
 {
 	const TAC_AUTHCODE_LEN = 15;
+	const TAC_AUTHCODE_LEN_MAX = 30;
 
 	const CREATED_WEB_PERSON        = 'web.person';
 	const CREATED_WEB_PERSON_PORTAL = 'web.person.portal';
@@ -1621,7 +1622,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 		$x->label = $l;
 
 		foreach ($this->labels as $idx => $label) {
-			if ($label->label == $x->label) {
+			if (strtolower($label->label) == strtolower($x->label)) {
 				$this->labels->remove($idx);
 				$this->_onPropertyChanged('labels', null, $this->labels);
 				return $label;

@@ -350,7 +350,7 @@ class TicketEmail
 
 		$state = $this->ticket->getStateChangeRecorder();
 		$ticket_attachments = array();
-		if ($state->hasNewReply()) {
+		if ($state->hasNewReply() && !$this->is_auto) {
 			$last_message = Arrays::getFirstItem($vars['messages']);
 
 			// This check is because theoretically, the entire thread

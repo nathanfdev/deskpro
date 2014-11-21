@@ -771,6 +771,31 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @param $field
+	 */
+	public function removeCustomDataForField($field)
+	{
+		$parent_id = null;
+		$field_id = $field['id'];
+		if ($field->parent) {
+			$parent_id = $field->parent['id'];
+		}
+
+		$change = false;
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id OR $data['field_id'] == $parent_id) {
+				$change = true;
+				$this->custom_data->removeElement($data);
+			}
+		}
+
+		if ($change) {
+			$this->_onPropertyChanged('custom_data', null, $this->participants);
+		}
+	}
+
+
+	/**
 	 * Add a custom data item to this chat
 	 *
 	 * @param CustomDataChat $data

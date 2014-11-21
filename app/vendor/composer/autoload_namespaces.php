@@ -47,7 +47,7 @@ return array(
     'Contrib\\Component' => array($vendorDir . '/satooshi/php-coveralls/src'),
     'Contrib\\Bundle' => array($vendorDir . '/satooshi/php-coveralls/src'),
     'Codeception' => array($vendorDir . '/codeception/codeception/src'),
-    'Behat\\Mink\\Driver' => array($vendorDir . '/behat/mink-selenium2-driver/src', $vendorDir . '/behat/mink-browserkit-driver/src', $vendorDir . '/behat/mink-goutte-driver/src'),
+    'Behat\\Mink\\Driver' => array($vendorDir . '/behat/mink-browserkit-driver/src', $vendorDir . '/behat/mink-selenium2-driver/src', $vendorDir . '/behat/mink-goutte-driver/src'),
     'Behat\\Mink' => array($vendorDir . '/behat/mink/src'),
     'Aws' => array($vendorDir . '/aws/aws-sdk-php/src'),
     'Assetic' => array($vendorDir . '/kriswallsmith/assetic/src'),

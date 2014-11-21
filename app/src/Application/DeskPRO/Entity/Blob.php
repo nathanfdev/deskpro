@@ -48,6 +48,7 @@ use Orb\Util\Strings;
  * @property Blob $original_blob
  * @property string $storage_loc
  * @property string $storage_loc_pref
+ * @property string $storage_loc_specific
  * @property string $save_path
  * @property string $file_url
  * @property string $filename
@@ -109,6 +110,18 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 */
 	protected $storage_loc_pref = null;
+
+	/**
+	 * A set storage adapter. This is used to 'set' a storage adapter that will
+	 * be used even if the system would normally use a different one.
+	 *
+	 * The main usage for this is to store things like logfiles in the database
+	 * instead of something like s3. DeskPRO saves lots of logfiles, so its
+	 * pretty inefficient to send off lots of small logfiles to s3.
+	 *
+	 * @var string
+	 */
+	protected $storage_loc_specific = null;
 
 	/**
 	 * The path to the file if it's not stored in the database.
@@ -440,6 +453,19 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @param string $storage_loc
+	 */
+	public function setStorageLocSpecific($storage_loc)
+	{
+		if (!$storage_loc) {
+			$this->setModelField('storage_loc_specific', null);
+		} else {
+			$this->setModelField('storage_loc_specific', $storage_loc);
+		}
+	}
+
+
+	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
 	public function getLabelManager()
@@ -492,6 +518,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 			'original_blob_id' => $this->original_blob ? $this->original_blob->id : null,
 			'storage_loc'      => $this->storage_loc,
 			'storage_loc_pref' => $this->storage_loc_pref,
+			'storage_loc_specific' => $this->storage_loc_specific,
 			'save_path'        => $this->save_path,
 			'file_url'         => $this->file_url,
 			'filename'         => $this->filename,
@@ -527,6 +554,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		$metadata->mapField(array( 'fieldName' => 'sys_name', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'sys_name', ));
 		$metadata->mapField(array( 'fieldName' => 'storage_loc', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc', ));
 		$metadata->mapField(array( 'fieldName' => 'storage_loc_pref', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_pref', ));
+		$metadata->mapField(array( 'fieldName' => 'storage_loc_specific', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'storage_loc_specific', ));
 		$metadata->mapField(array( 'fieldName' => 'save_path', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'save_path', ));
 		$metadata->mapField(array( 'fieldName' => 'file_url', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'file_url', ));
 		$metadata->mapField(array( 'fieldName' => 'filename', 'type' => 'string', 'length' => 120, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'filename', ));
