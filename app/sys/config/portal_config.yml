@@ -35,6 +35,7 @@ twig:
 
 sensio_framework_extra:
     cache:    { annotations: true }
+    security:    { annotations: true }
 
 white_october_pagerfanta:
     default_view: deskpro

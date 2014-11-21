@@ -44,9 +44,13 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ArticlesController extends AbstractController
 {
+    /**
+     * @Security("is_granted('USE_ARTICLES')")
+     */
     public function indexAction()
     {
         return $this->render('Theme:Articles:index.html.twig');
@@ -55,6 +59,7 @@ class ArticlesController extends AbstractController
 
     /**
      * @ParamConverter(name="category", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES')")
      */
     public function browseAction(ArticleCategory $category, Request $request)
     {
@@ -72,13 +77,16 @@ class ArticlesController extends AbstractController
 
     /**
      * @ParamConverter(name="article", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES')")
      */
     public function viewAction(Article $article)
     {
         return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
     }
 
-
+    /**
+     * @Security("is_granted('USE_ARTICLES')")
+     */
     public function listAction(Request $request)
     {
         $options_resolver = new OptionsResolver();
@@ -123,7 +131,9 @@ class ArticlesController extends AbstractController
         );
     }
 
-
+    /**
+     * @Security("is_granted('USE_ARTICLES')")
+     */
     public function categoriesAction(Request $request)
     {
         $options_resolver = new OptionsResolver();
