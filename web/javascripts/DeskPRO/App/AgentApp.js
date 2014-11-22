@@ -4,7 +4,8 @@ define([
 	'angularBootstrap',
 	'angularSelect2',
 	'angularUISortable',
-    'angularBootstrapDatetime',
+	'angularSanitize',
+  'angularBootstrapDatetime',
 	'DeskPRO/Util/Functions',
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',
@@ -15,36 +16,38 @@ define([
 	'DeskPRO/Service/AgentTeam',
 	'ngContextMenu',
 	'DeskPRO/CategoryBuilder/Module',
-    'DeskPRO/Directive/DpSubmitForm',
-    'DeskPRO/Directive/JIRAFormWidget'
+  'DeskPRO/Directive/DpSubmitForm',
+  'DeskPRO/Directive/JIRAFormWidget',
 ], function(
 	angular,
 	x1,
 	x2,
 	x3,
 	x4,
-    x5,
+  x5,
+  x6,
 	Functions,
 	Strings,
 	DeskPRO_Directive_DpLabel,
-    DeskPRO_Service_LabelDefinition,
-    ngContextMenu,
-    DeskPRO_Directive_DpTicketQuickActions,
+  DeskPRO_Service_LabelDefinition,
+  ngContextMenu,
+  DeskPRO_Directive_DpTicketQuickActions,
 	DeskPRO_Service_Person,
 	DeskPRO_Service_AgentTeam,
-    ngContextMenu,
-    DpCategoryBuilder,
-    DpSubmitForm,
-    JIRAFormWidget
-	) {
+  ngContextMenu,
+  DpCategoryBuilder,
+  DpSubmitForm,
+  JIRAFormWidget
+) {
 	var AgentApp = angular.module('AgentApp', [
 		'ngAnimate', 
 		'ui.bootstrap', 
 		'ui.sortable', 
-		'ng-context-menu', 
+		'ng-context-menu',
+		'ngSanitize',
 		'deskpro.category_builder',
 		'ui.select2',
-        'ui.bootstrap.datetimepicker'
+    'ui.bootstrap.datetimepicker'
 	]);
 
 	//-------------------------------------------------------------------------

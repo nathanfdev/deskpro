@@ -1,8 +1,9 @@
 <form name="create_issue_form" ng-submit="create_issue_form.$valid && confirm()">
     <div class="modal-header">
+        <button type="button" class="close" ng-click="dismiss()"><span aria-hidden="true">&times;</span></button>
         <h3 class="modal-title">New Issue</h3>
     </div>
-    <div class="modal-body jira-form">
+    <div class="modal-body jira-form" ng-style="{maxHeight: meta.windowHeight() - 220, overflowY: 'auto'}">
         <div class="extended-merge">
             <div class="merge-data-wrap" style="margin: 0;">
                 <table class="merge-data" width="100%">

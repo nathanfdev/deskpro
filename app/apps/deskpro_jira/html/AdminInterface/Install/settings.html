@@ -65,7 +65,7 @@
                         <br /><br />
 
                         <div class="col-lg-4">
-                            Default Fields
+                            Fields
                         </div>
                         <div class="col-lg-8">
                             <table class="table">
@@ -73,11 +73,13 @@
                                     <th>
                                         Field
                                     </th>
-                                    <th>
-                                        Summary
+                                    <th class="text-center" style="width: 110px;">
+                                        Detail View
+                                        <i class="fa fa-question-circle qmark-icon" tooltip='Fields enabled on the detail view will be visible when you click "View Details" on a JIRA issue.' tooltip-placement="left"></i>
                                     </th>
-                                    <th>
-                                        List
+                                    <th class="text-center" style="width: 110px;">
+                                        List View
+                                        <i class="fa fa-question-circle qmark-icon" tooltip='Fields enabled on the list view will be visible in the main list of JIRA issues. This list appears in the sidebar to the right of each ticket.' tooltip-placement="left"></i>
                                     </th>
                                 </tr>
                                 <tr ng-repeat="f in meta.fields">

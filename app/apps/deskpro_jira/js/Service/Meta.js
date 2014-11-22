@@ -1,5 +1,5 @@
 define(function () {
-  return function ($http, $q) {
+  return function ($http, $q, $window, $sce) {
 
     var meta = {
       default_fields_list: [],
@@ -95,7 +95,7 @@ define(function () {
           },
 
           comment: function (val) {
-            return val.total + ' ' + (1 === val.total ? ' comment' : ' comments');
+            return $sce.trustAsHtml(val.total + ' ' + (1 === val.total ? ' comment' : ' comments'));
           }
         };
 
@@ -109,7 +109,10 @@ define(function () {
         return comment.author.name === meta.user
           ? comment.body
           : ('[' + comment.author.displayName + ' via JIRA]: ' + comment.body);
-      }
+      },
+	    windowHeight: function() {
+		    return $($window).height();
+	    }
     };
 
     $http.get('/agent/jira/meta')
@@ -147,8 +150,6 @@ define(function () {
         meta.default_issuetype = data.default_issuetype;
         meta.default_project = data.default_project;
         meta.user = data.api_username;
-		    
-		    console.info(meta);
       })
 	    .error(function(data, status, headers, config) {
 				meta.error = true;

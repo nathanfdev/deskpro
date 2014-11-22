@@ -36,14 +36,23 @@
             <ul class="jira-issues-list" ng-if="issues.length > 0">
                 <li ng-repeat="issue in issues">
                     <div class="issue-header">
-                        <span ng-click="$event.stopPropagation(); issueModal(issue);" class="details-btn"><i class="fa fa-external-link"></i> View Details</span>
-                        <span ng-click="$event.stopPropagation(); unlink(issue);" class="unlink-btn"><i class="fa fa-unlink"></i> Unlink</span>
-                        {{ issue.key }}
+                        <span ng-click="issueModal(issue);" class="details-btn"><i class="fa fa-external-link"></i> View Details</span>
+                        <span ng-click="unlink(issue);" class="unlink-btn"><i class="fa fa-unlink"></i> Unlink</span>
+                        <a href="{{ issue.url }}" target="_blank">{{ issue.key }}</a>
                     </div>
                     <ul class="jira-fields">
                         <li ng-repeat="field in meta.default_fields_list" ng-if="meta.fieldHasValue(field, issue.fields[field])">
                             <div class="field-title">{{ meta.fieldName(field) }}</div>
-                            <div class="field-value">{{ meta.fieldValue(field, issue.fields[field]) }}</div>
+                            <div class="field-value" ng-if="'comment' != field">{{ meta.fieldValue(field, issue.fields[field]) }}</div>
+                            <div class="field-value" ng-if="'comment' == field">
+                                <a href="#" ng-click="issueModal(issue)">
+                                    {{ issue.fields[field].total }} Comment{{ 1 == issue.fields[field].total ? '' : 's' }}
+                                </a>
+                                &#8226;
+                                <a href="#" ng-click="sendCommentModal(issue)">
+                                    Add Comment
+                                </a>
+                            </div>
                         </li>
                     </ul>
                 </li>
@@ -53,18 +62,7 @@
             </div>
         </div>
 
-
-        <div ng-show="issues.loading">-> spinner <-</div>
-        <ul ng-show="!issues.loading">
-            <li ng-repeat="issue in issues" ng-click="issueModal(issue)">
-                <div>Key: {{ issue.key }}</div>
-                <div ng-repeat="field in meta.default_fields_list">{{ meta.fieldName(field) }}: {{ meta.fieldValue(field, issue.fields[field]) }}</div>
-                <button ng-click="$event.stopPropagation(); unlink(issue);" type="button">Unlink</button>
-                <hr>
-            </li>
-        </ul>
-
-        <button style="display:block; margin: 0 auto;" ng-click="sendCommentModal()">
+        <button style="display:block; margin: 0 auto;" ng-click="sendCommentModal()" ng-if="issues.length">
             Send Comment
         </button>
 
@@ -89,4 +87,8 @@
 
 <script type="text/ng-template" id="deskpro_jira/Ticket/send-comment-modal.html">
     <!--#include file="Ticket/send-comment-modal.html" -->
+</script>
+
+<script type="text/ng-template" id="deskpro_jira/Ticket/unlink-confirm-modal.html">
+    <!--#include file="Ticket/unlink-confirm-modal.html" -->
 </script>

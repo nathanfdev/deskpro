@@ -73,6 +73,8 @@ define([
                   }
                 );
               };
+
+	            $scope.dismiss = $modalInstance.dismiss;
             }]
           });
         }
@@ -85,10 +87,31 @@ define([
      * @param issue
      */
     $scope.unlink = function (issue) {
-      $scope.search_issue_state = 1;
-      issues.unlink(issue).then(function () {
-        $scope.search_issue_state = 0;
-      });
+	    $modal.open({
+		    templateUrl: 'deskpro_jira/Ticket/unlink-confirm-modal.html',
+		    controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+			    if (!issue.filtered_fields) {
+				    issue.filtered_fields = [];
+				    $.each(issue.fields, function (id, field) {
+					    if ('comment' === id) return;
+					    if ($meta.isEnabled('summary', id)) {
+						    issue.filtered_fields.push({id: id, value: field});
+					    }
+				    });
+			    }
+			    $scope.issue = issue;
+			    $scope.meta = $meta;
+			    $scope.confirm = function (msg) {
+				    $scope.search_issue_state = 1;
+				    //issues.unlink(issue).then(function () {
+				      $scope.search_issue_state = 0;
+				    //});
+				    $modalInstance.dismiss();
+			    };
+			    $scope.dismiss = $modalInstance.dismiss;
+		    }]
+	    });
+
     };
 
 
@@ -145,6 +168,8 @@ define([
               $scope.sending_comment = false;
             });
           };
+
+	        $scope.dismiss = $modalInstance.dismiss;
         }]
       });
     };
@@ -153,14 +178,19 @@ define([
     /**
      * send comment to all linked issues
      */
-    $scope.sendCommentModal = function () {
+    $scope.sendCommentModal = function (issue) {
       $modal.open({
         templateUrl: 'deskpro_jira/Ticket/send-comment-modal.html',
         controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+	        $scope.issues = issues;
+	        $scope.meta = $meta;
+	        $scope.issue = issue
           $scope.confirm = function (msg) {
-            issues.sendComment(msg);
+            issues.sendComment(msg, issue);
             $modalInstance.dismiss();
           };
+
+	        $scope.dismiss = $modalInstance.dismiss;
         }]
       });
     };

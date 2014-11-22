@@ -1,6 +1,6 @@
 define(function () {
 
-  return function ($http, $q) {
+  return function ($http, $q, $window) {
 
     function Issues($ticket) {
 
@@ -8,6 +8,24 @@ define(function () {
       var self = this;
 
       this.loading = false;
+
+	    this.last = function() {
+		    return this[this.length - 1];
+	    }
+
+	    this.push = function() {
+		    for (var i = 0; i < arguments.length; i++) {
+			    var issue = arguments[i];
+			    if (!issue) continue;
+
+			    if (issue instanceof Array) {
+				    return issue.each(function(el){self.push(el);});
+			    }
+
+			    Array.prototype.push.call(self, issue);
+			    issue.url = issue.self.replace('rest/api/2/issue/' + issue.id, 'browse/' + issue.key);
+		    }
+	    };
 
       /**
        * loads list of issues according to current ticket
@@ -21,13 +39,7 @@ define(function () {
         $http.get('/agent/jira/ticket/' + $ticket.id + '/issue')
           .success(function (data, status, headers, config) {
             self.loading = false;
-
-            if (data) {
-              data.issues && data.issues.each(function (issue) {
-                self.push(issue);
-              });
-            }
-
+		        data && self.push(data.issues);
             d.resolve(self);
           })
           .error(function (data, status, headers, config) {
@@ -49,16 +61,8 @@ define(function () {
 
         $http.post('/agent/jira/ticket/' + $ticket.id + '/issue', data)
           .success(function (data, status, headers, config) {
-            console.info(data);
-
-            if (data) {
-              data.issues && data.issues.each(function (issue) {
-                self.push(issue);
-                data = issue;
-              });
-            }
-
-            d.resolve(data);
+		        data && self.push(data.issues);
+            d.resolve(self.last());
           })
           .error(function (data, status, headers, config) {
             console.error('Create JIRA Issue: ', status, {data: data});
@@ -78,23 +82,22 @@ define(function () {
         var d = $q.defer();
         issueId = issue ? issue.id : 0;
 
-        console.info(msg);
         $http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issueId + '/comments', msg)
           .success(function (data, status, headers, config) {
-            if (data) {
-              if (issue) {
+            if (!data) return d.resolve(data);
+
+		        if (issue) {
+              if (issue.fields.comment) {
+                issue.fields.comment.comments.push(data);
+                issue.fields.comment.total++;
+              }
+            } else {
+              self.each(function (issue) {
                 if (issue.fields.comment) {
                   issue.fields.comment.comments.push(data);
                   issue.fields.comment.total++;
                 }
-              } else {
-                self.each(function (issue) {
-                  if (issue.fields.comment) {
-                    issue.fields.comment.comments.push(data);
-                    issue.fields.comment.total++;
-                  }
-                });
-              }
+              });
             }
 
             d.resolve(data);
@@ -119,14 +122,10 @@ define(function () {
           return d.promise;
         }
 
-        $http.get('/agent/jira/search?q=' + window.encodeURI(q))
+        $http.get('/agent/jira/search?q=' + $window.encodeURI(q))
           .success(function (data, status, headers, config) {
-            if (data) {
-              data.issues && data.issues.each(function (issue) {
-                data = issue;
-              });
-            }
-            d.resolve(data);
+		        var issue = data.issues ? data.issues[data.issues.length - 1] : null;
+            d.resolve(issue);
           })
           .error(function (data, status, headers, config) {
             console.error('Search JIRA Issue: ', status, {data: data});
@@ -146,14 +145,8 @@ define(function () {
 
         $http.post('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id + '/link')
           .success(function (data, status, headers, config) {
-            console.info(data);
-            if (data) {
-              data.issues && data.issues.each(function (issue) {
-                self.push(issue);
-                data = issue;
-              });
-            }
-            d.resolve(data);
+            data && self.push(data.issues);
+            d.resolve(self.last());
           })
           .error(function (data, status, headers, config) {
             console.error('Link JIRA Issue: ', status, {data: data});

@@ -2,9 +2,6 @@ define(function () {
 
   return function ($scope, $modalInstance, $ticket, $meta, issues) {
 
-    console.info($meta);
-    console.info($ticket);
-
     var staticFields = {
       project: 1,
       issuetype: 1,
@@ -69,5 +66,6 @@ define(function () {
       issuetype: {id: $meta.default_issuetype},
       summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject
     };
+	  $scope.dismiss = $modalInstance.dismiss;
   };
 });
