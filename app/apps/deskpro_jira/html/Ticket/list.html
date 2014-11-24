@@ -6,11 +6,11 @@
         <button class="dp-btn" ng-click="createIssueModal()" type="button" style="margin-right: 8px;">
             <i class="fa fa-plus"></i> Create Issue
         </button>
-        <button class="dp-btn" ng-click="link_search_mode = true" type="button">
+        <button class="dp-btn" ng-click="enableSearchMode()" type="button">
             <i class="fa fa-search-plus"></i> Link Existing Issue
         </button>
     </header>
-    <header class="sub-header" ng-show="link_search_mode" ng-if="!meta.error">
+    <header class="sub-header" ng-show="link_search_mode">
         <input type="text" placeholder="Enter Issue ID" ng-model="search_issue" style="display: block; width: 95%;" />
         <div style="text-align: center; margin: 8px 0;">
             <div ng-show="search_issue_state != 1">

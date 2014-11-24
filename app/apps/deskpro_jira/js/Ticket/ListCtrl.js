@@ -17,6 +17,9 @@ define([
       }
     });
 
+	  $scope.enableSearchMode = function() {
+		  $scope.link_search_mode = true;
+	  };
 
     /**
      * search issue for linking
