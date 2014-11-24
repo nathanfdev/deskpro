@@ -121,10 +121,10 @@ class JIRAWebhookController extends AbstractController
 				    $state->recordData('jira.' . $change['field'], $change);
 			    }
 		    }
-	    }
 
-	    if (!$state->isTrivialChangeSet()) {
-		    $manager->saveTicket($issue->ticket, $context);
+		    if (!$state->isTrivialChangeSet()) {
+			    $manager->saveTicket($issue->ticket, $context);
+		    }
 	    }
     }
 
