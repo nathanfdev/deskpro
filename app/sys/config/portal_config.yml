@@ -32,6 +32,9 @@ framework:
 twig:
     debug:            "%kernel.debug%"
     strict_variables: "%kernel.debug%"
+    form:
+        resources:
+            - Theme::form_theme.html.twig
 
 sensio_framework_extra:
     cache:    { annotations: true }

@@ -137,13 +137,3 @@ services:
       class: Application\PortalBundle\View\Pagerfanta\DeskproView
       public: false
       tags: [{ name: pagerfanta.view, alias: deskpro }]
-
-
-  ##
-  ## Forms
-  ##
-
-  ticket.form:
-    class: Application\PortalBundle\Form\TicketType
-    tags:
-       - { name: form.type, alias: ticket }
