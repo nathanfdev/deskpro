@@ -147,7 +147,7 @@
             if (action.model) {
               action.params[action.prop] = action.model.id;
             }
-            $http.post("/agent/tickets/" + $scope.ticket_id + "/ajax-save-actions", {
+            $http.post(BASE_PATH + ("agent/tickets/" + $scope.ticket_id + "/ajax-save-actions"), {
               actions: action.params
             }).success(function() {
               return window.DeskPRO_Window.getMessageChanneler().poller.send();
