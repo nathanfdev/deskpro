@@ -808,11 +808,9 @@ define([
 
 				scope.clearSearch = function() {
 					scope.searchQuery = '';
-					$input.blur();
 					closeAll();
 					$timeout(function() {
 						scope.searchQuery = '';
-						$input.blur();
 						closeAll();
 					});
 				};
