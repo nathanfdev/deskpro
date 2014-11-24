@@ -62,18 +62,23 @@
         var doRequest, page;
         page = -1;
         this.apply_started = true;
+        this.apply_page = '0';
+        this.apply_num_pages = '?';
         doRequest = (function(_this) {
           return function() {
             page++;
             return _this.Api.sendGet('/user_rules_apply/' + _this.user_rule.id + '/page_' + page).success(function(result) {
               if (!result.completed && result.success) {
-                _this.apply_log += 'Done batch #' + (page + 1) + ' ...<br>';
+                _this.apply_page = result.page;
+                _this.apply_num_pages = result.num_pages;
                 return doRequest();
               } else {
-                return _this.apply_log += 'Completed<br>';
+                _this.apply_done = true;
+                return _this.apply_done_status = 'success';
               }
             }).error(function() {
-              return _this.apply_log = 'Error occurred<br>';
+              _this.apply_done = true;
+              return _this.apply_done_status = 'error';
             });
           };
         })(this);

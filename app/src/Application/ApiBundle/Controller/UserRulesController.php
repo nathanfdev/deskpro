@@ -194,7 +194,6 @@ class UserRulesController extends AbstractController implements ProtectedControl
 		$user_rule  = $user_rules->getById($id);
 
 		if (!$user_rule) {
-
 			throw $this->createNotFoundException();
 		}
 
