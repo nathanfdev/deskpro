@@ -32,62 +32,33 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\Form;
+namespace Application\FormBundle;
 
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Application\FormBundle\DependencyInjection\FormExtension;
+use Symfony\Component\Console\Application;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class TicketType extends AbstractType
+class FormBundle extends Bundle
 {
-    public function __construct()
+    public function registerCommands(Application $application)
     {
-        // inject managers to get the form type configs
     }
 
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    public function getContainerExtension()
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
-    }
-
-    public function preDataEvent(FormEvent $event)
-    {
-        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $ticket = $event->getData();
-        $form = $event->getForm();
-        /** @var \Application\DeskPRO\Entity\TicketLayout $layout */
-        $layout = $form->getConfig()->getOption('layout_type');
-        $layout_type = $form->getConfig()->getOption('layout_type');
-
-        //...begin!
-        $form->add('subject', 'text');
-        $form->add('submit', 'submit');
+        return new FormExtension();
     }
 
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    public function getNamespace()
     {
-        $resolver->setDefaults(array(
-            'layout_type' => 'new',
-            'data_class' => 'Application\\DeskPRO\\Entity\\Ticket'
-        ));
-        $resolver->setRequired(array(
-            'ticket_layout'
-        ));
-        $resolver->addAllowedValues(array(
-            'layout_type' => array('new', 'edit', 'view')
-        ));
-        $resolver->setAllowedTypes(array(
-            'ticket_layout' => 'Application\\DeskPRO\\Entity\\TicketLayout'
-        ));
+        return __NAMESPACE__;
     }
 
-
-    public function getName()
+    public function getPath()
     {
-        return 'ticket';
+        return __DIR__;
     }
 }
+ 

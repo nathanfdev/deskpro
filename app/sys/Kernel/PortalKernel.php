@@ -66,7 +66,8 @@ class PortalKernel extends Kernel
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\PortalBundle\PortalBundle(),
             new \Application\LanguageBundle\LanguageBundle(),
-            new \Application\AuthBundle\AuthBundle()
+            new \Application\AuthBundle\AuthBundle(),
+            new \Application\FormBundle\FormBundle(),
         );
 
         if ('dev' === $this->getEnvironment()

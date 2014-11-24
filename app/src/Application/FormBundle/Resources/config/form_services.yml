@@ -1,0 +1,13 @@
+services:
+  form.ticket:
+    class: Application\FormBundle\Form\Type\TicketType
+    tags:
+      - { name: form.type, alias: deskpro_ticket }
+  form.language:
+    class: Application\FormBundle\Form\Type\LanguageType
+    tags:
+      - { name: form.type, alias: deskpro_language }
+  form.department:
+    class: Application\FormBundle\Form\Type\DepartmentType
+    tags:
+      - { name: form.type, alias: deskpro_department }
