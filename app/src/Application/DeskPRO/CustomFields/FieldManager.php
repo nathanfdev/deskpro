@@ -178,6 +178,13 @@ class FieldManager
     {
     }
 
+    public function getField($id, $field_type, $field_id)
+    {
+        $this->getFields();
+
+        return $id;
+    }
+
     /**
      * Get a collection of all top-level (parent) fields
      *
