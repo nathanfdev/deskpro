@@ -4,7 +4,11 @@
 	{%- elseif status == 'fail' -%}{{ phrase('agent.general.failed') }}{%- endif -%}
 {%- endmacro -%}
 {% if log.action_type == 'free' %}
-	{{ log.details.message }}
+	{% if log.details.message_html %}
+		{{ log.details.message_html }}
+	{% else %}
+		{{ log.details.message }}
+	{% endif %}
 {% elseif log.action_type == 'app_message' %}
 	App #{{ log.details.app_id }} {{ log.details.app_title }} &mdash; {{ log.details.message }}
 {% elseif log.action_type == 'action_starter' %}

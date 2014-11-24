@@ -188,6 +188,10 @@
           title: 'Set Trigger Variable',
           value: 'ModSetUserVar'
         });
+        options.push({
+          title: 'Ticket Log',
+          value: 'TicketLogText'
+        });
         set_options.push({
           title: 'Trigger Control',
           subOptions: options
@@ -1195,6 +1199,17 @@
             };
           }
         };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getTicketLogText = function(options) {
+        var def;
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'message';
+        options.placeholder = 'Enter text here to add to the ticket log';
+        def = this.getStandardInput(options);
+        return def;
       };
 
       Admin_OptionBuilder_TypesDef_TicketFilter.prototype.getSendUserEmail = function(options) {
