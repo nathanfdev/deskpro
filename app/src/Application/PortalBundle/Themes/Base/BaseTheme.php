@@ -43,6 +43,7 @@ class BaseTheme extends AbstractTheme
     {
         return array(
             new Tag('alerts',                   'Theme:Portal:alerts'),
+            new Tag('flashes',                  'Theme:Portal:flashes'),
             new Tag('page_top',                 'Theme:Portal:topBar'),
             new Tag('page_search_box',          'Theme:Portal:topSearch'),
             new Tag('page_tabs',                'Theme:Portal:topTabs'),

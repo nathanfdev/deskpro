@@ -59,6 +59,12 @@ class PortalController extends AbstractController
     }
 
 
+    public function flashesController()
+    {
+        return $this->render('Theme:Portal:flashes.html.twig');
+    }
+
+
     public function topBarAction()
     {
         /** @var \Application\LanguageBundle\Language\LanguageManager $language_manager */
