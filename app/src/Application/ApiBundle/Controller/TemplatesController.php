@@ -78,24 +78,6 @@ class TemplatesController extends AbstractController implements ProtectedControl
         $tpl_desc = new EmailTemplatesDesc();
         $list     = $tpl_desc->getProcessedList($this->container->getTranslator());
 
-        $custom_templates = $this->container->getSystemService('style')->getCustomTemplateInfo();
-        $custom_templates = array_filter($custom_templates, function ($x) { return preg_match('#^DeskPRO:emails_#', $x['name']); });
-
-        if ($custom_templates) {
-            foreach ($list as &$type_coll) {
-                foreach ($type_coll['groups'] as &$group_coll) {
-                    foreach ($group_coll['templates'] as &$tpl) {
-                        if (isset($custom_templates[$tpl['name']])) {
-                            $tpl['is_custom'] = true;
-                        } else {
-                            $tpl['is_custom'] = false;
-                        }
-                    }
-                }
-            }
-            unset($type_coll, $group_coll, $tpl);
-        }
-
         $list['custom']                     = array();
         $list['custom']['title']            = 'Custom Emails';
         $list['custom']['typeId']           = 'custom';
@@ -122,7 +104,7 @@ class TemplatesController extends AbstractController implements ProtectedControl
 
         return $this->createApiResponse(array(
             'list'             => $list,
-            'custom_templates' => $custom_templates,
+            'custom_templates' => array(),
         ));
     }
 
