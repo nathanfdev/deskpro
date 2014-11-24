@@ -162,3 +162,25 @@ $definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
     new Reference('database_connection')
 ));
 $container->setDefinition('deskpro.core.settings', $definition);
+
+
+$definition = new Definition('Application\\DeskPRO\\Groups\\GroupsReposFactory', array(new Reference('doctrine.orm.entity_manager')));
+$definition->setFactoryClass('Application\\DeskPRO\\Groups\\GroupsReposFactory');
+$definition->setFactoryMethod('createFromEntityManager');
+$container->setDefinition('deskpro.people.groups_repos_factory', $definition);
+
+$definition = new Definition('Application\\DeskPRO\\People\\AgentGroups');
+$definition->setFactoryService('deskpro.people.groups_repos_factory');
+$definition->setFactoryMethod('createAgentGroups');
+$container->setDefinition('deskpro.people.agent_groups', $definition);
+
+$definition = new Definition('Application\\DeskPRO\\People\\UserGroups');
+$definition->setFactoryService('deskpro.people.groups_repos_factory');
+$definition->setFactoryMethod('createUserGroups');
+$container->setDefinition('deskpro.people.user_groups', $definition);
+
+
+$container
+    ->register('dp.custom_fields.manager', 'Application\DeskPRO\Service\CustomFieldManager')
+    ->addArgument(new Reference('doctrine.orm.entity_manager'))
+    ->addArgument(new Reference('form.factory'));
