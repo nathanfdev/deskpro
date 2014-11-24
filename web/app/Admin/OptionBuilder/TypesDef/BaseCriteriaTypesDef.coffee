@@ -53,7 +53,7 @@ define [
     	# @return {Array}
 		###
 		getOperators: (options) ->
-			return options.operators || ['is', 'not']
+			return options.operators || ['is', 'not', 'isset', 'not_isset']
 
 		###
     	# Constructs standard input from a custom field def
@@ -69,7 +69,7 @@ define [
 				options.single = true
 				return @getStandardSelect(options)
 			else
-				if not options.operators then options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex']
+				if not options.operators then options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
 				return @getStandardInput(options)
 
 		###
