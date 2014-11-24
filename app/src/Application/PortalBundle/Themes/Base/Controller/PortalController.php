@@ -59,7 +59,7 @@ class PortalController extends AbstractController
     }
 
 
-    public function flashesController()
+    public function flashesAction()
     {
         return $this->render('Theme:Portal:flashes.html.twig');
     }

@@ -36,6 +36,9 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\Tickets\NewTicket\NewTicket;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -43,18 +46,49 @@ class NewTicketController extends AbstractController
 {
     public function newTicketAction(Request $request)
     {
+        $person = $this->getUser() ?: new PersonGuest();
+
+        $ticket = new Ticket();
+        $ticket->person = $person;
+
+
         $form = $this->createForm(
-            'ticket',
-            $ticket = new Ticket(),
+            'deskpro_ticket',
+            $ticket,
             array(
-                'ticket_layout' => $this->getDoctrine()->getManager()->getRepository('DeskPRO:TicketLayout')->find(1)
+                'ticket_layout' => $this->getDoctrine()->getManager()->getRepository('DeskPRO:TicketLayout')->find(1),
+                'person' => $person
             )
         );
 
         $form->submit($request);
 
         if ($form->isValid()) {
-            var_dump($ticket);
+
+            // we will do a lot of work here, and I definitely want to use services to do this work
+            // (hopefully inside of domain events) so that we can easily see and extend what happens during ticket
+            // creation instead of hacking one big function
+
+//            (some of) the old code:
+//            $newTicket = new NewTicket(Ticket::CREATED_WEB_PERSON_PORTAL, $person, $ticket);
+//            $newTicket->setPersonContext($person); // have to set twice?
+//            $newTicket->save();
+
+            $msg = new TicketMessage();
+            $msg->setMessage($form->get('message')->getData());
+            $msg->ticket = $ticket;
+            $msg->setPersonId($person->id);
+            $ticket->addMessage($msg);
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($ticket);
+            $em->persist($person);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('success', 'created.ticket.translated');
+
+            return $this->redirect($this->generateUrl('portal_index'));
+
         }
 
         return $this->render('Theme:NewTicket:new_ticket.html.twig', array(
