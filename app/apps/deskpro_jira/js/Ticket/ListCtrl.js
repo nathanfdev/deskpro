@@ -109,9 +109,9 @@ define([
 			    $scope.meta = $meta;
 			    $scope.confirm = function (msg) {
 				    $scope.search_issue_state = 1;
-				    //issues.unlink(issue).then(function () {
+				    issues.unlink(issue).then(function () {
 				      $scope.search_issue_state = 0;
-				    //});
+				    });
 				    $modalInstance.dismiss();
 			    };
 			    $scope.dismiss = $modalInstance.dismiss;
