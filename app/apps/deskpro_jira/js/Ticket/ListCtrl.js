@@ -27,6 +27,9 @@ define([
      */
     $scope.search = function () {
       $scope.search_issue_state = 1;
+	    if (!$scope.search_issue) {
+		    return;
+	    }
 
       for (var i = 0; i < issues.length; i++) {
         if ($scope.search_issue.toLowerCase().indexOf(issues[i].key.toLowerCase()) > -1) {
