@@ -50,6 +50,8 @@
 	'agent.tickets.change_user_ticket_email'            => 'Change the user email address on this ticket',
 	'agent.tickets.changed_from'                        => 'changed from',
 	'agent.tickets.changed_to'                          => 'to',
+	'agent.tickets.log_selected_option'                 => 'selected: ',
+	'agent.tickets.log_unselected_option'               => 'unselected: ',
 	'agent.tickets.charge'                              => 'Charge',
 	'agent.tickets.charge_time'                         => 'Charge Time',
 	'agent.tickets.click_icon_to_show_slas'             => 'Click {{icon}} to show SLAs',
