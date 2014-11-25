@@ -15,7 +15,8 @@
   },
   "trigger_events": {
     "update": {
-      "issue_update": "Linked JIRA issue was updated"
+      "issue_update": "Linked JIRA issue was updated",
+      "issue_delete": "Linked JIRA issue was deleted"
     }
   },
   "settings_def": [

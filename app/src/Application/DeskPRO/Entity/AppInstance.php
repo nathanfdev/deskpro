@@ -182,6 +182,31 @@ class AppInstance extends DomainObject
 
 
 	/**
+	 * @param string $type Event type (update, newticket, newreply)
+	 * @return array
+	 */
+	public function getTriggerEvents($type)
+	{
+		$trigger_events = $this->package->trigger_events;
+		if (!$trigger_events || empty($trigger_events[$type])) {
+			return array();
+		}
+
+		$events = array();
+
+		foreach ($trigger_events[$type] as $name => $label) {
+			$events[] = array(
+				'event_id'  => $this->package->name . '.' . $this->id . '.' . $name,
+				'name'      => $name,
+				'label'     => $label,
+			);
+		}
+
+		return $events;
+	}
+
+
+	/**
 	 * {@inheritDoc}
 	 */
 	public function toApiData($primary = true, $deep = true, array $visited = array())

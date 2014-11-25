@@ -133,6 +133,7 @@ class ManifestReader
 				'author.email',
 				'author.link',
 				'tags',
+				'trigger_events',
 				'settings_def',
 			);
 
@@ -148,6 +149,12 @@ class ManifestReader
 					}
 					$this->error_details[] = array('missing', $f);
 				} else if ($f == 'settings_def') {
+					if (!is_array($value)) {
+						$this->error_details[] = array('invalid', $f);
+					} else {
+						$this->manifest->$setter($value);
+					}
+				} else if ($f == 'trigger_events') {
 					if (!is_array($value)) {
 						$this->error_details[] = array('invalid', $f);
 					} else {

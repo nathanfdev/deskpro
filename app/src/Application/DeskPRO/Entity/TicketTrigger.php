@@ -52,6 +52,7 @@ use Orb\Util\Arrays;
  * @property array $event_flags
  * @property array $by_agent_mode
  * @property array $by_user_mode
+ * @property array $by_app_mode
  * @property \Application\DeskPRO\Tickets\Triggers\TriggerTerms $terms
  * @property \Application\DeskPRO\Tickets\Triggers\TriggerActions $actions
  * @property int $run_order
@@ -136,6 +137,11 @@ class TicketTrigger extends DomainObject
 	protected $by_user_mode = array();
 
 	/**
+	 * @var array
+	 */
+	protected $by_app_mode = array();
+
+	/**
 	 * @var \Application\DeskPRO\Tickets\Triggers\TriggerTerms
 	 */
 	protected $terms;
@@ -207,6 +213,26 @@ class TicketTrigger extends DomainObject
 
 
 	/**
+	 * @param array $modes
+	 */
+	public function setByAppMode($modes)
+	{
+		if (!$modes) {
+			$this->setModelField('by_app_mode', array());
+		} else {
+			if (!is_array($modes)) {
+				$modes = explode(',', $modes);
+			}
+
+			$modes = Arrays::func($modes, 'trim');
+			$modes = Arrays::func($modes, 'strtolower');
+			sort($modes, \SORT_STRING);
+			$this->setModelField('by_app_mode', $modes);
+		}
+	}
+
+
+	/**
 	 * @param string $flag
 	 * @return bool
 	 */
@@ -269,6 +295,7 @@ class TicketTrigger extends DomainObject
 		$data['email_account'] = $this->email_account ? array('id' => $this->email_account->id, 'address' => $this->email_account->address) : null;
 		$data['by_agent_mode'] = $this->by_agent_mode;
 		$data['by_user_mode']  = $this->by_user_mode;
+		$data['by_app_mode']   = $this->by_app_mode;
 		$data['terms']         = $this->terms->exportToArray();
 		$data['actions']       = $this->actions->exportToArray();
 		$data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
@@ -327,6 +354,12 @@ class TicketTrigger extends DomainObject
 		$metadata->mapField(array(
 			'columnName' => 'by_user_mode',
 			'fieldName'  => 'by_user_mode',
+			'type'       => 'simple_array',
+			'nullable'   => true,
+		));
+		$metadata->mapField(array(
+			'columnName' => 'by_app_mode',
+			'fieldName'  => 'by_app_mode',
 			'type'       => 'simple_array',
 			'nullable'   => true,
 		));

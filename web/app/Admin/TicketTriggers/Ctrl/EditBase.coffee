@@ -19,6 +19,7 @@ define [
 			@options     = {}
 			@editFormMapper = new TriggerEditFormMapper()
 			@mode = null
+			@appTriggerEvents = []
 
 			@$scope.form = @editFormMapper.getFormFromModel({})
 
@@ -95,12 +96,18 @@ define [
 				customActions: '/ticket_triggers/get-custom-actions'
 			}
 
+			if @mode == 'TriggersUpdate'
+				get.appEvents = '/ticket_triggers/app-events/update'
+
 			if @triggerId
 				get.trigger = "/ticket_triggers/#{@triggerId}"
 
 			promise = @Api.sendDataGet(get).then( (result) =>
 
 				@customActions = result.data.customActions.action_defs
+
+				if result.data.appEvents?.app_events?.length
+					@appTriggerEvents = result.data.appEvents.app_events
 
 				if result.data?.trigger?.trigger?
 					@trigger = result.data.trigger.trigger
@@ -109,7 +116,7 @@ define [
 					@trigger = {}
 					@triggerId = 0
 
-				@$scope.form = @editFormMapper.getFormFromModel(@trigger)
+				@$scope.form = @editFormMapper.getFormFromModel(@trigger, @appTriggerEvents)
 			)
 
 			promise2 = @criteraTypeDef.loadDataOptions()
@@ -139,6 +146,7 @@ define [
 				flags:         @$scope.form.flags,
 				by_user_mode:  [],
 				by_agent_mode: [],
+				by_app_mode:   [],
 				criteria_sets: [],
 				actions:       [],
 			}
@@ -151,6 +159,10 @@ define [
 				for own mode, enabled of @$scope.form.typeForm.by_agent_mode
 					if enabled
 						postData.by_agent_mode.push(mode)
+			if @$scope.form.typeForm.by_app
+				for own mode, enabled of @$scope.form.typeForm.by_app_mode
+					if enabled
+						postData.by_app_mode.push(mode)
 
 			for own _, crit_set of @$scope.form.terms_set
 				set = []

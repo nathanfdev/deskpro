@@ -134,20 +134,23 @@ class JIRAWebhookController extends AbstractController
 	 */
 	protected function onIssueDeleted(array $data)
 	{
+		$app = $this->container->getAppManager()->getPackageApp('deskpro_jira');
+		if (!$app) {
+			throw $this->createNotFoundException();
+		}
+
 		$manager = $this->container->getTicketManager();
 		$em = $this->em;
 		$issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
 
 		foreach ($issues as $issue) {
 			$ticket = $issue->ticket;
-			if (!$performer = $ticket->agent) {
-				$performer = $em->getRepository('DeskPRO:Person')->findOneBy(array('is_agent' => true, 'is_deleted' => false));
-			}
+			$manager->markAsManaged($issue->ticket);
+
 			$em->remove($issue);
 			$em->flush($issue);
 
-			$context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_API);
-			$context->setPersonContext($performer);
+			$context = $manager->createAppExecutorContext($app, 'issue_delete');
 			$manager->saveTicket($ticket, $context);
 		}
 	}

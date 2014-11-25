@@ -530,8 +530,8 @@ class TicketManager
 	{
 		$context = new ExecutorContext($this->createNewLogger());
 		$context->getVars()->setArray($this->auto_vars);
-		$context->setEventType('update.app.' . $app->package->name . '.' . $app->id);
-		$context->setEventMethod($event_method, $event_method_options);
+		$context->setEventType('update');
+		$context->setEventMethod($app->package->name . '.' . $app->id . '.' . $event_method, $event_method_options);
 		return $context;
 	}
 
