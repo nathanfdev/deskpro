@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,48 +29,73 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @category Entities
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
+namespace Application\DeskPRO\Tickets\Triggers\Terms;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\CheckedOptionsArray;
 
 /**
- * Fetch JIRA Comments
+ * Checks issue(s) status(es)
+ *
+ * @option string[] labels
  */
-class FetchJiraComments extends AbstractJob
+class CheckJIRAIssueStatus extends AbstractTriggerTerm
 {
-    const DEFAULT_INTERVAL = 60; // 1 minute
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('status', 'all');
+		return $options;
+	}
 
-    const LIMIT = 25; // should be in config?
-    const TIMELIMIT = 30;
 
-    public function run()
-    {
-        if (!App::getSetting('core.apps_jira.enabled')) {
-            return true;
-        }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+	{
+		$options = $this->getTermOptions();
+		$op = $this->getTermOperator();
 
-        $baseUrl	= App::getSetting('core.apps_jira.baseUrl');
+		$all = (bool) $options->get('all');
+		$status = $options->get('status');
 
-        $username	= App::getSetting('core.apps_jira.username');
+		if ($change = $ticket->getStateChangeRecorder()->getCombinedChangeForField('jira.status')) {
+			$data = $change->getData();
+			switch ($op) {
+				case 'changed':
+					return true;
+				case 'changed_to':
+					return isset($data['to']) && $data['to'] == $status;
+				case 'changed_from':
+					return isset($data['from']) && $data['from'] == $status;
+			}
+		}
 
-        $password	= App::getSetting('core.apps_jira.password');
+		$match = false;
+		foreach ($ticket->jira_issues as $issue) {
+			$match =
+				('is' === $op && $issue['status_id'] == $status)
+				||
+				('not' === $op && $issue['status_id'] != $status);
 
-        $em = App::getOrm();
-        $service = new \Orb\Jira\Service($baseUrl, array(
-            'username'	=> $username,
-            'password'	=> $password,
-            'debug'		=> DP_DEBUG,
-            'reg_enabled' => App::getSetting('core.reg_enabled'),
-        ), App::getOrm());
+			// break on first false if all
+			if ($all && !$match) {
+				break;
+			}
+			// break on first true if any
+			if (!$all && $match) {
+				break;
+			}
+		}
 
-        $rep = $em->getRepository('DeskPRO:JiraIssue');
-        $start = time();
-        foreach ($rep->findBy(array(), array('lastSynced' => 'ASC'), self::LIMIT) as $issue) {
-            $service->_fetchCommentsByIssueId($issue->issue);
-            if (time() - $start > self::TIMELIMIT) break;
-        }
-    }
+		return $match;
+	}
 }

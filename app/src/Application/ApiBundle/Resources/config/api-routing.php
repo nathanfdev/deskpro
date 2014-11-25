@@ -3299,6 +3299,12 @@ $collection->create('api_auditlog_detail', array(
 # Ticket Triggers
 ########################################################################################################################
 
+$collection->create('api_ticket_triggers_getappevents', array(
+	'path'        => '/ticket_triggers/app-events/{type}',
+	'controller'  => 'ApiBundle:TicketTriggers:getAppEvents',
+	'methods'     => array('GET'),
+));
+
 $collection->create('api_ticket_triggers_getcustomactions', array(
     'path'        => '/ticket_triggers/get-custom-actions',
     'controller'  => 'ApiBundle:TicketTriggers:getCustomActions',
@@ -4900,6 +4906,12 @@ $collection->create('api_apps_instance_exec', array(
     'defaults'     => array('action' => 'default'),
     'methods'      => array('GET', 'POST', 'PUT', 'DELETE'),
     'requirements' => array('id' => '\d+')
+));
+
+$collection->create('api_apps_jira', array(
+	'path'         => '/apps/jira',
+	'controller'   => 'ApiBundle:Apps:jiraSettings',
+	'methods'      => array('GET'),
 ));
 
 return $collection;

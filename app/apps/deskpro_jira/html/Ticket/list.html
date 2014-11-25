@@ -1,0 +1,94 @@
+<section>
+    <header>
+        <h4>JIRA</h4>
+    </header>
+    <header class="sub-header centered" ng-show="!link_search_mode" ng-if="!meta.error">
+        <button class="dp-btn" ng-click="createIssueModal()" type="button" style="margin-right: 8px;">
+            <i class="fa fa-plus"></i> Create Issue
+        </button>
+        <button class="dp-btn" ng-click="enableSearchMode()" type="button">
+            <i class="fa fa-search-plus"></i> Link Existing Issue
+        </button>
+    </header>
+    <header class="sub-header" ng-show="link_search_mode">
+        <input type="text" placeholder="Enter Issue ID" ng-model="search_issue" style="display: block; width: 95%;" />
+        <div style="text-align: center; margin: 8px 0;">
+            <div ng-show="search_issue_state != 1">
+                <button ng-click="search()" class="dp-btn" type="button">
+                    <i class="fa fa-link"></i> Find Issue and Preview
+                </button>
+                <span style="font-size: 11px;">
+                    or <span class="faux-link" ng-click="link_search_mode = false">cancel</span>
+                </span>
+            </div>
+            <div ng-show="search_issue_state == 1">
+                <i class="flat-spinner"></i>
+            </div>
+        </div>
+        <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="404 === search_issue_state">Issue not found. Please enter a valid issue ID.</div>
+        <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="407 === search_issue_state">Issue already linked.</div>
+    </header>
+    <article ng-if="!meta.error">
+        <div ng-show="issues.loading" style="margin: 10px;">
+            <i class="flat-spinner"></i>
+        </div>
+        <div ng-show="!issues.loading">
+            <ul class="jira-issues-list" ng-if="issues.length > 0">
+                <li ng-repeat="issue in issues">
+                    <div class="issue-header">
+                        <span ng-click="issueModal(issue);" class="details-btn"><i class="fa fa-external-link"></i> View Details</span>
+                        <span ng-click="unlink(issue);" class="unlink-btn"><i class="fa fa-unlink"></i> Unlink</span>
+                        <a href="{{ issue.url }}" target="_blank">{{ issue.key }}</a>
+                    </div>
+                    <ul class="jira-fields">
+                        <li ng-repeat="field in meta.default_fields_list" ng-if="meta.fieldHasValue(field, issue.fields[field])">
+                            <div class="field-title">{{ meta.fieldName(field) }}</div>
+                            <div class="field-value" ng-if="'comment' != field">{{ meta.fieldValue(field, issue.fields[field]) }}</div>
+                            <div class="field-value" ng-if="'comment' == field">
+                                <a href="#" ng-click="issueModal(issue)">
+                                    {{ issue.fields[field].total }} Comment{{ 1 == issue.fields[field].total ? '' : 's' }}
+                                </a>
+                                &#8226;
+                                <a href="#" ng-click="sendCommentModal(issue)">
+                                    Add Comment
+                                </a>
+                            </div>
+                        </li>
+                    </ul>
+                </li>
+            </ul>
+            <div ng-if="issues.length < 1" style="margin: 10px;">
+                No issues have been linked to this ticket.
+            </div>
+        </div>
+
+        <button style="display:block; margin: 10px auto;" class="dp-btn" ng-click="sendCommentModal()" ng-if="issues.length">
+            Send Comment
+        </button>
+
+	</article>
+
+    <article ng-if="meta.error">
+        <h3 class="text-danger">An error occurred. Please contact your Administrator.</h3>
+    </article>
+</section>
+
+<script type="text/ng-template" id="deskpro_jira/Ticket/create-issue-modal.html">
+    <!--#include file="Ticket/create-issue-modal.html" -->
+</script>
+
+<script type="text/ng-template" id="deskpro_jira/Ticket/issue-details-modal.html">
+    <!--#include file="Ticket/issue-details-modal.html" -->
+</script>
+
+<script type="text/ng-template" id="deskpro_jira/Ticket/link-issue-modal.html">
+    <!--#include file="Ticket/link-issue-modal.html" -->
+</script>
+
+<script type="text/ng-template" id="deskpro_jira/Ticket/send-comment-modal.html">
+    <!--#include file="Ticket/send-comment-modal.html" -->
+</script>
+
+<script type="text/ng-template" id="deskpro_jira/Ticket/unlink-confirm-modal.html">
+    <!--#include file="Ticket/unlink-confirm-modal.html" -->
+</script>

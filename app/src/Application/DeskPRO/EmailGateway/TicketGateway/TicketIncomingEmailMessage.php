@@ -186,6 +186,11 @@ class TicketIncomingEmailMessage
             // Sent from a DeskPRO instance, we should get the specific message by looking for our delims
             // But dont do this cut if its an auto-reply, we want the real message in those cases. The actual notifs we sent
             // are silenced in those cases anyway so the auto-replies are handled like other robot replies
+			// !! - TODO this needs to check for delims that aren't preceded by any other reply.
+			//      Otherwise you could have a case of DeskPRO -> User -> Reply to other DeskPRO.
+			//      The users reply would reach other DeskPRO and we would throw it away because we see the DP_MESSAGE_BEGIN tags
+			//      but not the users reply above it.
+			/*
             if (
                 $reader->getHeader('X-DeskPRO-Build') && $reader->getHeader('X-DeskPRO-Build')->getHeader()
                 && !($reader->getHeader('X-DeskPRO-Auto') && $reader->getHeader('X-DeskPRO-Auto')->getHeader())
@@ -195,6 +200,7 @@ class TicketIncomingEmailMessage
                     $this->body = $body;
                 }
             }
+			*/
 
             $body_raw = $this->body;
 
@@ -352,7 +358,7 @@ class TicketIncomingEmailMessage
                     $generic_cut = $this->body;
                 }
 
-                if ($this->body != $generic_cut) {
+				if ($this->body != $generic_cut && trim(Strings::stripTags($generic_cut))) {
                     $this->body = $generic_cut;
                     $this->generic_cut = $generic_cut;
                     $this->found_top_marker = true;

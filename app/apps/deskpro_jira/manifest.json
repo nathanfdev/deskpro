@@ -1,60 +1,54 @@
 {
-	"package_name": "deskpro_jira",
-	"is_native": true,
-	"title": "JIRA",
-	"description": "Enables agents to link DeskPRO tickets to Jira tickets.",
-	"tags": ["jira", "profiles"],
-	"api_version": 1,
-	"version": 1,
-	"version_name": "1.0.0",
-	"is_single": true,
-	"author": {
-		"name": "DeskPRO",
-		"email": "support@deskpro.com",
-		"link": "https://www.deskpro.com/"
-	},
-	"settings_def": [
-		{
-			"name": "jira_url",
-			"type": "text",
-			"label": "Base URL",
-			"description": "URL to your JIRA installation",
-			"native_only": true
-		},
-		{
-			"name": "jira_username",
-			"type": "text",
-			"label": "Your JIRA Username",
-			"description": "Enter your JIRA username",
-			"native_only": true
-		},
-		{
-			"name": "jira_password",
-			"type": "password",
-			"label": "Your JIRA Password",
-			"description": "Enter your JIRA password",
-			"native_only": true
-		},
-		{
-			"name": "jira_default_project",
-			"type": "text",
-			"label": "Default Project",
-			"description": "Enter the key for the default project to use. The key is the unique uppercase string that is used to identify a project.",
-			"native_only": true
-		},
-		{
-			"name": "jira_default_tags",
-			"type": "text",
-			"label": "Default Tags",
-			"description": "Enter tags to add by default when creating new JIRA tickets (optional).",
-			"native_only": true
-		},
-		{
-			"name": "jira_default_priority",
-			"type": "text",
-			"label": "Default Priority",
-			"description": "Enter priority to add by default when creating new JIRA tickets (optional).",
-			"native_only": true
-		}
-	]
+  "package_name": "deskpro_jira",
+  "is_native": true,
+  "title": "JIRA",
+  "description": "Enables agents to link DeskPRO tickets to Jira tickets.",
+  "tags": ["jira", "profiles"],
+  "api_version": 1,
+  "version": 1,
+  "version_name": "1.0.0",
+  "is_single": true,
+  "author": {
+    "name": "DeskPRO",
+    "email": "support@deskpro.com",
+    "link": "https://www.deskpro.com/"
+  },
+  "trigger_events": {
+    "update": {
+      "issue_update": "Linked JIRA issue was updated",
+      "issue_delete": "Linked JIRA issue was deleted"
+    }
+  },
+  "settings_def": [
+    {
+      "name": "url",
+      "type": "url",
+      "label": "Base URL",
+      "description": "URL to your JIRA installation.",
+      "native_only": true
+    },
+    {
+      "name": "consumer_key",
+      "type": "text",
+      "label": "Application Link consumer key",
+      "description": "Enter your JIRA Application Link consumer key.",
+      "native_only": true
+    },
+    {
+      "name": "private_key",
+      "type": "text",
+      "label": "Application Link Private Key",
+      "description": "Enter your JIRA Application Link private key to sign API requests. Do not modify it if you want to use default private key.",
+      "default": "-----BEGIN RSA PRIVATE KEY-----\nMIICXgIBAAKBgQC6yzHCHz3FRHfPlXsftHBVwIpqsGMwSW338sISCUHUIk1CKOf7\nTZX4xilU/XS8rsUx+hS0rhhL5DKwE9WNe6Icot0GjZYa/3X43H5XytHSvEgEKsqZ\n36syXNClrrR7hs0jrCoovMzG2eRzilgBtNoMqgp9KxPWDzfyzZ4WtCnKlQIDAQAB\nAoGAEKAPMLDpJYqfg0lRqRO9P9SgPTivy1dtwzjHDyXlxwS6jZ3ob9SK+ZZhjV/1\nqOmBQZ55g09PeEm6PTO2uR384pqcAm5JwdDpXhacRXvcyqphqapihhJs2mVN9OTm\nqhKiwXgLiBHmtdYYPaMRQJqu1W1rby3PyE0xhW9vbPZ982ECQQDnDwiOXJEC5lWP\ntCLnJWFHqgv7LnCOSGgK9gYR/h4uRDWmmjeROx79CYbc366PiJrS+JSpBh4IRNZy\ndI+05svJAkEAzvT2kRnY3kUo2lBH7lOL3l+O8J9B5cZ35Ae7WxMwepmD0itNJBLf\nyO0xnMwfL1ltcK9PG57Ds9VIdzaAMrPWbQJBAMe5FfNAjlRMVz8dPWJBzGHO2gZn\nsQE8EzsOSFb7KolhimKVQVz3FqUwu/NmIhSNxw5/sribwg/xuNA8cw+yxAkCQQCx\nUTLcuY+VSR4qhrRKnyxsl+Uphtn4G+bm6jT9YGCd+l/2N4F9kepJBekHFeD2OaHJ\n9XpLCOlWcDwJYBnQ10K1AkEAzix8lxez2lFS47c4mRU+mM7MTJCjwskn1H/yS2R1\n4+kyYyGDRzjfHpEeaMRxaq7WpGhUPnfDGEcCSbJEILMLlQ==\n-----END RSA PRIVATE KEY-----",
+      "native_only": true
+    },
+    {
+      "name": "public_key",
+      "type": "text",
+      "label": "Application Link Public Key",
+      "description": "Copy this key to your JIRA Application Link if you want to use default JIRA Application Link Private Key.",
+      "default": "-----BEGIN CERTIFICATE-----\nMIICxTCCAi6gAwIBAgIJAJw9+a1S8dAqMA0GCSqGSIb3DQEBBQUAMEwxCzAJBgNV\nBAYTAlVTMQswCQYDVQQIEwJDQTEWMBQGA1UEBxMNTW91bnRhaW4gVmlldzEYMBYG\nA1UEAxMPd3d3LmV4YW1wbGUuY29tMB4XDTE0MTAyOTE5MDcyM1oXDTE1MTAyOTE5\nMDcyM1owTDELMAkGA1UEBhMCVVMxCzAJBgNVBAgTAkNBMRYwFAYDVQQHEw1Nb3Vu\ndGFpbiBWaWV3MRgwFgYDVQQDEw93d3cuZXhhbXBsZS5jb20wgZ8wDQYJKoZIhvcN\nAQEBBQADgY0AMIGJAoGBALrLMcIfPcVEd8+Vex+0cFXAimqwYzBJbffywhIJQdQi\nTUIo5/tNlfjGKVT9dLyuxTH6FLSuGEvkMrAT1Y17ohyi3QaNlhr/dfjcflfK0dK8\nSAQqypnfqzJc0KWutHuGzSOsKii8zMbZ5HOKWAG02gyqCn0rE9YPN/LNnha0KcqV\nAgMBAAGjga4wgaswHQYDVR0OBBYEFNb+MNAN24VEyrZX1mOVe7hN2YLFMHwGA1Ud\nIwR1MHOAFNb+MNAN24VEyrZX1mOVe7hN2YLFoVCkTjBMMQswCQYDVQQGEwJVUzEL\nMAkGA1UECBMCQ0ExFjAUBgNVBAcTDU1vdW50YWluIFZpZXcxGDAWBgNVBAMTD3d3\ndy5leGFtcGxlLmNvbYIJAJw9+a1S8dAqMAwGA1UdEwQFMAMBAf8wDQYJKoZIhvcN\nAQEFBQADgYEAWN0qMBDqssXnO7mUTUekyZf799L9ksIAC81phy5nmkeSrZbFJI+w\nqjQQM1yTz0RiHNvP1hLtV5KkPRDb07y9UCYJRfqymdch1Vt/9g2tWiiI97GasNYF\nC40w3fCzhYtwwe0duWWpHBDQ7Pn6yBNTBru3zCo2tmYsbM4fo5A/czE=\n-----END CERTIFICATE-----",
+      "native_only": true
+    }
+  ]
 }

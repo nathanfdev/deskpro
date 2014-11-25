@@ -26,7 +26,7 @@ define [
 			return ops
 
 
-		getOptionsForTypes: (types, typesData = null) ->
+		getOptionsForTypes: (types, typesData = null, mode) ->
 			set_options = []
 
 			#------------------------------
@@ -217,6 +217,33 @@ define [
 			if options.length
 				set_options.push({
 					title: 'Ticket Fields',
+					subOptions: options
+				})
+
+			#------------------------------
+			# JIRA
+			#------------------------------
+
+			if @options_data?.jira_settings?.enabled && 'TriggersUpdate' == mode
+				options = []
+
+				options.push({
+					title: 'New JIRA Comment'
+					value: 'CheckJIRANewComment'
+				})
+
+				options.push({
+					title: 'Issue Status'
+					value: 'CheckJIRAIssueStatus'
+				})
+
+				options.push({
+					title: 'New Linked Issue'
+					value: 'CheckJIRANewLinkedIssue'
+				})
+
+				set_options.push({
+					title: 'JIRA',
 					subOptions: options
 				})
 
@@ -479,7 +506,8 @@ define [
 						'email_tpls':      '/email-templates-info'
 						'api_keys':        '/api_keys'
 						'ticket_settings': '/ticket_settings'
-						'contextual_fields': '/custom_fields'
+						'contextual_fields':'/custom_fields'
+						'jira_settings'    :'/apps/jira'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -501,6 +529,7 @@ define [
 						options_data['api_keys']         = data.api_keys.api_keys
 						options_data['ticket_settings']  = data.ticket_settings?.ticket_settings
 						options_data['contextual_fields']= data.contextual_fields
+						options_data['jira_settings']    = data.jira_settings
 						@options_data = options_data
 
 						if @options_data?.ticket_fields
@@ -1045,43 +1074,43 @@ define [
 		getCheckTimeOfDay: (options = {}) ->
 			me = @
 			return {
-			getTemplate: ->
-				return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html')
+				getTemplate: ->
+					return me.dpTemplateManager.get('OptionBuilder/type-criteria-timeofday.html')
 
-			getData: ->
-				return {}
+				getData: ->
+					return {}
 
-			getDataFormatter: ->
-				return {
-					getViewValue: (value = {}, data) ->
-						options = value.options || {}
+				getDataFormatter: ->
+					return {
+						getViewValue: (value = {}, data) ->
+							options = value.options || {}
 
-						time1 = (options.time1 || '8:0').split(':')
-						time2 = (options.time2 || '18:0').split(':')
+							time1 = (options.time1 || '8:0').split(':')
+							time2 = (options.time2 || '18:0').split(':')
 
-						return {
-							tz:          options.tz || 'UTC',
-							start_hour:  time1[0],
-							start_min:   time1[1],
-							end_hour:    time2[0],
-							end_min:     time2[1]
-						}
-
-					getValue: (model = {}, data) ->
-						time1 = (model.start_hour || '8') + ':' + (model.start_min || '0')
-						time2 = (model.end_hour || '18') + ':' + (model.end_min || '0')
-
-						value = {
-							type: 'CheckTimeOfDay',
-							op: 'between',
-							options: {
-								var:   'now',
-								tz:    model.tz || 'UTC',
-								time1: time1,
-								time2: time2
+							return {
+								tz:          options.tz || 'UTC',
+								start_hour:  time1[0],
+								start_min:   time1[1],
+								end_hour:    time2[0],
+								end_min:     time2[1]
 							}
-						}
-						return value
+
+						getValue: (model = {}, data) ->
+							time1 = (model.start_hour || '8') + ':' + (model.start_min || '0')
+							time2 = (model.end_hour || '18') + ':' + (model.end_min || '0')
+
+							value = {
+								type: 'CheckTimeOfDay',
+								op: 'between',
+								options: {
+									var:   'now',
+									tz:    model.tz || 'UTC',
+									time1: time1,
+									time2: time2
+								}
+							}
+							return value
 					}
 			}
 
@@ -1147,7 +1176,7 @@ define [
 		getIsEmailed: (name, tpl) ->
 			me = @
 			return {
-			getTemplate: ->
+				getTemplate: ->
 					return me.dpTemplateManager.get('OptionBuilder/' + tpl)
 
 				getData: ->
@@ -1171,7 +1200,7 @@ define [
 								template: if model.with_template and model.template then model.template else null
 							}
 							return value
-						}
+					}
 			}
 
 		getCheckUserIsEmailed: ->
@@ -1207,3 +1236,43 @@ define [
 			options.optionsFormatter = (options) ->
 				return [{value: -1, title: 'Negative'}, {value: 0, title: 'Neutral'}, {value: 1, title: 'Positive'}]
 			@getStandardSelect options
+
+		getCheckJIRANewComment: (options = {}) ->
+			options.propName = 'message'
+			options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex']
+			@getStandardInput options
+
+		getCheckJIRAIssueStatus: (options = {}) ->
+			me = @
+			getTemplate: -> me.dpTemplateManager.get 'OptionBuilder/type-criteria-jira-issue-status.html'
+			getData: -> {}
+			getDataFormatter: ->
+				getViewValue: (value = {}, data) ->
+					op: value.op || 'changed'
+					all: value.options?.all
+					status: value.options?.status
+					statuses: me.options_data.jira_settings.meta.statuses
+				getValue: (model = {}, data) ->
+					type: 'CheckJIRAIssueStatus',
+					op: model.op
+					options:
+						all: model.all || ''
+						status: model.status
+
+		getCheckJIRANewLinkedIssue: (options = {}) ->
+			me = @
+			getTemplate: -> me.dpTemplateManager.get 'OptionBuilder/type-criteria-jira-linked-issue.html'
+			getData: -> {}
+			getDataFormatter: ->
+				getViewValue: (value = {}, data) ->
+					strict_project: value.options?.project?
+					project: value.options?.project
+					projects: me.options_data.jira_settings.meta.projects
+				getValue: (model = {}, data) ->
+					console.info model
+					project = model.project
+					project = null if !model.strict_project
+					type: 'CheckJIRANewLinkedIssue',
+					op: 'is'
+					options:
+						project: project

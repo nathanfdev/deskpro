@@ -89,6 +89,7 @@ class Package
         $def->is_single    = $this->manifest->getIsSingle();
         $def->scopes       = array(AppPackage::SCOPE_AGENT);
         $def->tags         = $this->manifest->getTags() ?: array();
+		$def->trigger_events = $this->manifest->getTriggerEvents();
         $def->settings_def = $this->manifest->getSettingsDef();
         $def->native_name  = $this->manifest->getIsNative() ? $def->name : null;
 

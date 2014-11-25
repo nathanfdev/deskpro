@@ -40,6 +40,7 @@ use Application\DeskPRO\ORM\StateChange\ChangeCollection;
 use Application\DeskPRO\ORM\StateChange\ChangeData;
 use Application\DeskPRO\ORM\StateChange\ChangeInterface;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\Strings;
 use Orb\Util\Util;
 
 class TicketLogGenerator
@@ -639,6 +640,54 @@ class TicketLogGenerator
                 $data['action_type'] = 'webhook';
 
                 return $data;
+
+			// Custom fields changed
+			case strpos($change->getField(), 'custom_data.') === 0:
+				$value_before = null;
+				$value_after  = null;
+
+				if ($old && $old->field) {
+					$field = $old->field;
+				} else if ($new && $new->field) {
+					$field = $new->field;
+				}
+
+				if (!$field) {
+					return null;
+				}
+
+				if ($field->parent) {
+					$field = $field->parent;
+				}
+
+				$field_id   = $field->id;
+				$field_name = $field->getTitle();
+				$is_choice  = $field->isChoiceType();
+
+				if ($old) {
+					$value_before = $old->getData();
+
+					if ($is_choice) {
+						$value_before = $old->field->getTitle();
+					}
+				}
+				if ($new) {
+					$value_after = $new->getData();
+
+					if ($is_choice) {
+						$value_after = $new->field->getTitle();
+					}
+				}
+
+				$log_data = array();
+				$log_data['action_type']  = 'changed_custom_field';
+				$log_data['field_name']   = $field_name;
+				$log_data['field_id']     = $field_id;
+				$log_data['value_before'] = $value_before;
+				$log_data['value_after']  = $value_after;
+				$log_data['is_choice']    = $is_choice;
+
+				return $log_data;
 
             default:
                 return array();

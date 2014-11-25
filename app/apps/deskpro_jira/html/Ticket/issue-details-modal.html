@@ -1,0 +1,51 @@
+<div class="modal-header">
+    <button type="button" class="close" ng-click="dismiss()"><span aria-hidden="true">&times;</span></button>
+    <h3 class="modal-title">Issue Details</h3>
+</div>
+<div class="modal-body" ng-style="{maxHeight: meta.windowHeight() - 170, overflowY: 'auto'}">
+
+    <div class="extended-merge">
+        <div class="merge-data-wrap" style="margin: 0;">
+            <table class="merge-data" width="100%">
+                <tr class="header-row">
+                    <td colspan="2" style="border-left: none;">
+                        Issue ID: <a href="{{ issue.url }}" target="_blank">{{ issue.key }}</a>
+                    </td>
+                </tr>
+                <tr ng-repeat="field in issue.filtered_fields">
+                    <th style="text-align: left; text-wrap: none;" nowrap="nowrap">{{ meta.fieldName(field.id) }}</th>
+                    <td width="100%">{{ meta.fieldValue(field.id, field.value) }}</td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <div class="extended-merge" ng-if="issue.fields.comment" style="margin-top: 10px;">
+        <div class="merge-data-wrap" style="margin: 0;">
+            <table class="merge-data" width="100%">
+                <tr class="header-row">
+                    <td colspan="2" style="border-left: none;">
+                        Comments
+                    </td>
+                </tr>
+                <tr ng-repeat="comment in issue.fields.comment.comments">
+                    <td style="border-bottom: 1px solid #CCCCCC; padding: 12px;">{{ meta.renderComment(comment) }}</td>
+                </tr>
+                <tr ng-if="issue.fields.comment.comments.length < 1">
+                    <td>
+                        No comments have been added to this issue.
+                    </td>
+                </tr>
+                <tr>
+                    <td>
+                        <form name="comment_form" ng-submit="comment_form.$valid && sendComment(message); message = null;">
+                            <textarea class="jira-comment-textarea" name="message" ng-model="message" required="required" placeholder="Type your comment here..."></textarea>
+                            <button dp-submit-form class="dp-btn" ng-hide="sending_comment">Add Comment</button>
+                            <i ng-show="sending_comment" class="flat-spinner"></i>
+                        </form>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+</div>

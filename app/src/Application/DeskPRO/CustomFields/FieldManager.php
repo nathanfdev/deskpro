@@ -653,16 +653,33 @@ class FieldManager
             return null;
         }
 
-        if (!$custom_data = $object->getCustomDataForField($set_field)) {
+		$custom_data = $object->getCustomDataForField($set_field);
+
+		if (!$custom_data) {
             $custom_data = $this->createDataClass();
             $custom_data->field = $set_field;
             $custom_data->root_field = $field_def;
             $custom_data[$value_type] = $value;
 
             $object->addCustomData($custom_data);
-        }
+		} else if (method_exists($object, 'getStateChangeRecorder')) {
+			$old_custom_data = clone $custom_data;
+			$custom_data[$value_type] = $value;
+			$state = $object->getStateChangeRecorder();
 
-        $custom_data[$value_type] = $value;
+			$field = $set_field;
+			$parent_id = null;
+			$field_id = $field['id'];
+			if ($field->parent) {
+				$parent_id = $field->parent['id'];
+			}
+
+			if ($parent_id) {
+				$state->record("custom_data.$parent_id", $old_custom_data, $custom_data, true);
+			} else {
+				$state->record("custom_data.$field_id", $old_custom_data, $custom_data, true);
+			}
+        }
 
         return $custom_data;
     }

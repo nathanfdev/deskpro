@@ -1,6 +1,10 @@
 {% if log.action_type == 'free' %}
     {% if hide_unknown %}{% else %}
-        {{ log.details.message }}
+        {% if log.details.message_html %}
+            {{ log.details.message_html }}
+        {% else %}
+            {{ log.details.message }}
+        {% endif %}
     {% endif %}
 {% elseif log.action_type == 'changed_agent' %}
     Changed agent

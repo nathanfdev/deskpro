@@ -54,9 +54,19 @@
 								Click here to apply this rule to all existing users
 							</span>
 
-							<div ng-if="EditCtrl.apply_started" class="well info-message"
-								 ng-bind-html="EditCtrl.apply_log"
-								 style="overflow: auto; width: 300px; height: 100px;">
+							<div ng-if="EditCtrl.apply_started" class="well info-message">
+
+								<i class="spinner-flat" ng-show="!EditCtrl.apply_done"></i>
+								Done {{ ng_var('EditCtrl.apply_page') }} of {{ ng_var('EditCtrl.apply_num_pages') }} batches...
+
+								<div ng-show="EditCtrl.apply_done && EditCtrl.apply_done_status == 'success'">
+									<br/><br/>
+									Finished.
+								</div>
+								<div ng-show="EditCtrl.apply_done && EditCtrl.apply_done_status == 'error'">
+									<br/><br/>
+									An error occurred. Please try agian.
+								</div>
 							</div>
 						</div>
 					</div>

@@ -49,14 +49,14 @@ class ActivityController extends AbstractController
                 FROM DeskPRO:AgentAlert a
                 WHERE a.person = ?0 AND a.is_dismissed = 0
                 ORDER BY a.id DESC
-            ")->setParameters(array($this->person))->setMaxResults(200)->execute();
+			")->setParameters(array($this->person))->setMaxResults(100)->execute();
         } else {
             $alert_recs = $this->em->createQuery("
                 SELECT a
                 FROM DeskPRO:AgentAlert a
                 WHERE a.person = ?0 AND a.id >= ?1 AND a.is_dismissed = 0
                 ORDER BY a.id DESC
-            ")->setParameters(array($this->person, $since))->execute();
+			")->setParameters(array($this->person, $since))->setMaxResults(100)->execute();
         }
 
         $alerts = array();

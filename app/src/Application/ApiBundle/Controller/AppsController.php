@@ -37,6 +37,7 @@ use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Usersource;
 use Application\DeskPRO\Monolog\Logger;
+use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
@@ -815,4 +816,14 @@ class AppsController extends AbstractController
 
         return $app_manipulator;
     }
+
+	public function jiraSettingsAction()
+	{
+		/** @var JIRA $js */
+		$js = $this->get(JIRA::NAME);
+		$meta = $js->getMeta();
+		$meta = $meta ? $meta->toArray() : null;
+
+		return $this->createApiResponse(array('enabled' => $js->isEnabled(), 'meta' => $meta));
+	}
 }

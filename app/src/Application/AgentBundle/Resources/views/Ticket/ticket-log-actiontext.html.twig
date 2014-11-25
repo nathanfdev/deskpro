@@ -4,7 +4,11 @@
 	{%- elseif status == 'fail' -%}{{ phrase('agent.general.failed') }}{%- endif -%}
 {%- endmacro -%}
 {% if log.action_type == 'free' %}
-	{{ log.details.message }}
+	{% if log.details.message_html %}
+		{{ log.details.message_html }}
+	{% else %}
+		{{ log.details.message }}
+	{% endif %}
 {% elseif log.action_type == 'app_message' %}
 	App #{{ log.details.app_id }} {{ log.details.app_title }} &mdash; {{ log.details.message }}
 {% elseif log.action_type == 'action_starter' %}
@@ -302,8 +306,15 @@
 {% elseif log.action_type == 'changed_hold' %}
 	{% if log.details.is_hold %}{{ phrase('agent.tickets.ticket_put_on_hold') }}{% else %}{{ phrase('agent.tickets.ticket_removed_from_hold') }}{% endif %}
 {% elseif log.action_type == 'changed_custom_field' %}
-	<span class="type">{{ log.details.field_name }}</span> {{ phrase('agent.tickets.changed_from') }}
-	<span class="old-val">{{ log.details.value_before|default('(no value)')|raw }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.value_after|default('(no value)')|raw }}</span>
+	<span class="type">{{ log.details.field_name }}</span>
+	{% if log.details.is_choice %}
+		{% if log.details.value_after %}{{ phrase('agent.tickets.log_selected_option') }} {{ log.details.value_after }}
+		{% else %}{{ phrase('agent.tickets.log_unselected_option') }} {{ log.details.value_before }}
+		{% endif %}
+	{% else %}
+		{{ phrase('agent.tickets.changed_from') }}
+		<span class="old-val">{{ log.details.value_before|default('(no value)')|raw }}</span> {{ phrase('agent.tickets.changed_to') }} <span class="new-val">{{ log.details.value_after|default('(no value)')|raw }}</span>
+	{% endif %}
 {% elseif log.action_type == 'changed_slas' %}
 	{% if log.details.added %}
 		<div>
