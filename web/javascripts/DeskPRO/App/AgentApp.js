@@ -4,6 +4,8 @@ define([
 	'angularBootstrap',
 	'angularSelect2',
 	'angularUISortable',
+	'angularSanitize',
+  'angularBootstrapDatetime',
 	'DeskPRO/Util/Functions',
 	'DeskPRO/Util/Strings',
 	'DeskPRO/Directive/DpLabel',
@@ -13,31 +15,39 @@ define([
 	'DeskPRO/Service/Person',
 	'DeskPRO/Service/AgentTeam',
 	'ngContextMenu',
-	'DeskPRO/CategoryBuilder/Module'
+	'DeskPRO/CategoryBuilder/Module',
+  'DeskPRO/Directive/DpSubmitForm',
+  'DeskPRO/Directive/JIRAFormWidget',
 ], function(
 	angular,
 	x1,
 	x2,
 	x3,
 	x4,
+  x5,
+  x6,
 	Functions,
 	Strings,
 	DeskPRO_Directive_DpLabel,
-    DeskPRO_Service_LabelDefinition,
-    ngContextMenu,
-    DeskPRO_Directive_DpTicketQuickActions,
+  DeskPRO_Service_LabelDefinition,
+  ngContextMenu,
+  DeskPRO_Directive_DpTicketQuickActions,
 	DeskPRO_Service_Person,
 	DeskPRO_Service_AgentTeam,
-    ngContextMenu,
-    DpCategoryBuilder
-	) {
+  ngContextMenu,
+  DpCategoryBuilder,
+  DpSubmitForm,
+  JIRAFormWidget
+) {
 	var AgentApp = angular.module('AgentApp', [
 		'ngAnimate', 
 		'ui.bootstrap', 
 		'ui.sortable', 
-		'ng-context-menu', 
+		'ng-context-menu',
+		'ngSanitize',
 		'deskpro.category_builder',
-		'ui.select2'
+		'ui.select2',
+    'ui.bootstrap.datetimepicker'
 	]);
 
 	//-------------------------------------------------------------------------
@@ -76,7 +86,7 @@ define([
 		};
 	}]);
 
-	AgentApp.config(['$httpProvider', function($httpProvider) {
+	AgentApp.config(['$httpProvider', '$provide', function($httpProvider, $provide) {
 		$httpProvider.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 		$httpProvider.interceptors.push('dpAppAssetInterceptor');
 	}]);
@@ -1057,6 +1067,8 @@ define([
 
 	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
+    AgentApp.directive('dpSubmitForm', DpSubmitForm);
+    AgentApp.directive('jiraFormWidget', JIRAFormWidget);
 
 	return AgentApp;
 });

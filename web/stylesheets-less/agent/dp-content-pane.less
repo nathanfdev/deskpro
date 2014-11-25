@@ -8376,15 +8376,29 @@ a.assign-self-link {
 	}
 
 	section {
-		header {
-			background: #d4d5da;
+	  header {
+		background: #d4d5da;
+		border-bottom: 1px solid #BBBDC2;
 
-			h4 {
-				font-size: 14px;
-				padding: 6px;
-				margin: 0;
-			}
+		h4 {
+		  font-size: 14px;
+		  padding: 6px;
+		  margin: 0;
 		}
+	  }
+	  header.sub-header {
+		background: #EBEBEB;
+		padding: 5px;
+
+		&.centered {
+		  text-align: center;
+		}
+	  }
+
+	  .dp-btn {
+		font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+		font-size: 12px;
+	  }
 	}
 }
 

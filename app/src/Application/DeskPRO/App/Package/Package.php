@@ -77,20 +77,21 @@ class Package
 			$def = new AppPackage();
 		}
 
-		$def->name         = $this->manifest->getPackageName();
-		$def->title        = $this->manifest->getTitle();
-		$def->description  = $this->manifest->getDescription();
-		$def->author_name  = $this->manifest->getAuthorName();
-		$def->author_email = $this->manifest->getAuthorEmail();
-		$def->author_link  = $this->manifest->getAuthorLink();
-		$def->api_version  = $this->manifest->getApiVersion();
-		$def->version      = $this->manifest->getVersion();
-		$def->version_name = $this->manifest->getVersionName();
-		$def->is_single    = $this->manifest->getIsSingle();
-		$def->scopes       = array(AppPackage::SCOPE_AGENT);
-		$def->tags         = $this->manifest->getTags() ?: array();
-		$def->settings_def = $this->manifest->getSettingsDef();
-		$def->native_name  = $this->manifest->getIsNative() ? $def->name : null;
+		$def->name           = $this->manifest->getPackageName();
+		$def->title          = $this->manifest->getTitle();
+		$def->description    = $this->manifest->getDescription();
+		$def->author_name    = $this->manifest->getAuthorName();
+		$def->author_email   = $this->manifest->getAuthorEmail();
+		$def->author_link    = $this->manifest->getAuthorLink();
+		$def->api_version    = $this->manifest->getApiVersion();
+		$def->version        = $this->manifest->getVersion();
+		$def->version_name   = $this->manifest->getVersionName();
+		$def->is_single      = $this->manifest->getIsSingle();
+		$def->scopes         = array(AppPackage::SCOPE_AGENT);
+		$def->tags           = $this->manifest->getTags() ?: array();
+		$def->trigger_events = $this->manifest->getTriggerEvents();
+		$def->settings_def   = $this->manifest->getSettingsDef();
+		$def->native_name    = $this->manifest->getIsNative() ? $def->name : null;
 
 		return $def;
 	}

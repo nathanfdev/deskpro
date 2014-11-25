@@ -9,7 +9,7 @@ define [
 		init: ->
 			@options_data = null
 
-		getOptionsForTypes: (types = [], typesData = null) ->
+		getOptionsForTypes: (types = [], typesData = null, mode) ->
 			set_options = []
 
 			#------------------------------
@@ -211,6 +211,23 @@ define [
 				title: 'Send Email',
 				subOptions: options
 			})
+
+			#------------------------------
+			# JIRA Actions
+			#------------------------------
+
+			if @options_data?.jira_settings?.enabled && 'TriggersUpdate' == mode
+				options = []
+
+				options.push({
+					title: 'Add Comment to linked JIRA issues',
+					value: 'AddJIRAComment'
+				})
+
+				set_options.push({
+					title: 'JIRA Actions',
+					subOptions: options
+				})
 
 			#------------------------------
 			# Trigger Control
@@ -505,6 +522,7 @@ define [
 						round_robins:      '/round_robin',
 						tasks:             '/tasks/settings'
 						contextual_fields: '/custom_fields'
+						'jira_settings':   '/apps/jira'
 					}).then( (result) =>
 						data = result.data
 						options_data = {}
@@ -527,6 +545,7 @@ define [
 						options_data['round_robins']     = data.round_robins
 						options_data['tasks']            = data.tasks
 						options_data['contextual_fields']= data.contextual_fields
+						options_data['jira_settings']    = data.jira_settings
 
 						options_data['ticket_dep_options'] = @standardOptionsFormatter(options_data['ticket_deps'])
 
@@ -1455,3 +1474,24 @@ define [
 							}
 					}
 			}
+
+		getAddJIRAComment: (options = {}) ->
+			me = @
+			getTemplate: -> me.dpTemplateManager.get 'OptionBuilder/type-actions-addagentreply.html'
+			getData: -> me.loadDataOptions()
+			getDataFormatter: ->
+				getViewValue: (value = {}, data) ->
+					opt = value.options || {}
+					by_agent_id = (opt.by_agent_id || data.agents[0].id) + ""
+
+					type: 'AddJIRAComment',
+					text: opt.note_text || '',
+					by_assigned_agent: opt.by_assigned_agent || false,
+					by_agent_id: by_agent_id
+
+				getValue: (model = {}, data) ->
+					type: 'AddJIRAComment'
+					options:
+						note_text: model.text
+						by_assigned_agent: model.by_assigned_agent || false
+						by_agent_id: parseInt(model.by_agent_id || 0) || 0

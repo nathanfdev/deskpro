@@ -2181,62 +2181,62 @@ $collection->create('agent_apps_run', array(
 	'requirements'  => array('app_id' => '\\d+'),
 ));
 
-$collection->create('jira_widget', array(
-	'path'          => '/jira/widget/{ticket_id}',
-	'controller'    => 'AgentBundle:Jira:widget',
-	'defaults'		=> array('ticket_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+'),
-));
-
-$collection->create('jira_export', array(
-	'path'          => '/jira/export/{ticket_id}',
-	'controller'    => 'AgentBundle:Jira:export',
-	'defaults'		=> array('ticket_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+'),
-));
-
-$collection->create('jira_unlink', array(
-	'path'          => '/jira/unlink/{ticket_id}/{issue_id}',
-	'controller'    => 'AgentBundle:Jira:unlink',
-	'defaults'		=> array('ticket_id' => '-1', 'issue_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+', 'issue_id' => '\\d+'),
-));
-
-$collection->create('jira_lookup', array(
-	'path'          => '/jira/lookup',
-	'controller'    => 'AgentBundle:Jira:lookup',
-));
-
-$collection->create('jira_associated_issues', array(
-	'path'          => '/jira/issue/{ticket_id}',
-	'controller'    => 'AgentBundle:Jira:getAssociatedIssues',
-	'defaults'		=> array('ticket_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+'),
-));
-
-$collection->create('jira_fetchcomments', array(
-	'path'          => '/jira/issue/{ticket_id}/fetchcomments',
-	'controller'    => 'AgentBundle:Jira:getComments',
-	'defaults'		=> array('ticket_id' => '-1'),
-	'requirements'  => array('ticket_id' => '\\d+'),
-));
-
-$collection->create('jira_fetchallcomments', array(
-	'path'          => '/jira/fetchcomments',
-	'controller'    => 'AgentBundle:Jira:fetchAllComment',
-));
-
-$collection->create('jira_post_comment', array(
-	'path'          => '/jira/{issue_id}/comment',
-	'controller'    => 'AgentBundle:Jira:postComment',
-	'defaults'		=> array('issue_id' => '-1'),
-	'requirements'  => array('issue_id' => '\\d+'),
-));
-
 $collection->create('agent_label_definitions_list', array(
 	'path'          => '/labels/definitions',
 	'controller'    => 'AgentBundle:Labels:listDefinitions',
 	'methods'       => array('GET'),
 ));
+
+
+
+
+$collection->create('agent_jira_meta', array(
+	'path'          => '/jira/meta',
+	'controller'    => 'AgentBundle:Jira:getMeta',
+	'methods'       => array('GET'),
+));
+
+$collection->create('agent_jira_search', array(
+	'path'          => '/jira/search',
+	'controller'    => 'AgentBundle:Jira:search',
+	'methods'       => array('GET'),
+));
+
+$collection->create('agent_jira_ticket_issues_create', array(
+	'path'          => '/jira/ticket/{ticketId}/issue',
+	'controller'    => 'AgentBundle:Jira:createIssue',
+	'methods'       => array('POST'),
+	'requirements'  => array('ticketId' => '\\d+'),
+));
+
+$collection->create('agent_jira_ticket_issues_list', array(
+	'path'          => '/jira/ticket/{ticketId}/issue',
+	'controller'    => 'AgentBundle:Jira:issues',
+	'methods'       => array('GET'),
+	'requirements'  => array('ticketId' => '\\d+'),
+));
+
+$collection->create('agent_jira_ticket_issue_comments', array(
+	'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/comments',
+	'controller'    => 'AgentBundle:Jira:addComment',
+	'methods'       => array('POST'),
+	'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
+));
+
+$collection->create('agent_jira_ticket_issue_link', array(
+	'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/link',
+	'controller'    => 'AgentBundle:Jira:link',
+	'methods'       => array('POST'),
+	'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
+));
+
+$collection->create('agent_jira_ticket_issue_unlink', array(
+	'path'          => '/jira/ticket/{ticketId}/issue/{issueId}/link',
+	'controller'    => 'AgentBundle:Jira:unlink',
+	'methods'       => array('DELETE'),
+	'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
+));
+
+
 
 return $collection;

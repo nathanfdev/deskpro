@@ -48,6 +48,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 			width: 350
 		}
 
+		if (Modernizr.localstorage) {
+			if (localStorage['apps_sidebar_state'] && localStorage['apps_sidebar_state'] == 'open') {
+				this.appsSidebar.visible = true;
+			}
+			if (localStorage['apps_sidebar_width']) {
+				this.appsSidebar.width = localStorage['apps_sidebar_width'];
+			}
+		}
+
 		this.agentNotifyListShown = false;
 
 		this.paneVis = {

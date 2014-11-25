@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\DependencyInjection;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Service\JIRA;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\Definition;
@@ -92,6 +93,10 @@ class CoreExtension extends Extension
 		    ->register('dp.custom_fields.manager', 'Application\DeskPRO\Service\CustomFieldManager')
 		    ->addArgument(new Reference('doctrine.orm.entity_manager'))
 		    ->addArgument(new Reference('form.factory'));
+
+	    $container
+		    ->register(JIRA::NAME, 'Application\DeskPRO\Service\JIRA')
+		    ->addArgument(new Reference('service_container'));
 
 		$this->loadPeople($container);
 		$this->loadInputReader($container);

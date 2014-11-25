@@ -36,6 +36,10 @@ namespace deskpro_jira\RequestHandler;
 
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestContext;
 use Application\DeskPRO\App\Native\RequestHandler\ApiPackageRequestHandlerInterface;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\JIRA\OAuthWrapper;
+use Application\DeskPRO\Service\JIRA;
+use Guzzle\Http\Exception\ClientErrorResponseException;
 
 class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 {
@@ -45,80 +49,69 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
 	public function handleApiPackageRequest(ApiPackageRequestContext $context)
 	{
 		switch ($context->getAction()) {
-			case 'test-settings':
-				return $this->testSettingsAction($context);
-			case 'check-requirements':
-				return $this->checkRequirementsAction($context);
+			case 'get-meta':
+				return $this->getMetaAction($context);
 			default:
 				throw $context->createNotFoundException();
 		}
 	}
 
-
 	/**
-	 * @param ApiPackageRequestContext $context
-	 * @return \Symfony\Component\HttpFoundation\Response
+	 * check api link connection
+	 * @param DeskproContainer $container
+	 * @return null
 	 */
-	public function checkRequirementsAction(ApiPackageRequestContext $context)
+	protected function checkErrors(DeskproContainer $container)
 	{
-		return $context->createJsonResponse(array('curl_support' => function_exists('curl_init')));
+		$errors = array();
+
+		/** @var JIRA $js */
+		$js = $container->get(JIRA::NAME);
+		$back = $container->getRouter()->generateUrl('jira_token');
+		try {
+			$oauth = new OAuthWrapper($js, $back);
+			$oauth->requestTempCredentials();
+		} catch (\Exception $e) {
+
+			if ($e instanceof ClientErrorResponseException) {
+				$code = $e->getResponse()->getStatusCode();
+
+				if (404 === $code || 403 === $code) {
+					$errors['url'] = true;
+				} else {
+					$errors['api'] = true;
+				}
+			} elseif ($e->getCode() >= 1000) {
+				$errors['code'] = $e->getCode();
+				$errors['message'] = $e->getMessage();
+			} else {
+				$errors['url'] = true;
+			}
+		}
+
+		if (!$errors && !$js->getTokens()) {
+			$errors['token'] = true;
+		}
+
+		return $errors ?: null;
 	}
 
 	/**
 	 * @param ApiPackageRequestContext $context
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public function testSettingsAction(ApiPackageRequestContext $context)
+	public function getMetaAction(ApiPackageRequestContext $context)
 	{
-		$user = $context->getIn()->getString('jira_username');
-		$password = $context->getIn()->getString('jira_password');
-		$url = $context->getIn()->getString('jira_url');
-		$em = $context->getEm();
-		$regEnabled = $context->getContainer()->getSetting('core.reg_enabled');
-
-		$error = false;
-		$client = null;
-
-		$log = array();
-		$log[] = 'username: ' . $user;
-		$log[] = 'password: ' . $password;
-		$log[] = 'url: ' . $url;
-
-
-		$tests = array();
-		$tests[] = function() use (&$log, $url, $user, $password, $em, $regEnabled) {
-
-			$log[] = "Verifying JIRA API...";
-
-			$service = new \Orb\Jira\Service($url, array(
-				'username'	=> $user,
-				'password'	=> $password,
-				'debug'		=> DP_DEBUG,
-				'reg_enabled' => $regEnabled,
-			), $em);
-
-			try {
-				$meta = $service->getCreateMeta();
-				$log[] = 'Everything is ok';
-			} catch (\Exception $e) {
-				$log[] = $e->getMessage();
-				return array($e->getCode(), 'API Exception');
-			}
-		};
-
-		foreach ($tests as $t) {
-			$error = $t();
-			if ($error) {
-				break;
-			}
+		if ($errors = $this->checkErrors($context->getContainer())) {
+			return $context->createJsonResponse(array('errors' => $errors));
 		}
 
-		$result_data = array(
-			'log'        => implode("\n", $log),
-			'error'      => $error ? $error[1] : false,
-			'error_code' => $error ? $error[0] : false
-		);
+        /** @var JIRA $js */
+        $js = $context->getContainer()->get(JIRA::NAME);
+        $data = (array) $context->getIn()->getAll('req');
+        $meta = $js->updateMeta($data);
 
-		return $context->createJsonResponse($result_data);
+
+        return $context->createJsonResponse($meta->toArray());
 	}
 }

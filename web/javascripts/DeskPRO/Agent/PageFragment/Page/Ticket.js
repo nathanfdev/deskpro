@@ -812,19 +812,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				expandBtn.addClass('open');
 			}
 		});
-		
-		if (this.meta.jiraEnabled) {
-			var jiraWidget = new DeskPRO.Agent.Jira.Widget({
-				ticketId: self.meta.ticket_id,
-				baseId: self.meta.baseId,
-				defaultProject: self.meta.jiraDefaultProject
-			});
-			this.addEvent('destroy', function() {
-				if (jiraWidget) {
-					jiraWidget.destroy();
-				}
-			});
-		}
 	},
 
 	setTicketReplyBox: function(rb) {

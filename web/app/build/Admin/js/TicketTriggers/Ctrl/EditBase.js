@@ -24,18 +24,24 @@
         this.triggerId = this.$stateParams.id;
         this.options = {};
         this.editFormMapper = new TriggerEditFormMapper();
+        this.mode = null;
+        this.appTriggerEvents = [];
         this.$scope.form = this.editFormMapper.getFormFromModel({});
         this.$scope.triggerType = this.$stateParams.type;
         this.$scope.triggerId = this.$stateParams.id;
         with_changed_ops = true;
-        if (this.$stateParams.type === 'newticket') {
-          with_changed_ops = false;
-          this.dpTriggers = this.DataService.get('TriggersNew');
-        } else if (this.$stateParams.type === 'newreply') {
-          this.dpTriggers = this.DataService.get('TriggersReply');
-        } else {
-          this.dpTriggers = this.DataService.get('TriggersUpdate');
+        switch (this.$stateParams.type) {
+          case 'newticket':
+            this.mode = 'TriggersNew';
+            with_changed_ops = false;
+            break;
+          case 'newreply':
+            this.mode = 'TriggersReply';
+            break;
+          default:
+            this.mode = 'TriggersUpdate';
         }
+        this.dpTriggers = this.DataService.get(this.mode);
         this.criteraTypeDef = this.dpObTypesDefTicketCriteria;
         this.criteraTypeDef.setWithChangedOps(with_changed_ops);
         this.actionsTypeDef = this.dpObTypesDefTicketActions;
@@ -81,7 +87,7 @@
             Arrays.pushUnique(types, 'api.agent');
           }
         }
-        setCritOptions = this.criteraTypeDef.getOptionsForTypes(types);
+        setCritOptions = this.criteraTypeDef.getOptionsForTypes(types, null, this.mode);
         this.$scope.criteriaOptionTypes.length = 0;
         for (_i = 0, _len = setCritOptions.length; _i < _len; _i++) {
           opt = setCritOptions[_i];
@@ -89,7 +95,7 @@
         }
         setActionOptions = this.actionsTypeDef.getOptionsForTypes(types, {
           dynamicOptions: this.customActions
-        });
+        }, this.mode);
         this.$scope.actionOptionTypes.length = 0;
         _results = [];
         for (_j = 0, _len1 = setActionOptions.length; _j < _len1; _j++) {
@@ -109,21 +115,27 @@
         get = {
           customActions: '/ticket_triggers/get-custom-actions'
         };
+        if (this.mode === 'TriggersUpdate') {
+          get.appEvents = '/ticket_triggers/app-events/update';
+        }
         if (this.triggerId) {
           get.trigger = "/ticket_triggers/" + this.triggerId;
         }
         promise = this.Api.sendDataGet(get).then((function(_this) {
           return function(result) {
-            var _ref, _ref1;
+            var _ref, _ref1, _ref2, _ref3;
             _this.customActions = result.data.customActions.action_defs;
-            if (((_ref = result.data) != null ? (_ref1 = _ref.trigger) != null ? _ref1.trigger : void 0 : void 0) != null) {
+            if ((_ref = result.data.appEvents) != null ? (_ref1 = _ref.app_events) != null ? _ref1.length : void 0 : void 0) {
+              _this.appTriggerEvents = result.data.appEvents.app_events;
+            }
+            if (((_ref2 = result.data) != null ? (_ref3 = _ref2.trigger) != null ? _ref3.trigger : void 0 : void 0) != null) {
               _this.trigger = result.data.trigger.trigger;
               _this.triggerId = _this.trigger.id;
             } else {
               _this.trigger = {};
               _this.triggerId = 0;
             }
-            return _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger);
+            return _this.$scope.form = _this.editFormMapper.getFormFromModel(_this.trigger, _this.appTriggerEvents);
           };
         })(this));
         promise2 = this.criteraTypeDef.loadDataOptions();
@@ -145,7 +157,7 @@
        */
 
       Admin_TicketTriggers_Ctrl_EditBase.prototype.saveTrigger = function() {
-        var act, crit, crit_set, enabled, has_stop_triggers_action, is_new, mode, postData, promise, set, _, _ref, _ref1, _ref2, _ref3;
+        var act, crit, crit_set, enabled, has_stop_triggers_action, is_new, mode, postData, promise, set, _, _ref, _ref1, _ref2, _ref3, _ref4;
         if (this.$scope.form_props.$invalid) {
           return;
         }
@@ -156,6 +168,7 @@
           flags: this.$scope.form.flags,
           by_user_mode: [],
           by_agent_mode: [],
+          by_app_mode: [],
           criteria_sets: [],
           actions: []
         };
@@ -179,10 +192,20 @@
             }
           }
         }
-        _ref2 = this.$scope.form.terms_set;
-        for (_ in _ref2) {
-          if (!__hasProp.call(_ref2, _)) continue;
-          crit_set = _ref2[_];
+        if (this.$scope.form.typeForm.by_app) {
+          _ref2 = this.$scope.form.typeForm.by_app_mode;
+          for (mode in _ref2) {
+            if (!__hasProp.call(_ref2, mode)) continue;
+            enabled = _ref2[mode];
+            if (enabled) {
+              postData.by_app_mode.push(mode);
+            }
+          }
+        }
+        _ref3 = this.$scope.form.terms_set;
+        for (_ in _ref3) {
+          if (!__hasProp.call(_ref3, _)) continue;
+          crit_set = _ref3[_];
           set = [];
           for (_ in crit_set) {
             if (!__hasProp.call(crit_set, _)) continue;
@@ -197,10 +220,10 @@
         }
         has_stop_triggers_action = false;
         if (this.$scope.form.actions) {
-          _ref3 = this.$scope.form.actions;
-          for (_ in _ref3) {
-            if (!__hasProp.call(_ref3, _)) continue;
-            act = _ref3[_];
+          _ref4 = this.$scope.form.actions;
+          for (_ in _ref4) {
+            if (!__hasProp.call(_ref4, _)) continue;
+            act = _ref4[_];
             if (act.type) {
               postData.actions.push(act);
               if (act.type === 'ModStopTriggers') {

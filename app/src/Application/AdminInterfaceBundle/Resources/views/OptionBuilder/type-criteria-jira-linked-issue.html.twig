@@ -1,0 +1,17 @@
+<dp-optionbuilder-row>
+	<div class="dp-ob-standard-row">
+		<table class="display-table">
+			<tr>
+				<td class="nowrap" style="padding-right: 8px;"><label class="row-label">{{ ng_var('type_title') }}</label></td>
+				<td ng-show="rowOpts.rowEnabled" width="100%">
+                    <label>
+                        <input type="checkbox" ng-model="model.strict_project" /> Project:
+                    </label>
+					<select ng-show="model.strict_project" ui-select2 ng-model="model.project" style="min-width: 260px">
+						<option value="{{ ng_var('project.id') }}" ng-repeat="project in model.projects">{{ ng_var('project.name') }}</option>
+					</select>
+				</td>
+			</tr>
+		</table>
+	</div>
+</dp-optionbuilder-row>

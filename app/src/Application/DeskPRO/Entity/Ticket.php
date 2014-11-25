@@ -510,6 +510,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $_search_highlights;
 
 	/**
+	 * linked jira issues
+	 * @var
+	 */
+	protected $jira_issues;
+
+	/**
 	 * If the tikcet was created from an email just now, then this is the reader
 	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
 	 */
@@ -3760,6 +3766,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'orphanRemoval'        => true,
 			'dpApi'                => true,
 			'dpApiDeep'            => true
+		));
+		$metadata->mapOneToMany(array(
+			'fieldName'            => 'jira_issues',
+			'targetEntity'         => 'Application\\DeskPRO\\Entity\\JiraIssue',
+			'cascade'              => array('persist', 'merge', 'remove'),
+			'mappedBy'             => 'ticket',
+			'orphanRemoval'        => true,
+			'dpApi'                => false,
+			'dpApiDeep'            => false
 		));
 	}
 }

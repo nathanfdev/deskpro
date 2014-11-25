@@ -241,4 +241,16 @@ $collection->create(
 	)
 );
 
+########################################################################################################################
+# JIRA Webhook Endpoint
+########################################################################################################################
+
+$collection->create(
+    'jira_webhook_handle', array(
+        'path'       => '/jira/webhook',
+        'controller' => 'DeskPRO:JIRAWebhook:handle',
+        'methods'    => array('POST'),
+    )
+);
+
 return $collection;

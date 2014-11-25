@@ -137,6 +137,17 @@ class AppInstance extends DomainObject
 		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
 	}
 
+	/**
+	 * @param $name
+	 * @param $value
+	 */
+	public function setSetting($name, $value)
+	{
+		$settings = $this->settings;
+		$settings[$name] = $value;
+		$this->setModelField('settings', $settings);
+	}
+
 
 	/**
 	 * Get settings that we will output to JS (eg non-native only)
@@ -167,6 +178,31 @@ class AppInstance extends DomainObject
 		}
 
 		return $ret;
+	}
+
+
+	/**
+	 * @param string $type Event type (update, newticket, newreply)
+	 * @return array
+	 */
+	public function getTriggerEvents($type)
+	{
+		$trigger_events = $this->package->trigger_events;
+		if (!$trigger_events || empty($trigger_events[$type])) {
+			return array();
+		}
+
+		$events = array();
+
+		foreach ($trigger_events[$type] as $name => $label) {
+			$events[] = array(
+				'event_id'  => $this->package->name . '.' . $this->id . '.' . $name,
+				'name'      => $name,
+				'label'     => $label,
+			);
+		}
+
+		return $events;
 	}
 
 

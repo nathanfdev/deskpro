@@ -18,6 +18,8 @@ define [
 			@triggerId   = @$stateParams.id
 			@options     = {}
 			@editFormMapper = new TriggerEditFormMapper()
+			@mode = null
+			@appTriggerEvents = []
 
 			@$scope.form = @editFormMapper.getFormFromModel({})
 
@@ -25,16 +27,18 @@ define [
 			@$scope.triggerId   = @$stateParams.id
 
 			with_changed_ops = true
-			if @$stateParams.type == 'newticket'
-				with_changed_ops = false
-				@dpTriggers = @DataService.get('TriggersNew')
-			else if @$stateParams.type == 'newreply'
-				@dpTriggers = @DataService.get('TriggersReply')
-			else
-				@dpTriggers = @DataService.get('TriggersUpdate')
+			switch @$stateParams.type
+				when 'newticket'
+					@mode = 'TriggersNew'
+					with_changed_ops = false
+				when 'newreply'
+					@mode = 'TriggersReply'
+				else
+					@mode = 'TriggersUpdate'
 
+			@dpTriggers = @DataService.get @mode
 			@criteraTypeDef = @dpObTypesDefTicketCriteria
-			@criteraTypeDef.setWithChangedOps(with_changed_ops)
+			@criteraTypeDef.setWithChangedOps with_changed_ops
 
 			@actionsTypeDef = @dpObTypesDefTicketActions
 
@@ -74,12 +78,12 @@ define [
 					Arrays.pushUnique(types, 'api')
 					Arrays.pushUnique(types, 'api.agent')
 
-			setCritOptions = @criteraTypeDef.getOptionsForTypes(types)
+			setCritOptions = @criteraTypeDef.getOptionsForTypes types, null, @mode
 			@$scope.criteriaOptionTypes.length = 0
 			for opt in setCritOptions
 				@$scope.criteriaOptionTypes.push(opt)
 
-			setActionOptions = @actionsTypeDef.getOptionsForTypes(types, { dynamicOptions: @customActions })
+			setActionOptions = @actionsTypeDef.getOptionsForTypes types, { dynamicOptions: @customActions }, @mode
 			@$scope.actionOptionTypes.length = 0
 			for opt in setActionOptions
 				@$scope.actionOptionTypes.push(opt)
@@ -92,12 +96,18 @@ define [
 				customActions: '/ticket_triggers/get-custom-actions'
 			}
 
+			if @mode == 'TriggersUpdate'
+				get.appEvents = '/ticket_triggers/app-events/update'
+
 			if @triggerId
 				get.trigger = "/ticket_triggers/#{@triggerId}"
 
 			promise = @Api.sendDataGet(get).then( (result) =>
 
 				@customActions = result.data.customActions.action_defs
+
+				if result.data.appEvents?.app_events?.length
+					@appTriggerEvents = result.data.appEvents.app_events
 
 				if result.data?.trigger?.trigger?
 					@trigger = result.data.trigger.trigger
@@ -106,7 +116,7 @@ define [
 					@trigger = {}
 					@triggerId = 0
 
-				@$scope.form = @editFormMapper.getFormFromModel(@trigger)
+				@$scope.form = @editFormMapper.getFormFromModel(@trigger, @appTriggerEvents)
 			)
 
 			promise2 = @criteraTypeDef.loadDataOptions()
@@ -136,6 +146,7 @@ define [
 				flags:         @$scope.form.flags,
 				by_user_mode:  [],
 				by_agent_mode: [],
+				by_app_mode:   [],
 				criteria_sets: [],
 				actions:       [],
 			}
@@ -148,6 +159,10 @@ define [
 				for own mode, enabled of @$scope.form.typeForm.by_agent_mode
 					if enabled
 						postData.by_agent_mode.push(mode)
+			if @$scope.form.typeForm.by_app
+				for own mode, enabled of @$scope.form.typeForm.by_app_mode
+					if enabled
+						postData.by_app_mode.push(mode)
 
 			for own _, crit_set of @$scope.form.terms_set
 				set = []

@@ -38,8 +38,8 @@
         return ops;
       };
 
-      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData) {
-        var f, options, set_options, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getOptionsForTypes = function(types, typesData, mode) {
+        var f, options, set_options, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref10, _ref11, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9;
         if (typesData == null) {
           typesData = null;
         }
@@ -199,6 +199,25 @@
             subOptions: options
           });
         }
+        if (((_ref6 = this.options_data) != null ? (_ref7 = _ref6.jira_settings) != null ? _ref7.enabled : void 0 : void 0) && 'TriggersUpdate' === mode) {
+          options = [];
+          options.push({
+            title: 'New JIRA Comment',
+            value: 'CheckJIRANewComment'
+          });
+          options.push({
+            title: 'Issue Status',
+            value: 'CheckJIRAIssueStatus'
+          });
+          options.push({
+            title: 'New Linked Issue',
+            value: 'CheckJIRANewLinkedIssue'
+          });
+          set_options.push({
+            title: 'JIRA',
+            subOptions: options
+          });
+        }
         options = [];
         options.push({
           title: 'User',
@@ -248,11 +267,11 @@
           title: 'User Criteria',
           subOptions: options
         });
-        if ((_ref6 = this.options_data) != null ? _ref6.user_fields : void 0) {
+        if ((_ref8 = this.options_data) != null ? _ref8.user_fields : void 0) {
           options = [];
-          _ref7 = this.options_data.user_fields;
-          for (_k = 0, _len2 = _ref7.length; _k < _len2; _k++) {
-            f = _ref7[_k];
+          _ref9 = this.options_data.user_fields;
+          for (_k = 0, _len2 = _ref9.length; _k < _len2; _k++) {
+            f = _ref9[_k];
             options.push({
               title: f.title,
               value: this.initFieldGetter('CheckUserField', f)
@@ -290,11 +309,11 @@
           title: 'Organization Criteria',
           subOptions: options
         });
-        if ((_ref8 = this.options_data) != null ? _ref8.org_fields : void 0) {
+        if ((_ref10 = this.options_data) != null ? _ref10.org_fields : void 0) {
           options = [];
-          _ref9 = this.options_data.org_fields;
-          for (_l = 0, _len3 = _ref9.length; _l < _len3; _l++) {
-            f = _ref9[_l];
+          _ref11 = this.options_data.org_fields;
+          for (_l = 0, _len3 = _ref11.length; _l < _len3; _l++) {
+            f = _ref11[_l];
             options.push({
               title: f.title,
               value: this.initFieldGetter('CheckOrgField', f)
@@ -396,7 +415,8 @@
               'email_tpls': '/email-templates-info',
               'api_keys': '/api_keys',
               'ticket_settings': '/ticket_settings',
-              'contextual_fields': '/custom_fields'
+              'contextual_fields': '/custom_fields',
+              'jira_settings': '/apps/jira'
             }).then((function(_this) {
               return function(result) {
                 var data, f, options_data, _i, _j, _k, _l, _len, _len1, _len2, _len3, _ref, _ref1, _ref10, _ref11, _ref12, _ref13, _ref14, _ref2, _ref3, _ref4, _ref5, _ref6, _ref7, _ref8, _ref9, _results;
@@ -420,6 +440,7 @@
                 options_data['api_keys'] = data.api_keys.api_keys;
                 options_data['ticket_settings'] = (_ref6 = data.ticket_settings) != null ? _ref6.ticket_settings : void 0;
                 options_data['contextual_fields'] = data.contextual_fields;
+                options_data['jira_settings'] = data.jira_settings;
                 _this.options_data = options_data;
                 if ((_ref7 = _this.options_data) != null ? _ref7.ticket_fields : void 0) {
                   _ref8 = _this.options_data.ticket_fields;
@@ -1609,6 +1630,109 @@
           ];
         };
         return this.getStandardSelect(options);
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckJIRANewComment = function(options) {
+        if (options == null) {
+          options = {};
+        }
+        options.propName = 'message';
+        options.operators = ['isset', 'not_isset', 'contains', 'notcontains', 'is_regex', 'not_regex'];
+        return this.getStandardInput(options);
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckJIRAIssueStatus = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-jira-issue-status.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var _ref, _ref1;
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  op: value.op || 'changed',
+                  all: (_ref = value.options) != null ? _ref.all : void 0,
+                  status: (_ref1 = value.options) != null ? _ref1.status : void 0,
+                  statuses: me.options_data.jira_settings.meta.statuses
+                };
+              },
+              getValue: function(model, data) {
+                if (model == null) {
+                  model = {};
+                }
+                return {
+                  type: 'CheckJIRAIssueStatus',
+                  op: model.op,
+                  options: {
+                    all: model.all || '',
+                    status: model.status
+                  }
+                };
+              }
+            };
+          }
+        };
+      };
+
+      Admin_OptionBuilder_TypesDef_TicketCriteria.prototype.getCheckJIRANewLinkedIssue = function(options) {
+        var me;
+        if (options == null) {
+          options = {};
+        }
+        me = this;
+        return {
+          getTemplate: function() {
+            return me.dpTemplateManager.get('OptionBuilder/type-criteria-jira-linked-issue.html');
+          },
+          getData: function() {
+            return {};
+          },
+          getDataFormatter: function() {
+            return {
+              getViewValue: function(value, data) {
+                var _ref, _ref1;
+                if (value == null) {
+                  value = {};
+                }
+                return {
+                  strict_project: ((_ref = value.options) != null ? _ref.project : void 0) != null,
+                  project: (_ref1 = value.options) != null ? _ref1.project : void 0,
+                  projects: me.options_data.jira_settings.meta.projects
+                };
+              },
+              getValue: function(model, data) {
+                var project;
+                if (model == null) {
+                  model = {};
+                }
+                console.info(model);
+                project = model.project;
+                if (!model.strict_project) {
+                  project = null;
+                }
+                return {
+                  type: 'CheckJIRANewLinkedIssue',
+                  op: 'is',
+                  options: {
+                    project: project
+                  }
+                };
+              }
+            };
+          }
+        };
       };
 
       return Admin_OptionBuilder_TypesDef_TicketCriteria;
