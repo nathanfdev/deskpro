@@ -42,6 +42,7 @@ use Application\DeskPRO\PortalBundle\HttpKernel\PortalHttpCache;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
+use Symfony\Component\Debug\Debug;
 use Symfony\Component\HttpFoundation\Request;
 
 class KernelBooter
@@ -269,6 +270,7 @@ class KernelBooter
             if ('dev' === $env) {
                 require_once DP_ROOT . "/src/Application/PortalBundle/HttpKernel/PortalHttpCache.php";
                 $kernel = new PortalHttpCache($kernel);
+                Debug::enable();
             }
             $request = Request::createFromGlobals();
             $response = $kernel->handle($request);
