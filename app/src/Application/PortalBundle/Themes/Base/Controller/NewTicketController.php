@@ -61,7 +61,7 @@ class NewTicketController extends AbstractController
             )
         );
 
-        $form->submit($request);
+        $form->handleRequest($request);
 
         if ($form->isValid()) {
 
