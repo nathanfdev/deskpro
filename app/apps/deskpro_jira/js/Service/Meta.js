@@ -110,9 +110,9 @@ define(function () {
           ? comment.body
           : ('[' + comment.author.displayName + ' via JIRA]: ' + comment.body);
       },
-	    windowHeight: function() {
-		    return $($window).height();
-	    }
+      windowHeight: function() {
+          return $($window).height();
+      }
     };
 
     $http.get('/agent/jira/meta')

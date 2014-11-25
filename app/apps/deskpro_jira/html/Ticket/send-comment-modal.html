@@ -4,15 +4,14 @@
         <h3 class="modal-title">Send Comment:</h3>
     </div>
     <div class="modal-body" ng-style="{maxHeight: meta.windowHeight() - 220, overflowY: 'auto'}">
-        <p class="text-muted" ng-if="!issue">
-            This will add your comment to all ({{ issues.length }}) issues that this ticket is linked to. If you want to comment on only a specific issue, you should click on "View Details" for the issue you want to comment on and fill in the comment form.
+        <p class="text-muted" ng-if="issues.length > 1">
+            This will add your comment to {{ issues.length }} issues that this ticket is linked to. If you want to comment on only a specific issue, you should click on "View Details" for the issue you want to comment on and fill in the comment form.
         </p>
         <textarea name="message" ng-model="message" required class="jira-comment-textarea full"></textarea>
     </div>
     <div class="modal-footer" style="text-align: center;">
-        <button dp-submit-form class="dp-btn">Add comment to
-            <span ng-if="!issue">all ({{ issues.length }}) issues</span>
-            <span ng-if="issue">{{ issue.key }}</span>
+        <button dp-submit-form class="dp-btn">Add Comment
+            <span ng-if="issues.length > 1">to {{ issues.length }} issues</span>
         </button>
     </div>
 </form>
