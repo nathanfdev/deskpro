@@ -1619,9 +1619,9 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1415382972'
 	),
 
-	1416563468 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/11/Build1416563468.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1416563468'
+	1416907908 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/11/Build1416907908.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1416907908'
 	),
 
 );
