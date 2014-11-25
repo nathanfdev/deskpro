@@ -162,7 +162,7 @@ class HierarchyStructureProcessor
 	public function saveRecords(array $records, $remove_missing = false)
 	{
 		if ($remove_missing) {
-			$have_ids = array();
+			$have_ids = array(0);
 			foreach ($records as $r) {
 				if ($r->id) {
 					$have_ids[] = $r->id;

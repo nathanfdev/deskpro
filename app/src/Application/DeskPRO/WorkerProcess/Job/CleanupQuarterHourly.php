@@ -56,17 +56,6 @@ class CleanupQuarterHourly extends AbstractJob
 		$cache->cleanup();
 
 		#------------------------------
-		# sessions
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-		$num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale sessions");
-		}
-
-		#------------------------------
 		# ticket locks
 		#------------------------------
 

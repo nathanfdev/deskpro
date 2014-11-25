@@ -260,6 +260,11 @@ define [
 				value: 'ModSetUserVar'
 			})
 
+			options.push({
+				title: 'Ticket Log',
+				value: 'TicketLogText'
+			})
+
 			set_options.push({
 				title: 'Trigger Control',
 				subOptions: options
@@ -930,6 +935,12 @@ define [
 							return value
 					}
 			}
+
+		getTicketLogText: (options = {}) ->
+			options.propName = 'message'
+			options.placeholder = 'Enter text here to add to the ticket log';
+			def = @getStandardInput(options)
+			return def
 
 		getSendUserEmail: (options = {}) ->
 			me = @

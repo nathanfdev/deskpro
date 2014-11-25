@@ -34,56 +34,43 @@
 
 namespace Application\DeskPRO\Tickets\Actions;
 
-use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
+use Orb\Util\CheckedOptionsArray;
 
 /**
- * Delete the ticket
+ * Sets a user variable
+ *
+ * @option string  message
+ * @option boolean is_html
  */
-class SetDeleted extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
+class TicketLogText extends AbstractAction implements ActionInterface
 {
+	/**
+	 * {@inheritDoc}
+	 */
+	protected function getOptionsDef()
+	{
+		$options = new CheckedOptionsArray();
+		$options->addRequiredNames('message');
+		$options->addValidNames('is_html');
+		return $options;
+	}
+
+
 	/**
 	 * {@inheritDoc}
 	 */
 	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
 	{
-		$ticket->setStatus('hidden.deleted');
-		$context->getVars()->set('stop_triggers', true);
-	}
+		$value = $this->getActionOption('message', '');
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($ticket->getStatusCode() == 'hidden.deleted') {
-			return true;
+		if ($this->getActionOption('is_html')) {
+			$data = array('message_html' => $value);
+		} else {
+			$data = array('message' => $value);
 		}
 
-		return false;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-			return array('delete');
-		}
-
-		return null;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
+		$ticket->getStateChangeRecorder()->recordData('free', $data);
 	}
 }

@@ -173,13 +173,13 @@ class AlertSender
 					$data[$k] = $this->em->getRepository($type)->getByIds($val, true);
 
 					foreach ($data[$k] as &$sub) {
-						$sub = $sub->toApiData();
+						$sub = $sub->toApiData(true, false);
 					}
 					unset($sub);
 				} else {
 					$data[$k] = $this->em->getRepository($type)->find($val);
 					if ($data[$k] && $data[$k] instanceof DomainObject) {
-						$data[$k] = $data[$k]->toApiData();
+						$data[$k] = $data[$k]->toApiData(true, false);
 					} else {
 						unset($data[$k]);
 					}

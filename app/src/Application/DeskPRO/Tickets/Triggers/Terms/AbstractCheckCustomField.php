@@ -107,15 +107,15 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
 		# Check for existence
 		#------------------------------
 
-		if (!$field_data) {
-			if (in_array($op, array('not', 'notcontains', 'not_regex', 'not_isset'))) return true;
-			else return false;
+		if ($op == 'isset') {
+			return (bool)$field_data;
+		} else if ($op == 'not_isset') {
+			return !((bool)$field_data);
 		}
 
-		if ($op == 'isset') {
-			return true;
-		} else if ($op == 'not_isset') {
-			return false;
+		if (!$field_data) {
+			$field_data = '';
+			return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
 		}
 
 		#------------------------------

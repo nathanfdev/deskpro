@@ -175,19 +175,25 @@ class UserRules
 
 	public function applyRuleToUsers(UserRule $user_rule, $page)
 	{
-		$per_page = 1;
+		$per_page = 250;
 		$page = (int) $page;
+		$offset = $page * $per_page;
+
+		$num_pages = ceil(App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people_emails
+			WHERE is_validated = 1
+		") / $per_page);
 
 		$email_to_user = App::getDb()->fetchAllKeyValue("
 			SELECT email, person_id
 			FROM people_emails
 			WHERE is_validated = 1
 			ORDER BY id ASC
-			LIMIT $page, $per_page
+			LIMIT $offset, $per_page
 		");
 
 		if (!$email_to_user) {
-
 			return array('completed' => true);
 		}
 
@@ -195,9 +201,7 @@ class UserRules
 		$batch    = array();
 
 		foreach ($email_to_user as $email => $user_id) {
-
 			if (isset($did_user[$user_id])) {
-
 				continue;
 			}
 
@@ -226,13 +230,14 @@ class UserRules
 		}
 
 		if ($batch) {
-
 			App::getDb()->batchInsert('person2usergroups', $batch, true);
 		}
 
 		return array(
 			'completed' => false,
 			'success'   => true,
+			'page'      => $page+1,
+			'num_pages' => $num_pages
 		);
 	}
 }

@@ -75,7 +75,7 @@
        */
 
       Admin_OptionBuilder_TypesDef_BaseCriteriaTypesDef.prototype.getOperators = function(options) {
-        return options.operators || ['is', 'not'];
+        return options.operators || ['is', 'not', 'isset', 'not_isset'];
       };
 
 
@@ -112,7 +112,7 @@
           return this.getStandardSelect(options);
         } else {
           if (!options.operators) {
-            options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex'];
+            options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset'];
           }
           return this.getStandardInput(options);
         }

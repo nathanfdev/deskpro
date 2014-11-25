@@ -2861,7 +2861,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 								"CloudFlare Network Error: " + message,
 								'URL: ' + ajaxOptions.url,
 								'agent',
-								1
+								1,
+								true
 							);
 						}
 						// Try reloading the interface

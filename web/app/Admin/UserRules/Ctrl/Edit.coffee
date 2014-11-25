@@ -43,17 +43,22 @@ define [
 		applyRuleToUsers: ->
 			page = -1
 			@apply_started = true
+			@apply_page = '0'
+			@apply_num_pages = '?'
 
 			doRequest = =>
 				page++
 				@Api.sendGet('/user_rules_apply/' + @user_rule.id + '/page_' + page).success( (result) =>
 					if !result.completed and result.success
-						@apply_log += 'Done batch #' + (page + 1) + ' ...<br>'
+						@apply_page = result.page
+						@apply_num_pages = result.num_pages
 						doRequest()
 					else
-						@apply_log += 'Completed<br>'
+						@apply_done = true
+						@apply_done_status = 'success'
 				).error( =>
-					@apply_log = 'Error occurred<br>'
+					@apply_done = true
+					@apply_done_status = 'error'
 				)
 
 			doRequest()

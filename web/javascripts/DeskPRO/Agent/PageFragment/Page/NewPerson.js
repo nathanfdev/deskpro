@@ -50,12 +50,6 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
 			self.updateUi();
 		});
 
-//        DeskPRO_Window.util.fileupload(el, {
-//            uploadTemplate: $('.template-upload', el),
-//            downloadTemplate: $('.template-download', el),
-//            url: BASE_URL + 'agent/misc/parse-vcard'
-//        });
-
         var wrapper = $(this.wrapper).find('.upload-vcard-wrap');
         
         console.log(wrapper);
@@ -174,7 +168,7 @@ DeskPRO.Agent.PageFragment.Page.NewPerson = new Orb.Class({
                 });
             } else {
 	            var formData = { custom_fields_definitions: self.$scope.custom_fields_definitions };
-	            $('input[type="text"], input[type="password"], input:checked, select, textarea', this.form).each(function(){
+	            $('input[type="text"], input[type="password"], input[type="hidden"], input:checked, select, textarea', this.form).each(function(){
 					var name = $(this).attr('name');
 					var val  = $(this).val();
 					if (name && val !== null) {
