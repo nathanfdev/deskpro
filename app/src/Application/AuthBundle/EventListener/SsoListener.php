@@ -98,7 +98,9 @@ class SsoListener implements EventSubscriberInterface
     ) {
         $session = $request->getSession();
         if (
-            $session->has(LogoutHandler::RECENT_LOGOUT)
+            null !== $session
+            && $session->isStarted()
+            && $session->has(LogoutHandler::RECENT_LOGOUT)
             && $session->get(LogoutHandler::RECENT_LOGOUT) > 0
         ) {
             $session->remove(LogoutHandler::RECENT_LOGOUT);

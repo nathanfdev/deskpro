@@ -37,7 +37,6 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PortalController extends AbstractController
 {
@@ -59,9 +58,17 @@ class PortalController extends AbstractController
     }
 
 
-    public function flashesAction()
+    public function flashesAction(Request $request)
     {
-        return $this->render('Theme:Portal:flashes.html.twig');
+        $flashes = array();
+        $session = $request->getSession();
+        if (null !== $session && $session->isStarted()) {
+            $flashes = $session->getFlashBag()->all();
+        }
+
+        return $this->render('Theme:Portal:flashes.html.twig', array(
+            'flashes' => $flashes
+        ));
     }
 
 

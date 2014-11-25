@@ -89,7 +89,8 @@ class AuthTwigExtension extends \Twig_Extension
 
         ///////////////////////////////////////////////////////////////////////
         // If the user just logged out, we don't want to be logging him in immediately
-        if ($request->hasSession() && $request->getSession()->get(LogoutHandler::RECENT_LOGOUT) > 0) {
+        $session = $request->getSession();
+        if (null !== $session && $session->isStarted() && $session->get(LogoutHandler::RECENT_LOGOUT) > 0) {
             return '';
         }
 
