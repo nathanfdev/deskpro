@@ -39,10 +39,26 @@ class Build1416907908 extends AbstractBuild
 	public function run()
 	{
 		$this->out("Upgrade JIRA Issues");
-		$this->execMutateSql("ALTER TABLE jira_issues DROP FOREIGN KEY FK_88385CE2700047D2");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD status_id INT DEFAULT NULL, DROP last_synced, CHANGE created created DATETIME NOT NULL");
-		$this->execMutateSql("ALTER TABLE jira_issues ADD CONSTRAINT FK_88385CE2700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE");
+
+		// Correct FK: Should have delete cascade
+		$this->execMutateSql("ALTER TABLE jira_issues DROP FOREIGN KEY FK_88385CE2700047D2", true);
+		$this->execMutateSql("ALTER TABLE jira_issues ADD CONSTRAINT FK_88385CE2700047D2 FOREIGN KEY (ticket_id) REFERENCES tickets (id) ON DELETE CASCADE", true);
+
+		// Add: status_id
+		// Remove: last_synced
+		// Changed: Rename created -> created_unix (tmp), add created as datetime
+		$this->execMutateSql("ALTER TABLE jira_issues ADD status_id INT DEFAULT NULL, DROP last_synced, CHANGE created created_unix int(11) NOT NULL");
+		$this->execMutateSql("ALTER TABLE jira_issues ADD created DATETIME NOT NULL");
+
+		// Convert old unix timestamp field to datetime,
+		// then drop tmp created_unix field
+		$this->execMutateSql("UPDATE jira_issues SET `created` = FROM_UNIXTIME(created_unix)");
+		$this->execMutateSql("ALTER TABLE jira_issues DROP created_unix ");
+
+		// Remove old app
 		$this->execMutateSql("DELETE FROM app_packages WHERE name = 'deskpro_jira'");
+
+		// Drop old comments table
 		$this->execMutateSql("DROP TABLE IF EXISTS `jira_issue_comments`");
 	}
 }

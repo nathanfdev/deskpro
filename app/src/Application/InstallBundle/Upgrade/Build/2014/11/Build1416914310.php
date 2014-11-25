@@ -38,10 +38,14 @@ class Build1416914310 extends AbstractBuild
 {
 	public function run()
 	{
-		$this->out("Add app_packages.trigger_events");
-		$this->execMutateSql("ALTER TABLE app_packages ADD trigger_events LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
+		$did_do = $this->container->getDb()->fetchColumn("SELECT data FROM install_data WHERE build = 1416914310 AND name = 'did_app_triggers'");
+		if (!$did_do) {
+			$this->out("Add app_packages.trigger_events");
+			$this->execMutateSql("ALTER TABLE app_packages ADD trigger_events LONGTEXT NOT NULL COMMENT '(DC2Type:json_array)'");
 
-		$this->out("Add ticket_triggers.by_app_mode");
-		$this->execMutateSql("ALTER TABLE ticket_triggers ADD by_app_mode LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)'");
+			$this->out("Add ticket_triggers.by_app_mode");
+			$this->execMutateSql("ALTER TABLE ticket_triggers ADD by_app_mode LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)'");
+			$this->container->getDb()->insertIgnore('install_data', array('build' => '1416914310', 'name' => 'did_app_triggers', 'data' => '1'));
+		}
 	}
 }
