@@ -78,6 +78,11 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
      */
     protected $created_object_id;
 
+    /**
+     * @var null|array
+     */
+    protected $created_object_info = null;
+
 
     /**
      * @return \Application\DeskPRO\Entity\Ticket|\Application\DeskPRO\Entity\TicketMessage|null
@@ -455,6 +460,10 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         } else {
             $this->created_object_type = 'ticket_message';
             $this->created_object_id   = $obj->id;
+            $this->created_object_info = array(
+                'ticket_id'         => $obj->ticket->id,
+                'ticket_message_id' => $obj->id
+            );
         }
 
         return $obj;
@@ -548,7 +557,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $fwd_proc = new ProcessAgentFwd($this->account, $person, $ticket_email);
             $fwd_proc->setLogger($this->logger);
 
-            $obj = $fwd_proc->run();
+            $created = $fwd_proc->run();
 
             if ($err = $fwd_proc->getError()) {
                 $this->error = $err;
@@ -558,9 +567,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
 
             $this->created_object_type = 'ticket';
-            $this->created_object_id   = $obj->id;
+            $this->created_object_id   = $created['ticket']->id;
+            $this->created_object_info = array(
+                'ticket_id'         => $created['ticket']->id,
+                'ticket_message_id' => $created['ticket_message']->id
+            );
 
-            return $obj;
+            return $created['ticket'];
         } else {
             $this->logMessage('[TicketGatewayProcessor] runNewTicket');
 
@@ -571,7 +584,7 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             $new_proc = new ProcessNew($this->account, $person, $ticket_email, $translator);
             $new_proc->setLogger($this->logger);
 
-            $obj = $new_proc->run();
+            $created = $new_proc->run();
 
             if ($err = $new_proc->getError()) {
                 $this->error = $err;
@@ -581,9 +594,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
             }
 
             $this->created_object_type = 'ticket';
-            $this->created_object_id   = $obj->id;
+            $this->created_object_id   = $created['ticket']->id;
+            $this->created_object_info = array(
+                'ticket_id'         => $created['ticket']->id,
+                'ticket_message_id' => $created['ticket_message']->id
+            );
 
-            return $obj;
+            return $created['ticket'];
         }
     }
 
@@ -655,5 +672,14 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
     public function getCreatedObjectType()
     {
         return $this->created_object_type;
+    }
+
+
+    /**
+     * @return array|null
+     */
+    public function getCreatedObjectInfo()
+    {
+        return $this->created_object_info;
     }
 }

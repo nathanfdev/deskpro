@@ -123,6 +123,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     protected $object_id = '';
 
     /**
+     * @var array|null
+     */
+    protected $object_info = null;
+
+    /**
      * Just the headers portion of the email
      *
      * @var string
@@ -301,6 +306,28 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 
 
     /**
+     * @param array $info
+     */
+    public function setObjectInfo(array $info = null)
+    {
+        if (!$info) {
+            $this->setModelField('object_info', null);
+        } else {
+            $this->setModelField('object_info', $info);
+        }
+    }
+
+
+    /**
+     * @return array
+     */
+    public function getObjectInfo()
+    {
+        return $this->object_info ? $this->object_info : array();
+    }
+
+
+    /**
      * @param string $status
      */
     public function setStatus($status)
@@ -316,6 +343,8 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         if (!$deep) {
             unset($data['source_info']);
         }
+
+        $data['object_info'] = $this->object_info;
 
         return $data;
     }
@@ -342,6 +371,12 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'uid', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'uid' ));
         $metadata->mapField(array( 'fieldName' => 'object_type', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_type', ));
         $metadata->mapField(array( 'fieldName' => 'object_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'object_id', ));
+        $metadata->mapField(array(
+            'columnName' => 'object_info',
+            'fieldName'  => 'object_info',
+            'type'       => 'json_array',
+            'nullable'   => true,
+        ));
         $metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers', ));
         $metadata->mapField(array( 'fieldName' => 'header_to', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_to', ));
         $metadata->mapField(array( 'fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from', ));

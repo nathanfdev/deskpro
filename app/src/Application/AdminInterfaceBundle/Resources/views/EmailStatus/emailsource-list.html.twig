@@ -47,7 +47,7 @@
 							<td width="150">
 								<select ui-select2 ng-model="ListCtrl.filter.account">
 									<option value="0">Any</option>
-									<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.address') }}</option>
+									<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.use_email_address') }}</option>
 								</select>
 							</td>
 
@@ -115,31 +115,43 @@
 						<th>To</th>
 						<th>Account</th>
 						<th>Subject</th>
-						<th>Object</th>
-						<th>Status</th>
+						<th>Ticket</th>
+						<th>Status <i class="fa fa-question-circle qmark-icon" ng-click="showStatusHelp()" tooltip="Click for more details" tooltip-placement="left" style="cursor: pointer;"></i></th>
 					</tr>
 				</thead>
 				<tbody>
-					<tr ng-repeat="result in ListCtrl.results" ng-class="{'danger': result.status == 'error', 'warning': result.status == 'rejected'}">
+					<tr ng-repeat="result in ListCtrl.results">
 						<td class=""><input type="checkbox" ng-model="ListCtrl.massActions[result.id]" ng-change="" style="margin: 0;" /></td>
 						<td class="alt dp-id-col"><a href="{{ ng_href('tickets.ticket_accounts.emailsourcesview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
 						<td style="white-space: nowrap" nowrap dp-date="result.date_created"></td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_from') }}</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
-						<td class="overflow-ellipsis">{{ ng_var('result.email_account.address') }}</td>
+						<td class="overflow-ellipsis">
+							<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: result.email_account.id}') }}">
+								{{ ng_var('result.email_account.use_email_address') }}
+							</a>
+						</td>
 						<td class="overflow-ellipsis">{{ ng_var('result.header_subject') }}</td>
 						<td nowrap>
-							<span ng-if="result.object_id == 0">
-								&mdash;
-							</span>
-							<span ng-if="result.object_id != 0">
-								<span ng-if="result.object_type == 'ticket'" title="New Ticket"><i class="fa fa-envelope"></i> {{ ng_var('result.object_id') }}</span>
-								<span ng-if="result.object_type == 'ticket_message'" title="Reply to a ticket"><i class="fa fa-envelope-o"></i> {{ ng_var('result.object_id') }}</span>
-							</span>
+							<div ng-if="result.object_info.ticket_id">
+								<a ng-href="../agent/#t:{{ ng_var('result.object_info.ticket_id') }}" target="_blank"><i class="fa fa-envelope"></i> {{ ng_var('result.object_info.ticket_id') }}</a>
+								<span ng-if="result.object_info.ticket_message_id">(reply)</span>
+							</div>
+							<div ng-if="!result.object_info.ticket_id">
+								<span ng-if="result.object_id == 0">
+									&mdash;
+								</span>
+								<span ng-if="result.object_id != 0">
+									<span ng-if="result.object_type == 'ticket'" title="New Ticket"><i class="fa fa-envelope"></i> {{ ng_var('result.object_id') }}</span>
+									<span ng-if="result.object_type == 'ticket_message'" title="Reply to a ticket"><i class="fa fa-envelope-o"></i> {{ ng_var('result.object_id') }}</span>
+								</span>
+							</div>
 						</td>
-						<td nowrap>
-							{{ ng_var('result.status') }}
-							<span ng-if="result.error_code">({{ ng_var('result.error_code') }})</span>
+						<td nowrap ng-class="{'danger': result.status == 'error', 'warning': result.status == 'rejected', 'success': result.status == 'complete'}">
+							{{ ng_var('result.status | uppercase') }}
+							<span ng-if="result.error_code" ng-switch="result.error_code">
+								&middot; {{ ng_var('result.error_code') }} <i class="fa fa-question-circle qmark-icon" ng-click="showStatusHelp(result.error_code)" tooltip="Click for more details" tooltip-placement="left" style="cursor: pointer;"></i>
+							</span>
 						</td>
 					</tr>
 				</tbody>
@@ -184,4 +196,6 @@
 
 	<div dp-register-message="reprocess_done">The selected emails have been scheduled for reprocessing.</div>
 	<div dp-register-message="delete_done">The selected emails have been deleted.</div>
+
+	{{ ng_tpl('AdminInterfaceBundle:EmailStatus:emailsource-status-code-modal.html.twig', 'EmailStatus/emailsource-status-code-modal.html') }}
 {% endblock %}

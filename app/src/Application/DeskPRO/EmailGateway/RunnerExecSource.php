@@ -235,7 +235,8 @@ class RunnerExecSource
             return array(
                 'status' => 'okay',
                 'created_object_type' => $proc->getCreatedObjectType(),
-                'created_object_id'   => $proc->getCreatedObjectId()
+                'created_object_id'   => $proc->getCreatedObjectId(),
+                'created_object_info' => $proc->getCreatedObjectInfo()
             );
         } else {
             return array(

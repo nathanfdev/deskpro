@@ -186,7 +186,7 @@ class ProcessNew extends ProcessAbstract
         if (!App::getDataService('Language')->isLangSystemEnabled()) {
             $this->logMessage("Helpdesk is in single-language mode");
         } elseif ($this->person->getRealLanguage()) {
-            $this->logMessage("Person has language set: " . $this->person->getRealLanguage()->id . " " . $this->person->getRealLanguage()->title);
+            $this->logMessage("Person has language set: ".$this->person->getRealLanguage()->id." ".$this->person->getRealLanguage()->title);
         } else {
             $detect_body = strip_tags($email_info->body);
             if (strlen($detect_body) < 300) {
@@ -194,7 +194,7 @@ class ProcessNew extends ProcessAbstract
             } else {
                 /** @var $lang_detect \Application\DeskPRO\Languages\Detect */
                 $lang_detect = App::getSystemService('language_detect');
-                $this->logMessage("Detectable languages: " . implode(', ', $lang_detect->getDetectableLanguages()));
+                $this->logMessage("Detectable languages: ".implode(', ', $lang_detect->getDetectableLanguages()));
 
                 $lang = $lang_detect->detectLanguage($detect_body);
                 if ($lang) {
@@ -265,10 +265,10 @@ class ProcessNew extends ProcessAbstract
         }
 
         $ticket = $this->getTicketManager()->createTicket();
-        $ticket->subject         = $subject;
-        $ticket->person          = $this->person;
-        $ticket->status          = 'awaiting_agent';
-        $ticket->email_account   = $this->account;
+        $ticket->subject = $subject;
+        $ticket->person = $this->person;
+        $ticket->status = 'awaiting_agent';
+        $ticket->email_account = $this->account;
         $ticket->creation_system = 'gateway.person';
 
         if ($use_lang) {
@@ -359,7 +359,7 @@ class ProcessNew extends ProcessAbstract
                 ));
             }
 
-            $this->logMessage('[TicketGatewayProcessor] Created ticket ' . $ticket['id']);
+            $this->logMessage('[TicketGatewayProcessor] Created ticket '.$ticket['id']);
 
             App::getDb()->commit();
         } catch (\Exception $e) {
@@ -367,6 +367,9 @@ class ProcessNew extends ProcessAbstract
             throw $e;
         }
 
-        return $ticket;
+        return array(
+            'ticket' => $ticket,
+            'ticket_message' => $ticket_message,
+        );
     }
 }

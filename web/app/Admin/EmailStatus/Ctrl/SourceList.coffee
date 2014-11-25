@@ -2,7 +2,6 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
   class Admin_EmailStatus_Ctrl_SourceList extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_EmailStatus_Ctrl_SourceList'
     @CTRL_AS = 'ListCtrl'
-    @DEPS    = []
 
     init: ->
       @filter = {
@@ -25,6 +24,15 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
 
         @changePage()
       )
+
+      @$scope.showStatusHelp = =>
+        modalInstance = @$modal.open({
+          templateUrl: @getTemplatePath('EmailStatus/emailsource-status-code-modal.html'),
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+            $scope.dismiss = ->
+              $modalInstance.dismiss()
+          ]
+        })
 
     initialLoad: ->
       p1 = @loadResults()
