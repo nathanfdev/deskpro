@@ -600,7 +600,5 @@ $CONFIG['agent_vendors_css'] = array(
         'vendor/bootstrap/css/modal.css',
         'vendor/bootstrap/css/dropdown.css',
         'vendor/bootstrap/css/table.css',
-
-        'vendor/angular-bootstrap-datetimepicker-master/src/css/datetimepicker.css',
     )
 );

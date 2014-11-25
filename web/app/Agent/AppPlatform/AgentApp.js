@@ -1,11 +1,12 @@
 define([
   'angular',
-  'Agent/App/AppNgModules',
   'DeskPRO/Util/Functions',
   'DeskPRO/Util/Strings',
   'DeskPRO/Directive/DpLabel',
   'DeskPRO/Service/LabelDefinition',
   'DeskPRO/Directive/DpTicketQuickActions',
+  'DeskPRO/Directive/DpSubmitForm',
+  'DeskPRO/Directive/JIRAFormWidget',
   'DeskPRO/Service/Person',
   'DeskPRO/Service/AgentTeam',
   'DeskPRO/CategoryBuilder/Module',
@@ -18,12 +19,13 @@ define([
   'ngContextMenu',
 ], function(
   angular,
-  AppNgModules,
   Functions,
   Strings,
   DeskPRO_Directive_DpLabel,
   DeskPRO_Service_LabelDefinition,
   DeskPRO_Directive_DpTicketQuickActions,
+  DeskPRO_Directive_DpSubmitForm,
+  DeskPRO_Directive_JIRAFormWidget,
   DeskPRO_Service_Person,
   DeskPRO_Service_AgentTeam,
   DpCategoryBuilder
@@ -1054,8 +1056,8 @@ define([
 
 	AgentApp.directive('dpLabel', DeskPRO_Directive_DpLabel);
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
-	AgentApp.directive('dpSubmitForm', DpSubmitForm);
-	AgentApp.directive('jiraFormWidget', JIRAFormWidget);
+	AgentApp.directive('dpSubmitForm', DeskPRO_Directive_DpSubmitForm);
+	AgentApp.directive('jiraFormWidget', DeskPRO_Directive_JIRAFormWidget);
 
 	return AgentApp;
 });
