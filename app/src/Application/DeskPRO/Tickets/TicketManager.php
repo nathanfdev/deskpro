@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Monolog\Logger as DpLogger;
@@ -514,6 +515,22 @@ class TicketManager
 		$context = new ExecutorContext($this->createNewLogger());
 		$context->getVars()->setArray($this->auto_vars);
 		$context->setEventType($event_type);
+		$context->setEventMethod($event_method, $event_method_options);
+		return $context;
+	}
+
+
+	/**
+	 * @param AppInstance $app
+	 * @param string $event_method
+	 * @param array $event_method_options
+	 * @return ExecutorContext
+	 */
+	public function createAppExecutorContext(AppInstance $app, $event_method = 'general', array $event_method_options = array())
+	{
+		$context = new ExecutorContext($this->createNewLogger());
+		$context->getVars()->setArray($this->auto_vars);
+		$context->setEventType('update.app.' . $app->package->name . '.' . $app->id);
 		$context->setEventMethod($event_method, $event_method_options);
 		return $context;
 	}

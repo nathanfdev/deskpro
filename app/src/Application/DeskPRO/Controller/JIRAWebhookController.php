@@ -86,6 +86,11 @@ class JIRAWebhookController extends AbstractController
 	 */
     protected function onIssueUpdated(array $data)
     {
+		$app = $this->container->getAppManager()->getPackageApp('deskpro_jira');
+		if (!$app) {
+			throw $this->createNotFoundException();
+		}
+
 	    $manager = $this->container->getTicketManager();
 	    $em = $this->em;
 	    $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
@@ -93,14 +98,8 @@ class JIRAWebhookController extends AbstractController
 
 	    foreach ($issues as $issue) {
 		    /** @var $issue JiraIssue */
-
-		    if (!$performer = $issue->ticket->agent) {
-			    $performer = $em->getRepository('DeskPRO:Person')->findOneBy(array('is_agent' => true, 'is_deleted' => false));
-		    }
-
 		    $state = $issue->ticket->getStateChangeRecorder();
-		    $context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_API);
-		    $context->setPersonContext($performer);
+			$context = $manager->createAppExecutorContext($app, 'issue_update');
 
 		    if (isset($data['comment']) && $meta->getApiUsername() !== $data['comment']['author']['name']) {
 			    $state->recordData('jira.comment', $data['comment']);
@@ -123,6 +122,7 @@ class JIRAWebhookController extends AbstractController
 		    }
 
 		    if (!$state->isTrivialChangeSet()) {
+				$manager->markAsManaged($issue->ticket);
 			    $manager->saveTicket($issue->ticket, $context);
 		    }
 	    }

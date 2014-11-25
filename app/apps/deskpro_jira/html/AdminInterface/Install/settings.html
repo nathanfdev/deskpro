@@ -14,6 +14,14 @@
 			</p>
 		</div>
 		<div class="panel-body" ng-if="!no_curl_support">
+            <div class="form-group">
+                <div class="col-lg-12" style="font-size: 130%">
+                    <i class="fa fa-question-circle"></i> Please refer to our knowledgebase for information about the JIRA App and how to install it.
+                    <br/>
+                    <a href="https://support.deskpro.com/kb/articles/365" target="_blank" class="btn btn-default btn-lg" style="margin-top: 10px;">Read Install Instructions</a>
+                </div>
+            </div>
+
 			<!--#include file="AdminInterface/Install/settings-list.html" -->
 
             <div class="form-group">
@@ -36,7 +44,18 @@
                     </div>
 
                     <div ng-show="meta_errors.token">
-                        <br />
+                        <p>
+                            You need to connect JIRA to DeskPRO. Click the button below. You will be asked to log-in.
+                        </p>
+                        <p>
+                            <strong>Note:</strong> The user you log-in with here is very important. The user must have permissions
+                            to view and perform actions on the projects you want to enable in DeskPRO.
+                        </p>
+                        <p>
+                            It is recommended that you create a special DeskPRO user in JIRA. You should NOT use your own JIRA user
+                            or any other user that a real person will use (this is so things like triggers work properly).
+                        </p>
+                        <br/>
                         <button class="btn btn-primary" type="button" ng-click="getAccessToken()">
                             Get Access Token
                         </button>
@@ -64,20 +83,17 @@
                         </div>
                         <br /><br />
 
-                        <div class="col-lg-4">
-                            Fields
-                        </div>
-                        <div class="col-lg-8">
+                        <div class="col-lg-12">
                             <table class="table">
                                 <tr>
                                     <th>
-                                        Field
+                                        Fields
                                     </th>
-                                    <th class="text-center" style="width: 110px;">
-                                        Detail View
-                                        <i class="fa fa-question-circle qmark-icon" tooltip='Fields enabled on the detail view will be visible when you click "View Details" on a JIRA issue.' tooltip-placement="left"></i>
+                                    <th class="text-center" style="width: 170px;">
+                                        Create &amp; Detail View
+                                        <i class="fa fa-question-circle qmark-icon" tooltip='Fields enabled on the detail view will be the fields displayed on the "Create Issue" window and will be visible when you click "View Details" on a JIRA issue.' tooltip-placement="left"></i>
                                     </th>
-                                    <th class="text-center" style="width: 110px;">
+                                    <th class="text-center" style="width: 170px;">
                                         List View
                                         <i class="fa fa-question-circle qmark-icon" tooltip='Fields enabled on the list view will be visible in the main list of JIRA issues. This list appears in the sidebar to the right of each ticket.' tooltip-placement="left"></i>
                                     </th>

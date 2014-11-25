@@ -142,7 +142,7 @@ class ManifestReader
 				$setter = Strings::underscoreToCamelCase('set_' . str_replace('.', '_', $f));
 				$value = Arrays::getValue($this->data, $f, '___dp_unset___');
 				if ($value === '___dp_unset___') {
-					if ($f == 'tags' || $f == 'is_native') {
+					if ($f == 'tags' || $f == 'is_native' || $f == 'trigger_events') {
 						// allowed to be unset
 						continue;
 					}

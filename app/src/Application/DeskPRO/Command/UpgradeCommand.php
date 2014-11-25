@@ -53,6 +53,7 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		     ->addOption('info', null, InputOption::VALUE_NONE, 'Set this flag to get info about your current instance')
 		     ->addOption('dobuildrun', null, InputOption::VALUE_REQUIRED, 'Runs a build script. Usually used internally.')
 		     ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
+		     ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
 		     ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
 		     ->setHelp("This command executes the upgrader to bring your database to the same version the filesystem is");
 	}
@@ -128,6 +129,18 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 					}
 			}
 
+			return 0;
+		}
+
+		#------------------------------
+		# Set build
+		#------------------------------
+
+		if ($input->getOption('setbuild')) {
+			$num = time();
+			$logger->info("Setting deskpro_build = " . $num);
+			App::getDb()->replace('settings', array('value' => $num, 'name' => 'core.deskpro_build'));
+			$output->writeln("<info>Done</info>");
 			return 0;
 		}
 
