@@ -32,21 +32,29 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\DependencyInjection;
+namespace Application\FormBundle\Validator\Constraints;
 
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\Validator\Constraint;
 
-class FormExtension extends Extension
+class ValidCaptcha extends Constraint
 {
-    public function load(array $config, ContainerBuilder $container)
+    public $message = 'This value is not a valid captcha.';
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTargets()
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('form_services.yml');
-        $loader->load('validator_services.yml');
+        return Constraint::PROPERTY_CONSTRAINT;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validatedBy()
+    {
+        return 'deskpro.captcha';
     }
 }
  

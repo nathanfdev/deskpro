@@ -1,0 +1,6 @@
+services:
+  deskpro.validator.valid_captcha:
+    class: Application\FormBundle\Validator\Constraints\ValidCaptchaValidator
+    arguments: [@brand_stack, @request_stack]
+    tags:
+      - { name: validator.constraint_validator, alias: deskpro.captcha }

@@ -23,6 +23,11 @@ services:
     class: Application\FormBundle\Form\Type\PriorityType
     tags:
       - { name: form.type, alias: deskpro_priority }
+  form.captcha:
+    class: Application\FormBundle\Form\Type\CaptchaType
+    arguments: [@brand_stack]
+    tags:
+      - { name: form.type, alias: deskpro_captcha }
   form.heirarchical_entity:
     class: Application\FormBundle\Form\Type\HeirarchicalEntity
     tags:

@@ -37,6 +37,7 @@ namespace Application\FormBundle\Form\Type;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\FormBundle\Form\TicketFormContext;
 use Application\FormBundle\FormFields;
+use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -100,7 +101,7 @@ class TicketType extends AbstractType
         ));
         $resolver->setAllowedTypes(array(
             'ticket_layout' => 'Application\\DeskPRO\\Entity\\TicketLayout',
-            'person' => 'Application\\DeskPRO\\Entity\\Person'
+            'person'        => 'Application\\DeskPRO\\Entity\\Person'
         ));
     }
 
@@ -205,7 +206,7 @@ class TicketType extends AbstractType
     {
         $form_context->getForm()->add('name', 'text', array(
             'property_path' => 'person.name',
-            'empty_data' => $form_context->getPerson()->getName()
+            'empty_data'    => $form_context->getPerson()->getName()
         ));
     }
 
@@ -254,6 +255,13 @@ class TicketType extends AbstractType
 
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field)
     {
+        $form_context->getForm()->add('captcha', 'deskpro_captcha', array(
+            'mapped'      => false,
+            'error_bubbling' => false,
+            'constraints' => array(
+                new ValidCaptcha()
+            )
+        ));
     }
 
     private function addCc(TicketFormContext $form_context, LayoutField $field)
