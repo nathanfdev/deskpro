@@ -5,7 +5,7 @@ define([
   'AppPlatformConfig',
   'Agent/AppPlatform/Context/AppContext',
   'DeskPRO/Util/Util'
-], function(angular, AgentApp, AppPlatform, AppPlatformConfig, AppContext, Util) {
+], function(angular, AgentApp, AppPlatformClass, AppPlatformConfig, AppContext, Util) {
 
   if (!window.console) {
     window.console = {
@@ -51,19 +51,40 @@ define([
       var $html = angular.element(document.getElementsByTagName('html')[0]),
           loadContexts = [],
           loadingConfigs = [],
+          donePackageServices = {},
           i,
           self = this;
 
-      for (i = 0; i < AppPlatformConfig.length; i++) {
-        if (AppPlatformConfig[i].contextName != 'Agent/AppPlatform/Context/AppContext') {
-          loadContexts.push(AppPlatformConfig[i].contextName);
-          loadingConfigs.push(AppPlatformConfig[i]);
+      AppPlatformConfig.forEach(function(appConfig) {
+        if (appConfig.contextName != 'Agent/AppPlatform/Context/AppContext') {
+          loadContexts.push(appConfig.contextName);
+          loadingConfigs.push(appConfig);
         } else {
-          AppPlatformConfig[i].contextClass = AppContext;
+          appConfig.contextClass = AppContext;
         }
-      }
+
+        // Register each AppContext as a service
+        if (!donePackageServices[appConfig.packageName]) {
+          donePackageServices[appConfig.packageName] = true;
+          AgentApp.factory('$' + appConfig.packageName, function() {
+            if (!window.AppPlatform) {
+              throw "The app platform is not initialized yet.";
+            }
+
+            var a = window.AppPlatform.getPackageApp(appConfig.packageName);
+
+            if (!a) {
+              throw "The app platform is not initialized yet.";
+            }
+
+            return a;
+          });
+        }
+      });
 
       angular.element().ready(function() {
+
+        window.AppPlatform = new AppPlatformClass(AgentApp);
 
         $html.addClass('ng-app');
 
@@ -73,35 +94,34 @@ define([
           }
         }
 
-        AgentApp.run(['$timeout', '$injector', function($timeout, $injector) {
+        AgentApp.run(['$injector', function($injector) {
           // Legacy vars
           AgentApp.dpInjector = $injector;
-          window.AppPlatform = new AppPlatform(AgentApp);
-
-          if (loadContexts.length) {
-            require(loadContexts, function() {
-              for (var i = 0; i < loadContexts.length; i++) {
-                loadingConfigs[i].contextClass = arguments[i];
-              }
-
-              self.startPage();
-            });
-          } else {
-            self.startPage();
-          }
+          self.startPage();
         }]);
 
-        angular.bootstrap($html, ['AgentApp']);
-        angular.resumeBootstrap();
+        if (loadContexts.length) {
+          require(loadContexts, function() {
+            for (var i = 0; i < loadContexts.length; i++) {
+              loadingConfigs[i].contextClass = arguments[i];
+            }
+
+            for (var i = 0; i < AppPlatformConfig.length; i++) {
+              AppPlatform.registerApp(AppPlatformConfig[i].contextClass, AppPlatformConfig[i]);
+            }
+
+            angular.bootstrap($html, ['AgentApp']);
+            angular.resumeBootstrap();
+          });
+        } else {
+          angular.bootstrap($html, ['AgentApp']);
+          angular.resumeBootstrap();
+        }
       });
     },
 
     startPage: function() {
       window.DP_ONLOAD();
-
-      for (var i = 0; i < AppPlatformConfig.length; i++) {
-        window.AppPlatform.registerApp(AppPlatformConfig[i].contextClass, AppPlatformConfig[i]);
-      }
 
       if (window.DeskPRO_Window) {
         window.DeskPRO_Window.initAppPlatform(window.AppPlatform);

@@ -15,6 +15,7 @@ define([
       this._scopeName      = contextParams.scope;
       this._settings       = contextParams.settings;
       this._assets         = contextParams.assets || {};
+      this._run            = contextParams.run || null;
       this._regControllers = {};
       this._createdControllers = {};
     },
@@ -29,6 +30,10 @@ define([
 
     _dp_init: function() {
       this.init();
+
+      if (this._run) {
+        return this.getPlatform().getNgInjector().invoke(this._run, this);
+      }
     },
 
 

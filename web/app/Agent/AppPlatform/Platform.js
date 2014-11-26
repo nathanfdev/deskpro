@@ -5,10 +5,11 @@ define([
 ], function(AppContext) {
   return new Orb.Class({
     initialize: function(ngModule, appsConfig) {
-      this.ngModule   = ngModule;
-      this.apps       = [];
-      this.assetPaths = {};
-      this.isStarted  = false;
+      this.ngModule      = ngModule;
+      this.apps          = [];
+      this.packageToApps = {};
+      this.assetPaths    = {};
+      this.isStarted     = false;
 
       if (appsConfig) {
         for (var i = 0; i < appsConfig.length; i++) {
@@ -45,6 +46,14 @@ define([
 
       appInstanceInfo.platform = this;
 
+      // Handled specially because Orb.Class can't
+      // have properties, only methods, but `run` might
+      // be an array (Angular injection)
+      if (contextClass.run) {
+        appInstanceInfo.run = contextClass.run;
+        delete contextClass.run;
+      }
+
       if (typeof contextClass == 'function') {
         appContext = new contextClass(appInstanceInfo);
       } else {
@@ -56,6 +65,14 @@ define([
       }
 
       this.apps.push(appContext);
+
+      if (appInstanceInfo.packageName) {
+        if (!this.packageToApps[appInstanceInfo.packageName]) {
+          this.packageToApps[appInstanceInfo.packageName] = [];
+        }
+
+        this.packageToApps[appInstanceInfo.packageName].push(appContext);
+      }
 
       // Copy assets to our local assetsPath
       for (i in appInstanceInfo.assets) {
@@ -69,6 +86,21 @@ define([
       }
 
       return appContext;
+    },
+
+
+    /**
+     * Gets an app context for a given package name.
+     *
+     * @param packageName
+     * @returns {AppContext}
+     */
+    getPackageApp: function(packageName) {
+      if (!this.packageToApps[packageName]) {
+        return null;
+      }
+
+      return this.packageToApps[packageName][0];
     },
 
 
