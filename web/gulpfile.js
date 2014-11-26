@@ -24,7 +24,7 @@ var gulp       = require('gulp'),
 //######################################################################################################################
 
 gulp.task('default', ['coffee', 'less', 'sass', 'cpjs', 'loader']);
-gulp.task('prod', ['coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs']);
+gulp.task('prod', ['coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
 
 
 //######################################################################################################################
@@ -287,6 +287,34 @@ gulp.task('rjs', ['coffee', 'loader'], function () {
           break;
         case 'ReportsLoad':
           path.dirname = 'Reports';
+          break;
+      }
+
+      if (path.extname != '.map') {
+        path.extname = '.min.js';
+      }
+    }))
+    .pipe(gulp.dest('./app-build/'))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+});
+
+gulp.task('rjs-agent', ['coffee', 'loader'], function () {
+  var loadFiles = [
+    './app/Agent/AgentLoad.js',
+  ];
+
+  // Hack for agent interface
+  // jquery is included independantly and is version 1.7
+  var rjsConfig = require('./loader-build/rjs-optimizer-config.js');
+  rjsConfig.config.paths.jquery = "empty:";
+
+  return gulp.src(loadFiles, {base: './'})
+    .pipe(using({prefix: '<< Build --'}))
+    .pipe(rjs(rjsConfig.config))
+    .pipe(rename(function (path) {
+      switch (path.basename.replace(/\.js$/, '')) {
+        case 'AgentLoad':
+          path.dirname = 'Agent';
           break;
       }
 
