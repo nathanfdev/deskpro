@@ -876,6 +876,27 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Gets this persons name and their primary email address and wraps each in a span tag. Useful
+     * when you want to apply style to each part individually.
+     *
+     * @return string
+     */
+    public function getDisplayContactHtml()
+    {
+        $name = @htmlspecialchars($this->getDisplayName(), ENT_QUOTES, 'UTF-8');
+
+        $display = array();
+        $display[] = '<span class="contact-name">' . $name . '</span>';
+
+        if ($this->getPrimaryEmailAddress() && $name != $this->getPrimaryEmailAddress()) {
+            $email = @htmlspecialchars("<{$this->getPrimaryEmailAddress()}>", ENT_QUOTES, 'UTF-8');
+            $display[] = '<span class="contact-email">' . $email . '</span>';
+        }
+
+        return implode(' ', $display);
+    }
+
+    /**
      * Gets this persons name and primary email address. If their name is
      * long, we'll try to initialize it or try other ways to shorten the name
      * to the specified number of characters.
