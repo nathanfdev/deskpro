@@ -52,6 +52,11 @@ class TicketType extends AbstractType
 
     public function preDataEvent(FormEvent $event)
     {
+        //
+        // Note that we will probably move these events out into an event subscriber class to de-clutter
+        //
+
+        $ticket = $event->getData();
         $form = $event->getForm();
         $config = $form->getConfig();
 
@@ -63,15 +68,13 @@ class TicketType extends AbstractType
             $config->getOption('ticket_visibility')
         );
 
-
-        //...begin!
         foreach ($context->getActiveLayout()->all() as $field) {
             if (!$context->hasValidVisibility($field)) {
                 continue;
             }
 
-            if ($field->hasCriteria()) {
-                $field->getCriteria(); // make sure it fits the criteria (see LayoutDisplay:62)
+            if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($ticket)) {
+                continue;
             }
 
             $this->addField($context, $field);
