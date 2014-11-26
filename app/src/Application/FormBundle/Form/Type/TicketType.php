@@ -114,14 +114,35 @@ class TicketType extends AbstractType
     {
         switch ($field->getFieldType()) {
 
-            case FormFields::DEPARTMENT:
-                $this->addDepartment($form_context, $field);
-                break;
             case FormFields::SUBJECT:
                 $this->addSubject($form_context, $field);
                 break;
             case FormFields::MESSAGE:
                 $this->addMessage($form_context, $field);
+                break;
+            case FormFields::DEPARTMENT:
+                $this->addDepartment($form_context, $field);
+                break;
+            case FormFields::CATEGORY:
+                $this->addCategory($form_context, $field);
+                break;
+            case FormFields::PRIORITY:
+                $this->addPriority($form_context, $field);
+                break;
+            case FormFields::WORKFLOW:
+                $this->addWorkflow($form_context, $field);
+                break;
+            case FormFields::PRODUCT:
+                $this->addProduct($form_context, $field);
+                break;
+            case FormFields::CAPTCHA:
+                $this->addCaptcha($form_context, $field);
+                break;
+            case FormFields::CC:
+                $this->addCc($form_context, $field);
+                break;
+            case FormFields::ATTACH:
+                $this->addAttach($form_context, $field);
                 break;
             case FormFields::USER_EMAIL:
                 $this->addUserEmail($form_context, $field);
@@ -135,8 +156,14 @@ class TicketType extends AbstractType
             case FormFields::USER_LANGUAGE:
                 $this->addUserLanguage($form_context, $field);
                 break;
+            case FormFields::USER_FIELD:
+                $this->addCustomUserField($form_context, $field);
+                break;
             case FormFields::TICKET_FIELD:
                 $this->addCustomTicketField($form_context, $field);
+                break;
+            case FormFields::CUSTOM_FIELD:
+                $this->addCustomCustomField($form_context, $field);
                 break;
 
         }
@@ -192,6 +219,45 @@ class TicketType extends AbstractType
 
     private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field)
     {
-        // finds info from the db for the custom type to determine the "type" and passed options
+        // TODO: finds info from the db for the custom type to determine the "type" and passed options
+    }
+
+    private function addCustomUserField(TicketFormContext $form_context, LayoutField $field)
+    {
+        // TODO: finds info from the db for the custom type to determine the "type" and passed options
+    }
+
+    private function addCustomCustomField(TicketFormContext $form_context, LayoutField $field)
+    {
+        // TODO: finds info from the db for the custom type to determine the "type" and passed options
+    }
+
+    private function addCategory(TicketFormContext $form_context, LayoutField $field)
+    {
+
+    }
+
+    private function addPriority(TicketFormContext $form_context, LayoutField $field)
+    {
+    }
+
+    private function addWorkflow(TicketFormContext $form_context, LayoutField $field)
+    {
+    }
+
+    private function addProduct(TicketFormContext $form_context, LayoutField $field)
+    {
+    }
+
+    private function addCaptcha(TicketFormContext $form_context, LayoutField $field)
+    {
+    }
+
+    private function addCc(TicketFormContext $form_context, LayoutField $field)
+    {
+    }
+
+    private function addAttach(TicketFormContext $form_context, LayoutField $field)
+    {
     }
 }

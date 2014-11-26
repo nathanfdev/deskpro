@@ -45,101 +45,13 @@ class FormFields
     const USER_NAME = 'user_name';
     const USER_TIMEZONE = 'user_timezone';
     const USER_LANGUAGE = 'user_language';
+    const USER_FIELD = 'user_field';
+    const CUSTOM_FIELD = 'custom_field';
+    const CATEGORY = 'category';
+    const PRIORITY = 'priority';
+    const WORKFLOW = 'workflow';
+    const PRODUCT = 'product';
+    const CAPTCHA = 'captcha';
+    const CC = 'cc';
+    const ATTACH = 'attach';
 }
-
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1754]
-//  private 'field_type' => string 'department' (length = 10)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1755]
-//  private 'field_type' => string 'subject' (length = 7)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1756]
-//  private 'field_type' => string 'ticket_field' (length = 12)
-//  private 'field_id' => string '2' (length = 1)
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1757]
-//  private 'field_type' => string 'user_email' (length = 10)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1758]
-//  private 'field_type' => string 'message' (length = 7)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1759]
-//  private 'field_type' => string 'attach' (length = 6)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1760]
-//  private 'field_type' => string 'cc' (length = 2)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1761]
-//  private 'field_type' => string 'captcha' (length = 7)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1762]
-//  private 'field_type' => string 'user_name' (length = 9)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1763]
-//  private 'field_type' => string 'user_language' (length = 13)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1764]
-//  private 'field_type' => string 'user_timezone' (length = 13)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
-//object(Application\DeskPRO\TicketLayout\LayoutField)[1765]
-//  private 'field_type' => string 'priority' (length = 8)
-//  private 'field_id' => null
-//  private 'on_newticket' => boolean true
-//  private 'on_viewticket' => boolean true
-//  private 'on_viewticket_mode' => string 'value' (length = 5)
-//  private 'on_editticket' => boolean true
-//  private 'criteria' => null
