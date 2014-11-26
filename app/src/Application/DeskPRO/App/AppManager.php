@@ -307,7 +307,7 @@ class AppManager implements AppManagerInterface
         if (isset($this->native_package_configs[$package->name])) {
             return $this->native_package_configs[$package->name];
         } else {
-            $native_config = NativePackageConfig::createFromPackage($package, $this->getAppPath($package->name));
+            $native_config = NativePackageConfig::createFromPackage($package, $this->getAppPath($package->name, true));
             $this->native_package_configs[$package->name] = $native_config;
         }
 
