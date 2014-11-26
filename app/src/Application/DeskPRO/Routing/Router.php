@@ -37,37 +37,37 @@ use Orb\Util\Strings;
 
 class Router extends \Symfony\Bundle\FrameworkBundle\Routing\Router
 {
-	public function setOptions(array $options)
-	{
-		if (isset($options['debug'])) {
-			$options['debug'] = false;
-		}
+    public function setOptions(array $options)
+    {
+        if (isset($options['debug'])) {
+            $options['debug'] = false;
+        }
 
-		return parent::setOptions($options);
-	}
+        return parent::setOptions($options);
+    }
 
-	public function generateUrl($name, $parameters = array())
-	{
-		return $this->getGenerator()->generateUrl($name, $parameters);
-	}
+    public function generateUrl($name, $parameters = array())
+    {
+        return $this->getGenerator()->generateUrl($name, $parameters);
+    }
 
 
-	/**
-	 * Read the ID in a slug: 123-some-title will return 123
-	 *
-	 * If no ID couldbe found, then 0 is returned.
-	 *
-	 * @param $slug
-	 * @return int
-	 */
-	public function getIdFromSlug($slug)
-	{
-		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
+    /**
+     * Read the ID in a slug: 123-some-title will return 123
+     *
+     * If no ID couldbe found, then 0 is returned.
+     *
+     * @param $slug
+     * @return int
+     */
+    public function getIdFromSlug($slug)
+    {
+        $id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
 
-		if (!$id) {
-			return 0;
-		}
+        if (!$id) {
+            return 0;
+        }
 
-		return (int)$id;
-	}
+        return (int)$id;
+    }
 }

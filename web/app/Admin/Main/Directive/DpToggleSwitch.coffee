@@ -1,5 +1,5 @@
 define ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -23,71 +23,71 @@ define ->
     #     locked-tip="This is locked because the 'full' permission is enabled"
     # ></button>
     ###
-	Admin_Main_Directive_DpToggleSwitch = [ ->
-		return {
-			restrict: 'A',
-			require:  ['ngModel', '^?form'],
-			template: """
-				<div class="dp-switch">
-					<label><span></span></label>
-				</div>
-			""",
-			replace: true,
-			link: (scope, element, attrs, ctrls) ->
+  Admin_Main_Directive_DpToggleSwitch = [ ->
+    return {
+      restrict: 'A',
+      require:  ['ngModel', '^?form'],
+      template: """
+        <div class="dp-switch">
+          <label><span></span></label>
+        </div>
+      """,
+      replace: true,
+      link: (scope, element, attrs, ctrls) ->
 
-				ngModel = ctrls[0]
-				formCtrl = ctrls[1] || null
+        ngModel = ctrls[0]
+        formCtrl = ctrls[1] || null
 
-				if formCtrl
-					formCtrl.$addControl(ngModel)
+        if formCtrl
+          formCtrl.$addControl(ngModel)
 
-					element.on('$destroy', ->
-						formCtrl.$removeControl(ngModel)
-					)
+          element.on('$destroy', ->
+            formCtrl.$removeControl(ngModel)
+          )
 
-				ngModel.$viewChangeListeners.push(->
-					ngModel.$render()
-				)
+        ngModel.$viewChangeListeners.push(->
+          ngModel.$render()
+        )
 
-				ngModel.$render = ->
-					val = ngModel.$viewValue
-					if val
-						element.addClass('switch-on')
-						element.removeClass('switch-off')
-					else
-						element.removeClass('switch-on')
-						element.addClass('switch-off')
+        ngModel.$render = ->
+          val = ngModel.$viewValue
+          if val
+            element.addClass('switch-on')
+            element.removeClass('switch-off')
+          else
+            element.removeClass('switch-on')
+            element.addClass('switch-off')
 
-				element.on('click', (ev) ->
-					ev.preventDefault()
-					ev.stopPropagation()
+        element.on('click', (ev) ->
+          ev.preventDefault()
+          ev.stopPropagation()
 
-					if element.hasClass('locked')
-						return
+          if element.hasClass('locked')
+            return
 
-					scope.$apply(->
-						ngModel.$setViewValue(!ngModel.$viewValue)
-					)
-				)
+          scope.$apply(->
+            ngModel.$setViewValue(!ngModel.$viewValue)
+          )
+        )
 
-				if attrs.lockedModel
-					scope.$watch(attrs.lockedModel, (newVal) ->
-						if newVal
-							element.addClass('locked')
-						else
-							element.removeClass('locked')
-					)
+        if attrs.lockedModel
+          scope.$watch(attrs.lockedModel, (newVal) ->
+            if newVal
+              element.addClass('locked')
+            else
+              element.removeClass('locked')
+          )
 
-				if attrs.lockedTip
-					tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>')
-					tipTarget.attr('title', attrs.lockedTip)
-					tipTarget.appendTo(element)
-					tipTarget.tooltip({
-						placement: 'auto top',
-						trigger: 'hover',
-						container: 'body'
-					})
-		}
-	]
+        if attrs.lockedTip
+          tipTarget = angular.element('<div class="mouse-target show-on-locked-on"></div>')
+          tipTarget.attr('title', attrs.lockedTip)
+          tipTarget.appendTo(element)
+          tipTarget.tooltip({
+            placement: 'auto top',
+            trigger: 'hover',
+            container: 'body'
+          })
+    }
+  ]
 
-	return Admin_Main_Directive_DpToggleSwitch
+  return Admin_Main_Directive_DpToggleSwitch

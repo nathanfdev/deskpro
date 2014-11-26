@@ -42,101 +42,100 @@ use Orb\Validator\AbstractValidator;
 
 class NewCommentValidator extends AbstractValidator implements PersonContextInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Comments\NewComment
-	 */
-	protected $newcomment;
+    /**
+     * @var \Application\DeskPRO\Comments\NewComment
+     */
+    protected $newcomment;
 
-	/**
-	 * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
-	 */
-	protected $captcha;
+    /**
+     * @var \Application\DeskPRO\Form\Captcha\CaptchaAbstract
+     */
+    protected $captcha;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person_context;
 
-	public function setPersonContext(Entity\Person $person)
-	{
-		$this->person_context = $person;
-	}
+    public function setPersonContext(Entity\Person $person)
+    {
+        $this->person_context = $person;
+    }
 
-	public function init()
-	{
+    public function init()
+    {
 
-	}
+    }
 
-	/**
-	 * @param CaptchaAbstract $captcha
-	 */
-	public function setCaptcha(CaptchaAbstract $captcha)
-	{
-		$this->captcha = $captcha;
-	}
+    /**
+     * @param CaptchaAbstract $captcha
+     */
+    public function setCaptcha(CaptchaAbstract $captcha)
+    {
+        $this->captcha = $captcha;
+    }
 
-	/**
-	 * Check $value to see if its valid.
-	 *
-	 * @param \Application\DeskPRO\Comments\NewComment $newfeedback
-	 * @return bool
-	 */
-	protected function checkIsValid($newcomment)
-	{
-		if (!$this->captcha) {
-			if (App::getSetting('user.publish_captcha')) {
-				if ($this->person_context && (!$this->person_context->getId() || App::getSetting('user.always_show_captcha'))) {
-					$this->captcha = App::getSystemObject('form_captcha', array('type' => 'new_comment'));
-				}
-			}
-		}
+    /**
+     * Check $value to see if its valid.
+     *
+     * @param  \Application\DeskPRO\Comments\NewComment $newfeedback
+     * @return bool
+     */
+    protected function checkIsValid($newcomment)
+    {
+        if (!$this->captcha) {
+            if (App::getSetting('user.publish_captcha')) {
+                if ($this->person_context && (!$this->person_context->getId() || App::getSetting('user.always_show_captcha'))) {
+                    $this->captcha = App::getSystemObject('form_captcha', array('type' => 'new_comment'));
+                }
+            }
+        }
 
-		$this->newcomment = $newcomment;
+        $this->newcomment = $newcomment;
 
-		$validator = new \Orb\Validator\StringLength(array('min' => 3));
-		if (!$validator->isValid($this->newcomment->content)) {
-			$this->addError('content.short');
-		}
+        $validator = new \Orb\Validator\StringLength(array('min' => 3));
+        if (!$validator->isValid($this->newcomment->content)) {
+            $this->addError('content.short');
+        }
 
-		if (!$this->newcomment->getPersonContext() || !$this->newcomment->getPersonContext()->getId()) {
-			$validator = new \Orb\Validator\StringLength(array('min' => 2));
-			if (!$validator->isValid($this->newcomment->name)) {
-				$this->addError('name.short');
-			}
+        if (!$this->newcomment->getPersonContext() || !$this->newcomment->getPersonContext()->getId()) {
+            $validator = new \Orb\Validator\StringLength(array('min' => 2));
+            if (!$validator->isValid($this->newcomment->name)) {
+                $this->addError('name.short');
+            }
 
-			if (!App::getSystemService('email_address_validator')->isValidUserEmail($this->newcomment->email)) {
-				$this->addError('email.invalid');
-			}
-		}
+            if (!App::getSystemService('email_address_validator')->isValidUserEmail($this->newcomment->email)) {
+                $this->addError('email.invalid');
+            }
+        }
 
-		if ($this->captcha) {
-			if (!$this->captcha->validate()) {
-				$this->addError('captcha.invalid');
-			}
-		}
+        if ($this->captcha) {
+            if (!$this->captcha->validate()) {
+                $this->addError('captcha.invalid');
+            }
+        }
 
-		if ($this->errors) {
-			return false;
-		}
+        if ($this->errors) {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
+    public function checkDupe($newcomment)
+    {
+        $this->newcomment = $newcomment;
 
-	public function checkDupe($newcomment)
-	{
-		$this->newcomment = $newcomment;
+        $content = $this->newcomment->content;
+        $person  = $this->newcomment->getPersonContext();
+        $name    = $this->newcomment->name;
+        $email   = $this->newcomment->email;
 
-		$content = $this->newcomment->content;
-		$person  = $this->newcomment->getPersonContext();
-		$name    = $this->newcomment->name;
-		$email   = $this->newcomment->email;
-
-		return App::getOrm()->getRepository($this->newcomment->getClass())->getDuplicate(
-			$content,
-			$person,
-			$name,
-			$email
-		);
-	}
+        return App::getOrm()->getRepository($this->newcomment->getClass())->getDuplicate(
+            $content,
+            $person,
+            $name,
+            $email
+        );
+    }
 }

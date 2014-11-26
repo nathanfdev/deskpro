@@ -3,7 +3,7 @@
 DIR_ROOT="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )/../../"
 DIR_VENDOR=$DIR_ROOT/app/vendor
 DIR_WEB_VENDOR=$DIR_ROOT/web/vendor
-DIR_WEB_BOWER=$DIR_ROOT/web/app/bower_components
+DIR_WEB_BOWER=$DIR_ROOT/web/bower_components
 
 ########################################################################################################################
 # PHP Vendors

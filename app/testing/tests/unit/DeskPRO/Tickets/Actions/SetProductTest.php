@@ -8,72 +8,73 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetProductTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private function getMockContainer()
-	{
-		if ($this->container) return $this->container;
-		$this->container = ContainerMock::create()->withProducts()->get();
-		return $this->container;
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private function getMockContainer()
+    {
+        if ($this->container) return $this->container;
+        $this->container = ContainerMock::create()->withProducts()->get();
 
-	public function testSet()
-	{
-		$ticket = new Ticket();
-		$ticket->product = $this->getMockContainer()->getProducts()->getById(1);
-		$exec   = new ExecutorContext();
+        return $this->container;
+    }
 
-		$action = new SetProduct(array('product_id' => 55));
-		$action->setContainer($this->getMockContainer());
+    public function testSet()
+    {
+        $ticket = new Ticket();
+        $ticket->product = $this->getMockContainer()->getProducts()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetProduct(array('product_id' => 55));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\Product', $ticket->product);
-		$this->assertEquals(55, $ticket->product->id);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testSetNull()
-	{
-		$ticket = new Ticket();
-		$ticket->product = $this->getMockContainer()->getProducts()->getById(1);
-		$exec   = new ExecutorContext();
+        $this->assertInstanceOf('Application\\DeskPRO\\Entity\\Product', $ticket->product);
+        $this->assertEquals(55, $ticket->product->id);
+    }
 
-		$action = new SetProduct(array('product_id' => 0));
-		$action->setContainer($this->getMockContainer());
+    public function testSetNull()
+    {
+        $ticket = new Ticket();
+        $ticket->product = $this->getMockContainer()->getProducts()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetProduct(array('product_id' => 0));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertNull($ticket->product);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testNoop()
-	{
-		$ticket = new Ticket();
-		$ticket->product = $this->getMockContainer()->getProducts()->getById(55);
+        $this->assertNull($ticket->product);
+    }
 
-		$exec = new ExecutorContext();
+    public function testNoop()
+    {
+        $ticket = new Ticket();
+        $ticket->product = $this->getMockContainer()->getProducts()->getById(55);
 
-		$action = new SetProduct(array('product_id' => 55));
-		$action->setContainer($this->container);
+        $exec = new ExecutorContext();
 
-		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
+        $action = new SetProduct(array('product_id' => 55));
+        $action->setContainer($this->container);
 
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$exec = new ExecutorContext();
+        $this->assertTrue($action->isNoop($ticket, $exec));
+    }
 
-		$action = new SetProduct(array('product_id' => 200));
-		$action->setContainer($this->getMockContainer());
-		$action->applyAction($ticket, $exec);
+    public function testInvalid()
+    {
+        $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-		$this->assertNull($ticket->product);
-	}
+        $action = new SetProduct(array('product_id' => 200));
+        $action->setContainer($this->getMockContainer());
+        $action->applyAction($ticket, $exec);
+
+        $this->assertNull($ticket->product);
+    }
 }

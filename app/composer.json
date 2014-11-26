@@ -40,9 +40,5 @@
 		"onelogin/php-saml": "~2.1.0",
 		"google/apiclient": "1.0.*@dev"
 	},
-	"scripts": {
-		"post-update-cmd":  ["bin/clean-vendors.sh", "bin/hack-vendors.sh"],
-		"post-install-cmd": ["bin/clean-vendors.sh", "bin/hack-vendors.sh"]
-	},
 	"preferred-install": "dist"
 }

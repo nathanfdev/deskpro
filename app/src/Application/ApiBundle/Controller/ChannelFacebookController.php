@@ -45,159 +45,159 @@ use Application\DeskPRO\Facebook\Type\EditPageType;
 
 class ChannelFacebookController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
 
-		return $multi;
-	}
-
-
-	####################################################################################################################
-	# list facebook pages
-	####################################################################################################################
-
-	public function listAction()
-	{
-		$pages = $this->getFacebookPageRepo()->findAll();
-
-		$data = $this->getContainer()->getSerializer()->serializeArray($pages);
-
-		return $this->createApiResponse(array('facebook_pages' => $data));
-	}
+        return $multi;
+    }
 
 
-	####################################################################################################################
-	# create a facebook page
-	####################################################################################################################
+    ####################################################################################################################
+    # list facebook pages
+    ####################################################################################################################
 
-	public function createAction()
-	{
-		$page_postdata = $this->in->getArrayValue('page');
+    public function listAction()
+    {
+        $pages = $this->getFacebookPageRepo()->findAll();
 
-		if (!isset($page_postdata['graph_id'])) {
-			return $this->createApiErrorResponse('invalid_argument', 'graph_id of a page is required');
-		}
+        $data = $this->getContainer()->getSerializer()->serializeArray($pages);
 
-		$fb_app_repo  = $this->container->getEm()->getRepository('DeskPRO:FacebookPage');
-		$existing_page = $fb_app_repo->findOneBy(array('graph_id' => $page_postdata['graph_id']));
-
-		if ($existing_page) {
-			return $this->createApiErrorResponse('page_exists', 'this page already exists as a channel');
-		}
-
-		try {
-			$existing_app = null;
-			if (isset($page_postdata['app']) && isset($page_postdata['app']['app_id'])) {
-				$fb_app_repo  = $this->container->getEm()->getRepository('DeskPRO:FacebookApp');
-				$existing_app = $fb_app_repo->findOneBy(array('app_id' => $page_postdata['app']['app_id']));
-			}
-
-			$page      = new FacebookPage();
-			$page->app = $existing_app ? : new FacebookApp();
-
-			$model = new EditPage($page);
-			$form  = $this->createForm(new EditPageType(), $model);
-			$form->submit($page_postdata, true);
-
-			$model->save($this->container->getEm());
-
-			$data = $this->getContainer()->getSerializer()->serialize($page);
-
-			return $this->createApiSuccessResponse($data);
-		} catch (\Exception $e) {
-			throw $e;
-			return $this->createApiErrorResponse('invalid_argument', 'bad request - please check app credentials and retry');
-		}
-	}
+        return $this->createApiResponse(array('facebook_pages' => $data));
+    }
 
 
-	####################################################################################################################
-	# get facebook page
-	####################################################################################################################
+    ####################################################################################################################
+    # create a facebook page
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		$page = $this->getFacebookPageRepo()->find($id);
+    public function createAction()
+    {
+        $page_postdata = $this->in->getArrayValue('page');
 
-		if (!$page) {
-			return $this->createApiErrorResponse('not_found', sprintf('facebook page (id=%s) does not exist', $id));
-		}
+        if (!isset($page_postdata['graph_id'])) {
+            return $this->createApiErrorResponse('invalid_argument', 'graph_id of a page is required');
+        }
 
-		$data = $this->getContainer()->getSerializer()->serialize($page);
+        $fb_app_repo  = $this->container->getEm()->getRepository('DeskPRO:FacebookPage');
+        $existing_page = $fb_app_repo->findOneBy(array('graph_id' => $page_postdata['graph_id']));
 
-		return $this->createApiResponse($data);
-	}
+        if ($existing_page) {
+            return $this->createApiErrorResponse('page_exists', 'this page already exists as a channel');
+        }
 
+        try {
+            $existing_app = null;
+            if (isset($page_postdata['app']) && isset($page_postdata['app']['app_id'])) {
+                $fb_app_repo  = $this->container->getEm()->getRepository('DeskPRO:FacebookApp');
+                $existing_app = $fb_app_repo->findOneBy(array('app_id' => $page_postdata['app']['app_id']));
+            }
 
-	####################################################################################################################
-	# save facebook page
-	####################################################################################################################
+            $page      = new FacebookPage();
+            $page->app = $existing_app ? : new FacebookApp();
 
-	public function saveAction($id = null)
-	{
-		if (!$id) {
-			return $this->createApiErrorResponse('invalid_argument', 'ID not passed');
-		}
+            $model = new EditPage($page);
+            $form  = $this->createForm(new EditPageType(), $model);
+            $form->submit($page_postdata, true);
 
-		$page = $this->getFacebookPageRepo()->find($id);
+            $model->save($this->container->getEm());
 
-		if (!$page) {
-			return $this->createApiErrorResponse('facebook.page_not_found', 'facebook page not found', 404);
-		}
+            $data = $this->getContainer()->getSerializer()->serialize($page);
 
-		$model = new EditPage($page);
-		$form  = $this->createForm(new EditPageType(), $model);
+            return $this->createApiSuccessResponse($data);
+        } catch (\Exception $e) {
+            throw $e;
 
-		$page_postdata = $this->in->getArrayValue('page');
-		$form->submit($page_postdata, true);
-
-		$model->save($this->container->getEm());
-		$data = $this->getContainer()->getSerializer()->serialize($page);
-
-		return $this->createApiSuccessResponse($data);
-	}
-
-	####################################################################################################################
-	# delete facebook page
-	####################################################################################################################
-
-	public function deleteAction($id)
-	{
-		$page = $this->getFacebookPageRepo()->find($id);
-
-		if (!$page) {
-			return $this->createApiErrorResponse('not_found', sprintf('facebook page (id=%s) does not exist', $id));
-		}
-
-		$em = $this->getContainer()->getEm();
-		$em->remove($page);
-		$em->flush();
-
-		return $this->createApiSuccessResponse();
-	}
+            return $this->createApiErrorResponse('invalid_argument', 'bad request - please check app credentials and retry');
+        }
+    }
 
 
-	/**
-	 * @return \Doctrine\ORM\EntityRepository
-	 */
-	private function getFacebookPageRepo()
-	{
-		return $this->getContainer()->getEm()->getRepository('DeskPRO:FacebookPage');
-	}
+    ####################################################################################################################
+    # get facebook page
+    ####################################################################################################################
+
+    public function getAction($id)
+    {
+        $page = $this->getFacebookPageRepo()->find($id);
+
+        if (!$page) {
+            return $this->createApiErrorResponse('not_found', sprintf('facebook page (id=%s) does not exist', $id));
+        }
+
+        $data = $this->getContainer()->getSerializer()->serialize($page);
+
+        return $this->createApiResponse($data);
+    }
 
 
-	/**
-	 * @param $account
-	 */
-	protected function saveFacebookPage(FacebookPage $account)
-	{
-		$this->getContainer()->getEm()->persist($account);
-		$this->getContainer()->getEm()->flush();
-	}
+    ####################################################################################################################
+    # save facebook page
+    ####################################################################################################################
+
+    public function saveAction($id = null)
+    {
+        if (!$id) {
+            return $this->createApiErrorResponse('invalid_argument', 'ID not passed');
+        }
+
+        $page = $this->getFacebookPageRepo()->find($id);
+
+        if (!$page) {
+            return $this->createApiErrorResponse('facebook.page_not_found', 'facebook page not found', 404);
+        }
+
+        $model = new EditPage($page);
+        $form  = $this->createForm(new EditPageType(), $model);
+
+        $page_postdata = $this->in->getArrayValue('page');
+        $form->submit($page_postdata, true);
+
+        $model->save($this->container->getEm());
+        $data = $this->getContainer()->getSerializer()->serialize($page);
+
+        return $this->createApiSuccessResponse($data);
+    }
+
+    ####################################################################################################################
+    # delete facebook page
+    ####################################################################################################################
+
+    public function deleteAction($id)
+    {
+        $page = $this->getFacebookPageRepo()->find($id);
+
+        if (!$page) {
+            return $this->createApiErrorResponse('not_found', sprintf('facebook page (id=%s) does not exist', $id));
+        }
+
+        $em = $this->getContainer()->getEm();
+        $em->remove($page);
+        $em->flush();
+
+        return $this->createApiSuccessResponse();
+    }
+
+
+    /**
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    private function getFacebookPageRepo()
+    {
+        return $this->getContainer()->getEm()->getRepository('DeskPRO:FacebookPage');
+    }
+
+    /**
+     * @param $account
+     */
+    protected function saveFacebookPage(FacebookPage $account)
+    {
+        $this->getContainer()->getEm()->persist($account);
+        $this->getContainer()->getEm()->flush();
+    }
 }

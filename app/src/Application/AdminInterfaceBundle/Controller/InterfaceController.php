@@ -39,164 +39,164 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InterfaceController extends AbstractController
 {
-	####################################################################################################################
-	# load-view
-	####################################################################################################################
+    ####################################################################################################################
+    # load-view
+    ####################################################################################################################
 
-	public function loadViewAction($view_name)
-	{
-		$load_data = null;
+    public function loadViewAction($view_name)
+    {
+        $load_data = null;
 
-		// Load data from a route at the same time
-		if ($this->in->getString('load_data')) {
-			try {
-				$route_info = $this->container->getRouter()->match($this->in->getString('load_data'));
-			} catch (\Exception $e) {
-				$route_info = null;
-			}
+        // Load data from a route at the same time
+        if ($this->in->getString('load_data')) {
+            try {
+                $route_info = $this->container->getRouter()->match($this->in->getString('load_data'));
+            } catch (\Exception $e) {
+                $route_info = null;
+            }
 
-			if ($route_info) {
-				$ctrl_path = $route_info['_controller'];
-				unset($route_info['_controller']);
-				unset($route_info['_route']);
-				$path_vars = $route_info;
+            if ($route_info) {
+                $ctrl_path = $route_info['_controller'];
+                unset($route_info['_controller']);
+                unset($route_info['_route']);
+                $path_vars = $route_info;
 
-				if ($ctrl_path) {
-					$load_data = $this->forward($ctrl_path, $path_vars)->getContent();
-				}
-			}
-		}
+                if ($ctrl_path) {
+                    $load_data = $this->forward($ctrl_path, $path_vars)->getContent();
+                }
+            }
+        }
 
-		$tpl_name = $this->getRealViewName($view_name);
+        $tpl_name = $this->getRealViewName($view_name);
 
-		$rendered = $this->renderTemplateView($tpl_name);
+        $rendered = $this->renderTemplateView($tpl_name);
 
-		if ($load_data) {
-			$rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
-		}
+        if ($load_data) {
+            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
+        }
 
-		return $this->createResponse($rendered);
-	}
-
-
-	####################################################################################################################
-	# multi-load-view
-	####################################################################################################################
-
-	public function multiLoadViewAction()
-	{
-		$views = array();
-
-		foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
-			$id = $view_name;
-			$tpl_name = $this->getRealViewName($view_name);
-
-			$rendered = null;
-			$rendered = $this->renderTemplateView($tpl_name);
-
-			$views[] = array(
-				'id'       => $id,
-				'template' => $tpl_name,
-				'source'   => $rendered
-			);
-		}
-
-		return $this->createJsonResponse($views);
-	}
+        return $this->createResponse($rendered);
+    }
 
 
-	####################################################################################################################
-	# load-lang
-	####################################################################################################################
+    ####################################################################################################################
+    # multi-load-view
+    ####################################################################################################################
 
-	public function loadLangAction($_format)
-	{
-		$js_exporter = new JsExporter($this->container->getTranslator());
+    public function multiLoadViewAction()
+    {
+        $views = array();
 
-		$get_phrases = include(DP_ROOT.'/languages/expose-js.php');
-		$get_phrases = $get_phrases['admin'];
+        foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
+            $id = $view_name;
+            $tpl_name = $this->getRealViewName($view_name);
 
-		if ($_format == 'js') {
-			$varname = 'DP_LANG';
-			if ($this->in->getString('varname')) {
-				$varname = $this->in->getString('varname');
-			}
+            $rendered = null;
+            $rendered = $this->renderTemplateView($tpl_name);
 
-			$res = new Response(
-				$js_exporter->exportToJsFile($varname, $get_phrases),
-				200,
-				array('Content-Type' => 'text/javascript')
-			);
-		} else {
-			$res = new Response(
-				$js_exporter->exportToJson($get_phrases),
-				200,
-				array('Content-Type' => 'application/json')
-			);
-		}
+            $views[] = array(
+                'id'       => $id,
+                'template' => $tpl_name,
+                'source'   => $rendered
+            );
+        }
 
-		return $res;
-	}
+        return $this->createJsonResponse($views);
+    }
 
-	####################################################################################################################
 
-	private function renderTemplateView($tpl_name)
-	{
-		$m = null;
+    ####################################################################################################################
+    # load-lang
+    ####################################################################################################################
 
-		if ($this->tpl->exists($tpl_name)) {
-			return $this->renderView($tpl_name, $this->getViewParams($tpl_name));
-		} else if (preg_match('#^Apps:(.*?):(.*?)$#', $tpl_name, $m)) {
-			$app_name = $m[1];
-			$tpl_name = $m[2];
+    public function loadLangAction($_format)
+    {
+        $js_exporter = new JsExporter($this->container->getTranslator());
 
-			$app_manager = $this->container->getAppManager();
-			if ($app_manager->isPackageInstalled($app_name)) {
-				$package = $app_manager->getPackage($app_name);
-				if ($package->native_name) {
-					$native_package = $app_manager->getNativePackageConfig($package);
+        $get_phrases = include(DP_ROOT.'/languages/expose-js.php');
+        $get_phrases = $get_phrases['admin'];
 
-					$real_path = @realpath($native_package->getNativeDir() . '/Resources/views/' . $tpl_name);
-					if ($real_path && strpos($real_path, $native_package->getNativeDir()) === 0 && file_exists($real_path)) {
-						return file_get_contents($real_path);
-					}
-				}
-			}
-		}
+        if ($_format == 'js') {
+            $varname = 'DP_LANG';
+            if ($this->in->getString('varname')) {
+                $varname = $this->in->getString('varname');
+            }
 
-		return '';
-	}
+            $res = new Response(
+                $js_exporter->exportToJsFile($varname, $get_phrases),
+                200,
+                array('Content-Type' => 'text/javascript')
+            );
+        } else {
+            $res = new Response(
+                $js_exporter->exportToJson($get_phrases),
+                200,
+                array('Content-Type' => 'application/json')
+            );
+        }
 
-	private function getRealViewName($view_name)
-	{
-		if (strpos($view_name, 'Apps:') === 0) {
-			$tpl_name = $view_name;
-		} else {
-			$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.:]#', '', $view_name);
-			$view_name = Strings::strReplaceOne('/', ':', $view_name);
-			$view_name = str_replace('.html', '.html.twig', $view_name);
-			$view_name = str_replace('.html.twig.twig', '.html.twig', $view_name);
-			$tpl_name = "AdminInterfaceBundle:$view_name";
-		}
+        return $res;
+    }
 
-		if (defined('DPC_IS_CLOUD')) {
-			if ($this->tpl->exists('Cloud'.$tpl_name)){
-				$tpl_name = 'Cloud'.$tpl_name;
-			}
-		}
+    ####################################################################################################################
 
-		return $tpl_name;
-	}
+    private function renderTemplateView($tpl_name)
+    {
+        $m = null;
 
-	private function getViewParams($tpl_name)
-	{
-		switch ($tpl_name) {
-			case 'AdminInterfaceBundle:PortalEditor:frame.html.twig':
-				return array(
-					'default_portal_style' => $this->settings->getDefaultGroup('user_style', false)
-				);
-			default:
-				return array();
-		}
-	}
+        if ($this->tpl->exists($tpl_name)) {
+            return $this->renderView($tpl_name, $this->getViewParams($tpl_name));
+        } elseif (preg_match('#^Apps:(.*?):(.*?)$#', $tpl_name, $m)) {
+            $app_name = $m[1];
+            $tpl_name = $m[2];
+
+            $app_manager = $this->container->getAppManager();
+            if ($app_manager->isPackageInstalled($app_name)) {
+                $package = $app_manager->getPackage($app_name);
+                if ($package->native_name) {
+                    $native_package = $app_manager->getNativePackageConfig($package);
+
+                    $real_path = @realpath($native_package->getNativeDir() . '/Resources/views/' . $tpl_name);
+                    if ($real_path && strpos($real_path, $native_package->getNativeDir()) === 0 && file_exists($real_path)) {
+                        return file_get_contents($real_path);
+                    }
+                }
+            }
+        }
+
+        return '';
+    }
+
+    private function getRealViewName($view_name)
+    {
+        if (strpos($view_name, 'Apps:') === 0) {
+            $tpl_name = $view_name;
+        } else {
+            $view_name = preg_replace('#[^a-zA-Z0-9_\-/\.:]#', '', $view_name);
+            $view_name = Strings::strReplaceOne('/', ':', $view_name);
+            $view_name = str_replace('.html', '.html.twig', $view_name);
+            $view_name = str_replace('.html.twig.twig', '.html.twig', $view_name);
+            $tpl_name = "AdminInterfaceBundle:$view_name";
+        }
+
+        if (defined('DPC_IS_CLOUD')) {
+            if ($this->tpl->exists('Cloud'.$tpl_name)){
+                $tpl_name = 'Cloud'.$tpl_name;
+            }
+        }
+
+        return $tpl_name;
+    }
+
+    private function getViewParams($tpl_name)
+    {
+        switch ($tpl_name) {
+            case 'AdminInterfaceBundle:PortalEditor:frame.html.twig':
+                return array(
+                    'default_portal_style' => $this->settings->getDefaultGroup('user_style', false)
+                );
+            default:
+                return array();
+        }
+    }
 }

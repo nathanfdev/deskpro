@@ -36,87 +36,87 @@ namespace Orb\Doctrine\ORM\Mapping;
 
 class StaticReflectionProperty extends \ReflectionProperty
 {
-	/** @var string */
-	public $_class;
-	/** @var string  */
-	public $_prop;
+    /** @var string */
+    public $_class;
+    /** @var string  */
+    public $_prop;
 
-	public function __construct($class, $prop)
-	{
-		$this->_class = $class;
-		$this->_prop = $prop;
-	}
+    public function __construct($class, $prop)
+    {
+        $this->_class = $class;
+        $this->_prop = $prop;
+    }
 
-	public function getName()
-	{
-		return $this->_prop;
-	}
+    public function getName()
+    {
+        return $this->_prop;
+    }
 
-	public function getValue($object = null)
-	{
-		if (!$object) {
-			throw new \RuntimeException("Unsupported Operation");
-		}
+    public function getValue($object = null)
+    {
+        if (!$object) {
+            throw new \RuntimeException("Unsupported Operation");
+        }
 
-		return $object->__getPropValue__($this->_prop);
-	}
+        return $object->__getPropValue__($this->_prop);
+    }
 
-	public function setValue($object = null, $value = null)
-	{
-		if (func_num_args() != 2) {
-			throw new \RuntimeException("Unsupported Operation");
-		}
+    public function setValue($object = null, $value = null)
+    {
+        if (func_num_args() != 2) {
+            throw new \RuntimeException("Unsupported Operation");
+        }
 
-		return $object->__setPropValue__($this->_prop, $value);
-	}
+        return $object->__setPropValue__($this->_prop, $value);
+    }
 
-	public function setAccessible($accessible)
-	{
-		// nullop
-	}
+    public function setAccessible($accessible)
+    {
+        // nullop
+    }
 
-	public function getModifiers()
-	{
-		throw new \RuntimeException("Unsupported Operation");
-	}
+    public function getModifiers()
+    {
+        throw new \RuntimeException("Unsupported Operation");
+    }
 
-	public function isDefault()
-	{
-		throw new \RuntimeException("Unsupported Operation");
-	}
+    public function isDefault()
+    {
+        throw new \RuntimeException("Unsupported Operation");
+    }
 
-	public function getDeclaringClass()
-	{
-		throw new \RuntimeException("Unsupported Operation");
-	}
+    public function getDeclaringClass()
+    {
+        throw new \RuntimeException("Unsupported Operation");
+    }
 
-	public function getDocComment()
-	{
-		throw new \RuntimeException("Unsupported Operation");
-	}
+    public function getDocComment()
+    {
+        throw new \RuntimeException("Unsupported Operation");
+    }
 
-	public function isPrivate()
-	{
-		throw new \RuntimeException("Unsupported Operation");
-	}
+    public function isPrivate()
+    {
+        throw new \RuntimeException("Unsupported Operation");
+    }
 
-	public function isProtected()
-	{
-		throw new \RuntimeException("Unsupported Operation");
-	}
+    public function isProtected()
+    {
+        throw new \RuntimeException("Unsupported Operation");
+    }
 
-	public function isPublic()
-	{
-		throw new \RuntimeException("Unsupported Operation");
-	}
+    public function isPublic()
+    {
+        throw new \RuntimeException("Unsupported Operation");
+    }
 
-	public function isStatic()
-	{
-		throw new \RuntimeException("Unsupported Operation");
-	}
+    public function isStatic()
+    {
+        throw new \RuntimeException("Unsupported Operation");
+    }
 
-	public function __toString()
-	{
-		return "{$this->_class}::{$this->_prop}";
-	}
+    public function __toString()
+    {
+        return "{$this->_class}::{$this->_prop}";
+    }
 }

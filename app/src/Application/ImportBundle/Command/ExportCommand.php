@@ -42,56 +42,56 @@ use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 class ExportCommand extends ContainerAwareCommand
 {
-	/** @var ProgressBar */
-	protected $progress_bar;
-	
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function configure()
-	{
-		$this->setName('dp:export:run');
-		$this->setHelp('The actual export process');
-		$this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-		$this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
-		$this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
-	}
+    /** @var ProgressBar */
+    protected $progress_bar;
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure()
+    {
+        $this->setName('dp:export:run');
+        $this->setHelp('The actual export process');
+        $this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
+        $this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
+        $this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return parent::getContainer();
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return parent::getContainer();
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$logger = new Logger('exporter', array(new ConsoleHandler($output)));
-		
-		if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
-			$logger->err('You must supply an "input-path" argument while using CSV exporter');
-		}
-		
-		$this->progress_bar = $this->getHelperSet()->get('progress');
-		
-		$factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
-		
-		$generator_config = $factory->createGeneratorConfig();
-		
-		$generator_config->progress_bar	= $this->progress_bar;
-		$generator_config->output	= $output;
-		$generator_config->mode		= 'live';
-		
-		$output->setVerbosity(3);
-		
-		$generator = $factory->createGenerator($generator_config, $logger);
-		
-		$generator->generateJson();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $logger = new Logger('exporter', array(new ConsoleHandler($output)));
+
+        if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
+            $logger->err('You must supply an "input-path" argument while using CSV exporter');
+        }
+
+        $this->progress_bar = $this->getHelperSet()->get('progress');
+
+        $factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
+
+        $generator_config = $factory->createGeneratorConfig();
+
+        $generator_config->progress_bar	= $this->progress_bar;
+        $generator_config->output	= $output;
+        $generator_config->mode		= 'live';
+
+        $output->setVerbosity(3);
+
+        $generator = $factory->createGenerator($generator_config, $logger);
+
+        $generator->generateJson();
+    }
 }

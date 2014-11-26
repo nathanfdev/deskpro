@@ -35,7 +35,6 @@
 namespace Application\UserBundle\Form;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
@@ -44,22 +43,22 @@ use Symfony\Component\Form\FormBuilderInterface;
  */
 class NewFeedbackType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('title', 'text');
-		$builder->add('content', 'textarea');
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('title', 'text');
+        $builder->add('content', 'textarea');
 
-		$builder->add('category_id', 'choice', array(
-			'choices' => App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames(' > ', false),
-			'required' => false // needed for empty_value to appear
-		));
+        $builder->add('category_id', 'choice', array(
+            'choices' => App::getEntityRepository('DeskPRO:FeedbackCategory')->getFullNames(' > ', false),
+            'required' => false // needed for empty_value to appear
+        ));
 
-		$builder->add('person_name', 'text', array('required' => false));
-		$builder->add('person_email', 'text', array('required' => false));
-	}
+        $builder->add('person_name', 'text', array('required' => false));
+        $builder->add('person_email', 'text', array('required' => false));
+    }
 
-	public function getName()
-	{
-		return 'feedback';
-	}
+    public function getName()
+    {
+        return 'feedback';
+    }
 }

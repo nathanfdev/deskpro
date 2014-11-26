@@ -66,25 +66,25 @@
 			<p>When you configure a new email account, DeskPRO will read email messages in the account and import them as tickets and replies.</p>
 			<p>You can use the <strong>New Ticket Trigger</strong> to link an email account to a department: for example, if you want all emails to <code>sales@yourcompany.com</code> to be assigned to the sales department.</p>
 			<p>This trigger also controls sending auto-response emails. You can customize the auto-response by creating a new reply template: for example, you might want to have different auto-responses for your <code>help@</code> and <code>sales@</code> accounts.</p>
-			<p>In <a href="/admin/#/tickets/settings">Tickets > Settings > Email Settings</a>, you can change how DeskPRO processes emails CCed to agents.</p> 
+			<p>In <a href="/admin/#/tickets/settings">Tickets > Settings > Email Settings</a>, you can change how DeskPRO processes emails CCed to agents.</p>
 			<p>In <a href="/admin/#/tickets/fwd-settings">Tickets > Forward Settings</a>, you can configure how DeskPRO handles email forwarding into or out of the helpdesk.</p>
 			<p>You can configure allowed attachment types and sizes in <strong>Setup > Settings > User/Agent Attachments</strong>.</p>
 			<p>If you need to troubleshoot email delivery, check the logs of incoming and outgoing email.</p>
 		</section>
-		
+
 			<section>
 			<h2><span>FAQ</span></h2>
 			<dl>
-			
+
 				<dt><em>Q:</em>Which email header field does DeskPRO use to determine the sender?</dt>
 				<dd><em>A:</em>
 					By default, DeskPRO looks at the <code>From:</code> email header first. You can change this under <a href="/admin/#/tickets/settings">Tickets &gt; Settings</a> under <strong>Priority of "From Email Address" headers</strong> if you want to use <code>Reply-To</code> or <code>X-Original-From</code> instead.</dd>
-					
+
 				<dt><em>Q:</em>Why can't I use an agent's email address as a ticket account?</dt>
 				<dd><em>A:</em>
 					An email address that is registered to an agent or user cannot be used as a ticket account. This is necessary to prevent email loops, where DeskPRO could end up endlessly replying to its own messages.
 				</dd>
-	
+
 			</dl>
 		</section>
 

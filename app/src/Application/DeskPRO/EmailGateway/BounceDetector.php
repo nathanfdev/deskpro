@@ -40,150 +40,150 @@ use Orb\Util\Strings;
 
 class BounceDetector
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
-	 */
-	protected $reader;
+    /**
+     * @var \Application\DeskPRO\EmailGateway\Reader\AbstractReader
+     */
+    protected $reader;
 
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	protected $logger;
+    /**
+     * @var \Orb\Log\Logger
+     */
+    protected $logger;
 
-	/**
-	 * @var string[]
-	 */
-	protected $patterns;
+    /**
+     * @var string[]
+     */
+    protected $patterns;
 
-	/**
-	 * @var string
-	 */
-	protected $original_subject;
+    /**
+     * @var string
+     */
+    protected $original_subject;
 
-	/**
-	 * @var string[]
-	 */
-	protected $guessed_email_addresses;
+    /**
+     * @var string[]
+     */
+    protected $guessed_email_addresses;
 
-	public function __construct(AbstractReader $reader, EntityManager $em)
-	{
-		$this->reader = $reader;
-		$this->em = $em;
-	}
-
-
-	/**
-	 * @param \Orb\Log\Logger $logger
-	 */
-	public function setLogger(Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+    public function __construct(AbstractReader $reader, EntityManager $em)
+    {
+        $this->reader = $reader;
+        $this->em = $em;
+    }
 
 
-	/**
-	 * @return string[]
-	 */
-	public function getPatterns()
-	{
-		if ($this->patterns !== null) {
-			return $this->patterns;
-		}
-
-		$pattern_config = new \Application\DeskPRO\Config\UserFileConfig('bounce-subject-patterns');
-		$this->patterns = $pattern_config->all();
-
-		return $this->patterns;
-	}
+    /**
+     * @param \Orb\Log\Logger $logger
+     */
+    public function setLogger(Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
 
-	/**
-	 * @return bool
-	 */
-	public function isBounced()
-	{
-		// Subject check first, which also populates original_subject
-		// which is used again when detecting the ticket this belongs to
+    /**
+     * @return string[]
+     */
+    public function getPatterns()
+    {
+        if ($this->patterns !== null) {
+            return $this->patterns;
+        }
 
-		$subject = $this->reader->getSubject()->getSubjectUtf8();
+        $pattern_config = new \Application\DeskPRO\Config\UserFileConfig('bounce-subject-patterns');
+        $this->patterns = $pattern_config->all();
 
-		foreach ($this->getPatterns() as $pattern) {
-			$m = null;
-			if (preg_match($pattern, $subject, $m)) {
-				if (isset($m['subject'])) {
-					$this->original_subject = $m['subject'];
-				}
-				if ($this->logger) $this->logger->logDebug('Is bounced based on subject match: ' . $pattern);
-				return true;
-			}
-		}
-
-		$failed = $this->reader->getHeader('X-Failed-Recipients');
-		if ($failed && $failed->getHeader()) {
-			if ($this->logger) $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
-			return true;
-		}
-
-		$from = $this->reader->getFromAddress();
-		$postmaster_config = new \Application\DeskPRO\Config\UserFileConfig('postmaster-emails');
-		foreach ($postmaster_config as $pattern) {
-			if (preg_match($pattern, $from->email)) {
-				if ($this->logger) $this->logger->logDebug('Is bounced based on postmaster pattern #$k $pattern matching from address ' . $from->email);
-				return true;
-			}
-		}
-
-		if ($this->logger) $this->logger->logDebug('Not a bounce');
-		return false;
-	}
+        return $this->patterns;
+    }
 
 
-	/**
-	 * Try to find possible addresses to match on
-	 *
-	 * @return string[]
-	 */
-	public function getGuessedEmailAddresses()
-	{
-		if ($this->guessed_email_addresses !== null) {
-			return $this->guessed_email_addresses;
-		}
+    /**
+     * @return bool
+     */
+    public function isBounced()
+    {
+        // Subject check first, which also populates original_subject
+        // which is used again when detecting the ticket this belongs to
 
-		$this->guessed_email_addresses = array();
+        $subject = $this->reader->getSubject()->getSubjectUtf8();
 
-		// The actual From address should be tried too
-		$this->guessed_email_addresses[] = $this->reader->getFromAddress()->getEmail();
+        foreach ($this->getPatterns() as $pattern) {
+            $m = null;
+            if (preg_match($pattern, $subject, $m)) {
+                if (isset($m['subject'])) {
+                    $this->original_subject = $m['subject'];
+                }
+                if ($this->logger) $this->logger->logDebug('Is bounced based on subject match: ' . $pattern);
+                return true;
+            }
+        }
 
-		if ($failed = $this->reader->getHeader('X-Failed-Recipients')) {
-			foreach ($failed->getAllParts() as $email) {
-				$this->guessed_email_addresses[] = strtolower($email);
-				if ($this->logger) $this->logger->logDebug('Found email via X-Failed-Recipients: ' . $email);
-			}
-		}
+        $failed = $this->reader->getHeader('X-Failed-Recipients');
+        if ($failed && $failed->getHeader()) {
+            if ($this->logger) $this->logger->logDebug('Is bounced based on X-Failed-Recipients');
+            return true;
+        }
 
-		// Find original message part
-		$m = null;
-		if (preg_match_all('#^To: (.*?)$#imu', $this->reader->getBodyText()->getBodyUtf8(), $m, \PREG_SET_ORDER)) {
-			foreach ($m as $match) {
-				$email = Strings::extractRegexMatch('#<((.*?)@(.*?))>#', $match[1]);
-				if (!$email) {
-					$email = Strings::extractRegexMatch('#((.*?)@(.*?))#', $match[1]);
-				}
+        $from = $this->reader->getFromAddress();
+        $postmaster_config = new \Application\DeskPRO\Config\UserFileConfig('postmaster-emails');
+        foreach ($postmaster_config as $pattern) {
+            if (preg_match($pattern, $from->email)) {
+                if ($this->logger) $this->logger->logDebug('Is bounced based on postmaster pattern #$k $pattern matching from address ' . $from->email);
+                return true;
+            }
+        }
 
-				if ($email) {
-					$this->guessed_email_addresses[] = strtolower($email);
-					if ($this->logger) $this->logger->logDebug('Found email via body: ' . $email);
-				}
-			}
-		}
+        if ($this->logger) $this->logger->logDebug('Not a bounce');
+        return false;
+    }
 
-		$this->guessed_email_addresses = array_unique($this->guessed_email_addresses);
 
-		return $this->guessed_email_addresses;
-	}
+    /**
+     * Try to find possible addresses to match on
+     *
+     * @return string[]
+     */
+    public function getGuessedEmailAddresses()
+    {
+        if ($this->guessed_email_addresses !== null) {
+            return $this->guessed_email_addresses;
+        }
+
+        $this->guessed_email_addresses = array();
+
+        // The actual From address should be tried too
+        $this->guessed_email_addresses[] = $this->reader->getFromAddress()->getEmail();
+
+        if ($failed = $this->reader->getHeader('X-Failed-Recipients')) {
+            foreach ($failed->getAllParts() as $email) {
+                $this->guessed_email_addresses[] = strtolower($email);
+                if ($this->logger) $this->logger->logDebug('Found email via X-Failed-Recipients: ' . $email);
+            }
+        }
+
+        // Find original message part
+        $m = null;
+        if (preg_match_all('#^To: (.*?)$#imu', $this->reader->getBodyText()->getBodyUtf8(), $m, \PREG_SET_ORDER)) {
+            foreach ($m as $match) {
+                $email = Strings::extractRegexMatch('#<((.*?)@(.*?))>#', $match[1]);
+                if (!$email) {
+                    $email = Strings::extractRegexMatch('#((.*?)@(.*?))#', $match[1]);
+                }
+
+                if ($email) {
+                    $this->guessed_email_addresses[] = strtolower($email);
+                    if ($this->logger) $this->logger->logDebug('Found email via body: ' . $email);
+                }
+            }
+        }
+
+        $this->guessed_email_addresses = array_unique($this->guessed_email_addresses);
+
+        return $this->guessed_email_addresses;
+    }
 }

@@ -39,133 +39,134 @@ namespace Application\DeskPRO\Dpql;
  */
 class Lexer
 {
-	/**
-	 * Internal lexer positioning counter.
-	 *
-	 * @var integer
-	 */
-	protected $_counter = 0;
+    /**
+     * Internal lexer positioning counter.
+     *
+     * @var integer
+     */
+    protected $_counter = 0;
 
-	/**
-	 * String to be tokenized.
-	 *
-	 * @var string
-	 */
-	protected $_input;
+    /**
+     * String to be tokenized.
+     *
+     * @var string
+     */
+    protected $_input;
 
-	/**
-	 * ID of token that is being emitted. Tokens are defined in the parser.
-	 *
-	 * @var integer
-	 */
-	public $token = null;
+    /**
+     * ID of token that is being emitted. Tokens are defined in the parser.
+     *
+     * @var integer
+     */
+    public $token = null;
 
-	/**
-	 * Value for the token that is being emitted.
-	 *
-	 * @var string
-	 */
-	public $value = null;
+    /**
+     * Value for the token that is being emitted.
+     *
+     * @var string
+     */
+    public $value = null;
 
-	/**
-	 * Line number currently being tokenized. This can be used to detect the
-	 * line an error is occurring on.
-	 *
-	 * @var integer
-	 */
-	public $line = 1;
+    /**
+     * Line number currently being tokenized. This can be used to detect the
+     * line an error is occurring on.
+     *
+     * @var integer
+     */
+    public $line = 1;
 
-	/**
-	 * List of reserved keywords. These will be emitted with tokens that match
-	 * the name of the reserved word.
-	 *
-	 * @var array
-	 */
-	protected $_reserved = array(
-		'DISPLAY', 'TABLE', 'BAR', 'LINE', 'PIE', 'AREA',
-		'SELECT', 'FROM', 'WHERE',
-		'GROUP', 'ORDER', 'SPLIT', 'BY',
-		'LIMIT', 'OFFSET', 'AS', 'NULL',
-		'AND', 'OR', 'NOT', 'IN', 'LIKE', 'REGEXP',
-		'ASC', 'DESC',
-		'INTERVAL'
-	);
+    /**
+     * List of reserved keywords. These will be emitted with tokens that match
+     * the name of the reserved word.
+     *
+     * @var array
+     */
+    protected $_reserved = array(
+        'DISPLAY', 'TABLE', 'BAR', 'LINE', 'PIE', 'AREA',
+        'SELECT', 'FROM', 'WHERE',
+        'GROUP', 'ORDER', 'SPLIT', 'BY',
+        'LIMIT', 'OFFSET', 'AS', 'NULL',
+        'AND', 'OR', 'NOT', 'IN', 'LIKE', 'REGEXP',
+        'ASC', 'DESC',
+        'INTERVAL'
+    );
 
-	/**
-	 * Maps an operator string to a token name (T_OP_<value>).
-	 * Operator strings must be listed in the operator regex.
-	 *
-	 * @var array
-	 */
-	protected $_operatorMap = array(
-		'+' => 'PLUS',
-		'-' => 'MINUS',
-		'*' => 'MULTIPLY',
-		'/' => 'DIVIDE',
-		'=' => 'EQ',
-		'!=' => 'NE',
-		'<>' => 'NE',
-		'>=' => 'GTEQ',
-		'>' => 'GT',
-		'<=' => 'LTEQ',
-		'<' => 'LT',
-		'AND' => 'AND',
-		'&&' => 'AND',
-		'OR' => 'OR',
-		'||' => 'OR',
-		'!' => 'BANG',
-		'NOT' => 'NOT',
-		'IN' => 'IN',
-		'LIKE' => 'LIKE',
-		'REGEXP' => 'REGEXP'
-	);
+    /**
+     * Maps an operator string to a token name (T_OP_<value>).
+     * Operator strings must be listed in the operator regex.
+     *
+     * @var array
+     */
+    protected $_operatorMap = array(
+        '+' => 'PLUS',
+        '-' => 'MINUS',
+        '*' => 'MULTIPLY',
+        '/' => 'DIVIDE',
+        '=' => 'EQ',
+        '!=' => 'NE',
+        '<>' => 'NE',
+        '>=' => 'GTEQ',
+        '>' => 'GT',
+        '<=' => 'LTEQ',
+        '<' => 'LT',
+        'AND' => 'AND',
+        '&&' => 'AND',
+        'OR' => 'OR',
+        '||' => 'OR',
+        '!' => 'BANG',
+        'NOT' => 'NOT',
+        'IN' => 'IN',
+        'LIKE' => 'LIKE',
+        'REGEXP' => 'REGEXP'
+    );
 
-	/**
-	 * Sets the input and resets the lexer state.
-	 *
-	 * @param string $input
-	 */
-	public function setInput($input) {
-		$this->_input = $input;
-		$this->_counter = 0;
-		$this->token = null;
-		$this->value = null;
-		$this->line = 1;
-	}
+    /**
+     * Sets the input and resets the lexer state.
+     *
+     * @param string $input
+     */
+    public function setInput($input)
+    {
+        $this->_input = $input;
+        $this->_counter = 0;
+        $this->token = null;
+        $this->value = null;
+        $this->line = 1;
+    }
 
-	/**
-	 * @var int
-	 */
-	private $_yy_state = 1;
-	/**
-	 * @var array
-	 */
-	private $_yy_stack = array();
+    /**
+     * @var int
+     */
+    private $_yy_state = 1;
+    /**
+     * @var array
+     */
+    private $_yy_stack = array();
 
-    function yylex()
+    public function yylex()
     {
         return $this->{'yylex' . $this->_yy_state}();
     }
 
-    function yypushstate($state)
+    public function yypushstate($state)
     {
         array_push($this->_yy_stack, $this->_yy_state);
         $this->_yy_state = $state;
     }
 
-    function yypopstate()
+    public function yypopstate()
     {
         $this->_yy_state = array_pop($this->_yy_stack);
     }
 
-    function yybegin($state)
+    public function yybegin($state)
     {
         $this->_yy_state = $state;
     }
 
 
 
-    function yylex1()
+    public function yylex1()
     {
         $tokenMap = array (
               1 => 0,
@@ -281,6 +282,7 @@ class Lexer
                         // accept
                         $this->_counter += strlen($this->value);
                         $this->line += substr_count($this->value, "\n");
+
                         return true;
                     }
                 }
@@ -293,62 +295,61 @@ class Lexer
 
     } // end function
 
-
     const INITIAL = 1;
-    function yy_r1_1($yy_subpatterns)
+    public function yy_r1_1($yy_subpatterns)
     {
  return false;     }
-    function yy_r1_2($yy_subpatterns)
+    public function yy_r1_2($yy_subpatterns)
     {
  $this->token = Parser::T_COMMA;     }
-    function yy_r1_3($yy_subpatterns)
+    public function yy_r1_3($yy_subpatterns)
     {
  $this->token = Parser::T_LEFT_PAREN;     }
-    function yy_r1_4($yy_subpatterns)
+    public function yy_r1_4($yy_subpatterns)
     {
  $this->token = Parser::T_RIGHT_PAREN;     }
-    function yy_r1_5($yy_subpatterns)
+    public function yy_r1_5($yy_subpatterns)
     {
  $this->token = Parser::T_SEMICOLON;     }
-    function yy_r1_6($yy_subpatterns)
+    public function yy_r1_6($yy_subpatterns)
     {
  $this->token = Parser::T_AT;     }
-    function yy_r1_7($yy_subpatterns)
+    public function yy_r1_7($yy_subpatterns)
     {
  $this->token = Parser::T_QUOTED;     }
-    function yy_r1_9($yy_subpatterns)
+    public function yy_r1_9($yy_subpatterns)
     {
  $this->token = Parser::T_NUMBER;     }
-    function yy_r1_11($yy_subpatterns)
+    public function yy_r1_11($yy_subpatterns)
     {
  $this->token = Parser::T_PLACEHOLDER;     }
-    function yy_r1_12($yy_subpatterns)
+    public function yy_r1_12($yy_subpatterns)
     {
  $this->token = Parser::T_COLUMN_STAR;     }
-    function yy_r1_15($yy_subpatterns)
+    public function yy_r1_15($yy_subpatterns)
     {
  $this->token = Parser::T_COLUMN;     }
-    function yy_r1_19($yy_subpatterns)
+    public function yy_r1_19($yy_subpatterns)
     {
 
-	if (isset($this->_operatorMap[$this->value])) {
-		$this->token = constant(__NAMESPACE__ . '\\Parser::T_OP_' . $this->_operatorMap[$this->value]);
-	} else {
-		throw new Exception("Unknown operator $this->value");
-	}
+    if (isset($this->_operatorMap[$this->value])) {
+        $this->token = constant(__NAMESPACE__ . '\\Parser::T_OP_' . $this->_operatorMap[$this->value]);
+    } else {
+        throw new Exception("Unknown operator $this->value");
     }
-    function yy_r1_20($yy_subpatterns)
+    }
+    public function yy_r1_20($yy_subpatterns)
     {
 
-	$upper = strtoupper($this->value);
+    $upper = strtoupper($this->value);
 
-	if (isset($this->_operatorMap[$upper])) {
-		$this->token = constant(__NAMESPACE__ . '\\Parser::T_OP_' . $this->_operatorMap[$upper]);
-	} else if (in_array($upper, $this->_reserved)) {
-		$this->token = constant(__NAMESPACE__ . '\\Parser::T_' . $upper);
-	}  else {
-		$this->token = Parser::T_LITERAL;
-	}
+    if (isset($this->_operatorMap[$upper])) {
+        $this->token = constant(__NAMESPACE__ . '\\Parser::T_OP_' . $this->_operatorMap[$upper]);
+    } elseif (in_array($upper, $this->_reserved)) {
+        $this->token = constant(__NAMESPACE__ . '\\Parser::T_' . $upper);
+    }  else {
+        $this->token = Parser::T_LITERAL;
+    }
     }
 
 }

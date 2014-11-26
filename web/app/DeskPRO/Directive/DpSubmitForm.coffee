@@ -1,5 +1,5 @@
 define ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -11,31 +11,31 @@ define ->
     # ------------
     # <button dp-submit-form>Save</button>
     ###
-	DeskPRO_Directive_DpSubmitForm = [ ->
-		return {
-			restrict: 'A',
-			link: (scope, element, attrs) ->
-				element.on('click', (ev) ->
-					ev.preventDefault()
-					ev.stopPropagation()
+  DeskPRO_Directive_DpSubmitForm = [ ->
+    return {
+      restrict: 'A',
+      link: (scope, element, attrs) ->
+        element.on('click', (ev) ->
+          ev.preventDefault()
+          ev.stopPropagation()
 
-					form = element.closest('form')
-					form.on('submit', (ev) ->
-						ev.preventDefault()
-					)
-					formName = form.attr('name')
-					form.submit()
-					scope[formName].$attempted = true
+          form = element.closest('form')
+          form.on('submit', (ev) ->
+            ev.preventDefault()
+          )
+          formName = form.attr('name')
+          form.submit()
+          scope[formName].$attempted = true
 
-					for own k, v of scope[formName]
-						if k.substring(0, 1) == '$' then continue
-						if not v.$name or not v.$viewChangeListeners then continue
+          for own k, v of scope[formName]
+            if k.substring(0, 1) == '$' then continue
+            if not v.$name or not v.$viewChangeListeners then continue
 
-						v.$attempted = true
+            v.$attempted = true
 
-					scope.$apply()
-				)
-		}
-	]
+          scope.$apply()
+        )
+    }
+  ]
 
-	return DeskPRO_Directive_DpSubmitForm
+  return DeskPRO_Directive_DpSubmitForm

@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1341581749 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("My Upgrade Class");
-		$this->execMutateSql("UPDATE languages SET sys_name = 'default' WHERE id = 1");
-	}
+    public function run()
+    {
+        $this->out("My Upgrade Class");
+        $this->execMutateSql("UPDATE languages SET sys_name = 'default' WHERE id = 1");
+    }
 }

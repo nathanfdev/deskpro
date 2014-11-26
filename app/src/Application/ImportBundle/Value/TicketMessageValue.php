@@ -33,38 +33,38 @@ namespace Application\ImportBundle\Value;
 
 class TicketMessageValue
 {
-	/**
-	 * @var int
-	 */
-	public $oid;
+    /**
+     * @var int
+     */
+    public $oid;
 
-	/**
-	 * @var string
-	 */
-	public $person;
+    /**
+     * @var string
+     */
+    public $person;
 
-	/**
-	 * @var \DateTime
-	 */
-	public $date_created;
+    /**
+     * @var \DateTime
+     */
+    public $date_created;
 
-	/**
-	 * @var string
-	 */
-	public $message_html;
+    /**
+     * @var string
+     */
+    public $message_html;
 
-	/**
-	 * @var string
-	 */
-	public $message_text;
+    /**
+     * @var string
+     */
+    public $message_text;
 
-	/**
-	 * @var AttachmentValue[]
-	 */
-	public $attachments = array();
+    /**
+     * @var AttachmentValue[]
+     */
+    public $attachments = array();
 
-	/**
-	 * @var bool
-	 */
-	public $is_note = false;
+    /**
+     * @var bool
+     */
+    public $is_note = false;
 }

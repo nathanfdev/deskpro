@@ -38,66 +38,67 @@ use Doctrine\ORM\EntityManager;
  */
 class CustomDataPersister
 {
-	protected $toAdd;
+    protected $toAdd;
 
-	protected $toRemove;
+    protected $toRemove;
 
-	public function __construct()
-	{
-		$this->toAdd = array();
-		$this->toRemove = array();
-	}
+    public function __construct()
+    {
+        $this->toAdd = array();
+        $this->toRemove = array();
+    }
 
-	/**
-	 * @param DomainObject $entity
-	 */
-	public function add(DomainObject $entity)
-	{
-		$this->toAdd[] = $entity;
-	}
+    /**
+     * @param DomainObject $entity
+     */
+    public function add(DomainObject $entity)
+    {
+        $this->toAdd[] = $entity;
+    }
 
-	/**
-	 * @param array $add
-	 */
-	public function addArray(array $add)
-	{
-		foreach ($add as $_add) {
-			$this->add($_add);
-		}
-	}
+    /**
+     * @param array $add
+     */
+    public function addArray(array $add)
+    {
+        foreach ($add as $_add) {
+            $this->add($_add);
+        }
+    }
 
-	/**
-	 * @param DomainObject $entity
-	 */
-	public function remove(DomainObject $entity)
-	{
-		$this->toRemove[] = $entity;
-	}
+    /**
+     * @param DomainObject $entity
+     */
+    public function remove(DomainObject $entity)
+    {
+        $this->toRemove[] = $entity;
+    }
 
-	/**
-	 * @param array $remove
-	 */
-	public function removeArray(array $remove) {
-		foreach ($remove as $_remove) {
-			$this->remove($_remove);
-		}
-	}
+    /**
+     * @param array $remove
+     */
+    public function removeArray(array $remove)
+    {
+        foreach ($remove as $_remove) {
+            $this->remove($_remove);
+        }
+    }
 
-	/**
-	 * @param EntityManager $em
-	 */
-	public function flush(EntityManager $em)
-	{
-		foreach ($this->toAdd as $add) {
-			$em->persist($add);
-		}
-		$this->toAdd = array();
+    /**
+     * @param EntityManager $em
+     */
+    public function flush(EntityManager $em)
+    {
+        foreach ($this->toAdd as $add) {
+            $em->persist($add);
+        }
+        $this->toAdd = array();
 
-		foreach ($this->toRemove as $remove) {
-			$em->remove($remove);
-		}
-		$this->toRemove = array();
+        foreach ($this->toRemove as $remove) {
+            $em->remove($remove);
+        }
+        $this->toRemove = array();
 
-		$em->flush();
-	}
-} 
+        $em->flush();
+    }
+}

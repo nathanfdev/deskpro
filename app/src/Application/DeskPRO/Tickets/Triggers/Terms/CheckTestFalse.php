@@ -42,11 +42,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 class CheckTestFalse extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		return false;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        return false;
+    }
 }

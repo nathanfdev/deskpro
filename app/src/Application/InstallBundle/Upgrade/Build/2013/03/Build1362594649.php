@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1362594649 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add chat_messages.date_recieved");
-		$this->execMutateSql("ALTER TABLE chat_messages ADD date_received DATETIME DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add chat_messages.date_recieved");
+        $this->execMutateSql("ALTER TABLE chat_messages ADD date_received DATETIME DEFAULT NULL");
+    }
 }

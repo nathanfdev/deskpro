@@ -31,57 +31,56 @@
 
 namespace Application\ImportBundle\RecordMapper;
 
-use Doctrine\DBAL\Connection;
 
 class CustomDefTicketRecordMapper extends CommonRecordMapper
 {
-	/** @var  array */
-	protected $cache;
-	
-	/**
-	 * Returns person ID given a title.
-	 *
-	 * @param mixed $title
-	 * @return int|null
-	 */
-	public function findIdFromValue($title)
-	{
-		$dataArray = $this->fetch($title);
-				
-		return isset($dataArray['id']) ? $dataArray['id'] : null;
-	}
-	
-	/**
-	 * Checks if the give person is an agent
-	 * 
-	 * @param string $title The title to check by
-	 * @return bool True if the given user is an agent and false otherwise
-	 */
-	public function fetchHandlerClass($title)
-	{
-		$dataArray = $this->fetch($title);
-		
-		return $dataArray['handler_class'];
-	}
-	
-	protected function fetch($title)
-	{
-		$query = 'SELECT id, handler_class FROM custom_def_ticket WHERE title = ?';
+    /** @var  array */
+    protected $cache;
 
-		if (!isset($this->cache[$title])) {
-			$result = $this->db->fetchAll($query, array($title));
-			
-			if (!$result || !isset($result[0])) {
-				return null;
-			}
-			
-			while (count($this->cache) >= 5000) {
-				array_shift($this->cache);
-			}
-			
-			$this->cache[$title] = $result[0];
-		}
-		
-		return $this->cache[$title];
-	}
+    /**
+     * Returns person ID given a title.
+     *
+     * @param  mixed    $title
+     * @return int|null
+     */
+    public function findIdFromValue($title)
+    {
+        $dataArray = $this->fetch($title);
+
+        return isset($dataArray['id']) ? $dataArray['id'] : null;
+    }
+
+    /**
+     * Checks if the give person is an agent
+     *
+     * @param  string $title The title to check by
+     * @return bool   True if the given user is an agent and false otherwise
+     */
+    public function fetchHandlerClass($title)
+    {
+        $dataArray = $this->fetch($title);
+
+        return $dataArray['handler_class'];
+    }
+
+    protected function fetch($title)
+    {
+        $query = 'SELECT id, handler_class FROM custom_def_ticket WHERE title = ?';
+
+        if (!isset($this->cache[$title])) {
+            $result = $this->db->fetchAll($query, array($title));
+
+            if (!$result || !isset($result[0])) {
+                return null;
+            }
+
+            while (count($this->cache) >= 5000) {
+                array_shift($this->cache);
+            }
+
+            $this->cache[$title] = $result[0];
+        }
+
+        return $this->cache[$title];
+    }
 }

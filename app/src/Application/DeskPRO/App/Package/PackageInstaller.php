@@ -38,354 +38,367 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity\AppPackage;
 use Application\DeskPRO\Entity\Blob;
 use Doctrine\ORM\EntityManager;
-use Imagine\Exception as ImageException;
 use Imagine\Image\Box as ImageBox;
 use Imagine\Image\ImagineInterface;
-use Imagine\Image\Point as ImagePoint;
 use Orb\Data\ContentTypes;
 
 class PackageInstaller
 {
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage
-	 */
-	private $blob_storage;
+    /**
+     * @var \Application\DeskPRO\BlobStorage\DeskproBlobStorage
+     */
+    private $blob_storage;
 
-	/**
-	 * @var \Imagine\Image\ImagineInterface
-	 */
-	private $imagine;
+    /**
+     * @var \Imagine\Image\ImagineInterface
+     */
+    private $imagine;
 
-	public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage, ImagineInterface $imagine)
-	{
-		$this->em = $em;
-		$this->blob_storage = $blob_storage;
-		$this->imagine = $imagine;
-	}
-
-
-	/**
-	 * Install or update a package.
-	 *
-	 * @param Package    $package The package to installl
-	 * @param AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead.
-	 * @return AppPackage
-	 */
-	public function installPackage(Package $package, AppPackage $def = null)
-	{
-		$def = $package->createAppPackage($def);
-
-		$this->em->persist($def);
-		$this->em->flush();
-		$old_blobs = array();
-
-		#------------------------------
-		# Get app icons
-		#------------------------------
-
-		$sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
-		$have_sizes = array();
-		$largest = null;
-
-		$has_icon_filechange = false;
-
-		foreach ($sizes as $size) {
-			$path = $package->getIconFilePath($size);
-			if (!$path) {
-				continue;
-			}
-
-			$tag = "icons.app.$size";
-			$name = "app_$size.png";
-
-			if ($this->isAssetBlobChanged($def, $name, $path)) {
-				$blob = $this->blob_storage->createBlobRecordFromFile(
-					$path,
-					$name,
-					'image/png'
-				);
-
-				$asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
-				$this->em->persist($asset);
-				$has_icon_filechange = true;
-			} else {
-				$asset = $def->getAsset($name);
-				$blob = $asset->blob;
-			}
-
-			$largest = array($path, $size, $blob);
-			$have_sizes[$size] = $blob;
-		}
-
-		// No icon, we need a default
-		if (!$largest) {
-			$path = DP_ROOT.'/src/Application/DeskPRO/App/Package/Resources/no-icon.png';
-			$size = 256;
-
-			$tag = "icons.app.$size";
-			$name = "app_$size.png";
-
-			if ($this->isAssetBlobChanged($def, $name, $path)) {
-				$blob = $this->blob_storage->createBlobRecordFromFile(
-					$path,
-					$name,
-					'image/png'
-				);
-
-				$asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
-				$this->em->persist($asset);
-				$has_icon_filechange = true;
-			} else {
-				$asset = $def->getAsset($name);
-				$blob = $asset->blob;
-			}
-
-			$largest = array($path, $size, $blob);
-			$have_sizes[$size] = $blob;
-		}
-
-		// Missing sizes we'll just scale whatever
-		// the largest icon we have
-		foreach ($sizes as $size) {
-			if (isset($have_sizes[$size])) {
-				continue;
-			}
-
-			$tag = "icons.app.$size";
-			$name = "app_$size.png";
-
-			// If no main icon has changed, we only need to do the image
-			// resize if the image size doesnt exist yet, any other will
-			// not have changed
-			if (!$has_icon_filechange) {
-				$exist_asset = $def->getAsset($name);
-				if ($exist_asset) {
-					continue;
-				}
-			}
-
-			$image = $this->imagine->open($largest[0]);
-			$image->resize(new ImageBox($size, $size));
-
-			$img_raw = $image->get('png');
-
-			$blob = $this->blob_storage->createBlobRecordFromString(
-				$img_raw,
-				$name,
-				'image/png'
-			);
-
-			$asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
-			$this->em->persist($asset);
-
-			unset($img_raw);
-
-			$have_sizes[$size] = $blob;
-		}
-
-		#------------------------------
-		# README file
-		#------------------------------
-
-		$path = $package->getReadmeFilePath();
-		if ($path) {
-			$readme = file_get_contents($path);
-
-			if ($this->isAssetBlobChanged($def, 'README', md5($readme), true)) {
-				$blob = $this->blob_storage->createBlobRecordFromString(
-					$readme,
-					'README',
-					'text/plain'
-				);
-				$asset = $this->_addAssetBlob($def, $blob, 'readme.text', null, $old_blobs);
-				$this->em->persist($asset);
-			}
-
-			$readme_html = \Parsedown::instance()->parse($readme);
-			if ($this->isAssetBlobChanged($def, 'README.html', md5($readme_html), true)) {
-				$blob = $this->blob_storage->createBlobRecordFromString(
-					$readme_html,
-					'README.html',
-					'text/html'
-				);
-				$asset = $this->_addAssetBlob($def, $blob, 'readme.html', null, $old_blobs);
-				$this->em->persist($asset);
-			}
-		}
-
-		#------------------------------
-		# Main app.js
-		#------------------------------
-
-		$appjs_path = $package->getAppJsFilePath();
-		if ($appjs_path && $this->isAssetBlobChanged($def, 'app.js', $appjs_path)) {
-			$blob = $this->blob_storage->createBlobRecordFromFile(
-				$appjs_path,
-				'app.js',
-				'text/javascript'
-			);
-
-			$asset = $this->_addAssetBlob($def, $blob, 'app_js', null, $old_blobs);
-			$this->em->persist($asset);
-		}
-
-		#------------------------------
-		# Save assets
-		#------------------------------
-
-		foreach ($package->getJsAssets() as $asset_info) {
-			if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
-				$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'js', $old_blobs);
-				$this->em->persist($asset);
-			}
-		}
-		foreach ($package->getHtmlAssets() as $asset_info) {
-			if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
-				$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'html', $old_blobs);
-				$this->em->persist($asset);
-			}
-		}
-		foreach ($package->getCssAssets() as $asset_info) {
-			if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
-				$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'css', $old_blobs);
-				$this->em->persist($asset);
-			}
-		}
-		foreach ($package->getResAssets() as $asset_info) {
-			if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
-				$asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'res', $old_blobs);
-				$this->em->persist($asset);
-			}
-		}
-
-		$this->em->flush();
-
-		#------------------------------
-		# Remove old assets and blobs
-		#------------------------------
-
-		// Need to delete old blobs at the end after AppAsset.blob has been overwritten
-		// because AppAsset.blob has a delete cascade relation.
-		foreach ($old_blobs as $b) {
-			$this->blob_storage->deleteBlobRecord($b);
-		}
-
-		return $def;
-	}
+    public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage, ImagineInterface $imagine)
+    {
+        $this->em = $em;
+        $this->blob_storage = $blob_storage;
+        $this->imagine = $imagine;
+    }
 
 
-	/**
-	 * @param AppPackage $def
-	 * @param string     $name
-	 * @param string     $file     File path, or a string hash if $as_hash is used
-	 * @param bool       $as_hash
-	 * @return bool
-	 */
-	private function isAssetBlobChanged(AppPackage $def, $name, $file, $as_hash = false)
-	{
-		$asset = $def->getAsset($name);
+    /**
+     * Install or update a package.
+     *
+     * @param  Package    $package The package to installl
+     * @param  AppPackage $def     Existing package record. It will be updated. Otherwise, a new AppPackage is created instead.
+     * @return AppPackage
+     */
+    public function installPackage(Package $package, AppPackage $def = null)
+    {
+        $def = $package->createAppPackage($def);
 
-		// doesnt exist yet, so yes its "changed"
-		if (!$asset) {
-			return true;
-		}
+        $this->em->persist($def);
+        $this->em->flush();
+        $old_blobs = array();
 
-		if ($as_hash) {
-			$hash = $file;
-		} else {
-			$hash = @md5_file($file);
-		}
+        #------------------------------
+        # Get app icons
+        #------------------------------
 
-		// Different file hash, so its changed
-		if ($hash != $asset->blob->blob_hash) {
-			return true;
-		}
+        $sizes = array(16, 24, 32, 48, 64, 96, 128, 192, 256, 512);
+        $have_sizes = array();
+        $largest = null;
 
-		return false;
-	}
+        $has_icon_filechange = false;
 
+        foreach ($sizes as $size) {
+            $path = $package->getIconFilePath($size);
+            if (!$path) {
+                continue;
+            }
 
-	/**
-	 * @param Package $package
-	 * @param AppPackage $def
-	 * @param array $asset_info
-	 * @param $tag
-	 * @param array $old_blobs
-	 * @return \Application\DeskPRO\Entity\AppAsset
-	 */
-	private function _addAssetFromInfo(Package $package, AppPackage $def, array $asset_info, $tag, array &$old_blobs)
-	{
-		$mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
+            $tag = "icons.app.$size";
+            $name = "app_$size.png";
 
-		if ($tag == 'html') {
-			$content = file_get_contents($asset_info['real_path']);
-			$content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function($m) use ($package) {
-				$path = @realpath($package->getPath() . '/html/' . $m[1]);
-				$path_std = str_replace('\\', '/', $path);
+            if ($this->isAssetBlobChanged($def, $name, $path)) {
+                $blob = $this->blob_storage->createBlobRecordFromFile(
+                    $path,
+                    $name,
+                    'image/png'
+                );
 
-				if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
-					return '<!-- Invalid include file: ' . $m[1] . ' -->';
-				}
+                $asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
+                $this->em->persist($asset);
+                $has_icon_filechange = true;
+            } else {
+                $asset = $def->getAsset($name);
+                $blob = $asset->blob;
+            }
 
-				$inc_content = @file_get_contents($path);
-				return $inc_content;
-			}, $content);
+            $largest = array($path, $size, $blob);
+            $have_sizes[$size] = $blob;
+        }
 
-			$blob = $this->blob_storage->createBlobRecordFromString(
-				$content,
-				$asset_info['name'],
-				$mimetype
-			);
-		} else {
-			$blob = $this->blob_storage->createBlobRecordFromFile(
-				$asset_info['real_path'],
-				$asset_info['name'],
-				$mimetype
-			);
-		}
+        // No icon, we need a default
+        if (!$largest) {
+            $path = DP_ROOT.'/src/Application/DeskPRO/App/Package/Resources/no-icon.png';
+            $size = 256;
 
-		$asset = $this->_addAssetBlob($def, $blob, $tag, $asset_info['path'], $old_blobs);
-		return $asset;
-	}
+            $tag = "icons.app.$size";
+            $name = "app_$size.png";
 
+            if ($this->isAssetBlobChanged($def, $name, $path)) {
+                $blob = $this->blob_storage->createBlobRecordFromFile(
+                    $path,
+                    $name,
+                    'image/png'
+                );
 
-	/**
-	 * @param AppPackage $def
-	 * @param Blob $blob
-	 * @param null $tag
-	 * @param null $filename
-	 * @param array $old_blobs
-	 * @return \Application\DeskPRO\Entity\AppAsset|null
-	 */
-	private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
-	{
-		if (!$filename) {
-			$filename = $blob->filename;
-		}
+                $asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
+                $this->em->persist($asset);
+                $has_icon_filechange = true;
+            } else {
+                $asset = $def->getAsset($name);
+                $blob = $asset->blob;
+            }
 
-		$asset = $def->getAsset($filename);
+            $largest = array($path, $size, $blob);
+            $have_sizes[$size] = $blob;
+        }
 
-		if ($asset) {
-			if ($asset->blob && $asset->blob->id != $blob->id) {
-				$old_blobs[] = $asset->blob;
-				$asset->blob = null;
-			}
-		}
+        // Missing sizes we'll just scale whatever
+        // the largest icon we have
+        foreach ($sizes as $size) {
+            if (isset($have_sizes[$size])) {
+                continue;
+            }
 
-		if (!$asset) {
-			$asset = $def->addAssetFromBlob($blob, $filename);
-		} else {
-			$asset->blob = $blob;
-		}
+            $tag = "icons.app.$size";
+            $name = "app_$size.png";
 
-		$asset->name = $filename;
-		$asset->tag = $tag;
+            // If no main icon has changed, we only need to do the image
+            // resize if the image size doesnt exist yet, any other will
+            // not have changed
+            if (!$has_icon_filechange) {
+                $exist_asset = $def->getAsset($name);
+                if ($exist_asset) {
+                    continue;
+                }
+            }
 
-		return $asset;
-	}
+            $image = $this->imagine->open($largest[0]);
+            $image->resize(new ImageBox($size, $size));
+
+            $img_raw = $image->get('png');
+
+            $blob = $this->blob_storage->createBlobRecordFromString(
+                $img_raw,
+                $name,
+                'image/png'
+            );
+
+            $asset = $this->_addAssetBlob($def, $blob, $tag, null, $old_blobs);
+            $this->em->persist($asset);
+
+            unset($img_raw);
+
+            $have_sizes[$size] = $blob;
+        }
+
+        #------------------------------
+        # README file
+        #------------------------------
+
+        $path = $package->getReadmeFilePath();
+        if ($path) {
+            $readme = file_get_contents($path);
+
+            if ($this->isAssetBlobChanged($def, 'README', md5($readme), true)) {
+                $blob = $this->blob_storage->createBlobRecordFromString(
+                    $readme,
+                    'README',
+                    'text/plain'
+                );
+                $asset = $this->_addAssetBlob($def, $blob, 'readme.text', null, $old_blobs);
+                $this->em->persist($asset);
+            }
+
+            $readme_html = \Parsedown::instance()->parse($readme);
+            if ($this->isAssetBlobChanged($def, 'README.html', md5($readme_html), true)) {
+                $blob = $this->blob_storage->createBlobRecordFromString(
+                    $readme_html,
+                    'README.html',
+                    'text/html'
+                );
+                $asset = $this->_addAssetBlob($def, $blob, 'readme.html', null, $old_blobs);
+                $this->em->persist($asset);
+            }
+        }
+
+        #------------------------------
+        # Main app.js
+        #------------------------------
+
+        $appjs_path = $package->getAppJsFilePath();
+        if ($appjs_path && $this->isAssetBlobChanged($def, 'app.js', $appjs_path)) {
+            $blob = $this->blob_storage->createBlobRecordFromFile(
+                $appjs_path,
+                'app.js',
+                'text/javascript'
+            );
+
+            $asset = $this->_addAssetBlob($def, $blob, 'app_js', null, $old_blobs);
+            $this->em->persist($asset);
+        }
+
+        #------------------------------
+        # Main module.js
+        #------------------------------
+
+        $modulejs_path = $package->getModuleJsFilePath();
+        if ($modulejs_path && $this->isAssetBlobChanged($def, 'module.js', $modulejs_path)) {
+            $blob = $this->blob_storage->createBlobRecordFromFile(
+                $modulejs_path,
+                'module.js',
+                'text/javascript'
+            );
+
+            $asset = $this->_addAssetBlob($def, $blob, 'module_js', null, $old_blobs);
+            $this->em->persist($asset);
+        }
+
+        #------------------------------
+        # Save assets
+        #------------------------------
+
+        foreach ($package->getJsAssets() as $asset_info) {
+            if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+                $asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'js', $old_blobs);
+                $this->em->persist($asset);
+            }
+        }
+        foreach ($package->getHtmlAssets() as $asset_info) {
+            if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+                $asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'html', $old_blobs);
+                $this->em->persist($asset);
+            }
+        }
+        foreach ($package->getCssAssets() as $asset_info) {
+            if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+                $asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'css', $old_blobs);
+                $this->em->persist($asset);
+            }
+        }
+        foreach ($package->getResAssets() as $asset_info) {
+            if ($this->isAssetBlobChanged($def, $asset_info['path'], $asset_info['real_path'])) {
+                $asset = $this->_addAssetFromInfo($package, $def, $asset_info, 'res', $old_blobs);
+                $this->em->persist($asset);
+            }
+        }
+
+        $this->em->flush();
+
+        #------------------------------
+        # Remove old assets and blobs
+        #------------------------------
+
+        // Need to delete old blobs at the end after AppAsset.blob has been overwritten
+        // because AppAsset.blob has a delete cascade relation.
+        foreach ($old_blobs as $b) {
+            $this->blob_storage->deleteBlobRecord($b);
+        }
+
+        return $def;
+    }
+
+    /**
+     * @param  AppPackage $def
+     * @param  string     $name
+     * @param  string     $file    File path, or a string hash if $as_hash is used
+     * @param  bool       $as_hash
+     * @return bool
+     */
+    private function isAssetBlobChanged(AppPackage $def, $name, $file, $as_hash = false)
+    {
+        $asset = $def->getAsset($name);
+
+        // doesnt exist yet, so yes its "changed"
+        if (!$asset) {
+            return true;
+        }
+
+        if ($as_hash) {
+            $hash = $file;
+        } else {
+            $hash = @md5_file($file);
+        }
+
+        // Different file hash, so its changed
+        if ($hash != $asset->blob->blob_hash) {
+            return true;
+        }
+
+        return false;
+    }
+
+    /**
+     * @param  Package                              $package
+     * @param  AppPackage                           $def
+     * @param  array                                $asset_info
+     * @param $tag
+     * @param  array                                $old_blobs
+     * @return \Application\DeskPRO\Entity\AppAsset
+     */
+    private function _addAssetFromInfo(Package $package, AppPackage $def, array $asset_info, $tag, array &$old_blobs)
+    {
+        $mimetype = ContentTypes::getContentTypeFromFilename($asset_info['name']);
+
+        if ($tag == 'html') {
+            $content = file_get_contents($asset_info['real_path']);
+            $content = preg_replace_callback('/<!\-\-#include\s+file="([a-zA-Z0-9_\-\.\/]+)"\s+\-\->/', function ($m) use ($package) {
+                $path = @realpath($package->getPath() . '/html/' . $m[1]);
+                $path_std = str_replace('\\', '/', $path);
+
+                if (!$path || !is_file($path) || strpos($path_std, str_replace('\\', '/', $package->getPath())) !== 0) {
+                    return '<!-- Invalid include file: ' . $m[1] . ' -->';
+                }
+
+                $inc_content = @file_get_contents($path);
+
+                return $inc_content;
+            }, $content);
+
+            $blob = $this->blob_storage->createBlobRecordFromString(
+                $content,
+                $asset_info['name'],
+                $mimetype
+            );
+        } else {
+            $blob = $this->blob_storage->createBlobRecordFromFile(
+                $asset_info['real_path'],
+                $asset_info['name'],
+                $mimetype
+            );
+        }
+
+        $asset = $this->_addAssetBlob($def, $blob, $tag, $asset_info['path'], $old_blobs);
+
+        return $asset;
+    }
+
+    /**
+     * @param  AppPackage                                $def
+     * @param  Blob                                      $blob
+     * @param  null                                      $tag
+     * @param  null                                      $filename
+     * @param  array                                     $old_blobs
+     * @return \Application\DeskPRO\Entity\AppAsset|null
+     */
+    private function _addAssetBlob(AppPackage $def, Blob $blob, $tag = null, $filename = null, array &$old_blobs)
+    {
+        if (!$filename) {
+            $filename = $blob->filename;
+        }
+
+        $asset = $def->getAsset($filename);
+
+        if ($asset) {
+            if ($asset->blob && $asset->blob->id != $blob->id) {
+                $old_blobs[] = $asset->blob;
+                $asset->blob = null;
+            }
+        }
+
+        if (!$asset) {
+            $asset = $def->addAssetFromBlob($blob, $filename);
+        } else {
+            $asset->blob = $blob;
+        }
+
+        $asset->name = $filename;
+        $asset->tag = $tag;
+
+        return $asset;
+    }
 }

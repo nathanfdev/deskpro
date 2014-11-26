@@ -36,17 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056718 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Remove old email_gateway_addresses tables");
-		$db->exec("DROP TABLE email_gateway_addresses");
+        $this->out("Remove old email_gateway_addresses tables");
+        $db->exec("DROP TABLE email_gateway_addresses");
 
-		$this->out("Remove old email_gateways tables");
-		$db->exec("DROP TABLE email_gateways");
+        $this->out("Remove old email_gateways tables");
+        $db->exec("DROP TABLE email_gateways");
 
-		$this->out("Remove old email_transports tables");
-		$db->exec("DROP TABLE email_transports");
-	}
+        $this->out("Remove old email_transports tables");
+        $db->exec("DROP TABLE email_transports");
+    }
 }

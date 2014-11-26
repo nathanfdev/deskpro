@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Command;
 namespace Application\DeskPRO\Command;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Application\DeskPRO\Monolog\Logger;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -47,92 +46,93 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
-	protected function configure()
-	{
-		$this->setName('dp:upgrade')
-		     ->addOption('info', null, InputOption::VALUE_NONE, 'Set this flag to get info about your current instance')
-		     ->addOption('dobuildrun', null, InputOption::VALUE_REQUIRED, 'Runs a build script. Usually used internally.')
-		     ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
+    protected function configure()
+    {
+        $this->setName('dp:upgrade')
+             ->addOption('info', null, InputOption::VALUE_NONE, 'Set this flag to get info about your current instance')
+             ->addOption('dobuildrun', null, InputOption::VALUE_REQUIRED, 'Runs a build script. Usually used internally.')
+             ->addOption('runsync', null, InputOption::VALUE_NONE, 'Only runs the post sync scripts')
 		     ->addOption('setbuild', null, InputOption::VALUE_NONE, 'Sets the build number to now')
-		     ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
-		     ->setHelp("This command executes the upgrader to bring your database to the same version the filesystem is");
-	}
+             ->addOption('reset', null, InputOption::VALUE_NONE, 'Removes status files that tells the system an upgrade is running. Use this if the systme is "stuck" in upgrade mode.')
+             ->setHelp("This command executes the upgrader to bring your database to the same version the filesystem is");
+    }
 
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-		set_time_limit(0);
+        set_time_limit(0);
 
-		if ($input->getOption('reset')) {
-			@unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
-			@unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
-			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
-			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
-			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
-			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
-			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
-			$this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
-			$this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', null);
+        if ($input->getOption('reset')) {
+            @unlink(DP_WEB_ROOT . '/auto-update-is-running.trigger');
+            @unlink(dp_get_tmp_dir() . '/auto-upgrade-started');
+            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_started', null);
+            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_error_writeperm', null);
+            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_time', null);
+            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_set_at', null);
+            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_files', null);
+            $this->getContainer()->getSettingsHandler()->setSetting('core.upgrade_backup_db', null);
+            $this->getContainer()->getSettingsHandler()->setSetting('core.last_auto_upgrade_time', null);
 
-			$output->writeln("Reset done.");
-			return 0;
-		}
+            $output->writeln("Reset done.");
 
-		// Clear caches, including doctrine query caches
-		App::getDb()->exec("TRUNCATE TABLE cache");
-		@unlink(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache');
+            return 0;
+        }
 
-		$output->setVerbosity(4);
+        // Clear caches, including doctrine query caches
+        App::getDb()->exec("TRUNCATE TABLE cache");
+        @unlink(dp_get_tmp_dir() . DIRECTORY_SEPARATOR . 'dql.cache');
 
-		$logger = new Logger('upgrade');
-		$console_handler = new ConsoleHandler($output);
-		$logger->pushHandler($console_handler);
+        $output->setVerbosity(4);
 
-		$stream_handler = new StreamHandler(dp_get_log_dir() . '/upgrade.log');
-		$logger->pushHandler($stream_handler);
+        $logger = new Logger('upgrade');
+        $console_handler = new ConsoleHandler($output);
+        $logger->pushHandler($console_handler);
 
-		try {
-			$this->getContainer()->getDb()->exec("SET SESSION wait_timeout = 86400");
-			$logger->debug("Set wait_timeout to 86400");
-		} catch (\Exception $e) {
-			$logger->warn("Failed to set wait_timeout: " . $e->getMessage());
-		}
+        $stream_handler = new StreamHandler(dp_get_log_dir() . '/upgrade.log');
+        $logger->pushHandler($stream_handler);
 
-		$manager = new \Application\InstallBundle\Upgrade\Manager(
-			$this->getContainer(),
-			$logger
-		);
+        try {
+            $this->getContainer()->getDb()->exec("SET SESSION wait_timeout = 86400");
+            $logger->debug("Set wait_timeout to 86400");
+        } catch (\Exception $e) {
+            $logger->warn("Failed to set wait_timeout: " . $e->getMessage());
+        }
 
-		#------------------------------
-		# Info
-		#------------------------------
+        $manager = new \Application\InstallBundle\Upgrade\Manager(
+            $this->getContainer(),
+            $logger
+        );
 
-		if ($input->getOption('info')) {
+        #------------------------------
+        # Info
+        #------------------------------
 
-			$next_id = $manager->getNextBuildId();
-			$output->writeln(sprintf("\tInstalled version:   %d (%s)", $manager->getCurrentBuild(),  $manager->formatBuildId($manager->getCurrentBuild())));
-			if (!$next_id) {
-				$output->writeln(sprintf("\t     Next version:   none", $manager->getNextBuildId(),  $manager->formatBuildId($manager->getNextBuildId())));
-			} else {
-				$output->writeln(sprintf("\t     Next version:   %d (%s)", $manager->getNextBuildId(),  $manager->formatBuildId($manager->getNextBuildId())));
-			}
+        if ($input->getOption('info')) {
 
-			$output->writeln(sprintf("\t   Latest version:   %d (%s)", $manager->getLatestBuildId(), $manager->formatBuildId($manager->getLatestBuildId())));
+            $next_id = $manager->getNextBuildId();
+            $output->writeln(sprintf("\tInstalled version:   %d (%s)", $manager->getCurrentBuild(),  $manager->formatBuildId($manager->getCurrentBuild())));
+            if (!$next_id) {
+                $output->writeln(sprintf("\t     Next version:   none", $manager->getNextBuildId(),  $manager->formatBuildId($manager->getNextBuildId())));
+            } else {
+                $output->writeln(sprintf("\t     Next version:   %d (%s)", $manager->getNextBuildId(),  $manager->formatBuildId($manager->getNextBuildId())));
+            }
 
-			echo "\n";
+            $output->writeln(sprintf("\t   Latest version:   %d (%s)", $manager->getLatestBuildId(), $manager->formatBuildId($manager->getLatestBuildId())));
 
-			if (!$next_id) {
-				$output->writeln("You are all up to date!");
-			} else {
-				$output->writeln("Builds that need to be executed:");
-					foreach ($manager->getWaitingBuildIds() as $build_id) {
-						$output->writeln(sprintf("\t%d (%s)", $build_id, $manager->formatBuildId($build_id)));
-					}
-			}
+            echo "\n";
 
-			return 0;
-		}
+            if (!$next_id) {
+                $output->writeln("You are all up to date!");
+            } else {
+                $output->writeln("Builds that need to be executed:");
+                    foreach ($manager->getWaitingBuildIds() as $build_id) {
+                        $output->writeln(sprintf("\t%d (%s)", $build_id, $manager->formatBuildId($build_id)));
+                    }
+            }
 
-		#------------------------------
+            return 0;
+        }
+
+        #------------------------------
 		# Set build
 		#------------------------------
 
@@ -145,69 +145,72 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAw
 		}
 
 		#------------------------------
-		# Want to run post scripts only
-		#------------------------------
+        # Want to run post scripts only
+        #------------------------------
 
-		if ($input->getOption('runsync')) {
-			$output->writeln("<info>Running post scripts</info>");
-			$manager->postUpgrade();
-			$output->writeln("<info>Done All</info>");
-			return 0;
-		}
+        if ($input->getOption('runsync')) {
+            $output->writeln("<info>Running post scripts</info>");
+            $manager->postUpgrade();
+            $output->writeln("<info>Done All</info>");
 
-		#------------------------------
-		# Runs a build script
-		#------------------------------
+            return 0;
+        }
 
-		if (!$manager->getNextBuildId()) {
-			$logger->info("All up to date");
-		}
+        #------------------------------
+        # Runs a build script
+        #------------------------------
 
-		if ($input->getOption('dobuildrun')) {
-			$manager->runBuild($input->getOption('dobuildrun'));
-			return 0;
-		}
+        if (!$manager->getNextBuildId()) {
+            $logger->info("All up to date");
+        }
 
-		#------------------------------
-		# The main executor loop
-		#------------------------------
+        if ($input->getOption('dobuildrun')) {
+            $manager->runBuild($input->getOption('dobuildrun'));
 
-		chdir(DP_ROOT . '/../');
+            return 0;
+        }
 
-		while ($next_id = $manager->getNextBuildId()) {
-			$logger->info("Build #$next_id");
+        #------------------------------
+        # The main executor loop
+        #------------------------------
 
-			$cmd = dp_get_php_command('cmd.php', "dp:upgrade --dobuildrun=$next_id");
-			$logger->debug("Command: $cmd");
-			$ret = null;
-			passthru($cmd, $ret);
+        chdir(DP_ROOT . '/../');
 
-			if ($ret) {
-				$logger->notice("--> Error status: $ret");
-				return $ret;
-			}
+        while ($next_id = $manager->getNextBuildId()) {
+            $logger->info("Build #$next_id");
 
-			$manager->reset();
-		}
+            $cmd = dp_get_php_command('cmd.php', "dp:upgrade --dobuildrun=$next_id");
+            $logger->debug("Command: $cmd");
+            $ret = null;
+            passthru($cmd, $ret);
 
-		#------------------------------
-		# Post Run
-		#------------------------------
+            if ($ret) {
+                $logger->notice("--> Error status: $ret");
 
-		$logger->info("Running post scripts");
-	    $manager->postUpgrade();
+                return $ret;
+            }
 
-		if (defined('DP_BUILD_TIME')) {
-			$logger->info("Setting deskpro_build = " . DP_BUILD_TIME);
-			$current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
-			if ($current < DP_BUILD_TIME) {
-				App::getDb()->replace('settings', array('value' => DP_BUILD_TIME, 'name' => 'core.deskpro_build'));
-				App::getDb()->replace('settings', array('value' => DP_BUILD_NUM, 'name' => 'core.deskpro_build_num'));
-			}
-		}
+            $manager->reset();
+        }
 
-		$logger->info("Upgrade complete");
+        #------------------------------
+        # Post Run
+        #------------------------------
 
-		return 0;
-	}
+        $logger->info("Running post scripts");
+        $manager->postUpgrade();
+
+        if (defined('DP_BUILD_TIME')) {
+            $logger->info("Setting deskpro_build = " . DP_BUILD_TIME);
+            $current = App::getDb()->fetchColumn("SELECT value FROM settings WHERE name = 'core.deskpro_build'");
+            if ($current < DP_BUILD_TIME) {
+                App::getDb()->replace('settings', array('value' => DP_BUILD_TIME, 'name' => 'core.deskpro_build'));
+                App::getDb()->replace('settings', array('value' => DP_BUILD_NUM, 'name' => 'core.deskpro_build_num'));
+            }
+        }
+
+        $logger->info("Upgrade complete");
+
+        return 0;
+    }
 }

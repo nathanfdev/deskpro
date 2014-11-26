@@ -31,7 +31,6 @@ use Application\DeskPRO\CustomFields\CustomDataPersister;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
-use Application\DeskPRO\Form\Transformer\CustomDataTransformer;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormEvent;
@@ -43,136 +42,136 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 abstract class CustomFieldType extends AbstractType implements EventSubscriberInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\CustomFieldDefinition
-	 */
-	protected $definition;
+    /**
+     * @var \Application\DeskPRO\Entity\CustomFieldDefinition
+     */
+    protected $definition;
 
-	public function __construct(CustomFieldDefinition $definition)
-	{
-		$this->definition = $definition;
-	}
+    public function __construct(CustomFieldDefinition $definition)
+    {
+        $this->definition = $definition;
+    }
 
-	/**
-	 * @param FormBuilderInterface $builder
-	 * @param array $options
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		parent::buildForm($builder, $options);
-		$builder->addEventSubscriber($this);
-	}
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        parent::buildForm($builder, $options);
+        $builder->addEventSubscriber($this);
+    }
 
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver
-			->setDefaults(array(
-				'data_class' => 'Application\DeskPRO\Entity\CustomFieldData',
-				'label' => $this->definition['title'],
-				'attr' => array(
-					'data-definition-type' => $this->getName(),
-					'data-definition-id' => $this->definition['id'],
-				),
-				'allow_edit' => false,
-			))
-			->setRequired(array(
-				'owner', 'persister',
-			))
-			->setOptional(array(
-				'context', 'allow_edit',
-			))
-			->setAllowedTypes(array(
-				'owner' => 'Application\DeskPRO\Domain\DomainObject',
-				'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
-				'context' => array('null', 'Application\DeskPRO\Domain\DomainObject'),
-			));
-	}
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver
+            ->setDefaults(array(
+                'data_class' => 'Application\DeskPRO\Entity\CustomFieldData',
+                'label' => $this->definition['title'],
+                'attr' => array(
+                    'data-definition-type' => $this->getName(),
+                    'data-definition-id' => $this->definition['id'],
+                ),
+                'allow_edit' => false,
+            ))
+            ->setRequired(array(
+                'owner', 'persister',
+            ))
+            ->setOptional(array(
+                'context', 'allow_edit',
+            ))
+            ->setAllowedTypes(array(
+                'owner' => 'Application\DeskPRO\Domain\DomainObject',
+                'persister' => 'Application\DeskPRO\CustomFields\CustomDataPersister',
+                'context' => array('null', 'Application\DeskPRO\Domain\DomainObject'),
+            ));
+    }
 
-	/**
-	 * @return array
-	 */
-	protected function getValueOptions()
-	{
-		$options = $this->definition['options'];
-		$options['label'] = false;
-		unset($options['allow_edit']);
+    /**
+     * @return array
+     */
+    protected function getValueOptions()
+    {
+        $options = $this->definition['options'];
+        $options['label'] = false;
+        unset($options['allow_edit']);
 
-		return $options;
-	}
+        return $options;
+    }
 
-	/**
-	 * @param FormView $view
-	 * @param FormInterface $form
-	 * @param array $options
-	 */
-	public function buildView(FormView $view, FormInterface $form, array $options)
-	{
-		$view->vars['def'] = $this->definition;
-		$view->vars['rendered_data'] = null;
+    /**
+     * @param FormView      $view
+     * @param FormInterface $form
+     * @param array         $options
+     */
+    public function buildView(FormView $view, FormInterface $form, array $options)
+    {
+        $view->vars['def'] = $this->definition;
+        $view->vars['rendered_data'] = null;
 
-		if (!($data = $form->getData()) instanceof CustomFieldData) {
-			return;
-		}
-		$view->vars['rendered_data'] = $data['input'];
-	}
+        if (!($data = $form->getData()) instanceof CustomFieldData) {
+            return;
+        }
+        $view->vars['rendered_data'] = $data['input'];
+    }
 
-	/**
-	 * @return CustomFieldDefinition
-	 */
-	public function getDefinition()
-	{
-		return $this->definition;
-	}
+    /**
+     * @return CustomFieldDefinition
+     */
+    public function getDefinition()
+    {
+        return $this->definition;
+    }
 
-	/**
-	 * @param FormEvent $event
-	 */
-	public function onPreSubmit(FormEvent $event)
-	{
-		// clean extra data
-		if ($data = $event->getData()) {
-			$data = array_intersect_key($data, $event->getForm()->all());
-			$event->setData($data);
-		}
-	}
+    /**
+     * @param FormEvent $event
+     */
+    public function onPreSubmit(FormEvent $event)
+    {
+        // clean extra data
+        if ($data = $event->getData()) {
+            $data = array_intersect_key($data, $event->getForm()->all());
+            $event->setData($data);
+        }
+    }
 
-	/**
-	 * @param FormEvent $event
-	 */
-	public function onPostSubmit(FormEvent $event)
-	{
-		if (!($data = $event->getData()) instanceof CustomFieldData) {
-			return;
-		}
-		$form = $event->getForm();
+    /**
+     * @param FormEvent $event
+     */
+    public function onPostSubmit(FormEvent $event)
+    {
+        if (!($data = $event->getData()) instanceof CustomFieldData) {
+            return;
+        }
+        $form = $event->getForm();
 
-		$options = $form->getConfig()->getOptions();
-		/** @var CustomDataPersister $persister */
-		$persister = $options['persister'];
-		/** @var DomainObject $owner */
-		$owner = $options['owner'];
+        $options = $form->getConfig()->getOptions();
+        /** @var CustomDataPersister $persister */
+        $persister = $options['persister'];
+        /** @var DomainObject $owner */
+        $owner = $options['owner'];
 
-		if ($data->getData()) {
-			$persister->add($data);
-			$data->owner = $owner;
-			$data->definition = $this->definition;
-			$data->root_definition = $this->definition;
-		} else {
-			$persister->remove($data);
-		}
-	}
+        if ($data->getData()) {
+            $persister->add($data);
+            $data->owner = $owner;
+            $data->definition = $this->definition;
+            $data->root_definition = $this->definition;
+        } else {
+            $persister->remove($data);
+        }
+    }
 
-	/**
-	 * @return array
-	 */
-	public static function getSubscribedEvents()
-	{
-		return array(
-			FormEvents::PRE_SUBMIT => 'onPreSubmit',
-			FormEvents::POST_SUBMIT => 'onPostSubmit',
-		);
-	}
+    /**
+     * @return array
+     */
+    public static function getSubscribedEvents()
+    {
+        return array(
+            FormEvents::PRE_SUBMIT => 'onPreSubmit',
+            FormEvents::POST_SUBMIT => 'onPostSubmit',
+        );
+    }
 }

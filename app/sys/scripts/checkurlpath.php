@@ -10,7 +10,7 @@ $request = \Symfony\Component\HttpFoundation\Request::createFromGlobals();
 $pathinfo = $request->getPathInfo();
 
 if (strpos($pathinfo, '/__checkurlrewrite/') !== 0) {
-	echo "dp_check_invalid_path_info";
+    echo "dp_check_invalid_path_info";
 } else {
-	echo "dp_check_okay";
+    echo "dp_check_okay";
 }

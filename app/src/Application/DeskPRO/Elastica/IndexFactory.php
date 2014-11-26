@@ -37,33 +37,33 @@ use Elastica\Client;
 
 class IndexFactory
 {
-	/**
-	 * @var \Elastica\Client
-	 */
-	private $client;
+    /**
+     * @var \Elastica\Client
+     */
+    private $client;
 
 
-	/**
-	 * @param Client $client
-	 */
-	public function __construct(Client $client)
-	{
-		$this->client = $client;
-	}
+    /**
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
 
 
-	/**
-	 * @param string $index_name
-	 * @return \Elastica\Index
-	 */
-	public function getIndex($index_name)
-	{
-		if (defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
-			return $this->client->getIndex($index_name . '_' . DPC_SITE_ID);
-		} else if (defined('DP_ELASTIC_INDEX')) {
-			return $this->client->getIndex(DP_ELASTIC_INDEX);
-		} else {
-			return $this->client->getIndex($index_name);
-		}
-	}
+    /**
+     * @param  string          $index_name
+     * @return \Elastica\Index
+     */
+    public function getIndex($index_name)
+    {
+        if (defined('DPC_IS_CLOUD') && DPC_IS_CLOUD) {
+            return $this->client->getIndex($index_name . '_' . DPC_SITE_ID);
+        } elseif (defined('DP_ELASTIC_INDEX')) {
+            return $this->client->getIndex(DP_ELASTIC_INDEX);
+        } else {
+            return $this->client->getIndex($index_name);
+        }
+    }
 }

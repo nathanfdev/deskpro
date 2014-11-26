@@ -1,3 +1,3 @@
 <?php return array(
-	'agent.tasks.all_tasks'                                                => 'Alle Aufgaben',
+    'agent.tasks.all_tasks'                                                => 'Alle Aufgaben',
 );

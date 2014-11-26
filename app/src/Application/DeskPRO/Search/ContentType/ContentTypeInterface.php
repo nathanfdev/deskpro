@@ -45,34 +45,32 @@ use Application\DeskPRO\Search\SearcherResult\ResultInterface;
  */
 interface ContentTypeInterface
 {
-	/**
-	 * Convert a result from a search into the real content object.
-	 *
-	 * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
-	 * @return mixed
-	 */
-	public function resultToObject(ResultInterface $result);
+    /**
+     * Convert a result from a search into the real content object.
+     *
+     * @param  \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
+     * @return mixed
+     */
+    public function resultToObject(ResultInterface $result);
 
+    /**
+     * Converts many results of this type into real objects.
+     *
+     * Usually its more efficient to fetch multiple objects at once, so
+     * the implementation of a searcher will usually request many at once.
+     *
+     * IMPORTANT: Array should be keyed by the object ID.
+     *
+     * @param  \Application\DeskPRO\Search\SearcherResult\ResultInterface[] $result
+     * @return array
+     */
+    public function resultsToObjects(array $results);
 
-	/**
-	 * Converts many results of this type into real objects.
-	 *
-	 * Usually its more efficient to fetch multiple objects at once, so
-	 * the implementation of a searcher will usually request many at once.
-	 *
-	 * IMPORTANT: Array should be keyed by the object ID.
-	 *
-	 * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface[] $result
-	 * @return array
-	 */
-	public function resultsToObjects(array $results);
-
-
-	/**
-	 * Transforms an object into a document, suitable for indexing.
-	 *
-	 * @param mixed $object
-	 * @return \Application\DeskPRO\Search\Indexer\DocumentInterface
-	 */
-	public function objectToDocument($object);
+    /**
+     * Transforms an object into a document, suitable for indexing.
+     *
+     * @param  mixed                                                 $object
+     * @return \Application\DeskPRO\Search\Indexer\DocumentInterface
+     */
+    public function objectToDocument($object);
 }

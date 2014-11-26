@@ -1,0 +1,33 @@
+<div style="padding:15px; max-height: 130px; overflow: auto;">
+	<table id="jira-issue-table" width="100%" cellspacing="0" cellpadding="5" border="0">
+		<thead>
+			<tr>
+				<th>#</th>
+				<th>{{ phrase('agent.jira.issuekey') }}</th>
+				<th>{{ phrase('agent.jira.status') }}</th>
+				<th>{{ phrase('agent.jira.assignedto') }}</th>
+				<th>{{ phrase('agent.jira.lastactivity') }}</th>
+				<th>{{ phrase('agent.jira.actions') }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for issue in issues %}
+				<tr data-issue_id="{{ issue.id }}">
+					<td>{{ loop.index }}.</td>
+					<td><a target="_blank" href="{{ jirabaseurl }}browse/{{ issue.key }}">{{ issue.key }}</a></td>
+					<td>{{ issue.status }}</td>
+					<td>
+						{% if issue.assignee is null %}
+							{{ phrase('agent.jira.nobody') }}
+						{% else %}
+							{{ issue.assignee }}
+						{% endif %}
+					</td>
+					<td class="issue-table-modified momentjs">{{ issue.updated }}</td>
+					<td><i class="icon-comment"></i> | <i class="icon-remove"></i>
+					</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>

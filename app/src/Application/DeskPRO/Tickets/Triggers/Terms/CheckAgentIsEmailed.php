@@ -46,54 +46,55 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckAgentIsEmailed extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('template');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('template');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$template_name = $this->getTermOptions()->get('template', null);
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $template_name = $this->getTermOptions()->get('template', null);
 
-		$state = $ticket->getStateChangeRecorder();
-		$did_send = false;
+        $state = $ticket->getStateChangeRecorder();
+        $did_send = false;
 
-		foreach ($state->getChangesForField('ticket_email') as $log) {
-			if (!($log instanceof ChangeEmailLog)) {
-				continue;
-			}
+        foreach ($state->getChangesForField('ticket_email') as $log) {
+            if (!($log instanceof ChangeEmailLog)) {
+                continue;
+            }
 
-			if ($log->getUserMode() != 'agent') {
-				continue;
-			}
+            if ($log->getUserMode() != 'agent') {
+                continue;
+            }
 
-			if ($template_name) {
-				if ($log->getTemplate() == $template_name) {
-					$did_send = true;
-					break;
-				}
-			} else {
-				$did_send = true;
-				break;
-			}
-		}
+            if ($template_name) {
+                if ($log->getTemplate() == $template_name) {
+                    $did_send = true;
+                    break;
+                }
+            } else {
+                $did_send = true;
+                break;
+            }
+        }
 
-		$op = $this->getTermOperator();
-		if ($did_send) {
-			if ($op == 'is') return true;
-			else return false;
-		} else {
-			if ($op == 'not') return true;
-			else return false;
-		}
-	}
+        $op = $this->getTermOperator();
+        if ($did_send) {
+            if ($op == 'is') return true;
+            else return false;
+        } else {
+            if ($op == 'not') return true;
+            else return false;
+        }
+    }
 }

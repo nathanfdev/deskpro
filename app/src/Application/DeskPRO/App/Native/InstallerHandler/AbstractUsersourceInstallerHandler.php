@@ -40,124 +40,126 @@ use Application\DeskPRO\ORM\EntityManager;
 
 abstract class AbstractUsersourceInstallerHandler extends AbstractInstallerHandler
 {
-	protected $settingsDef;
+    protected $settingsDef;
 
-	/**
-	 * @var InstallerContext
-	 */
-	protected $context;
+    /**
+     * @var InstallerContext
+     */
+    protected $context;
 
-	public function __construct($settingsDef = array())
-	{
-		$this->settingsDef = $settingsDef;
-	}
-
-
-	/**
-	 * This is run during every install and update
-	 *
-	 * @param AppInstance   $app
-	 * @param Usersource    $usersource
-	 * @param EntityManager $em
-	 * @return mixed
-	 */
-	protected abstract function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em);
+    public function __construct($settingsDef = array())
+    {
+        $this->settingsDef = $settingsDef;
+    }
 
 
-	/**
-	 * Called after another app has enabled SSO. The underlying usersource is already cleared of its SSO status, but
-	 * you probably need to change your settings back to "off" mode (for exmaple, you need to manually "uncheck" the
-	 * "enable sso" checkbox here).
-	 *
-	 * @param AppInstance   $app
-	 * @param EntityManager $em
-	 * @return void
-	 */
-	public function disableSsoSettings(AppInstance $app, EntityManager $em)
-	{
-		return null;
-	}
+    /**
+     * This is run during every install and update
+     *
+     * @param  AppInstance   $app
+     * @param  Usersource    $usersource
+     * @param  EntityManager $em
+     * @return mixed
+     */
+    abstract protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em);
 
 
-	public function setupAutoAgent(Usersource $us, $auto_agent, $permission_group_id)
-	{
-		if ($context = $this->context) {
-			if (Usersource::TYPE_AGENT == $us->type && $auto_agent) {
-				$us->auto_agent   = true;
+    /**
+     * Called after another app has enabled SSO. The underlying usersource is already cleared of its SSO status, but
+     * you probably need to change your settings back to "off" mode (for exmaple, you need to manually "uncheck" the
+     * "enable sso" checkbox here).
+     *
+     * @param  AppInstance   $app
+     * @param  EntityManager $em
+     * @return void
+     */
+    public function disableSsoSettings(AppInstance $app, EntityManager $em)
+    {
+        return null;
+    }
 
-				// PERMISSION GROUPS
-				if ($permission_group_id) {
-					$permission_group = $context->getEm()->getRepository('DeskPRO:Usergroup')->find($permission_group_id);
 
-					if  ($permission_group) {
-						$us->agent_permission_group = $permission_group;
-					}
-				}
-			} else {
-				$us->auto_agent             = false;
-				$us->agent_permission_group = null;
-			}
-		} else {
-			throw new \RuntimeException('please ensure an installer context is present');
-		}
-	}
+    public function setupAutoAgent(Usersource $us, $auto_agent, $permission_group_id)
+    {
+        if ($context = $this->context) {
+            if (Usersource::TYPE_AGENT == $us->type && $auto_agent) {
+                $us->auto_agent   = true;
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function install(InstallerContext $context)
-	{
-		$this->context = $context;
-		$this->applyAppToUsersource($context->getApp(), $context->getUsersource(), $context->getEm());
-	}
+                // PERMISSION GROUPS
+                if ($permission_group_id) {
+                    $permission_group = $context->getEm()->getRepository('DeskPRO:Usergroup')->find($permission_group_id);
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function updateSettings(InstallerContext $context)
-	{
-		$this->context = $context;
-		$this->applyAppToUsersource($context->getApp(), $context->getUsersource(), $context->getEm());
-	}
+                    if  ($permission_group) {
+                        $us->agent_permission_group = $permission_group;
+                    }
+                }
+            } else {
+                $us->auto_agent             = false;
+                $us->agent_permission_group = null;
+            }
+        } else {
+            throw new \RuntimeException('please ensure an installer context is present');
+        }
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function uninstall(InstallerContext $context)
-	{
-		$this->context = $context;
-		$context->getEm()->remove($context->getUsersource());
-		$context->getEm()->flush();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function install(InstallerContext $context)
+    {
+        $this->context = $context;
+        $this->applyAppToUsersource($context->getApp(), $context->getUsersource(), $context->getEm());
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @param array $settings
-	 * @return array
-	 */
-	public function processSettings(InstallerContext $context, array $settings)
-	{
-		$this->context = $context;
-		return $settings;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function updateSettings(InstallerContext $context)
+    {
+        $this->context = $context;
+        $this->applyAppToUsersource($context->getApp(), $context->getUsersource(), $context->getEm());
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @param array $settings
-	 * @return array
-	 */
-	public function validateSettings(InstallerContext $context, array $settings)
-	{
-		$this->context = $context;
-		return $settings;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function uninstall(InstallerContext $context)
+    {
+        $this->context = $context;
+        $context->getEm()->remove($context->getUsersource());
+        $context->getEm()->flush();
+    }
 
-	/**
-	 * @param InstallerContext $context
-	 * @return void
-	 */
-	public function updatePackage(InstallerContext $context)
-	{
-		$this->context = $context;
-	}
+    /**
+     * @param  InstallerContext $context
+     * @param  array            $settings
+     * @return array
+     */
+    public function processSettings(InstallerContext $context, array $settings)
+    {
+        $this->context = $context;
+
+        return $settings;
+    }
+
+    /**
+     * @param  InstallerContext $context
+     * @param  array            $settings
+     * @return array
+     */
+    public function validateSettings(InstallerContext $context, array $settings)
+    {
+        $this->context = $context;
+
+        return $settings;
+    }
+
+    /**
+     * @param  InstallerContext $context
+     * @return void
+     */
+    public function updatePackage(InstallerContext $context)
+    {
+        $this->context = $context;
+    }
 }

@@ -34,95 +34,94 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Visitor as VisitorEntity;
 
 class ChatBlock extends AbstractEntityRepository
 {
-	/**
-	 * How long a block stays in place
-	 */
-	const BLOCK_TIMEOUT = 86400;
+    /**
+     * How long a block stays in place
+     */
+    const BLOCK_TIMEOUT = 86400;
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Visitor $visitor
-	 * @return \Application\DeskPRO\Entity\ChatBlock
-	 */
-	public function getBlockForVisitor(VisitorEntity $visitor = null)
-	{
-		$datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
+    /**
+     * @param  \Application\DeskPRO\Entity\Visitor   $visitor
+     * @return \Application\DeskPRO\Entity\ChatBlock
+     */
+    public function getBlockForVisitor(VisitorEntity $visitor = null)
+    {
+        $datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
 
-		if ($visitor) {
-			$block = $this->_em->createQuery("
-				SELECT b
-				FROM DeskPRO:ChatBlock b
-				WHERE (b.ip_address = ?0 OR b.visitor = ?1) AND b.date_created > ?2
-			")->setParameters(array($visitor->ip_address, $visitor, $datecut))->setMaxResults(1)->getOneOrNullResult();
-		} else {
-			$block = $this->_em->createQuery("
-				SELECT b
-				FROM DeskPRO:ChatBlock b
-				WHERE (b.ip_address = ?0) AND b.date_created > ?2
-			")->setParameters(array(dp_get_user_ip_address(), $datecut))->setMaxResults(1)->getOneOrNullResult();
-		}
+        if ($visitor) {
+            $block = $this->_em->createQuery("
+                SELECT b
+                FROM DeskPRO:ChatBlock b
+                WHERE (b.ip_address = ?0 OR b.visitor = ?1) AND b.date_created > ?2
+            ")->setParameters(array($visitor->ip_address, $visitor, $datecut))->setMaxResults(1)->getOneOrNullResult();
+        } else {
+            $block = $this->_em->createQuery("
+                SELECT b
+                FROM DeskPRO:ChatBlock b
+                WHERE (b.ip_address = ?0) AND b.date_created > ?2
+            ")->setParameters(array(dp_get_user_ip_address(), $datecut))->setMaxResults(1)->getOneOrNullResult();
+        }
 
-		return $block;
-	}
-
-
-	/**
-	 * @param string $ip_address
-	 * @return \Application\DeskPRO\Entity\ChatBlock
-	 */
-	public function getBlockForIp($ip_address)
-	{
-		$datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
-
-		$block = $this->_em->createQuery("
-			SELECT b
-			FROM DeskPRO:ChatBlock b
-			WHERE b.ip_address = ?0 AND b.date_created > ?1
-		")->setParameters(array($ip_address, $datecut))->setMaxResults(1)->getOneOrNullResult();
-
-		return $block;
-	}
+        return $block;
+    }
 
 
-	/**
-	 * @param string $ip_address
-	 * @param \Application\DeskPRO\Entity\Visitor $visitor
-	 * @return bool
-	 */
-	public function isBlocked($ip_address, VisitorEntity $visitor = null)
-	{
-		$visitor_id = 0;
-		if ($visitor) {
-			$visitor_id = $visitor->getId();
-		}
+    /**
+     * @param  string                                $ip_address
+     * @return \Application\DeskPRO\Entity\ChatBlock
+     */
+    public function getBlockForIp($ip_address)
+    {
+        $datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
 
-		$datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
-		$blocked = $this->_em->getConnection()->fetchColumn("
-			SELECT id FROM chat_blocks
-			WHERE (visitor_id = ? OR ip_address = ?) AND date_created > ?
-		", array($visitor_id, $ip_address, $datecut->format('Y-m-d H:i:s')));
+        $block = $this->_em->createQuery("
+            SELECT b
+            FROM DeskPRO:ChatBlock b
+            WHERE b.ip_address = ?0 AND b.date_created > ?1
+        ")->setParameters(array($ip_address, $datecut))->setMaxResults(1)->getOneOrNullResult();
 
-		return $blocked ? true : false;
-	}
+        return $block;
+    }
 
 
-	/**
-	 * Deletes blocks older than BLOCK_TIMEOUT
-	 *
-	 * @return int
-	 */
-	public function cleanupBlocks()
-	{
-		$datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
-		$count = $this->_em->getConnection()->executeUpdate("
-			DELETE FROM chat_blocks
-			WHERE date_created < ?
-		", array($datecut->format('Y-m-d H:i:s')));
+    /**
+     * @param  string                              $ip_address
+     * @param  \Application\DeskPRO\Entity\Visitor $visitor
+     * @return bool
+     */
+    public function isBlocked($ip_address, VisitorEntity $visitor = null)
+    {
+        $visitor_id = 0;
+        if ($visitor) {
+            $visitor_id = $visitor->getId();
+        }
 
-		return $count;
-	}
+        $datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
+        $blocked = $this->_em->getConnection()->fetchColumn("
+            SELECT id FROM chat_blocks
+            WHERE (visitor_id = ? OR ip_address = ?) AND date_created > ?
+        ", array($visitor_id, $ip_address, $datecut->format('Y-m-d H:i:s')));
+
+        return $blocked ? true : false;
+    }
+
+
+    /**
+     * Deletes blocks older than BLOCK_TIMEOUT
+     *
+     * @return int
+     */
+    public function cleanupBlocks()
+    {
+        $datecut = new \DateTime('-' . self::BLOCK_TIMEOUT . ' seconds');
+        $count = $this->_em->getConnection()->executeUpdate("
+            DELETE FROM chat_blocks
+            WHERE date_created < ?
+        ", array($datecut->format('Y-m-d H:i:s')));
+
+        return $count;
+    }
 }

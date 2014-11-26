@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1411643692 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add log_event table");
-		$this->execMutateSql("CREATE TABLE log_event (id INT UNSIGNED AUTO_INCREMENT NOT NULL, parent_id INT UNSIGNED DEFAULT NULL, person_id INT DEFAULT NULL, timestamp INT UNSIGNED NOT NULL, event VARCHAR(255) NOT NULL, subject VARCHAR(255) DEFAULT NULL, subject_id INT UNSIGNED DEFAULT NULL, details LONGBLOB NOT NULL COMMENT '(DC2Type:array)', INDEX IDX_1BD0E1FA727ACA70 (parent_id), INDEX IDX_1BD0E1FA217BBB47 (person_id), INDEX subject (subject, subject_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE log_event ADD CONSTRAINT FK_1BD0E1FA727ACA70 FOREIGN KEY (parent_id) REFERENCES log_event (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE log_event ADD CONSTRAINT FK_1BD0E1FA217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Add log_event table");
+        $this->execMutateSql("CREATE TABLE log_event (id INT UNSIGNED AUTO_INCREMENT NOT NULL, parent_id INT UNSIGNED DEFAULT NULL, person_id INT DEFAULT NULL, timestamp INT UNSIGNED NOT NULL, event VARCHAR(255) NOT NULL, subject VARCHAR(255) DEFAULT NULL, subject_id INT UNSIGNED DEFAULT NULL, details LONGBLOB NOT NULL COMMENT '(DC2Type:array)', INDEX IDX_1BD0E1FA727ACA70 (parent_id), INDEX IDX_1BD0E1FA217BBB47 (person_id), INDEX subject (subject, subject_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE log_event ADD CONSTRAINT FK_1BD0E1FA727ACA70 FOREIGN KEY (parent_id) REFERENCES log_event (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE log_event ADD CONSTRAINT FK_1BD0E1FA217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+    }
 }

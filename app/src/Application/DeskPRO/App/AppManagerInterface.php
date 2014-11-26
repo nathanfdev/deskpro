@@ -39,51 +39,45 @@ use Application\DeskPRO\Entity\AppPackage;
 
 interface AppManagerInterface
 {
-	/**
-	 * @param string $name
-	 * @return bool
-	 */
-	public function hasPackage($name);
+    /**
+     * @param  string $name
+     * @return bool
+     */
+    public function hasPackage($name);
 
+    /**
+     * @param  string                    $name
+     * @return AppPackage
+     * @throws \InvalidArgumentException
+     */
+    public function getPackage($name);
 
-	/**
-	 * @param string $name
-	 * @return AppPackage
-	 * @throws \InvalidArgumentException
-	 */
-	public function getPackage($name);
+    /**
+     * @return AppPackage[]
+     */
+    public function getAllPackages();
 
+    /**
+     * @param  int  $id
+     * @return bool
+     */
+    public function hasApp($id);
 
-	/**
-	 * @return AppPackage[]
-	 */
-	public function getAllPackages();
+    /**
+     * @param  int                       $id
+     * @return AppInstance
+     * @throws \InvalidArgumentException
+     */
+    public function getApp($id);
 
+    /**
+     * @return AppInstance[]
+     */
+    public function getAllApps();
 
-	/**
-	 * @param int $id
-	 * @return bool
-	 */
-	public function hasApp($id);
-
-
-	/**
-	 * @param int $id
-	 * @return AppInstance
-	 * @throws \InvalidArgumentException
-	 */
-	public function getApp($id);
-
-
-	/**
-	 * @return AppInstance[]
-	 */
-	public function getAllApps();
-
-
-	/**
-	 * @param string $name  The package name
-	 * @return AppInstance[]
-	 */
-	public function getPackageApps($name);
+    /**
+     * @param  string        $name The package name
+     * @return AppInstance[]
+     */
+    public function getPackageApps($name);
 }

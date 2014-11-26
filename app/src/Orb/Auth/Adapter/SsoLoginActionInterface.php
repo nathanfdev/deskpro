@@ -39,26 +39,25 @@ namespace Orb\Auth\Adapter;
  */
 interface SsoLoginActionInterface
 {
-	const CONTEXT_BACKGROUND = 'background';
-	const CONTEXT_REDIRECT = 'redirect';
+    const CONTEXT_BACKGROUND = 'background';
+    const CONTEXT_REDIRECT = 'redirect';
 
-	/**
-	 * TODO: Depending on a controller is odd, this should be cleaned up eventually
-	 *
-	 * @param \Application\DeskPRO\Controller\AbstractController $controller
-	 * @return \Orb\Auth\Result
-	 */
-	public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller);
+    /**
+     * TODO: Depending on a controller is odd, this should be cleaned up eventually
+     *
+     * @param  \Application\DeskPRO\Controller\AbstractController $controller
+     * @return \Orb\Auth\Result
+     */
+    public function getSsoLoginActionResult(\Application\DeskPRO\Controller\AbstractController $controller);
 
-
-	/**
-	 * Return true if the user is authenticated via a background js (iframe) and you want to signal that
-	 * it should be handled on success as just a simple refresh of parent page.
-	 *
-	 * FALSE means the "return" get param redirect, or redirect to interface main page will be loaded instead of
-	 * the simple refresh JS page.
-	 *
-	 * @return bool
-	 */
-	public function isBackgroundSsoSimpleRefresh();
+    /**
+     * Return true if the user is authenticated via a background js (iframe) and you want to signal that
+     * it should be handled on success as just a simple refresh of parent page.
+     *
+     * FALSE means the "return" get param redirect, or redirect to interface main page will be loaded instead of
+     * the simple refresh JS page.
+     *
+     * @return bool
+     */
+    public function isBackgroundSsoSimpleRefresh();
 }

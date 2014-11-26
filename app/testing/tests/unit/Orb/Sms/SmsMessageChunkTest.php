@@ -38,9 +38,9 @@ use Orb\Sms\SmsMessageChunk;
 
 class SmsMessageChunkTest extends \DpUnitTestCase
 {
-	public function testExceptionOnChunkTooBig()
-	{
-		$this->setExpectedException('Orb\Sms\SmsException');
-		new SmsMessageChunk(str_repeat('ten chars ', 20));
-	}
+    public function testExceptionOnChunkTooBig()
+    {
+        $this->setExpectedException('Orb\Sms\SmsException');
+        new SmsMessageChunk(str_repeat('ten chars ', 20));
+    }
 }

@@ -1,14 +1,12 @@
-<div class="modal-dialog" {% block modal_attributes %}{% endblock %}>
-	<div class="modal-content">
-		<div class="modal-header">
-			{% block modal_controls %}<button type="button" class="close" ng-click="dismiss()">&times;</button>{% endblock %}
-			{% block modal_title %}{% endblock %}
-		</div>
-		<div class="modal-body">
-			{% block modal_body %}{% endblock %}
-		</div>
-		<div class="modal-footer">
-			{% block modal_footer %}{% endblock %}
-		</div>
+<div class="modal-content">
+	<div class="modal-header">
+		{% block modal_controls %}<button type="button" class="close" ng-click="dismiss()">&times;</button>{% endblock %}
+		{% block modal_title %}{% endblock %}
+	</div>
+	<div class="modal-body">
+		{% block modal_body %}{% endblock %}
+	</div>
+	<div class="modal-footer">
+		{% block modal_footer %}{% endblock %}
 	</div>
 </div>

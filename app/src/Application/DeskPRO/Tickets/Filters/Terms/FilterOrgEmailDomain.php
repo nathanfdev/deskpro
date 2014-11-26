@@ -44,26 +44,28 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterOrgEmailDomain extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('domain');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('domain');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
 
-		$query = $this->getStringMatchQuery('org_email_domain.domain', $options['domain']);
-		$query->addJoin('tickets.organization.email_domains', 'organization_email_domains', 'org_email_domain', 'org_email_domain.organization_id = tickets.organization_id');
-		return $query;
-	}
+        $query = $this->getStringMatchQuery('org_email_domain.domain', $options['domain']);
+        $query->addJoin('tickets.organization.email_domains', 'organization_email_domains', 'org_email_domain', 'org_email_domain.organization_id = tickets.organization_id');
+
+        return $query;
+    }
 }

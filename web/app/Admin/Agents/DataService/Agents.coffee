@@ -1,19 +1,19 @@
 define [
-	'Admin/Main/DataService/BaseListEdit',
+  'Admin/Main/DataService/BaseListEdit',
 ], (
-	Admin_Main_DataService_BaseListEdit,
+  Admin_Main_DataService_BaseListEdit,
 )  ->
-	class Admin_Agents_DataService_Agents extends Admin_Main_DataService_BaseListEdit
-		@$inject = ['Api', '$q']
+  class Admin_Agents_DataService_Agents extends Admin_Main_DataService_BaseListEdit
+    @$inject = ['Api', '$q']
 
-		url: -> '/agents'
+    url: -> '/agents'
 
-		resolveResponse: (response) ->
-			models = []
-			for data in response.agents
-				models.push data
+    resolveResponse: (response) ->
+      models = []
+      for data in response.agents
+        models.push data
 
-			models
+      models
 
-		all: (reload) ->
-			super (reload), {basic: 1}
+    all: (reload) ->
+      super (reload), {basic: 1}

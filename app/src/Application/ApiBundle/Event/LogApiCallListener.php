@@ -29,7 +29,6 @@ namespace Application\ApiBundle\Event;
 
 
 use \Application\ApiBundle\Request\RequestAuth;
-use Application\DeskPRO\Entity\ApiKeyLog;
 use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\HttpKernel\Event\PrePostEvent;
 use Application\DeskPRO\ORM\EntityManager;
@@ -38,37 +37,38 @@ use Symfony\Component\HttpFoundation\Response;
 
 class LogApiCallListener
 {
-	public function onControllerPostAction(PrePostEvent $event, $eventName, ContainerAwareEventDispatcher $dispatcher)
-	{
-		/** @var $auth RequestAuth */
-		if (!$auth = $dispatcher->getContainer()->get('deskpro.api.request_auth')) {
-			return;
-		}
+    public function onControllerPostAction(PrePostEvent $event, $eventName, ContainerAwareEventDispatcher $dispatcher)
+    {
+        /** @var $auth RequestAuth */
+        if (!$auth = $dispatcher->getContainer()->get('deskpro.api.request_auth')) {
+            return;
+        }
 
-		if (!$log = $auth->getApiLogEntry()) {
-			return;
-		}
+        if (!$log = $auth->getApiLogEntry()) {
+            return;
+        }
 
-		/** @var Response $response */
-		if (!$response = $event->get('response')) {
-			return;
-		}
+        /** @var Response $response */
+        if (!$response = $event->get('response')) {
+            return;
+        }
 
         /** @var EntityManager $em */
         $em = $dispatcher->getContainer()->get('doctrine.orm.entity_manager');
 
-		// Dont log rate limit
-		if ($response->getStatusCode() == 429) {
+        // Dont log rate limit
+        if ($response->getStatusCode() == 429) {
             $em->remove($log);
             $em->flush($log);
-			return;
-		}
 
-		$log->response = array(
-			'status' => $response->getStatusCode(),
-			'content' => $response->getContent(), // parse json to array?
-		);
+            return;
+        }
 
-		$em->flush($log);
-	}
-} 
+        $log->response = array(
+            'status' => $response->getStatusCode(),
+            'content' => $response->getContent(), // parse json to array?
+        );
+
+        $em->flush($log);
+    }
+}

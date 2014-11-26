@@ -36,16 +36,16 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1359109263 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Update worker jobs");
-		$this->execMutateSql("DELETE FROM `worker_jobs` WHERE `id` IN ('cleanup_client_messages','cleanup_sendmail', 'cleanup_sessions', 'cleanup_ticket_locks', 'cleanup_tmp_attach', 'cleanup_tmp_data', 'cleanup_twitter', 'cleanup_drafts')");
+    public function run()
+    {
+        $this->out("Update worker jobs");
+        $this->execMutateSql("DELETE FROM `worker_jobs` WHERE `id` IN ('cleanup_client_messages','cleanup_sendmail', 'cleanup_sessions', 'cleanup_ticket_locks', 'cleanup_tmp_attach', 'cleanup_tmp_data', 'cleanup_twitter', 'cleanup_drafts')");
 
-		$install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
-		eval($install_data->get('create_jobs.cleanup_always'));
-		eval($install_data->get('create_jobs.cleanup_quarter_hourly'));
-		eval($install_data->get('create_jobs.cleanup_hourly'));
-		eval($install_data->get('create_jobs.cleanup_daily'));
-		eval($install_data->get('create_jobs.cleanup_weekly'));
-	}
+        $install_data = new \Application\InstallBundle\Install\InstallDataReader(DP_ROOT.'/src/Application/InstallBundle/Data/data.php');
+        eval($install_data->get('create_jobs.cleanup_always'));
+        eval($install_data->get('create_jobs.cleanup_quarter_hourly'));
+        eval($install_data->get('create_jobs.cleanup_hourly'));
+        eval($install_data->get('create_jobs.cleanup_daily'));
+        eval($install_data->get('create_jobs.cleanup_weekly'));
+    }
 }

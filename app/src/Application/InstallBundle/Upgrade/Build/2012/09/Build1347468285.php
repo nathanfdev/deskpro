@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1347468285 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add core_tickets.use_archive setting");
-		$this->execMutateSql("REPLACE INTO settings SET name = 'core_tickets.use_archive', value = 1");
-		$this->execMutateSql("REPLACE INTO settings SET name = 'core_tickets.auto_archive_time', value = 2419000");
-	}
+    public function run()
+    {
+        $this->out("Add core_tickets.use_archive setting");
+        $this->execMutateSql("REPLACE INTO settings SET name = 'core_tickets.use_archive', value = 1");
+        $this->execMutateSql("REPLACE INTO settings SET name = 'core_tickets.auto_archive_time', value = 2419000");
+    }
 }

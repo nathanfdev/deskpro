@@ -37,28 +37,27 @@ use Application\DeskPRO\Tickets\Actions\ActionDef\AbstractActionDef;
 
 class SmsTwilioActionDef extends AbstractActionDef
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTitle()
-	{
-		return 'Send a Twilio SMS message';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getTitle()
+    {
+        return 'Send a Twilio SMS message';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getTriggerActionClass()
-	{
-		return 'deskpro_twilio_sms\\Ticket\\Actions\\SmsTwilioAction';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getTriggerActionClass()
+    {
+        return 'deskpro_twilio_sms\\Ticket\\Actions\\SmsTwilioAction';
+    }
 
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function processActionBuilderOptions(array $options)
-	{
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function processActionBuilderOptions(array $options)
+    {
+        return $options;
+    }
 }

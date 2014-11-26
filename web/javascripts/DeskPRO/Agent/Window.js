@@ -1328,10 +1328,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.AppPlatform.start();
 
 		this.ngModule = this.AppPlatform.getNgModule();
-		this.ngModule.dpInjector = angular.element(document).injector();
+		this.ngModule.dpInjector = window.AppPlatform.getNgInjector();
 
 		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
-		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+		window.AppPlatform.getNgInjector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
 			self.$scope = $rootScope;
 			self.$q = $q;
 			self.$timeout = $timeout;

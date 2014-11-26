@@ -44,23 +44,25 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterCategory extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('category_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('category_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
-		return $this->getIdMatchQuery('tickets.category_id', $options['category_ids']);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
+
+        return $this->getIdMatchQuery('tickets.category_id', $options['category_ids']);
+    }
 }

@@ -39,38 +39,38 @@ use Application\DeskPRO\EventDispatcher\FilterPluginInterface;
 
 class DisplayEvent extends DataEvent implements FilterPluginInterface
 {
-	/** @var array */
-	protected $field_def;
+    /** @var array */
+    protected $field_def;
 
-	public function __construct($field_def, $data = array())
-	{
-		parent::__construct($data);
-		$this->field_def = $field_def;
-	}
+    public function __construct($field_def, $data = array())
+    {
+        parent::__construct($data);
+        $this->field_def = $field_def;
+    }
 
-	public function getField()
-	{
-		return $this->field_def;
-	}
+    public function getField()
+    {
+        return $this->field_def;
+    }
 
-	/**
-	 * @param Plugin $plugins
-	 * @return bool
-	 */
-	public function filterPlugins($plugin)
-	{
-		if (isset($plugin['event_options']['field_table'])) {
-			if ($plugin['event_options']['field_table'] != $this->field_def->getTableName()) {
-				return false;
-			}
-		}
+    /**
+     * @param  Plugin $plugins
+     * @return bool
+     */
+    public function filterPlugins($plugin)
+    {
+        if (isset($plugin['event_options']['field_table'])) {
+            if ($plugin['event_options']['field_table'] != $this->field_def->getTableName()) {
+                return false;
+            }
+        }
 
-		if (isset($plugin['event_options']['field_id'])) {
-			if ($plugin['event_options']['field_id'] != $this->field_def['id']) {
-				return false;
-			}
-		}
+        if (isset($plugin['event_options']['field_id'])) {
+            if ($plugin['event_options']['field_id'] != $this->field_def['id']) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

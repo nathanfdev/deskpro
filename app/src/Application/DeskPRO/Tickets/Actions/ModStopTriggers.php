@@ -42,11 +42,11 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 class ModStopTriggers extends AbstractAction implements ActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$context->getVars()->set('stop_triggers', true);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $context->getVars()->set('stop_triggers', true);
+    }
 }

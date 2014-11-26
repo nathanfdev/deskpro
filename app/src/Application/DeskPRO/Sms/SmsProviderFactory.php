@@ -39,27 +39,29 @@ use Orb\Sms\Provider\TwilioSmsProvider;
 
 class SmsProviderFactory
 {
-	/**
-	 * @param       $provider_name
-	 * @param array $params
-	 * @return \Orb\Sms\SmsProviderInterface
-	 */
-	public static function  create($provider_name, array $params)
-	{
-		switch ($provider_name) {
-			case 'twilio':
-				$sid        = $params['sid'];
-				$auth_token = $params['auth_token'];
-				return new TwilioSmsProvider($sid, $auth_token);
-			case 'clickatell':
-				$user     = $params['user'];
-				$password = $params['password'];
-				$api_id   = $params['api_id'];
-				return new ClickatellSmsProvider($user, $password, $api_id);
-		}
+    /**
+     * @param                                $provider_name
+     * @param  array                         $params
+     * @return \Orb\Sms\SmsProviderInterface
+     */
+    public static function create($provider_name, array $params)
+    {
+        switch ($provider_name) {
+            case 'twilio':
+                $sid        = $params['sid'];
+                $auth_token = $params['auth_token'];
 
-		throw new \InvalidArgumentException(
-			"sms provider '$provider_name' does not exist, please check logic inside of SmsProviderFactory'"
-		);
-	}
+                return new TwilioSmsProvider($sid, $auth_token);
+            case 'clickatell':
+                $user     = $params['user'];
+                $password = $params['password'];
+                $api_id   = $params['api_id'];
+
+                return new ClickatellSmsProvider($user, $password, $api_id);
+        }
+
+        throw new \InvalidArgumentException(
+            "sms provider '$provider_name' does not exist, please check logic inside of SmsProviderFactory'"
+        );
+    }
 }

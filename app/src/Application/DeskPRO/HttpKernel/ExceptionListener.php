@@ -42,80 +42,83 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
 {
-	/** @var \Exception|null */
-	protected $last_exception = null;
-	/** @var bool */
-	private $handling_exception = false;
+    /** @var \Exception|null */
+    protected $last_exception = null;
+    /** @var bool */
+    private $handling_exception = false;
 
-	public function getLastException()
-	{
-		return $this->last_exception;
-	}
+    public function getLastException()
+    {
+        return $this->last_exception;
+    }
 
-	public function onKernelException(GetResponseForExceptionEvent $event)
-	{
-		if ($this->handling_exception === true) return;
-		$this->handling_exception = true;
+    public function onKernelException(GetResponseForExceptionEvent $event)
+    {
+        if ($this->handling_exception === true) return;
+        $this->handling_exception = true;
 
-		$exception = $event->getException();
-		$this->_logException($exception);
+        $exception = $event->getException();
+        $this->_logException($exception);
 
-		// This is fetched from the template
-		$this->last_exception = $exception;
+        // This is fetched from the template
+        $this->last_exception = $exception;
 
-		$this->handling_exception = false;
-	}
+        $this->handling_exception = false;
+    }
 
-	protected function _logException(\Exception $exception)
-	{
-		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
-			$this->logRequestException('not_found', $exception);
-			return;
-		}
-		if ($exception instanceof ValidationException && defined('DP_INTERFACE') && DP_INTERFACE == 'api') {
-			return;
-		}
+    protected function _logException(\Exception $exception)
+    {
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\NotFoundHttpException) {
+            $this->logRequestException('not_found', $exception);
 
-		if ($exception instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException) {
-			$this->logRequestException('no_permission', $exception);
-			return;
-		}
+            return;
+        }
+        if ($exception instanceof ValidationException && defined('DP_INTERFACE') && DP_INTERFACE == 'api') {
+            return;
+        }
 
-		if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
-			$this->logRequestException('bad_method', $exception);
-			return;
-		}
+        if ($exception instanceof \Application\DeskPRO\HttpKernel\Exception\NoPermissionException) {
+            $this->logRequestException('no_permission', $exception);
 
-		$exception->_dp_sn = KernelErrorHandler::genSessionName();
+            return;
+        }
 
-		$errinfo = KernelErrorHandler::getExceptionInfo($exception);
-		KernelErrorHandler::logErrorInfo($errinfo);
-	}
+        if ($exception instanceof \Symfony\Component\HttpKernel\Exception\MethodNotAllowedHttpException) {
+            $this->logRequestException('bad_method', $exception);
 
-	private function logRequestException($type, \Exception $e)
-	{
-		if (!dp_get_config('enable_request_errorlog')) {
-			return;
-		}
+            return;
+        }
 
-		$log_file = dp_get_log_dir() . '/request_errors.log';
+        $exception->_dp_sn = KernelErrorHandler::genSessionName();
 
-		$url = '';
-		if (defined('DP_REQUEST_URL')) {
-			$url = DP_REQUEST_URL;
-		} elseif (defined('DP_INTERFACE')) {
-			$url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
-			if (class_exists('Application\\DeskPRO\\App', false)) {
-				try {
-					$url = App::getRequest()->getUri();
-				} catch (\Exception $e) {}
-			}
-		}
+        $errinfo = KernelErrorHandler::getExceptionInfo($exception);
+        KernelErrorHandler::logErrorInfo($errinfo);
+    }
 
-		$top = sprintf("[%s] %s: %s", date('Y-m-d H:i:s'), $type, $url);
-		$lines = sprintf("Type: %s\nException: %s %s\n%s", get_class($e), $e->getCode(), $e->getMessage(), KernelErrorHandler::formatBacktrace($e->getTrace()));
-		$lines = Strings::modifyLines($lines, "\t");
+    private function logRequestException($type, \Exception $e)
+    {
+        if (!dp_get_config('enable_request_errorlog')) {
+            return;
+        }
 
-		@file_put_contents($log_file, $top . "\n" . $lines, \FILE_APPEND);
-	}
+        $log_file = dp_get_log_dir() . '/request_errors.log';
+
+        $url = '';
+        if (defined('DP_REQUEST_URL')) {
+            $url = DP_REQUEST_URL;
+        } elseif (defined('DP_INTERFACE')) {
+            $url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+            if (class_exists('Application\\DeskPRO\\App', false)) {
+                try {
+                    $url = App::getRequest()->getUri();
+                } catch (\Exception $e) {}
+            }
+        }
+
+        $top = sprintf("[%s] %s: %s", date('Y-m-d H:i:s'), $type, $url);
+        $lines = sprintf("Type: %s\nException: %s %s\n%s", get_class($e), $e->getCode(), $e->getMessage(), KernelErrorHandler::formatBacktrace($e->getTrace()));
+        $lines = Strings::modifyLines($lines, "\t");
+
+        @file_put_contents($log_file, $top . "\n" . $lines, \FILE_APPEND);
+    }
 }

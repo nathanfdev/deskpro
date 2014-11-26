@@ -9,51 +9,51 @@ require_once 'AbstractEntityCheckTest.php';
 
 class CheckUserUsergroupTest extends AbstractEntityCheckTest
 {
-	/**
-	 * @param int $id
-	 * @param $object
-	 * @return Ticket
-	 */
-	public function createTicket($id, $object)
-	{
-		$person = new Person();
-		$person->id = $id;
+    /**
+     * @param  int    $id
+     * @param $object
+     * @return Ticket
+     */
+    public function createTicket($id, $object)
+    {
+        $person = new Person();
+        $person->id = $id;
 
-		$bogus_ug = new Usergroup();
-		$bogus_ug->id = $id+100;
+        $bogus_ug = new Usergroup();
+        $bogus_ug->id = $id+100;
 
-		$person->addUsergroup($bogus_ug);
-		$person->addUsergroup($object);
+        $person->addUsergroup($bogus_ug);
+        $person->addUsergroup($object);
 
-		$ticket = new Ticket();
-		$ticket->id = $id;
-		$ticket->person = $person;
+        $ticket = new Ticket();
+        $ticket->id = $id;
+        $ticket->person = $person;
 
-		return $ticket;
-	}
+        return $ticket;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClass()
-	{
-		return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckUserUsergroups';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClass()
+    {
+        return 'Application\\DeskPRO\\Tickets\\Triggers\\Terms\\CheckUserUsergroups';
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getCheckClassOptionKey()
-	{
-		return 'usergroup_ids';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getCheckClassOptionKey()
+    {
+        return 'usergroup_ids';
+    }
 
-	/**
-	 * The entity class we are checking
-	 * @return string
-	 */
-	public function getEntityClass()
-	{
-		return 'Application\DeskPRO\Entity\Usergroup';
-	}
+    /**
+     * The entity class we are checking
+     * @return string
+     */
+    public function getEntityClass()
+    {
+        return 'Application\DeskPRO\Entity\Usergroup';
+    }
 }

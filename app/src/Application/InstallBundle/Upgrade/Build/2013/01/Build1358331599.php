@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358331599 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Improved twitter indexes");
-		$this->execMutateSql("CREATE INDEX last_follow_update_idx ON twitter_users (last_follow_update)");
-	}
+    public function run()
+    {
+        $this->out("Improved twitter indexes");
+        $this->execMutateSql("CREATE INDEX last_follow_update_idx ON twitter_users (last_follow_update)");
+    }
 }

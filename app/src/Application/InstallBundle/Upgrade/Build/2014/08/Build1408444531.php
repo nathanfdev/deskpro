@@ -38,15 +38,15 @@ use DeskPRO\Kernel\KernelErrorHandler;
 
 class Build1408444531 extends AbstractBuild
 {
-	public function run()
-	{
-		try {
-			$this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93C12469DE2");
-			$this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93CD2112630");
-			$this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93C12469DE2 FOREIGN KEY (category_id) REFERENCES feedback_categories (id)");
-			$this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93CD2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id)");
-		} catch (\Exception $e) {
-			KernelErrorHandler::logException($e);
-		}
-	}
+    public function run()
+    {
+        try {
+            $this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93C12469DE2");
+            $this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93CD2112630");
+            $this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93C12469DE2 FOREIGN KEY (category_id) REFERENCES feedback_categories (id)");
+            $this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93CD2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id)");
+        } catch (\Exception $e) {
+            KernelErrorHandler::logException($e);
+        }
+    }
 }

@@ -33,46 +33,44 @@
 
 namespace Application\DeskPRO\ServerMysqlInfo;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\ORM\Util\Util;
 
 class ServerMysqlInfo
 {
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @param Connection $db
-	 */
-	public function __construct(Connection $db)
-	{
-		$this->db = $db;
-	}
+    /**
+     * @param Connection $db
+     */
+    public function __construct(Connection $db)
+    {
+        $this->db = $db;
+    }
 
-	/**
-	 * @return array
-	 */
-	public function getMysqlInfo()
-	{
-		return $this->db->fetchAllKeyValue("SHOW VARIABLES", array(), array(), 0, 1);
-	}
+    /**
+     * @return array
+     */
+    public function getMysqlInfo()
+    {
+        return $this->db->fetchAllKeyValue("SHOW VARIABLES", array(), array(), 0, 1);
+    }
 
+    /**
+     * @return string|null
+     */
+    public function getSchemaDiff()
+    {
+        $schema_diff = Util::getUpdateSchemaSql();
+        if ($schema_diff) {
+            $schema_diff = implode(";\n", $schema_diff) . ";";
+        } else {
+            $schema_diff = null;
+        }
 
-	/**
-	 * @return string|null
-	 */
-	public function getSchemaDiff()
-	{
-		$schema_diff = Util::getUpdateSchemaSql();
-		if ($schema_diff) {
-			$schema_diff = implode(";\n", $schema_diff) . ";";
-		} else {
-			$schema_diff = null;
-		}
-
-		return $schema_diff;
-	}
+        return $schema_diff;
+    }
 }

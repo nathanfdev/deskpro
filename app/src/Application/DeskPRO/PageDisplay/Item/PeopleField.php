@@ -36,8 +36,8 @@ namespace Application\DeskPRO\PageDisplay\Item;
 
 class PeopleField extends ItemAbstract
 {
-	public function getType()
-	{
-		return 'people_field';
-	}
+    public function getType()
+    {
+        return 'people_field';
+    }
 }

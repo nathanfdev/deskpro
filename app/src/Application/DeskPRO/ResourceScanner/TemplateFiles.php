@@ -34,224 +34,224 @@
 
 namespace Application\DeskPRO\ResourceScanner;
 
-use Application\DeskPRO\App;
 
 /**
  * Scans the filesystem for an array of all templates
  */
 class TemplateFiles
 {
-	/** @var bool */
-	protected $use_map_file = true;
+    /** @var bool */
+    protected $use_map_file = true;
 
 
-	/**
-	 * @param bool $use_map_file
-	 */
-	public function __construct($use_map_file = true)
-	{
-		$this->use_map_file = $use_map_file;
-	}
+    /**
+     * @param bool $use_map_file
+     */
+    public function __construct($use_map_file = true)
+    {
+        $this->use_map_file = $use_map_file;
+    }
 
 
-	/**
-	 * Get the map array
-	 *
-	 * @return array
-	 */
-	public function getTemplateMap()
-	{
-		$map_file_path = DP_ROOT.'/sys/config/template-map.php';
+    /**
+     * Get the map array
+     *
+     * @return array
+     */
+    public function getTemplateMap()
+    {
+        $map_file_path = DP_ROOT.'/sys/config/template-map.php';
 
-		if (!$this->use_map_file || !is_file($map_file_path)) {
-			return $this->genTemplateMap();
-		}
+        if (!$this->use_map_file || !is_file($map_file_path)) {
+            return $this->genTemplateMap();
+        }
 
-		$map = require $map_file_path;
-		return $map;
-	}
+        $map = require $map_file_path;
 
-
-	/**
-	 * Scans the filesystem to generate the map on-demand
-	 *
-	 * @return array
-	 */
-	public function genTemplateMap()
-	{
-		$paths = array(
-			'AgentBundle'   => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
-			'DeskPRO'       => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-			'UserBundle'    => DP_ROOT.'/src/Application/UserBundle/Resources/views',
-		);
-
-		$tpl_info = array();
-
-		foreach ($paths as $bundle => $dir) {
-			$finder = new \Symfony\Component\Finder\Finder();
-			$finder->files()->name('*.twig')->in($dir);
-
-			foreach ($finder as $file) {
-				/** @var \Symfony\Component\Finder\SplFileinfo $file */
-
-				$filepath = $file->getRealPath();
-				$filepath = str_replace('\\', '/', $filepath);
-				$dir = str_replace('\\', '/', $dir);
-
-				$tplname = str_replace($dir . '/', ':', $filepath);
-				$tplname = str_replace('/', ':', $tplname);
-				if (substr_count($tplname, ':') < 2) {
-					$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
-				}
-				$tplname = $bundle . $tplname;
-
-				// Dev templates arent included
-				if (strpos($tplname, ':Dev:') !== false) {
-					continue;
-				}
-
-				$tpl_info[$tplname] = array(
-					'path' => $file->getRealPath(),
-					'last_updated' => 0,
-				);
-			}
-		}
-
-		return $tpl_info;
-	}
+        return $map;
+    }
 
 
-	/**
-	 * Templates that should be categorized as "user portal" type templates.
-	 */
-	public function getUserTemplates()
-	{
-		$raw_map = $this->getTemplateMap();
+    /**
+     * Scans the filesystem to generate the map on-demand
+     *
+     * @return array
+     */
+    public function genTemplateMap()
+    {
+        $paths = array(
+            'AgentBundle'   => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+            'DeskPRO'       => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+            'UserBundle'    => DP_ROOT.'/src/Application/UserBundle/Resources/views',
+        );
 
-		$map = array();
+        $tpl_info = array();
 
-		foreach ($raw_map as $k => $info) {
-			if (strpos($k, 'UserBundle:') !== false || strpos($k, 'DeskPRO:custom_fields:') !== false) {
-				$map[$k] = $info;
-			}
-		}
+        foreach ($paths as $bundle => $dir) {
+            $finder = new \Symfony\Component\Finder\Finder();
+            $finder->files()->name('*.twig')->in($dir);
 
-		return $map;
-	}
+            foreach ($finder as $file) {
+                /** @var \Symfony\Component\Finder\SplFileinfo $file */
 
+                $filepath = $file->getRealPath();
+                $filepath = str_replace('\\', '/', $filepath);
+                $dir = str_replace('\\', '/', $dir);
 
-	/**
-	 * Non-user portal templates
-	 */
-	public function getEmailTemplates()
-	{
-		$raw_map = $this->getTemplateMap();
+                $tplname = str_replace($dir . '/', ':', $filepath);
+                $tplname = str_replace('/', ':', $tplname);
+                if (substr_count($tplname, ':') < 2) {
+                    $tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+                }
+                $tplname = $bundle . $tplname;
 
-		$map = array();
+                // Dev templates arent included
+                if (strpos($tplname, ':Dev:') !== false) {
+                    continue;
+                }
 
-		foreach ($raw_map as $k => $info) {
-			if (strpos($k, 'DeskPRO:emails_agent:') !== false || strpos($k, 'DeskPRO:emails_common:') !== false || strpos($k, 'DeskPRO:emails_user:') !== false) {
-				$map[$k] = $info;
-			}
-		}
+                $tpl_info[$tplname] = array(
+                    'path' => $file->getRealPath(),
+                    'last_updated' => 0,
+                );
+            }
+        }
 
-		return $map;
-	}
-
-
-	/**
-	 * Email templates
-	 */
-	public function getOtherTemplates()
-	{
-		$raw_map = $this->getTemplateMap();
-
-		$map = array();
-
-		foreach ($raw_map as $k => $info) {
-			if (strpos($k, 'AdminInterfaceBundle:') !== false || strpos($k, 'AgentBundle:') !== false || strpos($k, 'DeskPRO:') !== false) {
-				$map[$k] = $info;
-			}
-		}
-
-		return $map;
-	}
+        return $tpl_info;
+    }
 
 
-	/**
-	 * Group the map into [bundle][dir][tplname]
-	 *
-	 * @param array $map
-	 * @return array
-	 */
-	public function groupPrefixes(array $map)
-	{
-		$grouped = array();
-		foreach ($map as $k => $v) {
-			preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
-			$bundle = $m[1];
-			$dir = $m[2];
-			if ($dir) {
-				$dir = 'TOP';
-			}
+    /**
+     * Templates that should be categorized as "user portal" type templates.
+     */
+    public function getUserTemplates()
+    {
+        $raw_map = $this->getTemplateMap();
 
-			if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
-			if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array();
+        $map = array();
 
-			$grouped[$bundle][$dir][$k] = $v;
-			$grouped[$bundle][$dir][$k]['shortname'] = str_replace('.twig', '', $m[3]);
-		}
+        foreach ($raw_map as $k => $info) {
+            if (strpos($k, 'UserBundle:') !== false || strpos($k, 'DeskPRO:custom_fields:') !== false) {
+                $map[$k] = $info;
+            }
+        }
 
-		return $grouped;
-	}
+        return $map;
+    }
 
 
-	/**
-	 * @param array $map
-	 * @param array $custom_templates
-	 * @return array
-	 */
-	public function groupMap(array $map, array $custom_templates)
-	{
-		$grouped = array();
+    /**
+     * Non-user portal templates
+     */
+    public function getEmailTemplates()
+    {
+        $raw_map = $this->getTemplateMap();
 
-		foreach ($map as $k => $v) {
-			preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
-			$bundle = $m[1];
-			$dir = $m[2];
-			if (!$dir) {
-				$dir = 'TOP';
-			}
+        $map = array();
 
-			if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
-			if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
+        foreach ($raw_map as $k => $info) {
+            if (strpos($k, 'DeskPRO:emails_agent:') !== false || strpos($k, 'DeskPRO:emails_common:') !== false || strpos($k, 'DeskPRO:emails_user:') !== false) {
+                $map[$k] = $info;
+            }
+        }
 
-			$v['name'] = $k;
-			$v['shortname'] = str_replace('.twig', '', $m[3]);
+        return $map;
+    }
 
-			if (isset($custom_templates[$k])) {
-				$v['is_custom'] = true;
-				$grouped[$bundle][$dir]['count_changed']++;
 
-				$time = strtotime($custom_templates[$k]['date_updated']);
-				if ($time < $v['last_updated']) {
-					$grouped[$bundle][$dir]['count_outdated']++;
-					$v['is_outdated'] = true;
-				}
-			} else {
-				$v['is_custom'] = false;
-				$v['is_outdated'] = false;
-			}
+    /**
+     * Email templates
+     */
+    public function getOtherTemplates()
+    {
+        $raw_map = $this->getTemplateMap();
 
-			$grouped[$bundle][$dir]['templates'][] = $v;
-		}
+        $map = array();
 
-		ksort($grouped, \SORT_STRING);
+        foreach ($raw_map as $k => $info) {
+            if (strpos($k, 'AdminInterfaceBundle:') !== false || strpos($k, 'AgentBundle:') !== false || strpos($k, 'DeskPRO:') !== false) {
+                $map[$k] = $info;
+            }
+        }
 
-		foreach ($grouped as &$bundle_dirs) {
-			ksort($bundle_dirs, \SORT_STRING);
-		}
+        return $map;
+    }
 
-		return $grouped;
-	}
+
+    /**
+     * Group the map into [bundle][dir][tplname]
+     *
+     * @param  array $map
+     * @return array
+     */
+    public function groupPrefixes(array $map)
+    {
+        $grouped = array();
+        foreach ($map as $k => $v) {
+            preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
+            $bundle = $m[1];
+            $dir = $m[2];
+            if ($dir) {
+                $dir = 'TOP';
+            }
+
+            if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
+            if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array();
+
+            $grouped[$bundle][$dir][$k] = $v;
+            $grouped[$bundle][$dir][$k]['shortname'] = str_replace('.twig', '', $m[3]);
+        }
+
+        return $grouped;
+    }
+
+
+    /**
+     * @param  array $map
+     * @param  array $custom_templates
+     * @return array
+     */
+    public function groupMap(array $map, array $custom_templates)
+    {
+        $grouped = array();
+
+        foreach ($map as $k => $v) {
+            preg_match('#^(.*?):(.*?):(.*?)$#', $k, $m);
+            $bundle = $m[1];
+            $dir = $m[2];
+            if (!$dir) {
+                $dir = 'TOP';
+            }
+
+            if (!isset($grouped[$bundle])) $grouped[$bundle] = array();
+            if (!isset($grouped[$bundle][$dir])) $grouped[$bundle][$dir] = array('count_changed' => 0, 'count_outdated' => 0, 'templates' => array());
+
+            $v['name'] = $k;
+            $v['shortname'] = str_replace('.twig', '', $m[3]);
+
+            if (isset($custom_templates[$k])) {
+                $v['is_custom'] = true;
+                $grouped[$bundle][$dir]['count_changed']++;
+
+                $time = strtotime($custom_templates[$k]['date_updated']);
+                if ($time < $v['last_updated']) {
+                    $grouped[$bundle][$dir]['count_outdated']++;
+                    $v['is_outdated'] = true;
+                }
+            } else {
+                $v['is_custom'] = false;
+                $v['is_outdated'] = false;
+            }
+
+            $grouped[$bundle][$dir]['templates'][] = $v;
+        }
+
+        ksort($grouped, \SORT_STRING);
+
+        foreach ($grouped as &$bundle_dirs) {
+            ksort($bundle_dirs, \SORT_STRING);
+        }
+
+        return $grouped;
+    }
 }

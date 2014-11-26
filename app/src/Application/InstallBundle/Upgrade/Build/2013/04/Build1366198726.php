@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1366198726 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add new fields to downloads table");
-		$this->execMutateSql("ALTER TABLE downloads ADD fileurl VARCHAR(255) DEFAULT NULL, ADD filename VARCHAR(255) DEFAULT NULL, ADD filesize INT DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add new fields to downloads table");
+        $this->execMutateSql("ALTER TABLE downloads ADD fileurl VARCHAR(255) DEFAULT NULL, ADD filename VARCHAR(255) DEFAULT NULL, ADD filesize INT DEFAULT NULL");
+    }
 }

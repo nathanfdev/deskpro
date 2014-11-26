@@ -41,49 +41,49 @@ use Application\DeskPRO\EmailGateway\FetcherStorage\Pop3Storage;
 //TODO this is not actually used in the Runner
 class FetcherStorageFactory
 {
-	/**
-	 * @param AccountConfigInterface $config
-	 * @return FetcherStorageInterface
-	 * @throws \InvalidArgumentException
-	 */
-	public function createFetcherStorage(AccountConfigInterface $config)
-	{
-		switch ($config->getType()) {
-			case 'pop3':  return $this->createPop3Fetcher($config);
-			case 'gmail': return $this->createGmailFetcherStorage($config);
-			default:
-				throw new \InvalidArgumentException("Unknown incoming account type: {$config->getType()}");
-		}
-	}
+    /**
+     * @param  AccountConfigInterface    $config
+     * @return FetcherStorageInterface
+     * @throws \InvalidArgumentException
+     */
+    public function createFetcherStorage(AccountConfigInterface $config)
+    {
+        switch ($config->getType()) {
+            case 'pop3':  return $this->createPop3Fetcher($config);
+            case 'gmail': return $this->createGmailFetcherStorage($config);
+            default:
+                throw new \InvalidArgumentException("Unknown incoming account type: {$config->getType()}");
+        }
+    }
 
-	/**
-	 * @param Pop3Config $config
-	 * @return Pop3Storage
-	 */
-	public function createPop3FetcherStorage(Pop3Config $config)
-	{
-		return new Pop3Storage(
-			$config->host,
-			$config->port,
-			$config->user,
-			$config->password,
-			$config->secure_mode
-		);
-	}
+    /**
+     * @param  Pop3Config  $config
+     * @return Pop3Storage
+     */
+    public function createPop3FetcherStorage(Pop3Config $config)
+    {
+        return new Pop3Storage(
+            $config->host,
+            $config->port,
+            $config->user,
+            $config->password,
+            $config->secure_mode
+        );
+    }
 
 
-	/**
-	 * @param GmailConfig $config
-	 * @return Pop3Storage
-	 */
-	public function createGmailFetcherStorage(GmailConfig $config)
-	{
-		return new Pop3Storage(
-			'pop.gmail.com',
-			995,
-			$config->user,
-			$config->password,
-			'ssl'
-		);
-	}
+    /**
+     * @param  GmailConfig $config
+     * @return Pop3Storage
+     */
+    public function createGmailFetcherStorage(GmailConfig $config)
+    {
+        return new Pop3Storage(
+            'pop.gmail.com',
+            995,
+            $config->user,
+            $config->password,
+            'ssl'
+        );
+    }
 }

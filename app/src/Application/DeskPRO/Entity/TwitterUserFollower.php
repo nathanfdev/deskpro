@@ -35,7 +35,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
@@ -45,47 +44,47 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TwitterUserFollower extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var integer
-	 */
-	protected $id;
+    /**
+     * @var integer
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 */
-	protected $user;
+    /**
+     * @var \Application\DeskPRO\Entity\TwitterUser
+     */
+    protected $user;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 */
-	protected $follower_user;
+    /**
+     * @var \Application\DeskPRO\Entity\TwitterUser
+     */
+    protected $follower_user;
 
-	/**
-	 * @var int
-	 */
-	protected $display_order = 0;
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * @var int
+     */
+    protected $display_order = 0;
 
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterUserFollower';
-		$metadata->setPrimaryTable(array(
-			'name' => 'twitter_users_followers',
-			'uniqueConstraints' => array(
-				'user_follower_idx' => array('columns' => array('user_id', 'follower_user_id'))
-			)
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'follower_user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'follower_user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TwitterUserFollower';
+        $metadata->setPrimaryTable(array(
+            'name' => 'twitter_users_followers',
+            'uniqueConstraints' => array(
+                'user_follower_idx' => array('columns' => array('user_id', 'follower_user_id'))
+            )
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'display_order', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'display_order', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'follower_user', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TwitterUser', 'mappedBy' => NULL, 'inversedBy' => null, 'joinColumns' => array( 0 => array( 'name' => 'follower_user_id', 'referencedColumnName' => 'id', 'nullable' => false, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

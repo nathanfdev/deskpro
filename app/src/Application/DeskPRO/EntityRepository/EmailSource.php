@@ -34,66 +34,65 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 
 class EmailSource extends AbstractEntityRepository
 {
-	/**
-	 * @param array $types
-	 * @return int
-	 */
-	public function countAllSources(array $types)
-	{
-		$params = array_values($types);
+    /**
+     * @param  array $types
+     * @return int
+     */
+    public function countAllSources(array $types)
+    {
+        $params = array_values($types);
 
-		$types_place = implode(',', array_fill(0, count($types), '?'));
+        $types_place = implode(',', array_fill(0, count($types), '?'));
 
-		$count = $this->_em->getConnection()->fetchColumn("
-			SELECT COUNT(*)
-			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place)
-		", $params);
+        $count = $this->_em->getConnection()->fetchColumn("
+            SELECT COUNT(*)
+            FROM {$this->getTableName()}
+            WHERE object_type IN ($types_place)
+        ", $params);
 
-		return $count;
-	}
-
-
-	/**
-	 * @param array $types
-	 * @return int
-	 */
-	public function countErrorStatus(array $types)
-	{
-		$params = array_values($types);
-
-		$types_place = implode(',', array_fill(0, count($types), '?'));
-
-		$count = $this->_em->getConnection()->fetchColumn("
-			SELECT COUNT(*)
-			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place) AND status = 'error'
-		", $params);
-
-		return $count;
-	}
+        return $count;
+    }
 
 
-	/**
-	 * @param array $types
-	 * @return int
-	 */
-	public function countRejectionStatus(array $types)
-	{
-		$params = array_values($types);
+    /**
+     * @param  array $types
+     * @return int
+     */
+    public function countErrorStatus(array $types)
+    {
+        $params = array_values($types);
 
-		$types_place = implode(',', array_fill(0, count($types), '?'));
+        $types_place = implode(',', array_fill(0, count($types), '?'));
 
-		$count = $this->_em->getConnection()->fetchColumn("
-			SELECT COUNT(*)
-			FROM {$this->getTableName()}
-			WHERE object_type IN ($types_place) AND status = 'rejected'
-		", $params);
+        $count = $this->_em->getConnection()->fetchColumn("
+            SELECT COUNT(*)
+            FROM {$this->getTableName()}
+            WHERE object_type IN ($types_place) AND status = 'error'
+        ", $params);
 
-		return $count;
-	}
+        return $count;
+    }
+
+
+    /**
+     * @param  array $types
+     * @return int
+     */
+    public function countRejectionStatus(array $types)
+    {
+        $params = array_values($types);
+
+        $types_place = implode(',', array_fill(0, count($types), '?'));
+
+        $count = $this->_em->getConnection()->fetchColumn("
+            SELECT COUNT(*)
+            FROM {$this->getTableName()}
+            WHERE object_type IN ($types_place) AND status = 'rejected'
+        ", $params);
+
+        return $count;
+    }
 }

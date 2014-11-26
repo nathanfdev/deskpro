@@ -44,179 +44,176 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class Style extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * @var Style
-	 */
-	protected $parent;
+    /**
+     * @var Style
+     */
+    protected $parent;
 
-	/**
-	 * Title of the style
-	 *
-	 * @var string
-	 */
-	protected $title;
+    /**
+     * Title of the style
+     *
+     * @var string
+     */
+    protected $title;
 
-	/**
-	 * A note or description about the style
-	 *
-	 * @var string
-	 */
-	protected $note = '';
+    /**
+     * A note or description about the style
+     *
+     * @var string
+     */
+    protected $note = '';
 
-	/**
-	 * The blob containing the logo for this style.
-	 * Later we'll allow multiple resources to be attached to styles, but for now the logo is
-	 * here.
-	 *
-	 * @var \Application\DeskPRO\Entity\Blob
-	 */
-	protected $logo_blob_id = null;
+    /**
+     * The blob containing the logo for this style.
+     * Later we'll allow multiple resources to be attached to styles, but for now the logo is
+     * here.
+     *
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $logo_blob_id = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Blob
-	 */
-	protected $css_blob = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $css_blob = null;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Blob
-	 */
-	protected $css_blob_rtl = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $css_blob_rtl = null;
 
-	/**
-	 * CSS dir under static with CSS files
-	 *
-	 * @var string
-	 */
-	protected $css_dir = '';
+    /**
+     * CSS dir under static with CSS files
+     *
+     * @var string
+     */
+    protected $css_dir = '';
 
-	/**
-	 * Last time the CSS variable was updated.
-	 *
-	 * @var string
-	 */
-	protected $css_updated;
+    /**
+     * Last time the CSS variable was updated.
+     *
+     * @var string
+     */
+    protected $css_updated;
 
-	/**
-	 * Options for the style
-	 *
-	 * @var array
-	 */
-	protected $options = array();
+    /**
+     * Options for the style
+     *
+     * @var array
+     */
+    protected $options = array();
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $created_at;
+    /**
+     * @var \DateTime
+     */
+    protected $created_at;
 
-	public function __construct()
-	{
-		$this->setModelField('created_at', new \DateTime());
-		$this->setModelField('css_updated', new \DateTime());
-	}
+    public function __construct()
+    {
+        $this->setModelField('created_at', new \DateTime());
+        $this->setModelField('css_updated', new \DateTime());
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
-	public function setParentId($parent_id)
-	{
-		if ($parent_id) {
-			$this->setModelField('parent', App::getEntityRepository('DeskPRO:Style')->find($parent_id));
-		} else {
-			$this->setModelField('parent', null);
-		}
-	}
+    public function setParentId($parent_id)
+    {
+        if ($parent_id) {
+            $this->setModelField('parent', App::getEntityRepository('DeskPRO:Style')->find($parent_id));
+        } else {
+            $this->setModelField('parent', null);
+        }
+    }
 
-	public function getParentId()
-	{
-		return $this->parent ? $this->parent['id'] : 0;
-	}
+    public function getParentId()
+    {
+        return $this->parent ? $this->parent['id'] : 0;
+    }
 
+    public function getTemplate($template_name)
+    {
+        return App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($template_name, $this);
+    }
 
-	public function getTemplate($template_name)
-	{
-		return App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($template_name, $this);
-	}
+    public function getTemplateObject($template_name)
+    {
+        $tpl = $this->getTemplate($template_name);
+        if (!$tpl) {
+            $tpl = new Template();
+            $tpl['path'] = $template_name;
+            $tpl['style'] = $this;
+        }
 
-	public function getTemplateObject($template_name)
-	{
-		$tpl = $this->getTemplate($template_name);
-		if (!$tpl) {
-			$tpl = new Template();
-			$tpl['path'] = $template_name;
-			$tpl['style'] = $this;
-		}
+        return $tpl;
+    }
 
-		return $tpl;
-	}
+    public function getCustomTemplateNames()
+    {
+        return App::getEntityRepository('DeskPRO:Template')->getCustomTemplateNamesInStyle($this);
+    }
 
-	public function getCustomTemplateNames()
-	{
-		return App::getEntityRepository('DeskPRO:Template')->getCustomTemplateNamesInStyle($this);
-	}
+    public function getCustomTemplateInfo()
+    {
+        return App::getEntityRepository('DeskPRO:Template')->getCustomTemplateInfoInStyle($this);
+    }
 
-	public function getCustomTemplateInfo()
-	{
-		return App::getEntityRepository('DeskPRO:Template')->getCustomTemplateInfoInStyle($this);
-	}
+    public function setCssVar($name, $value)
+    {
+        $old_opts = $this->options;
 
-	public function setCssVar($name, $value)
-	{
-		$old_opts = $this->options;
+        if (!isset($this->options['css_vars'])) {
+            $this->options['css_vars'] = array();
+        }
 
-		if (!isset($this->options['css_vars'])) {
-			$this->options['css_vars'] = array();
-		}
+        $this->options['css_vars'][$name] = $value;
 
-		$this->options['css_vars'][$name] = $value;
+        $this->_onPropertyChanged('options', $old_opts, $this->options);
+        $this->setModelField('css_updated', new \DateTime());
+    }
 
-		$this->_onPropertyChanged('options', $old_opts, $this->options);
-		$this->setModelField('css_updated', new \DateTime());
-	}
+    public function getCssVars()
+    {
+        if (!isset($this->options['css_vars'])) {
+            return array();
+        }
 
-	public function getCssVars()
-	{
-		if (!isset($this->options['css_vars'])) {
-			return array();
-		}
+        return $this->options['css_vars'];
+    }
 
-		return $this->options['css_vars'];
-	}
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-
-
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
-
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array( 'name' => 'styles', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
-		$metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));
-		$metadata->mapField(array( 'fieldName' => 'css_dir', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'css_dir', ));
-		$metadata->mapField(array( 'fieldName' => 'css_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'css_updated', ));
-		$metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));
-		$metadata->mapField(array( 'fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Style', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'logo_blob_id', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'logo_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'css_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'css_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'css_blob_rtl', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'css_blob_rtl_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(array( 'name' => 'styles', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'title', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'title', ));
+        $metadata->mapField(array( 'fieldName' => 'note', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'note', ));
+        $metadata->mapField(array( 'fieldName' => 'css_dir', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'css_dir', ));
+        $metadata->mapField(array( 'fieldName' => 'css_updated', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'css_updated', ));
+        $metadata->mapField(array( 'fieldName' => 'options', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'options', ));
+        $metadata->mapField(array( 'fieldName' => 'created_at', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_at', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'parent', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Style', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'parent_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'logo_blob_id', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'logo_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'css_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'css_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'css_blob_rtl', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'css_blob_rtl_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

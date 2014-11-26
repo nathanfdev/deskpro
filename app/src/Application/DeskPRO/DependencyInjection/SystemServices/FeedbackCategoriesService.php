@@ -39,9 +39,10 @@ use Application\DeskPRO\FeedbackCategories\FeedbackCategories;
 
 class FeedbackCategoriesService
 {
-	public static function create(DeskproContainer $container)
-	{
+    public static function create(DeskproContainer $container)
+    {
         $x = new FeedbackCategories($container->getEm());
+
         return $x;
-	}
+    }
 }

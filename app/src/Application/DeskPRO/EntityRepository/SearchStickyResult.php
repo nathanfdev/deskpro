@@ -34,33 +34,32 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
 
 class SearchStickyResult extends AbstractEntityRepository
 {
-	public function getWordsForObject($object)
-	{
-		if ($object instanceof \Application\DeskPRO\Entity\Article) {
-			$object_type = 'DeskPRO:Article';
-		} elseif ($object instanceof \Application\DeskPRO\Entity\Download) {
-			$object_type = 'DeskPRO:Download';
-		} elseif ($object instanceof \Application\DeskPRO\Entity\News) {
-			$object_type = 'DeskPRO:News';
-		} elseif ($object instanceof \Application\DeskPRO\Entity\Feedback) {
-			$object_type = 'DeskPRO:Feedback';
-		} else {
-			throw new \InvalidArgumentException("Unknown type");
-		}
+    public function getWordsForObject($object)
+    {
+        if ($object instanceof \Application\DeskPRO\Entity\Article) {
+            $object_type = 'DeskPRO:Article';
+        } elseif ($object instanceof \Application\DeskPRO\Entity\Download) {
+            $object_type = 'DeskPRO:Download';
+        } elseif ($object instanceof \Application\DeskPRO\Entity\News) {
+            $object_type = 'DeskPRO:News';
+        } elseif ($object instanceof \Application\DeskPRO\Entity\Feedback) {
+            $object_type = 'DeskPRO:Feedback';
+        } else {
+            throw new \InvalidArgumentException("Unknown type");
+        }
 
-		return $this->getWordsFor($object_type, $object->id);
-	}
+        return $this->getWordsFor($object_type, $object->id);
+    }
 
-	public function getWordsFor($object_type, $object_id)
-	{
-		return $this->getEntityManager()->getConnection()->fetchAllCol("
-			SELECT word
-			FROM search_sticky_result
-			WHERE object_type = ? AND object_id = ?
-		", array($object_type, $object_id));
-	}
+    public function getWordsFor($object_type, $object_id)
+    {
+        return $this->getEntityManager()->getConnection()->fetchAllCol("
+            SELECT word
+            FROM search_sticky_result
+            WHERE object_type = ? AND object_id = ?
+        ", array($object_type, $object_id));
+    }
 }

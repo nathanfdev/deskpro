@@ -36,8 +36,6 @@ namespace Application\DeskPRO\EmailGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Usersource\UsersourceInfo;
-use DeskPRO\Kernel\KernelErrorHandler;
 
 /**
  * This finds a user based on the email sent, or creates a new user
@@ -45,101 +43,102 @@ use DeskPRO\Kernel\KernelErrorHandler;
  */
 class PersonFromEmailProcessor
 {
-	/**
-	 * When we have any email from a user, perform basic routines on the user its from.
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 */
-	public function passPerson(EmailAddress $from, Entity\Person $person)
-	{
-		if (!$person['first_name'] AND !$person['last_name']) {
-			if ($from->getName()) {
-				$person['name'] = $from->getName();
-				App::getOrm()->persist($person);
-			}
-		}
-	}
+    /**
+     * When we have any email from a user, perform basic routines on the user its from.
+     *
+     * @param \Application\DeskPRO\Entity\Person $person
+     */
+    public function passPerson(EmailAddress $from, Entity\Person $person)
+    {
+        if (!$person['first_name'] AND !$person['last_name']) {
+            if ($from->getName()) {
+                $person['name'] = $from->getName();
+                App::getOrm()->persist($person);
+            }
+        }
+    }
 
 
 
-	/**
-	 * Finds a person based on the From in the email address.
-	 *
-	 * @param EmailAddress $from
-	 * @return \Application\DeskPRO\Entity\Person|null
-	 */
-	public function findPerson(EmailAddress $from)
-	{
-		/** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
-		$um = App::getSystemService('usersource_manager');
+    /**
+     * Finds a person based on the From in the email address.
+     *
+     * @param  EmailAddress                            $from
+     * @return \Application\DeskPRO\Entity\Person|null
+     */
+    public function findPerson(EmailAddress $from)
+    {
+        /** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
+        $um = App::getSystemService('usersource_manager');
 
-		if ($person = $um->findPersonByEmail($from->getEmail())) {
-			$this->passPerson($from, $person);
+        if ($person = $um->findPersonByEmail($from->getEmail())) {
+            $this->passPerson($from, $person);
 
-			return $person;
-		}
+            return $person;
+        }
 
-		return null;
-	}
-
-
-	/**
-	 * Finds a person based on the From in the email address.
-	 *
-	 * @param string $email_address The email address as a string
-	 * @return \Application\DeskPRO\Entity\Person
-	 */
-	public function findPersonByEmailAddress($email_address)
-	{
-		$email = new EmailAddress();
-		$email->email = $email_address;
-
-		return $this->findPerson($email);
-	}
+        return null;
+    }
 
 
+    /**
+     * Finds a person based on the From in the email address.
+     *
+     * @param  string                             $email_address The email address as a string
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    public function findPersonByEmailAddress($email_address)
+    {
+        $email = new EmailAddress();
+        $email->email = $email_address;
 
-	/**
-	 * Creates a person based on the From email address.
-	 *
-	 * @param $from
-	 * @param bool $do_validated True to validate user, false to use whatever is default
-	 * @return \Application\DeskPRO\Entity\Person
-	 */
-	public function createPerson(EmailAddress $from, $do_validated = false)
-	{
-		App::getDb()->beginTransaction();
+        return $this->findPerson($email);
+    }
 
-		$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
 
-		if ($person) {
-			App::getDb()->commit();
-			return $person;
-		}
 
-		$email = new Entity\PersonEmail();
-		$email->setEmail($from->getEmail());
+    /**
+     * Creates a person based on the From email address.
+     *
+     * @param $from
+     * @param  bool                               $do_validated True to validate user, false to use whatever is default
+     * @return \Application\DeskPRO\Entity\Person
+     */
+    public function createPerson(EmailAddress $from, $do_validated = false)
+    {
+        App::getDb()->beginTransaction();
 
-		$person = Entity\Person::newContactPerson();
-		$person->creation_system = 'gateway.person';
-		$person->name = $from->getNameUtf8();
+        $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
 
-		$email->person = $person;
-		$person->addEmailAddress($email);
+        if ($person) {
+            App::getDb()->commit();
 
-		$email->is_validated = true;
-		$person->is_confirmed = true;
+            return $person;
+        }
 
-		if (App::getSetting('core.agent_validation')) {
-			$person->is_agent_confirmed = false;
-		}
+        $email = new Entity\PersonEmail();
+        $email->setEmail($from->getEmail());
 
-		App::getOrm()->persist($person);
-		App::getOrm()->persist($email);
-		App::getOrm()->flush();
+        $person = Entity\Person::newContactPerson();
+        $person->creation_system = 'gateway.person';
+        $person->name = $from->getNameUtf8();
 
-		App::getDb()->commit();
+        $email->person = $person;
+        $person->addEmailAddress($email);
 
-		return $person;
-	}
+        $email->is_validated = true;
+        $person->is_confirmed = true;
+
+        if (App::getSetting('core.agent_validation')) {
+            $person->is_agent_confirmed = false;
+        }
+
+        App::getOrm()->persist($person);
+        App::getOrm()->persist($email);
+        App::getOrm()->flush();
+
+        App::getDb()->commit();
+
+        return $person;
+    }
 }

@@ -40,18 +40,18 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class AsseticManagerService
 {
-	public static function create(DeskproContainer $container, array $options = array())
-	{
-		$manager = new \Application\DeskPRO\Assetic\AsseticManager(
-			App::getConfigFromFile('assets'),
-			realpath(DP_ROOT . '/../web'),
-			'build'
-		);
+    public static function create(DeskproContainer $container, array $options = array())
+    {
+        $manager = new \Application\DeskPRO\Assetic\AsseticManager(
+            App::getConfigFromFile('assets'),
+            realpath(DP_ROOT . '/../web'),
+            'build'
+        );
 
-		if ($container->isScopeActive('request')) {
-			$manager->setAssetHelper($container->get('templating.helper.assets'));
-		}
+        if ($container->isScopeActive('request')) {
+            $manager->setAssetHelper($container->get('templating.helper.assets'));
+        }
 
-		return $manager;
-	}
+        return $manager;
+    }
 }

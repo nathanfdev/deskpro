@@ -41,55 +41,57 @@ use Symfony\Component\Console\Output\OutputInterface;
 
 class CheckImportCommand extends ContainerAwareCommand
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function configure()
-	{
-		$this->setName('dp:check:import');
-		$this->setHelp("This goes through a dry-run of the import process. You will only see output if there are errors. Use -v to see verbose output.");
-		$this->addOption('data-path', null, InputOption::VALUE_REQUIRED, 'The path to the data directory containing your JSON files');
-		$this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure()
+    {
+        $this->setName('dp:check:import');
+        $this->setHelp("This goes through a dry-run of the import process. You will only see output if there are errors. Use -v to see verbose output.");
+        $this->addOption('data-path', null, InputOption::VALUE_REQUIRED, 'The path to the data directory containing your JSON files');
+        $this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	public function getContainer()
-	{
-		return parent::getContainer();
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return parent::getContainer();
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$factory = new ImporterFactory($this->getContainer(), $input);
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        $factory = new ImporterFactory($this->getContainer(), $input);
 
-		try {
-			$config       = $factory->createImporterConfig();
-			$config->mode = 'test';
-		} catch (\InvalidArgumentException $e) {
-			$output->writeln("<error>Config Error</error>");
-			$output->writeln("Message: " . $e->getMessage());
-			$output->writeln("");
-			$output->writeln("Run this command with --help to see options. You can also define configuration in your config.php file under the 'import' section.");
-			$output->writeln("");
-			return 1;
-		}
+        try {
+            $config       = $factory->createImporterConfig();
+            $config->mode = 'test';
+        } catch (\InvalidArgumentException $e) {
+            $output->writeln("<error>Config Error</error>");
+            $output->writeln("Message: " . $e->getMessage());
+            $output->writeln("");
+            $output->writeln("Run this command with --help to see options. You can also define configuration in your config.php file under the 'import' section.");
+            $output->writeln("");
 
-		$config->log_path = null;
+            return 1;
+        }
 
-		$output->setVerbosity(3);
-		$logger = new Logger('importer', array(new ConsoleHandler($output)));
+        $config->log_path = null;
 
-		$importer = $factory->createImporter($config, $logger);
-		$importer->processImports();
+        $output->setVerbosity(3);
+        $logger = new Logger('importer', array(new ConsoleHandler($output)));
 
-		echo "\n";
-		return 0;
-	}
+        $importer = $factory->createImporter($config, $logger);
+        $importer->processImports();
+
+        echo "\n";
+
+        return 0;
+    }
 }

@@ -31,7 +31,7 @@
 <ul>
 	<li><strong>Phrases</strong> - to insert a phrase as defined in the language pack:<br />
 		<code>{% verbatim %}{{ phrase('user.profile.choose_email')  }}{% endverbatim %}</code> inserts "Choose the email address you want to use" (unless custom phrase was stored)
-	</li>	
+	</li>
 	<li><strong>Variables</strong> - to insert information stored in DeskPRO:<br />
 		<code>{% verbatim %}{{  app.user.name  }}{% endverbatim %}</code> inserts name of logged-in user
 	</li>
@@ -40,7 +40,7 @@
     {% if app.user.isMemberOfUsergroup(3) %}
     <br /> <br />
         Welcome, VIP!
-      <br /> <br />   
+      <br /> <br />
     {% else %}
 	 <br /> <br />
         Welcome, average Joe!
@@ -50,14 +50,14 @@
     </code><br /><br />
     displays a different message to users who belong to a certain usergroup.
     </li>
-</ul>    
-		
-		
+</ul>
+
+
 <p>You can edit template code to customize the portal. Consult the <a href="https://support.deskpro.com/downloads/files/7-admin-manual-pdf" target="_blank">admin manual</a> and the <a href="http://twig.sensiolabs.org/doc/templates.html" target="_blank">Twig documentation</a> for more details.</p>
-	
-	
+
+
 	</section>
-	
+
 	<section>
 		<h2><span>FAQ</span></h2>
 		<dl>
@@ -79,5 +79,5 @@
 			</ul>
 	</section>
 </article>
-	
+
 {% endblock %}

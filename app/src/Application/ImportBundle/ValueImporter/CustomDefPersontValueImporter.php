@@ -38,35 +38,35 @@ use Application\ImportBundle\Exception\DuplicateValueException;
 
 class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
 {
-	/** @var string */
-	protected $mapped_column = 'person_id';
-	/** @var string */
-	protected $mapper_class = 'custom_def_person';
-	/** @var string */
-	protected $data_table = 'custom_data_person';
+    /** @var string */
+    protected $mapped_column = 'person_id';
+    /** @var string */
+    protected $mapper_class = 'custom_def_person';
+    /** @var string */
+    protected $data_table = 'custom_data_person';
 
-	/**
-	 * Imports the Custom Field value
-	 * 
-	 * @param \Application\ImportBundle\Value\CustomDefValue $custom_value
-	 * @return boolean
-	 * @throws \InvalidArgumentException
-	 * @throws BadDataException
-	 * @throws DuplicateValueException
-	 */
-	public function importValue($custom_value)
-	{
-		if (!($custom_value instanceof CustomDefValue)) {
-			throw new \InvalidArgumentException("This importer can only import Person Custom Fields");
-		}
+    /**
+     * Imports the Custom Field value
+     *
+     * @param  \Application\ImportBundle\Value\CustomDefValue $custom_value
+     * @return boolean
+     * @throws \InvalidArgumentException
+     * @throws BadDataException
+     * @throws DuplicateValueException
+     */
+    public function importValue($custom_value)
+    {
+        if (!($custom_value instanceof CustomDefValue)) {
+            throw new \InvalidArgumentException("This importer can only import Person Custom Fields");
+        }
 
-		$log_id = "Person CustomField :: " . $custom_value->oid . " ";
+        $log_id = "Person CustomField :: " . $custom_value->oid . " ";
 
-		if (!$custom_value->key) {
-			throw new BadDataException(sprintf('[%s] Custom field data must have a key', $log_id));
-		}
+        if (!$custom_value->key) {
+            throw new BadDataException(sprintf('[%s] Custom field data must have a key', $log_id));
+        }
 
-		return $this->processCustomField($custom_value);
-	}
+        return $this->processCustomField($custom_value);
+    }
 
 }

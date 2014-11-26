@@ -34,21 +34,19 @@
 
 namespace Application\DeskPRO\People\PermissionLoader;
 
-use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 
 /**
  * Loads download category permissions
  */
 class DownloadCategories extends BasicTreeCategoryPermission
 {
-	protected function getCategoryPermissionEntity()
-	{
-		return 'DeskPRO:DownloadCategoryPermission';
-	}
+    protected function getCategoryPermissionEntity()
+    {
+        return 'DeskPRO:DownloadCategoryPermission';
+    }
 
-	protected function getCategoryEntity()
-	{
-		return 'DeskPRO:DownloadCategory';
-	}
+    protected function getCategoryEntity()
+    {
+        return 'DeskPRO:DownloadCategory';
+    }
 }

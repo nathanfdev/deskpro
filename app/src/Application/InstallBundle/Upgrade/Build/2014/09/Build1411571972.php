@@ -36,31 +36,31 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1411571972 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Primary Team upgrade");
+    public function run()
+    {
+        $this->out("Primary Team upgrade");
 
-		$queries = array();
-		$queries[] = "ALTER TABLE people ADD primary_team_id INT DEFAULT NULL";
-		$queries[] = "CREATE INDEX IDX_28166A26E715BE01 ON people (primary_team_id)";
-		$queries[] = "ALTER TABLE people ADD CONSTRAINT FK_28166A26E715BE01 FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id)";
+        $queries = array();
+        $queries[] = "ALTER TABLE people ADD primary_team_id INT DEFAULT NULL";
+        $queries[] = "CREATE INDEX IDX_28166A26E715BE01 ON people (primary_team_id)";
+        $queries[] = "ALTER TABLE people ADD CONSTRAINT FK_28166A26E715BE01 FOREIGN KEY (primary_team_id) REFERENCES agent_teams (id)";
 
-		foreach ($queries as $q) {
-			$this->execMutateSql($q);
-		}
+        foreach ($queries as $q) {
+            $this->execMutateSql($q);
+        }
 
-		$this->out("Initialize primary team");
-		$member_map = $this->container->getDb()->fetchAllKeyValue("
-			SELECT person_id, team_id
-			FROM agent_team_members
-			ORDER BY team_id ASC
-		");
-		foreach ($member_map as $agent_id => $team_id) {
-			$this->container->getDb()->update(
-				'people',
-				array('primary_team_id' => $team_id),
-				array('id' => $agent_id)
-			);
-		}
-	}
+        $this->out("Initialize primary team");
+        $member_map = $this->container->getDb()->fetchAllKeyValue("
+            SELECT person_id, team_id
+            FROM agent_team_members
+            ORDER BY team_id ASC
+        ");
+        foreach ($member_map as $agent_id => $team_id) {
+            $this->container->getDb()->update(
+                'people',
+                array('primary_team_id' => $team_id),
+                array('id' => $agent_id)
+            );
+        }
+    }
 }

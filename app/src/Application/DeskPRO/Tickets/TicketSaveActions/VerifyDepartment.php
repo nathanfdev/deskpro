@@ -40,44 +40,44 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class VerifyDepartment implements TicketSaveActionInterface
 {
-	/**
-	 * @var TicketDepartments
-	 */
-	private $ticket_deps;
+    /**
+     * @var TicketDepartments
+     */
+    private $ticket_deps;
 
 
-	/**
-	 * @param TicketDepartments $ticket_deps
-	 */
-	public function __construct(TicketDepartments $ticket_deps)
-	{
-		$this->ticket_deps = $ticket_deps;
-	}
+    /**
+     * @param TicketDepartments $ticket_deps
+     */
+    public function __construct(TicketDepartments $ticket_deps)
+    {
+        $this->ticket_deps = $ticket_deps;
+    }
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return void
-	 */
-	public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($context->getEventType() == 'noop') {
-			return;
-		}
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
+     */
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($context->getEventType() == 'noop') {
+            return;
+        }
 
-		if (!$ticket->department) {
-			$dep = $this->ticket_deps->getDefaultDepartment();
-			$context->getLogger()->info("Setting system default department: {$dep->id} {$dep->title}");
-			$ticket->department = $dep;
-		}
+        if (!$ticket->department) {
+            $dep = $this->ticket_deps->getDefaultDepartment();
+            $context->getLogger()->info("Setting system default department: {$dep->id} {$dep->title}");
+            $ticket->department = $dep;
+        }
 
-		if ($ticket->department && $this->ticket_deps->getChildren($ticket->department)) {
-			$set = $ticket->department;
-			$dep = $this->ticket_deps->getDefaultDepartment();
-			$context->getLogger()->info("The set department {$set->id} {$set->title} has children. Reverting to system default: {$dep->id} {$dep->title}");
-			$ticket->department = $dep;
-		}
-	}
+        if ($ticket->department && $this->ticket_deps->getChildren($ticket->department)) {
+            $set = $ticket->department;
+            $dep = $this->ticket_deps->getDefaultDepartment();
+            $context->getLogger()->info("The set department {$set->id} {$set->title} has children. Reverting to system default: {$dep->id} {$dep->title}");
+            $ticket->department = $dep;
+        }
+    }
 
 }

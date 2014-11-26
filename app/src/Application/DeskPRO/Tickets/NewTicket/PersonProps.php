@@ -41,45 +41,45 @@ use Application\DeskPRO\Entity;
  */
 class PersonProps implements \ArrayAccess
 {
-	/** @var array */
-	protected static $prop_names = array(
-		'name' => 1, 'email' => 1
-	);
+    /** @var array */
+    protected static $prop_names = array(
+        'name' => 1, 'email' => 1
+    );
 
-	/**
-	 * A real person object, represents a logged in user
-	 * if the user is logged in. Otherwise this should be null for a guest
-	 *
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	public $person_obj;
+    /**
+     * A real person object, represents a logged in user
+     * if the user is logged in. Otherwise this should be null for a guest
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    public $person_obj;
 
-	/** @var string */
-	public $name = '';
-	/** @var string */
-	public $email = '';
+    /** @var string */
+    public $name = '';
+    /** @var string */
+    public $email = '';
 
-	public function __construct(Entity\Person $person = null)
-	{
-		$this->person_obj = $person;
+    public function __construct(Entity\Person $person = null)
+    {
+        $this->person_obj = $person;
 
-		if ($person) {
-			$this->first_name = $person['first_name'];
-			$this->last_name  = $person['last_name'];
-			if ($person['first_name'] && $person['last_name']) {
-				$this->name = $this->first_name . ' ' . $this->last_name;
-			} elseif ($person['name']) {
-				$this->name = $person['name'];
-			} else {
-				$this->name = '';
-			}
+        if ($person) {
+            $this->first_name = $person['first_name'];
+            $this->last_name  = $person['last_name'];
+            if ($person['first_name'] && $person['last_name']) {
+                $this->name = $this->first_name . ' ' . $this->last_name;
+            } elseif ($person['name']) {
+                $this->name = $person['name'];
+            } else {
+                $this->name = '';
+            }
 
-			$this->email = $person->getPrimaryEmailAddress();
-		}
-	}
+            $this->email = $person->getPrimaryEmailAddress();
+        }
+    }
 
-	public function offsetExists($offset)        { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
-    public function offsetGet($offset)           { if (isset(self::$prop_names[$offset])) return $this->$offset; }
-    public function offsetSet($offset, $value)   { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
-    public function offsetUnset($offset)         { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
+    public function offsetExists($offset) { return (isset(self::$prop_names[$offset]) && isset($this->$offset)); }
+    public function offsetGet($offset) { if (isset(self::$prop_names[$offset])) return $this->$offset; }
+    public function offsetSet($offset, $value) { if (isset(self::$prop_names[$offset])) $this->$offset = $value; }
+    public function offsetUnset($offset) { if (isset(self::$prop_names[$offset])) $this->$offset = null; }
 }

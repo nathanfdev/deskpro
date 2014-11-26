@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1355336072 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Auto update Twitter profile data as necessary");
-		$this->execMutateSql("ALTER TABLE twitter_users ADD url VARCHAR(200) NOT NULL, ADD last_timeline_update DATETIME DEFAULT NULL, ADD last_profile_update DATETIME DEFAULT NULL");
-	}
+    public function run()
+    {
+        $this->out("Auto update Twitter profile data as necessary");
+        $this->execMutateSql("ALTER TABLE twitter_users ADD url VARCHAR(200) NOT NULL, ADD last_timeline_update DATETIME DEFAULT NULL, ADD last_profile_update DATETIME DEFAULT NULL");
+    }
 }

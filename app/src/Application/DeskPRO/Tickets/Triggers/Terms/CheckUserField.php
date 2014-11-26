@@ -46,37 +46,38 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckUserField extends AbstractCheckCustomField
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('field_id', 'value');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('field_id', 'value');
+
+        return $options;
+    }
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return array
-	 */
-	function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($ticket->person && $ticket->person->custom_data) {
-			return $ticket->person->custom_data;
-		} else {
-			return array();
-		}
-	}
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return array
+     */
+    public function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($ticket->person && $ticket->person->custom_data) {
+            return $ticket->person->custom_data;
+        } else {
+            return array();
+        }
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getTermType()
-	{
-		return 'CheckUserField' . $this->getTermOptions()->get('field_id');
-	}
+    /**
+     * @return string
+     */
+    public function getTermType()
+    {
+        return 'CheckUserField' . $this->getTermOptions()->get('field_id');
+    }
 }

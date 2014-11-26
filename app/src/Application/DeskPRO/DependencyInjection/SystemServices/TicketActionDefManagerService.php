@@ -40,14 +40,15 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 class TicketActionDefManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$defs = $container->getEm()->getRepository('DeskPRO:TicketActionDef')->getActions();
-		if ($defs instanceof ArrayCollection) {
-			$defs = $defs->toArray();
-		}
+    public static function create(DeskproContainer $container)
+    {
+        $defs = $container->getEm()->getRepository('DeskPRO:TicketActionDef')->getActions();
+        if ($defs instanceof ArrayCollection) {
+            $defs = $defs->toArray();
+        }
 
-		$x = new TicketActionDefManager($defs);
-		return $x;
-	}
+        $x = new TicketActionDefManager($defs);
+
+        return $x;
+    }
 }

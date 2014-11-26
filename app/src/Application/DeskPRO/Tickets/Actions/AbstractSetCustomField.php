@@ -41,80 +41,81 @@ use Orb\Util\Util;
 
 abstract class AbstractSetCustomField extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('field_id', 'value');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('field_id', 'value');
+
+        return $options;
+    }
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return \Application\DeskPRO\CustomFields\FieldManager
-	 */
-	abstract function getFieldManager(Ticket $ticket, ExecutorContextInterface $context);
+    /**
+     * @param  Ticket                                         $ticket
+     * @param  ExecutorContextInterface                       $context
+     * @return \Application\DeskPRO\CustomFields\FieldManager
+     */
+    abstract public function getFieldManager(Ticket $ticket, ExecutorContextInterface $context);
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return mixed
-	 */
-	abstract function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context);
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return mixed
+     */
+    abstract public function getApplicableObject(Ticket $ticket, ExecutorContextInterface $context);
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$fm = $this->getFieldManager($ticket, $context);
-		$obj = $this->getApplicableObject($ticket, $context);
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $fm = $this->getFieldManager($ticket, $context);
+        $obj = $this->getApplicableObject($ticket, $context);
 
-		if (!$fm || !$obj) {
-			return;
-		}
+        if (!$fm || !$obj) {
+            return;
+        }
 
-		$field_id = $this->getActionOption('field_id');
-		$value    = $this->getActionOption('value');
-		$form_array = array("field_{$field_id}" => $value);
+        $field_id = $this->getActionOption('field_id');
+        $value    = $this->getActionOption('value');
+        $form_array = array("field_{$field_id}" => $value);
 
-		$fm->saveFormToObject($form_array, $obj, true);
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
-			return array('fields');
-		}
-
-		return array();
-	}
+        $fm->saveFormToObject($form_array, $obj, true);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'fields')) {
+            return array('fields');
+        }
+
+        return array();
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getActionType()
-	{
-		return Util::getBaseClassname($this) . $this->getActionOption('field_id');
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getActionType()
+    {
+        return Util::getBaseClassname($this) . $this->getActionOption('field_id');
+    }
 }

@@ -40,9 +40,9 @@ namespace Application\DeskPRO\EventDispatcher;
  */
 interface FilterPluginInterface
 {
-	/**
-	 * @param Plugin $plugins
-	 * @return bool
-	 */
-	public function filterPlugins($plugin);
+    /**
+     * @param  Plugin $plugins
+     * @return bool
+     */
+    public function filterPlugins($plugin);
 }

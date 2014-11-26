@@ -1,53 +1,53 @@
 define [
-	'Admin/Main/DataService/BaseListEdit'
+  'Admin/Main/DataService/BaseListEdit'
 ], (
-	BaseListEdit,
+  BaseListEdit,
 )  ->
-	class Admin_TicketFilters_DataService_TicketSlas extends BaseListEdit
-		@$inject = ['Api', '$q']
+  class Admin_TicketFilters_DataService_TicketSlas extends BaseListEdit
+    @$inject = ['Api', '$q']
 
-		_doLoadList: ->
-			deferred = @$q.defer()
+    _doLoadList: ->
+      deferred = @$q.defer()
 
-			@Api.sendGet('/ticket_slas').success( (data) =>
-				models = data.slas
-				deferred.resolve(models)
-			, (data, status, headers, config) ->
-				deferred.reject()
-			)
+      @Api.sendGet('/ticket_slas').success( (data) =>
+        models = data.slas
+        deferred.resolve(models)
+      , (data, status, headers, config) ->
+        deferred.reject()
+      )
 
-			return deferred.promise
-
-
-		###
-    	# Remove an slas
-    	#
-    	# @param {Integer} id SLA id
-    	# @return {promise}
-		###
-		deleteSlaById: (id) ->
-			promise = @Api.sendDelete('/ticket_slas/' + id).then(=>
-				@removeListModelById(id)
-			)
-			return promise
+      return deferred.promise
 
 
-		###
-    	# Get all data needed for the edit filter page
-    	#
-    	# @param {Integer} id Filter id
-    	# @return {promise}
-		###
-		loadEditSlaData: (id) ->
+    ###
+      # Remove an slas
+      #
+      # @param {Integer} id SLA id
+      # @return {promise}
+    ###
+    deleteSlaById: (id) ->
+      promise = @Api.sendDelete('/ticket_slas/' + id).then(=>
+        @removeListModelById(id)
+      )
+      return promise
 
-			deferred = @$q.defer()
 
-			@Api.sendGet('/ticket_slas/' + id).then( (result) ->
-				deferred.resolve({
-					sla: result.data.sla
-				})
-			, ->
-				deferred.reject()
-			)
+    ###
+      # Get all data needed for the edit filter page
+      #
+      # @param {Integer} id Filter id
+      # @return {promise}
+    ###
+    loadEditSlaData: (id) ->
 
-			return deferred.promise
+      deferred = @$q.defer()
+
+      @Api.sendGet('/ticket_slas/' + id).then( (result) ->
+        deferred.resolve({
+          sla: result.data.sla
+        })
+      , ->
+        deferred.reject()
+      )
+
+      return deferred.promise

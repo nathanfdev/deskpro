@@ -61,133 +61,133 @@ use Orb\Util\Strings;
  */
 class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * The channel the message is placed in.
-	 *
-	 * @var string
-	 */
-	protected $channel;
+    /**
+     * The channel the message is placed in.
+     *
+     * @var string
+     */
+    protected $channel;
 
-	/**
-	 * The auth is used when a client wants to fetch a "full" answer, if the
-	 * original push sent only a short.
-	 *
-	 * @var string
-	 */
-	protected $auth;
+    /**
+     * The auth is used when a client wants to fetch a "full" answer, if the
+     * original push sent only a short.
+     *
+     * @var string
+     */
+    protected $auth;
 
-	/**
-	 * Data to give the handler
-	 *
-	 * @var array
-	 */
-	protected $data = array();
+    /**
+     * Data to give the handler
+     *
+     * @var array
+     */
+    protected $data = array();
 
-	/**
-	 * The client ID (usully sessionid) that created this message.
-	 * This is so when we fetch messages, we don't get our own messages back.
-	 *
-	 */
-	protected $created_by_client = '';
+    /**
+     * The client ID (usully sessionid) that created this message.
+     * This is so when we fetch messages, we don't get our own messages back.
+     *
+     */
+    protected $created_by_client = '';
 
-	/**
-	 * The client ID (usully sessionid) that this message is for
-	 * specifically.
-	 *
-	 */
-	protected $for_client;
+    /**
+     * The client ID (usully sessionid) that this message is for
+     * specifically.
+     *
+     */
+    protected $for_client;
 
-	/**
-	 * Who this message is for specifically
-	 *
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $for_person;
+    /**
+     * Who this message is for specifically
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $for_person;
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * Event manager. This is used in the PostPersist callback to notify
-	 * any listeners. For example, if the web socket server is enabled,
-	 * it'll listen to this even and can handle pushing the message through
-	 * to clients.
-	 *
-	 * @var \Symfony\Component\EventDispatcher\EventDispatcher
-	 */
-	protected $event_dispatcher = null;
+    /**
+     * Event manager. This is used in the PostPersist callback to notify
+     * any listeners. For example, if the web socket server is enabled,
+     * it'll listen to this even and can handle pushing the message through
+     * to clients.
+     *
+     * @var \Symfony\Component\EventDispatcher\EventDispatcher
+     */
+    protected $event_dispatcher = null;
 
-	public function __construct()
-	{
-		$this->setModelField('date_created', new \DateTime());
-		$this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
+    public function __construct()
+    {
+        $this->setModelField('date_created', new \DateTime());
+        $this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
 
-		if (App::has('event_dispatcher')) {
-			$this->event_dispatcher = App::get('event_dispatcher');
-		}
-	}
+        if (App::has('event_dispatcher')) {
+            $this->event_dispatcher = App::get('event_dispatcher');
+        }
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-
-	/**
-	 * @param  $delivery_method
-	 * @return void
-	 */
-	public function getHandler()
-	{
-		$handler = new BasicArray($this);
-
-		return $handler;
-	}
-
-
-	/**
-	 */
-	public function notifyMessageServers()
-	{
-		if (!$this->event_dispatcher) return;
-
-		$event = new \Application\DeskPRO\ClientMessage\Event($this);
-
-		$this->event_dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    /**
+     * @param  $delivery_method
+     * @return void
+     */
+    public function getHandler()
+    {
+        $handler = new BasicArray($this);
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ClientMessage';
-		$metadata->setPrimaryTable(array( 'name' => 'client_messages', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->addLifecycleCallback('notifyMessageServers', 'postPersist');
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'channel', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'channel', ));
-		$metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
-		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-		$metadata->mapField(array( 'fieldName' => 'created_by_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_by_client', ));
-		$metadata->mapField(array( 'fieldName' => 'for_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'for_client', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'for_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'for_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-	}
+        return $handler;
+    }
+
+
+    /**
+     */
+    public function notifyMessageServers()
+    {
+        if (!$this->event_dispatcher) return;
+
+        $event = new \Application\DeskPRO\ClientMessage\Event($this);
+
+        $this->event_dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
+    }
+
+
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ClientMessage';
+        $metadata->setPrimaryTable(array( 'name' => 'client_messages', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->addLifecycleCallback('notifyMessageServers', 'postPersist');
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'channel', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'channel', ));
+        $metadata->mapField(array( 'fieldName' => 'auth', 'type' => 'string', 'length' => 15, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'auth', ));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'created_by_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'created_by_client', ));
+        $metadata->mapField(array( 'fieldName' => 'for_client', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'for_client', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'for_person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'for_person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+    }
 }

@@ -38,23 +38,23 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 
 class TicketUrgenciesController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		return new AdminManagePermission();
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        return new AdminManagePermission();
+    }
 
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-	public function listAction()
-	{
-		$counts = $this->em->getRepository('DeskPRO:Ticket')->countTicketsByUrgency();
+    public function listAction()
+    {
+        $counts = $this->em->getRepository('DeskPRO:Ticket')->countTicketsByUrgency();
 
-		return $this->createApiResponse(array('urgency_counts' => $counts));
-	}
+        return $this->createApiResponse(array('urgency_counts' => $counts));
+    }
 }

@@ -41,12 +41,12 @@ namespace Orb\Auth\Adapter;
  */
 interface IframeSsoInterface extends SsoLoginActionInterface
 {
-	/**
-	 * array of parameters that are passed to the _sso_iframe.html.twig template
-	 * Note: iframe_url is required
-	 *
-	 * @param bool $is_first_page
-	 * @return array of twig vars
-	 */
-	public function getIframeTemplateParams($is_first_page);
+    /**
+     * array of parameters that are passed to the _sso_iframe.html.twig template
+     * Note: iframe_url is required
+     *
+     * @param  bool  $is_first_page
+     * @return array of twig vars
+     */
+    public function getIframeTemplateParams($is_first_page);
 }

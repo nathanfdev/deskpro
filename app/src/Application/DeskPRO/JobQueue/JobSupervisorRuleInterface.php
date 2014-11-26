@@ -43,22 +43,21 @@ namespace Application\DeskPRO\JobQueue;
  */
 interface JobSupervisorRuleInterface
 {
-	/**
-	 * Checks the business logic behind this rule. Returns null if all is well. If a rule is violated, it
-	 * should throw the JobSupervisorException with a detailed message of the problem it found.
-	 *
-	 * @return null
-	 * @throws JobSupervisorException
-	 */
-	public function check();
+    /**
+     * Checks the business logic behind this rule. Returns null if all is well. If a rule is violated, it
+     * should throw the JobSupervisorException with a detailed message of the problem it found.
+     *
+     * @return null
+     * @throws JobSupervisorException
+     */
+    public function check();
 
-
-	/**
-	 * Only called if a JobSupervisorException is thrown in check(), which is always called first. This method
-	 * MAY attempt to fix the problem. It is optional, however, and any rule that cannot be fixed should just
-	 * have this method return false.
-	 *
-	 * @return bool true on successful fix, false on unsuccessful fix
-	 */
-	public function attemptToFix();
+    /**
+     * Only called if a JobSupervisorException is thrown in check(), which is always called first. This method
+     * MAY attempt to fix the problem. It is optional, however, and any rule that cannot be fixed should just
+     * have this method return false.
+     *
+     * @return bool true on successful fix, false on unsuccessful fix
+     */
+    public function attemptToFix();
 }

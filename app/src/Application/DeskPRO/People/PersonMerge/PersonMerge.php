@@ -42,286 +42,286 @@ use Application\DeskPRO\People\PersonContextInterface;
  */
 class PersonMerge implements PersonContextInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person_context;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person_context;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $other_person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $other_person;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @throws \InvalidArgumentException
-	 * @param \Application\DeskPRO\Entity\Person $person_performer
-	 * @param \Application\DeskPRO\Entity\Person $person         The base person, this is the one that will still exist at the end
-	 * @param \Application\DeskPRO\Entity\Feedback $other_person   The other person, the one that will be merged into $person and then deleted
-	 */
-	public function __construct(Person $person_performer, Person $person, Person $other_person)
-	{
-		$this->em = App::getOrm();
+    /**
+     * @throws \InvalidArgumentException
+     * @param  \Application\DeskPRO\Entity\Person   $person_performer
+     * @param  \Application\DeskPRO\Entity\Person   $person           The base person, this is the one that will still exist at the end
+     * @param  \Application\DeskPRO\Entity\Feedback $other_person     The other person, the one that will be merged into $person and then deleted
+     */
+    public function __construct(Person $person_performer, Person $person, Person $other_person)
+    {
+        $this->em = App::getOrm();
 
-		$this->person = $person;
-		$this->other_person = $other_person;
-		$this->setPersonContext($person_performer);
+        $this->person = $person;
+        $this->other_person = $other_person;
+        $this->setPersonContext($person_performer);
 
-		if ($person == $other_person) {
-			throw new \InvalidArgumentException("You cannot merge a person with itself");
-		}
-	}
+        if ($person == $other_person) {
+            throw new \InvalidArgumentException("You cannot merge a person with itself");
+        }
+    }
 
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
-	}
+    public function setPersonContext(Person $person)
+    {
+        $this->person_context = $person;
+    }
 
-	public function merge()
-	{
-		$this->em->beginTransaction();
+    public function merge()
+    {
+        $this->em->beginTransaction();
 
-		try {
+        try {
 
-			// todo: organizations cc?
-			$standard_prop_names = array(
-				'gravatar_url',
-				'language',
-				'organization',
-				'organization_position',
-				'picture_blob',
-				'summary'
-			);
-			foreach ($standard_prop_names as $prop_name) {
-				$prop_standard = new Property\StandardProperty($this->person, $this->other_person);
-				$prop_standard->setProperty($prop_name);
-				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
-				$prop_standard->merge();
-			}
+            // todo: organizations cc?
+            $standard_prop_names = array(
+                'gravatar_url',
+                'language',
+                'organization',
+                'organization_position',
+                'picture_blob',
+                'summary'
+            );
+            foreach ($standard_prop_names as $prop_name) {
+                $prop_standard = new Property\StandardProperty($this->person, $this->other_person);
+                $prop_standard->setProperty($prop_name);
+                $prop_standard->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
+                $prop_standard->merge();
+            }
 
-			if ($this->other_person->date_created < $this->person->date_created) {
-				$this->person->date_created = $this->other_person->date_created;
-			}
+            if ($this->other_person->date_created < $this->person->date_created) {
+                $this->person->date_created = $this->other_person->date_created;
+            }
 
-			foreach (array('is_agent', 'can_agent', 'can_admin', 'can_billing', 'can_reports') as $attr) {
-				if ($this->person[$attr] || $this->other_person[$attr]) {
-					$this->person[$attr] = true;
-				}
-			}
+            foreach (array('is_agent', 'can_agent', 'can_admin', 'can_billing', 'can_reports') as $attr) {
+                if ($this->person[$attr] || $this->other_person[$attr]) {
+                    $this->person[$attr] = true;
+                }
+            }
 
-			$this->_mergeCustomFields();
+            $this->_mergeCustomFields();
 
-			$this->_mergeContactData();
-			$this->_mergeOtherPersonData();
-			$this->_mergeArticles();
-			$this->_mergeChats();
-			$this->_mergeDownloads();
-			$this->_mergeFeedback();
-			$this->_mergeNews();
-			$this->_mergeTasks();
-			$this->_mergeTickets();
-			$this->_mergeOther();
+            $this->_mergeContactData();
+            $this->_mergeOtherPersonData();
+            $this->_mergeArticles();
+            $this->_mergeChats();
+            $this->_mergeDownloads();
+            $this->_mergeFeedback();
+            $this->_mergeNews();
+            $this->_mergeTasks();
+            $this->_mergeTickets();
+            $this->_mergeOther();
 
-			$this->em->persist($this->person);
-			$this->em->flush();
+            $this->em->persist($this->person);
+            $this->em->flush();
 
-			$this->em->remove($this->other_person);
-			$this->em->flush();
+            $this->em->remove($this->other_person);
+            $this->em->flush();
 
-			$this->em->commit();
+            $this->em->commit();
 
-		} catch (\Exception $e) {
-			$this->em->rollback();
+        } catch (\Exception $e) {
+            $this->em->rollback();
 
-			throw $e;
-		}
+            throw $e;
+        }
 
-		return true;
-	}
+        return true;
+    }
 
-	protected function _mergeContactData()
-	{
-		$simple_tables = array(
-			'people_contact_data',
-			'people_emails',
-			'people_emails_validating',
-			'people_twitter_users'
-		);
+    protected function _mergeContactData()
+    {
+        $simple_tables = array(
+            'people_contact_data',
+            'people_emails',
+            'people_emails_validating',
+            'people_twitter_users'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+    }
 
-	protected function _mergeCustomFields()
-	{
-		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		foreach ($field_defs as $f) {
-			$prop_field = new Property\CustomField($this->person, $this->other_person);
-			$prop_field->setField($f);
-			$prop_field->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
-			$prop_field->merge();
-		}
-	}
+    protected function _mergeCustomFields()
+    {
+        $field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+        foreach ($field_defs as $f) {
+            $prop_field = new Property\CustomField($this->person, $this->other_person);
+            $prop_field->setField($f);
+            $prop_field->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
+            $prop_field->merge();
+        }
+    }
 
-	protected function _mergeOtherPersonData()
-	{
-		$simple_tables = array(
-			'labels_people',
-			'people_notes',
-			'people_prefs',
-			'person2usergroups',
-			'person_activity',
-			'person_usersource_assoc'
-		);
+    protected function _mergeOtherPersonData()
+    {
+        $simple_tables = array(
+            'labels_people',
+            'people_notes',
+            'people_prefs',
+            'person2usergroups',
+            'person_activity',
+            'person_usersource_assoc'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+    }
 
-	protected function _mergeArticles()
-	{
-		$simple_tables = array(
-			'articles',
-			'article_attachments',
-			'article_comments',
-			'article_pending_create',
-			'article_revisions'
-		);
+    protected function _mergeArticles()
+    {
+        $simple_tables = array(
+            'articles',
+            'article_attachments',
+            'article_comments',
+            'article_pending_create',
+            'article_revisions'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+    }
 
-	protected function _mergeChats()
-	{
-		$simple_tables = array(
-			'chat_conversations',
-			'chat_conversation_to_person'
-		);
+    protected function _mergeChats()
+    {
+        $simple_tables = array(
+            'chat_conversations',
+            'chat_conversation_to_person'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
 
-		$this->_updateTablePersonId('chat_blocks', 'by_person_id');
-		$this->_updateTablePersonId('chat_messages', 'author_id');
-	}
+        $this->_updateTablePersonId('chat_blocks', 'by_person_id');
+        $this->_updateTablePersonId('chat_messages', 'author_id');
+    }
 
-	protected function _mergeDownloads()
-	{
-		$simple_tables = array(
-			'downloads',
-			'download_comments',
-			'download_revisions'
-		);
+    protected function _mergeDownloads()
+    {
+        $simple_tables = array(
+            'downloads',
+            'download_comments',
+            'download_revisions'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+    }
 
-	protected function _mergeFeedback()
-	{
-		$simple_tables = array(
-			'feedback',
-			'feedback_attachments',
-			'feedback_comments',
-			'feedback_revisions'
-		);
+    protected function _mergeFeedback()
+    {
+        $simple_tables = array(
+            'feedback',
+            'feedback_attachments',
+            'feedback_comments',
+            'feedback_revisions'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+    }
 
-	protected function _mergeNews()
-	{
-		$simple_tables = array(
-			'news',
-			'news_comments',
-			'news_revisions'
-		);
+    protected function _mergeNews()
+    {
+        $simple_tables = array(
+            'news',
+            'news_comments',
+            'news_revisions'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+    }
 
-	protected function _mergeTasks()
-	{
-		$simple_tables = array(
-			'tasks',
-			'task_associations',
-			'task_comments'
-		);
+    protected function _mergeTasks()
+    {
+        $simple_tables = array(
+            'tasks',
+            'task_associations',
+            'task_comments'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+    }
 
-	protected function _mergeTickets()
-	{
-		$simple_tables = array(
-			'pretickets_content',
-			'tickets',
-			'tickets_attachments',
-			'tickets_logs',
-			'tickets_messages',
-			'tickets_participants',
-			'tickets_search_active',
-			'ticket_access_codes',
-			'ticket_charges',
-			'ticket_feedback',
-		);
-		$complex_tables = array(
-			'tickets_deleted' => array('by_person_id')
-		);
+    protected function _mergeTickets()
+    {
+        $simple_tables = array(
+            'pretickets_content',
+            'tickets',
+            'tickets_attachments',
+            'tickets_logs',
+            'tickets_messages',
+            'tickets_participants',
+            'tickets_search_active',
+            'ticket_access_codes',
+            'ticket_charges',
+            'ticket_feedback',
+        );
+        $complex_tables = array(
+            'tickets_deleted' => array('by_person_id')
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-		foreach ($complex_tables AS $table => $columns) {
-			foreach ($columns AS $column) {
-				$this->_updateTablePersonId($table, $column);
-			}
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+        foreach ($complex_tables AS $table => $columns) {
+            foreach ($columns AS $column) {
+                $this->_updateTablePersonId($table, $column);
+            }
+        }
+    }
 
-	protected function _mergeOther()
-	{
-		$simple_tables = array(
-			'login_log',
-			'page_view_log',
-			'ratings',
-			'searchlog',
-			'visitors'
-		);
+    protected function _mergeOther()
+    {
+        $simple_tables = array(
+            'login_log',
+            'page_view_log',
+            'ratings',
+            'searchlog',
+            'visitors'
+        );
 
-		foreach ($simple_tables AS $table) {
-			$this->_updateTablePersonId($table, 'person_id');
-		}
-	}
+        foreach ($simple_tables AS $table) {
+            $this->_updateTablePersonId($table, 'person_id');
+        }
+    }
 
-	protected function _updateTablePersonId($table, $column)
-	{
-		// update ignore lets this work like a "combine" where needed
-		App::getDb()->executeUpdate("
-			UPDATE IGNORE $table
-			SET $column = ?
-			WHERE $column = ?
-		", array($this->person['id'], $this->other_person['id']));
-	}
+    protected function _updateTablePersonId($table, $column)
+    {
+        // update ignore lets this work like a "combine" where needed
+        App::getDb()->executeUpdate("
+            UPDATE IGNORE $table
+            SET $column = ?
+            WHERE $column = ?
+        ", array($this->person['id'], $this->other_person['id']));
+    }
 }

@@ -38,17 +38,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class HiddenFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('default_value', 'text', array('required' => false));
-		$builder->add('cookie_name', 'text', array('required' => false));
-		$builder->add('param_name', 'text', array('required' => false));
-	}
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('default_value', 'text', array('required' => false));
+        $builder->add('cookie_name', 'text', array('required' => false));
+        $builder->add('param_name', 'text', array('required' => false));
+    }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\HiddenField',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\HiddenField',
+        );
+    }
 }

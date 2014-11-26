@@ -17,7 +17,7 @@ echo "Running Integration Tests"
 echo "=========================="
 echo ""
 
-bin/codecept run integration --coverage --xml
+bin/codecept run integration
 
 if [[ $? -ne 0 ]] ; then
 	echo "!!! Unit Integration Failure !!!"

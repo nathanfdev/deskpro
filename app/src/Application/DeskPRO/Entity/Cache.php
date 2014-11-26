@@ -34,7 +34,6 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
@@ -44,56 +43,56 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class Cache extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $id = null;
+    /**
+     * @var int
+     */
+    protected $id = null;
 
-	/**
-	 * @var string
-	 */
-	protected $data = array();
+    /**
+     * @var string
+     */
+    protected $data = array();
 
-	/**
-	 * @var \DateTime
-	 */
-	protected $date_expire;
+    /**
+     * @var \DateTime
+     */
+    protected $date_expire;
 
-	public function setData($data)
-	{
-		if (!is_array($data)) {
-			$this['data'] = array('VALUE' => $data);
-		}
-	}
+    public function setData($data)
+    {
+        if (!is_array($data)) {
+            $this['data'] = array('VALUE' => $data);
+        }
+    }
 
-	public function getData()
-	{
-		if (isset($this->data['VALUE'])) {
-			return $this->data['VALUE'];
-		}
+    public function getData()
+    {
+        if (isset($this->data['VALUE'])) {
+            return $this->data['VALUE'];
+        }
 
-		return $this->data;
-	}
+        return $this->data;
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Cache';
-		$metadata->setPrimaryTable(array(
-			'name' => 'cache',
-			'indexes' => array(
-				'date_expire_idx' => array('columns' => array('date_expire')),
-			),
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
-		$metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expire', ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Cache';
+        $metadata->setPrimaryTable(array(
+            'name' => 'cache',
+            'indexes' => array(
+                'date_expire_idx' => array('columns' => array('date_expire')),
+            ),
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'data', ));
+        $metadata->mapField(array( 'fieldName' => 'date_expire', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'date_expire', ));
+    }
 }

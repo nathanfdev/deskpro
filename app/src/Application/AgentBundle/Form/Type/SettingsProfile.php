@@ -40,66 +40,66 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class SettingsProfile extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-		$builder->add('name', 'text', array('required' => false));
-		$builder->add('primary_phone_number_text', 'text', array('required' => false));
-	    $builder->add('override_display_name', 'text', array('required' => false));
-		$builder->add('email', 'text', array('required' => false));
-		$builder->add('timezone', 'choice', array(
-			'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
-		));
+        $builder->add('name', 'text', array('required' => false));
+        $builder->add('primary_phone_number_text', 'text', array('required' => false));
+        $builder->add('override_display_name', 'text', array('required' => false));
+        $builder->add('email', 'text', array('required' => false));
+        $builder->add('timezone', 'choice', array(
+            'choices' => array_combine(\DateTimeZone::listIdentifiers(), \DateTimeZone::listIdentifiers())
+        ));
 
-		$lang_names = array();
-		foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
-			if ($lang->has_agent) {
-				$lang_names[$lang->id] = App::getTranslator()->getPhraseObject($lang, 'title');
-			}
-		}
+        $lang_names = array();
+        foreach (App::getContainer()->getLanguageData()->getAll() as $lang) {
+            if ($lang->has_agent) {
+                $lang_names[$lang->id] = App::getTranslator()->getPhraseObject($lang, 'title');
+            }
+        }
 
-		$builder->add('language_id', 'choice', array(
-			'choices' => $lang_names
-		));
-		$builder->add('password', 'password', array('required' => false));
-		$builder->add('password2', 'password', array('required' => false));
+        $builder->add('language_id', 'choice', array(
+            'choices' => $lang_names
+        ));
+        $builder->add('password', 'password', array('required' => false));
+        $builder->add('password2', 'password', array('required' => false));
 
-	    $builder->add('ticket_close_reply', 'checkbox', array('required' => false));
-	    $builder->add('ticket_close_note', 'checkbox', array('required' => false));
-	    $builder->add('hide_claimed_chat', 'checkbox', array('required' => false));
-		$builder->add('ticket_go_next_reply', 'checkbox', array('required' => false));
-		$builder->add('ticket_reverse_order', 'checkbox', array('required' => false));
+        $builder->add('ticket_close_reply', 'checkbox', array('required' => false));
+        $builder->add('ticket_close_note', 'checkbox', array('required' => false));
+        $builder->add('hide_claimed_chat', 'checkbox', array('required' => false));
+        $builder->add('ticket_go_next_reply', 'checkbox', array('required' => false));
+        $builder->add('ticket_reverse_order', 'checkbox', array('required' => false));
 
-		$builder->add('reset_api_token', 'hidden', array('required' => false));
+        $builder->add('reset_api_token', 'hidden', array('required' => false));
 
-		$builder->add('default_team_id', 'hidden', array('required' => false));
+        $builder->add('default_team_id', 'hidden', array('required' => false));
 
-		$builder->add('new_picture_blob_id', 'hidden', array('required' => false));
+        $builder->add('new_picture_blob_id', 'hidden', array('required' => false));
 
-		$builder->add('auto_dismiss_notifications', 'choice', array(
-			'choices' => array(
-				5 => '5 seconds',
-				10 => '10 seconds',
-				15 => '15 seconds',
-				30 => '30 seconds',
-				60 => '1 minute',
-				120 => '2 minutes',
-				300 => '5 minutes',
-				900 => '15 minutes',
-				1800 => '30 minutes',
-				3600 => '1 hour',
-				0 => 'Never'
-			),
-			'expanded' => false,
-			'multiple' => false
-		));
+        $builder->add('auto_dismiss_notifications', 'choice', array(
+            'choices' => array(
+                5 => '5 seconds',
+                10 => '10 seconds',
+                15 => '15 seconds',
+                30 => '30 seconds',
+                60 => '1 minute',
+                120 => '2 minutes',
+                300 => '5 minutes',
+                900 => '15 minutes',
+                1800 => '30 minutes',
+                3600 => '1 hour',
+                0 => 'Never'
+            ),
+            'expanded' => false,
+            'multiple' => false
+        ));
     }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AgentBundle\\Form\\Model\\SettingsProfile',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AgentBundle\\Form\\Model\\SettingsProfile',
+        );
+    }
 
     public function getName()
     {

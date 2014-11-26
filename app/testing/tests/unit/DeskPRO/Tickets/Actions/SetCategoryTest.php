@@ -8,72 +8,73 @@ use Application\DeskPRO\Tickets\ExecutorContext;
 
 class SetCategoryTest extends \DpUnitTestCase
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private function getMockContainer()
-	{
-		if ($this->container) return $this->container;
-		$this->container = ContainerMock::create()->withTicketCategories()->get();
-		return $this->container;
-	}
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private function getMockContainer()
+    {
+        if ($this->container) return $this->container;
+        $this->container = ContainerMock::create()->withTicketCategories()->get();
 
-	public function testSet()
-	{
-		$ticket = new Ticket();
-		$ticket->category = $this->getMockContainer()->getTicketCategories()->getById(1);
-		$exec   = new ExecutorContext();
+        return $this->container;
+    }
 
-		$action = new SetCategory(array('category_id' => 55));
-		$action->setContainer($this->getMockContainer());
+    public function testSet()
+    {
+        $ticket = new Ticket();
+        $ticket->category = $this->getMockContainer()->getTicketCategories()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetCategory(array('category_id' => 55));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertInstanceOf('Application\\DeskPRO\\Entity\\TicketCategory', $ticket->category);
-		$this->assertEquals(55, $ticket->category->id);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testSetNull()
-	{
-		$ticket = new Ticket();
-		$ticket->category = $this->getMockContainer()->getTicketCategories()->getById(1);
-		$exec   = new ExecutorContext();
+        $this->assertInstanceOf('Application\\DeskPRO\\Entity\\TicketCategory', $ticket->category);
+        $this->assertEquals(55, $ticket->category->id);
+    }
 
-		$action = new SetCategory(array('category_id' => 0));
-		$action->setContainer($this->getMockContainer());
+    public function testSetNull()
+    {
+        $ticket = new Ticket();
+        $ticket->category = $this->getMockContainer()->getTicketCategories()->getById(1);
+        $exec   = new ExecutorContext();
 
-		$action->applyAction($ticket, $exec);
+        $action = new SetCategory(array('category_id' => 0));
+        $action->setContainer($this->getMockContainer());
 
-		$this->assertNull($ticket->category);
-	}
+        $action->applyAction($ticket, $exec);
 
-	public function testNoop()
-	{
-		$ticket = new Ticket();
-		$ticket->category = $this->getMockContainer()->getTicketCategories()->getById(55);
+        $this->assertNull($ticket->category);
+    }
 
-		$exec = new ExecutorContext();
+    public function testNoop()
+    {
+        $ticket = new Ticket();
+        $ticket->category = $this->getMockContainer()->getTicketCategories()->getById(55);
 
-		$action = new SetCategory(array('category_id' => 55));
-		$action->setContainer($this->container);
+        $exec = new ExecutorContext();
 
-		$this->assertTrue($action->isNoop($ticket, $exec));
-	}
+        $action = new SetCategory(array('category_id' => 55));
+        $action->setContainer($this->container);
 
-	public function testInvalid()
-	{
-		$ticket = new Ticket();
-		$exec = new ExecutorContext();
+        $this->assertTrue($action->isNoop($ticket, $exec));
+    }
 
-		$action = new SetCategory(array('category_id' => 200));
-		$action->setContainer($this->getMockContainer());
-		$action->applyAction($ticket, $exec);
+    public function testInvalid()
+    {
+        $ticket = new Ticket();
+        $exec = new ExecutorContext();
 
-		$this->assertNull($ticket->category);
-	}
+        $action = new SetCategory(array('category_id' => 200));
+        $action->setContainer($this->getMockContainer());
+        $action->applyAction($ticket, $exec);
+
+        $this->assertNull($ticket->category);
+    }
 }

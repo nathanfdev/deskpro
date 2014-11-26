@@ -41,57 +41,57 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 class LogRoundRobin extends DomainObject implements Loggable
 {
-	/** @var int */
-	protected $id;
-	/** @var int */
-	protected $timestamp;
-	/** @var int */
-	protected $roundRobinId;
-	/** @var int */
-	protected $agentId;
-	/** @var int */
-	protected $ticketId;
-	/** @var int */
-	protected $triggerId;
+    /** @var int */
+    protected $id;
+    /** @var int */
+    protected $timestamp;
+    /** @var int */
+    protected $roundRobinId;
+    /** @var int */
+    protected $agentId;
+    /** @var int */
+    protected $ticketId;
+    /** @var int */
+    protected $triggerId;
 
-	public function __construct($robinId, $agentId, $ticketId, $triggerId)
-	{
-		$this['timestamp'] = time();
-		$this['roundRobinId'] = (int) $robinId;
-		$this['agentId'] = (int) $agentId;
-		$this['ticketId'] = (int) $ticketId;
-		$this['triggerId'] = (int) $triggerId;
-	}
+    public function __construct($robinId, $agentId, $ticketId, $triggerId)
+    {
+        $this['timestamp'] = time();
+        $this['roundRobinId'] = (int) $robinId;
+        $this['agentId'] = (int) $agentId;
+        $this['ticketId'] = (int) $ticketId;
+        $this['triggerId'] = (int) $triggerId;
+    }
 
-	/**
-	 * todo
-	 * @return string
-	 */
-	public function __toString()
-	{
-		return sprintf('Round Robin entry');
-	}
+    /**
+     * todo
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf('Round Robin entry');
+    }
 
-	public function context()
-	{
-		return array();
-	}
+    public function context()
+    {
+        return array();
+    }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->setPrimaryTable(array( 'name' => 'log_round_robin', ));
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true,));
-		$metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'columnName' => 'timestamp',));
-		$metadata->mapField(array( 'fieldName' => 'roundRobinId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'round_robin_id'));
-		$metadata->mapField(array( 'fieldName' => 'agentId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'agent_id'));
-		$metadata->mapField(array( 'fieldName' => 'ticketId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'ticket_id'));
-		$metadata->mapField(array( 'fieldName' => 'triggerId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'trigger_id'));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->setPrimaryTable(array( 'name' => 'log_round_robin', ));
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true,));
+        $metadata->mapField(array( 'fieldName' => 'timestamp', 'type' => 'integer', 'nullable' => false, 'columnName' => 'timestamp',));
+        $metadata->mapField(array( 'fieldName' => 'roundRobinId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'round_robin_id'));
+        $metadata->mapField(array( 'fieldName' => 'agentId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'agent_id'));
+        $metadata->mapField(array( 'fieldName' => 'ticketId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'ticket_id'));
+        $metadata->mapField(array( 'fieldName' => 'triggerId', 'type' => 'integer', 'nullable' => false, 'columnName' => 'trigger_id'));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+    }
 }

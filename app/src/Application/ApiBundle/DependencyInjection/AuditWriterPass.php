@@ -39,21 +39,21 @@ use Symfony\Component\DependencyInjection\Reference;
 
 class AuditWriterPass implements CompilerPassInterface
 {
-	public function process(ContainerBuilder $container)
-	{
+    public function process(ContainerBuilder $container)
+    {
 
-		if (!$container->hasDefinition('deskpro.auditlog.manager')) {
-			return;
-		}
-		if (!$container->hasDefinition('deskpro.auditlog.doctrine_listener')) {
-			return;
-		}
+        if (!$container->hasDefinition('deskpro.auditlog.manager')) {
+            return;
+        }
+        if (!$container->hasDefinition('deskpro.auditlog.doctrine_listener')) {
+            return;
+        }
 
-		$audit_def = $container->getDefinition('deskpro.auditlog.manager');
+        $audit_def = $container->getDefinition('deskpro.auditlog.manager');
 
-		$taggedServices = $container->findTaggedServiceIds('deskpro.auditlog.writers');
-		foreach ($taggedServices as $id => $attributes) {
-			$audit_def->addMethodCall('addWriter', array(new Reference($id)));
-		}
-	}
+        $taggedServices = $container->findTaggedServiceIds('deskpro.auditlog.writers');
+        foreach ($taggedServices as $id => $attributes) {
+            $audit_def->addMethodCall('addWriter', array(new Reference($id)));
+        }
+    }
 }

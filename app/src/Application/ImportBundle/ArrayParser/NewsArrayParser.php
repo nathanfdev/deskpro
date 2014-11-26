@@ -38,39 +38,39 @@ use Orb\Util\Strings;
 class NewsArrayParser implements ArrayParserInterface
 {
 
-	/**
-	 * @param array $data
-	 * @return PersonValue
-	 */
-	public function parseArray(array $data)
-	{
-		$data = ArrayParserUtils::cleanArray($data);
+    /**
+     * @param  array       $data
+     * @return PersonValue
+     */
+    public function parseArray(array $data)
+    {
+        $data = ArrayParserUtils::cleanArray($data);
 
-		$value = new NewsValue();
+        $value = new NewsValue();
 
-		ArrayParserUtils::copyValueMapping(array(
-			'oid'			=> 'raw',
-			'person'		=> 'string',
-			'language'		=> 'string',
-			'slug'			=> 'string',
-			'title'			=> 'string',
-			'content'		=> 'string',
-			'view_count'		=> 'int',
-			'total_rating'		=> 'int',
-			'num_comments'		=> 'int',
-			'num_ratings'		=> 'int',
-			'status'		=> 'string',
-			'date_created'		=> 'date',
-			'date_published'	=> 'date',
-			'category'		=> 'string',
-			'labels'		=> 'array',
-		), $data, $value);
+        ArrayParserUtils::copyValueMapping(array(
+            'oid'			=> 'raw',
+            'person'		=> 'string',
+            'language'		=> 'string',
+            'slug'			=> 'string',
+            'title'			=> 'string',
+            'content'		=> 'string',
+            'view_count'		=> 'int',
+            'total_rating'		=> 'int',
+            'num_comments'		=> 'int',
+            'num_ratings'		=> 'int',
+            'status'		=> 'string',
+            'date_created'		=> 'date',
+            'date_published'	=> 'date',
+            'category'		=> 'string',
+            'labels'		=> 'array',
+        ), $data, $value);
 
-		if ($value->title && !$value->slug) {
-			$value->slug = Strings::slugifyTitle($value->title);
-		}
+        if ($value->title && !$value->slug) {
+            $value->slug = Strings::slugifyTitle($value->title);
+        }
 
-		return $value;
-	}
+        return $value;
+    }
 
 }

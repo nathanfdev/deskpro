@@ -40,71 +40,66 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
 
 class MacroComposite implements MacroActionInterface
 {
-	/**
-	 * @var MacroActionInterface[]
-	 */
-	private $actions = array();
+    /**
+     * @var MacroActionInterface[]
+     */
+    private $actions = array();
 
-	/**
-	 * @param MacroActionInterface[] $actions
-	 */
-	public function __construct(array $actions = array())
-	{
-		$this->setAll($actions);
-	}
+    /**
+     * @param MacroActionInterface[] $actions
+     */
+    public function __construct(array $actions = array())
+    {
+        $this->setAll($actions);
+    }
 
+    /**
+     * @param MacroActionInterface $term
+     */
+    public function add(MacroActionInterface $term)
+    {
+        $this->actions[] = $term;
+    }
 
-	/**
-	 * @param MacroActionInterface $term
-	 */
-	public function add(MacroActionInterface $term)
-	{
-		$this->actions[] = $term;
-	}
+    /**
+     * @param MacroActionInterface[] $actions
+     */
+    public function setAll(array $actions)
+    {
+        $this->actions = array();
+        foreach ($actions as $t) {
+            $this->add($t);
+        }
+    }
 
+    /**
+     * @return MacroActionInterface[]
+     */
+    public function getAll()
+    {
+        return $this->actions;
+    }
 
-	/**
-	 * @param MacroActionInterface[] $actions
-	 */
-	public function setAll(array $actions)
-	{
-		$this->actions = array();
-		foreach ($actions as $t) {
-			$this->add($t);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $errors = array();
+        foreach ($this->actions as $a) {
+            $errors = array_merge($errors, $a->getMacroPermissionErrors($person, $ticket, $context));
+        }
 
+        return $errors;
+    }
 
-	/**
-	 * @return MacroActionInterface[]
-	 */
-	public function getAll()
-	{
-		return $this->actions;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$errors = array();
-		foreach ($this->actions as $a) {
-			$errors = array_merge($errors, $a->getMacroPermissionErrors($person, $ticket, $context));
-		}
-
-		return $errors;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		foreach ($this->actions as $a) {
-			$a->applyMacro($person, $ticket, $context);
-		}
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        foreach ($this->actions as $a) {
+            $a->applyMacro($person, $ticket, $context);
+        }
+    }
 }

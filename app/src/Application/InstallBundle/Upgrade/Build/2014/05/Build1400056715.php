@@ -36,13 +36,13 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1400056715 extends AbstractBuild
 {
-	public function run()
-	{
-		$db = $this->container->getDb();
+    public function run()
+    {
+        $db = $this->container->getDb();
 
-		$this->out("Alter tickets table to remove old fields");
-		$db->exec("ALTER TABLE tickets DROP FOREIGN KEY FK_54469DF4FBCC7CDF, DROP FOREIGN KEY FK_54469DF4F2598614");
-		$db->exec("ALTER TABLE tickets DROP KEY IDX_54469DF4FBCC7CDF, DROP KEY IDX_54469DF4F2598614");
-		$db->exec("ALTER TABLE tickets DROP email_gateway_id, DROP email_gateway_address_id, DROP notify_email, DROP notify_email_name, DROP notify_email_agent, DROP notify_email_name_agent");
-	}
+        $this->out("Alter tickets table to remove old fields");
+        $db->exec("ALTER TABLE tickets DROP FOREIGN KEY FK_54469DF4FBCC7CDF, DROP FOREIGN KEY FK_54469DF4F2598614");
+        $db->exec("ALTER TABLE tickets DROP KEY IDX_54469DF4FBCC7CDF, DROP KEY IDX_54469DF4F2598614");
+        $db->exec("ALTER TABLE tickets DROP email_gateway_id, DROP email_gateway_address_id, DROP notify_email, DROP notify_email_name, DROP notify_email_agent, DROP notify_email_name_agent");
+    }
 }

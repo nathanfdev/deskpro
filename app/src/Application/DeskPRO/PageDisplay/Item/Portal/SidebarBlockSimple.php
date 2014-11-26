@@ -40,24 +40,23 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
  */
 class SidebarBlockSimple extends PortalItemAbstract
 {
-	public function getHtml()
-	{
-		$vars = $this->getVars();
-		$vars = array_merge($vars, array(
-			'section' => $this->section,
-			'options' => $this->options,
-			'title'   => $this->getOption('title'),
-			'content' => $this->getOption('content')
-		));
+    public function getHtml()
+    {
+        $vars = $this->getVars();
+        $vars = array_merge($vars, array(
+            'section' => $this->section,
+            'options' => $this->options,
+            'title'   => $this->getOption('title'),
+            'content' => $this->getOption('content')
+        ));
 
-		$html = $this->renderView('UserBundle:Portal:simple-block-sidebar.html.twig', $vars);
+        $html = $this->renderView('UserBundle:Portal:simple-block-sidebar.html.twig', $vars);
 
-		return $html;
-	}
+        return $html;
+    }
 
-
-	public function getVars()
-	{
-		return array();
-	}
+    public function getVars()
+    {
+        return array();
+    }
 }

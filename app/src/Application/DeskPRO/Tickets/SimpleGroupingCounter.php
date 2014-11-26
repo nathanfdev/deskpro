@@ -36,45 +36,44 @@ namespace Application\DeskPRO\Tickets;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity;
 
 /**
  * Performs groupings for specific tickets only.
  */
 class SimpleGroupingCounter extends GroupingCounter
 {
-	/** @var array */
-	protected $_ticket_ids = array();
+    /** @var array */
+    protected $_ticket_ids = array();
 
-	public function __construct(array $ticket_ids, $group_by)
-	{
-		$this->_ticket_ids = $ticket_ids;
-		$this->setGrouping($group_by);
-	}
+    public function __construct(array $ticket_ids, $group_by)
+    {
+        $this->_ticket_ids = $ticket_ids;
+        $this->setGrouping($group_by);
+    }
 
-	public function getCounts()
-	{
-		$group_by = 'GROUP BY field1';
-		$db = App::getDb();
+    public function getCounts()
+    {
+        $group_by = 'GROUP BY field1';
+        $db = App::getDb();
 
-		$select_fields[] = $db->quoteIdentifier('tickets.' . $this->grouping1) . ' AS field1';
-		if ($this->grouping2) {
-			$select_fields[] = $db->quoteIdentifier('tickets.' . $this->grouping2) . ' AS field2';
-			$group_by .= ', field2';
-		}
-		$select_fields[] = 'COUNT(*) AS total';
+        $select_fields[] = $db->quoteIdentifier('tickets.' . $this->grouping1) . ' AS field1';
+        if ($this->grouping2) {
+            $select_fields[] = $db->quoteIdentifier('tickets.' . $this->grouping2) . ' AS field2';
+            $group_by .= ', field2';
+        }
+        $select_fields[] = 'COUNT(*) AS total';
 
-		$wheres = array('tickets.id IN (?)');
+        $wheres = array('tickets.id IN (?)');
 
-		$sql = "
-			SELECT " . implode(', ', $select_fields) . "
-			FROM tickets
-			WHERE " . implode(' AND ', $wheres) . "
-			$group_by WITH ROLLUP
-		";
+        $sql = "
+            SELECT " . implode(', ', $select_fields) . "
+            FROM tickets
+            WHERE " . implode(' AND ', $wheres) . "
+            $group_by WITH ROLLUP
+        ";
 
-		$counts = $db->fetchAll($sql, array($this->_ticket_ids), array(Connection::PARAM_INT_ARRAY));
+        $counts = $db->fetchAll($sql, array($this->_ticket_ids), array(Connection::PARAM_INT_ARRAY));
 
-		return $counts;
-	}
+        return $counts;
+    }
 }

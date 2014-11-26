@@ -43,35 +43,35 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * @var int
-	 */
-	protected $ticket_id = null;
+    /**
+     * @var int
+     */
+    protected $ticket_id = null;
 
-	/**
-	 * @var int
-	 */
-	protected $person_id = null;
+    /**
+     * @var int
+     */
+    protected $person_id = null;
 
-	/**
-	 * @var string
-	 */
-	protected $color = 'blue';
+    /**
+     * @var string
+     */
+    protected $color = 'blue';
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFlagged';
-		$metadata->setPrimaryTable(array( 'name' => 'tickets_flagged', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'person_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'color', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'color', ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\TicketFlagged';
+        $metadata->setPrimaryTable(array( 'name' => 'tickets_flagged', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'person_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'person_id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'ticket_id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ticket_id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'color', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'color', ));
+    }
 }

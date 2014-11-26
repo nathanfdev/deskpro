@@ -39,28 +39,26 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class AuthenticationManagerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		/** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
-		$um = $container->getSystemService('usersource_manager');
+    public static function create(DeskproContainer $container)
+    {
+        /** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
+        $um = $container->getSystemService('usersource_manager');
 
-		/** @var \Application\DeskPRO\Auth\AuthSettings $as */
-		$as = $container->getSystemService('auth_settings');
+        /** @var \Application\DeskPRO\Auth\AuthSettings $as */
+        $as = $container->getSystemService('auth_settings');
 
-		/** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $as */
-		$aaf = $container->getSystemService('usersource_auth_adapter_factory');
+        /** @var \Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory $as */
+        $aaf = $container->getSystemService('usersource_auth_adapter_factory');
 
-		/** @var \Application\DeskPRO\Settings\Settings $as */
-		$app_settings = $container->getSettingsHandler();
+        /** @var \Application\DeskPRO\Settings\Settings $as */
+        $app_settings = $container->getSettingsHandler();
 
-		return new AuthenticationManager(
-			$as,
-			$um,
-			$aaf,
-			$app_settings,
-			DP_INTERFACE == 'user' ? 'user' : 'agent'
-		);
-	}
+        return new AuthenticationManager(
+            $as,
+            $um,
+            $aaf,
+            $app_settings,
+            DP_INTERFACE == 'user' ? 'user' : 'agent'
+        );
+    }
 }
-
-

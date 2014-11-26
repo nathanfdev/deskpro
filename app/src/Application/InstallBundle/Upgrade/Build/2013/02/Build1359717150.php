@@ -36,11 +36,11 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1359717150 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add email_sources.date_status");
-		$this->execMutateSql("ALTER TABLE email_sources ADD date_status DATETIME NOT NULL");
-		$this->execMutateSql("UPDATE email_sources SET date_status = date_created");
-		$this->execMutateSql("UPDATE email_sources SET status = 'processing' WHERE status = 'inserted'");
-	}
+    public function run()
+    {
+        $this->out("Add email_sources.date_status");
+        $this->execMutateSql("ALTER TABLE email_sources ADD date_status DATETIME NOT NULL");
+        $this->execMutateSql("UPDATE email_sources SET date_status = date_created");
+        $this->execMutateSql("UPDATE email_sources SET status = 'processing' WHERE status = 'inserted'");
+    }
 }

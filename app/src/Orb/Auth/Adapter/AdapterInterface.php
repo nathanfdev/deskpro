@@ -36,10 +36,10 @@ namespace Orb\Auth\Adapter;
 
 interface AdapterInterface
 {
-	/**
-	 * Authenticate a user.
-	 *
-	 * @return Result
-	 */
-	public function authenticate();
+    /**
+     * Authenticate a user.
+     *
+     * @return Result
+     */
+    public function authenticate();
 }

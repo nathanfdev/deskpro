@@ -46,58 +46,59 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterStatus extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('status');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('status');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$opt = $this->getTermOptions()->get('status');
-		if (!is_array($opt)) {
-			$opt = array($opt);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $opt = $this->getTermOptions()->get('status');
+        if (!is_array($opt)) {
+            $opt = array($opt);
+        }
 
-		$opt = array_unique($opt);
-		$opt = Arrays::removeFalsey($opt);
+        $opt = array_unique($opt);
+        $opt = Arrays::removeFalsey($opt);
 
-		$query = new FilterQuery();
+        $query = new FilterQuery();
 
-		if (!$opt) {
-			$query->andWhere("0");
-		}
+        if (!$opt) {
+            $query->andWhere("0");
+        }
 
-		$statuses = array();
-		$hidden_statuses = array();
+        $statuses = array();
+        $hidden_statuses = array();
 
-		foreach ($opt as $s) {
-			if (!preg_match('#^[a-zA-Z0-9_\-\.]+$#', $s)) {
-				continue;
-			}
-			if (strpos($s, '.') === false) {
-				$statuses[] = $s;
-			} else {
-				list (, $hs) = explode('.', $s, 2);
-				$hidden_statuses[] = $hs;
-			}
-		}
+        foreach ($opt as $s) {
+            if (!preg_match('#^[a-zA-Z0-9_\-\.]+$#', $s)) {
+                continue;
+            }
+            if (strpos($s, '.') === false) {
+                $statuses[] = $s;
+            } else {
+                list (, $hs) = explode('.', $s, 2);
+                $hidden_statuses[] = $hs;
+            }
+        }
 
-		if ($statuses) {
-			$query->orWhere("status IN ('" . implode("','", $statuses) . ")");
-		}
-		if ($hidden_statuses) {
-			$query->orWhere("(status = 'hidden' AND hidden_status IN ('" . implode("','", $hidden_statuses) . "))");
-		}
+        if ($statuses) {
+            $query->orWhere("status IN ('" . implode("','", $statuses) . ")");
+        }
+        if ($hidden_statuses) {
+            $query->orWhere("(status = 'hidden' AND hidden_status IN ('" . implode("','", $hidden_statuses) . "))");
+        }
 
-		return $query;
-	}
+        return $query;
+    }
 }

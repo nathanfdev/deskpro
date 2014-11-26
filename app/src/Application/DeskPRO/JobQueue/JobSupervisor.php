@@ -51,65 +51,64 @@ use DeskPRO\Kernel\KernelErrorHandler;
  */
 class JobSupervisor
 {
-	/**
-	 * @var JobSupervisorRuleInterface[]
-	 */
-	protected $rules;
+    /**
+     * @var JobSupervisorRuleInterface[]
+     */
+    protected $rules;
 
-	/**
-	 * @var Connection
-	 */
-	private $connection;
-
-
-	/**
-	 * @param Connection $connection
-	 * @param array      $rules
-	 */
-	public function __construct(Connection $connection, array $rules = array())
-	{
-		$this->connection = $connection;
-		$this->rules = $rules;
-	}
+    /**
+     * @var Connection
+     */
+    private $connection;
 
 
-	/**
-	 * Runs the supervisor instance, checking all of the registered rules, and reporting any violations that
-	 * cannot be fixed.
-	 */
-	public function run()
-	{
-		foreach ($this->rules as $rule) {
-			try {
-
-				$rule->check();
-
-			} catch (JobSupervisorException $e) {
-
-				if (!$rule->attemptToFix()) {
-					$this->reportViolation($e);
-				} else {
-					// fixed, silently log the violation and that it was resolved by the rule
-					KernelErrorHandler::logException($e);
-				}
-
-			} catch (\Exception $e) {
-				// something terribly wrong happened because we shouldn't be here, we should probably do something now
-				// because this is a problem with the job supervising system! Probably DB query issues.
-				KernelErrorHandler::logException($e);
-			}
-		}
-
-	}
+    /**
+     * @param Connection $connection
+     * @param array      $rules
+     */
+    public function __construct(Connection $connection, array $rules = array())
+    {
+        $this->connection = $connection;
+        $this->rules = $rules;
+    }
 
 
-	public function reportViolation(JobSupervisorException $e)
-	{
-		KernelErrorHandler::logException($e);
-	}
+    /**
+     * Runs the supervisor instance, checking all of the registered rules, and reporting any violations that
+     * cannot be fixed.
+     */
+    public function run()
+    {
+        foreach ($this->rules as $rule) {
+            try {
 
-	public function addRule(JobSupervisorRuleInterface $rule)
-	{
-		$this->rules[] = $rule;
-	}
+                $rule->check();
+
+            } catch (JobSupervisorException $e) {
+
+                if (!$rule->attemptToFix()) {
+                    $this->reportViolation($e);
+                } else {
+                    // fixed, silently log the violation and that it was resolved by the rule
+                    KernelErrorHandler::logException($e);
+                }
+
+            } catch (\Exception $e) {
+                // something terribly wrong happened because we shouldn't be here, we should probably do something now
+                // because this is a problem with the job supervising system! Probably DB query issues.
+                KernelErrorHandler::logException($e);
+            }
+        }
+
+    }
+
+    public function reportViolation(JobSupervisorException $e)
+    {
+        KernelErrorHandler::logException($e);
+    }
+
+    public function addRule(JobSupervisorRuleInterface $rule)
+    {
+        $this->rules[] = $rule;
+    }
 }

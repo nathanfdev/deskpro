@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1371739498 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add agent_alerts table");
-		$this->execMutateSql("CREATE TABLE agent_alerts (id INT AUTO_INCREMENT NOT NULL, person_id INT NOT NULL, typename VARCHAR(255) NOT NULL, data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', date_created DATETIME DEFAULT NULL, is_dismissed TINYINT(1) NOT NULL, INDEX IDX_A99D974D217BBB47 (person_id), INDEX date_created_idx (date_created), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE agent_alerts ADD CONSTRAINT FK_A99D974D217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
-	}
+    public function run()
+    {
+        $this->out("Add agent_alerts table");
+        $this->execMutateSql("CREATE TABLE agent_alerts (id INT AUTO_INCREMENT NOT NULL, person_id INT NOT NULL, typename VARCHAR(255) NOT NULL, data LONGBLOB NOT NULL COMMENT '(DC2Type:array)', date_created DATETIME DEFAULT NULL, is_dismissed TINYINT(1) NOT NULL, INDEX IDX_A99D974D217BBB47 (person_id), INDEX date_created_idx (date_created), PRIMARY KEY(id)) ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+        $this->execMutateSql("ALTER TABLE agent_alerts ADD CONSTRAINT FK_A99D974D217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+    }
 }

@@ -38,7 +38,6 @@ use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Form\Type\ApiKeyType;
 use Application\DeskPRO\Entity\ApiKey;
-use Application\DeskPRO\Exception\ValidationException;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -52,157 +51,159 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ApiKeysController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'getAgentsForKeyAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'getAgentsForKeyAction');
+
+        return $multi;
+    }
 
 
-	###################################################################################################################
-	# list
-	####################################################################################################################
+    ###################################################################################################################
+    # list
+    ####################################################################################################################
 
-	/**
-	 * @SWG\Api(
-	 * 	path="/api_keys",
-	 * 	@SWG\Operation(
-	 * 		method="GET",
-	 * 		summary="Get list of all existing API Keys",
-	 * 		notes="Returns array of all existing API Keys"
-	 * 	)
-	 * )
-	 */
+    /**
+     * @SWG\Api(
+     * 	path="/api_keys",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Get list of all existing API Keys",
+     * 		notes="Returns array of all existing API Keys"
+     * 	)
+     * )
+     */
 
-	public function listAction()
-	{
-		$keys = $this->em->getRepository('DeskPRO:ApiKey')->findAll();
-		return $this->createApiResponse($this->getApiData($keys, false) ?: array());
-	}
+    public function listAction()
+    {
+        $keys = $this->em->getRepository('DeskPRO:ApiKey')->findAll();
 
-	###################################################################################################################
-	# get
-	####################################################################################################################
+        return $this->createApiResponse($this->getApiData($keys, false) ?: array());
+    }
 
-	/**
-	 * @SWG\Api(
-	 * 	path="/api_keys/{id}",
-	 * 	@SWG\Operation(
-	 * 		method="GET",
-	 * 		summary="Find API Key By ID",
-	 * 		notes="Returns API Key based on ID",
-	 * 		@SWG\Parameter(
-	 * 			name="id",
-	 * 			description="ID of API Key that needs to be fetched",
-	 * 			required=true,
-	 * 			type="integer",
-	 * 			paramType="path"
-	 * 		),
-	 * 		@SWG\ResponseMessage(code=404, message="API Key not found")
-	 * 	)
-	 * )
-	 */
+    ###################################################################################################################
+    # get
+    ####################################################################################################################
 
-	public function getAction($id)
-	{
-		if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
-			throw $this->createNotFoundException();
-		}
+    /**
+     * @SWG\Api(
+     * 	path="/api_keys/{id}",
+     * 	@SWG\Operation(
+     * 		method="GET",
+     * 		summary="Find API Key By ID",
+     * 		notes="Returns API Key based on ID",
+     * 		@SWG\Parameter(
+     * 			name="id",
+     * 			description="ID of API Key that needs to be fetched",
+     * 			required=true,
+     * 			type="integer",
+     * 			paramType="path"
+     * 		),
+     * 		@SWG\ResponseMessage(code=404, message="API Key not found")
+     * 	)
+     * )
+     */
 
-		return $this->createApiResponse($this->getApiData($key));
-	}
+    public function getAction($id)
+    {
+        if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+            throw $this->createNotFoundException();
+        }
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+        return $this->createApiResponse($this->getApiData($key));
+    }
 
-	public function saveAction(Request $request, $id)
-	{
-		/** @var $key ApiKey */
-		if ($id) {
-			if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
-				throw $this->createNotFoundException();
-			}
-		} else {
-			$key = new ApiKey();
-			$this->em->persist($key);
-		}
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-		$data = $this->in->getAll('req');
-		$form = $this->createForm(new ApiKeyType(), $key);
-		$form->submit($data);
+    public function saveAction(Request $request, $id)
+    {
+        /** @var $key ApiKey */
+        if ($id) {
+            if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+                throw $this->createNotFoundException();
+            }
+        } else {
+            $key = new ApiKey();
+            $this->em->persist($key);
+        }
 
-		if ($form->isValid()) {
-			$this->em->flush($key);
-		} else {
-			return $this->createApiErrorInfoResponse('validation_rrror', $this->getFormValidationErrorsString($form), array());
-		}
+        $data = $this->in->getAll('req');
+        $form = $this->createForm(new ApiKeyType(), $key);
+        $form->submit($data);
 
-		return $this->getAction($key['id']);
-	}
+        if ($form->isValid()) {
+            $this->em->flush($key);
+        } else {
+            return $this->createApiErrorInfoResponse('validation_rrror', $this->getFormValidationErrorsString($form), array());
+        }
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+        return $this->getAction($key['id']);
+    }
 
-	public function removeAction($id)
-	{
-		/** @var $key ApiKey */
-		if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
-			throw $this->createNotFoundException();
-		}
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-		$old_id = $key['id'];
+    public function removeAction($id)
+    {
+        /** @var $key ApiKey */
+        if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+            throw $this->createNotFoundException();
+        }
 
-		$this->em->remove($key);
-		$this->em->flush();
+        $old_id = $key['id'];
 
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
+        $this->em->remove($key);
+        $this->em->flush();
 
-
-	####################################################################################################################
-	# get-logs
-	####################################################################################################################
-
-	public function getLogsAction($id)
-	{
-		/** @var $key ApiKey */
-		if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
-			throw $this->createNotFoundException();
-		}
-
-		$logs = $this->em->getRepository('DeskPRO:ApiKeyLog')->getLogsForKey($key);
-
-		$logs = $this->getApiData($logs);
-
-		return $this->createSuccessResponse(array(
-			'logs' => $logs
-		));
-	}
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 
 
-	####################################################################################################################
-	# regenerate
-	####################################################################################################################
+    ####################################################################################################################
+    # get-logs
+    ####################################################################################################################
 
-	public function regenerateAction($id)
-	{
-		/** @var $key ApiKey */
-		if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
-			throw $this->createNotFoundException();
-		}
+    public function getLogsAction($id)
+    {
+        /** @var $key ApiKey */
+        if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+            throw $this->createNotFoundException();
+        }
 
-		$key->regenerateApiKey();
-		$this->em->flush();
+        $logs = $this->em->getRepository('DeskPRO:ApiKeyLog')->getLogsForKey($key);
 
-		return $this->createSuccessResponse(array('code' => $key['code'], 'keyString' => $key['keyString']));
-	}
+        $logs = $this->getApiData($logs);
+
+        return $this->createSuccessResponse(array(
+            'logs' => $logs
+        ));
+    }
+
+
+    ####################################################################################################################
+    # regenerate
+    ####################################################################################################################
+
+    public function regenerateAction($id)
+    {
+        /** @var $key ApiKey */
+        if (!$key = $this->em->find('DeskPRO:ApiKey', $id)) {
+            throw $this->createNotFoundException();
+        }
+
+        $key->regenerateApiKey();
+        $this->em->flush();
+
+        return $this->createSuccessResponse(array('code' => $key['code'], 'keyString' => $key['keyString']));
+    }
 
     /**
      * @param $logEntryId
@@ -217,19 +218,19 @@ class ApiKeysController extends AbstractController implements ProtectedControlle
         if (!$entry = $this->em->find('DeskPRO:ApiKeyLog', $logEntryId)) {
             throw new NotFoundHttpException;
         }
-	    /** @var ApiKey $key */
-	    $key = $entry->key;
-	    $request = $entry['request'];
+        /** @var ApiKey $key */
+        $key = $entry->key;
+        $request = $entry['request'];
 
-	    $api = new \DeskPRO\Api($this->settings->get('core.deskpro_url'), $key->getKeyString(), $key->person['id']);
-	    $path = 0 === strpos($request['path'], '/api') ? substr($request['path'], 4) : $request['path'];
-	    /** @var \DeskPRO\Api\Result $response */
-	    $response = $api->call($request['method'], $path, $request['payload']);
+        $api = new \DeskPRO\Api($this->settings->get('core.deskpro_url'), $key->getKeyString(), $key->person['id']);
+        $path = 0 === strpos($request['path'], '/api') ? substr($request['path'], 4) : $request['path'];
+        /** @var \DeskPRO\Api\Result $response */
+        $response = $api->call($request['method'], $path, $request['payload']);
 
-	    $result = array(
-		    'status' => $response->getResponseCode(),
-		    'content' => $response->getData(),
-	    );
+        $result = array(
+            'status' => $response->getResponseCode(),
+            'content' => $response->getData(),
+        );
 
         return $this->createApiResponse($result);
     }

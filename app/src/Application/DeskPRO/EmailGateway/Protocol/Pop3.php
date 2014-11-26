@@ -40,49 +40,49 @@ use Zend\Mail\Protocol\Exception;
 
 class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
 {
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	protected $logger;
+    /**
+     * @var \Orb\Log\Logger
+     */
+    protected $logger;
 
-	/**
-	 * @var int
-	 */
-	protected $connect_timeout = 8;
+    /**
+     * @var int
+     */
+    protected $connect_timeout = 8;
 
-	/**
-	 * @var int
-	 */
-	protected $stream_timeout = 15;
-
-
-	/**
-	 * @param string $host
-	 * @param null $port
-	 * @param bool $ssl
-	 * @param Logger $logger
-	 * @param int $connect_timeout
-	 * @param int $stream_timeout
-	 */
-	public function __construct($host = '', $port = null, $ssl = false, Logger $logger = null, $connect_timeout = 8, $stream_timeout = 15)
-	{
-		$this->logger = $logger;
-		$this->connect_timeout = $connect_timeout;
-		$this->stream_timeout = $stream_timeout;
-		parent::__construct($host, $port, $ssl = $ssl ? strtoupper($ssl) : $ssl);
-	}
+    /**
+     * @var int
+     */
+    protected $stream_timeout = 15;
 
 
-	/**
-	 * @param string $host
-	 * @param null $port
-	 * @param bool $ssl
-	 * @return string
-	 * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-	 */
-	public function connect($host, $port = null, $ssl = false)
+    /**
+     * @param string $host
+     * @param null   $port
+     * @param bool   $ssl
+     * @param Logger $logger
+     * @param int    $connect_timeout
+     * @param int    $stream_timeout
+     */
+    public function __construct($host = '', $port = null, $ssl = false, Logger $logger = null, $connect_timeout = 8, $stream_timeout = 15)
     {
-		$ssl = $ssl ? strtoupper($ssl) : $ssl;
+        $this->logger = $logger;
+        $this->connect_timeout = $connect_timeout;
+        $this->stream_timeout = $stream_timeout;
+        parent::__construct($host, $port, $ssl = $ssl ? strtoupper($ssl) : $ssl);
+    }
+
+
+    /**
+     * @param  string                                         $host
+     * @param  null                                           $port
+     * @param  bool                                           $ssl
+     * @return string
+     * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     */
+    public function connect($host, $port = null, $ssl = false)
+    {
+        $ssl = $ssl ? strtoupper($ssl) : $ssl;
 
         if ($ssl == 'SSL') {
             $host = 'ssl://' . $host;
@@ -98,7 +98,7 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         if (!$this->socket) {
             throw new Exception\RuntimeException('cannot connect to host; error = ' . $errstr . ' (errno = ' . $errno . ' )');
         }
-		stream_set_timeout($this->socket, $this->stream_timeout);
+        stream_set_timeout($this->socket, $this->stream_timeout);
 
         $welcome = $this->readResponse();
 
@@ -122,81 +122,83 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
     }
 
 
-	/**
-	 * @param Logger $logger
-	 */
-	public function setLogger(Logger $logger = null)
-	{
-		$this->logger = $logger;
-	}
+    /**
+     * @param Logger $logger
+     */
+    public function setLogger(Logger $logger = null)
+    {
+        $this->logger = $logger;
+    }
 
 
-	/**
-	 * @return Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
+    /**
+     * @return Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 
 
-	/**
+    /**
      * Make a RETR call for retrieving a full message with headers and body
      *
-     * @param  int $msgno  message number
+     * @param  int    $msgno message number
      * @return string message
      */
     public function retrieveToStream($msgno, $stream)
     {
         $result = $this->requestToStream("RETR $msgno", $stream);
+
         return $result;
     }
 
 
-	/**
+    /**
      * Send request and get resposne
      *
      * @see sendRequest(), readResponse()
      *
-     * @param  string $request    request
-     * @param  resource $stream stream
-     * @return int Number of bytes read to stream
+     * @param  string   $request request
+     * @param  resource $stream  stream
+     * @return int      Number of bytes read to stream
      */
     public function requestToStream($request, $stream)
     {
         $this->sendRequest($request);
+
         return $this->readResponseToStream($stream);
     }
 
 
-	/**
-	 * @param string $request
-	 * @return null
-	 */
-	public function sendRequest($request)
-	{
-		if ($this->logger) {
-			if (strpos($request, 'PASS ') === 0) {
-				$this->logger->logDebug("==> PASS xxxxxx");
-			} else {
-				$this->logger->logDebug("==> " . $request);
-			}
-		}
+    /**
+     * @param  string $request
+     * @return null
+     */
+    public function sendRequest($request)
+    {
+        if ($this->logger) {
+            if (strpos($request, 'PASS ') === 0) {
+                $this->logger->logDebug("==> PASS xxxxxx");
+            } else {
+                $this->logger->logDebug("==> " . $request);
+            }
+        }
 
-		return parent::sendRequest($request);
-	}
+        return parent::sendRequest($request);
+    }
 
 
-	/**
-	 * @param bool $multiline
-	 * @return string
-	 * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-	 */
-	public function readResponse($multiline = false)
-	{
-		$result = @fgets($this->socket);
+    /**
+     * @param  bool                                           $multiline
+     * @return string
+     * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     */
+    public function readResponse($multiline = false)
+    {
+        $result = @fgets($this->socket);
         if (!is_string($result)) {
-			if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
+            if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
@@ -209,43 +211,43 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         }
 
         if ($status != '+OK') {
-			if ($this->logger) $this->logger->logDebug("<== $status");
+            if ($this->logger) $this->logger->logDebug("<== $status");
             throw new Exception\RuntimeException('last request failed');
         }
 
         if ($multiline) {
             $message = '';
             $line = fgets($this->socket);
-			$log_msg = '';
+            $log_msg = '';
             while ($line && rtrim($line, "\r\n") != '.') {
                 if ($line[0] == '.') {
                     $line = substr($line, 1);
                 }
                 $message .= $line;
                 $line = fgets($this->socket);
-				if ($this->logger && !isset($log_msg[350])) {
-					$log_msg .= $line;
-				}
+                if ($this->logger && !isset($log_msg[350])) {
+                    $log_msg .= $line;
+                }
             }
-			if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
+            if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
         }
 
         return $message;
-	}
+    }
 
 
-	/**
-	 * This reads a multi-line response to a stream and returns the number of bytes read.
-	 *
-	 * @param $stream
-	 * @return int
-	 * @throws \Zend\Mail\Protocol\Exception\RuntimeException
-	 */
-	public function readResponseToStream($stream)
-	{
-		$result = @fgets($this->socket);
+    /**
+     * This reads a multi-line response to a stream and returns the number of bytes read.
+     *
+     * @param $stream
+     * @return int
+     * @throws \Zend\Mail\Protocol\Exception\RuntimeException
+     */
+    public function readResponseToStream($stream)
+    {
+        $result = @fgets($this->socket);
         if (!is_string($result)) {
-			if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
+            if ($this->logger) $this->logger->logDebug("<== read failed - connection closed?");
             throw new Exception\RuntimeException('read failed - connection closed?');
         }
 
@@ -257,25 +259,24 @@ class Pop3 extends \Zend\Mail\Protocol\Pop3 implements Loggable
         }
 
         if ($status != '+OK') {
-			if ($this->logger) $this->logger->logDebug("<== $status");
+            if ($this->logger) $this->logger->logDebug("<== $status");
             throw new Exception\RuntimeException('last request failed');
         }
 
-		$bytes = 0;
-		$line = fgets($this->socket);
-		$log_msg = '';
-		while ($line && rtrim($line, "\r\n") != '.') {
-			if ($line[0] == '.') {
-				$line = substr($line, 1);
-			}
-			$bytes += fwrite($stream, $line);
-			$line = fgets($this->socket);
-			if ($this->logger && !isset($log_msg[350])) {
-				$log_msg .= $line;
-			}
-		}
-		if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
-
+        $bytes = 0;
+        $line = fgets($this->socket);
+        $log_msg = '';
+        while ($line && rtrim($line, "\r\n") != '.') {
+            if ($line[0] == '.') {
+                $line = substr($line, 1);
+            }
+            $bytes += fwrite($stream, $line);
+            $line = fgets($this->socket);
+            if ($this->logger && !isset($log_msg[350])) {
+                $log_msg .= $line;
+            }
+        }
+        if ($this->logger) $this->logger->logDebug("<== $status $log_msg");
         return $bytes;
-	}
+    }
 }

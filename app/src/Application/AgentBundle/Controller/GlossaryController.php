@@ -34,123 +34,122 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
 
 /**
  * Glossary listing and editing
  */
 class GlossaryController extends AbstractController
 {
-	public function glossaryNewWordJsonAction()
-	{
-		$words = $this->in->getCleanValueArray('words', 'string');
+    public function glossaryNewWordJsonAction()
+    {
+        $words = $this->in->getCleanValueArray('words', 'string');
 
-		$definition = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
-		$definition->definition = $this->in->getString('definition');
-		foreach ($words AS $word) {
-			$definition->addWord($word);
-		}
+        $definition = new \Application\DeskPRO\Entity\GlossaryWordDefinition();
+        $definition->definition = $this->in->getString('definition');
+        foreach ($words AS $word) {
+            $definition->addWord($word);
+        }
 
-		if (!count($definition->words)) {
-			return $this->createJsonResponse(array('error' => 'no_word'));
-		}
+        if (!count($definition->words)) {
+            return $this->createJsonResponse(array('error' => 'no_word'));
+        }
 
-		$this->em->persist($definition);
-		$this->em->flush();
+        $this->em->persist($definition);
+        $this->em->flush();
 
-		return $this->createJsonResponse(array(
-			'definition_id' => $definition['id'],
-			'words' => $words,
-			'definition' => $definition['definition']
-		));
-	}
+        return $this->createJsonResponse(array(
+            'definition_id' => $definition['id'],
+            'words' => $words,
+            'definition' => $definition['definition']
+        ));
+    }
 
-	public function glossarySaveWordJsonAction($word_id)
-	{
-		$word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
-		if (!$word || !$word->definition) {
-			return $this->createJsonResponse(array('error' => 'not_found'));
-		}
+    public function glossarySaveWordJsonAction($word_id)
+    {
+        $word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
+        if (!$word || !$word->definition) {
+            return $this->createJsonResponse(array('error' => 'not_found'));
+        }
 
-		$words = $this->in->getCleanValueArray('words', 'string');
-		if (!$words) {
-			return $this->createJsonResponse(array('error' => 'no_word'));
-		}
+        $words = $this->in->getCleanValueArray('words', 'string');
+        if (!$words) {
+            return $this->createJsonResponse(array('error' => 'no_word'));
+        }
 
-		$definition = $word->definition;
+        $definition = $word->definition;
 
-		$definition['definition'] = $this->in->getString('definition');
-		$definition->updateWords($words);
+        $definition['definition'] = $this->in->getString('definition');
+        $definition->updateWords($words);
 
-		if (!count($definition->words)) {
-			return $this->createJsonResponse(array('error' => 'no_word'));
-		}
+        if (!count($definition->words)) {
+            return $this->createJsonResponse(array('error' => 'no_word'));
+        }
 
-		$this->em->persist($definition);
-		$this->em->flush();
+        $this->em->persist($definition);
+        $this->em->flush();
 
-		return $this->createJsonResponse(array(
-			'definition_id' => $definition['id'],
-			'words' => $words,
-			'definition' => $definition['definition']
-		));
-	}
+        return $this->createJsonResponse(array(
+            'definition_id' => $definition['id'],
+            'words' => $words,
+            'definition' => $definition['definition']
+        ));
+    }
 
-	public function glossaryDeleteWordJsonAction($word_id)
-	{
-		$word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
-		if (!$word || !$word->definition) {
-			return $this->createJsonResponse(array('error' => 'not_found'));
-		}
+    public function glossaryDeleteWordJsonAction($word_id)
+    {
+        $word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
+        if (!$word || !$word->definition) {
+            return $this->createJsonResponse(array('error' => 'not_found'));
+        }
 
-		$definition = $word->definition;
+        $definition = $word->definition;
 
-		$words = array();
-		foreach ($definition->words AS $word) {
-			$words[] = $word->word;
-		}
+        $words = array();
+        foreach ($definition->words AS $word) {
+            $words[] = $word->word;
+        }
 
-		$this->em->remove($definition);
-		$this->em->flush();
+        $this->em->remove($definition);
+        $this->em->flush();
 
-		return $this->createJsonResponse(array(
-			'definition_id' => $definition['id'],
-			'words' => $words,
-			'definition' => $definition['definition']
-		));
-	}
+        return $this->createJsonResponse(array(
+            'definition_id' => $definition['id'],
+            'words' => $words,
+            'definition' => $definition['definition']
+        ));
+    }
 
-	public function glossaryWordJsonAction($word_id)
-	{
-		$word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
-		if (!$word || !$word->definition) {
-			return $this->createJsonResponse(array('error' => 'not_found'));
-		}
+    public function glossaryWordJsonAction($word_id)
+    {
+        $word = $this->em->find('DeskPRO:GlossaryWord', $word_id);
+        if (!$word || !$word->definition) {
+            return $this->createJsonResponse(array('error' => 'not_found'));
+        }
 
-		$definition = $word->definition;
+        $definition = $word->definition;
 
-		$words = array();
-		foreach ($definition->words AS $def_word) {
-			$words[] = $def_word->word;
-		}
+        $words = array();
+        foreach ($definition->words AS $def_word) {
+            $words[] = $def_word->word;
+        }
 
-		return $this->createJsonResponse(array(
-			'id' => $word['id'],
-			'definition_id' => $definition['id'],
-			'words' => $words,
-			'definition' => $definition['definition']
-		));
-	}
+        return $this->createJsonResponse(array(
+            'id' => $word['id'],
+            'definition_id' => $definition['id'],
+            'words' => $words,
+            'definition' => $definition['definition']
+        ));
+    }
 
-	public function tipAction($word)
-	{
-		try {
-			$word = $this->em->getRepository('DeskPRO:GlossaryWord')->findOneByWord($word);
-			$def = $word->definition->definition;
-		} catch (\Exception $e) {
-			$def = '';
-		}
+    public function tipAction($word)
+    {
+        try {
+            $word = $this->em->getRepository('DeskPRO:GlossaryWord')->findOneByWord($word);
+            $def = $word->definition->definition;
+        } catch (\Exception $e) {
+            $def = '';
+        }
 
-		return $this->createResponse($def);
-	}
+        return $this->createResponse($def);
+    }
 }

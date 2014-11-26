@@ -39,16 +39,16 @@ use Orb\Log\Logger;
 
 class MailLoggerService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$logger = new Logger();
+    public static function create(DeskproContainer $container)
+    {
+        $logger = new Logger();
 
-		if ($container->getSysConfig('debug.mail.enable_mail_log')) {
-			$writer = new \Orb\Log\Writer\Stream($container->getLogDir() . '/mailer.log');
-			$writer->enableNewStreamPerWrite();
-			$logger->addWriter($writer);
-		}
+        if ($container->getSysConfig('debug.mail.enable_mail_log')) {
+            $writer = new \Orb\Log\Writer\Stream($container->getLogDir() . '/mailer.log');
+            $writer->enableNewStreamPerWrite();
+            $logger->addWriter($writer);
+        }
 
-		return $logger;
-	}
+        return $logger;
+    }
 }

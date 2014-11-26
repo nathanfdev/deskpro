@@ -44,41 +44,42 @@ use Orb\Util\CheckedOptionsArray;
  */
 class ModForceAgentEmails extends AbstractContainerAwareAction implements ActionInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('agent_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('agent_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$force_list = $context->getVars()->get('agent_force_subscription_list', array());
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $force_list = $context->getVars()->get('agent_force_subscription_list', array());
 
-		$agent_ids = $this->getActionOption('agent_ids', array());
-		if (!is_array($agent_ids)) {
-			$agent_ids = array($agent_ids);
-		}
+        $agent_ids = $this->getActionOption('agent_ids', array());
+        if (!is_array($agent_ids)) {
+            $agent_ids = array($agent_ids);
+        }
 
-		$agent_data = $this->getContainer()->getAgentData();
-		$person_context = $context->getPersonContext();
+        $agent_data = $this->getContainer()->getAgentData();
+        $person_context = $context->getPersonContext();
 
-		foreach ($agent_ids as $aid) {
-			$force_list = array_merge($force_list, $agent_data->selectAgents($aid, $person_context, $ticket));
-		}
+        foreach ($agent_ids as $aid) {
+            $force_list = array_merge($force_list, $agent_data->selectAgents($aid, $person_context, $ticket));
+        }
 
-		$force_list = array_unique($force_list);
+        $force_list = array_unique($force_list);
 
-		$ids = array_map(function($a) { return $a->id; }, $force_list);
-		$context->getLogger()->info("[ModForceAgents] Force list: " . implode(', ', $ids));
+        $ids = array_map(function ($a) { return $a->id; }, $force_list);
+        $context->getLogger()->info("[ModForceAgents] Force list: " . implode(', ', $ids));
 
-		$context->getVars()->set('agent_force_subscription_list', $force_list);
-	}
+        $context->getVars()->set('agent_force_subscription_list', $force_list);
+    }
 }

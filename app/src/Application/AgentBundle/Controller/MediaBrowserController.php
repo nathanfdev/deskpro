@@ -34,183 +34,183 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\DeskPRO\App;
 
 /**
  * The mediabrowser does everything via ajax.
  */
 class MediaBrowserController extends AbstractController
 {
-	############################################################################
-	# accept-upload
-	############################################################################
+    ############################################################################
+    # accept-upload
+    ############################################################################
 
-	public function acceptUploadAction()
-	{
-		$files = $this->request->files->get('files');
+    public function acceptUploadAction()
+    {
+        $files = $this->request->files->get('files');
 
-		$data = array();
+        $data = array();
 
-		foreach ($files as $file) {
-			/** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
+        foreach ($files as $file) {
+            /** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
 
-			$blob = $this->container->getBlobStorage()->createBlobRecordFromFile(
-				$file->getRealPath(),
-				$file->getClientOriginalName(),
-				$file->getClientMimeType()
-			);
-			$blob_id = $blob->getId();
+            $blob = $this->container->getBlobStorage()->createBlobRecordFromFile(
+                $file->getRealPath(),
+                $file->getClientOriginalName(),
+                $file->getClientMimeType()
+            );
+            $blob_id = $blob->getId();
 
-			$data[] = array(
-				'blob_id' => $blob_id,
-				'is_image' => $blob->isImage(),
-				'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob))
-			);
-		}
+            $data[] = array(
+                'blob_id' => $blob_id,
+                'is_image' => $blob->isImage(),
+                'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob))
+            );
+        }
 
-		return $this->createJsonResponse($data);
-	}
+        return $this->createJsonResponse($data);
+    }
 
-	############################################################################
-	# image-editor
-	############################################################################
+    ############################################################################
+    # image-editor
+    ############################################################################
 
-	public function imageEditorAction($blob_id)
-	{
-		/** @var $blob \Application\DeskPRO\Entity\Blob */
-		$blob = $this->em->find('DeskPRO:Blob', $blob_id);
-		return $this->render('AgentBundle:MediaBrowser:image-editor.html.twig', array('blob' => $blob));
-	}
+    public function imageEditorAction($blob_id)
+    {
+        /** @var $blob \Application\DeskPRO\Entity\Blob */
+        $blob = $this->em->find('DeskPRO:Blob', $blob_id);
 
-	public function saveImageEditorAction($blob_id)
-	{
-		/** @var $blob \Application\DeskPRO\Entity\Blob */
-		$blob = $this->em->find('DeskPRO:Blob', $blob_id);
+        return $this->render('AgentBundle:MediaBrowser:image-editor.html.twig', array('blob' => $blob));
+    }
 
-		$file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
+    public function saveImageEditorAction($blob_id)
+    {
+        /** @var $blob \Application\DeskPRO\Entity\Blob */
+        $blob = $this->em->find('DeskPRO:Blob', $blob_id);
 
-		$im = new \Imagick();
-		$im->readImageBlob($file, $blob['filename']);
-		$im->cropimage($this->in->getInt('w'),$this->in->getInt('h'),$this->in->getInt('x'),$this->in->getInt('y'));
+        $file = $this->container->getBlobStorage()->copyBlobRecordToString($blob);
 
-		$new_blob = $this->container->getBlobStorage()->createBlobRecordFromString(
-			$im->getImageBlob(),
-			$blob['filename'],
-			$blob['content_type']
-		);
-		$new_blob_id = $blob->getId();
-		$new_blob['original_blob'] = $blob;
+        $im = new \Imagick();
+        $im->readImageBlob($file, $blob['filename']);
+        $im->cropimage($this->in->getInt('w'),$this->in->getInt('h'),$this->in->getInt('x'),$this->in->getInt('y'));
 
-		$this->em->persist($new_blob);
-		$this->em->flush();
+        $new_blob = $this->container->getBlobStorage()->createBlobRecordFromString(
+            $im->getImageBlob(),
+            $blob['filename'],
+            $blob['content_type']
+        );
+        $new_blob_id = $blob->getId();
+        $new_blob['original_blob'] = $blob;
 
-		return $this->createJsonResponse(array('blob_id' => $new_blob_id));
-	}
+        $this->em->persist($new_blob);
+        $this->em->flush();
 
-	############################################################################
-	# get-current
-	############################################################################
+        return $this->createJsonResponse(array('blob_id' => $new_blob_id));
+    }
 
-	public function getCurrentAction()
-	{
-		$ids = $this->in->getCleanValueArray('ids', 'uint', 'discard');
+    ############################################################################
+    # get-current
+    ############################################################################
 
-		if ($ids) {
-			$blobs = $this->em->getRepository('DeskPRO:Blob')->getByIds($ids);
-		} else {
-			$blobs = array();
-		}
+    public function getCurrentAction()
+    {
+        $ids = $this->in->getCleanValueArray('ids', 'uint', 'discard');
 
-		return $this->renderView('AgentBundle:MediaBrowser:current.html.twig', array(
-			'blobs' => $blobs,
-		));
-	}
+        if ($ids) {
+            $blobs = $this->em->getRepository('DeskPRO:Blob')->getByIds($ids);
+        } else {
+            $blobs = array();
+        }
 
-
-	############################################################################
-	# get-recent
-	############################################################################
-
-	public function getRecentAction($type = false)
-	{
-		if ($type) {
-			$recent_blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getRecent(30, $type);
-		} else {
-			$recent_blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getRecent(30);
-		}
-
-		return $this->renderView('AgentBundle:MediaBrowser:recent.html.twig', array(
-			'type' => $type,
-			'recent_blob_objects' => $recent_blob_objects,
-		));
-	}
+        return $this->renderView('AgentBundle:MediaBrowser:current.html.twig', array(
+            'blobs' => $blobs,
+        ));
+    }
 
 
-	############################################################################
-	# update-blob
-	############################################################################
+    ############################################################################
+    # get-recent
+    ############################################################################
 
-	public function updateBlobAction($blob_id)
-	{
-		/** @var $blob \Application\DeskPRO\Entity\Blob */
-		$blob = $this->em->find('DeskPRO:Blob', $blob_id);
+    public function getRecentAction($type = false)
+    {
+        if ($type) {
+            $recent_blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getRecent(30, $type);
+        } else {
+            $recent_blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getRecent(30);
+        }
 
-		$blob['title'] = $this->in->getString('title');
-		$blob['is_media_upload'] = true;
-		$blob->getLabelManager()->setLabelsArray($this->in->getCleanValueArray('labels', 'string', 'discard'));
+        return $this->renderView('AgentBundle:MediaBrowser:recent.html.twig', array(
+            'type' => $type,
+            'recent_blob_objects' => $recent_blob_objects,
+        ));
+    }
 
-		$this->em->transactional(function ($em) use ($blob) {
-			$em->persist($blob);
-			$em->flush();
-		});
 
-		return $this->createJsonResponse(array('success' => true));
-	}
+    ############################################################################
+    # update-blob
+    ############################################################################
 
-	############################################################################
-	# library
-	############################################################################
+    public function updateBlobAction($blob_id)
+    {
+        /** @var $blob \Application\DeskPRO\Entity\Blob */
+        $blob = $this->em->find('DeskPRO:Blob', $blob_id);
 
-	public function libraryAction($page = 1)
-	{
-		$types = $this->in->getCleanValueArray('types', 'string', 'discard');
-		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+        $blob['title'] = $this->in->getString('title');
+        $blob['is_media_upload'] = true;
+        $blob->getLabelManager()->setLabelsArray($this->in->getCleanValueArray('labels', 'string', 'discard'));
 
-		$qp = new \Application\DeskPRO\ORM\QueryPartial();
-		$qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page-1) * 50);
+        $this->em->transactional(function ($em) use ($blob) {
+            $em->persist($blob);
+            $em->flush();
+        });
 
-		$blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getLibraryResults($types, $labels, $qp);
+        return $this->createJsonResponse(array('success' => true));
+    }
 
-		return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
-			'types' => $types,
-			'labels' => $labels,
-			'blob_objects' => $blob_objects,
-		));
-	}
+    ############################################################################
+    # library
+    ############################################################################
 
-	############################################################################
-	# library-kb
-	############################################################################
+    public function libraryAction($page = 1)
+    {
+        $types = $this->in->getCleanValueArray('types', 'string', 'discard');
+        $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
-	public function libraryKbAction($category_id, $page = 1)
-	{
-		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+        $qp = new \Application\DeskPRO\ORM\QueryPartial();
+        $qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page-1) * 50);
 
-		/** @var $category \Application\DeskPRO\Entity\ArticleCategory */
-		$category = $this->em->find('DeskPRO:ArticleCategory', $category_id);
-		$cat_ids = $category->getTreeIds(true);
+        $blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getLibraryResults($types, $labels, $qp);
 
-		$qp = new \Application\DeskPRO\ORM\QueryPartial();
-		$qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page-1) * 50);
+        return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
+            'types' => $types,
+            'labels' => $labels,
+            'blob_objects' => $blob_objects,
+        ));
+    }
 
-		$blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getKbLibraryResults($cat_ids, $labels, $qp);
+    ############################################################################
+    # library-kb
+    ############################################################################
 
-		$category_hierarchy = $this->em->getRepository('DeskPRO:ArticleCateogory')->getFlatHierarchy();
+    public function libraryKbAction($category_id, $page = 1)
+    {
+        $labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
 
-		return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
-			'category_hierarchy' => $category_hierarchy,
-			'labels' => $labels,
-			'blob_objects' => $blob_objects,
-		));
-	}
+        /** @var $category \Application\DeskPRO\Entity\ArticleCategory */
+        $category = $this->em->find('DeskPRO:ArticleCategory', $category_id);
+        $cat_ids = $category->getTreeIds(true);
+
+        $qp = new \Application\DeskPRO\ORM\QueryPartial();
+        $qp->setMaxResults(50)->setOrderBy('blob.id', 'DESC')->setFirstResult(($page-1) * 50);
+
+        $blob_objects = $this->em->getRepository('DeskPRO:BlobObjectAttach')->getKbLibraryResults($cat_ids, $labels, $qp);
+
+        $category_hierarchy = $this->em->getRepository('DeskPRO:ArticleCateogory')->getFlatHierarchy();
+
+        return $this->renderView('AgentBundle:MediaBrowser:library.html.twig', array(
+            'category_hierarchy' => $category_hierarchy,
+            'labels' => $labels,
+            'blob_objects' => $blob_objects,
+        ));
+    }
 }

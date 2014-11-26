@@ -43,47 +43,46 @@ use Application\DeskPRO\Tickets\ExecutorContextInterface;
  */
 class SetDeleted extends AbstractAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$ticket->setStatus('hidden.deleted');
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $ticket->setStatus('hidden.deleted');
 		$context->getVars()->set('stop_triggers', true);
-	}
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if ($ticket->getStatusCode() == 'hidden.deleted') {
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if ($ticket->getStatusCode() == 'hidden.deleted') {
+            return true;
+        }
 
-		return false;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		if (!$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
-			return array('delete');
-		}
-
-		return null;
-	}
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        if (!$person->PermissionsManager->TicketChecker->canDelete($ticket)) {
+            return array('delete');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

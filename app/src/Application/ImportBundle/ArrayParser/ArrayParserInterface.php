@@ -33,11 +33,11 @@ namespace Application\ImportBundle\ArrayParser;
 
 interface ArrayParserInterface
 {
-	/**
-	 * Parses an array of data into a value object.
-	 *
-	 * @param array $data
-	 * @return mixed
-	 */
-	public function parseArray(array $data);
+    /**
+     * Parses an array of data into a value object.
+     *
+     * @param  array $data
+     * @return mixed
+     */
+    public function parseArray(array $data);
 }

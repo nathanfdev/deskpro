@@ -46,127 +46,128 @@ use Orb\Util\CheckedOptionsArray;
  */
 abstract class AbstractCheckCustomField extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('field_id', 'value');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('field_id', 'value');
+
+        return $options;
+    }
 
 
-	/**
-	 * @param Ticket                   $ticket
-	 * @param ExecutorContextInterface $context
-	 * @return array
-	 */
-	abstract function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context);
+    /**
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return array
+     */
+    abstract public function getCustomDataArray(Ticket $ticket, ExecutorContextInterface $context);
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
-		$op = $this->getTermOperator();
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
+        $op = $this->getTermOperator();
 
-		#------------------------------
-		# Get the field value
-		#------------------------------
+        #------------------------------
+        # Get the field value
+        #------------------------------
 
-		$custom_data_array = $this->getCustomDataArray($ticket, $context);
+        $custom_data_array = $this->getCustomDataArray($ticket, $context);
 
-		$field_id = $options->get('field_id');
-		$field = null;
-		$field_data = null;
+        $field_id = $options->get('field_id');
+        $field = null;
+        $field_data = null;
 
-		foreach ($custom_data_array as $custom_data) {
-			if ($custom_data->field->id == $field_id) {
-				$field_data = $custom_data->input;
-				$field = $custom_data->field;
-				break;
-			} else if ($custom_data->field->parent && $custom_data->field->parent->id == $field_id) {
-				$field = $custom_data->field->parent;
-				$field_data = array();
-				break;
-			}
-		}
+        foreach ($custom_data_array as $custom_data) {
+            if ($custom_data->field->id == $field_id) {
+                $field_data = $custom_data->input;
+                $field = $custom_data->field;
+                break;
+            } elseif ($custom_data->field->parent && $custom_data->field->parent->id == $field_id) {
+                $field = $custom_data->field->parent;
+                $field_data = array();
+                break;
+            }
+        }
 
-		if ($field && $field->getTypeName() == 'choice') {
-			foreach ($custom_data_array as $custom_data) {
-				if ($custom_data->field->parent and $custom_data->field->parent->id == $field_id) {
-					$field_data[] = $custom_data->field->id;
-				}
-			}
-		}
+        if ($field && $field->getTypeName() == 'choice') {
+            foreach ($custom_data_array as $custom_data) {
+                if ($custom_data->field->parent and $custom_data->field->parent->id == $field_id) {
+                    $field_data[] = $custom_data->field->id;
+                }
+            }
+        }
 
-		#------------------------------
-		# Check for existence
-		#------------------------------
+        #------------------------------
+        # Check for existence
+        #------------------------------
 
-		if ($op == 'isset') {
+        if ($op == 'isset') {
 			return (bool)$field_data;
-		} else if ($op == 'not_isset') {
+        } elseif ($op == 'not_isset') {
 			return !((bool)$field_data);
 		}
 
 		if (!$field_data) {
 			$field_data = '';
 			return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
-		}
+        }
 
-		#------------------------------
-		# Handle choice check
-		#------------------------------
+        #------------------------------
+        # Handle choice check
+        #------------------------------
 
-		if ($field->getTypeName() == 'choice') {
-			$check_value = $options->get('value');
-			$check_ids = array_fill_keys($field_data, true);
-			if (!is_array($check_value)) $check_value = array($check_value);
+        if ($field->getTypeName() == 'choice') {
+            $check_value = $options->get('value');
+            $check_ids = array_fill_keys($field_data, true);
+            if (!is_array($check_value)) $check_value = array($check_value);
 
-			$has = false;
-			foreach ($check_value as $v) {
-				if (isset($check_ids[$v])) {
-					$has = true;
-					break;
-				}
-			}
+            $has = false;
+            foreach ($check_value as $v) {
+                if (isset($check_ids[$v])) {
+                    $has = true;
+                    break;
+                }
+            }
 
-			switch ($op) {
-				case 'is':
-				case 'contains':
-					if ($has) {
-						return true;
-					}
-					break;
+            switch ($op) {
+                case 'is':
+                case 'contains':
+                    if ($has) {
+                        return true;
+                    }
+                    break;
 
-				case 'not':
-				case 'notcontains':
-					if (!$has) {
-						return true;
-					}
-			}
+                case 'not':
+                case 'notcontains':
+                    if (!$has) {
+                        return true;
+                    }
+            }
 
-			return false;
+            return false;
 
-		#------------------------------
-		# Handle text check
-		#------------------------------
+        #------------------------------
+        # Handle text check
+        #------------------------------
 
-		} else {
-			return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
-		}
-	}
+        } else {
+            return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
+        }
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getTermType()
-	{
-		return 'CheckTicketField' . $this->getTermOptions()->get('field_id');
-	}
+    /**
+     * @return string
+     */
+    public function getTermType()
+    {
+        return 'CheckTicketField' . $this->getTermOptions()->get('field_id');
+    }
 }

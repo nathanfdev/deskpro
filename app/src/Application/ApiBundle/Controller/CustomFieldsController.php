@@ -34,7 +34,6 @@
 
 namespace Application\ApiBundle\Controller;
 
-use Application\ApiBundle\Controller\Helper\CustomFieldHelper;
 use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
@@ -48,225 +47,228 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class CustomFieldsController extends AbstractController implements ProtectedControllerInterface
 {
-	protected $allowed = array(
-		'owner' => array('ticket', 'person'),
-		'context' => array('person', 'organization'),
-	);
+    protected $allowed = array(
+        'owner' => array('ticket', 'person'),
+        'context' => array('person', 'organization'),
+    );
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
 
-	protected function filterContextClass($context)
-	{
-		$context = strtolower($context);
-		if (!in_array($context, $this->allowed['context'])) {
-			throw new NotFoundHttpException;
-		}
+        return $multi;
+    }
 
-		return 'Application\DeskPRO\Entity\\' . Container::camelize($context);
-	}
+    protected function filterContextClass($context)
+    {
+        $context = strtolower($context);
+        if (!in_array($context, $this->allowed['context'])) {
+            throw new NotFoundHttpException;
+        }
 
-	protected function filterOwnerClass($owner)
-	{
-		$owner = strtolower($owner);
-		if (!in_array($owner, $this->allowed['owner'])) {
-			throw new NotFoundHttpException;
-		}
+        return 'Application\DeskPRO\Entity\\' . Container::camelize($context);
+    }
 
-		return 'Application\DeskPRO\Entity\\' . Container::camelize($owner);
-	}
+    protected function filterOwnerClass($owner)
+    {
+        $owner = strtolower($owner);
+        if (!in_array($owner, $this->allowed['owner'])) {
+            throw new NotFoundHttpException;
+        }
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+        return 'Application\DeskPRO\Entity\\' . Container::camelize($owner);
+    }
 
-	/**
-	 * @param Request $request
-	 * @return Response
-	 */
-	public function listAction(Request $request)
-	{
-		$criteria = array('parent' => null);
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-		if ($owner = $request->get('owner')) {
-			$criteria['owner_class'] = $this->filterOwnerClass($owner);
-		}
+    /**
+     * @param  Request  $request
+     * @return Response
+     */
+    public function listAction(Request $request)
+    {
+        $criteria = array('parent' => null);
 
-		if ($context = $request->get('context')) {
-			$criteria['context_class'] = $this->filterContextClass($context);
-		}
+        if ($owner = $request->get('owner')) {
+            $criteria['owner_class'] = $this->filterOwnerClass($owner);
+        }
 
-		$definitions = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->findBy(
-			$criteria,
-			array('display_order' => 'ASC')
-		);
+        if ($context = $request->get('context')) {
+            $criteria['context_class'] = $this->filterContextClass($context);
+        }
 
-		return $this->createApiResponse($this->getApiData($definitions, false));
-	}
+        $definitions = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->findBy(
+            $criteria,
+            array('display_order' => 'ASC')
+        );
 
-	/**
-	 * get children (choices) of custom field
-	 *
-	 * @param Request $request
-	 * @param $id
-	 * @return Response
-	 */
-	public function childrenAction(Request $request, $id)
-	{
-		$criteria = array('parent' => $id);
+        return $this->createApiResponse($this->getApiData($definitions, false));
+    }
 
-		if ($context = $request->get('context')) {
-			$criteria['context_class'] = $this->filterContextClass($context);
-			if ($cid = $request->get('context_id')) {
-				$criteria['context_id'] = $cid;
-			}
-		}
+    /**
+     * get children (choices) of custom field
+     *
+     * @param  Request  $request
+     * @param $id
+     * @return Response
+     */
+    public function childrenAction(Request $request, $id)
+    {
+        $criteria = array('parent' => $id);
 
-		$definitions = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->findBy(
-			$criteria,
-			array('display_order' => 'ASC')
-		);
+        if ($context = $request->get('context')) {
+            $criteria['context_class'] = $this->filterContextClass($context);
+            if ($cid = $request->get('context_id')) {
+                $criteria['context_id'] = $cid;
+            }
+        }
 
-		return $this->createApiResponse($this->getApiData($definitions, false));
-	}
+        $definitions = $this->em->getRepository('DeskPRO:CustomFieldDefinition')->findBy(
+            $criteria,
+            array('display_order' => 'ASC')
+        );
 
-	/**
-	 * add child (choice) to custom field
-	 * @param Request $request
-	 * @param $id
-	 * @return Response
-	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-	 */
-	public function addChildAction(Request $request, $id)
-	{
-		/** @var $definition CustomFieldDefinition */
-		if (!$definition = $this->em->find('DeskPRO:CustomFieldDefinition', $id)) {
-			throw new NotFoundHttpException;
-		}
+        return $this->createApiResponse($this->getApiData($definitions, false));
+    }
 
-		$context = $this->filterContextClass($request->get('context'));
-		if (!$context = $this->em->find($context, $request->get('context_id'))) {
-			throw new NotFoundHttpException;
-		}
+    /**
+     * add child (choice) to custom field
+     * @param  Request                                                       $request
+     * @param $id
+     * @return Response
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    public function addChildAction(Request $request, $id)
+    {
+        /** @var $definition CustomFieldDefinition */
+        if (!$definition = $this->em->find('DeskPRO:CustomFieldDefinition', $id)) {
+            throw new NotFoundHttpException;
+        }
 
-		$form = $this->createForm(new SimpleDefinitionType(), null, array(
-			'context' => $context,
-			'parent' => $definition,
-		));
-		$form->submit($request->request->all());
+        $context = $this->filterContextClass($request->get('context'));
+        if (!$context = $this->em->find($context, $request->get('context_id'))) {
+            throw new NotFoundHttpException;
+        }
 
-		if ($form->isValid()) {
-			$this->em->persist($form->getData());
-			$this->em->flush();
-		} else {
-			$this->createApiErrorInfoResponse('form_error', 'Validation error.', array());
-		}
+        $form = $this->createForm(new SimpleDefinitionType(), null, array(
+            'context' => $context,
+            'parent' => $definition,
+        ));
+        $form->submit($request->request->all());
 
-		return $this->createApiResponse($this->getApiData($form->getData(), false));
-	}
+        if ($form->isValid()) {
+            $this->em->persist($form->getData());
+            $this->em->flush();
+        } else {
+            $this->createApiErrorInfoResponse('form_error', 'Validation error.', array());
+        }
 
-	####################################################################################################################
-	# get-custom-field
-	####################################################################################################################
+        return $this->createApiResponse($this->getApiData($form->getData(), false));
+    }
 
-	public function getAction($id)
-	{
-		return $this->createApiResponse($this->getDefinition($id)->toApiData());
-	}
+    ####################################################################################################################
+    # get-custom-field
+    ####################################################################################################################
 
-	####################################################################################################################
-	# save-custom-field
-	####################################################################################################################
+    public function getAction($id)
+    {
+        return $this->createApiResponse($this->getDefinition($id)->toApiData());
+    }
 
-	public function saveAction($id)
-	{
-		$post = $this->in->getAll('req');
-		if (!$id || !($definition = $this->getDefinition($id))) {
+    ####################################################################################################################
+    # save-custom-field
+    ####################################################################################################################
 
-			if (empty($post['form_type']) || empty($post['context_class'])) {
-				throw new NotFoundHttpException;
-			}
-			$definition = new CustomFieldDefinition();
+    public function saveAction($id)
+    {
+        $post = $this->in->getAll('req');
+        if (!$id || !($definition = $this->getDefinition($id))) {
 
-			// todo quite dirty
-			$formType = Container::camelize($post['form_type']);
-			$contextClass = Container::camelize($post['context_class']);
-			$definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\' . $formType . 'Type';
-			$definition['context_class'] = 'Application\DeskPRO\Entity\\' . $contextClass;
-			$definition['owner_class'] = 'Application\DeskPRO\Entity\Ticket';
+            if (empty($post['form_type']) || empty($post['context_class'])) {
+                throw new NotFoundHttpException;
+            }
+            $definition = new CustomFieldDefinition();
 
-			$this->em->persist($definition);
-		}
+            // todo quite dirty
+            $formType = Container::camelize($post['form_type']);
+            $contextClass = Container::camelize($post['context_class']);
+            $definition['form_type'] = 'Application\DeskPRO\Form\Type\CustomFields\\' . $formType . 'Type';
+            $definition['context_class'] = 'Application\DeskPRO\Entity\\' . $contextClass;
+            $definition['owner_class'] = 'Application\DeskPRO\Entity\Ticket';
 
-		$form = $this->createForm($definition->createDefinitionType(), $definition, array(
-			'context' => new Ticket(),
-			'persister' => new CustomDataPersister(),
-		))->submit($post);
+            $this->em->persist($definition);
+        }
 
-		if (!$form->isValid()) {
-			return $this->createApiErrorInfoResponse('form_error', 'Validation error', array());
-		}
+        $form = $this->createForm($definition->createDefinitionType(), $definition, array(
+            'context' => new Ticket(),
+            'persister' => new CustomDataPersister(),
+        ))->submit($post);
 
-		$this->em->flush();
+        if (!$form->isValid()) {
+            return $this->createApiErrorInfoResponse('form_error', 'Validation error', array());
+        }
 
-		return $this->getAction($definition['id']);
-	}
+        $this->em->flush();
 
-	####################################################################################################################
-	# delete-custom-field
-	####################################################################################################################
+        return $this->getAction($definition['id']);
+    }
 
-	public function deleteAction($id)
-	{
-		$this->em->remove($this->getDefinition($id));
-		$this->em->flush();
+    ####################################################################################################################
+    # delete-custom-field
+    ####################################################################################################################
 
-		return $this->createApiDeleteResponse();
-	}
+    public function deleteAction($id)
+    {
+        $this->em->remove($this->getDefinition($id));
+        $this->em->flush();
 
-	####################################################################################################################
-	# toggleField
-	####################################################################################################################
+        return $this->createApiDeleteResponse();
+    }
 
-	public function toggleFieldAction($field_id, $is_enabled)
-	{
-		$definition = $this->getDefinition($field_id);
-		$definition['is_enabled'] = $is_enabled;
-		$this->em->flush();
+    ####################################################################################################################
+    # toggleField
+    ####################################################################################################################
 
-		return $this->createSuccessResponse();
-	}
+    public function toggleFieldAction($field_id, $is_enabled)
+    {
+        $definition = $this->getDefinition($field_id);
+        $definition['is_enabled'] = $is_enabled;
+        $this->em->flush();
 
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
+        return $this->createSuccessResponse();
+    }
 
-	public function saveDisplayOrderAction()
-	{
-		$display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
-		$this->em->getRepository('DeskPRO:CustomDefEntity')->updateDisplayOrders($display_orders);
-		return $this->createSuccessResponse();
-	}
+    ####################################################################################################################
+    # save-display-order
+    ####################################################################################################################
 
-	/**
-	 * @param $id
-	 * @return null|object
-	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-	 */
-	protected function getDefinition($id)
-	{
-		$definition = $this->em->find('DeskPRO:CustomFieldDefinition', $id);
-		if (!$definition || $definition->parent) {
-			throw $this->createNotFoundException();
-		}
-		return $definition;
-	}
+    public function saveDisplayOrderAction()
+    {
+        $display_orders = $this->in->getCleanValueArray('display_orders', 'uint', 'discard');
+        $this->em->getRepository('DeskPRO:CustomDefEntity')->updateDisplayOrders($display_orders);
+
+        return $this->createSuccessResponse();
+    }
+
+    /**
+     * @param $id
+     * @return null|object
+     * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+     */
+    protected function getDefinition($id)
+    {
+        $definition = $this->em->find('DeskPRO:CustomFieldDefinition', $id);
+        if (!$definition || $definition->parent) {
+            throw $this->createNotFoundException();
+        }
+
+        return $definition;
+    }
 }

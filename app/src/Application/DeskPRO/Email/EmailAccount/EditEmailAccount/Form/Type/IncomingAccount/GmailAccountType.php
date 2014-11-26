@@ -39,21 +39,21 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class GmailAccountType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('user',     'email',    array('required' => true));
-		$builder->add('password', 'password', array('required' => false));
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('user',     'email',    array('required' => true));
+        $builder->add('password', 'password', array('required' => false));
+    }
 
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(array(
-			'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\GmailConfig',
-		));
-	}
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class' => 'Application\\DeskPRO\\Email\\EmailAccount\\IncomingAccount\\GmailConfig',
+        ));
+    }
 
-	public function getName()
-	{
-		return 'in_gmail_account';
-	}
+    public function getName()
+    {
+        return 'in_gmail_account';
+    }
 }

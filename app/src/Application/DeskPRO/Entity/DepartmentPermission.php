@@ -44,132 +44,132 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class DepartmentPermission extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * Name of the "full access" permission
-	 */
-	const FULL = 'full';
+    /**
+     * Name of the "full access" permission
+     */
+    const FULL = 'full';
 
-	/**
-	 * Name of the "assign" permission
-	 */
-	const ASSIGN = 'assign';
+    /**
+     * Name of the "assign" permission
+     */
+    const ASSIGN = 'assign';
 
-	/**
-	 * name of the "tickets" app
-	 */
-	const APP_TICKETS = 'tickets';
+    /**
+     * name of the "tickets" app
+     */
+    const APP_TICKETS = 'tickets';
 
-	/**
-	 * name of the "chat" app
-	 */
-	const APP_CHAT = 'chat';
+    /**
+     * name of the "chat" app
+     */
+    const APP_CHAT = 'chat';
 
-	/**
-	 * @var int
-	 */
-	protected $id;
+    /**
+     * @var int
+     */
+    protected $id;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
-	protected $department = null;
+    /**
+     * @var \Application\DeskPRO\Entity\Department
+     */
+    protected $department = null;
 
-	/**
-	 * The connected usergroup. If this is set, then person cannot be set.
-	 *
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
-	protected $usergroup = null;
+    /**
+     * The connected usergroup. If this is set, then person cannot be set.
+     *
+     * @var \Application\DeskPRO\Entity\Department
+     */
+    protected $usergroup = null;
 
-	/**
-	 * The connected person. If this is set, then usergroup cannot be set.
-	 *
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person = null;
+    /**
+     * The connected person. If this is set, then usergroup cannot be set.
+     *
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person = null;
 
-	/**
-	 */
-	protected $app;
+    /**
+     */
+    protected $app;
 
-	/**
-	 * The name of the permission
-	 *
-	 * @var string
-	 */
-	protected $name = null;
+    /**
+     * The name of the permission
+     *
+     * @var string
+     */
+    protected $name = null;
 
-	/**
-	 * Any numeric number (ex filesize, flag)
-	 *
-	 * @var integer
-	 */
-	protected $value = null;
+    /**
+     * Any numeric number (ex filesize, flag)
+     *
+     * @var integer
+     */
+    protected $value = null;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-	public function setUsergroup($ug)
-	{
-		$this->setModelField('usergroup', $ug);
-
-		if ($ug !== null) {
-			$this->person = null;
-		}
-	}
-
-	public function setPerson($p)
-	{
-		$this->setModelField('person', $p);
-
-		if ($p !== null) {
-			$this->usergroup = null;
-		}
-	}
-
-	/**
-	 * A name that identifies this permission (eg could be used as an map key)
-	 *
-	 * @return string
-	 */
-	public function getPermissionSysId()
-	{
-		$x = $this->department->id . '.' . $this->app . '.';
-		if ($this->usergroup) {
-			$x .= 'ug' . $this->usergroup->id;
-		} else if ($this->person) {
-			$x .= 'p' . $this->person->id;
-		}
-		$x .= '.' . $this->name . '.1';
-
-		return $x;
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
+    public function setUsergroup($ug)
+    {
+        $this->setModelField('usergroup', $ug);
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+        if ($ug !== null) {
+            $this->person = null;
+        }
+    }
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DepartmentPermission';
-		$metadata->setPrimaryTable(array( 'name' => 'department_permissions', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'app', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'app', ));
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-		$metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'departmentPermissions', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade' ), ),  ));
-	}
+    public function setPerson($p)
+    {
+        $this->setModelField('person', $p);
+
+        if ($p !== null) {
+            $this->usergroup = null;
+        }
+    }
+
+    /**
+     * A name that identifies this permission (eg could be used as an map key)
+     *
+     * @return string
+     */
+    public function getPermissionSysId()
+    {
+        $x = $this->department->id . '.' . $this->app . '.';
+        if ($this->usergroup) {
+            $x .= 'ug' . $this->usergroup->id;
+        } elseif ($this->person) {
+            $x .= 'p' . $this->person->id;
+        }
+        $x .= '.' . $this->name . '.1';
+
+        return $x;
+    }
+
+
+
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
+
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DepartmentPermission';
+        $metadata->setPrimaryTable(array( 'name' => 'department_permissions', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'app', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'app', ));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 50, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
+        $metadata->mapField(array( 'fieldName' => 'value', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'value', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'department', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Department', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'department_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'usergroup', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => 'departmentPermissions', 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade' ), ),  ));
+    }
 }

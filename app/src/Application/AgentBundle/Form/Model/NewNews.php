@@ -40,70 +40,70 @@ use Application\DeskPRO\Entity\Person;
 
 class NewNews
 {
-	/** @var string */
-	public $title;
-	/** @var int */
-	public $category_id;
-	/** @var string */
-	public $status;
-	/** @var string */
-	public $content = '';
+    /** @var string */
+    public $title;
+    /** @var int */
+    public $category_id;
+    /** @var string */
+    public $status;
+    /** @var string */
+    public $content = '';
 
-	/** @var string */
-	public $slug;
-	/** @var string */
-	public $labels_json;
-	/** @var array */
-	public $labels = array();
-	/** @var array */
-	public $attach = array();
-	/** @var News */
-	protected $_news;
+    /** @var string */
+    public $slug;
+    /** @var string */
+    public $labels_json;
+    /** @var array */
+    public $labels = array();
+    /** @var array */
+    public $attach = array();
+    /** @var News */
+    protected $_news;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $_em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $_em;
 
-	public function __construct(Person $person_context)
-	{
-		$this->_person_context = $person_context;
+    public function __construct(Person $person_context)
+    {
+        $this->_person_context = $person_context;
 
-		$this->_em = App::getOrm();
-	}
+        $this->_em = App::getOrm();
+    }
 
-	public function save()
-	{
-		$this->_em->beginTransaction();
+    public function save()
+    {
+        $this->_em->beginTransaction();
 
-		$news = new News();
-		$news->person = $this->_person_context;
-		$news->title = $this->title;
-		$news->content = $this->content ?: '';
-		$news->setStatusCode($this->status);
+        $news = new News();
+        $news->person = $this->_person_context;
+        $news->title = $this->title;
+        $news->content = $this->content ?: '';
+        $news->setStatusCode($this->status);
 
-		if ($news->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
-			$news->setStatusCode('hidden.validating');
-		}
+        if ($news->getStatusCode() == 'published' && !$this->_person_context->hasPerm('agent_publish.validate')) {
+            $news->setStatusCode('hidden.validating');
+        }
 
-		$cat = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
-		$news->category = $cat;
+        $cat = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
+        $news->category = $cat;
 
-		$this->_em->persist($news);
-		$this->_em->flush();
+        $this->_em->persist($news);
+        $this->_em->flush();
 
-		if ($this->labels) {
-			$news->getLabelManager()->setLabelsArray($this->labels, $this->_em);
-			$this->_em->flush();
-		}
+        if ($this->labels) {
+            $news->getLabelManager()->setLabelsArray($this->labels, $this->_em);
+            $this->_em->flush();
+        }
 
-		$this->_em->commit();
+        $this->_em->commit();
 
-		$this->_news = $news;
-	}
+        $this->_news = $news;
+    }
 
-	public function getNews()
-	{
-		return $this->_news;
-	}
+    public function getNews()
+    {
+        return $this->_news;
+    }
 }

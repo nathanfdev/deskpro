@@ -38,26 +38,26 @@ use Symfony\Component\Form\FormBuilderInterface;
 
 class ChoiceFieldType extends CustomFieldTypeAbstract
 {
-	protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('field_type', 'choice', array('choices' => array(
-			'select' => 'Select box (single selection)',
-			'multi_select' => 'Mutli-Select box (multiple selection)',
-			'radio' => 'Radio buttons (single selection)',
-			'checkbox' => 'Checkboxes (multiple selection)',
-		)));
+    protected function buildCustomFieldForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('field_type', 'choice', array('choices' => array(
+            'select' => 'Select box (single selection)',
+            'multi_select' => 'Mutli-Select box (multiple selection)',
+            'radio' => 'Radio buttons (single selection)',
+            'checkbox' => 'Checkboxes (multiple selection)',
+        )));
 
-		$builder->add('min_length', 'text', array('required' => false));
-		$builder->add('max_length', 'text', array('required' => false));
+        $builder->add('min_length', 'text', array('required' => false));
+        $builder->add('max_length', 'text', array('required' => false));
 
-		$builder->add('agent_min_length', 'text', array('required' => false));
-		$builder->add('agent_max_length', 'text', array('required' => false));
-	}
+        $builder->add('agent_min_length', 'text', array('required' => false));
+        $builder->add('agent_max_length', 'text', array('required' => false));
+    }
 
-	public function getDefaultOptions(array $options)
-	{
-		return array(
-			'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ChoiceField',
-		);
-	}
+    public function getDefaultOptions(array $options)
+    {
+        return array(
+            'data_class' => 'Application\\AdminBundle\\Form\\CustomField\\Model\\ChoiceField',
+        );
+    }
 }

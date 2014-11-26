@@ -40,156 +40,159 @@ use Doctrine\ORM\EntityManager;
 
 class PersonDbLoader
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	private $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    private $person;
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	private $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
-	/**
-	 * @var \Application\DeskPRO\DBAL\Connection
-	 */
-	private $db;
+    /**
+     * @var \Application\DeskPRO\DBAL\Connection
+     */
+    private $db;
 
-	/**
-	 * @var array
-	 */
-	private $perms;
+    /**
+     * @var array
+     */
+    private $perms;
 
-	/**
-	 * @var array
-	 */
-	private static $prefix_map = array(
-		'agent_tickets' => 'ticket',
-		'agent_people'  => 'people',
-		'agent_org'     => 'org',
-		'agent_chat'    => 'chat',
-		'agent_publish' => 'publish',
-		'agent_general' => 'general',
-		'agent_tasks'   => 'tasks',
-	);
-
-
-	/**
-	 * @param Person $person
-	 * @param EntityManager $em
-	 */
-	public function __construct(Person $person, EntityManager $em)
-	{
-		$this->person = $person;
-		$this->em     = $em;
-		$this->db     = $em->getConnection();
-	}
+    /**
+     * @var array
+     */
+    private static $prefix_map = array(
+        'agent_tickets' => 'ticket',
+        'agent_people'  => 'people',
+        'agent_org'     => 'org',
+        'agent_chat'    => 'chat',
+        'agent_publish' => 'publish',
+        'agent_general' => 'general',
+        'agent_tasks'   => 'tasks',
+    );
 
 
-	/**
-	 * @return array
-	 */
-	private function getPermissions()
-	{
-		if ($this->perms !== null) {
-			return $this->perms;
-		}
-
-		$agent_group_ids = array();
-		foreach ($this->person->usergroups as $ug) {
-			if ($ug->is_agent_group) {
-				$agent_group_ids[] = $ug->id;
-			}
-		}
-
-		if (!$agent_group_ids) {
-			$agent_group_ids[] = 0;
-		}
-
-		$perm_recs = $this->db->fetchAll("
-			SELECT name, usergroup_id, person_id
-			FROM permissions
-			WHERE (usergroup_id IN (?) OR person_id = ?)
-				AND value = 1
-		", array($agent_group_ids, $this->person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
-
-		$this->perms = array(
-			'effective' => array(),
-			'group'     => array(),
-			'person'    => array(),
-		);
-
-		foreach ($perm_recs as $rec) {
-			$this->perms['effective'][$rec['name']] = true;
-
-			if ($rec['usergroup_id']) {
-				$this->perms['group'][$rec['name']] = true;
-			} else {
-				$this->perms['person'][$rec['name']] = true;
-			}
-		}
-
-		return $this->perms;
-	}
+    /**
+     * @param Person        $person
+     * @param EntityManager $em
+     */
+    public function __construct(Person $person, EntityManager $em)
+    {
+        $this->person = $person;
+        $this->em     = $em;
+        $this->db     = $em->getConnection();
+    }
 
 
-	/**
-	 * Get effective permissions (group and overrides combined)
-	 *
-	 * @return AgentPermissions
-	 */
-	public function getEffectivePermissions()
-	{
-		$perms = $this->getPermissions();
-		return $this->createAgentPermissions($perms['effective']);
-	}
+    /**
+     * @return array
+     */
+    private function getPermissions()
+    {
+        if ($this->perms !== null) {
+            return $this->perms;
+        }
 
-	/**
-	 * Get permissions defined just through overrides
-	 *
-	 * @return AgentPermissions
-	 */
-	public function getOverridePermissions()
-	{
-		$perms = $this->getPermissions();
-		return $this->createAgentPermissions($perms['person']);
-	}
+        $agent_group_ids = array();
+        foreach ($this->person->usergroups as $ug) {
+            if ($ug->is_agent_group) {
+                $agent_group_ids[] = $ug->id;
+            }
+        }
+
+        if (!$agent_group_ids) {
+            $agent_group_ids[] = 0;
+        }
+
+        $perm_recs = $this->db->fetchAll("
+            SELECT name, usergroup_id, person_id
+            FROM permissions
+            WHERE (usergroup_id IN (?) OR person_id = ?)
+                AND value = 1
+        ", array($agent_group_ids, $this->person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
+
+        $this->perms = array(
+            'effective' => array(),
+            'group'     => array(),
+            'person'    => array(),
+        );
+
+        foreach ($perm_recs as $rec) {
+            $this->perms['effective'][$rec['name']] = true;
+
+            if ($rec['usergroup_id']) {
+                $this->perms['group'][$rec['name']] = true;
+            } else {
+                $this->perms['person'][$rec['name']] = true;
+            }
+        }
+
+        return $this->perms;
+    }
 
 
-	/**
-	 * Get just group permissions (no overrides)
-	 *
-	 * @return AgentPermissions
-	 */
-	public function getGroupPermissions()
-	{
-		$perms = $this->getPermissions();
-		return $this->createAgentPermissions($perms['group']);
-	}
+    /**
+     * Get effective permissions (group and overrides combined)
+     *
+     * @return AgentPermissions
+     */
+    public function getEffectivePermissions()
+    {
+        $perms = $this->getPermissions();
+
+        return $this->createAgentPermissions($perms['effective']);
+    }
+
+    /**
+     * Get permissions defined just through overrides
+     *
+     * @return AgentPermissions
+     */
+    public function getOverridePermissions()
+    {
+        $perms = $this->getPermissions();
+
+        return $this->createAgentPermissions($perms['person']);
+    }
 
 
-	/**
-	 * @param array $perm_array
-	 * @return AgentPermissions
-	 */
-	private function createAgentPermissions(array $perm_array)
-	{
-		$agent_perms = new AgentPermissions();
+    /**
+     * Get just group permissions (no overrides)
+     *
+     * @return AgentPermissions
+     */
+    public function getGroupPermissions()
+    {
+        $perms = $this->getPermissions();
 
-		foreach ($perm_array as $k => $v) {
-			if (!$v) continue; // disabled
-			if (strpos($k, '.') === false) continue; // invalid
+        return $this->createAgentPermissions($perms['group']);
+    }
 
-			list ($type, $name) = explode('.', $k, 2);
-			if (!isset(self::$prefix_map[$type])) continue; // unknown type
 
-			$obj_name = self::$prefix_map[$type];
-			$obj = $agent_perms->$obj_name;
-			if (!isset($obj->$name)) continue; // invalid;
+    /**
+     * @param  array            $perm_array
+     * @return AgentPermissions
+     */
+    private function createAgentPermissions(array $perm_array)
+    {
+        $agent_perms = new AgentPermissions();
 
-			$obj->$name = true;
-		}
+        foreach ($perm_array as $k => $v) {
+            if (!$v) continue; // disabled
+            if (strpos($k, '.') === false) continue; // invalid
 
-		return $agent_perms;
-	}
+            list ($type, $name) = explode('.', $k, 2);
+            if (!isset(self::$prefix_map[$type])) continue; // unknown type
+
+            $obj_name = self::$prefix_map[$type];
+            $obj = $agent_perms->$obj_name;
+            if (!isset($obj->$name)) continue; // invalid;
+
+            $obj->$name = true;
+        }
+
+        return $agent_perms;
+    }
 }

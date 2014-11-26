@@ -41,48 +41,42 @@ namespace Orb\Scraper;
  */
 abstract class AbstractScraper
 {
-	/**
-	 * Array of options
-	 * @var array
-	 */
-	protected $_options;
+    /**
+     * Array of options
+     * @var array
+     */
+    protected $_options;
 
-	public function __construct(array $options = array())
-	{
-		$this->_options = $options;
-	}
-	
+    public function __construct(array $options = array())
+    {
+        $this->_options = $options;
+    }
 
+    /**
+     * Get the value of an option
+     *
+     * @param string $key     The option to get
+     * @param mixed  $default What to return if the option doesnt exist
+     */
+    public function getOption($key, $default = null)
+    {
+        return isset($this->_options[$key]) ? $this->_options[$key] : $default;
+    }
 
-	/**
-	 * Get the value of an option
-	 *
-	 * @param string $key The option to get
-	 * @param mixed $default What to return if the option doesnt exist
-	 */
-	public function getOption($key, $default = null)
-	{
-		return isset($this->_options[$key]) ? $this->_options[$key] : $default;
-	}
+    /**
+     * Check to see if an option exists
+     *
+     * @param  string $key
+     * @return bool
+     */
+    public function hasOption($key)
+    {
+        return isset($this->_options[$key]);
+    }
 
-	
-
-	/**
-	 * Check to see if an option exists
-	 * 
-	 * @param string $key
-	 * @return bool
-	 */
-	public function hasOption($key)
-	{
-		return isset($this->_options[$key]);
-	}
-
-
-	
-	/**
-	 * @param mixed $identity Info we're requesting. A URL, an ID, etc. Depends on the scraper.
-	 * @return ItemInterface
-	 */
-	abstract function getData($identity = null);
+    /**
+     * @param  mixed         $identity Info we're requesting. A URL, an ID, etc. Depends on the scraper.
+     * @return ItemInterface
+     */
+    abstract public function getData($identity = null);
 }

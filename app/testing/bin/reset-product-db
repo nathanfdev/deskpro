@@ -10,7 +10,21 @@ $db = DpTestEnv::getContainer()->getDb();
 $db->exec("CREATE DATABASE IF NOT EXISTS " . DP_DATABASE_NAME);
 
 require_once(DP_ROOT . '/testing/data/DpDbSets/AbstractDbSet.php');
-require_once(DP_ROOT . '/testing/data/DpDbSets/FreshDb.php');
+
+$opts = getopt('s:', array('set:'));
+$setname = null;
+if      (!empty($opts['s']))   $setname = $opts['s'];
+else if (!empty($opts['set'])) $setname = $opts['set'];
+else                           $setname = 'FreshDb';
+
+$setname = preg_replace('#[^a-zA-Z0-9]#', '', $setname);
+
+if (!$setname || !is_file(DP_ROOT . '/testing/data/DpDbSets/'.$setname.'.php')) {
+	echo "Invalid set name: $setname\n";
+	exit(1);
+}
+
+require_once(DP_ROOT . '/testing/data/DpDbSets/'.$setname.'.php');
 $set = new \DpDbSets\FreshDb(\DpTestEnv::getContainer());
 
 $cache_path = DP_ROOT.'/testing/data/dbset-cache';

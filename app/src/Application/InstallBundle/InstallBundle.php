@@ -39,23 +39,23 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class InstallBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	public function registerCommands(Application $application)
-	{
+    public function registerCommands(Application $application)
+    {
 
-	}
+    }
 
-	public function build(ContainerBuilder $container)
+    public function build(ContainerBuilder $container)
     {
         $container->registerExtension(new \Application\InstallBundle\DependencyInjection\InstallExtension());
     }
 
-	public function getNamespace()
-	{
-		return __NAMESPACE__;
-	}
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
 
-	public function getPath()
-	{
-		return __DIR__;
-	}
+    public function getPath()
+    {
+        return __DIR__;
+    }
 }

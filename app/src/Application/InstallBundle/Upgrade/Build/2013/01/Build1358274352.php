@@ -36,19 +36,19 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1358274352 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Track organization Twitter associations explicitly");
-		$this->execMutateSql("CREATE TABLE organizations_twitter_users (id INT AUTO_INCREMENT NOT NULL, organization_id INT NOT NULL, twitter_user_id BIGINT DEFAULT NULL, screen_name VARCHAR(50) NOT NULL, is_verified TINYINT(1) NOT NULL, oauth_token VARCHAR(4000) DEFAULT NULL, oauth_token_secret VARCHAR(4000) DEFAULT NULL, INDEX IDX_268948132C8A3DE (organization_id), INDEX IDX_26894816B1F2707 (twitter_user_id), INDEX screen_name_idx (screen_name), UNIQUE INDEX unique_key_idx (organization_id, screen_name), PRIMARY KEY(id)) ENGINE = InnoDB");
-		$this->execMutateSql("ALTER TABLE organizations_twitter_users ADD CONSTRAINT FK_268948132C8A3DE FOREIGN KEY (organization_id) REFERENCES organizations (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE organizations_twitter_users ADD CONSTRAINT FK_26894816B1F2707 FOREIGN KEY (twitter_user_id) REFERENCES twitter_users (id) ON DELETE CASCADE");
-		$this->execMutateSql("
-			INSERT IGNORE INTO organizations_twitter_users
-				(organization_id, screen_name)
-			SELECT organization_id, field_1
-			FROM organizations_contact_data
-			WHERE contact_type = 'twitter'
-				AND field_1 <> ''
-		");
-	}
+    public function run()
+    {
+        $this->out("Track organization Twitter associations explicitly");
+        $this->execMutateSql("CREATE TABLE organizations_twitter_users (id INT AUTO_INCREMENT NOT NULL, organization_id INT NOT NULL, twitter_user_id BIGINT DEFAULT NULL, screen_name VARCHAR(50) NOT NULL, is_verified TINYINT(1) NOT NULL, oauth_token VARCHAR(4000) DEFAULT NULL, oauth_token_secret VARCHAR(4000) DEFAULT NULL, INDEX IDX_268948132C8A3DE (organization_id), INDEX IDX_26894816B1F2707 (twitter_user_id), INDEX screen_name_idx (screen_name), UNIQUE INDEX unique_key_idx (organization_id, screen_name), PRIMARY KEY(id)) ENGINE = InnoDB");
+        $this->execMutateSql("ALTER TABLE organizations_twitter_users ADD CONSTRAINT FK_268948132C8A3DE FOREIGN KEY (organization_id) REFERENCES organizations (id) ON DELETE CASCADE");
+        $this->execMutateSql("ALTER TABLE organizations_twitter_users ADD CONSTRAINT FK_26894816B1F2707 FOREIGN KEY (twitter_user_id) REFERENCES twitter_users (id) ON DELETE CASCADE");
+        $this->execMutateSql("
+            INSERT IGNORE INTO organizations_twitter_users
+                (organization_id, screen_name)
+            SELECT organization_id, field_1
+            FROM organizations_contact_data
+            WHERE contact_type = 'twitter'
+                AND field_1 <> ''
+        ");
+    }
 }

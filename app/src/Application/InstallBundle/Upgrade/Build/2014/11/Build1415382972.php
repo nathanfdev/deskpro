@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1415382972 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("fixing user usersource auto_agent");
-		$this->execMutateSql("UPDATE usersources SET auto_agent = 0 WHERE type = 'user'");
-	}
+    public function run()
+    {
+        $this->out("fixing user usersource auto_agent");
+        $this->execMutateSql("UPDATE usersources SET auto_agent = 0 WHERE type = 'user'");
+    }
 }

@@ -43,40 +43,40 @@ use deskpro_us_db\Usersource\AppOptionsMapper;
 
 class InstallerHandler extends AbstractUsersourceInstallerHandler
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function processSettings(InstallerContext $context, array $settings)
-	{
-		// PHP code on cloud must be set manually, so the web form
-		// never changes it.
+    /**
+     * {@inheritDoc}
+     */
+    public function processSettings(InstallerContext $context, array $settings)
+    {
+        // PHP code on cloud must be set manually, so the web form
+        // never changes it.
 
-		if (defined('DPC_IS_CLOUD')) {
-			$settings['php_code'] = '';
+        if (defined('DPC_IS_CLOUD')) {
+            $settings['php_code'] = '';
 
-			if ($context->getApp()) {
-				$settings['php_code'] = $context->getApp()->getSetting('php_code');
-			}
-		}
+            if ($context->getApp()) {
+                $settings['php_code'] = $context->getApp()->getSetting('php_code');
+            }
+        }
 
-		return $settings;
-	}
+        return $settings;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
-	{
-		$us->title             = $app->title;
-		$us->options           = AppOptionsMapper::getOptions($app);
-		$us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
-		$us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
-		$us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck';
+    /**
+     * {@inheritDoc}
+     */
+    protected function applyAppToUsersource(AppInstance $app, Usersource $us, EntityManager $em)
+    {
+        $us->title             = $app->title;
+        $us->options           = AppOptionsMapper::getOptions($app);
+        $us->lost_password_url = $app->getSetting('lost_pwd_url') ? : '';
+        $us->is_enabled        = $app->getSetting('enable_usersource') ? 1 : 0;
+        $us->source_type       = 'Application\\DeskPRO\\Usersource\\Adapter\\DbTablePhpPasswordCheck';
 
-		$this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
+        $this->setupAutoAgent($us, $app->getSetting('auto_agent'), $app->getSetting('auto_agent_permission_group'));
 
-		$em->persist($app);
-		$em->persist($us);
-		$em->flush();
-	}
+        $em->persist($app);
+        $em->persist($us);
+        $em->flush();
+    }
 }

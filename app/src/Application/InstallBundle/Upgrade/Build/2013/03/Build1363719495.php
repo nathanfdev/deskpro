@@ -36,17 +36,17 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1363719495 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Move widget boxes");
-		$this->execMutateSql("
-			UPDATE widgets
-			SET page_location = 'properties'
-			WHERE page = 'ticket' AND page_location IN (
-				'headerbox',
-				'people',
-				'assignments'
-			)
-		");
-	}
+    public function run()
+    {
+        $this->out("Move widget boxes");
+        $this->execMutateSql("
+            UPDATE widgets
+            SET page_location = 'properties'
+            WHERE page = 'ticket' AND page_location IN (
+                'headerbox',
+                'people',
+                'assignments'
+            )
+        ");
+    }
 }

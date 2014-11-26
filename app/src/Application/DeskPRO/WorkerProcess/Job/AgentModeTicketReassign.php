@@ -45,39 +45,39 @@ use Doctrine\DBAL\Connection;
  */
 class AgentModeTicketReassign extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 300;
+    const DEFAULT_INTERVAL = 300;
 
-	public function run()
-	{
-		$max = 1000;
+    public function run()
+    {
+        $max = 1000;
 
-		#------------------------------
-		# Deleted
-		#------------------------------
+        #------------------------------
+        # Deleted
+        #------------------------------
 
-		$agent_ids = App::getDb()->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 1");
+        $agent_ids = App::getDb()->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 AND is_deleted = 1");
 
-		if ($max && $agent_ids) {
+        if ($max && $agent_ids) {
 
-			$ticket_ids = App::getDb()->fetchAllCol("
-				SELECT id
-				FROM tickets
-				WHERE status IN ('awaiting_agent', 'awaiting_user') AND agent_id IN (?)
-			", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
+            $ticket_ids = App::getDb()->fetchAllCol("
+                SELECT id
+                FROM tickets
+                WHERE status IN ('awaiting_agent', 'awaiting_user') AND agent_id IN (?)
+            ", array($agent_ids), array(Connection::PARAM_INT_ARRAY));
 
-			foreach ($ticket_ids as $t) {
-				App::getDb()->update(
-					'tickets',
-					array('agent_id' => null),
-					array('id' => $t)
-				);
-				App::getDb()->insert('tickets_logs', array(
-					'ticket_id'    => $t,
-					'action_type'  => 'free',
-					'details'      => serialize(array('message' => 'Unassigning deactivated agent')),
-					'date_created' => date('Y-m-d H:i:s')
-				));
-			}
-		}
-	}
+            foreach ($ticket_ids as $t) {
+                App::getDb()->update(
+                    'tickets',
+                    array('agent_id' => null),
+                    array('id' => $t)
+                );
+                App::getDb()->insert('tickets_logs', array(
+                    'ticket_id'    => $t,
+                    'action_type'  => 'free',
+                    'details'      => serialize(array('message' => 'Unassigning deactivated agent')),
+                    'date_created' => date('Y-m-d H:i:s')
+                ));
+            }
+        }
+    }
 }

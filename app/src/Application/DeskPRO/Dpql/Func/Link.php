@@ -47,79 +47,77 @@ use Application\DeskPRO\Dpql\Statement\Part\Prepared;
  */
 class Link extends AbstractFunc
 {
-	/**
-	 * Prepares the function for use, including validating that the usage is valid.
-	 *
-	 * @param \Application\DeskPRO\Dpql\Statement\Display $statement
-	 * @param string $section Name of the section usage is in (select, where, split, group, order)
-	 * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack Parent parts
-	 * @param \Application\DeskPRO\Dpql\SqlSelect $select Select being built up
-	 * @param \Application\DeskPRO\Dpql\ResultHandler $result
-	 *
-	 * @throws \Application\DeskPRO\Dpql\Exception
-	 *
-	 * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
-	 */
-	public function prepare(
-		Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
-	)
-	{
-		if (count($this->_arguments) < 2) {
-			throw new Exception('LINK() requires at least 2 arguments.');
-		}
+    /**
+     * Prepares the function for use, including validating that the usage is valid.
+     *
+     * @param \Application\DeskPRO\Dpql\Statement\Display             $statement
+     * @param string                                                  $section   Name of the section usage is in (select, where, split, group, order)
+     * @param \Application\DeskPRO\Dpql\Statement\Part\AbstractPart[] $stack     Parent parts
+     * @param \Application\DeskPRO\Dpql\SqlSelect                     $select    Select being built up
+     * @param \Application\DeskPRO\Dpql\ResultHandler                 $result
+     *
+     * @throws \Application\DeskPRO\Dpql\Exception
+     *
+     * @return \Application\DeskPRO\Dpql\Statement\Part\Prepared|bool Prepared results or false if there's no output
+     */
+    public function prepare(
+        Display $statement, $section, array $stack, Dpql\SqlSelect $select, Dpql\ResultHandler $result
+    )
+    {
+        if (count($this->_arguments) < 2) {
+            throw new Exception('LINK() requires at least 2 arguments.');
+        }
 
-		$arguments = $this->_arguments;
-		$print = array_shift($arguments);
-		$format = array_shift($arguments);
-		$formatLiteral = $this->_toLiteral($format);
+        $arguments = $this->_arguments;
+        $print = array_shift($arguments);
+        $format = array_shift($arguments);
+        $formatLiteral = $this->_toLiteral($format);
 
-		$argNames = array();
-		$argSelect = array();
-		foreach ($arguments AS $argument) {
-			$prepped = $argument->prepare($statement, $section, $stack, $select, $result);
-			$argNames[] = $prepped->name();
-			$argSelect[] = $select->addSelectField($prepped->printed());
-		}
+        $argNames = array();
+        $argSelect = array();
+        foreach ($arguments AS $argument) {
+            $prepped = $argument->prepare($statement, $section, $stack, $select, $result);
+            $argNames[] = $prepped->name();
+            $argSelect[] = $select->addSelectField($prepped->printed());
+        }
 
-		$preppedPrint = $print->prepare($statement, $section, $stack, $select, $result);
+        $preppedPrint = $print->prepare($statement, $section, $stack, $select, $result);
 
-		$renderer = function(AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer)
-			use ($formatLiteral, $argSelect)
-		{
-			return Link::formatLink($value, $formatLiteral, $argSelect, $row, $valueRenderer, $renderer);
-		};
+        $renderer = function (AbstractValues $valueRenderer, $value, array $row, AbstractRenderer $renderer) use ($formatLiteral, $argSelect) {
+            return Link::formatLink($value, $formatLiteral, $argSelect, $row, $valueRenderer, $renderer);
+        };
 
-		return new Prepared($preppedPrint->sql(), $preppedPrint->name(), false, $renderer);
-	}
+        return new Prepared($preppedPrint->sql(), $preppedPrint->name(), false, $renderer);
+    }
 
-	public static function formatLink($print, $format, array $argSelect, array $row,
-		AbstractValues $valueRenderer, AbstractRenderer $renderer
-	)
-	{
-		$breakEarly = (
-			$print === null
-				|| !($valueRenderer instanceof \Application\DeskPRO\Dpql\Renderer\Values\Html)
-		);
+    public static function formatLink($print, $format, array $argSelect, array $row,
+        AbstractValues $valueRenderer, AbstractRenderer $renderer
+    )
+    {
+        $breakEarly = (
+            $print === null
+                || !($valueRenderer instanceof \Application\DeskPRO\Dpql\Renderer\Values\Html)
+        );
 
-		$print = $valueRenderer->renderValue($print, 'string');
+        $print = $valueRenderer->renderValue($print, 'string');
 
-		if ($breakEarly) {
-			return $print;
-		}
+        if ($breakEarly) {
+            return $print;
+        }
 
-		switch ($format) {
-			case 'ticket': $format = 'agent/#app.tickets,t:%d'; break;
-			case 'person': $format = 'agent/#app.people,p:%d'; break;
-			case 'organization': $format = 'agent/#app.people,o:%d'; break;
-		}
+        switch ($format) {
+            case 'ticket': $format = 'agent/#app.tickets,t:%d'; break;
+            case 'person': $format = 'agent/#app.people,p:%d'; break;
+            case 'organization': $format = 'agent/#app.people,o:%d'; break;
+        }
 
-		$argValues = array();
-		foreach ($argSelect AS $key) {
-			$argValues[] = urlencode($renderer->getColumnValue($row, $key));
-		}
+        $argValues = array();
+        foreach ($argSelect AS $key) {
+            $argValues[] = urlencode($renderer->getColumnValue($row, $key));
+        }
 
-		$link = App::getRequest()->getUriForPath('') . '/' . vsprintf($format, $argValues);
+        $link = App::getRequest()->getUriForPath('') . '/' . vsprintf($format, $argValues);
 
-		return '<a href="' . htmlspecialchars($link) . '" target="_blank">' . $print . '</a>';
-	}
+        return '<a href="' . htmlspecialchars($link) . '" target="_blank">' . $print . '</a>';
+    }
 }

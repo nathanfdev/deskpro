@@ -37,7 +37,6 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-use Application\DeskPRO\App;
 
 /**
  * A log of deleted tickets
@@ -46,64 +45,64 @@ use Application\DeskPRO\App;
 class TextSnippetLog extends \Application\DeskPRO\Domain\DomainObject
 {
         /**
-	 * @var int
-	 */
-	protected $id = null;
-	
+     * @var int
+     */
+    protected $id = null;
+
         /**
-	 * @var int
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $ticket;
+     * @var int
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $ticket;
 
-	/**
-	 * @var int
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
-        
-	/**
-	 * @var int
-	 */
-	protected $time;
+    /**
+     * @var int
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @var int
-	 * @var \Application\DeskPRO\Entity\TextSnippet
-	 */
-	protected $snippet;
+    /**
+     * @var int
+     */
+    protected $time;
 
-	public function __construct()
-	{
-		$this['time'] = time();
-	}
+    /**
+     * @var int
+     * @var \Application\DeskPRO\Entity\TextSnippet
+     */
+    protected $snippet;
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
+    public function __construct()
+    {
+        $this['time'] = time();
+    }
+
+    /**
+     * @return int
+     */
+    public function getId()
+    {
             return $this->id;
-	}
+    }
 
 
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->setPrimaryTable(array(
-			'name' => 'text_snippet_logs',
-		));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->setPrimaryTable(array(
+            'name' => 'text_snippet_logs',
+        ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
                 $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'time', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'time', ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapManyToOne(array( 'fieldName' => 'snippet', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippet', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'snippet_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapField(array( 'fieldName' => 'time', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'time', ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'ticket', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Ticket', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'ticket_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'snippet', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TextSnippet', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'snippet_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
                 $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-	}
+    }
 }

@@ -44,26 +44,28 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterUserLanguage extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('language_ids');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('language_ids');
+
+        return $options;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$options = $this->getTermOptions();
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $options = $this->getTermOptions();
 
-		$query = $this->getIdMatchQuery('user.language_id', $options['language_ids']);
-		$query->addJoin('tickets.person', 'people', 'user', 'user.person_id = tickets.person_id');
-		return $query;
-	}
+        $query = $this->getIdMatchQuery('user.language_id', $options['language_ids']);
+        $query->addJoin('tickets.person', 'people', 'user', 'user.person_id = tickets.person_id');
+
+        return $query;
+    }
 }

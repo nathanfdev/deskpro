@@ -32,8 +32,6 @@ use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\CustomFieldDefinition;
 use Application\DeskPRO\Entity\CustomFieldData;
 use Application\DeskPRO\Form\Type\CustomFields\Definitions\ContextualChoiceDefinitionType;
-use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionChildrenType;
-use Application\DeskPRO\Form\Type\CustomFields\Definitions\DefinitionType;
 use Application\DeskPRO\TicketLayout\Layout;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
@@ -46,311 +44,311 @@ use Doctrine\Common\Util\ClassUtils;
 
 class CustomFieldManager
 {
-	const EVENT_FLUSH = 'flush';
+    const EVENT_FLUSH = 'flush';
 
-	/**
-	 * @var \Doctrine\ORM\EntityManager
-	 */
-	protected $em;
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    protected $em;
 
-	/**
-	 * @var \Symfony\Component\Form\FormFactory
-	 */
-	protected $ff;
+    /**
+     * @var \Symfony\Component\Form\FormFactory
+     */
+    protected $ff;
 
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\CustomFieldDefinition
-	 */
-	protected $repDefinition;
+    /**
+     * @var \Application\DeskPRO\EntityRepository\CustomFieldDefinition
+     */
+    protected $repDefinition;
 
-	/**
-	 * @var \Application\DeskPRO\EntityRepository\CustomFieldData
-	 */
-	protected $repData;
+    /**
+     * @var \Application\DeskPRO\EntityRepository\CustomFieldData
+     */
+    protected $repData;
 
-	/**
-	 * @var \Application\DeskPRO\CustomFields\CustomDataPersister
-	 */
-	protected $persister;
+    /**
+     * @var \Application\DeskPRO\CustomFields\CustomDataPersister
+     */
+    protected $persister;
 
-	public function __construct(EntityManager $em, FormFactory $ff)
-	{
-		$this->em = $em;
-		$this->ff = $ff;
-		$this->repDefinition = $em->getRepository('DeskPRO:CustomFieldDefinition');
-		$this->repData = $em->getRepository('DeskPRO:CustomFieldData');
-		$this->persister = new CustomDataPersister();
-	}
+    public function __construct(EntityManager $em, FormFactory $ff)
+    {
+        $this->em = $em;
+        $this->ff = $ff;
+        $this->repDefinition = $em->getRepository('DeskPRO:CustomFieldDefinition');
+        $this->repData = $em->getRepository('DeskPRO:CustomFieldData');
+        $this->persister = new CustomDataPersister();
+    }
 
-	/**
-	 * @param DomainObject $owner
-	 * @param DomainObject $context
-	 * @param Layout $layout
-	 * @return ArrayCollection
-	 */
-	public function getCustomDataForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
-	{
-		$datas = array();
+    /**
+     * @param  DomainObject    $owner
+     * @param  DomainObject    $context
+     * @param  Layout          $layout
+     * @return ArrayCollection
+     */
+    public function getCustomDataForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
+    {
+        $datas = array();
 
-		if (!$owner['id']) {
-			return new ArrayCollection();
-		}
+        if (!$owner['id']) {
+            return new ArrayCollection();
+        }
 
-		// fetch fields values
-		foreach ($this->repData->getAllDataForOwner($owner, $context, $layout) as $data) {
-			/** @var $data CustomFieldData */
-			$rootId = $data->root_definition['id'];
+        // fetch fields values
+        foreach ($this->repData->getAllDataForOwner($owner, $context, $layout) as $data) {
+            /** @var $data CustomFieldData */
+            $rootId = $data->root_definition['id'];
 
-			if (!isset($datas[$rootId])) {
-				$datas[$rootId] = array($data);
-			} else {
-				$datas[$rootId][] = $data;
-			}
-		}
+            if (!isset($datas[$rootId])) {
+                $datas[$rootId] = array($data);
+            } else {
+                $datas[$rootId][] = $data;
+            }
+        }
 
-		return new ArrayCollection($datas);
-	}
+        return new ArrayCollection($datas);
+    }
 
-	/**
-	 * @param FormInterface $form
-	 */
-	public function flush(FormInterface $form = null)
-	{
-		if ($form && !$form->isSubmitted()) {
-			return;
-		}
-		$this->persister->flush($this->em);
-	}
+    /**
+     * @param FormInterface $form
+     */
+    public function flush(FormInterface $form = null)
+    {
+        if ($form && !$form->isSubmitted()) {
+            return;
+        }
+        $this->persister->flush($this->em);
+    }
 
-	/**
-	 * creates form of defined custom fields
-	 *
-	 * @param DomainObject $owner
-	 * @param DomainObject $context add contextual fields to form if context provided
-	 * @param Layout $layout
-	 * @return \Symfony\Component\Form\Form
-	 */
-	public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null, array $options = array())
-	{
-		$datas = $this->getCustomDataForOwner($owner, $context, $layout);
+    /**
+     * creates form of defined custom fields
+     *
+     * @param  DomainObject                 $owner
+     * @param  DomainObject                 $context add contextual fields to form if context provided
+     * @param  Layout                       $layout
+     * @return \Symfony\Component\Form\Form
+     */
+    public function createFormForOwner(DomainObject $owner, DomainObject $context = null, Layout $layout = null, array $options = array())
+    {
+        $datas = $this->getCustomDataForOwner($owner, $context, $layout);
 
-		// build types and bind values
-		$builder = $this->ff->createNamedBuilder('custom_fields', 'form');
+        // build types and bind values
+        $builder = $this->ff->createNamedBuilder('custom_fields', 'form');
 
-		foreach ($this->getDefinitions($owner, $context, $layout) as $def) {
-			/** @var $def CustomFieldDefinition */
-			$builder->add($this->createFieldFormBuilder($def, $owner, $context, $datas, $options));
-		}
+        foreach ($this->getDefinitions($owner, $context, $layout) as $def) {
+            /** @var $def CustomFieldDefinition */
+            $builder->add($this->createFieldFormBuilder($def, $owner, $context, $datas, $options));
+        }
 
-		$builder
-			->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
-				// clean extra data
-				if ($data = $event->getData()) {
-					$data = array_intersect_key($data, $event->getForm()->all());
-					$event->setData($data);
-				}
-			})
-		;
+        $builder
+            ->addEventListener(FormEvents::PRE_SUBMIT, function (FormEvent $event) {
+                // clean extra data
+                if ($data = $event->getData()) {
+                    $data = array_intersect_key($data, $event->getForm()->all());
+                    $event->setData($data);
+                }
+            })
+        ;
 
-		return $builder->getForm();
-	}
+        return $builder->getForm();
+    }
 
-	/**
-	 * @param CustomFieldDefinition $definition
-	 * @param DomainObject $owner
-	 * @param DomainObject $context
-	 * @param ArrayCollection $datas
-	 * @param array $options
-	 * @return \Symfony\Component\Form\FormBuilderInterface
-	 */
-	public function createFieldFormBuilder(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, ArrayCollection $datas = null, $options = array())
-	{
-		if ($definition->parent) {
-			throw new InvalidArgumentException('Can\'t create form for definition child');
-		}
+    /**
+     * @param  CustomFieldDefinition                        $definition
+     * @param  DomainObject                                 $owner
+     * @param  DomainObject                                 $context
+     * @param  ArrayCollection                              $datas
+     * @param  array                                        $options
+     * @return \Symfony\Component\Form\FormBuilderInterface
+     */
+    public function createFieldFormBuilder(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, ArrayCollection $datas = null, $options = array())
+    {
+        if ($definition->parent) {
+            throw new InvalidArgumentException('Can\'t create form for definition child');
+        }
 
-		if (null === $datas) {
-			$datas = new ArrayCollection();
-			if ($childData = $this->repData->getFieldData($definition, $owner, $context)) {
-				$datas->set($definition['id'], $childData);
-			}
-		}
+        if (null === $datas) {
+            $datas = new ArrayCollection();
+            if ($childData = $this->repData->getFieldData($definition, $owner, $context)) {
+                $datas->set($definition['id'], $childData);
+            }
+        }
 
-		$multiple = isset($definition['options']['multiple']) && $definition['options']['multiple'];
-		$data = $datas->get($definition['id']);
-		if (!$multiple && is_array($data)) {
-			$data = reset($data);
-		}
-		$options = array_merge($options, array(
-			'owner' => $owner,
-			'context' => $context,
-			'persister' => $this->persister,
-		));
+        $multiple = isset($definition['options']['multiple']) && $definition['options']['multiple'];
+        $data = $datas->get($definition['id']);
+        if (!$multiple && is_array($data)) {
+            $data = reset($data);
+        }
+        $options = array_merge($options, array(
+            'owner' => $owner,
+            'context' => $context,
+            'persister' => $this->persister,
+        ));
 
-		return $this->ff->createNamedBuilder($definition['id'], $definition->createType(), $data, $options);
-	}
+        return $this->ff->createNamedBuilder($definition['id'], $definition->createType(), $data, $options);
+    }
 
-	/**
-	 * @param CustomFieldDefinition $definition
-	 * @param DomainObject $owner
-	 * @param DomainObject $context
-	 * @return \Symfony\Component\Form\FormBuilderInterface
-	 */
-	public function createFieldForm(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, $options = array())
-	{
-		if (!$definition['is_enabled']) {
-			// todo exception?
-			return null;
-		}
+    /**
+     * @param  CustomFieldDefinition                        $definition
+     * @param  DomainObject                                 $owner
+     * @param  DomainObject                                 $context
+     * @return \Symfony\Component\Form\FormBuilderInterface
+     */
+    public function createFieldForm(CustomFieldDefinition $definition, DomainObject $owner, DomainObject $context = null, $options = array())
+    {
+        if (!$definition['is_enabled']) {
+            // todo exception?
+            return null;
+        }
 
-		return $this->createFieldFormBuilder($definition, $owner, $context, null, $options)->getForm();
-	}
+        return $this->createFieldFormBuilder($definition, $owner, $context, null, $options)->getForm();
+    }
 
-	/**
-	 * @param $fieldId
-	 * @param DomainObject $owner
-	 * @return array|null
-	 * @throws \Symfony\Component\Form\Exception\InvalidArgumentException
-	 */
-	public function getFieldRawData($fieldId, DomainObject $owner)
-	{
-		if (!$owner['id']) {
-			return null;
-		}
+    /**
+     * @param $fieldId
+     * @param  DomainObject                                               $owner
+     * @return array|null
+     * @throws \Symfony\Component\Form\Exception\InvalidArgumentException
+     */
+    public function getFieldRawData($fieldId, DomainObject $owner)
+    {
+        if (!$owner['id']) {
+            return null;
+        }
 
-		if (!$definition = $this->repDefinition->find($fieldId)) {
-			return null;
-		}
+        if (!$definition = $this->repDefinition->find($fieldId)) {
+            return null;
+        }
 
-		if ($definition->parent) {
-			throw new InvalidArgumentException('Can\'t create form for definition child');
-		}
+        if ($definition->parent) {
+            throw new InvalidArgumentException('Can\'t create form for definition child');
+        }
 
-		if (!$data = $this->repData->getFieldRawData($definition, $owner)) {
-			return null;
-		}
+        if (!$data = $this->repData->getFieldRawData($definition, $owner)) {
+            return null;
+        }
 
-		$ret = array();
-		foreach ($data as $row) {
-			$ret[] = $row['value'] ? $row['title'] : $row['input'];
-		}
+        $ret = array();
+        foreach ($data as $row) {
+            $ret[] = $row['value'] ? $row['title'] : $row['input'];
+        }
 
-		return count($ret) > 1 ? $ret : $ret[0];
-	}
+        return count($ret) > 1 ? $ret : $ret[0];
+    }
 
-	/**
-	 * @param FormInterface $form1
-	 * @param FormInterface $form2
-	 * @return FormInterface
-	 */
-	public function merge(FormInterface $form1, FormInterface $form2)
-	{
-		foreach ($form2 as $name => $field) {
-			/** @var $field FormInterface */
-			$form2->remove($name);
-			$form1->add($field);
-		}
+    /**
+     * @param  FormInterface $form1
+     * @param  FormInterface $form2
+     * @return FormInterface
+     */
+    public function merge(FormInterface $form1, FormInterface $form2)
+    {
+        foreach ($form2 as $name => $field) {
+            /** @var $field FormInterface */
+            $form2->remove($name);
+            $form1->add($field);
+        }
 
-		return $form1;
-	}
+        return $form1;
+    }
 
-	/**
-	 * todo used for ContextualChoiceDefinition only (for now)
-	 * the only place this form used is Person view in Agent Interface (to define contextual choices for this person)
-	 *
-	 * @param DomainObject $context
-	 * @return \Symfony\Component\Form\Form
-	 */
-	public function createDefinitionsFormForContext(DomainObject $context)
-	{
-		// root definitions
-		$definitions = $this->repDefinition->findBy(array(
-			'parent' => null,
-			'context_class' => ClassUtils::getClass($context),
-			'is_enabled' => true,
-		), array('display_order' => 'ASC'));
+    /**
+     * todo used for ContextualChoiceDefinition only (for now)
+     * the only place this form used is Person view in Agent Interface (to define contextual choices for this person)
+     *
+     * @param  DomainObject                 $context
+     * @return \Symfony\Component\Form\Form
+     */
+    public function createDefinitionsFormForContext(DomainObject $context)
+    {
+        // root definitions
+        $definitions = $this->repDefinition->findBy(array(
+            'parent' => null,
+            'context_class' => ClassUtils::getClass($context),
+            'is_enabled' => true,
+        ), array('display_order' => 'ASC'));
 
-		$children = $this->buildDefinitionChildrenCollectionForContext($context);
+        $children = $this->buildDefinitionChildrenCollectionForContext($context);
 
-		// build form
-		$builder = $this->ff->createNamedBuilder('custom_fields_definitions', 'form');
+        // build form
+        $builder = $this->ff->createNamedBuilder('custom_fields_definitions', 'form');
 
-		foreach ($definitions as $def) {
-			/** @var $def CustomFieldDefinition */
+        foreach ($definitions as $def) {
+            /** @var $def CustomFieldDefinition */
 
-			$builder->add('definition_' . $def['id'], new ContextualChoiceDefinitionType(), array(
-				'context' => $context,
-				'data' => $def,
-				'children_collection' => $children,
-				'children_only' => true,
-				'label' => $def['title'],
-				'persister' => $this->persister,
-				'allow_edit' => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
-			));
-		}
+            $builder->add('definition_' . $def['id'], new ContextualChoiceDefinitionType(), array(
+                'context' => $context,
+                'data' => $def,
+                'children_collection' => $children,
+                'children_only' => true,
+                'label' => $def['title'],
+                'persister' => $this->persister,
+                'allow_edit' => isset($def['options']['allow_edit']) ? $def['options']['allow_edit'] : false,
+            ));
+        }
 
-		return $builder->getForm();
-	}
+        return $builder->getForm();
+    }
 
-	/**
-	 * @param DomainObject $context
-	 * @return ArrayCollection
-	 */
-	protected function buildDefinitionChildrenCollectionForContext(DomainObject $context)
-	{
-		// def children for current context
-		$collection = new ArrayCollection();
+    /**
+     * @param  DomainObject    $context
+     * @return ArrayCollection
+     */
+    protected function buildDefinitionChildrenCollectionForContext(DomainObject $context)
+    {
+        // def children for current context
+        $collection = new ArrayCollection();
 
-		if (!$context['id']) {
-			return $collection;
-		}
+        if (!$context['id']) {
+            return $collection;
+        }
 
-		$_children = $this->repDefinition->findBy(array(
-			'context_class' => ClassUtils::getClass($context),
-			'context_id' => $context['id'],
-		), array('display_order' => 'ASC'));
+        $_children = $this->repDefinition->findBy(array(
+            'context_class' => ClassUtils::getClass($context),
+            'context_id' => $context['id'],
+        ), array('display_order' => 'ASC'));
 
-		// build child tree
-		foreach ($_children as $child) {
-			if (!$child->parent) {
-				continue;
-			}
-			$pid = $child->parent['id'];
-			if (!$sub = $collection->get($pid)) {
-				$sub = new ArrayCollection();
-				$collection->set($pid, $sub);
-			}
-			$sub->add($child);
-		}
+        // build child tree
+        foreach ($_children as $child) {
+            if (!$child->parent) {
+                continue;
+            }
+            $pid = $child->parent['id'];
+            if (!$sub = $collection->get($pid)) {
+                $sub = new ArrayCollection();
+                $collection->set($pid, $sub);
+            }
+            $sub->add($child);
+        }
 
-		return $collection;
-	}
+        return $collection;
+    }
 
-	/**
-	 * @param DomainObject $owner
-	 * @param DomainObject $context
-	 * @param Layout $layout
-	 * @return array
-	 */
-	public function getDefinitions(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
-	{
-		return $this->repDefinition->getAllDefinitionsForOwner($owner, $context, $layout);
-	}
+    /**
+     * @param  DomainObject $owner
+     * @param  DomainObject $context
+     * @param  Layout       $layout
+     * @return array
+     */
+    public function getDefinitions(DomainObject $owner, DomainObject $context = null, Layout $layout = null)
+    {
+        return $this->repDefinition->getAllDefinitionsForOwner($owner, $context, $layout);
+    }
 
-	/**
-	 * @param $fieldId
-	 * @return CustomFieldDefinition|null
-	 */
-	public function getDefinition($fieldId)
-	{
-		return $this->repDefinition->findOneBy(array('id' => $fieldId, 'is_enabled' => true));
-	}
+    /**
+     * @param $fieldId
+     * @return CustomFieldDefinition|null
+     */
+    public function getDefinition($fieldId)
+    {
+        return $this->repDefinition->findOneBy(array('id' => $fieldId, 'is_enabled' => true));
+    }
 
-	/**
-	 * @return FormFactory
-	 */
-	public function getFormFactory()
-	{
-		return $this->ff;
-	}
+    /**
+     * @return FormFactory
+     */
+    public function getFormFactory()
+    {
+        return $this->ff;
+    }
 }

@@ -46,22 +46,22 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterOrgDateCreated extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addValidNames('date1', 'date2', 'date1_relative', 'date2_relative', 'date1_relative_type', 'date2_relative_type');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addValidNames('date1', 'date2', 'date1_relative', 'date2_relative', 'date1_relative_type', 'date2_relative_type');
 
+        return $options;
+    }
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		throw new NotImplementedException;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        throw new NotImplementedException;
+    }
 }

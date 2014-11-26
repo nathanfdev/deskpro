@@ -41,243 +41,248 @@ use Application\DeskPRO\App;
  */
 class DbStreamWrapper
 {
-	/** @var int */
-	protected $position;
-	/** @var string */
-	protected $name;
-	/** @var string */
-	protected $php_code;
-	/** @var int */
-	protected $size = 0;
-	/** @var int */
-	protected $date_updated;
+    /** @var int */
+    protected $position;
+    /** @var string */
+    protected $name;
+    /** @var string */
+    protected $php_code;
+    /** @var int */
+    protected $size = 0;
+    /** @var int */
+    protected $date_updated;
 
-	public static function getTemplateInfo($name)
-	{
-		static $templates = array();
-		static $not_set = array();
+    public static function getTemplateInfo($name)
+    {
+        static $templates = array();
+        static $not_set = array();
 
-		// Already loaded the template
-		if (isset($templates[$name])) {
-			if (!isset($templates[$name]['size'])) {
-				$templates[$name]['size'] = strlen($templates[$name]['template_compiled']);
-			}
-			return $templates[$name];
-		} elseif (isset($not_set[$name])) {
-			return null;
-		}
+        // Already loaded the template
+        if (isset($templates[$name])) {
+            if (!isset($templates[$name]['size'])) {
+                $templates[$name]['size'] = strlen($templates[$name]['template_compiled']);
+            }
 
-		#------------------------------
-		# Fetch template info, and try to
-		# guess which other templates will be used as well
-		#------------------------------
+            return $templates[$name];
+        } elseif (isset($not_set[$name])) {
+            return null;
+        }
 
-		$parts = explode(':', $name, 3);
-		$bundle = $parts[0];
-		$subdir = $parts[1];
+        #------------------------------
+        # Fetch template info, and try to
+        # guess which other templates will be used as well
+        #------------------------------
 
-		$params = array($name);
-		$params[] = 'DeskPRO:%';
-		$params[] = "$bundle:Common:%";
-		$params[] = "$bundle:Main:%";
+        $parts = explode(':', $name, 3);
+        $bundle = $parts[0];
+        $subdir = $parts[1];
 
-		if ($bundle == 'UserBundle') {
-			$params[] = 'UserBundle:Portal:%';
-		}
+        $params = array($name);
+        $params[] = 'DeskPRO:%';
+        $params[] = "$bundle:Common:%";
+        $params[] = "$bundle:Main:%";
 
-		if ($subdir) {
-			$params[] = "$bundle:$subdir:%";
-		}
+        if ($bundle == 'UserBundle') {
+            $params[] = 'UserBundle:Portal:%';
+        }
 
-		$where = array('name = ?');
-		for ($i = 1, $c = count($params); $i < $c; $i++) {
-			$where[] = "name LIKE ?";
-		}
-		$where = implode(" OR ", $where);
+        if ($subdir) {
+            $params[] = "$bundle:$subdir:%";
+        }
 
-		$results = App::getDb()->fetchAllKeyed("
-			SELECT name, template_compiled, UNIX_TIMESTAMP(date_updated) AS date_updated
-			FROM templates
-			WHERE $where
-		", $params, 'name');
+        $where = array('name = ?');
+        for ($i = 1, $c = count($params); $i < $c; $i++) {
+            $where[] = "name LIKE ?";
+        }
+        $where = implode(" OR ", $where);
 
-		$templates = array_merge($templates, $results);
+        $results = App::getDb()->fetchAllKeyed("
+            SELECT name, template_compiled, UNIX_TIMESTAMP(date_updated) AS date_updated
+            FROM templates
+            WHERE $where
+        ", $params, 'name');
 
-		if (!isset($templates[$name])) {
-			$not_set[$name] = true;
-			return null;
-		}
+        $templates = array_merge($templates, $results);
 
-		$templates[$name]['size'] = strlen($templates[$name]['template_compiled']);
+        if (!isset($templates[$name])) {
+            $not_set[$name] = true;
 
-		return $templates[$name];
-	}
+            return null;
+        }
 
-	public function stream_open($path, $mode, $options, &$opened_path)
-	{
-		$this->position = 0;
+        $templates[$name]['size'] = strlen($templates[$name]['template_compiled']);
 
-		if (!preg_match('#/([^/]+)$#', $path, $m)) {
-			return false;
-		}
+        return $templates[$name];
+    }
 
-		$this->name = $m[1];
+    public function stream_open($path, $mode, $options, &$opened_path)
+    {
+        $this->position = 0;
 
-		$info = self::getTemplateInfo($this->name);
-		if (!$info) {
-			return false;
-		}
+        if (!preg_match('#/([^/]+)$#', $path, $m)) {
+            return false;
+        }
 
-		$this->php_code = $info['template_compiled'];
-		$this->date_updated = $info['date_updated'];
-		$this->size = $info['size'];
+        $this->name = $m[1];
 
-		return true;
-	}
+        $info = self::getTemplateInfo($this->name);
+        if (!$info) {
+            return false;
+        }
 
-	public function stream_read($count)
-	{
-		$ret = substr($this->php_code, $this->position, $count);
-		$this->position += strlen($ret);
+        $this->php_code = $info['template_compiled'];
+        $this->date_updated = $info['date_updated'];
+        $this->size = $info['size'];
 
-		return $ret;
-	}
+        return true;
+    }
 
-	public function stream_write($data)
-	{
-		$left = substr($this->php_code, 0, $this->position);
-		$right = substr($this->php_code, $this->position + strlen($data));
-		$this->php_code = $left . $data . $right;
-		$this->position += strlen($data);
-		return strlen($data);
-	}
+    public function stream_read($count)
+    {
+        $ret = substr($this->php_code, $this->position, $count);
+        $this->position += strlen($ret);
 
-	public function stream_tell()
-	{
-		return $this->position;
-	}
+        return $ret;
+    }
 
-	public function stream_eof()
-	{
-		return $this->position >= strlen($this->php_code);
-	}
+    public function stream_write($data)
+    {
+        $left = substr($this->php_code, 0, $this->position);
+        $right = substr($this->php_code, $this->position + strlen($data));
+        $this->php_code = $left . $data . $right;
+        $this->position += strlen($data);
 
-	public function stream_seek($offset, $whence)
-	{
-		switch ($whence) {
-			case SEEK_SET:
-				if ($offset < strlen($this->php_code) && $offset >= 0) {
-					$this->position = $offset;
-					return true;
-				} else {
-					return false;
-				}
-				break;
+        return strlen($data);
+    }
 
-			case SEEK_CUR:
-				if ($offset >= 0) {
-					$this->position += $offset;
-					return true;
-				} else {
-					return false;
-				}
-				break;
+    public function stream_tell()
+    {
+        return $this->position;
+    }
 
-			case SEEK_END:
-				if (strlen($this->php_code) + $offset >= 0) {
-					$this->position = strlen($this->php_code) + $offset;
-					return true;
-				} else {
-					return false;
-				}
-				break;
+    public function stream_eof()
+    {
+        return $this->position >= strlen($this->php_code);
+    }
 
-			default:
-				return false;
-		}
-	}
+    public function stream_seek($offset, $whence)
+    {
+        switch ($whence) {
+            case SEEK_SET:
+                if ($offset < strlen($this->php_code) && $offset >= 0) {
+                    $this->position = $offset;
 
-	public function url_stat($path)
-	{
-		if ($path == 'dptpl://load') {
-			return array(
-				'dev' => 0,
-				'ino' => 0,
-				'mode' => 040777,
-				'nlink' => 0,
-				'uid' => 0,
-				'gid' => 0,
-				'rdev' => 0,
-				'size' => 1,
-				'atime' => time(),
-				'mtime' => time(),
-				'ctime' => time(),
-				'blksize' => 0,
-				'blocks' => -1,
-			);
-		}
+                    return true;
+                } else {
+                    return false;
+                }
+                break;
 
-		if (!preg_match('#/([^/]+)$#', $path, $m)) {
-			return false;
-		}
+            case SEEK_CUR:
+                if ($offset >= 0) {
+                    $this->position += $offset;
 
-		$name = $m[1];
-		$info = self::getTemplateInfo($name);
+                    return true;
+                } else {
+                    return false;
+                }
+                break;
 
-		if (!$info) {
-			return false;
-		}
+            case SEEK_END:
+                if (strlen($this->php_code) + $offset >= 0) {
+                    $this->position = strlen($this->php_code) + $offset;
 
-		return array(
-			'dev' => 0,
-			'ino' => 0,
-			'mode' => 0100555,
-			'nlink' => 0,
-			'uid' => 0,
-			'gid' => 0,
-			'rdev' => 0,
-			'size' => $info['size'],
-			'atime' => time(),
-			'mtime' => $info['date_updated'],
-			'ctime' => $info['date_updated'],
-			'blksize' => 0,
-			'blocks' => -1,
-		);
-	}
+                    return true;
+                } else {
+                    return false;
+                }
+                break;
 
-	public function stream_stat()
-	{
-		return array(
-			'dev' => 0,
-			'ino' => 0,
-			'mode' => 0100555,
-			'nlink' => 0,
-			'uid' => 0,
-			'gid' => 0,
-			'rdev' => 0,
-			'size' => $this->size,
-			'atime' => time(),
-			'mtime' => $this->date_updated,
-			'ctime' => $this->date_updated,
-			'blksize' => 0,
-			'blocks' => -1,
-		);
-	}
+            default:
+                return false;
+        }
+    }
 
-	public function stream_metadata($path, $option, $var)
-	{
-		return true;
-	}
+    public function url_stat($path)
+    {
+        if ($path == 'dptpl://load') {
+            return array(
+                'dev' => 0,
+                'ino' => 0,
+                'mode' => 040777,
+                'nlink' => 0,
+                'uid' => 0,
+                'gid' => 0,
+                'rdev' => 0,
+                'size' => 1,
+                'atime' => time(),
+                'mtime' => time(),
+                'ctime' => time(),
+                'blksize' => 0,
+                'blocks' => -1,
+            );
+        }
 
+        if (!preg_match('#/([^/]+)$#', $path, $m)) {
+            return false;
+        }
 
-	/**
-	 * Signal that stream_select is not supported by returning false
-	 *
-	 * @param int $cast_as
-	 * @return bool
-	 */
-	public function stream_cast($cast_as)
-	{
-		return false;
-	}
+        $name = $m[1];
+        $info = self::getTemplateInfo($name);
+
+        if (!$info) {
+            return false;
+        }
+
+        return array(
+            'dev' => 0,
+            'ino' => 0,
+            'mode' => 0100555,
+            'nlink' => 0,
+            'uid' => 0,
+            'gid' => 0,
+            'rdev' => 0,
+            'size' => $info['size'],
+            'atime' => time(),
+            'mtime' => $info['date_updated'],
+            'ctime' => $info['date_updated'],
+            'blksize' => 0,
+            'blocks' => -1,
+        );
+    }
+
+    public function stream_stat()
+    {
+        return array(
+            'dev' => 0,
+            'ino' => 0,
+            'mode' => 0100555,
+            'nlink' => 0,
+            'uid' => 0,
+            'gid' => 0,
+            'rdev' => 0,
+            'size' => $this->size,
+            'atime' => time(),
+            'mtime' => $this->date_updated,
+            'ctime' => $this->date_updated,
+            'blksize' => 0,
+            'blocks' => -1,
+        );
+    }
+
+    public function stream_metadata($path, $option, $var)
+    {
+        return true;
+    }
+
+    /**
+     * Signal that stream_select is not supported by returning false
+     *
+     * @param  int  $cast_as
+     * @return bool
+     */
+    public function stream_cast($cast_as)
+    {
+        return false;
+    }
 }

@@ -34,27 +34,16 @@
 
 namespace Application\AgentBundle\Controller;
 
-use Application\AgentBundle\Controller\Helper\ArticleResults;
-use Application\DeskPRO\App;
-use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
-use Application\DeskPRO\ContentSearch\RelatedContentFinder;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticleComment;
-use Application\DeskPRO\Entity\ArticlePendingCreate;
-use Application\DeskPRO\Publish\RelatedContentUpdate;
-use Orb\Data\ContentTypes;
-use Orb\Util\Arrays;
-use Orb\Util\Strings;
-use Symfony\Component\HttpFoundation\Response;
 
 /**
  * Handles label definitions
  */
 class LabelsController extends AbstractController
 {
-	public function listDefinitionsAction()
-	{
-		$rep = $this->em->getRepository('DeskPRO:LabelDef');
-		return $this->createJsonResponse($rep->getAllDefinitions());
-	}
+    public function listDefinitionsAction()
+    {
+        $rep = $this->em->getRepository('DeskPRO:LabelDef');
+
+        return $this->createJsonResponse($rep->getAllDefinitions());
+    }
 }

@@ -41,170 +41,173 @@ use ZendOAuth\OAuth;
 
 class Twitter extends AbstractCallbackAdatper implements Loggable
 {
-	/**
-	 * @var \Orb\Log\Logger
-	 */
-	protected $logger;
+    /**
+     * @var \Orb\Log\Logger
+     */
+    protected $logger;
 
-	/** @var string */
-	protected $consumer_key;
-	/** @var string */
-	protected $consumer_secret;
+    /** @var string */
+    protected $consumer_key;
+    /** @var string */
+    protected $consumer_secret;
 
-	/**
-	 * @param string $consumer_key     Your Twitter consumer key
-	 * @param string $consumer_secret  Your Twitter consumer secret
-	 */
-	public function __construct($consumer_key, $consumer_secret)
-	{
-		$this->consumer_key = $consumer_key;
-		$this->consumer_secret = $consumer_secret;
-	}
-
-
-	/**
-	 * @param \Orb\Log\Logger $logger
-	 */
-	public function setLogger(\Orb\Log\Logger $logger)
-	{
-		$this->logger = $logger;
-	}
+    /**
+     * @param string $consumer_key    Your Twitter consumer key
+     * @param string $consumer_secret Your Twitter consumer secret
+     */
+    public function __construct($consumer_key, $consumer_secret)
+    {
+        $this->consumer_key = $consumer_key;
+        $this->consumer_secret = $consumer_secret;
+    }
 
 
-	/**
-	 * @return \Orb\Log\Logger
-	 */
-	public function getLogger()
-	{
-		return $this->logger;
-	}
+    /**
+     * @param \Orb\Log\Logger $logger
+     */
+    public function setLogger(\Orb\Log\Logger $logger)
+    {
+        $this->logger = $logger;
+    }
 
 
-	/**
-	 * Initialize the auth process by setting state, and returning a redirect result.
-	 *
-	 * @return \Orb\Auth\Result
-	 */
-	protected function authenticateInitialize(StateHandlerInterface $state)
-	{
-		$oauth = $this->getOauthConsumer();
-
-		try {
-			$token = $oauth->getRequestToken();
-		} catch (\Exception $e) {
-			if ($this->logger) {
-				$this->logger->log("[Twitter] authenticateInitialize exception: {$e->getCode()} {$e->getMessage()}", 'ERR');
-			}
-			$result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
-			return $result;
-		}
-
-		$state['orb_oauth_twitter_rtoken'] = $token;
-
-		$redirect_url = $oauth->getRedirectUrl();
-
-		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
-
-		if ($this->logger) {
-			$this->logger->log("[Twitter] authenticateInitialize success: Token({$token}) Redirect({$redirect_url})", 'DEBUG');
-		}
-
-		return $result;
-	}
+    /**
+     * @return \Orb\Log\Logger
+     */
+    public function getLogger()
+    {
+        return $this->logger;
+    }
 
 
+    /**
+     * Initialize the auth process by setting state, and returning a redirect result.
+     *
+     * @return \Orb\Auth\Result
+     */
+    protected function authenticateInitialize(StateHandlerInterface $state)
+    {
+        $oauth = $this->getOauthConsumer();
 
-	/**
-	 * Process the callback and return a final result.
-	 *
-	 * @return \Orb\Auth\Result
-	 */
-	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
-	{
-		$oauth = $this->getOauthConsumer();
+        try {
+            $token = $oauth->getRequestToken();
+        } catch (\Exception $e) {
+            if ($this->logger) {
+                $this->logger->log("[Twitter] authenticateInitialize exception: {$e->getCode()} {$e->getMessage()}", 'ERR');
+            }
+            $result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
 
-		if (!isset($state['orb_oauth_twitter_rtoken'])) {
-			if ($this->logger) {
-				$this->logger->log("[Twitter] authenticateCallback fail: Missing token", 'DEBUG');
-			}
-			return new Result(Result::FAILURE, null, array('error_code' => 'invalid_token', 'error_message' => 'Invalid verify token'));
-		}
+            return $result;
+        }
 
-		if ($this->logger) {
-			$this->logger->log("[Twitter] authenticateCallback token: {$state['orb_oauth_twitter_rtoken']}", 'ERR');
-		}
+        $state['orb_oauth_twitter_rtoken'] = $token;
 
-		$access_token = $oauth->getAccessToken($callback_data, $state['orb_oauth_twitter_rtoken']);
-		unset($state['orb_oauth_twitter_rtoken']);
+        $redirect_url = $oauth->getRedirectUrl();
 
-		$client = $access_token->getHttpClient($this->getOauthConfig());
-		$client->setUri('https://api.twitter.com/1.1/account/verify_credentials.json');
-		$client->setMethod(\Zend\Http\Request::METHOD_GET);
-		$client->setOptions(array('sslverifypeer' => false));
-		$response = $client->send();
+        $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
 
-		if ($this->logger) {
-			$this->logger->log("[Twitter] authenticateCallback verify_credentials: {$response->getBody()}", 'DEBUG');
-		}
+        if ($this->logger) {
+            $this->logger->log("[Twitter] authenticateInitialize success: Token({$token}) Redirect({$redirect_url})", 'DEBUG');
+        }
 
-		$account_data = @json_decode($response->getBody(), true);
+        return $result;
+    }
 
-		if (!$account_data OR !isset($account_data['id'])) {
-			if ($this->logger) {
-				$this->logger->log("[Twitter] authenticateCallback failed_verify_credentials", 'DEBUG');
-			}
-			return new Result(Result::FAILURE, null, array('error_code' => 'failed_verify_credentials', 'error_message' => 'Failed to call API service to verify credentials'));
-		}
 
-		$raw_userinfo = array(
-			'access_token'        => $access_token->getToken(),
-			'access_token_secret' => $access_token->getTokenSecret(),
-			'identity'            => $account_data['id_str'],
-			'identity_friendly'   => $account_data['screen_name'],
-			'fullname'            => $account_data['name'],
-			'url'                 => $account_data['url'],
-			'nickname'            => $account_data['screen_name'],
-			'raw'                 => $account_data,
-		);
 
-		$identity = new \Orb\Auth\Identity($account_data['id'], $raw_userinfo);
-		$identity->setFriendlyIdentity($account_data['screen_name']);
+    /**
+     * Process the callback and return a final result.
+     *
+     * @return \Orb\Auth\Result
+     */
+    protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
+    {
+        $oauth = $this->getOauthConsumer();
 
-		$result = new Result(Result::SUCCESS, $identity);
+        if (!isset($state['orb_oauth_twitter_rtoken'])) {
+            if ($this->logger) {
+                $this->logger->log("[Twitter] authenticateCallback fail: Missing token", 'DEBUG');
+            }
 
-		if ($this->logger) {
-			$this->logger->log("[Twitter] authenticateCallback success: {$account_data['screen_name']}", 'DEBUG');
-		}
+            return new Result(Result::FAILURE, null, array('error_code' => 'invalid_token', 'error_message' => 'Invalid verify token'));
+        }
 
-		return $result;
-	}
+        if ($this->logger) {
+            $this->logger->log("[Twitter] authenticateCallback token: {$state['orb_oauth_twitter_rtoken']}", 'ERR');
+        }
 
-	/**
-	 * @return \ZendOAuth\Consumer
-	 */
-	public function getOauthConsumer()
-	{
-		static $has_set_http_client = false;
-		if (!$has_set_http_client) {
-			$has_set_http_client = true;
-			$httpClient = new \Zend\Http\Client(null, array(
-				'adapter' => 'Zend\Http\Client\Adapter\Socket',
-				'sslverifypeer' => false
-			));
-			OAuth::setHttpClient($httpClient);
-		}
+        $access_token = $oauth->getAccessToken($callback_data, $state['orb_oauth_twitter_rtoken']);
+        unset($state['orb_oauth_twitter_rtoken']);
 
-		return new \ZendOAuth\Consumer($this->getOauthConfig());
-	}
+        $client = $access_token->getHttpClient($this->getOauthConfig());
+        $client->setUri('https://api.twitter.com/1.1/account/verify_credentials.json');
+        $client->setMethod(\Zend\Http\Request::METHOD_GET);
+        $client->setOptions(array('sslverifypeer' => false));
+        $response = $client->send();
 
-	public function getOauthConfig()
-	{
-		return array(
-			'callbackUrl'    => $this->getCallbackUrl(),
-			'siteUrl'        => 'https://api.twitter.com/oauth',
-			'consumerKey'    => $this->consumer_key,
-			'consumerSecret' => $this->consumer_secret
-		);
-	}
+        if ($this->logger) {
+            $this->logger->log("[Twitter] authenticateCallback verify_credentials: {$response->getBody()}", 'DEBUG');
+        }
+
+        $account_data = @json_decode($response->getBody(), true);
+
+        if (!$account_data OR !isset($account_data['id'])) {
+            if ($this->logger) {
+                $this->logger->log("[Twitter] authenticateCallback failed_verify_credentials", 'DEBUG');
+            }
+
+            return new Result(Result::FAILURE, null, array('error_code' => 'failed_verify_credentials', 'error_message' => 'Failed to call API service to verify credentials'));
+        }
+
+        $raw_userinfo = array(
+            'access_token'        => $access_token->getToken(),
+            'access_token_secret' => $access_token->getTokenSecret(),
+            'identity'            => $account_data['id_str'],
+            'identity_friendly'   => $account_data['screen_name'],
+            'fullname'            => $account_data['name'],
+            'url'                 => $account_data['url'],
+            'nickname'            => $account_data['screen_name'],
+            'raw'                 => $account_data,
+        );
+
+        $identity = new \Orb\Auth\Identity($account_data['id'], $raw_userinfo);
+        $identity->setFriendlyIdentity($account_data['screen_name']);
+
+        $result = new Result(Result::SUCCESS, $identity);
+
+        if ($this->logger) {
+            $this->logger->log("[Twitter] authenticateCallback success: {$account_data['screen_name']}", 'DEBUG');
+        }
+
+        return $result;
+    }
+
+    /**
+     * @return \ZendOAuth\Consumer
+     */
+    public function getOauthConsumer()
+    {
+        static $has_set_http_client = false;
+        if (!$has_set_http_client) {
+            $has_set_http_client = true;
+            $httpClient = new \Zend\Http\Client(null, array(
+                'adapter' => 'Zend\Http\Client\Adapter\Socket',
+                'sslverifypeer' => false
+            ));
+            OAuth::setHttpClient($httpClient);
+        }
+
+        return new \ZendOAuth\Consumer($this->getOauthConfig());
+    }
+
+    public function getOauthConfig()
+    {
+        return array(
+            'callbackUrl'    => $this->getCallbackUrl(),
+            'siteUrl'        => 'https://api.twitter.com/oauth',
+            'consumerKey'    => $this->consumer_key,
+            'consumerSecret' => $this->consumer_secret
+        );
+    }
 
 }

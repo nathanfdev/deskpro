@@ -34,126 +34,126 @@
 
 namespace Application\DeskPRO\Style;
 
-use Application\DeskPRO\App;
 
 class UserStyle
 {
-	/** @var string */
-	protected $raw;
+    /** @var string */
+    protected $raw;
 
-	public function __construct($raw_css)
-	{
-		$this->raw = $raw_css;
-	}
-
-
-	/**
-	 * Read CSS to get embedded vars and their default values as k=>v
-	 *
-	 * @return array
-	 */
-	public function getVars()
-	{
-		// @my_var(default)
-		// @my_var
-		preg_match_all('#@([A-Za-z0-9_\-]+)(\[(.*?)\])?#', $this->raw, $matches, PREG_SET_ORDER);
-
-		$vars = array();
-
-		foreach ($matches as $m) {
-
-			if ($m[1] == 'HEX_TO_RGB') continue;
-
-			// Set value (may overwrite existing if it appeared later in the file
-			if (isset($m[3]) && $m[3]) {
-				$vars[$m[1]] = $m[3];
-			} else {
-				// Overwrite a blank if it has (parenthesis)
-				if (isset($m[2]) && $m[2]) {
-					$vars[$m[1]] = '';
-				// And finally set it to blank if it appears without parens and doesnt exist
-				} elseif (!isset($vars[$m[1]])) {
-					$vars[$m[1]] = '';
-				}
-			}
-		}
-
-		return $vars;
-	}
+    public function __construct($raw_css)
+    {
+        $this->raw = $raw_css;
+    }
 
 
-	/**
-	 * @param array $vars
-	 */
-	public function compileCss(array $vars = array())
-	{
-		$vars = array_merge($this->getVars(), $vars);
+    /**
+     * Read CSS to get embedded vars and their default values as k=>v
+     *
+     * @return array
+     */
+    public function getVars()
+    {
+        // @my_var(default)
+        // @my_var
+        preg_match_all('#@([A-Za-z0-9_\-]+)(\[(.*?)\])?#', $this->raw, $matches, PREG_SET_ORDER);
+
+        $vars = array();
+
+        foreach ($matches as $m) {
+
+            if ($m[1] == 'HEX_TO_RGB') continue;
+
+            // Set value (may overwrite existing if it appeared later in the file
+            if (isset($m[3]) && $m[3]) {
+                $vars[$m[1]] = $m[3];
+            } else {
+                // Overwrite a blank if it has (parenthesis)
+                if (isset($m[2]) && $m[2]) {
+                    $vars[$m[1]] = '';
+                // And finally set it to blank if it appears without parens and doesnt exist
+                } elseif (!isset($vars[$m[1]])) {
+                    $vars[$m[1]] = '';
+                }
+            }
+        }
+
+        return $vars;
+    }
 
 
-		$css = str_replace('@HEX_TO_RGB(', '__DP_HEX_TO_RGB(', $this->raw);
+    /**
+     * @param array $vars
+     */
+    public function compileCss(array $vars = array())
+    {
+        $vars = array_merge($this->getVars(), $vars);
 
-		$css = preg_replace_callback('#@([A-Za-z0-9_\-]+)(\[(.*?)\])?#', function($m) use ($vars) {
 
-			if (!isset($vars[$m[1]])) {
-				return '';
-			}
+        $css = str_replace('@HEX_TO_RGB(', '__DP_HEX_TO_RGB(', $this->raw);
 
-			return $vars[$m[1]];
-		}, $css);
+        $css = preg_replace_callback('#@([A-Za-z0-9_\-]+)(\[(.*?)\])?#', function ($m) use ($vars) {
 
-		$self = $this;
-		$css = preg_replace_callback('#__DP_HEX_TO_RGB\((.*?)\)#', function($m) use ($vars, $self) {
-			$color = rtrim($m[1], '#');
-			return $self->hex2RGB($color, ',');
-		}, $css);
+            if (!isset($vars[$m[1]])) {
+                return '';
+            }
 
-		// Fix url to static
-		$css = str_replace('url(../../', 'url(../../web/', $css);
+            return $vars[$m[1]];
+        }, $css);
 
-		// Strip comments
-		$css = preg_replace('#/\*[^*]*.*?\*/#s', '', $css);
+        $self = $this;
+        $css = preg_replace_callback('#__DP_HEX_TO_RGB\((.*?)\)#', function ($m) use ($vars, $self) {
+            $color = rtrim($m[1], '#');
 
-		// Superflous whitespace
-		$css = preg_replace("#\n{2,}#", "\n", $css);
-		$css = preg_replace("#\s*\{\s*#", "{", $css);
-		$css = preg_replace("#\s*\;\s*#", ";", $css);
-		$css = preg_replace("#\s*\:\s*#", ":", $css);
+            return $self->hex2RGB($color, ',');
+        }, $css);
 
-		return $css;
-	}
+        // Fix url to static
+        $css = str_replace('url(../../', 'url(../../web/', $css);
 
-	public function hex2RGB($hex, $return_string = ',')
-	{
-		$hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
-		$rgb = array();
-		if (strlen($hex) == 6) {
-			$color_val = hexdec($hex);
-			$rgb['red'] = 0xFF & ($color_val >> 0x10);
-			$rgb['green'] = 0xFF & ($color_val >> 0x8);
-			$rgb['blue'] = 0xFF & $color_val;
-		} elseif (strlen($hex) == 3) {
-			$rgb['red'] = hexdec(str_repeat(substr($hex, 0, 1), 2));
-			$rgb['green'] = hexdec(str_repeat(substr($hex, 1, 1), 2));
-			$rgb['blue'] = hexdec(str_repeat(substr($hex, 2, 1), 2));
-		} else {
-			return false;
-		}
+        // Strip comments
+        $css = preg_replace('#/\*[^*]*.*?\*/#s', '', $css);
 
-		return $return_string ? implode($return_string, $rgb) : $rgb; // returns the rgb string or the associative array
-	}
+        // Superflous whitespace
+        $css = preg_replace("#\n{2,}#", "\n", $css);
+        $css = preg_replace("#\s*\{\s*#", "{", $css);
+        $css = preg_replace("#\s*\;\s*#", ";", $css);
+        $css = preg_replace("#\s*\:\s*#", ":", $css);
 
-	public function lightenHex($orig_color, $fraction_denom = 2)
-	{
-		$highest_val = hexdec('FF');
-		$r = hexdec(substr($orig_color,0,2));
-		$r = ($highest_val-$r)/$fraction_denom + $r;
+        return $css;
+    }
 
-		$g = hexdec(substr($orig_color,2,2));
-		$g = ($highest_val-$g)/$fraction_denom + $g;
+    public function hex2RGB($hex, $return_string = ',')
+    {
+        $hex = preg_replace("/[^0-9A-Fa-f]/", '', $hex);
+        $rgb = array();
+        if (strlen($hex) == 6) {
+            $color_val = hexdec($hex);
+            $rgb['red'] = 0xFF & ($color_val >> 0x10);
+            $rgb['green'] = 0xFF & ($color_val >> 0x8);
+            $rgb['blue'] = 0xFF & $color_val;
+        } elseif (strlen($hex) == 3) {
+            $rgb['red'] = hexdec(str_repeat(substr($hex, 0, 1), 2));
+            $rgb['green'] = hexdec(str_repeat(substr($hex, 1, 1), 2));
+            $rgb['blue'] = hexdec(str_repeat(substr($hex, 2, 1), 2));
+        } else {
+            return false;
+        }
 
-		$b = hexdec(substr($orig_color,4,2));
-		$b = ($highest_val-$b)/$fraction_denom + $b;
+        return $return_string ? implode($return_string, $rgb) : $rgb; // returns the rgb string or the associative array
+    }
 
-		return dechex($r) . dechex($g) . dechex($b);
-	}
+    public function lightenHex($orig_color, $fraction_denom = 2)
+    {
+        $highest_val = hexdec('FF');
+        $r = hexdec(substr($orig_color,0,2));
+        $r = ($highest_val-$r)/$fraction_denom + $r;
+
+        $g = hexdec(substr($orig_color,2,2));
+        $g = ($highest_val-$g)/$fraction_denom + $g;
+
+        $b = hexdec(substr($orig_color,4,2));
+        $b = ($highest_val-$b)/$fraction_denom + $b;
+
+        return dechex($r) . dechex($g) . dechex($b);
+    }
 }

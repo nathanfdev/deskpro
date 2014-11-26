@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1352205586 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add support for organization managers");
-		$this->execMutateSql("ALTER TABLE people ADD organization_manager TINYINT(1) NOT NULL");
-	}
+    public function run()
+    {
+        $this->out("Add support for organization managers");
+        $this->execMutateSql("ALTER TABLE people ADD organization_manager TINYINT(1) NOT NULL");
+    }
 }

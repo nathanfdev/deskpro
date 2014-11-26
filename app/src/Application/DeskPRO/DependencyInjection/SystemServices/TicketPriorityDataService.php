@@ -38,187 +38,189 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class TicketPriorityDataService extends BaseRepositoryService
 {
-	/**
-	 * @var bool
-	 */
-	protected $has_init = false;
+    /**
+     * @var bool
+     */
+    protected $has_init = false;
 
-	/**
-	 * @var array
-	 */
-	protected $pris;
+    /**
+     * @var array
+     */
+    protected $pris;
 
-	/**
-	 * @var array
-	 */
-	protected $pri_ids;
+    /**
+     * @var array
+     */
+    protected $pri_ids;
 
-	/**
-	 * @var array
-	 */
-	protected $pri_map;
+    /**
+     * @var array
+     */
+    protected $pri_map;
 
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	protected $continer;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    protected $continer;
 
-	/**
-	 * @var \Application\DeskPRO\Translate\Translate
-	 */
-	protected $translator;
+    /**
+     * @var \Application\DeskPRO\Translate\Translate
+     */
+    protected $translator;
 
-	/**
-	 * @var int
-	 */
-	protected $default_id;
-
-
-	/**
-	 * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
-	 * @param array $options
-	 * @return BaseRepositoryService|TicketPriorityDataService
-	 */
-	public static function create(DeskproContainer $container, array $options = null)
-	{
-		if (!$options) $options = array();
-		$options['entity'] = 'Application\\DeskPRO\\Entity\\TicketPriority';
-		$options['translator'] = $container->getTranslator();
-		$options['default_id'] = $container->getSetting('core.default_ticket_pri');
-		$options['container']  = $container;
-
-		$em = $container->getEm();
-		$o = new static($em, $options);
-		return $o;
-	}
+    /**
+     * @var int
+     */
+    protected $default_id;
 
 
-	/**
-	 * Sets some useful objects from options
-	 */
-	protected function init()
-	{
-		$this->translator = $this->options['translator'];
-		$this->default_id = $this->options['default_id'];
-		$this->continer   = $this->options['container'];
-	}
+    /**
+     * @param  \Application\DeskPRO\DependencyInjection\DeskproContainer $container
+     * @param  array                                                     $options
+     * @return BaseRepositoryService|TicketPriorityDataService
+     */
+    public static function create(DeskproContainer $container, array $options = null)
+    {
+        if (!$options) $options = array();
+        $options['entity'] = 'Application\\DeskPRO\\Entity\\TicketPriority';
+        $options['translator'] = $container->getTranslator();
+        $options['default_id'] = $container->getSetting('core.default_ticket_pri');
+        $options['container']  = $container;
+
+        $em = $container->getEm();
+        $o = new static($em, $options);
+
+        return $o;
+    }
 
 
-	/**
-	 * @param int $pri_id
-	 * @return \Application\DeskPRO\Entity\TicketPriority
-	 */
-	public function get($pri_id)
-	{
-		$this->preload();
-		return isset($this->pris[$pri_id]) ? $this->pris[$pri_id] : null;
-	}
+    /**
+     * Sets some useful objects from options
+     */
+    protected function init()
+    {
+        $this->translator = $this->options['translator'];
+        $this->default_id = $this->options['default_id'];
+        $this->continer   = $this->options['container'];
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\Entity\TicketPriority[]
-	 */
-	public function getAll()
-	{
-		$this->preload();
-		return $this->pris;
-	}
+    /**
+     * @param  int                                        $pri_id
+     * @return \Application\DeskPRO\Entity\TicketPriority
+     */
+    public function get($pri_id)
+    {
+        $this->preload();
+
+        return isset($this->pris[$pri_id]) ? $this->pris[$pri_id] : null;
+    }
 
 
-	/**
-	 * Loads all tikcet priorities into this object
-	 */
-	protected function preload()
-	{
-		if ($this->has_init) {
-			return;
-		}
-		$this->has_init = true;
+    /**
+     * @return \Application\DeskPRO\Entity\TicketPriority[]
+     */
+    public function getAll()
+    {
+        $this->preload();
 
-		$this->pris = $this->em->createQuery("
-			SELECT p
-			FROM DeskPRO:TicketPriority p INDEX BY p.id
-			ORDER BY p.priority ASC
-		")->execute();
-		$this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:TicketPriority');
-
-		$this->pri_ids = array();
-		$this->pri_map = array();
-
-		// force hydration
-		foreach ($this->pris as $p) {
-			$this->pri_ids[] = $p->getId();
-			$this->pri_map[$p->getId()] = $p->getPriority();
-			$p->getTitle();
-		}
-	}
+        return $this->pris;
+    }
 
 
-	/**
-	 * @param int[] $for_ids
-	 * @return string[]
-	 */
-	public function getNames($for_ids = null)
-	{
-		$this->preload();
+    /**
+     * Loads all tikcet priorities into this object
+     */
+    protected function preload()
+    {
+        if ($this->has_init) {
+            return;
+        }
+        $this->has_init = true;
 
-		$ret = array();
+        $this->pris = $this->em->createQuery("
+            SELECT p
+            FROM DeskPRO:TicketPriority p INDEX BY p.id
+            ORDER BY p.priority ASC
+        ")->execute();
+        $this->em->getUnitOfWork()->markAsPreloaded('DeskPRO:TicketPriority');
 
-		if ($for_ids) {
-			foreach ($for_ids as $pid) {
-				$ret[$pid] = $this->translator->getPhraseObject($this->get($pid), 'title');
-			}
-		} else {
-			foreach ($this->pri_ids as $pid) {
-				$ret[$pid] = $this->translator->getPhraseObject($this->get($pid), 'title');
-			}
-		}
+        $this->pri_ids = array();
+        $this->pri_map = array();
 
-		return $ret;
-	}
-
-
-	/**
-	 * Gets a map of id=>priority
-	 *
-	 * @return array
-	 */
-	public function getIdToPriorityMap()
-	{
-		$this->preload();
-		return $this->pri_map;
-	}
+        // force hydration
+        foreach ($this->pris as $p) {
+            $this->pri_ids[] = $p->getId();
+            $this->pri_map[$p->getId()] = $p->getPriority();
+            $p->getTitle();
+        }
+    }
 
 
-	/**
-	 * @param array $ids
-	 * @return \Application\DeskPRO\Entity\TicketPriority[]
-	 */
-	public function getByIds(array $ids)
-	{
-		$this->preload();
-		$ret = array();
+    /**
+     * @param  int[]    $for_ids
+     * @return string[]
+     */
+    public function getNames($for_ids = null)
+    {
+        $this->preload();
 
-		foreach ($ids as $id) {
-			if (isset($this->pris[$id])) {
-				$ret[$id] = $this->pris[$id];
-			}
-		}
+        $ret = array();
 
-		return $ret;
-	}
+        if ($for_ids) {
+            foreach ($for_ids as $pid) {
+                $ret[$pid] = $this->translator->getPhraseObject($this->get($pid), 'title');
+            }
+        } else {
+            foreach ($this->pri_ids as $pid) {
+                $ret[$pid] = $this->translator->getPhraseObject($this->get($pid), 'title');
+            }
+        }
 
+        return $ret;
+    }
 
-	/**
-	 * Calls a method on the repository class and caches the result.
-	 *
-	 * @param $method
-	 * @param array $args
-	 * @return mixed
-	 */
-	public function __call($method, array $args = array())
-	{
-		$this->preload();
-		return parent::__call($method, $args);
-	}
+    /**
+     * Gets a map of id=>priority
+     *
+     * @return array
+     */
+    public function getIdToPriorityMap()
+    {
+        $this->preload();
+
+        return $this->pri_map;
+    }
+
+    /**
+     * @param  array                                        $ids
+     * @return \Application\DeskPRO\Entity\TicketPriority[]
+     */
+    public function getByIds(array $ids)
+    {
+        $this->preload();
+        $ret = array();
+
+        foreach ($ids as $id) {
+            if (isset($this->pris[$id])) {
+                $ret[$id] = $this->pris[$id];
+            }
+        }
+
+        return $ret;
+    }
+
+    /**
+     * Calls a method on the repository class and caches the result.
+     *
+     * @param $method
+     * @param  array $args
+     * @return mixed
+     */
+    public function __call($method, array $args = array())
+    {
+        $this->preload();
+
+        return parent::__call($method, $args);
+    }
 }

@@ -45,225 +45,227 @@ use Application\DeskPRO\Exception\ValidationException;
 
 class ChatDepsController extends AbstractController implements ProtectedControllerInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getPermissionStrategy()
-	{
-		$multi = new MultiPermissions();
-		$multi->addPermissionStrategy(new AdminManagePermission());
-		$multi->addPermissionStrategy(new PassPermission(), 'listAction');
-		return $multi;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new AdminManagePermission());
+        $multi->addPermissionStrategy(new PassPermission(), 'listAction');
 
-	####################################################################################################################
-	# list
-	####################################################################################################################
+        return $multi;
+    }
 
-	public function listAction()
-	{
-		$data = array();
+    ####################################################################################################################
+    # list
+    ####################################################################################################################
 
-		$chat_deps   = $this->container->getSystemService('chat_departments');
-		$flat_array  = $chat_deps->getFlatArray();
+    public function listAction()
+    {
+        $data = array();
 
-		$ag = $this->container->getAgentGroups();
-		$with_perms = $this->in->getBool('with_perms');
+        $chat_deps   = $this->container->getSystemService('chat_departments');
+        $flat_array  = $chat_deps->getFlatArray();
 
-		if ($with_perms) {
-			$perms = array();
+        $ag = $this->container->getAgentGroups();
+        $with_perms = $this->in->getBool('with_perms');
 
-			/** @var \Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService $ug */
-			$ug = $this->container->getDataService('Usergroup');
+        if ($with_perms) {
+            $perms = array();
 
-			$all_perms = $this->db->fetchAll("
-				SELECT department_id, usergroup_id, person_id, name
-				FROM department_permissions
-				WHERE app = 'chat'
-			");
+            /** @var \Application\DeskPRO\DependencyInjection\SystemServices\UsergroupDataService $ug */
+            $ug = $this->container->getDataService('Usergroup');
 
-			foreach ($all_perms as $p) {
-				if (!isset($perms[$p['department_id']])) {
-					$perms[$p['department_id']] = array('agentgroups' => array(), 'usergroups' => array(), 'users' => array());
-				}
+            $all_perms = $this->db->fetchAll("
+                SELECT department_id, usergroup_id, person_id, name
+                FROM department_permissions
+                WHERE app = 'chat'
+            ");
 
-				if ($p['usergroup_id']) {
-					if ($ug->getAgentGroup($p['usergroup_id'])) {
-						$perms[$p['department_id']]['agentgroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
-					} else {
-						$perms[$p['department_id']]['usergroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
-					}
-				} else {
-					$perms[$p['department_id']]['users'][] = array('id' => (int)$p['person_id'], 'name' => $p['name']);
-				}
-			}
-		}
+            foreach ($all_perms as $p) {
+                if (!isset($perms[$p['department_id']])) {
+                    $perms[$p['department_id']] = array('agentgroups' => array(), 'usergroups' => array(), 'users' => array());
+                }
 
-		$deps = array();
+                if ($p['usergroup_id']) {
+                    if ($ug->getAgentGroup($p['usergroup_id'])) {
+                        $perms[$p['department_id']]['agentgroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+                    } else {
+                        $perms[$p['department_id']]['usergroups'][] = array('id' => (int)$p['usergroup_id'], 'name' => $p['name']);
+                    }
+                } else {
+                    $perms[$p['department_id']]['users'][] = array('id' => (int)$p['person_id'], 'name' => $p['name']);
+                }
+            }
+        }
 
-		foreach ($flat_array as $row) {
-			$r = $row['object']->toApiData(true, false);
-			$r['depth'] = $row['depth'];
+        $deps = array();
 
-			if ($with_perms) {
-				if (isset($perms[$r['id']])) {
-					$r['permissions'] = $perms[$r['id']];
-				} else {
-					$r['permissions'] = array();
-				}
+        foreach ($flat_array as $row) {
+            $r = $row['object']->toApiData(true, false);
+            $r['depth'] = $row['depth'];
 
-				if (!isset($r['permissions']['agentgroups'])) {
-					$r['permissions']['agentgroups'] = array();
-				}
-				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full');
-				$r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full');
-			}
+            if ($with_perms) {
+                if (isset($perms[$r['id']])) {
+                    $r['permissions'] = $perms[$r['id']];
+                } else {
+                    $r['permissions'] = array();
+                }
 
-			$deps[] = $r;
-		}
+                if (!isset($r['permissions']['agentgroups'])) {
+                    $r['permissions']['agentgroups'] = array();
+                }
+                $r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_perms')->id, 'name' => 'full');
+                $r['permissions']['agentgroups'][] = array('id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'name' => 'full');
+            }
 
-		$data['departments'] = $deps;
+            $deps[] = $r;
+        }
 
-		return $this->createApiResponse($data);
-	}
+        $data['departments'] = $deps;
 
-	####################################################################################################################
-	# get
-	####################################################################################################################
+        return $this->createApiResponse($data);
+    }
 
-	public function getAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
-		 */
+    ####################################################################################################################
+    # get
+    ####################################################################################################################
 
-		$chat_deps = $this->container->getSystemService('chat_departments');
-		$dep       = $chat_deps->getById($id);
+    public function getAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
+         */
 
-		if (!$dep || !$dep->is_chat_enabled) {
+        $chat_deps = $this->container->getSystemService('chat_departments');
+        $dep       = $chat_deps->getById($id);
 
-			throw $this->createNotFoundException();
-		}
+        if (!$dep || !$dep->is_chat_enabled) {
 
-		$data                = array();
-		$data['department']  = $this->getApiData($dep);
-		$data['permissions'] = $chat_deps->getPermissionsInfo($dep);
+            throw $this->createNotFoundException();
+        }
 
-		$ag = $this->container->getAgentGroups();
-		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
-		$data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
+        $data                = array();
+        $data['department']  = $this->getApiData($dep);
+        $data['permissions'] = $chat_deps->getPermissionsInfo($dep);
 
-		return $this->createApiResponse($data);
-	}
+        $ag = $this->container->getAgentGroups();
+        $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_perms')->id, 'perm_name' => 'full');
+        $data['permissions']['agentgroups'][] = array('usergroup_id' => $ag->getSysGroup('agent_all_safe_perms')->id, 'perm_name' => 'full');
+
+        return $this->createApiResponse($data);
+    }
 
 
-	####################################################################################################################
-	# save
-	####################################################################################################################
+    ####################################################################################################################
+    # save
+    ####################################################################################################################
 
-	public function saveAction($id)
-	{
-		if ($id) {
+    public function saveAction($id)
+    {
+        if ($id) {
 
-			/**
-			 * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
-			 */
+            /**
+             * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
+             */
 
-			$chat_deps = $this->container->getSystemService('chat_departments');
-			$dep       = $chat_deps->getById($id);
+            $chat_deps = $this->container->getSystemService('chat_departments');
+            $dep       = $chat_deps->getById($id);
 
-			if (!$dep || !$dep->is_chat_enabled) {
+            if (!$dep || !$dep->is_chat_enabled) {
 
-				throw $this->createNotFoundException();
-			}
-		} else {
+                throw $this->createNotFoundException();
+            }
+        } else {
 
-			$dep = Department::createChatDepartment();
-		}
+            $dep = Department::createChatDepartment();
+        }
 
-		$postData = $this->in->getAll('post');
+        $postData = $this->in->getAll('post');
 
-		$chat_edit = new ChatDepartmentEdit($dep);
+        $chat_edit = new ChatDepartmentEdit($dep);
 
-		$form = $this->createForm(new ChatDepartmentType(), $chat_edit, array('cascade_validation' => true));
+        $form = $this->createForm(new ChatDepartmentType(), $chat_edit, array('cascade_validation' => true));
 
-		$form->submit($this->deleteExtraDataFromRequest($form, $postData, array('department', 'permissions')), true);
+        $form->submit($this->deleteExtraDataFromRequest($form, $postData, array('department', 'permissions')), true);
 
-		if ($form->isValid()) {
+        if ($form->isValid()) {
 
-			$chat_edit->save($this->em);
+            $chat_edit->save($this->em);
 
-			$chat_edit->savePermissions(
-				$this->em,
-				$this->container->getAgentData()->getAgents(),
-				$this->container->getDataService('Usergroup')->getAll()
-			);
+            $chat_edit->savePermissions(
+                $this->em,
+                $this->container->getAgentData()->getAgents(),
+                $this->container->getDataService('Usergroup')->getAll()
+            );
 
-		} else {
+        } else {
 
-			throw ValidationException::create($this->getFormValidationErrorsString($form));
-		}
+            throw ValidationException::create($this->getFormValidationErrorsString($form));
+        }
 
-		return $this->createApiResponse(
-			array(
-				 'success' => true,
-				 'id'      => $dep->id,
-			)
-		);
-	}
+        return $this->createApiResponse(
+            array(
+                 'success' => true,
+                 'id'      => $dep->id,
+            )
+        );
+    }
 
-	####################################################################################################################
-	# remove
-	####################################################################################################################
+    ####################################################################################################################
+    # remove
+    ####################################################################################################################
 
-	public function removeAction($id)
-	{
-		/**
-		 * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
-		 */
+    public function removeAction($id)
+    {
+        /**
+         * @var \Application\DeskPRO\Departments\ChatDepartments $chat_deps
+         */
 
-		$chat_deps = $this->container->getSystemService('chat_departments');
-		$editor    = $this->_getDepartmentEditor();
-		$dep       = $chat_deps->getById($id);
+        $chat_deps = $this->container->getSystemService('chat_departments');
+        $editor    = $this->_getDepartmentEditor();
+        $dep       = $chat_deps->getById($id);
 
-		if (!$dep) {
+        if (!$dep) {
 
-			throw $this->createNotFoundException();
-		}
+            throw $this->createNotFoundException();
+        }
 
-		$move_to_dep = $chat_deps->getById($this->in->getUint('move_to'));
+        $move_to_dep = $chat_deps->getById($this->in->getUint('move_to'));
 
-		if (!$move_to_dep) {
+        if (!$move_to_dep) {
 
-			throw ValidationException::create("department.move_chat.dep_not_valid");
-		}
+            throw ValidationException::create("department.move_chat.dep_not_valid");
+        }
 
-		$old_id = $editor->removeDepartment($dep, $move_to_dep);
+        $old_id = $editor->removeDepartment($dep, $move_to_dep);
 
-		return $this->createSuccessResponse(array('old_id' => $old_id));
-	}
+        return $this->createSuccessResponse(array('old_id' => $old_id));
+    }
 
-	####################################################################################################################
-	# save-display-order
-	####################################################################################################################
+    ####################################################################################################################
+    # save-display-order
+    ####################################################################################################################
 
-	public function saveDisplayOrderAction()
-	{
-		$display_orders = $this->in->getArrayOfUInts('display_orders');
+    public function saveDisplayOrderAction()
+    {
+        $display_orders = $this->in->getArrayOfUInts('display_orders');
 
-		$editor = $this->_getDepartmentEditor();
-		$editor->updateDisplayOrders($display_orders);
+        $editor = $this->_getDepartmentEditor();
+        $editor->updateDisplayOrders($display_orders);
 
-		return $this->createSuccessResponse();
-	}
+        return $this->createSuccessResponse();
+    }
 
-	/**
-	 * @return ChatDepartmentEditor
-	 */
+    /**
+     * @return ChatDepartmentEditor
+     */
 
-	private function _getDepartmentEditor()
-	{
-		$editor = new ChatDepartmentEditor($this->em);
-		return $editor;
-	}
+    private function _getDepartmentEditor()
+    {
+        $editor = new ChatDepartmentEditor($this->em);
+
+        return $editor;
+    }
 }

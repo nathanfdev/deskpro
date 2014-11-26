@@ -40,74 +40,74 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class EditAgentType extends AbstractType
 {
-	/**
-	 * @param FormBuilderInterface $builder
-	 * @param array $options
-	 */
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$builder->add('name', 'text', array('required' => true));
-		$builder->add('override_name', 'text', array('required' => false));
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->add('name', 'text', array('required' => true));
+        $builder->add('override_name', 'text', array('required' => false));
 
-		$builder->add('primary_phone_number_text', 'text', array('required' => false));
+        $builder->add('primary_phone_number_text', 'text', array('required' => false));
 
-		$builder->add('emails', 'collection', array(
-			'type'         => 'email',
-			'allow_add'    => true,
-			'allow_delete' => true,
-			'invalid_message' => 'Invalid Email.',
-		));
+        $builder->add('emails', 'collection', array(
+            'type'         => 'email',
+            'allow_add'    => true,
+            'allow_delete' => true,
+            'invalid_message' => 'Invalid Email.',
+        ));
 
-		$builder->add('zones', 'choice', array(
-			'choices'  => array('admin' => 'admin', 'reports' => 'reports'),
-			'multiple' => true,
-			'required' => false,
-		));
+        $builder->add('zones', 'choice', array(
+            'choices'  => array('admin' => 'admin', 'reports' => 'reports'),
+            'multiple' => true,
+            'required' => false,
+        ));
 
-		$builder->add('teams', 'entity', array(
-			'class'    => 'DeskPRO:AgentTeam',
-			'required' => false,
-			'multiple' => true,
-			'invalid_message' => 'Invalid Team.',
-		));
+        $builder->add('teams', 'entity', array(
+            'class'    => 'DeskPRO:AgentTeam',
+            'required' => false,
+            'multiple' => true,
+            'invalid_message' => 'Invalid Team.',
+        ));
 
-		$builder->add('agent_groups', 'entity', array(
-			'class'         => 'DeskPRO:Usergroup',
-			'required'      => false,
-			'multiple'      => true,
-			'query_builder' => function(EntityRepository $er) {
-				return $er->createQueryBuilder('ug')->where('ug.is_agent_group = true');
-			},
-			'invalid_message' => 'Invalid Agent Group.',
-		));
+        $builder->add('agent_groups', 'entity', array(
+            'class'         => 'DeskPRO:Usergroup',
+            'required'      => false,
+            'multiple'      => true,
+            'query_builder' => function (EntityRepository $er) {
+                return $er->createQueryBuilder('ug')->where('ug.is_agent_group = true');
+            },
+            'invalid_message' => 'Invalid Agent Group.',
+        ));
 
-		$builder->add('primary_team', 'entity', array(
-			'class'         => 'DeskPRO:AgentTeam',
-			'required'      => false,
-			'invalid_message' => 'Invalid Agent Team.',
-		));
+        $builder->add('primary_team', 'entity', array(
+            'class'         => 'DeskPRO:AgentTeam',
+            'required'      => false,
+            'invalid_message' => 'Invalid Agent Team.',
+        ));
 
-		$builder->add('notification_settings', 'collection');
-	}
-
-
-	/**
-	 * @param OptionsResolverInterface $resolver
-	 */
-	public function setDefaultOptions(OptionsResolverInterface $resolver)
-	{
-		$resolver->setDefaults(array(
-			'data_class'         => 'Application\\DeskPRO\\People\\Agents\\EditAgent',
-			'cascade_validation' => true,
-		));
-	}
+        $builder->add('notification_settings', 'collection');
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getName()
-	{
-		return 'agent';
-	}
+    /**
+     * @param OptionsResolverInterface $resolver
+     */
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'data_class'         => 'Application\\DeskPRO\\People\\Agents\\EditAgent',
+            'cascade_validation' => true,
+        ));
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return 'agent';
+    }
 }

@@ -34,43 +34,40 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use Application\DeskPRO\App;
-
 class PersonUsersourceAssoc extends AbstractEntityRepository
 {
-	/**
-	 * Finds the PersonUsersourceAssoc for a given identity.
-	 * If no association exists, null is returend.
-	 */
-	public function getIdentityAssociation($usersource, $identity)
-	{
-		$assoc = $this->_em->createQuery("
-			SELECT f, p
-			FROM DeskPRO:PersonUsersourceAssoc f
-			LEFT JOIN f.person p
-			WHERE f.usersource = ?1 AND f.identity = ?2
-		")->setMaxResults(1)
-		  ->setParameter(1, $usersource)
-		  ->setParameter(2, $identity)
-		  ->getOneOrNullResult();
+    /**
+     * Finds the PersonUsersourceAssoc for a given identity.
+     * If no association exists, null is returend.
+     */
+    public function getIdentityAssociation($usersource, $identity)
+    {
+        $assoc = $this->_em->createQuery("
+            SELECT f, p
+            FROM DeskPRO:PersonUsersourceAssoc f
+            LEFT JOIN f.person p
+            WHERE f.usersource = ?1 AND f.identity = ?2
+        ")->setMaxResults(1)
+          ->setParameter(1, $usersource)
+          ->setParameter(2, $identity)
+          ->getOneOrNullResult();
 
-		return $assoc;
-	}
+        return $assoc;
+    }
 
+    /**
+     * @param  \Application\DeskPRO\Entity\Person                  $person
+     * @return \Application\DeskPRO\Entity\PersonUsersourceAssoc[]
+     */
+    public function getAssociationsForPerson(\Application\DeskPRO\Entity\Person $person)
+    {
+        $associations = $this->_em->createQuery("
+            SELECT assoc, us
+            FROM DeskPRO:PersonUsersourceAssoc assoc
+            LEFT JOIN assoc.usersource us
+            WHERE assoc.person = ?0
+        ")->execute(array($person));
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return \Application\DeskPRO\Entity\PersonUsersourceAssoc[]
-	 */
-	public function getAssociationsForPerson(\Application\DeskPRO\Entity\Person $person)
-	{
-		$associations = $this->_em->createQuery("
-			SELECT assoc, us
-			FROM DeskPRO:PersonUsersourceAssoc assoc
-			LEFT JOIN assoc.usersource us
-			WHERE assoc.person = ?0
-		")->execute(array($person));
-
-		return $associations;
-	}
+        return $associations;
+    }
 }

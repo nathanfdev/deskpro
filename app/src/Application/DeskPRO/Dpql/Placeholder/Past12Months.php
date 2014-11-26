@@ -42,22 +42,22 @@ use Application\DeskPRO\Dpql;
  */
 class Past12Months extends AbstractDateRange
 {
-	/**
-	 * Gets the date range components (printable, start, end).
-	 *
-	 * @return string[int]
-	 */
-	protected function _getDateRange()
-	{
-		$tz = App::getCurrentPerson()->getTimezone();
-		$date = new \DateTime('now', new \DateTimeZone($tz));
+    /**
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
+     */
+    protected function _getDateRange()
+    {
+        $tz = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('now', new \DateTimeZone($tz));
 
-		$now = $date->format('Y-m-d H:i:s');
-		$today = $date->format('Y-m-d');
+        $now = $date->format('Y-m-d H:i:s');
+        $today = $date->format('Y-m-d');
 
-		$date->modify('-12 months');
-		$beginning = $date->format('Y-m-d');
+        $date->modify('-12 months');
+        $beginning = $date->format('Y-m-d');
 
-		return array("$beginning to $today", "$beginning 00:00:00", $now);
-	}
+        return array("$beginning to $today", "$beginning 00:00:00", $now);
+    }
 }

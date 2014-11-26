@@ -43,25 +43,25 @@ use Application\DeskPRO\App;
  */
 class SearchAdapter
 {
-	public static function getSearchAdapter()
-	{
-		$adapter_name = strtolower(App::getConfig('search.adapter'));
-		$config = App::getConfig('search.options');
+    public static function getSearchAdapter()
+    {
+        $adapter_name = strtolower(App::getConfig('search.adapter'));
+        $config = App::getConfig('search.options');
 
-		switch ($adapter_name) {
-			case 'elastic':
-				$adapter = \Application\DeskPRO\Search\Adapter\ElasticAdapter::create($config['host'], $config['port']);
-				break;
+        switch ($adapter_name) {
+            case 'elastic':
+                $adapter = \Application\DeskPRO\Search\Adapter\ElasticAdapter::create($config['host'], $config['port']);
+                break;
 
-			default:
-				$adapter = new \Application\DeskPRO\Search\Adapter\MysqlAdapter();
-				break;
-		}
+            default:
+                $adapter = new \Application\DeskPRO\Search\Adapter\MysqlAdapter();
+                break;
+        }
 
-		if (!$adapter) {
-			throw new \Exception('No search adapter');
-		}
+        if (!$adapter) {
+            throw new \Exception('No search adapter');
+        }
 
-		return $adapter;
-	}
+        return $adapter;
+    }
 }

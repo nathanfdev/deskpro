@@ -38,33 +38,33 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 
 class RefreshStylesheets
 {
-	/**
-	 * Refreshes the saved CSS file when the template has changed, or a stylevar has changed.
-	 *
-	 * "Refreshing" just means deleting the CSS blob. The serve_file will re-create it as needed.
-	 *
-	 * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
-	 */
-	public static function refresh(DeskproContainer $container)
-	{
-		$style = $container->getSystemService('style');
+    /**
+     * Refreshes the saved CSS file when the template has changed, or a stylevar has changed.
+     *
+     * "Refreshing" just means deleting the CSS blob. The serve_file will re-create it as needed.
+     *
+     * @param \Application\DeskPRO\DependencyInjection\DeskproContainer $container
+     */
+    public static function refresh(DeskproContainer $container)
+    {
+        $style = $container->getSystemService('style');
 
-		if ($style) {
-			if ($style->css_blob && $style->css_blob->getId()) {
-				$container->getBlobStorage()->deleteBlobRecord($style->css_blob);
-			}
+        if ($style) {
+            if ($style->css_blob && $style->css_blob->getId()) {
+                $container->getBlobStorage()->deleteBlobRecord($style->css_blob);
+            }
 
-			if ($style->css_blob_rtl && $style->css_blob_rtl->getId()) {
-				$container->getBlobStorage()->deleteBlobRecord($style->css_blob_rtl);
-			}
+            if ($style->css_blob_rtl && $style->css_blob_rtl->getId()) {
+                $container->getBlobStorage()->deleteBlobRecord($style->css_blob_rtl);
+            }
 
-			$style->css_blob = null;
-			$style->css_blob_rtl = null;
-			$container->getDb()->update('styles', array(
-				'css_blob_id' => null,
-				'css_blob_rtl_id' => null,
-				'css_updated' => date('Y-m-d H:i:s')
-			), array('id' => $style->getId()));
-		}
-	}
+            $style->css_blob = null;
+            $style->css_blob_rtl = null;
+            $container->getDb()->update('styles', array(
+                'css_blob_id' => null,
+                'css_blob_rtl_id' => null,
+                'css_updated' => date('Y-m-d H:i:s')
+            ), array('id' => $style->getId()));
+        }
+    }
 }

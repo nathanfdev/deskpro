@@ -38,67 +38,67 @@ use Application\DeskPRO\App;
 
 abstract class ContentInitializer extends AbstractInitializer
 {
-	abstract public function preRun();
-	
-	public function run()
-	{
-		$this->preRun();
+    abstract public function preRun();
 
-		#------------------------------
-		# Run through each content type
-		#------------------------------
+    public function run()
+    {
+        $this->preRun();
 
-		$time_start = microtime(true);
-		$total = 0;
-		try {
-			$total += $this->runForType('article',  'DeskPRO:Article');
-			$total += $this->runForType('download', 'DeskPRO:Download');
-			$total += $this->runForType('feedback',     'DeskPRO:Feedback');
-			$total += $this->runForType('news',     'DeskPRO:News');
-		} catch (\Exception $e) {
-			$this->logger->log('Exception: ' . $e->getMessage(), Logger::ERR);
-			throw $e;
-		}
+        #------------------------------
+        # Run through each content type
+        #------------------------------
 
-		$time = sprintf("%.5f", microtime(true)-$time_start);
-		$this->logger->log("Indexed $total items in $time seconds", Logger::INFO);
+        $time_start = microtime(true);
+        $total = 0;
+        try {
+            $total += $this->runForType('article',  'DeskPRO:Article');
+            $total += $this->runForType('download', 'DeskPRO:Download');
+            $total += $this->runForType('feedback',     'DeskPRO:Feedback');
+            $total += $this->runForType('news',     'DeskPRO:News');
+        } catch (\Exception $e) {
+            $this->logger->log('Exception: ' . $e->getMessage(), Logger::ERR);
+            throw $e;
+        }
 
-		return $total;
-	}
+        $time = sprintf("%.5f", microtime(true)-$time_start);
+        $this->logger->log("Indexed $total items in $time seconds", Logger::INFO);
 
-	public function runForType($type_name, $entity_name)
-	{
-		$table_name = App::getOrm()->getClassMetadata($entity_name)->getTableName();
+        return $total;
+    }
 
-		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM $table_name");
-		if (!$count) {
-			$this->logger->log("No $entity_name objects", Logger::INFO);
-		}
+    public function runForType($type_name, $entity_name)
+    {
+        $table_name = App::getOrm()->getClassMetadata($entity_name)->getTableName();
 
-		$time_start = microtime(true);
-		$this->logger->log("START $entity_name ($count objects)", Logger::INFO);
+        $count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM $table_name");
+        if (!$count) {
+            $this->logger->log("No $entity_name objects", Logger::INFO);
+        }
 
-		$per_page = 25;
-		$pages = ceil($count / $per_page);
+        $time_start = microtime(true);
+        $this->logger->log("START $entity_name ($count objects)", Logger::INFO);
 
-		for ($i = 0; $i < $pages; $i++) {
-			$offset = $i * $per_page;
+        $per_page = 25;
+        $pages = ceil($count / $per_page);
 
-			$objects = App::getOrm()->createQuery("
-				SELECT o
-				FROM $entity_name o
-				ORDER BY o.id
-			")->setMaxResults($per_page)->setFirstResult($offset)->execute();
+        for ($i = 0; $i < $pages; $i++) {
+            $offset = $i * $per_page;
 
-			$this->adapter->updateObjectsInIndex($objects);
-			$this->logger->log("--- Inserted batch $i of $pages", Logger::INFO);
+            $objects = App::getOrm()->createQuery("
+                SELECT o
+                FROM $entity_name o
+                ORDER BY o.id
+            ")->setMaxResults($per_page)->setFirstResult($offset)->execute();
 
-			App::getOrm()->clear();
-		}
+            $this->adapter->updateObjectsInIndex($objects);
+            $this->logger->log("--- Inserted batch $i of $pages", Logger::INFO);
 
-		$time = sprintf("%.5f", microtime(true)-$time_start);
-		$this->logger->log("END $entity_name (took $time seconds)", Logger::INFO);
+            App::getOrm()->clear();
+        }
 
-		return $count;
-	}
+        $time = sprintf("%.5f", microtime(true)-$time_start);
+        $this->logger->log("END $entity_name (took $time seconds)", Logger::INFO);
+
+        return $count;
+    }
 }

@@ -49,96 +49,96 @@ use Orb\Util\Numbers;
  */
 class Organization extends DomainObject implements HighlightableModelInterface
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 *
-	 */
-	protected $id = null;
+    /**
+     * The unique ID.
+     *
+     * @var int
+     *
+     */
+    protected $id = null;
 
-	/**
-	 * The org picture
-	 *
-	 * @var \Application\DeskPRO\Entity\Blob
-	 */
-	protected $picture_blob = null;
+    /**
+     * The org picture
+     *
+     * @var \Application\DeskPRO\Entity\Blob
+     */
+    protected $picture_blob = null;
 
-	/**
-	 * The organization name
-	 *
-	 * @var string
-	 */
-	protected $name = null;
+    /**
+     * The organization name
+     *
+     * @var string
+     */
+    protected $name = null;
 
-	/**
-	 * The summary field as filled in by agents
-	 *
-	 * @var string
-	 */
-	protected $summary = '';
+    /**
+     * The summary field as filled in by agents
+     *
+     * @var string
+     */
+    protected $summary = '';
 
-	/**
-	 * The org importance
-	 *
-	 * @var int
-	 */
-	protected $importance = 0;
+    /**
+     * The org importance
+     *
+     * @var int
+     */
+    protected $importance = 0;
 
-	/**
-	 */
-	protected $custom_data;
+    /**
+     */
+    protected $custom_data;
 
-	/**
-	 * Usergroups the user belongs to
-	 *
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $usergroups;
+    /**
+     * Usergroups the user belongs to
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $usergroups;
 
-	/**
-	 * Users who are set to automatically be added to tickets and other org things
-	 *
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $auto_cc_people;
+    /**
+     * Users who are set to automatically be added to tickets and other org things
+     *
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $auto_cc_people;
 
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $labels;
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $labels;
 
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $contact_data;
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $contact_data;
 
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $email_domains;
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $email_domains;
 
-	/**
-	 * The date the org was inserted into the system
-	 *
-	 * @var \DateTime
-	 */
-	protected $date_created;
+    /**
+     * The date the org was inserted into the system
+     *
+     * @var \DateTime
+     */
+    protected $date_created;
 
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $slas;
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $slas;
 
-	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 */
-	protected $twitter_users;
+    /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
+     */
+    protected $twitter_users;
 
-	/**
-	 * @var null|\Application\DeskPRO\Labels\LabelManager
-	 */
-	protected $_label_manager = null;
+    /**
+     * @var null|\Application\DeskPRO\Labels\LabelManager
+     */
+    protected $_label_manager = null;
 
     /**
      * The search result highlights
@@ -147,98 +147,98 @@ class Organization extends DomainObject implements HighlightableModelInterface
      */
     protected $_search_highlights;
 
-	public function __construct()
-	{
-		$this->setModelField('email_domains'       , new \Doctrine\Common\Collections\ArrayCollection());
-		$this->setModelField('custom_data'         , new \Doctrine\Common\Collections\ArrayCollection());
-		$this->setModelField('labels'              , new \Doctrine\Common\Collections\ArrayCollection());
-		$this->setModelField('contact_data'        , new \Doctrine\Common\Collections\ArrayCollection());
-		$this->setModelField('usergroups'          , new \Doctrine\Common\Collections\ArrayCollection());
-		$this->setModelField('twitter_users'       , new \Doctrine\Common\Collections\ArrayCollection());
-		$this->setModelField('date_created'        , new \DateTime());
-		$this->slas = new \Doctrine\Common\Collections\ArrayCollection();
-	}
+    public function __construct()
+    {
+        $this->setModelField('email_domains'       , new \Doctrine\Common\Collections\ArrayCollection());
+        $this->setModelField('custom_data'         , new \Doctrine\Common\Collections\ArrayCollection());
+        $this->setModelField('labels'              , new \Doctrine\Common\Collections\ArrayCollection());
+        $this->setModelField('contact_data'        , new \Doctrine\Common\Collections\ArrayCollection());
+        $this->setModelField('usergroups'          , new \Doctrine\Common\Collections\ArrayCollection());
+        $this->setModelField('twitter_users'       , new \Doctrine\Common\Collections\ArrayCollection());
+        $this->setModelField('date_created'        , new \DateTime());
+        $this->slas = new \Doctrine\Common\Collections\ArrayCollection();
+    }
 
-	/**
-	 * @return int
-	 */
-	public function getId()
-	{
-		return $this->id;
-	}
-
-
-	/**
-	 * Set the default importance of people in this org
-	 *
-	 * @param int $importance
-	 */
-	public function setImportance($importance)
-	{
-		$old = $this->importance;
-		$this->importance = Numbers::bound($importance, 0, 5);
-		$this->_onPropertyChanged('importance', $old, $this->importance);
-	}
+    /**
+     * @return int
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
 
 
-	/**
-	 * Find an existing data record for a field id.
-	 *
-	 * @param int $field_id
-	 * @return CustomDataOrganization
-	 */
-	public function getCustomDataForField($field_id)
-	{
-		if ($field_id instanceof CustomDefOrganization) {
-			$field_id = $field_id['id'];
-		}
-
-		foreach ($this->custom_data as $data) {
-			if ($data['field_id'] == $field_id) {
-				return $data;
-			}
-		}
-
-		return null;
-	}
-
-	/**
-	 * Add contact data
-	 *
-	 * @param OrganizationContactData $contact_data
-	 */
-	public function addContactData(OrganizationContactData $contact_data)
-	{
-		$em = App::getOrm();
-
-		$this['contact_data']->add($contact_data);
-
-		$contact_data['organization'] = $this;
-		$em->persist($contact_data);
-		$this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
-	}
+    /**
+     * Set the default importance of people in this org
+     *
+     * @param int $importance
+     */
+    public function setImportance($importance)
+    {
+        $old = $this->importance;
+        $this->importance = Numbers::bound($importance, 0, 5);
+        $this->_onPropertyChanged('importance', $old, $this->importance);
+    }
 
 
-	/**
-	 * @param null $type
-	 * @return array
-	 */
-	public function getContactData($type = null)
-	{
-		if (!$type) {
-			return $this->contact_data;
-		}
+    /**
+     * Find an existing data record for a field id.
+     *
+     * @param  int                    $field_id
+     * @return CustomDataOrganization
+     */
+    public function getCustomDataForField($field_id)
+    {
+        if ($field_id instanceof CustomDefOrganization) {
+            $field_id = $field_id['id'];
+        }
 
-		$ret = array();
+        foreach ($this->custom_data as $data) {
+            if ($data['field_id'] == $field_id) {
+                return $data;
+            }
+        }
 
-		foreach ($this->contact_data as $cd) {
-			if ($cd->contact_type == $type) {
-				$ret[] = $cd;
-			}
-		}
+        return null;
+    }
 
-		return $ret;
-	}
+    /**
+     * Add contact data
+     *
+     * @param OrganizationContactData $contact_data
+     */
+    public function addContactData(OrganizationContactData $contact_data)
+    {
+        $em = App::getOrm();
+
+        $this['contact_data']->add($contact_data);
+
+        $contact_data['organization'] = $this;
+        $em->persist($contact_data);
+        $this->_onPropertyChanged('contact_data', $this->contact_data, $this->contact_data);
+    }
+
+
+    /**
+     * @param  null  $type
+     * @return array
+     */
+    public function getContactData($type = null)
+    {
+        if (!$type) {
+            return $this->contact_data;
+        }
+
+        $ret = array();
+
+        foreach ($this->contact_data as $cd) {
+            if ($cd->contact_type == $type) {
+                $ret[] = $cd;
+            }
+        }
+
+        return $ret;
+    }
 
 
 	public function removeCustomDataForField(CustomDefOrganization $field)
@@ -259,237 +259,238 @@ class Organization extends DomainObject implements HighlightableModelInterface
 
 
 
-	/**
-	 * Set custom field data for a particular field.
-	 *
-	 * @param int $field_id
-	 * @param mixed $value
-	 * @return mixed
-	 */
-	public function setCustomData($field_id, $value_type, $value)
-	{
-		$custom_data = $this->getCustomDataForField($field_id);
-		$is_new = false;
+    /**
+     * Set custom field data for a particular field.
+     *
+     * @param  int   $field_id
+     * @param  mixed $value
+     * @return mixed
+     */
+    public function setCustomData($field_id, $value_type, $value)
+    {
+        $custom_data = $this->getCustomDataForField($field_id);
+        $is_new = false;
 
-		if (!$custom_data) {
-			if ($value === null) return null;
+        if (!$custom_data) {
+            if ($value === null) return null;
 
-			$is_new = true;
+            $is_new = true;
 
-			$field = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($field_id);
-			if (!$field) {
-				throw new \Exception("Invalid field_id `$field_id`");
-			}
-			$custom_data = new CustomDataOrganization();
-			$custom_data['field'] = $field;
-		}
+            $field = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($field_id);
+            if (!$field) {
+                throw new \Exception("Invalid field_id `$field_id`");
+            }
+            $custom_data = new CustomDataOrganization();
+            $custom_data['field'] = $field;
+        }
 
-		if ($value === null) {
-			$this['custom_data']->removeElement($custom_data);
-			return null;
-		}
+        if ($value === null) {
+            $this['custom_data']->removeElement($custom_data);
 
-		$custom_data[$value_type] = $value;
+            return null;
+        }
 
-		if ($is_new) {
-			$this->addCustomData($custom_data);
-		}
+        $custom_data[$value_type] = $value;
 
-		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+        if ($is_new) {
+            $this->addCustomData($custom_data);
+        }
 
-		return $custom_data;
-	}
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
 
-	/**
-	 * Add a custom data item to this ticket
-	 *
-	 * @param CustomDataTicket $data
-	 */
-	public function addCustomData(CustomDataOrganization $data)
-	{
-		$this->custom_data->add($data);
-		$data['organization'] = $this;
-		$this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
-	}
+        return $custom_data;
+    }
 
-
-	/**
-	 * Render a custom field
-	 */
-	public function renderCustomField($field_id, $context = 'html')
-	{
-		$f_def = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($field_id);
-
-		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
-
-		$value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
-		$rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
-
-		return $rendered;
-	}
-
-	/**
-	 * Check if this ticket has a custom field.
-	 *
-	 * @param $field_id
-	 * @return bool
-	 */
-	public function hasCustomField($field_id)
-	{
-		foreach ($this->custom_data as $data) {
-			if ($data->field['id'] == $field_id) {
-				return true;
-			}
-		}
-
-		return false;
-	}
+    /**
+     * Add a custom data item to this ticket
+     *
+     * @param CustomDataTicket $data
+     */
+    public function addCustomData(CustomDataOrganization $data)
+    {
+        $this->custom_data->add($data);
+        $data['organization'] = $this;
+        $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);
+    }
 
 
-	/**
-	 * Gets a display array for a specific field
-	 * @param $field_id
-	 * @return array|mixed|null
-	 */
-	public function getCustomFieldDisplayArray($field_id)
-	{
-		$data = $this->getCustomDataForField($field_id);
-		if (!$data) {
-			return null;
-		}
+    /**
+     * Render a custom field
+     */
+    public function renderCustomField($field_id, $context = 'html')
+    {
+        $f_def = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($field_id);
 
-		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
-		$org_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $org_field_defs);
+        $data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
 
-		$custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray(
-			$org_field_defs,
-			$org_data_structured
-		);
+        $value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
+        $rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
 
-		$custom_fields = array_pop($custom_fields);
+        return $rendered;
+    }
 
-		return $custom_fields;
-	}
+    /**
+     * Check if this ticket has a custom field.
+     *
+     * @param $field_id
+     * @return bool
+     */
+    public function hasCustomField($field_id)
+    {
+        foreach ($this->custom_data as $data) {
+            if ($data->field['id'] == $field_id) {
+                return true;
+            }
+        }
 
-
-	/**
-	 * Gets the URL to a picture for the org. If there is no picture for the org, a default one
-	 * will be rendered. Use hasPicture if you need to know if a picture exists
-	 *
-	 * @return null|string
-	 */
-	public function getPictureUrl($size = 80, $secure = null)
-	{
-		// Null means detect
-		if ($secure === null AND App::isWebRequest()) {
-			$request = App::getRequest();
-			if ($request->isSecure()) {
-				$secure = true;
-			}
-		}
-
-		$url = false;
-		if ($this->picture_blob) {
-			$url = App::get('router')->generate('serve_blob_sizefit', array(
-				'blob_auth_id' => $this->picture_blob->getAuthId(),
-				'filename' => $this->picture_blob->getFilenameSafe(),
-				's' => $size
-			), true);
-		}
-
-		if (!$url) {
-			$url = App::get('router')->generate('serve_org_picture_default', array(
-				's' => $size,
-				'size-fit' => 1,
-			), true);
-		}
-
-		if ($secure) {
-			$url = preg_replace('#^http:#', 'https:', $url);
-		}
-
-		return $url;
-	}
+        return false;
+    }
 
 
+    /**
+     * Gets a display array for a specific field
+     * @param $field_id
+     * @return array|mixed|null
+     */
+    public function getCustomFieldDisplayArray($field_id)
+    {
+        $data = $this->getCustomDataForField($field_id);
+        if (!$data) {
+            return null;
+        }
 
-	/**
-	 * Cehck if the company has a picture uploaded
-	 *
-	 * @return bool
-	 */
-	public function hasPicture()
-	{
-		if ($this->picture_blob) {
-			return true;
-		}
+        $org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
+        $org_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $org_field_defs);
 
-		return false;
-	}
+        $custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray(
+            $org_field_defs,
+            $org_data_structured
+        );
 
-	public function hasSla(Sla $sla)
-	{
-		foreach ($this->slas AS $org_sla) {
-			if ($org_sla->id == $sla->id) {
-				return true;
-			}
-		}
+        $custom_fields = array_pop($custom_fields);
 
-		return false;
-	}
+        return $custom_fields;
+    }
 
 
-	/**
-	 * Add a label
-	 * @param Entity\LabelOrganization $label
-	 */
-	public function addLabel(Entity\LabelOrganization $label)
-	{
-		$label['organization'] = $this;
-		$this->labels->add($label);
-		$this->_onPropertyChanged('labels', $this->labels, $this->labels);
-	}
+    /**
+     * Gets the URL to a picture for the org. If there is no picture for the org, a default one
+     * will be rendered. Use hasPicture if you need to know if a picture exists
+     *
+     * @return null|string
+     */
+    public function getPictureUrl($size = 80, $secure = null)
+    {
+        // Null means detect
+        if ($secure === null AND App::isWebRequest()) {
+            $request = App::getRequest();
+            if ($request->isSecure()) {
+                $secure = true;
+            }
+        }
 
-	public function getLabelManager()
-	{
-		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelOrganization');
-		}
+        $url = false;
+        if ($this->picture_blob) {
+            $url = App::get('router')->generate('serve_blob_sizefit', array(
+                'blob_auth_id' => $this->picture_blob->getAuthId(),
+                'filename' => $this->picture_blob->getFilenameSafe(),
+                's' => $size
+            ), true);
+        }
 
-		return $this->_label_manager;
-	}
+        if (!$url) {
+            $url = App::get('router')->generate('serve_org_picture_default', array(
+                's' => $size,
+                'size-fit' => 1,
+            ), true);
+        }
 
-	public function __toString()
-	{
-		return $this->name;
-	}
+        if ($secure) {
+            $url = preg_replace('#^http:#', 'https:', $url);
+        }
+
+        return $url;
+    }
 
 
 
-	public function toApiData($primary = true, $deep = true, array $visited = array())
-	{
-		$data = parent::toApiData($primary, $deep, $visited);
-		if ($deep) {
-			$data['labels'] = array();
-			foreach ($this->labels AS $label) {
-				$data['labels'][] = $label['label'];
-			}
+    /**
+     * Cehck if the company has a picture uploaded
+     *
+     * @return bool
+     */
+    public function hasPicture()
+    {
+        if ($this->picture_blob) {
+            return true;
+        }
 
-			$data['email_domains'] = array();
-			foreach ($this->email_domains AS $domain) {
-				$data['email_domains'][] = $domain->domain;
-			}
+        return false;
+    }
 
-			$data['member_count'] = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($this);
-		}
+    public function hasSla(Sla $sla)
+    {
+        foreach ($this->slas AS $org_sla) {
+            if ($org_sla->id == $sla->id) {
+                return true;
+            }
+        }
 
-		$data['picture_url'] = $this->getPictureUrl();
+        return false;
+    }
 
-		$field_manager = App::getContainer()->getSystemService('org_fields_manager');
-		$field_manager->addApiData($this, $data);
 
-		return $data;
-	}
+    /**
+     * Add a label
+     * @param Entity\LabelOrganization $label
+     */
+    public function addLabel(Entity\LabelOrganization $label)
+    {
+        $label['organization'] = $this;
+        $this->labels->add($label);
+        $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+    }
+
+    public function getLabelManager()
+    {
+        if ($this->_label_manager === null) {
+            $this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelOrganization');
+        }
+
+        return $this->_label_manager;
+    }
+
+    public function __toString()
+    {
+        return $this->name;
+    }
+
+
+
+    public function toApiData($primary = true, $deep = true, array $visited = array())
+    {
+        $data = parent::toApiData($primary, $deep, $visited);
+        if ($deep) {
+            $data['labels'] = array();
+            foreach ($this->labels AS $label) {
+                $data['labels'][] = $label['label'];
+            }
+
+            $data['email_domains'] = array();
+            foreach ($this->email_domains AS $domain) {
+                $data['email_domains'][] = $domain->domain;
+            }
+
+            $data['member_count'] = App::getEntityRepository('DeskPRO:Organization')->countMembersFor($this);
+        }
+
+        $data['picture_url'] = $this->getPictureUrl();
+
+        $field_manager = App::getContainer()->getSystemService('org_fields_manager');
+        $field_manager->addApiData($this, $data);
+
+        return $data;
+    }
 
     /**
      * Set ElasticSearch highlight data.
@@ -506,7 +507,7 @@ class Organization extends DomainObject implements HighlightableModelInterface
     /**
      * Get Elasticsearch highlight data
      *
-     * @param null $field
+     * @param  null       $field
      * @return array|null
      */
     public function getElasticHighlights($field = null)
@@ -522,29 +523,29 @@ class Organization extends DomainObject implements HighlightableModelInterface
         }
     }
 
-	############################################################################
-	# Doctrine Metadata
-	############################################################################
+    ############################################################################
+    # Doctrine Metadata
+    ############################################################################
 
-	public static function loadMetadata(ClassMetadata $metadata)
-	{
-		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Organization';
-		$metadata->setPrimaryTable(array( 'name' => 'organizations', ));
-		$metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-		$metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-		$metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
-		$metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary', ));
-		$metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance', ));
-		$metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-		$metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'dpApi' => true));
-		$metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'indexBy' => 'id', 'joinTable' => array( 'name' => 'organization2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
-		$metadata->mapManyToMany(array( 'fieldName' => 'auto_cc_people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'organizations_auto_cc', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', ));
-		$metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser', 'mappedBy' => 'organization',  ));
-	}
+    public static function loadMetadata(ClassMetadata $metadata)
+    {
+        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Organization';
+        $metadata->setPrimaryTable(array( 'name' => 'organizations', ));
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
+        $metadata->mapField(array( 'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'name', ));
+        $metadata->mapField(array( 'fieldName' => 'summary', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'summary', ));
+        $metadata->mapField(array( 'fieldName' => 'importance', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'importance', ));
+        $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
+        $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
+        $metadata->mapManyToOne(array( 'fieldName' => 'picture_blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'picture_blob_id', 'referencedColumnName' => 'id', 'unique' => true, 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'custom_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\CustomDataOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'dpApi' => true));
+        $metadata->mapManyToMany(array( 'fieldName' => 'usergroups', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Usergroup', 'indexBy' => 'id', 'joinTable' => array( 'name' => 'organization2usergroups', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'usergroup_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), 'dpApi' => true ));
+        $metadata->mapManyToMany(array( 'fieldName' => 'auto_cc_people', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'joinTable' => array( 'name' => 'organizations_auto_cc', 'schema' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'organization_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), 'inverseJoinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ), ), ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'labels', 'targetEntity' => 'Application\\DeskPRO\\Entity\\LabelOrganization', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'contact_data', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationContactData', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', 'orphanRemoval' => true, 'indexBy' => 'id', 'dpApi' => true ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'email_domains', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationEmailDomain', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'organization', ));
+        $metadata->mapOneToMany(array( 'fieldName' => 'twitter_users', 'targetEntity' => 'Application\\DeskPRO\\Entity\\OrganizationTwitterUser', 'mappedBy' => 'organization',  ));
+    }
 }

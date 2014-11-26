@@ -38,16 +38,16 @@ use Application\DeskPRO\App;
 
 class DownloadsFetcher extends AbstractFetcher
 {
-	const TYPENAME = 'downloads';
+    const TYPENAME = 'downloads';
 
-	/**
-	 * Returns an array of entities identified by $related_ids, that the user is able to see.
-	 *
-	 * @param array $related_ids
-	 * @return array
-	 */
-	function getEntities(array $related_ids)
-	{
-		return App::getEntityRepository('DeskPRO:Download')->getByIdsWithContext($related_ids, $this->person);
-	}
+    /**
+     * Returns an array of entities identified by $related_ids, that the user is able to see.
+     *
+     * @param  array $related_ids
+     * @return array
+     */
+    public function getEntities(array $related_ids)
+    {
+        return App::getEntityRepository('DeskPRO:Download')->getByIdsWithContext($related_ids, $this->person);
+    }
 }

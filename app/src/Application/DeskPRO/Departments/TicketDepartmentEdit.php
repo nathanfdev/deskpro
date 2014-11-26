@@ -42,140 +42,140 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class TicketDepartmentEdit implements HasValidationMetadataInterface
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
-	public $department;
+    /**
+     * @var \Application\DeskPRO\Entity\Department
+     */
+    public $department;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 */
-	public $move_department;
+    /**
+     * @var \Application\DeskPRO\Entity\Department
+     */
+    public $move_department;
 
-	/**
-	 * @var array
-	 */
-	public $permissions;
+    /**
+     * @var array
+     */
+    public $permissions;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Department|null
-	 */
-	private $old_parent;
+    /**
+     * @var \Application\DeskPRO\Entity\Department|null
+     */
+    private $old_parent;
 
-	public function __construct(Department $department)
-	{
-		$this->department = $department;
+    public function __construct(Department $department)
+    {
+        $this->department = $department;
 
-		if ($department->parent) {
-			$this->old_parent = $department->parent;
-		}
-	}
+        if ($department->parent) {
+            $this->old_parent = $department->parent;
+        }
+    }
 
-	/**
-	 * @return bool
-	 */
-	private function doesNeedMove()
-	{
-		$old = $this->old_parent;
-		$new = $this->department->parent;
+    /**
+     * @return bool
+     */
+    private function doesNeedMove()
+    {
+        $old = $this->old_parent;
+        $new = $this->department->parent;
 
-		// No parent, nothing to verify
-		if (!$new) {
-			return false;
-		// Not changed, nothing to verify
-		} else if ( ($old && $new && $old == $new) || (!$old && !$new)) {
-			return false;
-		// New enabled
-		} else if (!$old && $new) {
-			return true;
+        // No parent, nothing to verify
+        if (!$new) {
+            return false;
+        // Not changed, nothing to verify
+        } elseif ( ($old && $new && $old == $new) || (!$old && !$new)) {
+            return false;
+        // New enabled
+        } elseif (!$old && $new) {
+            return true;
 
-		// Changed
-		} else if ($old != $new) {
-			return true;
-		}
+        // Changed
+        } elseif ($old != $new) {
+            return true;
+        }
 
-		return false;
-	}
-
-
-	/**
-	 * @param EntityManager $em
-	 */
-	public function save(EntityManager $em)
-	{
-		// New, we should set a proper display order
-		if (!$this->department->id) {
-			$do = $em->getConnection()->fetchColumn("
-				SELECT display_order
-				FROM departments
-				WHERE is_tickets_enabled = 1
-				ORDER BY display_order DESC
-			");
-			$do += 10;
-			$this->department->display_order = $do;
-		}
-
-		$em->persist($this->department);
-		$em->flush();
-
-		// Make sure parent doesnt have a trigger
-		if ($this->department->parent) {
-			$em->getConnection()->delete('ticket_triggers', array('department_id' => $this->department->parent->id));
-		}
-	}
+        return false;
+    }
 
 
-	/**
-	 * @param EntityManager $em
-	 * @param \Application\DeskPRO\Entity\Person[] $agents
-	 * @param \Application\DeskPRO\Entity\Usergroup[] $groups
-	 */
-	public function savePermissions(EntityManager $em, array $agents, array $groups)
-	{
-		$matrix = new DepartmentPermissionMatrix($agents, $groups);
-		$matrix->setPermArray($this->permissions);
-		$matrix->save($this->department, $em);
-	}
+    /**
+     * @param EntityManager $em
+     */
+    public function save(EntityManager $em)
+    {
+        // New, we should set a proper display order
+        if (!$this->department->id) {
+            $do = $em->getConnection()->fetchColumn("
+                SELECT display_order
+                FROM departments
+                WHERE is_tickets_enabled = 1
+                ORDER BY display_order DESC
+            ");
+            $do += 10;
+            $this->department->display_order = $do;
+        }
 
-	/**
-	 * @param EntityManager $em
-	 */
-	public function clearTrigger(EntityManager $em)
-	{
-		$triggers = $em->createQuery("
-			SELECT trigger
-			FROM DeskPRO:TicketTrigger trigger
-			WHERE trigger.department = ?0
-		")->setParameters(array($this->department))->execute();
+        $em->persist($this->department);
+        $em->flush();
 
-		foreach ($triggers as $t) {
-			$em->remove($t);
-		}
-		$em->flush();
-	}
+        // Make sure parent doesnt have a trigger
+        if ($this->department->parent) {
+            $em->getConnection()->delete('ticket_triggers', array('department_id' => $this->department->parent->id));
+        }
+    }
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
 
-	public function validateParent(ExecutionContextInterface $context)
-	{
-		if ($this->doesNeedMove()) {
-			if (!$this->old_parent) {
-				$context->addViolationAt('move_department', 'Setting a new parent, must specify new department to move existing tickets to');
-			} else if (count($this->old_parent->children)) {
-				$context->addViolationAt('move_department', 'New department must not be a parent itself');
-			}
-		}
-	}
+    /**
+     * @param EntityManager                           $em
+     * @param \Application\DeskPRO\Entity\Person[]    $agents
+     * @param \Application\DeskPRO\Entity\Usergroup[] $groups
+     */
+    public function savePermissions(EntityManager $em, array $agents, array $groups)
+    {
+        $matrix = new DepartmentPermissionMatrix($agents, $groups);
+        $matrix->setPermArray($this->permissions);
+        $matrix->save($this->department, $em);
+    }
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		// Symfony\Component\Validator\Exception\ConstraintDefinitionException:
-		// The constraint Symfony\Component\Validator\Constraints\Callback cannot be put on properties or getters
+    /**
+     * @param EntityManager $em
+     */
+    public function clearTrigger(EntityManager $em)
+    {
+        $triggers = $em->createQuery("
+            SELECT trigger
+            FROM DeskPRO:TicketTrigger trigger
+            WHERE trigger.department = ?0
+        ")->setParameters(array($this->department))->execute();
 
-		$metadata->addConstraint(new Callback(array(
-			'methods' => array('validateParent')
-		)));
-	}
+        foreach ($triggers as $t) {
+            $em->remove($t);
+        }
+        $em->flush();
+    }
+
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
+
+    public function validateParent(ExecutionContextInterface $context)
+    {
+        if ($this->doesNeedMove()) {
+            if (!$this->old_parent) {
+                $context->addViolationAt('move_department', 'Setting a new parent, must specify new department to move existing tickets to');
+            } elseif (count($this->old_parent->children)) {
+                $context->addViolationAt('move_department', 'New department must not be a parent itself');
+            }
+        }
+    }
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        // Symfony\Component\Validator\Exception\ConstraintDefinitionException:
+        // The constraint Symfony\Component\Validator\Constraints\Callback cannot be put on properties or getters
+
+        $metadata->addConstraint(new Callback(array(
+            'methods' => array('validateParent')
+        )));
+    }
 }

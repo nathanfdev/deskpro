@@ -36,9 +36,9 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1361447637 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Drop client_channel_subscriptions");
-		$this->execMutateSql("DROP TABLE `client_channel_subscriptions`");
-	}
+    public function run()
+    {
+        $this->out("Drop client_channel_subscriptions");
+        $this->execMutateSql("DROP TABLE `client_channel_subscriptions`");
+    }
 }

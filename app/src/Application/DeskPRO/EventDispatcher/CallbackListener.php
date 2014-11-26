@@ -40,22 +40,23 @@ namespace Application\DeskPRO\EventDispatcher;
  */
 class CallbackListener
 {
-	/** @var Callable */
-	protected $callback;
+    /** @var Callable */
+    protected $callback;
 
-	public function __construct($callback)
-	{
-		$this->callback = $callback;
-	}
+    public function __construct($callback)
+    {
+        $this->callback = $callback;
+    }
 
-	public function __invoke()
-	{
-		$args = func_get_args();
-		return call_user_func_array($this->callback, $args);
-	}
+    public function __invoke()
+    {
+        $args = func_get_args();
 
-	public function __call($name, $args)
-	{
-		return call_user_func_array($this->callback, $args);
-	}
+        return call_user_func_array($this->callback, $args);
+    }
+
+    public function __call($name, $args)
+    {
+        return call_user_func_array($this->callback, $args);
+    }
 }

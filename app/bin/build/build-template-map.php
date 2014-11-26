@@ -1,9 +1,9 @@
 #!/usr/bin/env php
 <?php
 if (php_sapi_name() != 'cli') {
-	echo "This script must only be run from the CLI.\n";
-	echo "Contact support@deskpro.com if you require assistance.\n";
-	exit(1);
+    echo "This script must only be run from the CLI.\n";
+    echo "Contact support@deskpro.com if you require assistance.\n";
+    exit(1);
 }
 
 define('DP_BUILDING', true);
@@ -15,68 +15,68 @@ require DP_ROOT . '/bin/build/inc.php';
 require DP_ROOT.'/sys/system.php';
 
 $paths = array(
-	'AdminInterfaceBundle'       => DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/views',
-	'AgentBundle'                => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
-	'DeskPRO'                    => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
-	'ReportsInterfaceBundle'     => DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/views',
-	'UserBundle'                 => DP_ROOT.'/src/Application/UserBundle/Resources/views',
+    'AdminInterfaceBundle'       => DP_ROOT.'/src/Application/AdminInterfaceBundle/Resources/views',
+    'AgentBundle'                => DP_ROOT.'/src/Application/AgentBundle/Resources/views',
+    'DeskPRO'                    => DP_ROOT.'/src/Application/DeskPRO/Resources/views',
+    'ReportsInterfaceBundle'     => DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/views',
+    'UserBundle'                 => DP_ROOT.'/src/Application/UserBundle/Resources/views',
 );
 
 $tpl_info = array();
 
 $bogus = true;
 if (in_array('--real-time', $_SERVER['argv'])) {
-	$bogus = false;
+    $bogus = false;
 }
 
 foreach ($paths as $bundle => $dir) {
-	$finder = new \Symfony\Component\Finder\Finder();
-	$finder->files()->name('*.twig')->in($dir);
+    $finder = new \Symfony\Component\Finder\Finder();
+    $finder->files()->name('*.twig')->in($dir);
 
-	foreach ($finder as $file) {
-		/** @var \Symfony\Component\Finder\SplFileinfo $file */
+    foreach ($finder as $file) {
+        /** @var \Symfony\Component\Finder\SplFileinfo $file */
 
-		$filepath = $file->getRealPath();
+        $filepath = $file->getRealPath();
 
-		$tplname = str_replace($dir . '/', ':', $filepath);
-		$tplname = str_replace('/', ':', $tplname);
-		if (substr_count($tplname, ':') < 2) {
-			$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
-		}
-		$tplname = $bundle . $tplname;
+        $tplname = str_replace($dir . '/', ':', $filepath);
+        $tplname = str_replace('/', ':', $tplname);
+        if (substr_count($tplname, ':') < 2) {
+            $tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+        }
+        $tplname = $bundle . $tplname;
 
-		if (!$bogus) {
-			exec("git log --date=short -s -1 -- {$filepath}", $out);
-			$res = implode("\n", $out);
+        if (!$bogus) {
+            exec("git log --date=short -s -1 -- {$filepath}", $out);
+            $res = implode("\n", $out);
 
-			preg_match('#^Date:\s*([0-9]{4}\-[0-9]{2}\-[0-9]{2})#m', $res, $m);
-			$time = strtotime($m[1]);
-		} else {
-			$time = time();
-		}
+            preg_match('#^Date:\s*([0-9]{4}\-[0-9]{2}\-[0-9]{2})#m', $res, $m);
+            $time = strtotime($m[1]);
+        } else {
+            $time = time();
+        }
 
-		$path = $file->getRealPath();
-		if (strpos($path, DP_ROOT) === 0) {
-			$path = str_replace(DP_ROOT, '', $file->getRealPath());
-			$path = "DP_ROOT.'$path'";
-		} else {
-			$path = str_replace(DP_WEB_ROOT, '', $file->getRealPath());
-			$path = "DP_ROOT.'/..$path'";
-		}
+        $path = $file->getRealPath();
+        if (strpos($path, DP_ROOT) === 0) {
+            $path = str_replace(DP_ROOT, '', $file->getRealPath());
+            $path = "DP_ROOT.'$path'";
+        } else {
+            $path = str_replace(DP_WEB_ROOT, '', $file->getRealPath());
+            $path = "DP_ROOT.'/..$path'";
+        }
 
-		$tpl_info[$tplname] = array(
-			'path' => $path,
-			'last_updated' => $time,
-		);
+        $tpl_info[$tplname] = array(
+            'path' => $path,
+            'last_updated' => $time,
+        );
 
-		echo ".";
-	}
+        echo ".";
+    }
 }
 
 $php = array("<?php return array(\n");
 
 foreach ($tpl_info as $k => $info) {
-	$php[] = "'$k' => array('path' => {$info['path']}, 'last_updated' => {$info['last_updated']}),\n";
+    $php[] = "'$k' => array('path' => {$info['path']}, 'last_updated' => {$info['last_updated']}),\n";
 }
 
 $php[] = ");";

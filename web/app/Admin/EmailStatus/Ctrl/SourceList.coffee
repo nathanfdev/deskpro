@@ -1,113 +1,121 @@
 define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
-	class Admin_EmailStatus_Ctrl_SourceList extends Admin_Ctrl_Base
-		@CTRL_ID = 'Admin_EmailStatus_Ctrl_SourceList'
-		@CTRL_AS = 'ListCtrl'
-		@DEPS    = []
+  class Admin_EmailStatus_Ctrl_SourceList extends Admin_Ctrl_Base
+    @CTRL_ID = 'Admin_EmailStatus_Ctrl_SourceList'
+    @CTRL_AS = 'ListCtrl'
 
-		init: ->
-			@filter = {
-				account: "0",
-				page: 1
-			}
-			@results = []
-			@num_results = 0
-			@num_pages = 0
-			@page_nums = [1]
-			@filter_date_mode = "none"
-			@page = 1
-			@massActionsOp = "reprocess"
+    init: ->
+      @filter = {
+        account: "0",
+        page: 1
+      }
+      @results = []
+      @num_results = 0
+      @num_pages = 0
+      @page_nums = [1]
+      @filter_date_mode = "none"
+      @page = 1
+      @massActionsOp = "reprocess"
 
-			@$scope.$watch('ListCtrl.page', (newVal, oldVal) =>
-				if parseInt(newVal) == parseInt(oldVal)
-					return
-				if isNaN(parseInt(newVal))
-					return
+      @$scope.$watch('ListCtrl.page', (newVal, oldVal) =>
+        if parseInt(newVal) == parseInt(oldVal)
+          return
+        if isNaN(parseInt(newVal))
+          return
 
-				@changePage()
-			)
+        @changePage()
+      )
 
-		initialLoad: ->
-			p1 = @loadResults()
-			p2 = @Api.sendGet('/email_accounts').success( (data) =>
-				@$scope.email_accounts = data.email_accounts
-			)
+      @$scope.showStatusHelp = =>
+        modalInstance = @$modal.open({
+          templateUrl: @getTemplatePath('EmailStatus/emailsource-status-code-modal.html'),
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+            $scope.dismiss = ->
+              $modalInstance.dismiss()
+          ]
+        })
 
-			return @$q.all([p1, p2])
+    initialLoad: ->
+      p1 = @loadResults()
+      p2 = @Api.sendGet('/email_accounts').success( (data) =>
+        @$scope.email_accounts = data.email_accounts
+      )
 
-		changePage: ->
-			if @filter.page == @page
-				return
+      return @$q.all([p1, p2])
 
-			@filter.page = @page
-			@loadResults()
+    changePage: ->
+      if @filter.page == @page
+        return
 
-		updateFilter: ->
-			@page = 1
-			@filter.page = @page
+      @filter.page = @page
+      @loadResults()
 
-			@filter.date_start = null
-			@filter.date_end = null
-			if @filter_date_mode and @filter_date_mode != 'none'
-				if @filter_date1 and (@filter_date_mode == 'between' || @filter_date_mode == 'after')
-					@filter.date_start = moment(@filter_date1).format("YYYY-MM-DD")
-				if @filter_date2 and (@filter_date_mode == 'between' || @filter_date_mode == 'before')
-					@filter.date_end = moment(@filter_date2).format("YYYY-MM-DD")
+    updateFilter: ->
+      @page = 1
+      @filter.page = @page
 
-			@loadResults()
+      @filter.date_start = null
+      @filter.date_end = null
+      if @filter_date_mode and @filter_date_mode != 'none'
+        if @filter_date1 and (@filter_date_mode == 'between' || @filter_date_mode == 'after')
+          @filter.date_start = moment(@filter_date1).format("YYYY-MM-DD")
+        if @filter_date2 and (@filter_date_mode == 'between' || @filter_date_mode == 'before')
+          @filter.date_end = moment(@filter_date2).format("YYYY-MM-DD")
 
-		loadResults: (fallbackPrevPage) ->
-			@startSpinner('loading_page')
-			@results = []
-			promise = @Api.sendGet('/email_status/sources', {filter: @filter}).success( (data) =>
-				@stopSpinner('loading_page', true)
-				@results     = data.email_sources
-				@filter.page = data.page
-				@page        = data.page
-				@num_pages   = data.num_pages
-				@num_results = data.count
-				@massActions = {}
-				@massActionsAll = false
-				@massActionsLoading = false
+      @loadResults()
 
-				@page_nums = []
-				for i in [0...@num_pages]
-					@page_nums.push(i+1)
+    loadResults: (fallbackPrevPage) ->
+      @startSpinner('loading_page')
+      @results = []
+      promise = @Api.sendGet('/email_status/sources', {filter: @filter}).success( (data) =>
+        @stopSpinner('loading_page', true)
+        @results     = data.email_sources
+        @filter.page = data.page
+        @page        = data.page
+        @num_pages   = data.num_pages
+        @num_results = data.count
+        @massActions = {}
+        @massActionsAll = false
+        @massActionsLoading = false
 
-				if fallbackPrevPage and !@results.length and data.page > 1
-					@filter.page = data.page - 1;
-					@loadResults()
-			)
+        @page_nums = []
+        for i in [0...@num_pages]
+          @page_nums.push(i+1)
 
-			return promise
+        if fallbackPrevPage and !@results.length and data.page > 1
+          @filter.page = data.page - 1;
+          @loadResults()
+      )
 
-		toggleMassActions: ->
-			@massActions = {}
-			if @massActionsAll
-				for r in @results
-					@massActions[r.id] = true
+      return promise
 
-		hasAnyMassActions: ->
-			for r in @results
-				return true if @massActions[r.id]
-			return false
+    toggleMassActions: ->
+      @massActions = {}
+      if @massActionsAll
+        for r in @results
+          @massActions[r.id] = true
 
-		performMassActions: ->
-			url = "/email_status/sources/mass-actions/#{@massActionsOp}"
-			@massActionsLoading = true
+    hasAnyMassActions: ->
+      for r in @results
+        return true if @massActions[r.id]
+      return false
 
-			ids = []
-			for r in @results
-				if @massActions[r.id] then ids.push(r.id)
+    performMassActions: ->
+      url = "/email_status/sources/mass-actions/#{@massActionsOp}"
+      @massActionsLoading = true
 
-			@Api.sendPostJson(url, { ids: ids }).then(=>
-				@Growl.success(@getRegisteredMessage("#{@massActionsOp}_done"))
-				@loadResults(true)
-			)
+      ids = []
+      for r in @results
+        if @massActions[r.id] then ids.push(r.id)
 
-		goPrevPage: ->
-			@page--
+      @Api.sendPostJson(url, { ids: ids }).then(=>
+        @Growl.success(@getRegisteredMessage("#{@massActionsOp}_done"))
+        @loadResults(true)
+      )
 
-		goNextPage: ->
-			@page++
+    goPrevPage: ->
+      @page--
 
-	Admin_EmailStatus_Ctrl_SourceList.EXPORT_CTRL()
+    goNextPage: ->
+      @page++
+
+  Admin_EmailStatus_Ctrl_SourceList.EXPORT_CTRL()

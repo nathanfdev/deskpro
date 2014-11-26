@@ -38,111 +38,111 @@ use Symfony\Component\HttpFoundation\Response;
 
 class InterfaceController extends AbstractController
 {
-	####################################################################################################################
-	# load-view
-	####################################################################################################################
+    ####################################################################################################################
+    # load-view
+    ####################################################################################################################
 
-	public function loadViewAction($view_name)
-	{
-		$load_data = null;
+    public function loadViewAction($view_name)
+    {
+        $load_data = null;
 
-		// Load data from a route at the same time
-		if ($this->in->getString('load_data')) {
-			try {
-				$route_info = $this->container->getRouter()->match($this->in->getString('load_data'));
-			} catch (\Exception $e) {
-				$route_info = null;
-			}
+        // Load data from a route at the same time
+        if ($this->in->getString('load_data')) {
+            try {
+                $route_info = $this->container->getRouter()->match($this->in->getString('load_data'));
+            } catch (\Exception $e) {
+                $route_info = null;
+            }
 
-			if ($route_info) {
-				$ctrl_path = $route_info['_controller'];
-				unset($route_info['_controller']);
-				unset($route_info['_route']);
-				$path_vars = $route_info;
+            if ($route_info) {
+                $ctrl_path = $route_info['_controller'];
+                unset($route_info['_controller']);
+                unset($route_info['_route']);
+                $path_vars = $route_info;
 
-				if ($ctrl_path) {
-					$load_data = $this->forward($ctrl_path, $path_vars)->getContent();
-				}
-			}
-		}
+                if ($ctrl_path) {
+                    $load_data = $this->forward($ctrl_path, $path_vars)->getContent();
+                }
+            }
+        }
 
-		$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
-		$view_name = str_replace('/', ':', $view_name);
-		$view_name = str_replace('.html', '.html.twig', $view_name);
+        $view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
+        $view_name = str_replace('/', ':', $view_name);
+        $view_name = str_replace('.html', '.html.twig', $view_name);
 
-		$rendered = null;
-		if ($this->tpl->exists("ReportsInterfaceBundle:$view_name")) {
-			$rendered = $this->renderView("ReportsInterfaceBundle:$view_name");
-		}
+        $rendered = null;
+        if ($this->tpl->exists("ReportsInterfaceBundle:$view_name")) {
+            $rendered = $this->renderView("ReportsInterfaceBundle:$view_name");
+        }
 
-		if ($load_data) {
-			$rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
-		}
+        if ($load_data) {
+            $rendered = "<script type=\"application/json\" class=\"DP_LOAD_DATA\">" . $load_data . "</script>$rendered";
+        }
 
-		return $this->createResponse($rendered);
-	}
-
-
-	####################################################################################################################
-	# multi-load-view
-	####################################################################################################################
-
-	public function multiLoadViewAction()
-	{
-		$views = array();
-
-		foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
-			$id = $view_name;
-			$view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
-			$view_name = str_replace('/', ':', $view_name);
-			$view_name = str_replace('.html', '.html.twig', $view_name);
-
-			$rendered = null;
-			if ($this->tpl->exists("ReportsInterfaceBundle:$view_name")) {
-				$rendered = $this->renderView("ReportsInterfaceBundle:$view_name");
-			}
-
-			$views[] = array(
-				'id'       => $id,
-				'template' => "ReportsInterfaceBundle:$view_name",
-				'source'   => $rendered
-			);
-		}
-
-		return $this->createJsonResponse($views);
-	}
+        return $this->createResponse($rendered);
+    }
 
 
-	####################################################################################################################
-	# load-lang
-	####################################################################################################################
+    ####################################################################################################################
+    # multi-load-view
+    ####################################################################################################################
 
-	public function loadLangAction($_format)
-	{
-		$js_exporter = new JsExporter($this->container->getTranslator());
+    public function multiLoadViewAction()
+    {
+        $views = array();
 
-		$get_phrases = include(DP_ROOT.'/languages/expose-js.php');
-		$get_phrases = $get_phrases['reports'];
+        foreach ($this->in->getCleanValueArray('views', 'string', 'discard') as $view_name) {
+            $id = $view_name;
+            $view_name = preg_replace('#[^a-zA-Z0-9_\-/\.]#', '', $view_name);
+            $view_name = str_replace('/', ':', $view_name);
+            $view_name = str_replace('.html', '.html.twig', $view_name);
 
-		if ($_format == 'js') {
-			$varname = 'DP_LANG';
-			if ($this->in->getString('varname')) {
-				$varname = $this->in->getString('varname');
-			}
+            $rendered = null;
+            if ($this->tpl->exists("ReportsInterfaceBundle:$view_name")) {
+                $rendered = $this->renderView("ReportsInterfaceBundle:$view_name");
+            }
 
-			$res = new Response(
-				$js_exporter->exportToJsFile($varname, $get_phrases),
-				200,
-				array('Content-Type' => 'text/javascript')
-			);
-		} else {
-			$res = new Response(
-				$js_exporter->exportToJson($get_phrases),
-				200,
-				array('Content-Type' => 'application/json')
-			);
-		}
+            $views[] = array(
+                'id'       => $id,
+                'template' => "ReportsInterfaceBundle:$view_name",
+                'source'   => $rendered
+            );
+        }
 
-		return $res;
-	}
+        return $this->createJsonResponse($views);
+    }
+
+
+    ####################################################################################################################
+    # load-lang
+    ####################################################################################################################
+
+    public function loadLangAction($_format)
+    {
+        $js_exporter = new JsExporter($this->container->getTranslator());
+
+        $get_phrases = include(DP_ROOT.'/languages/expose-js.php');
+        $get_phrases = $get_phrases['reports'];
+
+        if ($_format == 'js') {
+            $varname = 'DP_LANG';
+            if ($this->in->getString('varname')) {
+                $varname = $this->in->getString('varname');
+            }
+
+            $res = new Response(
+                $js_exporter->exportToJsFile($varname, $get_phrases),
+                200,
+                array('Content-Type' => 'text/javascript')
+            );
+        } else {
+            $res = new Response(
+                $js_exporter->exportToJson($get_phrases),
+                200,
+                array('Content-Type' => 'application/json')
+            );
+        }
+
+        return $res;
+    }
 }

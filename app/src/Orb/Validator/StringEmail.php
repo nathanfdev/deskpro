@@ -36,58 +36,63 @@ namespace Orb\Validator;
 
 class StringEmail extends AbstractValidator implements StaticValidator
 {
-	/**
-	 * @param $value
-	 * @return bool
-	 */
-	public static function isValueValid($value)
-	{
-		$validator = new self();
-		return $validator->isValid($value);
-	}
+    /**
+     * @param $value
+     * @return bool
+     */
+    public static function isValueValid($value)
+    {
+        $validator = new self();
+
+        return $validator->isValid($value);
+    }
 
 
-	/**
-	 * Check $value to see if its valid.
-	 *
-	 * @return bool
-	 */
-	protected function checkIsValid($value)
-	{
-		if (strpos($value, '@') === false) {
-			$this->addError('bad_email_format');
-			return false;
-		}
+    /**
+     * Check $value to see if its valid.
+     *
+     * @return bool
+     */
+    protected function checkIsValid($value)
+    {
+        if (strpos($value, '@') === false) {
+            $this->addError('bad_email_format');
 
-		list($name, $domain) = explode('@', $value, 2);
-		$name   = trim($name);
-		$domain = trim($domain);
+            return false;
+        }
 
-		if ($name === "" || !$domain) {
-			$this->addError('empty_email');
-			return false;
-		}
+        list($name, $domain) = explode('@', $value, 2);
+        $name   = trim($name);
+        $domain = trim($domain);
 
-		// Match the part before the @
-		$regex_name = '#^[a-z0-9!\\#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!\\#$%&\'*+/=?^_`{|}~-]+)*$#i';
+        if ($name === "" || !$domain) {
+            $this->addError('empty_email');
 
-		// Match the hostname after the @
-		// Inspired by http://cpansearch.perl.org/src/ABIGAIL/Regexp-Common-2013031301/lib/Regexp/Common/URI/RFC2396.pm
-		$regex_domain = '#^(?:(?:(?:(?:[a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9])[.])*(?:[a-zA-Z][-a-zA-Z0-9]*[a-zA-Z0-9]|[a-zA-Z]))$#i';
+            return false;
+        }
 
-		// Match a IP address after the @
-		$regex_ip = '#^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$#i';
+        // Match the part before the @
+        $regex_name = '#^[a-z0-9!\\#$%&\'*+/=?^_`{|}~-]+(?:\.[a-z0-9!\\#$%&\'*+/=?^_`{|}~-]+)*$#i';
 
-		if (!preg_match($regex_name, $name)) {
-			$this->addError('bad_email_name');
-			return false;
-		}
+        // Match the hostname after the @
+        // Inspired by http://cpansearch.perl.org/src/ABIGAIL/Regexp-Common-2013031301/lib/Regexp/Common/URI/RFC2396.pm
+        $regex_domain = '#^(?:(?:(?:(?:[a-zA-Z0-9][-a-zA-Z0-9]*)?[a-zA-Z0-9])[.])*(?:[a-zA-Z][-a-zA-Z0-9]*[a-zA-Z0-9]|[a-zA-Z]))$#i';
 
-		if (!preg_match($regex_domain, $domain) AND !preg_match($regex_ip, $domain)) {
-			$this->addError('bad_email_domain');
-			return false;
-		}
+        // Match a IP address after the @
+        $regex_ip = '#^(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)$#i';
 
-		return true;
-	}
+        if (!preg_match($regex_name, $name)) {
+            $this->addError('bad_email_name');
+
+            return false;
+        }
+
+        if (!preg_match($regex_domain, $domain) AND !preg_match($regex_ip, $domain)) {
+            $this->addError('bad_email_domain');
+
+            return false;
+        }
+
+        return true;
+    }
 }

@@ -41,64 +41,64 @@ use Doctrine\ORM\EntityManager;
 
 class PersonDetector
 {
-	/**
-	 * @var EntityManager
-	 */
-	private $em;
+    /**
+     * @var EntityManager
+     */
+    private $em;
 
 
-	public function __construct(EntityManager $em)
-	{
-		$this->em = $em;
-	}
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
 
-	/**
-	 *  use number to find a person that sent us an sms
-	 *
-	 * @param string $from_number
-	 * @return \Application\DeskPRO\Entity\Person|null
-	 */
-	public function detectWithFromNumber($from_number = null)
-	{
-		return $this->em->getRepository('DeskPRO:Person')->findOneByPhoneNumber($from_number);
-	}
+    /**
+     *  use number to find a person that sent us an sms
+     *
+     * @param  string                                  $from_number
+     * @return \Application\DeskPRO\Entity\Person|null
+     */
+    public function detectWithFromNumber($from_number = null)
+    {
+        return $this->em->getRepository('DeskPRO:Person')->findOneByPhoneNumber($from_number);
+    }
 
 
-	/**
-	 * creates a person with the given phone number
-	 *
-	 * @param string $from_number
-	 * @return Person
-	 * @throws \Doctrine\DBAL\ConnectionException
-	 */
-	public function createPersonWithNumber($from_number)
-	{
-		$this->em->getConnection()->beginTransaction();
+    /**
+     * creates a person with the given phone number
+     *
+     * @param  string                             $from_number
+     * @return Person
+     * @throws \Doctrine\DBAL\ConnectionException
+     */
+    public function createPersonWithNumber($from_number)
+    {
+        $this->em->getConnection()->beginTransaction();
 
-		$person = $this->detectWithFromNumber($from_number);
+        $person = $this->detectWithFromNumber($from_number);
 
-		if ($person) {
-			$this->em->getConnection()->commit();
+        if ($person) {
+            $this->em->getConnection()->commit();
 
-			return $person;
-		}
+            return $person;
+        }
 
-		$person                  = Person::newContactPerson();
-		$person->creation_system = 'gateway.person';
-		$person->is_confirmed    = true;
-		$from_number = new PhoneNumber($from_number);
-		$person->setPrimaryPhoneNumber($from_number);
+        $person                  = Person::newContactPerson();
+        $person->creation_system = 'gateway.person';
+        $person->is_confirmed    = true;
+        $from_number = new PhoneNumber($from_number);
+        $person->setPrimaryPhoneNumber($from_number);
 
-		if (App::getSetting('core.agent_validation')) {
-			$person->is_agent_confirmed = false;
-		}
+        if (App::getSetting('core.agent_validation')) {
+            $person->is_agent_confirmed = false;
+        }
 
-		$this->em->persist($person);
-		$this->em->persist($from_number);
-		$this->em->flush();
+        $this->em->persist($person);
+        $this->em->persist($from_number);
+        $this->em->flush();
 
-		$this->em->getConnection()->commit();
+        $this->em->getConnection()->commit();
 
-		return $person;
-	}
+        return $person;
+    }
 }

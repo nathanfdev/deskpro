@@ -36,12 +36,12 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1356006320 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add worker job to clean up old Twitter data");
-		$this->execMutateSql("
-			INSERT IGNORE INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
-			VALUES ('cleanup_twitter', 'cleanup', 'Cleanup Twitter', 'Cleans up old data from Twitter', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\CleanupTwitter', X'613A303A7B7D', '3600', NULL, NULL)
-		");
-	}
+    public function run()
+    {
+        $this->out("Add worker job to clean up old Twitter data");
+        $this->execMutateSql("
+            INSERT IGNORE INTO `worker_jobs` (`id`, `worker_group`, `title`, `description`, `job_class`, `data`, `run_interval`, `last_run_date`, `last_start_date`)
+            VALUES ('cleanup_twitter', 'cleanup', 'Cleanup Twitter', 'Cleans up old data from Twitter', 'Application\\\\DeskPRO\\\\WorkerProcess\\\\Job\\\\CleanupTwitter', X'613A303A7B7D', '3600', NULL, NULL)
+        ");
+    }
 }

@@ -31,7 +31,7 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
         'ticket'            => 'DeskPRO:Ticket',
         'person'            => 'DeskPRO:Person',
         'organization'      => 'DeskPRO:Organization',
-		'chat_conversation' => 'DeskPRO:ChatConversation',
+        'chat_conversation' => 'DeskPRO:ChatConversation',
     );
 
     /**
@@ -55,42 +55,42 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
         $result_meta = array();
         $people_top  = false;
 
-		if ($sort && !in_array($sort, array('score', 'date_active', 'date_created'))) {
-			$sort = null;
-		}
-		if (!$sort) {
-			$sort = 'score';
-		}
+        if ($sort && !in_array($sort, array('score', 'date_active', 'date_created'))) {
+            $sort = null;
+        }
+        if (!$sort) {
+            $sort = 'score';
+        }
 
         $repositoryManager = $this->container->get('fos_elastica.manager');
 
         foreach ($this->objects as $object => $model) {
 
-			if ($limit_types !== null && !in_array($object, $limit_types)) {
-				continue;
-			}
+            if ($limit_types !== null && !in_array($object, $limit_types)) {
+                continue;
+            }
 
             if (!$this->isAllowed($object)) {
                 continue;
             }
 
             $repository = $repositoryManager->getRepository($model);
-			$ent_repos = $this->container->getEm()->getRepository($model);
+            $ent_repos = $this->container->getEm()->getRepository($model);
 
             if ($this->requiresPermission($object)) {
                 $repository->setPersonContext($this->person);
             }
 
-			if ($model == 'DeskPRO:Ticket' && preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
-				$result = $ent_repos->findTicketRef($q);
-				if ($result) {
-					$this->handleResult($object, $result);
-				}
-			}
+            if ($model == 'DeskPRO:Ticket' && preg_match('#^[0-9A-Z\-_\.]+$#', $q)) {
+                $result = $ent_repos->findTicketRef($q);
+                if ($result) {
+                    $this->handleResult($object, $result);
+                }
+            }
 
-			if (Numbers::isInteger($q)) {
-				if ($model == 'DeskPRO:Ticket' && $this->person) {
-					$result = $ent_repos->findTicketId($q);
+            if (Numbers::isInteger($q)) {
+                if ($model == 'DeskPRO:Ticket' && $this->person) {
+                    $result = $ent_repos->findTicketId($q);
 
                     if ($result) {
                         $this->person->loadHelper('PermissionsManager');
@@ -98,32 +98,32 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
                             $result = null;
                         }
                     }
-				} else {
-					$result = $ent_repos->findById($q);
-				}
-				if ($result) {
-					$this->handleResult($object, $result);
-				}
-			}
+                } else {
+                    $result = $ent_repos->findById($q);
+                }
+                if ($result) {
+                    $this->handleResult($object, $result);
+                }
+            }
 
-			if ($model == 'DeskPRO:Person' && StringEmail::isValueValid($q)) {
-				$result = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
-				if ($result) {
-					$this->handleResult($object, $result);
-				}
-			}
+            if ($model == 'DeskPRO:Person' && StringEmail::isValueValid($q)) {
+                $result = $this->container->getSystemService('UsersourceManager')->findPersonByEmail($q);
+                if ($result) {
+                    $this->handleResult($object, $result);
+                }
+            }
 
             $result = $repository->find($q, null, array(
-				'sort_type' => $sort
-			));
-			if ($result) {
-				$this->handleResult($object, $result);
-			}
+                'sort_type' => $sort
+            ));
+            if ($result) {
+                $this->handleResult($object, $result);
+            }
         }
 
-		foreach ($this->results as &$group) {
-			$group = array_unique($group);
-		}
+        foreach ($this->results as &$group) {
+            $group = array_unique($group);
+        }
 
         return array($this->results, $result_meta, $people_top);
     }
@@ -144,17 +144,17 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
 
     private function handleResult($object, $result)
     {
-		if (!isset($this->results[$object])) {
-			$this->results[$object] = array();
-		}
+        if (!isset($this->results[$object])) {
+            $this->results[$object] = array();
+        }
 
-		if (!is_array($result)) {
-			$result = array($result);
-		}
+        if (!is_array($result)) {
+            $result = array($result);
+        }
 
         switch ($object) {
             default:
-				$this->results[$object] = array_merge($this->results[$object], $result);
+                $this->results[$object] = array_merge($this->results[$object], $result);
         }
     }
 
@@ -167,4 +167,4 @@ class Elasticsearch extends ContainerAware implements SearchManagerInterface
     {
         $this->person = $person;
     }
-} 
+}

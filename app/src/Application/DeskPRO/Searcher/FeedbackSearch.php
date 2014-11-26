@@ -39,487 +39,486 @@ use Orb\Util\Util;
 
 class FeedbackSearch extends SearcherAbstract
 {
-	const TERM_ID              = 'id';
-	const TERM_STATUS          = 'status';
-	const TERM_DELETED         ='deleted';
-	const TERM_HIDDEN_STATUS   = 'hidden_status';
-	const TERM_CATEGORY        = 'category';
-	const TERM_CATEGORY_SPECIFIC = 'category_specific';
-	const TERM_STATUS_CATEGORY = 'status_category';
-	const TERM_NUM_RATINGS       = 'num_ratings';
-	const TERM_DATE_CREATED    = 'date_created';
-	const TERM_LABEL           = 'label';
-	const TERM_QUERY           = 'query';
+    const TERM_ID              = 'id';
+    const TERM_STATUS          = 'status';
+    const TERM_DELETED         ='deleted';
+    const TERM_HIDDEN_STATUS   = 'hidden_status';
+    const TERM_CATEGORY        = 'category';
+    const TERM_CATEGORY_SPECIFIC = 'category_specific';
+    const TERM_STATUS_CATEGORY = 'status_category';
+    const TERM_NUM_RATINGS       = 'num_ratings';
+    const TERM_DATE_CREATED    = 'date_created';
+    const TERM_LABEL           = 'label';
+    const TERM_QUERY           = 'query';
 
-	const ORDER_ID    = 'id';
-	const ORDER_DATE  = 'id';
-	const ORDER_NUM_RATINGS = 'num_ratings';
+    const ORDER_ID    = 'id';
+    const ORDER_DATE  = 'id';
+    const ORDER_NUM_RATINGS = 'num_ratings';
 
-	/**
-	 * @var bool
-	 */
-	protected $include_hidden = false;
-	/**
-	 * @var Visitor
-	 */
-	protected $visitor;
+    /**
+     * @var bool
+     */
+    protected $include_hidden = false;
+    /**
+     * @var Visitor
+     */
+    protected $visitor;
 
-	public function setVisitor($visitor)
-	{
-		$this->visitor = $visitor;
-	}
+    public function setVisitor($visitor)
+    {
+        $this->visitor = $visitor;
+    }
 
-	/**
-	 * Run the search and return an array of matching ID's.
-	 *
-	 * @param int $limit
-	 * @return array
-	 */
-	public function getMatches(array $limit = null)
-	{
-		$db = App::getDbRead('search.filter.feedback');
+    /**
+     * Run the search and return an array of matching ID's.
+     *
+     * @param  int   $limit
+     * @return array
+     */
+    public function getMatches(array $limit = null)
+    {
+        $db = App::getDbRead('search.filter.feedback');
 
-		$feedback_ids = $db->fetchAllCol($this->getSql($limit));
+        $feedback_ids = $db->fetchAllCol($this->getSql($limit));
 
-		return $feedback_ids;
-	}
+        return $feedback_ids;
+    }
 
+    /**
+     * Get actual model objects for matches
+     *
+     * @param  array $limit
+     * @return array
+     */
+    public function getMatchingObjects(array $limit = null)
+    {
+        $ids = $this->getMatches($limit);
 
-	/**
-	 * Get actual model objects for matches
-	 *
-	 * @param array $limit
-	 * @return array
-	 */
-	public function getMatchingObjects(array $limit = null)
-	{
-		$ids = $this->getMatches($limit);
+        if (!$ids) return array();
+        return App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($ids);
+    }
 
-		if (!$ids) return array();
+    /**
+     * @return string
+     */
+    public function getPermWhere()
+    {
+        if (!$this->person) {
+            return '';
+        }
 
-		return App::getEntityRepository('DeskPRO:Feedback')->getByResultIds($ids);
-	}
+        if (!$this->person->hasPerm('feedback.use')) {
+            return '0';
+        }
 
+        $where = '(feedback.status != \'hidden\')';
 
-	/**
-	 * @return string
-	 */
-	public function getPermWhere()
-	{
-		if (!$this->person) {
-			return '';
-		}
+        $dis_ids = $this->person->PermissionsManager->FeedbackCategories->getDisallowedCategories();
+        if (!$dis_ids) {
+            return $where;
+        }
 
-		if (!$this->person->hasPerm('feedback.use')) {
-			return '0';
-		}
+        $dis_ids = implode(',', $dis_ids);
 
-		$where = '(feedback.status != \'hidden\')';
+        return '('.$where.' AND feedback.category_id NOT IN(' . $dis_ids . '))';
+    }
 
-		$dis_ids = $this->person->PermissionsManager->FeedbackCategories->getDisallowedCategories();
-		if (!$dis_ids) {
-			return $where;
-		}
+    /**
+     * Get the total number of matches
+     *
+     * @return int
+     */
+    public function getCount()
+    {
+        $sql = "SELECT COUNT(*) FROM feedback ";
+        $parts = $this->getSqlParts();
+        $order_by = $this->getOrderByPart();
 
-		$dis_ids = implode(',', $dis_ids);
+        #------------------------------
+        # Add joins
+        #------------------------------
 
-		return '('.$where.' AND feedback.category_id NOT IN(' . $dis_ids . '))';
-	}
+        foreach ($parts['joins'] as $j) {
+            if (is_array($j)) {
+                $sql .= $j[1] . " ";
+            } else {
+                $sql .= "LEFT JOIN $j ON $j.feedback_id = feedback.id ";
+            }
+        }
 
+        if (is_array($order_by)) {
+            list ($order_join, $real_order_by) = $order_by;
 
-	/**
-	 * Get the total number of matches
-	 *
-	 * @return int
-	 */
-	public function getCount()
-	{
-		$sql = "SELECT COUNT(*) FROM feedback ";
-		$parts = $this->getSqlParts();
-		$order_by = $this->getOrderByPart();
+            $sql .= " $order_join ";
+        }
 
-		#------------------------------
-		# Add joins
-		#------------------------------
+        #------------------------------
+        # Add wheres
+        #------------------------------
 
-		foreach ($parts['joins'] as $j) {
-			if (is_array($j)) {
-				$sql .= $j[1] . " ";
-			} else {
-				$sql .= "LEFT JOIN $j ON $j.feedback_id = feedback.id ";
-			}
-		}
+        if ($this->include_hidden) {
+            $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
+        } else {
+            $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp', 'deleted')) AND ";
+        }
+        $where_perm = $this->getPermWhere();
+        if ($where_perm) {
+            $sql .= $where_perm . ' AND ';
+        }
+        if ($parts['wheres']) {
+            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+        } else {
+            $sql .= '1';
+        }
 
-		if (is_array($order_by)) {
-			list ($order_join, $real_order_by) = $order_by;
+        $count = App::getDbRead('search.filter.feedback')->fetchColumn($sql);
 
-			$sql .= " $order_join ";
-		}
+        return $count;
+    }
 
-		#------------------------------
-		# Add wheres
-		#------------------------------
+    /**
+     * Get the SQL query that'll fetch the results
+     *
+     * @return string
+     */
+    public function getSql(array $limit = null)
+    {
+        $sql = "SELECT feedback.id FROM feedback ";
 
-		if ($this->include_hidden) {
-			$sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
-		} else {
-			$sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp', 'deleted')) AND ";
-		}
-		$where_perm = $this->getPermWhere();
-		if ($where_perm) {
-			$sql .= $where_perm . ' AND ';
-		}
-		if ($parts['wheres']) {
-			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
-		} else {
-			$sql .= '1';
-		}
-
-		$count = App::getDbRead('search.filter.feedback')->fetchColumn($sql);
-
-		return $count;
-	}
-
-
-	/**
-	 * Get the SQL query that'll fetch the results
-	 *
-	 * @return string
-	 */
-	public function getSql(array $limit = null)
-	{
-		$sql = "SELECT feedback.id FROM feedback ";
-
-		$parts = $this->getSqlParts();
-		$order_by = $this->getOrderByPart();
+        $parts = $this->getSqlParts();
+        $order_by = $this->getOrderByPart();
 
 
-		#------------------------------
-		# Add joins
-		#------------------------------
+        #------------------------------
+        # Add joins
+        #------------------------------
 
-		foreach ($parts['joins'] as $j) {
-			if (is_array($j)) {
-				$sql .= $j[1] . " ";
-			} else {
-				$sql .= "LEFT JOIN $j ON $j.feedback_id = feedback.id ";
-			}
-		}
+        foreach ($parts['joins'] as $j) {
+            if (is_array($j)) {
+                $sql .= $j[1] . " ";
+            } else {
+                $sql .= "LEFT JOIN $j ON $j.feedback_id = feedback.id ";
+            }
+        }
 
-		if (is_array($order_by)) {
-			list ($order_join, $real_order_by) = $order_by;
+        if (is_array($order_by)) {
+            list ($order_join, $real_order_by) = $order_by;
 
-			$sql .= " $order_join ";
-			$order_by = $real_order_by;
-		}
+            $sql .= " $order_join ";
+            $order_by = $real_order_by;
+        }
 
-		#------------------------------
-		# Add wheres
-		#------------------------------
+        #------------------------------
+        # Add wheres
+        #------------------------------
 
-		if ($this->include_hidden) {
-			$sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
-		} else {
-			$sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp', 'deleted')) AND ";
-		}
-		$where_perm = $this->getPermWhere();
-		if ($where_perm) {
-			$sql .= $where_perm . ' AND ';
-		}
-		if ($parts['wheres']) {
-			$sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
-		} else {
-			$sql .= '1';
-		}
+        if ($this->include_hidden) {
+            $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp')) AND ";
+        } else {
+            $sql .= "WHERE (feedback.hidden_status IS NULL OR feedback.hidden_status NOT IN ('temp', 'deleted')) AND ";
+        }
+        $where_perm = $this->getPermWhere();
+        if ($where_perm) {
+            $sql .= $where_perm . ' AND ';
+        }
+        if ($parts['wheres']) {
+            $sql .= '(' . implode(") AND (", $parts['wheres']) . ')';
+        } else {
+            $sql .= '1';
+        }
 
-		$sql .= " GROUP BY feedback.id ";
-		$sql .= $order_by;
+        $sql .= " GROUP BY feedback.id ";
+        $sql .= $order_by;
 
-		if ($limit) {
-			$sql .= " LIMIT {$limit['offset']},{$limit['max']}";
-		} else {
-			$sql .= " LIMIT 1000";
-		}
+        if ($limit) {
+            $sql .= " LIMIT {$limit['offset']},{$limit['max']}";
+        } else {
+            $sql .= " LIMIT 1000";
+        }
 
-		return $sql;
-	}
-
-
-	/**
-	 * Get the ORDER BY clause based on order info set.
-	 *
-	 * @return string
-	 */
-	public function getOrderByPart()
-	{
-		// Set a default if none
-		if (!$this->order_by) {
-			$this->order_by = array('id', 'DESC');
-		}
-
-		list($type, $dir) = $this->order_by;
-
-		$dir = strtoupper($dir);
-		if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
-			$dir = self::ORDER_DESC;
-		}
-
-		$order_by = '';
-
-		switch ($type) {
-			case 'id':
-			case 'date_created':
-				$order_by = "ORDER BY feedback.date_published $dir";
-				break;
-
-			case 'i-voted':
-			case 'i_voted':
-				if (!$this->person && !$this->visitor) {
-					$this->order_by = array('id', 'DESC');
-					return $this->getOrderBy();
-				}
-
-				if ($this->person->id) {
-					$join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
-				} elseif ($this->visitor) {
-					$join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.visitor_id = {$this->visitor->id})";
-				} else {
-					$order_by = "ORDER BY feedback.date_published $dir";
-					return $order_by;
-				}
-
-				$order_by = array(
-					$join,
-					"ORDER BY ratings.date_created DESC, feedback.id DESC"
-				);
-				break;
-
-			case 'popular':
-				$order_by = "ORDER BY (POW(total_rating+1,2)/DATEDIFF(NOW(),date_created)) DESC, date_created DESC";
-				break;
-
-			case 'most-voted':
-			case 'num_ratings':
-				$order_by = "ORDER BY feedback.num_ratings $dir";
-				break;
-		}
-
-		return $order_by;
-	}
+        return $sql;
+    }
 
 
-	/**
-	 * Get the SQL parts we need in the query.
-	 *
-	 * @return array
-	 */
-	public function getSqlParts()
-	{
-		$db = App::getDbRead('search.filter.feedback');
+    /**
+     * Get the ORDER BY clause based on order info set.
+     *
+     * @return string
+     */
+    public function getOrderByPart()
+    {
+        // Set a default if none
+        if (!$this->order_by) {
+            $this->order_by = array('id', 'DESC');
+        }
 
-		$wheres = array();
-		$joins = array();
+        list($type, $dir) = $this->order_by;
 
-		foreach ($this->terms as $info) {
-			$join_id = Util::requestUniqueId();
-			$join_name = "j_$join_id";
+        $dir = strtoupper($dir);
+        if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+            $dir = self::ORDER_DESC;
+        }
 
-			list($term, $op, $choice) = $info;
-			$term_id = null;
+        $order_by = '';
 
-			switch ($term) {
+        switch ($type) {
+            case 'id':
+            case 'date_created':
+                $order_by = "ORDER BY feedback.date_published $dir";
+                break;
+
+            case 'i-voted':
+            case 'i_voted':
+                if (!$this->person && !$this->visitor) {
+                    $this->order_by = array('id', 'DESC');
+
+                    return $this->getOrderBy();
+                }
+
+                if ($this->person->id) {
+                    $join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.person_id = {$this->person->id})";
+                } elseif ($this->visitor) {
+                    $join = "LEFT JOIN ratings ON (ratings.object_id = feedback.id AND ratings.object_type = 'feedback' AND ratings.visitor_id = {$this->visitor->id})";
+                } else {
+                    $order_by = "ORDER BY feedback.date_published $dir";
+
+                    return $order_by;
+                }
+
+                $order_by = array(
+                    $join,
+                    "ORDER BY ratings.date_created DESC, feedback.id DESC"
+                );
+                break;
+
+            case 'popular':
+                $order_by = "ORDER BY (POW(total_rating+1,2)/DATEDIFF(NOW(),date_created)) DESC, date_created DESC";
+                break;
+
+            case 'most-voted':
+            case 'num_ratings':
+                $order_by = "ORDER BY feedback.num_ratings $dir";
+                break;
+        }
+
+        return $order_by;
+    }
+
+
+    /**
+     * Get the SQL parts we need in the query.
+     *
+     * @return array
+     */
+    public function getSqlParts()
+    {
+        $db = App::getDbRead('search.filter.feedback');
+
+        $wheres = array();
+        $joins = array();
+
+        foreach ($this->terms as $info) {
+            $join_id = Util::requestUniqueId();
+            $join_name = "j_$join_id";
+
+            list($term, $op, $choice) = $info;
+            $term_id = null;
+
+            switch ($term) {
                 case self::TERM_ID:
-					$choice = isset($choice['ids']) ? $choice['ids'] : $choice;
-					$choice = isset($choice['id']) ? $choice['id'] : $choice;
+                    $choice = isset($choice['ids']) ? $choice['ids'] : $choice;
+                    $choice = isset($choice['id']) ? $choice['id'] : $choice;
 
-					if ($op == self::OP_CONTAINS || is_array($choice)) {
-						if (!is_array($choice)) {
-							$choice = array($choice);
-						}
-						$wheres[] = $this->_choiceMatch('feedback.id', 'is', $choice);
-					} else {
-						$wheres[] = $this->_rangeMatch("feedback.id", $op, $choice, true);
-					}
-					break;
+                    if ($op == self::OP_CONTAINS || is_array($choice)) {
+                        if (!is_array($choice)) {
+                            $choice = array($choice);
+                        }
+                        $wheres[] = $this->_choiceMatch('feedback.id', 'is', $choice);
+                    } else {
+                        $wheres[] = $this->_rangeMatch("feedback.id", $op, $choice, true);
+                    }
+                    break;
 
-				case self::TERM_HIDDEN_STATUS:
-					if ($op == 'not') {
-						$wheres[] = '(feedback.hidden_status IS NULL OR ' . $this->_stringMatch('feedback.hidden_status', $op, $choice) . ')';
-					} else {
-						$wheres[] = $this->_stringMatch('feedback.hidden_status', $op, $choice);
-					}
-					break;
+                case self::TERM_HIDDEN_STATUS:
+                    if ($op == 'not') {
+                        $wheres[] = '(feedback.hidden_status IS NULL OR ' . $this->_stringMatch('feedback.hidden_status', $op, $choice) . ')';
+                    } else {
+                        $wheres[] = $this->_stringMatch('feedback.hidden_status', $op, $choice);
+                    }
+                    break;
 
-				case self::TERM_DELETED:
-					if ($op == self::OP_IS) {
-						$wheres[] = 'feedback.hidden_status = \'deleted\'';
-					} else {
-						$wheres[] = 'feedback.hidden_status != \'deleted\' OR feedback.hidden_status IS NULL';
-					}
-					break;
+                case self::TERM_DELETED:
+                    if ($op == self::OP_IS) {
+                        $wheres[] = 'feedback.hidden_status = \'deleted\'';
+                    } else {
+                        $wheres[] = 'feedback.hidden_status != \'deleted\' OR feedback.hidden_status IS NULL';
+                    }
+                    break;
 
-				case self::TERM_STATUS:
+                case self::TERM_STATUS:
 
-					$cats = array();
-					$types = array();
-					$hidden_types = array();
+                    $cats = array();
+                    $types = array();
+                    $hidden_types = array();
 
-					foreach ((array)$choice as $c) {
-						if (strpos($c, '.') !== false) {
-							list ($hidden, $c) = explode('.', $c, 2);
-						} else {
-							$hidden = false;
-						}
-						if ($hidden === 'hidden') {
-							$hidden_types[] = $c;
-						} else if (ctype_digit($c)) {
-							$cats[] = $c;
-						} else {
-							$types[] = $c;
-							if ($c == 'hidden') {
-								$this->include_hidden = true;
-							}
-						}
-					}
+                    foreach ((array)$choice as $c) {
+                        if (strpos($c, '.') !== false) {
+                            list ($hidden, $c) = explode('.', $c, 2);
+                        } else {
+                            $hidden = false;
+                        }
+                        if ($hidden === 'hidden') {
+                            $hidden_types[] = $c;
+                        } elseif (ctype_digit($c)) {
+                            $cats[] = $c;
+                        } else {
+                            $types[] = $c;
+                            if ($c == 'hidden') {
+                                $this->include_hidden = true;
+                            }
+                        }
+                    }
 
-					// Visible is a special type name
-					if (($k = array_search('visible', $types)) !== false) {
-						unset($types[$k]);
-						$types = array_merge($types, array('new', 'active', 'closed'));
-						$types = array_unique($types);
-					}
+                    // Visible is a special type name
+                    if (($k = array_search('visible', $types)) !== false) {
+                        unset($types[$k]);
+                        $types = array_merge($types, array('new', 'active', 'closed'));
+                        $types = array_unique($types);
+                    }
 
-					$part_where = array();
-					if ($cats) {
-						$part_where[] = $this->_choiceMatch('feedback.status_category_id', $op, $cats);
-					}
-					if ($types) {
-						$part_where[] = $this->_stringMatch('feedback.status', $op, $types);
-					}
-					if ($hidden_types) {
-						$part_where[] = "(feedback.status = 'hidden' AND " . $this->_stringMatch('feedback.hidden_status', $op, $types) . ')';
-					}
+                    $part_where = array();
+                    if ($cats) {
+                        $part_where[] = $this->_choiceMatch('feedback.status_category_id', $op, $cats);
+                    }
+                    if ($types) {
+                        $part_where[] = $this->_stringMatch('feedback.status', $op, $types);
+                    }
+                    if ($hidden_types) {
+                        $part_where[] = "(feedback.status = 'hidden' AND " . $this->_stringMatch('feedback.hidden_status', $op, $types) . ')';
+                    }
 
-					if ($hidden_types) {
-						$this->include_hidden = true;
-					}
+                    if ($hidden_types) {
+                        $this->include_hidden = true;
+                    }
 
-					$part_where = "(" . implode(' OR ', $part_where) . ")";
+                    $part_where = "(" . implode(' OR ', $part_where) . ")";
 
-					$wheres[] = $part_where;
+                    $wheres[] = $part_where;
 
-					break;
+                    break;
 
-				case self::TERM_QUERY:
+                case self::TERM_QUERY:
 
-					$string = $choice['query'];
-					$type = !empty($choice['type']) ? $choice['type'] : 'phrase';
+                    $string = $choice['query'];
+                    $type = !empty($choice['type']) ? $choice['type'] : 'phrase';
 
-					if (!$string) {
-						break;
-					}
+                    if (!$string) {
+                        break;
+                    }
 
-					$w = array();
-					$w[] = '(' . $this->_stringSearch("feedback.title", $op, $string, $type) . ')';
-					$w[] = '(' . $this->_stringSearch("feedback.content", $op, $string, $type) . ')';
+                    $w = array();
+                    $w[] = '(' . $this->_stringSearch("feedback.title", $op, $string, $type) . ')';
+                    $w[] = '(' . $this->_stringSearch("feedback.content", $op, $string, $type) . ')';
 
-					$wheres[] = implode(' OR ' , $w);
-					break;
+                    $wheres[] = implode(' OR ' , $w);
+                    break;
 
-				case self::TERM_CATEGORY:
-				case self::TERM_CATEGORY_SPECIFIC:
-					$base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
-					$ids = array();
+                case self::TERM_CATEGORY:
+                case self::TERM_CATEGORY_SPECIFIC:
+                    $base_ids = (array)((is_array($choice) && isset($choice['category'])) ? $choice['category'] : $choice);
+                    $ids = array();
 
-					if ($term == self::TERM_CATEGORY_SPECIFIC) {
-						$ids = $base_ids;
-					} else {
-						foreach ($base_ids as $id) {
-							$ids = array_merge($ids, App::getEntityRepository('DeskPRO:FeedbackCategory')->getIdsInTree($id, true));
-						}
-					}
+                    if ($term == self::TERM_CATEGORY_SPECIFIC) {
+                        $ids = $base_ids;
+                    } else {
+                        foreach ($base_ids as $id) {
+                            $ids = array_merge($ids, App::getEntityRepository('DeskPRO:FeedbackCategory')->getIdsInTree($id, true));
+                        }
+                    }
 
-					$ids = array_unique($ids);
+                    $ids = array_unique($ids);
 
-					$wheres[] = $this->_choiceMatch('feedback.category_id', $op, $ids);
+                    $wheres[] = $this->_choiceMatch('feedback.category_id', $op, $ids);
 
-					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getNames((array)$choice);
-						return $titles;
-					});
-					break;
+                    $this->summary[] = $this->_choiceSummary('Category', $op, $choice, function ($choice) {
+                        $titles = App::getEntityRepository('DeskPRO:FeedbackCategory')->getNames((array)$choice);
 
-				case self::TERM_STATUS_CATEGORY:
-					$ids = (array)$choice;
-					$ids = array_unique($ids);
+                        return $titles;
+                    });
+                    break;
 
-					$wheres[] = $this->_choiceMatch('feedback.status_category_id', $op, $ids);
+                case self::TERM_STATUS_CATEGORY:
+                    $ids = (array)$choice;
+                    $ids = array_unique($ids);
 
-					$this->summary[] = $this->_choiceSummary('Status Category', $op, $choice, function($choice) {
-						$titles = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getNames((array)$choice);
-						return $titles;
-					});
-					break;
+                    $wheres[] = $this->_choiceMatch('feedback.status_category_id', $op, $ids);
 
-				case self::TERM_NUM_RATINGS:
-					$wheres[] = $this->_rangeMatch('feedback.num_ratings', $op, $choice);
-					break;
+                    $this->summary[] = $this->_choiceSummary('Status Category', $op, $choice, function ($choice) {
+                        $titles = App::getEntityRepository('DeskPRO:FeedbackStatusCategory')->getNames((array)$choice);
 
-				case self::TERM_DATE_CREATED:
-					$wheres[] = $this->_dateMatch('idaes.date_created', $op, $choice);
-					break;
+                        return $titles;
+                    });
+                    break;
 
-				case self::TERM_LABEL:
-					$this->_normalizeOpAndChoice($op, $choice);
+                case self::TERM_NUM_RATINGS:
+                    $wheres[] = $this->_rangeMatch('feedback.num_ratings', $op, $choice);
+                    break;
 
-					$choices_in = array();
-					if (is_array($choice)) {
-						foreach ((array)$choice as $c) {
-							$choices_in[] = $db->quote($c);
-						}
-						$choices_in = implode(',', $choices_in);
-					}
+                case self::TERM_DATE_CREATED:
+                    $wheres[] = $this->_dateMatch('idaes.date_created', $op, $choice);
+                    break;
 
-					switch ($op) {
-						case self::OP_IS:
-							$joins[] = array(
-								'labels_feedback',
-								"LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)"
-							);
-							$wheres[] = "$join_name.label = " . $db->quote($choice);
-							break;
-						case self::OP_NOT:
-							$joins[] = array(
-								'labels_feedback',
-								"LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label = '.$db->quote($choice).')"
-							);
-							$wheres[] = "$join_name.person_id IS NULL";
-							break;
-						case self::OP_CONTAINS:
-							$joins[] = array(
-								'labels_feedback',
-								"LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)"
-							);
-							$wheres[] = "$join_name.label IN ($choices_in)";
-							break;
+                case self::TERM_LABEL:
+                    $this->_normalizeOpAndChoice($op, $choice);
 
-						case self::OP_NOTCONTAINS:
-							$joins[] = array(
-								'labels_feedback',
-								"LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label IN ($choices_in)"
-							);
-							$wheres[] = "$join_name.person_id IS NULL";
-							break;
-					}
-					break;// end labels
-			}
-		}
+                    $choices_in = array();
+                    if (is_array($choice)) {
+                        foreach ((array)$choice as $c) {
+                            $choices_in[] = $db->quote($c);
+                        }
+                        $choices_in = implode(',', $choices_in);
+                    }
 
-		$joins = array_unique($joins);
+                    switch ($op) {
+                        case self::OP_IS:
+                            $joins[] = array(
+                                'labels_feedback',
+                                "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)"
+                            );
+                            $wheres[] = "$join_name.label = " . $db->quote($choice);
+                            break;
+                        case self::OP_NOT:
+                            $joins[] = array(
+                                'labels_feedback',
+                                "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label = '.$db->quote($choice).')"
+                            );
+                            $wheres[] = "$join_name.person_id IS NULL";
+                            break;
+                        case self::OP_CONTAINS:
+                            $joins[] = array(
+                                'labels_feedback',
+                                "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id)"
+                            );
+                            $wheres[] = "$join_name.label IN ($choices_in)";
+                            break;
 
-		return array(
-			'joins' => $joins,
-			'wheres' => $wheres
-		);
-	}
+                        case self::OP_NOTCONTAINS:
+                            $joins[] = array(
+                                'labels_feedback',
+                                "LEFT JOIN labels_feedback AS $join_name ON ($join_name.feedback_id = feedback.id AND $join_name.label IN ($choices_in)"
+                            );
+                            $wheres[] = "$join_name.person_id IS NULL";
+                            break;
+                    }
+                    break;// end labels
+            }
+        }
+
+        $joins = array_unique($joins);
+
+        return array(
+            'joins' => $joins,
+            'wheres' => $wheres
+        );
+    }
 }

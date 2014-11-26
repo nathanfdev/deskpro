@@ -35,39 +35,38 @@
 namespace Application\UserBundle\Form;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 
 class RegisterType extends AbstractType
 {
-	public function buildForm(FormBuilderInterface $builder, array $options)
-	{
-		$this->buildPersonForm($builder);
-	}
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $this->buildPersonForm($builder);
+    }
 
 
 
-	/**
-	 * Configures the person form
-	 */
-	protected function buildPersonForm(FormBuilderInterface $builder)
-	{
-		$builder->add('name', 'text', array('required' => false));
-		$builder->add('email', 'text', array('required' => false));
-		$builder->add('password', 'password', array('required' => false));
-		$builder->add('password2', 'password', array('required' => false));
+    /**
+     * Configures the person form
+     */
+    protected function buildPersonForm(FormBuilderInterface $builder)
+    {
+        $builder->add('name', 'text', array('required' => false));
+        $builder->add('email', 'text', array('required' => false));
+        $builder->add('password', 'password', array('required' => false));
+        $builder->add('password2', 'password', array('required' => false));
 
-		$langs = App::getDataService('Language')->getTitles();
-		if (count($langs) != 1) {
-			$builder->add('language_id', 'choice', array(
-				'choices' => $langs
-			));
-		}
-	}
+        $langs = App::getDataService('Language')->getTitles();
+        if (count($langs) != 1) {
+            $builder->add('language_id', 'choice', array(
+                'choices' => $langs
+            ));
+        }
+    }
 
-	public function getName()
-	{
-		return 'register';
-	}
+    public function getName()
+    {
+        return 'register';
+    }
 }

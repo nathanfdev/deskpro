@@ -40,18 +40,17 @@ namespace Orb\Auth\Adapter;
  */
 interface SsoCapableInterface extends CallbackInterface
 {
-	/**
-	 * URL we send the deskpro user to after they log out of our system
-	 * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation
-	 *
-	 * @return string
-	 */
-	public function getLogoutRedirectUrl();
+    /**
+     * URL we send the deskpro user to after they log out of our system
+     * This is to comply with sing sign-off in SAML and our JWT system, but is useful in any SSO implementation
+     *
+     * @return string
+     */
+    public function getLogoutRedirectUrl();
 
-
-	/**
-	 * Allow external processes to determine and set the logout URL if needed. Should override any internal logic for
-	 * logout URL.
-	 */
-	public function setLogoutRedirectUrl($url);
+    /**
+     * Allow external processes to determine and set the logout URL if needed. Should override any internal logic for
+     * logout URL.
+     */
+    public function setLogoutRedirectUrl($url);
 }

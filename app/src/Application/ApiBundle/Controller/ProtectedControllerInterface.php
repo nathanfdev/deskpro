@@ -36,8 +36,8 @@ namespace Application\ApiBundle\Controller;
 
 interface ProtectedControllerInterface
 {
-	/**
-	 * @return \Application\ApiBundle\PermissionStrategy\PermissionStrategyInterface
-	 */
-	public function getPermissionStrategy();
+    /**
+     * @return \Application\ApiBundle\PermissionStrategy\PermissionStrategyInterface
+     */
+    public function getPermissionStrategy();
 }

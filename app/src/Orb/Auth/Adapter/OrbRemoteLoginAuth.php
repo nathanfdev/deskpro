@@ -98,252 +98,241 @@ use \Orb\Auth\Result;
  */
 abstract class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInterface, CallbackInterface
 {
-	const ERR_INVALID_TOKEN = -10;
-	const ERR_SERVICE_ERR = -11;
+    const ERR_INVALID_TOKEN = -10;
+    const ERR_SERVICE_ERR = -11;
 
-	/**
-	 * The key to authenticate the request
-	 * @var string
-	 */
-	protected $consumer_key = null;
+    /**
+     * The key to authenticate the request
+     * @var string
+     */
+    protected $consumer_key = null;
 
-	/**
-	 * The URL to call to initiate the process
-	 * @var string
-	 */
-	protected $initiate_url = null;
+    /**
+     * The URL to call to initiate the process
+     * @var string
+     */
+    protected $initiate_url = null;
 
-	/**
-	 * The URL to redirect the user back to upon successful login
-	 * @var string
-	 */
-	protected $redirect_url = null;
+    /**
+     * The URL to redirect the user back to upon successful login
+     * @var string
+     */
+    protected $redirect_url = null;
 
-	/**
-	 * The URL we'll use to verify a users login and possibly fetch userinfo
-	 * @var string
-	 */
-	protected $verify_url = null;
+    /**
+     * The URL we'll use to verify a users login and possibly fetch userinfo
+     * @var string
+     */
+    protected $verify_url = null;
 
-	/**
-	 * State handler to store session data
-	 * @var Orb\Auth\StateHandler\StateHandlerInterface;
-	 */
-	protected $state;
+    /**
+     * State handler to store session data
+     * @var Orb\Auth\StateHandler\StateHandlerInterface;
+     */
+    protected $state;
 
-	/**
-	 * HTTP client
-	 * @var \Zend\Http\Client
-	 */
-	protected $http;
+    /**
+     * HTTP client
+     * @var \Zend\Http\Client
+     */
+    protected $http;
 
-	/**
-	 * Do we request userinfo as well?
-	 * @var int
-	 */
-	protected $with_userinfo = 1;
+    /**
+     * Do we request userinfo as well?
+     * @var int
+     */
+    protected $with_userinfo = 1;
 
-	/**
-	 * Data we got back when user returned from providers website
-	 * @var array
-	 */
-	protected $got_data = array();
+    /**
+     * Data we got back when user returned from providers website
+     * @var array
+     */
+    protected $got_data = array();
 
-	/**
-	 * @param string $consumer_key
-	 * @param string $initiate_url The remote URL we'll call to initiate the process
-	 * @param string $redirect_url The local URL to redirect the user BACK to upon login
-	 * @param string $verify_url   The URL to call
-	 */
-	public function __construct($consumer_key, $initiate_url, $redirect_url, $verify_url)
-	{
-		$this->consumer_key = $consumer_key;
-		$this->initiate_url = $initiate_url;
-		$this->redirect_url = $redirect_url;
-		$this->verify_url   = $verify_url;
-	}
+    /**
+     * @param string $consumer_key
+     * @param string $initiate_url The remote URL we'll call to initiate the process
+     * @param string $redirect_url The local URL to redirect the user BACK to upon login
+     * @param string $verify_url   The URL to call
+     */
+    public function __construct($consumer_key, $initiate_url, $redirect_url, $verify_url)
+    {
+        $this->consumer_key = $consumer_key;
+        $this->initiate_url = $initiate_url;
+        $this->redirect_url = $redirect_url;
+        $this->verify_url   = $verify_url;
+    }
 
+    /**
+     * Switches the adapter to the callback context using form data $data.
+     *
+     * @param  array $data Form data or other callback data
+     * @return void
+     */
+    public function setCallbackContext(array $got_data)
+    {
+        $this->got_data = $got_data;
+    }
 
+    /**
+     * Set if we want userinfo or not
+     *
+     * @param bool $yes_or_no
+     */
+    public function setWithUserinfo($yes_or_no)
+    {
+        $this->with_userinfo = (int)((bool)$yes_or_no);
+    }
 
-	/**
-	 * Switches the adapter to the callback context using form data $data.
-	 *
-	 * @param array $data Form data or other callback data
-	 * @return void
-	 */
-	public function setCallbackContext(array $got_data)
-	{
-		$this->got_data = $got_data;
-	}
+    /**
+     * Authenticate a user.
+     *
+     * @return
+     */
+    public function authenticate()
+    {
+        $state = $this->getStateHandler();
 
+        // If we dont have tokens yet, we must initiate the request
+        if (!isset($this->got_data['orba_access_token']) OR !isset($this->got_data['orba_verify']) OR !isset($state['orba_user_key'])) {
+            return $this->_initiate();
+        }
 
+        #------------------------------
+        # Verify the callback
+        #------------------------------
 
-	/**
-	 * Set if we want userinfo or not
-	 *
-	 * @param bool $yes_or_no
-	 */
-	public function setWithUserinfo($yes_or_no)
-	{
-		$this->with_userinfo = (int)((bool)$yes_or_no);
-	}
+        $check_verify = sha1($this->got_data['orba_access_token'] . $state['orba_user_key']);
 
+        if ($check_verify != $this->got_data['orba_verify']) {
+            return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
+        }
 
+        #------------------------------
+        # Now fetch the data
+        #------------------------------
 
-	/**
-	 * Authenticate a user.
-	 *
-	 * @return
-	 */
-	public function authenticate()
-	{
-		$state = $this->getStateHandler();
+        $http = $this->getHttpClient();
+        $http->resetParameters();
 
-		// If we dont have tokens yet, we must initiate the request
-		if (!isset($this->got_data['orba_access_token']) OR !isset($this->got_data['orba_verify']) OR !isset($state['orba_user_key'])) {
-			return $this->_initiate();
-		}
+        $http->setUri($this->verify_url);
+        $http->setParameterPost('orba_access_token', $this->got_data['orba_access_token']);
+        $http->setParameterPost('orba_verify', sha1($this->got_data['orba_access_token'] . $state['orba_user_key']));
+        if ($this->with_userinfo) {
+            $http->setParameterPost('orba_with_userinfo', 1);
+        }
 
-		#------------------------------
-		# Verify the callback
-		#------------------------------
+        $http_result = $http->request(\Zend\Http\Client::POST);
 
-		$check_verify = sha1($this->got_data['orba_access_token'] . $state['orba_user_key']);
+        $data = @json_decode($http_result->getBody(), true);
+        if (!$data) {
+            throw \UnexpectedValueException('Invalid JSON returned from service');
+        }
 
-		if ($check_verify != $this->got_data['orba_verify']) {
-			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
-		}
+        if (isset($data['is_error'])) {
+            return new Result(Result::FAILURE, null, array('error_code' => self::ERR_SERVICE_ERR, 'error_message' => 'Service reported error', 'service_data' => $data));
+        }
 
-		#------------------------------
-		# Now fetch the data
-		#------------------------------
+        $identity = new \Orb\Auth\Identity($data['identity'], isset($data['userinfo']) ? $data['userinfo'] : array());
+        $result = new Result(Result::SUCCESS, $identity);
 
-		$http = $this->getHttpClient();
-		$http->resetParameters();
+        return $result;
+    }
 
-		$http->setUri($this->verify_url);
-		$http->setParameterPost('orba_access_token', $this->got_data['orba_access_token']);
-		$http->setParameterPost('orba_verify', sha1($this->got_data['orba_access_token'] . $state['orba_user_key']));
-		if ($this->with_userinfo) {
-			$http->setParameterPost('orba_with_userinfo', 1);
-		}
+    protected function _initiate()
+    {
+        $state = $this->getStateHandler();
+        $state->clearState();
 
-		$http_result = $http->request(\Zend\Http\Client::POST);
+        // The user key used in various signings
+        $user_key = \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_ALPHANUM_IU);
 
-		$data = @json_decode($http_result->getBody(), true);
-		if (!$data) {
-			throw \UnexpectedValueException('Invalid JSON returned from service');
-		}
+        #------------------------------
+        # Initiate the request on the service
+        #------------------------------
 
-		if (isset($data['is_error'])) {
-			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_SERVICE_ERR, 'error_message' => 'Service reported error', 'service_data' => $data));
-		}
+        $http = $this->getHttpClient();
+        $http->resetParameters();
+        $http->setUri($this->initiate_url);
 
-		$identity = new \Orb\Auth\Identity($data['identity'], isset($data['userinfo']) ? $data['userinfo'] : array());
-		$result = new Result(Result::SUCCESS, $identity);
+        $http->setParameterPost('orba_consumer_key', $this->consumer_key);
+        $http->setParameterPost('orba_user_key', $user_key);
 
-		return $result;
-	}
+        $http_result = $http->request(\Zend\Http\Client::POST);
 
-	protected function _initiate()
-	{
-		$state = $this->getStateHandler();
-		$state->clearState();
+        $service_data = @json_decode($http_result->getBody(), true);
+        if (!$service_data) {
+            throw \UnexpectedValueException('Invalid JSON returned from service');
+        }
 
-		// The user key used in various signings
-		$user_key = \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_ALPHANUM_IU);
+        #------------------------------
+        # Now store the tokens in the session and
+        # redirect the user
+        #------------------------------
 
-		#------------------------------
-		# Initiate the request on the service
-		#------------------------------
+        $state['orba_user_key'] = $user_key;
 
-		$http = $this->getHttpClient();
-		$http->resetParameters();
-		$http->setUri($this->initiate_url);
+        $redirect_url = $service_data['orba_service_url'];
+        if (\strpos($redirect_url, '?') === false) {
+            $redirect_url .= '?';
+        } else {
+            $redirect_url .= '&';
+        }
+        $redirect_url .= 'orba_token=' . urlencode($service_data['orba_token']);
+        $redirect_url .= '&orba_verify=' . sha1($service_data['orba_token'] . $user_key);
+        $redirect_url .= '&redirect_url=' . urlencode($this->redirect_url);
 
-		$http->setParameterPost('orba_consumer_key', $this->consumer_key);
-		$http->setParameterPost('orba_user_key', $user_key);
+        $result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
 
-		$http_result = $http->request(\Zend\Http\Client::POST);
+        return $result;
+    }
 
-		$service_data = @json_decode($http_result->getBody(), true);
-		if (!$service_data) {
-			throw \UnexpectedValueException('Invalid JSON returned from service');
-		}
+    /**
+     * Set a custom HTTP client. If one is not set, a default client will be used automatically.
+     *
+     * @param \Zend\Http\Client $http
+     */
+    public function setHttpClient(\Zend\Http\Client $http)
+    {
+        $this->http = $http;
+    }
 
-		#------------------------------
-		# Now store the tokens in the session and
-		# redirect the user
-		#------------------------------
+    /**
+     * Get the HTTP client.
+     *
+     * @return \Zend\Http\Client
+     */
+    public function getHttpClient()
+    {
+        if ($this->http !== null) return $this->http;
 
-		$state['orba_user_key'] = $user_key;
+        $this->http = new \Zend\Http\Client();
 
-		$redirect_url = $service_data['orba_service_url'];
-		if (\strpos($redirect_url, '?') === false) {
-			$redirect_url .= '?';
-		} else {
-			$redirect_url .= '&';
-		}
-		$redirect_url .= 'orba_token=' . urlencode($service_data['orba_token']);
-		$redirect_url .= '&orba_verify=' . sha1($service_data['orba_token'] . $user_key);
-		$redirect_url .= '&redirect_url=' . urlencode($this->redirect_url);
+        return $this->http;
+    }
 
-		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
-		return $result;
-	}
+    /**
+     * Switches the adapter to the callback context using form data $data.
+     *
+     * @param  Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
+     * @return void
+     */
+    public function setStateHandler(StateHandlerInterface $state)
+    {
+        $this->state = $state;
+    }
 
+    /**
+     * Get the state handler.
+     *
+     * @return Orb\Auth\StateHandler\StateHandlerInterface
+     */
+    public function getStateHandler()
+    {
+        if (!$this->state) {
+            throw new \RuntimeException('No state handler was set. Set one with setStateHandler');
+        }
 
-
-	/**
-	 * Set a custom HTTP client. If one is not set, a default client will be used automatically.
-	 *
-	 * @param \Zend\Http\Client $http
-	 */
-	public function setHttpClient(\Zend\Http\Client $http)
-	{
-		$this->http = $http;
-	}
-
-
-	/**
-	 * Get the HTTP client.
-	 *
-	 * @return \Zend\Http\Client
-	 */
-	public function getHttpClient()
-	{
-		if ($this->http !== null) return $this->http;
-
-		$this->http = new \Zend\Http\Client();
-
-		return $this->http;
-	}
-
-
-
-	/**
-	 * Switches the adapter to the callback context using form data $data.
-	 *
-	 * @param Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
-	 * @return void
-	 */
-	public function setStateHandler(StateHandlerInterface $state)
-	{
-		$this->state = $state;
-	}
-
-
-
-	/**
-	 * Get the state handler.
-	 *
-	 * @return Orb\Auth\StateHandler\StateHandlerInterface
-	 */
-	public function getStateHandler()
-	{
-		if (!$this->state) {
-			throw new \RuntimeException('No state handler was set. Set one with setStateHandler');
-		}
-		return $this->state;
-	}
+        return $this->state;
+    }
 }

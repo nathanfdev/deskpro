@@ -38,30 +38,31 @@ use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 
 class PhpMailConfig implements AccountConfigInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	public function serializeJsonArray()
-	{
-		return array('PhpMail' => true);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
+    {
+        return array('PhpMail' => true);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public static function unserializeJsonArray(array $data)
-	{
-		$obj = new self();
-		return $obj;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+
+        return $obj;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getType()
-	{
-		return 'php_mail';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getType()
+    {
+        return 'php_mail';
+    }
 }

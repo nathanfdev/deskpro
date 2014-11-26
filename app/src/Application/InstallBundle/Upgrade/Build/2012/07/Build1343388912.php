@@ -36,10 +36,10 @@ namespace Application\InstallBundle\Upgrade\Build;
 
 class Build1343388912 extends AbstractBuild
 {
-	public function run()
-	{
-		$this->out("Add is_enabled to usergroups table");
-		$this->execMutateSql("ALTER TABLE usergroups ADD is_enabled TINYINT(1) NOT NULL");
-		$this->execMutateSql("UPDATE usergroups SET is_enabled = 1");
-	}
+    public function run()
+    {
+        $this->out("Add is_enabled to usergroups table");
+        $this->execMutateSql("ALTER TABLE usergroups ADD is_enabled TINYINT(1) NOT NULL");
+        $this->execMutateSql("UPDATE usergroups SET is_enabled = 1");
+    }
 }

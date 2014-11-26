@@ -47,42 +47,43 @@ use Orb\Util\CheckedOptionsArray;
  */
 class CheckTicketContextualField extends AbstractTriggerTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('field_id', 'value');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('field_id', 'value');
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$options = $this->getTermOptions();
+        return $options;
+    }
 
-		#------------------------------
-		# Get the field value
-		#------------------------------
-		/** @var CustomFieldManager $manager */
-		$value = null;
-		if ($manager = $context->getVars()->get('custom_field_manager')) {
-			$field_id = $this->getTermOptions()->get('field_id');
-			$value = $manager->getFieldRawData($field_id, $ticket);
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function isTriggerMatch(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $options = $this->getTermOptions();
 
-		return $this->isStringMatch($ticket, $context, TermValue::createWithValue($value), $options->get('value'));
-	}
+        #------------------------------
+        # Get the field value
+        #------------------------------
+        /** @var CustomFieldManager $manager */
+        $value = null;
+        if ($manager = $context->getVars()->get('custom_field_manager')) {
+            $field_id = $this->getTermOptions()->get('field_id');
+            $value = $manager->getFieldRawData($field_id, $ticket);
+        }
+
+        return $this->isStringMatch($ticket, $context, TermValue::createWithValue($value), $options->get('value'));
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getTermType()
-	{
-		return 'CheckTicketContextualField' . $this->getTermOptions()->get('field_id');
-	}
+    /**
+     * @return string
+     */
+    public function getTermType()
+    {
+        return 'CheckTicketContextualField' . $this->getTermOptions()->get('field_id');
+    }
 }

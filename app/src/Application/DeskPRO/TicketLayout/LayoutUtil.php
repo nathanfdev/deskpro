@@ -36,32 +36,31 @@ namespace Application\DeskPRO\TicketLayout;
 
 class LayoutUtil
 {
-	private function __construct() {}
+    private function __construct() {}
 
-	/**
-	 * @param Layout $layout
-	 */
-	public static function ensureMinimumUserLayout(Layout $layout)
-	{
-		if (!$layout->has('message')) {
-			$layout->prepend(new LayoutField('message'));
-		}
+    /**
+     * @param Layout $layout
+     */
+    public static function ensureMinimumUserLayout(Layout $layout)
+    {
+        if (!$layout->has('message')) {
+            $layout->prepend(new LayoutField('message'));
+        }
 
-		if (!$layout->has('subject')) {
-			$layout->prepend(new LayoutField('subject'));
-		}
+        if (!$layout->has('subject')) {
+            $layout->prepend(new LayoutField('subject'));
+        }
 
-		if (!$layout->has('user_email')) {
-			$layout->prepend(new LayoutField('user_email'));
-		}
-	}
+        if (!$layout->has('user_email')) {
+            $layout->prepend(new LayoutField('user_email'));
+        }
+    }
 
-
-	/**
-	 * @param Layout $layout
-	 */
-	public static function ensureMinimumAgentLayout(Layout $layout)
-	{
-		// nothing at the moment
-	}
+    /**
+     * @param Layout $layout
+     */
+    public static function ensureMinimumAgentLayout(Layout $layout)
+    {
+        // nothing at the moment
+    }
 }

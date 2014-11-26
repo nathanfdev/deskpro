@@ -41,41 +41,41 @@ use Orb\Util\Strings;
  */
 class Mapper
 {
-	/** @var array */
-	protected $map = array();
+    /** @var array */
+    protected $map = array();
 
-	public function addMapName($name, $class)
-	{
-		$this->map[$name] = $class;
-	}
+    public function addMapName($name, $class)
+    {
+        $this->map[$name] = $class;
+    }
 
-	public function mapName($name)
-	{
-		// We have a specific name
-		if (isset(self::$map[$name])) {
-			$class = self::$map[$name];
+    public function mapName($name)
+    {
+        // We have a specific name
+        if (isset(self::$map[$name])) {
+            $class = self::$map[$name];
 
-		// We'll try to generate it
-		} else {
+        // We'll try to generate it
+        } else {
 
-			// Example:
-			// agent_team
-			// agent-team
-			// AgentTeam
-			// ActionTeamAction
+            // Example:
+            // agent_team
+            // agent-team
+            // AgentTeam
+            // ActionTeamAction
 
-			$class = str_replace('_', '-', $name);
-			$class = ucfirst(Strings::dashToCamelCase($class));
-		}
+            $class = str_replace('_', '-', $name);
+            $class = ucfirst(Strings::dashToCamelCase($class));
+        }
 
-		$action_class = $class . 'Action';
-		$modifier_class = $class . 'Modifier';
-		if (is_class($action_class)) {
-			return $action_class;
-		} elseif (is_class($modifier_class)) {
-			return $modifier_class;
-		}
+        $action_class = $class . 'Action';
+        $modifier_class = $class . 'Modifier';
+        if (is_class($action_class)) {
+            return $action_class;
+        } elseif (is_class($modifier_class)) {
+            return $modifier_class;
+        }
 
-		return null;
-	}
+        return null;
+    }
 }

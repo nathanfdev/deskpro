@@ -46,110 +46,111 @@ use Orb\Util\CheckedOptionsArray;
  */
 class SetAgent extends AbstractContainerAwareAction implements ActionInterface, MacroActionInterface, NoopableInterface
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('agent_id');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('agent_id');
+
+        return $options;
+    }
 
 
-	/**
-	 * @param $set_agent_id
-	 * @param ExecutorContextInterface $context
-	 * @return Person|null
-	 * @throws \InvalidArgumentException
-	 */
-	private function resolveAgent($set_agent_id, ExecutorContextInterface $context)
-	{
-		if ($set_agent_id == -1) {
-			if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
-				throw new \RuntimeException();
-			}
-			$agent = $context->getPersonContext();
-		} elseif ($set_agent_id == 0) {
-			$agent = null;
-		} else {
-			$agent = $this->getContainer()->getAgentData()->get($set_agent_id);
-			if (!$agent) {
-				throw new \InvalidArgumentException();
-			}
-		}
+    /**
+     * @param $set_agent_id
+     * @param  ExecutorContextInterface  $context
+     * @return Person|null
+     * @throws \InvalidArgumentException
+     */
+    private function resolveAgent($set_agent_id, ExecutorContextInterface $context)
+    {
+        if ($set_agent_id == -1) {
+            if (!$context->getPersonContext() || !$context->getPersonContext()->is_agent) {
+                throw new \RuntimeException();
+            }
+            $agent = $context->getPersonContext();
+        } elseif ($set_agent_id == 0) {
+            $agent = null;
+        } else {
+            $agent = $this->getContainer()->getAgentData()->get($set_agent_id);
+            if (!$agent) {
+                throw new \InvalidArgumentException();
+            }
+        }
 
-		return $agent;
-	}
-
-
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		try {
-			$agent = $this->resolveAgent($this->getActionOption('agent_id'), $context);
-		} catch (\RuntimeException $e) {
-			return;
-		} catch (\InvalidArgumentException $e) {
-			return;
-		}
-
-		$ticket->agent = $agent;
-	}
+        return $agent;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
-	{
-		try {
-			$agent = $this->resolveAgent($this->getActionOption('agent_id'), $context);
-		} catch (\RuntimeException $e) {
-			return true;
-		} catch (\InvalidArgumentException $e) {
-			return true;
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function applyAction(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        try {
+            $agent = $this->resolveAgent($this->getActionOption('agent_id'), $context);
+        } catch (\RuntimeException $e) {
+            return;
+        } catch (\InvalidArgumentException $e) {
+            return;
+        }
 
-		$set_agent_id    = $agent ? $agent->id : 0;
-		$ticket_agent_id = $ticket->agent ? $ticket->agent->id : 0;
-
-		if ($ticket_agent_id == $set_agent_id) {
-			return true;
-		}
-
-		return false;
-	}
+        $ticket->agent = $agent;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$set_agent_id = $this->getActionOption('agent_id');
-		if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
-			if ($set_agent_id == $person->getId()) {
-				if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
-					return null;
-				}
-				return array('assign_self');
-			}
+    /**
+     * {@inheritDoc}
+     */
+    public function isNoop(Ticket $ticket, ExecutorContextInterface $context)
+    {
+        try {
+            $agent = $this->resolveAgent($this->getActionOption('agent_id'), $context);
+        } catch (\RuntimeException $e) {
+            return true;
+        } catch (\InvalidArgumentException $e) {
+            return true;
+        }
 
-			return array('assign_agent');
-		}
+        $set_agent_id    = $agent ? $agent->id : 0;
+        $ticket_agent_id = $ticket->agent ? $ticket->agent->id : 0;
 
-		return null;
-	}
+        if ($ticket_agent_id == $set_agent_id) {
+            return true;
+        }
+
+        return false;
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
-	{
-		$this->applyAction($ticket, $context);
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function getMacroPermissionErrors(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $set_agent_id = $this->getActionOption('agent_id');
+        if (!$person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_agent')) {
+            if ($set_agent_id == $person->getId()) {
+                if ($person->PermissionsManager->TicketChecker->canModify($ticket, 'assign_self')) {
+                    return null;
+                }
+
+                return array('assign_self');
+            }
+
+            return array('assign_agent');
+        }
+
+        return null;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function applyMacro(Person $person, Ticket $ticket, ExecutorContextInterface $context)
+    {
+        $this->applyAction($ticket, $context);
+    }
 }

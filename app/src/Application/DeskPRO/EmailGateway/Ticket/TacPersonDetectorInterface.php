@@ -40,9 +40,9 @@ use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
  */
 interface TacPersonDetectorInterface
 {
-	/**
-	 * @param AbstractReader $reader
-	 * @return \Application\DeskPRO\Entity\Person|null
-	 */
-	public function findTacPerson(AbstractReader $reader);
+    /**
+     * @param  AbstractReader                          $reader
+     * @return \Application\DeskPRO\Entity\Person|null
+     */
+    public function findTacPerson(AbstractReader $reader);
 }

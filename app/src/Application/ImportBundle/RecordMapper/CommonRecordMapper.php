@@ -36,134 +36,136 @@ use Orb\Util\Strings;
 
 class CommonRecordMapper implements LearnableRecordMapperInterface
 {
-	/**
-	 * @var \Doctrine\DBAL\Connection
-	 */
-	protected $db;
+    /**
+     * @var \Doctrine\DBAL\Connection
+     */
+    protected $db;
 
-	/**
-	 * @var string
-	 */
-	protected $table;
+    /**
+     * @var string
+     */
+    protected $table;
 
-	/**
-	 * @var string
-	 */
-	protected $match_field;
+    /**
+     * @var string
+     */
+    protected $match_field;
 
-	/**
-	 * @var array
-	 */
-	protected $records;
+    /**
+     * @var array
+     */
+    protected $records;
 
-	/**
-	 * @var array
-	 */
-	protected $record_ids;
-
-
-	/**
-	 * @param Connection $db
-	 * @param string $table
-	 * @param string $match_field
-	 */
-	public function __construct(Connection $db, $table, $match_field)
-	{
-		$this->db = $db;
-		$this->table = $table;
-		$this->match_field = $match_field;
-	}
+    /**
+     * @var array
+     */
+    protected $record_ids;
 
 
-	/**
-	 * Fetches DB records from the databases
-	 */
-	protected function getDbRecords()
-	{
-		return $this->db->fetchAll("SELECT * FROM {$this->table} ORDER BY id ASC");
-	}
+    /**
+     * @param Connection $db
+     * @param string     $table
+     * @param string     $match_field
+     */
+    public function __construct(Connection $db, $table, $match_field)
+    {
+        $this->db = $db;
+        $this->table = $table;
+        $this->match_field = $match_field;
+    }
 
 
-	/**
-	 * Inits the lookup records
-	 */
-	protected function initRecords()
-	{
-		$this->records = array();
-		$this->record_ids = array();
-
-		$raw_records = $this->getDbRecords();
-		$id_to_title = array();
-		foreach ($raw_records as $rec) {
-			$id_to_title[$rec['id']] = $rec[$this->match_field];
-		}
-
-		foreach ($raw_records as $rec) {
-
-			$title = $rec[$this->match_field];
-			if (isset($rec['parent_id']) && $rec['parent_id'] && isset($id_to_title[$rec['parent_id']])) {
-				$title = $id_to_title[$rec['parent_id']] . ' > ' . $title;
-			}
-
-			$this->records[$rec['id']] = $this->normalizeMatchField($title);
-			$this->record_ids[$rec['id']] = $rec['id'];
-		}
-	}
+    /**
+     * Fetches DB records from the databases
+     */
+    protected function getDbRecords()
+    {
+        return $this->db->fetchAll("SELECT * FROM {$this->table} ORDER BY id ASC");
+    }
 
 
-	/**
-	 * Have the mapper learn a new value. For examlpe, this might add a new value to an internal cache.
-	 *
-	 * @param mixed $record
-	 * @return void
-	 */
-	public function learnRecord($record)
-	{
-		if ($this->records === null) {
-			$this->initRecords();
-		}
+    /**
+     * Inits the lookup records
+     */
+    protected function initRecords()
+    {
+        $this->records = array();
+        $this->record_ids = array();
 
-		$this->records[$record['id']] = $this->normalizeMatchField($record[$this->match_field]);
-		$this->record_ids[$record['id']] = $record['id'];
-	}
+        $raw_records = $this->getDbRecords();
+        $id_to_title = array();
+        foreach ($raw_records as $rec) {
+            $id_to_title[$rec['id']] = $rec[$this->match_field];
+        }
 
+        foreach ($raw_records as $rec) {
 
-	/**
-	 * @param string $value
-	 * @return string
-	 */
-	protected function normalizeMatchField($value)
-	{
-		$value = preg_replace('#\s>\s#', '>', $value); // "Parent > Sub" to "Parent>Sub"
-		$value = preg_replace('#\s#', '_', $value);    // "With Spaces" to "With_Spaces"
-		$value = Strings::utf8_strtolower($value);     // "Example_Cat" to "example_cat"
-		return $value;
-	}
+            $title = $rec[$this->match_field];
+            if (isset($rec['parent_id']) && $rec['parent_id'] && isset($id_to_title[$rec['parent_id']])) {
+                $title = $id_to_title[$rec['parent_id']] . ' > ' . $title;
+            }
+
+            $this->records[$rec['id']] = $this->normalizeMatchField($title);
+            $this->record_ids[$rec['id']] = $rec['id'];
+        }
+    }
 
 
-	/**
-	 * Returns person ID given an email address.
-	 *
-	 * @param mixed $value
-	 * @return int|null
-	 */
-	public function findIdFromValue($value)
-	{
-		if ($this->records === null) {
-			$this->initRecords();
-		}
+    /**
+     * Have the mapper learn a new value. For examlpe, this might add a new value to an internal cache.
+     *
+     * @param  mixed $record
+     * @return void
+     */
+    public function learnRecord($record)
+    {
+        if ($this->records === null) {
+            $this->initRecords();
+        }
 
-		if (!$this->records) {
-			return null;
-		}
+        $this->records[$record['id']] = $this->normalizeMatchField($record[$this->match_field]);
+        $this->record_ids[$record['id']] = $record['id'];
+    }
 
-		if ($value[0] == '@') {
-			$id = substr($value, 1);
-			return isset($this->record_ids[$id]) ? $this->record_ids[$id] : null;
-		}
 
-		$value = $this->normalizeMatchField($value);
-		
-		return array_search($value, $this->records);
-	}
+    /**
+     * @param  string $value
+     * @return string
+     */
+    protected function normalizeMatchField($value)
+    {
+        $value = preg_replace('#\s>\s#', '>', $value); // "Parent > Sub" to "Parent>Sub"
+        $value = preg_replace('#\s#', '_', $value);    // "With Spaces" to "With_Spaces"
+        $value = Strings::utf8_strtolower($value);     // "Example_Cat" to "example_cat"
+
+        return $value;
+    }
+
+
+    /**
+     * Returns person ID given an email address.
+     *
+     * @param  mixed    $value
+     * @return int|null
+     */
+    public function findIdFromValue($value)
+    {
+        if ($this->records === null) {
+            $this->initRecords();
+        }
+
+        if (!$this->records) {
+            return null;
+        }
+
+        if ($value[0] == '@') {
+            $id = substr($value, 1);
+
+            return isset($this->record_ids[$id]) ? $this->record_ids[$id] : null;
+        }
+
+        $value = $this->normalizeMatchField($value);
+
+        return array_search($value, $this->records);
+    }
 }

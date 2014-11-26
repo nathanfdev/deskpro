@@ -1,94 +1,94 @@
 define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
-	class Admin_Agents_Ctrl_Logs extends Admin_Ctrl_Base
+  class Admin_Agents_Ctrl_Logs extends Admin_Ctrl_Base
 
-		@CTRL_ID   = 'Admin_Agents_Ctrl_Logs'
-		@CTRL_AS   = 'LogsCtrl'
-		@DEPS      = []
+    @CTRL_ID   = 'Admin_Agents_Ctrl_Logs'
+    @CTRL_AS   = 'LogsCtrl'
+    @DEPS      = []
 
-		init: ->
-			@login_logs = null
-			@page = 1
-			@num_pages = 0
-			@page_nums = [1]
+    init: ->
+      @login_logs = null
+      @page = 1
+      @num_pages = 0
+      @page_nums = [1]
 
-			@initializeScopeWatching()
+      @initializeScopeWatching()
 
-		initialLoad: ->
+    initialLoad: ->
 
-			return @loadResults()
+      return @loadResults()
 
-		###
- 	#
- 	###
+    ###
+  #
+  ###
 
-		loadResults: ->
+    loadResults: ->
 
-			@startSpinner('paginating_login_logs')
+      @startSpinner('paginating_login_logs')
 
-			data_promise = @Api.sendGet('/login_logs', {
-				page: @page
-			}).then((res) =>
+      data_promise = @Api.sendGet('/login_logs', {
+        page: @page
+      }).then((res) =>
 
-				@login_logs = res.data.login_logs
-				@num_pages = res.data.login_logs.num_pages
+        @login_logs = res.data.login_logs
+        @num_pages = res.data.login_logs.num_pages
 
-				@page_nums = []
+        @page_nums = []
 
-				for i in [0...@num_pages]
-					@page_nums.push(i + 1)
+        for i in [0...@num_pages]
+          @page_nums.push(i + 1)
 
-				@stopSpinner('paginating_login_logs', true)
-			)
+        @stopSpinner('paginating_login_logs', true)
+      )
 
-			return @$q.all([data_promise])
+      return @$q.all([data_promise])
 
-		###
- 	#
- 	###
+    ###
+  #
+  ###
 
-		updateFilter: ->
+    updateFilter: ->
 
-			@loadResults()
+      @loadResults()
 
-		###
-		#	Here we watching scope 'page' variable in order to load new page of results
-		###
+    ###
+    # Here we watching scope 'page' variable in order to load new page of results
+    ###
 
-		initializeScopeWatching: ->
+    initializeScopeWatching: ->
 
-			@$scope.$watch('LogsCtrl.page', (newVal, oldVal) =>
+      @$scope.$watch('LogsCtrl.page', (newVal, oldVal) =>
 
-				if parseInt(newVal) == parseInt(oldVal)
-					return undefined
+        if parseInt(newVal) == parseInt(oldVal)
+          return undefined
 
-				if isNaN(parseInt(newVal))
-					return undefined
+        if isNaN(parseInt(newVal))
+          return undefined
 
-				@changePageCallback()
-			)
+        @changePageCallback()
+      )
 
-		###
-		# This is executed after we changed the current page
-		###
+    ###
+    # This is executed after we changed the current page
+    ###
 
-		changePageCallback: ->
+    changePageCallback: ->
 
-			@loadResults()
+      @loadResults()
 
-		###
- 	#
-		###
+    ###
+  #
+    ###
 
-		goPrevPage: ->
+    goPrevPage: ->
 
-			@page--
+      @page--
 
-		###
-		#
-		###
+    ###
+    #
+    ###
 
-		goNextPage: ->
+    goNextPage: ->
 
-			@page++
+      @page++
 
-	Admin_Agents_Ctrl_Logs.EXPORT_CTRL()
+  Admin_Agents_Ctrl_Logs.EXPORT_CTRL()

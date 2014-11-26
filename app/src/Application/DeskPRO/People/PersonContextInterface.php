@@ -42,5 +42,5 @@ use Application\DeskPRO\Entity\Person;
  */
 interface PersonContextInterface
 {
-	public function setPersonContext(Person $person);
+    public function setPersonContext(Person $person);
 }

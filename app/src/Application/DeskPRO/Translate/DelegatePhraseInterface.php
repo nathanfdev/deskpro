@@ -45,11 +45,11 @@ namespace Application\DeskPRO\Translate;
  */
 interface DelegatePhraseInterface
 {
-	/**
-	 * Get the phrase text.
-	 * 
-	 * @param  $translator
-	 * @return string
-	 */
-	public function getPhrase(Translate $translator);
+    /**
+     * Get the phrase text.
+     *
+     * @param  $translator
+     * @return string
+     */
+    public function getPhrase(Translate $translator);
 }

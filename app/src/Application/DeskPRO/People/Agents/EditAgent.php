@@ -49,261 +49,261 @@ use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
 class EditAgent
 {
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	private $agent;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    private $agent;
 
-	/**
-	 * @var string
-	 */
-	public $name;
+    /**
+     * @var string
+     */
+    public $name;
 
-	/**
-	 * @var string
-	 */
-	public $override_name;
+    /**
+     * @var string
+     */
+    public $override_name;
 
-	/**
-	 * @var string[]
-	 */
-	public $zones;
+    /**
+     * @var string[]
+     */
+    public $zones;
 
-	/**
-	 * @var string[]
-	 */
-	public $emails;
+    /**
+     * @var string[]
+     */
+    public $emails;
 
-	/**
-	 * @var string
-	 */
-	public $primary_phone_number_text;
+    /**
+     * @var string
+     */
+    public $primary_phone_number_text;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\AgentTeam[]
-	 */
-	public $teams;
+    /**
+     * @var \Application\DeskPRO\Entity\AgentTeam[]
+     */
+    public $teams;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Usergroup[]
-	 */
-	public $agent_groups;
-	
-	/**
-	 * @var \Application\DeskPRO\Entity\AgentTeam
-	 */
-	public $primary_team;
+    /**
+     * @var \Application\DeskPRO\Entity\Usergroup[]
+     */
+    public $agent_groups;
 
-	/**
-	 * @var array
-	 */
-	public $notification_settings;
+    /**
+     * @var \Application\DeskPRO\Entity\AgentTeam
+     */
+    public $primary_team;
 
-
-	/**
-	 * @param Person $person
-	 */
-	public function __construct(Person $person)
-	{
-		$this->agent = $person;
-		$this->name = $person->name;
-		$this->override_name = $person->override_display_name;
-		$this->primary_phone_number = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
-		$this->primary_phone_number_text = $person->getPrimaryPhoneNumberText();
-
-		$this->zones = array();
-		if ($person->can_admin) {
-			$this->zones[] = 'admin';
-		}
-		if ($person->can_reports) {
-			$this->zones[] = 'reports';
-		}
-
-		$this->emails = array();
-		if ($person->primary_email) {
-			$this->emails[] = $person->primary_email->email;
-		}
-		foreach ($person->emails as $email) {
-			$this->emails[] = $email;
-		}
-		$this->emails = array_unique($this->emails);
-
-		$this->teams = array();
-
-		if ($person->id) {
-			$person->loadHelper('AgentTeam');
-			$this->teams = $person->getHelper('AgentTeam')->getAgentTeams();
-		}
-
-		$this->agent_groups = $person->usergroups->toArray();
-
-		$this->notification_settings = array(
-			'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
-			'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
-		);
-
-		$this->primary_team = $person->primary_team;
-	}
+    /**
+     * @var array
+     */
+    public $notification_settings;
 
 
-	/**
-	 * Saves the agent.
-	 *
-	 * @param EntityManager $em
-	 * @return Person
-	 */
-	public function save(EntityManager $em)
-	{
-		$agent = $this->agent;
+    /**
+     * @param Person $person
+     */
+    public function __construct(Person $person)
+    {
+        $this->agent = $person;
+        $this->name = $person->name;
+        $this->override_name = $person->override_display_name;
+        $this->primary_phone_number = $person->getPrimaryPhoneNumber() ?: new PhoneNumber();
+        $this->primary_phone_number_text = $person->getPrimaryPhoneNumberText();
 
-		$em->persist($agent);
+        $this->zones = array();
+        if ($person->can_admin) {
+            $this->zones[] = 'admin';
+        }
+        if ($person->can_reports) {
+            $this->zones[] = 'reports';
+        }
 
-		#------------------------------
-		# General props
-		#------------------------------
+        $this->emails = array();
+        if ($person->primary_email) {
+            $this->emails[] = $person->primary_email->email;
+        }
+        foreach ($person->emails as $email) {
+            $this->emails[] = $email;
+        }
+        $this->emails = array_unique($this->emails);
 
-		$agent->is_user               = true;
-		$agent->is_confirmed          = true;
-		$agent->is_agent              = true;
-		$agent->can_agent             = true;
+        $this->teams = array();
 
-		$agent->name                  = $this->name;
-		$agent->override_display_name = $this->override_name ?: '';
+        if ($person->id) {
+            $person->loadHelper('AgentTeam');
+            $this->teams = $person->getHelper('AgentTeam')->getAgentTeams();
+        }
 
-		if (!PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
-			$this->primary_phone_number->number = $this->primary_phone_number_text;
-			$agent->setPrimaryPhoneNumber($this->primary_phone_number);
-		} else {
-			$agent->setPrimaryPhoneNumber(null);
-		}
+        $this->agent_groups = $person->usergroups->toArray();
 
-		$agent->can_admin             = in_array('admin', $this->zones);
-		$agent->can_reports           = in_array('reports', $this->zones);
+        $this->notification_settings = array(
+            'no_allow_set_email' => (int) $person->getPref('agent_notif.no_allow_set_email'),
+            'no_allow_set_browser' => (int) $person->getPref('agent_notif.no_allow_set_browser'),
+        );
 
-		#------------------------------
-		# Teams
-		#------------------------------
-
-		foreach ($agent->teams as $team) {
-			/** @var $team AgentTeam */
-			$team->removePerson($agent); // unidirectional
-		}
-
-		$found_primary = false;
-
-		foreach ($this->teams as $team) {
-			/** @var $team AgentTeam */
-			$agent->addTeam($team); // bidirectional
-
-			if ($team === $this->primary_team) {
-				$found_primary = true;
-			}
-		}
-
-		if (!$found_primary) {
-			if ($this->teams) {
-				$this->primary_team = Arrays::getFirstItem($this->teams);
-			} else {
-				$this->primary_team = null;
-			}
-		}
-
-		#------------------------------
-		# Groups
-		#------------------------------
-
-		$group_coll_helper = new CollectionHelper($agent, 'usergroups', function ($x) {
-			return $x->is_agent_group;
-		});
-		if ($this->agent_groups instanceof ArrayCollection) {
-			$this->agent_groups = $this->agent_groups->toArray();
-		}
-		$group_coll_helper->setCollection($this->agent_groups);
-
-		#------------------------------
-		# Email addresses
-		#------------------------------
-
-		$set_emails  = array_map(function($x) { return strtolower($x); },        $this->emails);
-		$have_emails = array_map(function($y) { return strtolower($y->email); }, $agent->emails->toArray());
-
-		$add_emails = array_diff($set_emails, $have_emails);
-		$del_emails = array_diff($have_emails, $set_emails);
-
-		foreach ($add_emails as $email_address) {
-			$email = new PersonEmail();
-			$email->person       = $agent;
-			$email->email        = $email_address;
-			$email->is_validated = true;
-
-			$agent->addEmailAddress($email);
-			$em->persist($email);
-		}
-
-		foreach ($del_emails as $email_address) {
-			$email = $agent->findEmailAddress($email_address);
-			if ($email) {
-				$agent->removeEmailAddressId($email['id']);
-				$em->remove($email);
-			}
-		}
-
-		$primary_email_address = strtolower(Arrays::getFirstItem($this->emails));
-		foreach ($agent->emails as $email) {
-			if (strtolower($email->email) == $primary_email_address) {
-				$agent->primary_email = $email;
-				break;
-			}
-		}
-
-		if (!$agent->primary_email) {
-			foreach ($agent->emails as $email) {
-				$agent->primary_email = $email;
-				break;
-			}
-		}
-
-		$em->flush();
-
-		foreach ($this->notification_settings as $k => $v) {
-			$p = $agent->setPreference('agent_notif.'.$k, (int) $v);
-			$em->persist($p);
-		}
-
-		$em->persist($agent);
-		$agent->primary_team = $this->primary_team;
-
-		$em->flush();
-	}
+        $this->primary_team = $person->primary_team;
+    }
 
 
-	############################################################################
-	# Validation Metadata
-	############################################################################
+    /**
+     * Saves the agent.
+     *
+     * @param  EntityManager $em
+     * @return Person
+     */
+    public function save(EntityManager $em)
+    {
+        $agent = $this->agent;
 
-	public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
-	{
-		$metadata->addPropertyConstraint('name', new Constraints\NotBlank(array(
-			'message' => 'Name should not be blank.',
-		)));
-		$metadata->addPropertyConstraint('emails', new Constraints\All(array(
-			'constraints' => array(
-				new Constraints\NotBlank(),
-				new Constraints\Email(),
-			)
-		)));
+        $em->persist($agent);
 
-		$metadata->addPropertyConstraint('emails', new Constraints\Count(array('min' => 1, 'minMessage' => '[emails_count] At least one email address is required')));
+        #------------------------------
+        # General props
+        #------------------------------
 
-		$metadata->addPropertyConstraint('teams', new Constraints\All(array(
-			'constraints' => array(
-				new DeskproConstraints\AgentTeamConstraint()
-			)
-		)));
-		$metadata->addPropertyConstraint('agent_groups', new Constraints\All(array(
-			'constraints' => array(
-				new DeskproConstraints\AgentGroupConstraint()
-			)
-		)));
-	}
+        $agent->is_user               = true;
+        $agent->is_confirmed          = true;
+        $agent->is_agent              = true;
+        $agent->can_agent             = true;
+
+        $agent->name                  = $this->name;
+        $agent->override_display_name = $this->override_name ?: '';
+
+        if (!PhoneNumbers::looksEmpty($this->primary_phone_number_text)) {
+            $this->primary_phone_number->number = $this->primary_phone_number_text;
+            $agent->setPrimaryPhoneNumber($this->primary_phone_number);
+        } else {
+            $agent->setPrimaryPhoneNumber(null);
+        }
+
+        $agent->can_admin             = in_array('admin', $this->zones);
+        $agent->can_reports           = in_array('reports', $this->zones);
+
+        #------------------------------
+        # Teams
+        #------------------------------
+
+        foreach ($agent->teams as $team) {
+            /** @var $team AgentTeam */
+            $team->removePerson($agent); // unidirectional
+        }
+
+        $found_primary = false;
+
+        foreach ($this->teams as $team) {
+            /** @var $team AgentTeam */
+            $agent->addTeam($team); // bidirectional
+
+            if ($team === $this->primary_team) {
+                $found_primary = true;
+            }
+        }
+
+        if (!$found_primary) {
+            if ($this->teams) {
+                $this->primary_team = Arrays::getFirstItem($this->teams);
+            } else {
+                $this->primary_team = null;
+            }
+        }
+
+        #------------------------------
+        # Groups
+        #------------------------------
+
+        $group_coll_helper = new CollectionHelper($agent, 'usergroups', function ($x) {
+            return $x->is_agent_group;
+        });
+        if ($this->agent_groups instanceof ArrayCollection) {
+            $this->agent_groups = $this->agent_groups->toArray();
+        }
+        $group_coll_helper->setCollection($this->agent_groups);
+
+        #------------------------------
+        # Email addresses
+        #------------------------------
+
+        $set_emails  = array_map(function ($x) { return strtolower($x); },        $this->emails);
+        $have_emails = array_map(function ($y) { return strtolower($y->email); }, $agent->emails->toArray());
+
+        $add_emails = array_diff($set_emails, $have_emails);
+        $del_emails = array_diff($have_emails, $set_emails);
+
+        foreach ($add_emails as $email_address) {
+            $email = new PersonEmail();
+            $email->person       = $agent;
+            $email->email        = $email_address;
+            $email->is_validated = true;
+
+            $agent->addEmailAddress($email);
+            $em->persist($email);
+        }
+
+        foreach ($del_emails as $email_address) {
+            $email = $agent->findEmailAddress($email_address);
+            if ($email) {
+                $agent->removeEmailAddressId($email['id']);
+                $em->remove($email);
+            }
+        }
+
+        $primary_email_address = strtolower(Arrays::getFirstItem($this->emails));
+        foreach ($agent->emails as $email) {
+            if (strtolower($email->email) == $primary_email_address) {
+                $agent->primary_email = $email;
+                break;
+            }
+        }
+
+        if (!$agent->primary_email) {
+            foreach ($agent->emails as $email) {
+                $agent->primary_email = $email;
+                break;
+            }
+        }
+
+        $em->flush();
+
+        foreach ($this->notification_settings as $k => $v) {
+            $p = $agent->setPreference('agent_notif.'.$k, (int) $v);
+            $em->persist($p);
+        }
+
+        $em->persist($agent);
+        $agent->primary_team = $this->primary_team;
+
+        $em->flush();
+    }
+
+
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('name', new Constraints\NotBlank(array(
+            'message' => 'Name should not be blank.',
+        )));
+        $metadata->addPropertyConstraint('emails', new Constraints\All(array(
+            'constraints' => array(
+                new Constraints\NotBlank(),
+                new Constraints\Email(),
+            )
+        )));
+
+        $metadata->addPropertyConstraint('emails', new Constraints\Count(array('min' => 1, 'minMessage' => '[emails_count] At least one email address is required')));
+
+        $metadata->addPropertyConstraint('teams', new Constraints\All(array(
+            'constraints' => array(
+                new DeskproConstraints\AgentTeamConstraint()
+            )
+        )));
+        $metadata->addPropertyConstraint('agent_groups', new Constraints\All(array(
+            'constraints' => array(
+                new DeskproConstraints\AgentGroupConstraint()
+            )
+        )));
+    }
 }

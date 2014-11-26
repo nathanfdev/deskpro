@@ -39,243 +39,243 @@ use Application\DeskPRO\DBAL\Connection;
 
 class CleanupHourly extends AbstractJob
 {
-	const DEFAULT_INTERVAL = 3600;
+    const DEFAULT_INTERVAL = 3600;
 
-	public function run()
-	{
-		$this->doRun();
-		App::getDb()->setIsolationDefault();
-	}
+    public function run()
+    {
+        $this->doRun();
+        App::getDb()->setIsolationDefault();
+    }
 
-	private function doRun()
-	{
-		#------------------------------
-		# drafts
-		#------------------------------
+    private function doRun()
+    {
+        #------------------------------
+        # drafts
+        #------------------------------
 
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.drafts_lifetime'));
-		$num = App::getDb()->executeUpdate("DELETE FROM drafts WHERE date_created < ?", array($datetime));
+        $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.drafts_lifetime'));
+        $num = App::getDb()->executeUpdate("DELETE FROM drafts WHERE date_created < ?", array($datetime));
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num drafts");
-		}
+        if ($num) {
+            $this->logStatus("Cleaned up $num drafts");
+        }
 
-		$datetime = date('Y-m-d H:i:s', time() - 28800);
-		$num = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
-		if ($num) {
-			$this->logStatus("Cleaned up $num temp article comments");
-		}
+        $datetime = date('Y-m-d H:i:s', time() - 28800);
+        $num = App::getDb()->executeUpdate("DELETE FROM article_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        if ($num) {
+            $this->logStatus("Cleaned up $num temp article comments");
+        }
 
-		$num = App::getDb()->executeUpdate("DELETE FROM download_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
-		if ($num) {
-			$this->logStatus("Cleaned up $num temp download comments");
-		}
+        $num = App::getDb()->executeUpdate("DELETE FROM download_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        if ($num) {
+            $this->logStatus("Cleaned up $num temp download comments");
+        }
 
-		$num = App::getDb()->executeUpdate("DELETE FROM feedback_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
-		if ($num) {
-			$this->logStatus("Cleaned up $num temp feedback comments");
-		}
+        $num = App::getDb()->executeUpdate("DELETE FROM feedback_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        if ($num) {
+            $this->logStatus("Cleaned up $num temp feedback comments");
+        }
 
-		$num = App::getDb()->executeUpdate("DELETE FROM news_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
-		if ($num) {
-			$this->logStatus("Cleaned up $num temp news comments");
-		}
+        $num = App::getDb()->executeUpdate("DELETE FROM news_comments WHERE status = 'temp' AND date_created < ?", array($datetime));
+        if ($num) {
+            $this->logStatus("Cleaned up $num temp news comments");
+        }
 
-		#------------------------------
-		# sessions
-		#------------------------------
+        #------------------------------
+        # sessions
+        #------------------------------
 
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-		$num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
+        $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
+        $num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale sessions");
-		}
+        if ($num) {
+            $this->logStatus("Cleaned up $num stale sessions");
+        }
 
-		#------------------------------
-		# Visitors
-		#------------------------------
+        #------------------------------
+        # Visitors
+        #------------------------------
 
-		$datesnip = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_time'));
-		$datesnip2 = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_bogus_time'));
+        $datesnip = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_time'));
+        $datesnip2 = date('Y-m-d H:i:s', time() - App::getSetting('core.visitor_cleanup_bogus_time'));
 
-		// old
-		$ids = App::getDb()->fetchAllCol("
-			SELECT id
-			FROM visitors
-			WHERE date_last < ?
-			LIMIT 1500
-		", array($datesnip));
+        // old
+        $ids = App::getDb()->fetchAllCol("
+            SELECT id
+            FROM visitors
+            WHERE date_last < ?
+            LIMIT 1500
+        ", array($datesnip));
 
-		// bogus
-		$ids = array_merge($ids, App::getDb()->fetchAllCol("
-			SELECT id
-			FROM visitors
-			WHERE
-				date_last < ?
-				AND (
-					visitors.hint_hidden = 1
-					OR visitors.last_track_id IS NULL
-				)
-		", array($datesnip2)));
+        // bogus
+        $ids = array_merge($ids, App::getDb()->fetchAllCol("
+            SELECT id
+            FROM visitors
+            WHERE
+                date_last < ?
+                AND (
+                    visitors.hint_hidden = 1
+                    OR visitors.last_track_id IS NULL
+                )
+        ", array($datesnip2)));
 
-		$ids = array_unique($ids);
+        $ids = array_unique($ids);
 
-		if ($ids) {
-			$batch_ids = array_chunk($ids, 50);
-			foreach ($batch_ids as $ids) {
-				$num = App::getDb()->executeUpdate("
-					DELETE FROM visitors
-					WHERE id IN (?)
-				", array($ids), array(Connection::PARAM_INT_ARRAY));
+        if ($ids) {
+            $batch_ids = array_chunk($ids, 50);
+            foreach ($batch_ids as $ids) {
+                $num = App::getDb()->executeUpdate("
+                    DELETE FROM visitors
+                    WHERE id IN (?)
+                ", array($ids), array(Connection::PARAM_INT_ARRAY));
 
-				if ($num) {
-					$this->logStatus("Cleaned up $num stale visitors");
-				}
-			}
-		}
+                if ($num) {
+                    $this->logStatus("Cleaned up $num stale visitors");
+                }
+            }
+        }
 
-		#------------------------------
-		# chat blocks
-		#------------------------------
+        #------------------------------
+        # chat blocks
+        #------------------------------
 
-		// Clean up chat blocks
-		$num = App::getOrm()->getRepository('DeskPRO:ChatBlock')->cleanupBlocks();
+        // Clean up chat blocks
+        $num = App::getOrm()->getRepository('DeskPRO:ChatBlock')->cleanupBlocks();
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale chat blocks");
-		}
+        if ($num) {
+            $this->logStatus("Cleaned up $num stale chat blocks");
+        }
 
-		#------------------------------
-		# temp attachments
-		#------------------------------
+        #------------------------------
+        # temp attachments
+        #------------------------------
 
-		$now = date('Y-m-d H:i:s');
-		$datetime = date('Y-m-d H:i:s', strtotime('-6 hours'));
+        $now = date('Y-m-d H:i:s');
+        $datetime = date('Y-m-d H:i:s', strtotime('-6 hours'));
 
-		$blob_ids = App::getDb()->fetchAllCol("
-			SELECT id
-			FROM blobs
-			WHERE (is_temp = 1 AND date_created < ?) OR date_cleanup < ?
-		", array($datetime, $now));
+        $blob_ids = App::getDb()->fetchAllCol("
+            SELECT id
+            FROM blobs
+            WHERE (is_temp = 1 AND date_created < ?) OR date_cleanup < ?
+        ", array($datetime, $now));
 
-		$num = 0;
-		foreach ($blob_ids as $blob_id) {
-			try {
-				$blob = App::getOrm()->find('DeskPRO:Blob', $blob_id);
-				if ($blob) {
-					App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
-				}
-			} catch (\Exception $e) {}
-			$num++;
-		}
+        $num = 0;
+        foreach ($blob_ids as $blob_id) {
+            try {
+                $blob = App::getOrm()->find('DeskPRO:Blob', $blob_id);
+                if ($blob) {
+                    App::getContainer()->getBlobStorage()->deleteBlobRecord($blob);
+                }
+            } catch (\Exception $e) {}
+            $num++;
+        }
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num temporary attachments");
-		}
+        if ($num) {
+            $this->logStatus("Cleaned up $num temporary attachments");
+        }
 
-		#------------------------------
-		# Temp data
-		#------------------------------
+        #------------------------------
+        # Temp data
+        #------------------------------
 
-		$datetime = date('Y-m-d H:i:s', time());
+        $datetime = date('Y-m-d H:i:s', time());
 
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM tmp_data
-			WHERE date_expire < ?
-		", array($datetime));
+        $num = App::getDb()->executeUpdate("
+            DELETE FROM tmp_data
+            WHERE date_expire < ?
+        ", array($datetime));
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale user temp data entries");
-		}
+        if ($num) {
+            $this->logStatus("Cleaned up $num stale user temp data entries");
+        }
 
-		#------------------------------
-		# Prefs
-		#------------------------------
+        #------------------------------
+        # Prefs
+        #------------------------------
 
-		$datetime = date('Y-m-d H:i:s', time());
+        $datetime = date('Y-m-d H:i:s', time());
 
-		$num = App::getDb()->executeUpdate("
-			DELETE FROM people_prefs
-			WHERE date_expire < ?
-		", array($datetime));
+        $num = App::getDb()->executeUpdate("
+            DELETE FROM people_prefs
+            WHERE date_expire < ?
+        ", array($datetime));
 
-		if ($num) {
-			$this->logStatus("Cleaned up $num stale user preference entries");
-		}
+        if ($num) {
+            $this->logStatus("Cleaned up $num stale user preference entries");
+        }
 
-		#------------------------------
-		# Twitter
-		#------------------------------
+        #------------------------------
+        # Twitter
+        #------------------------------
 
-		App::getContainer()->getSettingsHandler()->setSetting('core.twitter_last_cleanup', time());
+        App::getContainer()->getSettingsHandler()->setSetting('core.twitter_last_cleanup', time());
 
-		$db = App::getDb();
-		$cutoff = gmdate('Y-m-d H:i:s', time() - App::getSetting('core.twitter_auto_remove_time'));
+        $db = App::getDb();
+        $cutoff = gmdate('Y-m-d H:i:s', time() - App::getSetting('core.twitter_auto_remove_time'));
 
-		$db->executeUpdate("
-			DELETE IGNORE FROM twitter_accounts_statuses
-			WHERE (status_type = 'timeline' OR status_type IS NULL)
-				AND is_favorited = 0
-				AND agent_id IS NULL
-				AND agent_team_id IS NULL
-				AND retweeted_id IS NULL
-				AND action_agent_id IS NULL
-				AND date_created < ?
-		", array($cutoff));
+        $db->executeUpdate("
+            DELETE IGNORE FROM twitter_accounts_statuses
+            WHERE (status_type = 'timeline' OR status_type IS NULL)
+                AND is_favorited = 0
+                AND agent_id IS NULL
+                AND agent_team_id IS NULL
+                AND retweeted_id IS NULL
+                AND action_agent_id IS NULL
+                AND date_created < ?
+        ", array($cutoff));
 
-		$deleted = $db->executeUpdate("
-			DELETE IGNORE s FROM twitter_statuses AS s
-			LEFT JOIN twitter_accounts_statuses AS accs ON (s.id = accs.status_id)
-			WHERE s.date_created < ?
-				AND accs.id IS NULL
-		", array($cutoff));
+        $deleted = $db->executeUpdate("
+            DELETE IGNORE s FROM twitter_statuses AS s
+            LEFT JOIN twitter_accounts_statuses AS accs ON (s.id = accs.status_id)
+            WHERE s.date_created < ?
+                AND accs.id IS NULL
+        ", array($cutoff));
 
-		$ids = $db->fetchAllCol("
-			SELECT id
-			FROM twitter_users
-			WHERE last_follow_update < ? AND last_follow_update IS NOT NULL
-		", array($cutoff));
-		if ($ids) {
-			$db->executeUpdate("DELETE FROM twitter_users_followers WHERE user_id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
-			$db->executeUpdate("DELETE FROM twitter_users_friends WHERE user_id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
-			$db->executeUpdate("UPDATE twitter_users SET last_follow_update = NULL WHERE id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
-		}
+        $ids = $db->fetchAllCol("
+            SELECT id
+            FROM twitter_users
+            WHERE last_follow_update < ? AND last_follow_update IS NOT NULL
+        ", array($cutoff));
+        if ($ids) {
+            $db->executeUpdate("DELETE FROM twitter_users_followers WHERE user_id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
+            $db->executeUpdate("DELETE FROM twitter_users_friends WHERE user_id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
+            $db->executeUpdate("UPDATE twitter_users SET last_follow_update = NULL WHERE id IN (?)", array($ids), array(Connection::PARAM_INT_ARRAY));
+        }
 
-		if ($deleted) {
-			$this->logStatus("Cleaned up $deleted statuses");
-		}
+        if ($deleted) {
+            $this->logStatus("Cleaned up $deleted statuses");
+        }
 
-		App::getContainer()->getSettingsHandler()->setSetting('core.twitter_last_cleanup', time());
+        App::getContainer()->getSettingsHandler()->setSetting('core.twitter_last_cleanup', time());
 
-		#------------------------------
-		# Delete old ticket manager logs
-		#------------------------------
+        #------------------------------
+        # Delete old ticket manager logs
+        #------------------------------
 
-		$storetime = App::$container->getSetting('core.ticket_manager_log_storetime');
-		if ($storetime) {
-			$timesnip = date('Y-m-d H:i:s', time() - $storetime);
-			$em = App::$container->getEm();
-			$bs = App::$container->getBlobStorage();
+        $storetime = App::$container->getSetting('core.ticket_manager_log_storetime');
+        if ($storetime) {
+            $timesnip = date('Y-m-d H:i:s', time() - $storetime);
+            $em = App::$container->getEm();
+            $bs = App::$container->getBlobStorage();
 
-			for ($i = 0; $i < 50; $i++) {
-				$batch = $em->createQuery("
-					SELECT log, blob
-					FROM DeskPRO:TicketProcLog log
-					LEFT JOIN log.blob blob
-					WHERE log.date_created < ?0
-				")->execute(array($timesnip));
+            for ($i = 0; $i < 50; $i++) {
+                $batch = $em->createQuery("
+                    SELECT log, blob
+                    FROM DeskPRO:TicketProcLog log
+                    LEFT JOIN log.blob blob
+                    WHERE log.date_created < ?0
+                ")->execute(array($timesnip));
 
-				if (!count($batch)) {
-					break;
-				}
+                if (!count($batch)) {
+                    break;
+                }
 
-				foreach ($batch as $b) {
-					try {
-						$bs->deleteBlobRecord($b->blob);
-					} catch (\Exception $e) {}
-				}
-			}
-		}
-	}
+                foreach ($batch as $b) {
+                    try {
+                        $bs->deleteBlobRecord($b->blob);
+                    } catch (\Exception $e) {}
+                }
+            }
+        }
+    }
 }

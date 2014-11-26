@@ -42,34 +42,35 @@ use Orb\Util\CheckedOptionsArray;
  */
 class FilterHoldStatus extends AbstractFilterTerm
 {
-	/**
-	 * {@inheritDoc}
-	 */
-	protected function getOptionsDef()
-	{
-		$options = new CheckedOptionsArray();
-		$options->addRequiredNames('is_hold');
-		return $options;
-	}
+    /**
+     * {@inheritDoc}
+     */
+    protected function getOptionsDef()
+    {
+        $options = new CheckedOptionsArray();
+        $options->addRequiredNames('is_hold');
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function getFilterQuery(ExecutorContextInterface $context = null)
-	{
-		$query = new FilterQuery();
-		$query->setParameter('hold', $this->getTermOptions()->get('is_hold') ? 1 : 0);
+        return $options;
+    }
 
-		switch ($this->getTermOperator()) {
-			case self::OP_IS:
-				$query->andWhere('tickets.is_hold = {param.hold}');
-			case self::OP_NOT:
-				$query->andWhere('tickets.is_hold != {param.hold}');
-				break;
-			default:
-				throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");
-		}
+    /**
+     * {@inheritDoc}
+     */
+    public function getFilterQuery(ExecutorContextInterface $context = null)
+    {
+        $query = new FilterQuery();
+        $query->setParameter('hold', $this->getTermOptions()->get('is_hold') ? 1 : 0);
 
-		return $query;
-	}
+        switch ($this->getTermOperator()) {
+            case self::OP_IS:
+                $query->andWhere('tickets.is_hold = {param.hold}');
+            case self::OP_NOT:
+                $query->andWhere('tickets.is_hold != {param.hold}');
+                break;
+            default:
+                throw new \InvalidArgumentException("Invalid operator: {$this->getTermOperator()}");
+        }
+
+        return $query;
+    }
 }

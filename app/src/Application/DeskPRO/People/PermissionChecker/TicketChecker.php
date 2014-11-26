@@ -39,146 +39,146 @@ use Application\DeskPRO\Entity\Ticket;
 
 class TicketChecker extends AbstractChecker
 {
-	/** @var array */
-	public static $modify_ops = array(
-		'set_archived',
-		'department',
-		'fields',
-		'assign_agent',
-		'assign_team',
-		'assign_self',
-		'cc',
-		'slas',
-		'merge',
-		'labels',
-		'notes',
-		'set_hold',
-		'set_awaiting_user',
-		'set_awaiting_agent',
-		'set_resolved',
-		'set_unresolved',
-		'followed',
-	);
+    /** @var array */
+    public static $modify_ops = array(
+        'set_archived',
+        'department',
+        'fields',
+        'assign_agent',
+        'assign_team',
+        'assign_self',
+        'cc',
+        'slas',
+        'merge',
+        'labels',
+        'notes',
+        'set_hold',
+        'set_awaiting_user',
+        'set_awaiting_agent',
+        'set_resolved',
+        'set_unresolved',
+        'followed',
+    );
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 */
-	protected $person;
+    /**
+     * @var \Application\DeskPRO\Entity\Person
+     */
+    protected $person;
 
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
-	 */
-	private $agents;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService
+     */
+    private $agents;
 
-	protected function init()
-	{
-		$this->person->loadHelper('Agent');
-		$this->agents = App::$container->getAgentData();
-	}
+    protected function init()
+    {
+        $this->person->loadHelper('Agent');
+        $this->agents = App::$container->getAgentData();
+    }
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return bool
-	 */
-	public function canView(Ticket $ticket)
-	{
-		if (!$this->person->hasPerm('agent_tickets.use')) {
-			return false;
-		}
+    /**
+     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @return bool
+     */
+    public function canView(Ticket $ticket)
+    {
+        if (!$this->person->hasPerm('agent_tickets.use')) {
+            return false;
+        }
 
-		#------------------------------
-		# If the user is part of the ticket
-		# then we know right away they can view
-		#------------------------------
+        #------------------------------
+        # If the user is part of the ticket
+        # then we know right away they can view
+        #------------------------------
 
-		if ($ticket->agent && $ticket->agent->id == $this->person->id) {
-			return true;
-		}
+        if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+            return true;
+        }
 
-		if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
-			return true;
-		}
+        if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
+            return true;
+        }
 
-		if ($ticket->hasParticipantPerson($this->person)) {
-			return true;
-		}
+        if ($ticket->hasParticipantPerson($this->person)) {
+            return true;
+        }
 
-		#------------------------------
-		# Can't view certain deps
-		#------------------------------
+        #------------------------------
+        # Can't view certain deps
+        #------------------------------
 
-		if ($ticket->department && !$this->person->getHelper('AgentPermissions')->isDepartmentAllowed($ticket->department)) {
-			return false;
-		}
+        if ($ticket->department && !$this->person->getHelper('AgentPermissions')->isDepartmentAllowed($ticket->department)) {
+            return false;
+        }
 
-		#------------------------------
-		# Cant view unassigned
-		#------------------------------
+        #------------------------------
+        # Cant view unassigned
+        #------------------------------
 
-		if (!$ticket->agent && !$this->person->hasPerm('agent_tickets.view_unassigned')) {
-			return false;
-		}
+        if (!$ticket->agent && !$this->person->hasPerm('agent_tickets.view_unassigned')) {
+            return false;
+        }
 
-		#------------------------------
-		# Cant view others
-		#------------------------------
+        #------------------------------
+        # Cant view others
+        #------------------------------
 
-		if ($ticket->agent && !$this->person->hasPerm('agent_tickets.view_others')) {
-			return false;
-		}
+        if ($ticket->agent && !$this->person->hasPerm('agent_tickets.view_others')) {
+            return false;
+        }
 
-		// If we got here, then we're allowed
-		return true;
-	}
+        // If we got here, then we're allowed
+        return true;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return bool
-	 */
-	public function canDelete(Ticket $ticket)
-	{
-		if (!$this->canView($ticket)) {
-			return false;
-		}
+    /**
+     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @return bool
+     */
+    public function canDelete(Ticket $ticket)
+    {
+        if (!$this->canView($ticket)) {
+            return false;
+        }
 
-		#------------------------------
-		# Can delete own
-		#------------------------------
+        #------------------------------
+        # Can delete own
+        #------------------------------
 
-		if ($this->person->hasPerm('agent_tickets.delete_own')) {
-			if ($ticket->agent && $ticket->agent->id == $this->person->id) {
-				return true;
-			}
+        if ($this->person->hasPerm('agent_tickets.delete_own')) {
+            if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+                return true;
+            }
 
-			if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
-				return true;
-			}
-		}
+            if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
+                return true;
+            }
+        }
 
-		#------------------------------
-		# Can delete unassigned
-		#------------------------------
+        #------------------------------
+        # Can delete unassigned
+        #------------------------------
 
-		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.delete_unassigned')) {
-			return true;
-		}
+        if (!$ticket->agent && $this->person->hasPerm('agent_tickets.delete_unassigned')) {
+            return true;
+        }
 
-		#------------------------------
-		# Can delete others
-		#------------------------------
+        #------------------------------
+        # Can delete others
+        #------------------------------
 
-		if ($ticket->agent && $this->person->hasPerm('agent_tickets.delete_assigned')) {
-			return true;
-		}
+        if ($ticket->agent && $this->person->hasPerm('agent_tickets.delete_assigned')) {
+            return true;
+        }
 
-		#------------------------------
-		# Can delete others
-		#------------------------------
+        #------------------------------
+        # Can delete others
+        #------------------------------
 
-		if ($ticket->agent && $this->person->hasPerm('agent_tickets.delete_others')) {
-			return true;
-		}
+        if ($ticket->agent && $this->person->hasPerm('agent_tickets.delete_others')) {
+            return true;
+        }
 
         #------------------------------
         # Can delete followed
@@ -189,62 +189,62 @@ class TicketChecker extends AbstractChecker
         }
 
 
-		#------------------------------
-		# Cant delete
-		#------------------------------
+        #------------------------------
+        # Cant delete
+        #------------------------------
 
-		return false;
-	}
-
-
-	/**
-	 * @return bool
-	 */
-	public function canDeleteAny()
-	{
-		return ($this->person->hasPerm('agent_tickets.delete_own') || $this->person->hasPerm('agent_tickets.delete_unassigned') || $this->person->hasPerm('agent_tickets.delete_assigned') || $this->person->hasPerm('agent_tickets.delete_followed'));
-	}
+        return false;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return bool
-	 */
-	public function canReply(Ticket $ticket)
-	{
-		if (!$this->canView($ticket)) {
-			return false;
-		}
+    /**
+     * @return bool
+     */
+    public function canDeleteAny()
+    {
+        return ($this->person->hasPerm('agent_tickets.delete_own') || $this->person->hasPerm('agent_tickets.delete_unassigned') || $this->person->hasPerm('agent_tickets.delete_assigned') || $this->person->hasPerm('agent_tickets.delete_followed'));
+    }
 
-		#------------------------------
-		# Can delete own
-		#------------------------------
 
-		if ($this->person->hasPerm('agent_tickets.reply_own')) {
-			if ($ticket->agent && $ticket->agent->id == $this->person->id) {
-				return true;
-			}
+    /**
+     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @return bool
+     */
+    public function canReply(Ticket $ticket)
+    {
+        if (!$this->canView($ticket)) {
+            return false;
+        }
 
-			if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
-				return true;
-			}
-		}
+        #------------------------------
+        # Can delete own
+        #------------------------------
 
-		#------------------------------
-		# Can delete unassigned
-		#------------------------------
+        if ($this->person->hasPerm('agent_tickets.reply_own')) {
+            if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+                return true;
+            }
 
-		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.reply_unassigned')) {
-			return true;
-		}
+            if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
+                return true;
+            }
+        }
 
-		#------------------------------
-		# Can delete others
-		#------------------------------
+        #------------------------------
+        # Can delete unassigned
+        #------------------------------
 
-		if ($ticket->agent && $this->person->hasPerm('agent_tickets.reply_others')) {
-			return true;
-		}
+        if (!$ticket->agent && $this->person->hasPerm('agent_tickets.reply_unassigned')) {
+            return true;
+        }
+
+        #------------------------------
+        # Can delete others
+        #------------------------------
+
+        if ($ticket->agent && $this->person->hasPerm('agent_tickets.reply_others')) {
+            return true;
+        }
 
         #------------------------------
         # Can reply to followed
@@ -254,132 +254,131 @@ class TicketChecker extends AbstractChecker
             return true;
         }
 
-		#------------------------------
-		# Cant delete
-		#------------------------------
+        #------------------------------
+        # Cant delete
+        #------------------------------
 
-		return false;
-	}
-
-
-	/**
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 */
-	public function canSetArchived(Ticket $ticket)
-	{
-		if (!$this->person->hasPerm('agent_tickets.modify_set_archived')) {
-			return false;
-
-		}
-		if ($ticket->status == 'resolved' AND ($this->canModify($ticket, 'set_awaiting_user') || $this->canModify($ticket, 'set_awaiting_agent'))) {
-			return true;
-		} elseif ($this->canModify($ticket, 'set_resolved')) {
-			return true;
-		}
-
-		return false;
-	}
+        return false;
+    }
 
 
-	/**
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return bool
-	 */
-	public function canModify(Ticket $ticket, $op)
-	{
-		if (!$this->canView($ticket)) {
-			return false;
-		}
+    /**
+     * @param \Application\DeskPRO\Entity\Ticket $ticket
+     */
+    public function canSetArchived(Ticket $ticket)
+    {
+        if (!$this->person->hasPerm('agent_tickets.modify_set_archived')) {
+            return false;
 
-		$isSetUnresolved = 'set_awaiting_user' === $op || 'set_awaiting_agent' === $op;
-		if ($isSetUnresolved && 'resolved' === $ticket['status'] && !$this->canModify($ticket, 'set_unresolved')) {
-			return false;
-		}
-
-		if (!in_array($op, self::$modify_ops)) {
-			throw new \InvalidArgumentException("Invalid modify permission op: $op");
-		}
-
-		#------------------------------
-		# Figure out which set of permissions
-		# the current ticket falls into
-		#------------------------------
-
-		// Own tickets
-		if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
-			$set_suffix = 'own';
-
-		// Unassigned tickets
-		} elseif (!$ticket->agent && !$ticket->agent_team) {
-			$set_suffix = 'unassigned';
-
-		// Other
-		} else if($ticket->hasParticipantPerson($this->person)) {
-            $set_suffix = 'followed';
         }
-        else {
-			$set_suffix = 'others';
-		}
+        if ($ticket->status == 'resolved' AND ($this->canModify($ticket, 'set_awaiting_user') || $this->canModify($ticket, 'set_awaiting_agent'))) {
+            return true;
+        } elseif ($this->canModify($ticket, 'set_resolved')) {
+            return true;
+        }
 
-		$perm_global   = 'agent_tickets.modify_' . $set_suffix;
-		$perm_specific = 'agent_tickets.modify_' . $op . '_' . $set_suffix;
-
-		if ($this->person->hasPerm($perm_global) || $this->person->hasPerm($perm_specific)) {
-			return true;
-		}
-
-		return false;
-	}
+        return false;
+    }
 
 
-	/**
-	 * Check if the user can modify (or delete) a message
-	 *
-	 * @param Ticket $ticket
-	 */
-	public function canEditMessages(Ticket $ticket)
-	{
-		if (!$this->canView($ticket)) {
-			return false;
-		}
+    /**
+     * @param  \Application\DeskPRO\Entity\Ticket $ticket
+     * @return bool
+     */
+    public function canModify(Ticket $ticket, $op)
+    {
+        if (!$this->canView($ticket)) {
+            return false;
+        }
 
-		#------------------------------
-		# Can delete own
-		#------------------------------
+        $isSetUnresolved = 'set_awaiting_user' === $op || 'set_awaiting_agent' === $op;
+        if ($isSetUnresolved && 'resolved' === $ticket['status'] && !$this->canModify($ticket, 'set_unresolved')) {
+            return false;
+        }
 
-		if ($this->person->hasPerm('agent_tickets.modify_messages_own')) {
-			if ($ticket->agent && $ticket->agent->id == $this->person->id) {
-				return true;
-			}
+        if (!in_array($op, self::$modify_ops)) {
+            throw new \InvalidArgumentException("Invalid modify permission op: $op");
+        }
 
-			if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
-				return true;
-			}
-		}
+        #------------------------------
+        # Figure out which set of permissions
+        # the current ticket falls into
+        #------------------------------
 
-		#------------------------------
-		# Can delete unassigned
-		#------------------------------
+        // Own tickets
+        if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
+            $set_suffix = 'own';
 
-		if (!$ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_unassigned')) {
-			return true;
-		}
+        // Unassigned tickets
+        } elseif (!$ticket->agent && !$ticket->agent_team) {
+            $set_suffix = 'unassigned';
 
-		#------------------------------
-		# Can delete others
-		#------------------------------
+        // Other
+        } else if($ticket->hasParticipantPerson($this->person)) {
+            $set_suffix = 'followed';
+        } else {
+            $set_suffix = 'others';
+        }
 
-		if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_assigned')) {
-			return true;
-		}
+        $perm_global   = 'agent_tickets.modify_' . $set_suffix;
+        $perm_specific = 'agent_tickets.modify_' . $op . '_' . $set_suffix;
 
-		#------------------------------
-		# Can delete others
-		#------------------------------
+        if ($this->person->hasPerm($perm_global) || $this->person->hasPerm($perm_specific)) {
+            return true;
+        }
 
-		if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_others')) {
-			return true;
-		}
+        return false;
+    }
+
+
+    /**
+     * Check if the user can modify (or delete) a message
+     *
+     * @param Ticket $ticket
+     */
+    public function canEditMessages(Ticket $ticket)
+    {
+        if (!$this->canView($ticket)) {
+            return false;
+        }
+
+        #------------------------------
+        # Can delete own
+        #------------------------------
+
+        if ($this->person->hasPerm('agent_tickets.modify_messages_own')) {
+            if ($ticket->agent && $ticket->agent->id == $this->person->id) {
+                return true;
+            }
+
+            if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
+                return true;
+            }
+        }
+
+        #------------------------------
+        # Can delete unassigned
+        #------------------------------
+
+        if (!$ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_unassigned')) {
+            return true;
+        }
+
+        #------------------------------
+        # Can delete others
+        #------------------------------
+
+        if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_assigned')) {
+            return true;
+        }
+
+        #------------------------------
+        # Can delete others
+        #------------------------------
+
+        if ($ticket->agent && $this->person->hasPerm('agent_tickets.modify_messages_others')) {
+            return true;
+        }
 
         #------------------------------
         # Can delete followed
@@ -390,39 +389,39 @@ class TicketChecker extends AbstractChecker
         }
 
 
-		#------------------------------
-		# Cant delete
-		#------------------------------
+        #------------------------------
+        # Cant delete
+        #------------------------------
 
-		return false;
-	}
+        return false;
+    }
 
 
-	/**
-	 * Check if two tickets can be merged. To be able to merge, both tickets must give try for the 'merge' permission.
-	 *
-	 * @param Ticket $ticket1
-	 * @param Ticket $ticket2
-	 * @return bool
-	 */
-	public function canMerge(Ticket $ticket1, Ticket $ticket2)
-	{
-		foreach (array($ticket1, $ticket2) as $ticket) {
-			if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
-				$set_suffix = 'own';
-			} elseif (!$ticket->agent && !$ticket->agent_team) {
-				$set_suffix = 'unassigned';
-			} else if($ticket->hasParticipantPerson($this->person)) {
-				$set_suffix = 'followed';
-			} else {
-				$set_suffix = 'others';
-			}
+    /**
+     * Check if two tickets can be merged. To be able to merge, both tickets must give try for the 'merge' permission.
+     *
+     * @param  Ticket $ticket1
+     * @param  Ticket $ticket2
+     * @return bool
+     */
+    public function canMerge(Ticket $ticket1, Ticket $ticket2)
+    {
+        foreach (array($ticket1, $ticket2) as $ticket) {
+            if (($ticket->agent && $ticket->agent->id == $this->person->id) || ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team))) {
+                $set_suffix = 'own';
+            } elseif (!$ticket->agent && !$ticket->agent_team) {
+                $set_suffix = 'unassigned';
+            } else if($ticket->hasParticipantPerson($this->person)) {
+                $set_suffix = 'followed';
+            } else {
+                $set_suffix = 'others';
+            }
 
-			if (!$this->person->hasPerm("agent_tickets.modify_merge_{$set_suffix}")) {
-				return false;
-			}
-		}
+            if (!$this->person->hasPerm("agent_tickets.modify_merge_{$set_suffix}")) {
+                return false;
+            }
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

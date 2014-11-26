@@ -40,212 +40,213 @@ use Orb\Util\Strings;
 
 class LayoutFieldCriteria implements \Serializable, \Countable
 {
-	const CRIT_ALL = 'all';
-	const CRIT_ANY = 'any';
+    const CRIT_ALL = 'all';
+    const CRIT_ANY = 'any';
 
-	/**
-	 * @var string
-	 */
-	private $mode = self::CRIT_ALL;
+    /**
+     * @var string
+     */
+    private $mode = self::CRIT_ALL;
 
-	/**
-	 * @var \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
-	 */
-	private $terms = array();
-
-
-	/**
-	 * @param \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[] $terms
-	 * @param string $mode
-	 */
-	public function __construct(array $terms = null, $mode = self::CRIT_ALL)
-	{
-		$this->setMode($mode);
-
-		if ($terms) {
-			foreach ($terms as $t) {
-				$this->addTerm($t);
-			}
-		}
-	}
+    /**
+     * @var \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
+     */
+    private $terms = array();
 
 
-	/**
-	 * @param TicketLayoutTermInterface $term
-	 */
-	public function addTerm(TicketLayoutTermInterface $term)
-	{
-		$this->terms[] = $term;
-	}
+    /**
+     * @param \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[] $terms
+     * @param string                                                              $mode
+     */
+    public function __construct(array $terms = null, $mode = self::CRIT_ALL)
+    {
+        $this->setMode($mode);
+
+        if ($terms) {
+            foreach ($terms as $t) {
+                $this->addTerm($t);
+            }
+        }
+    }
 
 
-	/**
-	 * @return \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
-	 */
-	public function getTerms()
-	{
-		return $this->terms;
-	}
+    /**
+     * @param TicketLayoutTermInterface $term
+     */
+    public function addTerm(TicketLayoutTermInterface $term)
+    {
+        $this->terms[] = $term;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function getMode()
-	{
-		return $this->mode;
-	}
+    /**
+     * @return \Application\DeskPRO\TicketLayout\Terms\TicketLayoutTermInterface[]
+     */
+    public function getTerms()
+    {
+        return $this->terms;
+    }
 
 
-	/**
-	 * @param string $mode
-	 */
-	public function setMode($mode)
-	{
-		$mode = strtoupper($mode);
-		$this->mode = ($mode == self::CRIT_ALL ? self::CRIT_ALL : self::CRIT_ANY);
-	}
+    /**
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
 
 
-	/**
-	 * @param Ticket $ticket
-	 * @return bool
-	 */
-	public function isTicketMatch(Ticket $ticket)
-	{
-		if ($this->mode == self::CRIT_ALL) {
-			foreach ($this->terms as $t) {
-				if (!$t->isTicketMatch($ticket)) {
-					return false;
-				}
-			}
-			return true;
-		} else {
-			foreach ($this->terms as $t) {
-				if ($t->isTicketMatch($ticket)) {
-					return true;
-				}
-			}
-			return false;
-		}
-	}
+    /**
+     * @param string $mode
+     */
+    public function setMode($mode)
+    {
+        $mode = strtoupper($mode);
+        $this->mode = ($mode == self::CRIT_ALL ? self::CRIT_ALL : self::CRIT_ANY);
+    }
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function compileJsCheck()
-	{
-		if (!$this->terms) {
-			return "function() { return true; }";
-		}
+    /**
+     * @param  Ticket $ticket
+     * @return bool
+     */
+    public function isTicketMatch(Ticket $ticket)
+    {
+        if ($this->mode == self::CRIT_ALL) {
+            foreach ($this->terms as $t) {
+                if (!$t->isTicketMatch($ticket)) {
+                    return false;
+                }
+            }
 
-		$js = "(function() {\n";
-		$js .= "\tvar checkFn = [\n";
-		$fn_bits = array();
-		foreach ($this->terms as $t) {
-			$t_js = $t->compileJsCheck();
-			$t_js = trim(Strings::modifyLines($t_js, "\t\t"));
-			$fn_bits[] = "\t\t$t_js";
-		}
-		$js .= implode(",\n", $fn_bits);
-		$js .= "\n\t];\n";
+            return true;
+        } else {
+            foreach ($this->terms as $t) {
+                if ($t->isTicketMatch($ticket)) {
+                    return true;
+                }
+            }
 
-		$js .= "\treturn function(ticket) {\n";
-		$js .= "\t\tfor(var i = 0; i < checkFn.length; i++) { ";
-		if ($this->mode == self::CRIT_ANY) {
-			$js .= "if (checkFn[i](ticket)) return true;";
-		} else {
-			$js .= "if (!checkFn[i](ticket)) return true;";
-		}
-		$js .= " }\n";
-
-		if ($this->mode == self::CRIT_ANY) {
-			$js .= "\t\treturn false;\n";
-		} else {
-			$js .= "\t\treturn true;\n";
-		}
-
-		$js .= "\t};\n";
-		$js .= "})()";
-
-		return $js;
-	}
+            return false;
+        }
+    }
 
 
-	/**
-	 * @return array
-	 */
-	public function exportToArray()
-	{
-		$data = array();
+    /**
+     * {@inheritDoc}
+     */
+    public function compileJsCheck()
+    {
+        if (!$this->terms) {
+            return "function () { return true; }";
+        }
 
-		$data['version'] = 1;
-		$data['mode']    = $this->mode;
-		$data['terms']   = array();
+        $js = "(function () {\n";
+        $js .= "\tvar checkFn = [\n";
+        $fn_bits = array();
+        foreach ($this->terms as $t) {
+            $t_js = $t->compileJsCheck();
+            $t_js = trim(Strings::modifyLines($t_js, "\t\t"));
+            $fn_bits[] = "\t\t$t_js";
+        }
+        $js .= implode(",\n", $fn_bits);
+        $js .= "\n\t];\n";
 
-		foreach ($this->terms as $t) {
-			$data['terms'][] = array(
-				'type'    => $t->getTermType(),
-				'op'      => $t->getTermOperator(),
-				'options' => $t->getTermOptions()
-			);
-		}
+        $js .= "\treturn function (ticket) {\n";
+        $js .= "\t\tfor(var i = 0; i < checkFn.length; i++) { ";
+        if ($this->mode == self::CRIT_ANY) {
+            $js .= "if (checkFn[i](ticket)) return true;";
+        } else {
+            $js .= "if (!checkFn[i](ticket)) return true;";
+        }
+        $js .= " }\n";
 
-		return $data;
-	}
+        if ($this->mode == self::CRIT_ANY) {
+            $js .= "\t\treturn false;\n";
+        } else {
+            $js .= "\t\treturn true;\n";
+        }
 
+        $js .= "\t};\n";
+        $js .= "})()";
 
-	/**
-	 * @return string
-	 */
-	public function exportToJson()
-	{
-		return json_encode($this->exportToArray());
-	}
-
-
-	/**
-	 * @param array $data
-	 */
-	public function importFromArray(array $data)
-	{
-		$this->setMode($data['mode']);
-
-		foreach ($data['terms'] as $t) {
-			$classname = "Application\\DeskPRO\\TicketLayout\\Terms\\{$t['type']}";
-			$obj = new $classname($t['op'], $t['options']);
-			$this->addTerm($obj);
-		}
-	}
+        return $js;
+    }
 
 
-	/**
-	 * @return string
-	 */
-	public function serialize()
-	{
-		return $this->exportToJson();
-	}
+    /**
+     * @return array
+     */
+    public function exportToArray()
+    {
+        $data = array();
+
+        $data['version'] = 1;
+        $data['mode']    = $this->mode;
+        $data['terms']   = array();
+
+        foreach ($this->terms as $t) {
+            $data['terms'][] = array(
+                'type'    => $t->getTermType(),
+                'op'      => $t->getTermOperator(),
+                'options' => $t->getTermOptions()
+            );
+        }
+
+        return $data;
+    }
 
 
-	/**
-	 * @param string $data
-	 */
-	public function unserialize($data)
-	{
-		$data = json_decode($data, true);
-
-		$this->__construct($data['field_type'], $data['field_id']);
-		$this->importFromArray($data);
-	}
+    /**
+     * @return string
+     */
+    public function exportToJson()
+    {
+        return json_encode($this->exportToArray());
+    }
 
 
-	/**
-	 * @return int
-	 */
-	public function count()
-	{
-		return count($this->terms);
-	}
+    /**
+     * @param array $data
+     */
+    public function importFromArray(array $data)
+    {
+        $this->setMode($data['mode']);
+
+        foreach ($data['terms'] as $t) {
+            $classname = "Application\\DeskPRO\\TicketLayout\\Terms\\{$t['type']}";
+            $obj = new $classname($t['op'], $t['options']);
+            $this->addTerm($obj);
+        }
+    }
+
+
+    /**
+     * @return string
+     */
+    public function serialize()
+    {
+        return $this->exportToJson();
+    }
+
+
+    /**
+     * @param string $data
+     */
+    public function unserialize($data)
+    {
+        $data = json_decode($data, true);
+
+        $this->__construct($data['field_type'], $data['field_id']);
+        $this->importFromArray($data);
+    }
+
+    /**
+     * @return int
+     */
+    public function count()
+    {
+        return count($this->terms);
+    }
 }

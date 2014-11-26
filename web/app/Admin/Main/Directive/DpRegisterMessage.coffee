@@ -1,5 +1,5 @@
 define ->
-	###
+  ###
     # Description
     # -----------
     #
@@ -15,21 +15,21 @@ define ->
     # someAction: ->
     #     @Growl.success(@getRegisteredMessage('department_saved'))
     ###
-	Admin_Main_Directive_DpRegisterMessage = [ ->
-		return {
-			restrict: 'A',
-			scope: false,
-			link: (scope, element, attrs) ->
-				element.hide()
+  Admin_Main_Directive_DpRegisterMessage = [ ->
+    return {
+      restrict: 'A',
+      scope: false,
+      link: (scope, element, attrs) ->
+        element.hide()
 
-				if not scope._element_messages
-					scope._element_messages = {}
+        if not scope._element_messages
+          scope._element_messages = {}
 
-				scope._element_messages[attrs['dpRegisterMessage']] = ->
-					return element.html()
+        scope._element_messages[attrs['dpRegisterMessage']] = ->
+          return element.html()
 
-				return
-		}
-	]
+        return
+    }
+  ]
 
-	return Admin_Main_Directive_DpRegisterMessage
+  return Admin_Main_Directive_DpRegisterMessage

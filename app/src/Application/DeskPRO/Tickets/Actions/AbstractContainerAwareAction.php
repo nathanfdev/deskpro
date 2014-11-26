@@ -39,31 +39,31 @@ use Application\DeskPRO\DependencyInjection\DeskproContainerAwareInterface;
 
 abstract class AbstractContainerAwareAction extends AbstractAction implements DeskproContainerAwareInterface
 {
-	/**
-	 * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-	 */
-	private $container;
+    /**
+     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    private $container;
 
-	/**
-	 * @param DeskproContainer $container
-	 */
-	public function setContainer(DeskproContainer $container)
-	{
-		$this->container = $container;
-	}
+    /**
+     * @param DeskproContainer $container
+     */
+    public function setContainer(DeskproContainer $container)
+    {
+        $this->container = $container;
+    }
 
-	/**
-	 * Gets the set container.
-	 *
-	 * @return DeskproContainer
-	 * @throws \RuntimeException When no container has been set yet
-	 */
-	protected function getContainer()
-	{
-		if (!$this->container) {
-			throw new \RuntimeException("No container has been set");
-		}
+    /**
+     * Gets the set container.
+     *
+     * @return DeskproContainer
+     * @throws \RuntimeException When no container has been set yet
+     */
+    protected function getContainer()
+    {
+        if (!$this->container) {
+            throw new \RuntimeException("No container has been set");
+        }
 
-		return $this->container;
-	}
+        return $this->container;
+    }
 }

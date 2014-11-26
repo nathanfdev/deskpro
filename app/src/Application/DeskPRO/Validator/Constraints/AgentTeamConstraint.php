@@ -38,34 +38,34 @@ use Symfony\Component\Validator\Constraint;
 
 class AgentTeamConstraint extends Constraint
 {
-	/**
-	 * @var string
-	 */
-	public $message     = 'Invalid team';
+    /**
+     * @var string
+     */
+    public $message     = 'Invalid team';
 
-	/**
-	 * @var string
-	 */
-	public $typeMessage = 'Invalid object type got {{type}}';
+    /**
+     * @var string
+     */
+    public $typeMessage = 'Invalid object type got {{type}}';
 
-	/**
-	 * Accepts and validates IDs (as well as actual objects)
-	 * @var bool
-	 */
-	public $acceptId    = true;
+    /**
+     * Accepts and validates IDs (as well as actual objects)
+     * @var bool
+     */
+    public $acceptId    = true;
 
-	/**
-	 * If given a Usergroup, checks that its actually in the repository
-	 * @var bool
-	 */
-	public $checkRepos  = true;
+    /**
+     * If given a Usergroup, checks that its actually in the repository
+     * @var bool
+     */
+    public $checkRepos  = true;
 
 
-	/**
-	 * {@inheritDoc}
-	 */
-	public function validatedBy()
-	{
-		return 'AgentTeam';
-	}
+    /**
+     * {@inheritDoc}
+     */
+    public function validatedBy()
+    {
+        return 'AgentTeam';
+    }
 }

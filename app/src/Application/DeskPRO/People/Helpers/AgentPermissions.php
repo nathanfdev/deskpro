@@ -42,180 +42,178 @@ use Application\DeskPRO\Entity;
  */
 class AgentPermissions implements \ArrayAccess, \Orb\Helper\ShortCallableInterface
 {
-	/** @var \Application\DeskPRO\Entity\Person */
-	protected $person;
+    /** @var \Application\DeskPRO\Entity\Person */
+    protected $person;
 
-	/** @var array|null */
-	protected $_allowed_ids = null;
-	/** @var array */
-	protected $_disallowed_ids = array();
+    /** @var array|null */
+    protected $_allowed_ids = null;
+    /** @var array */
+    protected $_disallowed_ids = array();
 
-	public function __construct(Entity\Person $person)
-	{
-		$this->person = $person;
-	}
+    public function __construct(Entity\Person $person)
+    {
+        $this->person = $person;
+    }
 
-	public function getShortCallableNames()
-	{
-		return array(
-			'getAgentPermissions' => '_getthis',
-			'getDisallowedDepartments' => 'getDisallowedDepartments',
-			'getAllowedDepartments' => 'getAllowedDepartments',
-		);
-	}
+    public function getShortCallableNames()
+    {
+        return array(
+            'getAgentPermissions' => '_getthis',
+            'getDisallowedDepartments' => 'getDisallowedDepartments',
+            'getAllowedDepartments' => 'getAllowedDepartments',
+        );
+    }
 
-	// we use this because we implement arrayaccess
-	// so the caller gets this, and can use it as an array.
-	// So if the caller gets it through a another array access, it means
-	// we support $whatever['thishelper']['thisobject'];
-	public function _getthis() { return $this; }
-
-
-
-	/**
-	 * Check if the user is allowed to use a particular department
-	 *
-	 * @param int|Department $dep
-	 * @return bool
-	 */
-	public function isDepartmentAllowed($dep, $context = 'tickets')
-	{
-		if ($dep instanceof Entity\Department) {
-			$dep = $dep['id'];
-		}
-
-		return in_array($dep, $this->getAllowedDepartments($context));
-	}
+    // we use this because we implement arrayaccess
+    // so the caller gets this, and can use it as an array.
+    // So if the caller gets it through a another array access, it means
+    // we support $whatever['thishelper']['thisobject'];
+    public function _getthis() { return $this; }
 
 
 
-	/**
-	 * Get an array of departments the user isn't allowed to see
-	 *
-	 * @return array
-	 */
-	public function getDisallowedDepartments($context = 'tickets')
-	{
-		if (isset($this->_disallowed_ids[$context])) {
-			return $this->_disallowed_ids[$context];
-		}
+    /**
+     * Check if the user is allowed to use a particular department
+     *
+     * @param  int|Department $dep
+     * @return bool
+     */
+    public function isDepartmentAllowed($dep, $context = 'tickets')
+    {
+        if ($dep instanceof Entity\Department) {
+            $dep = $dep['id'];
+        }
 
-		$all_ids = App::getDataService('Department')->getIds();
-
-		$allowed_ids = $this->getAllowedDepartments($context);
-
-		$disallowed_ids = array_diff($all_ids, $allowed_ids);
-
-		$this->_disallowed_ids[$context] = $disallowed_ids;
-
-		return $this->_disallowed_ids[$context];
-	}
+        return in_array($dep, $this->getAllowedDepartments($context));
+    }
 
 
 
-	/**
-	 * Get an array of departments the user is allowed to see
-	 *
-	 * @return array
-	 */
-	public function getAllowedDepartments($context = 'tickets')
-	{
-		if ($this->_allowed_ids !== null) {
-			if (!isset($this->_allowed_ids[$context])) {
-				return array();
-			}
+    /**
+     * Get an array of departments the user isn't allowed to see
+     *
+     * @return array
+     */
+    public function getDisallowedDepartments($context = 'tickets')
+    {
+        if (isset($this->_disallowed_ids[$context])) {
+            return $this->_disallowed_ids[$context];
+        }
 
-			return $this->_allowed_ids[$context];
-		}
+        $all_ids = App::getDataService('Department')->getIds();
 
-		$agent_groups = App::$container->getAgentGroups();
-		$agent_data   = App::$container->getAgentData();
+        $allowed_ids = $this->getAllowedDepartments($context);
 
-		try {
-			$uids = $agent_data->getGroupIdsForAgent($this->person);
-		} catch (\InvalidArgumentException $e) {
-			$uids = array();
-		}
+        $disallowed_ids = array_diff($all_ids, $allowed_ids);
 
-		if (!$uids) {
-			$uids = array(0);
-		}
+        $this->_disallowed_ids[$context] = $disallowed_ids;
 
-		// Only agent groups!
-		$uids = array_filter($uids, function($id) use ($agent_groups) {
-			return $agent_groups->groupExists($id);
-		});
+        return $this->_disallowed_ids[$context];
+    }
 
-		$allow_all = false;
-		foreach ($uids as $ugid) {
-			if ($agent_groups->groupExists($ugid)) {
-				$g = $agent_groups->getGroup($ugid);
-				if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
-					$allow_all = true;
-					break;
-				}
-			}
-		}
+    /**
+     * Get an array of departments the user is allowed to see
+     *
+     * @return array
+     */
+    public function getAllowedDepartments($context = 'tickets')
+    {
+        if ($this->_allowed_ids !== null) {
+            if (!isset($this->_allowed_ids[$context])) {
+                return array();
+            }
 
-		if ($allow_all) {
-			$this->_allowed_ids = array();
-			foreach (array(App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()) as $coll) {
-				foreach ($coll as $d) {
-					$app = $d->is_tickets_enabled ? 'tickets' : 'chat';
-					if (!isset($this->_allowed_ids[$app])) {
-						$this->_allowed_ids[$app] = array();
-					}
+            return $this->_allowed_ids[$context];
+        }
 
-					$this->_allowed_ids[$app][] = $d->id;
-					if ($d && $d->parent) {
-						$this->_allowed_ids[$app][] = $d->parent->id;
-					}
-				}
-			}
-		} else {
-			$raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->id, $uids, 'full');
+        $agent_groups = App::$container->getAgentGroups();
+        $agent_data   = App::$container->getAgentData();
 
-			$this->_allowed_ids = array();
-			foreach ($raw as $r) {
-				if (!isset($this->_allowed_ids[$r['app']])) {
-					$this->_allowed_ids[$r['app']] = array();
-				}
-				$this->_allowed_ids[$r['app']][] = $r['department_id'];
+        try {
+            $uids = $agent_data->getGroupIdsForAgent($this->person);
+        } catch (\InvalidArgumentException $e) {
+            $uids = array();
+        }
 
-				$dep = App::getContainer()->getDataService('Department')->get($r['department_id']);
-				if ($dep && $dep->parent) {
-					$this->_allowed_ids[$r['app']][] = $dep->parent->getId();
-				}
-			}
-		}
+        if (!$uids) {
+            $uids = array(0);
+        }
 
-		if (!isset($this->_allowed_ids[$context])) {
-			return array();
-		}
+        // Only agent groups!
+        $uids = array_filter($uids, function ($id) use ($agent_groups) {
+            return $agent_groups->groupExists($id);
+        });
 
-		return $this->_allowed_ids[$context];
-	}
+        $allow_all = false;
+        foreach ($uids as $ugid) {
+            if ($agent_groups->groupExists($ugid)) {
+                $g = $agent_groups->getGroup($ugid);
+                if ($g->sys_name == 'agent_all_perms' || $g->sys_name == 'agent_all_safe_perms') {
+                    $allow_all = true;
+                    break;
+                }
+            }
+        }
 
+        if ($allow_all) {
+            $this->_allowed_ids = array();
+            foreach (array(App::$container->getTicketDepartments()->getAll(), App::$container->getChatDepartments()->getAll()) as $coll) {
+                foreach ($coll as $d) {
+                    $app = $d->is_tickets_enabled ? 'tickets' : 'chat';
+                    if (!isset($this->_allowed_ids[$app])) {
+                        $this->_allowed_ids[$app] = array();
+                    }
 
-	public function offsetExists($offset)
-	{
-		$o = array('allowed_dep_ids', 'disallowed_dep_ids');
-		return in_array($offset, $o);
-	}
-	public function offsetGet($offset)
-	{
-		if ($offset == 'allowed_dep_ids') {
-			return $this->getAllowedDepartments();
-		} else {
-			return $this->getDisallowedDepartments();
-		}
-	}
-	public function offsetSet($offset, $value)
-	{
-		throw new \BadMethodCallException('offsetSet not supported');
-	}
-	public function offsetUnset($offset)
-	{
-		throw new \BadMethodCallException('offsetUnset not supported');
-	}
+                    $this->_allowed_ids[$app][] = $d->id;
+                    if ($d && $d->parent) {
+                        $this->_allowed_ids[$app][] = $d->parent->id;
+                    }
+                }
+            }
+        } else {
+            $raw = App::$container->getEm()->getRepository('DeskPRO:DepartmentPermission')->getPermsForAgent($this->person->id, $uids, 'full');
+
+            $this->_allowed_ids = array();
+            foreach ($raw as $r) {
+                if (!isset($this->_allowed_ids[$r['app']])) {
+                    $this->_allowed_ids[$r['app']] = array();
+                }
+                $this->_allowed_ids[$r['app']][] = $r['department_id'];
+
+                $dep = App::getContainer()->getDataService('Department')->get($r['department_id']);
+                if ($dep && $dep->parent) {
+                    $this->_allowed_ids[$r['app']][] = $dep->parent->getId();
+                }
+            }
+        }
+
+        if (!isset($this->_allowed_ids[$context])) {
+            return array();
+        }
+
+        return $this->_allowed_ids[$context];
+    }
+
+    public function offsetExists($offset)
+    {
+        $o = array('allowed_dep_ids', 'disallowed_dep_ids');
+
+        return in_array($offset, $o);
+    }
+    public function offsetGet($offset)
+    {
+        if ($offset == 'allowed_dep_ids') {
+            return $this->getAllowedDepartments();
+        } else {
+            return $this->getDisallowedDepartments();
+        }
+    }
+    public function offsetSet($offset, $value)
+    {
+        throw new \BadMethodCallException('offsetSet not supported');
+    }
+    public function offsetUnset($offset)
+    {
+        throw new \BadMethodCallException('offsetUnset not supported');
+    }
 }

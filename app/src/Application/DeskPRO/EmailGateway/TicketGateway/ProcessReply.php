@@ -45,286 +45,287 @@ use Orb\Types\NoValue;
 
 class ProcessReply extends ProcessAbstract
 {
-	/**
-	 * @var TicketIncomingEmail
-	 */
-	protected $ticket_email;
+    /**
+     * @var TicketIncomingEmail
+     */
+    protected $ticket_email;
 
-	/**
-	 * @var \Application\DeskPRO\Entity\Ticket
-	 */
-	protected $ticket;
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    protected $ticket;
 
-	/**
-	 * @var \Orb\Input\Cleaner\Cleaner
-	 */
-	protected $cleaner;
+    /**
+     * @var \Orb\Input\Cleaner\Cleaner
+     */
+    protected $cleaner;
 
-	/**
-	 * @param Ticket $ticket
-	 * @param Person $person
-	 * @param TicketIncomingEmail $ticket_email
-	 */
-	public function __construct(Ticket $ticket, Person $person, TicketIncomingEmail $ticket_email, Translate $translator)
-	{
-		$this->ticket       = $ticket;
-		$this->person       = $person;
-		$this->ticket_email = $ticket_email;
-		$this->reader       = $ticket_email->reader;
-		$this->cleaner      = App::get('deskpro.core.input_cleaner');
-		$this->translator   = $translator;
-	}
+    /**
+     * @param Ticket              $ticket
+     * @param Person              $person
+     * @param TicketIncomingEmail $ticket_email
+     */
+    public function __construct(Ticket $ticket, Person $person, TicketIncomingEmail $ticket_email, Translate $translator)
+    {
+        $this->ticket       = $ticket;
+        $this->person       = $person;
+        $this->ticket_email = $ticket_email;
+        $this->reader       = $ticket_email->reader;
+        $this->cleaner      = App::get('deskpro.core.input_cleaner');
+        $this->translator   = $translator;
+    }
 
-	/**
-	 * @param string $context
-	 * @return \Application\DeskPRO\Mail\Message|mixed|null|TicketMessage
-	 * @throws \Exception
-	 */
-	public function run($context = 'user')
-	{
-		$this->logMessage("doNewRelpy context $context");
-		
-		$this->processBlobs();
+    /**
+     * @param  string                                                     $context
+     * @return \Application\DeskPRO\Mail\Message|mixed|null|TicketMessage
+     * @throws \Exception
+     */
+    public function run($context = 'user')
+    {
+        $this->logMessage("doNewRelpy context $context");
 
-		if ($context == 'user') {
-			$executor_context = $this->getTicketManager()->createUserExecutorContext(
-				$this->person,
-				'newreply',
-				'email'
-			);
-		} else {
-			$executor_context = $this->getTicketManager()->createAgentExecutorContext(
-				$this->person,
-				'newreply',
-				'email'
-			);
-		}
+        $this->processBlobs();
 
-		$executor_context->setEmailContext($this->reader);
-		$executor_context->getVars()->set('ticket_email', $this->ticket_email);
+        if ($context == 'user') {
+            $executor_context = $this->getTicketManager()->createUserExecutorContext(
+                $this->person,
+                'newreply',
+                'email'
+            );
+        } else {
+            $executor_context = $this->getTicketManager()->createAgentExecutorContext(
+                $this->person,
+                'newreply',
+                'email'
+            );
+        }
 
-		if ($this->logger) {
-			$orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
-			$executor_context->getLogger()->pushHandler($orb_logger_adapter);
-		}
+        $executor_context->setEmailContext($this->reader);
+        $executor_context->getVars()->set('ticket_email', $this->ticket_email);
 
-		if ($this->ticket_email->is_dp3_reply) {
-			$this->logMessage("doNewReply message class: TicketIncomingEmailMessageV3");
-			$email_info = new TicketIncomingEmailMessageV3(
-				$this->ticket,
-				$this->ticket_email,
-				$this->cleaner,
-				array($this, 'replaceInlineAttachTokens'),
-				$this->getLogger()
-			);
-		} else {
-			$this->logMessage("doNewReply message class: TicketIncomingEmailMessage");
-			$email_info = new TicketIncomingEmailMessage(
-				TicketIncomingEmailMessage::MODE_NEWREPLY,
-				$this->ticket,
-				$this->ticket_email,
-				$this->cleaner,
-				App::$container->getEmailAccountManager(),
-				array($this, 'replaceInlineAttachTokens'),
-				$this->getLogger()
-			);
-		}
+        if ($this->logger) {
+            $orb_logger_adapter = new OrbLoggerAdapterHandler($this->logger);
+            $executor_context->getLogger()->pushHandler($orb_logger_adapter);
+        }
 
-		if (App::getSetting('core_tickets.gateway_agent_require_marker') && $context == 'agent' && !$email_info->found_top_marker) {
-			// The marker is required for agent emails
-			$this->logMessage('doNewRelpy agent reply missing marker');
-			$this->setError('missing_marker');
+        if ($this->ticket_email->is_dp3_reply) {
+            $this->logMessage("doNewReply message class: TicketIncomingEmailMessageV3");
+            $email_info = new TicketIncomingEmailMessageV3(
+                $this->ticket,
+                $this->ticket_email,
+                $this->cleaner,
+                array($this, 'replaceInlineAttachTokens'),
+                $this->getLogger()
+            );
+        } else {
+            $this->logMessage("doNewReply message class: TicketIncomingEmailMessage");
+            $email_info = new TicketIncomingEmailMessage(
+                TicketIncomingEmailMessage::MODE_NEWREPLY,
+                $this->ticket,
+                $this->ticket_email,
+                $this->cleaner,
+                App::$container->getEmailAccountManager(),
+                array($this, 'replaceInlineAttachTokens'),
+                $this->getLogger()
+            );
+        }
 
-			$message = App::getMailer()->createMessage();
-			$message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', array(
-				'ticket'  => $this->ticket,
-				'subject' => $this->reader->getSubject()->getSubjectUtf8(),
-				'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
-			));
-			$message->setTo($this->reader->getFromAddress()->getEmail());
+        if (App::getSetting('core_tickets.gateway_agent_require_marker') && $context == 'agent' && !$email_info->found_top_marker) {
+            // The marker is required for agent emails
+            $this->logMessage('doNewRelpy agent reply missing marker');
+            $this->setError('missing_marker');
 
-			App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function() use ($message) {
-				$message->prepare();
-			});
+            $message = App::getMailer()->createMessage();
+            $message->setTemplate('DeskPRO:emails_agent:error-marker-missing.html.twig', array(
+                'ticket'  => $this->ticket,
+                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+            ));
+            $message->setTo($this->reader->getFromAddress()->getEmail());
 
-			App::getMailer()->send($message);
+            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                $message->prepare();
+            });
 
-			return null;
-		}
+            App::getMailer()->send($message);
 
-		if ($this->ticket_email->is_bounce) {
-			$executor_context->getVars()->set('is_bounce_message', true);
-		}
+            return null;
+        }
 
-		$message = new TicketMessage();
-		$message->email_reader = $this->reader;
-		if ($this->reader->hasProperty('email_source')) {
-			$message['email_source'] = $this->reader->getProperty('email_source');
-		}
+        if ($this->ticket_email->is_bounce) {
+            $executor_context->getVars()->set('is_bounce_message', true);
+        }
 
-		if ($this->person->is_agent) {
-			$message->creation_system = 'gateway.agent';
-		} else {
-			$message->creation_system = 'gateway.person';
-		}
+        $message = new TicketMessage();
+        $message->email_reader = $this->reader;
+        if ($this->reader->hasProperty('email_source')) {
+            $message['email_source'] = $this->reader->getProperty('email_source');
+        }
 
-		$message['ticket'] = $this->ticket;
-		$message['person'] = $this->person;
-		$message['email'] = $this->reader->getFromAddress()->getEmail();
+        if ($this->person->is_agent) {
+            $message->creation_system = 'gateway.agent';
+        } else {
+            $message->creation_system = 'gateway.person';
+        }
 
-		$message['message'] = $email_info->body;
-		$message['message_full'] = $email_info->body_full;
-		$message['message_raw'] = $email_info->body_raw;
+        $message['ticket'] = $this->ticket;
+        $message['person'] = $this->person;
+        $message['email'] = $this->reader->getFromAddress()->getEmail();
 
-		$message['show_full_hint'] = false;
-		$inline_reply_detector = new DetectInlineReply(App::getOrm(), $this->reader);
-		if ($this->getLogger()) {
-			$inline_reply_detector->setLogger($this->getLogger());
-		}
+        $message['message'] = $email_info->body;
+        $message['message_full'] = $email_info->body_full;
+        $message['message_raw'] = $email_info->body_raw;
 
-		if ($inline_reply_detector->hasDifferentMessage() && $message['message_full']) {
-			$message['show_full_hint'] = true;
-		}
+        $message['show_full_hint'] = false;
+        $inline_reply_detector = new DetectInlineReply(App::getOrm(), $this->reader);
+        if ($this->getLogger()) {
+            $inline_reply_detector->setLogger($this->getLogger());
+        }
 
-		if (isset($this->ticket_email->reply_actions['is_note'])) {
-			$message['is_agent_note'] = true;
-			$this->ticket->email_reader_action = 'agent_note';
-		}
+        if ($inline_reply_detector->hasDifferentMessage() && $message['message_full']) {
+            $message['show_full_hint'] = true;
+        }
 
-		$ticket_attach = array();
-		foreach ($this->processBlobs() as $blob) {
+        if (isset($this->ticket_email->reply_actions['is_note'])) {
+            $message['is_agent_note'] = true;
+            $this->ticket->email_reader_action = 'agent_note';
+        }
 
-			if (isset($this->dupe_inline_blobs[$blob->getId()])) {
-				continue;
-			}
+        $ticket_attach = array();
+        foreach ($this->processBlobs() as $blob) {
 
-			$attach = new TicketAttachment();
-			$attach['blob'] = $blob;
-			$attach['person'] = $this->person;
+            if (isset($this->dupe_inline_blobs[$blob->getId()])) {
+                continue;
+            }
 
-			if (isset($this->inline_blobs[$blob->getId()])) {
-				$attach->is_inline = true;
-			}
+            $attach = new TicketAttachment();
+            $attach['blob'] = $blob;
+            $attach['person'] = $this->person;
 
-			$message->addAttachment($attach);
-			$ticket_attach[] = $attach;
-		}
+            if (isset($this->inline_blobs[$blob->getId()])) {
+                $attach->is_inline = true;
+            }
 
-		$has_message = true;
-		if (!$ticket_attach && !trim(strip_tags($email_info->body))) {
-			$has_message = false;
-		}
+            $message->addAttachment($attach);
+            $ticket_attach[] = $attach;
+        }
 
-		$has_reply_codes = false;
-		if ($this->ticket_email->reply_actions) {
-			$has_reply_codes = true;
-		}
+        $has_message = true;
+        if (!$ticket_attach && !trim(strip_tags($email_info->body))) {
+            $has_message = false;
+        }
 
-		$message->message_hash = null;
-		$message->initHashCode();
+        $has_reply_codes = false;
+        if ($this->ticket_email->reply_actions) {
+            $has_reply_codes = true;
+        }
 
-		// - Only add the message if we have an actual message
-		// This allows email replies with action codes but no reply,
-		// so the "empty reply" isnt processed as a reply
-		$did_add_message = false;
-		if (!isset($this->ticket_email->reply_actions['no_reply']) && ($has_message || ($has_reply_codes && !$has_message))) {
+        $message->message_hash = null;
+        $message->initHashCode();
 
-			$this->logMessage('[TicketGatewayProcessor] Checking for dupe message: ' . $message->getMessageHash());
+        // - Only add the message if we have an actual message
+        // This allows email replies with action codes but no reply,
+        // so the "empty reply" isnt processed as a reply
+        $did_add_message = false;
+        if (!isset($this->ticket_email->reply_actions['no_reply']) && ($has_message || ($has_reply_codes && !$has_message))) {
 
-			$did_add_message = true;
-			if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $this->ticket, 10800, $this->getLogger())) {
-				$this->setError('duplicate_message');
-				$this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
+            $this->logMessage('[TicketGatewayProcessor] Checking for dupe message: ' . $message->getMessageHash());
 
-				// Reset some objects so they dont get flushed during next loop
-				App::getOrm()->detach($this->ticket);
-				App::getOrm()->detach($message);
+            $did_add_message = true;
+            if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $this->ticket, 10800, $this->getLogger())) {
+                $this->setError('duplicate_message');
+                $this->logMessage('[TicketGatewayProcessor] doNewReply duplicate message ' . $dupe_message->getId());
 
-				foreach ($ticket_attach as $a) {
-					$a->ticket = null;
-					$a->message = null;
-					App::getOrm()->detach($a);
-				}
+                // Reset some objects so they dont get flushed during next loop
+                App::getOrm()->detach($this->ticket);
+                App::getOrm()->detach($message);
 
-				return $dupe_message;
-			}
+                foreach ($ticket_attach as $a) {
+                    $a->ticket = null;
+                    $a->message = null;
+                    App::getOrm()->detach($a);
+                }
 
-			$this->ticket->addMessage($message);
-		} else {
-			if (isset($this->ticket_email->reply_actions['no_reply'])) {
-				$this->logMessage('No reply because of #noreply tag');
-			} else {
-				$this->logMessage('No reply because empty reply');
-			}
+                return $dupe_message;
+            }
 
-			if ($context == 'user') {
-				$this->setError('empty');
-				return;
-			}
-		}
+            $this->ticket->addMessage($message);
+        } else {
+            if (isset($this->ticket_email->reply_actions['no_reply'])) {
+                $this->logMessage('No reply because of #noreply tag');
+            } else {
+                $this->logMessage('No reply because empty reply');
+            }
 
-		if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
-			$this->logMessage('[TicketGatewayProcessor] Has CC');
-			$this->handleCc($this->ticket, $this->reader->getDeliveredAddresses());
-		}
+            if ($context == 'user') {
+                $this->setError('empty');
 
-		#------------------------------
-		# Reply actions
-		#------------------------------
+                return;
+            }
+        }
 
-		if ($this->ticket_email->reply_actions) {
-			$reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
-			$reply_actions_context = new ReplyActionsContext();
-			$reply_actions_context->ticket = $this->ticket;
-			if ($did_add_message) {
-				$reply_actions_context->message = $message;
-			}
-			$reply_actions_apply->apply($reply_actions_context);
-		}
+        if ($this->reader->getCcAddresses() || count($this->reader->getToAddresses()) > 1) {
+            $this->logMessage('[TicketGatewayProcessor] Has CC');
+            $this->handleCc($this->ticket, $this->reader->getDeliveredAddresses());
+        }
 
-		#------------------------------
-		# Default switch status
-		#------------------------------
+        #------------------------------
+        # Reply actions
+        #------------------------------
 
-		if (!$this->ticket_email->is_bounce && !$message->is_agent_note && $did_add_message && !isset($this->ticket_email->reply_actions['status'])) {
-			if ($this->person['is_agent'] && $context == 'agent') {
-				$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
-				$this->ticket['status'] = Ticket::STATUS_AWAITING_USER;
-			} else {
-				$this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_agent');
-				$this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
-			}
-		}
+        if ($this->ticket_email->reply_actions) {
+            $reply_actions_apply = new ReplyActionsApplicator($this->ticket_email->reply_actions, App::getContainer());
+            $reply_actions_context = new ReplyActionsContext();
+            $reply_actions_context->ticket = $this->ticket;
+            if ($did_add_message) {
+                $reply_actions_context->message = $message;
+            }
+            $reply_actions_apply->apply($reply_actions_context);
+        }
 
-		App::getDb()->beginTransaction();
+        #------------------------------
+        # Default switch status
+        #------------------------------
 
-		try {
-			App::getOrm()->persist($this->person);
-			App::getOrm()->persist($this->ticket);
-			if ($did_add_message) {
-				App::getOrm()->persist($message);
-			}
+        if (!$this->ticket_email->is_bounce && !$message->is_agent_note && $did_add_message && !isset($this->ticket_email->reply_actions['status'])) {
+            if ($this->person['is_agent'] && $context == 'agent') {
+                $this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_user');
+                $this->ticket['status'] = Ticket::STATUS_AWAITING_USER;
+            } else {
+                $this->logMessage('[TicketGatewayProcessor] doNewReply set status = awaiting_agent');
+                $this->ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
+            }
+        }
 
-			$this->getTicketManager()->saveTicket($this->ticket, $executor_context);
-			App::getOrm()->flush();
+        App::getDb()->beginTransaction();
 
-			if ($email_info->charset_error) {
-				App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
-					'message_id' => $message['id'],
-					'raw'        => $email_info->body,
-					'charset'    => $email_info->charset_error,
-				));
-			}
-			App::getDb()->commit();
-		} catch (\Exception $e) {
-			App::getDb()->rollback();
-			throw $e;
-		}
+        try {
+            App::getOrm()->persist($this->person);
+            App::getOrm()->persist($this->ticket);
+            if ($did_add_message) {
+                App::getOrm()->persist($message);
+            }
 
-		if ($message) {
-			return $message;
-		} else {
-			return NoValue::get();
-		}
-	}
+            $this->getTicketManager()->saveTicket($this->ticket, $executor_context);
+            App::getOrm()->flush();
+
+            if ($email_info->charset_error) {
+                App::getOrm()->getConnection()->insert('tickets_messages_raw', array(
+                    'message_id' => $message['id'],
+                    'raw'        => $email_info->body,
+                    'charset'    => $email_info->charset_error,
+                ));
+            }
+            App::getDb()->commit();
+        } catch (\Exception $e) {
+            App::getDb()->rollback();
+            throw $e;
+        }
+
+        if ($message) {
+            return $message;
+        } else {
+            return NoValue::get();
+        }
+    }
 }

@@ -1,5 +1,6 @@
 # IDE project files
-/.idea/
+/.idea/*
+!/.idea/codeStyleSettings.xml
 /web/app/.idea/
 /nbproject/
 /catalog.xml
@@ -10,6 +11,15 @@
 *.komodoproject
 *.sublime*
 /running_tests.trigger
+
+# vendors and build files
+/app/vendor
+/web/node_modules
+/web/bower_components
+/web/app/node_modules
+/web/app/bower_components
+/web/app-build
+/web/loader-build
 
 # cache and log files
 /app/sys/cache/*

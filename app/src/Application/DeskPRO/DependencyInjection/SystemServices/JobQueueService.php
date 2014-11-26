@@ -40,10 +40,10 @@ use Application\DeskPRO\JobQueue\JobScheduler;
 
 class JobQueueService
 {
-	public static function create(DeskproContainer $container)
-	{
-		$queue = new JobQueue($container->getEm(), new JobScheduler($container->getEm()));
+    public static function create(DeskproContainer $container)
+    {
+        $queue = new JobQueue($container->getEm(), new JobScheduler($container->getEm()));
 
-		return $queue;
-	}
+        return $queue;
+    }
 }

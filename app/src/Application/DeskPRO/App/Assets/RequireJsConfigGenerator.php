@@ -39,42 +39,54 @@ use Application\DeskPRO\Assets\RequireJsConfigGenerator as BaseRequireJsConfigGe
 
 class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
 {
-	public function __construct(AppManagerInterface $manager, $native_file_root = null)
-	{
-		foreach ($manager->getAllPackages() as $package) {
-			if ($native_file_root && $package->native_name) {
-				$native_baseurl = $native_file_root . '/' . $package->native_name;
-			} else {
-				$native_baseurl = null;
-			}
+    public function __construct(AppManagerInterface $manager, $native_file_root = null)
+    {
+        foreach ($manager->getAllPackages() as $package) {
+            if ($native_file_root && $package->native_name) {
+                $native_baseurl = $native_file_root . '/' . $package->native_name;
+            } else {
+                $native_baseurl = null;
+            }
 
-			$appAsset = $package->getTaggedAsset('app_js');
-			$name = "{$package->name}/app";
+            $appAsset = $package->getTaggedAsset('app_js');
+            $name = "{$package->name}/app";
 
-			if ($appAsset) {
-				if ($native_baseurl) {
-					$appjs_path = preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js');
-				} else {
-					$appjs_path = preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl(false, false));
-				}
-				$this->addPath($name, $appjs_path);
-			}
+            if ($appAsset) {
+                if ($native_baseurl) {
+                    $appjs_path = preg_replace('#\.js$#', '', $native_baseurl . '/app/app.js');
+                } else {
+                    $appjs_path = preg_replace('#\.js$#', '', $appAsset->blob->getDownloadUrl(false, false));
+                }
+                $this->addPath($name, $appjs_path);
+            }
 
-			// If its a native app, then we can get away with just using the prefix path
-			if ($native_baseurl) {
-				$name = $package->name;
-				$asset_path = $native_baseurl . '/js';
-				$this->addPath($name, $asset_path);
+            $moduleAsset = $package->getTaggedAsset('module_js');
+            $name = "{$package->name}/module";
 
-			// Otherwise, we need to use the download URL that will contain unique auth codes
-			} else {
-				foreach ($package->getTaggedAssets('js') as $asset) {
-					$name = $package->name . '/js/' . str_replace('.js', '', $asset->name);
-					$asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl(false, false));
+            if ($moduleAsset) {
+                if ($native_baseurl) {
+                    $modulejs_path = preg_replace('#\.js$#', '', $native_baseurl . '/app/module.js');
+                } else {
+                    $modulejs_path = preg_replace('#\.js$#', '', $moduleAsset->blob->getDownloadUrl(false, false));
+                }
+                $this->addPath($name, $modulejs_path);
+            }
 
-					$this->addPath($name, $asset_path);
-				}
-			}
-		}
-	}
+            // If its a native app, then we can get away with just using the prefix path
+            if ($native_baseurl) {
+                $name = $package->name;
+                $asset_path = $native_baseurl . '/js';
+                $this->addPath($name, $asset_path);
+
+            // Otherwise, we need to use the download URL that will contain unique auth codes
+            } else {
+                foreach ($package->getTaggedAssets('js') as $asset) {
+                    $name = $package->name . '/js/' . str_replace('.js', '', $asset->name);
+                    $asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl(false, false));
+
+                    $this->addPath($name, $asset_path);
+                }
+            }
+        }
+    }
 }
