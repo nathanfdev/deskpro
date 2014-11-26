@@ -422,15 +422,15 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
      * @returns {Array}
      */
     getElementLocationDef: function(location) {
-      var locationSelector, locationPlace, placeMath;
+      var locationSelector, locationPlace, placeMatch;
 
       if (typeof location == 'string') {
         location = Strings.trim(location);
 
-        placeMath = location.match(/^(append|prepend|after|before|replace)\s+ (.*?)$/);
-        if (placeMath) {
-          locationSelector = placeMath[0];
-          locationPlace = placeMath[1];
+        placeMatch = location.match(/^(append|prepend|after|before|replace)\s+(.*?)$/);
+        if (placeMatch) {
+          locationSelector = placeMatch[2];
+          locationPlace = placeMatch[1];
         } else {
           locationSelector = location;
           locationPlace = 'append';
