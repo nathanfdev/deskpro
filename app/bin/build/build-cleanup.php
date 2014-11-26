@@ -29,10 +29,10 @@ foreach ($rm_paths as $p) {
     echo "\n";
 }
 
-$cmd = "clean-vendors.sh";
+$cmd = "./clean-vendors.sh";
 echo "-> $cmd\n";
 
-$proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT.'/app/bin');
+$proc = new \Symfony\Component\Process\Process($cmd, DP_ROOT.'/bin');
 $proc->setTimeout(600);
 
 $output_realtime = function ($type, $buffer) {
