@@ -105,7 +105,7 @@ pageMeta.lang = {{ {
 					{% else %}
 						{{ phrase('agent.tickets.you_have_locked') }}
 					{% endif %}
-					{% if app.getSetting('core_tickets.unlock_on_close') %}<br/>{{ phrase('agent.tickets.lock_auto_release') }}{% endif %}
+					{% if app.getSetting('core_tickets.unlock_on_close') %}<div class="auto-unlock-message">{{ phrase('agent.tickets.lock_auto_release') }}</div>{% endif %}
 				</div>
 				{% if ticket.locked_by_agent and not locked_self %}
 					<div id="{{baseId}}_locked_message_other">
@@ -246,9 +246,9 @@ pageMeta.lang = {{ {
 	<div class="margin"></div>
 </header>
 
-<nav class="header-nav">
+<nav id="{{ baseId }}_header_nav_primary" class="header-nav header-nav-primary">
 	<ul>
-		<li title="{{ phrase('agent.general.department') }}">
+		<li title="{{ phrase('agent.general.department') }}" data-btn-id="department">
 			{% include 'AgentBundle:Common:select-department.html.twig' with {
 				'name': "department_id",
 				'with_blank': blank_option,
@@ -264,7 +264,7 @@ pageMeta.lang = {{ {
 
 			<span class="dp-caret"></span>
 		</li>
-		<li title="{{ phrase('agent.general.status') }}">
+		<li title="{{ phrase('agent.general.status') }}" data-btn-id="status">
 			<select name="status_code" class="status_code" id="{{baseId}}_status_code" data-invisible-trigger="1" style="display: none" data-dropdown-css-class="ticket-header" data-dropdown-nosearch="1">
 				{% if ticket.status == 'hidden' %}
 					<option value="" selected="selected">{{ phrase('agent.general.hidden') }}</option>
@@ -289,7 +289,7 @@ pageMeta.lang = {{ {
 
 			<span class="dp-caret"></span>
 		</li>
-		<li title="{{ phrase('agent.general.urgency') }}" class="urgency-item">
+		<li title="{{ phrase('agent.general.urgency') }}" class="urgency-item" data-btn-id="urgency">
 			<select name="urgency" class="urgency" data-style-type="urgency" id="{{baseId}}_urgency" style="display: none" data-invisible-trigger="1" data-dropdown-css-class="ticket-header" data-dropdown-nosearch="1">
 				{% for i in 1..10 %}
 					<option value="{{ i }}" {% if ticket.urgency == i %}selected="selected"{% endif %}>{{ i }}</option>
@@ -300,7 +300,7 @@ pageMeta.lang = {{ {
 
 			<span class="dp-caret"></span>
 		</li>
-		<li>
+		<li data-btn-id="flag">
 			<input type="hidden" id="{{ baseId }}_flag_old" value="{{ ticket_flagged }}" />
 			<select name="flag" class="flag" id="{{baseId}}_flag" class="dpe_select" data-style-type="icons" data-invisible-trigger="1" data-dropdown-css-class="ticket-header" data-dropdown-nosearch="1">
 				<option
@@ -327,7 +327,7 @@ pageMeta.lang = {{ {
 {{ dp_app_loc(baseId, 'header.after') }}
 {{ dp_app_loc(baseId, 'properties.before') }}
 
-<div class="header-profile-box">
+<div id="{{ baseId }}_header_profile_box" class="header-profile-box">
 <div class="profile-box-container dp-simpletab-container">
 	<header id="{{baseId}}_properties_header">
 		{% if ticket_perms.modify_fields %}
@@ -551,38 +551,38 @@ pageMeta.lang = {{ {
 	{{ dp_app_loc(baseId, 'properties.after') }}
 </div>
 
-<nav class="header-nav">
+<nav id="{{ baseId }}_header_nav_secondary" class="header-nav header-nav-secondary">
 	<ul>
-		<li id="{{ baseId }}_unlock_ticket" {% if not ticket.hasLock() %}style="display: none"{% endif %}>
+		<li id="{{ baseId }}_unlock_ticket" {% if not ticket.hasLock() %}style="display: none"{% endif %} data-btn-id="unlock">
 			<i class="icon-unlock"></i>
 			{{ phrase('agent.tickets.unlock') }}
 		</li>
-		<li id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %}>
+		<li id="{{ baseId }}_lock_ticket" {% if ticket.hasLock() %}style="display: none"{% endif %} data-btn-id="lock">
 			<i class="icon-lock"></i>
 			{{ phrase('agent.tickets.lock') }}
 		</li>
 		{% if ticket_perms.modify_merge %}
-			<li class="merge-menu-trigger noedit-hide">
+			<li class="merge-menu-trigger noedit-hide" data-btn-id="merge-menu">
 				<i class="icon-columns"></i>
 				{{ phrase('agent.general.merge') }}
 				<span class="dp-caret"></span>
 			</li>
 		{% endif %}
-		<li id="{{baseId}}_macros_menu_trigger">
+		<li id="{{baseId}}_macros_menu_trigger" data-btn-id="macros-menu">
 			<i class="icon-tasks"></i>
 			{{ phrase('agent.general.macros') }}
 			<span class="dp-caret"></span>
 		</li>
 		{% if ticket_perms.delete %}
 			{% if not (ticket.hidden_status in ['deleted', 'spam'] )%}
-				<li id="{{baseId}}_remove_menu_trigger">
+				<li id="{{baseId}}_remove_menu_trigger" data-btn-id="remove-menu">
 					<i class="icon-trash"></i>
 					{{ phrase('agent.general.remove') }}
 					<span class="dp-caret"></span>
 				</li>
 			{% endif %}
 		{% endif %}
-		<li id="{{ baseId }}_actions_menu_trigger">
+		<li id="{{ baseId }}_actions_menu_trigger" data-btn-id="actions-meny">
 			<i class="icon-edit"></i>
 			{{ phrase('agent.general.actions') }}
 			<span class="dp-caret"></span>
