@@ -1,2 +1,67 @@
 {% extends 'form_div_layout.html.twig' %}
 
+
+{###
+HEIRARCHY
+###}
+{% block deskpro_heirarchical_entity_widget %}
+    {% if expanded %}
+        {{- block('deskpro_heirarchical_choice_widget_expanded') -}}
+    {% else %}
+        {{- block('deskpro_heirarchical_choice_widget_collapsed') -}}
+    {% endif %}
+{% endblock %}
+
+{% block deskpro_heirarchical_choice_widget_expanded -%}
+    <div data-heirarcy="" {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            {{- form_widget(child) -}}
+            {{- form_label(child) -}}
+        {% endfor -%}
+    </div>
+{% endblock deskpro_heirarchical_choice_widget_expanded %}
+
+{% block deskpro_heirarchical_choice_widget_collapsed -%}
+    {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+    <select data-heirarcy="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {% if empty_value is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+        {%- endif %}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {{- block('deskpro_heirarchical_choice_widget_options') -}}
+            {% if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif %}
+        {%- endif -%}
+        {% set options = choices -%}
+        {{- block('deskpro_heirarchical_choice_widget_options') -}}
+    </select>
+{%- endblock deskpro_heirarchical_choice_widget_collapsed %}
+
+{% block deskpro_heirarchical_choice_widget_options -%}
+    {% for group_label, choice in options %}
+        {%- if choice is iterable -%}
+            <optgroup label="{{ group_label|trans({}, translation_domain) }}">
+                {% set options = choice %}
+                {{- block('deskpro_heirarchical_choice_widget_options') -}}
+            </optgroup>
+        {%- else -%}
+            <option
+                    {% if choice.data.parent is not null %} data-parent="{{ choice.data.parent.id }}"{% endif %}
+                    {% if choice.data.id is not null %} data-id="{{ choice.data.id }}"{% endif %}
+                    {% if choice.data.children and choice.data.children|length > 0 %} disabled="disabled"{% endif %}
+                    {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
+                    value="{{ choice.value }}"
+            >
+                {{ choice.label|trans({}, translation_domain) }}
+            </option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock deskpro_heirarchical_choice_widget_options %}
+
+{###
+END HEIRARCHY
+###}

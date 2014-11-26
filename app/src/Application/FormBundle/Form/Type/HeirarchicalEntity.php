@@ -34,38 +34,23 @@
 
 namespace Application\FormBundle\Form\Type;
 
-use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class DepartmentType extends AbstractType
+class HeirarchicalEntity extends AbstractType
 {
     public function getName()
-    {
-        return 'deskpro_department';
-    }
-
-    public function getParent()
     {
         return 'deskpro_heirarchical_entity';
     }
 
+    public function getParent()
+    {
+        return 'entity';
+    }
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        // IMPORTANT TODO: We need to pass in the "person" object that is viewing this form and inject a service to get us
-        // the correct Language entities. We can pass these correct "secure" departments in directly instead of this query builder.
-        $resolver->setDefaults(array(
-            'class'         => 'Application\\DeskPRO\\Entity\\Department',
-            'property'      => 'title',
-            'empty_data'    => null,
-            'query_builder' => function (EntityRepository $repo) {
-                    return $repo
-                        ->createQueryBuilder('d')
-                        ->select('d')
-                        ->andWhere('d.is_tickets_enabled = true')
-                        ->addOrderBy('d.display_order');
-                }
-        ));
     }
 }
  

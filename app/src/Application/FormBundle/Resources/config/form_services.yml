@@ -11,3 +11,7 @@ services:
     class: Application\FormBundle\Form\Type\DepartmentType
     tags:
       - { name: form.type, alias: deskpro_department }
+  form.heirarchical_entity:
+    class: Application\FormBundle\Form\Type\HeirarchicalEntity
+    tags:
+      - { name: form.type, alias: deskpro_heirarchical_entity }
