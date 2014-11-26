@@ -256,18 +256,17 @@ gulp.task('loader', ['clean'], function () {
 gulp.task('rjs', ['coffee', 'loader'], function () {
   var loadFiles = [
     './app/Admin/AdminLoad.js',
-    './app/Agent/AgentLoad.js',
     './app/Admin/Cloud/CloudAdminLoad.js',
     './app/AdminUpgrade/AdminUpgradeLoad.js',
     './app/AdminStart/AdminStartLoad.js',
     './app/Reports/ReportsLoad.js'
   ];
 
-  var rjsConfig = require('./loader-build/rjs-optimizer-config.js');
+  var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
 
   return gulp.src(loadFiles, {base: './'})
     .pipe(using({prefix: '<< Build --'}))
-    .pipe(rjs(rjsConfig.config))
+    .pipe(rjs(rjsConfig))
     .pipe(rename(function (path) {
       switch (path.basename.replace(/\.js$/, '')) {
         case 'AdminLoad':
@@ -305,12 +304,12 @@ gulp.task('rjs-agent', ['coffee', 'loader'], function () {
 
   // Hack for agent interface
   // jquery is included independantly and is version 1.7
-  var rjsConfig = require('./loader-build/rjs-optimizer-config.js');
-  rjsConfig.config.paths.jquery = "empty:";
+  var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
+  rjsConfig.paths.jquery = "empty:";
 
   return gulp.src(loadFiles, {base: './'})
     .pipe(using({prefix: '<< Build --'}))
-    .pipe(rjs(rjsConfig.config))
+    .pipe(rjs(rjsConfig))
     .pipe(rename(function (path) {
       switch (path.basename.replace(/\.js$/, '')) {
         case 'AgentLoad':
