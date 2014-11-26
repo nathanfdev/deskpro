@@ -11,6 +11,18 @@ services:
     class: Application\FormBundle\Form\Type\DepartmentType
     tags:
       - { name: form.type, alias: deskpro_department }
+  form.product:
+    class: Application\FormBundle\Form\Type\ProductType
+    tags:
+      - { name: form.type, alias: deskpro_product }
+  form.workflow:
+    class: Application\FormBundle\Form\Type\WorkflowType
+    tags:
+      - { name: form.type, alias: deskpro_workflow }
+  form.priority:
+    class: Application\FormBundle\Form\Type\PriorityType
+    tags:
+      - { name: form.type, alias: deskpro_priority }
   form.heirarchical_entity:
     class: Application\FormBundle\Form\Type\HeirarchicalEntity
     tags:

@@ -32,26 +32,38 @@
  * @subpackage
  */
 
-namespace Application\FormBundle;
+namespace Application\FormBundle\Form\Type;
 
+use Doctrine\ORM\EntityRepository;
+use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class FormFields
+class PriorityType extends AbstractType
 {
-    const DEPARTMENT = 'department';
-    const SUBJECT = 'subject';
-    const MESSAGE = 'message';
-    const USER_EMAIL = 'email';
-    const USER_NAME = 'user_name';
-    const USER_TIMEZONE = 'user_timezone';
-    const USER_LANGUAGE = 'user_language';
-    const USER_FIELD = 'user_field';
-    const TICKET_FIELD = 'ticket_field';
-    const CUSTOM_FIELD = 'custom_field';
-    const CATEGORY = 'category';
-    const PRIORITY = 'priority';
-    const WORKFLOW = 'workflow';
-    const PRODUCT = 'product';
-    const CAPTCHA = 'captcha';
-    const CC = 'cc';
-    const ATTACH = 'attach';
+    public function getName()
+    {
+        return 'deskpro_priority';
+    }
+
+    public function getParent()
+    {
+        return 'entity';
+    }
+
+    public function setDefaultOptions(OptionsResolverInterface $resolver)
+    {
+        $resolver->setDefaults(array(
+            'class'         => 'Application\\DeskPRO\\Entity\\TicketPriority',
+            'property'      => 'title',
+            'empty_data'    => null,
+            'query_builder' => function (EntityRepository $repo) {
+                    return $repo
+                        ->createQueryBuilder('p')
+                        ->select('p')
+                        ->addOrderBy('p.priority')
+                    ;
+                }
+        ));
+    }
 }
+ 

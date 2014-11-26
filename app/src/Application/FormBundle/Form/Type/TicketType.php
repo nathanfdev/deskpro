@@ -239,14 +239,17 @@ class TicketType extends AbstractType
 
     private function addPriority(TicketFormContext $form_context, LayoutField $field)
     {
+        $form_context->getForm()->add('priority', 'deskpro_priority', array());
     }
 
     private function addWorkflow(TicketFormContext $form_context, LayoutField $field)
     {
+        $form_context->getForm()->add('workflow', 'deskpro_workflow', array());
     }
 
     private function addProduct(TicketFormContext $form_context, LayoutField $field)
     {
+        $form_context->getForm()->add('product', 'deskpro_product', array());
     }
 
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field)
