@@ -3099,85 +3099,85 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     public function _autoProcessTicket()
     {
-        if ($this->__dp_is_processing_ticket) {
-            return;
-        }
-
-        if ($this->__dp_auto_ticket_process) {
-            // Detect when we last did a save
-            if ($this->__dp_last_process_save) {
-                $state = $this->getStateChangeRecorder();
-                if ($state->getStateVersion() <= $this->__dp_last_process_save) {
-                    return;
-                }
-            }
-
-            $tm = App::$container->getTicketManager();
-
-            $context = new ExecutorContext();
-            if (App::getCurrentPerson()) {
-                $context->setPersonContext(App::getCurrentPerson(), true);
-            }
-            $context->getVars()->set('custom_field_manager', App::$container->getCustomFieldManager());
-
-            $state = $this->getStateChangeRecorder();
-            if ($state->isNewTicket()) {
-                $event_type = 'newticket';
-            } elseif ($state->hasNewReply()) {
-                $event_type = 'newreply';
-            } else {
-                $event_type = 'update';
-            }
-
-            if (defined('DP_INTERFACE')) {
-                $person = App::getCurrentPerson();
-
-                if (!$person || !$person->id) {
-                    $person = null;
-                }
-
-                switch (DP_INTERFACE) {
-                    case 'admin':
-                    case 'agent':
-                        $context = $tm->createAgentExecutorContext(
-                            $person,
-                            $event_type,
-                            'web'
-                        );
-                        break;
-                    case 'user':
-                        if (!$person && $this->person) {
-                            $person = $this->person;
-                        }
-                        $context = $tm->createUserExecutorContext(
-                            $person,
-                            $event_type,
-                            'portal'
-                        );
-                        break;
-                    case 'api':
-                        $context = $tm->createAgentExecutorContext(
-                            $person,
-                            $event_type,
-                            'api'
-                        );
-                        break;
-                    default:
-                        $context = $tm->createSystemExecutorContext();
-                        break;
-                }
-            }
-
-            $this->__dp_is_processing_ticket = true;
-
-            try {
-                $tm->saveTicket($this, $context);
-                $this->__dp_is_processing_ticket = false;
-            } catch (\Exception $e) {
-                $this->__dp_is_processing_ticket = false;
-                throw $e;
-            }
-        }
+//        if ($this->__dp_is_processing_ticket) {
+//            return;
+//        }
+//
+//        if ($this->__dp_auto_ticket_process) {
+//            // Detect when we last did a save
+//            if ($this->__dp_last_process_save) {
+//                $state = $this->getStateChangeRecorder();
+//                if ($state->getStateVersion() <= $this->__dp_last_process_save) {
+//                    return;
+//                }
+//            }
+//
+//            $tm = App::$container->getTicketManager();
+//
+//            $context = new ExecutorContext();
+//            if (App::getCurrentPerson()) {
+//                $context->setPersonContext(App::getCurrentPerson(), true);
+//            }
+//            $context->getVars()->set('custom_field_manager', App::$container->getCustomFieldManager());
+//
+//            $state = $this->getStateChangeRecorder();
+//            if ($state->isNewTicket()) {
+//                $event_type = 'newticket';
+//            } elseif ($state->hasNewReply()) {
+//                $event_type = 'newreply';
+//            } else {
+//                $event_type = 'update';
+//            }
+//
+//            if (defined('DP_INTERFACE')) {
+//                $person = App::getCurrentPerson();
+//
+//                if (!$person || !$person->id) {
+//                    $person = null;
+//                }
+//
+//                switch (DP_INTERFACE) {
+//                    case 'admin':
+//                    case 'agent':
+//                        $context = $tm->createAgentExecutorContext(
+//                            $person,
+//                            $event_type,
+//                            'web'
+//                        );
+//                        break;
+//                    case 'user':
+//                        if (!$person && $this->person) {
+//                            $person = $this->person;
+//                        }
+//                        $context = $tm->createUserExecutorContext(
+//                            $person,
+//                            $event_type,
+//                            'portal'
+//                        );
+//                        break;
+//                    case 'api':
+//                        $context = $tm->createAgentExecutorContext(
+//                            $person,
+//                            $event_type,
+//                            'api'
+//                        );
+//                        break;
+//                    default:
+//                        $context = $tm->createSystemExecutorContext();
+//                        break;
+//                }
+//            }
+//
+//            $this->__dp_is_processing_ticket = true;
+//
+//            try {
+//                $tm->saveTicket($this, $context);
+//                $this->__dp_is_processing_ticket = false;
+//            } catch (\Exception $e) {
+//                $this->__dp_is_processing_ticket = false;
+//                throw $e;
+//            }
+//        }
     }
 
     public static function loadMetadata(ClassMetadata $metadata)

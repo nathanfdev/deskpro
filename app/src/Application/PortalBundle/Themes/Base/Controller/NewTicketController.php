@@ -76,8 +76,8 @@ class NewTicketController extends AbstractController
 
             $msg = new TicketMessage();
             $msg->setMessage($form->get('message')->getData());
-            $msg->ticket = $ticket;
-            $msg->setPersonId($person->id);
+            $msg->setTicket($ticket);
+            $msg->setPerson($person);
             $ticket->addMessage($msg);
 
             $em = $this->getDoctrine()->getManager();
