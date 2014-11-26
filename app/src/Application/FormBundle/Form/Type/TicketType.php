@@ -235,7 +235,7 @@ class TicketType extends AbstractType
 
     private function addCategory(TicketFormContext $form_context, LayoutField $field)
     {
-
+        $form_context->getForm()->add('category', 'deskpro_category', array());
     }
 
     private function addPriority(TicketFormContext $form_context, LayoutField $field)

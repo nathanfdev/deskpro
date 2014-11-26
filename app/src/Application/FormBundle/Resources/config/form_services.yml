@@ -15,6 +15,10 @@ services:
     class: Application\FormBundle\Form\Type\ProductType
     tags:
       - { name: form.type, alias: deskpro_product }
+  form.category:
+    class: Application\FormBundle\Form\Type\CategoryType
+    tags:
+      - { name: form.type, alias: deskpro_category }
   form.workflow:
     class: Application\FormBundle\Form\Type\WorkflowType
     tags:
