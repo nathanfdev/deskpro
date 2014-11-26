@@ -34,6 +34,14 @@ echo "-> $cmd\n";
 
 $proc = new \Symfony\Component\Process\Process($cmd, DP_WEB_ROOT.'/app/bin');
 $proc->setTimeout(600);
+
+$output_realtime = function ($type, $buffer) {
+    if ($type === 'err') {
+        echo 'ERR: '.$buffer;
+    } else {
+        echo $buffer;
+    }
+};
 $proc->run($output_realtime);
 
 if (!$proc->isSuccessful()) {
