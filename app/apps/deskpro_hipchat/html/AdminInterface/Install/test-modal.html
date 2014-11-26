@@ -1,53 +1,51 @@
-<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" ng-click="dismiss()">&times;</button>
-			<h4 class="modal-title">Test Settings</h4>
-		</div>
-		<div class="modal-body">
-			<div class="form-horizontal dp-form">
-				<div ng-hide="loading">
-					<div ng-show="!has_results">
-						<p>
-							This tool will test the settings you have entered. When you are ready to run the test, click the "Run Test" button below.
-						</p>
-					</div>
-					<div ng-show="has_results">
-						<div ng-show="!error">
-							<h3 class="text-success">Success</h3>
-							<p>
-								Your settings appear to be valid.
-								<button class="btn btn-default" ng-show="!show_log" ng-click="show_log = true"><i class="fa fa-file-text-o"></i> Show log</button>
-							</p>
-						</div>
-						<div ng-show="error">
-							<h3 class="text-danger">Error</h3>
-							<p>
-								[{{error_code}}] {{error}}
-							</p>
-						</div>
-						<div class="dp-log-display" ng-show="error || show_log">
-							<textarea>{{log}}</textarea>
-						</div>
-					</div>
-				</div>
-				<div ng-show="loading">
-					Please wait while your settings are being tested.
-				</div>
-			</div>
-		</div>
-		<div class="modal-footer">
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">Test Settings</h4>
+	</div>
+	<div class="modal-body">
+		<div class="form-horizontal dp-form">
 			<div ng-hide="loading">
 				<div ng-show="!has_results">
-					<button class="btn btn-info" ng-click="doTest()"><i class="fa fa-bolt"></i> Run Test</button>
+					<p>
+						This tool will test the settings you have entered. When you are ready to run the test, click the "Run Test" button below.
+					</p>
 				</div>
 				<div ng-show="has_results">
-					<button class="btn btn-default" ng-click="resetTest()"><i class="fa fa-arrow-left"></i> Try Again</button>
+					<div ng-show="!error">
+						<h3 class="text-success">Success</h3>
+						<p>
+							Your settings appear to be valid.
+							<button class="btn btn-default" ng-show="!show_log" ng-click="show_log = true"><i class="fa fa-file-text-o"></i> Show log</button>
+						</p>
+					</div>
+					<div ng-show="error">
+						<h3 class="text-danger">Error</h3>
+						<p>
+							[{{error_code}}] {{error}}
+						</p>
+					</div>
+					<div class="dp-log-display" ng-show="error || show_log">
+						<textarea>{{log}}</textarea>
+					</div>
 				</div>
 			</div>
 			<div ng-show="loading">
-				<i class="spinner-flat"></i>
+				Please wait while your settings are being tested.
 			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<div ng-hide="loading">
+			<div ng-show="!has_results">
+				<button class="btn btn-info" ng-click="doTest()"><i class="fa fa-bolt"></i> Run Test</button>
+			</div>
+			<div ng-show="has_results">
+				<button class="btn btn-default" ng-click="resetTest()"><i class="fa fa-arrow-left"></i> Try Again</button>
+			</div>
+		</div>
+		<div ng-show="loading">
+			<i class="spinner-flat"></i>
 		</div>
 	</div>
 </div>
