@@ -46,6 +46,21 @@ use Orb\Util\Numbers;
 
 class Ticket extends AbstractEntityRepository
 {
+    public function getTicketCountForPerson(PersonEntity $person)
+    {
+        $query = $this->_em->createQuery(
+            '
+            SELECT count(t) as c
+            FROM DeskPRO:Ticket t
+            WHERE t.person = :person
+            '
+        );
+
+        $query->setParameter('person', $person);
+
+        return $query->getSingleScalarResult();
+    }
+
     /**
      * The ticket is
      *

@@ -135,6 +135,10 @@ class PortalController extends AbstractController
 
     public function userSidebarAction()
     {
-        return $this->render('Theme:Portal:user_sidebar.html.twig');
+        $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($this->getUser());
+
+        return $this->render('Theme:Portal:user_sidebar.html.twig', array(
+            'has_tickets' => $ticket_count > 0
+        ));
     }
 }

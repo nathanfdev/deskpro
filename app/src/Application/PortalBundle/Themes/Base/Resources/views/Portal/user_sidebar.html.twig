@@ -1,4 +1,13 @@
 {% if is_granted('ROLE_USER') %}
 {{ app.user }}
-    <a href="{{ path('portal_logout') }}">Logout</a>
+    <ul class="user-info" style="margin-bottom: 40px;">
+        {% if has_tickets %}
+            <li>
+                <a href="{{ path('portal_tickets') }}">My Tickets</a>
+            </li>
+        {% endif %}
+        <li>
+            <a href="{{ path('portal_logout') }}">Logout</a>
+        </li>
+    </ul>
 {% endif %}
