@@ -38,7 +38,6 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
-use Application\DeskPRO\Tickets\NewTicket\NewTicket;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 

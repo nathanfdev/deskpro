@@ -45,6 +45,14 @@ services:
     arguments: [@brand_stack]
     tags:
       - { name: form.type, alias: deskpro_captcha }
+  form.attach:
+    class: Application\FormBundle\Form\Type\AttachType
+    tags:
+      - { name: form.type, alias: deskpro_attach }
+  form.cc:
+    class: Application\FormBundle\Form\Type\CcType
+    tags:
+      - { name: form.type, alias: deskpro_cc }
   form.heirarchical_entity:
     class: Application\FormBundle\Form\Type\HeirarchicalEntity
     tags:

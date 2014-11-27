@@ -190,7 +190,7 @@ class TicketType extends AbstractType
     private function addMessage(TicketFormContext $form_context, LayoutField $field)
     {
         // TODO: make a special type for this. A messge should be a TicketMessage instance.
-        if ($form_context->getViewContext() != 'new') return;
+        if ($form_context->getVisibility() != TicketFormContext::VISIBILITY_NEW) return;
         $form_context->getForm()->add('message', 'textarea', array(
             'mapped' => false
         ));
@@ -243,12 +243,10 @@ class TicketType extends AbstractType
 
     private function addCustomUserField(TicketFormContext $form_context, LayoutField $field)
     {
-        // TODO: finds info from the db for the custom type to determine the "type" and passed options
     }
 
     private function addCustomCustomField(TicketFormContext $form_context, LayoutField $field)
     {
-        // TODO: finds info from the db for the custom type to determine the "type" and passed options
     }
 
     private function addCategory(TicketFormContext $form_context, LayoutField $field)
@@ -284,9 +282,11 @@ class TicketType extends AbstractType
 
     private function addCc(TicketFormContext $form_context, LayoutField $field)
     {
+        $form_context->getForm()->add('cc', 'deskpro_cc', array('mapped' => false, 'required' => false));
     }
 
     private function addAttach(TicketFormContext $form_context, LayoutField $field)
     {
+        $form_context->getForm()->add('attach', 'deskpro_attach', array('mapped' => false, 'required' => false));
     }
 }
