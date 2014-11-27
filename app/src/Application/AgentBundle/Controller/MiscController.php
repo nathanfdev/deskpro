@@ -426,22 +426,33 @@ JS;
         curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
         $contents = curl_exec($ch);
-        $info = curl_getinfo($ch);
+        $info     = curl_getinfo($ch);
+        $err_no   = curl_errno($ch);
+        $err_msg  = curl_error($ch);
         curl_close($ch);
 
         $response = $this->response;
 
-        if ($info['content_type']) {
-            $response->headers->set('Content-Type', $info['content_type']);
-        }
-        if ($info['http_code']) {
-            $response->setStatusCode($info['http_code']);
-        }
-
-        if ($contents) {
-            $response->setContent($contents);
+        if ($err_no) {
+            $response->setStatusCode(400);
+            $response->headers->set('Content-Type', 'application/json');
+            $response->setContent(json_encode(array(
+                'error' => $err_msg,
+                'code'  => $err_no
+            )));
         } else {
-            $response->setContent('');
+            if ($info['content_type']) {
+                $response->headers->set('Content-Type', $info['content_type']);
+            }
+            if ($info['http_code']) {
+                $response->setStatusCode($info['http_code']);
+            }
+
+            if ($contents) {
+                $response->setContent($contents);
+            } else {
+                $response->setContent('');
+            }
         }
 
         return $response;
