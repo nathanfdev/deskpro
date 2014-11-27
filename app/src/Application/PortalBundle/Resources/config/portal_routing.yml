@@ -99,10 +99,10 @@ portal_tickets:
     path: /tickets
     defaults:
       _controller: Theme:Tickets:index
-portal_tickets_view:
-    path: /tickets/{ref}
+portal_tickets_edit:
+    path: /tickets/{id}
     defaults:
-      _controller: Theme:Tickets:view
+      _controller: Theme:Tickets:edit
 
 # User Account / Profile / Login / Registration
 portal_user_profile:

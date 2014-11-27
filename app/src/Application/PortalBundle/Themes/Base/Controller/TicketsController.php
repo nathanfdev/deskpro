@@ -34,17 +34,46 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
+use Application\DeskPRO\Entity\Ticket;
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class TicketsController extends AbstractController
 {
     public function indexAction()
     {
-        return $this->render('Theme:Tickets:index.html.twig');
+        // TODO: we just grab them all for now, without filtering...
+        $tickets = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->findBy(array('person' => $this->getUser()));
+
+        return $this->render('Theme:Tickets:index.html.twig', array('tickets' => $tickets));
     }
 
-    public function viewAction($ref)
+    /**
+     * TODO: put a Security annotation to make sure user is granted acess to edit this ticket (being granted acces to
+     * EDIT this ticket implies you are logged in, becasue the voter denies non logged in users, so we dont need to
+     * make multiple security assertions, see what I mean?)
+     */
+    public function editAction(Ticket $ticket, Request $request)
     {
-        return $this->render('Theme:Tickets:view.html.twig', array('ticket' => $ref));
+        $form = $this->createForm('deskpro_ticket', $ticket, array(
+            'person' => $this->getUser(),
+            'ticket_visibility' => 'edit',
+            'ticket_layout' => $this->getDoctrine()->getManager()->getRepository('DeskPRO:TicketLayout')->find(1)
+        ));
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+
+            $em = $this->getDoctrine()->getManager();
+            $em->persist($ticket);
+            $em->flush();
+
+            $request->getSession()->getFlashBag()->add('success', 'updated.ticket.translated');
+
+            return $this->redirect($this->generateUrl('portal_tickets'));
+        }
+
+        return $this->render('Theme:Tickets:edit.html.twig', array('ticket' => $ticket, 'form' => $form->createView()));
     }
 }
