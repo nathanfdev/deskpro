@@ -1,0 +1,114 @@
+@import 'lib';
+
+@import 'variables';
+body {
+  background: #f6f6f6;
+  font-family: Lato, "proxima nova";
+  font-size: 13px;
+  font-weight: 400;
+  color: #333;
+}
+
+* { @include box-sizing(border-box); }
+
+p {
+  font-weight: 400;
+  color: $text-color;
+}
+
+a { color: $link-color; }
+
+// So we don't have to repeat it every time we want to reposition an icon
+.fa { position: relative; }
+
+// extras
+@import 'sidebar';
+@import 'top-bar';
+@import 'dropdowns';
+@import 'live-search';
+@import 'forms';
+@import 'sidebar-kb';
+@import 'user-preferences';
+@import 'misc';
+@import 'reports';
+@import 'tooltips';
+@import 'stats';
+
+// Just for presentation
+.content, .sidebar, .app-bar { min-height: 3000px; }
+
+// To keep a set width sidebar with a full width content columns: float left and give the content container
+// padding-left equal to the full width of the sidebars.
+//   |   |         |              |
+//   | A | sidebar |   content    |
+//   |   |         |              |
+//   |   |         |              |
+//
+//    A(pp-bar) + sidebar = content padding-left
+//
+
+
+$app-width: 55px;
+$sidebar-width: 220px;
+$report-list-width: 555px;
+$content-width: $app-width + $sidebar-width;
+
+.app-bar-wrapper {
+  float: left;
+  width: $app-width;
+  background: #2b2f34;
+}
+
+// Tenmporary for presentation]
+.app-bar {
+  padding-top: 20px;
+  text-align: center;
+  a {
+    display: block;
+    font-size: 1.5em;
+    color: #cecece;
+    margin-bottom: 30px;
+
+    &:hover {
+      color: #fff;
+    }
+  }
+
+}
+
+// Main sidebar
+.sidebar-wrapper {
+  float: left;
+  width: $sidebar-width;
+  background: #cecece;
+  border-right: 1px solid #e2e4e5;
+}
+
+.content-wrapper {
+  padding-left: $content-width;
+  background: #fff;
+}
+
+.report-wrapper {
+  padding-left: $app-width;
+}
+
+.report-list-wrapper {
+  float: left;
+  width: $report-list-width;
+}
+
+.stat-large-preview-wrapper {
+  padding-left: $app-width + $report-list-width;
+
+  div {
+    background: #fff;
+    border-left: 1px solid $global-border;
+    height: 2400px;
+  }
+}
+
+
+.wrapper {
+  @include clearfix;
+}

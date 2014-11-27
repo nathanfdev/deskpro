@@ -1,0 +1,522 @@
+// Popups
+$item-padding: 9px 10px;
+// Dark cover for content
+.cover {
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  top: 0px;
+  left: 0px;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 108;
+}
+
+$popup-background: #f5f6f7;
+
+// main popup styles
+.popup {
+  @include clearfix;
+  width: 100%;// Some responsiveness (although content will break for now)
+  max-width: 950px;
+  display: block;
+  background: $popup-background;
+  z-index: 109;
+  box-shadow: 0px 0px 20px rgba(0, 0, 0, 0.1);
+  color: $text-color;
+  border-top: 4px solid #4681b2;
+  // Place it in the middle of the screen
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  //* { line-height: 1.2em; }
+
+  // We absolute position the footer, so need some padding there to look good
+  padding-bottom: 76px;
+  // If we don't use a footer
+  &.no-footer { padding-bottom: 10px; }
+
+  // Popup title
+  header {
+    text-transform: uppercase;
+    background: #e1e6eb;
+    padding: 10px;
+    border-bottom: 1px solid #dcddde;
+    position: relative;
+
+    h1 {
+      font-weight: 300;
+      font-size: 1.1em;
+    }
+
+    .controls {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+
+      a {
+        opacity: 0.3;
+        &:hover { opacity: 1; }
+      }
+    }
+  }
+
+  // Text ober content;
+  .popup-blurb {
+    color: #6e6e6f;
+    padding-left: 5px;
+
+    h2 {
+      font-size: 1.2em;
+      margin-bottom: 5px;
+    }
+
+    p {
+      font-size: 0.95em;
+      color: inherit;
+    }
+  }
+
+  // Full width footer content
+  footer {
+    position: absolute;
+    bottom: 0px;
+    left: 0px;
+    width: 100%;
+    background: #f5f6f7;
+    border-top: 1px solid rgba(0, 0, 0, 0.1);
+    padding: 20px;
+    text-align: center;
+    .button { max-width: 300px; }
+  }
+
+  h2 {
+    display: block;
+    margin-top: 10px;
+    margin-bottom: 10px;
+    font-size: 1.1em;
+  }
+
+  // Buttons and stuff
+  input[type="text"], input[type="password"], .select, .button {
+    border: 1px solid #bdbdbd;
+    border-radius: 2px;
+    padding: $item-padding;
+    width: 100%;
+    background: #fff;
+    text-decoration: none;
+    display: inline-block;
+    font-size: 1em;
+  }
+
+  .button {
+    background: $top-bar-blue;
+    border: 1px solid $top-bar-blue;
+    text-align: center;
+    color: #fff;
+    font-weight: 400;
+  }
+
+  .button-secondary {
+    background: #e1e6eb;
+    border: 1px solid #cecece;
+    color: #757e86;
+  }
+
+}
+
+
+
+// Sidebar width
+$popup-sidebar: 150px;
+// Right side column width
+$right-bucket: 200px;
+
+// Left sidebar
+.popup-sidebar {
+  background: #fafbfb;
+  border-right: 1px solid #dcddde;
+  width: $popup-sidebar;
+  float: left;
+}
+
+.popup-content {
+  @include clearfix;
+  padding-left: $popup-sidebar + 10px;
+  padding-right: 10px;
+  padding-top: 10px;
+  padding-bottom: 5px;
+}
+
+.popup-content.blank {
+  padding: 0px;
+  padding-left: $popup-sidebar + 10px;
+}
+
+.popup {
+  // Buckets are the form columns
+  //
+  // label: left side (usually the title of the form input)
+  // bucket-column: the main column (usually input)
+  // bucket-column-last: extra info - not needed if there's no content for it
+  // bucket-column.bucket-column-full if we need to take over the width of column-last too
+  .bucket {
+    padding: 5px 0px;
+    vertical-align: top;
+
+    .label {
+      display: block;
+      float: left;
+      width: 150px;
+      color: #6e6e6f;
+    }
+
+    .bucket-column {
+      position: relative;
+      padding-left: 150px;
+      padding-right: $right-bucket;
+    }
+
+    .bucket-column.bucket-column-full {
+      padding-right: 0px;
+    }
+
+    .bucket-column-last {
+      width: 200px;
+      float: right;
+      padding-left: 10px;
+    }
+  }
+}
+
+
+
+// The form
+
+.popup-form-default {
+  font-size: 1.05em;
+  font-weight: 400;
+
+  // Left side title for each item
+  // Can be <label> or any other element
+  .label {
+    text-align: right;
+    padding: $item-padding;
+    &.single-line { padding-top: 0px; }// Titles for the checkbox lines
+    font-size: 1em;
+    border: 1px solid rgba(0, 0, 0, 0);
+  }
+
+  // Small text to the right
+  .meta {
+    display: block;
+    font-size: 0.9em;
+    position: relative;
+    z-index: 99;
+
+    a {
+      position: relative;
+      top: 10px;
+      opacity: 0.3;
+      &:hover { opacity: 1; }
+    }
+  }
+
+
+
+  // Upload avatar button
+  .user-avatar {
+    position: relative;
+    text-align: left;
+    padding-left: 40px;
+
+    span {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 2px;
+      background-size: cover;
+      position: absolute;
+      left: 5px;
+      top: 6px;
+    }
+  }
+
+  // Two inputs side by side (like password)
+  input[type="password"], .select, .half-width {
+    width: 49%;
+    &:first-child { margin-right: 2%; }
+  }
+
+  // Dropdown button (move the icon to the right)
+  .select {
+    i {
+      float: right;
+      margin-right: 5px;
+    }
+  }
+
+  hr {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
+
+  // The bunch of checkboxes
+  .checkboxes {
+    div {
+      margin-bottom: 15px;
+      &:last-child { margin-bottom: 0px; }
+    }
+    .focus { font-weight: 600; }
+  }
+}
+
+
+
+// Sidebar vertical navigation
+.popup-sidebar-content {
+  padding: 10px;
+  padding-right: 0px;
+  padding-bottom: 0px;
+
+  ul {
+    @extend %flat-list;
+
+    li {
+      text-align: right;
+    }
+
+    a {
+      color: #a6a6a6;
+      display: block;
+      text-decoration: none;
+      &:hover { color: #3c3e3f; }
+    }
+
+    i {
+      margin-left: 10px;
+      top: 1px;
+    }
+  }
+
+  > ul {
+    font-size: 1.05em;
+
+    > li {
+      position: relative;
+      left: 1px;
+      border: 1px solid rgba(0, 0, 0, 0);
+      border-bottom: 1px solid #dcddde;
+
+      > a {
+        padding: 10px;
+        font-weight: 400;
+      }
+    }
+
+
+    .active {
+      border: 1px solid #dcddde;
+      border-right: #f5f6f7;
+      background: #f5f6f7;
+      position: relative;
+      top: -1px;
+      a { color: #3c3e3f; }
+    }
+  }
+
+  ul.stat-types-list {
+    padding-right: 15px;
+    border-right: 1px solid #dcddde;
+    margin-right: 17px;
+    margin-bottom: 10px;
+
+    li {
+      position: relative;
+    }
+
+    li:after {
+      content: "";
+      display: block;
+      position: absolute;
+      right: -8px;
+      width: 8px;
+      height: 1px;
+      background: #dcddde;
+      top: 55%;
+    }
+
+    a {
+      padding: 4px 5px;
+      font-size: 0.9em;
+      color: #a6a6a6;
+      &:hover { color: #3c3e3f; }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+// Report styles
+
+.cloned-report-mark {
+  position: absolute;
+
+  // Explanation: we are placing this based on the total width of it's container
+  // wich is overlapping the third column
+  // so we absolute place it based on the width of that third container
+  right: $right-bucket + 10px;
+  top: 7px;
+  color: #b9b9b9;
+  border: 1px solid #cecece;
+  padding: 2px 5px;
+  border-radius: 2px;
+  line-height: 1em;
+}
+
+.reports-dropdown-content {
+  ul {
+    @extend %flat-list;
+  }
+
+  a {
+    text-decoration: none;
+  }
+}
+
+
+
+.popup {
+  .agent-list {
+    max-height: 360px;
+    overflow-y: scroll;
+
+    table {
+      width: 100%;
+      font-size: 1em;
+    }
+
+    thead {
+      text-transform: uppercase;
+      font-weight: 600;
+      font-size: 0.8em;
+
+      td {
+        border-left: 0px;
+        padding: 5px;
+        padding-top: 0px;
+        color: #ababab;
+      }
+    }
+
+    td {
+      width: 15%;
+      text-align: center;
+      border-bottom: 1px solid #dcddde;
+      border-left: 1px solid #dcddde;
+    }
+
+    .agent-name {
+      text-align: left;
+      color: #707070;
+      width: 70%;
+      border-left: 0px;
+
+      .avatar {
+        display: inline-block;
+        width: 26px;
+        height: 26px;
+        border-radius: 4px;
+        margin-right: 5px;
+        background-size: cover;
+        background-repeat: no-repeat;
+        vertical-align: middle;
+        position: relative;
+        margin: 5px;
+
+      }
+    }
+
+    ul {
+      @extend %flat-list;
+
+      li {
+        display: block;
+        border-bottom: 1px solid #dcddde;
+      }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+.popup-breadcrumbs {
+  background: #fff;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+  padding: 8px 10px;
+  color: #737373;
+  text-transform: uppercase;
+  font-size: 0.8em;
+  font-weight: 600;
+
+  i {
+    margin-left: 5px;
+  }
+
+  a {
+    margin-left: 10px;
+    opacity: 0.3;
+    font-weight: 800;
+    &:hover { opacity: 1; }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//

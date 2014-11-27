@@ -1,0 +1,911 @@
+// Generic dropdown styles
+
+$secondary-surface: #e1e6eb;
+$secondary-surface-border: #d5d6d7;
+
+.dropdown {
+  border-top: 4px solid #325d80;
+  position: absolute;
+  top: 40px;
+  box-shadow: 0px 5px 10px rgba(0, 0, 0, 0.3);
+
+  header, footer { @include clearfix; }
+
+  header {
+    background: $secondary-surface;
+    border-bottom: 1px solid $secondary-surface-border;
+  }
+
+  footer {
+    background: #e1e6eb;
+    padding: 5px;
+    border-top: 1px solid $secondary-surface-border;
+  }
+
+  .button {
+    text-decoration: none;
+    background: #4681b2;
+    color: #fff;
+    display: inline-block;
+    line-height: 1em;
+    padding: 10px;
+    border-bottom: 1px solid #325d80;
+    font-size: 12px;
+    font-weight: 600;
+    vertical-align: middle;
+
+    i {
+      font-size: 1.4em;
+      vertical-align: middle;
+      margin-right: 5px;
+      line-height: 12px;
+    }
+  }
+
+  // Top right button for dropdowns
+  .control {
+    position: absolute;
+    top: 15px;
+    right: 23px;
+
+    i {
+      font-size: 1.5em;
+      opacity: 0.3;
+    }
+  }
+}
+
+// Tabs for dropdown headers
+ul.dropdown-tabs {
+  @extend %flat-list;
+  background: $secondary-surface;
+  padding-left: 10px;
+  padding-top: 10px;
+
+  li {
+    display: inline-block;
+    width: auto;
+    position: relative;
+    top: 1px;
+
+    a {
+      padding: 10px;
+      display: block;
+      text-decoration: none;
+      color: #9ea1a4;
+      font-weight: 500;
+      font-size: 1.1em;
+    }
+  }
+
+  .selected {
+    a {
+      background: #f5f6f7;
+      color: #333;
+      border: 1px solid #d5d6d7;
+      border-bottom: #f5f6f7;
+    }
+  }
+}
+
+
+
+
+.im-dropdown {
+  width: 480px;
+  right: 300px;
+  background: #f5f6f7;
+  font-weight: 500;
+  @include clearfix;
+
+  h1 {
+    font-size: 1.1em;
+    font-weight: 600;
+    display: inline-block;
+  }
+
+  h2 {
+    @extend h1;
+    font-size: 1.2em;
+  }
+
+  .show-offline-agents {
+    float: right;
+    position: relative;
+    top: 2px;
+    color: #b3b3b3;
+
+    label {
+      position: relative;
+      top: -1px;
+    }
+  }
+
+  .broadcast-to-all {
+    margin-bottom: 15px;
+
+    a {
+      text-decoration: none;
+    }
+
+    i {
+      display: inline-block;
+      border: 1px solid #cecece;
+      border-radius: 2px;
+      font-size: 0.9em;
+      padding: 4px;
+      color: #a2a2a2;
+      margin-left: 5px;
+      position: relative;
+      top: 1px;
+    }
+
+  }
+
+  .chat {
+    box-shadow: none;
+    width: 22px;
+    height: 22px;
+    position: relative;
+    top: -1px;
+  }
+
+  // Search users form
+  form {
+    margin-top: 10px;
+
+    input, .button {
+      display: inline-block;
+      vertical-align: top;
+      font-family: Lato;
+      font-size: 1.1em;
+      padding: 7px;
+      line-height: 1em;
+      border-radius: 2px;
+      line-height: 1.3em;
+    }
+
+    input[type="text"] {
+      width: 100%;
+      background: #ffffff;
+      border: 1px solid $global-border;
+    }
+
+    .button {
+      border: 1px solid #4681b2;
+      background: #4681b2;
+      color: #fff;
+    }
+  }
+
+  // Left & right containers (agents/teams)
+  .bucket {
+    float: left;
+    padding: 10px;
+  }
+
+  .left {
+    width: 55%;
+    padding-right: 10px;
+    border-right: 1px solid $global-border;
+  }
+
+  .right { width: 45%; }
+
+  // Teams & Department list
+  ul.team-list {
+    @extend %flat-list;
+    margin-top: 10px;
+    margin-left: 10px;
+    font-size: 1.05em;
+    margin-bottom: 20px;
+
+    a {
+      color: #575757;
+      text-decoration: none;
+
+      span {
+        color: #919191;
+        font-size: 0.9em;
+        font-weight: 600;
+      }
+    }
+
+    i {
+      margin-right: 3px;
+      color: #919191;
+    }
+
+    li { margin-bottom: 10px; }
+  }
+
+
+  // Agents list
+
+  .agent-list-wrapper {
+    overflow: scroll;
+    max-height: 260px;
+  }
+
+  ul.agent-list {
+    @extend %flat-list;
+    margin-top: 10px;
+
+    li {
+      @include clearfix;
+      position: relative;
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid $global-border;
+
+      span {
+        display: block;
+        line-height: 1.2em;
+      }
+
+      .last-contact {
+        color: #bdbdbd;
+        font-size: 0.85em;
+        font-weight: 600;
+      }
+
+      .chat {
+        float: left;
+        margin-top: 4px;
+        margin-right: 5px;
+      }
+    }
+
+    a {
+      text-decoration: none;
+      font-size: 1.05em;
+      color: #545454;
+    }
+
+    a.offline {
+      opacity: 0.5;
+    }
+
+    .chat { vertical-align: middle; }
+  }
+}
+
+
+
+
+
+
+// Chat Dropdown
+
+.chat-dropdown {
+  right: 400px;
+  background: #f5f6f7;
+  width: 300px;
+
+  .volume {
+    float: left;
+    color: #808080;
+    text-align: right;
+    font-weight: 600;
+    line-height: 0.9em;
+    text-decoration: none;
+    margin-top: 3px;
+    margin-left: 5px;
+
+    i {
+      display: inline-block;
+      padding: 4px;
+      border-radius: 2px;
+      background: #fff;
+      position: relative;
+      margin-left: 4px;
+    }
+
+    &:hover { i { background: #f6f6f6; }}
+  }
+
+  footer {
+    text-align: right;
+
+    .button {
+      background: #dcddde;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      color: #979797;
+      padding: 7px 10px;
+
+      i {
+        font-size: 1em;
+        position: relative;
+        top: -1px;
+      }
+    }
+  }
+
+  .chat-meta {
+    margin: 10px;
+    margin-bottom: 15px;
+    font-weight: 400;
+    font-size: 1.1em;
+
+    .sort-by-department {
+      border: 1px solid rgba(0, 0, 0, 0.1);
+      border-radius: 2px;
+      font-size: 0.85em;
+      font-weight: 600;
+      padding: 3px;
+      text-decoration: none;
+      color: #ababab;
+      display: inline-block;
+      line-height: 1em;
+      margin-left: 3px;
+
+      &:hover { background: #fff; }
+    }
+  }
+
+  ul.user-chat-list {
+    @extend %flat-list;
+    margin: 5px 5px;
+
+    li {
+      position: relative;
+      margin-bottom: 5px;
+      padding-bottom: 5px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+      &:last-child { border-bottom: 0px; margin-bottom: 0px; padding-bottom: 0px; }
+
+      a {
+        display: block;
+        padding-left: 40px;
+        text-decoration: none;
+        color: #707070;
+        font-weight: 600;
+      }
+
+      .chat {
+        position: absolute;
+        left: 5px;
+        box-shadow: none;
+        margin: 0px
+      }
+
+      .user {
+        display: block;
+        font-size: 1.05em;
+        &:hover { color: $text-color; }
+      }
+
+      .meta {
+        display: inline-block;
+        color: #b3b3b3;
+        font-size: 0.9em;
+        font-weight: 400;
+        &:hover { color: $text-color; }
+      }
+    }
+  }
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// Ongoing chats
+.active-chat-dropdown {
+  right: 600px;
+  width: 300px;
+  background: #f5f6f7;
+
+  // Header for the dropdown
+  header {
+    color: #a8a8a9;
+    padding: 10px;
+  }
+
+  h1 {
+    font-size: 1.05em;
+    span { color: #333; }
+  }
+
+  .user-status {
+    display: inline-block;
+    width: 7px;
+    height: 7px;
+    border-radius: 99px;
+    margin-left: 5px;
+  }
+  .online { background: #56bb70; }
+  .offline { background: #cecece; }
+  //
+
+  // Load old messages & Chat history link
+  .chat-controls {
+    display: block;
+    text-align: center;
+    margin: 10px;
+    margin-bottom: 5px;
+    position: relative;
+
+    hr {
+      position: absolute;
+      top: 50%;
+      left: 0px;
+      z-index: 81;
+    }
+
+    a {
+      display: inline-block;
+      background: #dcddde;
+      color: #8a8b8c;
+      line-height: 1em;
+      font-size: 0.9em;
+      font-weight: 600;
+      text-shadow: 1px 1px 1px rgba(255, 255, 255, 0.5);
+      border-radius: 6px;
+      padding: 3px 7px;
+      text-decoration: none;
+      border: 4px solid #f5f6f7;
+      position: relative;
+      z-index: 89;
+    }
+  }
+  //
+
+  // The messages
+  ul.chat-message-list {
+    @extend %flat-list;
+    margin: 10px;
+    margin-top: 0px;
+  }
+
+  .chat-divider {
+    text-align: center;
+    position: relative;
+    margin-bottom: 10px;
+
+    hr {
+      position: absolute;
+      top: 50%;
+      z-index: 81;
+    }
+
+    span {
+      background: #f5f6f7;
+      text-transform: uppercase;
+      color: #cbcbcb;
+      font-shadow: 1px 1px 1px #fff;
+      font-weight: 800;
+      font-size: 8px;
+      position: relative;
+      z-index: 89;
+      padding: 0px 5px;
+      top: -2px;
+    }
+  }
+
+  .chat-message {
+    margin-left: 35px;
+    background: #fff;
+    padding: 5px 10px;
+    margin-bottom: 10px;
+    border-radius: 4px;
+    position: relative;
+
+    .chat {// User avatar
+      position: absolute;
+      left: -39px;
+      top: 0px;
+      box-shadow: none;
+    }
+  }
+
+  .chat-message.yours {
+    background: #e1e6eb;
+    margin-left: 0px;
+    border: 1px dashed rgba(0, 0, 0, 0.1);
+  }
+
+  .meta {// Message data (author, date)
+    font-weight: 700;
+    color: #bababa;
+    margin-bottom: 5px;
+  }
+  .user { color: #4681b2; }
+  .time { font-size: 0.8em; }
+
+  .message-read-mark {
+    position: absolute;
+    bottom: 5px;
+    right: 5px;
+    color: #8b8f92;
+
+    // Add a stroke to the first check
+    i:first-child {
+      text-shadow: -2px 0 #e1e6eb, 0 2px #e1e6eb, 2px 0 #e1e6eb, 0 -2px #e1e6eb;
+      position: relative;
+      left: 4px;
+    }
+  }
+
+  // Footer stuff
+  footer {
+    padding: 10px;
+    text-align: center;
+  }
+
+  form {
+    input[type="text"], input[type="button"], input[type="submit"] button, .button { display: block; }
+
+    input[type="text"] {
+      float: left;
+      border: 0px;
+      background: #fff;
+      border-radius: 2px;
+      padding: 10px;
+      border-bottom: 1px solid rgba(0, 0, 0, 0.3);
+      width: 80%;
+    }
+
+    input[type="button"], input[type="submit"] button, .button {
+      float: left;
+      border: 0px;
+      background: #4681b2;
+      border-radius: 2px;
+      padding: 10px;
+      border-bottom: 1px solid #325d80;
+      color: #fff;
+      text-transform: uppercase;
+      font-weight: 700;
+      width: 18%;
+      text-align: center;
+      margin-left: 2%;
+      color: #90b3d1;
+      &:hover { color: #fff; }
+    }
+  }
+}
+
+
+
+// Notifications list
+.notification-dropdown {
+  right: 350px;
+  width: 550px;
+
+  ul.notification-list {
+    @extend %flat-list;
+    padding: 10px;
+    padding-bottom: 5px;
+    background: #f5f6f7;
+
+    li {
+      border-bottom: 1px solid #d5d6d7;
+      padding: 5px;
+      position: relative;
+      &:last-child { border-bottom: 1px; }
+    }
+
+    a {
+      text-decoration: none;
+      color: #333;
+      font-weight: 500;
+    }
+
+    .dismiss-notification {
+      position: absolute;
+      right: 5px;
+      top: 7px;
+      display: block;
+      width: 30px;
+      height: 30px;
+      text-align: center;
+      border-radius: 2px;
+      color: #cecece;
+      &:hover { color: #000; }
+      i { position: relative; top: 7px; }
+    }
+
+    .title {
+      display: block;
+      font-size: 1.05em;
+      font-weight: 700;
+      margin-bottom: 2px;
+      color: #545454;
+    }
+
+    .id {
+      font-size: 10px;
+      border: 1px solid #cecece;
+      padding: 0px 3px;
+      font-weight: 800;
+      color: #b0b0b0;
+      position: relative;
+      top: -1px;
+      margin-right: 3px;
+      border-radius: 2px;
+    }
+
+    .meta {
+      color: #aaaaab;
+      font-weight: 500;
+    }
+  }
+
+  footer { text-align: right; }
+}
+
+
+
+
+// Account preferences dropdown
+.account-dropdown {
+  right: 0px;
+  background: #edf0f3;
+  width: 220px;
+
+  .select-window-mode {
+    text-align: center;
+    background: #edf0f3;
+    margin-bottom: 10px;
+
+    span {
+      display: block;
+      text-align: center;
+      font-size: 1.1em;
+      font-weight: 600;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      color: #63696f;
+    }
+
+
+    a {
+      display: inline-block;
+      width: 40%;
+      margin-left: 2%;
+      margin-right: 2%;
+      text-align: center;
+      height: 60px;
+      padding: 3px;
+      background: #d4d5d6;
+      text-decoration: none;
+      color: #333;
+      font-weight: 400;
+      border-radius: 4px;
+      text-align: left;
+      &:hover { background: #cbcbcb; }
+      span { font-size: 0.95em; }
+    }
+
+    .column-mode, .focus-mode {
+      position: relative;
+      div {
+        display: inline-block;
+        border: 1px solid #b2b4b7;
+        min-width: 10px;
+        border-radius: 4px;
+        height: 54px;
+        margin-right: 2.5%;
+      }
+    }
+
+    .icon-selected {
+      display: block;
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      height: 17px;
+      width: 17px;
+      border: 2px solid #edf0f3;
+      background: $green;
+      border-radius: 199px;
+      font-size: 0.85em;
+      color: #fff;
+      text-align: center;
+      padding-top: 1px;
+    }
+
+    .column-mode {
+      div {
+
+        &.bucket-1 {
+          width: 15%;
+        }
+
+        &.bucket-2 {
+          width:40%;
+        }
+
+        &.bucket-3 {
+          width: 40%;
+          margin-right: 0%;
+        }
+      }
+    }
+
+    .focus-mode {
+      div {
+        &.bucket-1 {
+          width: 15%;
+        }
+
+        &.bucket-2 {
+          width:80%;
+        }
+      }
+    }
+
+  }
+
+  ul {
+    @extend %flat-list;
+    background: #e1e6eb;
+
+    a {
+      display: block;
+      padding: 10px;
+      color: #63696f;
+      text-decoration: none;
+      border-bottom: 1px solid #c8cdd2;
+      margin: 0px 5px;
+      font-weight: 600;
+      font-size: 1.05em;
+
+      i {
+        display: inline-block;
+        width: 15px;
+        color: #b6bbc0;
+        margin-right: 5px;
+        text-align: center;
+      }
+    }
+
+    li:last-child a { border-bottom: 0px; }
+  }
+}
+
+
+.sidebar-dropdown-content {
+  @extend .dropdown;
+  position: absolute;
+  bottom: auto;
+  left: 40px;
+  top: 20px;
+  background: #f5f6f7;
+  box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.2);
+  z-index: 999;
+
+  header {
+    color: #a8a8a9;
+    padding: 10px;
+    font-size: 1.1em;
+    strong { color: $text-color; }
+  }
+
+  ul {
+    margin: 0px;
+    width: 160px;
+
+    li {
+      border-bottom: 1px solid $global-border;
+    }
+
+    a {
+      font-size: 1.1em;
+      display: block;
+      text-align: left;
+      line-height: 1em;
+      padding: 10px;
+      top: 0px;
+    }
+
+    i {
+      color: #b0b1b2;
+      margin-right: 3px;
+      font-size: 1em;
+      position: relative;
+    }
+  }
+
+  form {
+    font-size: 1.1em;
+    width: 300px;
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+      color: #919191;
+    }
+
+    input[type="text"], .select-dropdown {
+      background: #fff;
+      border: 1px solid $global-border;
+      border-radius: 2px;
+      display: block;
+      line-height: 1em;
+      padding: 10px 5px;
+      margin-bottom: 10px;
+      font-size: 1em;
+
+      i { float: right; margin-right: 10px; }
+
+      @include placeholder {
+        color: #5b5e68;
+        font-style: italic;
+        opacity: 0.25;
+      }
+    }
+
+    .select-dropdown { border-bottom: 2px solid $global-border; }
+
+    input[type="button"], input[type="submit"], .button, button {
+      background: #4681b2;
+      padding: 10px;
+      border: 0px;
+      color: #fff;
+      font-size: 1em;
+    }
+
+    .extra-option {
+      text-align: center;
+      padding: 2px;
+      font-size: 0.85em;
+      font-weight: 700;
+
+      a { opacity: 0.5; }
+      a:hover { opacity: 1; }
+    }
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.im-dropdown {
+  display: none;
+}
+
+.account-dropdown {
+  display: none;
+}
+
+.notification-dropdown {
+  display: none;
+}
+
+.chat-dropdown {
+  // display: none;
+}
+
+.active-chat-dropdown {
+  display: none;
+}

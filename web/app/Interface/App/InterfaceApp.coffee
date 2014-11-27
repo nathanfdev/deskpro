@@ -85,10 +85,10 @@ define [
   ])
 
   InterfaceApp.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
-    $urlRouterProvider.otherwise("/loading")
-    $stateProvider.state('app_loading', {
+    $urlRouterProvider.otherwise("/")
+    $stateProvider.state('app', {
       url: "/loading",
-      templateUrl: "InterfaceBundle:Interface:main-loader.html",
+      templateUrl: "InterfaceBundle:Interface:main-frame.html",
     })
   ])
 

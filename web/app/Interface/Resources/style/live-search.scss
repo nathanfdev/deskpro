@@ -1,0 +1,302 @@
+// Live search
+
+.live-search-results {
+  display: block;
+  position: absolute;
+  top: 28px;
+  left: 0px;
+  z-index: 9999;
+  min-height: 200px;
+  background: #ededed;
+  color: $results-text-color;
+  width: 600px;
+  font-size: 1.05em;
+  font-weight: 400;
+  border-top: 4px solid $global-border;
+  ////////
+  display: none;
+
+  ul {// basic list stuff
+    @extend %flat-list;
+    margin: 10px 10px;
+
+    li {
+      @include clearfix;//we float a bunch of stuff inline lists
+      position: relative;
+    }
+    a.item { border-bottom: 1px solid $global-border; }
+    .id { min-width: 40px; }
+  }
+
+  // Titles over lists of results
+  .header {
+    background: $header-background;
+    border-top: 1px solid $global-border;
+    border-bottom: 1px solid $global-border;
+    padding: 10px;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 1em;
+    position: relative;
+    z-index: 81;
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 15px;
+    margin-bottom: 5px;
+
+    // "Show More" button at the bottom of search results panel
+    a.show-more {
+      display: inline-block;
+      line-height: 1em;
+      padding: 5px 20px;
+      border: 1px solid $global-border;
+      border-radius: 2px;
+      color: $global-border;
+      position: relative;
+
+      &:hover { color: $results-text-color }
+
+      // Fake pointy corner on button
+      &:after, &:before {
+        content: " ";
+        display: block;
+        width: 0px;
+        height: 0px;
+        position: absolute;
+        top: -12px;
+        left: 47%;
+        border: 6px solid rgba(0, 0, 0, 0);
+        border-bottom: 6px solid $global-border;
+      }
+      &:after { top: -10px; border-bottom: 6px solid #ededed; }
+    }
+  }
+
+
+  // Whole list item
+  a {
+    * { vertical-align: middle; }// align everything in list items
+    color: $results-link;
+    display: block;
+    margin-bottom: 5px;
+    padding-bottom: 7px;
+
+    .title { text-decoration: underline; }
+
+    .email {
+      color: $text-color-secondary;
+      font-size: 0.9em;
+      margin-left: 2px;
+    }
+  }
+
+  // ID numbers
+  .id {
+    display: inline-block;
+    background: #fff;
+    font-weight: 400;
+    color: $results-text-color;
+    line-height: 1em;
+    padding: 4px 5px;
+    padding-left: 10px;
+    border-radius: 2px;
+    min-width: 20px;
+    font-size: 0.85em;
+    text-align: right;
+    margin-right: 2px;
+    position: relative;
+  }
+
+  // Color marks inside the id boxes
+  .id_status {
+    display: inline-block;
+    width: 4px;
+    height: 1em;
+    background: #cecece;
+    float: left;
+    position: absolute;
+    left: 2px;
+    border-radius: 10px;
+    &.yellow { background: $yellow; }
+    &.orange { background: $orange; }
+    &.green { background: $green; }
+  }
+
+  // Small avatar to the left of names
+  .avatar {
+    display: inline-block;
+    vertical-align: middle;
+    border-radius: 2px;
+    background: #fff;
+    background-size: cover;
+    margin-right: 3px;
+  }
+
+  // The left side info on headers
+  .section-meta {
+    float: right;
+    text-transform: uppercase;
+    font-size: 0.8em;
+    font-weight: 600;
+    opacity: 0.5;
+    position: relative;
+    top: 3px;
+    margin-right: 8px;
+  }
+
+
+  .expanded-user-data {
+    border-bottom: 1px solid $global-border;
+    margin-bottom: 5px;
+
+    ul {
+      margin: 0px;
+      margin-top: 10px;
+      margin-bottom: 10px;
+      margin-left: 6px;
+      border-left: 1px solid $global-border;
+      padding-left: 10px;
+      padding-top: 5px;
+      padding-bottom: 5px;
+
+      li:last-child a {
+        margin-bottom: 0;
+        padding-bottom: 0;
+      }
+
+      .item { border-bottom: 0px; }
+
+      a {
+        color: #6b6b6b;
+        .title { text-decoration: none; }
+      }
+    }
+
+    a.more {
+      color: $results-text-color;
+      text-decoration: underline;
+      font-size: 0.9em;
+      font-weight: 600;
+    }
+  }
+
+
+  // Icon link on title to open content on a pane
+  .open-in-pane {
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    background: url(../img/open-on-column.png) center center no-repeat;
+    padding: 0px;
+    margin: 0px;
+    position: absolute;// Taking it off the line-height so it doesnt change the container height
+    margin-left: 5px;
+  }
+
+
+  // Right side dropdown control for users (or anything else)
+  .show-extra-data {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    border: 1px solid $global-border;
+    border-radius: 2px;
+    text-align: center;
+    font-size: 0.8em;
+    position: relative;
+    top: -4px;
+    color: $global-border;
+    margin-right: 5px;
+    i { position: relative; top: 2px; }// Align the icon to the box
+
+    &:hover { color: $results-text-color; }
+    &.active { color: $results-text-color;
+      i { top: 1px; }
+    }
+  }
+
+  // Container for any kind of right side info (number of tickets, dropdowns etc)
+  .item-meta {
+    vertical-align: middle;
+    float: right;
+    line-height: 1em;
+    margin-bottom: 0px;
+    padding-bottom: 0px;
+    //
+    margin-top: 7px;
+
+    // Extra styles for the avatar, inherits from .chat
+    .chat {
+      box-shadow: none;
+      position: relative;
+      z-index: 81;
+      margin: 0;
+      margin: 0px;
+      margin-left: -13px;// Negative margin to have the chat align with the status disc
+      margin-right: 3px;
+    }
+  }
+
+  // Text before .item-meta
+  .item-meta-label {
+    font-size: 0.8em;
+    text-transform: uppercase;
+    font-weight: 700;
+    margin-right: 7px;
+    position: relative;
+    top: -4px;
+    color: lighten($text-color-secondary, 20%);
+    &.focus { color: $results-text-color; }
+  }
+
+  // The round disc & color for ticket statuses
+  .item-status {
+    vertical-align: middle;
+    display: inline-block;
+    width: 11px;
+    height: 11px;
+    border-radius: 99px;
+    background: #c8c8c8;
+    margin-left: 3px;
+    position: relative;
+    z-index: 89;
+    border: 2px solid $results-background;
+    position: relative;
+    top: -1px;
+
+    // Colors and styles for the discs
+    &.awaiting-user {
+      background: none;
+      border: 2px solid #cecece;
+    }
+    &.resolved { background: #3bb870; }
+    &.awaiting-yellow { background: #ffc65e; }
+    &.awaiting-orange { background: #fa7313;}
+  }
+
+  // Second line for people (or anything)
+  .subtitle {
+    display: block;
+    margin-top: 5px;
+    color: #5b5e68;
+    vertical-align: bottom;
+    font-size: 0.95em;
+
+    span {
+      font-weight: 600;
+      vertical-align: bottom;
+      margin-right: 4px;
+    }
+
+    i {
+      margin-right: 7px;
+      margin-left: 3px;
+      position: relative;
+      top: -1px;
+      color: #c7c7c7;
+      font-size: 0.9em;
+    }
+  }
+}

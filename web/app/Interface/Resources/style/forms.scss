@@ -1,0 +1,15 @@
+form {
+  margin-bottom: 0px;
+}
+
+input, button {
+  font-family: Lato, "proxima nova";
+  font-size: 12px;
+}
+
+input {
+  @include placeholder {
+    font-style: italic;
+    color: #9f9f9f;
+  }
+}

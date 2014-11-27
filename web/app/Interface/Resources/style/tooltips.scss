@@ -1,0 +1,49 @@
+.tooltip {
+  max-width: 360px;
+  border-radius: 2px;
+  position: relative;
+  border: 1px solid #d9d9d9;
+
+  h1 {
+    font-size: 1.2em;
+  }
+
+  p {
+    color: lighten($text-color, 25%);
+    font-size: 1em;
+  }
+}
+
+
+
+
+
+
+
+.t-reports-disabled {
+  display: block;
+  padding: 10px;
+  background: #efeeeb;
+  padding-left: 45px;
+
+  &:before {
+    content: " ";
+    display: block;
+    width: 0px;
+    height: 0px;
+    border: 4px solid rgba(0, 0, 0, 0);
+    border-right: 4px solid #d9d9d9;
+    position: absolute;
+    left: -8px;
+    top: 14px;
+  }
+
+  i.tooltip-icon {
+    position: absolute;
+    left: 10px;
+    top: 15px;
+    font-size: 26px;
+    color: #000;
+    opacity: 0.2;
+  }
+}
