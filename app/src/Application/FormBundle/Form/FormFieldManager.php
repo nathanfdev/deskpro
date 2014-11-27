@@ -34,12 +34,52 @@
 
 namespace Application\FormBundle\Form;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefTicket;
+use Application\DeskPRO\TicketLayout\LayoutField;
+use Doctrine\ORM\EntityManager;
+
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
  * expanded into more information or fetched from the database.
  */
 class FormFieldManager 
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
 
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
+    public function getCustomTicketField(CustomDefTicket $field)
+    {
+        list($type, $value_name) = $this->getFormType($field);
+        $options = array();
+        $options['label'] = $field->getRealTitle();
+        $options['help'] = $field->getRealDescription();
+
+        return array($value_name, $type, $options);
+    }
+
+    public function getCustomTicketFieldById($id)
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
+    }
+
+    private function getFormType(CustomDefAbstract $field_type)
+    {
+        switch ($field_type->getHandlerClass()) {
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
+                return array('text', 'input');
+            default:
+                break;
+        }
+
+        throw new \InvalidArgumentException('invalid field. cannot find type for handler class: ' . $field_type->getHandlerClass());
+    }
 }
  

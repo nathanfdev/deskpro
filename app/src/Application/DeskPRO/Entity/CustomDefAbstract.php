@@ -300,6 +300,11 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
         return $this->_handler_instance;
     }
 
+    public function getHandlerClass()
+    {
+        return $this->handler_class;
+    }
+
     /**
      * @return \Doctrine\Common\Collections\ArrayCollection
      */
