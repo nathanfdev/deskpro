@@ -64,7 +64,7 @@ class CustomDataCollection implements \ArrayAccess
      * @param object          $wants_signal the "object" that needs to report to doctrine its change
      * @param string          $signal       the "property" affected by this update
      */
-    public function __construct(Collection $custom_datas, $wants_signal, $signal = 'custom_data')
+    public function __construct(Collection $custom_datas, $wants_signal)
     {
         $this->custom_datas = $custom_datas;
         $this->wants_signal = $wants_signal;
@@ -77,7 +77,7 @@ class CustomDataCollection implements \ArrayAccess
         foreach ($this->custom_datas as $real_offset => $data) {
             if ($id == $data->getFieldId()) {
                 $this->custom_datas->set($real_offset, $value);
-                $this->wants_signal->_onPropertyChanged($this->signal, null, $this->custom_datas);
+                $this->wants_signal->addCustomData($value);
                 return null;
             }
         }
@@ -88,7 +88,7 @@ class CustomDataCollection implements \ArrayAccess
 
         // can't update, so adding it as new
         $this->custom_datas->add($value);
-        $this->wants_signal->_onPropertyChanged($this->signal, null, $this->custom_datas);
+        $this->wants_signal->addCustomData($value);
     }
 
     public function offsetGet($id)
@@ -103,7 +103,7 @@ class CustomDataCollection implements \ArrayAccess
 
     public function offsetExists($offset)
     {
-        return (bool) $this->offsetGet($offset);
+        return null !== $this->offsetGet($offset);
     }
 
     public function offsetUnset($offset)

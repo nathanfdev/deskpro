@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity;
+use Application\FormBundle\Collection\CustomDataCollection;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\Events;
 use Doctrine\ORM\Mapping\ClassMetadata;
@@ -515,6 +516,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     protected $notes;
 
     /**
+     * @var CustomDataCollection
+     */
+    protected $cdc;
+
+    /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
      * a full user.
      *
@@ -620,6 +626,11 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     public function hasPerm($name)
     {
         return $this->getPermissionsManager()->hasPerm($name);
+    }
+
+    public function getCustomDataCollection()
+    {
+        return $this->cdc = $this->cdc ? : new CustomDataCollection($this->custom_data, $this);
     }
 
     /**

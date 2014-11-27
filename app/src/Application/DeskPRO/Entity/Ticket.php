@@ -552,6 +552,9 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      */
     public $_is_new = false;
 
+    /**
+     * @var CustomDataCollection
+     */
     protected $cdc;
 
     public function __construct()
@@ -1492,12 +1495,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             $this->_onPropertyChanged('custom_data', null, $this->participants);
         }
     }
-
-    public function _onPropertyChanged($prop, $old, $new, $skip_state = false)
-    {
-        parent::_onPropertyChanged($prop, $old, $new, $skip_state);
-    }
-
 
     /**
      * Add a custom data item to this ticket
