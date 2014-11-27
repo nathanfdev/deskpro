@@ -70,6 +70,7 @@ class TicketType extends AbstractType
 
         $context = new TicketFormContext(
             $form,
+            $ticket,
             $config->getOption('person'),
             $config->getOption('ticket_layout'),
             $config->getOption('ticket_view_context'),
@@ -234,6 +235,7 @@ class TicketType extends AbstractType
             'deskpro_custom_data_ticket',
             array(
                 'custom_data_field' => $field_def,
+                'ticket' => $form_context->getTicket(),
                 'property_path' => sprintf('getCustomDataCollection[%s]',
                  $field->getFieldId()
                 )

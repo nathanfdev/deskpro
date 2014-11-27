@@ -36,6 +36,7 @@ namespace Application\FormBundle\Form\Type;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\FormBundle\Form\FormFieldManager;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -49,14 +50,22 @@ class CustomDataTicketType extends AbstractType
      */
     private $field_manager;
 
-    public function __construct(FormFieldManager $field_manager)
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    public function __construct(FormFieldManager $field_manager, EntityManager $em)
     {
         $this->field_manager = $field_manager;
+        $this->em = $em;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
+        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'postSubmitEvent'));
+        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'submitEvent'));
     }
 
     public function preDataEvent(FormEvent $event)
@@ -72,16 +81,37 @@ class CustomDataTicketType extends AbstractType
         $form->add($value_name, $form_type, $options);
     }
 
+    public function submitEvent(FormEvent $event)
+    {
+        $config = $event->getForm()->getConfig();
+        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
+        $custom_data = $event->getData();
+        $field = $config->getOption('custom_data_field');
+        $ticket =$config->getOption('ticket');
+        $custom_data->field = $field;
+        $custom_data->ticket = $ticket;
+    }
+
+    public function postSubmitEvent(FormEvent $event)
+    {
+        // after successful form submission, we want to make sure this entity is persisted in case it is new
+        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
+        $custom_data = $event->getData();
+        $this->em->persist($custom_data);
+    }
+
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
             'data_class'   => 'Application\DeskPRO\Entity\CustomDataTicket'
         ));
         $resolver->setRequired(array(
-            'custom_data_field'
+            'custom_data_field',
+            'ticket'
         ));
         $resolver->setAllowedTypes(array(
-            'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefTicket'
+            'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefTicket',
+            'ticket' => 'Application\DeskPRO\Entity\Ticket'
         ));
     }
 

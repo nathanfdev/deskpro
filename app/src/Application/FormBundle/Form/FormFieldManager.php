@@ -34,9 +34,9 @@
 
 namespace Application\FormBundle\Form;
 
+use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefTicket;
-use Application\DeskPRO\TicketLayout\LayoutField;
 use Doctrine\ORM\EntityManager;
 
 /**

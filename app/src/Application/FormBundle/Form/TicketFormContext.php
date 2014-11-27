@@ -35,6 +35,7 @@
 namespace Application\FormBundle\Form;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
@@ -89,15 +90,21 @@ class TicketFormContext
     private $person;
 
     /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    private $ticket;
+
+    /**
      * @param FormInterface $form
      * @param Person        $person
      * @param TicketLayout  $layout       the ticket layout we are using for this form
      * @param string        $view_context - "user" or "agent"?
      * @param string        $visibility   the view, such as "new", "edit", "view" (contants of this class)
      */
-    public function __construct(FormInterface $form, Person $person, TicketLayout $layout, $view_context, $visibility)
+    public function __construct(FormInterface $form, Ticket $ticket, Person $person, TicketLayout $layout, $view_context, $visibility)
     {
         $this->form = $form;
+        $this->ticket = $ticket;
         $this->person = $person;
         $this->layout = $layout;
         $this->view_context = $view_context;
@@ -172,5 +179,13 @@ class TicketFormContext
     public function getPerson()
     {
         return $this->person;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
     }
 }
