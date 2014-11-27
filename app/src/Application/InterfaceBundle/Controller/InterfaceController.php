@@ -68,6 +68,8 @@ class InterfaceController extends AbstractController
             $rendered = null;
             if ($this->tpl->exists($view_name.".twig")) {
                 $rendered = $this->renderView($view_name.".twig");
+            } else {
+                $rendered = "View does not exist: " . $view_name . ".twig";
             }
 
             $views[] = array(

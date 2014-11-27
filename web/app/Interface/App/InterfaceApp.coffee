@@ -3,7 +3,6 @@ define [
 
   # Services
   'Interface/App/Service/AppConfig',
-  'Interface/App/Service/StateConfig',
   'Interface/App/Service/TemplateLoader',
   'Interface/App/Service/TemplateManager',
 
@@ -23,7 +22,6 @@ define [
 ], (
   angular,
   AppConfig,
-  StateConfig,
   TemplateLoader,
   TemplateManager
 ) ->
@@ -36,11 +34,9 @@ define [
     'oc.lazyLoad'
   ])
 
-  InterfaceApp.service('AppConfig', -> return new AppConfig)
+  # TODO http://christopherthielen.github.io/ui-router-extras/#/home
 
-  InterfaceApp.service('StateConfig', ['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
-    new StateConfig($stateProvider, $urlRouterProvider)
-  ])
+  InterfaceApp.service('AppConfig', -> return new AppConfig)
 
   InterfaceApp.service('TemplateLoader', [ 'AppConfig', '$http', '$q', (AppConfig, $http, $q) ->
     window.DP_TEMPLATE_LOADER = new TemplateLoader(AppConfig.getBaseUrl() + 'viewer/load-views', $http, $q)
@@ -73,23 +69,50 @@ define [
   ])
 
   InterfaceApp.config(['$httpProvider', ($httpProvider) ->
-      $httpProvider.interceptors.push('HttpTemplateInterceptor')
+    $httpProvider.interceptors.push('HttpTemplateInterceptor')
   ])
 
   InterfaceApp.config(['$ocLazyLoadProvider', ($ocLazyLoadProvider) ->
     $ocLazyLoadProvider.config({
-      jsLoader: require,
+      jsLoader: requirejs,
       debug: true,
-      loadedModules: ['DeskPRO.InterfaceApp']
+      loadedModules: ['DeskPRO.InterfaceApp'],
+      modules: [
+        {name: 'DeskPRO.ReportsApp', files: ['Reports/ReportsApp'] }
+      ]
     })
   ])
 
+  isDone = false
   InterfaceApp.config(['$stateProvider', '$urlRouterProvider', ($stateProvider, $urlRouterProvider) ->
+    return if isDone
+    isDone = true
+
     $urlRouterProvider.otherwise("/")
     $stateProvider.state('app', {
-      url: "/loading",
+      url: "/",
       templateUrl: "InterfaceBundle:Interface:main-frame.html",
+      controller: [ '$state', ($state) ->
+        $state.go('app.reports')
+      ]
     })
+
+    addState = (module, id, url, ctrl, tpl, resolve, options) ->
+      resolve = resolve || {}
+      options = options || {}
+
+      resolve.loadModule = ['$ocLazyLoad', ($ocLazyLoad) ->
+        return $ocLazyLoad.load(module)
+      ]
+
+      options.url         = url
+      options.templateUrl = tpl
+      options.resolve     = resolve
+
+      return $stateProvider.state(id, options)
+
+    # TODO: make these dynamic somehow based on loaded apps
+    addState('DeskPRO.ReportsApp', 'app.reports', 'reports', 'Reports.App.Main', 'ReportsInterfaceBundle:Interface:main.html')
   ])
 
   return InterfaceApp

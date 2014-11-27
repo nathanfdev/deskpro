@@ -1,12 +1,15 @@
-//
-
-
-
+.site-header-container {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: $top-bar-height;
+}
 .site-header {
   color: $top-bar-text-color;
   padding: 7px;
   background: $top-bar-blue;
-  height: 44px;
+  height: $top-bar-height;
 
   > *, .header-right > *, .header-left > * {// Turn everything directly under the site header into an inline-block item
     display: inline-block;

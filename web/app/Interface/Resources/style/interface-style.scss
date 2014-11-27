@@ -1,12 +1,28 @@
 @import 'lib';
 
 @import 'variables';
+html, body {
+  padding: 0;
+  margin: 0;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+}
 body {
   background: #f6f6f6;
   font-family: Lato, "proxima nova";
   font-size: 13px;
   font-weight: 400;
   color: #333;
+}
+
+#dp_win {
+  position: absolute;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  overflow: hidden;
 }
 
 * { @include box-sizing(border-box); }
@@ -34,9 +50,6 @@ a { color: $link-color; }
 @import 'tooltips';
 @import 'stats';
 
-// Just for presentation
-.content, .sidebar, .app-bar { min-height: 3000px; }
-
 // To keep a set width sidebar with a full width content columns: float left and give the content container
 // padding-left equal to the full width of the sidebars.
 //   |   |         |              |
@@ -47,16 +60,22 @@ a { color: $link-color; }
 //    A(pp-bar) + sidebar = content padding-left
 //
 
-
-$app-width: 55px;
-$sidebar-width: 220px;
-$report-list-width: 555px;
-$content-width: $app-width + $sidebar-width;
-
 .app-bar-wrapper {
-  float: left;
+  position: absolute;
+  top: $top-bar-height;
+  left: 0;
+  bottom: 0;
   width: $app-width;
   background: #2b2f34;
+}
+
+.app-container {
+  position: absolute;
+  top: $top-bar-height;
+  left: $app-width;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
 }
 
 // Tenmporary for presentation]

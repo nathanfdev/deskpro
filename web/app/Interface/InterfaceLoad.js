@@ -34,7 +34,7 @@ define([
 
     boot: function() {
       this.isDoneBoot = true;
-      angular.bootstrap(document.getElementById('app_win'), ['DeskPRO.InterfaceApp']);
+      angular.bootstrap(document.getElementById('dp_win'), ['DeskPRO.InterfaceApp']);
     }
   }
 });
