@@ -1,45 +1,5 @@
 define([
-  'angular',
-  'angularAnimate',
-  'angularSanitize',
-  'angularBootstrap',
-  'angularSelect2',
-  'angularUiRouter',
-  'angularUiSortable',
-  'angular-moment',
-  'angularFileUpload',
-  'angularSlider',
-
-  'moment',
-
-  'jquery',
-  'jqueryUi',
-  'underscore',
-  'stacktrace',
-
-  'bootstrapTooltip',
-
-  'select2',
-  'toastr',
-
-  'DeskPRO/OptionBuilder/Module',
-  'DeskPRO/CategoryBuilder/Module',
-
-  'Reports/App/App',
-
-  'Reports/Main/Ctrl/MainPage',
-  'Reports/Main/Ctrl/Bare',
-
-  'Reports/Main/Ctrl/BackToAgent',
-
-  'Reports/Overview/Ctrl/Overview',
-  'Reports/Builder/Ctrl/List',
-  'Reports/Builder/Ctrl/Edit',
-  'Reports/AgentActivity/Ctrl/AgentActivity',
-  'Reports/AgentHours/Ctrl/AgentHours',
-  'Reports/TicketSatisfaction/Ctrl/TicketSatisfaction',
-  'Reports/Billing/Ctrl/List',
-  'Reports/Billing/Ctrl/View'
+  'angular'
 ], function(angular) {
 
   if (!window.console) {

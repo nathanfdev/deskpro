@@ -40,6 +40,7 @@ deskpro.isWatching = false;
 deskpro.watches = [
   ['./app/Admin*/**/*.coffee', ['coffee-admin']],
   ['./app/Agent*/**/*.coffee', ['coffee-agent']],
+  ['./app/Interface*/**/*.coffee', ['coffee-interface']],
   ['./app/Reports/**/*.coffee', ['coffee-reports']],
   ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
   ['./app/**/Resources/style/*.less', ['less-app']],
@@ -168,6 +169,10 @@ gulp.task('coffee-agent', function () {
   return deskpro.taskGen.coffeeScript('./app/Agent*/**/*.coffee');
 });
 
+gulp.task('coffee-interface', function () {
+  return deskpro.taskGen.coffeeScript('./app/Interface*/**/*.coffee');
+});
+
 gulp.task('coffee-reports', function () {
   return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee');
 });
@@ -180,6 +185,7 @@ gulp.task('coffee', ['clean'], function() {
   return deskpro.taskGen.coffeeScript([
     './app/Admin*/**/*.coffee',
     './app/Agent*/**/*.coffee',
+    './app/Interface*/**/*.coffee',
     './app/Reports*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);

@@ -15,6 +15,7 @@
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
   "angularBootstrapDatetime":        "bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js",
   "angularUiDatetime":               "vendor/ui-datetime",
+  "angularOcLazyLoad":               "bower_components/oclazyload/dist/ocLazyLoad",
 
   "ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
   "ngContextMenu":                   "vendor/ng-context-menu/src/ng-context-menu",
@@ -62,6 +63,7 @@
   "CloudAdminLoad":                  "app/Admin/Cloud/CloudAdminLoad",
   "AdminUpgradeLoad":                "app/AdminUpgrade/AdminUpgradeLoad",
   "AdminStartLoad":                  "app/AdminStart/AdminStartLoad",
+  "InterfaceLoad":                   "app/Interface/InterfaceLoad",
   "ReportsLoad":                     "app/Reports/ReportsLoad",
 
   "DeskPRO":                         "app-build/DeskPRO",
@@ -70,6 +72,7 @@
   "AdminUpgrade":                    "app-build/AdminUpgrade",
   "AdminStart":                      "app-build/AdminStart",
   "Agent":                           "app-build/Agent",
+  "Interface":                       "app-build/Interface",
   "Reports":                         "app-build/Reports",
   "ReportsRouting":                  "app/Reports/Resources/config/routing"
 }

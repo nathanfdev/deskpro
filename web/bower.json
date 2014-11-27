@@ -21,6 +21,7 @@
     "intl-tel-input": "3.7.1",
     "font-awesome": "4.1.0",
     "jquery": "2.1.1",
+    "oclazyload": "0.5.1",
     "jquery-ui": "1.10.4",
     "bootstrap": "3.2.0",
     "select2": "3.4.8",

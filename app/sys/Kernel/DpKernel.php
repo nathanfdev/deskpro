@@ -339,6 +339,7 @@ class DpKernel extends AbstractKernel
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\AdminInterfaceBundle\AdminInterfaceBundle(),
             new \Application\AgentBundle\AgentBundle(),
+            new \Application\InterfaceBundle\InterfaceBundle(),
             new \Application\ReportsInterfaceBundle\ReportsInterfaceBundle(),
             new \Application\UserBundle\UserBundle(),
             new \Application\ApiBundle\ApiBundle(),

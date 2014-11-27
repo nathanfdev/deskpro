@@ -21,6 +21,10 @@ $col = $loader->import(DP_ROOT.'/src/Application/ApiBundle/Resources/config/api-
 $col->addPrefix('/api');
 $collection->addCollection($col);
 
+$col = $loader->import(DP_ROOT.'/src/Application/InterfaceBundle/Resources/config/interface-routing.php');
+$col->addPrefix('/viewer');
+$collection->addCollection($col);
+
 $col = $loader->import(DP_ROOT.'/src/Application/ReportsInterfaceBundle/Resources/config/reports-interface-routing.php');
 $col->addPrefix('/reports');
 $collection->addCollection($col);

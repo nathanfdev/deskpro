@@ -15,6 +15,7 @@
   "angularSelectize":                ["angular"],
   "angularBootstrapDatetime":        ["angular"],
   "angularUiDatetime":               ["angular"],
+  "angularOcLazyLoad":               ["angular"],
   "ngClip":                          ["angular"],
   "ngFileUpload":                    ["angular"],
   "ngContextMenu":                   ["angular"],
