@@ -1,0 +1,27 @@
+<style>
+    .form-error {
+        color: red;
+        border: 1px solid red;
+    }
+
+    .deskpro-form-widget {
+        margin-bottom: 15px;
+    }
+</style>
+
+
+{{ form_errors(form) }}
+        {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
+        {% for widget in form.children if widget.vars.name != '_token' %}
+            <div class="deskpro-form-widget {% if not widget.vars.valid %} form-error{% endif %}">
+                {{ form_label(widget) }}
+                {{ form_widget(widget) }}
+                {% if widget.vars.help %}
+                    <small class="help">{{ widget.vars.help }}</small>
+                {% endif %}
+                {{ form_errors(widget) }}
+            </div>
+        {% endfor %}
+<button type="submit">Submit</button>
+{{ form_rest(form) }}
+{{ form_end(form) }}
