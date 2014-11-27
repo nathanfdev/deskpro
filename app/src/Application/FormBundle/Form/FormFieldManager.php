@@ -36,6 +36,7 @@ namespace Application\FormBundle\Form;
 
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Doctrine\ORM\EntityManager;
 
@@ -80,6 +81,21 @@ class FormFieldManager
         }
 
         throw new \InvalidArgumentException('invalid field. cannot find type for handler class: ' . $field_type->getHandlerClass());
+    }
+
+    public function getCustomPersonField(CustomDefPerson $field)
+    {
+        list($type, $value_name) = $this->getFormType($field);
+        $options = array();
+        $options['label'] = $field->getRealTitle();
+        $options['help'] = $field->getRealDescription();
+
+        return array($value_name, $type, $options);
+    }
+
+    public function getCustomPersonFieldById($id)
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefPerson')->find($id);
     }
 }
  

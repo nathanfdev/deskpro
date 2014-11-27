@@ -11,6 +11,11 @@ services:
     arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: deskpro_custom_data_ticket }
+  form.custom_data_person:
+    class: Application\FormBundle\Form\Type\CustomDataPersonType
+    arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_data_person }
   form.ticket:
     class: Application\FormBundle\Form\Type\TicketType
     arguments: [@form_field_manager]
