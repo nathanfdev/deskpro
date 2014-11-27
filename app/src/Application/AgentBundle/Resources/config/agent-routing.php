@@ -27,6 +27,11 @@ $collection->create('agent_apps_config_js', array(
     'controller'  => 'AgentBundle:Misc:getAppsConfig',
 ));
 
+$collection->create('agent_my_info', array(
+    'path'        => '/me/info.js',
+    'controller'  => 'AgentBundle:Misc:getMyInfo',
+));
+
 $collection->create('agent_combined_sectiondata', array(
     'path'        => '/get-combined-section-data.json',
     'controller'  => 'AgentBundle:Main:getCombinedSectionData',

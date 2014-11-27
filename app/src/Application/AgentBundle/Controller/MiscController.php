@@ -41,6 +41,7 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
+use Application\DeskPRO\People\AgentPermissions\PersonDbLoader as AgentPermsPersonDbLoader;
 
 class MiscController extends AbstractController
 {
@@ -1069,6 +1070,38 @@ JS;
         $response->setContent($js);
 
         return $response;
+    }
+
+    public function getMyInfoAction()
+    {
+        $agent = $this->person;
+
+        $serializer = $this->getContainer()->getSystemService('serializer');
+        $agent_data = $serializer->serialize($agent);
+
+        $agent_data['teams'] = array();
+
+        $agent->loadHelper('Agent');
+        $agent->loadHelper('AgentTeam');
+        $agent->loadHelper('AgentPermissions');
+        $agent->loadHelper('PermissionsManager');
+
+        foreach ($this->container->getAgentData()->getTeamsByIds($agent->getHelper('AgentTeam')->getAgentTeamIds()) as $t) {
+            $agent_data['teams'][] = $t->toApiData();
+        }
+
+        $perm_loader = new AgentPermsPersonDbLoader($agent, $this->em);
+
+        $data = array(
+            'agent' => $agent_data,
+            'perms' => $perm_loader->getEffectivePermissions()->toArray(),
+        );
+
+        if ($this->in->getBool('extended')) {
+            $data['signature_html'] = $agent->getSignatureHtml();
+        }
+
+        return $this->createJsonResponse($data);
     }
 
     public function dismissDpNewsAction($id)
