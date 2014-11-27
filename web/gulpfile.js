@@ -54,7 +54,7 @@ deskpro.watches = [
 
 deskpro.util.sourceMapRoot = function (file) {
   var path = file.path.replace(/\\/g, '/')
-  var rel = path.replace(/^.*?\/web\/app\//, '');
+  var rel = path.replace(/^.*?\/web\/app\-build\//, '');
 
   // Counts slashes the relative path to decide how many levels up we need to go
   var depth = (rel.match(/(\/|\\)/g) || []).length + 1;
@@ -65,7 +65,7 @@ deskpro.util.sourceMapRoot = function (file) {
   var up = "";
   for (var i = 0; i < depth; i++) up += "../";
 
-  return up + 'app/' + ns;
+  return up + 'web/app/' + ns;
 };
 
 deskpro.util.coffeeError = function (e) {
