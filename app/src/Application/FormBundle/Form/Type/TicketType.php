@@ -35,6 +35,7 @@
 namespace Application\FormBundle\Form\Type;
 
 use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Form\TicketFormContext;
 use Application\FormBundle\FormFields;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
@@ -46,6 +47,16 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TicketType extends AbstractType
 {
+    /**
+     * @var \Application\FormBundle\Form\FormFieldManager
+     */
+    private $field_manager;
+
+    public function __construct(FormFieldManager $field_manager)
+    {
+        $this->field_manager = $field_manager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
@@ -53,10 +64,6 @@ class TicketType extends AbstractType
 
     public function preDataEvent(FormEvent $event)
     {
-        //
-        // Note that we will probably move these events out into an event subscriber class to de-clutter
-        //
-
         $ticket = $event->getData();
         $form = $event->getForm();
         $config = $form->getConfig();
@@ -183,6 +190,7 @@ class TicketType extends AbstractType
     private function addMessage(TicketFormContext $form_context, LayoutField $field)
     {
         // TODO: make a special type for this. A messge should be a TicketMessage instance.
+        if ($form_context->getViewContext() != 'new') return;
         $form_context->getForm()->add('message', 'textarea', array(
             'mapped' => false
         ));
@@ -220,7 +228,17 @@ class TicketType extends AbstractType
 
     private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field)
     {
-        // TODO: finds info from the db for the custom type to determine the "type" and passed options
+        $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
+        $form_context->getForm()->add(
+            $field->getId(),
+            'deskpro_custom_data_ticket',
+            array(
+                'custom_data_field' => $field_def,
+                'property_path' => sprintf('getCustomDataCollection[%s]',
+                 $field->getFieldId()
+                )
+            )
+        );
     }
 
     private function addCustomUserField(TicketFormContext $form_context, LayoutField $field)
