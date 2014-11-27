@@ -213,11 +213,11 @@ class Package
      */
     private function readAssetPath($path_name)
     {
-        $assets = array();
-        $path = $this->path . '/' . $path_name;
+        $assets   = array();
+        $path     = @realpath($this->path . '/' . $path_name);
         $path_std = str_replace('\\', '/', $path);
 
-        if (!is_dir($path)) {
+        if (!$path || !is_dir($path)) {
             return array();
         }
 

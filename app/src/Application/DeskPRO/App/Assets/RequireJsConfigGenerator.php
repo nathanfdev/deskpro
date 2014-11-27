@@ -81,7 +81,7 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
             // Otherwise, we need to use the download URL that will contain unique auth codes
             } else {
                 foreach ($package->getTaggedAssets('js') as $asset) {
-                    $name = $package->name . '/js/' . str_replace('.js', '', $asset->name);
+                    $name = $package->name . '/' . str_replace('.js', '', $asset->name);
                     $asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl(false, false));
 
                     $this->addPath($name, $asset_path);
