@@ -1,6 +1,19 @@
 services:
+  form.extension.deskpro:
+    class: Application\FormBundle\Form\Extension\DeskproExtension
+    tags:
+      - { name: form.type_extension, alias: form }
+  form_field_manager:
+    class: Application\FormBundle\Form\FormFieldManager
+    arguments: [@doctrine.orm.default_entity_manager]
+  form.custom_data_ticket:
+    class: Application\FormBundle\Form\Type\CustomDataTicketType
+    arguments: [@form_field_manager]
+    tags:
+      - { name: form.type, alias: deskpro_custom_data_ticket }
   form.ticket:
     class: Application\FormBundle\Form\Type\TicketType
+    arguments: [@form_field_manager]
     tags:
       - { name: form.type, alias: deskpro_ticket }
   form.language:
