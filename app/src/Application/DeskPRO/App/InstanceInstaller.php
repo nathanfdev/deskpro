@@ -101,7 +101,7 @@ class InstanceInstaller
         $handler->install($context);
 
         // if this package is a usersource package, we should always check with the manager to avoid invalid SSO configurations
-        if ($context->getPackage()->isUsersource()) {
+        if ($context->getNativeApp() && $context->getPackage()->isUsersource()) {
             $container->getSystemService('usersource_manager')->ensureSsoSettings($context->getUsersource());
         }
 
@@ -133,6 +133,7 @@ class InstanceInstaller
             return new InstallerContext($container, $native_app, $settings, $usersource);
         }
 
+        // TODO this shouldnt be a native context, they need to be separate
         return new InstallerContext($container, null, $settings);
     }
 
