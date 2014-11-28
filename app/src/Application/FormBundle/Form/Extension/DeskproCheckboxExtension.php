@@ -39,25 +39,25 @@ use Symfony\Component\Form\FormInterface;
 use Symfony\Component\Form\FormView;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class DeskproExtension extends AbstractTypeExtension
+class DeskproCheckboxExtension extends AbstractTypeExtension
 {
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(
             array(
-                'help' => ''
+                'checkbox_label' => ''
             )
         );
     }
 
     public function buildView(FormView $view, FormInterface $form, array $options)
     {
-        $view->vars['help'] = $options['help'];
+        $view->vars['checkbox_label'] = $options['checkbox_label'];
     }
 
 
     public function getExtendedType()
     {
-        return 'form';
+        return 'checkbox';
     }
 }

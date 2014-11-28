@@ -1,8 +1,12 @@
 services:
-  form.extension.deskpro:
-    class: Application\FormBundle\Form\Extension\DeskproExtension
+  form.form_extension:
+    class: Application\FormBundle\Form\Extension\DeskproFormExtension
     tags:
       - { name: form.type_extension, alias: form }
+  form.checkbox_extension:
+    class: Application\FormBundle\Form\Extension\DeskproCheckboxExtension
+    tags:
+      - { name: form.type_extension, alias: checkbox }
   form_field_manager:
     class: Application\FormBundle\Form\FormFieldManager
     arguments: [@doctrine.orm.default_entity_manager]

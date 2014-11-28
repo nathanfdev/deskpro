@@ -58,8 +58,7 @@ class FormFieldManager
 
     public function getCustomTicketField(CustomDefTicket $field)
     {
-        list($type, $value_name) = $this->getFormType($field);
-        $options = array();
+        list($type, $value_name, $options) = $this->getFormType($field);
         $options['label'] = $field->getTitle();
         $options['help'] = $field->getDescription();
 
@@ -90,9 +89,11 @@ class FormFieldManager
     {
         switch ($field_type->getHandlerClass()) {
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
-                return array('text', 'input');
+                return array('text', 'input', array());
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
-                return array('textarea', 'input');
+                return array('textarea', 'input', array());
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
+                return array('checkbox', 'value', array('checkbox_label' => $field_type->getOption('label_text')));
             default:
                 break;
         }

@@ -13,6 +13,14 @@
 {%- endblock form_widget %}
 
 
+
+{# A Checkbox #}
+{% block checkbox_widget -%}
+    <input style="margin-left: 20px;" type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+    {% if form.vars.checkbox_label %}{{ form.vars.checkbox_label }}{% endif %}
+{%- endblock checkbox_widget %}
+
+
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}
