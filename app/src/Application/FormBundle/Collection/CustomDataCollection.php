@@ -51,24 +51,16 @@ class CustomDataCollection implements \ArrayAccess
     /**
      * @var object
      */
-
-    private $wants_signal;
-
-    /**
-     * @var string
-     */
-    private $signal;
+    private $data_holder;
 
     /**
-     * @param ArrayCollection $custom_datas
-     * @param object          $wants_signal the "object" that needs to report to doctrine its change
-     * @param string          $signal       the "property" affected by this update
+     * @param Collection $custom_datas
+     * @param object     $data_holder the "object" that needs to report to doctrine its change
      */
-    public function __construct(Collection $custom_datas, $wants_signal)
+    public function __construct(Collection $custom_datas, $data_holder)
     {
         $this->custom_datas = $custom_datas;
-        $this->wants_signal = $wants_signal;
-        $this->signal = $signal;
+        $this->data_holder = $data_holder;
     }
 
     public function offsetSet($id, $value)
@@ -77,7 +69,7 @@ class CustomDataCollection implements \ArrayAccess
         foreach ($this->custom_datas as $real_offset => $data) {
             if ($id == $data->getFieldId()) {
                 $this->custom_datas->set($real_offset, $value);
-                $this->wants_signal->addCustomData($value);
+                $this->data_holder->addCustomData($value);
                 return null;
             }
         }
@@ -88,7 +80,7 @@ class CustomDataCollection implements \ArrayAccess
 
         // can't update, so adding it as new
         $this->custom_datas->add($value);
-        $this->wants_signal->addCustomData($value);
+        $this->data_holder->addCustomData($value);
     }
 
     public function offsetGet($id)
