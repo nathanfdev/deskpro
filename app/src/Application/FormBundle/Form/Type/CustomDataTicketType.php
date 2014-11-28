@@ -79,6 +79,7 @@ class CustomDataTicketType extends AbstractType
 
         list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($custom_data_field);
         $form->add($value_name, $form_type, $options);
+
     }
 
     public function submitEvent(FormEvent $event)
@@ -87,7 +88,7 @@ class CustomDataTicketType extends AbstractType
         /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
         $custom_data = $event->getData();
         $field = $config->getOption('custom_data_field');
-        $ticket =$config->getOption('ticket');
+        $ticket = $config->getOption('ticket');
         $custom_data->field = $field;
         $custom_data->ticket = $ticket;
     }

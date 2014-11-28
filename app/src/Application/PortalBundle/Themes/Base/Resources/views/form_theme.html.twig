@@ -1,5 +1,18 @@
 {% extends 'form_div_layout.html.twig' %}
 
+{# Generic Form Types #}
+{% block form_widget -%}
+    {% if compound %}
+        {{- block('form_widget_compound') -}}
+    {% else %}
+        {{- block('form_widget_simple') -}}
+    {% endif %}
+    {% if form.vars.help %}
+        <small class="help">{{ form.vars.help }}</small>
+    {% endif %}
+{%- endblock form_widget %}
+
+
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}

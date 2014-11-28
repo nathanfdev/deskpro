@@ -236,9 +236,8 @@ class TicketType extends AbstractType
             array(
                 'custom_data_field' => $field_def,
                 'ticket' => $form_context->getTicket(),
-                'property_path' => sprintf('getCustomDataCollection[%s]',
-                 $field->getFieldId()
-                )
+                'property_path' => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
+                'label' => false,
             )
         );
     }
@@ -252,9 +251,8 @@ class TicketType extends AbstractType
             array(
                 'custom_data_field' => $field_def,
                 'person'            => $form_context->getPerson(),
-                'property_path'     => sprintf('person.getCustomDataCollection[%s]',
-                    $field->getFieldId()
-                )
+                'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
+                'label' => false,
             )
         );
     }

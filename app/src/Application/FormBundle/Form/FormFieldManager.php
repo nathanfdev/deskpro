@@ -60,8 +60,8 @@ class FormFieldManager
     {
         list($type, $value_name) = $this->getFormType($field);
         $options = array();
-        $options['label'] = $field->getRealTitle();
-        $options['help'] = $field->getRealDescription();
+        $options['label'] = $field->getTitle();
+        $options['help'] = $field->getDescription();
 
         return array($value_name, $type, $options);
     }
@@ -71,24 +71,12 @@ class FormFieldManager
         return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
     }
 
-    private function getFormType(CustomDefAbstract $field_type)
-    {
-        switch ($field_type->getHandlerClass()) {
-            case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
-                return array('text', 'input');
-            default:
-                break;
-        }
-
-        throw new \InvalidArgumentException('invalid field. cannot find type for handler class: ' . $field_type->getHandlerClass());
-    }
-
     public function getCustomPersonField(CustomDefPerson $field)
     {
         list($type, $value_name) = $this->getFormType($field);
         $options = array();
-        $options['label'] = $field->getRealTitle();
-        $options['help'] = $field->getRealDescription();
+        $options['label'] = $field->getTitle();
+        $options['help'] = $field->getDescription();
 
         return array($value_name, $type, $options);
     }
@@ -96,6 +84,20 @@ class FormFieldManager
     public function getCustomPersonFieldById($id)
     {
         return $this->em->getRepository('DeskPRO:CustomDefPerson')->find($id);
+    }
+
+    private function getFormType(CustomDefAbstract $field_type)
+    {
+        switch ($field_type->getHandlerClass()) {
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
+                return array('text', 'input');
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
+                return array('textarea', 'input');
+            default:
+                break;
+        }
+
+        throw new \InvalidArgumentException('invalid field. cannot find type for handler class: '.$field_type->getHandlerClass());
     }
 }
  

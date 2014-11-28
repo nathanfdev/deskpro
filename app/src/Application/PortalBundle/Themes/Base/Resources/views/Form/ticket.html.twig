@@ -16,9 +16,6 @@
             <div class="deskpro-form-widget {% if not widget.vars.valid %} form-error{% endif %}">
                 {{ form_label(widget) }}
                 {{ form_widget(widget) }}
-                {% if widget.vars.help %}
-                    <small class="help">{{ widget.vars.help }}</small>
-                {% endif %}
                 {{ form_errors(widget) }}
             </div>
         {% endfor %}
