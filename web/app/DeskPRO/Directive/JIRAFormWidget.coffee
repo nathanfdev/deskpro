@@ -98,6 +98,36 @@ define ->
           </div>
         """
 
+      # map value back from model format
+      types =
+        'com.atlassian.jira.plugin.system.customfieldtypes:multiselect': 'array_objects'
+        'com.atlassian.jira.plugin.system.customfieldtypes:multicheckboxes': 'array_objects'
+        'com.atlassian.jira.plugin.system.customfieldtypes:select': 'object'
+        'com.atlassian.jira.plugin.system.customfieldtypes:radiobuttons': 'object'
+        'com.atlassian.jira.plugin.system.customfieldtypes:float': 'float'
+        'com.atlassian.jira.plugin.system.customfieldtypes:datetime': 'datetime'
+        priority: 'object'
+        resolution: 'object'
+        parent: (val) -> val.key if val
+
+      value = $scope.model
+      if value
+        schema = field.schema
+        type = schema.custom || schema.system
+        type = types[type]
+
+        switch type
+          when 'array_objects'
+            value = value.map (item) -> item.id
+          when 'object'
+            value = value.id
+          when 'datetime'
+            value = moment(value).getDate() if moment
+
+        if 'function' == typeof type
+            value = type(value)
+
+      $scope.value = value
       $el.replaceWith $compile($template)($scope)
 
     controller: ($scope) ->
