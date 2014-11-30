@@ -43,7 +43,13 @@
                     <ul class="jira-fields">
                         <li ng-repeat="field in meta.default_fields_list" ng-if="meta.fieldHasValue(field, issue.fields[field])">
                             <div class="field-title">{{ meta.fieldName(field) }}</div>
-                            <div class="field-value" ng-if="'comment' != field">{{ meta.fieldValue(field, issue.fields[field]) }}</div>
+                            <div class="field-value" ng-if="'comment' != field">
+                                <div ng-if="issue.renderedFields[field]" ng-bind-html="meta.fieldValue(field, issue.fields[field])">
+                                </div>
+                                <div ng-if="!issue.renderedFields[field]">
+                                    {{ meta.fieldValue(field, issue.fields[field]) }}
+                                </div>
+                            </div>
                             <div class="field-value" ng-if="'comment' == field">
                                 <a href="#" ng-click="issueModal(issue)">
                                     {{ issue.fields[field].total }} Comment{{ 1 == issue.fields[field].total ? '' : 's' }}

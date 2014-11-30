@@ -14,7 +14,13 @@
                 </tr>
                 <tr ng-repeat="field in issue.filtered_fields">
                     <th style="text-align: left; text-wrap: none;" nowrap="nowrap">{{ meta.fieldName(field.id) }}</th>
-                    <td width="100%">{{ meta.fieldValue(field.id, field.value) }}</td>
+                    <td width="100%">
+                        <div ng-if="issue.renderedFields[field.id]" ng-bind-html="meta.fieldValue(field.id, field.value)">
+                        </div>
+                        <div ng-if="!issue.renderedFields[field.id]">
+                            {{ meta.fieldValue(field.id, field.value) }}
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>
@@ -29,7 +35,9 @@
                     </td>
                 </tr>
                 <tr ng-repeat="comment in issue.fields.comment.comments">
-                    <td style="border-bottom: 1px solid #CCCCCC; padding: 12px;">{{ meta.renderComment(comment) }}</td>
+                    <td style="border-bottom: 1px solid #CCCCCC; padding: 12px;">
+                        <p ng-bind-html="meta.renderComment(comment)"></p>
+                    </td>
                 </tr>
                 <tr ng-if="issue.fields.comment.comments.length < 1">
                     <td>

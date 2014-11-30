@@ -272,6 +272,7 @@ class JIRA
 			$result = $this->getApi()->post('/search', array(
 				'jql' => $jql,
 				'fields' => $this->getMeta()->getAllFields(),
+                'expand' => array('renderedFields'),
 			));
 		} catch (\Exception $e) {
 			// todo

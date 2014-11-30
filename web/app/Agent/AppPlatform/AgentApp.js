@@ -17,6 +17,7 @@ define([
   'angularSelect2',
   'angularUiSortable',
   'ngContextMenu',
+  'angularSanitize'
 ], function(
   angular,
   Functions,
@@ -36,7 +37,8 @@ define([
 	'ui.sortable',
 	'ng-context-menu',
 	'deskpro.category_builder',
-	'ui.select2'
+	'ui.select2',
+    'ngSanitize'
   ]);
 
 	//-------------------------------------------------------------------------
