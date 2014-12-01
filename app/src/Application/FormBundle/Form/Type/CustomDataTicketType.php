@@ -77,9 +77,8 @@ class CustomDataTicketType extends AbstractType
         /** @var \Application\DeskPRO\Entity\CustomDefTicket $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
 
-        list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($custom_data_field);
+        list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($custom_data_field, $config->getOption('agent_interface'));
         $form->add($value_name, $form_type, $options);
-
     }
 
     public function submitEvent(FormEvent $event)
@@ -108,11 +107,13 @@ class CustomDataTicketType extends AbstractType
         ));
         $resolver->setRequired(array(
             'custom_data_field',
-            'ticket'
+            'ticket',
+            'agent_interface'
         ));
         $resolver->setAllowedTypes(array(
             'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefTicket',
-            'ticket' => 'Application\DeskPRO\Entity\Ticket'
+            'ticket' => 'Application\DeskPRO\Entity\Ticket',
+            'agent_interface' => 'bool'
         ));
     }
 

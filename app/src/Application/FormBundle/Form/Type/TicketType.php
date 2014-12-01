@@ -95,8 +95,8 @@ class TicketType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'ticket_visibility'   => 'new',
-            'ticket_view_context' => 'user',
+            'ticket_visibility'   => TicketFormContext::VISIBILITY_NEW,
+            'ticket_view_context' => TicketFormContext::VIEW_USER,
             'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
             'method'              => 'POST'
         ));
@@ -105,7 +105,11 @@ class TicketType extends AbstractType
             'person'
         ));
         $resolver->addAllowedValues(array(
-            'ticket_visibility' => array('new', 'edit', 'view')
+            'ticket_visibility' => array(
+                TicketFormContext::VISIBILITY_NEW,
+                TicketFormContext::VISIBILITY_EDIT,
+                TicketFormContext::VISIBILITY_VIEW
+            )
         ));
         $resolver->setAllowedTypes(array(
             'ticket_layout' => 'Application\\DeskPRO\\Entity\\TicketLayout',
@@ -242,7 +246,8 @@ class TicketType extends AbstractType
                 'custom_data_field' => $field_def,
                 'ticket' => $form_context->getTicket(),
                 'property_path' => sprintf('getCustomDataCollection[%s]', $field->getFieldId()),
-                'label' => false,
+                'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+                'label'           => false
             )
         );
     }
@@ -262,7 +267,8 @@ class TicketType extends AbstractType
                 'custom_data_field' => $field_def,
                 'person'            => $form_context->getPerson(),
                 'property_path'     => sprintf('person.getCustomDataCollection[%s]', $field->getFieldId()),
-                'label' => false,
+                'agent_interface' => $form_context->getViewContext() === TicketFormContext::VIEW_AGENT,
+                'label'           => false
             )
         );
     }

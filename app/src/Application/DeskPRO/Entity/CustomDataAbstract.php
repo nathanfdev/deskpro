@@ -85,6 +85,11 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
      */
     protected $input = '';
 
+    public function __construct()
+    {
+        $this->input = '';
+    }
+
     /**
      * @return int
      */

@@ -77,7 +77,7 @@ class CustomDataPersonType extends AbstractType
         /** @var \Application\DeskPRO\Entity\CustomDefTicket $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
 
-        list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field);
+        list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));
         $form->add($value_name, $form_type, $options);
     }
 
@@ -107,11 +107,13 @@ class CustomDataPersonType extends AbstractType
         ));
         $resolver->setRequired(array(
             'custom_data_field',
-            'person'
+            'person',
+            'agent_interface'
         ));
         $resolver->setAllowedTypes(array(
             'custom_data_field' => 'Application\DeskPRO\Entity\CustomDefPerson',
-            'person' => 'Application\DeskPRO\Entity\Person'
+            'person' => 'Application\DeskPRO\Entity\Person',
+            'agent_interface' => 'bool'
         ));
     }
 

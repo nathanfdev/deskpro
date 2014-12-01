@@ -34,7 +34,9 @@
 
 {# DISPLAY HTML #}
 {% block deskpro_display_html_widget %}
+{% set value = 'html' %}
 {{ html|raw }}
+{{ block('hidden_widget') }}
 {% endblock deskpro_display_html_widget %}
 
 
