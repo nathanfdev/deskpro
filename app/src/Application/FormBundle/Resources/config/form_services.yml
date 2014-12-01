@@ -72,6 +72,6 @@ services:
     tags:
       - { name: form.type, alias: deskpro_cc }
   form.heirarchical_entity:
-    class: Application\FormBundle\Form\Type\HeirarchicalEntity
+    class: Application\FormBundle\Form\Type\HeirarchicalEntityType
     tags:
       - { name: form.type, alias: deskpro_heirarchical_entity }

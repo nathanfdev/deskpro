@@ -38,7 +38,7 @@ namespace Application\FormBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class HeirarchicalEntity extends AbstractType
+class HeirarchicalEntityType extends AbstractType
 {
     public function getName()
     {
