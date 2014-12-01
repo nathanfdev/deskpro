@@ -103,6 +103,11 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         return $this->value ? $this->value : $this->input;
     }
 
+    public function getValue()
+    {
+        return (int) $this->value;
+    }
+
     public function getFieldId()
     {
         return $this->field->getId();

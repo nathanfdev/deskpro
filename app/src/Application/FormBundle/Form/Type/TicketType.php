@@ -229,7 +229,7 @@ class TicketType extends AbstractType
 
     private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field)
     {
-        $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
+        $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId(), $form_context);
 
         if (!$field_def->is_enabled) {
             return false;
