@@ -32,6 +32,12 @@
 {%- endblock deskpro_hidden_widget %}
 
 
+{# DISPLAY HTML #}
+{% block deskpro_display_html_widget %}
+{{ html|raw }}
+{% endblock deskpro_display_html_widget %}
+
+
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}

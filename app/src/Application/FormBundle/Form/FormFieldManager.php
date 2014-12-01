@@ -106,6 +106,10 @@ class FormFieldManager
                     'checkbox_label' => $field_type->getOption('label_text'),
                     'force_boolean' => true
                 ));
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Display':
+                return array('deskpro_display_html', 'input', array(
+                    'html' => $field_type->getOption('html')
+                ));
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
 
                 $options = array(
