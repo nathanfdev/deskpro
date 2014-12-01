@@ -55,31 +55,19 @@ class FormFieldManager
         $this->em = $em;
     }
 
-    public function getCustomTicketField(CustomDefTicket $field)
+    public function getCustomTicketField(CustomDefTicket $field, TicketFormContext $form_context = null)
     {
-        list($type, $value_name, $options) = $this->getFormType($field);
-        if (!array_key_exists('label', $options)) {
-            $options['label'] = $field->getTitle();
-        }
-        $options['help'] = $field->getDescription();
-
-        return array($value_name, $type, $options);
-    }
-
-    public function getCustomTicketFieldById($id)
-    {
-        return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
+        return $this->createCustomField($field, $form_context);
     }
 
     public function getCustomPersonField(CustomDefPerson $field)
     {
-        list($type, $value_name, $options) = $this->getFormType($field);
-        if (!array_key_exists('label', $options)) {
-            $options['label'] = $field->getTitle();
-        }
-        $options['help'] = $field->getDescription();
+        return $this->createCustomField($field);
+    }
 
-        return array($value_name, $type, $options);
+    public function getCustomTicketFieldById($id, TicketFormContext $form_context = null)
+    {
+        return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
     }
 
     public function getCustomPersonFieldById($id)
@@ -87,7 +75,22 @@ class FormFieldManager
         return $this->em->getRepository('DeskPRO:CustomDefPerson')->find($id);
     }
 
-    private function getFormType(CustomDefAbstract $field_type)
+    /**
+     * @param CustomDefPerson $field
+     * @return array
+     */
+    protected function createCustomField(CustomDefAbstract $field, TicketFormContext $ticket_form_context = null)
+    {
+        list($type, $value_name, $options) = $this->getFormType($field, $ticket_form_context);
+        if (!array_key_exists('label', $options)) {
+            $options['label'] = $field->getTitle();
+        }
+        $options['help'] = $field->getDescription();
+
+        return array($value_name, $type, $options);
+    }
+
+    private function getFormType(CustomDefAbstract $field_type, TicketFormContext $ticket_form_context = null)
     {
         switch ($field_type->getHandlerClass()) {
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
@@ -100,17 +103,34 @@ class FormFieldManager
                 ));
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
                 return array('checkbox', 'value', array(
-                    'checkbox_label' => $field_type->getOption('label_text')
+                    'checkbox_label' => $field_type->getOption('label_text'),
+                    'force_boolean' => true
                 ));
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
-                return array('deskpro_hidden', 'input', array(
-                    'auto_fill'          => true, // TODO: if NEW and not agent
-                    'hidden'             => true, // TODO: if not agent,
-                    'label'              => false, //TODO: set this if hidden=true
+
+                $options = array(
+                    'auto_fill'          => false,
+                    'hidden'             => true,
+                    'label'              => false,
                     'cookie_param_name'  => $field_type->getOption('cookie_name'),
                     'request_param_name' => $field_type->getOption('param_name')
+                );
 
-                ));
+                if ($ticket_form_context) {
+
+                    // on agent forms, this is not hidden, so change that here:
+                    if ($ticket_form_context->getViewContext() === TicketFormContext::VIEW_AGENT) {
+                        $options['hidden'] = false;
+                        unset($options['label']); // unset this so that the normal process sets it correctly later
+                    } elseif ($ticket_form_context->getVisibility() === TicketFormContext::VISIBILITY_NEW) {
+                        // it on the user interface and its a new ticket, we need to signal the form type to auto fill
+                        // itself (see Application\FormBundle\Form\Type\HiddenType)
+                        $options['auto_fill'] = true;
+                    }
+                }
+
+                return array('deskpro_hidden', 'input', $options);
+
             default:
                 break;
         }
