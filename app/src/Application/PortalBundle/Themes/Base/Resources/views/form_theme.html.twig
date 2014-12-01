@@ -21,6 +21,17 @@
 {%- endblock checkbox_widget %}
 
 
+{# Hidden Custom Fields #}
+{% block deskpro_hidden_widget -%}
+    {% if hidden %}
+        {% set type = 'hidden' %}
+    {% else %}
+        {% set type = type|default('text') %}
+    {% endif %}
+    {{- block('form_widget_simple') -}}
+{%- endblock deskpro_hidden_widget %}
+
+
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}

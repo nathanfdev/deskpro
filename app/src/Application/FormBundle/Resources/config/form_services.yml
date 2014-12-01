@@ -29,6 +29,11 @@ services:
     class: Application\FormBundle\Form\Type\LanguageType
     tags:
       - { name: form.type, alias: deskpro_language }
+  form.hidden:
+    class: Application\FormBundle\Form\Type\HiddenType
+    arguments: [@request_stack]
+    tags:
+      - { name: form.type, alias: deskpro_hidden }
   form.department:
     class: Application\FormBundle\Form\Type\DepartmentType
     tags:

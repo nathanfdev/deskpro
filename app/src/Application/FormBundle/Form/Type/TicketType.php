@@ -230,6 +230,11 @@ class TicketType extends AbstractType
     private function addCustomTicketField(TicketFormContext $form_context, LayoutField $field)
     {
         $field_def = $this->field_manager->getCustomTicketFieldById($field->getFieldId());
+
+        if (!$field_def->is_enabled) {
+            return false;
+        }
+
         $form_context->getForm()->add(
             $field->getId(),
             'deskpro_custom_data_ticket',
@@ -245,6 +250,11 @@ class TicketType extends AbstractType
     private function addCustomUserField(TicketFormContext $form_context, LayoutField $field)
     {
         $field_def = $this->field_manager->getCustomPersonFieldById($field->getFieldId());
+
+        if (!$field_def->is_enabled) {
+            return false;
+        }
+
         $form_context->getForm()->add(
             $field->getId(),
             'deskpro_custom_data_person',

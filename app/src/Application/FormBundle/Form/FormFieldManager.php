@@ -34,7 +34,6 @@
 
 namespace Application\FormBundle\Form;
 
-use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -59,7 +58,9 @@ class FormFieldManager
     public function getCustomTicketField(CustomDefTicket $field)
     {
         list($type, $value_name, $options) = $this->getFormType($field);
-        $options['label'] = $field->getTitle();
+        if (!array_key_exists('label', $options)) {
+            $options['label'] = $field->getTitle();
+        }
         $options['help'] = $field->getDescription();
 
         return array($value_name, $type, $options);
@@ -72,9 +73,10 @@ class FormFieldManager
 
     public function getCustomPersonField(CustomDefPerson $field)
     {
-        list($type, $value_name) = $this->getFormType($field);
-        $options = array();
-        $options['label'] = $field->getTitle();
+        list($type, $value_name, $options) = $this->getFormType($field);
+        if (!array_key_exists('label', $options)) {
+            $options['label'] = $field->getTitle();
+        }
         $options['help'] = $field->getDescription();
 
         return array($value_name, $type, $options);
@@ -89,11 +91,26 @@ class FormFieldManager
     {
         switch ($field_type->getHandlerClass()) {
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Text':
-                return array('text', 'input', array());
+                return array('text', 'input', array(
+
+                ));
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Textarea':
-                return array('textarea', 'input', array());
+                return array('textarea', 'input', array(
+
+                ));
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
-                return array('checkbox', 'value', array('checkbox_label' => $field_type->getOption('label_text')));
+                return array('checkbox', 'value', array(
+                    'checkbox_label' => $field_type->getOption('label_text')
+                ));
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
+                return array('deskpro_hidden', 'input', array(
+                    'auto_fill'          => true, // TODO: if NEW and not agent
+                    'hidden'             => true, // TODO: if not agent,
+                    'label'              => false, //TODO: set this if hidden=true
+                    'cookie_param_name'  => $field_type->getOption('cookie_name'),
+                    'request_param_name' => $field_type->getOption('param_name')
+
+                ));
             default:
                 break;
         }
