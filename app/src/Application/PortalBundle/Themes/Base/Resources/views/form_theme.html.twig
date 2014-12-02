@@ -40,6 +40,18 @@
 {% endblock deskpro_display_html_widget %}
 
 
+{# DATES #}
+{% block deskpro_date_widget %}
+    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' deskpro-date-form-widget')|trim}) %}
+    {{ block('date_widget') }}
+{% endblock deskpro_date_widget %}
+
+{% block deskpro_datetime_widget %}
+    {% set attr = attr|merge({'class': (attr.class|default('') ~ ' deskpro-date-form-widget')|trim}) %}
+    {{ block('datetime_widget') }}
+{% endblock deskpro_datetime_widget %}
+
+
 {# RECAPTHCA #}
 {% block deskpro_captcha_widget %}
     {% spaceless %}

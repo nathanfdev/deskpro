@@ -80,6 +80,14 @@ services:
     class: Application\FormBundle\Form\Type\CcType
     tags:
       - { name: form.type, alias: deskpro_cc }
+  form.date:
+    class: Application\FormBundle\Form\Type\DateType
+    tags:
+      - { name: form.type, alias: deskpro_date }
+  form.datetime:
+    class: Application\FormBundle\Form\Type\DateTimeType
+    tags:
+      - { name: form.type, alias: deskpro_datetime }
   form.heirarchical_entity:
     class: Application\FormBundle\Form\Type\HeirarchicalEntityType
     tags:

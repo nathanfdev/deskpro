@@ -145,6 +145,28 @@ class FormFieldManager
                         'custom_field' => $field_type
                     )));
 
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
+
+                return array(
+                    'deskpro_date',
+                    'input',
+                    $this->getGeneralOptionsForField($field_type, array(
+                        'input' => 'string',
+                        'widget' => 'choice',
+                        'format' => 'y-M-d'
+                    )));
+
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
+
+                return array(
+                    'deskpro_datetime',
+                    'input',
+                    $this->getGeneralOptionsForField($field_type, array(
+                        'input' => 'string',
+                        'widget' => 'choice',
+                        'format' => 'Y-m-d H:i'
+                    )));
+
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
 
                 $options = array(
