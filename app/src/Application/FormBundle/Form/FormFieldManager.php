@@ -129,10 +129,15 @@ class FormFieldManager
 
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
 
+                $multiple = (bool)$field_type->getOption('multiple');
+                $expanded = (bool)$field_type->getOption('expanded');
+
                 return array(
                     'deskpro_custom_field_choice',
-                    'input',
+                    $multiple ? 'input' : 'value',
                     $this->getGeneralOptionsForField($field_type, array(
+                        'expanded' => $expanded,
+                        'multiple' => $multiple,
                         'custom_field' => $field_type
                     )));
 

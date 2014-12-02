@@ -34,6 +34,8 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\FormBundle\Form\DataTransformer\StringToArrayTransformer;
+use Application\FormBundle\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Application\FormBundle\Heirarchy\HeirarchyGenerator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -54,7 +56,9 @@ class CustomFieldChoiceType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-
+        if ($options['multiple']) {
+            $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
+        }
     }
 
     public function getName()
@@ -71,8 +75,6 @@ class CustomFieldChoiceType extends AbstractType
     {
         $heirarchy_generator = $this->heirarchy_generator;
 
-        // IMPORTANT TODO: We need to pass in the "person" object that is viewing this form and inject a service to get us
-        // the correct Language entities. We can pass these correct "secure" departments in directly instead of this query builder.
         $resolver->setDefaults(array(
             'empty_data' => null,
             'choice_list'    => function (Options $options) use ($heirarchy_generator) {
