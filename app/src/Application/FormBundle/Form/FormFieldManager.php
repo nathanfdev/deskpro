@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -168,6 +169,13 @@ class FormFieldManager
         $options = array(
             'required' => $field_type->isRequired()
         );
+
+        $constraints = array();
+        if ($field_type->isRequired()) {
+            $constraints[] = new NotBlank(array('message' => 'This value is required'));
+        }
+
+        $options['constraints'] = $constraints;
 
         return array_merge($options, $specific_options);
     }
