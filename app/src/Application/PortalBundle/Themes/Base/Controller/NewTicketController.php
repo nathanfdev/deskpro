@@ -55,7 +55,6 @@ class NewTicketController extends AbstractController
             'deskpro_ticket',
             $ticket,
             array(
-                'ticket_layout' => $this->getDoctrine()->getManager()->getRepository('DeskPRO:TicketLayout')->find(1),
                 'person' => $person
             )
         );

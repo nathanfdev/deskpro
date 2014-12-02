@@ -57,8 +57,7 @@ class TicketsController extends AbstractController
     {
         $form = $this->createForm('deskpro_ticket', $ticket, array(
             'person' => $this->getUser(),
-            'ticket_visibility' => 'edit',
-            'ticket_layout' => $this->getDoctrine()->getManager()->getRepository('DeskPRO:TicketLayout')->find(1)
+            'ticket_visibility' => 'edit'
         ));
 
         $form->handleRequest($request);

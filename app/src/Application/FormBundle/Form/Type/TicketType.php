@@ -38,6 +38,7 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Form\TicketFormContext;
 use Application\FormBundle\FormFields;
+use Application\FormBundle\TicketLayout\TicketLayoutFactory;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -55,9 +56,15 @@ class TicketType extends AbstractType
      */
     private $field_manager;
 
-    public function __construct(FormFieldManager $field_manager)
+    /**
+     * @var \Application\FormBundle\TicketLayout\TicketLayoutFactory
+     */
+    private $ticket_layout_factory;
+
+    public function __construct(FormFieldManager $field_manager, TicketLayoutFactory $ticket_layout_factory)
     {
         $this->field_manager = $field_manager;
+        $this->ticket_layout_factory = $ticket_layout_factory;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -68,8 +75,10 @@ class TicketType extends AbstractType
 
     public function postSubmitDataEvent(FormEvent $event)
     {
-        $ticket = $event->getData();
-        $ticket->addMessage($event->getForm()->get('message')->getData());
+        if ($event->getForm()->has('message')) {
+            $ticket = $event->getData();
+            $ticket->addMessage($event->getForm()->get('message')->getData());
+        }
     }
 
     public function preDataEvent(FormEvent $event)
@@ -77,12 +86,13 @@ class TicketType extends AbstractType
         $ticket = $event->getData();
         $form = $event->getForm();
         $config = $form->getConfig();
+        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
 
         $context = new TicketFormContext(
             $form,
             $ticket,
             $config->getOption('person'),
-            $config->getOption('ticket_layout'),
+            $layout,
             $config->getOption('ticket_view_context'),
             $config->getOption('ticket_visibility')
         );
@@ -111,7 +121,6 @@ class TicketType extends AbstractType
             'method'              => 'POST'
         ));
         $resolver->setRequired(array(
-            'ticket_layout',
             'person'
         ));
         $resolver->addAllowedValues(array(
@@ -122,7 +131,6 @@ class TicketType extends AbstractType
             )
         ));
         $resolver->setAllowedTypes(array(
-            'ticket_layout' => 'Application\\DeskPRO\\Entity\\TicketLayout',
             'person'        => 'Application\\DeskPRO\\Entity\\Person'
         ));
     }
