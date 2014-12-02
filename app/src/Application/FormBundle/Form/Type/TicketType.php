@@ -44,6 +44,9 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TicketType extends AbstractType
 {
@@ -191,7 +194,13 @@ class TicketType extends AbstractType
 
     private function addSubject(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('subject', 'text', array());
+        $form_context->getForm()->add('subject', 'text', array(
+            'required' => true,
+            'constraints' => array(
+                new NotBlank(array('message' => 'This value is required')),
+                new Length(array('min' => 5, 'minMessage' => 'The subject must be at least 5 characters in length'))
+            )
+        ));
     }
 
     private function addMessage(TicketFormContext $form_context, LayoutField $field)
@@ -206,7 +215,11 @@ class TicketType extends AbstractType
     private function addUserEmail(TicketFormContext $form_context, LayoutField $field)
     {
         $form_context->getForm()->add('email', 'email', array(
-            'property_path' => 'person.primary_email'
+            'property_path' => 'person.primary_email',
+            'constraints' => array(
+                new NotBlank(array('message' => 'Please provide us with your email')),
+                new Email(array('message' => 'This email adddress is not valid')),
+            )
         ));
     }
 
