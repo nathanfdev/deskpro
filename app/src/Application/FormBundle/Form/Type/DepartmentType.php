@@ -34,12 +34,32 @@
 
 namespace Application\FormBundle\Form\Type;
 
-use Doctrine\ORM\EntityRepository;
+use Application\FormBundle\Form\DataTransformer\EntityToIdTransformer;
+use Application\FormBundle\Heirarchy\HeirarchyGenerator;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class DepartmentType extends AbstractType
 {
+    /**
+     * @var \Application\FormBundle\Heirarchy\HeirarchyGenerator
+     */
+    private $heirarchy_generator;
+
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    public function __construct(HeirarchyGenerator $heirarchy, EntityManager $em)
+    {
+        $this->heirarchy_generator = $heirarchy;
+        $this->em = $em;
+    }
+
     public function getName()
     {
         return 'deskpro_department';
@@ -47,23 +67,27 @@ class DepartmentType extends AbstractType
 
     public function getParent()
     {
-        return 'deskpro_heirarchical_entity';
+        return 'choice';
     }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addModelTransformer(new EntityToIdTransformer($this->em->getRepository('DeskPRO:Department')));;
+    }
+
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        // IMPORTANT TODO: We need to pass in the "person" object that is viewing this form and inject a service to get us
-        // the correct Language entities. We can pass these correct "secure" departments in directly instead of this query builder.
+        $heirarchy_generator = $this->heirarchy_generator;
+
+        $resolver->setRequired(array('person'));
+
         $resolver->setDefaults(array(
             'class'         => 'Application\\DeskPRO\\Entity\\Department',
             'property'      => 'title',
             'empty_data'    => null,
-            'query_builder' => function (EntityRepository $repo) {
-                    return $repo
-                        ->createQueryBuilder('d')
-                        ->select('d')
-                        ->andWhere('d.is_tickets_enabled = true')
-                        ->addOrderBy('d.display_order');
+            'choice_list'   => function(Options $options) use ($heirarchy_generator) {
+                    return $heirarchy_generator->generateTicketDepartmentsHeirarchy($options['person'])->getChoiceList();
                 }
         ));
     }

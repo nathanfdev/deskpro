@@ -161,7 +161,26 @@ class PortalPermissionsManager
         $this->conn->executeQuery('REPLACE INTO settings SET name = "'.static::CACHE_TIMESTAMP_SETTING_NAME.'", value = '.time());
 
         // force a reload of global settings
-        return $this->settingsResolver->getGlobalSettings(true)->get(static::CACHE_TIMESTAMP_SETTING_NAME);
+        $this->settingsResolver->getGlobalSettings(true)->get(static::CACHE_TIMESTAMP_SETTING_NAME);
+    }
+
+    public function getAllowedDepartmentIds(Person $person)
+    {
+        $cache_key = $this->getCacheTimestamp().'-'.'deps'.'-'.$this->getCacheKeyForPerson($person);
+
+        // TODO: this is just returning back all departments. add logic in the closure for actual permission logic.
+        $that = $this;
+        return $this->cache->get($cache_key, function() use ($person, $that) {
+            $ids = $that->getEm()->createQuery('SELECT d.id FROM DeskPRO:Department d')->getScalarResult();
+            return array_map(function($val) {
+                return $val['id'];
+            }, $ids);
+        });
+    }
+
+    public function getEm()
+    {
+        return $this->em;
     }
 
     /**
