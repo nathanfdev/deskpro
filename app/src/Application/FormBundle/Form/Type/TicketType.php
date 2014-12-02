@@ -68,8 +68,8 @@ class TicketType extends AbstractType
 
     public function postSubmitDataEvent(FormEvent $event)
     {
-        // add the message to the ticket
-        $event->getData()->addMessage($event->getForm()->get('message')->getData());
+        $ticket = $event->getData();
+        $ticket->addMessage($event->getForm()->get('message')->getData());
     }
 
     public function preDataEvent(FormEvent $event)
