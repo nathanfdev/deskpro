@@ -48,6 +48,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 			width: 350
 		}
 
+		if (Modernizr.localstorage) {
+			if (localStorage['apps_sidebar_state'] && localStorage['apps_sidebar_state'] == 'open') {
+				this.appsSidebar.visible = true;
+			}
+			if (localStorage['apps_sidebar_width']) {
+				this.appsSidebar.width = localStorage['apps_sidebar_width'];
+			}
+		}
+
 		this.agentNotifyListShown = false;
 
 		this.paneVis = {
@@ -1319,10 +1328,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.AppPlatform.start();
 
 		this.ngModule = this.AppPlatform.getNgModule();
-		this.ngModule.dpInjector = angular.element(document).injector();
+		this.ngModule.dpInjector = window.AppPlatform.getNgInjector();
 
 		// injector required at init stage, as AppPlatform initiated after all $scope vars filled
-		angular.element(document).injector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
+		window.AppPlatform.getNgInjector().invoke(['$rootScope', '$q', '$timeout', function($rootScope, $q, $timeout) {
 			self.$scope = $rootScope;
 			self.$q = $q;
 			self.$timeout = $timeout;
@@ -2861,7 +2870,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 								"CloudFlare Network Error: " + message,
 								'URL: ' + ajaxOptions.url,
 								'agent',
-								1
+								1,
+								true
 							);
 						}
 						// Try reloading the interface

@@ -33,8 +33,8 @@
 
 namespace Application\DeskPRO\EmailGateway;
 
-use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\Entity\EmailSource;
 use Orb\Log\Logger;
 
@@ -70,6 +70,7 @@ class RunnerExecSource
      */
     private $from_headers = array('from');
 
+
     /**
      * @param EmailSource         $source
      * @param AbstractReader      $reader
@@ -78,12 +79,13 @@ class RunnerExecSource
      */
     public function __construct(EmailSource $source, AbstractReader $reader = null, EmailAccountManager $account_manager, Logger $logger = null)
     {
-        $this->source          = $source;
-        $this->account         = $source->email_account;
-        $this->reader          = $reader;
-        $this->logger          = $logger ?: new Logger();
+        $this->source  = $source;
+        $this->account = $source->email_account;
+        $this->reader  = $reader;
+        $this->logger  = $logger ?: new Logger();
         $this->account_manager = $account_manager;
     }
+
 
     /**
      * @param array $from_headers
@@ -119,7 +121,7 @@ class RunnerExecSource
         try {
             $reader = $this->getReader();
         } catch (\Exception $e) {
-            $this->logger->logDebug("Exception while decoding: ".$e->getMessage());
+            $this->logger->logDebug("Exception while decoding: " . $e->getMessage());
 
             return array(
                 'status'     => 'rejected',
@@ -188,6 +190,7 @@ class RunnerExecSource
         return $result;
     }
 
+
     /**
      * @return array
      */
@@ -198,15 +201,16 @@ class RunnerExecSource
 
         if ($pre_processor->isValid()) {
             return array(
-                'status' => 'okay',
+                'status' => 'okay'
             );
         } else {
             return array(
-                'status'     => $pre_processor->getErrorType() ?: 'error',
-                'error_code' => $pre_processor->getErrorCode(),
+                'status' => $pre_processor->getErrorType() ?: 'error',
+                'error_code' => $pre_processor->getErrorCode()
             );
         }
     }
+
 
     /**
      * @return array
@@ -220,8 +224,8 @@ class RunnerExecSource
         );
         if (!$proc) {
             return array(
-                'status'     => 'rejected',
-                'error_code' => 'invalid_address',
+                'status' => 'rejected',
+                'error_code' => 'invalid_address'
             );
         }
 
@@ -229,14 +233,15 @@ class RunnerExecSource
 
         if ($proc->isValid()) {
             return array(
-                'status'              => 'okay',
+                'status' => 'okay',
                 'created_object_type' => $proc->getCreatedObjectType(),
                 'created_object_id'   => $proc->getCreatedObjectId(),
+                'created_object_info' => $proc->getCreatedObjectInfo()
             );
         } else {
             return array(
-                'status'     => $proc->getErrorType() ?: 'error',
-                'error_code' => $proc->getErrorCode(),
+                'status' => $proc->getErrorType() ?: 'error',
+                'error_code' => $proc->getErrorCode()
             );
         }
     }

@@ -130,6 +130,7 @@ class ManifestReader
                 'author.email',
                 'author.link',
                 'tags',
+				'trigger_events',
                 'settings_def',
             );
 
@@ -139,7 +140,7 @@ class ManifestReader
                 $setter = Strings::underscoreToCamelCase('set_'.str_replace('.', '_', $f));
                 $value  = Arrays::getValue($this->data, $f, '___dp_unset___');
                 if ($value === '___dp_unset___') {
-                    if ($f == 'tags' || $f == 'is_native') {
+					if ($f == 'tags' || $f == 'is_native' || $f == 'trigger_events') {
                         // allowed to be unset
                         continue;
                     }
@@ -150,6 +151,12 @@ class ManifestReader
                     } else {
                         $this->manifest->$setter($value);
                     }
+				} else if ($f == 'trigger_events') {
+					if (!is_array($value)) {
+						$this->error_details[] = array('invalid', $f);
+					} else {
+						$this->manifest->$setter($value);
+					}
                 } elseif ($f == 'tags') {
                     if (!is_array($value)) {
                         $this->error_details[] = array('invalid', $f);

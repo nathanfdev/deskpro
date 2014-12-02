@@ -246,6 +246,15 @@ class Choice extends HandlerAbstract
 
         $data = Arrays::removeFalsey($data);
 
+		// - Choice values are always ints
+		// But if a multi-select is sent via JS in some old JS code
+		// it's possible a JS null value is sent, which when sent as a POST
+		// to PHP becomes the string 'null', which in turn will become a validation error
+		// - So this is removing those possible 'null' strings
+		$data = array_filter($data, function($d) {
+			return $d !== 'null';
+		});
+
         #------------------------------
         # Validate selections
         #------------------------------

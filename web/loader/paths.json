@@ -13,6 +13,7 @@
   "angularSlider":                   "bower_components/angular-slider/slider",
   "angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
+  "angularBootstrapDatetime":        "bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js",
   "angularUiDatetime":               "vendor/ui-datetime",
 
   "ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
@@ -33,7 +34,7 @@
   "canvas-to-blob":                  "bower_components/blueimp-canvas-to-blob/js/canvas-to-blob.min",
   "underscore":                      "bower_components/underscore/underscore-min",
   "momentTimezone":                  "vendor/moment-timezone",
-  "moment":                          "bower_components/moment/min/moment-with-langs.min",
+  "moment":                          "bower_components/moment/min/moment-with-locales.min",
   "aceEditor":                       "bower_components/ace-builds/src-min-noconflict/ace",
   "stacktrace":                      "bower_components/stacktrace/stacktrace",
   "bootstrapModal":                  "bower_components/bootstrap/js/modal",
@@ -52,7 +53,12 @@
   "ZeroClipboard":                   "bower_components/zeroclipboard/dist/ZeroClipboard",
   "ngClip":                          "bower_components/ng-clip/src/ngClip",
 
+  "AgentApp":                        "empty:",
+  "AppPlatform":                     "empty:",
+  "AppPlatformConfig":               "empty:",
+
   "AdminLoad":                       "app/Admin/AdminLoad",
+  "AgentLoad":                       "app/Agent/AgentLoad",
   "CloudAdminLoad":                  "app/Admin/Cloud/CloudAdminLoad",
   "AdminUpgradeLoad":                "app/AdminUpgrade/AdminUpgradeLoad",
   "AdminStartLoad":                  "app/AdminStart/AdminStartLoad",
@@ -63,6 +69,7 @@
   "AdminRouting":                    "app/Admin/Resources/config/routing",
   "AdminUpgrade":                    "app-build/AdminUpgrade",
   "AdminStart":                      "app-build/AdminStart",
+  "Agent":                           "app-build/Agent",
   "Reports":                         "app-build/Reports",
   "ReportsRouting":                  "app/Reports/Resources/config/routing"
 }

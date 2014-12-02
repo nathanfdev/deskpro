@@ -174,6 +174,9 @@ class ExecTriggers implements TicketSaveActionInterface, ErrorCheckedInterface
             case 'user':
                 $mode_var = $trigger->by_user_mode;
                 break;
+			case 'system':
+				$mode_var = $trigger->by_app_mode;
+				break;
         }
         if ($mode_var) {
             $is_method_match = in_array($context->getEventMethod(), $mode_var);

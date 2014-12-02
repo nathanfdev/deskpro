@@ -741,6 +741,7 @@ class UserChatController extends AbstractController
             $client_messages = $this->em->getRepository('DeskPRO:ClientMessage')->getMessageData(
                 $this->person,
                 $this->session,
+                true,
                 $this->in->getUint('client_messages_since')
             );
         }

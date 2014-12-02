@@ -812,19 +812,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				expandBtn.addClass('open');
 			}
 		});
-		
-		if (this.meta.jiraEnabled) {
-			var jiraWidget = new DeskPRO.Agent.Jira.Widget({
-				ticketId: self.meta.ticket_id,
-				baseId: self.meta.baseId,
-				defaultProject: self.meta.jiraDefaultProject
-			});
-			this.addEvent('destroy', function() {
-				if (jiraWidget) {
-					jiraWidget.destroy();
-				}
-			});
-		}
 	},
 
 	setTicketReplyBox: function(rb) {
@@ -1583,7 +1570,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 	_initTicketMessageClipped: function(article, isImgUpdate) {
 		var self = this;
-		var h = article.find('div.body-text').height();
+		var h = article.find('div.body-text-container').height();
 		var doClipping = false;
 		var allArticles = null, idx;
 		var isFirst = false;
@@ -1596,8 +1583,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 				isFirst = true;
 				if (h >= 1200) {
 					doClipping = true;
-				} else {
-					doClipping = false;
 				}
 			} else {
 				doClipping = true;
@@ -1612,22 +1597,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 		if (doClipping) {
 			if (!article.hasClass('with-clipped-body')) {
-				article.addClass('with-clipped-body');
 				article.find('.fade-bar-longmsg').on('click', function(ev) {
 					ev.stopPropagation();
 					article.addClass('clipped-show');
 				});
 			}
+			article.addClass('with-clipped-body');
 		} else {
-			if (article.hasClass('with-clipped-body')) {
-				article.removeClass('with-clipped-body');
-			}
+			article.removeClass('with-clipped-body');
 		}
 
 		// Images might change the visible height once loaded
 		if (!isImgUpdate) {
 			var throttled = _.throttle(function () { self._initTicketMessageClipped(article, true); }, 1000);
-			article.find('div.body-text').find('img').on('load', function () {
+			article.find('div.body-text-container').find('img').on('load', function () {
 				throttled();
 			});
 		}

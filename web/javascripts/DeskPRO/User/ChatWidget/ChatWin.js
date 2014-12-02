@@ -277,6 +277,11 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			});
 		}
 
+		// Reset spamtrap fields
+		$('#st_name').val('')
+		$('#st_email').val('');
+		$('#st_email2').val('yes');
+
 		$('.auth-popup').click(function(ev) {
 			ev.preventDefault();
 			window.open($(this).attr('href'),'dpauth','width=600,height=400,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=0');
@@ -555,6 +560,22 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 			value: message
 		});
 
+		// Spam trap vars
+		if (!this.conversationId) {
+			data.push({
+				name: 'full_name',
+				value: $('#st_name').val()
+			});
+			data.push({
+				name: 'email_address',
+				value: $('#st_email').val()
+			});
+			data.push({
+				name: 'email_address2',
+				value: $('#st_email2').val()
+			});
+		}
+
 		this.addMessageRow({
 			author_type: 'user',
 			content: message
@@ -577,7 +598,7 @@ DeskPRO.User.WebsiteWidget.ChatWin = new Orb.Class({
 				}
 
 				if (data.conversation_id) {
-					conversationId = data.conversation_id;
+					this.conversationId = data.conversation_id;
 				}
 
 				if (this.ajaxPoller.disable) {

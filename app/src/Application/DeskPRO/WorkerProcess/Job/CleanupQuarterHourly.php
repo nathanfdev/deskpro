@@ -38,124 +38,113 @@ use Application\DeskPRO\App;
 
 class CleanupQuarterHourly extends AbstractJob
 {
-    const DEFAULT_INTERVAL = 900;
+	const DEFAULT_INTERVAL = 900;
 
-    public function run()
-    {
-        $this->doRun();
-        App::getDb()->setIsolationDefault();
-    }
+	public function run()
+	{
+		$this->doRun();
+		App::getDb()->setIsolationDefault();
+	}
 
-    private function doRun()
-    {
-        #------------------------------
-        # Page cache
-        #------------------------------
+	private function doRun()
+	{
+		#------------------------------
+		# Page cache
+		#------------------------------
 
-        $cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
-        $cache->cleanup();
+		$cache = new \Application\DeskPRO\CacheInvalidator\UserPageCache();
+		$cache->cleanup();
 
-        #------------------------------
-        # sessions
-        #------------------------------
+		#------------------------------
+		# ticket locks
+		#------------------------------
 
-        $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));
-        $num = App::getDb()->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
+		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.lock_lifetime'));
+		$num = App::getDb()->executeUpdate("UPDATE tickets SET date_locked = null, locked_by_agent = null  WHERE date_locked < ?", array($datetime));
 
-        if ($num) {
-            $this->logStatus("Cleaned up $num stale sessions");
-        }
+		if ($num) {
+			$this->logStatus("Cleaned up $num ticket locks");
+		}
 
-        #------------------------------
-        # ticket locks
-        #------------------------------
+		#------------------------------
+		# Agent alerts
+		#------------------------------
 
-        $datetime = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.lock_lifetime'));
-        $num = App::getDb()->executeUpdate("UPDATE tickets SET date_locked = null, locked_by_agent = null  WHERE date_locked < ?", array($datetime));
+		if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
+			$datetime = date('Y-m-d H:i:s', time() - $maxage);
+			$num = App::getDb()->executeUpdate("
+				DELETE FROM agent_alerts
+				WHERE date_created < ? AND is_dismissed = 1
+			", array($datetime));
 
-        if ($num) {
-            $this->logStatus("Cleaned up $num ticket locks");
-        }
+			if ($num) {
+				$this->logStatus("Cleaned up $num agent alerts");
+			}
+		}
 
-        #------------------------------
-        # Agent alerts
-        #------------------------------
+		#------------------------------
+		# Old API logs
+		#------------------------------
 
-        if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
-            $datetime = date('Y-m-d H:i:s', time() - $maxage);
-            $num = App::getDb()->executeUpdate("
-                DELETE FROM agent_alerts
-                WHERE date_created < ? AND is_dismissed = 1
-            ", array($datetime));
+		App::$container->getEm()->getRepository('DeskPRO:ApiKeyLog')->cleanup();
 
-            if ($num) {
-                $this->logStatus("Cleaned up $num agent alerts");
-            }
-        }
+		#------------------------------
+		# Update table counts
+		#------------------------------
 
-        #------------------------------
-        # Old API logs
-        #------------------------------
+		$counts = array();
+		$counts['tickets']                    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets`");
+		$counts['tickets.resolved']           = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
+		$counts['tickets.archive_validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
+		$counts['tickets.archive_spam']       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
+		$counts['tickets.archive_deleted']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
+		$counts['tickets.archive_archived']   = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'archived'");
+		$counts['people']                     = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `people`");
 
-        App::$container->getEm()->getRepository('DeskPRO:ApiKeyLog')->cleanup();
+		foreach ($counts as $k => $v) {
+			App::getDb()->replace('settings', array(
+				'name'  => "core_tablecounts.$k",
+				'value' => (int)$v
+			));
+		}
 
-        #------------------------------
-        # Update table counts
-        #------------------------------
+		// Fetch in agent context
+		$filters = App::getOrm()->createQuery("
+			SELECT f
+			FROM DeskPRO:TicketFilter f
+			WHERE f.sys_name LIKE 'archive_%' AND f.sys_name != 'archive_resolved' AND f.sys_name != 'archive_awaiting_user'
+		")->execute();
 
-        $counts = array();
-        $counts['tickets']                    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets`");
-        $counts['tickets.resolved']           = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets_search_active` WHERE `status` = 'resolved'");
-        $counts['tickets.archive_validating'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'validating'");
-        $counts['tickets.archive_spam']       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'spam'");
-        $counts['tickets.archive_deleted']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'hidden' AND `hidden_status` = 'deleted'");
-        $counts['tickets.archive_archived']   = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `tickets` WHERE `status` = 'archived'");
-        $counts['people']                     = App::getDb()->fetchColumn("SELECT COUNT(*) FROM `people`");
+		$inserts = array();
 
-        foreach ($counts as $k => $v) {
-            App::getDb()->replace('settings', array(
-                'name'  => "core_tablecounts.$k",
-                'value' => (int)$v
-            ));
-        }
+		foreach (App::getContainer()->getAgentData()->getAgents() as $agent) {
+			$agent->loadHelper('Agent');
+			$agent->loadHelper('AgentTeam');
+			$agent->loadHelper('AgentPermissions');
+			$agent->loadHelper('PermissionsManager');
+			$agent->loadHelper('HelpMessages');
+			$agent->loadHelper('AgentPrefs');
 
-        // Fetch in agent context
-        $filters = App::getOrm()->createQuery("
-            SELECT f
-            FROM DeskPRO:TicketFilter f
-            WHERE f.sys_name LIKE 'archive_%' AND f.sys_name != 'archive_resolved' AND f.sys_name != 'archive_awaiting_user'
-        ")->execute();
+			foreach ($filters as $filter) {
+				/** @var \Application\DeskPRO\Entity\TicketFilter $filter*/
+				$searcher = $filter->getSearcher();
+				$searcher->setPersonContext($agent);
 
-        $inserts = array();
+				$count = $searcher->getCount();
 
-        foreach (App::getContainer()->getAgentData()->getAgents() as $agent) {
-            $agent->loadHelper('Agent');
-            $agent->loadHelper('AgentTeam');
-            $agent->loadHelper('AgentPermissions');
-            $agent->loadHelper('PermissionsManager');
-            $agent->loadHelper('HelpMessages');
-            $agent->loadHelper('AgentPrefs');
+				$inserts[] = array(
+					'person_id'   => $agent->id,
+					'name'        => "ticket_counts.{$filter->sys_name}",
+					'value_str'   => $count,
+					'value_array' => null,
+					'date_expire' => null
+				);
+			}
+		}
 
-            foreach ($filters as $filter) {
-                /** @var \Application\DeskPRO\Entity\TicketFilter $filter*/
-                $searcher = $filter->getSearcher();
-                $searcher->setPersonContext($agent);
-
-                $count = $searcher->getCount();
-
-                $inserts[] = array(
-                    'person_id'   => $agent->id,
-                    'name'        => "ticket_counts.{$filter->sys_name}",
-                    'value_str'   => $count,
-                    'value_array' => null,
-                    'date_expire' => null
-                );
-            }
-        }
-
-        if ($inserts) {
-            App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
-            App::getDb()->batchInsert('people_prefs', $inserts, true);
-        }
-    }
+		if ($inserts) {
+			App::getDb()->executeUpdate("DELETE FROM people_prefs WHERE name LIKE 'ticket_counts.%'");
+			App::getDb()->batchInsert('people_prefs', $inserts, true);
+		}
+	}
 }

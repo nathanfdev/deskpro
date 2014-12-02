@@ -50,214 +50,256 @@ use Orb\Util\Strings;
  */
 class AppInstance extends DomainObject
 {
-    /**
-     * @var int
-     */
-    protected $id = null;
+	/**
+	 * @var int
+	 */
+	protected $id = null;
 
-    /**
-     * @var \Application\DeskPRO\Entity\AppPackage
-     */
-    protected $package;
+	/**
+	 * @var \Application\DeskPRO\Entity\AppPackage
+	 */
+	protected $package;
 
-    /**
-     * @var string
-     */
-    protected $title;
+	/**
+	 * @var string
+	 */
+	protected $title;
 
-    /**
-     * @var string
-     */
-    protected $auth_key;
+	/**
+	 * @var string
+	 */
+	protected $auth_key;
 
-    /**
-     * @var string
-     */
-    protected $secret_key;
+	/**
+	 * @var string
+	 */
+	protected $secret_key;
 
-    /**
-     * @var array
-     */
-    protected $settings = null;
+	/**
+	 * @var array
+	 */
+	protected $settings = null;
 
-    /**
-     * @var \DateTime
-     */
-    protected $date_created;
+	/**
+	 * @var \DateTime
+	 */
+	protected $date_created;
 
-    public function __construct()
-    {
-        $this['date_created'] = new \DateTime();
-        $this['secret_key']   = Strings::random(40, Strings::CHARS_ALPHANUM_IU);
-        $this['auth_key']     = Strings::random(40, Strings::CHARS_ALPHANUM_IU);
-    }
+	public function __construct()
+	{
+		$this['date_created'] = new \DateTime();
+		$this['secret_key']   = Strings::random(40, Strings::CHARS_ALPHANUM_IU);
+		$this['auth_key']     = Strings::random(40, Strings::CHARS_ALPHANUM_IU);
+	}
 
-    /**
-     * @return int
-     */
-    public function getId()
-    {
-        return $this->id;
-    }
+	/**
+	 * @return int
+	 */
+	public function getId()
+	{
+		return $this->id;
+	}
 
-    /**
-     * Set settings
-     *
-     * @param array $settings
-     */
-    public function setSettings(array $settings = null)
-    {
-        if (!$settings) {
-            $this->setModelField('settings', null);
-        } else {
-            $this->setModelField('settings', $settings);
-        }
-    }
 
-    /**
-     * Get settings
-     *
-     * @return array
-     */
-    public function getSettings()
-    {
-        return $this->settings ? $this->settings : array();
-    }
+	/**
+	 * Set settings
+	 *
+	 * @param array $settings
+	 */
+	public function setSettings(array $settings = null)
+	{
+		if (!$settings) {
+			$this->setModelField('settings', null);
+		} else {
+			$this->setModelField('settings', $settings);
+		}
+	}
 
-    /**
-     * @param  string $name
-     * @param  mixed  $default
-     * @return mixed
-     */
-    public function getSetting($name, $default = null)
-    {
-        return isset($this->settings[$name]) ? $this->settings[$name] : $default;
-    }
 
-    /**
-     * Get settings that we will output to JS (eg non-native only)
-     *
-     * @return array
-     */
-    public function getOutputSettings()
-    {
-        if (!$this->settings) {
-            return $this->settings;
-        }
+	/**
+	 * Get settings
+	 *
+	 * @return array
+	 */
+	public function getSettings()
+	{
+		return $this->settings ? $this->settings : array();
+	}
 
-        $native_only = array();
 
-        foreach ($this->package->settings_def as $info) {
-            if (isset($info['native_only']) && $info['native_only']) {
-                $native_only[$info['name']] = true;
-            }
-        }
+	/**
+	 * @param string $name
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getSetting($name, $default = null)
+	{
+		return isset($this->settings[$name]) ? $this->settings[$name] : $default;
+	}
 
-        if (!$native_only) {
-            return $this->settings;
-        }
+	/**
+	 * @param $name
+	 * @param $value
+	 */
+	public function setSetting($name, $value)
+	{
+		$settings = $this->settings;
+		$settings[$name] = $value;
+		$this->setModelField('settings', $settings);
+	}
 
-        $ret = $this->settings;
-        foreach ($native_only as $name => $x) {
-            unset($ret[$name]);
-        }
 
-        return $ret;
-    }
+	/**
+	 * Get settings that we will output to JS (eg non-native only)
+	 *
+	 * @return array
+	 */
+	public function getOutputSettings()
+	{
+		if (!$this->settings) {
+			return $this->settings;
+		}
 
-    /**
-     * {@inheritDoc}
-     */
-    public function toApiData($primary = true, $deep = true, array $visited = array())
-    {
-        $data = array();
+		$native_only = array();
 
-        $data['id']              = $this->id;
-        $data['package_name']    = $this->package->name;
-        $data['title']           = $this->title;
-        $data['secret_key']      = $this->secret_key;
-        $data['auth_key']        = $this->auth_key;
-        $data['settings']        = $this->settings ?: array();
-        $data['date_created']    = $this->date_created->format('Y-m-d H:i:s');
-        $data['date_created_ts'] = $this->date_created->getTimestamp();
+		foreach ($this->package->settings_def as $info) {
+			if (isset($info['native_only']) && $info['native_only']) {
+				$native_only[$info['name']] = true;
+			}
+		}
 
-        if ($primary) {
-            $data['package'] = $this->package->toApiData(false, $deep, $visited);
-        }
+		if (!$native_only) {
+			return $this->settings;
+		}
 
-        return $data;
-    }
+		$ret = $this->settings;
+		foreach ($native_only as $name => $x) {
+			unset($ret[$name]);
+		}
 
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
+		return $ret;
+	}
 
-    public static function loadMetadata(ClassMetadata $metadata)
-    {
-        $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
-        $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
-        $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AppInstance';
-        $metadata->setPrimaryTable(array(
-            'name' => 'app_instances',
-        ));
 
-        $metadata->mapField(array(
-            'columnName' => 'id',
-            'fieldName'  => 'id',
-            'type'       => 'integer',
-            'id'         => true,
-            'nullable'   => false,
-        ));
+	/**
+	 * @param string $type Event type (update, newticket, newreply)
+	 * @return array
+	 */
+	public function getTriggerEvents($type)
+	{
+		$trigger_events = $this->package->trigger_events;
+		if (!$trigger_events || empty($trigger_events[$type])) {
+			return array();
+		}
 
-        $metadata->mapField(array(
-            'columnName' => 'title',
-            'fieldName'  => 'title',
-            'type'       => 'string',
-            'length'     => 255,
-            'nullable'   => false,
-        ));
+		$events = array();
 
-        $metadata->mapField(array(
-            'columnName' => 'secret_key',
-            'fieldName'  => 'secret_key',
-            'type'       => 'string',
-            'length'     => 40,
-            'nullable'   => false,
-        ));
+		foreach ($trigger_events[$type] as $name => $label) {
+			$events[] = array(
+				'event_id'  => $this->package->name . '.' . $this->id . '.' . $name,
+				'name'      => $name,
+				'label'     => $label,
+			);
+		}
 
-        $metadata->mapField(array(
-            'columnName' => 'auth_key',
-            'fieldName'  => 'auth_key',
-            'type'       => 'string',
-            'length'     => 40,
-            'nullable'   => false,
-        ));
+		return $events;
+	}
 
-        $metadata->mapField(array(
-            'columnName' => 'settings',
-            'fieldName'  => 'settings',
-            'type'       => 'json_array',
-            'nullable'   => true,
-        ));
 
-        $metadata->mapField(array(
-            'columnName' => 'date_created',
-            'fieldName'  => 'date_created',
-            'type'       => 'datetime',
-            'nullable'   => false,
-        ));
+	/**
+	 * {@inheritDoc}
+	 */
+	public function toApiData($primary = true, $deep = true, array $visited = array())
+	{
+		$data = array();
 
-        $metadata->mapManyToOne(array(
-            'fieldName'    => 'package',
-            'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
-            'joinColumns'  => array(array(
-                'name'                 => 'package_name',
-                'referencedColumnName' => 'name',
-                'nullable'             => true,
-                'onDelete'             => 'CASCADE',
-                'fetch'                => 'EAGER',
-            )),
-        ));
-    }
+		$data['id']              = $this->id;
+		$data['package_name']    = $this->package->name;
+		$data['title']           = $this->title;
+		$data['secret_key']      = $this->secret_key;
+		$data['auth_key']        = $this->auth_key;
+		$data['settings']        = $this->settings ?: array();
+		$data['date_created']    = $this->date_created->format('Y-m-d H:i:s');
+		$data['date_created_ts'] = $this->date_created->getTimestamp();
+
+		if ($primary) {
+			$data['package'] = $this->package->toApiData(false, $deep, $visited);
+		}
+
+		return $data;
+	}
+
+
+	############################################################################
+	# Doctrine Metadata
+	############################################################################
+
+	public static function loadMetadata(ClassMetadata $metadata)
+	{
+		$metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
+		$metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
+		$metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\AppInstance';
+		$metadata->setPrimaryTable(array(
+			'name' => 'app_instances'
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'id',
+			'fieldName'  => 'id',
+			'type'       => 'integer',
+			'id'         => true,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'title',
+			'fieldName'  => 'title',
+			'type'       => 'string',
+			'length'     => 255,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'secret_key',
+			'fieldName'  => 'secret_key',
+			'type'       => 'string',
+			'length'     => 40,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'auth_key',
+			'fieldName'  => 'auth_key',
+			'type'       => 'string',
+			'length'     => 40,
+			'nullable'   => false,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'settings',
+			'fieldName'  => 'settings',
+			'type'       => 'json_array',
+			'nullable'   => true,
+		));
+
+		$metadata->mapField(array(
+			'columnName' => 'date_created',
+			'fieldName'  => 'date_created',
+			'type'       => 'datetime',
+			'nullable'   => false,
+		));
+
+		$metadata->mapManyToOne(array(
+			'fieldName'    => 'package',
+			'targetEntity' => 'Application\\DeskPRO\\Entity\\AppPackage',
+			'joinColumns'  => array(array(
+				'name'                 => 'package_name',
+				'referencedColumnName' => 'name',
+				'nullable'             => true,
+				'onDelete'             => 'CASCADE',
+				'fetch'                => 'EAGER',
+			))
+		));
+	}
 }

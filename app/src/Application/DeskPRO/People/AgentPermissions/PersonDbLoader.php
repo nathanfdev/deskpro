@@ -95,10 +95,21 @@ class PersonDbLoader
             return $this->perms;
         }
 
+        $has_all_perms = false;
+        $has_all_safe_perms = false;
+
         $agent_group_ids = array();
         foreach ($this->person->usergroups as $ug) {
             if ($ug->is_agent_group) {
                 $agent_group_ids[] = $ug->id;
+
+                if ($ug->sys_name) {
+                    if ($ug->sys_name == 'agent_all_perms') {
+                        $has_all_perms = $ug->id;
+                    } elseif ($ug->sys_name == 'agent_all_safe_perms') {
+                        $has_all_safe_perms = $ug->id;
+                    }
+                }
             }
         }
 
@@ -112,6 +123,26 @@ class PersonDbLoader
             WHERE (usergroup_id IN (?) OR person_id = ?)
                 AND value = 1
         ", array($agent_group_ids, $this->person['id']), array(Connection::PARAM_INT_ARRAY, \PDO::PARAM_INT));
+
+        if ($has_all_perms || $has_all_safe_perms) {
+            $names_loader = new PermissionNamesLoader();//TODO inject
+
+            if ($has_all_perms) {
+                $add = $names_loader->getNames();
+                $add_ugid = $has_all_perms;
+            } else {
+                $add = $names_loader->getSafeNames();
+                $add_ugid = $has_all_safe_perms;
+            }
+
+            foreach ($add as $n) {
+                $perm_recs[] = array(
+                    'name'         => $n,
+                    'usergroup_id' => $add_ugid,
+                    'person_id'    => null
+                );
+            }
+        }
 
         $this->perms = array(
             'effective' => array(),

@@ -311,7 +311,11 @@ class ProcessAgentFwd extends ProcessAbstract
             throw $e;
         }
 
-        return $ticket;
+        return array(
+            'ticket'               => $ticket,
+            'ticket_message'       => $ticket_message,
+            'agent_ticket_message' => $agent_ticket_message,
+        );
     }
 
     /**
@@ -554,7 +558,12 @@ class ProcessAgentFwd extends ProcessAbstract
             throw $e;
         }
 
-        return $ticket;
+        return array(
+            'via'                  => 'fwd',
+            'ticket'               => $ticket,
+            'agent_ticket_message' => $agent_ticket_message,
+            'user_ticket_message'  => $ticket_message
+        );
     }
 
     /**

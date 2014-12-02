@@ -7,6 +7,16 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
     init: ->
       @sourceId = parseInt(@$stateParams.id)
       @$scope.ds = @DpDateService
+
+      @$scope.showStatusHelp = =>
+        modalInstance = @$modal.open({
+          templateUrl: @getTemplatePath('EmailStatus/emailsource-status-code-modal.html'),
+          controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+            $scope.dismiss = ->
+              $modalInstance.dismiss()
+          ]
+        })
+
       return
 
     initialLoad: ->

@@ -4,8 +4,11 @@ namespace Application\DeskPRO\ORM\Unprivate;
 use Doctrine\ORM\Configuration, Doctrine\ORM\ORMException, Doctrine\ORM\UnitOfWork, Doctrine\ORM\Query, Doctrine\ORM\Internal, Doctrine\ORM\NativeQuery, Doctrine\ORM\QueryBuilder;
 use Exception;
 use Doctrine\Common\EventManager;
+use Doctrine\Common\Persistence\ObjectManager;
 use Doctrine\DBAL\Connection;
 use Doctrine\DBAL\LockMode;
+use Doctrine\ORM\Mapping\ClassMetadata;
+use Doctrine\ORM\Mapping\ClassMetadataFactory;
 use Doctrine\ORM\Query\ResultSetMapping;
 use Doctrine\ORM\Proxy\ProxyFactory;
 use Doctrine\ORM\Query\FilterCollection;
@@ -53,7 +56,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         if ($this->expressionBuilder === null) {
             $this->expressionBuilder = new Query\Expr;
         }
-
         return $this->expressionBuilder;
     }
     public function beginTransaction()
@@ -70,7 +72,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
             $return = call_user_func($func, $this);
             $this->flush();
             $this->conn->commit();
-
             return $return ?: true;
         } catch (Exception $e) {
             $this->close();
@@ -96,7 +97,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         if ( ! empty($dql)) {
             $query->setDql($dql);
         }
-
         return $query;
     }
     public function createNamedQuery($name)
@@ -108,13 +108,11 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         $query = new NativeQuery($this);
         $query->setSql($sql);
         $query->setResultSetMapping($rsm);
-
         return $query;
     }
     public function createNamedNativeQuery($name)
     {
         list($sql, $rsm) = $this->config->getNamedNativeQuery($name);
-
         return $this->createNativeQuery($sql, $rsm);
     }
     public function createQueryBuilder()
@@ -160,7 +158,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
                     $persister->refresh($sortedId, $entity, $lockMode);
                     break;
             }
-
             return $entity;         }
         $persister = $unitOfWork->getEntityPersister($class->name);
         switch ($lockMode) {
@@ -172,13 +169,11 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
                 }
                 $entity = $persister->load($sortedId);
                 $unitOfWork->lock($entity, $lockMode, $lockVersion);
-
                 return $entity;
             default:
                 if ( ! $this->getConnection()->isTransactionActive()) {
                     throw TransactionRequiredException::transactionRequired();
                 }
-
                 return $persister->load($sortedId, null, null, array(), $lockMode);
         }
     }
@@ -206,7 +201,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         }
         $entity = $this->proxyFactory->getProxy($class->name, $sortedId);
         $this->unitOfWork->registerManaged($entity, $sortedId, array());
-
         return $entity;
     }
     public function getPartialReference($entityName, $identifier)
@@ -222,7 +216,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         $class->setIdentifierValues($entity, $identifier);
         $this->unitOfWork->registerManaged($entity, $identifier, array());
         $this->unitOfWork->markReadOnly($entity);
-
         return $entity;
     }
     public function clear($entityName = null)
@@ -271,7 +264,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
             throw ORMInvalidArgumentException::invalidObject('EntityManager#merge()' , $entity);
         }
         $this->errorIfClosed();
-
         return $this->unitOfWork->merge($entity);
     }
     public function copy($entity, $deep = false)
@@ -365,7 +357,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
             default:
                 throw new \InvalidArgumentException("Invalid argument: " . $conn);
         }
-
         return new static($conn, $config, $conn->getEventManager());
     }
     public function getFilters()
@@ -373,7 +364,6 @@ class UnprivateEntityManager extends \Doctrine\ORM\EntityManager
         if (null === $this->filterCollection) {
             $this->filterCollection = new FilterCollection($this);
         }
-
         return $this->filterCollection;
     }
     public function isFiltersStateClean()

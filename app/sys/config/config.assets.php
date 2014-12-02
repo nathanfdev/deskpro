@@ -281,7 +281,7 @@ $CONFIG['agent_element_handlers'] = array(
         'javascripts/DeskPRO/Agent/ElementHandler/PasswordPrompt.js',
         'javascripts/DeskPRO/Agent/ElementHandler/OverlayFrame.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TimezoneSwitch.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
+        'javascripts/DeskPRO/Agent/ElementHandler/RadioExpander.js',
         'javascripts/DeskPRO/Agent/ElementHandler/FirstLogin.js',
         'javascripts/DeskPRO/Agent/ElementHandler/TwitterFeed.js',
 
@@ -412,97 +412,6 @@ $CONFIG['agent_misc'] = array(
         'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
         'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
         'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
-        'javascripts/DeskPRO/Agent/Jira/Widget.js',
-    )
-);
-
-/**
- * Admin UI specific
- */
-$CONFIG['admin_admin_ui'] = array(
-    'out' => 'js/admin-ui.js',
-    'files' => array(
-        'javascripts/DeskPRO/BasicWindow.js',
-        'javascripts/DeskPRO/Admin/Window.js',
-        'javascripts/DeskPRO/Admin/PopoutWindow.js',
-        'javascripts/DeskPRO/Admin/PopoutWindow.js',
-        'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
-        'javascripts/DeskPRO/Admin/TableReorder.js',
-        'javascripts/DeskPRO/Form/RuleBuilder.js',
-        'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
-        'javascripts/DeskPRO/Admin/RuleBuilder/TemplateEdit.js',
-        'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
-        'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',
-        'javascripts/DeskPRO/Agent/RuleBuilder/SelectNewOption.js',
-        'javascripts/DeskPRO/FormValidator/FormValidator.js',
-        'javascripts/DeskPRO/FormValidator/FieldValidator.js',
-        'javascripts/DeskPRO/FormValidator/LengthValidator.js',
-        'javascripts/DeskPRO/FormValidator/EmailValidator.js',
-        'javascripts/DeskPRO/FormValidator/RegexValidator.js',
-    )
-);
-
-/**
- * Admin UI specific
- */
-$CONFIG['admin_admin_handlers'] = array(
-    'out' => 'js/admin-handlers.js',
-    'files' => array(
-        'javascripts/DeskPRO/Admin/Departments/AjaxSave.js',
-        'javascripts/DeskPRO/Admin/Departments/AgentSelector.js',
-        'javascripts/DeskPRO/Admin/Departments/UsergroupSelector.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/HeaderSetupGuide.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/TicketPropertiesList.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/TaskQueueStatus.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/CustomFieldList.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/ChoiceBuilder.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/SimpleHierarchyBuilder.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/PortalNav.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/PortalToggle.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/PortalEditor.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/LabelsPage.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/RadioExpander.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/DashVersion.js',
-        'javascripts/DeskPRO/Admin/ElementHandler/DashNotice.js',
-    )
-);
-
-/**
- * Report specific
- */
-$CONFIG['report_graphs'] = array(
-    'out' 	=> 'js/report_graphs.js',
-    'files'	=> array(
-        'vendor/jquery/sparkline/jquery.sparkline.min.js',
-    ),
-);
-
-/**
- * Report builder specific
- */
-$CONFIG['report_builder'] = array(
-    'out' 	=> 'js/report_builder.js',
-    'files'	=> array(
-        'javascripts/DeskPRO/Report/ElementHandler/Builder/BuilderTabs.js',
-        'javascripts/DeskPRO/Report/ElementHandler/Builder/ListCollapse.js',
-        'javascripts/DeskPRO/Report/ElementHandler/Builder/ReportList.js',
-        'javascripts/DeskPRO/Report/ElementHandler/Builder/ReportList.js',
-        'javascripts/DeskPRO/Report/PageHandler/ReportBuilder.js',
-        'vendor/jquery/jquery.history.js',
-        'vendor/jquery/jquery.scrollTo.js',
-        'vendor/jquery/jquery.textarea-expander.js',
-        //'vendor/amcharts/javascript/amcharts.js',
-        //'vendor/amcharts/javascript/amfallback.js',
-        //'vendor/amcharts/javascript/raphael.js',
-        'vendor/amcharts/javascript/amcharts27.js',
-    ),
-);
-
-$CONFIG['report_report_ui'] = array(
-    'out' => 'js/report-ui.js',
-    'files' => array(
-        'javascripts/DeskPRO/Report/Window.js',
-        'javascripts/DeskPRO/Report/PageHandler/Basic.js',
     )
 );
 
@@ -638,14 +547,6 @@ $CONFIG['agent_vendor_out_css'] = array(
     )
 );
 
-$CONFIG['admin_interface_css'] = array(
-    'out' => 'css/admin-interface.css',
-    'filters' => array('less'),
-    'files' => array(
-        'stylesheets-less/admin/main.less',
-    )
-);
-
 $CONFIG['agent_interface_css1'] = array(
     'out' => 'css/agent-interface1.css',
     'filters' => array('less'),
@@ -665,7 +566,6 @@ $CONFIG['agent_interface_css2'] = array(
     'files' => array(
         'stylesheets-less/agent/dp-content-pane.less',
         'stylesheets-less/agent/agent.less',
-        'stylesheets-less/agent/jira.less',
     )
 );
 
@@ -695,14 +595,10 @@ $CONFIG['agent_vendors_css'] = array(
         'vendor/jquery/colorbox/colorbox.css',
         'vendor/select2/select2.css',
         'vendor/redactor/redactor.css',
-    )
-);
 
-$CONFIG['report_interface_css'] = array(
-    'out' => 'css/report-interface.css',
-    'filters' => array('less'),
-    'media' => 'screen',
-    'files' => array(
-        'stylesheets-less/report/main.less',
+        'vendor/bootstrap/css/common.css',
+        'vendor/bootstrap/css/modal.css',
+        'vendor/bootstrap/css/dropdown.css',
+        'vendor/bootstrap/css/table.css',
     )
 );

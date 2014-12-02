@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="person-{{ app.user.id }} {% for ug in app.user.usergroups %}person-ug-{{ ug.id }}{% endfor %}">
 <head>
 	<meta http-equiv="X-UA-Compatible" content="IE=Edge,chrome=1" />
 	<meta charset="utf-8" />

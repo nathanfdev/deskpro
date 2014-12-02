@@ -34,59 +34,19 @@
 
 namespace deskpro_jira;
 
-use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
+use Application\DeskPRO\JIRA\OAuthWrapper;
+use Application\DeskPRO\Service\JIRA;
 
 class InstallerHandler extends AbstractInstallerHandler
 {
-    /**
-     * {@inheritDoc}
-     */
-    public function install(InstallerContext $context)
-    {
-        $this->_doInstall($context);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function uninstall(InstallerContext $context)
-    {
-        $context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled', null);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function updateSettings(InstallerContext $context)
-    {
-        $this->_doInstall($context);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function updatePackage(InstallerContext $context)
-    {
-        $this->_doInstall($context);
-    }
-
-    /**
-     * @param InstallerContext $context
-     */
-    private function _doInstall(InstallerContext $context)
-    {
-        $enabled = 1;
-        if (!$context->getApp()->getSetting('jira_url') || !$context->getApp()->getSetting('jira_username') || !$context->getApp()->getSetting('jira_password')) {
-            $enabled = 0;
-        }
-
-        $context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.enabled',        $enabled);
-        $context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.baseUrl',        rtrim($context->getApp()->getSetting('jira_url'), '/').'/');
-        $context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.username',       $context->getApp()->getSetting('jira_username'));
-        $context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.password',       $context->getApp()->getSetting('jira_password'));
-        $context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultProject', $context->getApp()->getSetting('jira_default_project'));
-        $context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultTags',    $context->getApp()->getSetting('jira_default_tags'));
-        $context->getContainer()->getSettingsHandler()->setSetting('core.apps_jira.defaultPriority', $context->getApp()->getSetting('jira_default_priority'));
-    }
+	/**
+	 * {@inheritDoc}
+	 */
+	public function processSettings(InstallerContext $context, array $settings)
+	{
+		$old = $context->getApp()->getSettings() ?: array();
+		return array_merge($old, $settings);
+	}
 }

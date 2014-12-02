@@ -142,6 +142,13 @@ class NativeAppsSync
      */
     private function _syncAppsDir($path)
     {
+        $this->logger->debug("syncing apps dir: $path");
+
+        if (!is_dir($path)) {
+            $this->logger->debug("(no dir)");
+            return;
+        }
+
         $dir = dir($path);
         while (($f = $dir->read()) !== false) {
             $f_path = $path.'/'.$f;

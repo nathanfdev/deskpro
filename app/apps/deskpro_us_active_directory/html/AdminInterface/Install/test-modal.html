@@ -1,82 +1,80 @@
-<div class="modal-dialog">
-	<div class="modal-content">
-		<div class="modal-header">
-			<button type="button" class="close" ng-click="dismiss()">&times;</button>
-			<h4 class="modal-title">Test Settings</h4>
-		</div>
-		<div class="modal-body">
-			<div class="form-horizontal dp-form">
-				<div ng-hide="loading">
-					<div ng-show="!has_results">
-						<div class="panel panel-fill indent">
-							<div class="form-group">
-								<div class="col-sm-4">
-									<h3>Test Username</h3>
-								</div>
-								<div class="col-sm-8">
-									<input type="text" class="form-control" ng-model="test.username" />
-									<span class="help-block">Enter the username of a test user you know the password for.</span>
-								</div>
-							</div>
-							<div class="form-group">
-								<div class="col-sm-4">
-									<h3>Password</h3>
-								</div>
-								<div class="col-sm-8">
-									<input type="password" class="form-control" ng-model="test.password" autocomplete="off" />
-									<span class="help-block">Enter the password for your test user.</span>
-								</div>
-							</div>
-						</div>
-					</div>
-					<div ng-show="has_results">
-						<div ng-show="!error">
-							<h3 class="text-success">Success</h3>
-							<p>
-								Your settings appear to be valid.
-								<button class="btn btn-default" ng-show="!show_userdata" ng-click="show_userdata = true"><i class="fa fa-file-text-o"></i> Show raw user data</button>
-								<button class="btn btn-default" ng-show="!show_log" ng-click="show_log = true"><i class="fa fa-file-text-o"></i> Show log</button>
-							</p>
-						</div>
-						<div ng-show="error">
-							<h3 class="text-danger">Error</h3>
-							<p>
-								The system failed to authenticate your test username and password. Refer to the below log for more information.
-							</p>
-						</div>
-
-						<div ng-show="show_userdata">
-							<strong>Raw user data:</strong>
-							<div class="dp-log-display">
-								<textarea>{{raw_data}}</textarea>
-							</div>
-						</div>
-
-						<div ng-show="error || show_log">
-							<strong>Log:</strong>
-							<div class="dp-log-display">
-								<textarea>{{log}}</textarea>
-							</div>
-						</div>
-					</div>
-				</div>
-				<div ng-show="loading">
-					Please wait while your settings are being tested.
-				</div>
-			</div>
-		</div>
-		<div class="modal-footer">
+<div class="modal-content">
+	<div class="modal-header">
+		<button type="button" class="close" ng-click="dismiss()">&times;</button>
+		<h4 class="modal-title">Test Settings</h4>
+	</div>
+	<div class="modal-body">
+		<div class="form-horizontal dp-form">
 			<div ng-hide="loading">
 				<div ng-show="!has_results">
-					<button class="btn btn-info" ng-click="doTest()"><i class="fa fa-bolt"></i> Run Test</button>
+					<div class="panel panel-fill indent">
+						<div class="form-group">
+							<div class="col-sm-4">
+								<h3>Test Username</h3>
+							</div>
+							<div class="col-sm-8">
+								<input type="text" class="form-control" ng-model="test.username" />
+								<span class="help-block">Enter the username of a test user you know the password for.</span>
+							</div>
+						</div>
+						<div class="form-group">
+							<div class="col-sm-4">
+								<h3>Password</h3>
+							</div>
+							<div class="col-sm-8">
+								<input type="password" class="form-control" ng-model="test.password" autocomplete="off" />
+								<span class="help-block">Enter the password for your test user.</span>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div ng-show="has_results">
-					<button class="btn btn-default" ng-click="resetTest()"><i class="fa fa-arrow-left"></i> Try Again</button>
+					<div ng-show="!error">
+						<h3 class="text-success">Success</h3>
+						<p>
+							Your settings appear to be valid.
+							<button class="btn btn-default" ng-show="!show_userdata" ng-click="show_userdata = true"><i class="fa fa-file-text-o"></i> Show raw user data</button>
+							<button class="btn btn-default" ng-show="!show_log" ng-click="show_log = true"><i class="fa fa-file-text-o"></i> Show log</button>
+						</p>
+					</div>
+					<div ng-show="error">
+						<h3 class="text-danger">Error</h3>
+						<p>
+							The system failed to authenticate your test username and password. Refer to the below log for more information.
+						</p>
+					</div>
+
+					<div ng-show="show_userdata">
+						<strong>Raw user data:</strong>
+						<div class="dp-log-display">
+							<textarea>{{raw_data}}</textarea>
+						</div>
+					</div>
+
+					<div ng-show="error || show_log">
+						<strong>Log:</strong>
+						<div class="dp-log-display">
+							<textarea>{{log}}</textarea>
+						</div>
+					</div>
 				</div>
 			</div>
 			<div ng-show="loading">
-				<i class="spinner-flat"></i>
+				Please wait while your settings are being tested.
 			</div>
+		</div>
+	</div>
+	<div class="modal-footer">
+		<div ng-hide="loading">
+			<div ng-show="!has_results">
+				<button class="btn btn-info" ng-click="doTest()"><i class="fa fa-bolt"></i> Run Test</button>
+			</div>
+			<div ng-show="has_results">
+				<button class="btn btn-default" ng-click="resetTest()"><i class="fa fa-arrow-left"></i> Try Again</button>
+			</div>
+		</div>
+		<div ng-show="loading">
+			<i class="spinner-flat"></i>
 		</div>
 	</div>
 </div>

@@ -15,9 +15,22 @@ var gulp       = require('gulp'),
     using      = require('gulp-using'),
     gulpif     = require('gulp-if'),
     lazypipe   = require('lazypipe'),
-    clean      = require('gulp-clean');
+    clean      = require('gulp-clean'),
+    deskpro    = {util: {}, taskGen: {}};
 
-var deskpro = {util: {}, taskGen: {}};
+
+//######################################################################################################################
+//# Task Runners
+//######################################################################################################################
+
+gulp.task('default', ['coffee', 'less', 'sass', 'cpjs', 'loader']);
+gulp.task('prod', ['coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
+
+
+//######################################################################################################################
+//# Setup
+//######################################################################################################################
+
 deskpro.isWatching = false;
 
 //------------------------------
@@ -26,10 +39,12 @@ deskpro.isWatching = false;
 
 deskpro.watches = [
   ['./app/Admin*/**/*.coffee', ['coffee-admin']],
+  ['./app/Agent*/**/*.coffee', ['coffee-agent']],
   ['./app/Reports/**/*.coffee', ['coffee-reports']],
   ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
   ['./app/**/Resources/style/*.less', ['less-app']],
   ['./app/**/Resources/style/*.scss', ['sass-app']],
+  ['./app/**/*.js', ['cpjs-all']],
   ['./loader/*', ['loader-requirejs']]
 ];
 
@@ -39,7 +54,7 @@ deskpro.watches = [
 
 deskpro.util.sourceMapRoot = function (file) {
   var path = file.path.replace(/\\/g, '/')
-  var rel = path.replace(/^.*?\/web\/app\//, '');
+  var rel = path.replace(/^.*?\/web\/app\-build\//, '');
 
   // Counts slashes the relative path to decide how many levels up we need to go
   var depth = (rel.match(/(\/|\\)/g) || []).length + 1;
@@ -50,12 +65,8 @@ deskpro.util.sourceMapRoot = function (file) {
   var up = "";
   for (var i = 0; i < depth; i++) up += "../";
 
-  return up + 'app/' + ns;
+  return up + 'web/app/' + ns;
 };
-
-//------------------------------
-// Coffeescript
-//------------------------------
 
 deskpro.util.coffeeError = function (e) {
   gutil.log(gutil.colors.white.bgRed('Coffee Error:'), e.name, ' ', e.message);
@@ -70,7 +81,16 @@ deskpro.util.coffeeError = function (e) {
   }
 };
 
-deskpro.taskGen.coffeeScript = function(glob) {
+//------------------------------
+// Task Methods
+//------------------------------
+
+deskpro.taskGen.coffeeScript = function(glob, target_dir) {
+
+  if (!target_dir) {
+    target_dir = './app-build/';
+  }
+
   return gulp.src(glob)
     .pipe(cache('watch', {optimizeMemory: true}))
     .pipe(gulpif(deskpro.isWatching, plumber()))
@@ -78,12 +98,74 @@ deskpro.taskGen.coffeeScript = function(glob) {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
     .pipe(coffee().on('error', deskpro.util.coffeeError))
     .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
-    .pipe(gulp.dest('./app-build/'))
+    .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
 
+deskpro.taskGen.lessCss = function(glob, target_dir) {
+
+  if (!target_dir) {
+    target_dir = './app-build/';
+  }
+
+  return gulp.src(glob)
+    .pipe(cache('watch', {optimizeMemory: true}))
+    .pipe(gulpif(deskpro.isWatching, plumber()))
+    .pipe(sourcemaps.init())
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+    .pipe(less())
+    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+    .pipe(gulp.dest(target_dir))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+deskpro.taskGen.sassCss = function(glob, target_dir) {
+
+  if (!target_dir) {
+    target_dir = './app-build/';
+  }
+
+  return gulp.src(glob)
+    .pipe(cache('watch', {optimizeMemory: true}))
+    .pipe(gulpif(deskpro.isWatching, plumber()))
+    .pipe(sourcemaps.init())
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+    .pipe(sass())
+    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+    .pipe(gulp.dest(target_dir))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+deskpro.taskGen.loaderTpl = function(glob, target_dir) {
+
+  if (!target_dir) {
+    target_dir = './loader-build/';
+  }
+
+  return gulp.src(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js'])
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+    .pipe(finclude({
+      prefix: '!!'
+    }))
+    .pipe(gulp.dest(target_dir))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+};
+
+
+//######################################################################################################################
+//# Tasks
+//######################################################################################################################
+
+//------------------------------
+// Coffeescript
+//------------------------------
+
 gulp.task('coffee-admin', function () {
   return deskpro.taskGen.coffeeScript('./app/Admin*/**/*.coffee');
+});
+
+gulp.task('coffee-agent', function () {
+  return deskpro.taskGen.coffeeScript('./app/Agent*/**/*.coffee');
 });
 
 gulp.task('coffee-reports', function () {
@@ -97,25 +179,43 @@ gulp.task('coffee-deskpro', function () {
 gulp.task('coffee', ['clean'], function() {
   return deskpro.taskGen.coffeeScript([
     './app/Admin*/**/*.coffee',
+    './app/Agent*/**/*.coffee',
     './app/Reports*/**/*.coffee',
     './app/DeskPRO*/**/*.coffee'
   ]);
 });
 
 //------------------------------
-// Less
+// Copy JS
 //------------------------------
 
-deskpro.taskGen.lessCss = function(glob) {
+gulp.task('cpjs-all', function() {
+
+  var glob       = './app/**/*.js';
+  var target_dir = './app-build/';
+
   return gulp.src(glob)
+    .pipe(cache('watch', {optimizeMemory: true}))
     .pipe(gulpif(deskpro.isWatching, plumber()))
-    .pipe(sourcemaps.init())
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
-    .pipe(less())
-    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
-    .pipe(gulp.dest('./app-build/'))
+    .pipe(gulp.dest(target_dir))
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
-};
+});
+
+gulp.task('cpjs', ['clean'], function() {
+
+  var glob       = './app/**/*.js';
+  var target_dir = './app-build/';
+
+  return gulp.src(glob)
+    .pipe(cache('watch', {optimizeMemory: true}))
+    .pipe(gulpif(deskpro.isWatching, plumber()))
+    .pipe(gulp.dest(target_dir))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+});
+
+//------------------------------
+// Less
+//------------------------------
 
 gulp.task('less-app', function () {
   return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
@@ -129,17 +229,6 @@ gulp.task('less', ['clean'], function () {
 // Sass
 //------------------------------
 
-deskpro.taskGen.sassCss = function(glob) {
-  return gulp.src(glob)
-    .pipe(gulpif(deskpro.isWatching, plumber()))
-    .pipe(sourcemaps.init())
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
-    .pipe(sass())
-    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
-    .pipe(gulp.dest('./app-build/'))
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
-};
-
 gulp.task('sass-app', function () {
   return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
 });
@@ -151,16 +240,6 @@ gulp.task('sass', ['clean'], function () {
 //------------------------------
 // Loader
 //------------------------------
-
-deskpro.taskGen.loaderTpl = function(glob) {
-  return gulp.src(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js'])
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
-    .pipe(finclude({
-      prefix: '!!'
-    }))
-    .pipe(gulp.dest('./loader-build/'))
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
-};
 
 gulp.task('loader-requirejs', function () {
   return deskpro.taskGen.loaderTpl(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js']);
@@ -183,15 +262,18 @@ gulp.task('rjs', ['coffee', 'loader'], function () {
     './app/Reports/ReportsLoad.js'
   ];
 
-  var rjsConfig = require('./loader-build/rjs-optimizer-config.js');
+  var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
 
   return gulp.src(loadFiles, {base: './'})
     .pipe(using({prefix: '<< Build --'}))
-    .pipe(rjs(rjsConfig.config))
+    .pipe(rjs(rjsConfig))
     .pipe(rename(function (path) {
       switch (path.basename.replace(/\.js$/, '')) {
         case 'AdminLoad':
           path.dirname = 'Admin';
+          break;
+        case 'AgentLoad':
+          path.dirname = 'Agent';
           break;
         case 'CloudAdminLoad':
           path.dirname = 'Admin/Cloud';
@@ -215,8 +297,36 @@ gulp.task('rjs', ['coffee', 'loader'], function () {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 });
 
+gulp.task('rjs-agent', ['coffee', 'loader'], function () {
+  var loadFiles = [
+    './app/Agent/AgentLoad.js',
+  ];
+
+  // Hack for agent interface
+  // jquery is included independantly and is version 1.7
+  var rjsConfig = require('./loader-build/rjs-optimizer-config.js').getConfig();
+  rjsConfig.paths.jquery = "empty:";
+
+  return gulp.src(loadFiles, {base: './'})
+    .pipe(using({prefix: '<< Build --'}))
+    .pipe(rjs(rjsConfig))
+    .pipe(rename(function (path) {
+      switch (path.basename.replace(/\.js$/, '')) {
+        case 'AgentLoad':
+          path.dirname = 'Agent';
+          break;
+      }
+
+      if (path.extname != '.map') {
+        path.extname = '.min.js';
+      }
+    }))
+    .pipe(gulp.dest('./app-build/'))
+    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+});
+
 //------------------------------
-// Tasks
+// Watcher
 //------------------------------
 
 gulp.task('precache', function () {
@@ -236,14 +346,11 @@ gulp.task('watch', ['precache'], function () {
   });
 });
 
+//------------------------------
+// Clean
+//------------------------------
+
 gulp.task('clean', function () {
   return gulp.src(['./app-build', './loader-build'])
     .pipe(clean());
 });
-
-//------------------------------
-// Main
-//------------------------------
-
-gulp.task('default', ['coffee', 'less', 'sass', 'loader']);
-gulp.task('prod', ['coffee', 'less', 'sass', 'loader', 'rjs']);

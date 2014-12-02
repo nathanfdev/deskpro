@@ -318,10 +318,7 @@ class EmailAccount extends DomainObject
         $data['incoming_account_type'] = $this->getIncomingAccountType();
         $data['outgoing_account_type'] = $this->getOutgoingAccountType();
         $data['outgoing_account']      = $this->outgoing_account ? $this->outgoing_account->serializeJsonArray() : array();
-
-        if ($this->getUseEmailAddress() && $this->getUseEmailAddress() != $this->address) {
-            $data['use_email_address'] = $this->getUseEmailAddress();
-        }
+        $data['use_email_address']     = $this->getUseEmailAddress();
 
         return $data;
     }

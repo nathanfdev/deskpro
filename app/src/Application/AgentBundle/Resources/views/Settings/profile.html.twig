@@ -57,7 +57,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			</div>
 		</div>
 
-		{% if app.user.getPasswordHash() and app.authenticationManager.isRegistrationFormVisible %}
+		{% if app.user.getPasswordHash() and app.authenticationManager.isDeskPROEnabled() %}
 			{% if password_expired %}
 				<div style="padding: 10px; margin: 10px; background-color: #ffe3e4; border: 2px solid #f0544d;">
 					Your password has expired. Please enter a new password.

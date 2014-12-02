@@ -223,6 +223,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
         $trigger->setByAgentMode($this->in->getArrayOfStrings('by_agent_mode'));
         $trigger->setByUserMode($this->in->getArrayOfStrings('by_user_mode'));
+		$trigger->setByAppMode($this->in->getArrayOfStrings('by_app_mode'));
 
         $error_criteria = array();
         $error_actions  = array();
@@ -440,4 +441,41 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
 
         return $this->createJsonResponse(array('action_defs' => $actions));
     }
+
+	####################################################################################################################
+	# get-app-events
+	####################################################################################################################
+
+	public function getAppEventsAction($type = 'update')
+	{
+		if ($type != 'update') {
+			throw $this->createNotFoundException();
+		}
+
+		$events = array();
+
+		foreach ($this->container->getAppManager()->getAllApps() as $app) {
+			$app_events = $app->getTriggerEvents($type);
+
+			if ($app_events) {
+				$app_info = array(
+					'id'    => $app->id,
+					'title' => $app->title,
+					'package' => array(
+						'name'  => $app->package->name,
+						'title' => $app->package->title
+					)
+				);
+
+				foreach ($app_events as $ev) {
+					$events[] = array(
+						'event' => $ev,
+						'app'   => $app_info
+					);
+				}
+			}
+		}
+
+		return $this->createJsonResponse(array('app_events' => $events, 'event_type' => $type));
+	}
 }

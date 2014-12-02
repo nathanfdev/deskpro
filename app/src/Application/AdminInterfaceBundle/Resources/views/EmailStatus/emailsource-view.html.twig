@@ -27,9 +27,9 @@
 					<td dp-date="ViewSource.source.date_created" format="fulltime"></td>
 				</tr>
 				<tr>
-					<th>Status</th>
-					<td>
-						{{ ng_var('ViewSource.source.status') }} (<span dp-date="ViewSource.source.date_status" format="fulltime"></span>)
+					<th>Status <i class="fa fa-question-circle qmark-icon" ng-click="showStatusHelp(ViewSource.source.status)" tooltip="Click for more details" tooltip-placement="left" style="cursor: pointer;"></i></th>
+					<td ng-class="{'danger': ViewSource.source.status == 'error', 'warning': ViewSource.source.status == 'rejected', 'success': ViewSource.source.status == 'complete'}">
+						{{ ng_var('ViewSource.source.status | uppercase') }} (<span dp-date="ViewSource.source.date_status" format="fulltime"></span>)
 						<div ng-if="ViewSource.source.status == 'error'">
 							{{ ng_var('ViewSource.source.error_code') }} &mdash;
 							<button class="btn btn-primary btn-xs" ng-click="ViewSource.startReprocess()">Reprocess Email</button>
@@ -117,4 +117,6 @@
 			</tbody>
 		</table>
 	</section>
+
+	{{ ng_tpl('AdminInterfaceBundle:EmailStatus:emailsource-status-code-modal.html.twig', 'EmailStatus/emailsource-status-code-modal.html') }}
 {% endblock %}
