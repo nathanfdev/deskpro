@@ -36,6 +36,7 @@ namespace DeskPRO\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -462,6 +463,25 @@ class DpKernel extends AbstractKernel
             $do_correction = true;
         } elseif ($now_host != $correct_host) {
             $do_correction = true;
+        }
+
+        if (isset($_GET['__debug_dp_autocorrect_url'])) {
+
+            $content = array();
+            $content[] = "URL:            " . App::getSetting('core.deskpro_url');
+            $content[] = "Correct Host:   " . $correct_host;
+            $content[] = "Correct Scheme: " . $correct_scheme;
+            $content[] = "Now Host:       " . $request->getHttpHost();
+            $content[] = "Now Scheme:     " . $request->getScheme();
+            $content[] = "";
+            $content[] = "Correction required? " . ($do_correction ? "Yes" : "No") . ".";
+            $content = implode("\n", $content);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'text/plain');
+            $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, 'debug_autocorrect.txt');
+            $response->setContent($content);
+            return $response;
         }
 
         if ($do_correction) {
