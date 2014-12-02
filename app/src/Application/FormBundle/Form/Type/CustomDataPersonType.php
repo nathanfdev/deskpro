@@ -97,6 +97,9 @@ class CustomDataPersonType extends AbstractType
         // after successful form submission, we want to make sure this entity is persisted in case it is new
         /** @var \Application\DeskPRO\Entity\CustomDataPerson $custom_data */
         $custom_data = $event->getData();
+        if ($custom_data->input === null) {
+            $custom_data->input = '';
+        }
         $this->em->persist($custom_data);
     }
 
