@@ -35,7 +35,7 @@
 namespace Application\FormBundle\Form\Type;
 
 use Application\FormBundle\Form\DataTransformer\EntityToIdTransformer;
-use Application\FormBundle\Heirarchy\HeirarchyGenerator;
+use Application\FormBundle\Hierarchy\HierarchyGenerator;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -45,18 +45,18 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class DepartmentType extends AbstractType
 {
     /**
-     * @var \Application\FormBundle\Heirarchy\HeirarchyGenerator
+     * @var \Application\FormBundle\Hierarchy\HierarchyGenerator
      */
-    private $heirarchy_generator;
+    private $hierarchy_generator;
 
     /**
      * @var \Doctrine\ORM\EntityManager
      */
     private $em;
 
-    public function __construct(HeirarchyGenerator $heirarchy, EntityManager $em)
+    public function __construct(HierarchyGenerator $hierarchy, EntityManager $em)
     {
-        $this->heirarchy_generator = $heirarchy;
+        $this->hierarchy_generator = $hierarchy;
         $this->em = $em;
     }
 
@@ -78,7 +78,7 @@ class DepartmentType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $heirarchy_generator = $this->heirarchy_generator;
+        $hierarchy_generator = $this->hierarchy_generator;
 
         $resolver->setRequired(array('person'));
 
@@ -86,8 +86,8 @@ class DepartmentType extends AbstractType
             'class'         => 'Application\\DeskPRO\\Entity\\Department',
             'property'      => 'title',
             'empty_data'    => null,
-            'choice_list'   => function(Options $options) use ($heirarchy_generator) {
-                    return $heirarchy_generator->generateTicketDepartmentsHeirarchy($options['person'])->getChoiceList();
+            'choice_list'   => function(Options $options) use ($hierarchy_generator) {
+                    return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'])->getChoiceList();
                 }
         ));
     }

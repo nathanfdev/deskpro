@@ -32,33 +32,18 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Heirarchy\Formatter;
+namespace Application\FormBundle\Hierarchy\Formatter;
 
+use Application\FormBundle\Hierarchy\HierarchyNode;
 
-use Application\FormBundle\Heirarchy\HeirarchyFormatterInterface;
-use Application\FormBundle\Heirarchy\HeirarchyNode;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-
-abstract class AbstractFormatter implements HeirarchyFormatterInterface
+class FlatListFormatter extends AbstractFormatter
 {
     /**
-     * @var string|null
+     * {@inheritdoc}
      */
-    private $stringPropertyPath;
-
-    public function __construct($stringPropertyPath = null)
+    public function format(HierarchyNode $node)
     {
-        $this->stringPropertyPath = $stringPropertyPath;
-    }
-
-    public function getDataValue(HeirarchyNode $node)
-    {
-        if ($this->stringPropertyPath) {
-            $accessor = PropertyAccess::createPropertyAccessor();
-            return $accessor->getValue($node->getData(), $this->stringPropertyPath);
-        }
-
-        return (string) $node->getData();
+        return sprintf("%s", $node->getData()->title);
     }
 }
  

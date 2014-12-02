@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Heirarchy;
+namespace Application\FormBundle\Hierarchy;
 
 
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
@@ -40,11 +40,11 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\FormBundle\Heirarchy\Formatter\DashesFormatter;
+use Application\FormBundle\Hierarchy\Formatter\DashesFormatter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
-class HeirarchyGenerator
+class HierarchyGenerator
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -73,27 +73,27 @@ class HeirarchyGenerator
     {
         $root_nodes = array();
         foreach ($field->children as $field_child) {
-            $root_nodes[] = new HeirarchyNode($field_child, 0);
+            $root_nodes[] = new HierarchyNode($field_child, 0);
         }
 
-        $heirarchy = new Heirarchy($root_nodes, new DashesFormatter('title'));
-        $heirarchy->markOnlyLeafSelections();
+        $hierarchy = new Hierarchy($root_nodes, new DashesFormatter('title'));
+        $hierarchy->markOnlyLeafSelections();
 
-        $recursive = function(CustomDefAbstract $field, HeirarchyNode $parent, $depth) use (&$recursive) {
+        $recursive = function(CustomDefAbstract $field, HierarchyNode $parent, $depth) use (&$recursive) {
             foreach ($field->children as $child) {
-                $parent->addChild($child_node = new HeirarchyNode($child, $depth, $child->display_order));
+                $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
                 $recursive($child, $child_node, $depth + 1);
             }
         };
 
-        foreach ($heirarchy as $root_node) {
+        foreach ($hierarchy as $root_node) {
             $recursive($root_node->getData(), $root_node, 1);
         }
 
-        return $heirarchy;
+        return $hierarchy;
     }
 
-    public function generateTicketDepartmentsHeirarchy(Person $person)
+    public function generateTicketDepartmentsHierarchy(Person $person)
     {
         $allowed_department_ids = $this->permissions_manager->getAllowedDepartmentIds($person);
 
@@ -116,24 +116,24 @@ class HeirarchyGenerator
 
         $root_nodes = array();
         foreach ($departments as $department) {
-            $root_nodes[] = new HeirarchyNode($department, 0);
+            $root_nodes[] = new HierarchyNode($department, 0);
         }
 
-        $heirarchy = new Heirarchy($root_nodes, new DashesFormatter('title'));
-        $heirarchy->markOnlyLeafSelections();
+        $hierarchy = new Hierarchy($root_nodes, new DashesFormatter('title'));
+        $hierarchy->markOnlyLeafSelections();
 
-        $recursive = function (Department $dep, HeirarchyNode $parent, $depth) use (&$recursive) {
+        $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive) {
             foreach ($dep->children as $child) {
-                $parent->addChild($child_node = new HeirarchyNode($child, $depth, $child->display_order));
+                $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
                 $recursive($child, $child_node, $depth + 1);
             }
         };
 
-        foreach ($heirarchy as $root_node) {
+        foreach ($hierarchy as $root_node) {
             $recursive($root_node->getData(), $root_node, 1);
         }
 
-        return $heirarchy;
+        return $hierarchy;
     }
 }
  

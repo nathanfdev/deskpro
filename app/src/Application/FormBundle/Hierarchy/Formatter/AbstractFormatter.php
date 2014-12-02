@@ -32,21 +32,33 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Heirarchy\Formatter;
+namespace Application\FormBundle\Hierarchy\Formatter;
 
 
-use Application\FormBundle\Heirarchy\HeirarchyNode;
+use Application\FormBundle\Hierarchy\HierarchyFormatterInterface;
+use Application\FormBundle\Hierarchy\HierarchyNode;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 
-class DashesFormatter extends AbstractFormatter
+abstract class AbstractFormatter implements HierarchyFormatterInterface
 {
     /**
-     * {@inheritdoc}
+     * @var string|null
      */
-    public function format(HeirarchyNode $node)
-    {
-        $prefix = str_repeat('--', $node->getDepth());
+    private $stringPropertyPath;
 
-        return strlen($prefix) > 0 ? $prefix . ' ' . $this->getDataValue($node) : $this->getDataValue($node);
+    public function __construct($stringPropertyPath = null)
+    {
+        $this->stringPropertyPath = $stringPropertyPath;
+    }
+
+    public function getDataValue(HierarchyNode $node)
+    {
+        if ($this->stringPropertyPath) {
+            $accessor = PropertyAccess::createPropertyAccessor();
+            return $accessor->getValue($node->getData(), $this->stringPropertyPath);
+        }
+
+        return (string) $node->getData();
     }
 }
  

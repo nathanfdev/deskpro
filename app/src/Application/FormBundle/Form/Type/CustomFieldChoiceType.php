@@ -36,7 +36,7 @@ namespace Application\FormBundle\Form\Type;
 
 use Application\FormBundle\Form\DataTransformer\StringToArrayTransformer;
 use Application\FormBundle\Form\DataTransformer\StringToIntegerArrayTransformer;
-use Application\FormBundle\Heirarchy\HeirarchyGenerator;
+use Application\FormBundle\Hierarchy\HierarchyGenerator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
@@ -45,13 +45,13 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 class CustomFieldChoiceType extends AbstractType
 {
     /**
-     * @var \Application\FormBundle\Heirarchy\HeirarchyGenerator
+     * @var \Application\FormBundle\Hierarchy\HierarchyGenerator
      */
-    private $heirarchy_generator;
+    private $hierarchy_generator;
 
-    public function __construct(HeirarchyGenerator $heirarchy)
+    public function __construct(HierarchyGenerator $hierarchy)
     {
-        $this->heirarchy_generator = $heirarchy;
+        $this->hierarchy_generator = $hierarchy;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -73,12 +73,12 @@ class CustomFieldChoiceType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
-        $heirarchy_generator = $this->heirarchy_generator;
+        $hierarchy_generator = $this->hierarchy_generator;
 
         $resolver->setDefaults(array(
             'empty_data' => null,
-            'choice_list'    => function (Options $options) use ($heirarchy_generator) {
-                    return $heirarchy_generator->generateForCustomTicketFormField($options['custom_field'])->getChoiceList();
+            'choice_list'    => function (Options $options) use ($hierarchy_generator) {
+                    return $hierarchy_generator->generateForCustomTicketFormField($options['custom_field'])->getChoiceList();
                 }
         ));
 

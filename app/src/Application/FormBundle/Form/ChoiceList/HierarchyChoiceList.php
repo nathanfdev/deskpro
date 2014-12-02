@@ -32,18 +32,11 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Heirarchy\Formatter;
+namespace Application\FormBundle\Form\ChoiceList;
 
-use Application\FormBundle\Heirarchy\HeirarchyNode;
+use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 
-class FlatListFormatter extends AbstractFormatter
+class HierarchyChoiceList extends ChoiceList
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function format(HeirarchyNode $node)
-    {
-        return sprintf("%s", $node->getData()->title);
-    }
 }
  

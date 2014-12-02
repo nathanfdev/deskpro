@@ -32,29 +32,29 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Heirarchy;
+namespace Application\FormBundle\Hierarchy;
 
-use Application\FormBundle\Form\ChoiceList\HeirarchyChoiceList;
-use Application\FormBundle\Heirarchy\Formatter\FlatListFormatter;
+use Application\FormBundle\Form\ChoiceList\HierarchyChoiceList;
+use Application\FormBundle\Hierarchy\Formatter\FlatListFormatter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 use Traversable;
 
 /**
- * Represents a heirarchy.
+ * Represents a hierarchy.
  *
- * getChoiceList can be used directly in a form (choice type) and will use the heirarchy formatter to render options
+ * getChoiceList can be used directly in a form (choice type) and will use the hierarchy formatter to render options
  * and the ID of the entity (by default) as the value.
  */
-class Heirarchy implements \Countable, \IteratorAggregate
+class Hierarchy implements \Countable, \IteratorAggregate
 {
     /**
-     * @var HeirarchyFormatterInterface
+     * @var HierarchyFormatterInterface
      */
     private $formatter;
 
     /**
-     * @var HeirarchyNode[]
+     * @var HierarchyNode[]
      */
     private $root_nodes;
 
@@ -74,16 +74,16 @@ class Heirarchy implements \Countable, \IteratorAggregate
     private $leaf_selections_only;
 
     /**
-     * @param HeirarchyNode[]             $root_nodes
-     * @param HeirarchyFormatterInterface $formatter
+     * @param HierarchyNode[]             $root_nodes
+     * @param HierarchyFormatterInterface $formatter
      * @param string|null $node_id_path
      */
-    public function __construct(array $root_nodes, HeirarchyFormatterInterface $formatter = null, $node_id_path = null)
+    public function __construct(array $root_nodes, HierarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
         $this->formatter = $formatter ?: new FlatListFormatter();
         $this->root_nodes = $root_nodes;
         foreach ($root_nodes as $root_node) {
-            $root_node->setHeirarchy($this);
+            $root_node->setHierarchy($this);
         }
         $this->node_id_path = $node_id_path;
         $this->accessor = PropertyAccess::createPropertyAccessor();
@@ -91,7 +91,7 @@ class Heirarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return HeirarchyFormatterInterface
+     * @return HierarchyFormatterInterface
      */
     public function getFormatter()
     {
@@ -99,7 +99,7 @@ class Heirarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return HeirarchyNode[]
+     * @return HierarchyNode[]
      */
     public function getRootNodes()
     {
@@ -107,7 +107,7 @@ class Heirarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return HeirarchyNode[]
+     * @return HierarchyNode[]
      */
     public function getFlattened()
     {
@@ -120,11 +120,11 @@ class Heirarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param HeirarchyNode   $node
+     * @param HierarchyNode   $node
      * @param ArrayCollection $append_to_collection
-     * @return ArrayCollection|HeirarchyNode[]
+     * @return ArrayCollection|HierarchyNode[]
      */
-    public static function flatten(HeirarchyNode $node, ArrayCollection $append_to_collection = null)
+    public static function flatten(HierarchyNode $node, ArrayCollection $append_to_collection = null)
     {
         if (!$append_to_collection) {
             $append_to_collection = new ArrayCollection();
@@ -140,7 +140,7 @@ class Heirarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @return HeirarchyChoiceList
+     * @return HierarchyChoiceList
      */
     public function getChoiceList()
     {
@@ -148,7 +148,7 @@ class Heirarchy implements \Countable, \IteratorAggregate
         $labels = array();
 
         if (!$this->leaf_selections_only) {
-            /** @var HeirarchyNode $node */
+            /** @var HierarchyNode $node */
             foreach ($this->getFlattened() as $node) {
                 $label = (string)$node;
                 $key = $this->getNodeId($node);
@@ -157,10 +157,10 @@ class Heirarchy implements \Countable, \IteratorAggregate
                 $labels[$key] = $label;
             }
 
-            return new HeirarchyChoiceList($choices, $labels);
+            return new HierarchyChoiceList($choices, $labels);
         }
 
-        /** @var HeirarchyNode $node */
+        /** @var HierarchyNode $node */
         foreach ($this as $node) {
             if (count($node)) {
                 $choices[(string)$node] = $node->getChoices();
@@ -171,13 +171,13 @@ class Heirarchy implements \Countable, \IteratorAggregate
             }
         }
 
-        return new HeirarchyChoiceList($choices, $labels);
+        return new HierarchyChoiceList($choices, $labels);
     }
 
     /**
-     * @param HeirarchyFormatterInterface $formatter
+     * @param HierarchyFormatterInterface $formatter
      */
-    public function setFormatter(HeirarchyFormatterInterface $formatter)
+    public function setFormatter(HierarchyFormatterInterface $formatter)
     {
         $this->formatter = $formatter;
     }
@@ -215,7 +215,7 @@ class Heirarchy implements \Countable, \IteratorAggregate
      * @param $node
      * @return mixed
      */
-    public function getNodeId(HeirarchyNode $node)
+    public function getNodeId(HierarchyNode $node)
     {
         return $this->accessor->getValue($node, $this->node_id_path ?: 'data.id');
     }

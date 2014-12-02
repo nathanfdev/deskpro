@@ -10,8 +10,8 @@ services:
   form_field_manager:
     class: Application\FormBundle\Form\FormFieldManager
     arguments: [@doctrine.orm.default_entity_manager]
-  form_heirarchy_generator:
-    class: Application\FormBundle\Heirarchy\HeirarchyGenerator
+  form_hierarchy_generator:
+    class: Application\FormBundle\Hierarchy\HierarchyGenerator
     arguments: [@doctrine.orm.default_entity_manager, @portal_permissions_manager]
   form.custom_data_ticket:
     class: Application\FormBundle\Form\Type\CustomDataTicketType
@@ -30,7 +30,7 @@ services:
       - { name: form.type, alias: deskpro_ticket }
   form.custom_field_choice:
     class: Application\FormBundle\Form\Type\CustomFieldChoiceType
-    arguments: [@form_heirarchy_generator]
+    arguments: [@form_hierarchy_generator]
     tags:
       - { name: form.type, alias: deskpro_custom_field_choice }
   form.language:
@@ -48,7 +48,7 @@ services:
       - { name: form.type, alias: deskpro_hidden }
   form.department:
     class: Application\FormBundle\Form\Type\DepartmentType
-    arguments: [@form_heirarchy_generator, @doctrine.orm.default_entity_manager]
+    arguments: [@form_hierarchy_generator, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: deskpro_department }
   form.product:

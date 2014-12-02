@@ -32,17 +32,21 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Heirarchy;
+namespace Application\FormBundle\Hierarchy\Formatter;
 
 
-interface HeirarchyFormatterInterface 
+use Application\FormBundle\Hierarchy\HierarchyNode;
+
+class DashesFormatter extends AbstractFormatter
 {
     /**
-     * Must turn the node into a string
-     *
-     * @param HeirarchyNode $node
-     * @return string
+     * {@inheritdoc}
      */
-    public function format(HeirarchyNode $node);
+    public function format(HierarchyNode $node)
+    {
+        $prefix = str_repeat('--', $node->getDepth());
+
+        return strlen($prefix) > 0 ? $prefix . ' ' . $this->getDataValue($node) : $this->getDataValue($node);
+    }
 }
  

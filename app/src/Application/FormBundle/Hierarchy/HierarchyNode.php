@@ -32,17 +32,17 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Heirarchy;
+namespace Application\FormBundle\Hierarchy;
 
 /**
- * A HeirarchyNode is iteratable, and countable, because each can have an arbitray number of children.
+ * A HierarchyNode is iteratable, and countable, because each can have an arbitray number of children.
  */
-class HeirarchyNode implements \IteratorAggregate, \Countable
+class HierarchyNode implements \IteratorAggregate, \Countable
 {
     /**
-     * @var Heirarchy
+     * @var Hierarchy
      */
-    private $heirarchy;
+    private $hierarchy;
 
     /**
      * @var int
@@ -60,14 +60,14 @@ class HeirarchyNode implements \IteratorAggregate, \Countable
     private $data;
 
     /**
-     * @var HeirarchyNode[]
+     * @var HierarchyNode[]
      */
     private $children;
 
     /**
-     * @param int   $depth the depth into the heirarchy that this exists
+     * @param int   $depth the depth into the hierarchy that this exists
      * @param int   $order the order amoung this depth (higher is top of list)
-     * @param mixed $data  any arbitrary data stored at this location in the heirarchy
+     * @param mixed $data  any arbitrary data stored at this location in the hierarchy
      */
     public function __construct($data, $depth = 0, $order = 0)
     {
@@ -79,37 +79,37 @@ class HeirarchyNode implements \IteratorAggregate, \Countable
 
     public function __toString()
     {
-        return $this->heirarchy->getFormatter()->format($this);
+        return $this->hierarchy->getFormatter()->format($this);
     }
 
-    public function addChild(HeirarchyNode $node)
+    public function addChild(HierarchyNode $node)
     {
-        $node->setHeirarchy($this->heirarchy);
+        $node->setHierarchy($this->hierarchy);
         $this->children[] = $node;
     }
 
     /**
-     * @param Heirarchy $heirarchy
+     * @param Hierarchy $hierarchy
      */
-    public function setHeirarchy(Heirarchy $heirarchy)
+    public function setHierarchy(Hierarchy $hierarchy)
     {
-        $this->heirarchy = $heirarchy;
+        $this->hierarchy = $hierarchy;
     }
 
     /**
-     * @return Heirarchy
+     * @return Hierarchy
      */
-    public function getHeirarchy()
+    public function getHierarchy()
     {
-        return $this->heirarchy;
+        return $this->hierarchy;
     }
 
     /**
-     * @return HeirarchyNode
+     * @return HierarchyNode
      */
     public function getRoot()
     {
-        return $this->heirarchy->getRootNode();
+        return $this->hierarchy->getRootNode();
     }
 
     /**
@@ -155,12 +155,12 @@ class HeirarchyNode implements \IteratorAggregate, \Countable
     {
         $choices = array();
 
-        /** @var HeirarchyNode $node */
+        /** @var HierarchyNode $node */
         foreach ($this as $node) {
             if (count($node)) {
                 $choices[(string)$node] = $node->getChoices();
             } else {
-                $nodeId = $this->heirarchy->getNodeId($node);
+                $nodeId = $this->hierarchy->getNodeId($node);
                 $choices[$nodeId] = $nodeId;
             }
         }
@@ -177,12 +177,12 @@ class HeirarchyNode implements \IteratorAggregate, \Countable
     {
         $labels = array();
 
-        /** @var HeirarchyNode $node */
+        /** @var HierarchyNode $node */
         foreach ($this as $node) {
             if (count($node)) {
                 $labels[(string)$node] = $node->getLabels();
             } else {
-                $nodeId = $this->heirarchy->getNodeId($node);
+                $nodeId = $this->hierarchy->getNodeId($node);
                 $labels[$nodeId] = (string) $node;
             }
         }

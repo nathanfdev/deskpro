@@ -32,11 +32,19 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Form\ChoiceList;
+namespace Application\FormBundle\Hierarchy\Formatter;
 
-use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
 
-class HeirarchyChoiceList extends ChoiceList
+use Application\FormBundle\Hierarchy\HierarchyNode;
+
+class DebugFormatter extends AbstractFormatter
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function format(HierarchyNode $node)
+    {
+        return sprintf("%s - %s - %s", $node->getDepth(), $node->getOrder(), $this->getDataValue($node));
+    }
 }
  

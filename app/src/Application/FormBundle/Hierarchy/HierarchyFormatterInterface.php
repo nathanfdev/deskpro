@@ -32,19 +32,17 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Heirarchy\Formatter;
+namespace Application\FormBundle\Hierarchy;
 
 
-use Application\FormBundle\Heirarchy\HeirarchyNode;
-
-class DebugFormatter extends AbstractFormatter
+interface HierarchyFormatterInterface
 {
     /**
-     * {@inheritdoc}
+     * Must turn the node into a string
+     *
+     * @param HierarchyNode $node
+     * @return string
      */
-    public function format(HeirarchyNode $node)
-    {
-        return sprintf("%s - %s - %s", $node->getDepth(), $node->getOrder(), $this->getDataValue($node));
-    }
+    public function format(HierarchyNode $node);
 }
  
