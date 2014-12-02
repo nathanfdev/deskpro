@@ -28,6 +28,10 @@ services:
     arguments: [@form_field_manager]
     tags:
       - { name: form.type, alias: deskpro_ticket }
+  form.ticket_message:
+    class: Application\FormBundle\Form\Type\TicketMessageType
+    tags:
+      - { name: form.type, alias: deskpro_ticket_message }
   form.custom_field_choice:
     class: Application\FormBundle\Form\Type\CustomFieldChoiceType
     arguments: [@form_hierarchy_generator]

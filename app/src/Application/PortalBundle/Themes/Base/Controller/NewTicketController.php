@@ -73,18 +73,12 @@ class NewTicketController extends AbstractController
 //            $newTicket->setPersonContext($person); // have to set twice?
 //            $newTicket->save();
 
-            $msg = new TicketMessage();
-            $msg->setMessage($form->get('message')->getData());
-            $msg->setTicket($ticket);
-            $msg->setPerson($person);
-            $ticket->addMessage($msg);
-
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->persist($person);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'created.ticket.translated');
+            $request->getSession()->getFlashBag()->add('success', 'created.ticket.phrase.here');
 
             return $this->redirect($this->generateUrl('portal_index'));
 

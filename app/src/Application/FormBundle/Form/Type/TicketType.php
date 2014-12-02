@@ -63,6 +63,13 @@ class TicketType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
+        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'postSubmitDataEvent'));
+    }
+
+    public function postSubmitDataEvent(FormEvent $event)
+    {
+        // add the message to the ticket
+        $event->getData()->addMessage($event->getForm()->get('message')->getData());
     }
 
     public function preDataEvent(FormEvent $event)
@@ -205,10 +212,15 @@ class TicketType extends AbstractType
 
     private function addMessage(TicketFormContext $form_context, LayoutField $field)
     {
-        // TODO: make a special type for this. A messge should be a TicketMessage instance.
-        if ($form_context->getVisibility() != TicketFormContext::VISIBILITY_NEW) return;
-        $form_context->getForm()->add('message', 'textarea', array(
-            'mapped' => false
+        if (TicketFormContext::VISIBILITY_NEW !== $form_context->getVisibility()) {
+            return;
+        }
+
+        $form_context->getForm()->add('message', 'deskpro_ticket_message', array(
+            'mapped' => false,
+            'label'  => false,
+            'person' => $form_context->getPerson(),
+            'ticket' => $form_context->getTicket()
         ));
     }
 
