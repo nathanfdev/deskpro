@@ -34,10 +34,10 @@
 
 namespace Application\FormBundle\Form\ChoiceList;
 
-use Symfony\Component\Form\Extension\Core\ChoiceList\ObjectChoiceList;
+use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
+use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
-class HeirarchyChoiceList extends ObjectChoiceList
+class HeirarchyChoiceList extends ChoiceList
 {
-
 }
  

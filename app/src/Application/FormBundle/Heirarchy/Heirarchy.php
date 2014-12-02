@@ -37,6 +37,7 @@ namespace Application\FormBundle\Heirarchy;
 use Application\FormBundle\Form\ChoiceList\HeirarchyChoiceList;
 use Application\FormBundle\Heirarchy\Formatter\FlatListFormatter;
 use Doctrine\Common\Collections\ArrayCollection;
+use Symfony\Component\PropertyAccess\PropertyAccess;
 use Traversable;
 
 /**
@@ -57,17 +58,30 @@ class Heirarchy implements \Countable, \IteratorAggregate
      */
     private $root_nodes;
 
+    /*
+     * @var string|null
+     */
+    private $node_id_path;
+
+    /**
+     * @var \Symfony\Component\PropertyAccess\PropertyAccessor
+     */
+    private $accessor;
+
     /**
      * @param HeirarchyNode[]             $root_nodes
      * @param HeirarchyFormatterInterface $formatter
+     * @param string|null $node_id_path
      */
-    public function __construct(array $root_nodes, HeirarchyFormatterInterface $formatter = null)
+    public function __construct(array $root_nodes, HeirarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
         $this->formatter = $formatter ?: new FlatListFormatter();
         $this->root_nodes = $root_nodes;
         foreach ($root_nodes as $root_node) {
             $root_node->setHeirarchy($this);
         }
+        $this->node_id_path = $node_id_path;
+        $this->accessor = PropertyAccess::createPropertyAccessor();
     }
 
     /**
@@ -124,7 +138,19 @@ class Heirarchy implements \Countable, \IteratorAggregate
      */
     public function getChoiceList()
     {
-        return new HeirarchyChoiceList($this->getFlattened(), null, array(), null, 'data.id');
+        $choices = array();
+        $labels = array();
+
+        $accessor = PropertyAccess::createPropertyAccessor();
+
+        /** @var HeirarchyNode $node */
+        foreach ($this->getFlattened() as $node) {
+            $key = $this->getNodeId($node);
+            $choices[$key] = $key;
+            $labels[$key] = (string) $node;
+        }
+
+        return new HeirarchyChoiceList($choices, $labels);
     }
 
     /**
@@ -161,6 +187,16 @@ class Heirarchy implements \Countable, \IteratorAggregate
     public function count()
     {
         return count($this->root_nodes);
+    }
+
+    /**
+     * @param $accessor
+     * @param $node
+     * @return mixed
+     */
+    protected function getNodeId(HeirarchyNode $node)
+    {
+        return $this->accessor->getValue($node, $this->node_id_path ?: 'data.id');
     }
 }
  
