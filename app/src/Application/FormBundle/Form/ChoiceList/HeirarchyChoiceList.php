@@ -35,7 +35,6 @@
 namespace Application\FormBundle\Form\ChoiceList;
 
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList;
-use Symfony\Component\PropertyAccess\PropertyAccessorInterface;
 
 class HeirarchyChoiceList extends ChoiceList
 {

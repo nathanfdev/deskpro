@@ -12,7 +12,7 @@ services:
     arguments: [@doctrine.orm.default_entity_manager]
   form_heirarchy_generator:
     class: Application\FormBundle\Heirarchy\HeirarchyGenerator
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: [@doctrine.orm.default_entity_manager, @portal_permissions_manager]
   form.custom_data_ticket:
     class: Application\FormBundle\Form\Type\CustomDataTicketType
     arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
@@ -48,6 +48,7 @@ services:
       - { name: form.type, alias: deskpro_hidden }
   form.department:
     class: Application\FormBundle\Form\Type\DepartmentType
+    arguments: [@form_heirarchy_generator, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: deskpro_department }
   form.product:

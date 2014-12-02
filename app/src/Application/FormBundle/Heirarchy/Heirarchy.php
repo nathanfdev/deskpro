@@ -69,6 +69,11 @@ class Heirarchy implements \Countable, \IteratorAggregate
     private $accessor;
 
     /**
+     * @var bool
+     */
+    private $leaf_selections_only;
+
+    /**
      * @param HeirarchyNode[]             $root_nodes
      * @param HeirarchyFormatterInterface $formatter
      * @param string|null $node_id_path
@@ -82,6 +87,7 @@ class Heirarchy implements \Countable, \IteratorAggregate
         }
         $this->node_id_path = $node_id_path;
         $this->accessor = PropertyAccess::createPropertyAccessor();
+        $this->leaf_selections_only = false;
     }
 
     /**
@@ -141,13 +147,28 @@ class Heirarchy implements \Countable, \IteratorAggregate
         $choices = array();
         $labels = array();
 
-        $accessor = PropertyAccess::createPropertyAccessor();
+        if (!$this->leaf_selections_only) {
+            /** @var HeirarchyNode $node */
+            foreach ($this->getFlattened() as $node) {
+                $label = (string)$node;
+                $key = $this->getNodeId($node);
+
+                $choices[$key] = $key;
+                $labels[$key] = $label;
+            }
+
+            return new HeirarchyChoiceList($choices, $labels);
+        }
 
         /** @var HeirarchyNode $node */
-        foreach ($this->getFlattened() as $node) {
-            $key = $this->getNodeId($node);
-            $choices[$key] = $key;
-            $labels[$key] = (string) $node;
+        foreach ($this as $node) {
+            if (count($node)) {
+                $choices[(string)$node] = $node->getChoices();
+                $labels[(string)$node] = $node->getLabels();
+            } else {
+                $choices[$this->getNodeId($node)] = $this->getNodeId($node);
+                $labels[$this->getNodeId($node)] = (string)$node;
+            }
         }
 
         return new HeirarchyChoiceList($choices, $labels);
@@ -194,9 +215,14 @@ class Heirarchy implements \Countable, \IteratorAggregate
      * @param $node
      * @return mixed
      */
-    protected function getNodeId(HeirarchyNode $node)
+    public function getNodeId(HeirarchyNode $node)
     {
         return $this->accessor->getValue($node, $this->node_id_path ?: 'data.id');
+    }
+
+    public function markOnlyLeafSelections()
+    {
+        $this->leaf_selections_only = true;
     }
 }
  

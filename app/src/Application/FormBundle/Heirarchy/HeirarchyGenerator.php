@@ -35,9 +35,11 @@
 namespace Application\FormBundle\Heirarchy;
 
 
+use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\Person;
 use Application\FormBundle\Heirarchy\Formatter\DashesFormatter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
@@ -49,9 +51,15 @@ class HeirarchyGenerator
      */
     private $em;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var \Application\AuthBundle\Permissions\Portal\PortalPermissionsManager
+     */
+    private $permissions_manager;
+
+    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
     {
         $this->em = $em;
+        $this->permissions_manager = $permissions_manager;
     }
 
     public function generateForCustomTicketFormField(CustomDefTicket $field)
@@ -69,6 +77,7 @@ class HeirarchyGenerator
         }
 
         $heirarchy = new Heirarchy($root_nodes, new DashesFormatter('title'));
+        $heirarchy->markOnlyLeafSelections();
 
         $recursive = function(CustomDefAbstract $field, HeirarchyNode $parent, $depth) use (&$recursive) {
             foreach ($field->children as $child) {
@@ -84,23 +93,45 @@ class HeirarchyGenerator
         return $heirarchy;
     }
 
-    public function generateForDepartments(Department $dep)
+    public function generateTicketDepartmentsHeirarchy(Person $person)
     {
-        $level = 0;
-        $parent_node = new HeirarchyNode($field, $level);
-        $heirarchy = new Heirarchy($parent_node, new DashesFormatter('title'));
+        $allowed_department_ids = $this->permissions_manager->getAllowedDepartmentIds($person);
 
-        $recursive = function(CustomDefAbstract $field, HeirarchyNode $parent, $depth) use (&$recursive) {
+        // TODO: make sure allowed_departmetn_ids is correct
+        // TODO: since allowed_dep_ids is cached. like, ensure enabled = true for ex, stuff that is always true
+        $departments = $this->em
+            ->getRepository('DeskPRO:Department')
+            ->createQueryBuilder('d')
+            ->select('d')
+            ->where('d.id IN (:allowed_department_ids) AND d.parent IS NULL AND d.is_tickets_enabled = true')
+            ->orderBy('d.display_order', 'ASC')
+            ->setParameter('allowed_department_ids', $allowed_department_ids)
+            ->getQuery()
+            ->getResult()
+        ;
 
-            foreach ($field->children as $child) {
+        //
+        // TODO: the methods in this class are very repetitive, meaning we have a good chance to extract a class for reuse
+        //
+
+        $root_nodes = array();
+        foreach ($departments as $department) {
+            $root_nodes[] = new HeirarchyNode($department, 0);
+        }
+
+        $heirarchy = new Heirarchy($root_nodes, new DashesFormatter('title'));
+        $heirarchy->markOnlyLeafSelections();
+
+        $recursive = function (Department $dep, HeirarchyNode $parent, $depth) use (&$recursive) {
+            foreach ($dep->children as $child) {
                 $parent->addChild($child_node = new HeirarchyNode($child, $depth, $child->display_order));
                 $recursive($child, $child_node, $depth + 1);
             }
-
-
         };
 
-        $recursive($field, $parent_node, $level + 1);
+        foreach ($heirarchy as $root_node) {
+            $recursive($root_node->getData(), $root_node, 1);
+        }
 
         return $heirarchy;
     }

@@ -184,7 +184,9 @@ class TicketType extends AbstractType
 
     private function addDepartment(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('department', 'deskpro_department', array());
+        $form_context->getForm()->add('department', 'deskpro_department', array(
+            'person' => $form_context->getPerson()
+        ));
     }
 
     private function addSubject(TicketFormContext $form_context, LayoutField $field)

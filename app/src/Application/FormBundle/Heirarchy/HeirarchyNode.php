@@ -145,5 +145,49 @@ class HeirarchyNode implements \IteratorAggregate, \Countable
     {
         return count($this->children);
     }
+
+    /**
+     * Recursively get a choices array for a form ChoiceList (only leaf values can be selected, the others are opt groups)
+     *
+     * @return array
+     */
+    public function getChoices()
+    {
+        $choices = array();
+
+        /** @var HeirarchyNode $node */
+        foreach ($this as $node) {
+            if (count($node)) {
+                $choices[(string)$node] = $node->getChoices();
+            } else {
+                $nodeId = $this->heirarchy->getNodeId($node);
+                $choices[$nodeId] = $nodeId;
+            }
+        }
+
+        return $choices;
+    }
+
+    /**
+     * Recursively get a labels array for a form ChoiceList (only leaf values can be selected, the others are opt groups)
+     *
+     * @return array
+     */
+    public function getLabels()
+    {
+        $labels = array();
+
+        /** @var HeirarchyNode $node */
+        foreach ($this as $node) {
+            if (count($node)) {
+                $labels[(string)$node] = $node->getLabels();
+            } else {
+                $nodeId = $this->heirarchy->getNodeId($node);
+                $labels[$nodeId] = (string) $node;
+            }
+        }
+
+        return $labels;
+    }
 }
  
