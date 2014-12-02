@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Doctrine\ORM\EntityManager;
+use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
 /**
@@ -137,8 +138,8 @@ class FormFieldManager
                     'deskpro_custom_field_choice',
                     $multiple ? 'input' : 'value',
                     $this->getGeneralOptionsForField($field_type, array(
-                        'expanded' => $expanded,
-                        'multiple' => $multiple,
+                        'expanded'     => $expanded,
+                        'multiple'     => $multiple,
                         'custom_field' => $field_type
                     )));
 
@@ -166,13 +167,30 @@ class FormFieldManager
 
     private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options)
     {
+        $isAgent = false;
+
         $options = array(
-            'required' => $field_type->isRequired()
+            'required' => $field_type->isRequired($isAgent)
         );
 
         $constraints = array();
-        if ($field_type->isRequired()) {
+        if ($field_type->isRequired($isAgent)) {
             $constraints[] = new NotBlank(array('message' => 'This value is required'));
+        }
+
+        $min = $field_type->getMinLength($isAgent);
+        $max = $field_type->getMaxLength($isAgent);
+        if ($min || $max) {
+            $opts = array();
+
+            if ($min) {
+                $opts['min'] = $min;
+            }
+            if ($max) {
+                $opts['max'] = $max;
+            }
+
+            $constraints[] = new Length($opts);
         }
 
         $options['constraints'] = $constraints;

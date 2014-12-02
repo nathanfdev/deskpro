@@ -362,7 +362,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
      *
      * @param  $name
      * @param  null       $default
-     * @return array|null
+     * @return mixed
      */
     public function getOption($name, $default = null)
     {
@@ -417,13 +417,33 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
-     * Is the field required?
-     *
-     * @return bool
+     * @param bool $isAgent
+     * @return mixed
      */
-    public function isRequired()
+    public function isRequired($isAgent = false)
     {
-        return $this->getOption('required', false);
+        $option_name = ($isAgent ? 'agent_' : '').'required';
+        return (bool) $this->getOption($option_name, false);
+    }
+
+    /**
+     * @param bool $isAgent
+     * @return mixed
+     */
+    public function getMinLength($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'min_length';
+        return $this->getOption($option_name, 0);
+    }
+
+    /**
+     * @param bool $isAgent
+     * @return mixed
+     */
+    public function getMaxLength($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'max_length';
+        return $this->getOption($option_name, 0);
     }
 
     /**
