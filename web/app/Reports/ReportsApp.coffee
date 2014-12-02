@@ -1,5 +1,5 @@
 define [
-  '../../bower_components/angular/angular',
+  'angular',
   'Reports/App/Controller/Main',
 ], (
   angular,
