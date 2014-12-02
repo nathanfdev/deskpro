@@ -43,6 +43,8 @@ use Orb\Util\Numbers;
  * A custom field definition
  *
  * @property int $display_order
+ * @property CustomDefAbstract|null $parent
+ * @property CustomDefAbstract[]|null $children
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {

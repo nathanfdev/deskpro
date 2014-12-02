@@ -127,6 +127,15 @@ class FormFieldManager
                         'data' => ''
                     )));
 
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+
+                return array(
+                    'deskpro_custom_field_choice',
+                    'input',
+                    $this->getGeneralOptionsForField($field_type, array(
+                        'custom_field' => $field_type
+                    )));
+
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
 
                 $options = array(
