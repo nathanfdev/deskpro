@@ -38,8 +38,10 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Doctrine\ORM\EntityManager;
+use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\Regex;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -167,17 +169,20 @@ class FormFieldManager
 
     private function getGeneralOptionsForField(CustomDefAbstract $field_type, array $specific_options)
     {
-        $isAgent = false;
+        $isAgent = false; //TODO: make this true if agent form
 
         $options = array(
             'required' => $field_type->isRequired($isAgent)
         );
 
         $constraints = array();
+
+        // required
         if ($field_type->isRequired($isAgent)) {
             $constraints[] = new NotBlank(array('message' => 'This value is required'));
         }
 
+        // length
         $min = $field_type->getMinLength($isAgent);
         $max = $field_type->getMaxLength($isAgent);
         if ($min || $max) {
@@ -191,6 +196,11 @@ class FormFieldManager
             }
 
             $constraints[] = new Length($opts);
+        }
+
+        // regex
+        if ($regex = $field_type->getRegex($isAgent)) {
+            $constraints[] = new Regex(array('pattern' => Strings::getInputRegexPattern($regex)));
         }
 
         $options['constraints'] = $constraints;

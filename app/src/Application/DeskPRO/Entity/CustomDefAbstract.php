@@ -447,6 +447,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @param bool $isAgent
+     * @return mixed
+     */
+    public function getRegex($isAgent = false)
+    {
+        $option_name = ($isAgent ? 'agent_' : '').'regex';
+        return $this->getOption($option_name, null);
+    }
+
+    /**
      * Get the phrasename for the handler class. This is just
      * the key of the phrase when showing this fields type.
      * For example, for phrases like "Text box" or "Checkbox" etc listed in the admin interface.
