@@ -41,6 +41,7 @@ use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Entity\EmailAccount;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Exception\MissingConfigurationException;
 use Orb\Util\Arrays;
 
@@ -333,6 +334,20 @@ class EmailAccountManager
         } catch (MissingConfigurationException $e) {
             return $this->getDefaultOutAccountWithFallback();
         }
+    }
+
+
+    /**
+     * @param Ticket $ticket
+     * @return EmailAccount
+     */
+    public function getAccountForTicket(Ticket $ticket)
+    {
+        if ($ticket->email_account) {
+            return $ticket->email_account;
+        }
+
+        return $this->getPrimaryTicketAccountWithFallback();
     }
 
 

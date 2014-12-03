@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\EmailBundle\Entity;
 
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
