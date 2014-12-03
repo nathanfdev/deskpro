@@ -13,7 +13,6 @@
   "angularSlider":                   "bower_components/angular-slider/slider",
   "angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
-  "angularBootstrapDatetime":        "bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js",
   "angularUiDatetime":               "vendor/ui-datetime",
 
   "ngFileUpload":                    "bower_components/ng-file-upload/angular-file-upload.min",
