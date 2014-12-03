@@ -100,7 +100,7 @@ abstract class HandlerAbstract
             $sb = $b->getOption('parent_id') ? 1 : -1;
 
             if ($sa === $sb) {
-                if ($a->getOption('parent_id') && $b->getOption('parent_id')) {
+                if ($a->getOption('parent_id') && $b->getOption('parent_id') && isset($children[$a->getOption('parent_id')]) && isset($children[$b->getOption('parent_id')])) {
                     $sa = $children[$a->getOption('parent_id')]->display_order + $a->display_order;
                     $sb = $children[$b->getOption('parent_id')]->display_order + $b->display_order;
                 } else {
