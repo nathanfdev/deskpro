@@ -72,6 +72,7 @@ class NewTicketController extends AbstractController
 //            $newTicket->setPersonContext($person); // have to set twice?
 //            $newTicket->save();
 
+            // ideally we fire an event here and do any excess logic in event listeners
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->persist($person);

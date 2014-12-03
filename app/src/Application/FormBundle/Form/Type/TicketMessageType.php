@@ -46,6 +46,7 @@ class TicketMessageType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('message', 'textarea', array(
+            'label' => $options['message_label'],
             'required' => $options['required'],
             'constraints' => $options['constraints']
         ));
@@ -75,7 +76,8 @@ class TicketMessageType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class' => 'Application\\DeskPRO\\Entity\\TicketMessage'
+            'data_class' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+            'message_label' => 'Message'
         ));
         $resolver->setRequired(array(
             'person', 'ticket'

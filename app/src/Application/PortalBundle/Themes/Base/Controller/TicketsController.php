@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 
@@ -55,7 +56,31 @@ class TicketsController extends AbstractController
      */
     public function viewAction(Ticket $ticket, Request $request)
     {
-        return $this->render('Theme:Tickets:view.html.twig', array('ticket' => $ticket));
+        $form = $this->createForm('deskpro_ticket_message', new TicketMessage(), array(
+            'ticket' => $ticket,
+            'message_label' => 'Reply',
+            'person' => $this->getUser()
+        ));
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            /** @var \Application\DeskPRO\Entity\TicketMessage $message */
+            $message = $form->getData();
+            $ticket->addMessage($message);
+
+            // ideally we fire an event here and do any excess logic in event listeners
+            $this->getDoctrine()->getManager()->persist($message);
+            $this->getDoctrine()->getManager()->flush();
+
+            $request->getSession()->getFlashBag()->add('success', 'ticket.successful_new_reply.translated');
+            return $this->redirect($this->generateUrl('portal_tickets'));
+        }
+
+        return $this->render('Theme:Tickets:view.html.twig', array(
+            'ticket' => $ticket,
+            'form' => $form->createView()
+        ));
     }
 
     /**
@@ -74,6 +99,7 @@ class TicketsController extends AbstractController
 
         if ($form->isValid()) {
 
+            // ideally we fire an event here and do any excess logic in event listeners
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->flush();
