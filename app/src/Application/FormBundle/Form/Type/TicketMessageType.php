@@ -51,21 +51,35 @@ class TicketMessageType extends AbstractType
             'constraints' => $options['constraints']
         ));
 
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreSetData'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
+        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
     }
 
-    public function onPreSetData(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
-        if (!$event->getData()) {
-            $event->setData(new TicketMessage());
+        /** @var \Application\DeskPRO\Entity\TicketMessage $message */
+        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $message = $event->getData();
+        $ticket = $event->getForm()->getConfig()->getOption('ticket');
+
+        $ticket->addMessage($message);
+    }
+
+    public function onPreData(FormEvent $event)
+    {
+        /** @var \Application\DeskPRO\Entity\TicketMessage $message */
+        $message = $event->getData();
+
+        if (!$message) {
+            $event->setData($message = new TicketMessage());
         }
 
         $config = $event->getForm()->getConfig();
         $ticket = $config->getOption('ticket');
         $person = $config->getOption('person');
 
-        $event->getData()->setTicket($ticket);
-        $event->getData()->setPerson($person);
+        $message->setTicket($ticket);
+        $message->setPerson($person);
     }
 
     public function getName()

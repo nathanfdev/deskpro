@@ -56,7 +56,9 @@ class TicketsController extends AbstractController
      */
     public function viewAction(Ticket $ticket, Request $request)
     {
-        $form = $this->createForm('deskpro_ticket_message', new TicketMessage(), array(
+        $message = new TicketMessage()
+
+        $form = $this->createForm('deskpro_ticket_message', $message, array(
             'ticket' => $ticket,
             'message_label' => 'Reply',
             'person' => $this->getUser()
@@ -65,16 +67,16 @@ class TicketsController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isValid()) {
-            /** @var \Application\DeskPRO\Entity\TicketMessage $message */
-            $message = $form->getData();
-            $ticket->addMessage($message);
 
-            // ideally we fire an event here and do any excess logic in event listeners
-            $this->getDoctrine()->getManager()->persist($message);
-            $this->getDoctrine()->getManager()->flush();
+            // TODO: fire an event (Ticket::NEW_MESSAGE)
+            // TODO: Make the Ticket repository do this actual persisting logic
+            $em = $this->getEm();
+            $em->persist($message);
+            $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'ticket.successful_new_reply.translated');
-            return $this->redirect($this->generateUrl('portal_tickets'));
+            $this->addFlash('success', 'ticket.successful_new_reply.translated');
+
+            return $this->redirectToRoute('portal_tickets');
         }
 
         return $this->render('Theme:Tickets:view.html.twig', array(

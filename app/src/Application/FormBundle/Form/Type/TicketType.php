@@ -74,19 +74,6 @@ class TicketType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
-    }
-
-    public function onPostSubmit(FormEvent $event)
-    {
-        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $ticket = $event->getData();
-        $form = $event->getForm();
-
-        if ($form->has('message')) {
-            //TODO: move this too message type
-            $ticket->addMessage($event->getForm()->get('message')->getData());
-        }
     }
 
     public function onPreData(FormEvent $event)
