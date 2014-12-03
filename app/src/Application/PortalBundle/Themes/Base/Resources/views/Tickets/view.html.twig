@@ -17,6 +17,15 @@
         </span>
     </header>
 
+    <h2>CC'ed peple</h2>
+    <ul>
+        {% for person in ticket.userParticipants %}
+            <li>{{ person }} ({{ person.primary_email.email }})</li>
+        {% else %}
+            <li>None!</li>
+        {% endfor %}
+    </ul>
+
     <h2>Messages on Ticket</h2>
     <ul>
         {% for msg in ticket.messages %}
@@ -24,6 +33,8 @@
         {% endfor %}
     </ul>
 
+<br>
+    <h3>Respond</h3>
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <button type="submit">Submit Reply</button>
