@@ -7,7 +7,7 @@
         {% for ticket in tickets %}
 
             <LI>
-                <a href="{{ path('portal_tickets_edit', { id: ticket.id }) }}">{{ ticket.subject }}</a>
+                <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">{{ ticket.subject }}</a>
             </LI>
 
         {% endfor %}
@@ -111,7 +111,7 @@
                 <tbody>
                 <tr class="item-row">
                     <td>
-                        <a href="{{ path('portal_tickets_edit', { id: 1 }) }}">
+                        <a href="{{ path('portal_tickets_view', { id: 1 }) }}">
                             <span class="status-tag">A</span>
                             <span class="focus">[Billing]</span> I´m getting a lot of 500 error pages in my sites and
                             virtualmin goes lorel
@@ -119,7 +119,7 @@
                     </td>
 
                     <td class="info-block">
-                        <a href="{{ path('portal_tickets_edit', { id: 2 }) }}">
+                        <a href="{{ path('portal_tickets_view', { id: 2 }) }}">
                             <img src="./img/avatar.png" class="avatar">
                             <span class="person">Dennis Schipper</span>
                             <span class="date">Yesterday</span>
@@ -129,7 +129,7 @@
 
                 <tr class="item-row">
                     <td>
-                        <a href="{{ path('portal_tickets_edit', { id: 3 }) }}">
+                        <a href="{{ path('portal_tickets_view', { id: 3 }) }}">
                             <span class="status-tag">A</span>
                             <span class="focus">[Sales]</span> 502 Bad Gateway nginx/1.4.6 (Ubuntu)
                         </a>
@@ -146,7 +146,7 @@
 
                 <tr class="item-row last-in-line">
                     <td>
-                        <a href="{{ path('portal_tickets_edit', { id: 4 }) }}">
+                        <a href="{{ path('portal_tickets_view', { id: 4 }) }}">
                             <span class="status-tag">A</span>
                             <span class="focus">[Sales]</span> My domain only works in certain format.
                         </a>
@@ -171,7 +171,7 @@
 
                 <tr class="item-row">
                     <td>
-                        <a href="{{ path('portal_tickets_edit', { id: 5 }) }}">
+                        <a href="{{ path('portal_tickets_view', { id: 5 }) }}">
                             <span class="status-tag">A</span>
                             <span class="focus positive">[Resolved]</span><span class="focus">[Sales]</span> My domain
                             only works in certain format.
@@ -190,7 +190,7 @@
 
                 <tr class="item-row">
                     <td>
-                        <a href="{{ path('portal_tickets_edit', { id: 3 }) }}">
+                        <a href="{{ path('portal_tickets_view', { id: 3 }) }}">
                             <span class="status-tag">A</span>
                             <span class="focus">[Sales]</span> 502 Bad Gateway nginx/1.4.6 (Ubuntu)
                         </a>

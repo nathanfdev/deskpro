@@ -49,7 +49,17 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * TODO: put a Security annotation to make sure user is granted acess to edit this ticket (being granted acces to
+     * TODO: put a Security annotation to make sure user is granted acess to VIEW this ticket (being granted acces to
+     * VIEW this ticket implies you are logged in, becasue the voter denies non logged in users, so we dont need to
+     * make multiple security assertions, see what I mean?)
+     */
+    public function viewAction(Ticket $ticket, Request $request)
+    {
+        return $this->render('Theme:Tickets:view.html.twig', array('ticket' => $ticket));
+    }
+
+    /**
+     * TODO: put a Security annotation to make sure user is granted acess to EDIT this ticket (being granted acces to
      * EDIT this ticket implies you are logged in, becasue the voter denies non logged in users, so we dont need to
      * make multiple security assertions, see what I mean?)
      */

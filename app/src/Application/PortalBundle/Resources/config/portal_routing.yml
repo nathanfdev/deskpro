@@ -99,6 +99,10 @@ portal_tickets:
     path: /tickets
     defaults:
       _controller: Theme:Tickets:index
+portal_tickets_view:
+    path: /tickets/view/{id}
+    defaults:
+      _controller: Theme:Tickets:view
 portal_tickets_edit:
     path: /tickets/{id}
     defaults:
