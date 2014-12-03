@@ -45,5 +45,6 @@ class PersonExtension extends Extension
     {
         $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
         $loader->load('person_services.yml');
+        $loader->load('person_events.yml');
     }
 }

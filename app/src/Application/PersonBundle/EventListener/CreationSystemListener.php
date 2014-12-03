@@ -32,69 +32,30 @@
  * @subpackage
  */
 
-namespace Application\PersonBundle\Person;
+namespace Application\PersonBundle\EventListener;
 
 
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Entity\PersonEmail;
 use Application\PersonBundle\Events\PersonCreateEvent;
-use Application\PersonBundle\Person\Context\CreatePersonContext;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\EventDispatcher\EventDispatcherInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 
-class PersonFactory
+/**
+ * Responsible for making sure the creation_system is set on a person correctly for every NEW person.
+ *
+ * Current implementation is that it is generated elsewhere and passed with the context
+ */
+class CreationSystemListener implements EventSubscriberInterface
 {
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    /**
-     * @var \Symfony\Component\EventDispatcher\EventDispatcher
-     */
-    private $event_dispatcher;
-
-    public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher)
+    public function onPreCreate(PersonCreateEvent $event)
     {
-        $this->em = $em;
-        $this->event_dispatcher = $event_dispatcher;
+        $event->getPerson()->creation_system = $event->getContext()->getCreationSystem();
     }
 
-    public function getPersonByEmail($email)
+    public static function getSubscribedEvents()
     {
-        return $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
-    }
-
-    public function createPersonByEmail($raw_email, CreatePersonContext $context)
-    {
-        $person = new Person();
-
-        $email = new PersonEmail();
-        $email->setEmail($raw_email);
-        $email->person = $person;
-
-        $person->addEmailAddress($email);
-
-        $email->is_validated = true;
-        $person->is_confirmed = true;
-
-        $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
-
-        $this->em->persist($person);
-        $this->em->flush();
-
-        $this->event_dispatcher->dispatch(Person::EVENT_POST_CREATE, new PersonCreateEvent($person, $context));
-
-        return $person;
-    }
-
-    public function getOrCreatePersonByEmail($email, CreatePersonContext $context)
-    {
-        if ($person = $this->getPersonByEmail($email)) {
-            return $person;
-        }
-
-        return $this->createPersonByEmail($email, $context);
+        return array(
+            Person::EVENT_PRE_CREATE => 'onPreCreate'
+        );
     }
 }
  
