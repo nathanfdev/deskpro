@@ -182,7 +182,7 @@ class CleanupDaily extends AbstractJob
 
             $blob_ids = App::getDb()->fetchAllCol("
                 SELECT blob_id FROM sendmail_queue
-                WHERE (has_sent = 1 AND date_sent < ?) OR date_sent < ? AND blob_id IS NOT NULL
+                WHERE ((has_sent = 1 AND date_sent < ?) OR date_sent < ?) AND blob_id IS NOT NULL
             ", array($datetime, $datetime2));
 
             if ($blob_ids) {
