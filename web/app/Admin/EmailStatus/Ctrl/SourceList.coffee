@@ -52,6 +52,12 @@ define [
       p2 = @Api.sendGet('/email_accounts').success( (data) =>
         @$scope.email_accounts = data.email_accounts
       )
+      @Api.sendGet('/email_status/stats').success( (data) =>
+        @$scope.counts = {
+          status: data.by_status || {},
+          account: data.by_account || {}
+        }
+      )
 
       return @$q.all([p1, p2])
 

@@ -116,6 +116,22 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
 
     ####################################################################################################################
+    # get-email-sources-stats
+    ####################################################################################################################
+
+    public function sourcesStatsAction()
+    {
+        $status_counts  = $this->db->fetchAllKeyValue("SELECT status, COUNT(*) FROM email_sources GROUP BY status");
+        $account_counts = $this->db->fetchAllKeyValue("SELECT email_account_id, COUNT(*) FROM email_sources GROUP BY email_account_id");
+
+        return $this->createJsonResponse(array(
+            'by_status'  => $status_counts,
+            'by_account' => $account_counts
+        ));
+    }
+
+
+    ####################################################################################################################
     # get-sendmail-queue
     ####################################################################################################################
 

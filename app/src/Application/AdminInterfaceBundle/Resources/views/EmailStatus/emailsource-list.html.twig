@@ -37,12 +37,12 @@
 									ng-model="ListCtrl.filter.statuses"
 									style="width: 100%;"
 								>
-									<option value="inserted">Pending</option>
-									<option value="processing">Processing</option>
-									<option value="complete">Complete</option>
-									<option value="rejected">Rejected</option>
-									<option value="retry">Retry</option>
-									<option value="error">Error</option>
+									<option value="inserted">Pending ({{ ng_var('counts.status.inserted || 0') }})</option>
+									<option value="processing">Processing ({{ ng_var('counts.status.processing || 0') }})</option>
+									<option value="complete">Complete ({{ ng_var('counts.status.complete || 0') }})</option>
+									<option value="rejected">Rejected ({{ ng_var('counts.status.rejected || 0') }})</option>
+									<option value="retry">Retry ({{ ng_var('counts.status.retry || 0') }})</option>
+									<option value="error">Error ({{ ng_var('counts.status.error || 0') }})</option>
 								</select>
 							</td>
 
@@ -50,7 +50,7 @@
 							<td width="150">
 								<select ui-select2 ng-model="ListCtrl.filter.account">
 									<option value="0">Any</option>
-									<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.use_email_address') }}</option>
+									<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.use_email_address') }} ({{ ng_var('counts.account[acc.id] || 0') }})</option>
 								</select>
 							</td>
 

@@ -3216,6 +3216,12 @@ $collection->create('api_emailstatus_sourcelist', array(
     'methods'     => array('GET'),
 ));
 
+$collection->create('api_emailstatus_sourcestats', array(
+    'path'        => '/email_status/stats',
+    'controller'  => 'ApiBundle:EmailStatus:sourcesStats',
+    'methods'     => array('GET'),
+));
+
 $collection->create('api_emailstatus_source_get', array(
     'path'         => '/email_status/sources/{id}',
     'controller'   => 'ApiBundle:EmailStatus:getSourceInfo',
