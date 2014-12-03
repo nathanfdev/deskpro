@@ -21,6 +21,9 @@
 		<article class="dp-padded">
 			<div class="alert alert-info">
 				<div ng-show="!filter_open">
+					<div style="float:right; position: relative; top: 3px;" dp-hide-spinning="loading_page">
+						<button type="button" class="btn btn-default btn-xs" ng-click="ListCtrl.updateFilter()"><i class="fa fa-refresh" style="margin:0;"></i></button>
+					</div>
 					Showing all incoming emails. <button class="btn" ng-click="filter_open = true"><i class="fa fa-filter"></i> Filter</button>
 				</div>
 				<div ng-show="filter_open">
@@ -134,8 +137,8 @@
 						<td class="overflow-ellipsis">{{ ng_var('result.header_subject') }}</td>
 						<td nowrap>
 							<div ng-if="result.object_info.ticket_id">
-								<a ng-href="../agent/#t:{{ ng_var('result.object_info.ticket_id') }}" target="_blank"><i class="fa fa-envelope"></i> {{ ng_var('result.object_info.ticket_id') }}</a>
-								<span ng-if="result.object_info.ticket_message_id">(reply)</span>
+								<i class="fa fa-envelope"></i> <a ng-href="../agent/#t:{{ ng_var('result.object_info.ticket_id') }}" target="_blank">{{ ng_var('result.object_info.ticket_id') }}</a>
+								<span ng-if="result.object_type == 'ticket_message'">(reply)</span>
 							</div>
 							<div ng-if="!result.object_info.ticket_id">
 								<span ng-if="result.object_id == 0">

@@ -10,7 +10,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav class="dp-blocktabs">
-				<menu>
+				<menu dropdown>
 					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
 					<ul class="dropdown-menu pull-right">
 						<li><a ng-click="ViewSource.startDelete()"><i class="fa fa-trash-o"></i> Delete Email</a></li>
@@ -27,7 +27,7 @@
 					<td dp-date="ViewSource.source.date_created" format="fulltime"></td>
 				</tr>
 				<tr>
-					<th>Status <i class="fa fa-question-circle qmark-icon" ng-click="showStatusHelp(ViewSource.source.status)" tooltip="Click for more details" tooltip-placement="left" style="cursor: pointer;"></i></th>
+					<th>Status <i class="fa fa-question-circle qmark-icon" ng-click="showStatusHelp(ViewSource.source.status)" tooltip="Click for more details" tooltip-placement="right" style="cursor: pointer;"></i></th>
 					<td ng-class="{'danger': ViewSource.source.status == 'error', 'warning': ViewSource.source.status == 'rejected', 'success': ViewSource.source.status == 'complete'}">
 						{{ ng_var('ViewSource.source.status | uppercase') }} (<span dp-date="ViewSource.source.date_status" format="fulltime"></span>)
 						<div ng-if="ViewSource.source.status == 'error'">
