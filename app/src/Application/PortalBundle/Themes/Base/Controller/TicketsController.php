@@ -52,7 +52,9 @@ class TicketsController extends AbstractController
                 )
             );
 
-        return $this->render('Theme:Tickets:index.html.twig', array('tickets' => $tickets));
+        return $this->render('Theme:Tickets:index.html.twig', array(
+            'tickets' => $tickets
+        ));
     }
 
     /**
@@ -82,7 +84,7 @@ class TicketsController extends AbstractController
 
             $this->addFlash('success', 'ticket.successful_new_reply.translated');
 
-            return $this->redirectToRoute('portal_tickets');
+            return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
         }
 
         return $this->render('Theme:Tickets:view.html.twig', array(
@@ -115,7 +117,7 @@ class TicketsController extends AbstractController
 
             $this->addFlash('success', 'updated.ticket.translated');
 
-            return $this->redirectToRoute('portal_tickets');
+            return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
         }
 
         return $this->render('Theme:Tickets:edit.html.twig', array(

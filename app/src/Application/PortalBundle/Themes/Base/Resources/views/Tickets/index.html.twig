@@ -8,6 +8,7 @@
 
             <LI>
                 <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">{{ ticket.subject }}</a>
+               [ <a href="{{ path('portal_tickets_edit', { id: ticket.id }) }}">EDIT</a> ]
             </LI>
 
         {% endfor %}
