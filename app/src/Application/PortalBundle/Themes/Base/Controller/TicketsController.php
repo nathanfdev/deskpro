@@ -44,7 +44,13 @@ class TicketsController extends AbstractController
     public function indexAction()
     {
         // TODO: we just grab them all for now, without filtering...
-        $tickets = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->findBy(array('person' => $this->getUser()));
+        $tickets = $this->getEm()
+            ->getRepository('DeskPRO:Ticket')
+            ->findBy(
+                array(
+                    'person' => $this->getUser()
+                )
+            );
 
         return $this->render('Theme:Tickets:index.html.twig', array('tickets' => $tickets));
     }
@@ -56,19 +62,19 @@ class TicketsController extends AbstractController
      */
     public function viewAction(Ticket $ticket, Request $request)
     {
-        $message = new TicketMessage()
+        $message = new TicketMessage();
 
         $form = $this->createForm('deskpro_ticket_message', $message, array(
-            'ticket' => $ticket,
+            'ticket'        => $ticket,
             'message_label' => 'Reply',
-            'person' => $this->getUser()
+            'person'        => $this->getUser()
         ));
 
         $form->handleRequest($request);
 
         if ($form->isValid()) {
 
-            // TODO: fire an event (Ticket::NEW_MESSAGE)
+            // TODO: fire an event (Ticket::ADD_MESSAGE)
             // TODO: Make the Ticket repository do this actual persisting logic
             $em = $this->getEm();
             $em->persist($message);
@@ -81,7 +87,7 @@ class TicketsController extends AbstractController
 
         return $this->render('Theme:Tickets:view.html.twig', array(
             'ticket' => $ticket,
-            'form' => $form->createView()
+            'form'   => $form->createView()
         ));
     }
 
@@ -93,7 +99,7 @@ class TicketsController extends AbstractController
     public function editAction(Ticket $ticket, Request $request)
     {
         $form = $this->createForm('deskpro_ticket', $ticket, array(
-            'person' => $this->getUser(),
+            'person'            => $this->getUser(),
             'ticket_visibility' => 'edit'
         ));
 
@@ -101,16 +107,20 @@ class TicketsController extends AbstractController
 
         if ($form->isValid()) {
 
-            // ideally we fire an event here and do any excess logic in event listeners
+            // TODO: fire an event (Ticket::EDIT)
+            // TODO: have the Ticket repo do this persistence logic
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->flush();
 
-            $request->getSession()->getFlashBag()->add('success', 'updated.ticket.translated');
+            $this->addFlash('success', 'updated.ticket.translated');
 
-            return $this->redirect($this->generateUrl('portal_tickets'));
+            return $this->redirectToRoute('portal_tickets');
         }
 
-        return $this->render('Theme:Tickets:edit.html.twig', array('ticket' => $ticket, 'form' => $form->createView()));
+        return $this->render('Theme:Tickets:edit.html.twig', array(
+                'ticket' => $ticket,
+                'form'   => $form->createView())
+        );
     }
 }

@@ -36,7 +36,6 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\DeskPRO\Entity\Ticket;
-use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -63,24 +62,22 @@ class NewTicketController extends AbstractController
 
         if ($form->isValid()) {
 
-            // we will do a lot of work here, and I definitely want to use services to do this work
-            // (hopefully inside of domain events) so that we can easily see and extend what happens during ticket
-            // creation instead of hacking one big function
-
 //            (some of) the old code:
 //            $newTicket = new NewTicket(Ticket::CREATED_WEB_PERSON_PORTAL, $person, $ticket);
 //            $newTicket->setPersonContext($person); // have to set twice?
 //            $newTicket->save();
 
-            // ideally we fire an event here and do any excess logic in event listeners
+            // TODO: fire an event (Ticket::NEW_READY)
+            // TODO: logic below in Ticket repo
             $em = $this->getDoctrine()->getManager();
             $em->persist($ticket);
             $em->persist($person);
             $em->flush();
+            // TODO: fire an event (Ticket::NEW_SAVED)
 
-            $request->getSession()->getFlashBag()->add('success', 'created.ticket.phrase.here');
+            $this->addFlash('success', 'created.ticket.phrase.here');
 
-            return $this->redirect($this->generateUrl('portal_index'));
+            return $this->redirectToRoute('portal_index');
 
         }
 
