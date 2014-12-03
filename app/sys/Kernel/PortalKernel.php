@@ -69,6 +69,7 @@ class PortalKernel extends Kernel
             new \Application\AuthBundle\AuthBundle(),
             new \Application\FormBundle\FormBundle(),
             new \Application\AppBundle\AppBundle(),
+            new \Application\PersonBundle\PersonBundle(),
         );
 
         if ('dev' === $this->getEnvironment()
