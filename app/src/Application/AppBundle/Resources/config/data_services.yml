@@ -1,0 +1,4 @@
+services:
+  data.departments:
+      class: Application\AppBundle\DataService\DepartmentDataService
+      arguments: [@doctrine.orm.default_entity_manager, @portal_permissions_manager]

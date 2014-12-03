@@ -35,6 +35,7 @@
 namespace Application\FormBundle\Hierarchy;
 
 
+use Application\AppBundle\DataService\DepartmentDataService;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -44,6 +45,10 @@ use Application\AppBundle\Hierarchy\Formatter\DashesFormatter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 
+//
+// TODO: the methods in this class are very repetitive, meaning we have a good chance to extract a class for reuse
+//
+
 class HierarchyGenerator
 {
     /**
@@ -52,14 +57,14 @@ class HierarchyGenerator
     private $em;
 
     /**
-     * @var \Application\AuthBundle\Permissions\Portal\PortalPermissionsManager
+     * @var \Application\AppBundle\DataService\DepartmentDataService
      */
-    private $permissions_manager;
+    private $department_data_service;
 
-    public function __construct(EntityManager $em, PortalPermissionsManager $permissions_manager)
+    public function __construct(EntityManager $em, DepartmentDataService $department_data_service)
     {
         $this->em = $em;
-        $this->permissions_manager = $permissions_manager;
+        $this->department_data_service = $department_data_service;
     }
 
     public function generateForCustomTicketFormField(CustomDefTicket $field)
@@ -95,24 +100,7 @@ class HierarchyGenerator
 
     public function generateTicketDepartmentsHierarchy(Person $person)
     {
-        $allowed_department_ids = $this->permissions_manager->getAllowedDepartmentIds($person);
-
-        // TODO: make sure allowed_departmetn_ids is correct
-        // TODO: since allowed_dep_ids is cached. like, ensure enabled = true for ex, stuff that is always true
-        $departments = $this->em
-            ->getRepository('DeskPRO:Department')
-            ->createQueryBuilder('d')
-            ->select('d')
-            ->where('d.id IN (:allowed_department_ids) AND d.parent IS NULL AND d.is_tickets_enabled = true')
-            ->orderBy('d.display_order', 'ASC')
-            ->setParameter('allowed_department_ids', $allowed_department_ids)
-            ->getQuery()
-            ->getResult()
-        ;
-
-        //
-        // TODO: the methods in this class are very repetitive, meaning we have a good chance to extract a class for reuse
-        //
+        $departments = $this->department_data_service->getAuthorizedDepartmentsForPersonInPortal($person);
 
         $root_nodes = array();
         foreach ($departments as $department) {

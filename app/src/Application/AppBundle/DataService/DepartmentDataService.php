@@ -32,21 +32,47 @@
  * @subpackage
  */
 
-namespace Application\AppBundle\DependencyInjection;
+namespace Application\AppBundle\DataService;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class AppExtension extends Extension
+use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
+use Application\DeskPRO\Entity\Person;
+use Doctrine\ORM\EntityManager;
+
+class DepartmentDataService
 {
-    public function load(array $config, ContainerBuilder $container)
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    /**
+     * @var \Application\AuthBundle\Permissions\Portal\PortalPermissionsManager
+     */
+    private $portal_permissions_manager;
+
+    public function __construct(EntityManager $em, PortalPermissionsManager $portal_permissions_manager)
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('hierarchy.yml');
-        $loader->load('data_services.yml');
+        $this->em = $em;
+        $this->portal_permissions_manager = $portal_permissions_manager;
+    }
+
+    public function getAuthorizedDepartmentsForPersonInPortal(Person $person)
+    {
+        $allowed_department_ids = $this->portal_permissions_manager->getAllowedDepartmentIds($person);
+
+        // TODO: make sure allowed_department_ids is correct
+        $departments = $this->em
+            ->getRepository('DeskPRO:Department')
+            ->createQueryBuilder('d')
+            ->select('d')
+            ->where('d.id IN (:allowed_department_ids) AND d.parent IS NULL AND d.is_tickets_enabled = true')
+            ->orderBy('d.display_order', 'ASC')
+            ->setParameter('allowed_department_ids', $allowed_department_ids)
+            ->getQuery()
+            ->getResult();
+
+        return $departments;
     }
 }
-
  

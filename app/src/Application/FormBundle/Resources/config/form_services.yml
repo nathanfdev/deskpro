@@ -15,7 +15,7 @@ services:
     arguments: [@doctrine.orm.default_entity_manager]
   form_hierarchy_generator:
     class: Application\FormBundle\Hierarchy\HierarchyGenerator
-    arguments: [@doctrine.orm.default_entity_manager, @portal_permissions_manager]
+    arguments: [@doctrine.orm.default_entity_manager, @data.departments]
   form.custom_data_ticket:
     class: Application\FormBundle\Form\Type\CustomDataTicketType
     arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
