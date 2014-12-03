@@ -63,16 +63,11 @@ class TicketType extends AbstractType
      * @var \Application\FormBundle\TicketLayout\TicketLayoutFactory
      */
     private $ticket_layout_factory;
-    /**
-     * @var \Application\PersonBundle\Person\PersonFactory
-     */
-    private $person_factory;
 
-    public function __construct(FormFieldManager $field_manager, TicketLayoutFactory $ticket_layout_factory, PersonFactory $person_factory)
+    public function __construct(FormFieldManager $field_manager, TicketLayoutFactory $ticket_layout_factory)
     {
         $this->field_manager = $field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;
-        $this->person_factory = $person_factory;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -88,23 +83,8 @@ class TicketType extends AbstractType
         $form = $event->getForm();
 
         if ($form->has('message')) {
+            //TODO: move this too message type
             $ticket->addMessage($event->getForm()->get('message')->getData());
-        }
-
-        if ($form->has('cc')) {
-            $participants = array();
-            $cc_emails = $form->get('cc')->getData();
-            foreach ($cc_emails as $email) {
-                // TODO: rethink this approach...
-                $new_person_context = new CreatePersonContext('gateway.person'); // used only if email makes new person
-                $participants[] = $this->person_factory->getOrCreatePersonByEmail($email, $new_person_context);
-            }
-
-            $user_participant_ids = array_map(function(Person $person) {
-                return $person->id;
-            }, $participants);
-
-            $ticket->setParticipantUserIds($user_participant_ids);
         }
     }
 
@@ -136,15 +116,6 @@ class TicketType extends AbstractType
 
             $this->addField($context, $field);
 
-        }
-
-        if ($form->has('cc')) {
-            $cc_emails = array();
-            foreach ($ticket->getUserParticipants() as $participant) {
-                $cc_emails[] = (string) $participant->getEmailAddress();
-            }
-
-            $form->get('cc')->setData($cc_emails);
         }
     }
 
@@ -382,7 +353,11 @@ class TicketType extends AbstractType
 
     private function addCc(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('cc', 'deskpro_cc', array('mapped' => false, 'required' => false));
+        $form_context->getForm()->add('cc', 'deskpro_cc', array(
+            'ticket' => $form_context->getTicket(),
+            'mapped' => false,
+            'required' => false
+        ));
     }
 
     private function addAttach(TicketFormContext $form_context, LayoutField $field)

@@ -35,15 +35,72 @@
 namespace Application\FormBundle\Form\Type;
 
 use Application\FormBundle\Form\DataTransformer\ArrayToStringTransformer;
+use Application\PersonBundle\Person\Context\CreatePersonContext;
+use Application\PersonBundle\Person\PersonFactory;
+use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CcType extends AbstractType
 {
+    /**
+     * @var \Application\PersonBundle\Person\PersonFactory
+     */
+    private $person_factory;
+
+    public function __construct(PersonFactory $person_factory)
+    {
+        $this->person_factory = $person_factory;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addModelTransformer(new ArrayToStringTransformer());
+        $builder->addViewTransformer(new ArrayToStringTransformer());
+
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
+        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostsubmit'));
+    }
+
+    public function onPreData(FormEvent $event)
+    {
+        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $form = $event->getForm();
+        $config = $form->getConfig();
+        $ticket = $config->getOption('ticket');
+
+        $cc_emails = array();
+        foreach ($ticket->getUserParticipants() as $participant) {
+            $cc_emails[] = (string)$participant->getEmailAddress();
+        }
+
+        $event->setData($cc_emails);
+    }
+
+    public function onPostSubmit(FormEvent $event)
+    {
+        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $form = $event->getForm();
+        $config = $form->getConfig();
+        $ticket = $config->getOption('ticket');
+
+        $participants = array();
+        $cc_emails = $form->getData();
+        foreach ($cc_emails as $email) {
+            if ($email = trim($email)) {
+                // TODO: rethink this "context" approach, because it makes no sense to make one unless creating a person...
+                $new_person_context = new CreatePersonContext('gateway.person'); // used only if email makes new person
+                $participants[] = $this->person_factory->getOrCreatePersonByEmail($email, $new_person_context);
+            }
+        }
+
+        $user_participant_ids = array_map(function (Person $person) {
+            return $person->id;
+        }, $participants);
+
+        $ticket->setParticipantUserIds($user_participant_ids);
     }
 
     public function getName()
@@ -58,6 +115,17 @@ class CcType extends AbstractType
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $resolver
+            ->setRequired(
+                array(
+                    'ticket'
+                )
+            )
+            ->setAllowedTypes(
+                array(
+                    'ticket' => 'Application\\DeskPRO\\Entity\\Ticket'
+                )
+            );
     }
 }
  
