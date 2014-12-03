@@ -34,12 +34,15 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Form\TicketFormContext;
 use Application\FormBundle\FormFields;
 use Application\FormBundle\TicketLayout\TicketLayoutFactory;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
+use Application\PersonBundle\Person\Context\CreatePersonContext;
+use Application\PersonBundle\Person\PersonFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -60,11 +63,16 @@ class TicketType extends AbstractType
      * @var \Application\FormBundle\TicketLayout\TicketLayoutFactory
      */
     private $ticket_layout_factory;
+    /**
+     * @var \Application\PersonBundle\Person\PersonFactory
+     */
+    private $person_factory;
 
-    public function __construct(FormFieldManager $field_manager, TicketLayoutFactory $ticket_layout_factory)
+    public function __construct(FormFieldManager $field_manager, TicketLayoutFactory $ticket_layout_factory, PersonFactory $person_factory)
     {
         $this->field_manager = $field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;
+        $this->person_factory = $person_factory;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -75,14 +83,34 @@ class TicketType extends AbstractType
 
     public function postSubmitDataEvent(FormEvent $event)
     {
-        if ($event->getForm()->has('message')) {
-            $ticket = $event->getData();
+        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $ticket = $event->getData();
+        $form = $event->getForm();
+
+        if ($form->has('message')) {
             $ticket->addMessage($event->getForm()->get('message')->getData());
+        }
+
+        if ($form->has('cc')) {
+            $participants = array();
+            $cc_emails = $form->get('cc')->getData();
+            foreach ($cc_emails as $email) {
+                // TODO: rethink this approach...
+                $new_person_context = new CreatePersonContext('gateway.person'); // used only if email makes new person
+                $participants[] = $this->person_factory->getOrCreatePersonByEmail($email, $new_person_context);
+            }
+
+            $user_participant_ids = array_map(function(Person $person) {
+                return $person->id;
+            }, $participants);
+
+            $ticket->setParticipantUserIds($user_participant_ids);
         }
     }
 
     public function preDataEvent(FormEvent $event)
     {
+        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
         $ticket = $event->getData();
         $form = $event->getForm();
         $config = $form->getConfig();
@@ -108,6 +136,15 @@ class TicketType extends AbstractType
 
             $this->addField($context, $field);
 
+        }
+
+        if ($form->has('cc')) {
+            $cc_emails = array();
+            foreach ($ticket->getUserParticipants() as $participant) {
+                $cc_emails[] = (string) $participant->getEmailAddress();
+            }
+
+            $form->get('cc')->setData($cc_emails);
         }
     }
 

@@ -34,11 +34,18 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\FormBundle\Form\DataTransformer\ArrayToStringTransformer;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class CcType extends AbstractType
 {
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addModelTransformer(new ArrayToStringTransformer());
+    }
+
     public function getName()
     {
         return 'deskpro_cc';

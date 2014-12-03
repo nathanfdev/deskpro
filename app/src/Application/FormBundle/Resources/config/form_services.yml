@@ -28,7 +28,7 @@ services:
       - { name: form.type, alias: deskpro_custom_data_person }
   form.ticket:
     class: Application\FormBundle\Form\Type\TicketType
-    arguments: [@form_field_manager, @ticket_layout_factory]
+    arguments: [@form_field_manager, @ticket_layout_factory, @person_factory]
     tags:
       - { name: form.type, alias: deskpro_ticket }
   form.ticket_message:
