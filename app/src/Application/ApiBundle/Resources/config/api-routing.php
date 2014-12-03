@@ -3229,6 +3229,20 @@ $collection->create('api_emailstatus_source_get', array(
     'methods'      => array('GET'),
 ));
 
+$collection->create('api_emailstatus_source_get_summary', array(
+    'path'         => '/email_status/sources/{id}/summary',
+    'controller'   => 'ApiBundle:EmailStatus:getSourceSummary',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
+$collection->create('api_emailstatus_source_get_rendered', array(
+    'path'         => '/email_status/sources/{id}/rendered',
+    'controller'   => 'ApiBundle:EmailStatus:getSourceRendered',
+    'requirements' => array('id' => '\d+'),
+    'methods'      => array('GET'),
+));
+
 $collection->create('api_emailstatus_source_reprocess', array(
     'path'         => '/email_status/sources/{id}/reprocess',
     'controller'   => 'ApiBundle:EmailStatus:reprocessEmailSource',
