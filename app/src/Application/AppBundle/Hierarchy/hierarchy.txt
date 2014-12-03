@@ -1,0 +1,41 @@
+# Hierarchy
+
+A Hierarchy is a traversable recursive adjacencey list tree structure.
+
+This package allows you to create a Hierarchy object of arbitrary data.
+
+## Generators
+
+Users of this package will most likely want to create a generator service (see: HierarcyGenerator in the FormBundle)
+that will take some input and recursively construct a hierarchy.
+
+The generator *should probably* be a serivce with specialized methods to produce a particular tree with the data
+you expect. It is responsible for instantiating all classes and returning you a fully constructed Hierarchy.
+
+## Hierarchy
+
+The highest level structure is Hierarchy and it includes the tree of HierarchyNode objects. The Hierarchy is
+responsible for maintaing a Formatter for the tree, and is meant to hold other such metadata about the entire
+structure as a whole.
+
+## HierarchyNode
+
+Everything in a Hierarchy is represented as a tree of these Node objects. Each HierarchyNode references back to the
+main Hierarchy, and holds a collection of zero or more child nodes. Each node has metadata about its associated data,
+such as order in the sibling list.
+
+The node is a common way to encapsulate hierarchy related data, but most importanly each node holds the underlying DATA
+that is is representing.
+
+$node->getData() can return anything (the hierarchy generator, in the context of the type of tree its creating, will
+insert the data that the user-land code expects). Again, this componenet doesn't care much about the underlying data,
+it tries to handle the "outer" hierarchy side of things.
+
+Each node is traversable.
+
+## Subclassing
+
+This is mean to be subclassed if specific functionality is needed. The FormBundle does this extensivly, by using its
+own subclass of Hierarchy and HierarchyNode to create form choice lists. It also proviodes its own formatters that
+its own HierarchyGenerator uses.
+
