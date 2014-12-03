@@ -32,19 +32,31 @@
  * @subpackage
  */
 
-namespace Application\AppBundle\DependencyInjection;
+namespace Application\PersonBundle;
 
-use Symfony\Component\Config\FileLocator;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
 
-class AppExtension extends Extension
+use Application\PersonBundle\DependencyInjection\PersonExtension;
+use Symfony\Component\Console\Application;
+use Symfony\Component\HttpKernel\Bundle\Bundle;
+
+class PersonBundle extends Bundle
 {
-    public function load(array $config, ContainerBuilder $container)
+    public function getContainerExtension()
     {
-        $loader = new YamlFileLoader($container, new FileLocator(__DIR__.'/../Resources/config'));
-        $loader->load('hierarchy.yml');
-        $loader->load('data_services.yml');
+        return new PersonExtension();
+    }
+
+    public function registerCommands(Application $application)
+    {
+    }
+
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
+
+    public function getPath()
+    {
+        return __DIR__;
     }
 }
