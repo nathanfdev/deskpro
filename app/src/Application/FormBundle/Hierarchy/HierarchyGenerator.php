@@ -40,7 +40,7 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
-use Application\FormBundle\Hierarchy\Formatter\DashesFormatter;
+use Application\AppBundle\Hierarchy\Formatter\DashesFormatter;
 use Doctrine\ORM\EntityManager;
 use Doctrine\ORM\EntityRepository;
 

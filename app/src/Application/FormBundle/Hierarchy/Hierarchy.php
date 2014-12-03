@@ -34,11 +34,10 @@
 
 namespace Application\FormBundle\Hierarchy;
 
+use Application\AppBundle\Hierarchy\Hierarchy as BaseHierarchy;
+use Application\AppBundle\Hierarchy\HierarchyFormatterInterface;
 use Application\FormBundle\Form\ChoiceList\HierarchyChoiceList;
-use Application\FormBundle\Hierarchy\Formatter\FlatListFormatter;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\PropertyAccess\PropertyAccess;
-use Traversable;
 
 /**
  * Represents a hierarchy.
@@ -46,65 +45,19 @@ use Traversable;
  * getChoiceList can be used directly in a form (choice type) and will use the hierarchy formatter to render options
  * and the ID of the entity (by default) as the value.
  */
-class Hierarchy implements \Countable, \IteratorAggregate
+class Hierarchy extends BaseHierarchy
 {
-    /**
-     * @var HierarchyFormatterInterface
-     */
-    private $formatter;
-
-    /**
-     * @var HierarchyNode[]
-     */
-    private $root_nodes;
-
-    /*
-     * @var string|null
-     */
-    private $node_id_path;
-
-    /**
-     * @var \Symfony\Component\PropertyAccess\PropertyAccessor
-     */
-    private $accessor;
-
     /**
      * @var bool
      */
     private $leaf_selections_only;
 
-    /**
-     * @param HierarchyNode[]             $root_nodes
-     * @param HierarchyFormatterInterface $formatter
-     * @param string|null $node_id_path
-     */
     public function __construct(array $root_nodes, HierarchyFormatterInterface $formatter = null, $node_id_path = null)
     {
-        $this->formatter = $formatter ?: new FlatListFormatter();
-        $this->root_nodes = $root_nodes;
-        foreach ($root_nodes as $root_node) {
-            $root_node->setHierarchy($this);
-        }
-        $this->node_id_path = $node_id_path;
-        $this->accessor = PropertyAccess::createPropertyAccessor();
+        parent::__construct($root_nodes, $formatter, $node_id_path);
         $this->leaf_selections_only = false;
     }
 
-    /**
-     * @return HierarchyFormatterInterface
-     */
-    public function getFormatter()
-    {
-        return $this->formatter;
-    }
-
-    /**
-     * @return HierarchyNode[]
-     */
-    public function getRootNodes()
-    {
-        return $this->root_nodes;
-    }
 
     /**
      * @return HierarchyNode[]
@@ -174,51 +127,6 @@ class Hierarchy implements \Countable, \IteratorAggregate
         return new HierarchyChoiceList($choices, $labels);
     }
 
-    /**
-     * @param HierarchyFormatterInterface $formatter
-     */
-    public function setFormatter(HierarchyFormatterInterface $formatter)
-    {
-        $this->formatter = $formatter;
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.0.0)<br/>
-     * Retrieve an external iterator
-     *
-     * @link http://php.net/manual/en/iteratoraggregate.getiterator.php
-     * @return Traversable An instance of an object implementing <b>Iterator</b> or
-     *       <b>Traversable</b>
-     */
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->root_nodes);
-    }
-
-    /**
-     * (PHP 5 &gt;= 5.1.0)<br/>
-     * Count elements of an object
-     *
-     * @link http://php.net/manual/en/countable.count.php
-     * @return int The custom count as an integer.
-     *       </p>
-     *       <p>
-     *       The return value is cast to an integer.
-     */
-    public function count()
-    {
-        return count($this->root_nodes);
-    }
-
-    /**
-     * @param $accessor
-     * @param $node
-     * @return mixed
-     */
-    public function getNodeId(HierarchyNode $node)
-    {
-        return $this->accessor->getValue($node, $this->node_id_path ?: 'data.id');
-    }
 
     public function markOnlyLeafSelections()
     {

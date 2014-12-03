@@ -34,118 +34,13 @@
 
 namespace Application\FormBundle\Hierarchy;
 
+use Application\AppBundle\Hierarchy\HierarchyNode as BaseNode;
+
 /**
  * A HierarchyNode is iteratable, and countable, because each can have an arbitray number of children.
  */
-class HierarchyNode implements \IteratorAggregate, \Countable
+class HierarchyNode extends BaseNode
 {
-    /**
-     * @var Hierarchy
-     */
-    private $hierarchy;
-
-    /**
-     * @var int
-     */
-    private $depth;
-
-    /**
-     * @var int
-     */
-    private $order;
-
-    /**
-     * @var mixed
-     */
-    private $data;
-
-    /**
-     * @var HierarchyNode[]
-     */
-    private $children;
-
-    /**
-     * @param int   $depth the depth into the hierarchy that this exists
-     * @param int   $order the order amoung this depth (higher is top of list)
-     * @param mixed $data  any arbitrary data stored at this location in the hierarchy
-     */
-    public function __construct($data, $depth = 0, $order = 0)
-    {
-        $this->depth = $depth;
-        $this->order = $order;
-        $this->data = $data;
-        $this->children = array();
-    }
-
-    public function __toString()
-    {
-        return $this->hierarchy->getFormatter()->format($this);
-    }
-
-    public function addChild(HierarchyNode $node)
-    {
-        $node->setHierarchy($this->hierarchy);
-        $this->children[] = $node;
-    }
-
-    /**
-     * @param Hierarchy $hierarchy
-     */
-    public function setHierarchy(Hierarchy $hierarchy)
-    {
-        $this->hierarchy = $hierarchy;
-    }
-
-    /**
-     * @return Hierarchy
-     */
-    public function getHierarchy()
-    {
-        return $this->hierarchy;
-    }
-
-    /**
-     * @return HierarchyNode
-     */
-    public function getRoot()
-    {
-        return $this->hierarchy->getRootNode();
-    }
-
-    /**
-     * @return int
-     */
-    public function getDepth()
-    {
-        return $this->depth;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOrder()
-    {
-        return $this->order;
-    }
-
-    /**
-     * @return mixed
-     */
-    public function getData()
-    {
-        return $this->data;
-    }
-
-    public function getIterator()
-    {
-        return new \ArrayIterator($this->children);
-    }
-
-    public function count()
-    {
-        return count($this->children);
-    }
-
     /**
      * Recursively get a choices array for a form ChoiceList (only leaf values can be selected, the others are opt groups)
      *

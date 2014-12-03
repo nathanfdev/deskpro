@@ -32,21 +32,19 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Hierarchy\Formatter;
+namespace Application\AppBundle\Hierarchy\Formatter;
 
 
-use Application\FormBundle\Hierarchy\HierarchyNode;
+use Application\AppBundle\Hierarchy\HierarchyNode;
 
-class DashesFormatter extends AbstractFormatter
+class FlatListFormatter extends AbstractFormatter
 {
     /**
      * {@inheritdoc}
      */
     public function format(HierarchyNode $node)
     {
-        $prefix = str_repeat('--', $node->getDepth());
-
-        return strlen($prefix) > 0 ? $prefix . ' ' . $this->getDataValue($node) : $this->getDataValue($node);
+        return sprintf("%s", $node->getData()->title);
     }
 }
  

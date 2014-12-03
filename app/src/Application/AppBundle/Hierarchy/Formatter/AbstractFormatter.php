@@ -32,13 +32,16 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Hierarchy\Formatter;
+namespace Application\AppBundle\Hierarchy\Formatter;
 
 
-use Application\FormBundle\Hierarchy\HierarchyFormatterInterface;
-use Application\FormBundle\Hierarchy\HierarchyNode;
+use Application\AppBundle\Hierarchy\HierarchyFormatterInterface;
+use Application\AppBundle\Hierarchy\HierarchyNode;
 use Symfony\Component\PropertyAccess\PropertyAccess;
 
+/**
+ * The AbstractFormatter lets you easily get the string value of a node (optionally, with a property accessor)
+ */
 abstract class AbstractFormatter implements HierarchyFormatterInterface
 {
     /**
