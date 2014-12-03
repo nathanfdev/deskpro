@@ -50,15 +50,9 @@ class CustomDataPersonType extends AbstractType
      */
     private $field_manager;
 
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(FormFieldManager $field_manager, EntityManager $em)
+    public function __construct(FormFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
-        $this->em = $em;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -100,7 +94,6 @@ class CustomDataPersonType extends AbstractType
         if ($custom_data->input === null) {
             $custom_data->input = '';
         }
-        $this->em->persist($custom_data);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

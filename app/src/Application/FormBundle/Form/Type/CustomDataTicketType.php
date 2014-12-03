@@ -50,15 +50,9 @@ class CustomDataTicketType extends AbstractType
      */
     private $field_manager;
 
-    /**
-     * @var \Doctrine\ORM\EntityManager
-     */
-    private $em;
-
-    public function __construct(FormFieldManager $field_manager, EntityManager $em)
+    public function __construct(FormFieldManager $field_manager)
     {
         $this->field_manager = $field_manager;
-        $this->em = $em;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -94,13 +88,11 @@ class CustomDataTicketType extends AbstractType
 
     public function postSubmitEvent(FormEvent $event)
     {
-        // after successful form submission, we want to make sure this entity is persisted in case it is new
         /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
         $custom_data = $event->getData();
         if ($custom_data->input === null) {
             $custom_data->input = '';
         }
-        $this->em->persist($custom_data);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

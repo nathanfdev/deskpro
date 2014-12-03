@@ -35,6 +35,7 @@
 namespace Application\FormBundle\Form\Type;
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Form\TicketFormContext;
@@ -72,11 +73,11 @@ class TicketType extends AbstractType
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'preDataEvent'));
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'postSubmitDataEvent'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
+        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
     }
 
-    public function postSubmitDataEvent(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
         $ticket = $event->getData();
@@ -88,7 +89,7 @@ class TicketType extends AbstractType
         }
     }
 
-    public function preDataEvent(FormEvent $event)
+    public function onPreData(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
         $ticket = $event->getData();
@@ -115,7 +116,6 @@ class TicketType extends AbstractType
             }
 
             $this->addField($context, $field);
-
         }
     }
 

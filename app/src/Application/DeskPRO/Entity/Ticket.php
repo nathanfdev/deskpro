@@ -571,7 +571,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->participants  = new ArrayCollection();
         $this->messages      = new ArrayCollection();
         $this->sms_messages  = new ArrayCollection();
-        $this->custom_data   = new ArrayCollection();
         $this->labels        = new ArrayCollection();
         $this->access_codes  = new ArrayCollection();
         $this->attachments   = new ArrayCollection();
