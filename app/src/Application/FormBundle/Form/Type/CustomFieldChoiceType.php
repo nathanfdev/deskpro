@@ -86,8 +86,8 @@ class CustomFieldChoiceType extends AbstractType
             'custom_field'
         ));
 
-        $resolver->setAllowedValues(array(
-            'custom_field' => 'Application\\DeskPRO\\Entity\\CustomFieldAbstract'
+        $resolver->setAllowedTypes(array(
+            'custom_field' => 'Application\\DeskPRO\\Entity\\CustomDefAbstract'
         ));
     }
 }

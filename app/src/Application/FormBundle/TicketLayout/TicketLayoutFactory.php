@@ -60,9 +60,11 @@ class TicketLayoutFactory
     public function getLayoutForTicketForm($department = null)
     {
         if ($department) {
-            return $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
+            if ($department_entity = $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
                 ->setParameter('department', $department)
-                ->getOneOrNullResult();
+                ->getOneOrNullResult()) {
+                return $department_entity;
+            }
         }
 
 

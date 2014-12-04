@@ -64,10 +64,11 @@ class CustomDataTicketType extends AbstractType
 
     public function preDataEvent(FormEvent $event)
     {
-        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
-        $custom_data = $event->getData();
         $form = $event->getForm();
         $config = $form->getConfig();
+
+        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
+        $custom_data = $event->getData();
         /** @var \Application\DeskPRO\Entity\CustomDefTicket $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
 

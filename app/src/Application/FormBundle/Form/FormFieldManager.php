@@ -34,6 +34,10 @@
 
 namespace Application\FormBundle\Form;
 
+use Application\ApiBundle\Form\CustomField\Model\ChoiceField;
+use Application\DeskPRO\Entity\CustomDataAbstract;
+use Application\DeskPRO\Entity\CustomDataPerson;
+use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -80,7 +84,8 @@ class FormFieldManager
     }
 
     /**
-     * @param CustomDefPerson $field
+     * @param CustomDefAbstract $field
+     * @param                   $agent_interface
      * @return array
      */
     protected function createCustomField(CustomDefAbstract $field, $agent_interface)
@@ -94,6 +99,12 @@ class FormFieldManager
         return array($value_name, $type, $options);
     }
 
+    /**
+     * @param CustomDefAbstract $field_type
+     * @param                   $agent_interface
+     * @return array
+     * @throws \InvalidArgumentException
+     */
     private function getFormType(CustomDefAbstract $field_type, $agent_interface)
     {
         switch ($field_type->getHandlerClass()) {
