@@ -503,7 +503,7 @@ class Runner
                 $source->error_code  = null;
                 $source->source_info = $result->source_info ?: array();
                 $source->object_type = $result->created_object_type;
-                $source->object_type = $result->created_object_type;
+                $source->object_id   = $result->created_object_id;
                 $source->object_info = $result->created_object_info;
                 $this->logger->logInfo("Status: COMPLETE {$source->error_code}");
                 break;

@@ -46,6 +46,8 @@
   "intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
   "redactor":                        "vendor/redactor/redactor.min",
 
+  "json3":                           "bower_components/json3/lib/json3.min",
+
   "selectize":                       "bower_components/selectize/dist/js/selectize",
   "sifter":                          "bower_components/sifter/sifter",
   "microplugin":                     "bower_components/microplugin/src/microplugin",

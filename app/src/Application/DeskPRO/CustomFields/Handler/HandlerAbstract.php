@@ -94,12 +94,22 @@ abstract class HandlerAbstract
         // Index array
         $children = \Orb\Util\Arrays::keyFromData($children, 'id');
 
-        uasort($children, function ($a, $b) {
-            if ($a->getDisplayOrder() == $b->getDisplayOrder()) {
-                return 0;
-            }
+        uasort($children, function ($a, $b) use ($children) {
+            $sa = $a->getOption('parent_id') ? 1 : -1;
+            $sb = $b->getOption('parent_id') ? 1 : -1;
 
-            return $a->getDisplayOrder() < $b->getDisplayOrder() ? -1 : 1;
+            if ($sa === $sb) {
+                if ($a->getOption('parent_id') && $b->getOption('parent_id') && isset($children[$a->getOption('parent_id')]) && isset($children[$b->getOption('parent_id')])) {
+                    $sa = $children[$a->getOption('parent_id')]->display_order + $a->display_order;
+                    $sb = $children[$b->getOption('parent_id')]->display_order + $b->display_order;
+                } else {
+                    $sa = $a->display_order;
+                    $sb = $b->display_order;
+                }
+            };
+
+            if ($sa === $sb) return 0;
+            return $sa < $sb ? -1 : 1;
         });
 
         $this->field_children = $children;

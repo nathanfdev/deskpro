@@ -36,6 +36,7 @@ namespace DeskPRO\Kernel;
 use Symfony\Component\Config\Loader\LoaderInterface;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\HttpFoundation\ResponseHeaderBag;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
@@ -464,6 +465,25 @@ class DpKernel extends AbstractKernel
             $do_correction = true;
         }
 
+        if (isset($_GET['__debug_dp_autocorrect_url'])) {
+
+            $content = array();
+            $content[] = "URL:            " . App::getSetting('core.deskpro_url');
+            $content[] = "Correct Host:   " . $correct_host;
+            $content[] = "Correct Scheme: " . $correct_scheme;
+            $content[] = "Now Host:       " . $request->getHttpHost();
+            $content[] = "Now Scheme:     " . $request->getScheme();
+            $content[] = "";
+            $content[] = "Correction required? " . ($do_correction ? "Yes" : "No") . ".";
+            $content = implode("\n", $content);
+
+            $response = new Response();
+            $response->headers->set('Content-Type', 'text/plain');
+            $response->headers->makeDisposition(ResponseHeaderBag::DISPOSITION_INLINE, 'debug_autocorrect.txt');
+            $response->setContent($content);
+            return $response;
+        }
+
         if ($do_correction) {
             $url = App::getSetting('core.deskpro_url') . ltrim($now_path, '/');
             $response = new RedirectResponse($url, 301);
@@ -552,7 +572,7 @@ class DpKernel extends AbstractKernel
                     || preg_match('#^/tickets/new/thanks-simple/#', $request->getPathInfo())
                     || preg_match('#^/accept-temp-upload$#', $request->getPathInfo())
                     || preg_match('#^/logout#', $request->getPathInfo())
-                    || preg_match('#^/login#', $request->getPathInfo())
+                    || ($request->getMethod() != 'GET' && preg_match('#^/login#', $request->getPathInfo()))
                     || isset($_REQUEST['_partial'])
                 ) {
                     return false;
