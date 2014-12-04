@@ -216,7 +216,7 @@ class JiraController extends AbstractController
         $this->service()->createRemoteIssueLink(
             $issueId,
             $ticket,
-            $this->generateUrl('agent_ticket_view', array('ticket_id' => $ticket['id']), true)
+            $this->generateUrl('agent', array(), true) . '#app.tickets,t.o:' . $ticket['id']
         );
 
 		$this->em->persist($issue);
