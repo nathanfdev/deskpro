@@ -1,108 +1,31 @@
 services:
+
   form.form_extension:
     class: Application\FormBundle\Form\Extension\DeskproFormExtension
     tags:
       - { name: form.type_extension, alias: form }
+
+
   form.checkbox_extension:
     class: Application\FormBundle\Form\Extension\DeskproCheckboxExtension
     tags:
       - { name: form.type_extension, alias: checkbox }
+
+
   form_field_manager:
     class: Application\FormBundle\Form\FormFieldManager
     arguments: [@doctrine.orm.default_entity_manager]
+
+
   ticket_layout_factory:
     class: Application\FormBundle\TicketLayout\TicketLayoutFactory
     arguments: [@doctrine.orm.default_entity_manager]
+
+
   ticket_layout_differ:
     class: Application\FormBundle\TicketLayout\TicketLayoutDiffer
+
+
   form_hierarchy_generator:
     class: Application\FormBundle\Hierarchy\HierarchyGenerator
     arguments: [@doctrine.orm.default_entity_manager, @data.departments]
-  form.custom_data_ticket:
-    class: Application\FormBundle\Form\Type\CustomDataTicketType
-    arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_ticket }
-  form.custom_data_person:
-    class: Application\FormBundle\Form\Type\CustomDataPersonType
-    arguments: [@form_field_manager]
-    tags:
-      - { name: form.type, alias: deskpro_custom_data_person }
-  form.ticket:
-    class: Application\FormBundle\Form\Type\TicketType
-    arguments: [@form_field_manager, @ticket_layout_factory, @ticket_layout_differ]
-    tags:
-      - { name: form.type, alias: deskpro_ticket }
-  form.ticket_message:
-    class: Application\FormBundle\Form\Type\TicketMessageType
-    tags:
-      - { name: form.type, alias: deskpro_ticket_message }
-  form.custom_field_choice:
-    class: Application\FormBundle\Form\Type\CustomFieldChoiceType
-    arguments: [@form_hierarchy_generator]
-    tags:
-      - { name: form.type, alias: deskpro_custom_field_choice }
-  form.language:
-    class: Application\FormBundle\Form\Type\LanguageType
-    tags:
-      - { name: form.type, alias: deskpro_language }
-  form.person_email:
-    class: Application\FormBundle\Form\Type\PersonEmailType
-    tags:
-      - { name: form.type, alias: deskpro_person_email }
-  form.display_html:
-    class: Application\FormBundle\Form\Type\DisplayHtmlType
-    tags:
-      - { name: form.type, alias: deskpro_display_html }
-  form.hidden:
-    class: Application\FormBundle\Form\Type\HiddenType
-    arguments: [@request_stack]
-    tags:
-      - { name: form.type, alias: deskpro_hidden }
-  form.department:
-    class: Application\FormBundle\Form\Type\DepartmentType
-    arguments: [@form_hierarchy_generator, @doctrine.orm.default_entity_manager]
-    tags:
-      - { name: form.type, alias: deskpro_department }
-  form.product:
-    class: Application\FormBundle\Form\Type\ProductType
-    tags:
-      - { name: form.type, alias: deskpro_product }
-  form.category:
-    class: Application\FormBundle\Form\Type\CategoryType
-    tags:
-      - { name: form.type, alias: deskpro_category }
-  form.workflow:
-    class: Application\FormBundle\Form\Type\WorkflowType
-    tags:
-      - { name: form.type, alias: deskpro_workflow }
-  form.priority:
-    class: Application\FormBundle\Form\Type\PriorityType
-    tags:
-      - { name: form.type, alias: deskpro_priority }
-  form.captcha:
-    class: Application\FormBundle\Form\Type\CaptchaType
-    arguments: [@brand_stack]
-    tags:
-      - { name: form.type, alias: deskpro_captcha }
-  form.attach:
-    class: Application\FormBundle\Form\Type\AttachType
-    tags:
-      - { name: form.type, alias: deskpro_attach }
-  form.cc:
-    class: Application\FormBundle\Form\Type\CcType
-    arguments: [@person_factory]
-    tags:
-      - { name: form.type, alias: deskpro_cc }
-  form.date:
-    class: Application\FormBundle\Form\Type\DateType
-    tags:
-      - { name: form.type, alias: deskpro_date }
-  form.datetime:
-    class: Application\FormBundle\Form\Type\DateTimeType
-    tags:
-      - { name: form.type, alias: deskpro_datetime }
-  form.heirarchical_entity:
-    class: Application\FormBundle\Form\Type\HeirarchicalEntityType
-    tags:
-      - { name: form.type, alias: deskpro_heirarchical_entity }
