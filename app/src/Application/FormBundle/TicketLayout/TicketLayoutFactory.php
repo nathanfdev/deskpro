@@ -59,22 +59,6 @@ class TicketLayoutFactory
      */
     public function getLayoutForTicketForm($department = null)
     {
-        if ($department && $layout = $this->getLayoutForDepartment($department)) {
-            return $layout;
-        }
-
-        // TODO: is this the initial layout? (ie, the "default" layout?) Or do we go deeper?
-        return $this->getLayoutForDepartment(null);
-    }
-
-    /**
-     * Returns the row with a null department_id
-     *
-     * @param Department|int $department the department entity or its ID
-     * @return TicketLayout
-     */
-    protected function getLayoutForDepartment($department = null)
-    {
         if ($department) {
             return $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')
                 ->setParameter('department', $department)
@@ -82,6 +66,15 @@ class TicketLayoutFactory
         }
 
 
+        return $this->getInitialLayout();
+    }
+
+    /**
+     * @return TicketLayout
+     */
+    public function getInitialLayout()
+    {
+        // TODO: what if all departments are custom layouts, ie there is no default layout? something different should happen.
         return $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department IS NULL')
             ->getOneOrNullResult();
     }
