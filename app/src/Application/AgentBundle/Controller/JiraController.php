@@ -139,11 +139,7 @@ class JiraController extends AbstractController
 		$ticket = null;
 
 		foreach ($issues as $issue) {
-			$response = $js->createComment(
-				$issue['issue_id'],
-				'[' . $this->person->getDisplayName() . ' via DeskPRO]: ' . $message
-			);
-
+			$response = $js->createComment($issue['issue_id'], $this->person, $issue->ticket, $message);
 			$ticket = $ticket ?: $issue->ticket;
 		}
 
@@ -213,11 +209,7 @@ class JiraController extends AbstractController
 		$issue->ticket = $ticket;
 
         // create remote issue link on JIRA side
-        $this->service()->createRemoteIssueLink(
-            $issueId,
-            $ticket,
-            $this->generateUrl('agent', array(), true) . '#app.tickets,t.o:' . $ticket['id']
-        );
+        $this->service()->createRemoteIssueLink($issueId, $ticket);
 
 		$this->em->persist($issue);
 		$this->em->flush($issue);

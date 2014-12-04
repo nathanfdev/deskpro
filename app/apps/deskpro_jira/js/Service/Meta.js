@@ -110,10 +110,10 @@ define(['cutstring'], function (cutstring) {
       isEnabled: function (type, id) {
         return this.fields[id] && this.fields[id]['_' + type];
       },
-      renderComment: function (comment) {
+      renderComment: function (comment, url) {
         return comment.author.name === meta.user
           ? comment.body
-          : ('[' + comment.author.displayName + ' via JIRA]: ' + comment.body);
+          : ('<a href="' + url + '">'+ comment.author.displayName + ' via JIRA</a>: ' + comment.body);
       },
       windowHeight: function() {
           return $($window).height();

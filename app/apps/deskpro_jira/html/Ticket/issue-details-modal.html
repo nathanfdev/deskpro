@@ -36,7 +36,7 @@
                 </tr>
                 <tr ng-repeat="comment in issue.fields.comment.comments">
                     <td style="border-bottom: 1px solid #CCCCCC; padding: 12px;">
-                        <p ng-bind-html="meta.renderComment(comment)"></p>
+                        <p ng-bind-html="meta.renderComment(comment, issue.url)"></p>
                     </td>
                 </tr>
                 <tr ng-if="issue.fields.comment.comments.length < 1">

@@ -31,6 +31,7 @@ namespace Application\DeskPRO\Service;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
 use Application\DeskPRO\Entity\JiraIssue;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\Meta;
@@ -285,18 +286,22 @@ class JIRA
 	}
 
     /**
-     * @param $issueId
-     * @param $message
-     * @return mixed
+     * @param        $issueId
+     * @param Person $author
+     * @param Ticket $ticket
+     * @param        $message
      * @throws \Exception
      * @throws \Exceptions
      */
-	public function createComment($issueId, $message)
+	public function createComment($issueId, Person $author, Ticket $ticket, $message)
 	{
+        $url = $this->container->get('router')->generateUrl('agent', array(), true)
+            . '#app.tickets,t.o:' . $ticket['id'];
+
 		try {
 
 			return $this->getApi()->post('/issue/' . $issueId . '/comment?expand=renderedBody', array(
-				'body' => $message,
+				'body' => sprintf('[%s via DeskPRO #%d|%s]: %s', $author->getDisplayName(), $ticket['id'], $url, $message),
 			));
 
 		} catch (\Exceptions $e) {
@@ -313,9 +318,12 @@ class JIRA
      * @throws \Exception
      * @throws \Exceptions
      */
-    public function createRemoteIssueLink($issueId, Ticket $ticket, $url)
+    public function createRemoteIssueLink($issueId, Ticket $ticket)
     {
         try {
+
+            $url = $this->container->get('router')->generateUrl('agent', array(), true)
+                . '#app.tickets,t.o:' . $ticket['id'];
 
             $data = array(
                 'globalId' => 'deskpro_ticket_' . $ticket['id'],

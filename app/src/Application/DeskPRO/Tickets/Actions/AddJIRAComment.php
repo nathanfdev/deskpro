@@ -90,10 +90,9 @@ class AddJIRAComment extends AbstractContainerAwareAction implements ActionInter
 
 		/** @var JIRA $js */
 		$js = $this->getContainer()->get(JIRA::NAME);
-		$note_text = '[' . $agent->getDisplayName() . ' via DeskPRO]: ' . $note_text;
 		foreach ($ticket->jira_issues as $issue) {
 			try {
-				$js->createComment($issue['issue_id'], $note_text);
+				$js->createComment($issue['issue_id'], $agent, $ticket, $note_text);
 			} catch (\Exception $e) {
 				$context->getLogger()->error(
 					sprintf("[JIRAAddComment] Exception: [%s] %s", $e->getCode(), $e->getMessage()),
