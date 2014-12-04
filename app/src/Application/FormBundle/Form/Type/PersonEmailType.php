@@ -37,6 +37,8 @@ namespace Application\FormBundle\Form\Type;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Email;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PersonEmailType extends AbstractType
 {
@@ -45,7 +47,10 @@ class PersonEmailType extends AbstractType
         $builder->add('email', 'email', array(
             'label' => $options['email_label'],
             'required' => $options['required'],
-            'constraints' => $options['constraints']
+            'constraints' => array(
+                new NotBlank(array('message' => 'Please provide us with your email')),
+                new Email(array('message' => 'This email adddress is not valid')),
+            )
         ));
     }
 

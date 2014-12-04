@@ -170,7 +170,8 @@ class TicketType extends AbstractType
             'ticket_visibility'   => TicketFormContext::VISIBILITY_NEW,
             'ticket_view_context' => TicketFormContext::VIEW_USER,
             'data_class'          => 'Application\\DeskPRO\\Entity\\Ticket',
-            'method'              => 'POST'
+            'method'              => 'POST',
+            'allow_extra_fields' => true
         ));
         $resolver->setRequired(array(
             'person'
@@ -301,11 +302,7 @@ class TicketType extends AbstractType
     {
         $form_context->getForm()->add($field->getId(), 'deskpro_person_email', array(
             'property_path' => 'person.primary_email',
-            'label' => false,
-            'constraints' => array(
-                new NotBlank(array('message' => 'Please provide us with your email')),
-                new Email(array('message' => 'This email adddress is not valid')),
-            )
+            'label' => false
         ));
     }
 
