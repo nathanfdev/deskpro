@@ -121,14 +121,23 @@ class TicketType extends AbstractType
         $ticket = $event->getForm()->getData();
         $form = $event->getForm();
         $pre_submit_data = $event->getData();
-        $submitted_department = $pre_submit_data['department'];
 
-        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ? : null);
         $context = $this->createTicketFormContext($ticket, $form, $layout);
         $initial_layout = $context->getActiveLayout();
 
-        $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($submitted_department ? : null);
-        $context->setNewLayout($destination_layout);
+        // now we need to compare the department's layout and see if we need to add/remove fields before we submit data
+        if ($form->has(FormFields::DEPARTMENT)) {
+            /** @var \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList $choice_list */
+            $choice_list = $form->get(FormFields::DEPARTMENT)->getConfig()->getOption('choice_list');
+            $submitted_department = $pre_submit_data[FormFields::DEPARTMENT];
+            $values = $choice_list->getChoicesForValues(array($submitted_department));
+            $submitted_department_id = array_pop($values);
+
+            $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($submitted_department_id ? : null);
+            $context->setNewLayout($destination_layout);
+        }
+
 
         $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context);
     }
