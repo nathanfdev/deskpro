@@ -59,7 +59,7 @@ services:
 
     dp_security.sso_listener:
         class: Application\AuthBundle\EventListener\SsoListener
-        arguments: [@security.context, @dp_authentication_manager.user, @logger]
+        arguments: [@security.authorization_checker, @dp_authentication_manager.user, @logger]
         tags:
             - { name: kernel.event_subscriber }
 

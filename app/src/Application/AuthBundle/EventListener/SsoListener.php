@@ -43,14 +43,15 @@ use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
+use Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface;
 use Symfony\Component\Security\Core\SecurityContextInterface;
 
 class SsoListener implements EventSubscriberInterface
 {
     /**
-     * @var \Symfony\Component\Security\Core\SecurityContextInterface
+     * @var \Symfony\Component\Security\Core\Authorization\AuthorizationCheckerInterface
      */
-    private $security_context;
+    private $authorization_checker;
 
     /**
      * @var \Application\DeskPRO\Auth\AuthenticationManager
@@ -62,9 +63,9 @@ class SsoListener implements EventSubscriberInterface
      */
     private $logger;
 
-    public function __construct(SecurityContextInterface $security_context, AuthenticationManager $auth_manager, LoggerInterface $logger)
+    public function __construct(AuthorizationCheckerInterface $authorization_checker, AuthenticationManager $auth_manager, LoggerInterface $logger)
     {
-        $this->security_context = $security_context;
+        $this->authorization_checker = $authorization_checker;
         $this->auth_manager     = $auth_manager;
         $this->logger           = $logger;
     }
@@ -75,7 +76,7 @@ class SsoListener implements EventSubscriberInterface
             return null;
         }
 
-        if ($this->security_context->isGranted('ROLE_USER')) {
+        if ($this->authorization_checker->isGranted('ROLE_USER')) {
             return null;
         }
 

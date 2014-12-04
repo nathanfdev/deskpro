@@ -126,15 +126,13 @@ class AuthTwigExtension extends \Twig_Extension
 
     /**
      * @param $interface
-     * @param $person
-     * @param $is_first_page
-     * @return array
+     * @return string
      */
     protected function legacyMagentoPluginCode($interface)
     {
         $person = null;
-        if ($security_context = $this->container->get('security.context')) {
-            if ($token = $security_context->getToken()) {
+        if ($token_storage = $this->container->get('security.token_storage')) {
+            if ($token = $token_storage->getToken()) {
                 $person = $token->getUser();
             }
         }

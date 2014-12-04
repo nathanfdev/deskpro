@@ -93,7 +93,7 @@ class AbstractController extends BaseController
             throw new \LogicException('The SecurityBundle is not registered in your application.');
         }
 
-        return $this->container->get('security.context')->isGranted($attributes, $object);
+        return $this->container->get('security.authorization_checker')->isGranted($attributes, $object);
     }
 
     /**
