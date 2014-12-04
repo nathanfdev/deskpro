@@ -77,8 +77,7 @@ class NewTicketController extends AbstractController
 
             $this->addFlash('success', 'created.ticket.phrase.here');
 
-            return $this->redirectToRoute('portal_index');
-
+            return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
         }
 
         return $this->render('Theme:NewTicket:new_ticket.html.twig', array(
