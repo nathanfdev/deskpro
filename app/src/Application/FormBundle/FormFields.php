@@ -40,7 +40,7 @@ class FormFields
     const DEPARTMENT = 'department';
     const SUBJECT = 'subject';
     const MESSAGE = 'message';
-    const USER_EMAIL = 'email';
+    const USER_EMAIL = 'user_email';
     const USER_NAME = 'user_name';
     const USER_TIMEZONE = 'user_timezone';
     const USER_LANGUAGE = 'user_language';
