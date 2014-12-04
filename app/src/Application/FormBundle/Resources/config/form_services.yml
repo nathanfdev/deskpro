@@ -46,6 +46,10 @@ services:
     class: Application\FormBundle\Form\Type\LanguageType
     tags:
       - { name: form.type, alias: deskpro_language }
+  form.person_email:
+    class: Application\FormBundle\Form\Type\PersonEmailType
+    tags:
+      - { name: form.type, alias: deskpro_person_email }
   form.display_html:
     class: Application\FormBundle\Form\Type\DisplayHtmlType
     tags:

@@ -290,13 +290,14 @@ class TicketType extends AbstractType
 
     private function addUserEmail(TicketFormContext $form_context, LayoutField $field)
     {
-//        $form_context->getForm()->add($field->getId(), 'email', array(
-//            'property_path' => 'person.primary_email',
-//            'constraints' => array(
-//                new NotBlank(array('message' => 'Please provide us with your email')),
-//                new Email(array('message' => 'This email adddress is not valid')),
-//            )
-//        ));
+        $form_context->getForm()->add($field->getId(), 'deskpro_person_email', array(
+            'property_path' => 'person.primary_email',
+            'label' => false,
+            'constraints' => array(
+                new NotBlank(array('message' => 'Please provide us with your email')),
+                new Email(array('message' => 'This email adddress is not valid')),
+            )
+        ));
     }
 
     private function addUserTimezone(TicketFormContext $form_context, LayoutField $field)
