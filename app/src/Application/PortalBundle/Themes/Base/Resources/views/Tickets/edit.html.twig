@@ -4,4 +4,6 @@
 
     {% embed 'Theme:Form:ticket.html.twig' %}{% endembed %}
 
+    <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">Cancel edit, show me the ticket again</a>
+
 {% endblock inner_content %}

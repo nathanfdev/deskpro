@@ -17,7 +17,19 @@
         </span>
     </header>
 
-    <h2>CC'ed peple</h2>
+    <h2 style="margin-top: 15px;">
+        Department
+    </h2>
+    {{ ticket.department }}
+
+    <h2 style="margin-top: 15px;">
+        Date Opened
+    </h2>
+    {{ ticket.date_created|date() }}
+
+
+
+    <h2 style="margin-top: 15px;">CC'ed peple</h2>
     <ul>
         {% for person in ticket.userParticipants %}
             <li>{{ person }} ({{ person.primary_email.email }})</li>
@@ -34,7 +46,6 @@
     </ul>
 
 <br>
-    <h3>Respond</h3>
     {{ form_start(form) }}
     {{ form_widget(form) }}
     <button type="submit">Submit Reply</button>
@@ -49,7 +60,7 @@
 
 
 
-    <hr style="margin-top:40px;margin-bottom:20px;" />
+    <hr style="margin-top:300px;margin-bottom:20px;" />
 
     <div class="container">
 
