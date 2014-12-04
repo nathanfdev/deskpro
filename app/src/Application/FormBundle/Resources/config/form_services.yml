@@ -13,6 +13,8 @@ services:
   ticket_layout_factory:
     class: Application\FormBundle\TicketLayout\TicketLayoutFactory
     arguments: [@doctrine.orm.default_entity_manager]
+  ticket_layout_differ:
+    class: Application\FormBundle\TicketLayout\TicketLayoutDiffer
   form_hierarchy_generator:
     class: Application\FormBundle\Hierarchy\HierarchyGenerator
     arguments: [@doctrine.orm.default_entity_manager, @data.departments]
@@ -28,7 +30,7 @@ services:
       - { name: form.type, alias: deskpro_custom_data_person }
   form.ticket:
     class: Application\FormBundle\Form\Type\TicketType
-    arguments: [@form_field_manager, @ticket_layout_factory]
+    arguments: [@form_field_manager, @ticket_layout_factory, @ticket_layout_differ]
     tags:
       - { name: form.type, alias: deskpro_ticket }
   form.ticket_message:

@@ -37,6 +37,7 @@ namespace Application\FormBundle\TicketLayout;
 
 use Application\DeskPRO\Entity\Department;
 use Doctrine\ORM\EntityManager;
+use Application\DeskPRO\Entity\TicketLayout;
 
 class TicketLayoutFactory
 {
@@ -53,9 +54,10 @@ class TicketLayoutFactory
     /**
      * Used in the TicketType form type to detect the layout it should use, given the selected dept (or null for initial layout)
      *
-     * @param Department $department
+     * @param Department|int $department the department entity or its ID
+     * @return TicketLayout
      */
-    public function getLayoutForTicketForm(Department $department = null)
+    public function getLayoutForTicketForm($department = null)
     {
         if ($department && $layout = $this->getLayoutForDepartment($department)) {
             return $layout;
@@ -67,8 +69,11 @@ class TicketLayoutFactory
 
     /**
      * Returns the row with a null department_id
+     *
+     * @param Department|int $department the department entity or its ID
+     * @return TicketLayout
      */
-    protected function getLayoutForDepartment(Department $department = null)
+    protected function getLayoutForDepartment($department = null)
     {
         if ($department) {
             return $this->entity_manager->createQuery('SELECT l FROM DeskPRO:TicketLayout l WHERE l.department = :department')

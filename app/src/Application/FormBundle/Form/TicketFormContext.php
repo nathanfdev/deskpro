@@ -65,9 +65,9 @@ class TicketFormContext
     private $layout;
 
     /**
-     * @var Layout
+     * @var TicketLayout
      */
-    private $active_layout;
+    private $previous_layout;
 
     /**
      * @var string
@@ -90,13 +90,9 @@ class TicketFormContext
     private $person;
 
     /**
-     * @var \Application\DeskPRO\Entity\Ticket
-     */
-    private $ticket;
-
-    /**
      * @param FormInterface $form
      * @param Person        $person
+     * @param Ticket        $ticket
      * @param TicketLayout  $layout       the ticket layout we are using for this form
      * @param string        $view_context - "user" or "agent"?
      * @param string        $visibility   the view, such as "new", "edit", "view" (contants of this class)
@@ -107,10 +103,15 @@ class TicketFormContext
         $this->ticket = $ticket;
         $this->person = $person;
         $this->layout = $layout;
+        $this->previous_layout = $layout;
         $this->view_context = $view_context;
         $this->visibility = $visibility;
-        $this->active_layout = ('agent' === $view_context) ? $layout->agent_layout : $layout->user_layout;
     }
+
+    /**
+     * @var \Application\DeskPRO\Entity\Ticket
+     */
+    private $ticket;
 
     /**
      * @return TicketLayout
@@ -125,7 +126,7 @@ class TicketFormContext
      */
     public function getActiveLayout()
     {
-        return $this->active_layout;
+        return ('agent' === $this->view_context) ? $this->layout->agent_layout : $this->layout->user_layout;
     }
 
     /**
@@ -187,5 +188,19 @@ class TicketFormContext
     public function getTicket()
     {
         return $this->ticket;
+    }
+
+    public function setNewLayout($destination_layout)
+    {
+        $this->previous_layout = $this->layout;
+        $this->layout = $destination_layout;
+    }
+
+    /**
+     * @return TicketLayout
+     */
+    public function getPreviousLayout()
+    {
+        return $this->previous_layout;
     }
 }

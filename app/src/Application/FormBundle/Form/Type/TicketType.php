@@ -34,20 +34,21 @@
 
 namespace Application\FormBundle\Form\Type;
 
-use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\ORM\EntityManager;
+use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Form\TicketFormContext;
 use Application\FormBundle\FormFields;
+use Application\FormBundle\TicketLayout\TicketLayoutDiffer;
 use Application\FormBundle\TicketLayout\TicketLayoutFactory;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
-use Application\PersonBundle\Person\Context\CreatePersonContext;
-use Application\PersonBundle\Person\PersonFactory;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\Form\FormInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
@@ -65,8 +66,14 @@ class TicketType extends AbstractType
      */
     private $ticket_layout_factory;
 
-    public function __construct(FormFieldManager $field_manager, TicketLayoutFactory $ticket_layout_factory)
+    /**
+     * @var \Application\FormBundle\TicketLayout\TicketLayoutDiffer
+     */
+    private $layout_differ;
+
+    public function __construct(FormFieldManager $field_manager, TicketLayoutFactory $ticket_layout_factory, TicketLayoutDiffer $layout_differ)
     {
+        $this->layout_differ = $layout_differ;
         $this->field_manager = $field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;
     }
@@ -74,6 +81,7 @@ class TicketType extends AbstractType
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'onPreSubmit'));
     }
 
     public function onPreData(FormEvent $event)
@@ -81,31 +89,71 @@ class TicketType extends AbstractType
         /** @var \Application\DeskPRO\Entity\Ticket $ticket */
         $ticket = $event->getData();
         $form = $event->getForm();
-        $config = $form->getConfig();
         $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $context = $this->createTicketFormContext($ticket, $form, $layout);
 
-        $context = new TicketFormContext(
+        $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
+    }
+
+    /**
+     * @param Ticket        $ticket
+     * @param FormInterface $form
+     * @param TicketLayout  $initial_layout
+     * @return TicketFormContext
+     */
+    protected function createTicketFormContext(Ticket $ticket, FormInterface $form, TicketLayout $initial_layout)
+    {
+        $config = $form->getConfig();
+
+        return new TicketFormContext(
             $form,
             $ticket,
             $config->getOption('person'),
-            $layout,
+            $initial_layout,
             $config->getOption('ticket_view_context'),
             $config->getOption('ticket_visibility')
         );
+    }
 
-        foreach ($context->getActiveLayout()->all() as $field) {
+    public function onPreSubmit(FormEvent $event)
+    {
+        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
+        $ticket = $event->getForm()->getData();
+        $form = $event->getForm();
+        $pre_submit_data = $event->getData();
+        $submitted_department = $pre_submit_data['department'];
+
+        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
+        $context = $this->createTicketFormContext($ticket, $form, $layout);
+        $initial_layout = $context->getActiveLayout();
+
+        $destination_layout = $this->ticket_layout_factory->getLayoutForTicketForm($submitted_department ? : null);
+        $context->setNewLayout($destination_layout);
+
+        $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context);
+    }
+
+    protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context)
+    {
+        $additional_fields = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
+        $fields_to_remove = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
+
+        foreach ($additional_fields as $field) {
             if (!$context->hasValidVisibility($field)) {
                 continue;
             }
 
-            if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($ticket)) {
+            if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
                 continue;
             }
 
             $this->addField($context, $field);
         }
-    }
 
+        foreach ($fields_to_remove as $field) {
+            $this->removeField($context, $field);
+        }
+    }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
@@ -136,8 +184,21 @@ class TicketType extends AbstractType
         return 'deskpro_ticket';
     }
 
+    private function removeField(TicketFormContext $form_context, LayoutField $field)
+    {
+        if (!$form_context->getForm()->has($field->getId())) {
+            return;
+        }
+
+        $form_context->getForm()->remove($field->getId());
+    }
+
     private function addField(TicketFormContext $form_context, LayoutField $field)
     {
+        if ($form_context->getForm()->has($field->getId())) {
+            return;
+        }
+
         switch ($field->getFieldType()) {
 
             case FormFields::SUBJECT:
@@ -197,14 +258,14 @@ class TicketType extends AbstractType
 
     private function addDepartment(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('department', 'deskpro_department', array(
+        $form_context->getForm()->add($field->getId(), 'deskpro_department', array(
             'person' => $form_context->getPerson()
         ));
     }
 
     private function addSubject(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('subject', 'text', array(
+        $form_context->getForm()->add($field->getId(), 'text', array(
             'required' => true,
             'constraints' => array(
                 new NotBlank(array('message' => 'This value is required')),
@@ -219,7 +280,7 @@ class TicketType extends AbstractType
             return;
         }
 
-        $form_context->getForm()->add('message', 'deskpro_ticket_message', array(
+        $form_context->getForm()->add($field->getId(), 'deskpro_ticket_message', array(
             'mapped' => false,
             'label'  => false,
             'person' => $form_context->getPerson(),
@@ -229,25 +290,25 @@ class TicketType extends AbstractType
 
     private function addUserEmail(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('email', 'email', array(
-            'property_path' => 'person.primary_email',
-            'constraints' => array(
-                new NotBlank(array('message' => 'Please provide us with your email')),
-                new Email(array('message' => 'This email adddress is not valid')),
-            )
-        ));
+//        $form_context->getForm()->add($field->getId(), 'email', array(
+//            'property_path' => 'person.primary_email',
+//            'constraints' => array(
+//                new NotBlank(array('message' => 'Please provide us with your email')),
+//                new Email(array('message' => 'This email adddress is not valid')),
+//            )
+//        ));
     }
 
     private function addUserTimezone(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('timezone', 'timezone', array(
+        $form_context->getForm()->add($field->getId(), 'timezone', array(
             'property_path' => 'person.timezone'
         ));
     }
 
     private function addUserName(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('name', 'text', array(
+        $form_context->getForm()->add($field->getId(), 'text', array(
             'property_path' => 'person.name',
             'empty_data'    => $form_context->getPerson()->getName()
         ));
@@ -255,7 +316,7 @@ class TicketType extends AbstractType
 
     private function addUserLanguage(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('language', 'deskpro_language', array(
+        $form_context->getForm()->add($field->getId(), 'deskpro_language', array(
             'property_path' => 'person.language',
             'view_context'  => $form_context->getViewContext()
         ));
@@ -305,31 +366,32 @@ class TicketType extends AbstractType
 
     private function addCustomCustomField(TicketFormContext $form_context, LayoutField $field)
     {
+        // TODO: custom-custom user fields
     }
 
     private function addCategory(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('category', 'deskpro_category', array());
+        $form_context->getForm()->add($field->getId(), 'deskpro_category', array());
     }
 
     private function addPriority(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('priority', 'deskpro_priority', array());
+        $form_context->getForm()->add($field->getId(), 'deskpro_priority', array());
     }
 
     private function addWorkflow(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('workflow', 'deskpro_workflow', array());
+        $form_context->getForm()->add($field->getId(), 'deskpro_workflow', array());
     }
 
     private function addProduct(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('product', 'deskpro_product', array());
+        $form_context->getForm()->add($field->getId(), 'deskpro_product', array());
     }
 
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('captcha', 'deskpro_captcha', array(
+        $form_context->getForm()->add($field->getId(), 'deskpro_captcha', array(
             'mapped'      => false,
             'error_bubbling' => false,
             'constraints' => array(
@@ -340,7 +402,7 @@ class TicketType extends AbstractType
 
     private function addCc(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('cc', 'deskpro_cc', array(
+        $form_context->getForm()->add($field->getId(), 'deskpro_cc', array(
             'ticket' => $form_context->getTicket(),
             'mapped' => false,
             'required' => false
@@ -349,6 +411,6 @@ class TicketType extends AbstractType
 
     private function addAttach(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add('attach', 'deskpro_attach', array('mapped' => false, 'required' => false));
+        $form_context->getForm()->add($field->getId(), 'deskpro_attach', array('mapped' => false, 'required' => false));
     }
 }
