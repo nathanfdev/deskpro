@@ -30,6 +30,8 @@ namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\JiraIssue;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\Meta;
 
@@ -282,11 +284,18 @@ class JIRA
 		return $result;
 	}
 
+    /**
+     * @param $issueId
+     * @param $message
+     * @return mixed
+     * @throws \Exception
+     * @throws \Exceptions
+     */
 	public function createComment($issueId, $message)
 	{
 		try {
 
-			$result = $this->getApi()->post('/issue/' . $issueId . '/comment?expand=renderedBody', array(
+			return $this->getApi()->post('/issue/' . $issueId . '/comment?expand=renderedBody', array(
 				'body' => $message,
 			));
 
@@ -294,7 +303,53 @@ class JIRA
 			// todo
 			throw $e;
 		}
-
-		return $result;
 	}
+
+    /**
+     * @param        $issueId
+     * @param Ticket $ticket
+     * @param        $url
+     * @return mixed
+     * @throws \Exception
+     * @throws \Exceptions
+     */
+    public function createRemoteIssueLink($issueId, Ticket $ticket, $url)
+    {
+        try {
+
+            $data = array(
+                'globalId' => 'deskpro_ticket_' . $ticket['id'],
+                'relationship' => 'linked with',
+                'object' => array(
+                    'title' => 'DeskPRO #' . $ticket['id'],
+                    'summary' => $ticket['subject'],
+                    'url' => $url,
+                ),
+            );
+
+            return $this->getApi()->post('/issue/' . $issueId . '/remotelink', $data);
+
+        } catch (\Exceptions $e) {
+            // todo
+            throw $e;
+        }
+    }
+
+    /**
+     * @param JiraIssue $issue
+     * @throws \Exception
+     * @throws \Exceptions
+     */
+    public function removeRemoteIssueLink(JiraIssue $issue)
+    {
+        try {
+            return $this->getApi()->delete(
+                '/issue/' . $issue['issue_id'] . '/remotelink?globalId=deskpro_ticket_' . $issue['ticket_id']
+            );
+
+        } catch (\Exceptions $e) {
+            // todo
+            throw $e;
+        }
+    }
 } 
