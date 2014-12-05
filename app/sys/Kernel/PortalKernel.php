@@ -77,6 +77,7 @@ class PortalKernel extends Kernel
             'test' === $this->getEnvironment()) {
             $bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
             $bundles[] = new \Doctrine\Bundle\FixturesBundle\DoctrineFixturesBundle();
+            $bundles[] = new \Symfony\Bundle\DebugBundle\DebugBundle();
         }
 
         return $bundles;
