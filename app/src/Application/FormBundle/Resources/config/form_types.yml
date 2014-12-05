@@ -105,6 +105,7 @@ services:
 
   form.blob:
     class: Application\FormBundle\Form\Type\BlobType
+    arguments: [@doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: deskpro_blob }
 

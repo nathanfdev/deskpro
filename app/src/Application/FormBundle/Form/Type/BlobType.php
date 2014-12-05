@@ -34,17 +34,64 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\FormBundle\Form\DataTransformer\BlobTypeModelTransformer;
+use Application\FormBundle\Form\DataTransformer\BlobTypeViewTransformer;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class BlobType extends AbstractType
 {
+    /**
+     * @var \Doctrine\ORM\EntityManager
+     */
+    private $em;
+
+    public function __construct(EntityManager $em)
+    {
+        $this->em = $em;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->add('upload', 'file', array(
-            'mapped' => false
-        ));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onChange'));
+        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'onChange'));
+
+        $builder->addModelTransformer(new BlobTypeModelTransformer($this->em->getRepository('DeskPRO:Blob')));
+//        $builder->addViewTransformer(new BlobTypeViewTransformer($this->em->getRepository('DeskPRO:Blob')));
+    }
+
+    public function onChange(FormEvent $event)
+    {
+        /** @var \Application\DeskPRO\Entity\Blob $blob */
+        $blob = $event->getData();
+        $form = $event->getForm();
+
+        if (!$blob) {
+            $form->add('upload', 'file', array(
+                'mapped' => false
+            ));
+
+            if ($form->has('delete_blob')) {
+                $form->remove('delete_blob');
+            }
+
+            if ($form->has('blob_auth')) {
+                $form->remove('blob_auth');
+            }
+
+            return;
+        }
+
+        $form->add('delete_blob', 'checkbox');
+        $form->add('blob_auth', 'hidden');
+
+        if ($form->has('upload')) {
+            $form->remove('upload');
+        }
     }
 
     public function getName()
