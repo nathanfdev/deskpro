@@ -103,6 +103,12 @@ services:
       - { name: form.type, alias: deskpro_attach }
 
 
+  form.blob:
+    class: Application\FormBundle\Form\Type\BlobType
+    tags:
+      - { name: form.type, alias: deskpro_blob }
+
+
   form.cc:
     class: Application\FormBundle\Form\Type\CcType
     arguments: [@person_factory]

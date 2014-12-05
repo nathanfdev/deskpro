@@ -35,22 +35,30 @@
 namespace Application\FormBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class AttachType extends AbstractType
+class BlobType extends AbstractType
 {
-    public function getName()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return 'deskpro_attach';
+        $builder->add('upload', 'file', array(
+            'mapped' => false
+        ));
     }
 
-    public function getParent()
+    public function getName()
     {
         return 'deskpro_blob';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $resolver->setDefaults(
+            array(
+                'data_class' => 'Application\\DeskPRO\\Entity\\Blob'
+            )
+        );
     }
 }
  
