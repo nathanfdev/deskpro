@@ -10,6 +10,7 @@ define([
   'DeskPRO/Service/Person',
   'DeskPRO/Service/AgentTeam',
   'DeskPRO/CategoryBuilder/Module',
+  'DeskPRO/Directive/DpDateTime',
 
   'AppPlatformConfig',
   'angularAnimate',
@@ -17,6 +18,7 @@ define([
   'angularSelect2',
   'angularUiSortable',
   'ngContextMenu',
+  'angularSanitize'
 ], function(
   angular,
   Functions,
@@ -28,7 +30,8 @@ define([
   DeskPRO_Directive_JIRAFormWidget,
   DeskPRO_Service_Person,
   DeskPRO_Service_AgentTeam,
-  DpCategoryBuilder
+  DpCategoryBuilder,
+  DeskPRO_Directive_DateTime
 ) {
   var AgentApp = angular.module('AgentApp', [
 	'ngAnimate',
@@ -36,7 +39,8 @@ define([
 	'ui.sortable',
 	'ng-context-menu',
 	'deskpro.category_builder',
-	'ui.select2'
+	'ui.select2',
+    'ngSanitize'
   ]);
 
 	//-------------------------------------------------------------------------
@@ -1058,6 +1062,23 @@ define([
 	AgentApp.directive('dpTicketQuickActions', DeskPRO_Directive_DpTicketQuickActions);
 	AgentApp.directive('dpSubmitForm', DeskPRO_Directive_DpSubmitForm);
 	AgentApp.directive('jiraFormWidget', DeskPRO_Directive_JIRAFormWidget);
+    AgentApp.directive('dpDatetime', DeskPRO_Directive_DateTime);
+
+    AgentApp.directive('dpDatetimeInput', function($parse){
+      return {
+        require: ['ngModel'],
+        restrict: 'A',
+        scope: {
+          getOptions: '&dpDatetimeInput'
+        },
+        link: function($scope, $el, $attr, ngModel) {
+          $el.on('click', function(){
+            $scope.$root.$emit('dp.datetime.show', ngModel[0], $el, $scope.getOptions() || {});
+          });
+        }
+      };
+    });
+
 
 	return AgentApp;
 });

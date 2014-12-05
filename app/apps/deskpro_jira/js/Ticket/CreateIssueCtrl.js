@@ -66,6 +66,6 @@ define(function () {
       issuetype: {id: $meta.default_issuetype},
       summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject
     };
-	  $scope.dismiss = $modalInstance.dismiss;
+    $scope.dismiss = $modalInstance.dismiss;
   };
 });
