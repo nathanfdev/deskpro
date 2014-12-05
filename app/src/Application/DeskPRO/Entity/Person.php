@@ -1894,11 +1894,11 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
 
-
     /**
      * Add a new usergroup
      *
      * @param Usergroup $usergroup
+     * @return bool
      */
     public function addUsergroup(Usergroup $usergroup)
     {
@@ -2707,6 +2707,11 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    public function isAgent()
+    {
+        return (bool) $this->is_agent;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -2802,6 +2807,11 @@ class Person extends DomainObject implements HighlightableModelInterface
         $metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
                                        'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
                                        'mappedBy' => 'person'
+        ));
+
+        $metadata->mapOneToMany(array( 'fieldName'    => 'report_dashboard_permissions',
+                                       'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardPermission',
+                                       'mappedBy' => 'agent'
         ));
 
         $metadata->mapManyToMany(array(
