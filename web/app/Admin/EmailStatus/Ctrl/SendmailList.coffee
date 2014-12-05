@@ -1,10 +1,18 @@
-define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
+define [
+  'Admin/Main/Ctrl/Base',
+  'DeskPRO/Util/LocalStore',
+  'moment'
+], (
+  Admin_Ctrl_Base,
+  LocalStore,
+  moment) ->
   class Admin_EmailStatus_Ctrl_SendmailList extends Admin_Ctrl_Base
     @CTRL_ID = 'Admin_EmailStatus_Ctrl_SendmailList'
     @CTRL_AS = 'ListCtrl'
     @DEPS    = ['DpDateService']
 
     init: ->
+      @storeFilterId = Admin_EmailStatus_Ctrl_SendmailList.CTRL_ID+'.filter'
       @filter = {
         page: 1
       }
@@ -15,6 +23,11 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
       @filter_date_mode = "none"
       @page = 1
       @massActionsOp = "resend"
+
+      if LocalStore.has(@storeFilterId)
+        @filter = LocalStore.getObject(@storeFilterId, @filter)
+        @filter.page = 1
+        @$scope.filter_open = true
 
       @$scope.$watch('ListCtrl.page', (newVal, oldVal) =>
         if parseInt(newVal) == parseInt(oldVal)
@@ -33,9 +46,17 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
         return
 
       @filter.page = @page
-      @loadResults()
+      @loadResults(true)
 
-    updateFilter: ->
+    clearFilter: ->
+      @filter = {
+        page: 1
+      }
+      @$scope.filter_open = false
+      @updateFilter(true)
+      LocalStore.remove(@storeFilterId)
+
+    updateFilter: (skipSave) ->
       @page = 1
       @filter.page = @page
 
@@ -46,6 +67,9 @@ define ['Admin/Main/Ctrl/Base', 'moment'], (Admin_Ctrl_Base, moment) ->
           @filter.date_start = moment(@filter_date1).format("YYYY-MM-DD")
         if @filter_date2 and (@filter_date_mode == 'between' || @filter_date_mode == 'before')
           @filter.date_end = moment(@filter_date2).format("YYYY-MM-DD")
+
+      if not skipSave
+        LocalStore.setObject(@storeFilterId, @filter)
 
       @loadResults()
 

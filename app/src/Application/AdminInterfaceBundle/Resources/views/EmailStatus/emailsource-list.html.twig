@@ -21,6 +21,9 @@
 		<article class="dp-padded">
 			<div class="alert alert-info">
 				<div ng-show="!filter_open">
+					<div style="float:right; position: relative; top: 3px;" dp-hide-spinning="loading_page">
+						<button type="button" class="btn btn-default btn-xs" ng-click="ListCtrl.updateFilter()"><i class="fa fa-refresh" style="margin:0;"></i></button>
+					</div>
 					Showing all incoming emails. <button class="btn" ng-click="filter_open = true"><i class="fa fa-filter"></i> Filter</button>
 				</div>
 				<div ng-show="filter_open">
@@ -34,12 +37,12 @@
 									ng-model="ListCtrl.filter.statuses"
 									style="width: 100%;"
 								>
-									<option value="inserted">Pending</option>
-									<option value="processing">Processing</option>
-									<option value="complete">Complete</option>
-									<option value="rejected">Rejected</option>
-									<option value="retry">Retry</option>
-									<option value="error">Error</option>
+									<option value="inserted">Pending ({{ ng_var('counts.status.inserted || 0') }})</option>
+									<option value="processing">Processing ({{ ng_var('counts.status.processing || 0') }})</option>
+									<option value="complete">Complete ({{ ng_var('counts.status.complete || 0') }})</option>
+									<option value="rejected">Rejected ({{ ng_var('counts.status.rejected || 0') }})</option>
+									<option value="retry">Retry ({{ ng_var('counts.status.retry || 0') }})</option>
+									<option value="error">Error ({{ ng_var('counts.status.error || 0') }})</option>
 								</select>
 							</td>
 
@@ -47,7 +50,7 @@
 							<td width="150">
 								<select ui-select2 ng-model="ListCtrl.filter.account">
 									<option value="0">Any</option>
-									<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.use_email_address') }}</option>
+									<option ng-repeat="acc in email_accounts" value="{{ ng_var('acc.id') }}">{{ ng_var('acc.use_email_address') }} ({{ ng_var('counts.account[acc.id] || 0') }})</option>
 								</select>
 							</td>
 
@@ -90,6 +93,7 @@
 					</table>
 					<div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
 						<button class="btn btn-primary" ng-click="ListCtrl.updateFilter()">Filter</button>
+						<button class="btn btn-default" ng-click="ListCtrl.clearFilter()">Clear Filter</button>
 					</div>
 				</div>
 			</div>
@@ -134,8 +138,8 @@
 						<td class="overflow-ellipsis">{{ ng_var('result.header_subject') }}</td>
 						<td nowrap>
 							<div ng-if="result.object_info.ticket_id">
-								<a ng-href="../agent/#t:{{ ng_var('result.object_info.ticket_id') }}" target="_blank"><i class="fa fa-envelope"></i> {{ ng_var('result.object_info.ticket_id') }}</a>
-								<span ng-if="result.object_info.ticket_message_id">(reply)</span>
+								<i class="fa fa-envelope"></i> <a ng-href="../agent/#t:{{ ng_var('result.object_info.ticket_id') }}" target="_blank">{{ ng_var('result.object_info.ticket_id') }}</a>
+								<span ng-if="result.object_type == 'ticket_message'">(reply)</span>
 							</div>
 							<div ng-if="!result.object_info.ticket_id">
 								<span ng-if="result.object_id == 0">
