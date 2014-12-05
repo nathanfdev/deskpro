@@ -1,4 +1,4 @@
-<section>
+<section class="sidebar-app with-header with-sub-header">
     <header>
         <h4>JIRA</h4>
     </header>
@@ -28,7 +28,7 @@
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="404 === search_issue_state">Issue not found. Please enter a valid issue ID.</div>
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="407 === search_issue_state">Issue already linked.</div>
     </header>
-    <article ng-if="!meta.error">
+    <article class="app-content" ng-if="!meta.error">
         <div ng-show="issues.loading" style="margin: 10px;">
             <i class="flat-spinner"></i>
         </div>
