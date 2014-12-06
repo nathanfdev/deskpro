@@ -61,14 +61,12 @@
     </ul>
 
 <br>
-    {{ form_start(form) }}
-    {{ form_widget(form) }}
-    <button type="submit">Submit Reply</button>
-    {{ form_end(form) }}
 
 
 
 
+
+    {% embed 'Theme:Form:ticket_reply.html.twig' %}{% endembed %}
 
 
 

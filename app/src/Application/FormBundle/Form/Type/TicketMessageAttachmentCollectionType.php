@@ -88,11 +88,13 @@ class TicketMessageAttachmentCollectionType extends AbstractType
                 'options' => function (Options $options) {
                         return array(
                             'ticket_message' =>  $options->get('ticket_message'),
-                            'person'         =>  $options->get('person')
+                            'person'         =>  $options->get('person'),
+                            'label'          => false
                         );
                     },
                 'allow_add' => true,
-                'allow_delete' => true
+                'allow_delete' => true,
+                'label' => false
             )
         );
 

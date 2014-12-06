@@ -16,13 +16,10 @@
 
 {{ form_errors(form) }}
 {{ form_start(form, { attr: { class: 'form-ticket' } }) }}
-{% for widget in form.children if widget.vars.name != '_token' %}
-    <div class="deskpro-form-widget {% if not widget.vars.valid %} form-error{% endif %}">
-        {{ form_label(widget) }}
-        {{ form_widget(widget) }}
-        {{ form_errors(widget) }}
-    </div>
-{% endfor %}
-<button type="submit">Submit</button>
+<h1>Reply</h1>
+{{ form_widget(form.ticket_message) }}
+<h3 style="margin-top:20px;">Add Attachments</h3>
+{{ form_widget(form.attachments) }}
+<button style="margin-top: 40px;" type="submit">Submit Reply</button>
 {{ form_rest(form) }}
 {{ form_end(form) }}

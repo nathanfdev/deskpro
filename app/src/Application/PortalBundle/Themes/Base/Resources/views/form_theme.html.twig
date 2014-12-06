@@ -32,6 +32,14 @@
 {%- endblock deskpro_hidden_widget %}
 
 
+{# TICKET ATTACHMENTS #}
+{% block ticket_message_attachments_widget %}
+{% if form.upload %}
+    {{ form_widget(form.upload) }}
+{% endif %}
+{% endblock ticket_message_attachments_widget %}
+
+
 {# DISPLAY HTML #}
 {% block deskpro_display_html_widget %}
 {% set value = 'html' %}

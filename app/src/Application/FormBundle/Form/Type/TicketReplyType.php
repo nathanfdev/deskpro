@@ -48,12 +48,14 @@ class TicketReplyType extends AbstractType
         $builder->add('ticket_message', 'ticket_message', array(
             'ticket'        => $options['ticket'],
             'person'        => $options['person'],
-            'message_label' => $options['message_label']
+            'message_label' => $options['message_label'],
+            'label' => false
         ));
 
         $builder->add('attachments', 'ticket_message_attachment_collection', array(
             'ticket_message' => $options['ticket_message'],
-            'person'         => $options['person']
+            'person'         => $options['person'],
+            'label' => false
         ));
 
         $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
@@ -79,7 +81,7 @@ class TicketReplyType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'message_label' => 'Reply'
+                'message_label' => false
             )
         );
         $resolver->setRequired(array(

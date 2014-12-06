@@ -63,7 +63,7 @@ class TicketMessageAttachmentType extends AbstractType
             $form = $event->getForm();
 
             if (!$attachment->getBlob()) {
-                $form->add('upload', 'file', array('mapped' => false, 'required' => false));
+                $form->add('upload', 'file', array('mapped' => false, 'required' => false, 'label' => false));
             }
         });
 
