@@ -66,7 +66,7 @@ class TicketsController extends AbstractController
     {
         $message = new TicketMessage();
 
-        $form = $this->createForm('deskpro_ticket_message', $message, array(
+        $form = $this->createForm('ticket_message', $message, array(
             'ticket'        => $ticket,
             'message_label' => 'Reply',
             'person'        => $this->getUser()
@@ -100,7 +100,7 @@ class TicketsController extends AbstractController
      */
     public function editAction(Ticket $ticket, Request $request)
     {
-        $form = $this->createForm('deskpro_ticket', $ticket, array(
+        $form = $this->createForm('ticket', $ticket, array(
             'person'            => $this->getUser(),
             'ticket_visibility' => 'edit'
         ));

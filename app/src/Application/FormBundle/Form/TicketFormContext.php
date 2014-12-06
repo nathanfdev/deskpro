@@ -37,6 +37,7 @@ namespace Application\FormBundle\Form;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketLayout;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
 use Symfony\Component\Form\FormInterface;
@@ -88,6 +89,10 @@ class TicketFormContext
      * @var \Application\DeskPRO\Entity\Person
      */
     private $person;
+    /**
+     * @var \Application\DeskPRO\Entity\TicketMessage
+     */
+    private $ticket_message;
 
     /**
      * @param FormInterface $form
@@ -96,8 +101,9 @@ class TicketFormContext
      * @param TicketLayout  $layout       the ticket layout we are using for this form
      * @param string        $view_context - "user" or "agent"?
      * @param string        $visibility   the view, such as "new", "edit", "view" (contants of this class)
+     * @param TicketMessage $ticket_message
      */
-    public function __construct(FormInterface $form, Ticket $ticket, Person $person, TicketLayout $layout, $view_context, $visibility)
+    public function __construct(FormInterface $form, Ticket $ticket, TicketMessage $ticket_message = null, Person $person, TicketLayout $layout, $view_context, $visibility)
     {
         $this->form = $form;
         $this->ticket = $ticket;
@@ -106,6 +112,7 @@ class TicketFormContext
         $this->previous_layout = $layout;
         $this->view_context = $view_context;
         $this->visibility = $visibility;
+        $this->ticket_message = $ticket_message;
     }
 
     /**
@@ -202,5 +209,13 @@ class TicketFormContext
     public function getPreviousLayout()
     {
         return $this->previous_layout;
+    }
+
+    /**
+     * @return TicketMessage
+     */
+    public function getMessage()
+    {
+        return $this->ticket_message;
     }
 }

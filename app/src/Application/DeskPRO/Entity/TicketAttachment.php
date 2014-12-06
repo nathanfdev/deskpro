@@ -124,4 +124,52 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(array( 'fieldName' => 'blob', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Blob', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'blob_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'message', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessage', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
     }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getBlob()
+    {
+        return $this->blob;
+    }
+
+    /**
+     * @return Ticket
+     */
+    public function getTicket()
+    {
+        return $this->ticket;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isAgentNote()
+    {
+        return $this->is_agent_note;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isInline()
+    {
+        return $this->is_inline;
+    }
+
+    /**
+     * @return TicketMessage
+     */
+    public function getMessage()
+    {
+        return $this->message;
+    }
 }

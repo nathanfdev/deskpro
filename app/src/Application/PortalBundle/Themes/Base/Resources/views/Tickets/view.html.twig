@@ -41,7 +41,17 @@
     <h2>Messages on Ticket</h2>
     <ul>
         {% for msg in ticket.messages %}
-            <li>{{ msg.message }}</li>
+            <li>
+                {{ msg.message }}
+                {% if msg.attachments|length > 0 %}
+                    <ul>
+                        {% for attachment in msg.attachments %}
+                        <li><strong>{{ attachment.person.name }}</strong> attached <strong>{{ attachment.blob.filename }}</strong>
+                            <a href="{{ attachment.blob.downloadUrl }}">[download link]</a></li>
+                        {% endfor %}
+                    </ul>
+                {% endif %}
+            </li>
         {% endfor %}
     </ul>
 

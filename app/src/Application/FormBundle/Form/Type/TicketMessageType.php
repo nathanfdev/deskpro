@@ -84,7 +84,7 @@ class TicketMessageType extends AbstractType
 
     public function getName()
     {
-        return 'deskpro_ticket_message';
+        return 'ticket_message';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

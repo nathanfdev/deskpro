@@ -18,13 +18,26 @@ services:
     class: Application\FormBundle\Form\Type\TicketType
     arguments: [@form_field_manager, @ticket_layout_factory, @ticket_layout_differ]
     tags:
-      - { name: form.type, alias: deskpro_ticket }
+      - { name: form.type, alias: ticket }
 
 
   form.ticket_message:
     class: Application\FormBundle\Form\Type\TicketMessageType
     tags:
-      - { name: form.type, alias: deskpro_ticket_message }
+      - { name: form.type, alias: ticket_message }
+
+
+  form.ticket_message_attachment:
+    class: Application\FormBundle\Form\Type\TicketMessageAttachmentType
+    arguments: [@blob.storage]
+    tags:
+      - { name: form.type, alias: ticket_message_attachment }
+
+
+  form.ticket_message_attachment_collection:
+    class: Application\FormBundle\Form\Type\TicketMessageAttachmentCollectionType
+    tags:
+      - { name: form.type, alias: ticket_message_attachment_collection }
 
 
   form.custom_field_choice:

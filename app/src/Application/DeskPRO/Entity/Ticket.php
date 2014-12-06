@@ -1294,6 +1294,11 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $ids;
     }
 
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
     /**
      * Add a message to this ticket.
      *

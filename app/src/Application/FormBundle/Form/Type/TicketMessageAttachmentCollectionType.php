@@ -34,23 +34,82 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\TicketAttachment;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
-class AttachType extends AbstractType
+class TicketMessageAttachmentCollectionType extends AbstractType
 {
-    public function getName()
+    public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        return 'deskpro_attach';
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event){
+            $form = $event->getForm();
+            $collection = $event->getData();
+
+            if (!$collection instanceof Collection) {
+                $collection = new ArrayCollection();
+                $event->setData($collection);
+            }
+
+            $attachment = new TicketAttachment();
+            $attachment->setMessage($form->getConfig()->getOption('ticket_message'));
+            $attachment->person = $form->getConfig()->getOption('person');
+
+            $collection->add($attachment);
+        }, 100);
     }
 
     public function getParent()
     {
-        return 'deskpro_blob';
+        return 'collection';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
+        $resolver->setDefaults(
+            array(
+                'type' => 'ticket_message_attachment',
+                'options' => function (Options $options) {
+                        return array(
+                            'ticket_message' =>  $options->get('ticket_message'),
+                            'person'         =>  $options->get('person')
+                        );
+                    },
+                'allow_add' => true,
+                'allow_delete' => true
+            )
+        );
+
+        $resolver->setRequired(
+            array(
+                'ticket_message',
+                'person'
+            )
+        );
+
+        $resolver->setAllowedTypes(
+            array(
+                'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+                'person' => 'Application\\DeskPRO\\Entity\\Person'
+            )
+        );
+    }
+
+    /**
+     * Returns the name of this type.
+     *
+     * @return string The name of this type
+     */
+    public function getName()
+    {
+        return 'ticket_message_attachment_collection';
     }
 }
  

@@ -36,6 +36,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -47,14 +48,17 @@ class NewTicketController extends AbstractController
         $person = $this->getUser() ?: new PersonGuest();
 
         $ticket = new Ticket();
-        $ticket->person = $person;
-
+        $ticket_message = new TicketMessage();
+        $ticket->setPerson($person);
+        $ticket_message->setPerson($person);
+        $ticket->addMessage($ticket_message);
 
         $form = $this->createForm(
-            'deskpro_ticket',
+            'ticket',
             $ticket,
             array(
-                'person' => $person
+                'person' => $person,
+                'ticket_message' => $ticket_message
             )
         );
 
