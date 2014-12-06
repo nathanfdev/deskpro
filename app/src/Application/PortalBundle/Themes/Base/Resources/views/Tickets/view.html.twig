@@ -46,8 +46,13 @@
                 {% if msg.attachments|length > 0 %}
                     <ul>
                         {% for attachment in msg.attachments %}
-                        <li><strong>{{ attachment.person.name }}</strong> attached <strong>{{ attachment.blob.filename }}</strong>
-                            <a href="{{ attachment.blob.downloadUrl }}">[download link]</a></li>
+                        <li>
+                            {% if attachment.blob.is_image %}
+                                <img src="{{ attachment.blob.thumbnailUrl }}" alt=""/>
+                            {% endif %}
+                            <strong>{{ attachment.person.name }}</strong> attached <strong>{{ attachment.blob.filename }}</strong>
+                            <a href="{{ attachment.blob.downloadUrl }}">[download link]</a>
+                        </li>
                         {% endfor %}
                     </ul>
                 {% endif %}
