@@ -53,22 +53,31 @@ class TicketMessageAttachmentCollectionType extends AbstractType
             $form = $event->getForm();
             $collection = $event->getData();
 
+            // ensure there is a collection of attachments on the message (even if empty)
             if (!$collection instanceof Collection) {
                 $collection = new ArrayCollection();
                 $event->setData($collection);
             }
 
+            // adds a new attachment (allowing the form to show one empty)
             $attachment = new TicketAttachment();
             $attachment->setMessage($form->getConfig()->getOption('ticket_message'));
             $attachment->person = $form->getConfig()->getOption('person');
-
             $collection->add($attachment);
         }, 100);
-    }
 
-    public function getParent()
-    {
-        return 'collection';
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
+            $form = $event->getForm();
+            $collection = $event->getData();
+
+            // clean up attachments that don't have a blob (delete them from the message)
+            foreach ($collection as $attachment) {
+                if (!$attachment->getBlob()) {
+                    $collection->removeElement($attachment);
+                }
+            }
+
+        });
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -100,6 +109,11 @@ class TicketMessageAttachmentCollectionType extends AbstractType
                 'person' => 'Application\\DeskPRO\\Entity\\Person'
             )
         );
+    }
+
+    public function getParent()
+    {
+        return 'collection';
     }
 
     /**

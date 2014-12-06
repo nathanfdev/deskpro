@@ -37,6 +37,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\PortalBundle\Controller\AbstractController;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
 
 class TicketsController extends AbstractController
@@ -65,10 +66,14 @@ class TicketsController extends AbstractController
     public function viewAction(Ticket $ticket, Request $request)
     {
         $message = new TicketMessage();
+        $form_data = array(
+            'ticket_message' => $message,
+            'attachments' => new ArrayCollection()
+        );
 
-        $form = $this->createForm('ticket_message', $message, array(
+        $form = $this->createForm('ticket_reply', $form_data, array(
             'ticket'        => $ticket,
-            'message_label' => 'Reply',
+            'ticket_message' => $message,
             'person'        => $this->getUser()
         ));
 

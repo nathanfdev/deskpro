@@ -40,6 +40,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class TicketMessageAttachmentType extends AbstractType
@@ -62,7 +63,7 @@ class TicketMessageAttachmentType extends AbstractType
             $form = $event->getForm();
 
             if (!$attachment->getBlob()) {
-                $form->add('upload', 'file', array('mapped' => false));
+                $form->add('upload', 'file', array('mapped' => false, 'required' => false));
             }
         });
 
@@ -80,7 +81,7 @@ class TicketMessageAttachmentType extends AbstractType
         if ($form->has('upload')) {
             $file = $form->get('upload')->getData();
 
-            if ($file->getRealPath()) {
+            if ($file instanceof File && $file->getRealPath()) {
                 $blob = $this->blob_storage->createBlobRecordFromFile(
                     $file->getRealPath(),
                     $file->getClientOriginalName(),
@@ -91,6 +92,8 @@ class TicketMessageAttachmentType extends AbstractType
                 $attachment->setPerson($person);
 
                 $ticket_message->addAttachment($attachment);
+            } else {
+                $ticket_message->attachments->removeElement($attachment);
             }
         }
     }
