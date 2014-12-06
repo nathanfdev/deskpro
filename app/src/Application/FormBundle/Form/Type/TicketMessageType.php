@@ -48,21 +48,10 @@ class TicketMessageType extends AbstractType
         $builder->add('message', 'textarea', array(
             'label' => $options['message_label'],
             'required' => $options['required'],
-            'constraints' => $options['constraints']
+            'constraints' => $options['message_constraints']
         ));
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
-    }
-
-    public function onPostSubmit(FormEvent $event)
-    {
-        /** @var \Application\DeskPRO\Entity\TicketMessage $message */
-        /** @var \Application\DeskPRO\Entity\Ticket $ticket */
-        $message = $event->getData();
-        $ticket = $event->getForm()->getConfig()->getOption('ticket');
-
-        $ticket->addMessage($message);
     }
 
     public function onPreData(FormEvent $event)
@@ -91,7 +80,8 @@ class TicketMessageType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Application\\DeskPRO\\Entity\\TicketMessage',
-            'message_label' => 'Message'
+            'message_label' => 'Message',
+            'message_constraints' => array()
         ));
         $resolver->setRequired(array(
             'person', 'ticket'
@@ -102,4 +92,3 @@ class TicketMessageType extends AbstractType
         ));
     }
 }
- 

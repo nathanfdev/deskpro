@@ -36,9 +36,7 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
-use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity;
-use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Orb\Util\Arrays;
@@ -46,7 +44,32 @@ use Orb\Util\Numbers;
 
 class Ticket extends AbstractEntityRepository
 {
-    public function getTicketCountForPerson(PersonEntity $person)
+    public function saveTicket(Entity\Ticket $ticket)
+    {
+        $this->_em->persist($ticket);
+        $this->_em->flush();
+    }
+
+    public function saveNewMessage(Entity\Ticket $ticket, Entity\TicketMessage $message)
+    {
+        $ticket->addMessage($message);
+
+        $this->_em->persist($message);
+        $this->_em->flush();
+    }
+
+    public function saveNewTicket(Entity\Ticket $ticket, Entity\TicketMessage $message, Entity\Person $person)
+    {
+        $ticket->addMessage($message);
+        $ticket->setPerson($person);
+
+        $this->_em->persist($ticket);
+        $this->_em->persist($message);
+        $this->_em->persist($person);
+        $this->_em->flush();
+    }
+
+    public function getTicketCountForPerson(Entity\Person $person)
     {
         $query = $this->_em->createQuery(
             '
@@ -65,10 +88,10 @@ class Ticket extends AbstractEntityRepository
      * The ticket is
      *
      * @param  Person                                 $person
-     * @return TicketEntity
+     * @return Entity\Ticket
      * @throws \Doctrine\ORM\NonUniqueResultException
      */
-    public function findMostRecentSmsTicketFromPerson(PersonEntity $person, $date_last_reply = null)
+    public function findMostRecentSmsTicketFromPerson(Entity\Person $person, $date_last_reply = null)
     {
         if (!$date_last_reply) {
             $date_last_reply = new \DateTime("now - 3 days");
@@ -601,15 +624,15 @@ class Ticket extends AbstractEntityRepository
     {
         if ($only_open) {
             $status = array(
-                TicketEntity::STATUS_AWAITING_AGENT,
-                TicketEntity::STATUS_AWAITING_USER
+                Entity\Ticket::STATUS_AWAITING_AGENT,
+                Entity\Ticket::STATUS_AWAITING_USER
             );
         } else {
             $status = array(
-                TicketEntity::STATUS_AWAITING_AGENT,
-                TicketEntity::STATUS_AWAITING_USER,
-                TicketEntity::STATUS_ARCHIVED,
-                TicketEntity::STATUS_RESOLVED
+                Entity\Ticket::STATUS_AWAITING_AGENT,
+                Entity\Ticket::STATUS_AWAITING_USER,
+                Entity\Ticket::STATUS_ARCHIVED,
+                Entity\Ticket::STATUS_RESOLVED
             );
         }
 
@@ -766,7 +789,7 @@ class Ticket extends AbstractEntityRepository
      * @param  mixed                              $id
      * @return \Application\DeskPRO\Entity\Ticket
      */
-    public function getTicketByPublicId($ticket_ref, PersonEntity $person_context = null, &$matched_type = null)
+    public function getTicketByPublicId($ticket_ref, Entity\Person $person_context = null, &$matched_type = null)
     {
         if ($person_context && !$person_context->getId()) {
             $person_context = null;
@@ -819,10 +842,10 @@ class Ticket extends AbstractEntityRepository
     /**
      * Find all linked tickets
      *
-     * @param  TicketEntity $parent_ticket
+     * @param  Entity\Ticket $parent_ticket
      * @return array
      */
-    public function getLinkedTickets(TicketEntity $parent_ticket)
+    public function getLinkedTickets(Entity\Ticket $parent_ticket)
     {
         return $this->_em->createQuery("
             SELECT t

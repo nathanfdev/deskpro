@@ -642,6 +642,19 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * @return string
+     */
+    public function getPlainSubject()
+    {
+        return $this->subject;
+    }
+
+    public function setPlainSubject($subject)
+    {
+        $this->setSubject($subject);
+    }
+
+    /**
      * Get an array of addresses the ticket was sent To or CC's
      *
      * @return array

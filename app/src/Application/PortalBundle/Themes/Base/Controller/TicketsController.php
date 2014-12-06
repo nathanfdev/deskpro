@@ -45,8 +45,7 @@ class TicketsController extends AbstractController
     public function indexAction()
     {
         // TODO: we just grab them all for now, without filtering...
-        $tickets = $this->getEm()
-            ->getRepository('DeskPRO:Ticket')
+        $tickets = $this->getTicketsRepo()
             ->findBy(
                 array(
                     'person' => $this->getUser()
@@ -65,16 +64,15 @@ class TicketsController extends AbstractController
      */
     public function viewAction(Ticket $ticket, Request $request)
     {
-        $message = new TicketMessage();
         $form_data = array(
-            'ticket_message' => $message,
-            'attachments' => new ArrayCollection()
+            'ticket_message' => $message = new TicketMessage(),
+            'attachments'    => new ArrayCollection()
         );
 
         $form = $this->createForm('ticket_reply', $form_data, array(
-            'ticket'        => $ticket,
+            'ticket'         => $ticket,
             'ticket_message' => $message,
-            'person'        => $this->getUser()
+            'person'         => $this->getUser()
         ));
 
         $form->handleRequest($request);
@@ -82,10 +80,7 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
 
             // TODO: fire an event (Ticket::ADD_MESSAGE)
-            // TODO: Make the Ticket repository do this actual persisting logic
-            $em = $this->getEm();
-            $em->persist($message);
-            $em->flush();
+            $this->getTicketsRepo()->saveNewMessage($ticket, $message);
 
             $this->addFlash('success', 'ticket.successful_new_reply.translated');
 
@@ -115,10 +110,7 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
 
             // TODO: fire an event (Ticket::EDIT)
-            // TODO: have the Ticket repo do this persistence logic
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($ticket);
-            $em->flush();
+            $this->getTicketsRepo()->saveTicket($ticket);
 
             $this->addFlash('success', 'updated.ticket.translated');
 
@@ -129,5 +121,13 @@ class TicketsController extends AbstractController
                 'ticket' => $ticket,
                 'form'   => $form->createView())
         );
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Ticket
+     */
+    protected function getTicketsRepo()
+    {
+        return $this->getRepo('DeskPRO:Ticket');
     }
 }

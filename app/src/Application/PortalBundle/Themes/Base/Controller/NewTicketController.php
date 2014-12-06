@@ -53,14 +53,10 @@ class NewTicketController extends AbstractController
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);
 
-        $form = $this->createForm(
-            'ticket',
-            $ticket,
-            array(
+        $form = $this->createForm('ticket', $ticket, array(
                 'person' => $person,
                 'ticket_message' => $ticket_message
-            )
-        );
+        ));
 
         $form->handleRequest($request);
 
@@ -72,11 +68,7 @@ class NewTicketController extends AbstractController
 //            $newTicket->save();
 
             // TODO: fire an event (Ticket::NEW_READY)
-            // TODO: logic below in Ticket repo
-            $em = $this->getDoctrine()->getManager();
-            $em->persist($ticket);
-            $em->persist($person);
-            $em->flush();
+            $this->getTicketsRepo()->saveNewTicket($ticket, $ticket_message, $person);
             // TODO: fire an event (Ticket::NEW_SAVED)
 
             $this->addFlash('success', 'created.ticket.phrase.here');
@@ -87,5 +79,13 @@ class NewTicketController extends AbstractController
         return $this->render('Theme:NewTicket:new_ticket.html.twig', array(
             'form' => $form->createView()
         ));
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Ticket
+     */
+    protected function getTicketsRepo()
+    {
+        return $this->getRepo('DeskPRO:Ticket');
     }
 }

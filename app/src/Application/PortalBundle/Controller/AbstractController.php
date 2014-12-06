@@ -49,6 +49,15 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @param string $entity_name
+     * @return \Doctrine\ORM\EntityRepository
+     */
+    public function getRepo($entity_name)
+    {
+        return $this->getEm()->getRepository($entity_name);
+    }
+
+    /**
      * Adds a flash message to the current session for type.
      *
      * @param string $type    The type

@@ -284,7 +284,8 @@ class TicketType extends AbstractType
 
     private function addSubject(TicketFormContext $form_context, LayoutField $field)
     {
-        $form_context->getForm()->add($field->getId(), 'text', array(
+        $form_context->getForm()->add('plain_subject', 'text', array(
+            'label' => 'Subject',
             'required' => true,
             'constraints' => array(
                 new NotBlank(array('message' => 'This value is required')),
@@ -299,7 +300,7 @@ class TicketType extends AbstractType
             return;
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_ticket_message', array(
+        $form_context->getForm()->add($field->getId(), 'ticket_message', array(
             'mapped' => false,
             'label'  => false,
             'person' => $form_context->getPerson(),

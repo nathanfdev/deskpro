@@ -40,6 +40,7 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Length;
 
 class TicketReplyType extends AbstractType
 {
@@ -49,7 +50,10 @@ class TicketReplyType extends AbstractType
             'ticket'        => $options['ticket'],
             'person'        => $options['person'],
             'message_label' => $options['message_label'],
-            'label' => false
+            'label' => false,
+            'message_constraints' => array(
+                new Length(array('min' => 100))
+            )
         ));
 
         $builder->add('attachments', 'ticket_message_attachment_collection', array(
@@ -68,8 +72,6 @@ class TicketReplyType extends AbstractType
         $data = $event->getData();
         $message = $data['ticket_message'];
         $message->attachments = $data['attachments'];
-
-        $event->getForm()->getConfig()->getOption('ticket')->addMessage($message);
     }
 
     public function getName()
