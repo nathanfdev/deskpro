@@ -127,10 +127,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 			self._resetForX();
 		});
 
-		this.addEvent('deactivate', function() {
-			this._resetForX();
-		}, this);
-
 		var messageEl = this.getEl('message');
 		var subjectEl = this.getEl('subject');
 		var sig = $.trim(self.getEl('signature_value').val());

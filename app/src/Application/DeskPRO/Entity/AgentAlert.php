@@ -138,7 +138,8 @@ class AgentAlert extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setPrimaryTable(array(
             'name' => 'agent_alerts',
             'indexes' => array(
-                'date_created_idx' => array('columns' => array('date_created'))
+                'date_created_idx' => array('columns' => array('date_created')),
+                'is_dismissed_idx' => array('columns' => array('is_dismissed', 'date_created'))
             )
         ));
         $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'nullable' => false, 'columnName' => 'id', 'id' => true, ));

@@ -216,7 +216,7 @@ define [
 			# JIRA Actions
 			#------------------------------
 
-			if @options_data?.jira_settings?.enabled && 'TriggersUpdate' == mode
+			if @options_data?.jira_settings?.enabled
 				options = []
 
 				options.push({

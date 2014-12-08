@@ -28,7 +28,7 @@ define([
     $scope.search = function () {
       $scope.search_issue_state = 1;
 	    if (!$scope.search_issue) {
-		    return;
+          return $scope.search_issue_state = 404;
 	    }
 
       for (var i = 0; i < issues.length; i++) {

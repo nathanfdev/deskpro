@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -26,52 +25,23 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-
-class TestCommand extends ContainerAwareCommand
+class Build1418032449 extends AbstractBuild
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
+    public function run()
     {
-        $this->setName('dp:test');
-    }
+        $this->out("Clear out agent_alerts (bad cleanup made this table very large)");
+        $this->execMutateSql("TRUNCATE TABLE agent_alerts", true);
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $mailer = $this->getContainer()->getMailer();
-
-        $message = $mailer->createMessage();
-        $message->setTemplate('DeskPRO:emails_agent:test-email.html.twig');
-
-        $person = $this->getContainer()->getAgentData()->get(1);
-        $message->setToPerson($person);
-
-        $mailer->sendNow($message);
-
-        return 0;
+        $this->out("Add index: agent_alerts.is_dismissed_idx");
+		$this->execMutateSql("CREATE INDEX is_dismissed_idx ON agent_alerts (is_dismissed, date_created)", true);
     }
 }

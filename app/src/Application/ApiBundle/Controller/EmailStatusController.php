@@ -40,6 +40,7 @@ use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilte
 use Application\DeskPRO\Email\SendmailQueue\Finder as SendmailQueueFinder;
 use Application\DeskPRO\Email\SendmailQueue\FinderFilter as SendmailQueueFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
+use Orb\Util\Strings;
 
 class EmailStatusController extends AbstractController implements ProtectedControllerInterface
 {
@@ -111,6 +112,22 @@ class EmailStatusController extends AbstractController implements ProtectedContr
             'num_pages'     => $info['num_pages'],
             'count'         => $info['count'],
             'email_sources' => $this->getApiData($results)
+        ));
+    }
+
+
+    ####################################################################################################################
+    # get-email-sources-stats
+    ####################################################################################################################
+
+    public function sourcesStatsAction()
+    {
+        $status_counts  = $this->db->fetchAllKeyValue("SELECT status, COUNT(*) FROM email_sources GROUP BY status");
+        $account_counts = $this->db->fetchAllKeyValue("SELECT email_account_id, COUNT(*) FROM email_sources GROUP BY email_account_id");
+
+        return $this->createJsonResponse(array(
+            'by_status'  => $status_counts,
+            'by_account' => $account_counts
         ));
     }
 
@@ -231,6 +248,89 @@ class EmailStatusController extends AbstractController implements ProtectedContr
         }
 
         return $this->createApiResponse($info);
+    }
+
+    ####################################################################################################################
+    # get-source-summary
+    ####################################################################################################################
+
+    public function getSourceSummaryAction($id)
+    {
+        $source = $this->em->find('DeskPRO:EmailSource', $id);
+        if (!$source) {
+            throw $this->createNotFoundException();
+        }
+
+        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->blob));
+
+        $info = "";
+
+        if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $info .= str_repeat("#", 72);
+            $info .= "\n# EMAIL HTML BODY\n";
+            $info .= str_repeat("#", 72);
+            $info .= "\n\n";
+            $info .= $t;
+            $info .= "\n\n\n\n\n";
+        }
+        unset($t);
+
+        if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
+            $info .= str_repeat("#", 72);
+            $info .= "\n# EMAIL TEXT BODY\n";
+            $info .= str_repeat("#", 72);
+            $info .= "\n\n";
+            $info .= $t;
+        } else if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $info .= str_repeat("#", 72);
+            $info .= "\n# EMAIL TEXT BODY (generated based on html)\n";
+            $info .= str_repeat("#", 72);
+            $info .= "\n\n";
+            $info .= Strings::stripTags($t);
+        }
+        unset($t);
+
+        return $this->createApiResponse(array('summary' => trim($info)));
+    }
+
+    ####################################################################################################################
+    # get-source-rendered
+    ####################################################################################################################
+
+    public function getSourceRenderedAction($id)
+    {
+        $source = $this->em->find('DeskPRO:EmailSource', $id);
+        if (!$source) {
+            throw $this->createNotFoundException();
+        }
+
+        $reader = new \Application\DeskPRO\EmailGateway\Reader\EzcReader();
+        $reader->setRawSource($this->container->getBlobStorage()->copyBlobRecordToString($source->blob));
+
+        $text = null;
+        $html = null;
+
+        if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $html = $t;
+            $html = $this->cleaner->clean($html, 'html_email_preclean');
+            $html = $this->cleaner->clean($html, 'html_email_basicclean');
+            $html = $this->cleaner->clean($html, 'html_email');
+            $html = $this->cleaner->clean($html, 'html_email_postclean');
+        }
+        unset($t);
+
+        if ($reader->getBodyText() && ($t = trim($reader->getBodyText()->getBodyUtf8()))) {
+            $text = $t;
+        } else if ($reader->getBodyHtml() && ($t = trim($reader->getBodyHtml()->getBodyUtf8()))) {
+            $text = Strings::stripTags($t);
+        }
+        unset($t);
+
+        return $this->createApiResponse(array(
+            'text' => $text,
+            'html' => $html
+        ));
     }
 
     ####################################################################################################################
