@@ -247,6 +247,34 @@ class CleanupDaily extends AbstractJob
         }
 
         #------------------------------
+        # Agent alerts
+        #------------------------------
+
+        if ($maxage = App::getSetting('agent.alerts_cleanup_time_always')) {
+            $datetime = date('Y-m-d H:i:s', time() - $maxage);
+            $num = App::getDb()->executeUpdate("
+				DELETE FROM agent_alerts
+				WHERE date_created < ?
+			", array($datetime));
+
+            if ($num) {
+                $this->logStatus("Cleaned up $num agent alerts");
+            }
+        }
+
+        if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
+            $datetime = date('Y-m-d H:i:s', time() - $maxage);
+            $num = App::getDb()->executeUpdate("
+				DELETE FROM agent_alerts
+				WHERE date_created < ? AND is_dismissed = 1
+			", array($datetime));
+
+            if ($num) {
+                $this->logStatus("Cleaned up $num dismissed agent alerts");
+            }
+        }
+
+        #------------------------------
         # result caches
         #------------------------------
 
