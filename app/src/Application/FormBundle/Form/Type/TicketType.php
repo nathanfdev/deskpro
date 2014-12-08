@@ -134,7 +134,7 @@ class TicketType extends AbstractType
         $initial_layout = $context->getActiveLayout();
 
         // now we need to compare the department's layout and see if we need to add/remove fields before we submit data
-        if ($form->has(FormFields::DEPARTMENT)) {
+        if ($form->has(FormFields::DEPARTMENT) && isset($pre_submit_data[FormFields::DEPARTMENT])) {
             /** @var \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList $choice_list */
             $choice_list = $form->get(FormFields::DEPARTMENT)->getConfig()->getOption('choice_list');
             $submitted_department = $pre_submit_data[FormFields::DEPARTMENT];

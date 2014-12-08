@@ -92,6 +92,14 @@ class DeskproBlobStorage implements Loggable
         $this->logger   = new Logger();
     }
 
+    public function getBlobEntityFromAuthcode($blob_auth_code)
+    {
+        return $this->em->createQuery('SELECT b FROM DeskPRO:Blob b WHERE b.authcode = :ac')
+            ->setParameter('ac', $blob_auth_code)
+            ->getOneOrNullResult()
+        ;
+    }
+
     /**
      * @param Logger $logger
      */
