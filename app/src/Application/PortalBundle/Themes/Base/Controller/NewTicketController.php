@@ -53,11 +53,21 @@ class NewTicketController extends AbstractController
         $ticket_message->setPerson($person);
         $ticket->addMessage($ticket_message);
 
+
+        // do a one through with the GET request to update our model before starting the "real" form
+        $form = $this->createForm('ticket', $ticket, array(
+                'person' => $person,
+                'ticket_message' => $ticket_message,
+                'method' => 'GET',
+                'validation_groups' => false
+        ));
+        $form->submit($request->get('ticket', array()), false);
+
+
         $form = $this->createForm('ticket', $ticket, array(
                 'person' => $person,
                 'ticket_message' => $ticket_message
         ));
-
         $form->handleRequest($request);
 
         if ($form->isValid()) {
