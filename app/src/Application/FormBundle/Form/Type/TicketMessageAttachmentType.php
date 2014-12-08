@@ -64,10 +64,28 @@ class TicketMessageAttachmentType extends AbstractType
 
             if (!$attachment->getBlob()) {
                 $form->add('upload', 'file', array('mapped' => false, 'required' => false, 'label' => false));
+            } else {
+                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
             }
         });
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'postSubmit'));
+        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'postSubmit'));
+        $builder->addEventListener(FormEvents::PRE_SUBMIT, array($this, 'preSubmit'));
+    }
+
+    public function preSubmit(FormEvent $event)
+    {
+        $form = $event->getForm();
+        $submittedData = $event->getData();
+        if (array_key_exists('blob_auth', $submittedData)) {
+            $form->getData()->setBlob($this->blob_storage->getBlobEntityFromAuthcode($submittedData['blob_auth']));
+            if ($form->has('upload')) {
+                $form->remove('upload');
+            }
+            if (!$form->has('blob_auth')) {
+                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+            }
+        }
     }
 
     public function postSubmit(FormEvent $event)
@@ -92,6 +110,9 @@ class TicketMessageAttachmentType extends AbstractType
                 $attachment->setPerson($person);
 
                 $ticket_message->addAttachment($attachment);
+
+                $form->remove('upload');
+                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
             } else {
                 $ticket_message->attachments->removeElement($attachment);
             }

@@ -33,11 +33,24 @@
 
 
 {# TICKET ATTACHMENTS #}
-{% block ticket_message_attachments_widget %}
-{% if form.upload %}
+{% block ticket_message_attachment_widget %}
+{% if form.upload is defined %}
     {{ form_widget(form.upload) }}
+{% else %}
+    <a href="{{ form.vars.data.blob.downloadUrl }}">
+        {% if form.vars.data.blob.is_image %}
+            <img src="{{ form.vars.data.blob.thumbnailUrl }}" alt=""/>
+        {% endif %}
+        {{ form.vars.data.blob.filename }}
+    </a>
+    {{ form_widget(form.blob_auth) }}
 {% endif %}
-{% endblock ticket_message_attachments_widget %}
+{{ dump(form) }}
+{% endblock ticket_message_attachment_widget %}
+
+{% block ticket_message_attachment_collection_widget %}
+    {{ block('collection_widget') }}
+{% endblock ticket_message_attachment_collection_widget %}
 
 
 {# DISPLAY HTML #}
