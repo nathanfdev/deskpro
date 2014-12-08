@@ -41,11 +41,11 @@ class Build1400056710 extends AbstractBuild
         $db = $this->container->getDb();
 
         $this->out("Alter usersources table");
-        $db->exec("ALTER TABLE usersources DROP FOREIGN KEY FK_4E3C994CEB0D3362, DROP INDEX IDX_4E3C994CEB0D3362");
+        $this->execMutateSql("ALTER TABLE usersources DROP FOREIGN KEY FK_4E3C994CEB0D3362, DROP INDEX IDX_4E3C994CEB0D3362", true);
         $db->exec("ALTER TABLE usersources DROP usersource_plugin_id");
         $db->exec("ALTER TABLE usersources ADD app_id INT DEFAULT NULL");
-        $db->exec("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994C7987212D FOREIGN KEY (app_id) REFERENCES app_instances (id) ON DELETE CASCADE");
-        $db->exec("CREATE INDEX IDX_4E3C994C7987212D ON usersources (app_id)");
+        $this->execMutateSql("ALTER TABLE usersources ADD CONSTRAINT FK_4E3C994C7987212D FOREIGN KEY (app_id) REFERENCES app_instances (id) ON DELETE CASCADE", true);
+        $this->execMutateSql("CREATE INDEX IDX_4E3C994C7987212D ON usersources (app_id)", true);
 
         $this->out("Drop old usersource_plugins table");
         $db->exec("DROP TABLE IF EXISTS usersource_plugins");
