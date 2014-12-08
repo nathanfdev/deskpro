@@ -13,7 +13,7 @@ echo
 
 echo ">> Installing vendors with composer"
 cd $DIR_ROOT/app
-composer install -o
+composer install --ignore-platform-reqs -o
 echo ".. done"
 echo
 
