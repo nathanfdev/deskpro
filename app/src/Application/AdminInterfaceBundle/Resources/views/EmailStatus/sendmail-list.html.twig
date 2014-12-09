@@ -21,6 +21,9 @@
 		<article class="dp-padded">
 			<div class="alert alert-info">
 				<div ng-show="!filter_open">
+					<div style="float:right; position: relative; top: 3px;" dp-hide-spinning="loading_page">
+						<button type="button" class="btn btn-default btn-xs" ng-click="ListCtrl.updateFilter()"><i class="fa fa-refresh" style="margin:0;"></i></button>
+					</div>
 					Showing all outgoing emails. <button class="btn" ng-click="filter_open = true"><i class="fa fa-filter"></i> Filter</button>
 				</div>
 				<div ng-show="filter_open">
@@ -80,6 +83,7 @@
 					</table>
 					<div class="text-center" style="border-top: 1px solid #aed7e0; padding-top: 8px; margin-top: 8px;">
 						<button class="btn btn-primary" ng-click="ListCtrl.updateFilter()">Filter</button>
+						<button class="btn btn-default" ng-click="ListCtrl.clearFilter()">Clear Filter</button>
 					</div>
 				</div>
 			</div>
@@ -142,7 +146,7 @@
 
 			<div style="text-align: center;" dp-show-spinning="loading_page"><i class="spinner-flat"></i></div>
 
-			<div class="dp-btn-pagination">
+			<div class="dp-btn-pagination" ng-show="ListCtrl.page_nums.length > 1">
 				<button class="btn" ng-show="ListCtrl.page != 1" ng-click="ListCtrl.goPrevPage()">&lt; Prev</button>
 				<select ng-model="ListCtrl.page" ui-select2 style="width: 130px;">
 					<option ng-repeat="page in ListCtrl.page_nums" value="{{ ng_var('page') }}">Page {{ ng_var('page') }}</option>

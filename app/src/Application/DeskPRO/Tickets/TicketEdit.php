@@ -148,8 +148,10 @@ class TicketEdit implements PersonContextInterface
 
                     if ($this->person_context) {
                         $can = true;
-                        if ($action == $this->person_context->getId() && !$tcheck->canModify($this->ticket, 'assign_self')) {
-                            $can = null;
+                        if ($action == $this->person_context->getId()) {
+                            if (!$tcheck->canModify($this->ticket, 'assign_self')) {
+                                $can = null;
+                            }
                         } elseif (!$tcheck->canModify($this->ticket, 'assign_agent')) {
                             $can = null;
                         }

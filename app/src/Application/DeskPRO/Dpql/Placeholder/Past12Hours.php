@@ -1,5 +1,4 @@
 <?php
-
 /**************************************************************************\
 | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
 | a British company located in London, England.                            |
@@ -7,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -26,52 +25,39 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage Dpql
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\DeskPRO\Dpql\Placeholder;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql;
 
-class TestCommand extends ContainerAwareCommand
+/**
+ * Place holder for the last 12 hours
+ */
+class Past12Hours extends AbstractDateRange
 {
     /**
-     * {@inheritDoc}
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
      */
-    protected function configure()
+    protected function _getDateRange()
     {
-        $this->setName('dp:test');
-    }
+        $tz = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('now', new \DateTimeZone($tz));
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
+        $now = $date->format('Y-m-d H:i:s');
+        $today = $date->format('Y-m-d H:i:s');
 
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $mailer = $this->getContainer()->getMailer();
+        $date->modify('-12 hours');
+        $beginning = $date->format('Y-m-d H:i:s');
 
-        $message = $mailer->createMessage();
-        $message->setTemplate('DeskPRO:emails_agent:test-email.html.twig');
-
-        $person = $this->getContainer()->getAgentData()->get(1);
-        $message->setToPerson($person);
-
-        $mailer->sendNow($message);
-
-        return 0;
+        return array("$beginning to $today", $beginning, $now);
     }
 }

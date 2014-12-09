@@ -238,6 +238,10 @@ class ChoiceField extends CustomFieldAbstract
             $this->_em->persist($ch);
         }
 
+        // Parents need to be flushed now
+        // so id's are hooked up properly
+        $this->_em->flush();
+
         // Hook up parents and set display order
         foreach ($choices_structure as $cinfo) {
             if (!isset($choices[$cinfo['id']])) {

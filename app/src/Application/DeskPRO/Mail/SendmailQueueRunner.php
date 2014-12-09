@@ -180,9 +180,26 @@ class SendmailQueueRunner implements Loggable
             $success = false;
         }
 
+        if ($message && $message instanceof \Application\DeskPRO\Mail\Message) {
+            $sendmail['log'] = $sendmail['log'] . "\n" . $message->getLogMessages();
+
+            $len = strlen($sendmail['log']);
+            if ($len > 25000) {
+                $trim = $len - 25000;
+                if ($trim > 1000) {
+                    $sendmail['log'] = "(Truncated)\n\n" . substr($sendmail['log'], -25000);
+                }
+            }
+
+            $sendmail['log'] = trim($sendmail['log']);
+        }
+
         if ($success) {
-            $this->blob_storage->deleteBlobRecord($sendmail['blob']);
-            $this->db->delete('sendmail_queue', array('id' => $sendmail['id']));
+            $this->db->update(
+                'sendmail_queue',
+                array('has_sent' => true, 'date_next_attempt' => null, 'attempts' => $sendmail['attempts']+1, 'log' => $sendmail['log'], 'status' => 'complete'),
+                array('id' => $sendmail['id'])
+            );
         } else {
 
             switch ($sendmail['attempts']) {
@@ -204,23 +221,9 @@ class SendmailQueueRunner implements Loggable
                     break;
             }
 
-            if ($message && $message instanceof \Application\DeskPRO\Mail\Message) {
-                $sendmail['log'] = $sendmail['log'] . "\n" . $message->getLogMessages();
-
-                $len = strlen($sendmail['log']);
-                if ($len > 25000) {
-                    $trim = $len - 25000;
-                    if ($trim > 1000) {
-                        $sendmail['log'] = "(Truncated)\n\n" . substr($sendmail['log'], -25000);
-                    }
-                }
-
-                $sendmail['log'] = trim($sendmail['log']);
-            }
-
             if ($next_attempt) {
                 $next_attempt = date('Y-m-d H:i:s', $next_attempt);
-                $status = 'pending';
+                $status = 'retry';
             } else {
                 $status = 'error';
             }
@@ -319,7 +322,7 @@ class SendmailQueueRunner implements Loggable
 
         $next = $this->db->fetchAssoc("
             SELECT * FROM sendmail_queue
-            WHERE date_next_attempt < ? AND blob_id IS NOT NULL AND status = 'pending'
+            WHERE date_next_attempt < ? AND blob_id IS NOT NULL AND status IN ('pending', 'retry')
             ORDER BY priority DESC, date_next_attempt ASC
             LIMIT 1
         ", array($date));
