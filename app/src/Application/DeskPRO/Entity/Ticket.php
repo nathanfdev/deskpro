@@ -494,7 +494,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $_sent_to_addresses;
 
     /**
-	 * @var null|\Application\DeskPRO\Labels\c
+	 * @var null|\Application\DeskPRO\Labels\LabelManager
      */
     protected $_label_manager = null;
 
@@ -569,6 +569,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->_is_new       = true;
         $this->custom_data   = new ArrayCollection();
         $this->participants  = new ArrayCollection();
+        $this->jira_issues   = new ArrayCollection();
         $this->messages      = new ArrayCollection();
         $this->sms_messages  = new ArrayCollection();
         $this->labels        = new ArrayCollection();
@@ -951,7 +952,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * Check if a person ID or a person object is current a participant.
      *
      * @param  $person_or_id
-     * @param $only_parts Only check participants (not assigned agent)
      * @return bool
      */
     public function hasParticipantPerson($person_or_id)
@@ -2933,8 +2933,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             if ($escape) {
                 $v = htmlspecialchars($v);
             }
-            $string = str_replace("{{ $k }}", $v, $string);
-            $string = str_replace("{{{$k}}}", $v, $string);
+            $string = str_replace("{{". $k ."}}", $v, $string);
+            $string = str_replace("{{" . $k . "}}", $v, $string);
         }
 
         return $string;

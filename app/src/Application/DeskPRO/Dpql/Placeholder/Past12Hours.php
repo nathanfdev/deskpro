@@ -29,20 +29,35 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage Dpql
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\DeskPRO\Dpql\Placeholder;
 
-class Build1400056715 extends AbstractBuild
+use Application\DeskPRO\App;
+use Application\DeskPRO\Dpql;
+
+/**
+ * Place holder for the last 12 hours
+ */
+class Past12Hours extends AbstractDateRange
 {
-    public function run()
+    /**
+     * Gets the date range components (printable, start, end).
+     *
+     * @return string[int]
+     */
+    protected function _getDateRange()
     {
-        $db = $this->container->getDb();
+        $tz = App::getCurrentPerson()->getTimezone();
+        $date = new \DateTime('now', new \DateTimeZone($tz));
 
-        $this->out("Alter tickets table to remove old fields");
-        $this->execMutateSql("ALTER TABLE tickets DROP FOREIGN KEY FK_54469DF4FBCC7CDF, DROP FOREIGN KEY FK_54469DF4F2598614", true);
-        $this->execMutateSql("ALTER TABLE tickets DROP KEY IDX_54469DF4FBCC7CDF, DROP KEY IDX_54469DF4F2598614", true);
-        $db->exec("ALTER TABLE tickets DROP email_gateway_id, DROP email_gateway_address_id, DROP notify_email, DROP notify_email_name, DROP notify_email_agent, DROP notify_email_name_agent");
+        $now = $date->format('Y-m-d H:i:s');
+        $today = $date->format('Y-m-d H:i:s');
+
+        $date->modify('-12 hours');
+        $beginning = $date->format('Y-m-d H:i:s');
+
+        return array("$beginning to $today", $beginning, $now);
     }
 }
