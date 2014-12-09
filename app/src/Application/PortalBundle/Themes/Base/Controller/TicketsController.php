@@ -79,14 +79,19 @@ class TicketsController extends AbstractController
 
         $form->handleRequest($request);
 
+
+
         if ($form->isValid()) {
+            if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
+                // We don't continue here if they just clicked the "add more attachments" button
 
-            // TODO: fire an event (Ticket::ADD_MESSAGE)
-            $this->getTicketsRepo()->saveNewMessage($ticket, $message);
+                // TODO: fire an event (Ticket::ADD_MESSAGE)
+                $this->getTicketsRepo()->saveNewMessage($ticket, $message);
 
-            $this->addFlash('success', 'ticket.successful_new_reply.translated');
+                $this->addFlash('success', 'ticket.successful_new_reply.translated');
 
-            return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+                return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+            }
         }
 
         return $this->render('Theme:Tickets:view.html.twig', array(

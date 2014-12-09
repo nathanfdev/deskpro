@@ -48,7 +48,7 @@ use Orb\Util\Strings;
  * @property Person $person
  * @property EmailSource $email_source
  * @property Visitor $visitor
- * @property TicketAttachment[] $attachments
+ * @property \Doctrine\Common\Collections\ArrayCollection $attachments
  * @property \DateTime $date_created
  * @property bool $is_agent_note
  * @property string $creation_system
@@ -102,6 +102,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     protected $visitor = null;
 
     /**
+     * @var \Doctrine\Common\Collections\ArrayCollection
      */
     protected $attachments;
 
@@ -487,7 +488,9 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
     public function addAttachment(TicketAttachment $attach)
     {
-        $this->attachments->add($attach);
+        if (!$this->attachments->contains($attach)) {
+            $this->attachments->add($attach);
+        }
         $attach['ticket'] = $this->ticket;
         $attach['message'] = $this;
     }

@@ -169,6 +169,8 @@ class TicketType extends AbstractType
         foreach ($fields_to_remove as $field) {
             $this->removeField($context, $field);
         }
+
+        $this->addSubmit($context);
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
@@ -437,6 +439,17 @@ class TicketType extends AbstractType
                 'person'         => $form_context->getPerson(),
                 'ticket_message' => $form_context->getMessage()
             ));
+            $form_context->getForm()->add('more_attachments', 'submit', array(
+                'validation_groups' => false,
+                'label' => 'Add Another Attachment'
+            ));
         }
+    }
+
+    private function addSubmit(TicketFormContext $form_context)
+    {
+        $form_context->getForm()->add('submit', 'submit', array(
+            'label' => 'Submit Ticket'
+        ));
     }
 }

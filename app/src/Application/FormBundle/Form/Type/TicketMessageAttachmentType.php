@@ -95,7 +95,7 @@ class TicketMessageAttachmentType extends AbstractType
     public function postSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
-        $attachment = $event->getData();
+        $attachment = $event->getData() instanceof TicketAttachment ? $event->getData() : new TicketAttachment();
         $form = $event->getForm();
         $person = $form->getConfig()->getOption('person');
         $ticket_message = $form->getConfig()->getOption('ticket_message');
@@ -120,7 +120,18 @@ class TicketMessageAttachmentType extends AbstractType
             } else {
                 $ticket_message->attachments->removeElement($attachment);
             }
+        } else {
+            if (!$form->has('blob_auth')) {
+                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                $ticket_message->addAttachment($attachment);
+            }
         }
+
+        if ($attachment->getPerson() != $person) {
+            $attachment->setPerson($person);
+        }
+        $ticket_message->addAttachment($attachment);
+        $form->setData($attachment);
     }
 
     public function getName()

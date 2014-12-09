@@ -74,6 +74,7 @@ class TicketMessageAttachmentCollectionType extends AbstractType
             foreach ($collection as $attachment) {
                 if (!$attachment) {
                     $collection->removeElement($attachment);
+                    continue;
                 }
                 if (!$attachment->getBlob()) {
                     $collection->removeElement($attachment);

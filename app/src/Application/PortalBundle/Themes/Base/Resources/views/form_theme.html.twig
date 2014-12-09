@@ -47,8 +47,19 @@
 {% endif %}
 {% endblock ticket_message_attachment_widget %}
 
+{# ATTACHMENTS #}
 {% block ticket_message_attachment_collection_widget %}
-    {{ block('collection_widget') }}
+    {% if prototype is defined %}
+        {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
+    {% endif %}
+    <div {{ block('widget_container_attributes') }}>
+        {%- if form.parent is empty -%}
+            {{ form_errors(form) }}
+        {%- endif -%}
+        {{- block('form_rows') -}}
+        {{ attr['data-prototype']|str_replace(prototype.vars.name, form.children|length)|raw }}
+        {{- form_rest(form) -}}
+    </div>
 {% endblock ticket_message_attachment_collection_widget %}
 
 

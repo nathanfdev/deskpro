@@ -62,6 +62,15 @@ class TicketReplyType extends AbstractType
             'label' => false
         ));
 
+        $builder->add('more_attachments', 'submit', array(
+            'validation_groups' => false,
+            'label' => 'Add Another Attachment'
+        ));
+
+        $builder->add('submit', 'submit', array(
+            'label' => 'Submit Reply'
+        ));
+
         $builder->addEventListener(FormEvents::POST_SUBMIT, array($this, 'onPostSubmit'));
     }
 

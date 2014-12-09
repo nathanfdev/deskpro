@@ -78,26 +78,29 @@ class NewTicketController extends AbstractController
 
         if ($form->isValid()) {
 
+            // dont process if user hit "more attachments"
+            if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
 
-            // deal with guests via negotiating with PersonFactory
-            if ($person instanceof PersonGuest) {
-                $person = $this->getPersonFactory()->createPersonFromGuest($person);
+                // deal with guests via negotiating with PersonFactory
+                if ($person instanceof PersonGuest) {
+                    $person = $this->getPersonFactory()->createPersonFromGuest($person);
 
-                // since the guest is set on the form, we need to update all of the associations
-                // TODO: we should be able to deal with this better by using a contact to beign with
-                $ticket->setPerson($person);
-                $ticket_message->setPerson($person);
-                foreach ($ticket_message->getAttachments() as $attachment) {
-                    $attachment->setPerson($person);
+                    // since the guest is set on the form, we need to update all of the associations
+                    // TODO: we should be able to deal with this better by using a contact to beign with
+                    $ticket->setPerson($person);
+                    $ticket_message->setPerson($person);
+                    foreach ($ticket_message->getAttachments() as $attachment) {
+                        $attachment->setPerson($person);
+                    }
+
                 }
 
+                $ticket = $this->saveNewTicket($ticket, $person);
+
+                $this->addFlash('success', 'created.ticket.phrase.here');
+
+                return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
             }
-            
-            $ticket = $this->saveNewTicket($ticket, $person);
-
-            $this->addFlash('success', 'created.ticket.phrase.here');
-
-            return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
         }
 
         return $this->render('Theme:NewTicket:new_ticket.html.twig', array(
