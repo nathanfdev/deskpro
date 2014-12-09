@@ -41,6 +41,7 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotBlank;
 
 class TicketReplyType extends AbstractType
 {
@@ -52,7 +53,7 @@ class TicketReplyType extends AbstractType
             'message_label' => $options['message_label'],
             'label' => false,
             'message_constraints' => array(
-                new Length(array('min' => 100))
+                new NotBlank()
             )
         ));
 
