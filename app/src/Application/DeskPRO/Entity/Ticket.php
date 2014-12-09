@@ -1129,11 +1129,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
         $set_user_ids = array_keys($set_user_ids_info);
 
-        $participants = App::getOrm()->createQuery("
+        if ($this->id > 0) {
+            $participants = App::getOrm()->createQuery("
             SELECT p
             FROM DeskPRO:TicketParticipant p
             WHERE p.ticket = ?1
-        ")->setParameter(1, $this)->execute();
+          ")->setParameter(1, $this)->execute();
+        } else {
+            $participants = array();
+        }
 
         foreach ($participants as $k => $part) {
             if ($part->person['is_agent']) {

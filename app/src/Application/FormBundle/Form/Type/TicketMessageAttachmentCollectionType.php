@@ -72,6 +72,9 @@ class TicketMessageAttachmentCollectionType extends AbstractType
 
             // clean up attachments that don't have a blob (delete them from the message)
             foreach ($collection as $attachment) {
+                if (!$attachment) {
+                    $collection->removeElement($attachment);
+                }
                 if (!$attachment->getBlob()) {
                     $collection->removeElement($attachment);
                 }

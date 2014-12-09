@@ -647,4 +647,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'message', 'dpApi' => true, 'dpApiDeep' => true  ));
     }
+
+    /**
+     * @return TicketAttachment[]
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
 }

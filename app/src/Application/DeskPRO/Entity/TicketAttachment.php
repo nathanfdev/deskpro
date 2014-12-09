@@ -172,4 +172,9 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->message;
     }
+
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+    }
 }
