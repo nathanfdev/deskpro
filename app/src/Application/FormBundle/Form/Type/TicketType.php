@@ -328,6 +328,7 @@ class TicketType extends AbstractType
     {
         $form_context->getForm()->add($field->getId(), 'text', array(
             'property_path' => 'person.name',
+            'label'         => 'Name',
             'empty_data'    => $form_context->getPerson()->getName()
         ));
     }
