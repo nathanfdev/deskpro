@@ -1,0 +1,4 @@
+services:
+  ticket_manager:
+    class: Application\DeskPRO\Tickets\TicketManager
+    arguments: [@service_container]
