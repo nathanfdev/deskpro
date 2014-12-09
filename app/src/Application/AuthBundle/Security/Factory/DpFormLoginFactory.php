@@ -98,4 +98,16 @@ class DpFormLoginFactory extends AbstractFactory
     {
         return 'dp_security.form_login.listener';
     }
+
+    protected function createEntryPoint($container, $id, $config, $defaultEntryPoint)
+    {
+        $entryPointId = 'security.authentication.dp_form_entry_point.'.$id;
+        $container
+            ->setDefinition($entryPointId, new DefinitionDecorator('security.authentication.form_entry_point'))
+            ->addArgument(new Reference('security.http_utils'))
+            ->addArgument($config['login_path'])
+            ->addArgument($config['use_forward']);
+
+        return $entryPointId;
+    }
 }

@@ -39,9 +39,13 @@ use Application\DeskPRO\Entity\TicketMessage;
 use Application\PortalBundle\Controller\AbstractController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class TicketsController extends AbstractController
 {
+    /**
+     * @Security("is_granted('USE_TICKETS')")
+     */
     public function indexAction()
     {
         // TODO: we just grab them all for now, without filtering...
@@ -58,9 +62,7 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * TODO: put a Security annotation to make sure user is granted acess to VIEW this ticket (being granted acces to
-     * VIEW this ticket implies you are logged in, becasue the voter denies non logged in users, so we dont need to
-     * make multiple security assertions, see what I mean?)
+     * @Security("is_granted('USE_TICKETS') and is_granted('TICKET_VIEW', ticket)")
      */
     public function viewAction(Ticket $ticket, Request $request)
     {
@@ -94,9 +96,7 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * TODO: put a Security annotation to make sure user is granted acess to EDIT this ticket (being granted acces to
-     * EDIT this ticket implies you are logged in, becasue the voter denies non logged in users, so we dont need to
-     * make multiple security assertions, see what I mean?)
+     * @Security("is_granted('USE_TICKETS') and is_granted('TICKET_EDIT', ticket)")
      */
     public function editAction(Ticket $ticket, Request $request)
     {

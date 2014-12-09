@@ -15,6 +15,8 @@ security:
             provider: dp_person_user_provider
             deskpro_form_login:
                 failure_path: /login?retry=auth
+                login_path: /login
+                use_forward: false
             anonymous: ~
             logout:
                 path: portal_logout

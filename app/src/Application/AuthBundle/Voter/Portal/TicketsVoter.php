@@ -35,47 +35,37 @@
 namespace Application\AuthBundle\Voter\Portal;
 
 use Application\AuthBundle\Voter\AbstractVoter;
+use Application\DeskPRO\Entity\Ticket;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 
-/**
- * An example of a "global" or "app-wide" voter. This votes on USE_{SECTION} attributes.
- *
- * Concerned only with wether or not a person can use a section / module of the desk.
- */
-class UseSectionVoter extends AbstractVoter
+class TicketsVoter extends AbstractVoter
 {
-    const USE_ARTICLES = 'USE_ARTICLES';
-    const USE_FEEDBACK = 'USE_FEEDBACK';
-    const USE_CHAT = 'USE_CHAT';
-    const USE_DOWNLOADS = 'USE_DOWNLOADS';
-    const USE_NEWS = 'USE_NEWS';
-    const USE_TICKETS = 'USE_TICKETS';
+    const TICKET_LIST = 'TICKET_LIST';
+    const TICKET_VIEW = 'TICKET_VIEW';
+    const TICKET_EDIT = 'TICKET_EDIT';
 
     protected function getSupportedAttributes()
     {
-        return array(self::USE_ARTICLES, self::USE_FEEDBACK, self::USE_CHAT, self::USE_DOWNLOADS, self::USE_NEWS, self::USE_TICKETS);
+        return array(self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT);
     }
 
     protected function isGranted($attribute, $object, $user = null)
     {
-        if ($this->isLoggedIn($user)) {
-            $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
-        } else {
-            $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
+        if (!$object instanceof Ticket) {
+            throw new InvalidArgumentException('expected Ticket entity, but got "'. get_class($object) .'"');
+        }
+
+        if (!$this->isLoggedIn($user)) {
+            return false;
         }
 
         switch($attribute) {
-            case static::USE_ARTICLES:
-                return $permissionBag->hasPermission('core.apps_kb');
-            case static::USE_FEEDBACK:
-                return $permissionBag->hasPermission('core.apps_feedback');
-            case static::USE_CHAT:
-                return $permissionBag->hasPermission('core.apps_chat');
-            case static::USE_DOWNLOADS:
-                return $permissionBag->hasPermission('core.apps_downloads');
-            case static::USE_NEWS:
-                return $permissionBag->hasPermission('core.apps_news');
-            case static::USE_TICKETS:
-                return true; // all of these settings seems to have changed names recently, this update reflects those changes as best as I can see.
+            case static::TICKET_LIST:
+                return $this->isLoggedIn($user);
+
+            case static::TICKET_VIEW:
+            case static::TICKET_EDIT:
+            return $object->person->getId() === $user->getId();
         }
 
         return false;
@@ -88,7 +78,7 @@ class UseSectionVoter extends AbstractVoter
      */
     protected function getSupportedClasses()
     {
-        return true;
+        return array('Application\\DeskPRO\\Entity\\Ticket');
     }
 }
  
