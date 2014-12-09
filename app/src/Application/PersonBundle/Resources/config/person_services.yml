@@ -1,4 +1,4 @@
 services:
   person_factory:
     class: Application\PersonBundle\Person\PersonFactory
-    arguments: [@doctrine.orm.default_entity_manager, @event_dispatcher]
+    arguments: [@doctrine.orm.default_entity_manager, @event_dispatcher, @brand_stack]

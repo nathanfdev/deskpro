@@ -35,19 +35,25 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\People\PersonGuest;
+use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class NewTicketController extends AbstractController
 {
+    /**
+     * @Security("is_granted('USE_TICKETS')")
+     */
     public function newTicketAction(Request $request)
     {
         $person = $this->getUser() ?: new PersonGuest();
 
-        $ticket = new Ticket();
+        $ticket = $this->getTicketManager()->createTicket();
         $ticket_message = new TicketMessage();
         $ticket->setPerson($person);
         $ticket_message->setPerson($person);
@@ -72,14 +78,22 @@ class NewTicketController extends AbstractController
 
         if ($form->isValid()) {
 
-//            (some of) the old code:
-//            $newTicket = new NewTicket(Ticket::CREATED_WEB_PERSON_PORTAL, $person, $ticket);
-//            $newTicket->setPersonContext($person); // have to set twice?
-//            $newTicket->save();
 
-            // TODO: fire an event (Ticket::NEW_READY)
-            $this->getTicketsRepo()->saveNewTicket($ticket, $ticket_message, $person);
-            // TODO: fire an event (Ticket::NEW_SAVED)
+            // deal with guests via negotiating with PersonFactory
+            if ($person instanceof PersonGuest) {
+                $person = $this->getPersonFactory()->createPersonFromGuest($person);
+
+                // since the guest is set on the form, we need to update all of the associations
+                // TODO: we should be able to deal with this better by using a contact to beign with
+                $ticket->setPerson($person);
+                $ticket_message->setPerson($person);
+                foreach ($ticket_message->getAttachments() as $attachment) {
+                    $attachment->setPerson($person);
+                }
+
+            }
+            
+            $ticket = $this->saveNewTicket($ticket, $person);
 
             $this->addFlash('success', 'created.ticket.phrase.here');
 
@@ -97,5 +111,51 @@ class NewTicketController extends AbstractController
     protected function getTicketsRepo()
     {
         return $this->getRepo('DeskPRO:Ticket');
+    }
+
+    /**
+     * @return \Application\DeskPRO\Tickets\TicketManager
+     */
+    protected function getTicketManager()
+    {
+        return $this->get('ticket_manager');
+    }
+
+    /**
+     * @return \Application\PersonBundle\Person\PersonFactory
+     */
+    protected function getPersonFactory()
+    {
+        return $this->get('person_factory');
+    }
+
+    private function saveNewTicket(Ticket $ticket, Person $person)
+    {
+        $em = $this->getEm();
+
+        $em->beginTransaction();
+
+        try {
+
+            $em->persist($ticket);
+
+            $ticket_manager = $this->getTicketManager();
+            $context = $ticket_manager->createUserExecutorContext($person, 'newticket', 'portal');
+
+            $ticket_manager->saveTicket($ticket, $context);
+            $em->flush();
+            $em->commit();
+
+        } catch (DuplicateTicketException $e) {
+           $em->rollback();
+            $ticket = $em->find('DeskPRO:Ticket', $e->ticket_id);
+
+            return $ticket;
+        } catch (\Exception $e) {
+            $em->rollback();
+            throw $e;
+        }
+
+        return $ticket;
     }
 }

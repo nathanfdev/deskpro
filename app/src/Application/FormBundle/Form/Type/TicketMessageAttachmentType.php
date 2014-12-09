@@ -78,6 +78,10 @@ class TicketMessageAttachmentType extends AbstractType
         $form = $event->getForm();
         $submittedData = $event->getData();
         if (array_key_exists('blob_auth', $submittedData)) {
+            if (!$form->getData()) {
+                $attachment = new TicketAttachment();
+                $form->setData($attachment);
+            }
             $form->getData()->setBlob($this->blob_storage->getBlobEntityFromAuthcode($submittedData['blob_auth']));
             if ($form->has('upload')) {
                 $form->remove('upload');

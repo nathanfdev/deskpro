@@ -35,8 +35,12 @@
 namespace Application\PersonBundle\Person;
 
 
+use Application\DeskPRO\Brand\BrandStack;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
+use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\PersonEmail;
+use Application\DeskPRO\People\PersonGuest;
 use Application\PersonBundle\Events\PersonCreateEvent;
 use Application\PersonBundle\Person\Context\CreatePersonContext;
 use Doctrine\ORM\EntityManager;
@@ -54,15 +58,16 @@ class PersonFactory
      */
     private $event_dispatcher;
 
-    public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher)
+    /**
+     * @var \Application\DeskPRO\Brand\BrandStack
+     */
+    private $brand_stack;
+
+    public function __construct(EntityManager $em, EventDispatcherInterface $event_dispatcher, BrandStack $brand_stack)
     {
         $this->em = $em;
+        $this->brand_stack = $brand_stack;
         $this->event_dispatcher = $event_dispatcher;
-    }
-
-    public function getPersonByEmail($email)
-    {
-        return $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
     }
 
     public function createPersonByEmail($raw_email, CreatePersonContext $context)
@@ -88,6 +93,63 @@ class PersonFactory
         return $person;
     }
 
+    public function createPersonFromGuest(PersonGuest $guest)
+    {
+        $final_person = null;
+
+        $settings = $this->brand_stack->getActive()->getSettings();
+
+        $email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($guest->getPrimaryEmail()->email);
+
+        // Email already exists on an account
+        // Means use the same person, but depending on the setting we
+        // might require the user to log in (in which case the ticket is a temp ticket for a bit)
+        if ($email) {
+            if ($settings->get('core.existing_account_login')) {
+                $person = $email->person;
+                $require_login = true; // TODO: redirect to login page.. but do we ignore the ticket? We dont have "temp" ones atm in new portal.
+            } else {
+                $person = $email->person;
+                if ($guest->name) {
+                    $person->name = $guest->name;
+                    $this->em->persist($person);
+                }
+            }
+
+            // If we get here, then its a new user. We add the email address
+            // as an email address that requires validation. If validation is disabled,
+            // we toggles it off
+        } else {
+
+            $person = $this->getPersonByEmail($email);
+
+            // Still no, if we're here then we make a new profile
+            if (!$person) {
+                $person = Person::newContactPerson();
+                if ($guest->name) {
+                    $person->name = $guest->name;
+                }
+                $person->getChangeTracker()->recordExtra('email_validating', $guest->primary_email->email);
+
+                if ($settings->get('core.agent_validation')) {
+                    $person->is_agent_confirmed = false;
+                }
+
+                $email = new PersonEmail();
+                $email->setEmail($guest->primary_email->email);
+                $email->person = $person;
+                $person->addEmailAddress($email);
+
+                $this->em->persist($person);
+                $this->em->persist($email);
+            }
+        }
+
+        $this->em->flush($person);
+
+        return $person;
+    }
+
     public function getOrCreatePersonByEmail($email, CreatePersonContext $context)
     {
         if ($person = $this->getPersonByEmail($email)) {
@@ -95,6 +157,14 @@ class PersonFactory
         }
 
         return $this->createPersonByEmail($email, $context);
+    }
+
+    public function getPersonByEmail($email)
+    {
+        if ($email instanceof PersonEmail) {
+            $email = $email->email;
+        }
+        return $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
     }
 }
  
