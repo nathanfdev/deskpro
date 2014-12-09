@@ -4,3 +4,5 @@ portal_routes:
     resource: "@PortalBundle/Resources/config/portal_routing.yml"
 auth_routes:
     resource: "@AuthBundle/Resources/config/auth_routing.yml"
+agent_routes:
+    resource: "@AgentBundle/Resources/config/agent-routing.php"
