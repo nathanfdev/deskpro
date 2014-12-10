@@ -51,6 +51,9 @@ class Csv implements GeneratorInterface
     /** @var int */
     protected $batch_size;
 
+    /** @var array */
+    protected $read_ticket_ids = array();
+
     /** @var \Psr\Log\LoggerInterface */
     protected $logger;
 
@@ -89,7 +92,16 @@ class Csv implements GeneratorInterface
 
         $records = -1;
 
-        while (($row = fgetcsv($data_file, 4096, ';')) !== false) {
+        $line1 = fgets($data_file);
+        rewind($data_file);
+
+        if (substr_count($line1, ';') > substr_count($line1, ',')) {
+            $sep = ';';
+        } else {
+            $sep = ',';
+        }
+
+        while (($row = fgetcsv($data_file, 4096, $sep)) !== false) {
             ++$records;
         }
 
@@ -105,10 +117,22 @@ class Csv implements GeneratorInterface
         $output_file_path = $this->output_path . 'people/';
 
         foreach ($this->getData('people') as $person) {
-            if (!isset($person['name']) || !isset($person['email'])) {
-                $this->logger->warning(sprintf('Invalid person record found (Skipping)'));
+            if (empty($person)) {
+                $index++;
                 $this->config->progress_bar->advance();
                 continue;
+            }
+
+            if (!isset($person['email'])) {
+                $this->logger->warning(sprintf('Invalid person record found (Skipping): %s'));
+                $index++;
+                $this->config->progress_bar->advance();
+                continue;
+            }
+
+            if (empty($person['name'])) {
+                $e = explode('@', $person['email'], 2);
+                $person['name'] = $e[0];
             }
 
             $file_name = 'person' . $index . '.json';
@@ -143,8 +167,15 @@ class Csv implements GeneratorInterface
         $output_file_path = $this->output_path . 'tickets/';
 
         foreach ($this->getData('tickets') as $ticket) {
+            if (empty($ticket)) {
+                $index++;
+                $this->config->progress_bar->advance();
+                continue;
+            }
+
             if (!isset($ticket['subject']) || !isset($ticket['user'])) {
                 $this->logger->warning(sprintf('Invalid ticket record found (Skipping)'));
+                $index++;
                 $this->config->progress_bar->advance();
                 continue;
             }
@@ -165,6 +196,7 @@ class Csv implements GeneratorInterface
             }
 
             $this->logger->info(sprintf('%s exported successfully!', $file_name));
+            $this->read_ticket_ids[$ticket['id']] = true;
 
             $this->config->progress_bar->advance();
 
@@ -179,8 +211,15 @@ class Csv implements GeneratorInterface
         $index = 0;
 
         foreach ($this->getData('messages') as $ticket_message) {
+            if (empty($ticket_message)) {
+                $index++;
+                $this->config->progress_bar->advance();
+                continue;
+            }
+
             if (!isset($ticket_message['message_text']) || !isset($ticket_message['user'])) {
                 $this->logger->warning(sprintf('Invalid ticket message record found (Skipping)'));
+                $index++;
                 $this->config->progress_bar->advance();
                 continue;
             }
@@ -191,25 +230,31 @@ class Csv implements GeneratorInterface
 
             $ticket_file_path = $output_file_path . $ticket_file_name;
 
-            if (is_writable($ticket_file_path)) {
-                $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
+            if ($this->config->mode === 'live') {
+                if (is_writable($ticket_file_path)) {
+                    $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
 
-                $message = array(
-                    'person'	=> $ticket_message['user'],
-                    'date_created'	=> isset($ticket_message['date_created']) ? $ticket_message['date_created'] : date('Y-m-d H:i:s'),
-                    'message_text'	=> $ticket_message['message_text']
-                );
+                    $message = array(
+                        'person' => $ticket_message['user'],
+                        'date_created' => isset($ticket_message['date_created']) ? $ticket_message['date_created'] : date('Y-m-d H:i:s'),
+                        'message_text' => $ticket_message['message_text']
+                    );
 
-                @$ticket_array['messages'][] = $message;
+                    @$ticket_array['messages'][] = $message;
 
-                if ($this->config->mode === 'live') {
-                    file_put_contents($ticket_file_path, json_encode($ticket_array));
+                    if ($this->config->mode === 'live') {
+                        file_put_contents($ticket_file_path, json_encode($ticket_array));
+                    }
+
+                    $this->logger->info(sprintf('%s exported successfully!', $ticket_file_path));
+
+                } else {
+                    $this->logger->warning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
                 }
-
-                $this->logger->info(sprintf('%s exported successfully!', $ticket_file_path));
-
             } else {
-                $this->logger->warning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
+                if (!isset($this->read_ticket_ids[$ticket_id])) {
+                    $this->logger->warning(sprintf('Source record for ticket #%s not read', $ticket_id));
+                }
             }
 
             $index++;
@@ -223,14 +268,36 @@ class Csv implements GeneratorInterface
         $handle = $this->getFile($data_source);
 
         $header = NULL;
+        $header_count = 0;
 
         $data = array();
 
+        $line1 = fgets($handle);
+        rewind($handle);
+
+        if (substr_count($line1, ';') > substr_count($line1, ',')) {
+            $sep = ';';
+        } else {
+            $sep = ',';
+        }
+
         if ($handle) {
-            while (($row = fgetcsv($handle, 4096, ';')) !== FALSE) {
+            while (($row = fgetcsv($handle, 0, $sep)) !== FALSE) {
                 if(!$header) {
                     $header = array_map('trim',$row);
+                    $header_count = count($header);
                 } else {
+                    $c = count($row);
+
+                    // Fixes mis-matching column counts
+                    if ($header_count > $c) {
+                        // missing header cols, empty value
+                        for ($i = $c; $i < $header_count; $i++) $row[$i] = '';
+                    } else if ($c > $header_count) {
+                        // too many cols, discard them
+                        for ($i = $header_count; $i < $c; $i++) unset($row[$i]);
+                    }
+
                     $data[] = array_combine($header, array_map('trim',$row));
                 }
             }
