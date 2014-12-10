@@ -9,10 +9,6 @@
         <JSCodeStyleSettings>
           <option name="ALIGN_MULTILINE_VAR_DECLARATION" value="true" />
         </JSCodeStyleSettings>
-        <JSON>
-          <option name="OBJECT_WRAPPING" value="1" />
-          <option name="ARRAY_WRAPPING" value="1" />
-        </JSON>
         <PHPCodeStyleSettings>
           <option name="ALIGN_KEY_VALUE_PAIRS" value="true" />
           <option name="ALIGN_PHPDOC_PARAM_NAMES" value="true" />
@@ -59,3 +55,4 @@
     <option name="USE_PER_PROJECT_SETTINGS" value="true" />
   </component>
 </project>
+

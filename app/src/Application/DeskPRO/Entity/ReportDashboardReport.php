@@ -147,7 +147,6 @@ class ReportDashboardReport extends DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-//		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportBuilder';
 		$metadata->setPrimaryTable(
 			array(
 				 'name' => 'report_dashboard_report',
@@ -174,7 +173,6 @@ class ReportDashboardReport extends DomainObject
                  'default'    => 0,
 				 'nullable'   => false,
 				 'columnName' => 'order',
-				 'id'         => true,
 			)
 		);
 		$metadata->mapField(
