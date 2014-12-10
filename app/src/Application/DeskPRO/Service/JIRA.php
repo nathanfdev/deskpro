@@ -266,9 +266,9 @@ class JIRA
      * @param $q
      * @return array|null
      */
-	public function searchByKey($q)
+	public function searchByKey($key)
 	{
-        if (!preg_match('/[A-Za-z]+\-\d+/', $q, $matches)) {
+        if (!preg_match('/[A-Za-z]+\-\d+/', $key, $matches)) {
             return null;
         }
 

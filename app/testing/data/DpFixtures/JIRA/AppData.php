@@ -11,8 +11,6 @@ class AppData extends AbstractFixture
     {
         /** @var \Application\DeskPRO\DBAL\Connection $connection */
         $connection = $manager->getConnection();
-        $connection->delete('app_packages', array('name' => 'deskpro_jira'));
-        $connection->delete('app_instances', array('package_name' => 'deskpro_jira'));
 
         $connection->executeQuery(
 <<<SQL
@@ -41,18 +39,19 @@ UTLcuY+VSR4qhrRKnyxsl+Uphtn4G+bm6jT9YGCd+l/2N4F9kepJBekHFeD2OaHJ
 4+kyYyGDRzjfHpEeaMRxaq7WpGhUPnfDGEcCSbJEILMLlQ==
 -----END RSA PRIVATE KEY-----',
             'oauth_tokens' => array(
-                'oauth_token' => 'DS5zF5IgjldsGrcq9c6yzk26D0qRFIaX',
-                'oauth_token_secret' => 'YcB7S484Jm0rP8coQQv2m22CRa6Ve6bO',
-                'oauth_expires_in' => 157680000,
-                'oauth_session_handle' => 'UwLsvq0ciVtZ2jHUko8LpXYMi4jL1ofQ',
+                'oauth_token' => 'vqsyD8yfZKAmhYAgbDplJTZNLE1xlqJn',
+                'oauth_token_secret' => 'Wv9wvrwaEZHttaTCqdFWNQT1GmbnyO1V',
+                'oauth_expires_in' => '157680000',
+                'oauth_session_handle' => 'nyxi9O58uJy4z92XylWf42GI1bT79icY',
                 'oauth_authorization_expires_in' => 160272000,
             ),
         );
+
         $connection->executeQuery(
 <<<SQL
-INSERT INTO `app_instances` (`id`, `package_name`, `title`, `secret_key`, `auth_key`, `settings`, `date_created`)
+INSERT INTO `app_instances` (`package_name`, `title`, `secret_key`, `auth_key`, `settings`, `date_created`)
 VALUES
-	(32, 'deskpro_jira', 'JIRA', 'SY59FLY4202RUN2CWSKZ8MJCRO7ZCC82WGG9SF6U', 'MFY1I3L68RSH4K663RVB4BS8GNP7FKUQ7EY4CZXM', :settings, '2014-11-27 18:57:52');
+	('deskpro_jira', 'JIRA', 'SY59FLY4202RUN2CWSKZ8MJCRO7ZCC82WGG9SF6U', 'MFY1I3L68RSH4K663RVB4BS8GNP7FKUQ7EY4CZXM', :settings, '2014-11-27 18:57:52');
 SQL
         , array('settings' => json_encode($settings)));
 //
