@@ -34,6 +34,7 @@
 
 namespace Application\DeskPRO\Usersource\Adapter;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\Adapter\Local;
 use Application\DeskPRO\Usersource\UsersourceInfo;
 use Doctrine\ORM\EntityManager;
@@ -62,10 +63,19 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
     }
 
 
+    /**
+     * @return EntityManager
+     */
+    public function getEm()
+    {
+        return $this->em ?: App::getContainer()->getEm();
+    }
+
+
     public function findIdentityByInput($input)
     {
         /** @var \Application\DeskPRO\EntityRepository\Person $personRepo */
-        $personRepo = $this->em->getRepository('DeskPRO:Person');
+        $personRepo = $this->getEm()->getRepository('DeskPRO:Person');
         if ($person = $personRepo->findOneByEmail($input)) {
             return $person;
         }
@@ -78,7 +88,7 @@ class DeskPRO extends AbstractAdapter implements IdentityFinderInterface, Entity
      */
     protected function _createAuthAdapterObject()
     {
-        return new Local($this->em);
+        return new Local($this->getEm());
     }
 
     /**

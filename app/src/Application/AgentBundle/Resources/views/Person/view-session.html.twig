@@ -1,14 +1,14 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.PersonSession';
 {% if visitor.name %}
-	pageMeta.title = {{ visitor.name|json_encode|raw }};
+	pageMeta.title = '';
 {% elseif visitor.email %}
-	pageMeta.title = {{ visitor.email|json_encode|raw }};
+	pageMeta.title = '';
 {% else %}
 	pageMeta.title = 'Anonymous User';
 {% endif %}
 pageMeta.session_id = {{session.id}};
-pageMeta.visitor_id = {{visitor.id|default(0)}};
+pageMeta.visitor_id = 0;
 
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';

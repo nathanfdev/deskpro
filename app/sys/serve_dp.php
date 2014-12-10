@@ -97,709 +97,710 @@ class DpLoader extends LoaderAbstract
 
     protected function visitorPingAction()
     {
-        if (Web::isBotUseragent()) {
-            header('Content-Type: text/javascript; filename=vis.js');
-            header('Content-Disposition: inline; filename=vis.js');
-            header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-            header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-            header('Cache-Control: max-age=0,private');
-            echo "// Detected that you are a bot";
+        //if (Web::isBotUseragent()) {
+        //    header('Content-Type: text/javascript; filename=vis.js');
+        //    header('Content-Disposition: inline; filename=vis.js');
+        //    header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        //    header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        //    header('Cache-Control: max-age=0,private');
+        //    echo "// Detected that you are a bot";
+        //
+        //    return;
+        //}
+        //
+        //if (isset($_GET['notrack'])) {
+        //    $js_out = $this->checkChatAvailable();
+        //    header('Content-Type: text/javascript; filename=vis.js');
+        //    header('Content-Length: ' . strlen($js_out));
+        //    header('Content-Disposition: inline; filename=vis.js');
+        //    header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        //    header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+        //    header('Cache-Control: max-age=0,private');
+        //    echo $js_out;
+        //
+        //    return;
+        //}
+        //
+        //$visitor_id   = null;
+        //$visitor_code = null;
+        //$visitor      = null;
+        //$session_id   = null;
+        //$session_auth = null;
+        //$session_code = null;
+        //$visitor_person_id = null;
+        //
+        //$session_code = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
+        //if (!$session_code) {
+        //    $session_code = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
+        //}
+        //if (!$session_code) {
+        //    $session_code = isset($_COOKIE['dpchat_sid']) ? $_COOKIE['dpchat_sid'] : null;
+        //}
+        //if (!$session_code) {
+        //    $session_code = isset($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : null;
+        //}
+        //if (!$session_code) {
+        //    $session_code = isset($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : null;
+        //}
+        //
+        //if ($session_code && strpos($session_code, '-')) {
+        //    list ($session_id, $session_auth) = explode('-', $session_code, 2);
+        //
+        //    $session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
+        //
+        //    $q = $this->getPdo()->prepare("
+        //        SELECT id, person_id
+        //        FROM sessions
+        //        WHERE id = ? AND auth = ?
+        //    ");
+        //    $q->execute(array($session_id, $session_auth));
+        //
+        //    $r = $q->fetch(\PDO::FETCH_ASSOC);
+        //    if ($r) {
+        //        $visitor_person_id = $r['person_id'];
+        //        $session_id = $r['id'];
+        //    } else {
+        //        $session_code = null;
+        //    }
+        //} else {
+        //    $session_code = null;
+        //}
+        //
+        //if (isset($_REQUEST['vc'])) {
+        //    $visitor_code = (string)$_REQUEST['vc'];
+        //} elseif (isset($_COOKIE['dpvc'])) {
+        //    $visitor_code = (string)$_COOKIE['dpvc'];
+        //}
+        //
+        //if ($visitor_code && !strpos($visitor_code, '-')) {
+        //    $visitor_code = null;
+        //}
+        //
+        //$user_token = null;
+        //if (isset($_REQUEST['vut'])) {
+        //    $user_token = $_REQUEST['vut'];
+        //} elseif (isset($_COOKIE['dpvut'])) {
+        //    $user_token = $_COOKIE['dpvut'];
+        //}
+        //
+        //$user_ip = $_SERVER['REMOTE_ADDR'];
+        //if (dp_get_config('trust_proxy_data')) {
+        //    if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
+        //        $user_ip = $_SERVER['HTTP_CLIENT_IP'];
+        //    } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
+        //        $user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
+        //        $user_ip = explode(',', $user_ip);
+        //        if (isset($user_ip[0])) {
+        //            $user_ip = $user_ip[0];
+        //        } else {
+        //            $user_ip = $_SERVER['REMOTE_ADDR'];
+        //        }
+        //    }
+        //}
+        //
+        //$user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
+        //
+        //$js_out = array();
+        //
+        //#-----------------------------------
+        //# Authorize a visitor id
+        //#-----------------------------------
+        //
+        //if ($session_id) {
+        //    $q = $this->getPdo()->prepare("
+        //        SELECT
+        //            visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
+        //            visitor_tracks.date_created AS date_last_track
+        //        FROM visitors
+        //        LEFT JOIN sessions ON (sessions.visitor_id = visitors.id)
+        //        LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
+        //        WHERE sessions.id = ?
+        //    ");
+        //    $q->execute(array($session_id));
+        //    $visitor = $q->fetch(\PDO::FETCH_ASSOC);
+        //
+        //    if (!$visitor) {
+        //        $visitor = null;
+        //    } else {
+        //        $visitor_id   = $visitor['id'];
+        //        $visitor_code = $visitor['id'] . '-' . $visitor['auth'];
+        //    }
+        //}
+        //
+        //if ($visitor_code && !$visitor) {
+        //    list ($visitor_id, $visitor_auth) = explode('-', $visitor_code, 2);
+        //    $visitor_id = (int)$visitor_id;
+        //
+        //    $q = $this->getPdo()->prepare("
+        //        SELECT
+        //            visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
+        //            visitor_tracks.date_created AS date_last_track
+        //        FROM visitors
+        //        LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
+        //        WHERE visitors.id = ?
+        //    ");
+        //    $q->execute(array($visitor_id));
+        //    $visitor = $q->fetch(\PDO::FETCH_ASSOC);
+        //
+        //    if (!$visitor || $visitor['auth'] != $visitor_auth) {
+        //        $visitor_id   = null;
+        //        $visitor_code = null;
+        //        $visitor      = null;
+        //        $user_token   = null;
+        //    }
+        //}
+        //
+        //#-----------------------------------
+        //# Try to find an existing visitor
+        //#-----------------------------------
+        //
+        //if (!$visitor && $user_token) {
+        //    $q = $this->getPdo()->prepare("
+        //        SELECT
+        //            visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
+        //            visitor_tracks.date_created AS date_last_track
+        //        FROM visitors
+        //        LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
+        //        WHERE
+        //            visitors.user_token = ?
+        //            AND visitors.date_last > ?
+        //    ");
+        //    $q->execute(array(
+        //        $user_token,
+        //        date('Y-m-d H:i:s', time() - 600)
+        //    ));
+        //    $visitor = $q->fetch(\PDO::FETCH_ASSOC);
+        //
+        //    if (!$visitor) {
+        //        $visitor_id   = null;
+        //        $visitor_code = null;
+        //        $visitor      = null;
+        //    }
+        //}
+        //
+        //#-----------------------------------
+        //# If we have no visitor, create one
+        //#-----------------------------------
+        //
+        //$is_new_visit_session = false;
+        //$is_new_visitor       = false;
+        //$update_track_id      = null;
+        //$soft_visitor_id      = null;
+        //
+        //if (!$visitor) {
+        //    $is_new_visitor = true;
+        //    $is_new_visit_session = true;
+        //
+        //    // If there have been multiple requests from the same ip
+        //    // and those visitor counts arent increasing, it probably means
+        //    // this is a bot or a user without cookies. So prevent the
+        //    // track from being displayed to agents a bajillion times.
+        //    $q = $this->getPdo()->prepare("
+        //        SELECT v.id
+        //        FROM visitors v
+        //        LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
+        //        WHERE
+        //            v.date_last > ?
+        //            AND v.page_count = 1
+        //            AND v.hint_hidden = 0
+        //            AND vt.ip_address = ?
+        //        LIMIT 1
+        //    ");
+        //    $q->execute(array(
+        //        date('Y-m-d H:i:s', time() - 600),
+        //        $user_ip
+        //    ));
+        //    $soft_visitor_id = $q->fetchColumn(0);
+        //
+        //    $visitor = array(
+        //        'auth'             => '',
+        //        'person_id'        => $visitor_person_id ?: null,
+        //        'page_count'       => 1,
+        //        'date_created'     => date('Y-m-d H:i:s'),
+        //        'date_last'        => date('Y-m-d H:i:s'),
+        //        'initial_track_id' => null,
+        //        'visit_track_id'   => null,
+        //        'last_track_id'    => null,
+        //        'hint_hidden'      => $soft_visitor_id ? 1 : 0,
+        //        'user_token'       => $user_token ?: null,
+        //        'ip_address'       => $user_ip,
+        //    );
+        //
+        //    $tmp = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        //    for ($i = 0; $i < 15; $i++) {
+        //        $t = mt_rand(0, 35);
+        //        $visitor['auth'] .= $tmp[$t];
+        //    }
+        //
+        //    $q = $this->getPdo()->prepare("
+        //        INSERT INTO visitors
+        //        SET auth = ?, page_count = 1, date_created = ?, date_last = ?, hint_hidden = ?, user_token = ?
+        //    ");
+        //    $q->execute(array(
+        //        $visitor['auth'],
+        //        $visitor['date_created'],
+        //        $visitor['date_last'],
+        //        $visitor['hint_hidden'],
+        //        $visitor['user_token'],
+        //    ));
+        //
+        //    $visitor_id = $visitor['id'] = $this->getPdo()->lastInsertId();
+        //} else {
+        //    $is_new_visitor = false;
+        //
+        //    // If our main page is DeskPRO, then a track was inserted
+        //    // as part of its session. We want toupdate that track
+        //    // with better information we have access to from Javascript
+        //    if (!empty($_GET['v_tid'])) {
+        //        // Just need to verify its the correct visitor
+        //        $q = $this->getPdo()->prepare("
+        //            SELECT id
+        //            FROM visitor_tracks
+        //            WHERE id = ? AND visitor_id = ?
+        //        ");
+        //        $q->execute(array($_GET['v_tid'], $visitor['id']));
+        //        $update_track_id = $q->fetchColumn(0);
+        //    }
+        //
+        //    if (!$update_track_id) {
+        //        if ($visitor['date_last_track']) {
+        //            $last_time = strtotime($visitor['date_last']);
+        //
+        //            if ($last_time < (time() - 2400)) {
+        //                $is_new_visit_session = true;
+        //            }
+        //        } else {
+        //            $is_new_visit_session = true;
+        //        }
+        //    }
+        //}
+        //
+        //$visitor_code = "{$visitor['id']}-{$visitor['auth']}";
+        //
+        //#-----------------------------------
+        //# Create the track
+        //#-----------------------------------
+        //
+        //$visitor_track = array();
+        //if ($is_new_visit_session) {
+        //    $visitor_track['is_new_visit'] = $is_new_visit_session;
+        //}
+        //if (!empty($_REQUEST['url'])) {
+        //    $visitor_track['page_url'] = (string)$_REQUEST['url'];
+        //} elseif (!empty($_SERVER['HTTP_REFERER'])) {
+        //    $visitor_track['page_url'] = (string)$_SERVER['HTTP_REFERER'];
+        //}
+        //
+        //if (!empty($_REQUEST['title'])) {
+        //    $visitor_track['page_title'] = (string)$_REQUEST['title'];
+        //}
+        //if (!empty($_REQUEST['rurl'])) {
+        //    $visitor_track['ref_page_url'] = (string)$_REQUEST['rurl'];
+        //}
+        //
+        //$visitor_track['user_agent']   = $user_agent;
+        //$visitor_track['user_browser'] = '';
+        //$visitor_track['user_os']      = '';
+        //$visitor_track['ip_address']   = $user_ip;
+        //$visitor_track['date_created'] = date('Y-m-d H:i:s');
+        //
+        //if ($is_new_visit_session || 1) {
+        //
+        //    if (dp_get_config('disable_geoip')) {
+        //        $geoip = new \Orb\GeoIp\GeoIpNull();
+        //    } else {
+        //        if (function_exists('geoip_db_avail')) {
+        //            $geoip = new \Orb\GeoIp\GeoIpExtension();
+        //        } else {
+        //            $geoip = new \Orb\GeoIp\GeoIpPhp();
+        //            $geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor-src/geoip-db/GeoIP.dat');
+        //        }
+        //    }
+        //
+        //    $geo = $geoip->lookup($visitor_track['ip_address']);
+        //
+        //    if (!empty($geo['continent']))      $visitor_track['geo_continent'] = $geo['continent'];
+        //    if (!empty($geo['country']))        $visitor_track['geo_country']   = $geo['country'];
+        //    if (!empty($geo['region']))         $visitor_track['geo_region']    = $geo['region'];
+        //    if (!empty($geo['city']))           $visitor_track['geo_city']      = $geo['city'];
+        //    if (!empty($geo['longitude']))      $visitor_track['geo_long']      = $geo['longitude'];
+        //    if (!empty($geo['latitude']))       $visitor_track['geo_lat']       = $geo['latitude'];
+        //}
+        //
+        //$set_q = array();
+        //foreach ($visitor_track as $k => $v) {
+        //    $set_q[] = "$k = ?";
+        //}
+        //$set_q = implode(', ', $set_q);
+        //
+        //if ($update_track_id) {
+        //    $q = $this->getPdo()->prepare("
+        //        UPDATE visitor_tracks
+        //        SET $set_q
+        //        WHERE id = {$update_track_id}
+        //    ");
+        //    $q->execute(array_values($visitor_track));
+        //
+        //    if ($q->rowCount()) {
+        //        $visitor_track['id'] = $update_track_id;
+        //    } else {
+        //        $visitor_track['id'] = 0;
+        //    }
+        //}
 
-            return;
-        }
+        //if (!$update_track_id && (!isset($visitor_track['id']) || !$visitor_track['id'])) {
+        //    $this->getPdo()->prepare("
+        //        INSERT INTO visitor_tracks
+        //        SET $set_q, visitor_id = $visitor_id
+        //    ")->execute(array_values($visitor_track));
+        //    $visitor_track['id'] = $this->getPdo()->lastInsertId();
+        //}
 
-        if (isset($_GET['notrack'])) {
-            $js_out = $this->checkChatAvailable();
-            header('Content-Type: text/javascript; filename=vis.js');
-            header('Content-Length: ' . strlen($js_out));
-            header('Content-Disposition: inline; filename=vis.js');
-            header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-            header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-            header('Cache-Control: max-age=0,private');
-            echo $js_out;
-
-            return;
-        }
-
-        $visitor_id   = null;
-        $visitor_code = null;
-        $visitor      = null;
-        $session_id   = null;
-        $session_auth = null;
-        $session_code = null;
-        $visitor_person_id = null;
-
-        $session_code = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
-        if (!$session_code) {
-            $session_code = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
-        }
-        if (!$session_code) {
-            $session_code = isset($_COOKIE['dpchat_sid']) ? $_COOKIE['dpchat_sid'] : null;
-        }
-        if (!$session_code) {
-            $session_code = isset($_COOKIE['dpsid-agent']) ? $_COOKIE['dpsid-agent'] : null;
-        }
-        if (!$session_code) {
-            $session_code = isset($_COOKIE['dpsid-admin']) ? $_COOKIE['dpsid-admin'] : null;
-        }
-
-        if ($session_code && strpos($session_code, '-')) {
-            list ($session_id, $session_auth) = explode('-', $session_code, 2);
-
-            $session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
-
-            $q = $this->getPdo()->prepare("
-                SELECT id, person_id
-                FROM sessions
-                WHERE id = ? AND auth = ?
-            ");
-            $q->execute(array($session_id, $session_auth));
-
-            $r = $q->fetch(\PDO::FETCH_ASSOC);
-            if ($r) {
-                $visitor_person_id = $r['person_id'];
-                $session_id = $r['id'];
-            } else {
-                $session_code = null;
-            }
-        } else {
-            $session_code = null;
-        }
-
-        if (isset($_REQUEST['vc'])) {
-            $visitor_code = (string)$_REQUEST['vc'];
-        } elseif (isset($_COOKIE['dpvc'])) {
-            $visitor_code = (string)$_COOKIE['dpvc'];
-        }
-
-        if ($visitor_code && !strpos($visitor_code, '-')) {
-            $visitor_code = null;
-        }
-
-        $user_token = null;
-        if (isset($_REQUEST['vut'])) {
-            $user_token = $_REQUEST['vut'];
-        } elseif (isset($_COOKIE['dpvut'])) {
-            $user_token = $_COOKIE['dpvut'];
-        }
-
-        $user_ip = $_SERVER['REMOTE_ADDR'];
-        if (dp_get_config('trust_proxy_data')) {
-            if (!empty($_SERVER['HTTP_CLIENT_IP'])) {
-                $user_ip = $_SERVER['HTTP_CLIENT_IP'];
-            } elseif (!empty($_SERVER['HTTP_X_FORWARDED_FOR'])) {
-                $user_ip = $_SERVER['HTTP_X_FORWARDED_FOR'];
-                $user_ip = explode(',', $user_ip);
-                if (isset($user_ip[0])) {
-                    $user_ip = $user_ip[0];
-                } else {
-                    $user_ip = $_SERVER['REMOTE_ADDR'];
-                }
-            }
-        }
-
-        $user_agent = !empty($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : 'Unknown';
-
-        $js_out = array();
-
-        #-----------------------------------
-        # Authorize a visitor id
-        #-----------------------------------
-
-        if ($session_id) {
-            $q = $this->getPdo()->prepare("
-                SELECT
-                    visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
-                    visitor_tracks.date_created AS date_last_track
-                FROM visitors
-                LEFT JOIN sessions ON (sessions.visitor_id = visitors.id)
-                LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
-                WHERE sessions.id = ?
-            ");
-            $q->execute(array($session_id));
-            $visitor = $q->fetch(\PDO::FETCH_ASSOC);
-
-            if (!$visitor) {
-                $visitor = null;
-            } else {
-                $visitor_id   = $visitor['id'];
-                $visitor_code = $visitor['id'] . '-' . $visitor['auth'];
-            }
-        }
-
-        if ($visitor_code && !$visitor) {
-            list ($visitor_id, $visitor_auth) = explode('-', $visitor_code, 2);
-            $visitor_id = (int)$visitor_id;
-
-            $q = $this->getPdo()->prepare("
-                SELECT
-                    visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
-                    visitor_tracks.date_created AS date_last_track
-                FROM visitors
-                LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
-                WHERE visitors.id = ?
-            ");
-            $q->execute(array($visitor_id));
-            $visitor = $q->fetch(\PDO::FETCH_ASSOC);
-
-            if (!$visitor || $visitor['auth'] != $visitor_auth) {
-                $visitor_id   = null;
-                $visitor_code = null;
-                $visitor      = null;
-                $user_token   = null;
-            }
-        }
-
-        #-----------------------------------
-        # Try to find an existing visitor
-        #-----------------------------------
-
-        if (!$visitor && $user_token) {
-            $q = $this->getPdo()->prepare("
-                SELECT
-                    visitors.id, visitors.person_id, visitors.initial_track_id, visitors.visit_track_id, visitors.auth, visitors.user_token, visitors.chat_invite, visitors.page_count, visitors.date_last, visitors.hint_hidden,
-                    visitor_tracks.date_created AS date_last_track
-                FROM visitors
-                LEFT JOIN visitor_tracks ON (visitor_tracks.id = visitors.last_track_id)
-                WHERE
-                    visitors.user_token = ?
-                    AND visitors.date_last > ?
-            ");
-            $q->execute(array(
-                $user_token,
-                date('Y-m-d H:i:s', time() - 600)
-            ));
-            $visitor = $q->fetch(\PDO::FETCH_ASSOC);
-
-            if (!$visitor) {
-                $visitor_id   = null;
-                $visitor_code = null;
-                $visitor      = null;
-            }
-        }
-
-        #-----------------------------------
-        # If we have no visitor, create one
-        #-----------------------------------
-
-        $is_new_visit_session = false;
-        $is_new_visitor       = false;
-        $update_track_id      = null;
-        $soft_visitor_id      = null;
-
-        if (!$visitor) {
-            $is_new_visitor = true;
-            $is_new_visit_session = true;
-
-            // If there have been multiple requests from the same ip
-            // and those visitor counts arent increasing, it probably means
-            // this is a bot or a user without cookies. So prevent the
-            // track from being displayed to agents a bajillion times.
-            $q = $this->getPdo()->prepare("
-                SELECT v.id
-                FROM visitors v
-                LEFT JOIN visitor_tracks AS vt ON (vt.id = v.last_track_id)
-                WHERE
-                    v.date_last > ?
-                    AND v.page_count = 1
-                    AND v.hint_hidden = 0
-                    AND vt.ip_address = ?
-                LIMIT 1
-            ");
-            $q->execute(array(
-                date('Y-m-d H:i:s', time() - 600),
-                $user_ip
-            ));
-            $soft_visitor_id = $q->fetchColumn(0);
-
-            $visitor = array(
-                'auth'             => '',
-                'person_id'        => $visitor_person_id ?: null,
-                'page_count'       => 1,
-                'date_created'     => date('Y-m-d H:i:s'),
-                'date_last'        => date('Y-m-d H:i:s'),
-                'initial_track_id' => null,
-                'visit_track_id'   => null,
-                'last_track_id'    => null,
-                'hint_hidden'      => $soft_visitor_id ? 1 : 0,
-                'user_token'       => $user_token ?: null,
-                'ip_address'       => $user_ip,
-            );
-
-            $tmp = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-            for ($i = 0; $i < 15; $i++) {
-                $t = mt_rand(0, 35);
-                $visitor['auth'] .= $tmp[$t];
-            }
-
-            $q = $this->getPdo()->prepare("
-                INSERT INTO visitors
-                SET auth = ?, page_count = 1, date_created = ?, date_last = ?, hint_hidden = ?, user_token = ?
-            ");
-            $q->execute(array(
-                $visitor['auth'],
-                $visitor['date_created'],
-                $visitor['date_last'],
-                $visitor['hint_hidden'],
-                $visitor['user_token'],
-            ));
-
-            $visitor_id = $visitor['id'] = $this->getPdo()->lastInsertId();
-        } else {
-            $is_new_visitor = false;
-
-            // If our main page is DeskPRO, then a track was inserted
-            // as part of its session. We want toupdate that track
-            // with better information we have access to from Javascript
-            if (!empty($_GET['v_tid'])) {
-                // Just need to verify its the correct visitor
-                $q = $this->getPdo()->prepare("
-                    SELECT id
-                    FROM visitor_tracks
-                    WHERE id = ? AND visitor_id = ?
-                ");
-                $q->execute(array($_GET['v_tid'], $visitor['id']));
-                $update_track_id = $q->fetchColumn(0);
-            }
-
-            if (!$update_track_id) {
-                if ($visitor['date_last_track']) {
-                    $last_time = strtotime($visitor['date_last']);
-
-                    if ($last_time < (time() - 2400)) {
-                        $is_new_visit_session = true;
-                    }
-                } else {
-                    $is_new_visit_session = true;
-                }
-            }
-        }
-
-        $visitor_code = "{$visitor['id']}-{$visitor['auth']}";
-
-        #-----------------------------------
-        # Create the track
-        #-----------------------------------
-
-        $visitor_track = array();
-        if ($is_new_visit_session) {
-            $visitor_track['is_new_visit'] = $is_new_visit_session;
-        }
-        if (!empty($_REQUEST['url'])) {
-            $visitor_track['page_url'] = (string)$_REQUEST['url'];
-        } elseif (!empty($_SERVER['HTTP_REFERER'])) {
-            $visitor_track['page_url'] = (string)$_SERVER['HTTP_REFERER'];
-        }
-
-        if (!empty($_REQUEST['title'])) {
-            $visitor_track['page_title'] = (string)$_REQUEST['title'];
-        }
-        if (!empty($_REQUEST['rurl'])) {
-            $visitor_track['ref_page_url'] = (string)$_REQUEST['rurl'];
-        }
-
-        $visitor_track['user_agent']   = $user_agent;
-        $visitor_track['user_browser'] = '';
-        $visitor_track['user_os']      = '';
-        $visitor_track['ip_address']   = $user_ip;
-        $visitor_track['date_created'] = date('Y-m-d H:i:s');
-
-        if ($is_new_visit_session || 1) {
-
-            if (dp_get_config('disable_geoip')) {
-                $geoip = new \Orb\GeoIp\GeoIpNull();
-            } else {
-                if (function_exists('geoip_db_avail')) {
-                    $geoip = new \Orb\GeoIp\GeoIpExtension();
-                } else {
-                    $geoip = new \Orb\GeoIp\GeoIpPhp();
-                    $geoip->addDatabase(\GEOIP_COUNTRY_EDITION, DP_ROOT.'/vendor-src/geoip-db/GeoIP.dat');
-                }
-            }
-
-            $geo = $geoip->lookup($visitor_track['ip_address']);
-
-            if (!empty($geo['continent']))      $visitor_track['geo_continent'] = $geo['continent'];
-            if (!empty($geo['country']))        $visitor_track['geo_country']   = $geo['country'];
-            if (!empty($geo['region']))         $visitor_track['geo_region']    = $geo['region'];
-            if (!empty($geo['city']))           $visitor_track['geo_city']      = $geo['city'];
-            if (!empty($geo['longitude']))      $visitor_track['geo_long']      = $geo['longitude'];
-            if (!empty($geo['latitude']))       $visitor_track['geo_lat']       = $geo['latitude'];
-        }
-
-        $set_q = array();
-        foreach ($visitor_track as $k => $v) {
-            $set_q[] = "$k = ?";
-        }
-        $set_q = implode(', ', $set_q);
-
-        if ($update_track_id) {
-            $q = $this->getPdo()->prepare("
-                UPDATE visitor_tracks
-                SET $set_q
-                WHERE id = {$update_track_id}
-            ");
-            $q->execute(array_values($visitor_track));
-
-            if ($q->rowCount()) {
-                $visitor_track['id'] = $update_track_id;
-            } else {
-                $visitor_track['id'] = 0;
-            }
-        }
-
-        if (!$update_track_id && (!isset($visitor_track['id']) || !$visitor_track['id'])) {
-            $this->getPdo()->prepare("
-                INSERT INTO visitor_tracks
-                SET $set_q, visitor_id = $visitor_id
-            ")->execute(array_values($visitor_track));
-            $visitor_track['id'] = $this->getPdo()->lastInsertId();
-        }
-
-        if (!$update_track_id && $soft_visitor_id) {
-            // If we suspect this is linked to a different visitor,
-            // duplicate the track and set it as the soft link
-            $dupe = $visitor_track;
-            unset($dupe['id']);
-
-            $this->getPdo()->prepare("
-                INSERT INTO visitor_tracks
-                SET $set_q, is_soft_track = 1, visitor_id = $soft_visitor_id
-            ")->execute(array_values($dupe));
-            $soft_track_id = $this->getPdo()->lastInsertId();
-
-            // Also update the last time so it appears in the agent list
-            $this->getPdo()->prepare("
-                UPDATE visitors
-                SET date_last = ?, last_track_id_soft = ?
-                WHERE id = ?
-            ")->execute(array(
-                date('Y-m-d H:i:s'),
-                $soft_track_id,
-                $soft_visitor_id
-            ));
-        }
+        //if (!$update_track_id && $soft_visitor_id) {
+        //    // If we suspect this is linked to a different visitor,
+        //    // duplicate the track and set it as the soft link
+        //    $dupe = $visitor_track;
+        //    unset($dupe['id']);
+        //
+        //    $this->getPdo()->prepare("
+        //        INSERT INTO visitor_tracks
+        //        SET $set_q, is_soft_track = 1, visitor_id = $soft_visitor_id
+        //    ")->execute(array_values($dupe));
+        //    $soft_track_id = $this->getPdo()->lastInsertId();
+        //
+        //    // Also update the last time so it appears in the agent list
+        //    $this->getPdo()->prepare("
+        //        UPDATE visitors
+        //        SET date_last = ?, last_track_id_soft = ?
+        //        WHERE id = ?
+        //    ")->execute(array(
+        //        date('Y-m-d H:i:s'),
+        //        $soft_track_id,
+        //        $soft_visitor_id
+        //    ));
+        //}
 
         #-----------------------------------
         # Update the last times for the visitor
         #-----------------------------------
 
-        $visitor_update = array();
-        if (!$visitor['initial_track_id']) {
-            $visitor_update['initial_track_id'] = $visitor_track['id'];
-        }
-        if (!$visitor['visit_track_id'] || $is_new_visit_session) {
-            $visitor_update['visit_track_id'] = $visitor_track['id'];
-        }
-        $visitor_update['last_track_id'] = $visitor_track['id'];
-        $visitor_update['last_track_id_soft'] = null;
-        $visitor_update['date_last']     = date('Y-m-d H:i:s');
+    //    $visitor_update = array();
+    //    if (!$visitor['initial_track_id']) {
+    //        $visitor_update['initial_track_id'] = $visitor_track['id'];
+    //    }
+    //    if (!$visitor['visit_track_id'] || $is_new_visit_session) {
+    //        $visitor_update['visit_track_id'] = $visitor_track['id'];
+    //    }
+    //    $visitor_update['last_track_id'] = $visitor_track['id'];
+    //    $visitor_update['last_track_id_soft'] = null;
+    //    $visitor_update['date_last']     = date('Y-m-d H:i:s');
+    //
+    //    if ($visitor_person_id) {
+    //        $visitor_update['person_id'] = $visitor_person_id;
+    //    }
+    //
+    //    if (!$is_new_visitor && !$update_track_id) {
+    //        $visitor_update['page_count'] = $visitor['page_count'] + 1;
+    //    }
+    //
+    //    if (!$is_new_visitor) {
+    //        $visitor_update['hint_hidden'] = '0';
+    //
+    //        // Clear out any soft links to this record
+    //        // If there's a page2, then it means any soft-links
+    //        // are not actually theirs.
+    //        // (theyre sending the cookie etc so the "guess" wouldnt be neccessary)
+    //        if ($visitor['page_count'] < 4) {
+    //            $this->getPdo()->prepare("
+    //                DELETE FROM visitor_tracks
+    //                WHERE visitor_id = ? AND is_soft_track = 1
+    //            ")->execute(array($visitor_id));
+    //        }
+    //    }
+    //
+    //    foreach (array(
+    //        'page_title',
+    //        'page_url',
+    //        'ref_page_url',
+    //        'user_agent',
+    //        'ip_address',
+    //        'geo_continent',
+    //        'geo_country'
+    //    ) as $field) {
+    //        if (isset($visitor_track[$field])) {
+    //            $visitor_update[$field] = $visitor_track[$field];
+    //        }
+    //    }
+    //
+    //    if ($user_token) {
+    //        $visitor_update['user_token'] = $user_token;
+    //    }
+    //
+    //    $set_q = array();
+    //    foreach ($visitor_update as $k => $v) {
+    //        $set_q[] = "$k = ?";
+    //    }
+    //    $set_q = implode(', ', $set_q);
+    //
+    //    $q = $this->getPdo()->prepare("
+    //        UPDATE visitors
+    //        SET $set_q
+    //        WHERE id = {$visitor_id}
+    //    ");
+    //    $q->execute(array_values($visitor_update));
+    //
+    //    $js_out[] = "window.DESKPRO_VISITOR_ID = '$visitor_code';";
+    //    if ($user_token) {
+    //        $js_out[] = "window.DESKPRO_VISITOR_USER_TOKEN = '$user_token';";
+    //        $js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code', '$user_token');";
+    //    } else {
+    //        $js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code', null);";
+    //    }
+    //
+    //    #------------------------------
+    //    # Chat
+    //    #------------------------------
+    //
+    //    $js_out[] = $this->checkChatAvailable($visitor);
+    //
+    //    #-----------------------------------
+    //    # Output
+    //    #-----------------------------------
+    //
+    //    $js_out = implode("\n", $js_out);
+    //
+    //    setcookie('dpvc', $visitor_code, time() + 15552000, '/', null);
+    //    if ($user_token) {
+    //        setcookie('dpvut', $user_token, time() + 15552000, '/', null);
+    //    }
+    //    header('Content-Type: text/javascript; filename=vis.js');
+    //    header('Content-Length: ' . strlen($js_out));
+    //    header('Content-Disposition: inline; filename=vis.js');
+    //    header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+    //    header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
+    //    header('Cache-Control: max-age=0,private');
+    //    echo $js_out;
+    //}
+    //
+    ///**
+    // * Check if chat is available / current chat is active
+    // * @return string JS string to return
+    // */
+    //public function checkChatAvailable(array $visitor = null)
+    //{
+    //    $js_out = array();
+    //
+    //    #------------------------------
+    //    # Chat is available
+    //    #------------------------------
+    //
+    //    $session_id = null;
+    //
+    //    if (isset($_GET['chat'])) {
+    //        $GLOBALS['DP_DB_PDO'] = $this->getPdo();
+    //        if (!class_exists('Application\\DeskPRO\\Chat\\UserChat\\ChatAvailableCheck')) {
+    //            require_once DP_ROOT . '/src/Application/DeskPRO/Chat/UserChat/ChatAvailableCheck.php';
+    //        }
+    //        $online_time = ChatAvailableCheck::getAvailableTime();
+    //
+    //        // If departments were specified, we need to see if those specific
+    //        // departments are online
+    //        if ($online_time && !empty($_REQUEST['department_ids'])) {
+    //
+    //            $dep_ids = $_REQUEST['department_ids'];
+    //            $dep_ids = explode(',', $dep_ids);
+    //            $dep_ids = array_map(function ($v) { return (int)$v; }, $dep_ids);
+    //            if (!$dep_ids) {
+    //                $dep_ids = array(0);
+    //            }
+    //
+    //            $q = $this->getPdo()->prepare("
+    //                SELECT DISTINCT(sessions.person_id)
+    //                FROM sessions
+    //                LEFT JOIN people ON (people.id = sessions.person_id)
+    //                WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1
+    //            ");
+    //            $q->execute(array(date('Y-m-d H:i:s', time() - 20)));
+    //
+    //            $agents_online_ids = array();
+    //            while ($aid = $q->fetchColumn()) {
+    //                if ($aid) {
+    //                    $agents_online_ids[] = $aid;
+    //                }
+    //            }
+    //
+    //            if ($agents_online_ids) {
+    //
+    //                // Are any in 'all perms'?
+    //                $q = $this->getPdo()->prepare("
+    //                    SELECT id
+    //                    FROM usergroups
+    //                    WHERE sys_name IN ('agent_all_perms', 'agent_all_safe_perms')
+    //                ");
+    //                $q->execute();
+    //                $all_perm_groups = array();
+    //                while ($gid = $q->fetchColumn()) {
+    //                    $all_perm_groups[] = $gid;
+    //                }
+    //                if ($all_perm_groups) {
+    //                    $q = $this->getPdo()->prepare("
+    //                        SELECT COUNT(*)
+    //                        FROM person2usergroups
+    //                        WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND usergroup_id IN (" . implode(',', $all_perm_groups) . ")
+    //                        LIMIT 1
+    //                    ");
+    //                    $q->execute();
+    //                    $any_online = $q->fetchColumn();
+    //                }
+    //
+    //                if (!$any_online) {
+    //                    $q = $this->getPdo()->prepare("
+    //                        SELECT COUNT(*)
+    //                        FROM department_permissions
+    //                        WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND department_id IN (" . implode(',', $dep_ids) . ")
+    //                        LIMIT 1
+    //                    ");
+    //                    $q->execute();
+    //                    $any_online = $q->fetchColumn();
+    //                }
+    //
+    //                if (!$any_online) {
+    //                    $online_time = 0;
+    //                }
+    //
+    //            } else {
+    //                $online_time = 0;
+    //            }
+    //        }
+    //
+    //        if ($online_time && $online_time > time() - 900) {
+    //
+    //            $session_id = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
+    //            if (!$session_id) {
+    //                $session_id = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
+    //            }
+    //
+    //            if (!strpos($session_id, '-')) {
+    //                $session_id = null;
+    //            }
+    //
+    //            $chat_id = isset($_COOKIE['dpchatid']) ? $_COOKIE['dpchatid'] : null;
+    //            if ($session_id && !$chat_id) {
+    //                // They have an active session but no indication if they have a chat
+    //                // open right now, so we need to look it up
+    //                list ($sid, $sauth) = explode('-', $session_id, 2);
+    //                $sid = Util::baseDecode($sid, Util::BASE36_ALPHABET);
+    //
+    //                $timeout_limit = date('Y-m-d H:i:s', time() - 1800);
+    //
+    //                $q = $this->getPdo()->prepare("
+    //                    SELECT chat_conversations.id
+    //                    FROM chat_conversations
+    //                    LEFT JOIN sessions ON (sessions.id = chat_conversations.session_id)
+    //                    WHERE
+    //                        sessions.id = ?
+    //                        AND sessions.auth = ?
+    //                        AND (
+    //                            chat_conversations.status == 'open'
+    //                            OR (chat_conversations.ended_by == 'timeout' AND chat_conversations.date_ended > ?)
+    //                        )
+    //                    ORDER BY chat_conversations.id DESC
+    //                    LIMIT 1
+    //                ");
+    //                $q->execute(array(
+    //                    $sid,
+    //                    $sauth,
+    //                    $timeout_limit
+    //                ));
+    //                $chat_id = $q->fetchColumn(0);
+    //            }
+    //
+    //            // they already have a chat active, load up system to get read to resume
+    //            if ($session_id && $chat_id) {
+    //                $to_login_page = false;
+    //
+    //                $container = $this->bootFullSystem();
+    //
+    //                $sessionObj = $container->get('session');
+    //
+    //                if (!$sessionObj->isStarted()) {
+    //                    $sessionObj->start();
+    //                }
+    //
+    //                $session_id = $sessionObj->getId();
+    //                $session = $sessionObj->getEntity();
+    //                $chat_manager = $container->getSystemObject('user_chat_manager', array('session' => $session));
+    //
+    //                // True to allow fetching of chats w/ timeout
+    //                $convo = $chat_manager->getChat(true);
+    //
+    //                // If the user is on a new page, tell the agent
+    //                if ($convo) {
+    //                    // If the status is ended then it's because of a timeout, but the user is back! so pop open the chat again
+    //                    if ($convo['status'] == 'ended') {
+    //                        $chat_manager->reopenTimoutChat($convo);
+    //                    }
+    //
+    //                    $current_page = !empty($_GET['url']) ? strval($_GET['url']) : false;
+    //                    if ($current_page) {
+    //                        $chat_manager->addUserTrack($convo, $current_page);
+    //                    }
+    //                    $container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
+    //
+    //                    $cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());
+    //                    $cookie->send();
+    //                } else {
+    //                    $cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
+    //                    $cookie->send();
+    //                }
+    //            } else {
+    //                $to_login_page = false;
+    //                $convo = false;
+    //                $session_id = null;
+    //            }
+    //
+    //            if ($convo) {
+    //                $js_out[] = "DpChatWidget.doResume = true;\n";
+    //                if ($convo->is_window) {
+    //                    $js_out[] = "DpChatWidget.isWindowChat = true;\n";
+    //                }
+    //            }
+    //            if ($to_login_page) {
+    //                $js_out[] = "DpChatWidget.toLoginPage = true;\n";
+    //            }
+    //
+    //            if ($session_id) {
+    //                $js_out[] = "DpChatWidget.initWidget('$session_id');";
+    //
+    //                if ($visitor && !empty($visitor['id'])) {
+    //                    // Connect the visitor to the session
+    //                    $this->getPdo()->prepare("UPDATE sessions SET visitor_id = ? WHERE id = ?")->execute(array(
+    //                        $visitor['id'],
+    //                        $session_id
+    //                    ));
+    //
+    //                    // Connect the chat as well
+    //                    if ($convo) {
+    //                        $this->getPdo()->prepare("
+    //                            UPDATE chat_conversations
+    //                            SET visitor_id = ? WHERE id = ?
+    //                        ")->execute(array(
+    //                            $visitor['id'],
+    //                            $convo->getId()
+    //                        ));
+    //                    }
+    //                }
+    //            } else {
+    //                $js_out[] = "DpChatWidget.initWidget(null);";
+    //            }
+    //
+    //        // Chat unavailable
+    //        } else {
+    //            $js_out[] = "DpChatWidget.setNotAvailable();\n";
+    //        }
+    //    }
 
-        if ($visitor_person_id) {
-            $visitor_update['person_id'] = $visitor_person_id;
-        }
-
-        if (!$is_new_visitor && !$update_track_id) {
-            $visitor_update['page_count'] = $visitor['page_count'] + 1;
-        }
-
-        if (!$is_new_visitor) {
-            $visitor_update['hint_hidden'] = '0';
-
-            // Clear out any soft links to this record
-            // If there's a page2, then it means any soft-links
-            // are not actually theirs.
-            // (theyre sending the cookie etc so the "guess" wouldnt be neccessary)
-            if ($visitor['page_count'] < 4) {
-                $this->getPdo()->prepare("
-                    DELETE FROM visitor_tracks
-                    WHERE visitor_id = ? AND is_soft_track = 1
-                ")->execute(array($visitor_id));
-            }
-        }
-
-        foreach (array(
-            'page_title',
-            'page_url',
-            'ref_page_url',
-            'user_agent',
-            'ip_address',
-            'geo_continent',
-            'geo_country'
-        ) as $field) {
-            if (isset($visitor_track[$field])) {
-                $visitor_update[$field] = $visitor_track[$field];
-            }
-        }
-
-        if ($user_token) {
-            $visitor_update['user_token'] = $user_token;
-        }
-
-        $set_q = array();
-        foreach ($visitor_update as $k => $v) {
-            $set_q[] = "$k = ?";
-        }
-        $set_q = implode(', ', $set_q);
-
-        $q = $this->getPdo()->prepare("
-            UPDATE visitors
-            SET $set_q
-            WHERE id = {$visitor_id}
-        ");
-        $q->execute(array_values($visitor_update));
-
-        $js_out[] = "window.DESKPRO_VISITOR_ID = '$visitor_code';";
-        if ($user_token) {
-            $js_out[] = "window.DESKPRO_VISITOR_USER_TOKEN = '$user_token';";
-            $js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code', '$user_token');";
-        } else {
-            $js_out[] = "if (window.DpVis && window.DpVis.init) window.DpVis.init('$visitor_code', null);";
-        }
-
-        #------------------------------
-        # Chat
-        #------------------------------
-
-        $js_out[] = $this->checkChatAvailable($visitor);
-
-        #-----------------------------------
-        # Output
-        #-----------------------------------
-
-        $js_out = implode("\n", $js_out);
-
-        setcookie('dpvc', $visitor_code, time() + 15552000, '/', null);
-        if ($user_token) {
-            setcookie('dpvut', $user_token, time() + 15552000, '/', null);
-        }
-        header('Content-Type: text/javascript; filename=vis.js');
-        header('Content-Length: ' . strlen($js_out));
-        header('Content-Disposition: inline; filename=vis.js');
-        header('Last-Modified: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Expires: ' . date('D, d M Y H:i:s', strtotime('-1 year')).' GMT');
-        header('Cache-Control: max-age=0,private');
-        echo $js_out;
-    }
-
-    /**
-     * Check if chat is available / current chat is active
-     * @return string JS string to return
-     */
-    public function checkChatAvailable(array $visitor = null)
-    {
-        $js_out = array();
-
-        #------------------------------
-        # Chat is available
-        #------------------------------
-
-        $session_id = null;
-
-        if (isset($_GET['chat'])) {
-            $GLOBALS['DP_DB_PDO'] = $this->getPdo();
-            if (!class_exists('Application\\DeskPRO\\Chat\\UserChat\\ChatAvailableCheck')) {
-                require_once DP_ROOT . '/src/Application/DeskPRO/Chat/UserChat/ChatAvailableCheck.php';
-            }
-            $online_time = ChatAvailableCheck::getAvailableTime();
-
-            // If departments were specified, we need to see if those specific
-            // departments are online
-            if ($online_time && !empty($_REQUEST['department_ids'])) {
-
-                $dep_ids = $_REQUEST['department_ids'];
-                $dep_ids = explode(',', $dep_ids);
-                $dep_ids = array_map(function ($v) { return (int)$v; }, $dep_ids);
-                if (!$dep_ids) {
-                    $dep_ids = array(0);
-                }
-
-                $q = $this->getPdo()->prepare("
-                    SELECT DISTINCT(sessions.person_id)
-                    FROM sessions
-                    LEFT JOIN people ON (people.id = sessions.person_id)
-                    WHERE sessions.date_last >= ? AND sessions.is_chat_available = 1 AND people.is_agent = 1
-                ");
-                $q->execute(array(date('Y-m-d H:i:s', time() - 20)));
-
-                $agents_online_ids = array();
-                while ($aid = $q->fetchColumn()) {
-                    if ($aid) {
-                        $agents_online_ids[] = $aid;
-                    }
-                }
-
-                if ($agents_online_ids) {
-
-                    // Are any in 'all perms'?
-                    $q = $this->getPdo()->prepare("
-                        SELECT id
-                        FROM usergroups
-                        WHERE sys_name IN ('agent_all_perms', 'agent_all_safe_perms')
-                    ");
-                    $q->execute();
-                    $all_perm_groups = array();
-                    while ($gid = $q->fetchColumn()) {
-                        $all_perm_groups[] = $gid;
-                    }
-                    if ($all_perm_groups) {
-                        $q = $this->getPdo()->prepare("
-                            SELECT COUNT(*)
-                            FROM person2usergroups
-                            WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND usergroup_id IN (" . implode(',', $all_perm_groups) . ")
-                            LIMIT 1
-                        ");
-                        $q->execute();
-                        $any_online = $q->fetchColumn();
-                    }
-
-                    if (!$any_online) {
-                        $q = $this->getPdo()->prepare("
-                            SELECT COUNT(*)
-                            FROM department_permissions
-                            WHERE person_id IN (" . implode(',', $agents_online_ids) . ") AND department_id IN (" . implode(',', $dep_ids) . ")
-                            LIMIT 1
-                        ");
-                        $q->execute();
-                        $any_online = $q->fetchColumn();
-                    }
-
-                    if (!$any_online) {
-                        $online_time = 0;
-                    }
-
-                } else {
-                    $online_time = 0;
-                }
-            }
-
-            if ($online_time && $online_time > time() - 900) {
-
-                $session_id = isset($_GET['dpsid']) ? $_GET['dpsid'] : null;
-                if (!$session_id) {
-                    $session_id = isset($_COOKIE['dpsid']) ? $_COOKIE['dpsid'] : null;
-                }
-
-                if (!strpos($session_id, '-')) {
-                    $session_id = null;
-                }
-
-                $chat_id = isset($_COOKIE['dpchatid']) ? $_COOKIE['dpchatid'] : null;
-                if ($session_id && !$chat_id) {
-                    // They have an active session but no indication if they have a chat
-                    // open right now, so we need to look it up
-                    list ($sid, $sauth) = explode('-', $session_id, 2);
-                    $sid = Util::baseDecode($sid, Util::BASE36_ALPHABET);
-
-                    $timeout_limit = date('Y-m-d H:i:s', time() - 1800);
-
-                    $q = $this->getPdo()->prepare("
-                        SELECT chat_conversations.id
-                        FROM chat_conversations
-                        LEFT JOIN sessions ON (sessions.id = chat_conversations.session_id)
-                        WHERE
-                            sessions.id = ?
-                            AND sessions.auth = ?
-                            AND (
-                                chat_conversations.status == 'open'
-                                OR (chat_conversations.ended_by == 'timeout' AND chat_conversations.date_ended > ?)
-                            )
-                        ORDER BY chat_conversations.id DESC
-                        LIMIT 1
-                    ");
-                    $q->execute(array(
-                        $sid,
-                        $sauth,
-                        $timeout_limit
-                    ));
-                    $chat_id = $q->fetchColumn(0);
-                }
-
-                // they already have a chat active, load up system to get read to resume
-                if ($session_id && $chat_id) {
-                    $to_login_page = false;
-
-                    $container = $this->bootFullSystem();
-
-                    $sessionObj = $container->get('session');
-
-                    if (!$sessionObj->isStarted()) {
-                        $sessionObj->start();
-                    }
-
-                    $session_id = $sessionObj->getId();
-                    $session = $sessionObj->getEntity();
-                    $chat_manager = $container->getSystemObject('user_chat_manager', array('session' => $session));
-
-                    // True to allow fetching of chats w/ timeout
-                    $convo = $chat_manager->getChat(true);
-
-                    // If the user is on a new page, tell the agent
-                    if ($convo) {
-                        // If the status is ended then it's because of a timeout, but the user is back! so pop open the chat again
-                        if ($convo['status'] == 'ended') {
-                            $chat_manager->reopenTimoutChat($convo);
-                        }
-
-                        $current_page = !empty($_GET['url']) ? strval($_GET['url']) : false;
-                        if ($current_page) {
-                            $chat_manager->addUserTrack($convo, $current_page);
-                        }
-                        $container->getDb()->insert('chat_conversation_pings', array('chat_id' => $convo->getId(), 'ping_time' => time()));
-
-                        $cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', $convo->getId());
-                        $cookie->send();
-                    } else {
-                        $cookie = new \Application\DeskPRO\HttpFoundation\Cookie('dpchatid', 0, time() - 3600);
-                        $cookie->send();
-                    }
-                } else {
-                    $to_login_page = false;
-                    $convo = false;
-                    $session_id = null;
-                }
-
-                if ($convo) {
-                    $js_out[] = "DpChatWidget.doResume = true;\n";
-                    if ($convo->is_window) {
-                        $js_out[] = "DpChatWidget.isWindowChat = true;\n";
-                    }
-                }
-                if ($to_login_page) {
-                    $js_out[] = "DpChatWidget.toLoginPage = true;\n";
-                }
-
-                if ($session_id) {
-                    $js_out[] = "DpChatWidget.initWidget('$session_id');";
-
-                    if ($visitor && !empty($visitor['id'])) {
-                        // Connect the visitor to the session
-                        $this->getPdo()->prepare("UPDATE sessions SET visitor_id = ? WHERE id = ?")->execute(array(
-                            $visitor['id'],
-                            $session_id
-                        ));
-
-                        // Connect the chat as well
-                        if ($convo) {
-                            $this->getPdo()->prepare("
-                                UPDATE chat_conversations
-                                SET visitor_id = ? WHERE id = ?
-                            ")->execute(array(
-                                $visitor['id'],
-                                $convo->getId()
-                            ));
-                        }
-                    }
-                } else {
-                    $js_out[] = "DpChatWidget.initWidget(null);";
-                }
-
-            // Chat unavailable
-            } else {
-                $js_out[] = "DpChatWidget.setNotAvailable();\n";
-            }
-        }
-
+        $js_out = '';
         return implode("\n", $js_out);
     }
 

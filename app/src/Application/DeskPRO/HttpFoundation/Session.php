@@ -334,7 +334,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             if (!$vis->initial_track || (DP_INTERFACE == 'user' && $url && !preg_match('#/chat/#', $url) && !preg_match('#/widget/#', $url) && !$is_ajax)) {
                 $track = array();
                 $track['date_created'] = date('Y-m-d H:i:s');
-                $track['visitor_id']   = $vis->getId();
                 $track['page_url']     = $url;
                 $track['ref_page_url'] = !empty($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : '';
                 $track['ip_address']   = $user_ip;
@@ -407,34 +406,34 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 $vis->new_track_id = $track['id'];
             }
 
-            if ($track && $soft_visitor_id) {
-                // If we suspect this is linked to a different visitor,
-                // duplicate the track and set it as the soft link
-                $track_dupe = $track;
-                unset($track_dupe['id']);
-                $track_dupe['visitor_id'] = $soft_visitor_id;
-                $track_dupe['is_soft_track'] = 1;
-
-                // Also update the last time so it appears in the agent list
-                App::getDb()->insert('visitor_tracks', $track_dupe);
-                $soft_track_id = App::getDb()->lastInsertId();
-
-                try {
-                    App::getDb()->executeUpdate("
-                        UPDATE visitors
-                        SET date_last = ?, last_track_id_soft = ?
-                        WHERE id = ?
-                    ", array(
-                        date('Y-m-d H:i:s'),
-                        $soft_track_id,
-                        $soft_visitor_id
-                    ));
-                } catch (\Exception $e) {
-                    // This could potentially fail with a FK failure
-                    // if the soft track we just inserted is deleted
-                    // in another request (theyre deleted once we "know" a user isnt using soft tracks)
-                }
-            }
+            //if ($track && $soft_visitor_id) {
+            //    // If we suspect this is linked to a different visitor,
+            //    // duplicate the track and set it as the soft link
+            //    $track_dupe = $track;
+            //    unset($track_dupe['id']);
+            //    $track_dupe['visitor_id'] = $soft_visitor_id;
+            //    $track_dupe['is_soft_track'] = 1;
+            //
+            //    // Also update the last time so it appears in the agent list
+            //    App::getDb()->insert('visitor_tracks', $track_dupe);
+            //    $soft_track_id = App::getDb()->lastInsertId();
+            //
+            //    try {
+            //        App::getDb()->executeUpdate("
+            //            UPDATE visitors
+            //            SET date_last = ?, last_track_id_soft = ?
+            //            WHERE id = ?
+            //        ", array(
+            //            date('Y-m-d H:i:s'),
+            //            $soft_track_id,
+            //            $soft_visitor_id
+            //        ));
+            //    } catch (\Exception $e) {
+            //        // This could potentially fail with a FK failure
+            //        // if the soft track we just inserted is deleted
+            //        // in another request (theyre deleted once we "know" a user isnt using soft tracks)
+            //    }
+            //}
 
             if ($vis) {
                 $this->set('dpvid', $vis['id']);
