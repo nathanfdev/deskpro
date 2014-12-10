@@ -1,6 +1,6 @@
 # IDE project files
 /.idea/*
-!/.idea/codeStyleSettings.xml
+/.idea/codeStyleSettings.xml
 /web/app/.idea/
 /nbproject/
 /catalog.xml

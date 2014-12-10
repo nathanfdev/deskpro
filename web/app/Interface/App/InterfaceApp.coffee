@@ -108,6 +108,7 @@ define [
       options.url         = url
       options.templateUrl = tpl
       options.resolve     = resolve
+      options.controller  = ctrl
 
       return $stateProvider.state(id, options)
 
