@@ -34,6 +34,7 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\GeneratorConfig;
+use Orb\Util\Arrays;
 
 /**
  * Description of OsTicket
@@ -67,6 +68,14 @@ class Csv implements GeneratorInterface
         $this->input_path = $config->input_path;
 
         $this->output_path = $config->output_path;
+
+        if ($this->config->mode == 'live') {
+            foreach (array('people', 'tickets') as $n) {
+                if (!is_dir($this->output_path.$n)) {
+                    mkdir($this->output_path . $n, 0777, true);
+                }
+            }
+        }
 
         $this->batch_size = 10;
 
@@ -117,7 +126,7 @@ class Csv implements GeneratorInterface
         $output_file_path = $this->output_path . 'people/';
 
         foreach ($this->getData('people') as $person) {
-            if (empty($person)) {
+            if (!count(Arrays::removeEmptyString($person))) {
                 $index++;
                 $this->config->progress_bar->advance();
                 continue;
@@ -167,7 +176,7 @@ class Csv implements GeneratorInterface
         $output_file_path = $this->output_path . 'tickets/';
 
         foreach ($this->getData('tickets') as $ticket) {
-            if (empty($ticket)) {
+            if (!count(Arrays::removeEmptyString($ticket))) {
                 $index++;
                 $this->config->progress_bar->advance();
                 continue;
@@ -211,7 +220,7 @@ class Csv implements GeneratorInterface
         $index = 0;
 
         foreach ($this->getData('messages') as $ticket_message) {
-            if (empty($ticket_message)) {
+            if (!count(Arrays::removeEmptyString($ticket_message))) {
                 $index++;
                 $this->config->progress_bar->advance();
                 continue;
@@ -231,7 +240,7 @@ class Csv implements GeneratorInterface
             $ticket_file_path = $output_file_path . $ticket_file_name;
 
             if ($this->config->mode === 'live') {
-                if (is_writable($ticket_file_path)) {
+                if (is_file($ticket_file_path)) {
                     $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
 
                     $message = array(

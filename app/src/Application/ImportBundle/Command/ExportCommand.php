@@ -94,5 +94,7 @@ class ExportCommand extends ContainerAwareCommand
         $generator = $factory->createGenerator($generator_config, $logger);
 
         $generator->generateJson();
+
+        echo "\nDone\n";
     }
 }

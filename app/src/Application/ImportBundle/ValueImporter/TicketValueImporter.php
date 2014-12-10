@@ -117,7 +117,7 @@ class TicketValueImporter extends AbstractValueImporter
         if ($tval->language) {
             $languageId = $this->getMappers()->findIdFromMappedValue('language', $tval->language);
             if ($languageId) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $tval->language));
+                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $tval->language));
                 $record['language_id'] = $languageId;
             } else {
                 $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s (skipping)", $log_id, $tval->language));
@@ -248,6 +248,7 @@ class TicketValueImporter extends AbstractValueImporter
         #------------------------------
         # Ticket Messages
         #------------------------------
+
         if ($ticket_id && $tval->messages) {
             foreach ($tval->messages as $message) {
                 $record = array();
@@ -262,7 +263,7 @@ class TicketValueImporter extends AbstractValueImporter
                 }
 
                 $record['ticket_id']		= $ticket_id;
-                $record['message']		= $message->message_text;
+                $record['message']		= $message->message_text ?: '';
                 $record['date_created']		= $message->date_created ?  $message->date_created->format('Y-m-d H:i:s') : ($tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'));
 
                 $this->getDb()->insert('tickets_messages', $record);
