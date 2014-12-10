@@ -1086,11 +1086,11 @@ HTML;
         $person = $identity['person'];
         $person->setLastLoginAt();
         $person->loadHelper('FeedbackVotes', array(
-            'visitor' => $this->session->getVisitor()
+            'visitor' =>null
         ));
         $person->loadHelper('HelpdeskUser', array(
             'session' => $this->session,
-            'visitor' => $this->session->getVisitor()
+            'visitor' => null
         ));
 
         $this->person = $person;

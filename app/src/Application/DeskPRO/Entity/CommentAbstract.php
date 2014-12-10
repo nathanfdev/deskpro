@@ -66,11 +66,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor = null;
-
-    /**
      * @var string
      */
     protected $ip_address = '';
@@ -129,17 +124,13 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @static
      * @param  Person                                      $person
-     * @param  bool                                        $use_request Use the current request to set visitor (and thus ip etc)
+     * @param  bool                                        $use_request not used anymore?
      * @return \Application\DeskPRO\Entity\CommentAbstract
      */
     public static function newForPerson(Person $person, $use_request = true)
     {
         $comment         = new static();
         $comment->person = $person;
-
-        if ($use_request) {
-            $comment->visitor = App::getSession()->getVisitor();
-        }
 
         return $comment;
     }
@@ -203,30 +194,6 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
             }
 
             return $display;
-        }
-    }
-
-    /**
-     * Set the visitor of the person who made this comment. If the name
-     * and email arent set they will be set to values of the visitor.
-     *
-     * @return string
-     */
-    public function setVisitor(Visitor $visitor = null)
-    {
-        $this->setModelField('visitor', $visitor);
-
-        if ($visitor === null) {
-            return;
-        }
-
-        $this['ip_address'] = $visitor['ip_address'];
-
-        if (!$this->name and $visitor['name']) {
-            $this['name'] = $visitor['name'];
-        }
-        if (!$this->email and $visitor['email']) {
-            $this['email'] = $visitor['email'];
         }
     }
 

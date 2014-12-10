@@ -75,11 +75,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor = null;
-
-    /**
      * The users user agent string
      *
      * @var string
@@ -233,10 +228,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getSessionSecret($name = '', $not_vis = false)
     {
-        if (!$not_vis && $this->visitor) {
-            return $this->visitor->getVisitorSecret($name);
-        }
-
         return md5($this->id.$this->auth.App::getAppSecret().$name);
     }
 
@@ -249,10 +240,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      */
     public function generateSecurityToken($name = '', $timeout = 43200)
     {
-        if ($this->visitor) {
-            return Util::generateStaticSecurityToken($this->visitor->getVisitorSecret($name), $timeout);
-        }
-
         return Util::generateStaticSecurityToken($this->getSessionSecret($name, true), $timeout);
     }
 
@@ -264,10 +251,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
      */
     public function checkSecurityToken($name = '', $token)
     {
-        if ($this->visitor && $this->visitor->checkSecurityToken($name, $token)) {
-            return true;
-        }
-
         return Util::checkStaticSecurityToken($token, $this->getSessionSecret($name, true));
     }
 
@@ -315,6 +298,5 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_last_page', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_last_page'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
     }
 }

@@ -390,16 +390,13 @@ class AgentMessagesLoader extends LoaderAbstract
         $waiting_secs = time() - $convo->date_created->getTimestamp();
 
         $url = null;
-        if ($convo->visitor && $convo->visitor->last_page) {
-            $url = $convo->visitor->last_page;
-        }
 
         return $this->_getContainer()->getTemplating()->render('AgentBundle:UserChat:chat-alert.html.twig', array(
             'convo'         => $convo,
             'person'        => $convo->person,
             'tickets'       => $tickets,
             'session'       => $convo->session,
-            'visitor'       => $convo->visitor,
+            'visitor'       => null,
             'waiting_secs'  => $waiting_secs,
             'url'           => $url,
         ));

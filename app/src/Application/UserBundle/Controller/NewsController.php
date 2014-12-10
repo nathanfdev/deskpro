@@ -207,7 +207,7 @@ class NewsController extends AbstractController
         if ($comments_helper) {
             $comments_widget = $comments_helper->getHtml();
         } else {
-            $comments = $this->em->getRepository('DeskPRO:NewsComment')->getDisplayComments($news, $this->person, $this->session->getVisitor());
+            $comments = $this->em->getRepository('DeskPRO:NewsComment')->getDisplayComments($news, $this->person, null);
         }
 
         if ($this->container->getSetting('core.facebook_like')) {
@@ -218,7 +218,7 @@ class NewsController extends AbstractController
         $related_finder = new RelatedContentFinder($this->person, $news);
         $related_content = $related_finder->getRelatedEntities();
 
-        $content_rating = new ContentRating($news, $this->person, $this->session->getVisitor());
+        $content_rating = new ContentRating($news, $this->person, null);
         $content_rating->setRequest($this->request);
         $rating = $content_rating->getRating();
 

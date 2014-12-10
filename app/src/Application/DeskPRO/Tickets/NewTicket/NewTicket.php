@@ -340,7 +340,6 @@ class NewTicket implements \Application\DeskPRO\People\PersonContextInterface, \
 
         if (strpos($this->creation_system, 'web.') === 0) {
             $ticket_message->ip_address = dp_get_user_ip_address();
-            $ticket_message->visitor = App::getSession()->getVisitor();
         }
 
         $ticket_message['person']  = $person;

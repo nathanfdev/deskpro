@@ -112,13 +112,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
                 SELECT SUM(rating)
                 FROM ratings
                 WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' #AND is_returned = 0
-            ", array($this->person['id'], $this->visitor['id']));
-        } elseif ($this->visitor) {
-            $num_votes = App::getDb()->fetchColumn("
-                SELECT SUM(rating)
-                FROM ratings
-                WHERE visitor_id = ? AND object_type = 'feedback' #AND is_returned = 0
-            ", array(App::getSession()->getVisitor()->getId()));
+            ", array($this->person['id'], null));
         } else {
             $num_votes = 0;
         }
@@ -150,7 +144,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
                 SELECT rating
                 FROM ratings
                 WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id = ?
-            ", array($this->person['id'], $this->visitor['id'], $feedback_id));
+            ", array($this->person['id'], null, $feedback_id));
         } elseif ($this->visitor) {
             $num_votes_this = App::getDb()->fetchColumn("
                 SELECT rating
@@ -194,7 +188,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
                 FROM ratings
                 WHERE (person_id = ? OR visitor_id = ?) AND object_type = 'feedback' AND object_id IN (?)
             ",
-            array($this->person['id'], $this->visitor['id'], $ids),
+            array($this->person['id'], null, $ids),
             array(\PDO::PARAM_INT, \PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
         } elseif ($this->visitor) {
             $vote_info = App::getDb()->fetchAllKeyValue("
@@ -202,7 +196,7 @@ class FeedbackVotes implements \Orb\Helper\ShortCallableInterface
                 FROM ratings
                 WHERE visitor_id = ? AND object_type = 'feedback' AND object_id IN (?)
             ",
-            array($this->visitor['id'], $ids),
+            array(null, $ids),
             array(\PDO::PARAM_INT, Connection::PARAM_INT_ARRAY));
         } else {
             $vote_info = array_combine($ids, array_fill(0, count($ids), 0));

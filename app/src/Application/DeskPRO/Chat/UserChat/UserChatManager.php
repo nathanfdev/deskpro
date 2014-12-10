@@ -101,7 +101,7 @@ class UserChatManager
 
         if ($session) {
             $this->session     = $session;
-            $this->visitor     = $session->getVisitor();
+            $this->visitor     = null;
             $this->person      = $session->getPerson();
         }
     }
@@ -131,7 +131,6 @@ class UserChatManager
         if (!$convo) {
             $convo          = new ChatConversation();
             $convo->session = $this->session;
-            $convo->visitor = $this->visitor;
             if ($this->person) {
                 $convo->person = $this->person;
             }
@@ -240,7 +239,7 @@ class UserChatManager
                 if (isset($_GET['parent_url']) && is_string($_GET['parent_url'])) {
                     $this->addUserTrack($convo, $_GET['parent_url']);
                 } else {
-                    $url = $this->visitor->getLastPage();
+                    $url = '';
                     if ($k = strpos($url, 'parent_url=')) {
                         $str  = substr($url, $k);
                         $vars = null;

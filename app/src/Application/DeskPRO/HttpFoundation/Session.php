@@ -258,28 +258,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
 
         // Also make sure the user is a visitor
         $vis = null;
-        if ($this->getEntity()->visitor) {
-            $vis = $this->getEntity()->visitor;
-        } else{
-            $vis_id = empty($_COOKIE['dpvc']) ? null : $_COOKIE['dpvc'];
-            if ($vis_id) {
-                $vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($vis_id);
-            }
-        }
 
         $user_token = null;
         if (isset($_COOKIE['dpvut'])) {
             $user_token = $_COOKIE['dpvut'];
-        }
-
-        if (!$vis) {
-            if ($this->getEntity()->getPersonId()) {
-                $vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorForPerson($this->getEntity()->getPersonId());
-            }
-
-            if (!$vis && $user_token) {
-                $vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromUserToken($user_token);
-            }
         }
 
         if (!Web::isBotUseragent()) {
@@ -454,11 +436,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
                 }
             }
 
-            if (!$vis->id || !$this->getEntity()->visitor || $this->getEntity()->visitor->id != $vis->id) {
-                $this->getEntity()->visitor = $vis;
-                App::getOrm()->persist($this->getEntity());
-            }
-
             if ($vis) {
                 $this->set('dpvid', $vis['id']);
 
@@ -469,7 +446,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
             }
         } else {
             $this->visitor = null;
-            $this->getEntity()->visitor = null;
             $this->remove('dpvid');
 
             \Application\DeskPRO\HttpFoundation\Cookie::makeDeleteCookie('dpvc')->send();
@@ -523,7 +499,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session\Session implemen
      */
     public function getVisitor()
     {
-        return $this->visitor;
+        return $this->visitor ?: null;
     }
 
 

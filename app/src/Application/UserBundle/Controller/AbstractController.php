@@ -137,11 +137,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
         }
 
         $this->person->loadHelper('FeedbackVotes', array(
-            'visitor' => $this->session->getVisitor()
+            'visitor' => null
         ));
         $this->person->loadHelper('HelpdeskUser', array(
             'session' => $this->session,
-            'visitor' => $this->session->getVisitor()
+            'visitor' => null
         ));
 
         if ($this instanceof RequireUserInterface) {

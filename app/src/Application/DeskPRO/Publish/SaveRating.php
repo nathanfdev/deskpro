@@ -90,7 +90,7 @@ class SaveRating implements PersonContextInterface
             }
         }
 
-        $content_rating = new ContentRating($content_object, $this->person, App::getSession()->getVisitor());
+        $content_rating = new ContentRating($content_object, $this->person, null);
         $content_rating->setRequest(App::getRequest());
 
         $this->em->beginTransaction();

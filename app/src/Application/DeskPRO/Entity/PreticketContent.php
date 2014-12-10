@@ -57,11 +57,6 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor = null;
-
-    /**
      * @var string
      */
     protected $ip_address = '';
@@ -148,7 +143,7 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @static
      * @param  Person                                      $person
-     * @param  bool                                        $use_request Use the current request to set visitor (and thus ip etc)
+     * @param  bool                                        $use_request not used?
      * @return \Application\DeskPRO\Entity\CommentAbstract
      */
     public static function newForPerson(Person $person, $use_request = true)
@@ -159,10 +154,6 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
             $preticket->person = $person;
         }
 
-        if ($use_request) {
-            $preticket->visitor = App::getSession()->getVisitor();
-        }
-
         return $preticket;
     }
 
@@ -170,25 +161,6 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
     {
         $this['object_type'] = $obj->getContentType();
         $this['object_id']   = $obj->getId();
-    }
-
-    public function setVisitor(Visitor $visitor = null)
-    {
-        $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-        $this['visitor'] = $visitor;
-
-        if ($visitor === null) {
-            return;
-        }
-
-        $this['ip_address'] = $visitor['ip_address'];
-
-        if (!$this->name and $visitor['name']) {
-            $this['name'] = $visitor['name'];
-        }
-        if (!$this->email and $visitor['email']) {
-            $this['email'] = $visitor['email'];
-        }
     }
 
     ############################################################################
@@ -221,6 +193,5 @@ class PreticketContent extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created'));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL))));
     }
 }

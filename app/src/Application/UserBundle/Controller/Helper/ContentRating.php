@@ -186,9 +186,6 @@ class ContentRating
 
             if ($ref && preg_match('#' . preg_quote($search_url, '#') . '(\?.*?)?$#', $ref)) {
                 $searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->has('last_searchlog_id'));
-                if ($searchlog->visitor && $this->visitor && $searchlog->visitor == $this->visitor) {
-                    return $searchlog['id'];
-                }
             }
         }
 
@@ -218,9 +215,6 @@ class ContentRating
 
         if ($search_log_id) {
             $searchlog = App::findEntity('DeskPRO:SearchLog', $search_log_id);
-            if ($searchlog && $searchlog->visitor && $this->visitor && $searchlog->visitor['id'] == $this->visitor['id']) {
-                $rating->searchlog = $searchlog;
-            }
         } else {
             if ($this->session->get('from_search')) {
                 $searchlog = App::findEntity('DeskPRO:SearchLog', $this->session->get('last_searchlog_id'));

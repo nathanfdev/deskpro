@@ -146,11 +146,7 @@ class PersonController extends AbstractController
         }
 
         $session = $this->em->getRepository('DeskPRO:Session')->getSessionForPerson($person);
-        if ($session) {
-            $visitor = $session->visitor;
-        } else {
-            $visitor = $this->em->getRepository('DeskPRO:Visitor')->getVisitorForPerson($person);
-        }
+        $visitor = null;
 
         $timezone_options = \DateTimeZone::listIdentifiers();
         $usergroup_names  = $this->em->getRepository('DeskPRO:Usergroup')->getUsergroupNames();
@@ -384,18 +380,11 @@ class PersonController extends AbstractController
             return $this->viewAction($session->person->id);
         }
 
-        $visitor        = $session->visitor;
+        // removed visitor assocations
+        $visitor        = null;
         $related_person = null;
-        if ($session->visitor && $session->visitor->email) {
-            $related_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($session->visitor->email);
-
-            if ($related_person) {
-                return $this->viewAction($related_person->id, $session->visitor->email);
-            }
-        }
-
-        $person_chats       = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($session->visitor);
-        $person_chats_count = count($person_chats);
+        $person_chats       = array();
+        $person_chats_count = 0;
 
         return $this->render('AgentBundle:Person:view-session.html.twig', array(
             'person_chats'       => $person_chats,

@@ -130,7 +130,7 @@ class FeedbackController extends AbstractController
 
         $searcher = new \Application\DeskPRO\Searcher\FeedbackSearch();
         $searcher->setPersonContext($this->person);
-        $searcher->setVisitor($this->session->getVisitor());
+        $searcher->setVisitor(null);
         if ($status == 'any-status') {
             $searcher->addTerm('status', 'not', 'hidden');
         } elseif ($status == 'open') {
@@ -186,7 +186,7 @@ class FeedbackController extends AbstractController
         #------------------------------
 
         $newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(
-            $this->session->getVisitor()
+            null
         );
         $newfeedback->setPersonContext($this->person);
 
@@ -328,9 +328,9 @@ class FeedbackController extends AbstractController
         }
 
         if ($this->person['id']) {
-            $r = $this->em->getRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, $this->person, $this->session->getVisitor());
+            $r = $this->em->getRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, $this->person, null);
         } else {
-            $r = $this->em->getRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, null, $this->session->getVisitor());
+            $r = $this->em->getRepository('DeskPRO:Rating')->getRatingByPersonOnObject('Feedback', $feedback_id, null, null);
         }
 
         if ($r) {
@@ -340,7 +340,7 @@ class FeedbackController extends AbstractController
         }
 
         if ($this->in->getInt('rating')) {
-            $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
+            $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, null);
             $content_rating->setRequest($this->request);
 
             $this->em->beginTransaction();
@@ -466,7 +466,7 @@ class FeedbackController extends AbstractController
         if ($comments_helper) {
             $comments_widget = $comments_helper->getHtml();
         } else {
-            $comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getDisplayComments($feedback, $this->person, $this->session->getVisitor());
+            $comments = $this->em->getRepository('DeskPRO:FeedbackComment')->getDisplayComments($feedback, $this->person, null);
         }
 
         if ($this->container->getSetting('core.facebook_like')) {

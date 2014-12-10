@@ -50,11 +50,6 @@ class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
     protected $id;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor;
-
-    /**
      * @var bool
      */
     protected $is_new_visit = false;
@@ -197,6 +192,5 @@ class VisitorTrack extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'is_soft_track', 'type' => 'boolean', 'nullable' => false, 'columnName' => 'is_soft_track', ));
         $metadata->mapField(array( 'fieldName' => 'data', 'type' => 'array', 'nullable' => true, 'columnName' => 'data', ));
         $metadata->mapField(array( 'fieldName' => 'date_created', 'type' => 'datetime', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'date_created', ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
     }
 }

@@ -261,9 +261,6 @@ class NewFeedback implements \Application\DeskPRO\People\PersonContextInterface
 
             $rating = Rating::create(1);
             $rating->person = $person;
-            if ($this->visitor) {
-                $rating->visitor = $this->visitor;
-            }
             $feedback->addRating($rating);
 
             $this->em->persist($rating);

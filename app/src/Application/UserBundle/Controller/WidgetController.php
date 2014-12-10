@@ -126,7 +126,7 @@ class WidgetController extends AbstractController
         /** @var $structure \Application\DeskPRO\Publish\Structure */
         $structure = $this->container->getSystemService('publish_structure');
 
-        $newfeedback = new \Application\DeskPRO\Feedback\NewFeedback($this->session->getVisitor());
+        $newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(null);
         $newfeedback->setPersonContext($this->person);
         $feedbackform = $this->get('form.factory')->create(new NewFeedbackType($this->person), $newfeedback);
 
@@ -289,7 +289,7 @@ class WidgetController extends AbstractController
 
     public function newFeedbackAction()
     {
-        $newfeedback = new \Application\DeskPRO\Feedback\NewFeedback($this->session->getVisitor());
+        $newfeedback = new \Application\DeskPRO\Feedback\NewFeedback(null);
         $newfeedback->setPersonContext($this->person);
         $newfeedback->enableWidgetMode();
 
@@ -361,7 +361,7 @@ class WidgetController extends AbstractController
         }
 
         // User is blocked
-        $blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked(dp_get_user_ip_address(), $session->visitor);
+        $blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked(dp_get_user_ip_address(), null);
 
         if ($blocked) {
             $response = $this->createResponse('');

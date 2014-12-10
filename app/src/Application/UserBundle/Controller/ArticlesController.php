@@ -272,7 +272,7 @@ class ArticlesController extends AbstractController
         if ($comments_helper) {
             $comments_widget = $comments_helper->getHtml();
         } else {
-            $comments = $this->em->getRepository('DeskPRO:ArticleComment')->getDisplayComments($article, $this->person, $this->session->getVisitor());
+            $comments = $this->em->getRepository('DeskPRO:ArticleComment')->getDisplayComments($article, $this->person, null);
         }
 
         if ($this->container->getSetting('core.facebook_like')) {
@@ -283,7 +283,7 @@ class ArticlesController extends AbstractController
         $related_finder = new RelatedContentFinder($this->person, $article);
         $related_content = $related_finder->getRelatedEntities();
 
-        $content_rating = new ContentRating($article, $this->person, $this->session->getVisitor());
+        $content_rating = new ContentRating($article, $this->person, null);
         $content_rating->setRequest($this->request);
         $rating = $content_rating->getRating();
 

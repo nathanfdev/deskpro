@@ -306,7 +306,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getVisitorCode()
     {
-        return $this->id . '-' . $this->auth;
+        return $this->id;
     }
 
 
@@ -316,6 +316,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
      * if they match.
      *
      * @return bool
+     * @deprecated
      */
     public function checkVisitorCode($vis_code)
     {

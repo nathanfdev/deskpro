@@ -79,7 +79,7 @@ class UserChatController extends AbstractController
         ")->setParameter(1, $convo)->execute();
 
         $session     = $convo->session;
-        $visitor     = $convo->visitor;
+        $visitor     = null;
         $other_chats = $this->em->getRepository('DeskPRO:ChatConversation')->getPastChatsForVisitor($visitor);
 
         // For selector
@@ -97,9 +97,6 @@ class UserChatController extends AbstractController
         }
 
         $block = null;
-        if ($convo->visitor) {
-            $block = $this->em->getRepository('DeskPRO:ChatBlock')->getBlockForVisitor($convo->visitor);
-        }
 
         $field_manager = $this->container->getSystemService('chat_fields_manager');
         $custom_fields = $field_manager->getDisplayArrayForObject($convo);
@@ -713,16 +710,13 @@ class UserChatController extends AbstractController
         $waiting_secs = time() - $convo->date_created->getTimestamp();
 
         $url = null;
-        if ($convo->visitor && $convo->visitor->last_page) {
-            $url = $convo->visitor->last_page;
-        }
 
         return $this->render('AgentBundle:UserChat:chat-alert.html.twig', array(
             'convo'         => $convo,
             'person'        => $convo->person,
             'tickets'       => $tickets,
             'session'       => $convo->session,
-            'visitor'       => $convo->visitor,
+            'visitor'       => null,
             'waiting_secs'  => $waiting_secs,
             'url'           => $url,
         ));
@@ -861,20 +855,6 @@ class UserChatController extends AbstractController
         /** @var $chat_manager \Application\DeskPRO\Chat\UserChat\UserChatManager */
         $chat_manager = $this->container->getSystemObject('user_chat_manager', array('session' => $this->session->getEntity()));
 
-        if ($convo->visitor) {
-            $block            = new ChatBlock();
-            $block->visitor   = $convo->visitor;
-            $block->by_person = $this->person;
-            $block->reason    = $this->in->getString('reason');
-
-            if ($this->in->getBool('block_ip') && $convo->visitor->ip_address) {
-                $block->ip_address = $convo->visitor->ip_address;
-            }
-
-            $this->em->persist($block);
-            $this->em->flush();
-        }
-
         if ($convo->status == 'open') {
             $chat_manager->endChat($convo, $this->person, '');
         }
@@ -888,14 +868,6 @@ class UserChatController extends AbstractController
 
         if (!$convo || !$this->person->PermissionsManager->ChatChecker->canView($convo)) {
             throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
-        }
-
-        if ($convo->visitor) {
-            $block = $this->em->getRepository('DeskPRO:ChatBlock')->getBlockForVisitor($convo->visitor);
-            if ($block) {
-                $this->em->remove($block);
-                $this->em->flush();
-            }
         }
 
         return $this->createJsonResponse(array('success' => true));

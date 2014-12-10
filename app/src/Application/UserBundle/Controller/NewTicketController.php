@@ -258,13 +258,6 @@ class NewTicketController extends AbstractController
                 if ($preticket_id = $this->in->getUint('preticket_status_id')) {
                     $preticket = $this->em->find('DeskPRO:PreticketContent', $preticket_id);
 
-                    // Must be same user
-                    if ($preticket) {
-                        if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-                            $preticket = null;
-                        }
-                    }
-
                     if ($preticket) {
                         $this->em->remove($preticket);
                         $this->em->flush();
@@ -378,13 +371,6 @@ class NewTicketController extends AbstractController
         $preticket = null;
         if ($id) {
             $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
-
-            // Must be same user
-            if ($preticket) {
-                if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-                    $preticket = null;
-                }
-            }
         }
 
         if (!$preticket) {
@@ -433,13 +419,6 @@ class NewTicketController extends AbstractController
         $preticket = null;
         if ($id) {
             $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
-
-            // Must be same user
-            if ($preticket) {
-                if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-                    $preticket = null;
-                }
-            }
         }
 
         $url = $this->in->getString('url');
@@ -478,13 +457,6 @@ class NewTicketController extends AbstractController
         $preticket = null;
         if ($id) {
             $preticket = $this->em->find('DeskPRO:PreticketContent', $id);
-
-            // Must be same user
-            if ($preticket) {
-                if (!$preticket->visitor || $preticket->visitor->getId() != $this->session->getVisitor()->getId()) {
-                    $preticket = null;
-                }
-            }
         }
 
         $content_type = $this->in->getString('content_type');

@@ -130,7 +130,7 @@ class FeedbackController extends AbstractController
 
         $state = $this->em->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
-        $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
+        $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, null);
         $my_vote        = $content_rating->getRating();
 
         $feedback_categories = $this->em->getRepository('DeskPRO:FeedbackCategory')->getInHierarchy();
@@ -449,7 +449,7 @@ class FeedbackController extends AbstractController
 
             case 'vote':
 
-                $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
+                $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, null);
                 $content_rating->setRequest($this->request);
                 $content_rating->setRating(1);
 
@@ -457,7 +457,7 @@ class FeedbackController extends AbstractController
 
             case 'clear-vote':
 
-                $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, $this->session->getVisitor());
+                $content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($feedback, $this->person, null);
                 $vote           = $content_rating->getRating();
 
                 if ($vote) {

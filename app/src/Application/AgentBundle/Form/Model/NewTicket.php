@@ -341,7 +341,6 @@ class NewTicket
         // Message
         $message         = new TicketMessage();
         $message->person = $this->_person_context;
-        $message->setVisitorFromRequest();
 
         $message_text = $this->message;
         $formatter    = new SnippetFormatter(App::getContainer()->get('twig'));

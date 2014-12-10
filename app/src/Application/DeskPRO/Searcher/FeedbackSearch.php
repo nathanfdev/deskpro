@@ -59,10 +59,6 @@ class FeedbackSearch extends SearcherAbstract
      * @var bool
      */
     protected $include_hidden = false;
-    /**
-     * @var Visitor
-     */
-    protected $visitor;
 
     public function setVisitor($visitor)
     {

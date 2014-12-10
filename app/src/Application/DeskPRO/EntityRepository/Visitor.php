@@ -39,6 +39,7 @@ class Visitor extends AbstractEntityRepository
 {
     /**
      * @return Visitor
+     * @deprecated
      */
     public function getVisitorFromCode($vis_code)
     {
@@ -60,6 +61,7 @@ class Visitor extends AbstractEntityRepository
 
     /**
      * @return Visitor
+     * @deprecated
      */
     public function getVisitorForPerson($person)
     {
@@ -76,6 +78,7 @@ class Visitor extends AbstractEntityRepository
 
     /**
      * @param string $user_token
+     * @deprecated
      */
     public function getVisitorFromUserToken($user_token)
     {

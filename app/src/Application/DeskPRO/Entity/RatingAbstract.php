@@ -58,11 +58,6 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $person = null;
 
     /**
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor = null;
-
-    /**
      * @var string
      */
     protected $ip_address = '';
@@ -96,8 +91,6 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
             if (!App::getCurrentPerson()->isGuest()) {
                 $rating->person = App::getCurrentPerson();
             }
-
-            $rating->visitor = App::getSession()->getVisitor();
         }
 
         return $rating;
@@ -135,38 +128,10 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this->setRating(-1);
     }
 
-    public function setVisitor(Visitor $visitor = null)
-    {
-        $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-        $this->visitor = $visitor;
-
-        if ($visitor === null) {
-            return;
-        }
-
-        $this['ip_address'] = $visitor['ip_address'];
-
-        if (!$this->name and $visitor['name']) {
-            $this['name'] = $visitor['name'];
-        }
-        if (!$this->email and $visitor['email']) {
-            $this['email'] = $visitor['email'];
-        }
-    }
-
     public function getPersonId()
     {
         if ($this->person) {
             return $this->person->getId();
-        }
-
-        return 0;
-    }
-
-    public function getVisitorId()
-    {
-        if ($this->visitor) {
-            return $this->visitor->getId();
         }
 
         return 0;

@@ -305,7 +305,7 @@ class ChatController extends AbstractController
         $session = $sessionObj->getEntity();
 
         // User is blocked
-        $blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked(dp_get_user_ip_address(), $session->visitor);
+        $blocked = $this->em->getRepository('DeskPRO:ChatBlock')->isBlocked(dp_get_user_ip_address(), null);
 
         if (!$sessionObj->getPerson()->hasPerm('chat.use')) {
             $blocked = true;

@@ -165,7 +165,7 @@ class NewComment implements \Application\DeskPRO\People\PersonContextInterface
             }
 
             $obj->validating = $validating;
-            $obj->visitor    = App::getSession()->getVisitor();
+            $obj->visitor    = null;
             $obj->content    = $this->content;
 
             if ($this->require_login) {

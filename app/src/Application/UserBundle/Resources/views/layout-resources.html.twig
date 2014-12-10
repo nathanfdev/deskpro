@@ -8,9 +8,9 @@
 	var ASSETS_BASE_URL            = '{{ asset('') }}';
 	var DESKPRO_PERSON_ID          = {{ app.user.id|default(0) }};
 	var DESKPRO_SESSION_ID         = '{{ app.getSession().getEntity().getSessionCode() }}';
-	var DESKPRO_VISITOR_ID         = '{{ app.getSession().getEntity().visitor.getVisitorCode() }}';
-	var DESKPRO_VISITOR_USER_TOKEN = '{{ app.getSession().getEntity().visitor.user_token }}';
-	var DESKPRO_VISITOR_TRACK_ID   = '{{ app.getSession().getEntity().visitor.new_track_id|default('0') }}';
+	var DESKPRO_VISITOR_ID         = '';
+	var DESKPRO_VISITOR_USER_TOKEN = '';
+	var DESKPRO_VISITOR_TRACK_ID   = '';
 	var DP_REQUEST_TOKEN           = '{{ security_token('request_token', 10800) }}';
 
 	{% if constant('DP_DEBUG') %}

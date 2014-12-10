@@ -47,7 +47,6 @@ use Orb\Util\Strings;
  * @property Ticket $ticket
  * @property Person $person
  * @property EmailSource $email_source
- * @property Visitor $visitor
  * @property \Doctrine\Common\Collections\ArrayCollection $attachments
  * @property \DateTime $date_created
  * @property bool $is_agent_note
@@ -95,11 +94,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\EmailSource
      */
     protected $email_source = null;
-
-    /**
-     * @var \Application\DeskPRO\Entity\Visitor
-     */
-    protected $visitor = null;
 
     /**
      * @var \Doctrine\Common\Collections\ArrayCollection
@@ -495,28 +489,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $attach['message'] = $this;
     }
 
-    public function setVisitor(Visitor $visitor = null)
-    {
-        $this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-        $this->setModelField('visitor', $visitor);
-
-        if ($visitor === null) return;
-
-        if (!$this->ip_address && $visitor->getIpAddress()) {
-            $this['ip_address'] = $visitor->getIpAddress();
-        }
-
-        if ($visitor && $visitor->last_track && $visitor->last_track->geo_country) {
-            $this['geo_country'] = $visitor->last_track->geo_country;
-        }
-
-        if ($this->ip_address && !$this->geo_country) {
-            $geoip = App::getSystemService('geo_ip');
-            $geo = $geoip->lookup($this->ip_address);
-            $this['geo_country'] = !empty($geo['country']) ? $geo['country'] : '';
-        }
-    }
-
     /**
      * @param string $geo_country Two-letter country code or null
      */
@@ -531,14 +503,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function getGeoCountry()
     {
         return $this->geo_country;
-    }
-
-    public function setVisitorFromRequest()
-    {
-        if (App::has('session')) {
-            $v = App::getSession()->getVisitor();
-            $this->setVisitor($v);
-        }
     }
 
     /**
@@ -647,7 +611,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ), 'dpApi' => true  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'email_source', 'targetEntity' => 'Application\\DeskPRO\\Entity\\EmailSource', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'email_source_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapManyToOne(array( 'fieldName' => 'primary_translation', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketMessageTranslated', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'message_translated_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'visitor', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Visitor', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'visitor_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'set null', 'columnDefinition' => NULL, ), ),  ));
         $metadata->mapOneToMany(array( 'fieldName' => 'attachments', 'targetEntity' => 'Application\\DeskPRO\\Entity\\TicketAttachment', 'cascade' => array( 0 => 'remove', 1 => 'persist', 3 => 'merge', ), 'mappedBy' => 'message', 'dpApi' => true, 'dpApiDeep' => true  ));
     }
 

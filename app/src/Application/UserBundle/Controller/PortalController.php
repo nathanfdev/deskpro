@@ -140,7 +140,7 @@ class PortalController extends AbstractController
             }
         }
 
-        $content_rating = new ContentRating($content_object, $this->person, $this->session->getVisitor());
+        $content_rating = new ContentRating($content_object, $this->person, null);
         $content_rating->setRequest($this->request);
 
         $rating = $this->in->getInt('rating');

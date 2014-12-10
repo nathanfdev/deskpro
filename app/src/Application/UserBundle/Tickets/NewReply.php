@@ -82,7 +82,6 @@ class NewReply extends \ArrayObject
         $ticket_message->person = $this->person;
         $ticket_message->creation_system = TicketMessage::CREATED_WEB_PERSON_PORTAL;
         $ticket_message->ip_address = dp_get_user_ip_address();
-        $ticket_message->visitor = App::getSession()->getVisitor();
 
         if ($this->new_upload) {
             $blob = App::getContainer()->getBlobStorage()->createBlobRecordFromFile(
