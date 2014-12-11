@@ -56,6 +56,7 @@ class CategoryType extends AbstractType
             'class'         => 'Application\\DeskPRO\\Entity\\TicketCategory',
             'property'      => 'title',
             'empty_data'    => null,
+            'required' => true,
             'query_builder' => function (EntityRepository $repo) {
                     return $repo
                         ->createQueryBuilder('c')

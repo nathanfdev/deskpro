@@ -36,6 +36,11 @@ namespace Application\DeskPRO\EntityRepository;
 
 class TicketPriority extends AbstractEntityRepository
 {
+    public function countAll()
+    {
+        return $this->_em->createQuery('SELECT count(p) FROM DeskPRO:TicketPriority p')->getSingleScalarResult();
+    }
+
     public function findByTitle($title)
     {
         try {

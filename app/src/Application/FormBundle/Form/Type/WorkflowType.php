@@ -56,6 +56,7 @@ class WorkflowType extends AbstractType
             'class'         => 'Application\\DeskPRO\\Entity\\TicketWorkflow',
             'property'      => 'title',
             'empty_data'    => null,
+            'required' => true,
             'query_builder' => function (EntityRepository $repo) {
                     return $repo
                         ->createQueryBuilder('w')

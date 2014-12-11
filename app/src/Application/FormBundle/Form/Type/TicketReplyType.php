@@ -97,11 +97,12 @@ class TicketReplyType extends AbstractType
             )
         );
         $resolver->setRequired(array(
-            'person', 'ticket', 'ticket_message'
+            'person', 'ticket', 'ticket_message', 'settings'
         ));
         $resolver->setAllowedTypes(array(
             'ticket'         => 'Application\\DeskPRO\\Entity\\Ticket',
             'ticket_message' => 'Application\\DeskPRO\\Entity\\TicketMessage',
+            'settings' => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
             'person'         => 'Application\\DeskPRO\\Entity\\Person'
         ));
     }

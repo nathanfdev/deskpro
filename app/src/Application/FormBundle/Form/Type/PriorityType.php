@@ -56,6 +56,7 @@ class PriorityType extends AbstractType
             'class'         => 'Application\\DeskPRO\\Entity\\TicketPriority',
             'property'      => 'title',
             'empty_data'    => null,
+            'required' => true,
             'query_builder' => function (EntityRepository $repo) {
                     return $repo
                         ->createQueryBuilder('p')

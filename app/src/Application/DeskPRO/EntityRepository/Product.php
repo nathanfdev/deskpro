@@ -36,6 +36,11 @@ namespace Application\DeskPRO\EntityRepository;
 
 class Product extends AbstractCategoryRepository
 {
+    public function countAll()
+    {
+        return $this->_em->createQuery('SELECT count(p) FROM DeskPRO:Product p')->getSingleScalarResult();
+    }
+
     public function getAll()
     {
         $products = $this->getEntityManager()->createQuery("

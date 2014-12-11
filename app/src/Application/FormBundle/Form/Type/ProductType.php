@@ -55,6 +55,7 @@ class ProductType extends AbstractType
         $resolver->setDefaults(array(
             'class'         => 'Application\\DeskPRO\\Entity\\Product',
             'property'      => 'title',
+            'required' => true,
             'empty_data'    => null,
             'query_builder' => function (EntityRepository $repo) {
                     return $repo

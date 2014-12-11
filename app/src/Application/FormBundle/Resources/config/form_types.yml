@@ -2,7 +2,7 @@ services:
 
   form.ticket:
     class: Application\FormBundle\Form\Type\TicketType
-    arguments: [@form_field_manager, @ticket_layout_factory, @ticket_layout_differ]
+    arguments: [@form_field_manager, @ticket_layout_factory, @ticket_layout_differ, @form_hierarchy_generator, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: ticket }
 
@@ -11,6 +11,12 @@ services:
     class: Application\FormBundle\Form\Type\TicketReplyType
     tags:
       - { name: form.type, alias: ticket_reply }
+
+
+  form.person_registration:
+    class: Application\FormBundle\Form\Type\PersonRegistrationType
+    tags:
+      - { name: form.type, alias: person_registration }
 
 
   form.custom_data_ticket:

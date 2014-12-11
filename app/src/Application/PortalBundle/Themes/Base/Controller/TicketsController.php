@@ -74,7 +74,8 @@ class TicketsController extends AbstractController
         $form = $this->createForm('ticket_reply', $form_data, array(
             'ticket'         => $ticket,
             'ticket_message' => $message,
-            'person'         => $this->getUser()
+            'person'         => $this->getUser(),
+            'settings'       => $this->getBrandContainer()->getSettings()
         ));
 
         $form->handleRequest($request);
@@ -107,7 +108,8 @@ class TicketsController extends AbstractController
     {
         $form = $this->createForm('ticket', $ticket, array(
             'person'            => $this->getUser(),
-            'ticket_visibility' => 'edit'
+            'ticket_visibility' => 'edit',
+            'settings'          => $this->getBrandContainer()->getSettings()
         ));
 
         $form->handleRequest($request);

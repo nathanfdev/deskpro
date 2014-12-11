@@ -36,6 +36,11 @@ namespace Application\DeskPRO\EntityRepository;
 
 class TicketWorkflow extends AbstractEntityRepository
 {
+    public function countAll()
+    {
+        return $this->_em->createQuery('SELECT count(w) FROM DeskPRO:TicketWorkflow w')->getSingleScalarResult();
+    }
+
     public function getAll()
     {
         $works = $this->getEntityManager()->createQuery("

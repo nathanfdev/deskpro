@@ -132,5 +132,28 @@ class Hierarchy extends BaseHierarchy
     {
         $this->leaf_selections_only = true;
     }
+
+    /**
+     * It might in the future be possible for this and the normal count() method to differ, because some nodes are parents and
+     * not selectable. For now it is the same as counting the hierarchy, but the concept should be respected in code (form types).
+     *
+     * @return int
+     */
+    public function countSelectable()
+    {
+        return $this->count();
+    }
+
+    /**
+     * Similar to countSelectable(), this method will return this first slectable (the first that would appear in a slect box, for example)
+     *
+     * @return mixed
+     */
+    public function getFirstSelectable()
+    {
+        foreach ($this->root_nodes as $node) {
+            return $node->getData();
+        }
+    }
 }
  
