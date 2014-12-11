@@ -43,10 +43,12 @@ use Application\DeskPRO\TicketLayout\LayoutField;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Form\TicketFormContext;
 use Application\FormBundle\FormFields;
+use Application\FormBundle\Hierarchy\HierarchyGenerator;
 use Application\FormBundle\TicketLayout\TicketLayoutDiffer;
 use Application\FormBundle\TicketLayout\TicketLayoutFactory;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -74,11 +76,28 @@ class TicketType extends AbstractType
      */
     private $layout_differ;
 
-    public function __construct(FormFieldManager $field_manager, TicketLayoutFactory $ticket_layout_factory, TicketLayoutDiffer $layout_differ)
+    /**
+     * @var EntityManager
+     */
+    private $em;
+    /**
+     * @var HierarchyGenerator
+     */
+    private $hierarchy_generator;
+
+    public function __construct(
+        FormFieldManager $field_manager,
+        TicketLayoutFactory $ticket_layout_factory,
+        TicketLayoutDiffer $layout_differ,
+        HierarchyGenerator $hierarchy_generator,
+        EntityManager $em
+    )
     {
         $this->layout_differ = $layout_differ;
         $this->field_manager = $field_manager;
         $this->ticket_layout_factory = $ticket_layout_factory;
+        $this->hierarchy_generator = $hierarchy_generator;
+        $this->em = $em;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -95,6 +114,13 @@ class TicketType extends AbstractType
         $ticket_message = $form->getConfig()->getOption('ticket_message');
         $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department ?: null);
         $context = $this->createTicketFormContext($ticket, $ticket_message, $form, $layout);
+
+        // if there is only one department we want to make sure to set it now...
+        $person = $context->getForm()->getConfig()->getOption('person');
+        $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
+        if ($hierarchy->countSelectable() === 1) {
+            $ticket->department = $hierarchy->getFirstSelectable();
+        }
 
         $this->manipulateForm(new Layout(), $context->getActiveLayout(), $context);
     }
@@ -119,6 +145,15 @@ class TicketType extends AbstractType
             $config->getOption('ticket_view_context'),
             $config->getOption('ticket_visibility')
         );
+    }
+
+    /**
+     * @param FormInterface $form
+     * @return \Application\DeskPRO\NewSettings\SettingsBag
+     */
+    public function getSettingsBag(FormInterface $form)
+    {
+        return $form->getConfig()->getOption('settings');
     }
 
     public function onPreSubmit(FormEvent $event)
@@ -184,7 +219,8 @@ class TicketType extends AbstractType
             'ticket_message'      => null
         ));
         $resolver->setRequired(array(
-            'person'
+            'person',
+            'settings'
         ));
         $resolver->addAllowedValues(array(
             'ticket_visibility' => array(
@@ -195,6 +231,7 @@ class TicketType extends AbstractType
         ));
         $resolver->setAllowedTypes(array(
             'person'        => 'Application\\DeskPRO\\Entity\\Person',
+            'settings'        => 'Application\\DeskPRO\\NewSettings\\SettingsBag',
             'ticket_message' => array('Application\\DeskPRO\\Entity\\TicketMessage', 'null')
         ));
     }
@@ -279,6 +316,14 @@ class TicketType extends AbstractType
 
     private function addDepartment(TicketFormContext $form_context, LayoutField $field)
     {
+        $person = $form_context->getForm()->getConfig()->getOption('person');
+        $hierarchy = $this->hierarchy_generator->generateTicketDepartmentsHierarchy($person);
+
+        // if it is 1 or less to choose from, dont even add this field to the form
+        if ($hierarchy->countSelectable() <= 1) {
+            return;
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_department', array(
             'person' => $form_context->getPerson()
         ));
@@ -392,21 +437,57 @@ class TicketType extends AbstractType
 
     private function addCategory(TicketFormContext $form_context, LayoutField $field)
     {
+        // we need the brand setting to be correct
+        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_category', false)) {
+            return;
+        }
+
+        if (!$this->em->getRepository('DeskPRO:TicketCategory')->countAll() > 0) {
+            return;
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_category', array());
     }
 
     private function addPriority(TicketFormContext $form_context, LayoutField $field)
     {
+        // we need the brand setting to be correct
+        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_priority', false)) {
+            return;
+        }
+
+        if (!$this->em->getRepository('DeskPRO:TicketPriority')->countAll() > 0) {
+            return;
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_priority', array());
     }
 
     private function addWorkflow(TicketFormContext $form_context, LayoutField $field)
     {
+        // we need the brand setting to be correct
+        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_ticket_workflow', false)) {
+            return;
+        }
+
+        if (!$this->em->getRepository('DeskPRO:TicketWorkflow')->countAll() > 0) {
+            return;
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_workflow', array());
     }
 
     private function addProduct(TicketFormContext $form_context, LayoutField $field)
     {
+        // we need the brand setting to be correct
+        if (!$this->getSettingsBag($form_context->getForm())->get('core.use_product', false)) {
+            return;
+        }
+
+        if (!$this->em->getRepository('DeskPRO:Product')->countAll() > 0) {
+            return;
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_product', array());
     }
 
