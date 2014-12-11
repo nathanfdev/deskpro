@@ -1,9 +1,5 @@
-define [
-  'Reports/Main/Ctrl/Base'
-], (
-  ReportsBaseCtrl
-) ->
-  class Reports_Dashboard_Ctrl_ModalInstance extends ReportsBaseCtrl
+define [], () ->
+  class Reports_Dashboard_Ctrl_ModalInstance
     @CTRL_ID   = 'Reports_Dashboard_Ctrl_ModalInstance'
     @CTRL_AS   = 'ReportsModalInstanceCtrl'
     @DEPS      = ['$scope', '$modalInstance', 'db']

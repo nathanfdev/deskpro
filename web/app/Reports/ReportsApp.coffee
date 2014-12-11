@@ -4,20 +4,29 @@ define [
 
   'Reports/App/Controller/Main',
   'Reports/App/Controller/Dashboard',
+#  'Reports/App/Controller/ModalInstance',
 
 
   'Reports/App/Service/Dashboard'
   'Reports/App/Service/DashboardWidget'
+
+  'Reports/App/Directive/DashboardAmcharts',
+  'Reports/App/Directive/DashboardStat',
+  'Reports/App/Directive/DashboardTable',
 
 ], (
   angular,
   DeskPRO_Main_Service_DpApi,
   Reports_App_Controller_Main,
   Reports_App_Controller_Dashboard,
+#  Reports_App_Controller_ModalInstance,
 
+  Reports_App_Service_Dashboard,
+  Reports_App_Service_DashboardWidget,
 
-  Reports_App_Service_Dashboard
-  Reports_App_Service_DashboardWidget
+  Reports_App_Directive_DashboardAmcharts,
+  Reports_App_Directive_DashboardStat,
+  Reports_App_Directive_DashboardTable,
 
 ) ->
   ReportsApp = angular.module('DeskPRO.ReportsApp', ['DeskPRO.InterfaceApp'])
@@ -42,15 +51,22 @@ define [
       return $q.reject(rejection)
     }
   ])
-
+  ###
+  # Config section
+  ###
   ReportsApp.config(['$httpProvider', ($httpProvider) ->
                            $httpProvider.interceptors.push('dpHttpInterceptor');
   ])
-
+  ###
+  # Controllers section
+  ###
   ReportsApp.controller('Reports.App.Main', Reports_App_Controller_Main)
   ReportsApp.controller('Reports.App.Dashboard', Reports_App_Controller_Dashboard)
 #  ReportsApp.controller('Reports.App.ModalInstance', Reports_App_Controller_ModalInstance)
 
+  ###
+  # Service section
+  ###
   ReportsApp.service('Api', ['$http', ($http) ->
     return new DeskPRO_Main_Service_DpApi(
       $http,
@@ -66,5 +82,12 @@ define [
   ReportsApp.service('DashboardWidgetService', ['Api', '$q', (Api, $q) ->
     return new Reports_App_Service_DashboardWidget(Api, $q)
   ])
+
+  ###
+  # Directives section
+  ###
+  ReportsApp.directive('DashboardAmchartsDirective', Reports_App_Directive_DashboardAmcharts)
+  ReportsApp.directive('DashboardStatDirective', Reports_App_Directive_DashboardStat)
+  ReportsApp.directive('DashboardTableDirective', Reports_App_Directive_DashboardTable)
 
   return ReportsApp

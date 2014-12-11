@@ -1,0 +1,55 @@
+﻿<div class="modal-header">
+    <h3 class="modal-title">New widget</h3>
+</div>
+<div class="modal-body">
+    <form role="form">
+        <div class="form-group">
+            <label for="title">Title</label>
+            <input type="text" class="form-control"
+                   ng-model="ReportsModalInstanceCtrl.newWidget.title"
+                   id="title"
+                   placeholder="Enter title">
+        </div>
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle dropdown-modal" type="button" id="dataSource" data-toggle="dropdown">
+                {{ '{{selectedSource.name}}' }}
+                <span class="caret"></span>
+
+            </button>
+            <ul class="dropdown-menu scroll-menu" role="menu" aria-labelledby="dataSource.builtInReports">
+                <li ng-repeat="ds in dataSources.customReports" role="presentation">
+                    <a role="menuitem" tabindex="-1" href="" ng-click="$event.preventDefault();ReportsModalInstanceCtrl.setSource(ds)">{{ '{{ds.title}}' }}</a>
+                </li>
+                <li role="presentation" class="divider"></li>
+                <li ng-repeat-start="(header,group) in dataSources.builtInReports" role="presentation" class="dropdown-header">{{ '{{header}}' }}</li>
+                <li ng-repeat="ds in group" role="presentation">
+                    <a role="menuitem" tabindex="-1" href="" ng-click="ReportsModalInstanceCtrl.setSource(ds)">{{ '{{ds.title}}' }}</a>
+                </li>
+                <li role="presentation" class="divider" ng-repeat-end></li>
+            </ul>
+        </div>
+       
+        <div class="form-group">
+            <label for="wsizex">Widget x size</label>
+            <input type="number"
+                   class="form-control"
+                   ng-model="ReportsModalInstanceCtrl.newWidget.sizeX"
+                   id="wsizex"
+                   placeholder="Enter x size">
+        </div>
+
+        <div class="form-group">
+            <label for="wsizey">Widget y size</label>
+            <input type="number"
+                   class="form-control"
+                   ng-model="ReportsModalInstanceCtrl.newWidget.sizeY"
+                   id="wsizey"
+                   placeholder="Enter y size">
+        </div>
+   
+    </form>
+</div>
+<div class="modal-footer">
+    <button class="btn btn-primary" ng-click="ReportsModalInstanceCtrl.createWidget()">OK</button>
+    <button class="btn btn-warning" ng-click="ReportsModalInstanceCtrl.cancel()">Cancel</button>
+</div>

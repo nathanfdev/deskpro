@@ -1,1 +1,7 @@
-../phpmd/phpmd/src/bin/phpmd
+#!/usr/bin/env sh
+SRC_DIR="`pwd`"
+cd "`dirname "$0"`"
+cd "../phpmd/phpmd/src/bin"
+BIN_TARGET="`pwd`/phpmd"
+cd "$SRC_DIR"
+"$BIN_TARGET" "$@"

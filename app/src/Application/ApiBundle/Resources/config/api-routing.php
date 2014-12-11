@@ -4774,6 +4774,80 @@ $collection->create('api_reports_billing_get', array(
 ));
 
 ########################################################################################################################
+# Report Dashboards
+########################################################################################################################
+
+$collection->create('dashboards_list', array(
+    'path'         => '/dashboards',
+    'controller'   => 'ApiBundle:Dashboard:list',
+    'defaults'     => array('action' => 'list'),
+    'methods'      => array('GET',),
+));
+
+$collection->create('dashboards_get', array(
+    'path'         => '/dashboards/{id}',
+    'controller'   => 'ApiBundle:Dashboard:get',
+    'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'get'),
+    'methods'      => array('GET',),
+));
+
+$collection->create('dashboard_create', array(
+    'path'         => '/dashboards',
+    'controller'   => 'ApiBundle:Dashboard:save',
+    'defaults'     => array('action' => 'save', 'id' => 0),
+    'methods'      => array('POST',),
+));
+
+$collection->create('dashboard_update', array(
+    'path'         => '/dashboards/{id}',
+    'controller'   => 'ApiBundle:Dashboard:save',
+    'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'save'),
+    'methods'      => array('POST',),
+));
+
+$collection->create('dashboard_delete', array(
+    'path'         => '/dashboards/{id}',
+    'controller'   => 'ApiBundle:Dashboard:delete',
+    'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'delete'),
+    'methods'      => array('DELETE',),
+));
+
+$collection->create('dashboard_widget_get    ', array(
+    'path'         => '/dashboards/widgets/{id}',
+    'controller'   => 'ApiBundle:Dashboard:getWidget',
+    'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'getWidget'),
+    'methods'      => array('GET',),
+));
+
+$collection->create('dashboard_widget_save', array(
+    'path'         => '/dashboards/widgets/{id}',
+    'controller'   => 'ApiBundle:Dashboard:saveWidget',
+    'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'saveWidget'),
+    'methods'      => array('POST',),
+));
+
+$collection->create('dashboard_widget_create', array(
+    'path'         => '/dashboards/{id}/widgets',
+    'controller'   => 'ApiBundle:Dashboard:addWidget',
+    'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'addWidget'),
+    'methods'      => array('POST',),
+));
+
+$collection->create('dashboard_widget_delete    ', array(
+    'path'         => '/dashboards/widgets/{id}',
+    'controller'   => 'ApiBundle:Dashboard:deleteWidget',
+    'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'deleteWidget'),
+    'methods'      => array('DELETE',),
+));
+
+########################################################################################################################
 # Plugins
 ########################################################################################################################
 
