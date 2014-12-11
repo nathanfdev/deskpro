@@ -114,7 +114,13 @@ define [
 
     # TODO: make these dynamic somehow based on loaded apps
     addState('DeskPRO.ReportsApp', 'app.reports', 'reports', 'Reports.App.Main', 'ReportsInterfaceBundle:Interface:main.html')
-    addState('DeskPRO.ReportsApp', 'app.reports.dashboards', '/dashboards', 'Reports.App.Dashboard', 'ReportsInterfaceBundle:Dashboard:dashboard.html')
+    addState(
+      'DeskPRO.ReportsApp',
+      'app.reports.dashboards',
+      '/dashboards',
+      'Reports.App.Dashboard',
+      'ReportsInterfaceBundle:Dashboard:dashboard.html'
+    )
   ])
 
   return InterfaceApp

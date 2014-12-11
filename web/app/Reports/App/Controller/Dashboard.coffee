@@ -1,5 +1,33 @@
-define -> ['$scope', '$timeout', '$modal', '$rootScope', ($scope, $timeout, $modal, $rootScope) ->
-  console.log($scope)
+define -> [
+  '$scope', '$timeout', '$modal', '$rootScope', 'DashboardService', 'DashboardWidgetService',
+  ($scope, $timeout, $modal, $rootScope, DashboardService, DashboardWidgetService) ->
+
+    DashboardService.setWidgetService(DashboardWidgetService)
+
+    DashboardService.getDashboards().then (dbs) =>
+      $scope.dashboards = dbs
+
+      if $scope.dashboards.length > 0
+        dashboard = $scope.dashboards[0]
+        $scope.dashboard = dashboard
+      else
+        $scope.gridsterOptions =
+          margins: [20, 20],
+          columns: 10,
+          draggable:
+            handle: 'h3'
+
+
+    $scope.$watch 'dashboard', (newVal, oldVal) =>
+      if newVal != oldVal
+        $scope.radioModel = $scope.dashboard.name
+        $scope.gridsterOptions = $scope.dashboard.options
+      else
+        if $scope.dashboard?
+          $scope.radioModel = $scope.dashboard.name
+          $scope.gridsterOptions = $scope.dashboard.options
+        else
+          $scope.radioModel == ""
 ]
 
 

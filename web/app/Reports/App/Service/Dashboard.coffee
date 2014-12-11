@@ -1,11 +1,8 @@
-define [
-    'DeskPRO/Util/Arrays',
-  ], (
-    Arrays
-) ->
-class DashboardService
-
-    constructor: (@Api, @$q) ->
+define ['DeskPRO/Util/Arrays'], (Arrays) ->
+  class DashboardService
+    constructor: (Api, $q) ->
+      @Api = Api
+      @$q = $q
       @data = {}
       @storage = { dbs: [] }
 

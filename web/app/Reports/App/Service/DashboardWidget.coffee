@@ -1,14 +1,8 @@
-define [
-  'DeskPRO/Util/Arrays',
-], (
-  Arrays
-)  ->
+define ['DeskPRO/Util/Arrays',], (Arrays) ->
   class DashboardWidgetService
-
-    ###
-    #
-    ###
-    constructor: (@Api, @$q) ->
+    constructor: (Api, $q) ->
+      @Api = Api
+      @$q = $q
       @data = {}
       @storage = {}
       @hostname = window.location.origin;

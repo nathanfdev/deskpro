@@ -59,13 +59,12 @@ define [
     )
   ])
 
-
-  ReportsApp.service('DashboardService', ['$http', '$q', ($http, $q) ->
-    return new Reports_App_Service_Dashboard($http, $q)
+  ReportsApp.service('DashboardService', ['Api', '$q', (Api, $q) ->
+    return new Reports_App_Service_Dashboard(Api, $q)
   ])
 
-  ReportsApp.service('DashboardWidgetService', ['$http', '$q', ($http, $q) ->
-    return new Reports_App_Service_DashboardWidget($http, $q)
+  ReportsApp.service('DashboardWidgetService', ['Api', '$q', (Api, $q) ->
+    return new Reports_App_Service_DashboardWidget(Api, $q)
   ])
 
   return ReportsApp
