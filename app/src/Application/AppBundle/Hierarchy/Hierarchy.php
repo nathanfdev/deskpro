@@ -128,13 +128,39 @@ class Hierarchy implements \Countable, \IteratorAggregate
     }
 
     /**
-     * @param $accessor
-     * @param $node
+     * @param HierarchyNode $node
      * @return mixed
      */
     public function getNodeId(HierarchyNode $node)
     {
         return $this->accessor->getValue($node, $this->node_id_path ? : 'data.id');
+    }
+
+    /**
+     * Will find you a node in the tree for a given node ID (as defined by this hierarchy's node property acessor)
+     *
+     * @param $node_id
+     * @param bool $recursive
+     * @return HierarchyNode|null
+     */
+    public function findNodeById($node_id, $recursive = true)
+    {
+        foreach ($this->root_nodes as $node) {
+            if ($node_id == $this->getNodeId($node)) {
+                return $node;
+            }
+        }
+
+        if ($recursive) {
+            foreach ($this->root_nodes as $node) {
+                if ($result = $node->findChildById($node_id)) {
+                    return $result;
+                }
+            }
+
+        }
+
+        return null;
     }
 }
  

@@ -78,21 +78,21 @@ class HierarchyGenerator
     {
         $root_nodes = array();
         foreach ($field->children as $field_child) {
-            $root_nodes[] = new HierarchyNode($field_child, 0);
+            // fields with a parent_id are dealt with below
+            if (!$field_child->getOption('parent_id')) {
+                $root_nodes[] = new HierarchyNode($field_child, 0);
+            }
         }
 
         $hierarchy = new Hierarchy($root_nodes, new DashesFormatter('title'));
         $hierarchy->markOnlyLeafSelections();
 
-        $recursive = function(CustomDefAbstract $field, HierarchyNode $parent, $depth) use (&$recursive) {
-            foreach ($field->children as $child) {
-                $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
-                $recursive($child, $child_node, $depth + 1);
+        foreach ($field->children as $field_child) {
+            if ($parent_id = $field_child->getOption('parent_id')) {
+                if ($parent = $parent_node = $hierarchy->findNodeById($parent_id)) {
+                    $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1));
+                }
             }
-        };
-
-        foreach ($hierarchy as $root_node) {
-            $recursive($root_node->getData(), $root_node, 1);
         }
 
         return $hierarchy;
