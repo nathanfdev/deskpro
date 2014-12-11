@@ -39,6 +39,11 @@ use Application\DeskPRO\Entity\Department as DepartmentEntity;
 
 class Department extends AbstractCategoryRepository
 {
+    public function countAll()
+    {
+        return $this->_em->createQuery('SELECT count(d) FROM DeskPRO:Department d')->getSingleScalarResult();
+    }
+
     public function getAll()
     {
         return $this->getRootNodes();

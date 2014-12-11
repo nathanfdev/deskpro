@@ -41,6 +41,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class DepartmentType extends AbstractType
 {
@@ -85,10 +86,17 @@ class DepartmentType extends AbstractType
         $resolver->setDefaults(array(
             'class'         => 'Application\\DeskPRO\\Entity\\Department',
             'property'      => 'title',
-            'empty_data'    => null,
-            'choice_list'   => function(Options $options) use ($hierarchy_generator) {
-                    return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'])->getChoiceList();
-                }
+            'placeholder'    => 'Select...',
+            'required' => true,
+            'constraints' => array(
+                new NotNull()
+            ),
+            'hierarchy' => function (Options $options) use ($hierarchy_generator) {
+                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person']);
+            },
+            'choice_list'   => function(Options $options) {
+                    return $options['hierarchy']->getChoiceList();
+            }
         ));
     }
 }
