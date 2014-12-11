@@ -1,5 +1,9 @@
-define ->
-  class DashboardService
+define [
+    'DeskPRO/Util/Arrays',
+  ], (
+    Arrays
+) ->
+class DashboardService
 
     constructor: (@Api, @$q) ->
       @data = {}

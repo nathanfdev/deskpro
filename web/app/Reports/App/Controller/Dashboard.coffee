@@ -1,9 +1,10 @@
-define [
-  'DeskPRO/Util/Arrays',
-], (
-  Arrays
-) ->
-  class Reports_Dashboard_Ctrl_Dashboard
+define -> ['$scope', '$timeout', '$modal', '$rootScope', ($scope, $timeout, $modal, $rootScope) ->
+  console.log($scope)
+]
+
+
+###
+class Reports_Dashboard_Ctrl_Dashboard
     @CTRL_ID   = 'Reports_Dashboard_Ctrl_Dashboard'
     @CTRL_AS   = 'DashboardCtrl'
     @DEPS      = ['$scope', '$timeout', '$modal', '$rootScope']
@@ -117,3 +118,5 @@ define [
       @widgetService.addWidget(@$scope.dashboard.id, widget)
 
     Reports_Dashboard_Ctrl_Dashboard.EXPORT_CTRL()
+
+###

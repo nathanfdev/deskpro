@@ -1,18 +1,14 @@
 define [
-  'Admin/Main/DataService/BaseListEdit',
   'DeskPRO/Util/Arrays',
 ], (
-  BaseListEdit,
   Arrays
 )  ->
-  class DashboardWidgetService extends BaseListEdit
-    @$inject = ['Api', '$q']
-
+  class DashboardWidgetService
 
     ###
     #
     ###
-    init: ->
+    constructor: (@Api, @$q) ->
       @data = {}
       @storage = {}
       @hostname = window.location.origin;

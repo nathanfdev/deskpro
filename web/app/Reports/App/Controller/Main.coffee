@@ -1,5 +1,6 @@
-define -> ['$scope', ($scope) ->
+define -> ['$scope', '$state', ($scope, $state) ->
   $scope.hello = "World";
-  $scope.ping = -> alert('pong')
-  console.log($scope);
+  $scope.goto = ->
+    console.log('going to dashboards')
+    $state.transitionTo('app.reports.dashboards')
 ]
