@@ -70,6 +70,11 @@ class PersonFactory
         $this->event_dispatcher = $event_dispatcher;
     }
 
+    public function createNewPerson()
+    {
+        return new Person();
+    }
+
     public function createPersonByEmail($raw_email, CreatePersonContext $context)
     {
         $person = new Person();
@@ -80,6 +85,22 @@ class PersonFactory
 
         $person->addEmailAddress($email);
 
+        $email->is_validated = true;
+        $person->is_confirmed = true;
+
+        $this->event_dispatcher->dispatch(Person::EVENT_PRE_CREATE, new PersonCreateEvent($person, $context));
+
+        $this->em->persist($person);
+        $this->em->flush();
+
+        $this->event_dispatcher->dispatch(Person::EVENT_POST_CREATE, new PersonCreateEvent($person, $context));
+
+        return $person;
+    }
+
+    public function saveNewPerson(Person $person, CreatePersonContext $context)
+    {
+        $email = $person->getPrimaryEmail();
         $email->is_validated = true;
         $person->is_confirmed = true;
 

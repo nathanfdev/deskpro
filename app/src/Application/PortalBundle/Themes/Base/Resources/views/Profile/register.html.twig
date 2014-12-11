@@ -7,6 +7,10 @@
         </header>
     </div>
 
-    <p>Please tell us about yourself...</p>
+    {{ form_start(form) }}
+    {{ form_widget(form) }}
+    {{ form_rest(form) }}
+    <button type="submit">Register</button>
+    {{ form_end(form) }}
 
 {% endblock inner_content %}

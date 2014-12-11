@@ -34,17 +34,46 @@
 
 namespace Application\PortalBundle\Themes\Base\Controller;
 
+use Application\DeskPRO\Entity\Person;
+use Application\PersonBundle\Person\Context\CreatePersonContext;
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Request;
 
 class ProfileController extends AbstractController
 {
-    public function registerAction()
+    public function registerAction(Request $request)
     {
-        return $this->render('Theme:Profile:register.html.twig');
+        $person = $this->getPersonFactory()->createNewPerson();
+
+        $form = $this->createForm('person_registration', $person, array(
+            'settings' => $this->getBrandContainer()->getSettings()
+        ));
+
+        $form->handleRequest($request);
+
+        if ($form->isValid()) {
+            $context = new CreatePersonContext('gateway.person');
+            $this->getPersonFactory()->saveNewPerson($person, $context);
+            $this->addFlash('success', 'thank.you.for.registering');
+
+            return $this->redirectToRoute('portal_login');
+        }
+
+        return $this->render('Theme:Profile:register.html.twig', array(
+            'form' => $form->createView()
+        ));
     }
 
     public function editAction()
     {
         return $this->render('Theme:Profile:edit.html.twig');
+    }
+
+    /**
+     * @return \Application\PersonBundle\Person\PersonFactory
+     */
+    public function getPersonFactory()
+    {
+        return $this->get('person_factory');
     }
 }
