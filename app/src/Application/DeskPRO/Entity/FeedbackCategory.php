@@ -216,14 +216,16 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
                              'referencedColumnName' => 'id',
                              'nullable'             => true,
                              'columnDefinition'     => null,
+                             'onDelete'             => 'cascade',
                          ),
                      ),
                      'inverseJoinColumns' => array(
                          0 => array(
                              'name'                 => 'usergroup_id',
-                             'referencedColumnName' => 'id',
+                             'onDelete'             => 'cascade',
                              'nullable'             => true,
                              'columnDefinition'     => null,
+                             'referencedColumnName' => 'id',
                          ),
                      ),
                  ),
