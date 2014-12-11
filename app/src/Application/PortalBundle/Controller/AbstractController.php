@@ -58,6 +58,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Application\DeskPRO\Brand\BrandContainer
+     */
+    public function getBrandContainer()
+    {
+        return $this->get('brand_stack')->getActive();
+    }
+
+    /**
      * Adds a flash message to the current session for type.
      *
      * @param string $type    The type

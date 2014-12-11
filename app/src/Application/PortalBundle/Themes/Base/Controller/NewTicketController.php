@@ -65,14 +65,16 @@ class NewTicketController extends AbstractController
                 'person' => $person,
                 'ticket_message' => $ticket_message,
                 'method' => 'GET',
-                'validation_groups' => false
+                'validation_groups' => false,
+                'settings' => $this->getBrandContainer()->getSettings()
         ));
         $form->submit($request->get('ticket', array()), false);
 
 
         $form = $this->createForm('ticket', $ticket, array(
                 'person' => $person,
-                'ticket_message' => $ticket_message
+                'ticket_message' => $ticket_message,
+                'settings' => $this->getBrandContainer()->getSettings()
         ));
         $form->handleRequest($request);
 

@@ -142,7 +142,6 @@ class Session extends AbstractEntityRepository
         return $this->getEntityManager()->createQuery("
             SELECT s
             FROM DeskPRO:Session s
-            LEFT JOIN s.visitor v
             WHERE s.person = ?1 AND s.date_last > ?2
             ORDER BY s.id
         ")->setMaxResults(1)
