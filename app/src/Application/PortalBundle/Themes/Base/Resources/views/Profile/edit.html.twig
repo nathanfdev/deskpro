@@ -14,6 +14,26 @@
 
 
     <br><br><br>
+    {# EMAILS #}
+    <h1>Manage Emails</h1>
+    {{ form_start(emails_form) }}
+    {% for email_form in emails_form.emails %}
+    <div style="display: block; padding-top: 5px; padding-bottom: 5px;">
+        {{ form_widget(email_form.email) }}
+        {% if email_form.vars.data.isPrimary %}
+            <strong>primary</strong>
+        {% elseif email_form.vars.data.id %}
+            [<a href="{{ path('portal_user_profile', { new_primary: email_form.vars.data.id }) }}">make primary</a>]
+            [<a href="{{ path('portal_user_profile', { remove_email: email_form.vars.data.id }) }}">remove</a>]
+        {% endif %}
+    </div>
+    {% endfor %}
+    <button type="submit">Update Emails</button>
+    {{ form_rest(emails_form) }}
+    {{ form_end(emails_form) }}
+
+
+    <br><br><br>
     {# PASSWORD #}
     <h1>Change Password</h1>
     {{ form_start(password_form) }}

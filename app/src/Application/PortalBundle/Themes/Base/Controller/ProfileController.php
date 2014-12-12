@@ -70,6 +70,30 @@ class ProfileController extends AbstractController
      */
     public function editAction(Request $request)
     {
+        if ($email_id = $request->query->get('new_primary')) {
+            $proposed_new_primary_email = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
+            if ($proposed_new_primary_email->getPerson()->getId() == $this->getUser()->getId()) {
+                $this->getUser()->setPrimaryEmail($proposed_new_primary_email);
+                $this->getEm()->flush();
+                $this->addFlash('success', 'updated.primary.email');
+                return $this->redirectToRoute('portal_user_profile');
+            }
+        }
+
+        if ($email_id = $request->query->get('remove_email')) {
+            $proposed_email_removal = $this->getRepo('DeskPRO:PersonEmail')->find($email_id);
+            if ($proposed_email_removal->getPerson()->getId() == $this->getUser()->getId()) {
+                if (!$proposed_email_removal->isPrimary()) { // cannot remove primary email
+                    $this->getUser()->removeEmail($proposed_email_removal);
+                    $this->getEm()->remove($proposed_email_removal);
+                    $this->getEm()->flush();
+                    $this->addFlash('success', 'removed.email');
+                    return $this->redirectToRoute('portal_user_profile');
+                }
+            }
+        }
+
+
         // PROFILE
         $profile_form = $this->createForm('person_profile', $this->getUser(), array(
             'settings' => $this->getBrandContainer()->getSettings()
@@ -78,6 +102,18 @@ class ProfileController extends AbstractController
         if ($profile_form->isValid()) {
             $this->getEm()->flush();
             $this->addFlash('success', 'success.updated.profile.phrase');
+
+            return $this->redirectToRoute('portal_user_profile');
+        }
+
+        // EMAILS
+        $emails_form = $this->createForm('person_manage_emails', $this->getUser(), array(
+            'settings' => $this->getBrandContainer()->getSettings()
+        ));
+        $emails_form->handleRequest($request);
+        if ($emails_form->isValid()) {
+            $this->getEm()->flush();
+            $this->addFlash('success', 'success.updated.emails.phrase');
 
             return $this->redirectToRoute('portal_user_profile');
         }
@@ -96,7 +132,8 @@ class ProfileController extends AbstractController
 
         return $this->render('Theme:Profile:edit.html.twig', array(
             'profile_form' => $profile_form->createView(),
-            'password_form' => $password_form->createView()
+            'password_form' => $password_form->createView(),
+            'emails_form' => $emails_form->createView()
         ));
     }
 

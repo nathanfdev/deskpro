@@ -137,6 +137,15 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    public function isPrimary()
+    {
+        if (!$this->person) {
+            return false;
+        }
+
+        return $this->person->primary_email === $this;
+    }
+
     public function getEmailDomain()
     {
         if ($this->email_domain) {

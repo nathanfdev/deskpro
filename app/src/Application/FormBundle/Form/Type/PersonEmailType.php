@@ -47,10 +47,7 @@ class PersonEmailType extends AbstractType
         $builder->add('email', 'email', array(
             'label' => $options['email_label'],
             'required' => $options['required'],
-            'constraints' => array(
-                new NotBlank(array('message' => 'Please provide us with your email')),
-                new Email(array('message' => 'This email adddress is not valid')),
-            )
+            'constraints' => $options['email_constraints']
         ));
     }
 
@@ -63,7 +60,11 @@ class PersonEmailType extends AbstractType
     {
         $resolver->setDefaults(array(
             'data_class' => 'Application\\DeskPRO\\Entity\\PersonEmail',
-            'email_label' => 'Email'
+            'email_label' => 'Email',
+            'email_constraints' => array(
+                new NotBlank(array('message' => 'Please provide us with your email')),
+                new Email(array('message' => 'This email adddress is not valid')),
+            )
         ));
     }
 }

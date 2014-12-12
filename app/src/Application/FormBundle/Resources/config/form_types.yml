@@ -19,6 +19,13 @@ services:
       - { name: form.type, alias: person_registration }
 
 
+  form.person_manage_emails:
+    class: Application\FormBundle\Form\Type\PersonManageEmailsType
+    arguments: [@doctrine.orm.default_entity_manager]
+    tags:
+      - { name: form.type, alias: person_manage_emails }
+
+
   form.person_profile:
     class: Application\FormBundle\Form\Type\PersonEditProfileType
     tags:

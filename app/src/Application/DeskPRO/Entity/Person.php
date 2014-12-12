@@ -1686,6 +1686,27 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     }
 
     /**
+     * @return PersonEmail[]|\Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getEmails()
+    {
+        return $this->emails;
+    }
+
+    public function addEmail(PersonEmail $email)
+    {
+        die(dump($email));
+        $this->emails->add($email);
+        $this->_onPropertyChanged('emails', null, $this->emails);
+    }
+
+    public function removeEmail(PersonEmail $email)
+    {
+        $this->emails->removeElement($email);
+        $this->_onPropertyChanged('emails', null, $this->emails);
+    }
+
+    /**
      * Alias for getPrimaryEmailAddress
      *
      * @return string

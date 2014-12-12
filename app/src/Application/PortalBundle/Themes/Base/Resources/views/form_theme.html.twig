@@ -47,7 +47,6 @@
 {% endif %}
 {% endblock ticket_message_attachment_widget %}
 
-{# ATTACHMENTS #}
 {% block ticket_message_attachment_collection_widget %}
     {% if prototype is defined %}
         {%- set attr = attr|merge({'data-prototype': form_row(prototype) }) -%}
