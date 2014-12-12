@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\PersonBundle\Person\Context\CreatePersonContext;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class ProfileController extends AbstractController
 {
@@ -64,9 +65,39 @@ class ProfileController extends AbstractController
         ));
     }
 
-    public function editAction()
+    /**
+     * @Security("is_granted('EDIT_PROFILE', user)")
+     */
+    public function editAction(Request $request)
     {
-        return $this->render('Theme:Profile:edit.html.twig');
+        // PROFILE
+        $profile_form = $this->createForm('person_profile', $this->getUser(), array(
+            'settings' => $this->getBrandContainer()->getSettings()
+        ));
+        $profile_form->handleRequest($request);
+        if ($profile_form->isValid()) {
+            $this->getEm()->flush();
+            $this->addFlash('success', 'success.updated.profile.phrase');
+
+            return $this->redirectToRoute('portal_user_profile');
+        }
+
+        // PASSWORD
+        $password_form = $this->createForm('person_change_password', $this->getUser(), array(
+            'settings' => $this->getBrandContainer()->getSettings()
+        ));
+        $password_form->handleRequest($request);
+        if ($password_form->isValid()) {
+            $this->getEm()->flush();
+            $this->addFlash('success', 'success.changed.password.phrase');
+
+            return $this->redirectToRoute('portal_user_profile');
+        }
+
+        return $this->render('Theme:Profile:edit.html.twig', array(
+            'profile_form' => $profile_form->createView(),
+            'password_form' => $password_form->createView()
+        ));
     }
 
     /**

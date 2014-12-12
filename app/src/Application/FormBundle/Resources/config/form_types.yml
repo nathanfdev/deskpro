@@ -19,6 +19,18 @@ services:
       - { name: form.type, alias: person_registration }
 
 
+  form.person_profile:
+    class: Application\FormBundle\Form\Type\PersonEditProfileType
+    tags:
+      - { name: form.type, alias: person_profile }
+
+
+  form.person_change_password:
+    class: Application\FormBundle\Form\Type\PersonChangePasswordType
+    tags:
+      - { name: form.type, alias: person_change_password }
+
+
   form.custom_data_ticket:
     class: Application\FormBundle\Form\Type\CustomDataTicketType
     arguments: [@form_field_manager, @doctrine.orm.default_entity_manager]
