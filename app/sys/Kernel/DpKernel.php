@@ -83,6 +83,7 @@ class DpKernel extends AbstractKernel
 
         set_error_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleError', E_ALL | E_STRICT);
         set_exception_handler('DeskPRO\\Kernel\\KernelErrorHandler::handleException');
+        register_shutdown_function('DeskPRO\\Kernel\\KernelErrorHandler::shutdownCheckFatalError');
     }
 
 
