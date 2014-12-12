@@ -45,6 +45,12 @@ class PersonEditProfileType extends AbstractType
     {
         $builder->add('first_name', 'text');
         $builder->add('last_name', 'text');
+
+        $builder->add('timezone', 'timezone', array());
+
+        $builder->add('language_id', 'deskpro_language', array(
+            'view_context' => 'user'
+        ));
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
