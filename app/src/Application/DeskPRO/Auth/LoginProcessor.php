@@ -363,7 +363,7 @@ class LoginProcessor
     protected function updatePersonName($mapped_fields)
     {
         foreach (array('first_name', 'last_name', 'name') as $k) {
-            if (!$this->person[$k] && $mapped_fields->has($k)) {
+            if ($mapped_fields->has($k)) {
                 $this->person[$k] = $mapped_fields->get($k);
             }
         }
