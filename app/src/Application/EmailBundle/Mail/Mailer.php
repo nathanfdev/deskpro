@@ -35,6 +35,8 @@
 namespace Application\EmailBundle\Mail;
 
 use Application\EmailBundle\Mail\Message\MessageFactoryInterface;
+use Application\EmailBundle\Mail\Transport\DeskproTransport;
+use Swift_Mime_Message;
 
 class Mailer extends \Swift_Mailer
 {
@@ -70,6 +72,88 @@ class Mailer extends \Swift_Mailer
         parent::__construct($transport);
 
         $this->message_factory = $message_factory;
+    }
+
+    /**
+     * Sends the given message. Disables any queue that might be enabled.
+     *
+     * @param Swift_Mime_Message $message
+     * @param string[]           $failedRecipients An array of failures by-reference
+     *
+     * @return integer The number of sent emails
+     */
+    public function sendNow(Swift_Mime_Message $message, &$failedRecipients = null)
+    {
+        $tr = $this->getTransport();
+
+        if ($tr instanceof DeskproTransport) {
+            if (method_exists($message, 'doPrepare')) {
+                $message->doPrepare();
+            }
+            return $tr->sendNow($message, $failedRecipients);
+        } else {
+            return $tr->send($message, $failedRecipients);
+        }
+    }
+
+
+    /**
+     * Queue the message so it is sent by the queue processor.
+     *
+     * @param Swift_Mime_Message $message
+     * @param \DateTime          $send_date  When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @return int
+     */
+    public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
+    {
+        $tr = $this->getTransport();
+
+        if (!($tr instanceof DeskproTransport)) {
+            throw new \BadMethodCallException("Transport does not support queueing");
+        }
+
+        if (method_exists($message, 'doPrepare')) {
+            $message->doPrepare();
+        }
+
+        return $tr->queueMessage($message, $send_date);
+    }
+
+
+    /**
+     * Save the message to the DB.
+     *
+     * @param Swift_Mime_Message $message
+     * @return int
+     */
+    public function insertMessage(Swift_Mime_Message $message)
+    {
+        $tr = $this->getTransport();
+
+        if (!($tr instanceof DeskproTransport)) {
+            throw new \BadMethodCallException("Transport does not support queueing");
+        }
+
+        if (method_exists($message, 'doPrepare')) {
+            $message->doPrepare();
+        }
+
+        return $tr->insertMessage($message);
+    }
+
+
+    /**
+     * @param Swift_Mime_Message $message
+     * @param null $failedRecipients
+     * @return int
+     */
+    public function send(Swift_Mime_Message $message, &$failedRecipients = null)
+    {
+        if (method_exists($message, 'doPrepare')) {
+            $message->doPrepare();
+        }
+
+        return parent::send($message, $failedRecipients);
     }
 
 

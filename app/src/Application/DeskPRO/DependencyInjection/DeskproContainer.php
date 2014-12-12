@@ -556,7 +556,7 @@ class DeskproContainer extends Container
      */
     public function getEmailAccountManager()
     {
-        return $this->getSystemService('email_account_manager');
+        return $this->getSystemService('email.email_account_manager');
     }
 
 
@@ -589,7 +589,7 @@ class DeskproContainer extends Container
      */
     public function getBlobStorage()
     {
-        return $this->getSystemService('blob_storage');
+        return $this->get('deskpro.blob_storage');
     }
 
 

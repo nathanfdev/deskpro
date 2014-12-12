@@ -1,0 +1,35 @@
+services:
+  swiftmailer.mailer.default:
+    class: Application\EmailBundle\Mail\Mailer
+    arguments: [@swiftmailer.mailer.default.transport, @email.message_factory]
+
+  swiftmailer.mailer.default.transport:
+    class: Application\EmailBundle\Mail\Transport\DeskproTransport
+    arguments: [@email.source_mapper, @swiftmailer.mailer.default.transport.real, @swiftmailer.mailer.default.transport.eventdispatcher]
+
+  swiftmailer.mailer.default.transport.real:
+    class: Application\EmailBundle\Mail\Transport\EmailAccountTransport
+    arguments: [@email.email_account_manager, @swiftmailer.mailer.default.transport.real.eventdispatcher]
+
+  swiftmailer.mailer.default.transport.real.eventdispatcher:
+    parent: swiftmailer.transport.eventdispatcher.abstract
+
+  email.message_factory:
+    class: Application\EmailBundle\Mail\Message\MessageFactory
+    arguments: [@templating]
+
+  email.email_account_manager:
+    class: Application\DeskPRO\Email\EmailAccount\EmailAccountManager
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\EmailAccountManagerService
+    factory_method: create
+    arguments: [@service_container]
+
+  deskpro.blob_storage:
+    class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
+    factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
+    factory_method: create
+    arguments: [@service_container]
+
+  email.source_mapper:
+    class: Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper
+    arguments: [@database_connection, @deskpro.blob_storage]

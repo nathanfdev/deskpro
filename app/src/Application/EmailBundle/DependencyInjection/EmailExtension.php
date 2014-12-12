@@ -1,10 +1,9 @@
 <?php
-
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -26,53 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-
 /**
  * DeskPRO
  *
  * @package DeskPRO
+ * @subpackage EmailBundle
  */
 
-namespace Application\DeskPRO\Command;
+namespace Application\EmailBundle\DependencyInjection;
 
-use Orb\Util\Strings;
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\FileLocator;
 
-class TestCommand extends ContainerAwareCommand
+class EmailExtension extends Extension
 {
-    /**
-     * {@inheritDoc}
-     */
-    protected function configure()
+    public function load(array $configs, ContainerBuilder $container)
     {
-        $this->setName('dp:test');
-    }
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $mailer = $this->getContainer()->getMailer();
-
-        $message = $mailer->createMessage();
-        $message->setTemplate('DeskPRO:emails_agent:test-email.html.twig');
-
-        $person = $this->getContainer()->getAgentData()->get(1);
-        $message->setToPerson($person);
-
-        $mailer->sendNow($message);
-
-        return 0;
+        $loader = new YamlFileLoader($container, new FileLocator(__DIR__ . '/../Resources/config'));
+        $loader->load('email_settings.yml');
     }
 }

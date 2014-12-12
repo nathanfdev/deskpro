@@ -11,7 +11,6 @@ $container->setParameter('http_kernel.class', 'Application\\DeskPRO\\HttpKernel\
 $container->setParameter('controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\ControllerResolver');
 $container->setParameter('debug.controller_resolver.class', 'Application\\DeskPRO\\HttpKernel\\Controller\\TraceableControllerResolver');
 $container->setParameter('session.class', 'Application\\DeskPRO\\HttpFoundation\\Session');
-$container->setParameter('swiftmailer.class', 'Application\\DeskPRO\\Mail\\Mailer');
 $container->setParameter('twig.loader.filesystem.class', 'Application\\DeskPRO\\Twig\\Loader\\HybridLoader');
 $container->setParameter('twig.class', 'Application\\DeskPRO\\Twig\\Environment');
 $container->setParameter('file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
@@ -100,24 +99,6 @@ $definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemS
 $definition->setFactoryMethod('create');
 $definition->setArguments(array(new Reference('service_container')));
 $container->setDefinition('deskpro.mail_logger', $definition);
-
-// swiftmailer.mailer
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Mail\\Mailer');
-$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailerFactory');
-$definition->setFactoryMethod('create');
-$definition->setArguments(array(
-    new Reference('service_container')
-));
-$container->setDefinition('swiftmailer.mailer', $definition);
-
-// swiftmailer.transport.dp_delegating
-$definition = new Definition();
-$definition->setClass('Application\\DeskPRO\\Mail\\Transport\\DelegatingTransport');
-$definition->setArguments(array(
-    new Reference('swiftmailer.mailer.default.transport.eventdispatcher')
-));
-$container->setDefinition('swiftmailer.mailer.transport.dp_delegating', $definition);
 
 // doctrine.dbal.connection_factory
 $definition = new Definition();
@@ -333,14 +314,6 @@ $container->loadFromExtension('doctrine', array(
             'read' => array('host' => 'from_user_config.db_read', 'logging' => true)
         )
     )
-));
-
-############################################################################
-# Swiftmailer Configuration
-############################################################################
-
-$container->loadFromExtension('swiftmailer', array(
-    'transport' => 'dp_delegating'
 ));
 
 ############################################################################

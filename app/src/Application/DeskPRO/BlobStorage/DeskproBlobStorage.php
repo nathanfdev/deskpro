@@ -655,6 +655,51 @@ class DeskproBlobStorage implements Loggable
         return $data;
     }
 
+    /**
+     * @param  array $blob_row
+     * @return null|string
+     */
+    public function copyBlobRowToString(array $blob_row)
+    {
+        $this->logger->logDebug("[DeskproBlobStorage] (copyBlobRowToString) Read blob row {$blob_row['id']} from {$blob_row['storage_loc']}");
+
+        $data = null;
+
+        // Can just use the public URL
+        if ($blob_row->file_url) {
+            $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Attempting to fetch via URL: {$blob_row['file_url']}");
+            $data = @file_get_contents($blob_row->file_url);
+            if (!$data || strlen($data) != $blob_row->filesize) {
+                $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Failed");
+                $data = null;
+            } else {
+                $this->logger->logDebug("[DeskproBlobStorage] (copyBlobRowToString) Successfully read {$blob_row['filesize']} bytes");
+            }
+        }
+
+        if (!$data) {
+            $blob = $this->getBlobFromBlobRow($blob_row);
+            $data = $this->copyBlobToString($blob, $blob_row['storage_loc']);
+        }
+
+        return $data;
+    }
+
+
+    /**
+     * @param  int $blob_row_id
+     * @return null|string
+     */
+    public function copyBlobRowIdToString($blob_row_id)
+    {
+        $blob_row = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($blob_row_id));
+        if (!$blob_row) {
+            return null;
+        }
+
+        return $this->copyBlobRowToString($blob_row);
+    }
+
 
     /**
      * @param  string          $target_path
@@ -787,6 +832,20 @@ class DeskproBlobStorage implements Loggable
         $this->logger->logDebug("[DeskproBlobStorage] (deleteBlobRow) Delete success");
 
         return true;
+    }
+
+    /**
+     * @param  int $blob_row_id
+     * @return null|string
+     */
+    public function deleteBlobRowId($blob_row_id)
+    {
+        $blob_row = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($blob_row_id));
+        if (!$blob_row) {
+            return null;
+        }
+
+        return $this->deleteBlobRow($blob_row);
     }
 
     /**

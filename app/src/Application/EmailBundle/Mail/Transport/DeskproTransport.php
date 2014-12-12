@@ -39,6 +39,7 @@ use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\BlobStorage;
 use Application\DeskPRO\Mail\Message as DeskproMessage;
 use Application\EmailBundle\Entity\SendmailSource;
+use Application\EmailBundle\Mail\SourceMapper\SourceMapperInterface;
 use Swift_Transport;
 use Swift_Events_EventDispatcher;
 use Swift_Message;
@@ -59,14 +60,9 @@ class DeskproTransport implements Swift_Transport
     private $transport;
 
     /**
-     * @var Connection
+     * @var SourceMapperInterface
      */
-    private $db;
-
-    /**
-     * @var DeskproBlobStorage
-     */
-    private $blob_storage;
+    private $source_mapper;
 
     /**
      * @var string
@@ -74,18 +70,15 @@ class DeskproTransport implements Swift_Transport
     private $queue_mode = 'never';
 
     /**
-     * @param Connection                   $db
-     * @param DeskproBlobStorage           $blob_storage
-     * @param Swift_Transport              $real_transport
+     * @param SourceMapperInterface $source_mapper
+     * @param Swift_Transport $real_transport
      * @param Swift_Events_EventDispatcher $event_dispatcher
      */
-    public function __construct(Connection $db, DeskproBlobStorage $blob_storage, Swift_Transport $real_transport, Swift_Events_EventDispatcher $event_dispatcher)
+    public function __construct(SourceMapperInterface $source_mapper, Swift_Transport $real_transport, Swift_Events_EventDispatcher $event_dispatcher)
     {
         $this->transport        = $real_transport;
         $this->event_dispatcher = $event_dispatcher;
-        $this->db               = $db;
-        $this->blob_storage     = $blob_storage;
-        $this->message_factory  = $message_factory;
+        $this->source_mapper    = $source_mapper;
     }
 
 
@@ -122,11 +115,12 @@ class DeskproTransport implements Swift_Transport
      * Queue the message so it is sent by the queue processor.
      *
      * @param Swift_Mime_Message $message
+     * @param \DateTime          $send_date  When to send the message. If not specified, it will be sent the next time the processor is run.
      * @return int
      */
-    public function queueMessage(Swift_Mime_Message $message)
+    public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
     {
-        $r = $this->saveMessage($message, 'pending');
+        $r = $this->source_mapper->createForMessage($message, 'pending', $send_date);
         return $r['id'];
     }
 
@@ -139,7 +133,7 @@ class DeskproTransport implements Swift_Transport
      */
     public function insertMessage(Swift_Mime_Message $message)
     {
-        $r = $this->saveMessage($message, 'inserted');
+        $r = $this->getOrCreateSource($message, 'inserted');
         return $r['id'];
     }
 
@@ -154,22 +148,20 @@ class DeskproTransport implements Swift_Transport
      */
     public function sendNow(Swift_Mime_Message $message, &$failedRecipients = null)
     {
-        $r = $this->saveMessage($message, 'processing');
-
-        $sent = $this->transport->send($message, $failedRecipients);
-
-        $update = array();
-        if ($message instanceof Swift_Message) {
-            if ($message->getHeaders()->get('X-DeskPRO-EmailAccountId')) {
-                $update['email_account_id'] = $message->getHeaders()->get('X-DeskPRO-EmailAccountId')->getFieldBody();
+        if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
+            $this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+            if ($evt->bubbleCancelled()) {
+                $this->source_mapper->createSourceForMessage($message, 'aborted');
+                return 0;
             }
         }
 
-        $update['exec_count'] = $r['exec_count'] + 1;
+        $sent = $this->transport->send($message, $failedRecipients);
+
         if ($sent) {
-            $this->updateMessageStatus($r, 'complete', 'complete', $update);
+            $this->source_mapper->createSourceForMessage($message, 'complete');
         } else {
-            $this->updateMessageStatus($r, 'error', 'error', $update);
+            $this->source_mapper->createSourceForMessage($message, 'retry');
         }
 
         return $sent;
@@ -189,7 +181,7 @@ class DeskproTransport implements Swift_Transport
         if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
             $this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
             if ($evt->bubbleCancelled()) {
-                $this->saveMessage($message, 'aborted');
+                $this->source_mapper->createSourceForMessage($message, 'aborted');
                 return 0;
             }
         }
@@ -206,7 +198,7 @@ class DeskproTransport implements Swift_Transport
         }
 
         if ($do_queue) {
-            $this->queue($message);
+            $this->queueMessage($message);
             $sent = 1;
         } else {
             $sent = $this->sendNow($message, $failedRecipients);
@@ -218,175 +210,6 @@ class DeskproTransport implements Swift_Transport
         }
 
         return $sent;
-    }
-
-
-    /**
-     * @param Swift_Mime_Message $message
-     * @param string             $as
-     * @param bool               $ignore_existing
-     * @return array
-     */
-    private function saveMessage(Swift_Mime_Message $message, $as = 'inserted', $ignore_existing = false)
-    {
-        if ($message instanceof DeskproMessage) {
-            $message->prepare();
-        }
-
-        if (!$ignore_existing && $message instanceof Swift_Message) {
-            $exist_id = $message->getHeaders()->get('X-DeskPRO-SendmailSourceId')->getFieldBody();
-            if ($exist_id) {
-                $row = $this->db->fetchAssoc("SELECT * FROM sendmail_sources WHERE id = ?", array($exist_id));
-                if ($row) {
-                    if ($row['status'] != $as) {
-                        $update = array('status' => $as);
-                        switch ($as) {
-                            case SendmailSource::STATUS_PENDING:
-                            case SendmailSource::STATUS_RETRY:
-                                $update['date_next_attempt'] = date('Y-m-d H:i:s');
-                                break;
-                            default:
-                                $update['date_next_attempt'] = null;
-                        }
-
-                        $this->db->update('sendmail_sources', $update, array('id' => $row['id']));
-                        $row = array_merge($row, $update);
-                    }
-
-                    return $row;
-                }
-            }
-        }
-
-        $blob = $this->blob_storage->createBlobRowFromString($message->toString(), 'out_email.eml', 'message/rfc822');
-
-        $header_to_raw  = $message->getTo();
-        $header_to      = array();
-        if ($header_to_raw) {
-            foreach ($header_to_raw as $email => $name) {
-                if ($name) {
-                    $header_to[] = "$name <$email>";
-                } else {
-                    $header_to[] = $email;
-                }
-            }
-        }
-        $header_to = implode(', ', $header_to);
-
-        $header_subject_raw = $message->getHeaders()->get('Subject');
-        $header_subject = '';
-        if ($header_subject_raw) {
-            $header_subject = $header_subject_raw;
-        }
-
-        $header_from_raw = $message->getHeaders()->get('From');
-        $header_from = array();
-        if ($header_from_raw) {
-            foreach ($header_from_raw as $email => $name) {
-                if ($name) {
-                    $header_from[] = "$name <$email>";
-                } else {
-                    $header_from[] = $email;
-                }
-            }
-        }
-        $header_from = implode(', ', $header_from);
-
-        $date = date('Y-m-d H:i:s');
-
-        $record = array(
-            'blob_id'        => $blob['id'],
-            'headers'        => $message->getHeaders()->toString(),
-            'header_to'      => $header_to,
-            'header_from'    => $header_from,
-            'header_subject' => $header_subject,
-            'status'         => $as,
-            'date_status'    => $date,
-            'date_created'   => $date,
-            'exec_count'     => 0
-        );
-
-        if ($this->transport instanceof EmailAccountTransport) {
-            $acc = $this->transport->getAccountForMessage($message);
-            if ($acc && $acc->id) {
-                $record['email_account_id'] = $acc->id;
-            }
-        }
-
-        if ($as == 'pending') {
-            $record['date_next_attempt'] = $date;
-        }
-
-        $this->db->insert('sendmail_sources', $record);
-        $record['id'] = $this->db->lastInsertId();
-
-        if ($message instanceof Swift_Message) {
-            if ($ignore_existing) {
-                $message->getHeaders()->removeAll('X-DeskPRO-SendmailSourceId');
-            }
-            $message->getHeaders()->addTextHeader('X-DeskPRO-SendmailSourceId', $record['id']);
-        }
-
-        return $record;
-    }
-
-
-    /**
-     * @param array|int $row
-     * @param string    $status
-     * @param string    $log
-     * @param array     $update
-     * @return array
-     * @throws \Exception
-     */
-    private function updateMessageStatus($row, $status, $log, array $update = array())
-    {
-        if (!is_array($row)) {
-            $row = $this->db->fetchAssoc("SELECT * FROM sendmail_sources WHERE id = ?", array($row));
-        }
-
-        if (!$row || !is_array($row)) {
-            throw new \InvalidArgumentException();
-        }
-
-        $log_text = '';
-        $old_log_blob = null;
-        if ($row['log_blob_id']) {
-            $old_log_blob = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($row['log_blob_id']));
-            if ($old_log_blob) {
-                try {
-                    $rec = $this->blob_storage->getBlobFromBlobRow($old_log_blob);
-                    $log_text = $this->blob_storage->copyBlobToString($rec, $old_log_blob['storage_loc']);
-                } catch (\Exception $e) {}
-            }
-        }
-
-        if ($log_text) {
-            $log_text .= "\n\n\n" . $log;
-        }
-
-        $new_log_blob = $this->blob_storage->createBlobRowFromString($log_text, 'log.txt', 'text/plain');
-        $update['status'] = $status;
-        $update['log_blob_id'] = $new_log_blob['id'];
-        switch ($status) {
-            case SendmailSource::STATUS_PENDING:
-            case SendmailSource::STATUS_RETRY:
-                if (!isset($update['date_next_attempt'])) {
-                    $update['date_next_attempt'] = date('Y-m-d H:i:s');
-                }
-                break;
-            default:
-                $update['date_next_attempt'] = null;
-        }
-
-        $this->db->update('sendmail_sources', $update, array('id' => $row['id']));
-        $row = array_merge($row, $update);
-
-        if ($old_log_blob) {
-            $this->blob_storage->deleteBlobRow($old_log_blob);
-        }
-
-        return $row;
     }
 
 
