@@ -1660,6 +1660,13 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         return $this->primary_email;
     }
 
+    public function setPrimaryEmail(PersonEmail $person_email)
+    {
+        $person_email->person = $this;
+
+        $this->setModelField('primary_email', $person_email);
+    }
+
     public function pickEmailAddress($search)
     {
         $search = strtolower($search);

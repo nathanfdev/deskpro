@@ -32,74 +32,47 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Form\Type;
+namespace Application\AuthBundle\Validator\Constraints;
 
 
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\Form\FormEvent;
-use Symfony\Component\Form\FormEvents;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\User\UserInterface;
 use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraint;
+use Symfony\Component\Validator\ConstraintValidator;
+use Symfony\Component\Validator\Exception\ConstraintDefinitionException;
+use Symfony\Component\Validator\Exception\UnexpectedTypeException;
 
-class PersonChangePasswordType extends AbstractType
+class UserPasswordValidator extends ConstraintValidator
 {
-    public function buildForm(FormBuilderInterface $builder, array $options)
+    /**
+     * @param TokenStorage $token_storage
+     */
+    protected $token_storage;
+
+    public function __construct(TokenStorage $token_storage)
     {
-        $builder->add('current_password', 'password', array(
-            'required' => true,
-            'constraints' => array(
-                new UserPassword()
-            ),
-            'mapped' => false // not mapping this, just using it for validation
-        ));
-
-        $builder->add('new_password', 'repeated', array(
-            'first_name' => 'password',
-            'first_options' => array('label' => 'New Password'),
-            'second_name' => 'confirm',
-            'second_options' => array('label' => 'Confirm'),
-            'type' => 'password',
-            'required' => true,
-            'constraints' => array(
-                new NotBlank()
-            ),
-            'mapped' => false
-        ));
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $event->getData()->setPassword($event->getForm()->get('new_password')->getData());
-        });
+        $this->token_storage = $token_storage;
     }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'Application\DeskPRO\Entity\Person'
-            )
-        );
-
-        $resolver->setRequired(
-            array('settings')
-        );
-
-        $resolver->setAllowedTypes(
-            array(
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag'
-            )
-        );
-    }
-
 
     /**
-     * Returns the name of this type.
-     *
-     * @return string The name of this type
+     * {@inheritdoc}
      */
-    public function getName()
+    public function validate($password, Constraint $constraint)
     {
-        return 'person_change_password';
+        if (!$constraint instanceof UserPassword) {
+            throw new UnexpectedTypeException($constraint, __NAMESPACE__ . '\UserPassword');
+        }
+
+        /** @var \Application\DeskPRO\Entity\Person $user */
+        $user = $this->token_storage->getToken()->getUser();
+
+        if (!$user instanceof UserInterface) {
+            throw new ConstraintDefinitionException('The User object must implement the UserInterface interface.');
+        }
+
+        if (!$user->checkPassword($password)) {
+            $this->context->addViolation($constraint->message);
+        }
     }
 }

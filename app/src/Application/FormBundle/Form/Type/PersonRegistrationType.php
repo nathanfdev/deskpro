@@ -37,6 +37,8 @@ namespace Application\FormBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -57,9 +59,16 @@ class PersonRegistrationType extends AbstractType
         ));
 
         $builder->add('password', 'repeated', array(
-            'first_name' => 'Password',
-            'second_name' => 'Confirm',
+            'first_name' => 'password',
+            'first_options' => array('label' => 'Password'),
+            'second_name' => 'confirm',
+            'second_options' => array('label' => 'Confirm'),
             'type' => 'password',
+            'mapped' => false,
+            'required' => true,
+            'constraints' => array(
+                new NotBlank()
+            )
         ));
 
         $builder->add('timezone', 'timezone', array());
@@ -67,6 +76,10 @@ class PersonRegistrationType extends AbstractType
         $builder->add('language_id', 'deskpro_language', array(
             'view_context' => 'user'
         ));
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) {
+            $event->getData()->setPassword($event->getForm()->get('password')->getData());
+        });
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

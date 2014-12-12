@@ -32,6 +32,13 @@ security:
 
 
 services:
+    # use a custom user/password validator
+    security.validator.user_password:
+        class: Application\AuthBundle\Validator\Constraints\UserPasswordValidator
+        arguments: [@security.token_storage]
+        tags:
+            - { name: validator.constraint_validator, alias: security.validator.user_password }
+
     dp_authentication_manager.user:
         class: Application\DeskPRO\Auth\AuthenticationManager
         factory_class: Application\DeskPRO\DependencyInjection\SystemServices\AuthenticationManagerService

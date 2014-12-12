@@ -4,6 +4,8 @@
 
 
 
+    {# PROFILE #}
+    <h1>Edit Profile</h1>
     {{ form_start(profile_form) }}
     {{ form_widget(profile_form) }}
     <button type="submit">Save Profile</button>
@@ -11,12 +13,14 @@
     {{ form_end(profile_form) }}
 
 
-
-
-
-
-
-
+    <br><br><br>
+    {# PASSWORD #}
+    <h1>Change Password</h1>
+    {{ form_start(password_form) }}
+    {{ form_widget(password_form) }}
+    <button type="submit">Update Password</button>
+    {{ form_rest(password_form) }}
+    {{ form_end(password_form) }}
 
 
 
