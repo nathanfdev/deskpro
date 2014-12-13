@@ -185,7 +185,7 @@ class ReportDashboard extends DomainObject
             'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardReport',
             'mappedBy'     => 'dashboard',
             'inversedBy'   => null,
-            'orderBy'      => array('position'=>'ASC'),
+            'orderBy'      => array('sort_order'=>'ASC', 'id'=>'ASC'),
             'cascade'      => array('persist', 'remove'),
             ));
 

@@ -1,0 +1,396 @@
+<section class="content reports">
+<header class="reports-header">
+    <div class="right">
+        <div class="report-access-avatars">
+            <span class="title">On this dashboard:</span>
+            <a href="#" class="avatar" style="background-image: url(./img/avatar2.png);"></a>
+            <a href="#" class="avatar" style="background-image: url(./img/avatar3.jpg);"></a>
+            <a href="#" class="avatar" style="background-image: url(./img/avatar4.jpg);"></a>
+            <a href="#" class="avatar" style="background-image: url(./img/avatar2.png);"></a>
+            <a href="#" class="avatar" style="background-image: url(./img/avatar3.jpg);"></a>
+            <a href="#" class="avatar" style="background-image: url(./img/avatar4.jpg);"></a>
+            <a href="#" class="avatar avatar-blank"><span>+4</span></a>
+            <a href="./reports-main-create-dashboard-agent-permissions.html" class="avatar edit-access-link"><span>Edit user access <i class="fa fa-user"></i></span></a>
+        </div>
+    </div>
+
+    <div class="left">
+        <div class="dashboard-main-list" ng-click='selecting=!selecting' ng-class = "{'expanded': selecting}">
+            <a class="link-pointer">
+                <span>Dashboard:</span> {{ ng_var('dashboard.title') }} <i class="fa fa-sort"></i>
+            </a>
+
+            <ul ng-show="selecting">
+                <li ng-repeat="db in dashboards track by db.id">
+                    <a class='link-pointer' ng-class='{"current": db.id === dashboard.id}' ng-click="changeDashboard(db)">
+                        <span class='logo-deskpro' ng-show="db.default"></span>
+                        {{ ng_var('db.title') }}
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <nav class="reports-control">
+            <ul>
+                <li><a href="./reports-main-create-dashboard-filled-in.html"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
+                <li><a href="./reports-main-create-dashboard.html"><i class="fa fa-plus"></i> Create Dashboard</a></li>
+            </ul>
+        </nav>
+        <hr>
+    </div>
+
+</header>
+
+
+
+<div class="report-tabs">
+    <ul>
+        <li class="add-report-link">
+            <a href="#" ng-click='addReport()'><i class="fa fa-plus"></i></a>
+        </li>
+
+        <li ng-repeat="report in dashboard.reports track by report.id" ng-class="{'active-tab':currentReport.id===report.id}">
+            <a ng-click="changeReport(report)">{{ ng_var('report.title') }}</a>
+        </li>
+    </ul>
+</div>
+
+<div class="report-info">
+
+    <div class="report-extras">
+        <a href="#">
+            <div><i class="fa fa-print"></i></div>
+            <span>Print Report</span>
+        </a>
+
+        <a href="#">
+            <div><i class="fa fa-file-pdf-o"></i></div>
+            <span>Download PDF</span>
+        </a>
+    </div>
+
+    <h1><span>Report:</span> User Performance</h1>
+
+    <nav class="reports-control">
+        <ul>
+            <li><a href="#" class="control-inactive"><i class="fa fa-cog"></i> Edit Report</a></li>
+            <li><a href="#"><i class="fa fa-copy"></i> Clone Report</a></li>
+        </ul>
+    </nav>
+
+    <div class="report-date-range-picker">
+        <a href="#" class="date-range-button">Date range <i class="fa fa-calendar-o"></i></a>
+
+        <span class="selected-date"><span>Selected:</span> January 2014</span>
+
+              <span class="date-jumper">
+                <a href="#"><i class="fa fa-caret-left"></i></a>
+                <a href="#"><i class="fa fa-caret-right"></i></a>
+              </span>
+    </div>
+</div>
+
+
+<div class="graph-container">
+    <div class="graph-container-controls">
+        <!-- default or control-active(when selected) or control-inactive(when disabled for default dashboards) -->
+        <a href="#" class="control control-inactive">Dashboard Layout <i class="fa fa-columns"></i></a>
+        <a href="./presentation-only-active-filters.html" class="control">Filters <i class="fa fa-filter"></i></a>
+
+        <span class="generated-graph-info">Report generated at 6.32PM, Aug 24, 2014 <a href="#"><i class="fa fa-refresh"></i></a></span>
+    </div>
+
+    <!--<div class="graph-filters">
+      <span class="label">Departments:</span> <a href="#" class="active">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
+      <span class="label">Agents:</span> <a href="#">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
+    </div>-->
+</div>
+
+<div style="padding: 50px;">
+
+</div>
+
+
+
+
+
+
+
+<div style="padding: 50px; width: 500px;">
+    <div class="reports-dropdown expanded">
+        <header>
+            <a href="#" class="hide-dropdown"><i class="fa fa-times"></i></a>
+            <i class="fa fa-plus"></i> Create new report
+        </header>
+
+        <div class="reports-dropdown-content">
+            <p>Bit of text about adding a report into your current dashboard lorel ipsum.</p>
+        </div>
+
+        <hr>
+
+
+        <div class="reports-dropdown-content">
+            <h2>Create new report</h2>
+            <form>
+                <button>Create report</button>
+                <div class="input-bucket"><input type="text" placeholder="Name your report"></div>
+            </form>
+        </div>
+
+        <hr>
+
+        <div class="reports-dropdown-content">
+            <h2>Or clone an existing report</h2>
+            <ul class="clone-list">
+                <li>
+                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a href="#">DeskPRO Cloud Agents</a>
+                </li>
+
+                <li class="current">
+                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a href="#">DeskPRO Insights <span>(Your current dashboard)</span></a>
+                </li>
+
+                <li class="expanded">
+                    <a href="#" class="control"><i class="fa fa-minus-square-o"></i></a>
+                    <a href="#">Agent Performance</a>
+
+                    <ul>
+                        <li><a href="#">User performance</a></li>
+                        <li><a href="#">Ticket performance</a></li>
+                        <li><a href="#">Agent</a></li>
+                    </ul>
+
+                </li>
+
+                <li>
+                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a href="#">Ticket Statuses</a>
+                </li>
+
+                <li>
+                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a href="#">Tickets resolve time</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Inline styles for rpesentation, remove -->
+<div style="padding: 50px; width: 500px;">
+    <div class="reports-dropdown expanded">
+        <header>
+            <a href="#" class="hide-dropdown"><i class="fa fa-times"></i></a>
+            <i class="fa fa-plus"></i> Create Dashboard
+        </header>
+        <hr>
+
+        <div class="dropdown-content">
+            <ul class="big-actions">
+                <li>
+                    <a href="#"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
+                </li>
+
+                <li>
+                    <a href="#"><i class="fa fa-copy"></i> Clone the <span>DeskPRO Insights</span> dashboard</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Inline styles for rpesentation, remove -->
+<div style="padding: 50px; width: 500px;">
+    <div class="reports-dropdown expanded">
+        <header>
+            <a href="#" class="hide-dropdown"><i class="fa fa-times"></i></a>
+            <i class="fa fa-copy"></i> Clone report
+        </header>
+
+        <div class="reports-dropdown-content">
+            <p>Bit of text about adding a report into your current dashboard lorel ipsum.</p>
+        </div>
+
+        <hr>
+
+        <div class="reports-dropdown-content">
+            <h2>Existing Dashboards</h2>
+            <ul class="clone-list">
+                <li>
+                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a href="#">DeskPRO Cloud Agents</a>
+                </li>
+
+                <li class="current">
+                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a href="#">DeskPRO Insights <span>(Your current dashboard)</span></a>
+                </li>
+
+                <li>
+                    <a href="#" class="control"><i class="fa fa-minus-square-o"></i></a>
+                    <a href="#">Agent Performance</a>
+                </li>
+
+                <li>
+                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a href="#">Ticket Statuses</a>
+                </li>
+
+                <li>
+                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a href="#">Tickets resolve time</a>
+                </li>
+            </ul>
+        </div>
+
+        <hr>
+
+        <div class="reports-dropdown-content">
+            <a href="#" class="footer-link"><i class="fa fa-copy"></i> Or create a new dashboard and clone into it</a>
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Can be any width, padding is for presentation on html, remove -->
+<div style="padding: 50px; width: 650px;">
+    <div class="reports-dropdown expanded">
+        <header>
+            <a href="#" class="hide-dropdown"><i class="fa fa-times"></i></a>
+            <i class="fa fa-plus"></i> Date Range
+        </header>
+
+        <hr>
+
+        <div class="date-range-popup">
+            <ul class="date-range-main-list">
+                <li><a href="#">Year</a></li>
+                <li><a href="#">Week</a></li>
+                <li><a href="#" class="active">Month</a></li>
+                <li><a href="#">Year</a></li>
+                <li><a href="#">Custom Dates</a></li>
+                <li><a href="#">Everything</a></li>
+            </ul>
+        </div>
+
+        <div class="date-range-content">
+            <ul class="preset-values">
+                <li><a href="#">This Month</a></li>
+                <li><a href="#">Last Month</a></li>
+                <li><a href="#">2014 <i class="fa fa-caret-down"></i></a></li>
+            </ul>
+
+            <div class="date-range-widget">
+                <!-- Calendars etc in here -->
+                <table>
+                    <tr>
+                        <td><a href="#">Jan</a></td>
+                        <td><a href="#">Feb</a></td>
+                        <td><a href="#">Mar</a></td>
+                        <td><a href="#">Apr</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#">May</a></td>
+                        <td><a href="#">Jun</a></td>
+                        <td><a href="#">Jul</a></td>
+                        <td><a href="#">Aug</a></td>
+                    </tr>
+                    <tr>
+                        <td><a href="#">Sep</a></td>
+                        <td><a href="#">Oct</a></td>
+                        <td><a href="#">Nov</a></td>
+                        <td><a href="#">Dec</a></td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="date-save">
+                <a href="#" class="button">Save Dates</a>
+            </div>
+        </div><!-- End date-range-content -->
+    </div><!-- End reports-dropdown -->
+</div><!-- End presentation div -->
+
+
+
+<!-- Can be any width, padding is for presentation on html, remove -->
+<div style="padding: 50px; width: 650px;">
+    <div class="reports-dropdown expanded">
+        <header>
+            <a href="#" class="hide-dropdown"><i class="fa fa-times"></i></a>
+            <i class="fa fa-plus"></i> Date Range
+        </header>
+
+        <hr>
+
+        <div class="date-range-popup">
+            <ul class="date-range-main-list">
+                <li><a href="#" class="active">Year</a></li>
+                <li><a href="#">Week</a></li>
+                <li><a href="#">Month</a></li>
+                <li><a href="#">Year</a></li>
+                <li><a href="#">Custom Dates</a></li>
+                <li><a href="#">Everything</a></li>
+            </ul>
+        </div>
+
+        <div class="date-range-content">
+            <ul class="preset-values">
+                <li><a href="#">Today</a></li>
+                <li><a href="#">Yesterday</a></li>
+                <li><a href="#">Last 24hrs</a></li>
+            </ul>
+
+            <div class="date-range-widget">
+                <a href="#" class="select">Select Year <i class="fa fa-caret-down"></i></a>
+                <a href="#" class="select">Select Week <i class="fa fa-caret-down"></i></a>
+            </div>
+
+            <div class="date-save">
+                <a href="#" class="button">Save Dates</a>
+            </div>
+        </div><!-- End date-range-content -->
+    </div><!-- End reports-dropdown -->
+</div><!-- End presentation div -->
+
+
+<!-- Expanded filters dropdown content - needs to be placed and width adjusted with js -->
+<div class="graph-filters">
+    <span class="label">Departments:</span> <a href="#" class="active">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
+
+    <span class="label">Agents:</span>
+
+    <a href="#" class="expanded">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
+
+    <div class="expanded-content">
+        <ul>
+            <li>
+                <a href="#">Sales</a>
+            </li>
+            <li>
+                <a href="#">Billing</a>
+            </li>
+            <li>
+                <a href="#">Tech Support</a>
+            </li>
+        </ul>
+    </div>
+</div>
+
+
+
+<!-- inline styles for presentation, not needed -->
+<div class="tooltip t-reports-disabled" style="margin: 20px; margin-top: 140px;">
+    <i class="fa fa-ban tooltip-icon"></i>
+    <h1>This item is disabled</h1>
+    <p>Lorel ipsum dolor sit amet lorel ipsum dolor</p>
+</div>
+</section>

@@ -68,6 +68,33 @@ define [
     }
   ])
 
+  InterfaceApp.factory('dpHttpInterceptor', ['$q', ($q) ->
+    return {
+    request: (config) ->
+      if window.DP_SESSION_ID
+        config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
+      if window.DP_REQUEST_TOKEN
+        config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN
+
+      return config
+
+    response: (response) ->
+      return response
+
+    requestError: (rejection) ->
+      return $q.reject(rejection)
+
+    responseError: (rejection) ->
+      return $q.reject(rejection)
+    }
+  ])
+  ###
+  # Config section
+  ###
+  InterfaceApp.config(['$httpProvider', ($httpProvider) ->
+    $httpProvider.interceptors.push('dpHttpInterceptor');
+  ])
+
   InterfaceApp.config(['$httpProvider', ($httpProvider) ->
     $httpProvider.interceptors.push('HttpTemplateInterceptor')
   ])
@@ -119,7 +146,7 @@ define [
       'app.reports.dashboards',
       '/dashboards',
       'Reports.App.Dashboard',
-      'ReportsInterfaceBundle:Dashboard:dashboard.html'
+      'ReportsInterfaceBundle:Dashboard:dashboards.html'
     )
   ])
 

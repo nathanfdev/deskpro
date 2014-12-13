@@ -1,39 +1,65 @@
-﻿<div class="modal-header">
-    <h3 class="modal-title">New dashboard</h3>
-</div>
-<div class="modal-body">
-    <form role="form">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text"
-                   class="form-control"
-                   ng-model="ReportsModalInstanceCtrl.newDashboard.name"
-                   id="name"
-                   placeholder="Enter name">
+﻿<section class="popup">
+
+    <!-- Popup Header & Title -->
+    <header>
+        <h1>Create new dashboard</h1>
+        <div class="controls"><a href="./reports-main.html"><i class="fa fa-times"></i></a></div>
+    </header>
+
+    <!-- Popup Sidebar -->
+    <div class="popup-sidebar" style="height: 579px;"><!-- Need to calculate the height of popup with js and update the sidebar -->
+        <div class="popup-sidebar-content">
+            <ul>
+                <li class="active"><a href="./reports-main-create-dashboard.html">Dashboard Info</a></li>
+                <li><a href="./reports-main-create-dashboard-agent-permissions.html">Agent Permissions</a></li>
+            </ul>
         </div>
-        <div class="form-group">
-            <label for="cols">Columns</label>
-            <input
-                    type="number"
-                    class="form-control"
-                    ng-model="ReportsModalInstanceCtrl.newDashboard.cols"
-                    id="cols"
-                    placeholder="Enter columns"
-                    >
-        </div>
+    </div>
+    <!-- End Popup Sidebar -->
 
 
-    </form>
-</div>
-<div class="modal-footer">
-    <button
-            class="btn btn-primary"
-            ng-click="ReportsModalInstanceCtrl.createDashboard()">
-        Create
-    </button>
-    <button
-            class="btn btn-warning"
-            ng-click="ReportsModalInstanceCtrl.cancel()">
-        Cancel
-    </button>
-</div>
+
+    <!-- Popup Content -->
+    <div class="popup-content">
+
+        <!-- Content Form -->
+        <form class="popup-form-default">
+
+            <!-- Form Row (left label, input & possible side content) -->
+            <div class="bucket">
+                <label class="label">Dashboard Title:</label>
+                <div class="bucket-column"><input type="text" placeholder="Name of your new dashboard"></div>
+            </div>
+            <!-- End Form Row -->
+
+            <hr>
+
+            <h2>Create reports for this dashboard</h2>
+
+            <div class="bucket">
+                <label class="label"><i class="fa fa-bars"></i></label>
+                <div class="bucket-column-last">
+                    <span class="meta"><a href="#">Remove</a></span>
+                </div>
+                <div class="bucket-column">
+                    <input type="text" placeholder="Report title">
+                </div>
+            </div>
+            <hr>
+
+            <div class="bucket">
+                <label class="label">Reports:</label>
+                <div class="bucket-column">
+                    <a href="./presentation-only-reports-main-create-dashboard-filled-in-single.html" class="button button-secondary half-width">Add new report</a><a href="./presentation-only-reports-main-create-dashboard-filled-in-cloned.html" class="button button-secondary half-width">Clone existing report</a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <footer>
+        <a href="./reports-main-create-dashboard-filled-in.html" class="button">Save Changes</a>
+    </footer>
+    <!-- End Popup Content -->
+
+</section>

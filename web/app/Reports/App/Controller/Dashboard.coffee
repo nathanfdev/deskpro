@@ -4,43 +4,36 @@ define -> [
 
     DashboardService.setWidgetService(DashboardWidgetService)
 
-#    DashboardService.getDashboards().then (dbs) =>
-#      $scope.dashboards = dbs
-#
-#      if $scope.dashboards.length > 0
-#        dashboard = $scope.dashboards[0]
-#        $scope.dashboard = dashboard
-#      else
-#        $scope.gridsterOptions =
-#          margins: [20, 20],
-#          columns: 10,
-#          draggable:
-#            handle: 'h3'
+    DashboardService.getDashboards().then (dbs) =>
+      $scope.dashboards = dbs
+
+      if $scope.dashboards.length > 0
+        $scope.changeDashboard($scope.dashboards[0])
+      else
+        $scope.gridsterOptions =
+          margins: [20, 20],
+          columns: 10,
+          draggable:
+            handle: 'h3'
 
 
     $scope.$watch 'dashboard', (newVal, oldVal) =>
       if newVal != oldVal
-        $scope.radioModel = $scope.dashboard.name
         $scope.gridsterOptions = $scope.dashboard.options
       else
         if $scope.dashboard?
-          $scope.radioModel = $scope.dashboard.name
           $scope.gridsterOptions = $scope.dashboard.options
-        else
-          $scope.radioModel == ""
 
-    $scope.setDash = (dash) ->
-      $scope.dashboard = dash;
 
     $scope.changeDashboard = (newDb) ->
-      newDb.options.floating = false
       if newDb.loaded is false
         DashboardService
         .getDashboard newDb
         .then (db) =>
+          console.log(db)
           $scope.dashboard = db
       else
-       @$scope.dashboard = newDb
+        $scope.dashboard = newDb
 
 
     $scope.NewDashboardModal = () ->

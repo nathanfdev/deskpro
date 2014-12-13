@@ -164,17 +164,6 @@ class ReportDashboardReport extends DomainObject
 				 'id'         => true,
 			)
 		);
-        $metadata->mapField(
-			array(
-				 'fieldName'  => 'order',
-				 'type'       => 'integer',
-				 'precision'  => 0,
-				 'scale'      => 0,
-                 'default'    => 0,
-				 'nullable'   => false,
-				 'columnName' => 'order',
-			)
-		);
 		$metadata->mapField(
 			array(
 				 'fieldName'  => 'title',
@@ -184,6 +173,17 @@ class ReportDashboardReport extends DomainObject
 				 'scale'      => 0,
 				 'nullable'   => false,
 				 'columnName' => 'title',
+			)
+		);
+        $metadata->mapField(
+			array(
+				 'fieldName'  => 'sort_order',
+				 'type'       => 'integer',
+                 'precision'  => 0,
+                 'scale'      => 0,
+                 'default'    => 0,
+				 'nullable'   => false,
+				 'columnName' => 'sort_order',
 			)
 		);
         $metadata->mapField(

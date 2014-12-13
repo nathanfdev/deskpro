@@ -74,11 +74,8 @@ class DashboardController extends AbstractController
 //            $data[$k] = $this->_getDashboardData($dashboard);
 //            $data[$k]['widgets'] = $this->_getDashboardWidgets($dashboard);
 
-            $data[$k] = array(
-                'title' => $dashboard->getTitle(),
-                'id' => $dashboard->getId(),
-                'reports' => $this->_getReportsData($dashboard),
-            );
+
+            $data[$k] = $this->_getDashboardData($dashboard);
 
         }
 
@@ -91,88 +88,14 @@ class DashboardController extends AbstractController
         return $this->createApiResponse($widgetData);
     }
 
-    protected function _getWidgetData($widget)
-    {
-        if(! ($widget instanceof Widget)) {
-            $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget);
-        }
-        $pos  = $widget->getPosition();
-        $size = $widget->getSize();
-        $report = $widget->getReport();
-        $widget_data = Display::renderQuery('json', $report->query);
 
-        $data = array(
-            'id'    => $widget->getId(),
-            'name'  => $widget->getTitle(),
-            "row"   => $pos[0],
-            "col"   => $pos[1],
-            "sizeX" => $size[0],
-            "sizeY" => $size[1],
-            "type"  => "graph",
-            "data"  => $widget_data,
-        );
-        return $data;
-    }
-
-    protected function _getReportsData($dashboard)
-    {
-        if(! ($dashboard instanceof Dashboard)) {
-            $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find((int) $dashboard);
-        }
-
-        $reports_data = array();
-        foreach ($dashboard->getReports() as $report)
-        {
-            $widgets = array();
-            foreach($report->getWidgets() as $widget) {
-                $pos  = $widget->getPosition();
-                $size = $widget->getSize();
-                $widgets[] = array(
-                    'id'    => $widget->getId(),
-                    'name'  => $widget->getTitle(),
-                    "row"   => $pos[0],
-                    "col"   => $pos[1],
-                    "sizeX" => $size[0],
-                    "sizeY" => $size[1],
-                    "type"  => "graph",
-                );
-            }
-            $data = array(
-                'name'    => $report->getTitle(),
-                'id'      => $report->getId(),
-                'loaded'  => false,
-                'options' => array(
-                    'columns'  => $report->getColumns(),
-                    "floating" => false,
-                    "swapping" => false,
-                ),
-                'widgets'  => $widgets,
-            );
-            $reports_data[] = $data;
-        }
-
-
-        return $reports_data;
-    }
-
-    protected function _getDashboardWidgets($dashboard)
-    {
-        $widgets = array();
-        if(! ($dashboard instanceof Dashboard)) {
-            $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find((int) $dashboard);
-        }
-        foreach($dashboard->getStats() as $widget) {
-            $widgets[] = $this->_getWidgetData($widget);
-        }
-        return $widgets;
-    }
 
     public function getAction($id)
     {
-        $dashboard = $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find((int) $id);
-        $data = $this->_getReportsData($dashboard);
-//        $data['widgets'] = $this->_getDashboardWidgets($dashboard);
+        $dashboard = $this->_getDashboard($id);
+        $data = $this->_getDashboardData($dashboard);
         $data['loaded'] = true;
+        $data['reports'] = $this->_getReportsData($dashboard);
         return $this->createApiResponse($data);
     }
 
@@ -248,10 +171,7 @@ class DashboardController extends AbstractController
     public function saveAction($id)
     {
         if($id) {
-            $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find($id);
-            if(!$dashboard) {
-                throw $this->createNotFoundException('Dashboard not found!');
-            }
+            $dashboard = $this->_getDashboard($id);
         } else {
             $dashboard = new Dashboard();
         }
@@ -362,7 +282,7 @@ class DashboardController extends AbstractController
         if($id) {
             $widget = $this->em->getRepository('DeskPRO:ReportDashboardStat')->find($id);
             if(!$widget) {
-                throw $this->createNotFoundException('Dashboard not found!');
+                throw $this->createNotFoundException('Widget not found!');
             }
         } else {
             $widget = new Widget();
@@ -437,11 +357,7 @@ class DashboardController extends AbstractController
     public function addWidgetAction($id)
     {
         /** @var Dashboard $dashboard */
-        $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find($id);
-
-        if(!$dashboard) {
-            throw $this->createNotFoundException('Dashboard not found!');
-        }
+        $dashboard = $this->_getDashboard($id);
         /**
          * @var \Application\DeskPRO\Reports\Builder $reports_builder
          */
@@ -503,13 +419,115 @@ class DashboardController extends AbstractController
      */
     public function deleteAction($id)
     {
-        $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find($id);
+        $dashboard = $this->_getDashboard($id);
         if($dashboard) {
             $this->em->remove($dashboard);
             $this->em->flush();
             return $this->createApiDeleteResponse();
-        } else {
-            throw $this->createNotFoundException('Dashboard not found!');
         }
+    }
+
+    // service methods
+    //todo: move in service
+
+    protected function _getWidgetData($widget)
+    {
+        if(! ($widget instanceof Widget)) {
+            $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget);
+        }
+        $pos  = $widget->getPosition();
+        $size = $widget->getSize();
+        $report = $widget->getReport();
+        $widget_data = Display::renderQuery('json', $report->query);
+
+        $data = array(
+            'id'    => $widget->getId(),
+            'name'  => $widget->getTitle(),
+            "row"   => $pos[0],
+            "col"   => $pos[1],
+            "sizeX" => $size[0],
+            "sizeY" => $size[1],
+            "type"  => "graph",
+            "data"  => $widget_data,
+        );
+        return $data;
+    }
+
+    protected function _getReportsData($dashboard)
+    {
+        $dashboard = $this->_getDashboard($dashboard);
+
+        $reports_data = array();
+        foreach ($dashboard->getReports() as $report)
+        {
+//            $widgets = array();
+//            foreach($report->getWidgets() as $widget) {
+//                $pos  = $widget->getPosition();
+//                $size = $widget->getSize();
+//                $widgets[] = array(
+//                    'id'    => $widget->getId(),
+//                    'name'  => $widget->getTitle(),
+//                    "row"   => $pos[0],
+//                    "col"   => $pos[1],
+//                    "sizeX" => $size[0],
+//                    "sizeY" => $size[1],
+//                    "type"  => "graph",
+//                );
+//            }
+            $data = array(
+                'title'        => $report->getTitle(),
+                'id'           => $report->getId(),
+                'dashboard_id' => $dashboard->getId(),
+                'loaded'       => false,
+                'options'      => array(
+                    'columns'  => $report->getColumns(),
+                    "floating" => false,
+                    "swapping" => false,
+                ),
+                //                'widgets'  => $widgets,
+            );
+            $reports_data[] = $data;
+        }
+
+
+        return $reports_data;
+    }
+
+    protected function _getDashboardWidgets($dashboard)
+    {
+        $widgets = array();
+
+        foreach($dashboard->getStats() as $widget) {
+            $widgets[] = $this->_getWidgetData($widget);
+        }
+        return $widgets;
+    }
+
+    /**
+     * @param $dashboard
+     *
+     * @return null|Dashboard
+     */
+    protected function _getDashboard($dashboard) {
+        if(! ($dashboard instanceof Dashboard)) {
+            $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find((int) $dashboard);
+            if (!$dashboard) throw $this->createNotFoundException('Dashboard not found!');
+        }
+        return $dashboard;
+    }
+
+    protected function _getDashboardData($dashboard)
+    {
+        if(! ($dashboard instanceof Dashboard)) {
+           $dashboard = $this->_getDashboard($dashboard);
+        }
+        $data = array(
+            'title'   => $dashboard->getTitle(),
+            'id'      => $dashboard->getId(),
+            'default' => $dashboard->isDefault(),
+            'loaded'  => false,
+            'reports' => array(),
+        );
+        return $data;
     }
 }

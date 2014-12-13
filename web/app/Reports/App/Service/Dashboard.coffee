@@ -43,7 +43,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           (resp) =>
             dbs = []
             if resp? and resp.data.length > 0
-              dbs.push(el = @widgetService.fillElement element) for element in resp.data
+#              dbs.push(el = @widgetService.fillElement element) for element in resp.data
+              dbs.push element for element in resp.data
             @storage.dbs = dbs;
             deferred.resolve(dbs)
       else deferred.resolve(@storage.dbs)
@@ -59,7 +60,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         .sendGet "/dashboards/#{dashboard.id}"
         .then (resp) =>
           @storage.dbs[dashboardIndex] = resp.data
-          console.log(resp, @storage.dbs)
           deferred.resolve(resp.data)
       return deferred.promise
 
