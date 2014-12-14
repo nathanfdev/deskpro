@@ -1,10 +1,9 @@
 {% extends 'Theme::layout.html.twig' %}
-{% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {# TODO #}
 
 {% block inner_content %}
-    {{ macros.kb_article_cat_breadcrumbs(cat, cat.treeParents) }}
+    {{ kb_category_breadcrumbs({ category: cat }) }}
 
     <article class="categories">
 

@@ -62,6 +62,7 @@ class BaseTheme extends AbstractTheme
             new Tag('knowledgebase_compact',    'Theme:Articles:categories',        array('style' => 'summary')),
             new Tag('knowledgebase_list',       'Theme:Articles:categories',        array('style' => 'expander')),
             new Tag('kb_cats_list',             'Theme:Articles:categories',        array('style' => 'small')),
+            new Tag('kb_category_breadcrumbs',  'Theme:Articles:breadcrumbs'),
 
             new Tag('news_posts',               'Theme:News:list',                  array('style' => 'posts')),
             new Tag('news_posts_list',          'Theme:News:list',                  array('style' => 'small')),

@@ -75,6 +75,23 @@ class ArticlesController extends AbstractController
         );
     }
 
+    public function breadcrumbsAction(Request $request)
+    {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setRequired('category')
+            ->setAllowedTypes(
+                array(
+                    'category' => 'Application\DeskPRO\Entity\ArticleCategory'
+                )
+            );
+        $options = $resolver->resolve($request->query->get('tag_options'));
+
+        return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
+            'category' => $options['category']
+        ));
+    }
+
     /**
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES')")
