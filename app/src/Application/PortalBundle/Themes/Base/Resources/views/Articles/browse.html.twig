@@ -1,7 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {#{{ kb_category_breadcrumbs({ category: cat }) }}#}
-    {#{{ knowledgebase({parent: cat}) }}#}
-    {#{{ kb_articles_simple({category: cat, show_pagination: true, page: page, max_per_page: 2}) }}#}
+    {{ kb_category_breadcrumbs({ category: cat }) }}
+    {{ knowledgebase({parent: cat}) }}
+    {{ kb_articles_simple({category: cat, show_pagination: true, page: page, max_per_page: 2}) }}
 {% endblock inner_content %}

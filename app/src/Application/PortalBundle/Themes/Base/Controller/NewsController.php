@@ -116,7 +116,7 @@ class NewsController extends AbstractController
             )
             ->setAllowedValues(
                 array(
-                    'style' => 'small'
+                    'style' => array('small', 'dropdown')
                 )
             );
         $options = $options_resolver->resolve($request->query->get('tag_options'));

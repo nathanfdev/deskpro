@@ -2,7 +2,7 @@
     <div class="column-full">
         <article class="top-articles-wide">
             <ul>
-                {% for article in page %}
+                {% for article in pager %}
                     <li>
                         <h1><a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a></h1>
                     <span class="meta">

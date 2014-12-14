@@ -64,6 +64,7 @@ class RedirectExceptionListener implements EventSubscriberInterface
         $e = $event->getException();
 
         // only interested in a particular exception here
+        // the DeskPRO LanguageBundle's Router (used in portal) throws this
         if (!$e instanceof RedirectToUrlException) {
             return;
         }
