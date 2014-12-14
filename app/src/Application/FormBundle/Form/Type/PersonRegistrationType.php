@@ -35,6 +35,7 @@
 namespace Application\FormBundle\Form\Type;
 
 
+use Application\FormBundle\Form\FormFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -44,6 +45,16 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 
 class PersonRegistrationType extends AbstractType
 {
+    /**
+     * @var FormFieldManager
+     */
+    private $field_manager;
+
+    public function __construct(FormFieldManager $field_manager)
+    {
+        $this->field_manager = $field_manager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('name', 'text', array(
@@ -77,7 +88,30 @@ class PersonRegistrationType extends AbstractType
             'view_context' => 'user'
         ));
 
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) {
+
+        $field_manager = $this->field_manager;
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($field_manager) {
+            foreach ($field_manager->getAvailablePersonFields() as $field_def) {
+                if (!$field_def->is_enabled) {
+                    return false;
+                }
+
+                $id = $field_def->getId();
+                $event->getForm()->add(
+                    $id,
+                    'deskpro_custom_data_person',
+                    array(
+                        'custom_data_field' => $field_def,
+                        'person' => $event->getData(),
+                        'property_path' => sprintf('getCustomDataCollection[%s]', $id),
+                        'agent_interface' => false,
+                        'label' => false
+                    )
+                );
+            }
+        });
+
+        $builder->addEventListener(FormEvents::POST_SUBMIT, function(FormEvent $event) use ($field_manager) {
             $event->getData()->setPassword($event->getForm()->get('password')->getData());
         });
     }

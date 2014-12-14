@@ -35,12 +35,25 @@
 namespace Application\FormBundle\Form\Type;
 
 
+use Application\FormBundle\Form\FormFieldManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class PersonEditProfileType extends AbstractType
 {
+    /**
+     * @var FormFieldManager
+     */
+    private $field_manager;
+
+    public function __construct(FormFieldManager $field_manager)
+    {
+        $this->field_manager = $field_manager;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('first_name', 'text');
@@ -51,6 +64,29 @@ class PersonEditProfileType extends AbstractType
         $builder->add('language_id', 'deskpro_language', array(
             'view_context' => 'user'
         ));
+
+
+        $field_manager = $this->field_manager;
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, function (FormEvent $event) use ($field_manager) {
+            foreach ($field_manager->getAvailablePersonFields() as $field_def) {
+                if (!$field_def->is_enabled) {
+                    return false;
+                }
+
+                $id = $field_def->getId();
+                $event->getForm()->add(
+                    $id,
+                    'deskpro_custom_data_person',
+                    array(
+                        'custom_data_field' => $field_def,
+                        'person' => $event->getData(),
+                        'property_path' => sprintf('getCustomDataCollection[%s]', $id),
+                        'agent_interface' => false,
+                        'label' => false
+                    )
+                );
+            }
+        });
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

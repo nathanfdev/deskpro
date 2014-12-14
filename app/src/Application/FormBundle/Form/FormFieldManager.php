@@ -73,6 +73,22 @@ class FormFieldManager
         return $this->createCustomField($field, $agent_interface);
     }
 
+    /**
+     * @return CustomDefPerson[]
+     */
+    public function getAvailablePersonFields()
+    {
+        $query = $this->em->createQuery('
+        SELECT f
+        FROM DeskPRO:CustomDefPerson f
+        WHERE f.is_user_enabled = true
+        AND f.is_enabled = true
+        ORDER BY f.display_order
+        ');
+
+        return $query->getResult();
+    }
+
     public function getCustomTicketFieldById($id, $agent_interface)
     {
         return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
