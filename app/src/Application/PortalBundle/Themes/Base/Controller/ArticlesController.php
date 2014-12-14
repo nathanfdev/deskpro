@@ -63,33 +63,11 @@ class ArticlesController extends AbstractController
      */
     public function browseAction(ArticleCategory $category, Request $request)
     {
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($category->articles));
-        $pager->setMaxPerPage(5); // TODO: should come from a brand setting
-        $pager->setCurrentPage($request->get('page', 1));
-
         return $this->render('Theme:Articles:browse.html.twig', array(
                 'cat' => $category,
-                'pager' => $pager
+                'page' => $request->get('page', 1)
             )
         );
-    }
-
-    public function breadcrumbsAction(Request $request)
-    {
-        $resolver = new OptionsResolver();
-        $resolver
-            ->setRequired('category')
-            ->setAllowedTypes(
-                array(
-                    'category' => 'Application\DeskPRO\Entity\ArticleCategory'
-                )
-            );
-        $options = $resolver->resolve($request->query->get('tag_options'));
-
-        return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
-            'category' => $options['category']
-        ));
     }
 
     /**
@@ -108,6 +86,9 @@ class ArticlesController extends AbstractController
             ->setRequired(array('category'))
             ->setDefaults(
                 array(
+                    'show_pagination'       => false,
+                    'page'                  => 1,
+                    'max_per_page'          => 10,
                     'style'                 => 'small',
                     'include_subcategories' => false,
                     'count'                 => 10,
@@ -127,20 +108,23 @@ class ArticlesController extends AbstractController
             )
             ->setAllowedValues(
                 array(
-                    'style' => array('forcat', 'small', 'xsmall', 'simple')
+                    'style' => array('forcat', 'small', 'xsmall', 'simple'),
                 )
             )
         ;
         $options = $options_resolver->resolve($request->query->get('tag_options'));
 
-        $data = $this->getArticlesRepo()->getDataForTagOptions($options);
+        if (!$options['category'] instanceof ArticleCategory) {
+            $options['category'] = $this->getArticleCategoryRepo()->find($options['category']);
+        }
+        $pager = $this->getArticlesDataService()->getArticlesPager($options['category'], $options['page'], $options['max_per_page']);
 
         return $this->render(
             sprintf('Theme:Articles:list_%s.html.twig', $options['style']),
             array(
-                'cat' => $data['cat'],
-                'articles' => $data['articles'],
-                'total_count' => $data['total_count']
+                'show_pagination' => $options['show_pagination'],
+                'cat' => $options['category'],
+                'pager' => $pager
             )
         );
     }
@@ -180,6 +164,31 @@ class ArticlesController extends AbstractController
                 'articles_options' => $options['articles']
             )
         );
+    }
+
+    public function breadcrumbsAction(Request $request)
+    {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setRequired('category')
+            ->setAllowedTypes(
+                array(
+                    'category' => 'Application\DeskPRO\Entity\ArticleCategory'
+                )
+            );
+        $options = $resolver->resolve($request->query->get('tag_options'));
+
+        return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
+            'category' => $options['category']
+        ));
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\ArticlesDataService
+     */
+    protected function getArticlesDataService()
+    {
+        return $this->get('data.articles');
     }
 
 

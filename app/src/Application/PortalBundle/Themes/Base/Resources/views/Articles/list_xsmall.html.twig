@@ -1,8 +1,8 @@
-{% if articles|length > 0 %}
+{% if pager|length > 0 %}
     <div class="column-half">
         <article class="article-categories">
             <ul>
-                {% for article in articles %}
+                {% for article in pager %}
                     <li>
                         <a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a>
                     </li>

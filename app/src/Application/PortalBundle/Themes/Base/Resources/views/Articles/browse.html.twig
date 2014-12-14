@@ -3,23 +3,5 @@
 {% block inner_content %}
     {{ kb_category_breadcrumbs({ category: cat }) }}
     {{ knowledgebase({parent: cat}) }}
-
-        <ul class="categories-article-list">
-            {% for article in pager.currentPageResults %}
-                <li>
-                    <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">
-                        <h1>{{ article.realTitle }}</h1>
-
-                        <div class="article-meta">
-                            {{ phrase('portal.articles.by-line', { name: article.person.name, date: article.date_published | date('Y-m-d') }) }}
-                            <span class="comments focus"><i class="fa fa-comments"></i> 0 comments</span>
-                        </div>
-                    </a>
-                </li>
-            {% endfor %}
-        </ul>
-        {% if pager.haveToPaginate %}
-            {{ pagerfanta(pager) }}
-        {% endif %}
-
+    {{ kb_articles_simple({category: cat, show_pagination: true, page: page, max_per_page: 2}) }}
 {% endblock inner_content %}

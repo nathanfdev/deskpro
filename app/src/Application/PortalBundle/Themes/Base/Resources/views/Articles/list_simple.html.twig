@@ -1,7 +1,11 @@
 <ul>
-    {% for article in articles %}
+    {% for article in pager %}
         <li>
             <a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a>
         </li>
     {% endfor %}
+
+    {% if show_pagination and pager.haveToPaginate %}
+        {{ pagerfanta(pager, null, { routeParams: {tag_options: null} }) }}
+    {% endif %}
 </ul>

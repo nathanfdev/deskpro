@@ -1,8 +1,8 @@
-{% if articles|length > 0 %}
+{% if pager|length > 0 %}
     <div class="column-full">
         <article class="top-articles-wide">
             <ul>
-                {% for article in articles %}
+                {% for article in page %}
                     <li>
                         <h1><a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a></h1>
                     <span class="meta">

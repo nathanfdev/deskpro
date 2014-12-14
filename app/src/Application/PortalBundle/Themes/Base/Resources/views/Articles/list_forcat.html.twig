@@ -1,7 +1,7 @@
-{% if articles|length > 0 %}
+{% if pager|length > 0 %}
     <article class="article-categories">
         <ul>
-            {% for article in articles %}
+            {% for article in pager %}
                 <li>
                     <a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a>
                 </li>
@@ -11,7 +11,7 @@
 
     <div class="list-meta">
         <a href="{{ path('portal_kb_browse', { 'slug':cat.slug }) }}">
-            View <span>{{ total_count }}</span> articles
+            View <span>{{ pager|length }}</span> articles
             <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
         </a>
     </div>
