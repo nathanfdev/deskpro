@@ -37,6 +37,8 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
+use Symfony\Component\HttpFoundation\Response;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class PortalController extends AbstractController
 {
@@ -85,6 +87,24 @@ class PortalController extends AbstractController
                 'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
             )
         );
+    }
+
+    public function pagerAction(Request $request)
+    {
+        $resolver = new OptionsResolver();
+        $resolver->setRequired('pager');
+        $resolver->setDefault('show_pagination', true);
+        $resolver->setAllowedTypes(array('pager' => 'Pagerfanta\Pagerfanta'));
+
+        $options = $resolver->resolve($request->query->get('tag_options'));
+
+        if (!$options['show_pagination']) {
+            return new Response('');
+        }
+
+        return $this->render('Theme:Portal:pager.html.twig', array(
+            'pager' => $options['pager']
+        ));
     }
 
 

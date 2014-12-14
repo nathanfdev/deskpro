@@ -1,11 +1,12 @@
-<ul>
-    {% for article in pager %}
-        <li>
-            <a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a>
-        </li>
-    {% endfor %}
-
-    {% if show_pagination and pager.haveToPaginate %}
-        {{ pagerfanta(pager, null, { routeParams: {tag_options: null} }) }}
-    {% endif %}
-</ul>
+{% if pager|length %}
+    <ul>
+        {% for article in pager %}
+            <li>
+                <a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a>
+            </li>
+        {% endfor %}
+    </ul>
+    {{ pager({pager: pager, show_pagination: show_pagination}) }}
+{% else %}
+    <strong>No articles yet</strong>
+{% endif %}

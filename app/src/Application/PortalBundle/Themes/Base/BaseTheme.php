@@ -42,6 +42,8 @@ class BaseTheme extends AbstractTheme
     public function getTags()
     {
         return array(
+            new Tag('pager',                   'Theme:Portal:pager'),
+
             new Tag('alerts',                   'Theme:Portal:alerts'),
             new Tag('flashes',                  'Theme:Portal:flashes'),
             new Tag('page_top',                 'Theme:Portal:topBar'),
