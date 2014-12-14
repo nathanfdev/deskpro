@@ -113,6 +113,14 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
     }
 
     /**
+     * @return \Application\DeskPRO\Brand\BrandContainer
+     */
+    public function getActiveBrandContainer()
+    {
+        return $this->container->get('brand_stack')->getActive();
+    }
+
+    /**
      * @return \Symfony\Component\Security\Core\Authorization\AuthorizationChecker
      */
     public function getAuthorizationChecker()

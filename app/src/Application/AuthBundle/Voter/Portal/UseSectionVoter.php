@@ -57,23 +57,26 @@ class UseSectionVoter extends AbstractVoter
 
     protected function isGranted($attribute, $object, $user = null)
     {
+        // TODO: we do need the permission bag here, but it is not currently used.... this is purely based on settings atm
         if ($this->isLoggedIn($user)) {
             $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
         } else {
             $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
         }
 
+        $brand_settings = $this->getActiveBrandContainer()->getSettings();
+
         switch($attribute) {
             case static::USE_ARTICLES:
-                return $permissionBag->hasPermission('core.apps_kb');
+                return $brand_settings->get('core.apps_kb');
             case static::USE_FEEDBACK:
-                return $permissionBag->hasPermission('core.apps_feedback');
+                return $brand_settings->get('core.apps_feedback');
             case static::USE_CHAT:
-                return $permissionBag->hasPermission('core.apps_chat');
+                return $brand_settings->get('core.apps_chat');
             case static::USE_DOWNLOADS:
-                return $permissionBag->hasPermission('core.apps_downloads');
+                return $brand_settings->get('core.apps_downloads');
             case static::USE_NEWS:
-                return $permissionBag->hasPermission('core.apps_news');
+                return $brand_settings->get('core.apps_news');
             case static::USE_TICKETS:
                 return true; // all of these settings seems to have changed names recently, this update reflects those changes as best as I can see.
         }
