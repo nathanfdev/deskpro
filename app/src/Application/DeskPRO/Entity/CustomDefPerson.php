@@ -44,7 +44,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class CustomDefPerson extends CustomDefAbstract
 {
     /**
-     * @var CustomDefPeople
+     * @var CustomDefPerson
      */
     protected $parent = null;
 
