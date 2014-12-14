@@ -47,6 +47,11 @@ class PortalController extends AbstractController
         return $this->render('Theme:Portal:index.html.twig');
     }
 
+    public function homeAction()
+    {
+        return $this->render('Theme:Portal:home.html.twig');
+    }
+
 
     public function getInTouchAction()
     {

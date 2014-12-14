@@ -1,0 +1,26 @@
+<h1>DEV TEST</h1>
+<section>
+    {{ news_posts({ count: 3 }) }}
+</section>
+
+<section>
+    {{ knowledgebase({'articles': { sort: 'title asc' }}) }}
+</section>
+
+<section>
+    {{ knowledgebase_list({'articles': { sort: 'title asc' }}) }}
+</section>
+
+<section>
+    <div class="column-third">
+        {{ news_posts_list({ count: 10 }) }}
+    </div>
+
+    <div class="column-third">
+        {{ feedback_list_small({ count: 10 }) }}
+    </div>
+
+    <div class="column-third omega">
+        {{ files_list({ count: 10 }) }}
+    </div>
+</section>
