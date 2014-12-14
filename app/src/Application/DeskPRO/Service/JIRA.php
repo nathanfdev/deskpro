@@ -286,7 +286,7 @@ class JIRA
      * @return array|null
      */
     public function searchByIds(array $ids)
-    {;
+    {
         try {
             return $this->getApi()->searchIssues(sprintf('id IN (%s)', implode(',', $ids)), $this->getMeta()->getAllFields());
         } catch (\Exception $e) {
@@ -360,9 +360,10 @@ class JIRA
     public function removeRemoteIssueLink(JiraIssue $issue)
     {
         try {
-            return $this->getApi()->delete(
+            $this->getApi()->delete(
                 '/issue/' . $issue['issue_id'] . '/remotelink?globalId=deskpro_ticket_' . $issue['ticket_id']
             );
+            return true;
 
         } catch (\Exceptions $e) {
             // todo

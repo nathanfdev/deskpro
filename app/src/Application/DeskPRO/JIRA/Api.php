@@ -76,13 +76,19 @@ class Api
 		} catch (ClientErrorResponseException $e) {
 			$code = $e->getResponse()->getStatusCode();
 
-			if (404 === $code) {
-				throw new NotFoundHttpException($e->getResponse()->getReasonPhrase(), null, 404);
-			}
+            if (404 === $code) {
+                throw new NotFoundHttpException($e->getResponse()->getReasonPhrase(), null, 404);
+            }
 
 			// todo log error message
 			// $json['errorMessages']
-			$json = $e->getResponse()->json();
+            try {
+                $json = $e->getResponse()->json();
+            } catch (\Exception $jsonParseException) {
+                // throw previous exception
+                throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
+            }
+
 
 			if (!empty($json['errors'])) {
 				throw new ApiErrorsException($json['errors']);

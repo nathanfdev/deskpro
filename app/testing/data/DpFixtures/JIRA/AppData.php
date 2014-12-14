@@ -22,7 +22,7 @@ SQL
 
         $settings = array(
             'url' => 'https://deskpro.atlassian.net/',
-            'consumer_key' => 'consumer',
+            'consumer_key' => 'dp-test-hardcoded-consumer',
             'private_key' => '-----BEGIN RSA PRIVATE KEY-----
 MIICXgIBAAKBgQC6yzHCHz3FRHfPlXsftHBVwIpqsGMwSW338sISCUHUIk1CKOf7
 TZX4xilU/XS8rsUx+hS0rhhL5DKwE9WNe6Icot0GjZYa/3X43H5XytHSvEgEKsqZ
@@ -39,10 +39,10 @@ UTLcuY+VSR4qhrRKnyxsl+Uphtn4G+bm6jT9YGCd+l/2N4F9kepJBekHFeD2OaHJ
 4+kyYyGDRzjfHpEeaMRxaq7WpGhUPnfDGEcCSbJEILMLlQ==
 -----END RSA PRIVATE KEY-----',
             'oauth_tokens' => array(
-                'oauth_token' => 'vqsyD8yfZKAmhYAgbDplJTZNLE1xlqJn',
-                'oauth_token_secret' => 'Wv9wvrwaEZHttaTCqdFWNQT1GmbnyO1V',
-                'oauth_expires_in' => '157680000',
-                'oauth_session_handle' => 'nyxi9O58uJy4z92XylWf42GI1bT79icY',
+                'oauth_token' => '1vfYH0rCY9IMrXPaEH0RpZiWqYTbixMt',
+                'oauth_token_secret' => 'ityVNKRIUWLkhLvMERlKg6toz88gJAkT',
+                'oauth_expires_in' => 157680000,
+                'oauth_session_handle' => '1w57KHkPWucvEwb8L4JNcUlbDUnY8dn0',
                 'oauth_authorization_expires_in' => 160272000,
             ),
         );

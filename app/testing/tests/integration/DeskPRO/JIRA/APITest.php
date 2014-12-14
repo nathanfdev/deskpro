@@ -2,6 +2,7 @@
 
 namespace DpIntegrationTests\DeskPRO\JIRA;
 
+use Application\DeskPRO\JIRA\ApiErrorsException;
 use Application\DeskPRO\Service\JIRA;
 use Doctrine\ORM\EntityRepository;
 
@@ -16,8 +17,6 @@ class APITest extends \DpIntegrationTestCase
      * @var JIRA
      */
     protected $service;
-
-    protected $test;
 
     public function runBefore()
     {
@@ -36,26 +35,21 @@ class APITest extends \DpIntegrationTestCase
         return $this->service;
     }
 
-    /**
-     * @throws \Application\DeskPRO\JIRA\ApiErrorsException
-     * @throws \Exception
-     */
-    public function testApiConnection()
+    public function testJiraAPI()
     {
-        $response = $this->js()->getApi()->call('rest/auth/1/session', 'GET');
+        $service = $this->js();
+        $api = $service->getApi();
 
+        // test API connection
+        $response = $this->js()->getApi()->call('rest/auth/1/session', 'GET');
         $this->assertArrayHasKey('name', $response);
         $this->assertArrayHasKey('loginInfo', $response);
         $this->assertArrayHasKey('self', $response);
-
         $this->assertEquals('test-user', $response['name']);
         $this->assertEquals('https://deskpro.atlassian.net/rest/api/latest/user?username=test-user', $response['self']);
-    }
 
-    public function testMeta()
-    {
+        // test meta
         $meta = $this->js()->getMeta();
-
         $this->assertInstanceOf('Application\DeskPRO\JIRA\Meta', $meta);
         $data = $meta->toArray();
         $this->assertEquals('test-user', @$data['api_username']);
@@ -81,12 +75,12 @@ class APITest extends \DpIntegrationTestCase
 
         $this->assertNotNull($issuetype);
         $this->assertArrayHasKey('fields', $issuetype);
-    }
 
-    public function testIssuesAPI()
-    {
-        $service = $this->js();
-        $api = $service->getApi();
+
+
+
+        /** issues tests */
+
         $service->updateMeta(array('default_fields_summary' => array('comment')));
 
         $duedate = new \DateTime('+1 week');
@@ -106,6 +100,20 @@ class APITest extends \DpIntegrationTestCase
                 'summary' => $summary,
             ),
         );
+
+
+        // test validation error
+        $invalidIssue = $issue;
+        $invalidIssue['fields']['duedate'] = time() + 3600;
+        $invalidIssue['fields']['summary'] = null;
+        try {
+            $service->createIssueJson(json_encode($invalidIssue));
+        } catch (ApiErrorsException $e) {
+            $this->assertArrayHasKey('duedate', $e->errors);
+            $this->assertArrayHasKey('summary', $e->errors);
+        }
+
+
         $issue = $service->createIssueJson(json_encode($issue));
         $this->assertArrayHasKey('id', $issue);
         $this->assertArrayHasKey('key', $issue);
