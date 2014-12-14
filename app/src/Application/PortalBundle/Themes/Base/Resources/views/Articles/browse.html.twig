@@ -1,18 +1,8 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{# TODO #}
-
 {% block inner_content %}
     {{ kb_category_breadcrumbs({ category: cat }) }}
-
-    <article class="categories">
-
-        {%  if cat.children|length > 0 %}
-            <div class="row">
-                {{ knowledgebase({ parent: cat.id }) }}
-            </div>
-            <hr>
-        {% endif %}
+    {{ knowledgebase({parent: cat}) }}
 
         <ul class="categories-article-list">
             {% for article in pager.currentPageResults %}
@@ -28,9 +18,8 @@
                 </li>
             {% endfor %}
         </ul>
-
         {% if pager.haveToPaginate %}
             {{ pagerfanta(pager) }}
         {% endif %}
-    </article>
+
 {% endblock inner_content %}
