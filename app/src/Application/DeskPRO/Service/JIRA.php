@@ -411,10 +411,12 @@ class JIRA
         $em->flush($issue);
 
         // trigger an update event
-        $ticket->getStateChangeRecorder()->recordData('jira.linked', $result['issues'][0]);
         $manager = $this->container->getTicketManager();
-        $context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_WEB);
-        $context->setPersonContext($byPerson);
+        $state = $ticket->getStateChangeRecorder();
+        $context = $manager->createAppExecutorContext($this->getApp(), 'issue_update');
+
+        $state->recordData('jira.linked', $result['issues'][0]);
+        $manager->markAsManaged($ticket);
         $manager->saveTicket($ticket, $context);
 
         return $result;
@@ -516,10 +518,13 @@ class JIRA
         }
 
         $manager = $this->container->getTicketManager();
-        $context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_WEB);
-        $context->setPersonContext($performer);
-        $ticket->getStateChangeRecorder()->recordData('jira.comment', $response);
+        $state = $issue->ticket->getStateChangeRecorder();
+        $context = $manager->createAppExecutorContext($this->getApp(), 'issue_update');
+
+        $state->recordData('jira.comment', $response);
         $context->getUserVars()->set('jira.comment', $response['body']);
+        $manager->markAsManaged($ticket);
+        $manager->saveTicket($ticket, $context);
 
         return $response;
     }

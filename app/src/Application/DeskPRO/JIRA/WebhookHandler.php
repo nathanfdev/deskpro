@@ -29,6 +29,7 @@ namespace Application\DeskPRO\JIRA;
 
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Service\JIRA;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class WebhookHandler
@@ -55,7 +56,7 @@ class WebhookHandler
             return false;
         }
 
-        $method = 'on' . Container::camelize(str_replace('jira:', '', $data['webhookEvent']));
+        $method = 'on' . DeskproContainer::camelize(str_replace('jira:', '', $data['webhookEvent']));
         if (!method_exists($this, $method)) {
             return false;
         }
