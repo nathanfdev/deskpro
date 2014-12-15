@@ -39,6 +39,7 @@ use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
@@ -61,14 +62,27 @@ class DownloadsDataService
      * @param $max_per_page
      * @return Pagerfanta
      */
-    public function getDownloadsPager(DownloadCategory $category, $page, $max_per_page)
+    public function getDownloadsPager(DownloadCategory $category = null, $page, $max_per_page)
     {
+        if ($category) {
+            $dls = $category->downloads;
+        } else {
+            $dls = new ArrayCollection($this->getDownloadsRepo()->findAll());
+        }
         // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($category->downloads));
+        $pager = new Pagerfanta(new DoctrineCollectionAdapter($dls));
         $pager->setMaxPerPage($max_per_page);
         $pager->setCurrentPage($page);
 
         return $pager;
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Download
+     */
+    public function getDownloadsRepo()
+    {
+        return $this->em->getRepository('DeskPRO:Download');
     }
 }
  

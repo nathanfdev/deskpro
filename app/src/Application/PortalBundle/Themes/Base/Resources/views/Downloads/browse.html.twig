@@ -1,34 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
-{% import 'Theme:Downloads:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-    {{ macros.kb_downloads_cat_breadcrumbs(cat, cat.treeParents) }}
-
-    <header class="section-header">
-        <h1>{{ cat.title }}</h1>
-    </header>
-
-    {% if cat.children|length>0 %}
-        {{ downloads_overview({ parent: cat.id }) }}
-    {% endif %}
-
-    <article class="downloads">
-        <ul class="download-list">
-            {% for download in cat.downloads %}
-                <li>
-                    <div class="controls">
-                        <ul>
-                            <li class="the-file"><a href="{{ path('portal_downloads_view', { slug: download.slug }) }}">Download <i class="fa fa-file-pdf-o"></i></a></li><li class="the-comments"><a href="#"><i class="fa fa-comments"></i> 0</a></li><li class="the-cudos has-cudos"><a href="#"><i class="fa fa-thumbs-up"></i> 15</a></li>
-                        </ul>
-                    </div>
-
-                    <h1><a href="#"><i class="fa fa-file-pdf-o"></i> {{ download.realTitle }}</a></h1>
-                    <span class="date">Uploaded: {{ download.date_created | date('Y-m-d') }}</span>
-                    <p>
-                        {{ download.content_html|raw }}
-                    </p>
-                </li>
-            {% endfor %}
-        </ul>
-    </article>
+    {{ downloads_category_breadcrumbs({ category: cat }) }}
+    {{ downloads_cats_list({parent: cat}) }}
+    {{ downloads_list_items({category: cat, show_pagination: true, page: page, max_per_page: 2}) }}
 {% endblock inner_content %}

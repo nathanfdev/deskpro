@@ -58,12 +58,30 @@ class DownloadsController extends AbstractController
     /**
      * @ParamConverter(name="category", converter="deskpro_slug")
      */
-    public function browseAction(DownloadCategory $category)
+    public function browseAction(DownloadCategory $category, Request $request)
     {
         return $this->render('Theme:Downloads:browse.html.twig', array(
-                'cat' => $category
+                'cat' => $category,
+                'page' => $request->query->get('page', 1)
             )
         );
+    }
+
+    public function breadcrumbsAction(Request $request)
+    {
+        $resolver = new OptionsResolver();
+        $resolver
+            ->setRequired('category')
+            ->setAllowedTypes(
+                array(
+                    'category' => 'Application\DeskPRO\Entity\DownloadCategory'
+                )
+            );
+        $options = $resolver->resolve($request->query->get('tag_options'));
+
+        return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
+            'category' => $options['category']
+        ));
     }
 
 
@@ -94,9 +112,12 @@ class DownloadsController extends AbstractController
         $options_resolver
             ->setDefaults(
                 array(
-                    'category' => 0, //TODO
                     'count' => 10,
-                    'style' => 'small'
+                    'style' => 'small',
+                    'show_pagination' => false,
+                    'page' => 1,
+                    'max_per_page' => 10,
+                    'category' => null
                 )
             )
             ->setAllowedValues(
@@ -106,14 +127,15 @@ class DownloadsController extends AbstractController
             );
         $options = $options_resolver->resolve($request->query->get('tag_options'));
 
-        $downloads  = $this->getDownloadsRepo()->getNewest($options['count']);
-        $total = $this->getDownloadsRepo()->countPublished();
+        if (null !== $options['category'] && !$options['category'] instanceof DownloadCategory) {
+            $options['category'] = $this->getDownloadCategoriesRepo()->find($options['category']);
+        }
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($options['category'], $options['page'], $options['max_per_page']);
 
         return $this->render(
             sprintf('Theme:Downloads:list_%s.html.twig', $options['style']),
             array(
-                'count_downloads' => $total,
-                'downloads'    => $downloads
+                'pager' => $pager
             )
         );
     }

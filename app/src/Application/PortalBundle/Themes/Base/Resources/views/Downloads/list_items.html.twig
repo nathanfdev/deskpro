@@ -1,5 +1,6 @@
+{% if pager|length > 0 %}
 <ul>
-    {% for dl in downloads %}
+    {% for dl in pager %}
         <li>
             {% if dl.blob and dl.blob.extension %}
                 <span class="text-tag file-tag file-{{ dl.blob.extension }}">.{{ dl.blob.extension }}</span>
@@ -11,3 +12,6 @@
         </li>
     {% endfor %}
 </ul>
+{% else %}
+    <strong>No downloads yet</strong>
+{% endif %}

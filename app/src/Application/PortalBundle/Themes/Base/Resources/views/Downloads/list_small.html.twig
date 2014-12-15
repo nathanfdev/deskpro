@@ -1,21 +1,26 @@
-<article class="panel-tiny front-page-downloads">
-    <div class="large-title clearfix"><h1>Downloads</h1></div>
+{% if pager|length > 0 %}
+    <article class="panel-tiny front-page-downloads">
+        <div class="large-title clearfix"><h1>Downloads</h1></div>
 
-    <ul>
-        {% for dl in downloads %}
-        <li>
-            {% if dl.blob and dl.blob.extension %}
-            <span class="text-tag file-tag file-{{ dl.blob.extension }}">.{{ dl.blob.extension }}</span>
-            {% else %}
-                {# this is the default if we cant decide what the fie extension is #}
-                <span class="text-tag file-tag">&nbsp;</span>
-            {% endif %}
-            <a href="{{ path('portal_downloads_view', { slug:dl.slug } ) }}">{{ dl.title }}</a>
-        </li>
-        {% endfor %}
-    </ul>
+        <ul>
+            {% for dl in pager %}
+                <li>
+                    {% if dl.blob and dl.blob.extension %}
+                        <span class="text-tag file-tag file-{{ dl.blob.extension }}">.{{ dl.blob.extension }}</span>
+                    {% else %}
+                        {# this is the default if we cant decide what the fie extension is #}
+                        <span class="text-tag file-tag">&nbsp;</span>
+                    {% endif %}
+                    <a href="{{ path('portal_downloads_view', { slug:dl.slug } ) }}">{{ dl.title }}</a>
+                </li>
+            {% endfor %}
+        </ul>
 
-    <div class="list-meta">
-        <a href="{{ path('portal_downloads') }}">View <span>{{ count_downloads }}</span> downloads<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
-    </div>
-</article>
+        <div class="list-meta">
+            <a href="{{ path('portal_downloads') }}">View <span>{{ pager|length }}</span> downloads<img
+                        src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+        </div>
+    </article>
+{% else %}
+    <strong>No downloads yet</strong>
+{% endif %}

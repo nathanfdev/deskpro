@@ -82,6 +82,9 @@ class BaseTheme extends AbstractTheme
             new Tag('downloads', 'Theme:Downloads:downloads'),
             new Tag('downloads_cats_list',      'Theme:Downloads:cats',             array('style' => 'small')),
             new Tag('downloads_overview',       'Theme:Downloads:cats',             array('style' => 'overview')),
+            new Tag('downloads_list_simple',       'Theme:Downloads:list',             array('style' => 'simple')),
+            new Tag('downloads_list_items',       'Theme:Downloads:list',             array('style' => 'items')),
+            new Tag('downloads_category_breadcrumbs', 'Theme:Downloads:breadcrumbs'),
 
             new Tag('feedback', 'Theme:Feedback:feedback'),
             new Tag('feedback_items',           'Theme:Feedback:list',              array('style' => 'items')),
