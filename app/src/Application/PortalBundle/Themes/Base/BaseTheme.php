@@ -39,7 +39,7 @@ use Application\PortalBundle\Theme\Tag;
 
 class BaseTheme extends AbstractTheme
 {
-    public function getTags()
+    public static function getTags()
     {
         return array(
             new Tag('home',                   'Theme:Portal:home'),

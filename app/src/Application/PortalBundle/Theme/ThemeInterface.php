@@ -89,4 +89,11 @@ interface ThemeInterface
      * @return array
      */
     public function getTemplateMap();
+
+    /**
+     * Return an array of instantiated Tag objects for use within this theme.
+     *
+     * @return Tag[]
+     */
+    public static function getTags();
 }

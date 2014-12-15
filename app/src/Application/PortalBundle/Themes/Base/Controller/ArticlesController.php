@@ -47,6 +47,7 @@ use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Application\PortalBundle\Annotation\TagOptions;
+use Application\PortalBundle\Annotation\Tag;
 
 class ArticlesController extends AbstractController
 {
@@ -83,37 +84,24 @@ class ArticlesController extends AbstractController
 
     /**
      * @TagOptions({
-     *      defaults: {"show_pagination": false,
+     *      "defaults": {
+     *          "show_pagination": false,
      *          "page": 1,
      *          "max_per_page": 10,
      *          "style": "small",
-     *          "include_subcategories" => false,
+     *          "include_subcategories": false,
      *          "count": 10,
      *          "labelled": "",
      *          "sort": "date_published desc"
      *      },
      *      "allowedValues": {
-     *      "   style": "forcat", "small", "xsmall", "simple"
-     *      }
+     *          "style": {"forcat", "small", "xsmall", "simple"}
+     *      },
+     *      "required": {"category"}
+     * })
      */
     public function listAction(TagRequest $request)
     {
-        $request
-            ->getOptionsResolver()
-            ->setDefaults(array(
-                    'sort_by'               => function (Options $options) {
-                                                $opts = explode(' ', $options['sort']);
-
-                                                return isset($opts[0]) ? trim($opts[0]) : 'date_published';
-                                            },
-                    'sort_direction'        => function (Options $options) {
-                                                $opts = explode(' ', $options['sort']);
-
-                                                return isset($opts[1]) ? trim($opts[1]) : 'desc';
-                                            },
-                )
-            )
-        ;
         $options = $request->getTagOptions();
 
         if (!$options['category'] instanceof ArticleCategory) {

@@ -54,15 +54,10 @@ abstract class AbstractTheme implements ThemeInterface
     public function __construct(ThemeInterface $parent = null)
     {
         $this->parent = $parent;
-        foreach ($this->getTags() as $tag) {
+        foreach (static::getTags() as $tag) {
             $this->tags[$tag->getName()] = $tag;
         }
     }
-
-    /**
-     * @return Tag[]
-     */
-    abstract public function getTags();
 
     public function getParent()
     {

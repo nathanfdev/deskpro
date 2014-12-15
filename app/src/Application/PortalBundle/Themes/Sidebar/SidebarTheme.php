@@ -56,7 +56,7 @@ class SidebarTheme extends AbstractTheme
     }
 
 
-    public function getTags()
+    public static function getTags()
     {
         return array();
     }
