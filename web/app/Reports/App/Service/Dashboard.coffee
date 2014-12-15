@@ -42,6 +42,19 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           , () =>
             console.error('something goes wrong!')
 
+    cloneDashboard: (dashboard) ->
+      deferred = @$q.defer()
+      url = "/dashboards/clone/#{dashboard.id}"
+      @Api
+        .sendPost url
+        .then (response) =>
+          if(response)
+            clonedOne = response.data
+            @storage.dbs.push clonedOne
+            deferred.resolve clonedOne
+        , () =>
+          console.error('something goes wrong!')
+
     getDashboards: () ->
       deferred = @$q.defer()
       if @storage.dbs.length == 0
@@ -95,4 +108,32 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
             @storage.reports = reports;
             deferred.resolve(reports)
       else deferred.resolve(@storage.reports)
+
+    cloneReport: (report) ->
+      deferred = @$q.defer()
+      url = "/dashboards/reports/clone/#{report.id}"
+      @Api
+      .sendPost url
+      .then (response) =>
+        if(response)
+          clonedOne = response.data
+          db_index = @getDbIndexById @storage.dbs, response.data.dashboard_id
+          @storage.dbs[db_index].reports.push clonedOne
+          deferred.resolve clonedOne
+      , () =>
+        console.error('something goes wrong!')
+
+    removeReport: (report) ->
+      deferred = @$q.defer()
+      url = "/dashboards/reports/#{report.id}"
+      @Api
+      .sendDelete url
+      .then (response) =>
+        if(response)
+          db_id = @getDbIndexById @storage.dbs, report.dashboard_id
+          Arrays.removeValue @storage.dbs[db_id].reports, report
+          deferred.resolve @storage.dbs[db_id].reports
+      , () =>
+        console.error('something goes wrong!')
+      deferred.promise
 

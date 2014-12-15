@@ -52,6 +52,12 @@ define -> [
 #
     $scope.saveDashboard = ->
       $modalInstance.close($scope.dashboard)
+
+    $scope.removeReport = (report) ->
+      DashboardService
+        .removeReport(report)
+        .then (reports) ->
+          $scope.dashboard.reports = reports
 #
 #    $scope.createDashboard = () ->
 #      dashboard =

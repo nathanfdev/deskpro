@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReport;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * @SWG\Resource(
@@ -69,6 +70,49 @@ class DashboardReportController extends AbstractController
         return $this->createApiResponse($data);
     }
 
+    public function cloneAction($id)
+    {
+        $prototype = $this->_getReport($id);
+        /** @var ArrayCollection $allReports */
+        $allReports = $prototype->getDashboard()->getReports();
+        $report = new DashboardReport();
+        $sort_order = $allReports->last() ? $allReports->last()->getSortOrder() + 1 : 1;
+        $report
+            ->setTitle($prototype->getTitle())
+            ->setColumns($prototype->getColumns())
+            ->setDashboard($prototype->getDashboard())
+            ->setSortOrder($sort_order);
+        $this->em->persist($report);
+        $this->em->flush();
+        return $this->createApiSuccessResponse($this->_getReportData($report));
+    }
+
+    public function saveAction($dashboard_id, $id)
+    {
+        if($id) {
+            $report = $this->_getReport($id);
+        } else {
+            $report = new DashboardReport();
+        }
+        $title = $this->in->getCleanValue('title', 'string');
+        $dashboard
+            ->setTitle($title);
+        $this->em->persist($dashboard);
+        $this->em->flush();
+        return $this->createSuccessResponse(array(
+            'id' => $dashboard->getId(),
+            'title' => $dashboard->getTitle(),
+        ));
+    }
+
+    public function deleteAction($id)
+    {
+        $report = $this->_getReport($id);
+        $this->em->remove($report);
+        $this->em->flush();
+        return $this->createApiDeleteResponse();
+    }
+
     /**
      * @param $report
      *
@@ -87,10 +131,11 @@ class DashboardReportController extends AbstractController
     {
         $report = $this->_getReport($report);
         $data = array(
-            'title'   => $report->getTitle(),
-            'id'      => $report->getId(),
-            'loaded'  => false,
-            'widgets' => $report->getWidgets(),
+            'title'        => $report->getTitle(),
+            'id'           => $report->getId(),
+            'dasbhoard_id' => $report->getDashboard()->getId(),
+            'loaded'       => false,
+            'widgets'      => $report->getWidgets(),
         );
         return $data;
     }

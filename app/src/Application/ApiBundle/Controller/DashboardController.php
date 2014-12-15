@@ -38,10 +38,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboard as Dashboard;
 use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
-use Orb\Util\Numbers;
+use Application\DeskPRO\Dpql\Statement\Display;
+use Application\ApiBundle\Service\Dashboard as DashboardService;
+
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use Application\DeskPRO\Dpql\Statement\Display;
 
 /**
 * @SWG\Resource(
@@ -52,6 +53,15 @@ use Application\DeskPRO\Dpql\Statement\Display;
 */
 class DashboardController extends AbstractController
 {
+
+    /** @var DashboardService */
+    protected $service;
+
+    public function __consturct()
+    {
+        $this->service = $this->get('dashboard.service');
+    }
+
 	/**
 	 * @SWG\Api(
 	 * 	path="/dashboards",
@@ -75,7 +85,7 @@ class DashboardController extends AbstractController
 //            $data[$k]['widgets'] = $this->_getDashboardWidgets($dashboard);
 
 
-            $data[$k] = $this->_getDashboardData($dashboard);
+            $data[$k] = $this->service->getDashboardData($dashboard);
 
         }
 
@@ -92,7 +102,7 @@ class DashboardController extends AbstractController
 
     public function getAction($id)
     {
-        $dashboard = $this->_getDashboard($id);
+        $dashboard = $this->service->getDashboard($id);
         $data = $this->_getDashboardData($dashboard);
         $data['loaded'] = true;
         $data['reports'] = $this->_getReportsData($dashboard);
@@ -175,19 +185,44 @@ class DashboardController extends AbstractController
         } else {
             $dashboard = new Dashboard();
         }
-        $columns = $this->in->getCleanValue('columns', 'int');
         $title = $this->in->getCleanValue('title', 'string');
         $dashboard
-            ->setTitle($title)
-            ->setColumns($columns);
+            ->setTitle($title);
         $this->em->persist($dashboard);
         $this->em->flush();
         return $this->createSuccessResponse(array(
             'id' => $dashboard->getId(),
             'title' => $dashboard->getTitle(),
-            'columns' => $dashboard->getColumns(),
         ));
     }
+
+    public function cloneAction($id)
+    {
+        $prototype = $this->service->getDashboard($id);
+
+        $dashboard = new Dashboard();
+        $dashboard -> setTitle($prototype->getTitle().'_clone');
+
+        foreach($prototype->getReports() as $report_prototype)
+        {
+            $report = new Tab();
+            $report
+                ->setTitle($report_prototype->getTitle().'_clone')
+                ->setColumns($report_prototype->getColumns())
+                ->setSortOrder($report_prototype->getSortOrder());
+            $dashboard->addReport($report);
+        }
+
+        $this->em->persist($dashboard);
+        $this->em->flush();
+        return $this->createSuccessResponse(array(
+            'id' => $dashboard->getId(),
+            'title' => $dashboard->getTitle(),
+            'loaded' => false,
+            'reports' => array(),
+        ));
+    }
+
     /**
      * @param $id
      * @throws NotFoundHttpException
@@ -357,7 +392,7 @@ class DashboardController extends AbstractController
     public function addWidgetAction($id)
     {
         /** @var Dashboard $dashboard */
-        $dashboard = $this->_getDashboard($id);
+        $dashboard = $this->service->getDashboard($id);
         /**
          * @var \Application\DeskPRO\Reports\Builder $reports_builder
          */
@@ -419,12 +454,12 @@ class DashboardController extends AbstractController
      */
     public function deleteAction($id)
     {
-        $dashboard = $this->_getDashboard($id);
+        $dashboard = $this->service->getDashboard($id);
         if($dashboard) {
-            $this->em->remove($dashboard);
-            $this->em->flush();
-            return $this->createApiDeleteResponse();
-        }
+        $this->em->remove($dashboard);
+        $this->em->flush();
+        return $this->createApiDeleteResponse();
+    }
     }
 
     // service methods
@@ -455,7 +490,7 @@ class DashboardController extends AbstractController
 
     protected function _getReportsData($dashboard)
     {
-        $dashboard = $this->_getDashboard($dashboard);
+        $dashboard = $this->service->getDashboard($dashboard);
 
         $reports_data = array();
         foreach ($dashboard->getReports() as $report)
@@ -503,31 +538,7 @@ class DashboardController extends AbstractController
         return $widgets;
     }
 
-    /**
-     * @param $dashboard
-     *
-     * @return null|Dashboard
-     */
-    protected function _getDashboard($dashboard) {
-        if(! ($dashboard instanceof Dashboard)) {
-            $dashboard = $this->em->getRepository('DeskPRO:ReportDashboard')->find((int) $dashboard);
-            if (!$dashboard) throw $this->createNotFoundException('Dashboard not found!');
-        }
-        return $dashboard;
-    }
 
-    protected function _getDashboardData($dashboard)
-    {
-        if(! ($dashboard instanceof Dashboard)) {
-           $dashboard = $this->_getDashboard($dashboard);
-        }
-        $data = array(
-            'title'   => $dashboard->getTitle(),
-            'id'      => $dashboard->getId(),
-            'default' => $dashboard->isDefault(),
-            'loaded'  => false,
-            'reports' => array(),
-        );
-        return $data;
-    }
+
+
 }

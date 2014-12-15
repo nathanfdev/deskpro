@@ -71,6 +71,16 @@ class ReportDashboardReport extends DomainObject
      */
     protected $widgets;
 
+    /**
+     * @var integer
+     */
+    protected $sort_order;
+
+    /**
+     * @var ReportDashboard
+     */
+    protected $dashboard;
+
     public function __construct()
     {
         $this->widgets = new ArrayCollection();
@@ -138,6 +148,46 @@ class ReportDashboardReport extends DomainObject
     {
         return $this->widgets;
     }
+
+    /**
+     * @return int
+     */
+    public function getSortOrder()
+    {
+        return $this->sort_order;
+    }
+
+    /**
+     * @param int $sort_order
+     *
+     * @return $this
+     */
+    public function setSortOrder($sort_order)
+    {
+        $this->sort_order = $sort_order;
+        return $this;
+    }
+
+    /**
+     * @return ReportDashboard
+     */
+    public function getDashboard()
+    {
+        return $this->dashboard;
+    }
+
+    /**
+     * @param ReportDashboard $dashboard
+     *
+     * @return $this
+     */
+    public function setDashboard($dashboard)
+    {
+        $this->dashboard = $dashboard;
+        return $this;
+    }
+
+
 
 
 	############################################################################

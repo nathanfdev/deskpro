@@ -69,10 +69,11 @@ class ReportDashboard extends DomainObject
      * In case that default reports are comes only with upgrade script we have only getter here
      * @see ReportDashboard::isDefault()
      */
-    protected $default;
+    protected $is_default;
 
     public function __construct()
     {
+        $this->is_default = false;
         $this->reports = new ArrayCollection();
     }
 
@@ -121,12 +122,25 @@ class ReportDashboard extends DomainObject
         return $this->reports;
     }
 
+
+    /**
+     * @param ReportDashboardReport $report
+     *
+     * @return $this
+     */
+    public function addReport(ReportDashboardReport $report)
+    {
+        $this->reports->add($report);
+        $report->setDashboard($this);
+        return $this;
+    }
+
     /**
      * @return bool
      */
     public function isDefault()
     {
-        return (bool) $this->default;
+        return (bool) $this->is_default;
     }
 
 
@@ -169,13 +183,13 @@ class ReportDashboard extends DomainObject
 
         $metadata->mapField(
             array(
-                'fieldName'  => 'default',
-                'default'    => 0,
+                'fieldName'  => 'is_default',
+                'default'    => false,
                 'type'       => 'boolean',
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
-                'columnName' => 'default',
+                'columnName' => 'is_default',
             )
         );
 
