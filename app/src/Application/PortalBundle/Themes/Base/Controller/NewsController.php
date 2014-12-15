@@ -171,6 +171,15 @@ class NewsController extends AbstractController
 
 
     /**
+     * @return \Application\AppBundle\DataService\NewsDataService
+     */
+    public function getNewsDataService()
+    {
+        return $this->get('data.news');
+    }
+
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\News
      */
     protected function getNewsRepo()

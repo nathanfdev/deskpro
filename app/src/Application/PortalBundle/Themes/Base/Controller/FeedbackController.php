@@ -108,6 +108,14 @@ class FeedbackController extends AbstractController
         );
     }
 
+    /**
+     * @return \Application\AppBundle\DataService\FeedbackDataService
+     */
+    public function getFeedbackDataService()
+    {
+        return $this->get('data.feedback');
+    }
+
 
     /**
      * @return \Application\DeskPRO\EntityRepository\Feedback

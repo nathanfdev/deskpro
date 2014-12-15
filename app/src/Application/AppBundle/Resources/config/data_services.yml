@@ -5,3 +5,12 @@ services:
   data.articles:
       class: Application\AppBundle\DataService\ArticlesDataService
       arguments: [@doctrine.orm.default_entity_manager]
+  data.news:
+      class: Application\AppBundle\DataService\NewsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+  data.downloads:
+      class: Application\AppBundle\DataService\DownloadsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+  data.feedback:
+      class: Application\AppBundle\DataService\FeedbackDataService
+      arguments: [@doctrine.orm.default_entity_manager]
