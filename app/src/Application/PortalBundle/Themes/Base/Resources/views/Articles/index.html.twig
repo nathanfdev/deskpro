@@ -2,14 +2,5 @@
 {% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-    <div class="downloads main-downloads">
-        <header class="section-header">
-            <h1>{{ phrase('portal.articles.section-title') }}</h1>
-            <p>
-                {{ phrase('portal.articles.section-desc') }}
-            </p>
-        </header>
-
         {{ knowledgebase() }}
-    </div>
 {% endblock inner_content %}

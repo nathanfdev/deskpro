@@ -45,17 +45,22 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 
 class FeedbackController extends AbstractController
 {
-    public function indexAction(Request $request)
+    public function indexAction()
+    {
+        return $this->render('Theme:Feedback:index.html.twig');
+    }
+
+    public function feedbackAction(Request $request)
     {
         $allFeedback = $this->getFeedbackRepo()->createQueryBuilder('f');
-        $pager       = new Pagerfanta(new DoctrineORMAdapter($allFeedback));
+        $pager = new Pagerfanta(new DoctrineORMAdapter($allFeedback));
         $pager->setMaxPerPage(3);
         $pager->setCurrentPage($request->get('page', 1));
 
         return $this->render(
-            'Theme:Feedback:index.html.twig',
+            'Theme:Feedback:feedback.html.twig',
             array(
-                'pager'     => $pager,
+                'pager' => $pager,
                 'feedbacks' => $pager->getCurrentPageResults()
             )
         );

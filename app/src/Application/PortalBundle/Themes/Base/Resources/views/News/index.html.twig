@@ -2,29 +2,5 @@
 {% import 'Theme:News:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-    {{ macros.kb_news_cat_breadcrumbs() }}
-
-    {{ news_cats_dropdown() }}
-
-    <article class="news front-page-news">
-        <ul>
-            {% for item in news_articles %}
-                <li>
-                    <div class="calendar-decoration"><span class="month">{{ item.date_published | date('M') }}</span>
-                        <hr>
-                        <span class="day">{{ item.date_published | date('j') }}</span></div>
-                    <h1><a href="{{ path('portal_news_view', { slug: item.slug }) }}">{{ item.title }}</a></h1>
-
-                    <h2>{% if item.person %}by <a href="#">{{ item.person.name }}</a> {% endif %}in <a href="{{ path('portal_news_browse', { slug: item.category.slug }) }}">{{ item.category.title }}</a></h2>
-
-                    <p>{{ item.getExcerptHtml|raw }}</p>
-                    <a href="#" class="expand"><i class="fa fa-expand"></i></a>
-                </li>
-            {% endfor %}
-        </ul>
-    </article>
-
-    {% if pager.haveToPaginate %}
-        {{ pagerfanta(pager) }}
-    {% endif %}
+    {{ news() }}
 {% endblock inner_content %}

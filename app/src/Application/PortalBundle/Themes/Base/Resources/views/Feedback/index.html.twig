@@ -1,22 +1,5 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{# TODO #}
-
 {% block inner_content %}
-    <div class="feedback main-feedback">
-        <header class="section-header">
-            <h1>{{ phrase('portal.feedback.section-title') }}</h1>
-            <p>
-                {{ phrase('portal.feedback.section-desc') }}
-            </p>
-        </header>
-
-        {% include 'Theme:Feedback:controls.html.twig' %}
-
-        {{ feedback_items() }}
-
-        {% if pager.haveToPaginate %}
-            {{ pagerfanta(pager) }}
-        {% endif %}
-    </div>
+    {{ feedback() }}
 {% endblock inner_content %}

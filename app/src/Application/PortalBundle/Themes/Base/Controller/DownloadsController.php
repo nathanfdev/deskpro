@@ -50,6 +50,11 @@ class DownloadsController extends AbstractController
         return $this->render('Theme:Downloads:index.html.twig');
     }
 
+    public function downloadsAction()
+    {
+        return $this->render('Theme:Downloads:downloads.html.twig');
+    }
+
     /**
      * @ParamConverter(name="category", converter="deskpro_slug")
      */

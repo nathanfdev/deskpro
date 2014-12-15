@@ -68,19 +68,22 @@ class BaseTheme extends AbstractTheme
             new Tag('kb_cats_list',             'Theme:Articles:categories',        array('style' => 'small')),
             new Tag('kb_category_breadcrumbs',  'Theme:Articles:breadcrumbs'),
 
+            new Tag('news', 'Theme:News:list'),
             new Tag('news_posts',               'Theme:News:list',                  array('style' => 'posts')),
             new Tag('news_posts_list',          'Theme:News:list',                  array('style' => 'small')),
             new Tag('news_date_list',           'Theme:Dev:render',                 array('tpl' => 'Theme:News:news_date_list.html.twig')),
-
             new Tag('news_cats_list',           'Theme:News:cats',                  array('style' => 'small')),
             new Tag('news_cats_dropdown',       'Theme:News:cats',                  array('style' => 'dropdown')),
 
             new Tag('file_items',               'Theme:Downloads:list',             array('style' => 'items')),
             new Tag('files_list',               'Theme:Downloads:list',             array('style' => 'small')),
             new Tag('files_list_simple',        'Theme:Downloads:list',             array('style' => 'simple')),
+
+            new Tag('downloads', 'Theme:Downloads:downloads'),
             new Tag('downloads_cats_list',      'Theme:Downloads:cats',             array('style' => 'small')),
             new Tag('downloads_overview',       'Theme:Downloads:cats',             array('style' => 'overview')),
 
+            new Tag('feedback', 'Theme:Feedback:feedback'),
             new Tag('feedback_items',           'Theme:Feedback:list',              array('style' => 'items')),
             new Tag('feedback_list_small',      'Theme:Feedback:list',              array('style' => 'small')),
 
