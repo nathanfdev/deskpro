@@ -34,10 +34,12 @@
 
 namespace Application\PortalBundle\Theme;
 
+use Application\PortalBundle\Request\TagRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\HttpKernel\Controller\ControllerReference;
 use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\OptionsResolver\OptionsResolver;
 
 class ThemeResolver
 {
@@ -218,11 +220,9 @@ class ThemeResolver
         }
 
         // construct and return the actual tag response content
-        $tag_request = $current_request->duplicate(
-            $query,
-            null,
-            array_merge($current_request->attributes->all(), array('_controller' => $tag->getControllerName()))
-        );
+        $attributes = array_merge($current_request->attributes->all(), array('_controller' => $tag->getControllerName()));
+        $tag_request = new TagRequest($query, array(), $attributes);
+        $tag_request->setOptionsResolver(new OptionsResolver());
 
         return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();
     }

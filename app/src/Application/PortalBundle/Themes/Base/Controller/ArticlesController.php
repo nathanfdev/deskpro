@@ -38,6 +38,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\PortalBundle\Controller\AbstractController;
+use Application\PortalBundle\Request\TagRequest;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
@@ -79,9 +80,9 @@ class ArticlesController extends AbstractController
         return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
     }
 
-    public function listAction(Request $request)
+    public function listAction(TagRequest $request)
     {
-        $options_resolver = new OptionsResolver();
+        $options_resolver = $request->getOptionsResolver();
         $options_resolver
             ->setRequired(array('category'))
             ->setDefaults(
@@ -129,9 +130,9 @@ class ArticlesController extends AbstractController
         );
     }
 
-    public function categoriesAction(Request $request)
+    public function categoriesAction(TagRequest $request)
     {
-        $options_resolver = new OptionsResolver();
+        $options_resolver = $request->getOptionsResolver();
         $options_resolver
             ->setDefaults(
                 array(
