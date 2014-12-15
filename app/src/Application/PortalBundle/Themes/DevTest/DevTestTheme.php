@@ -70,6 +70,14 @@ class DevTestTheme extends AbstractTheme
         return __DIR__ . '/Resources/views';
     }
 
+    /**
+     * @return string absolute path to the root of this theme's controllers
+     */
+    public function getBaseControllerDir()
+    {
+        return __DIR__ . '/Controller';
+    }
+
 
     /**
      * {@inheritdoc}

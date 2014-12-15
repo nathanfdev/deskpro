@@ -129,4 +129,12 @@ class BaseTheme extends AbstractTheme
     {
         return __NAMESPACE__;
     }
+
+    /**
+     * @return string absolute path to the root of this theme's controllers
+     */
+    public function getBaseControllerDir()
+    {
+        return __DIR__ . '/Controller';
+    }
 }

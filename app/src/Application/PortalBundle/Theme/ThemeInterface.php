@@ -65,14 +65,22 @@ interface ThemeInterface
 
 
     /**
-     * @return string relative path to the root of this theme's templates - it is relative to the kernel root dir
+     * @return string absolute path to the root of this theme's templates
      */
     public function getBaseTemplateDir();
+
+
+    /**
+     * @return string absolute path to the root of this theme's controllers
+     */
+    public function getBaseControllerDir();
+
 
     /**
      * @return string|null base namespace of controllers, like: Application\PortalBundle\Themes\Standard
      */
     public function getNamespace();
+
 
     /**
      * Get the tag for the given tag name.
@@ -82,6 +90,7 @@ interface ThemeInterface
      */
     public function getTag($tag_name);
 
+
     /**
      * Get a map of "Theme:x:y.html.twig" => "/abs/path/to/source/twig/file.twig" for all templates that this theme
      * can resolve. This means recursively going through the parents for a complete list. See AbstractTheme.
@@ -89,6 +98,7 @@ interface ThemeInterface
      * @return array
      */
     public function getTemplateMap();
+
 
     /**
      * Return an array of instantiated Tag objects for use within this theme.
