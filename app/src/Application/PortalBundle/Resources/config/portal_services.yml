@@ -87,6 +87,12 @@ services:
     tags:
       - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }
 
+  tag_options.listener:
+      class: Application\PortalBundle\EventListener\TagOptionsListener
+      arguments: [@annotation_reader]
+      tags:
+        - { name: kernel.event_subscriber }
+
 
   ##
   ## Event Listeners
