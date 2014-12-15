@@ -58,7 +58,7 @@ interface SourceMapperInterface
      * @param \Swift_Mime_Message $message
      * @param $status
      * @param \DateTime $queue_date
-     * @return mixed
+     * @return array
      */
     public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null);
 

@@ -61,7 +61,6 @@ class MessageFactory implements MessageFactoryInterface
             $message = Message::newInstance();
             $message->setEncoder(\Swift_Encoding::get8BitEncoding());
             $message->setTemplateEngine($this->templating);
-            $message->enableQueueHint();
 
             return $message;
         }

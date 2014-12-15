@@ -36,7 +36,10 @@ namespace Application\EmailBundle\Mail\SourceMapper;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\DBAL\Connection;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 class DatabaseSourceMapper implements SourceMapperInterface
 {
@@ -51,13 +54,19 @@ class DatabaseSourceMapper implements SourceMapperInterface
     private $bs;
 
     /**
+     * @var EmailAccountManager
+     */
+    private $email_accounts;
+
+    /**
      * @param Connection $db
      * @param DeskproBlobStorage $bs
      */
-    public function __construct(Connection $db, DeskproBlobStorage $bs)
+    public function __construct(Connection $db, DeskproBlobStorage $bs, EmailAccountManager $email_accounts)
     {
         $this->db = $db;
         $this->bs = $bs;
+        $this->email_accounts = $email_accounts;
     }
 
     /**
@@ -106,11 +115,14 @@ class DatabaseSourceMapper implements SourceMapperInterface
         $header_subject_raw = $message->getHeaders()->get('Subject');
         $header_subject = '';
         if ($header_subject_raw) {
-            $header_subject = $header_subject_raw;
+            $header_subject = $header_subject_raw->getFieldBody();
         }
 
-        $header_from_raw = $message->getHeaders()->get('From');
+        $header_from_raw = $message->getFrom();
         $header_from = array();
+
+        $account_id = null;
+
         if ($header_from_raw) {
             foreach ($header_from_raw as $email => $name) {
                 if ($name) {
@@ -118,22 +130,50 @@ class DatabaseSourceMapper implements SourceMapperInterface
                 } else {
                     $header_from[] = $email;
                 }
+
+                if ($email && !$account_id) {
+                    $acc = $this->email_accounts->findAccountForEmailAddress($email, 'with_transport');
+                    if ($acc) {
+                        $account_id = $acc->id;
+                    }
+                }
             }
         }
         $header_from = implode(', ', $header_from);
 
         $date = date('Y-m-d H:i:s');
 
+        $ref_header = $message->getHeaders()->get('X-DeskPRO-MessageRef');
+        $ref = null;
+        if ($ref_header) {
+            $ref = $ref_header->getFieldBody();
+        }
+
+        // Should aready be set via Mailer so this is a fallback
+        if (!$ref) {
+            $ref = Numbers::roundToMultiple(time(), 5) . '-' . Strings::random(40, Strings::CHARS_ALPHANUM_IU);
+            $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
+            $message->setId($ref . '@deskpro-message');
+        }
+
+        if ($status == 'processing') {
+            $exec_count = 1;
+        } else {
+            $exec_count = 0;
+        }
+
         $record = array(
-            'blob_id'        => $blob['id'],
-            'headers'        => $message->getHeaders()->toString(),
-            'header_to'      => $header_to,
-            'header_from'    => $header_from,
-            'header_subject' => $header_subject,
-            'status'         => $status,
-            'date_status'    => $date,
-            'date_created'   => $date,
-            'exec_count'     => 0
+            'blob_id'          => $blob['id'],
+            'ref'              => $ref,
+            'email_account_id' => $account_id,
+            'headers'          => $message->getHeaders()->toString(),
+            'header_to'        => $header_to,
+            'header_from'      => $header_from,
+            'header_subject'   => $header_subject,
+            'status'           => $status,
+            'date_status'      => $date,
+            'date_created'     => $date,
+            'exec_count'       => $exec_count
         );
 
         if ($status == 'pending') {
@@ -304,7 +344,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
         }
 
         try {
-            $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain');
+            $new_log_blob = $this->bs->createBlobRowFromString($log_text, 'log.txt', 'text/plain', array('tag' => 'logs.sendmail_source_log'));
         } catch (\Exception $e) {
             KernelErrorHandler::handleException($e);
             return;

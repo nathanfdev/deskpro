@@ -221,6 +221,24 @@ class EmailAccountManager
 
 
     /**
+     * @param \Swift_Mime_Message $message
+     * @return \Application\DeskPRO\Entity\EmailAccount
+     */
+    public function findAccountForSwiftmailerMessage(\Swift_Mime_Message $message)
+    {
+        $from = $message->getFrom();
+        foreach ($from as $email => $name) {
+            $acc = $this->findAccountForEmailAddress($email, EmailAccountManager::IS_ENABLED & EmailAccountManager::WITH_TRANSPORT);
+            if ($acc) {
+                return $acc;
+            }
+        }
+
+        return $this->getDefaultOutAccountWithFallback();
+    }
+
+
+    /**
      * @param  array $accounts
      * @param  int   $criteria
      * @return array

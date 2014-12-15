@@ -415,7 +415,7 @@ class DeskproContainer extends Container
     /**
      * Get the mailer
      *
-     * @return \Application\DeskPRO\Mail\Mailer
+     * @return \Application\EmailBundle\Mail\Mailer
      */
     public function getMailer()
     {
@@ -556,7 +556,7 @@ class DeskproContainer extends Container
      */
     public function getEmailAccountManager()
     {
-        return $this->getSystemService('email.email_account_manager');
+        return $this->get('email.email_account_manager');
     }
 
 

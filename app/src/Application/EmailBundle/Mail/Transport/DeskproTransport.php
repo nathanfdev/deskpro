@@ -34,15 +34,12 @@
 
 namespace Application\EmailBundle\Mail\Transport;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
-use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\BlobStorage;
-use Application\DeskPRO\Mail\Message as DeskproMessage;
-use Application\EmailBundle\Entity\SendmailSource;
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Mail\SourceMapper\SourceMapperInterface;
+use Orb\Util\Arrays;
 use Swift_Transport;
 use Swift_Events_EventDispatcher;
-use Swift_Message;
 use Swift_Mime_Message;
 use Swift_Events_SendEvent;
 use Swift_Events_EventListener;
@@ -55,6 +52,11 @@ class DeskproTransport implements Swift_Transport
     private $event_dispatcher;
 
     /**
+     * @var EmailAccountManager
+     */
+    private $email_accounts;
+
+    /**
      * @var Swift_Transport
      */
     private $transport;
@@ -65,20 +67,62 @@ class DeskproTransport implements Swift_Transport
     private $source_mapper;
 
     /**
+     * @var bool
+     */
+    private $queue_mode = true;
+
+    /**
      * @var string
      */
-    private $queue_mode = 'never';
+    private $last_log = '';
 
     /**
      * @param SourceMapperInterface $source_mapper
+     * @param EmailAccountManager $email_accounts
      * @param Swift_Transport $real_transport
      * @param Swift_Events_EventDispatcher $event_dispatcher
      */
-    public function __construct(SourceMapperInterface $source_mapper, Swift_Transport $real_transport, Swift_Events_EventDispatcher $event_dispatcher)
+    public function __construct(SourceMapperInterface $source_mapper, EmailAccountManager $email_accounts, Swift_Transport $real_transport, Swift_Events_EventDispatcher $event_dispatcher)
     {
         $this->transport        = $real_transport;
         $this->event_dispatcher = $event_dispatcher;
+        $this->email_accounts   = $email_accounts;
         $this->source_mapper    = $source_mapper;
+
+        if (!empty($GLOBALS['DP_CONFIG']['mail_queue_mode'])) {
+            $s = $GLOBALS['DP_CONFIG']['mail_queue_mode'];
+            if ($s === false || $s == 0 || $s == 'off' || $s == 'disable' || $s == 'disabled') {
+                $this->setQueueMode(false);
+            }
+        }
+    }
+
+
+    /**
+     * @param Swift_Mime_Message $message
+     */
+    private function preprocessMessage(Swift_Mime_Message $message)
+    {
+        if (isset($message->__dp_deskpro_transport_done_preproc)) {
+            return;
+        }
+
+        $acc = $this->email_accounts->findAccountForSwiftmailerMessage($message);
+        $from_name = Arrays::getFirstItem($message->getFrom() ?: array()) ?: '';
+        $message->setFrom($acc->getUseEmailAddress(), $from_name);
+
+        $message->__dp_deskpro_transport_done_preproc = true;
+    }
+
+
+    /**
+     * Set the queue mode (on/off)
+     *
+     * @param string $mode
+     */
+    public function setQueueMode($mode)
+    {
+        $this->queue_mode = $mode;
     }
 
 
@@ -112,15 +156,34 @@ class DeskproTransport implements Swift_Transport
 
 
     /**
+     * @return string
+     */
+    public function getLastLog()
+    {
+        if ($this->transport instanceof EmailAccountTransport) {
+            return trim($this->last_log . "\n" . $this->transport->getLastLog());
+        }
+
+        return sprintf("%s does not support getLastLog", get_class($this->transport));
+    }
+
+
+    /**
      * Queue the message so it is sent by the queue processor.
      *
      * @param Swift_Mime_Message $message
-     * @param \DateTime          $send_date  When to send the message. If not specified, it will be sent the next time the processor is run.
+     * @param \DateTime $send_date When to send the message. If not specified, it will be sent the next time the processor is run.
      * @return int
      */
     public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
     {
-        $r = $this->source_mapper->createForMessage($message, 'pending', $send_date);
+        $this->last_log = '';
+
+        $this->preprocessMessage($message);
+        $r = $this->source_mapper->createSourceForMessage($message, 'pending', $send_date);
+
+        $this->last_log = sprintf('[%s] DeskproTransport: Message %d queued as pending -- %s', date('Y-m-d H:i:s'), $r['id'], $r['ref']);
+
         return $r['id'];
     }
 
@@ -133,7 +196,13 @@ class DeskproTransport implements Swift_Transport
      */
     public function insertMessage(Swift_Mime_Message $message)
     {
+        $this->last_log = '';
+
+        $this->preprocessMessage($message);
         $r = $this->getOrCreateSource($message, 'inserted');
+
+        $this->last_log = sprintf('[%s] DeskproTransport: Message %d queued as inserted -- %s', date('Y-m-d H:i:s'), $r['id'], $r['ref']);
+
         return $r['id'];
     }
 
@@ -142,26 +211,37 @@ class DeskproTransport implements Swift_Transport
      * Sends the given message. Disables any queue that might be enabled.
      *
      * @param Swift_Mime_Message $message
-     * @param string[]           $failedRecipients An array of failures by-reference
+     * @param string[] $failedRecipients An array of failures by-reference
      *
      * @return integer The number of sent emails
      */
     public function sendNow(Swift_Mime_Message $message, &$failedRecipients = null)
     {
+        $this->last_log = '';
+        $this->preprocessMessage($message);
+
+        $r = $this->source_mapper->createSourceForMessage($message, 'processing');
+
         if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
             $this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
             if ($evt->bubbleCancelled()) {
-                $this->source_mapper->createSourceForMessage($message, 'aborted');
+                $this->last_log = sprintf('[%s] DeskproTransport: Aborted because beforeSendPerformed cancelled message', date('Y-m-d H:i:s'));
+                $this->source_mapper->markSourceAborted($r, sprintf('[%s] Aborted because beforeSendPerformed cancelled message', date('Y-m-d H:i:s')));
                 return 0;
             }
         }
 
-        $sent = $this->transport->send($message, $failedRecipients);
+        try {
+            $sent = $this->transport->send($message, $failedRecipients);
 
-        if ($sent) {
-            $this->source_mapper->createSourceForMessage($message, 'complete');
-        } else {
-            $this->source_mapper->createSourceForMessage($message, 'retry');
+            if ($sent) {
+                $this->source_mapper->markSourceComplete($r, $this->getLastLog());
+            } else {
+                $this->source_mapper->markSourceError($r, 'no_send', $this->getLastLog());
+            }
+        } catch (\Exception $e) {
+            $this->source_mapper->markSourceRetry($r, $this->getLastLog() . "\n" . sprintf("[%s] Exception: %s %s", date('Y-m-d H:i:d'), $e->getCode(), $e->getMessage()));
+            return 0;
         }
 
         return $sent;
@@ -178,6 +258,9 @@ class DeskproTransport implements Swift_Transport
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {
+        $this->last_log = '';
+        $this->preprocessMessage($message);
+
         if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
             $this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
             if ($evt->bubbleCancelled()) {
@@ -187,14 +270,8 @@ class DeskproTransport implements Swift_Transport
         }
 
         $do_queue = false;
-        if ($this->queue_mode == 'always') {
+        if ($this->queue_mode == 'enabled' || $this->queue_mode === true || $this->queue_mode == 1) {
             $do_queue = true;
-        } else if ($this->queue_mode == 'smart') {
-            if ($message instanceof DeskproMessage) {
-                if ($message->isQueueHinted()) {
-                    $do_queue = true;
-                }
-            }
         }
 
         if ($do_queue) {

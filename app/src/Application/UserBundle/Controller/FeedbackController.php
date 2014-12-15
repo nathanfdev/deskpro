@@ -416,7 +416,6 @@ class FeedbackController extends AbstractController
             $message = App::getMailer()->createMessage();
             $message->setTo($person->primary_email_address, $person->getDisplayName());
             $message->setTemplate('DeskPRO:emails_user:feedback-new.html.twig', $vars);
-            $message->enableQueueHint();
 
             App::getMailer()->send($message);
         });

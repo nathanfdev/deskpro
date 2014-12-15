@@ -71,7 +71,9 @@ class TestCommand extends ContainerAwareCommand
         $person = $this->getContainer()->getAgentData()->get(1);
         $message->setToPerson($person);
 
-        $mailer->sendNow($message);
+        $mailer->send($message);
+
+        echo $mailer->getLastLog();
 
         return 0;
     }

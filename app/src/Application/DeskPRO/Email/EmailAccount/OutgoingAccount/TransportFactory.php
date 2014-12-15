@@ -53,13 +53,18 @@ class TransportFactory
         }
 
         switch ($config->getType()) {
-            case 'smtp':     return $this->createSmtpTransport($config);
-            case 'gmail':    return $this->createGmailTransport($config);
-            case 'php_mail': return $this->createPhpMailTransport($config);
-            case 'sendmail': return $this->createSendmailTransport($config);
+            case 'smtp':     $tr = $this->createSmtpTransport($config); break;
+            case 'gmail':    $tr = $this->createGmailTransport($config); break;
+            case 'php_mail': $tr = $this->createPhpMailTransport($config); break;
+            case 'sendmail': $tr = $this->createSendmailTransport($config); break;
             default:
                 throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
         }
+
+        $tr->__dp_logger = new \Application\EmailBundle\Mail\Plugins\Logger();
+        $tr->registerPlugin($tr->__dp_logger);
+
+        return $tr;
     }
 
 

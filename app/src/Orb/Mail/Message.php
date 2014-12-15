@@ -43,22 +43,7 @@ class Message extends \Swift_Message
     /**
      * @var bool
      */
-    protected $_queue_hint = false;
-
-    /**
-     * @var int
-     */
-    protected $_queue_priority = 10;
-
-    /**
-     * @var bool
-     */
     protected $_suppress_autoreply = false;
-
-    /**
-     * @var \Swift_Transport
-     */
-    protected $force_transport;
 
     /**
      * @var bool
@@ -144,32 +129,6 @@ class Message extends \Swift_Message
 
     protected function doPreSend($is_retry = false) { }
 
-
-    /**
-     * Enable the queue hint that hints that it's okay to queue and send later.
-     */
-    public function enableQueueHint($priority = 10)
-    {
-        $this->_queue_hint = true;
-        $this->_queue_priority = $priority;
-    }
-
-    /**
-     * @return int
-     */
-    public function getQueuePriority()
-    {
-        return $this->_queue_priority;
-    }
-
-    /**
-     * Disable the queue hint
-     */
-    public function disableQueueHint()
-    {
-        $this->_queue_hint = false;
-    }
-
     /**
      * Set the suppress autoreplies headers
      *
@@ -178,36 +137,6 @@ class Message extends \Swift_Message
     public function setSuppressAutoreplies($on = true)
     {
         $this->_suppress_autoreply = (bool)$on;
-    }
-
-    /**
-     * Is it okay to queue this message to send later?
-     *
-     * @return bool
-     */
-    public function isQueueHinted()
-    {
-        return $this->_queue_hint;
-    }
-
-    /**
-     * Set a transport to use instead of whatever is configured in the mailer.
-     *
-     * @param \Swift_Transport $tr
-     */
-    public function setForceTransport(\Swift_Transport $tr)
-    {
-        $this->force_transport = $tr;
-    }
-
-    /**
-     * Get the forced transport.
-     *
-     * @return \Swift_Transport
-     */
-    public function getSpecificTransport()
-    {
-        return $this->force_transport;
     }
 
     /**

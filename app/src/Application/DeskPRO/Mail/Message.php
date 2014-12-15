@@ -48,11 +48,6 @@ class Message extends \Orb\Mail\Message
     /**
      * @var string
      */
-    protected $track_code;
-
-    /**
-     * @var string
-     */
     protected $context_id;
 
     /**
@@ -89,18 +84,6 @@ class Message extends \Orb\Mail\Message
      * @var array
      */
     protected $embed_only = array();
-
-    /**
-     * Is the message being re-sent?
-     *
-     * @var bool
-     */
-    protected $is_retrying = false;
-
-    /**
-     * @var array
-     */
-    protected $log_messages = array();
 
 
     /**
@@ -231,16 +214,6 @@ class Message extends \Orb\Mail\Message
 
                 $from = $this->getFrom();
                 $from = Arrays::getFirstKey($from);
-
-                if ($tos && $from) {
-                    if ($obj instanceof Entity\TicketMessage) {
-                        $this->track_code = Entity\SendmailLog::insertTicketMessageLog($obj, $tos, $subject, $from);
-                    } elseif ($obj instanceof Entity\Ticket) {
-                        $this->track_code = Entity\SendmailLog::insertTicketLog($obj, $tos, $subject, $from);
-                    } else {
-                        $this->track_code = Entity\SendmailLog::insertLog($tos, $subject, $from);
-                    }
-                }
             }
 
             $body = $this->replaceEmbeds($body);
@@ -309,18 +282,6 @@ class Message extends \Orb\Mail\Message
         $this->embed_only = true;
 
         $this->getHeaders()->addTextHeader('X-DeskPRO-Build', defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 1);
-
-        if ($this->track_code) {
-            $data = array(
-                'unique_args' => array(
-                    'dp_code' => $this->track_code
-                )
-            );
-            if (defined('DPC_SITE_ID')) {
-                $data['unique_args']['dpc_site_id'] = DPC_SITE_ID;
-            }
-            $this->getHeaders()->addTextHeader('X-SMTPAPI', json_encode($data));
-        }
     }
 
     /**
@@ -463,79 +424,5 @@ class Message extends \Orb\Mail\Message
     public static function newInstance($subject = null, $body = null, $contentType = null, $charset = null)
     {
         return new static($subject, $body, $contentType, $charset);
-    }
-
-    /**
-     * Get is retrying flag. A message is set as retrying when it is being sent
-     * after being queued (either because it was deemed unimportant, or because of an error).
-     *
-     * @return bool
-     */
-    public function getIsRetrying()
-    {
-        return $this->is_retrying;
-    }
-
-    /**
-     * Sets is retrying flag
-     */
-    public function setIsRetrying()
-    {
-        $this->is_retrying = true;
-    }
-
-    /**
-     * @param string $track_code
-     */
-    public function setTrackCode($track_code)
-    {
-        $this->track_code = $this->track_code;
-    }
-
-    /**
-     * @return string
-     */
-    public function getTrackCode()
-    {
-        return $this->track_code;
-    }
-
-    /**
-     * Add a log message. These messages are meant to be for the current invocation (eg to track sendmail errors).
-     *
-     * @param string $msg
-     */
-    public function addLogMessage($msg)
-    {
-        $this->log_messages[] = $msg;
-    }
-
-    /**
-     * @param string[] $msgs
-     */
-    public function addLogMessages(array $msgs)
-    {
-        $this->log_messages = array_merge($this->log_messages, $msgs);
-    }
-
-    /**
-     * @param  bool            $as_string
-     * @return string[]|string
-     */
-    public function getLogMessages($as_string = true)
-    {
-        if ($as_string) {
-            return implode("\n", $this->log_messages);
-        }
-
-        return $this->log_messages;
-    }
-
-    /**
-     * @return void
-     */
-    public function clearLogMessages()
-    {
-        $this->log_messages = array();
     }
 }

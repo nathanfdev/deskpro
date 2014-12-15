@@ -87,6 +87,11 @@ class SendmailSource implements NotifyPropertyChanged
     protected $id = null;
 
     /**
+     * @var string
+     */
+    protected $ref = null;
+
+    /**
      * @var \Application\DeskPRO\Entity\Blob
      */
     protected $blob = null;
@@ -489,6 +494,9 @@ class SendmailSource implements NotifyPropertyChanged
             'name' => 'sendmail_sources',
             'indexes' => array(
                 'status_idx'   => array('columns' => array('status')),
+            ),
+            'uniqueConstraints' => array(
+                'ref_idx' => array('columns' => array('ref'))
             )
         ));
 
@@ -497,6 +505,13 @@ class SendmailSource implements NotifyPropertyChanged
             'fieldName'  => 'id',
             'type'       => 'integer',
             'id'         => true,
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'ref',
+            'fieldName'  => 'ref',
+            'type'       => 'string',
+            'length'     => 100,
             'nullable'   => false,
         ));
         $metadata->mapField(array(

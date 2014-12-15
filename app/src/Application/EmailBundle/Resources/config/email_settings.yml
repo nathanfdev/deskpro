@@ -5,7 +5,7 @@ services:
 
   swiftmailer.mailer.default.transport:
     class: Application\EmailBundle\Mail\Transport\DeskproTransport
-    arguments: [@email.source_mapper, @swiftmailer.mailer.default.transport.real, @swiftmailer.mailer.default.transport.eventdispatcher]
+    arguments: [@email.source_mapper, @email.email_account_manager, @swiftmailer.mailer.default.transport.real, @swiftmailer.mailer.default.transport.eventdispatcher]
 
   swiftmailer.mailer.default.transport.real:
     class: Application\EmailBundle\Mail\Transport\EmailAccountTransport
@@ -32,4 +32,4 @@ services:
 
   email.source_mapper:
     class: Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper
-    arguments: [@database_connection, @deskpro.blob_storage]
+    arguments: [@database_connection, @deskpro.blob_storage, @email.email_account_manager]

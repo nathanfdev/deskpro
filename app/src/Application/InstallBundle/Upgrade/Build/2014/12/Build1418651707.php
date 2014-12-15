@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -32,34 +32,16 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\Mail\Loggers;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Orb\Log\Logger;
-
-class OrbLogger implements \Swift_Plugins_Logger
+class Build1418651707 extends AbstractBuild
 {
-    /**
-     * @var \Orb\Log\Logger $logger
-     */
-    protected $logger;
-
-    public function __construct(Logger $logger)
+    public function run()
     {
-        $this->logger = $logger;
-    }
-
-    public function add($entry)
-    {
-        $this->logger->logDebug($entry);
-    }
-
-    public function clear()
-    {
-
-    }
-
-    public function dump()
-    {
-
+        $this->out("Add sendmail_sources table");
+		$this->execMutateSql("CREATE TABLE sendmail_sources (id INT AUTO_INCREMENT NOT NULL, blob_id INT DEFAULT NULL, email_account_id INT DEFAULT NULL, log_blob_id INT DEFAULT NULL, ref VARCHAR(100) NOT NULL, context_type VARCHAR(100) NOT NULL, context_id INT NOT NULL, context_info LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', headers LONGTEXT NOT NULL, header_to LONGTEXT NOT NULL, header_from LONGTEXT NOT NULL, header_subject LONGTEXT NOT NULL, status VARCHAR(80) NOT NULL, date_status DATETIME NOT NULL, date_sent DATETIME DEFAULT NULL, date_next_attempt DATETIME DEFAULT NULL, error_code VARCHAR(80) NOT NULL, date_created DATETIME DEFAULT NULL, exec_count INT NOT NULL, INDEX IDX_9195FF45ED3E8EA5 (blob_id), INDEX IDX_9195FF4537D8AD65 (email_account_id), INDEX IDX_9195FF45D5F3B632 (log_blob_id), INDEX status_idx (status), UNIQUE INDEX ref_idx (ref), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF45ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF4537D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF45D5F3B632 FOREIGN KEY (log_blob_id) REFERENCES blobs (id) ON DELETE SET NULL");
     }
 }

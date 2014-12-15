@@ -36,6 +36,9 @@ namespace Application\EmailBundle\Mail;
 
 use Application\EmailBundle\Mail\Message\MessageFactoryInterface;
 use Application\EmailBundle\Mail\Transport\DeskproTransport;
+use Orb\Util\Numbers;
+use Orb\Util\Strings;
+use Orb\Util\Util;
 use Swift_Mime_Message;
 
 class Mailer extends \Swift_Mailer
@@ -44,6 +47,11 @@ class Mailer extends \Swift_Mailer
      * @var MessageFactoryInterface
      */
     private $message_factory;
+
+    /**
+     * @var string
+     */
+    private $construct_log = array();
 
     /**
      * @param \Swift_Transport        $transport
@@ -72,6 +80,25 @@ class Mailer extends \Swift_Mailer
         parent::__construct($transport);
 
         $this->message_factory = $message_factory;
+
+        if (!empty($GLOBALS['DP_CONFIG']['debug']['mail']['force_to'])) {
+            $this->construct_log[] = sprintf('[%s] Mailer: force_to = %s', date('Y-m-d H:i:s'), $GLOBALS['DP_CONFIG']['debug']['mail']['force_to']);
+            $this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress($GLOBALS['DP_CONFIG']['debug']['mail']['force_to']));
+        }
+    }
+
+    /**
+     * @param Swift_Mime_Message $message
+     */
+    private function preprocessMessage(Swift_Mime_Message $message)
+    {
+        if ($message instanceof \Orb\Mail\Message) {
+            $message->prepare();
+        }
+
+        $ref = Numbers::roundToMultiple(time(), 5) . '-' . Strings::random(40, Strings::CHARS_ALPHANUM_IU);
+        $message->getHeaders()->addTextHeader('X-DeskPRO-MessageRef', $ref);
+        $message->setId($ref . '@deskpro-message');
     }
 
     /**
@@ -87,9 +114,7 @@ class Mailer extends \Swift_Mailer
         $tr = $this->getTransport();
 
         if ($tr instanceof DeskproTransport) {
-            if (method_exists($message, 'doPrepare')) {
-                $message->doPrepare();
-            }
+            $this->preprocessMessage($message);
             return $tr->sendNow($message, $failedRecipients);
         } else {
             return $tr->send($message, $failedRecipients);
@@ -112,9 +137,7 @@ class Mailer extends \Swift_Mailer
             throw new \BadMethodCallException("Transport does not support queueing");
         }
 
-        if (method_exists($message, 'doPrepare')) {
-            $message->doPrepare();
-        }
+        $this->preprocessMessage($message);
 
         return $tr->queueMessage($message, $send_date);
     }
@@ -134,9 +157,7 @@ class Mailer extends \Swift_Mailer
             throw new \BadMethodCallException("Transport does not support queueing");
         }
 
-        if (method_exists($message, 'doPrepare')) {
-            $message->doPrepare();
-        }
+        $this->preprocessMessage($message);
 
         return $tr->insertMessage($message);
     }
@@ -149,9 +170,7 @@ class Mailer extends \Swift_Mailer
      */
     public function send(Swift_Mime_Message $message, &$failedRecipients = null)
     {
-        if (method_exists($message, 'doPrepare')) {
-            $message->doPrepare();
-        }
+        $this->preprocessMessage($message);
 
         return parent::send($message, $failedRecipients);
     }
@@ -159,7 +178,7 @@ class Mailer extends \Swift_Mailer
 
     /**
      * @param string $service
-     * @return \Swift_Message
+     * @return \Application\EmailBundle\Mail\Message\Message
      */
     public function createMessage($service = 'message')
     {
@@ -170,5 +189,26 @@ class Mailer extends \Swift_Mailer
         }
 
         return $message;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getLastLog()
+    {
+        $tr = $this->getTransport();
+        if ($tr instanceof DeskproTransport) {
+            $l = $tr->getLastLog();
+            $l_pre = implode("\n", $this->construct_log);
+
+            if ($l_pre) {
+                $l = $l_pre . "\n" . $l;
+            }
+
+            return $l;
+        }
+
+        return sprintf("%s does not support getLastLog", get_class($tr));
     }
 }
