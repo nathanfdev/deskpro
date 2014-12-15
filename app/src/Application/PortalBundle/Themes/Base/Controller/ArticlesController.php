@@ -46,6 +46,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Application\PortalBundle\Annotation\TagOptions;
 
 class ArticlesController extends AbstractController
 {
@@ -80,21 +81,26 @@ class ArticlesController extends AbstractController
         return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
     }
 
+    /**
+     * @TagOptions({
+     *      defaults: {"show_pagination": false,
+     *          "page": 1,
+     *          "max_per_page": 10,
+     *          "style": "small",
+     *          "include_subcategories" => false,
+     *          "count": 10,
+     *          "labelled": "",
+     *          "sort": "date_published desc"
+     *      },
+     *      "allowedValues": {
+     *      "   style": "forcat", "small", "xsmall", "simple"
+     *      }
+     */
     public function listAction(TagRequest $request)
     {
-        $options_resolver = $request->getOptionsResolver();
-        $options_resolver
-            ->setRequired(array('category'))
-            ->setDefaults(
-                array(
-                    'show_pagination'       => false,
-                    'page'                  => 1,
-                    'max_per_page'          => 10,
-                    'style'                 => 'small',
-                    'include_subcategories' => false,
-                    'count'                 => 10,
-                    'labelled'              => '',
-                    'sort'                  => 'date_published desc',
+        $request
+            ->getOptionsResolver()
+            ->setDefaults(array(
                     'sort_by'               => function (Options $options) {
                                                 $opts = explode(' ', $options['sort']);
 
@@ -107,13 +113,8 @@ class ArticlesController extends AbstractController
                                             },
                 )
             )
-            ->setAllowedValues(
-                array(
-                    'style' => array('forcat', 'small', 'xsmall', 'simple'),
-                )
-            )
         ;
-        $options = $options_resolver->resolve($request->query->get('tag_options'));
+        $options = $request->getTagOptions();
 
         if (!$options['category'] instanceof ArticleCategory) {
             $options['category'] = $this->getArticleCategoryRepo()->find($options['category']);
@@ -130,27 +131,22 @@ class ArticlesController extends AbstractController
         );
     }
 
-    public function categoriesAction(TagRequest $request)
+    /**
+     * @TagOptions({
+     *      "defaults": {
+     *          "style": "small",
+     *          "parent": null,
+     *          "articles": {
+     *              "include_subcategories": false
+     *          }
+     *      },
+     *      "allowedValues": {
+     *          "style": {"expander", "home", "small", "summary"}
+     *      }
+     * })
+     */
+    public function categoriesAction(TagRequest $request, array $options)
     {
-        $options_resolver = $request->getOptionsResolver();
-        $options_resolver
-            ->setDefaults(
-                array(
-                    'style'                 => 'small',
-                    'parent'                => null,
-                    'articles'              => array(
-                        'include_subcategories' => false
-                    )
-                )
-            )
-            ->setAllowedValues(
-                array(
-                    'style' => array('expander', 'home', 'small', 'summary')
-                )
-            )
-        ;
-        $options = $options_resolver->resolve($request->query->get('tag_options'));
-
         /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
         if ($options['parent']) {
             $categories = $this->getArticleCategoryRepo()->findBy(array('parent' => $options['parent']));
@@ -167,18 +163,16 @@ class ArticlesController extends AbstractController
         );
     }
 
-    public function breadcrumbsAction(Request $request)
+    /**
+     * @TagOptions({
+     *      "required": {"category"},
+     *      "allowedTypes": {
+     *          "category": "Application\DeskPRO\Entity\ArticleCategory"
+     *      }
+     * })
+     */
+    public function breadcrumbsAction(TagRequest $request, array $options)
     {
-        $resolver = new OptionsResolver();
-        $resolver
-            ->setRequired('category')
-            ->setAllowedTypes(
-                array(
-                    'category' => 'Application\DeskPRO\Entity\ArticleCategory'
-                )
-            );
-        $options = $resolver->resolve($request->query->get('tag_options'));
-
         return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
             'category' => $options['category']
         ));
