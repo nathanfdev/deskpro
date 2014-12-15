@@ -4,7 +4,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @Api = Api
       @$q = $q
       @data = {}
-      @storage = { dbs: [] }
+      @storage = { dbs: [], reports: [] }
 
     ping: ->
       console.log('this is widget service!')
@@ -22,24 +22,30 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           return true
       return index
 
-    saveDashboard: (db) ->
+
+    ###
+    # Operations about dashboards
+    ###
+    saveDashboard: (dashboard) ->
       url = '/dashboards'
-      if db.id
-        url += "/#{db.id}";
+      oldOne = false
+      if dashboard.id
+        oldOne = true
+        url += "/#{dashboard.id}";
       @Api
-        .sendPost url, {title: db.name, columns: db.options.columns}
+        .sendPost url, {title: dashboard.title}
         .then (response) =>
             if(response)
-              db.id = response.data.id
-              if !db.id
-                @storage.dbs.push(db)
+              dashboard.id = response.data.id
+              if !oldOne
+                @storage.dbs.push(dashboard)
           , () =>
             console.error('something goes wrong!')
 
     getDashboards: () ->
       deferred = @$q.defer()
       if @storage.dbs.length == 0
-        @getData().then \
+        @getDashboardsData().then \
           (resp) =>
             dbs = []
             if resp? and resp.data.length > 0
@@ -63,34 +69,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           deferred.resolve(resp.data)
       return deferred.promise
 
-    saveWidget: (widget) ->
-      @Api.sendPost \
-        "/dashboards/widgets/#{widget.id}",
-        {
-          "size_x": widget.newSizeX,
-          "size_y": widget.newSizeY
-          "col":   widget.newCol
-          "row":   widget.newRow
-        }
-
-    updateDashboard: (db) ->
-      dbId = db.id
-      dbName = db.name
-      cols = db.options.columns
-
-      @getDashboards().then (dbs) =>
-
-        ind = @getDbIndexById(dbs, dbId)
-        dashboard = Arrays.find dbs
-        , (v, i) ->
-          if v.id is db.id then true else false
-
-        if ind != -1
-          dashboard = db
-          dashboard.widgets = @widgetService.updateWidgetsSize(db.widgets, cols);
-          @saveDashboard(db)
-
-    getData: () ->
+    getDashboardsData: () ->
       @Api.sendGet('/dashboards')
 
     deleteDashboard: (dashboard) ->
@@ -99,5 +78,21 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         Arrays.removeValue @storage.dbs, dashboard, 1
       return promise
 
+    ###
+    # Operations about reports
+    ###
+    getReportsData: () ->
+      @Api.sendGet('/dashboards/reports')
 
+    getReports: () ->
+      deferred = @$q.defer();
+      if @storage.reports.length == 0
+        @getReportsData().then \
+          (resp) =>
+            reports = []
+            if resp? and resp.data.length > 0
+              reports.push element for element in resp.data
+            @storage.reports = reports;
+            deferred.resolve(reports)
+      else deferred.resolve(@storage.reports)
 

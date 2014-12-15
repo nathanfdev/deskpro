@@ -32,8 +32,8 @@
 
         <nav class="reports-control">
             <ul>
-                <li><a href="./reports-main-create-dashboard-filled-in.html"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
-                <li><a href="./reports-main-create-dashboard.html"><i class="fa fa-plus"></i> Create Dashboard</a></li>
+                <li{# ng-show="!dashboard.default"#}><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
+                <li><a class='link-pointer' ng-click='addingDashboard = true'><i class="fa fa-plus"></i>Create Dashboard</a></li>
             </ul>
         </nav>
         <hr>
@@ -46,7 +46,7 @@
 <div class="report-tabs">
     <ul>
         <li class="add-report-link">
-            <a href="#" ng-click='addReport()'><i class="fa fa-plus"></i></a>
+            <a ng-click='addingReport = true'><i class="fa fa-plus"></i></a>
         </li>
 
         <li ng-repeat="report in dashboard.reports track by report.id" ng-class="{'active-tab':currentReport.id===report.id}">
@@ -69,12 +69,12 @@
         </a>
     </div>
 
-    <h1><span>Report:</span> User Performance</h1>
+    <h1><span>Report:</span> {{ ng_var('currentReport.title') }}</h1>
 
     <nav class="reports-control">
         <ul>
-            <li><a href="#" class="control-inactive"><i class="fa fa-cog"></i> Edit Report</a></li>
-            <li><a href="#"><i class="fa fa-copy"></i> Clone Report</a></li>
+            <li><a ng-click='editReport()' ng-class="{'control-inactive':dashboard.default}"><i class="fa fa-cog"></i> Edit Report</a></li>
+            <li><a ng-click="cloningReport = true"><i class="fa fa-copy"></i> Clone Report</a></li>
         </ul>
     </nav>
 
@@ -106,73 +106,41 @@
     </div>-->
 </div>
 
-<div style="padding: 50px;">
-
-</div>
-
-
-
-
-
-
-
 <div style="padding: 50px; width: 500px;">
-    <div class="reports-dropdown expanded">
+    <div ng-show='addingReport' class="reports-dropdown expanded">
         <header>
-            <a href="#" class="hide-dropdown"><i class="fa fa-times"></i></a>
+            <a ng-click="addingReport = !addingReport" class="hide-dropdown"><i class="fa fa-times"></i></a>
             <i class="fa fa-plus"></i> Create new report
         </header>
-
         <div class="reports-dropdown-content">
             <p>Bit of text about adding a report into your current dashboard lorel ipsum.</p>
         </div>
-
         <hr>
-
-
         <div class="reports-dropdown-content">
             <h2>Create new report</h2>
             <form>
                 <button>Create report</button>
-                <div class="input-bucket"><input type="text" placeholder="Name your report"></div>
+                <div class="input-bucket"><input type="text" ng-model='newReport.title' placeholder="Name your report"></div>
             </form>
         </div>
-
         <hr>
-
         <div class="reports-dropdown-content">
             <h2>Or clone an existing report</h2>
             <ul class="clone-list">
-                <li>
-                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a href="#">DeskPRO Cloud Agents</a>
-                </li>
+                <li ng-repeat="db in dashboards track by db.id"
+                    ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded(db)}">
 
-                <li class="current">
-                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a href="#">DeskPRO Insights <span>(Your current dashboard)</span></a>
-                </li>
+                    <a ng-show='!isExpanded(db)' ng-click="expandDashboard(db)" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a ng-show='isExpanded(db)' ng-click="collide(db)" class="control">
+                        <i class="fa fa-minus-square-o"></i>
+                    </a>
 
-                <li class="expanded">
-                    <a href="#" class="control"><i class="fa fa-minus-square-o"></i></a>
-                    <a href="#">Agent Performance</a>
-
-                    <ul>
-                        <li><a href="#">User performance</a></li>
-                        <li><a href="#">Ticket performance</a></li>
-                        <li><a href="#">Agent</a></li>
+                    <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
+                    <ul ng-show='isExpanded(db) && db.reports.length > 0'>
+                        <li ng-repeat="report in db.reports track by report.id">
+                            <a ng-click="alert('clone!')">{{ ng_var('report.title') }}</a>
+                        </li>
                     </ul>
-
-                </li>
-
-                <li>
-                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a href="#">Ticket Statuses</a>
-                </li>
-
-                <li>
-                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a href="#">Tickets resolve time</a>
                 </li>
             </ul>
         </div>
@@ -183,9 +151,9 @@
 
 <!-- Inline styles for rpesentation, remove -->
 <div style="padding: 50px; width: 500px;">
-    <div class="reports-dropdown expanded">
+    <div ng-show="addingDashboard" class="reports-dropdown expanded">
         <header>
-            <a href="#" class="hide-dropdown"><i class="fa fa-times"></i></a>
+            <a ng-click="addingDashboard = !addingDashboard" class="hide-dropdown"><i class="fa fa-times"></i></a>
             <i class="fa fa-plus"></i> Create Dashboard
         </header>
         <hr>
@@ -193,11 +161,11 @@
         <div class="dropdown-content">
             <ul class="big-actions">
                 <li>
-                    <a href="#"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
+                    <a ng-click="newDashboardModal()"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
                 </li>
 
                 <li>
-                    <a href="#"><i class="fa fa-copy"></i> Clone the <span>DeskPRO Insights</span> dashboard</a>
+                    <a ng-click="cloneDashboardModal()"><i class="fa fa-copy"></i> Clone the <span>{{ ng_var('dashboard.title') }}</span> dashboard</a>
                 </li>
             </ul>
         </div>
@@ -208,9 +176,9 @@
 
 <!-- Inline styles for rpesentation, remove -->
 <div style="padding: 50px; width: 500px;">
-    <div class="reports-dropdown expanded">
+    <div ng-show='cloningReport' class="reports-dropdown expanded">
         <header>
-            <a href="#" class="hide-dropdown"><i class="fa fa-times"></i></a>
+            <a ng-click="cloningReport = !cloningReport" class="hide-dropdown"><i class="fa fa-times"></i></a>
             <i class="fa fa-copy"></i> Clone report
         </header>
 
@@ -223,29 +191,20 @@
         <div class="reports-dropdown-content">
             <h2>Existing Dashboards</h2>
             <ul class="clone-list">
-                <li>
-                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a href="#">DeskPRO Cloud Agents</a>
-                </li>
+                <li ng-repeat="db in dashboards track by db.id"
+                    ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded(db)}">
 
-                <li class="current">
-                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a href="#">DeskPRO Insights <span>(Your current dashboard)</span></a>
-                </li>
+                    <a ng-show='!isExpanded(db)' ng-click="expandDashboard(db)" class="control"><i class="fa fa-plus-square-o"></i></a>
+                    <a ng-show='isExpanded(db)' ng-click="collide(db)" class="control">
+                        <i class="fa fa-minus-square-o"></i>
+                    </a>
 
-                <li>
-                    <a href="#" class="control"><i class="fa fa-minus-square-o"></i></a>
-                    <a href="#">Agent Performance</a>
-                </li>
-
-                <li>
-                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a href="#">Ticket Statuses</a>
-                </li>
-
-                <li>
-                    <a href="#" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a href="#">Tickets resolve time</a>
+                    <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
+                    <ul ng-show='isExpanded(db) && db.reports.length > 0'>
+                        <li ng-repeat="report in db.reports track by report.id">
+                            <a ng-click="alert('clone!')">{{ ng_var('report.title') }}</a>
+                        </li>
+                    </ul>
                 </li>
             </ul>
         </div>

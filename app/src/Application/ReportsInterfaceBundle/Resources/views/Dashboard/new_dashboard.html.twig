@@ -3,7 +3,7 @@
     <!-- Popup Header & Title -->
     <header>
         <h1>Create new dashboard</h1>
-        <div class="controls"><a href="./reports-main.html"><i class="fa fa-times"></i></a></div>
+        <div class="controls"><a ng-click="cancel()"><i class="fa fa-times"></i></a></div>
     </header>
 
     <!-- Popup Sidebar -->
@@ -58,8 +58,10 @@
     </div>
 
     <footer>
-        <a href="./reports-main-create-dashboard-filled-in.html" class="button">Save Changes</a>
+        <a ng-click="saveDashboard()" class="button">Save Changes</a>
     </footer>
     <!-- End Popup Content -->
 
 </section>
+
+<div class="cover"></div><!-- Transparent background to the popup -->

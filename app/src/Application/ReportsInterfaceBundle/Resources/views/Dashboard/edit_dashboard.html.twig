@@ -1,4 +1,5 @@
-﻿<div class="modal-header">
+﻿{#
+<div class="modal-header">
     <h3 class="modal-title">Edit dashboard</h3>
 </div>
 <div class="modal-body">
@@ -17,4 +18,263 @@
 <div class="modal-footer">
     <button class="btn btn-primary" ng-click="ReportsModalInstanceCtrl.updateDashboard()">Update</button>
     <button class="btn btn-warning" ng-click="ReportsModalInstanceCtrl.cancel()">Cancel</button>
-</div>
+</div>#}
+
+<section class="popup" ng-init="state='info'">
+
+    <!-- Popup Header & Title -->
+    <header>
+        <h1>Create new dashboard</h1>
+        <div class="controls"><a ng-click="cancel()"><i class="fa fa-times"></i></a></div>
+    </header>
+
+    <!-- Popup Sidebar -->
+    <div class="popup-sidebar" style="height: 579px;"><!-- Need to calculate the height of popup with js and update the sidebar -->
+        <div class="popup-sidebar-content">
+            <ul>
+                <li ng-class="{'active': state == 'info'}">
+                    <a ng-click="state = 'info'">Dashboard Info</a>
+                </li>
+                <li ng-class="{'active': state == 'permissions'}">
+                    <a ng-click="state = 'permissions'" >Agent Permissions</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+    <!-- End Popup Sidebar -->
+
+
+
+    <!-- Popup Content -->
+    <div class="popup-content">
+    {{ ng_var('state') }}
+        <!-- Content Form -->
+        {# FFFFFFFFFUUUUUUUU #}
+        <form ng-show="state == 'info'" class="popup-form-default">
+
+            <!-- Form Row (left label, input & possible side content) -->
+            <div class="bucket">
+                <label class="label">Dashboard Title:</label>
+                <div class="bucket-column"><input type="text" ng-model="dashboard.title" placeholder="Name of your new dashboard"></div>
+            </div>
+            <!-- End Form Row -->
+
+            <hr>
+
+            <h2>Create reports for this dashboard</h2>
+
+            <div class="bucket" ng-repeat="report in dashboard.reports">
+                <label class="label"><i class="fa fa-bars"></i></label>
+                <div class="bucket-column-last">
+                    <span class="meta"><a ng-click="removeReport(report)">Remove</a></span>
+                </div>
+                <div class="bucket-column">
+                    <input type="text" ng-model="report.title" placeholder="Report title">
+                </div>
+            </div>
+
+            {#<div class="bucket">
+            <label class="label"><i class="fa fa-bars"></i></label>
+            <div class="bucket-column-last">
+                <span class="meta"><a href="#">Remove</a></span>
+            </div>
+            <div class="bucket-column">
+                <input type="text" value="Another Excelent Report" placeholder="Report title">
+            </div>
+        </div>
+
+            <div class="bucket">
+                <label class="label"><i class="fa fa-bars"></i></label>
+                <div class="bucket-column-last">
+                    <span class="meta"><a href="#">Remove</a></span>
+                </div>
+                <div class="bucket-column">
+                    <span class="cloned-report-mark"><i class="fa fa-bar-chart"></i></span>
+                    <input type="text" value="A Excellently Cloned Report" placeholder="Report title">
+
+                    <div class="reports-dropdown-content">
+                        <h2>Select a report to clone:</h2>
+                        <ul class="clone-list">
+                            <li>
+                                <a class="control" href="#"><i class="fa fa-plus-square-o"></i></a>
+                                <a href="#">DeskPRO Cloud Agents</a>
+                            </li>
+
+                            <li>
+                                <a class="control" href="#"><i class="fa fa-plus-square-o"></i></a>
+                                <a href="#">DeskPRO Insights</a>
+                            </li>
+
+                            <li class="expanded">
+                                <a class="control" href="#"><i class="fa fa-minus-square-o"></i></a>
+                                <a href="#">Agent Performance</a>
+
+                                <ul>
+                                    <li>
+                                        <a href="#">User performance</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Ticket performance</a>
+                                    </li>
+                                    <li>
+                                        <a href="#">Agent</a>
+                                    </li>
+                                </ul>
+
+                            </li>
+
+                            <li>
+                                <a class="control" href="#"><i class="fa fa-plus-square-o"></i></a>
+                                <a href="#">Ticket Statuses</a>
+                            </li>
+
+                            <li>
+                                <a class="control" href="#"><i class="fa fa-plus-square-o"></i></a>
+                                <a href="#">Tickets resolve time</a>
+                            </li>
+                        </ul>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <div class="bucket">
+                <label class="label"><i class="fa fa-bars"></i></label>
+                <div class="bucket-column-last">
+                    <span class="meta"><a href="#">Remove</a></span>
+                </div>
+                <div class="bucket-column">
+                    <input type="text" value="An Excelent Report" placeholder="Report title">
+                </div>
+            </div>
+
+            <div class="bucket">
+                <label class="label"><i class="fa fa-bars"></i></label>
+                <div class="bucket-column-last">
+                    <span class="meta"><a href="#">Remove</a></span>
+                </div>
+                <div class="bucket-column">
+                    <input type="text" value="Another Excelent Report" placeholder="Report title">
+                </div>
+            </div>#}
+
+            <hr>
+
+            <div class="bucket">
+                <label class="label">Reports:</label>
+                <div class="bucket-column">
+                    <a ng-click="addNewReport()" class="button button-secondary half-width">Add new report</a><a ng-click()="cloneExisting()" class="button button-secondary half-width">Clone existing report</a>
+                </div>
+            </div>
+
+        </form>
+
+        <div ng-show="state == 'permissions'" class="popup-blurb">
+            <h2>Choose agents that can see this dashboard</h2>
+            <p>Bit of text about the agents and the dashboard</p>
+        </div>
+
+        <div ng-show="state == 'permissions'" class="agent-list">
+            <table>
+                <thead>
+                <td class="agent-name"></td>
+                <td>View</td>
+                <td>Edit</td>
+                </thead>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar3.jpg)"></span>Ben Henley</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar4.jpg)"></span>Jane Doe Longname</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox5"><label for="checkbox5"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox6"><label for="checkbox6"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar3.jpg)"></span>Ben Henley</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar4.jpg)"></span>Jane Doe Longname</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox5"><label for="checkbox5"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox6"><label for="checkbox6"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar3.jpg)"></span>Ben Henley</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar4.jpg)"></span>Jane Doe Longname</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox5"><label for="checkbox5"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox6"><label for="checkbox6"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar3.jpg)"></span>Ben Henley</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar4.jpg)"></span>Jane Doe Longname</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox5"><label for="checkbox5"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox6"><label for="checkbox6"></label></span></td>
+                </tr>
+
+                <tr>
+                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
+                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+    <footer>
+        <a ng-click="saveDashboard()" class="button">Save Changes</a>
+    </footer>
+    <!-- End Popup Content -->
+
+</section>
+
+<div class="cover"></div><!-- Transparent background to the popup -->

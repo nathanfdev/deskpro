@@ -146,8 +146,7 @@ define [
       'app.reports.dashboards',
       '/dashboards',
       'Reports.App.Dashboard',
-      'ReportsInterfaceBundle:Dashboard:dashboards.html'
-    )
+      'ReportsInterfaceBundle:Dashboard:dashboards.html')
   ])
 
   return InterfaceApp
