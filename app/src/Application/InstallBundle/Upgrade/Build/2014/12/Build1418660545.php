@@ -29,46 +29,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
-use Application\EmailBundle\Queue\QueueRunner;
-use Application\DeskPRO\App;
-use Monolog;
+namespace Application\InstallBundle\Upgrade\Build;
 
-/**
- * Goes through queued messages
- */
-class SendmailQueue extends AbstractJob
+class Build1418660545 extends AbstractBuild
 {
-    const DEFAULT_INTERVAL = 60;
-
     public function run()
     {
-        $container = App::getContainer();
-
-        $logger = new Monolog\Logger('sendmail_queue');
-        $logger->pushHandler(new OrbLoggerAdapterHandler($this->getLogger()));
-
-        @ini_set('memory_limit', DP_MAX_MEMSIZE);
-        $runner = new QueueRunner(
-            $container->getDb(),
-            $container->getMailer(),
-            $container->get('email.source_mapper'),
-            $container->get('email.source_sender')
-        );
-        $runner->setLogger($logger);
-        $count_problems = $runner->detectProblems();
-        $count = $runner->run();
-        @ini_set('memory_limit', DP_SET_MEMSIZE);
-
-        if ($count_problems) {
-            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
-        }
-        if ($count) {
-            $this->logStatus("Processed {$count} emails in queue.");
-        }
+		$this->out("Add sendmail_sources table");
+		$this->execMutateSql("CREATE TABLE sendmail_sources (id INT AUTO_INCREMENT NOT NULL, blob_id INT DEFAULT NULL, email_account_id INT DEFAULT NULL, log_blob_id INT DEFAULT NULL, ref VARCHAR(100) NOT NULL, context_type VARCHAR(100) NOT NULL, context_id INT NOT NULL, context_info LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', headers LONGTEXT NOT NULL, header_to LONGTEXT NOT NULL, header_from LONGTEXT NOT NULL, header_subject LONGTEXT NOT NULL, from_email LONGTEXT NOT NULL, to_emails LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', cc_emails LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', bcc_emails LONGTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', status VARCHAR(80) NOT NULL, date_status DATETIME NOT NULL, date_sent DATETIME DEFAULT NULL, date_next_attempt DATETIME DEFAULT NULL, error_code VARCHAR(80) NOT NULL, date_created DATETIME DEFAULT NULL, exec_count INT NOT NULL, INDEX IDX_9195FF45ED3E8EA5 (blob_id), INDEX IDX_9195FF4537D8AD65 (email_account_id), INDEX IDX_9195FF45D5F3B632 (log_blob_id), INDEX status_idx (status), UNIQUE INDEX ref_idx (ref), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF45ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF4537D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF45D5F3B632 FOREIGN KEY (log_blob_id) REFERENCES blobs (id) ON DELETE SET NULL");
     }
 }

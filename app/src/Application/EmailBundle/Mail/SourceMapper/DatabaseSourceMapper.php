@@ -101,8 +101,17 @@ class DatabaseSourceMapper implements SourceMapperInterface
 
         $header_to_raw  = $message->getTo();
         $header_to      = array();
+
+        $header_cc_raw  = $message->getCc();
+        $header_bcc_raw = $message->getBcc();
+
+        $tos  = array();
+        $ccs  = array();
+        $bccs = array();
+
         if ($header_to_raw) {
             foreach ($header_to_raw as $email => $name) {
+                $tos[] = $email;
                 if ($name) {
                     $header_to[] = "$name <$email>";
                 } else {
@@ -112,6 +121,17 @@ class DatabaseSourceMapper implements SourceMapperInterface
         }
         $header_to = implode(', ', $header_to);
 
+        if ($header_cc_raw) {
+            foreach ($header_cc_raw as $email => $x) {
+                $ccs[] = $email;
+            }
+        }
+        if ($header_bcc_raw) {
+            foreach ($header_cc_raw as $email) {
+                $bccs[] = $email;
+            }
+        }
+
         $header_subject_raw = $message->getHeaders()->get('Subject');
         $header_subject = '';
         if ($header_subject_raw) {
@@ -120,6 +140,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
 
         $header_from_raw = $message->getFrom();
         $header_from = array();
+        $header_from_email = '';
 
         $account_id = null;
 
@@ -135,6 +156,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
                     $acc = $this->email_accounts->findAccountForEmailAddress($email, 'with_transport');
                     if ($acc) {
                         $account_id = $acc->id;
+                        $header_from_email = $acc->getUseEmailAddress();
                     }
                 }
             }
@@ -170,6 +192,10 @@ class DatabaseSourceMapper implements SourceMapperInterface
             'header_to'        => $header_to,
             'header_from'      => $header_from,
             'header_subject'   => $header_subject,
+            'from_email'       => $header_from_email,
+            'to_emails'        => implode(',', $tos) ?: null,
+            'cc_emails'        => implode(',', $ccs) ?: null,
+            'bcc_emails'       => implode(',', $bccs) ?: null,
             'status'           => $status,
             'date_status'      => $date,
             'date_created'     => $date,

@@ -33,3 +33,7 @@ services:
   email.source_mapper:
     class: Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper
     arguments: [@database_connection, @deskpro.blob_storage, @email.email_account_manager]
+
+  email.source_sender:
+      class: Application\EmailBundle\Queue\SourceSender
+      arguments: [@email.email_account_manager, @deskpro.blob_storage]

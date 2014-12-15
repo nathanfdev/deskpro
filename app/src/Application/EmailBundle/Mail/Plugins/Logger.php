@@ -85,6 +85,20 @@ class Logger implements \Swift_Events_CommandListener, \Swift_Events_ResponseLis
     }
 
     /**
+     * @param bool $with_connection
+     * @return array
+     */
+    public function getMessageLogsAsArray($with_connection = true)
+    {
+        if ($with_connection) {
+            return array_merge($this->connection_log, $this->message_logs);
+        } else {
+            return $this->message_logs;
+        }
+    }
+
+
+    /**
      * Clears message logs
      */
     public function resetMessageLogs()

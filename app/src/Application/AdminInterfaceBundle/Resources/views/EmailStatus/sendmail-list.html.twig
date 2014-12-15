@@ -137,6 +137,7 @@
 			<div ng-show="ListCtrl.hasAnyMassActions()">
 				With selected: <select ng-model="ListCtrl.massActionsOp" ui-select2>
 					<option value="resend">Resend Messages</option>
+					<option value="abort">Abort Messages</option>
 					<option value="delete">Delete Messages</option>
 				</select>
 				<button ng-hide="massActionsLoading" class="btn btn-primary" type="button" ng-click="ListCtrl.performMassActions()">Perform Actions &rarr;</button>
@@ -147,6 +148,10 @@
 						<i class="fa fa-question-circle"></i> Resend Messages: The system sends emails in the background.
 						By selecting this option, you will reschedule the selected emails which will mark them as pending.
 						The system will attempt to deliver the messages the next time the message queue is processed.
+					</div>
+					<div ng-switch-when="abort">
+						<i class="fa fa-question-circle"></i> Abort Messages: Cancel the selected messages so they are NOT sent. Note that if a message
+						has already been sent, you cannot "recall" it. Cancelling messages that are already sent has no affect.
 					</div>
 					<div ng-switch-when="delete">
 						<i class="fa fa-question-circle"></i> Delete: By deleting the messages, all records of email

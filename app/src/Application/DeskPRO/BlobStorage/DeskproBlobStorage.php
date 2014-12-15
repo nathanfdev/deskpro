@@ -666,7 +666,7 @@ class DeskproBlobStorage implements Loggable
         $data = null;
 
         // Can just use the public URL
-        if ($blob_row->file_url) {
+        if ($blob_row['file_url']) {
             $this->logger->logDebug("[DeskproBlobStorage] (readcopyBlobRowToString) Attempting to fetch via URL: {$blob_row['file_url']}");
             $data = @file_get_contents($blob_row->file_url);
             if (!$data || strlen($data) != $blob_row->filesize) {
@@ -694,7 +694,7 @@ class DeskproBlobStorage implements Loggable
     {
         $blob_row = $this->db->fetchAssoc("SELECT * FROM blobs WHERE id = ?", array($blob_row_id));
         if (!$blob_row) {
-            return null;
+            throw new \InvalidArgumentException("Could not find blob with ID $blob_row_id");
         }
 
         return $this->copyBlobRowToString($blob_row);

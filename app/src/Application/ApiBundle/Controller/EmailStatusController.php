@@ -40,6 +40,7 @@ use Application\DeskPRO\Email\EmailSource\FinderFilter as EmailSourceFinderFilte
 use Application\DeskPRO\Email\SendmailSource\Finder as SendmailSourceFinder;
 use Application\DeskPRO\Email\SendmailSource\FinderFilter as SendmailSourceFinderFilter;
 use Application\DeskPRO\EmailGateway\Runner;
+use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
 class EmailStatusController extends AbstractController implements ProtectedControllerInterface
@@ -446,19 +447,22 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
     public function resendSendmailAction($id)
     {
-        $sendmail = $this->em->find('DeskPRO:SendmailQueue', $id);
+        $sendmail = $this->db->fetchAssoc("
+            SELECT *
+            FROM sendmail_sources
+            WHERE id = ?
+        ", array($id));
         if (!$sendmail) {
             throw $this->createNotFoundException();
         }
 
-        $sendmail['status'] = 'pending';
-        $sendmail['date_next_attempt'] = new \DateTime();
+        /** @var \Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper $source_mapper */
+        $source_mapper = $this->get('email.source_mapper');
 
-        $this->em->persist($sendmail);
-        $this->em->flush();
+        $r = $source_mapper->markSourceRetry($sendmail, sprintf("[%s] Manually marked for retry by %s", date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
 
         return $this->createApiResponse(array(
-            'date_next_attempt' => $sendmail->date_next_attempt
+            'date_next_attempt' => $r['date_next_attempt']
         ));
     }
 
@@ -475,10 +479,33 @@ class EmailStatusController extends AbstractController implements ProtectedContr
 
         switch ($action) {
             case 'resend':
-                $this->db->updateIn('sendmail_sources', array(
-                    'status'            => 'retry',
-                    'date_next_attempt' => date('Y-m-d H:i:s')
-                ), $ids);
+                /** @var \Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper $source_mapper */
+                $source_mapper = $this->get('email.source_mapper');
+
+                $recs = $this->db->fetchAll("
+                    SELECT *
+                    FROM sendmail_sources
+                    WHERE id IN (?)
+                ", array($ids), array(Connection::PARAM_INT_ARRAY));
+
+                foreach ($recs as $r) {
+                    $source_mapper->markSourceRetry($r, sprintf("[%s] Manually marked for retry by %s", date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
+                }
+                break;
+
+            case 'abort':
+                /** @var \Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper $source_mapper */
+                $source_mapper = $this->get('email.source_mapper');
+
+                $recs = $this->db->fetchAll("
+                    SELECT *
+                    FROM sendmail_sources
+                    WHERE id IN (?) AND status IN ('pending', 'inserted', 'retry')
+                ", array($ids), array(Connection::PARAM_INT_ARRAY));
+
+                foreach ($recs as $r) {
+                    $source_mapper->markSourceAborted($r, sprintf("[%s] Manually aborted by %s", date('Y-m-d H:i:s'), $this->person->getDisplayContact()));
+                }
                 break;
 
             case 'delete':

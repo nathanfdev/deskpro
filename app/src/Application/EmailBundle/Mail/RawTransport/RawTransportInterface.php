@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,46 +29,22 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage WorkerProcess
+ * @subpackage EmailBundle
  */
 
-namespace Application\DeskPRO\WorkerProcess\Job;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
-use Application\EmailBundle\Queue\QueueRunner;
-use Application\DeskPRO\App;
-use Monolog;
+namespace Application\EmailBundle\Mail\RawTransport;
 
-/**
- * Goes through queued messages
- */
-class SendmailQueue extends AbstractJob
+interface RawTransportInterface
 {
-    const DEFAULT_INTERVAL = 60;
-
-    public function run()
-    {
-        $container = App::getContainer();
-
-        $logger = new Monolog\Logger('sendmail_queue');
-        $logger->pushHandler(new OrbLoggerAdapterHandler($this->getLogger()));
-
-        @ini_set('memory_limit', DP_MAX_MEMSIZE);
-        $runner = new QueueRunner(
-            $container->getDb(),
-            $container->getMailer(),
-            $container->get('email.source_mapper'),
-            $container->get('email.source_sender')
-        );
-        $runner->setLogger($logger);
-        $count_problems = $runner->detectProblems();
-        $count = $runner->run();
-        @ini_set('memory_limit', DP_SET_MEMSIZE);
-
-        if ($count_problems) {
-            $this->logStatus("Detected {$count_problems} probelms in queue. Marked those as error:timeout.");
-        }
-        if ($count) {
-            $this->logStatus("Processed {$count} emails in queue.");
-        }
-    }
+    /**
+     * @param string   $from          The account to send from (for use with SMTP 'MAIL FROM')
+     * @param array    $to            Array of email addresses to send to (for use with SMTP 'RCPT TO')
+     * @param array    $cc            Array of CC'd email addresses to send to (for use with SMTP 'RCPT TO')
+     * @param array    $bcc           Array of BCC'd email addresses to send to (for use with SMTP 'RCPT TO')
+     * @param resource $raw_fp        A file pointer to the raw email source
+     * @param array    $failed        Array of failed recipients, if any
+     * @param array    $log_messages  Where to put log messages
+     * @return int
+     */
+    public function sendRawMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp, array &$failed = null, array &$log_messages = null);
 }

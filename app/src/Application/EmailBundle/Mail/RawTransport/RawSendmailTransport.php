@@ -1,9 +1,9 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
 | can be found at http://www.deskpro.com/license                           |
@@ -29,19 +29,27 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage
+ * @subpackage EmailBundle
  */
 
-namespace Application\InstallBundle\Upgrade\Build;
+namespace Application\EmailBundle\Mail\RawTransport;
 
-class Build1418651707 extends AbstractBuild
+class RawSendmailTransport extends RawSmtpTransport
 {
-    public function run()
+    /**
+     * @var \Swift_SendmailTransport
+     */
+    private $tr;
+
+    /**
+     * @param \Swift_SendmailTransport $tr
+     */
+    public function __construct(\Swift_SendmailTransport $tr)
     {
-        $this->out("Add sendmail_sources table");
-		$this->execMutateSql("CREATE TABLE sendmail_sources (id INT AUTO_INCREMENT NOT NULL, blob_id INT DEFAULT NULL, email_account_id INT DEFAULT NULL, log_blob_id INT DEFAULT NULL, ref VARCHAR(100) NOT NULL, context_type VARCHAR(100) NOT NULL, context_id INT NOT NULL, context_info LONGTEXT DEFAULT NULL COMMENT '(DC2Type:json_array)', headers LONGTEXT NOT NULL, header_to LONGTEXT NOT NULL, header_from LONGTEXT NOT NULL, header_subject LONGTEXT NOT NULL, status VARCHAR(80) NOT NULL, date_status DATETIME NOT NULL, date_sent DATETIME DEFAULT NULL, date_next_attempt DATETIME DEFAULT NULL, error_code VARCHAR(80) NOT NULL, date_created DATETIME DEFAULT NULL, exec_count INT NOT NULL, INDEX IDX_9195FF45ED3E8EA5 (blob_id), INDEX IDX_9195FF4537D8AD65 (email_account_id), INDEX IDX_9195FF45D5F3B632 (log_blob_id), INDEX status_idx (status), UNIQUE INDEX ref_idx (ref), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
-		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF45ED3E8EA5 FOREIGN KEY (blob_id) REFERENCES blobs (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF4537D8AD65 FOREIGN KEY (email_account_id) REFERENCES email_accounts (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE sendmail_sources ADD CONSTRAINT FK_9195FF45D5F3B632 FOREIGN KEY (log_blob_id) REFERENCES blobs (id) ON DELETE SET NULL");
+        $this->tr = $tr;
     }
+
+    // This extends RawSmtpTransport because the only difference is the transport
+    // being used. If we use the Sendmail transport, then the '-bs' flag makes
+    // it act like a normal SMTP server, so everything else stays the same.
 }

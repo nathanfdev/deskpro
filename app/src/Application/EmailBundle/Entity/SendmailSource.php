@@ -141,6 +141,26 @@ class SendmailSource implements NotifyPropertyChanged
     /**
      * @var string
      */
+    protected $from_email = null;
+
+    /**
+     * @var array
+     */
+    protected $to_emails = null;
+
+    /**
+     * @var array
+     */
+    protected $cc_emails = null;
+
+    /**
+     * @var array
+     */
+    protected $bcc_emails = null;
+
+    /**
+     * @var string
+     */
     protected $status = 'inserted';
 
     /**
@@ -195,9 +215,16 @@ class SendmailSource implements NotifyPropertyChanged
         return $this->id;
     }
 
+    /**
+     * @return string
+     */
+    public function getRef()
+    {
+        return $this->ref;
+    }
 
     /**
-     * @return Blob
+     * @return \Application\DeskPRO\Entity\Blob
      */
     public function getBlob()
     {
@@ -205,7 +232,7 @@ class SendmailSource implements NotifyPropertyChanged
     }
 
     /**
-     * @param Blob $blob
+     * @param \Application\DeskPRO\Entity\Blob $blob
      */
     public function setBlob($blob)
     {
@@ -213,7 +240,7 @@ class SendmailSource implements NotifyPropertyChanged
     }
 
     /**
-     * @return EmailAccount
+     * @return \Application\DeskPRO\Entity\EmailAccount
      */
     public function getEmailAccount()
     {
@@ -221,7 +248,7 @@ class SendmailSource implements NotifyPropertyChanged
     }
 
     /**
-     * @param EmailAccount $email_account
+     * @param \Application\DeskPRO\Entity\EmailAccount $email_account
      */
     public function setEmailAccount($email_account)
     {
@@ -343,6 +370,73 @@ class SendmailSource implements NotifyPropertyChanged
     /**
      * @return string
      */
+    public function getFromEmail()
+    {
+        return $this->from_email;
+    }
+
+    /**
+     * @param string $from_email
+     */
+    public function setFromEmail($from_email)
+    {
+        $this->from_email = $from_email;
+    }
+
+    /**
+     * @return array
+     */
+    public function getToEmails()
+    {
+        return $this->to_emails ?: array();
+    }
+
+    /**
+     * @param array $to_emails
+     */
+    public function setToEmails(array $to_emails = null)
+    {
+        if (empty($to_emails)) $to_emails = null;
+        $this->to_emails = $to_emails;
+    }
+
+    /**
+     * @return array
+     */
+    public function getCcEmails()
+    {
+        return $this->cc_emails ?: array();
+    }
+
+    /**
+     * @param array $cc_emails
+     */
+    public function setCcEmails($cc_emails)
+    {
+        if (empty($cc_emails)) $cc_emails = null;
+        $this->cc_emails = $cc_emails;
+    }
+
+    /**
+     * @return array
+     */
+    public function getBccEmails()
+    {
+        return $this->bcc_emails ?: array();
+    }
+
+    /**
+     * @param array $bcc_emails
+     */
+    public function setBccEmails($bcc_emails)
+    {
+        if (empty($bcc_emails)) $bcc_emails = null;
+        $this->bcc_emails = $bcc_emails;
+    }
+
+    /**
+     * @return string
+     */
     public function getStatus()
     {
         return $this->status;
@@ -433,7 +527,7 @@ class SendmailSource implements NotifyPropertyChanged
     }
 
     /**
-     * @return Blob
+     * @return \Application\DeskPRO\Entity\Blob
      */
     public function getLogBlob()
     {
@@ -441,7 +535,7 @@ class SendmailSource implements NotifyPropertyChanged
     }
 
     /**
-     * @param Blob $log_blob
+     * @param \Application\DeskPRO\Entity\Blob $log_blob
      */
     public function setLogBlob($log_blob)
     {
@@ -593,6 +687,30 @@ class SendmailSource implements NotifyPropertyChanged
             'fieldName'  => 'header_subject',
             'type'       => 'text',
             'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'from_email',
+            'fieldName'  => 'from_email',
+            'type'       => 'text',
+            'nullable'   => false,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'to_emails',
+            'fieldName'  => 'to_emails',
+            'type'       => 'simple_array',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'cc_emails',
+            'fieldName'  => 'cc_emails',
+            'type'       => 'simple_array',
+            'nullable'   => true,
+        ));
+        $metadata->mapField(array(
+            'columnName' => 'bcc_emails',
+            'fieldName'  => 'bcc_emails',
+            'type'       => 'simple_array',
+            'nullable'   => true,
         ));
         $metadata->mapField(array(
             'columnName' => 'status',
