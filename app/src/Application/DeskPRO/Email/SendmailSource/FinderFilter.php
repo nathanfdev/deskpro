@@ -32,9 +32,9 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Email\SendmailQueue;
+namespace Application\DeskPRO\Email\SendmailSource;
 
-use Application\DeskPRO\Entity\SendmailQueue;
+use Application\EmailBundle\Entity\SendmailSource;
 use Orb\Util\Arrays;
 
 /**
@@ -152,11 +152,13 @@ class FinderFilter
     public function getValidStatuses()
     {
         static $valid = array(
-            SendmailQueue::STATUS_INSERTED,
-            SendmailQueue::STATUS_PENDING,
-            SendmailQueue::STATUS_PROCESSING,
-            SendmailQueue::STATUS_COMPLETE,
-            SendmailQueue::STATUS_ERROR,
+            SendmailSource::STATUS_INSERTED,
+            SendmailSource::STATUS_PENDING,
+            SendmailSource::STATUS_PROCESSING,
+            SendmailSource::STATUS_COMPLETE,
+            SendmailSource::STATUS_ERROR,
+            SendmailSource::STATUS_RETRY,
+            SendmailSource::STATUS_ABORTED,
         );
 
         return $valid;

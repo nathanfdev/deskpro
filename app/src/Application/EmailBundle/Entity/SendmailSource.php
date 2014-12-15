@@ -480,6 +480,43 @@ class SendmailSource implements NotifyPropertyChanged
         $this->setModelField('exec_count', $exec_count);
     }
 
+    public function toArray()
+    {
+        $data = array();
+
+        $data['id'] = $this->id;
+        $data['ref'] = $this->ref;
+        $data['header_to'] = $this->header_to;
+        $data['header_from'] = $this->header_from;
+        $data['header_subject'] = $this->header_subject;
+        $data['status'] = $this->status;
+        $data['error_code'] = $this->error_code;
+        $data['exec_count'] = $this->exec_count;
+
+        foreach (array('date_created', 'date_status', 'date_sent', 'date_next_attempt') as $date_field) {
+            if ($this->$date_field) {
+                $data[$date_field] = $this->$date_field->format('Y-m-d H:i:s');
+                $data["{$date_field}_ts"] = $this->$date_field->getTimestamp();
+            } else {
+                $data[$date_field] = null;
+                $data["{$date_field}_ts"] = null;
+            }
+        }
+
+        if ($this->email_account) {
+            $data['email_account'] = array(
+                'id'                => $this->email_account->id,
+                'account_type'      => $this->email_account->account_type,
+                'address'           => $this->email_account->address,
+                'use_email_address' => $this->email_account->getUseEmailAddress(),
+            );
+        } else {
+            $data['email_account'] = null;
+        }
+
+        return $data;
+    }
+
     ############################################################################
     # Doctrine
     ############################################################################

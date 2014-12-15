@@ -37,10 +37,13 @@
 										ng-model="ListCtrl.filter.statuses"
 										style="width: 100%;"
 										>
+									<option value="inserted">Inserted</option>
 									<option value="pending">Pending</option>
 									<option value="processing">Processing</option>
 									<option value="complete">Complete</option>
 									<option value="error">Error</option>
+									<option value="retry">Retry</option>
+									<option value="aborted">Aborted</option>
 								</select>
 							</td>
 
@@ -114,9 +117,18 @@
 						<td class=""><input type="checkbox" ng-model="ListCtrl.massActions[result.id]" ng-change="" style="margin: 0;" /></td>
 						<td class="alt dp-id-col"><a href="{{ ng_href('tickets.ticket_accounts.sendmailqueueview', '{id: result.id}') }}"><em class="dp-id">{{ ng_var('result.id') }}</a></td>
 						<td nowrap><span am-time-ago="result.date_created"></span></td>
-						<td class="overflow-ellipsis">{{ ng_var('result.from_address') }}</td>
-						<td class="overflow-ellipsis">{{ ng_var('result.to_address') }}</td>
-						<td>{{ ng_var('result.subject') }}</td>
+						<td class="overflow-ellipsis">
+							<div ng-if="result.email_account">
+								<a href="{{ ng_href('tickets.ticket_accounts.edit', '{id: result.email_account.id}') }}">
+									{{ ng_var('result.header_from') }}
+								</a>
+							</div>
+							<div ng-if="!result.email_account">
+								{{ ng_var('result.header_from') }}
+							</div>
+						</td>
+						<td class="overflow-ellipsis">{{ ng_var('result.header_to') }}</td>
+						<td>{{ ng_var('result.header_subject') }}</td>
 						<td>{{ ng_var('result.status') }}</td>
 					</tr>
 				</tbody>

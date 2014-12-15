@@ -32,7 +32,7 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Email\SendmailQueue;
+namespace Application\DeskPRO\Email\SendmailSource;
 
 use Doctrine\ORM\EntityManager;
 
@@ -79,7 +79,7 @@ class Finder
 
 
     /**
-     * @return \Application\DeskPRO\Entity\SendmailQueue[]
+     * @return \Application\EmailBundle\Entity\SendmailSource[]
      */
     public function getResults()
     {
@@ -99,7 +99,7 @@ class Finder
     private function getQb()
     {
         $q = $this->em->createQueryBuilder();
-        $q->from('DeskPRO:SendmailQueue', 's');
+        $q->from('EmailBundle:SendmailSource', 's');
 
         if ($opt = $this->filter->getStatuses()) {
             $q->andWhere('s.status IN (:statuses)');
