@@ -916,16 +916,20 @@ HTML;
                 }
             }
 
-            if ($us_names) {
-                if ($this->request->isXmlHttpRequest()) {
-                    return $this->createJsonResponse(array('status' => 'usersource_no_reset', 'usersource_name' => implode(', ', $us_names)));
-                }
+            // If reg is enabled, then resetting a password makes them a user (below)
+            // otherwise we fail with a no account error
+            if (!$this->container->getSetting('core.reg_enabled')) {
+                if ($us_names) {
+                    if ($this->request->isXmlHttpRequest()) {
+                        return $this->createJsonResponse(array('status' => 'usersource_no_reset', 'usersource_name' => implode(', ', $us_names)));
+                    }
 
-                // No other user sources for the user
-                return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
-                    'route_prefix' => $this->route_prefix,
-                    'did_send' => false
-                ));
+                    // No other user sources for the user
+                    return $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+                        'route_prefix' => $this->route_prefix,
+                        'did_send' => false
+                    ));
+                }
             }
         }
 

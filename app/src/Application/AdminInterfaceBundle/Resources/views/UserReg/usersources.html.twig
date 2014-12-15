@@ -29,7 +29,7 @@
 {% endblock %}
 {% block listpane_help %}
 	<header>
-		<h1>Add authentication apps to enable users to sign in with existing accounts from other services</h1>
+		<h1>Add authentication apps to enable users/agents to sign in with existing accounts from other services</h1>
 		<p>Install authentication apps from the Apps section. Supported services include Microsoft Active Directory, LDAP, and social media accounts.</p>
 	</header>
 	<article>
@@ -41,8 +41,12 @@
 						<li>Active Directory</li>
 						<li>Database Authentication (using an existing MySQL, PostgreSQL, SQLite, MsSQL or Oracle database)</li>
 						<li>LDAP</li>
+						<li>Okta</li>
+						<li>OneLogin</li>
+						<li>SAML</li>
+						<li>JSON Web Token</li>
 						<li>Facebook</li>
-						<li>Google</li>
+						<li>Google +</li>
 						<li>Twitter</li>
 						<li>Magento</li>
 						<li>Joomla</li>
@@ -52,11 +56,21 @@
 						<li>XenForo</li>
 					</ul>
 		</section>
-
-				<section class="related-content">
+		
+		<section>
+			<h2><span>FAQ</span></h2>
+			<dl>
+				<dt><em>Q:</em> Why are there two different apps for Google authentication?</dt>
+					<dd><em>A:</em> The Google Authentication app uses an older authentication system which is being retired by Google. You should only use Google+ Sign-In. If you are currently using Google Authentication, switch to Google+ Sign-In.</dd>
+			</dl>
+		</section>
+		
+		<section class="related-content">
 			<h2><span>Related Content</span></h2>
 
 				<ul>
+				<li><i class="fa fa-globe"></i> <a href="https://www.deskpro.com/manuals/admin-manual/admin-manual.html#authentication-and-sso" target="_blank">Authentication and SSO</a> 	</li>
+			
 		<li><i class="fa fa-file-text"></i> <a href="https://support.deskpro.com/kb/articles/344" target="_blank">How do I debug setting up an authentication app?</a> 	</li>
 				</ul>
         	</section>

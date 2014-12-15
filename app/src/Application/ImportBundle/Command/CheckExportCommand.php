@@ -72,7 +72,8 @@ class CheckExportCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $logger = new Logger('exporter', array(new ConsoleHandler($output)));
+        $out_handler = new ConsoleHandler($output);
+        $logger = new Logger('exporter', array($out_handler));
 
         if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
             $logger->err('You must supply an "input-path" argument while using CSV exporter');
@@ -87,10 +88,12 @@ class CheckExportCommand extends ContainerAwareCommand
         $generator_config->progress_bar	= $this->progress_bar;
         $generator_config->output	= $output;
 
-        $output->setVerbosity(3);
-
         $generator = $factory->createGenerator($generator_config, $logger);
 
         $generator->generateJson();
+
+        echo "\n";
+        echo "Done";
+        echo "\n";
     }
 }

@@ -155,7 +155,11 @@ class CsvUpload
 
             if ('completed' === $task['status'] || 'errored' === $task['status']) {
                 /** @var Blob $logBlob */
-                $logBlob = $this->em->find('DeskPRO:Blob', $data['log_blob_id']);
+                if (!empty($data['log_blob_id'])) {
+                    $logBlob = $this->em->find('DeskPRO:Blob', $data['log_blob_id']);
+                } else {
+                    $logBlob = null;
+                }
 
                 return array(
                     'status'  => 'completed',

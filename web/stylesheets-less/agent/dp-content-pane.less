@@ -8366,6 +8366,7 @@ a.assign-self-link {
 		position: absolute;
 		top: 9px;
 		right: 10px;
+		z-index: 1;
 
 		color: #959a9e;
 		cursor: pointer;
@@ -8375,10 +8376,31 @@ a.assign-self-link {
 		}
 	}
 
-	section {
+	section.sidebar-app {
+	  position: absolute;
+	  top: 0; right: 0; bottom: 0; left: 0;
+
+	  article.app-content {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+		overflow: auto;
+	  }
+
+	  &.with-header {
+		article.app-content {
+		  top: 31px;
+		}
+	  }
+	  &.with-header.with-sub-header {
+		article.app-content {
+		  top: 73px;
+		}
+	  }
+
 	  header {
 		background: #d4d5da;
 		border-bottom: 1px solid #BBBDC2;
+		height: 30px;
 
 		h4 {
 		  font-size: 14px;
@@ -8389,6 +8411,7 @@ a.assign-self-link {
 	  header.sub-header {
 		background: #EBEBEB;
 		padding: 5px;
+		height: 31px;
 
 		&.centered {
 		  text-align: center;
@@ -8410,4 +8433,12 @@ a.assign-self-link {
 		display: block;
 		box-shadow: none;
 	}
+}
+
+.with-docked-apps-sidebar .layout-content {
+  overflow: auto;
+
+  .dp-page-content {
+	min-width: 575px;
+  }
 }

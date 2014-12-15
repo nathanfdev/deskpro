@@ -44,6 +44,7 @@ class KernelErrorHandler
     public static $is_handling_exception = false;
     public static $wrote_log_file = false;
     public static $wrote_php_log = false;
+    protected static $caught_errors = array();
     protected static $process_log = array();
 
 
@@ -797,6 +798,8 @@ class KernelErrorHandler
      */
     public static function getErrorInfo($errno, $errstr, $errfile, $errline)
     {
+        self::recordErrorAsCaught($errno, $errstr, $errfile, $errline);
+
         $die = false;
         switch ($errno) {
             case E_ERROR:
@@ -995,6 +998,94 @@ class KernelErrorHandler
         $content = str_replace($prefix, '/', $content);
 
         return $content;
+    }
+
+
+    /**
+     * Set this as a shutdown function to try and record fatal errors (e.g., memory).
+     */
+    public static function shutdownCheckFatalError()
+    {
+        $error = error_get_last();
+
+        $handle_types = array_map(function ($c) {
+            return defined($c) ? constant($c) : null;
+        }, array('E_ERROR', 'E_CORE_ERROR', 'E_USER_ERROR', 'E_RECOVERABLE_ERROR'));
+
+        if (
+            $error
+            && !empty($error['type'])
+            && in_array($error['type'], $handle_types)
+            && !self::isErrorCaught($error['type'], $error['message'], $error['file'], $error['line'])
+        ) {
+
+            self::recordErrorAsCaught($error['type'], $error['message'], $error['file'], $error['line']);
+
+            $errname = 'SHUTDOWN_ERR';
+            $errno   = $error['type'];
+
+            $errstr  = self::stripPathPrefix($error['message']);
+            $errfile = self::stripPathPrefix($error['file']);
+            $errline = $error['line'];
+
+            $backtrace = debug_backtrace();
+            $trace = self::formatBacktrace($backtrace);
+
+            $summary = "[$errname:$errno] $errstr ($errfile:$errline)";
+
+            $url = '';
+            if (defined('DP_REQUEST_URL')) {
+                $url = DP_REQUEST_URL;
+            } elseif (defined('DP_INTERFACE')) {
+                $url = isset($_SERVER['PHP_SELF']) ? $_SERVER['PHP_SELF'] : '';
+            }
+            if (php_sapi_name() == 'cli' && !empty($_SERVER['argv'])) {
+                $url = 'Command: ' . implode(' ', $_SERVER['argv']);
+            }
+
+            $errinfo = array(
+                'type'               => 'error',
+                'session_name'       => self::genSessionName(),
+                'die'                => false,
+                'pri'                => 'ERR',
+                'trace'              => $trace,
+                'summary'            => $summary,
+                'errstr'             => $errstr,
+                'errname'            => $errname,
+                'errno'              => $errno,
+                'errfile'            => $errfile,
+                'errfile_hash'       => '',
+                'errfile_modified'   => false,
+                'errline'            => $errline,
+                'last_error'         => null,
+                'display'            => false,
+                'build'              => defined('DP_BUILD_TIME') ? DP_BUILD_TIME : 0,
+                'process_log'        => '',
+                'context_data'       => '',
+                'error_time'        => microtime(true),
+                'time_to_error'     => defined('DP_START_TIME') ? sprintf("%0.4f", microtime(true) - DP_START_TIME) : 0,
+                'no_send_error'     => true,
+                'client_user_agent' => isset($_SERVER['HTTP_USER_AGENT']) ? $_SERVER['HTTP_USER_AGENT'] : '',
+                'set_setting'       => null,
+                'url'               => $url,
+            );
+            self::logToFile($errinfo);
+        }
+    }
+
+    protected static function recordErrorAsCaught($errno, $errstr, $errfile, $errline)
+    {
+        self::$caught_errors[self::hashErrorInfoForKey($errno, $errstr, $errfile, $errline)] = true;
+    }
+
+    protected static function isErrorCaught($errno, $errstr, $errfile, $errline)
+    {
+        return isset(self::$caught_errors[self::hashErrorInfoForKey($errno, $errstr, $errfile, $errline)]);
+    }
+
+    protected static function hashErrorInfoForKey($errno, $errstr, $errfile, $errline)
+    {
+        return md5($errno . $errstr . $errfile . $errline);
     }
 
     /**

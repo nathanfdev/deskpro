@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -34,15 +34,14 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
-class Build1400056715 extends AbstractBuild
+class Build1418321332 extends AbstractBuild
 {
     public function run()
     {
-        $db = $this->container->getDb();
-
-        $this->out("Alter tickets table to remove old fields");
-        $this->execMutateSql("ALTER TABLE tickets DROP FOREIGN KEY FK_54469DF4FBCC7CDF, DROP FOREIGN KEY FK_54469DF4F2598614", true);
-        $this->execMutateSql("ALTER TABLE tickets DROP KEY IDX_54469DF4FBCC7CDF, DROP KEY IDX_54469DF4F2598614", true);
-        $db->exec("ALTER TABLE tickets DROP email_gateway_id, DROP email_gateway_address_id, DROP notify_email, DROP notify_email_name, DROP notify_email_agent, DROP notify_email_name_agent");
+        $this->out("Fix FK cascade on feedback_category2usergroup");
+		$this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93C12469DE2", true);
+		$this->execMutateSql("ALTER TABLE feedback_category2usergroup DROP FOREIGN KEY FK_B304B93CD2112630", true);
+		$this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93C12469DE2 FOREIGN KEY (category_id) REFERENCES feedback_categories (id) ON DELETE CASCADE", true);
+		$this->execMutateSql("ALTER TABLE feedback_category2usergroup ADD CONSTRAINT FK_B304B93CD2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id) ON DELETE CASCADE", true);
     }
 }

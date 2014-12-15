@@ -621,7 +621,13 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
         $ticket_detect->addDetector(new SubjectRefMatchDetector());
 
         if ($this->container->getSetting('core_tickets.gateway_enable_subject_match')) {
-            $ticket_detect->addDetector(new SubjectMatchDetector());
+            $m = new SubjectMatchDetector();
+
+            if ($this->container->getSetting('core_tickets.enable_exact_subject_matching')) {
+                $m->enableExactSubjectMatching();
+            }
+
+            $ticket_detect->addDetector($m);
         }
 
         return $ticket_detect;
