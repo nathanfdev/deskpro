@@ -37,7 +37,7 @@ namespace Application\PortalBundle\Theme;
 /**
  * Contains the configuration for a theme tag
  */
-class Tag
+class Tag implements \Serializable
 {
     protected $name;
     protected $controller_name;
@@ -57,6 +57,20 @@ class Tag
         $this->controller_name = $controller_name;
         $this->esi             = $esi;
         $this->get_params      = $get_params;
+    }
+
+    public function serialize()
+    {
+        return serialize(array('name'=>$this->name, 'controller_name'=>$this->controller_name,'esi'=>$this->esi,'get_params'=>$this->get_params));
+    }
+
+    public function unserialize($serialized)
+    {
+        $unserialized = unserialize($serialized);
+        $this->name = $unserialized['name'];
+        $this->controller_name = $unserialized['controller_name'];
+        $this->esi = $unserialized['esi'];
+        $this->get_params = $unserialized['get_params'];
     }
 
     /**
