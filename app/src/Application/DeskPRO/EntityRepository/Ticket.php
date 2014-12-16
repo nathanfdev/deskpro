@@ -466,18 +466,34 @@ class Ticket extends AbstractEntityRepository
             ", array($person->id));
         } else {
             if ($person->organization && $person->organization_manager) {
-                $count = App::getDb()->fetchColumn("
-                    SELECT COUNT(DISTINCT tickets.id)
-                    FROM tickets
-                    LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                    WHERE (tickets.person_id = ? OR (tickets_participants.person_id = ? AND tickets.organization_id != ?)) " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                ", array($person->id, $person->id, $person->getOrganizationId()));
+                $count = array_sum(App::getDb()->fetchAllCol("
+                    (
+                        SELECT COUNT(DISTINCT tickets.id)
+                        FROM tickets
+                        WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    )
+                    UNION
+                    (
+                        SELECT COUNT(DISTINCT tickets.id)
+                        FROM tickets
+                        LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+                        WHERE tickets_participants.person_id = ? AND tickets.organization_id != ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    )
+                ", array($person->id, $person->id, $person->getOrganizationId())));
             } else {
                 $count = App::getDb()->fetchColumn("
-                    SELECT COUNT(DISTINCT tickets.id)
-                    FROM tickets
-                    LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                    WHERE (tickets.person_id = ? OR tickets_participants.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    (
+                        SELECT COUNT(DISTINCT tickets.id)
+                        FROM tickets
+                        WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    )
+                    UNION
+                    (
+                        SELECT COUNT(DISTINCT tickets.id)
+                        FROM tickets
+                        LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+                        WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    )
                 ", array($person->id, $person->id));
             }
         }
