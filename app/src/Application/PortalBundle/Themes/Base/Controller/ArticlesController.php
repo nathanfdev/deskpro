@@ -83,6 +83,11 @@ class ArticlesController extends AbstractController
     }
 
     /**
+     * @Tag(name="kb_articles_forcat", default_options={"style":"forcat"})
+     * @Tag(name="kb_articles_small", default_options={"style":"small"})
+     * @Tag(name="kb_articles_xsmall", default_options={"style":"xsmall"})
+     * @Tag(name="kb_articles_simple", default_options={"style":"simple"})
+     *
      * @TagOptions({
      *      "defaults": {
      *          "show_pagination": false,
@@ -120,6 +125,11 @@ class ArticlesController extends AbstractController
     }
 
     /**
+     * @Tag(name="knowledgebase", default_options={"style":"home"})
+     * @Tag(name="knowledgebase_compact", default_options={"style":"summary"})
+     * @Tag(name="knowledgebase_list", default_options={"style":"expander"})
+     * @Tag(name="kb_cats_list", default_options={"style":"small"})
+     *
      * @TagOptions({
      *      "defaults": {
      *          "style": "small",
@@ -152,6 +162,8 @@ class ArticlesController extends AbstractController
     }
 
     /**
+     * @Tag(name="kb_category_breadcrumbs")
+     *
      * @TagOptions({
      *      "required": {"category"},
      *      "allowedTypes": {

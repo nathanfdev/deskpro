@@ -57,17 +57,6 @@ class BaseTheme extends AbstractTheme
             new Tag('user_sidebar',             'Theme:Portal:userSidebar'),
             new Tag('login_sidebar',            'Theme:Portal:loginSidebar'),
 
-            new Tag('kb_articles_forcat',       'Theme:Articles:list',              array('style' => 'forcat')),
-            new Tag('kb_articles_small',        'Theme:Articles:list',              array('style' => 'small')),
-            new Tag('kb_articles_xsmall',       'Theme:Articles:list',              array('style' => 'xsmall')),
-            new Tag('kb_articles_simple',       'Theme:Articles:list',              array('style' => 'simple')),
-
-            new Tag('knowledgebase',            'Theme:Articles:categories',        array('style' => 'home')),
-            new Tag('knowledgebase_compact',    'Theme:Articles:categories',        array('style' => 'summary')),
-            new Tag('knowledgebase_list',       'Theme:Articles:categories',        array('style' => 'expander')),
-            new Tag('kb_cats_list',             'Theme:Articles:categories',        array('style' => 'small')),
-            new Tag('kb_category_breadcrumbs',  'Theme:Articles:breadcrumbs'),
-
             new Tag('news', 'Theme:News:list'),
             new Tag('news_posts',               'Theme:News:list',                  array('style' => 'posts')),
             new Tag('news_posts_list',          'Theme:News:list',                  array('style' => 'small')),
