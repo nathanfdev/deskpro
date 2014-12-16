@@ -39,6 +39,7 @@ use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
+use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
@@ -678,11 +679,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 ),
                 400
             );
-        // maybe we should wrap all exceptions?
         } elseif ($e instanceof NotFoundHttpException) {
             return $this->createApiResponse(array(
                 'error_code' => 404,
                 'error_message' => $e->getMessage() ?: 'Not Found',
+            ), 404);
+        } elseif ($e instanceof AccessDeniedException) {
+            return $this->createApiResponse(array(
+                'error_code' => 403,
+                'error_message' => $e->getMessage() ?: 'Access Denied',
             ), 404);
         }
 
