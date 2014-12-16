@@ -4,9 +4,20 @@ define -> [
 
     DashboardService.setWidgetService(DashboardWidgetService)
 
+    ###
+    # intialize
+    ###
+
     #just to simplify at the first time, but who knows :)
     $scope.reports = DashboardService.storage.reports
     $scope.expandedDashboard = []
+    $scope.dashboards = []
+    $scope.newReport =
+      title: ''
+      loaded: false
+      id: 0
+      widgets: []
+      columns: 0
 
     DashboardService.getDashboards().then (dbs) ->
       $scope.dashboards = dbs
@@ -15,6 +26,9 @@ define -> [
       if $scope.dashboards.length > 0
         $scope.changeDashboard($scope.dashboards[0])
 
+    ###
+    # Operations about dashboards
+    ###
     $scope.changeDashboard = (newDb) ->
       deferred = $q.defer()
       if newDb.loaded is false
@@ -32,55 +46,9 @@ define -> [
         return deferred.promise
 
 
-    $scope.newDashboardModal = () ->
-      modalInstance = $modal.open {
-        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
-        controller: "Reports.App.ModalInstance"
-        resolve:
-          dashboard: () =>
-            return null
-      }
-
-      modalInstance.result.then (dashboard) =>
-        DashboardService.saveDashboard(dashboard).then () =>
-          $scope.dashboards.push dashboard
-          $scope
-            .changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
-            .then ->
-              $scope.editDashboardModal()
-
-    $scope.cloneDashboardModal = () ->
-      DashboardService
-        .cloneDashboard $scope.dashboard
-        .then ->
-          clonedOne = $scope.dashboards[$scope.dashboards.length - 1]
-          $scope.changeDashboard(clonedOne).then (dashboard)->
-            modalInstance = $modal.open {
-              templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
-              controller: "Reports.App.ModalInstance"
-              resolve:
-                dashboard: () ->
-                  db = JSON.parse(JSON.stringify(dashboard))
-                  return db
-            }
-            modalInstance.result.then (dashboard) =>
-              DashboardService.saveDashboard(dashboard).then () =>
-                $scope.dashboards.push dashboard
-                $scope.changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
-                $scope.editDashboardModal()
-
-
-    $scope.editDashboardModal = () ->
-      modalInstance = $modal.open {
-        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
-        controller: "Reports.App.ModalInstance"
-        resolve:
-          dashboard: () =>
-            return $scope.dashboard
-      }
-
-      modalInstance.result.then (dashboard) =>
-        DashboardService.saveDashboard(dashboard)
+    ###
+    # ui staff
+    ###
 
     $scope.deleteDashboard = (dashboard) ->
       DashboardService.deleteDashboard dashboard
@@ -99,9 +67,85 @@ define -> [
       $scope.expandedDashboard[dashboard.id]? and $scope.expandedDashboard[dashboard.id] is true
 
     ###
+    # Dashboard modal instasnces
+    ###
+
+    ###
+    # Creates modal instance and resolves dashboard as null, so ModalInstace controller will have to create new object
+    ###
+    $scope.newDashboardModal = () ->
+      modalInstance = $modal.open {
+        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
+        controller: "Reports.App.ModalInstance"
+        resolve:
+          dashboard: () =>
+            return null
+      }
+
+      modalInstance.result.then (dashboard) =>
+        DashboardService.saveDashboard(dashboard).then () =>
+          $scope
+          .changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
+          .then ->
+            $scope.editDashboardModal()
+
+
+
+    ###
+    # Just as previous one, but the dashboard object resolves to current dashboard
+    ###
+    $scope.editDashboardModal = () ->
+      modalInstance = $modal.open {
+        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
+        controller: "Reports.App.ModalInstance"
+        resolve:
+          dashboard: () =>
+            return $scope.dashboard
+      }
+
+      modalInstance.result.then (dashboard) =>
+        DashboardService.saveDashboard(dashboard)
+
+
+    ###
+    # Compilation from previous tow methods - get current dashboard and crate new with it parameters, then
+    # open editDashboardModal with newly created dashboard.
+    ###
+    $scope.cloneDashboardModal = () ->
+      DashboardService
+      .cloneDashboard $scope.dashboard
+      .then ->
+        clonedOne = $scope.dashboards[$scope.dashboards.length - 1]
+        $scope.changeDashboard(clonedOne).then (dashboard)->
+          modalInstance = $modal.open {
+            templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
+            controller: "Reports.App.ModalInstance"
+            resolve:
+              dashboard: () ->
+                db = JSON.parse(JSON.stringify(dashboard))
+                return db
+          }
+          modalInstance.result.then (dashboard) =>
+            DashboardService.saveDashboard(dashboard).then () =>
+              $scope.dashboards.push dashboard
+              $scope
+              .changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
+              .then ->
+                $scope.editDashboardModal()
+
+
+
+
+
+
+    ###
     # Operations about reports
     ###
 
+
+    ###
+    # ui staff for reports
+    ###
     $scope.changeReport = (report) ->
       $scope.currentReport = report
 
@@ -110,6 +154,25 @@ define -> [
       if $scope.reports.length < 1
         DashboardService
         .getReports
+
+    $scope.createReport = () ->
+      $scope.newReport.dashboard_id = $scope.dashboard.id
+      DashboardService
+        .createReport $scope.newReport
+        .then (report) ->
+          $scope.dashboard.reports.push report
+          $scope.changeReport report
+
+    $scope.cloneReport = (report) ->
+      DashboardService
+        .cloneReport report, $scope.dashboard.id
+        .then (report) ->
+          $scope.dashboard.reports.push report
+          $scope.changeReport report
+
+
+
+
 
 #    $scope.removeWidget = (widget) ->
 #      DashboardWidgetService

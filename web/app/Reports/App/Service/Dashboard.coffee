@@ -27,6 +27,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     # Operations about dashboards
     ###
     saveDashboard: (dashboard) ->
+      deferred = @$q.defer()
       url = '/dashboards'
       oldOne = false
       if dashboard.id
@@ -39,8 +40,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
               dashboard.id = response.data.id
               if !oldOne
                 @storage.dbs.push(dashboard)
+              deferred.resolve dashboard
           , () =>
-            console.error('something goes wrong!')
+            console.error 'something goes wrong!'
+      deferred.promise
 
     cloneDashboard: (dashboard) ->
       deferred = @$q.defer()
@@ -54,6 +57,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
             deferred.resolve clonedOne
         , () =>
           console.error('something goes wrong!')
+      deferred.promise
 
     getDashboards: () ->
       deferred = @$q.defer()
@@ -65,7 +69,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 #              dbs.push(el = @widgetService.fillElement element) for element in resp.data
               dbs.push element for element in resp.data
             @storage.dbs = dbs;
-            deferred.resolve(dbs)
+            deferred.resolve(@storage.dbs)
       else deferred.resolve(@storage.dbs)
 
       return deferred.promise
@@ -109,20 +113,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
             deferred.resolve(reports)
       else deferred.resolve(@storage.reports)
 
-    cloneReport: (report) ->
-      deferred = @$q.defer()
-      url = "/dashboards/reports/clone/#{report.id}"
-      @Api
-      .sendPost url
-      .then (response) =>
-        if(response)
-          clonedOne = response.data
-          db_index = @getDbIndexById @storage.dbs, response.data.dashboard_id
-          @storage.dbs[db_index].reports.push clonedOne
-          deferred.resolve clonedOne
-      , () =>
-        console.error('something goes wrong!')
-
     removeReport: (report) ->
       deferred = @$q.defer()
       url = "/dashboards/reports/#{report.id}"
@@ -136,4 +126,48 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       , () =>
         console.error('something goes wrong!')
       deferred.promise
+
+    createReport: (report) ->
+      deferred = @$q.defer()
+      url = "/dashboards/reports/#{report.dashboard_id}"
+
+      newReport =
+        title: report.title
+        columns: if report.columns? then report.columns else 0
+        loaded: false
+        widgets: []
+
+      @Api
+      .sendPost url, newReport
+      .then (response) =>
+        if(response)
+          newOne = response.data
+          @storage.reports.push newOne
+          deferred.resolve newOne
+      , () =>
+        console.error 'something goes wrong!'
+      deferred.promise
+
+    cloneReport: (report, dashboard_id) ->
+      deferred = @$q.defer()
+      url = "/dashboards/reports/clone/#{report.id}/#{dashboard_id}"
+
+      newReport =
+        title: report.title
+        columns: if report.columns? then report.columns else 0
+        loaded: false
+        widgets: []
+
+      @Api
+      .sendPost url, newReport
+      .then (response) =>
+        if(response)
+          clonedOne = response.data
+          db_index = @getDbIndexById @storage.dbs, response.data.dashboard_id
+          @storage.reports.push clonedOne
+          deferred.resolve clonedOne
+      , () =>
+        console.error 'something goes wrong!'
+      deferred.promise
+
 

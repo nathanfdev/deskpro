@@ -38,7 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboard as Dashboard;
 use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
-use Application\DeskPRO\Dpql\Statement\Display;
+
 use Application\ApiBundle\Service\Dashboard as DashboardService;
 
 use Symfony\Component\HttpFoundation\Response;
@@ -57,8 +57,9 @@ class DashboardController extends AbstractController
     /** @var DashboardService */
     protected $service;
 
-    public function __consturct()
+    public function init()
     {
+        parent::init();
         $this->service = $this->get('dashboard.service');
     }
 
@@ -103,9 +104,9 @@ class DashboardController extends AbstractController
     public function getAction($id)
     {
         $dashboard = $this->service->getDashboard($id);
-        $data = $this->_getDashboardData($dashboard);
+        $data = $this->service->getDashboardData($dashboard);
         $data['loaded'] = true;
-        $data['reports'] = $this->_getReportsData($dashboard);
+        $data['reports'] = $this->service->getReportsData($dashboard);
         return $this->createApiResponse($data);
     }
 
@@ -181,7 +182,7 @@ class DashboardController extends AbstractController
     public function saveAction($id)
     {
         if($id) {
-            $dashboard = $this->_getDashboard($id);
+            $dashboard = $this->service->getDashboard($id);
         } else {
             $dashboard = new Dashboard();
         }
@@ -462,81 +463,7 @@ class DashboardController extends AbstractController
     }
     }
 
-    // service methods
-    //todo: move in service
 
-    protected function _getWidgetData($widget)
-    {
-        if(! ($widget instanceof Widget)) {
-            $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget);
-        }
-        $pos  = $widget->getPosition();
-        $size = $widget->getSize();
-        $report = $widget->getReport();
-        $widget_data = Display::renderQuery('json', $report->query);
-
-        $data = array(
-            'id'    => $widget->getId(),
-            'name'  => $widget->getTitle(),
-            "row"   => $pos[0],
-            "col"   => $pos[1],
-            "sizeX" => $size[0],
-            "sizeY" => $size[1],
-            "type"  => "graph",
-            "data"  => $widget_data,
-        );
-        return $data;
-    }
-
-    protected function _getReportsData($dashboard)
-    {
-        $dashboard = $this->service->getDashboard($dashboard);
-
-        $reports_data = array();
-        foreach ($dashboard->getReports() as $report)
-        {
-//            $widgets = array();
-//            foreach($report->getWidgets() as $widget) {
-//                $pos  = $widget->getPosition();
-//                $size = $widget->getSize();
-//                $widgets[] = array(
-//                    'id'    => $widget->getId(),
-//                    'name'  => $widget->getTitle(),
-//                    "row"   => $pos[0],
-//                    "col"   => $pos[1],
-//                    "sizeX" => $size[0],
-//                    "sizeY" => $size[1],
-//                    "type"  => "graph",
-//                );
-//            }
-            $data = array(
-                'title'        => $report->getTitle(),
-                'id'           => $report->getId(),
-                'dashboard_id' => $dashboard->getId(),
-                'loaded'       => false,
-                'options'      => array(
-                    'columns'  => $report->getColumns(),
-                    "floating" => false,
-                    "swapping" => false,
-                ),
-                //                'widgets'  => $widgets,
-            );
-            $reports_data[] = $data;
-        }
-
-
-        return $reports_data;
-    }
-
-    protected function _getDashboardWidgets($dashboard)
-    {
-        $widgets = array();
-
-        foreach($dashboard->getStats() as $widget) {
-            $widgets[] = $this->_getWidgetData($widget);
-        }
-        return $widgets;
-    }
 
 
 

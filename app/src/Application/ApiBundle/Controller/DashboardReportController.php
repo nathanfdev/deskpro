@@ -36,7 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReport;
-use Doctrine\Common\Collections\ArrayCollection;
+use Application\ApiBundle\Service\Dashboard as DashboardService;
 
 /**
  * @SWG\Resource(
@@ -47,6 +47,16 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class DashboardReportController extends AbstractController
 {
+
+    /** @var DashboardService */
+    protected $service;
+
+    public function init()
+    {
+        parent::init();
+        $this->service = $this->get('dashboard.service');
+    }
+
     /**
      * @SWG\Api(
      * 	path="/dashboards/reports",
@@ -65,78 +75,59 @@ class DashboardReportController extends AbstractController
 
         foreach ($reports as $k => $report) {
             /** @var DashboardReport $report */
-            $data[$k] = $this->_getReportData($report);
+            $data[$k] = $this->service->getReportData($report);
         }
         return $this->createApiResponse($data);
     }
 
-    public function cloneAction($id)
+    public function cloneAction($id, $dashboard_id)
     {
-        $prototype = $this->_getReport($id);
-        /** @var ArrayCollection $allReports */
-        $allReports = $prototype->getDashboard()->getReports();
+        $prototype = $this->service->getReport($id);
+        $dashboard = $this->service->getDashboard($dashboard_id);
         $report = new DashboardReport();
-        $sort_order = $allReports->last() ? $allReports->last()->getSortOrder() + 1 : 1;
         $report
-            ->setTitle($prototype->getTitle())
+            ->setTitle($prototype->getTitle().'_clone')
             ->setColumns($prototype->getColumns())
-            ->setDashboard($prototype->getDashboard())
-            ->setSortOrder($sort_order);
-        $this->em->persist($report);
-        $this->em->flush();
-        return $this->createApiSuccessResponse($this->_getReportData($report));
+            ->setDashboard($dashboard)
+            ->setSortOrder($this->service->getLastSortOrder($dashboard));
+        return $this->createApiSuccessResponse($this->service->saveReport($report));
     }
 
-    public function saveAction($dashboard_id, $id)
+    public function saveAction($id)
     {
-        if($id) {
-            $report = $this->_getReport($id);
-        } else {
-            $report = new DashboardReport();
-        }
+        $report = $this->service->getReport($id);
+
         $title = $this->in->getCleanValue('title', 'string');
-        $dashboard
-            ->setTitle($title);
-        $this->em->persist($dashboard);
-        $this->em->flush();
-        return $this->createSuccessResponse(array(
-            'id' => $dashboard->getId(),
-            'title' => $dashboard->getTitle(),
-        ));
+        $columns = $this->in->getCleanValue('columns', 'string');
+
+        $report
+            ->setTitle($title)
+            ->setColumns($columns);
+
+        return $this->createApiSuccessResponse($this->service->saveReport($report));
+    }
+
+    public function createAction($dashboard_id)
+    {
+        $dashboard = $this->service->getDashboard($dashboard_id);
+        $report = new DashboardReport();
+        $title = $this->in->getCleanValue('title', 'string');
+        $columns = $this->in->getCleanValue('columns', 'string');
+
+        $report
+            ->setTitle($title)
+            ->setDashboard($dashboard)
+            ->setSortOrder($this->service->getLastSortOrder($dashboard))
+            ->setColumns($columns);
+        return $this->createApiSuccessResponse($this->service->saveReport($report));
+
     }
 
     public function deleteAction($id)
     {
-        $report = $this->_getReport($id);
+        $report = $this->service->getReport($id);
         $this->em->remove($report);
         $this->em->flush();
         return $this->createApiDeleteResponse();
-    }
-
-    /**
-     * @param $report
-     *
-     * @return null|DashboardReport
-     */
-    protected function _getReport($report)
-    {
-        if(! ($report instanceof DashboardReport)) {
-            $report = $this->em->getRepository('DeskPRO:ReportDashboardReport')->find((int) $report);
-            if (!$report) throw $this->createNotFoundException('DashboardReport not found!');
-        }
-        return $report;
-    }
-
-    protected function _getReportData($report)
-    {
-        $report = $this->_getReport($report);
-        $data = array(
-            'title'        => $report->getTitle(),
-            'id'           => $report->getId(),
-            'dasbhoard_id' => $report->getDashboard()->getId(),
-            'loaded'       => false,
-            'widgets'      => $report->getWidgets(),
-        );
-        return $data;
     }
 }

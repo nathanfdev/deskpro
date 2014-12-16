@@ -74,7 +74,7 @@
     <nav class="reports-control">
         <ul>
             <li><a ng-click='editReport()' ng-class="{'control-inactive':dashboard.default}"><i class="fa fa-cog"></i> Edit Report</a></li>
-            <li><a ng-click="cloningReport = true"><i class="fa fa-copy"></i> Clone Report</a></li>
+            <li><a ng-click="cloneReport(currentReport)"><i class="fa fa-copy"></i> Clone Report</a></li>
         </ul>
     </nav>
 
@@ -119,7 +119,7 @@
         <div class="reports-dropdown-content">
             <h2>Create new report</h2>
             <form>
-                <button>Create report</button>
+                <button ng-click="createReport()">Create report</button>
                 <div class="input-bucket"><input type="text" ng-model='newReport.title' placeholder="Name your report"></div>
             </form>
         </div>
@@ -138,7 +138,7 @@
                     <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
                     <ul ng-show='isExpanded(db) && db.reports.length > 0'>
                         <li ng-repeat="report in db.reports track by report.id">
-                            <a ng-click="alert('clone!')">{{ ng_var('report.title') }}</a>
+                            <a ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
                         </li>
                     </ul>
                 </li>

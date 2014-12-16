@@ -4823,6 +4823,10 @@ $collection->create('dashboard_delete', array(
     'methods'      => array('DELETE',),
 ));
 
+########################################################################################################################
+# Report Dashboards Wdigets
+########################################################################################################################
+
 $collection->create('dashboard_widget_get    ', array(
     'path'         => '/dashboards/widgets/{id}',
     'controller'   => 'ApiBundle:Dashboard:getWidget',
@@ -4866,10 +4870,27 @@ $collection->create('dashboards_reports_list', array(
     'methods'      => array('GET',),
 ));
 
-$collection->create('dashboards_reports_clone', array(
-    'path'         => '/dashboards/reports/clone/{id}',
-    'controller'   => 'ApiBundle:DashboardReport:clone',
+$collection->create('dashboard_reports_create', array(
+    'path'         => '/dashboards/reports/{dashboard_id}',
+    'controller'   => 'ApiBundle:DashboardReport:create',
+    'defaults'     => array('action' => 'create'),
+    'requirements' => array('dashboard_id' => '\\d+'),
+    'methods'      => array('POST',),
+));
+
+$collection->create('dashboard_reports_update', array(
+    'path'         => '/dashboards/reports/{id}',
+    'controller'   => 'ApiBundle:DashboardReport:save',
     'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'save'),
+    'methods'      => array('PUT',),
+));
+
+
+$collection->create('dashboards_reports_clone', array(
+    'path'         => '/dashboards/reports/clone/{id}/{dashboard_id}',
+    'controller'   => 'ApiBundle:DashboardReport:clone',
+    'requirements' => array('id' => '\\d+', 'dashboard_id' => '\\d+'),
     'defaults'     => array('action' => 'clone'),
     'methods'      => array('POST',),
 ));
