@@ -39,7 +39,7 @@ use Symfony\Component\Finder\Finder;
 /**
  * Representation of a DeskPRO Theme
  */
-abstract class AbstractTheme implements ThemeInterface
+abstract class AbstractTheme implements ThemeInterface, \Serializable
 {
     /**
      * @var Tag[]
@@ -51,19 +51,29 @@ abstract class AbstractTheme implements ThemeInterface
      */
     private $parent;
 
-    public function __construct(ThemeInterface $parent = null)
+    public function serialize()
+    {
+        return serialize($this->tags);
+    }
+
+    public function unserialize($serialized)
+    {
+        $this->tags = unserialize($serialized);
+    }
+
+    public function setParent(ThemeInterface $parent)
     {
         $this->parent = $parent;
-        foreach (static::getTags() as $tag) {
-            $this->tags[$tag->getName()] = $tag;
-        }
     }
 
     public function getParent()
     {
+        if ($this->getParentId() && !$this->parent) {
+            throw new \RuntimeException(sprintf('theme "%s" was not constructed properly in the repository. It should have parent "%s" but does not.', $this->getId(), $this->getParentId()));
+        }
+
         return $this->parent;
     }
-
 
     /**
      * Get the tag for the given tag name.
@@ -99,5 +109,10 @@ abstract class AbstractTheme implements ThemeInterface
         }
 
         return $this->getParent() ? array_merge($this->parent->getTemplateMap(), $temps) : $temps;
+    }
+
+    public function setTags(array $tags)
+    {
+        $this->tags = $tags;
     }
 }

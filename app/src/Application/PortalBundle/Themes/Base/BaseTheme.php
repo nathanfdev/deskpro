@@ -108,6 +108,15 @@ class BaseTheme extends AbstractTheme
     /**
      * {@inheritdoc}
      */
+    public function getParentId()
+    {
+        return null;
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'Base';

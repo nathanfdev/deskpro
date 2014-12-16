@@ -50,6 +50,15 @@ class TabBarTheme extends AbstractTheme
     /**
      * {@inheritdoc}
      */
+    public function getParentId()
+    {
+        return 'base';
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'Tab Bar';

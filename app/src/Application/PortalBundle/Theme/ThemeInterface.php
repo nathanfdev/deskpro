@@ -65,6 +65,14 @@ interface ThemeInterface
 
 
     /**
+     * The theme ID of the parent theme
+     *
+     * @return string|null
+     */
+    public function getParentId();
+
+
+    /**
      * @return string absolute path to the root of this theme's templates
      */
     public function getBaseTemplateDir();
@@ -106,4 +114,20 @@ interface ThemeInterface
      * @return Tag[]
      */
     public static function getTags();
+
+    /**
+     * Sets the parent of the theme
+     *
+     * @param ThemeInterface $parent
+     * @return null
+     */
+    public function setParent(ThemeInterface $parent);
+
+    /**
+     * Sets an array of tag objects, replaces previously set tags with new array
+     *
+     * @param Tag[] $tags
+     * @return null
+     */
+    public function setTags(array $tags);
 }

@@ -50,6 +50,15 @@ class SidebarTheme extends AbstractTheme
     /**
      * {@inheritdoc}
      */
+    public function getParentId()
+    {
+        return 'base';
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'Side Bar';
