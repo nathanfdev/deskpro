@@ -35,40 +35,63 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Application\PortalBundle\Annotation\Tag;
+use Application\PortalBundle\Annotation\TagOptions;
 
 class PortalController extends AbstractController
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         return $this->render('Theme:Portal:index.html.twig');
     }
 
-    public function homeAction()
+    public function loginAction(Request $request)
+    {
+        return $this->render(
+            'Theme:Portal:login.html.twig',
+            array(
+                'auth_manager' => $this->get('dp_authentication_manager.user'),
+                'login_error' => $request->get('retry') == 'auth'
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="home")
+     */
+    public function homeAction(TagRequest $tag_request)
     {
         return $this->render('Theme:Portal:home.html.twig');
     }
 
-
-    public function getInTouchAction()
+    /**
+     * @Tag(name="get_in_touch")
+     */
+    public function getInTouchAction(TagRequest $tag_request)
     {
         return $this->render('Theme:Portal:get_in_touch.html.twig');
     }
 
-
-    public function alertsAction()
+    /**
+     * @Tag(name="alerts")
+     */
+    public function alertsAction(TagRequest $tag_request)
     {
         return $this->render('Theme:Portal:alerts.html.twig');
     }
 
-
-    public function flashesAction(Request $request)
+    /**
+     * @Tag(name="flashes")
+     */
+    public function flashesAction(TagRequest $tag_request)
     {
         $flashes = array();
-        $session = $request->getSession();
+        $session = $tag_request->getSession();
         if (null !== $session && $session->isStarted()) {
             $flashes = $session->getFlashBag()->all();
         }
@@ -78,8 +101,10 @@ class PortalController extends AbstractController
         ));
     }
 
-
-    public function topBarAction()
+    /**
+     * @Tag(name="page_top")
+     */
+    public function topBarAction(TagRequest $tag_request)
     {
         /** @var \Application\LanguageBundle\Language\LanguageManager $language_manager */
         $language_manager = $this->get('language_manager');
@@ -94,14 +119,17 @@ class PortalController extends AbstractController
         );
     }
 
-    public function pagerAction(Request $request)
+    /**
+     * @Tag(name="pager")
+     */
+    public function pagerAction(TagRequest $tag_request)
     {
         $resolver = new OptionsResolver();
         $resolver->setRequired('pager');
         $resolver->setDefault('show_pagination', true);
         $resolver->setAllowedTypes(array('pager' => 'Pagerfanta\Pagerfanta'));
 
-        $options = $resolver->resolve($request->query->get('tag_options'));
+        $options = $resolver->resolve($tag_request->query->get('tag_options'));
 
         if (!$options['show_pagination']) {
             return new Response('');
@@ -112,22 +140,20 @@ class PortalController extends AbstractController
         ));
     }
 
-
-    public function topSearchAction()
+    /**
+     * @Tag(name="page_search_box")
+     */
+    public function topSearchAction(TagRequest $tag_request)
     {
         return $this->render('Theme:Portal:top_search.html.twig');
     }
 
-
-    public function sidebarAction()
+    /**
+     * @Tag(name="page_tabs")
+     */
+    public function topTabsAction(TagRequest $tag_request)
     {
-        return $this->render('Theme:Portal:sidebar.html.twig');
-    }
-
-
-    public function topTabsAction(Request $request)
-    {
-        $path_parts = explode('/', ltrim($request->getPathInfo(), '/'));
+        $path_parts = explode('/', ltrim($tag_request->getPathInfo(), '/'));
 
         return $this->render(
             'Theme:Portal:top_tabs.html.twig',
@@ -137,18 +163,18 @@ class PortalController extends AbstractController
         );
     }
 
-    public function loginAction(Request $request)
+    /**
+     * @Tag(name="sidebar")
+     */
+    public function sidebarAction(TagRequest $tag_request)
     {
-        return $this->render(
-            'Theme:Portal:login.html.twig',
-            array(
-                'auth_manager' => $this->get('dp_authentication_manager.user'),
-                'login_error' => $request->get('retry') == 'auth'
-            )
-        );
+        return $this->render('Theme:Portal:sidebar.html.twig');
     }
 
-    public function loginSidebarAction()
+    /**
+     * @Tag(name="login_sidebar")
+     */
+    public function loginSidebarAction(TagRequest $tag_request)
     {
         return $this->render(
             'Theme:Portal:login_sidebar.html.twig',
@@ -158,7 +184,10 @@ class PortalController extends AbstractController
         );
     }
 
-    public function userSidebarAction()
+    /**
+     * @Tag(name="user_sidebar")
+     */
+    public function userSidebarAction(TagRequest $tag_request)
     {
         $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($this->getUser());
 

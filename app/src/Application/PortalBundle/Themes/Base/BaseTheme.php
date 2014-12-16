@@ -42,21 +42,6 @@ class BaseTheme extends AbstractTheme
     public static function getTags()
     {
         return array(
-            new Tag('home',                   'Theme:Portal:home'),
-
-            new Tag('pager',                   'Theme:Portal:pager'),
-
-            new Tag('alerts',                   'Theme:Portal:alerts'),
-            new Tag('flashes',                  'Theme:Portal:flashes'),
-            new Tag('page_top',                 'Theme:Portal:topBar'),
-            new Tag('page_search_box',          'Theme:Portal:topSearch'),
-            new Tag('page_tabs',                'Theme:Portal:topTabs'),
-
-            new Tag('get_in_touch',             'Theme:Portal:getInTouch'),
-            new Tag('sidebar',                  'Theme:Portal:sidebar'),
-            new Tag('user_sidebar',             'Theme:Portal:userSidebar'),
-            new Tag('login_sidebar',            'Theme:Portal:loginSidebar'),
-
             new Tag('news', 'Theme:News:list'),
             new Tag('news_posts',               'Theme:News:list',                  array('style' => 'posts')),
             new Tag('news_posts_list',          'Theme:News:list',                  array('style' => 'small')),
@@ -78,9 +63,6 @@ class BaseTheme extends AbstractTheme
             new Tag('feedback', 'Theme:Feedback:feedback'),
             new Tag('feedback_items',           'Theme:Feedback:list',              array('style' => 'items')),
             new Tag('feedback_list_small',      'Theme:Feedback:list',              array('style' => 'small')),
-
-            new Tag('statisfaction_stats_list', 'Theme:Dev:render',                 array('tpl' => 'Theme:Portal:satisfaction_stats_list.html.twig')),
-            new Tag('agents_online_list',       'Theme:Dev:render',                 array('tpl' => 'Theme:Portal:agents_online_list.html.twig')),
         );
     }
 

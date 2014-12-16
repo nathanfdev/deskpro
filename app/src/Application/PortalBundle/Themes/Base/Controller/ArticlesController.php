@@ -64,7 +64,7 @@ class ArticlesController extends AbstractController
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function browseAction(ArticleCategory $category, Request $request)
+    public function browseAction(Request $request, ArticleCategory $category)
     {
         return $this->render('Theme:Articles:browse.html.twig', array(
                 'cat' => $category,

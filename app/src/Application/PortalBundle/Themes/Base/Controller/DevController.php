@@ -35,9 +35,11 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\PortalBundle\Annotation\Tag;
+use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
+use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\OptionsResolver\OptionsResolver;
-use Symfony\Component\HttpFoundation\Request;
 
 class DevController extends AbstractController
 {
@@ -46,12 +48,16 @@ class DevController extends AbstractController
         return $this->render('Theme:Dev:dev.html.twig');
     }
 
-    public function renderAction(Request $request)
+    /**
+     * @Tag(name="statisfaction_stats_list", default_options={"tpl":"Theme:Portal:satisfaction_stats_list.html.twig"})
+     * @Tag(name="agents_online_list", default_options={"tpl":"Theme:Portal:agents_online_list.html.twig"})
+     *
+     * @TagOptions({
+     *      "required": {"tpl"}
+     * })
+     */
+    public function renderAction(TagRequest $request, array $options)
     {
-        $options_resolver = new OptionsResolver();
-        $options_resolver->setRequired(array('tpl'));
-        $options = $options_resolver->resolve($request->query->get('tag_options'));
-
         return $this->render($options['tpl']);
     }
 }
