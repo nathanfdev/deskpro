@@ -50,6 +50,15 @@ class DevTestTheme extends AbstractTheme
     /**
      * {@inheritdoc}
      */
+    public function getParentId()
+    {
+        return 'base';
+    }
+
+
+    /**
+     * {@inheritdoc}
+     */
     public function getName()
     {
         return 'Dev Test';
