@@ -88,6 +88,12 @@ services:
     tags:
       - { name: 'kernel.cache_warmer' }
 
+  portal_cache.theme_cache_warmer:
+    class: Application\PortalBundle\CacheWarmer\ThemeRepositoryCacheWarmer
+    arguments: [@theme_repository]
+    tags:
+      - { name: 'kernel.cache_warmer' }
+
   data_collector.portal:
     class: Application\PortalBundle\DataCollector\PortalCollector
     arguments: [@brand_stack, @language_stack]
