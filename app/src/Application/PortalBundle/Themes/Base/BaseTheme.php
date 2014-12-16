@@ -41,11 +41,8 @@ class BaseTheme extends AbstractTheme
 {
     public static function getTags()
     {
-        return array(
-            new Tag('feedback', 'Theme:Feedback:feedback'),
-            new Tag('feedback_items',           'Theme:Feedback:list',              array('style' => 'items')),
-            new Tag('feedback_list_small',      'Theme:Feedback:list',              array('style' => 'small')),
-        );
+        // these have been moved to annotations on the tag controllers in this theme
+        return array();
     }
 
 

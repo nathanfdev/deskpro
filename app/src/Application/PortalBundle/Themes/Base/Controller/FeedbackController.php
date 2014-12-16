@@ -36,21 +36,39 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\DeskPRO\Entity\Feedback;
+use Application\PortalBundle\Annotation\Tag;
+use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
+use Application\PortalBundle\Request\TagRequest;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
 
 class FeedbackController extends AbstractController
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         return $this->render('Theme:Feedback:index.html.twig');
     }
 
-    public function feedbackAction(Request $request)
+
+    /**
+     * @ParamConverter(name="feedback", converter="deskpro_slug")
+     */
+    public function viewAction(Request $request, Feedback $feedback)
+    {
+        return $this->render(
+            'Theme:Feedback:view.html.twig', array(
+                'feedback' => $feedback
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="feedback")
+     */
+    public function feedbackAction(TagRequest $request)
     {
         $allFeedback = $this->getFeedbackRepo()->createQueryBuilder('f');
         $pager = new Pagerfanta(new DoctrineORMAdapter($allFeedback));
@@ -66,36 +84,22 @@ class FeedbackController extends AbstractController
         );
     }
 
-
     /**
-     * @ParamConverter(name="feedback", converter="deskpro_slug")
+     * @Tag(name="feedback_items", default_options={"style":"items"})
+     * @Tag(name="feedback_list_small", default_options={"style":"small"})
+     *
+     * @TagOptions({
+     *      "defaults": {
+     *          "style": "small",
+     *          "count": 5
+     *      },
+     *      "allowedValues": {
+     *          "style": {"items","small"}
+     *      }
+     * })
      */
-    public function viewAction(Feedback $feedback)
+    public function listAction(TagRequest $request, array $options)
     {
-        return $this->render(
-            'Theme:Feedback:view.html.twig', array(
-                'feedback' => $feedback
-            )
-        );
-    }
-
-    public function listAction(Request $request)
-    {
-        $options_resolver = new OptionsResolver();
-        $options_resolver
-            ->setDefaults(
-                array(
-                    'style' => 'small',
-                    'count' => 5
-                )
-            )
-            ->setAllowedValues(
-                array(
-                    'style' => array('items', 'small')
-                )
-            );
-        $options = $options_resolver->resolve($request->query->get('tag_options'));
-
         $feedback  = $this->getFeedbackRepo()->getNewest(false, $options['count']);
         $total = $this->getFeedbackRepo()->countNotClosedNotHidden();
 
