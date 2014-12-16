@@ -3,7 +3,6 @@
 namespace DpIntegrationTests\DeskPRO\JIRA;
 
 use Application\DeskPRO\Entity\JiraIssue;
-use Application\DeskPRO\Entity\LabelTicket;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\WebhookHandler;
@@ -11,7 +10,7 @@ use Application\DeskPRO\Service\JIRA;
 use Doctrine\ORM\EntityRepository;
 use DpFixtures\JIRA\TriggerData;
 
-class APITest extends \DpIntegrationTestCase
+class DPTest extends \DpIntegrationTestCase
 {
     /**
      * @var EntityRepository
