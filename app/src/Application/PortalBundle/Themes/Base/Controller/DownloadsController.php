@@ -37,28 +37,26 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Application\PortalBundle\Annotation\TagOptions;
+use Application\PortalBundle\Annotation\Tag;
 
 class DownloadsController extends AbstractController
 {
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         return $this->render('Theme:Downloads:index.html.twig');
-    }
-
-    public function downloadsAction()
-    {
-        return $this->render('Theme:Downloads:downloads.html.twig');
     }
 
     /**
      * @ParamConverter(name="category", converter="deskpro_slug")
      */
-    public function browseAction(DownloadCategory $category, Request $request)
+    public function browseAction(Request $request, DownloadCategory $category)
     {
         return $this->render('Theme:Downloads:browse.html.twig', array(
                 'cat' => $category,
@@ -67,28 +65,11 @@ class DownloadsController extends AbstractController
         );
     }
 
-    public function breadcrumbsAction(Request $request)
-    {
-        $resolver = new OptionsResolver();
-        $resolver
-            ->setRequired('category')
-            ->setAllowedTypes(
-                array(
-                    'category' => 'Application\DeskPRO\Entity\DownloadCategory'
-                )
-            );
-        $options = $resolver->resolve($request->query->get('tag_options'));
-
-        return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
-            'category' => $options['category']
-        ));
-    }
-
 
     /**
      * @ParamConverter(name="download", converter="deskpro_slug")
      */
-    public function viewAction(Download $download)
+    public function viewAction(Request $request, Download $download)
     {
         return $this->render('Theme:Downloads:view.html.twig', array(
                 'download' => $download
@@ -100,33 +81,59 @@ class DownloadsController extends AbstractController
     /**
      * @ParamConverter(name="download", converter="deskpro_slug")
      */
-    public function downloadAction(Download $download)
+    public function downloadAction(Request $request, Download $download)
     {
         return new Response('downlading file...');
     }
 
-
-    public function listAction(Request $request)
+    /**
+     * @Tag(name="downloads")
+     */
+    public function downloadsAction(TagRequest $request)
     {
-        $options_resolver = new OptionsResolver();
-        $options_resolver
-            ->setDefaults(
-                array(
-                    'count' => 10,
-                    'style' => 'small',
-                    'show_pagination' => false,
-                    'page' => 1,
-                    'max_per_page' => 10,
-                    'category' => null
-                )
-            )
-            ->setAllowedValues(
-                array(
-                    'style' => array('items', 'small', 'simple')
-                )
-            );
-        $options = $options_resolver->resolve($request->query->get('tag_options'));
+        return $this->render('Theme:Downloads:downloads.html.twig');
+    }
 
+    /**
+     * @Tag(name="downloads_category_breadcrumbs")
+     *
+     * @TagOptions({
+     *      "required": {"category"},
+     *      "allowedTypes": {"category": {"Application\DeskPRO\Entity\DownloadCategory", "int"} }
+     * })
+     */
+    public function breadcrumbsAction(TagRequest $request, array $options)
+    {
+        if (!$options['category'] instanceof DownloadCategory) {
+            $options['category'] = $this->getDownloadCategoriesRepo()->find($options['category']);
+        }
+
+        return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
+            'category' => $options['category']
+        ));
+    }
+
+    /**
+     * @Tag(name="downloads_list")
+     * @Tag(name="downloads_list_simple", default_options={"style":"simple"})
+     * @Tag(name="downloads_list_items", default_options={"style":"items"})
+     *
+     * @TagOptions({
+     *      "defaults": {
+     *          "count": 10,
+     *          "style": "small",
+     *          "show_pagination": false,
+     *          "page": 1,
+     *          "max_per_page": 10,
+     *          "category": null
+     *      },
+     *      "allowedValues": {
+     *          "style": {"small","simple","items"}
+     *      }
+     * })
+     */
+    public function listAction(TagRequest $request, array $options)
+    {
         if (null !== $options['category'] && !$options['category'] instanceof DownloadCategory) {
             $options['category'] = $this->getDownloadCategoriesRepo()->find($options['category']);
         }
@@ -141,23 +148,22 @@ class DownloadsController extends AbstractController
     }
 
 
-    public function catsAction(Request $request)
+    /**
+     * @Tag(name="downloads_overview")
+     * @Tag(name="downloads_cats_list", default_options={"style":"small"})
+     *
+     * @TagOptions({
+     *      "defaults": {
+     *          "style": "small",
+     *          "parent": null
+     *      },
+     *      "allowedValues": {
+     *          "style": {"small","overview"}
+     *      }
+     * })
+     */
+    public function catsAction(TagRequest $request, array $options)
     {
-        $options_resolver = new OptionsResolver();
-        $options_resolver
-            ->setDefaults(
-                array(
-                    'parent' => null,
-                    'style'  => 'small'
-                )
-            )
-            ->setAllowedValues(
-                array(
-                    'style' => array('small', 'overview')
-                )
-            );
-        $options = $options_resolver->resolve($request->query->get('tag_options'));
-
         if ($category = $options['parent']) {
             if (!$category instanceof DownloadCategory) {
                 $category = $this->getDownloadCategoriesRepo()->find($category);
@@ -170,7 +176,7 @@ class DownloadsController extends AbstractController
         return $this->render(
             sprintf('Theme:Downloads:cats_%s.html.twig', $options['style']),
             array(
-                'cat'        => $category,
+                'cat' => $category,
                 'child_cats' => $categories
             )
         );
