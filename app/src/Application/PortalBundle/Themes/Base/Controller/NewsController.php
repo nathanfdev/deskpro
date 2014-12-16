@@ -38,6 +38,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\PortalBundle\Controller\AbstractController;
+use Application\PortalBundle\Request\TagRequest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
@@ -45,6 +46,8 @@ use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Application\PortalBundle\Annotation\TagOptions;
+use Application\PortalBundle\Annotation\Tag;
 
 class NewsController extends AbstractController
 {
@@ -67,7 +70,7 @@ class NewsController extends AbstractController
     /**
      * @ParamConverter(name="category", converter="deskpro_slug")
      */
-    public function browseAction(NewsCategory $category, Request $request)
+    public function browseAction(Request $request, NewsCategory $category)
     {
         if (!$category) {
             throw $this->createNotFoundException('news category "' . $slug . '" not found');
@@ -104,23 +107,22 @@ class NewsController extends AbstractController
     }
 
 
-    public function catsAction(Request $request)
+    /**
+     * @Tag(name="news_cats_list", default_options={"style":"small"})
+     * @Tag(name="news_cats_dropdown", default_options={"style":"dropdown"})
+     *
+     * @TagOptions({
+     *      "defaults": {
+     *          "style": "small",
+     *          "parent": null
+     *      },
+     *      "allowedValues": {
+     *          "style": {"small", "dropdown"}
+     *      }
+     * })
+     */
+    public function catsAction(TagRequest $tag_request, array $options)
     {
-        $options_resolver = new OptionsResolver();
-        $options_resolver
-            ->setDefaults(
-                array(
-                    'style' => 'small',
-                    'parent' => null
-                )
-            )
-            ->setAllowedValues(
-                array(
-                    'style' => array('small', 'dropdown')
-                )
-            );
-        $options = $options_resolver->resolve($request->query->get('tag_options'));
-
         if ($category = $options['parent']) {
             if (!$category instanceof NewsCategory) {
                 $category = $this->getNewsCategoriesRepo()->find($category);
@@ -140,23 +142,23 @@ class NewsController extends AbstractController
     }
 
 
-    public function listAction(Request $request)
+    /**
+     * @Tag(name="news")
+     * @Tag(name="news_posts", default_options={"style":"posts"})
+     * @Tag(name="news_posts_list", default_options={"style":"small"})
+     *
+     * @TagOptions({
+     *      "defaults": {
+     *          "style": "small",
+     *          "count": 5
+     *      },
+     *      "allowedValues": {
+     *          "style": {"posts", "small"}
+     *      }
+     * })
+     */
+    public function listAction(Request $request, array $options)
     {
-        $options_resolver = new OptionsResolver();
-        $options_resolver
-            ->setDefaults(
-                array(
-                    'style'  => 'small',
-                    'count' => 5
-                )
-            )
-            ->setAllowedValues(
-                array(
-                    'style' => array('posts', 'small')
-                )
-            );
-        $options = $options_resolver->resolve($request->query->get('tag_options'));
-
         $news  = $this->getNewsRepo()->getNewest($options['count']);
         $total = $this->getNewsRepo()->countPublished();
 
