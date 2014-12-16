@@ -7,7 +7,7 @@
                 <hr>
             </header>
 
-            {{ kb_articles_forcat({'category':cat.id,'include_subcategories': true}|merge(articles_options)) }}
+            {{ knowedgebase_articles_forcat({'category':cat.id,'include_subcategories': true}|merge(articles_options)) }}
         </article>
     </div>
 {% endfor %}

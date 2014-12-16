@@ -54,7 +54,7 @@ class ArticlesController extends AbstractController
     /**
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function indexAction()
+    public function indexAction(Request $request)
     {
         return $this->render('Theme:Articles:index.html.twig');
     }
@@ -77,16 +77,54 @@ class ArticlesController extends AbstractController
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function viewAction(Article $article)
+    public function viewAction(Request $request, Article $article)
     {
         return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
     }
 
     /**
-     * @Tag(name="kb_articles_forcat", default_options={"style":"forcat"})
-     * @Tag(name="kb_articles_small", default_options={"style":"small"})
-     * @Tag(name="kb_articles_xsmall", default_options={"style":"xsmall"})
-     * @Tag(name="kb_articles_simple", default_options={"style":"simple"})
+     * @Tag(name="knowledgebase", default_options={"style":"home"})
+     * @Tag(name="knowledgebase_compact", default_options={"style":"summary"})
+     * @Tag(name="knowledgebase_list", default_options={"style":"expander"})
+     * @Tag(name="knowledgebase_small", default_options={"style":"small"})
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "style": "small",
+     *          "category": null,
+     *          "articles": {
+     *              "include_subcategories": false
+     *          }
+     *      },
+     *      allowed_values={
+     *          "style": {"expander", "home", "small", "summary"}
+     *      }
+     * )
+     */
+    public function categoriesAction(TagRequest $request, array $options)
+    {
+        /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
+        if ($options['category']) {
+            $categories = $this->getArticleCategoryRepo()->findBy(array('category' => $options['category']));
+        } else {
+            $categories = $this->getArticleCategoryRepo()->findAll();
+        }
+
+        return $this->render(
+            sprintf('Theme:Articles:cats_%s.html.twig', $options['style']),
+            array(
+                'cats' => $categories,
+                'articles_options' => $options['articles']
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="knowedgebase_articles")
+     * @Tag(name="knowedgebase_articles_forcat", default_options={"style":"forcat"})
+     * @Tag(name="knowedgebase_articles_small", default_options={"style":"small"})
+     * @Tag(name="knowedgebase_articles_xsmall", default_options={"style":"xsmall"})
+     * @Tag(name="knowedgebase_articles_simple", default_options={"style":"simple"})
      *
      * @TagOptions(
      *      defaults={
@@ -123,44 +161,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase", default_options={"style":"home"})
-     * @Tag(name="knowledgebase_compact", default_options={"style":"summary"})
-     * @Tag(name="knowledgebase_list", default_options={"style":"expander"})
-     * @Tag(name="kb_cats_list", default_options={"style":"small"})
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "style": "small",
-     *          "parent": null,
-     *          "articles": {
-     *              "include_subcategories": false
-     *          }
-     *      },
-     *      allowed_values={
-     *          "style": {"expander", "home", "small", "summary"}
-     *      }
-     * )
-     */
-    public function categoriesAction(TagRequest $request, array $options)
-    {
-        /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
-        if ($options['parent']) {
-            $categories = $this->getArticleCategoryRepo()->findBy(array('parent' => $options['parent']));
-        } else {
-            $categories = $this->getArticleCategoryRepo()->findAll();
-        }
-
-        return $this->render(
-            sprintf('Theme:Articles:cats_%s.html.twig', $options['style']),
-            array(
-                'cats' => $categories,
-                'articles_options' => $options['articles']
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="kb_category_breadcrumbs")
+     * @Tag(name="knowledgebase_breadcrumbs")
      *
      * @TagOptions(
      *      required={"category"},

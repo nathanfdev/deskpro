@@ -95,7 +95,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_category_breadcrumbs")
+     * @Tag(name="downloads_breadcrumbs")
      *
      * @TagOptions(
      *      required={"category"},
@@ -114,12 +114,46 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_list")
-     * @Tag(name="downloads_list_simple", default_options={"style":"simple"})
-     * @Tag(name="downloads_list_items", default_options={"style":"items"})
+     * @Tag(name="downloads")
+     * @Tag(name="downloads_list", default_options={"style":"small"})
      *
-     * @TagOptions({
-     *      "defaults": {
+     * @TagOptions(
+     *      defaults={
+     *          "style": "small",
+     *          "category": null
+     *      },
+     *      allowed_values={"style": {"small","overview"}}
+     * )
+     */
+    public function categoriesAction(TagRequest $request, array $options)
+    {
+        if ($category = $options['category']) {
+            if (!$category instanceof DownloadCategory) {
+                $category = $this->getDownloadCategoriesRepo()->find($category);
+            }
+            $categories = $category->children;
+        } else {
+            $categories = $this->getDownloadCategoriesRepo()->findBy(array('parent' => null));
+        }
+
+        return $this->render(
+            sprintf('Theme:Downloads:cats_%s.html.twig', $options['style']),
+            array(
+                'cat' => $category,
+                'child_cats' => $categories
+            )
+        );
+    }
+
+
+    /**
+     * @Tag(name="downloads_files")
+     * @Tag(name="downloads_files_simple", default_options={"style":"simple"})
+     * @Tag(name="downloads_files_items", default_options={"style":"items"})
+     * @Tag(name="downloads_files_list", default_options={"style":"small"})
+     *
+     * @TagOptions(
+     *      defaults={
      *          "count": 10,
      *          "style": "small",
      *          "show_pagination": false,
@@ -127,10 +161,10 @@ class DownloadsController extends AbstractController
      *          "max_per_page": 10,
      *          "category": null
      *      },
-     *      "allowedValues": {
+     *      allowed_values={
      *          "style": {"small","simple","items"}
      *      }
-     * })
+     * )
      */
     public function listAction(TagRequest $request, array $options)
     {
@@ -143,39 +177,6 @@ class DownloadsController extends AbstractController
             sprintf('Theme:Downloads:list_%s.html.twig', $options['style']),
             array(
                 'pager' => $pager
-            )
-        );
-    }
-
-
-    /**
-     * @Tag(name="downloads_overview")
-     * @Tag(name="downloads_cats_list", default_options={"style":"small"})
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "style": "small",
-     *          "parent": null
-     *      },
-     *      allowed_values={"style": {"small","overview"}}
-     * )
-     */
-    public function catsAction(TagRequest $request, array $options)
-    {
-        if ($category = $options['parent']) {
-            if (!$category instanceof DownloadCategory) {
-                $category = $this->getDownloadCategoriesRepo()->find($category);
-            }
-            $categories = $category->children;
-        } else {
-            $categories = $this->getDownloadCategoriesRepo()->findBy(array('parent' => $category));
-        }
-
-        return $this->render(
-            sprintf('Theme:Downloads:cats_%s.html.twig', $options['style']),
-            array(
-                'cat' => $category,
-                'child_cats' => $categories
             )
         );
     }

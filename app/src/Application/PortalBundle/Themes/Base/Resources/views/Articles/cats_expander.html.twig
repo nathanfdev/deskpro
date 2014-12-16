@@ -12,7 +12,7 @@
             </a>
         </header>
 
-        {{ kb_articles_simple({'category':cat.id}|merge(articles_options)) }}
+        {{ knowedgebase_articles_simple({'category':cat.id}|merge(articles_options)) }}
 
         <div class="list-meta">
             <a href="{{ path('portal_kb_browse', { slug: cat.slug }) }}">View <span>{{ cat.articles|length }}</span> articles</a>

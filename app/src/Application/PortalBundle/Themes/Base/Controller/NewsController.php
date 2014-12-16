@@ -95,7 +95,7 @@ class NewsController extends AbstractController
     /**
      * @ParamConverter(name="news", converter="deskpro_slug")
      */
-    public function viewAction(News $news)
+    public function viewAction(Request $request, News $news)
     {
         return $this->render(
             'Theme:News:view.html.twig',
@@ -108,28 +108,29 @@ class NewsController extends AbstractController
 
 
     /**
-     * @Tag(name="news_cats_list", default_options={"style":"small"})
-     * @Tag(name="news_cats_dropdown", default_options={"style":"dropdown"})
+     * @Tag(name="news")
+     * @Tag(name="news_list", default_options={"style":"small"})
+     * @Tag(name="news_dropdown", default_options={"style":"dropdown"})
      *
      * @TagOptions(
      *      defaults={
      *          "style": "small",
-     *          "parent": null
+     *          "category": null
      *      },
      *      allowed_values={
      *          "style": {"small", "dropdown"}
      *      }
      * )
      */
-    public function catsAction(TagRequest $tag_request, array $options)
+    public function categoriesAction(TagRequest $tag_request, array $options)
     {
-        if ($category = $options['parent']) {
+        if ($category = $options['category']) {
             if (!$category instanceof NewsCategory) {
                 $category = $this->getNewsCategoriesRepo()->find($category);
             }
             $categories = $category->children;
         } else {
-            $categories = $this->getNewsCategoriesRepo()->findBy(array('parent' => $category));
+            $categories = $this->getNewsCategoriesRepo()->findBy(array('category' => $category));
         }
 
         return $this->render(
@@ -143,8 +144,7 @@ class NewsController extends AbstractController
 
 
     /**
-     * @Tag(name="news")
-     * @Tag(name="news_posts", default_options={"style":"posts"})
+     * @Tag(name="news_posts")
      * @Tag(name="news_posts_list", default_options={"style":"small"})
      *
      * @TagOptions(
@@ -157,7 +157,7 @@ class NewsController extends AbstractController
      *      }
      * )
      */
-    public function listAction(Request $request, array $options)
+    public function listAction(TagRequest $tag_request, array $options)
     {
         $news  = $this->getNewsRepo()->getNewest($options['count']);
         $total = $this->getNewsRepo()->countPublished();

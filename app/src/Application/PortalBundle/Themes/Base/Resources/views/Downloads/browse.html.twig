@@ -1,7 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ downloads_category_breadcrumbs({ category: cat }) }}
-    {{ downloads_cats_list({parent: cat}) }}
-    {{ downloads_list_items({category: cat, show_pagination: true, page: page, max_per_page: 2}) }}
+    {{ downloads_breadcrumbs({ category: cat }) }}
+    {{ downloads_list({category: cat}) }}
+    {{ downloads_files_items({category: cat, show_pagination: true, page: page, max_per_page: 2}) }}
 {% endblock inner_content %}
