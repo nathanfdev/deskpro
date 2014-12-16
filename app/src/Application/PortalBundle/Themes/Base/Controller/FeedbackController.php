@@ -88,15 +88,15 @@ class FeedbackController extends AbstractController
      * @Tag(name="feedback_items", default_options={"style":"items"})
      * @Tag(name="feedback_list_small", default_options={"style":"small"})
      *
-     * @TagOptions({
-     *      "defaults": {
+     * @TagOptions(
+     *      defaults={
      *          "style": "small",
      *          "count": 5
      *      },
-     *      "allowedValues": {
+     *      allowed_values={
      *          "style": {"items","small"}
      *      }
-     * })
+     * )
      */
     public function listAction(TagRequest $request, array $options)
     {

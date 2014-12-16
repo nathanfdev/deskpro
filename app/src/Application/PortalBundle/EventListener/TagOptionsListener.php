@@ -82,22 +82,20 @@ class TagOptionsListener implements EventSubscriberInterface
 
         foreach ($annotations as $annotation) {
             if ($annotation instanceof TagOptions) {
-                $options = $annotation->value;
-
-                if (array_key_exists('defaults', $options)) {
-                    $tag_request->getOptionsResolver()->setDefaults($options['defaults']);
+                if (count($annotation->defaults)) {
+                    $tag_request->getOptionsResolver()->setDefaults($annotation->defaults);
                 }
 
-                if (array_key_exists('required', $options)) {
-                    $tag_request->getOptionsResolver()->setRequired($options['required']);
+                if (count($annotation->required)) {
+                    $tag_request->getOptionsResolver()->setRequired($annotation->required);
                 }
 
-                if (array_key_exists('allowedTypes', $options)) {
-                    $tag_request->getOptionsResolver()->setAllowedTypes($options['allowedTypes']);
+                if (count($annotation->allowed_types)) {
+                    $tag_request->getOptionsResolver()->setAllowedTypes($annotation->allowed_types);
                 }
 
-                if (array_key_exists('allowedValues', $options)) {
-                    $tag_request->getOptionsResolver()->setAllowedValues($options['allowedValues']);
+                if (count($annotation->allowed_values)) {
+                    $tag_request->getOptionsResolver()->setAllowedValues($annotation->allowed_values);
                 }
 
                 $tag_request->attributes->set('options', $tag_request->getTagOptions());

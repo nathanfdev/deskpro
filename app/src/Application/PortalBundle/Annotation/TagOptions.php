@@ -40,5 +40,8 @@ namespace Application\PortalBundle\Annotation;
  */
 class TagOptions
 {
-    public $value;
+    public $defaults = array();
+    public $required = array();
+    public $allowed_values = array();
+    public $allowed_types = array();
 }

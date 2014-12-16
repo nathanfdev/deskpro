@@ -97,10 +97,10 @@ class DownloadsController extends AbstractController
     /**
      * @Tag(name="downloads_category_breadcrumbs")
      *
-     * @TagOptions({
-     *      "required": {"category"},
-     *      "allowedTypes": {"category": {"Application\DeskPRO\Entity\DownloadCategory", "int"} }
-     * })
+     * @TagOptions(
+     *      required={"category"},
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\DownloadCategory", "int"}}
+     * )
      */
     public function breadcrumbsAction(TagRequest $request, array $options)
     {
@@ -152,15 +152,13 @@ class DownloadsController extends AbstractController
      * @Tag(name="downloads_overview")
      * @Tag(name="downloads_cats_list", default_options={"style":"small"})
      *
-     * @TagOptions({
-     *      "defaults": {
+     * @TagOptions(
+     *      defaults={
      *          "style": "small",
      *          "parent": null
      *      },
-     *      "allowedValues": {
-     *          "style": {"small","overview"}
-     *      }
-     * })
+     *      allowed_values={"style": {"small","overview"}}
+     * )
      */
     public function catsAction(TagRequest $request, array $options)
     {

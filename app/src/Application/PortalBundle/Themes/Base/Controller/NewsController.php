@@ -111,15 +111,15 @@ class NewsController extends AbstractController
      * @Tag(name="news_cats_list", default_options={"style":"small"})
      * @Tag(name="news_cats_dropdown", default_options={"style":"dropdown"})
      *
-     * @TagOptions({
-     *      "defaults": {
+     * @TagOptions(
+     *      defaults={
      *          "style": "small",
      *          "parent": null
      *      },
-     *      "allowedValues": {
+     *      allowed_values={
      *          "style": {"small", "dropdown"}
      *      }
-     * })
+     * )
      */
     public function catsAction(TagRequest $tag_request, array $options)
     {
@@ -147,15 +147,15 @@ class NewsController extends AbstractController
      * @Tag(name="news_posts", default_options={"style":"posts"})
      * @Tag(name="news_posts_list", default_options={"style":"small"})
      *
-     * @TagOptions({
-     *      "defaults": {
+     * @TagOptions(
+     *      defaults={
      *          "style": "small",
      *          "count": 5
      *      },
-     *      "allowedValues": {
+     *      allowed_values={
      *          "style": {"posts", "small"}
      *      }
-     * })
+     * )
      */
     public function listAction(Request $request, array $options)
     {

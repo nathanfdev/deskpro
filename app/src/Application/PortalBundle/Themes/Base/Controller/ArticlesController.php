@@ -88,8 +88,8 @@ class ArticlesController extends AbstractController
      * @Tag(name="kb_articles_xsmall", default_options={"style":"xsmall"})
      * @Tag(name="kb_articles_simple", default_options={"style":"simple"})
      *
-     * @TagOptions({
-     *      "defaults": {
+     * @TagOptions(
+     *      defaults={
      *          "show_pagination": false,
      *          "page": 1,
      *          "max_per_page": 10,
@@ -99,16 +99,14 @@ class ArticlesController extends AbstractController
      *          "labelled": "",
      *          "sort": "date_published desc"
      *      },
-     *      "allowedValues": {
+     *      allowed_values={
      *          "style": {"forcat", "small", "xsmall", "simple"}
      *      },
-     *      "required": {"category"}
-     * })
+     *      required={"category"}
+     * )
      */
-    public function listAction(TagRequest $request)
+    public function listAction(TagRequest $request, array $options)
     {
-        $options = $request->getTagOptions();
-
         if (!$options['category'] instanceof ArticleCategory) {
             $options['category'] = $this->getArticleCategoryRepo()->find($options['category']);
         }
@@ -130,18 +128,18 @@ class ArticlesController extends AbstractController
      * @Tag(name="knowledgebase_list", default_options={"style":"expander"})
      * @Tag(name="kb_cats_list", default_options={"style":"small"})
      *
-     * @TagOptions({
-     *      "defaults": {
+     * @TagOptions(
+     *      defaults={
      *          "style": "small",
      *          "parent": null,
      *          "articles": {
      *              "include_subcategories": false
      *          }
      *      },
-     *      "allowedValues": {
+     *      allowed_values={
      *          "style": {"expander", "home", "small", "summary"}
      *      }
-     * })
+     * )
      */
     public function categoriesAction(TagRequest $request, array $options)
     {
@@ -164,15 +162,19 @@ class ArticlesController extends AbstractController
     /**
      * @Tag(name="kb_category_breadcrumbs")
      *
-     * @TagOptions({
-     *      "required": {"category"},
-     *      "allowedTypes": {
-     *          "category": "Application\DeskPRO\Entity\ArticleCategory"
+     * @TagOptions(
+     *      required={"category"},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int"}
      *      }
-     * })
+     * )
      */
     public function breadcrumbsAction(TagRequest $request, array $options)
     {
+        if (!$options['category'] instanceof ArticleCategory) {
+            $options['category'] = $this->getArticleCategoryRepo()->find($options['category']);
+        }
+
         return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
             'category' => $options['category']
         ));
