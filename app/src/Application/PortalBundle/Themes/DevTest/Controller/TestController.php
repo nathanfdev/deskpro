@@ -49,15 +49,14 @@ class TestController extends AbstractController
      * @Tag(name="hello_henry", default_options={"name":"Henry!"})
      * @Tag(name="hello_world")
      *
-     * @TagOptions({
-     *      "defaults": {
+     * @TagOptions(
+     *      defaults={
      *          "name": "World"
      *      }
-     * })
+     * )
      */
-    public function testAction(TagRequest $request)
+    public function testAction(TagRequest $request, array $options)
     {
-        $options = $request->getTagOptions();
         return new Response(sprintf('Hello, %s', $options['name']));
     }
 }
