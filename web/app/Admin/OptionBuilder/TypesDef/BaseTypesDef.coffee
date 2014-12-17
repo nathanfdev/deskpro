@@ -109,6 +109,7 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
 
               return {
                 value: info
+                valueString: value.options?[prop_name] || ''
                 op: value.op || _.first(data.operators)
                 inputOptions: inputOptions
               }
@@ -118,8 +119,13 @@ define ['DeskPRO/Util/Util', 'DeskPRO/Util/Arrays'], (Util, Arrays) ->
               value.type = type
               value.op = model.op
               value.options = {}
-              value.options[prop_name] = model.value?[prop_name] || ''
-              value.options.info = model.value
+
+              if model.op == 'is' || model.op == 'not'
+                value.options[prop_name] = model.value?[prop_name] || ''
+                value.options.info = model.value
+              else
+                value.options[prop_name] = model.valueString
+                value.options.info = model.valueString
               return value
           }
       }
