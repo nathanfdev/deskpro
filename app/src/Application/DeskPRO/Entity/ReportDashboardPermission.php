@@ -45,7 +45,9 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
-     * Name of the "full access" permission (for now we can track only view and edit, so this cannot be that agent can edit, but cant view :) )
+     * Name of the "full access" permission
+     * (for now we can track only view and edit, so this cannot be that
+     * agent can edit, but cant view :) )
      */
     const FULL = 'full';
 
@@ -66,6 +68,12 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
 
     /** @var \Application\DeskPRO\Entity\ReportDashboard */
     protected $dashboard = null;
+
+    /** @var integer */
+    protected $dashboard_id;
+
+    /** @var integer */
+    protected $person_id;
 
     /**
      * The name of the permission
@@ -89,7 +97,7 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
 
     public function setPerson(Person $p)
     {
-        if( $p->isAgent() ) {
+        if( $p->getIsAgent() ) {
             $this->setModelField('agent', $p);
         } else {
             //possibly we gonna throw an Exception here, cause it's wrong trying to add just a person here
@@ -97,6 +105,19 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
 
         return $this;
     }
+
+    /**
+     * @param string $name
+     *
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+
 
     /**
      * A name that identifies this permission (eg could be used as an map key)
@@ -110,7 +131,29 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
         return $x;
     }
 
+    /**
+     * @return Person
+     */
+    public function getAgent()
+    {
+        return $this->agent;
+    }
 
+    /**
+     * @return ReportDashboard
+     */
+    public function getDashboard()
+    {
+        return $this->dashboard;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
 
     ############################################################################
     # Doctrine Metadata
@@ -138,29 +181,52 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
                                   'nullable'   => false,
                                   'columnName' => 'name',
             ));
+
+        $metadata->mapField(array('fieldName'  => 'dashboard_id',
+                                  'type'       => 'integer',
+                                  'precision'  => 0,
+                                  'scale'      => 0,
+                                  'nullable'   => false,
+                                  'columnName' => 'dashboard_id',
+                                  'id'         => false,
+            ));
+        $metadata->mapField(array('fieldName'  => 'person_id',
+                                  'type'       => 'integer',
+                                  'precision'  => 0,
+                                  'scale'      => 0,
+                                  'nullable'   => false,
+                                  'columnName' => 'person_id',
+                                  'id'         => false,
+            ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
-        $metadata->mapManyToOne(array('fieldName'    => 'department',
-                                      'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboard',
-                                      'mappedBy'     => null,
-                                      'inversedBy'   => null,
-                                      'joinColumns'  => array(0 => array('name'                 => 'dashboard_id',
-                                                                         'referencedColumnName' => 'id',
-                                                                         'nullable'             => true,
-                                                                         'onDelete'             => 'cascade',
-                                                                         'columnDefinition'     => null,
-                                      ),
-                                      ),
-            ));
-        $metadata->mapManyToOne(array('fieldName'    => 'agent',
-                                      'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
-                                      'mappedBy'     => null,
-                                      'inversedBy'   => 'report_dashboard_permissions',
-                                      'joinColumns'  => array(0 => array('name'                 => 'person_id',
-                                                                         'referencedColumnName' => 'id',
-                                                                         'nullable'             => true,
-                                                                         'onDelete'             => 'cascade'
-                                      ),
-                                      ),
-            ));
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'department',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboard',
+            'mappedBy'     => null,
+            'inversedBy'   => null,
+            'joinColumns'  => array(
+                0 => array(
+                    'name'                 => 'dashboard_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade',
+                    'columnDefinition'     => null,
+                ),
+            ),
+        ));
+        $metadata->mapManyToOne(array(
+            'fieldName'    => 'agent',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+            'mappedBy'     => null,
+            'inversedBy'   => 'report_dashboard_permissions',
+            'joinColumns'  => array(
+                0 => array(
+                    'name'                 => 'person_id',
+                    'referencedColumnName' => 'id',
+                    'nullable'             => true,
+                    'onDelete'             => 'cascade'
+                ),
+            ),
+        ));
     }
 }

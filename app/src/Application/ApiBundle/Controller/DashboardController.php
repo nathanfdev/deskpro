@@ -60,6 +60,7 @@ class DashboardController extends AbstractController
     public function init()
     {
         parent::init();
+        $this->person->loadHelper('DashboardPermissions');
         $this->service = $this->get('dashboard.service');
     }
 
@@ -79,15 +80,13 @@ class DashboardController extends AbstractController
     {
         $data = array();
         $dashboards = $this->em->getRepository('DeskPRO:ReportDashboard')->findAll();
-
         foreach ($dashboards as $k => $dashboard) {
             /** @var Dashboard $dashboard */
+            if ($this->person->getHelper('DashboardPermissions')->isAllowedToEdit($dashboard)) {
+                $data[$k] = $this->service->getDashboardData($dashboard);
+            }
 //            $data[$k] = $this->_getDashboardData($dashboard);
 //            $data[$k]['widgets'] = $this->_getDashboardWidgets($dashboard);
-
-
-            $data[$k] = $this->service->getDashboardData($dashboard);
-
         }
 
         return $this->createApiResponse($data);

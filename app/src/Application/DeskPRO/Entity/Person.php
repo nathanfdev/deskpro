@@ -105,6 +105,9 @@ use Orb\Util\Util;
  * @property \DateTime $date_password_set
  * @property \DateTime $date_picture_check
  * @property string $browser
+ *
+ * @method bool getIsAgent()
+ * @method ReportDashboardPermission[] getReportDashboardPermissions()
  */
 class Person extends DomainObject implements HighlightableModelInterface
 {
@@ -511,6 +514,10 @@ class Person extends DomainObject implements HighlightableModelInterface
      * @var AgentTeam
      */
     protected $notes;
+    /**
+     * @var ReportDashboardPermission
+     */
+    protected $report_dashboard_permissions;
 
     /**
      * A "contact person" is simply a person record. They have no login credentials, they are not
@@ -2707,11 +2714,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
     }
 
-    public function isAgent()
-    {
-        return (bool) $this->is_agent;
-    }
-
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -2804,14 +2806,16 @@ class Person extends DomainObject implements HighlightableModelInterface
                                        'mappedBy'     => 'person', 'cascade' => array('persist'),
                                        'orphanRemoval' => true
         ));
-        $metadata->mapOneToMany(array( 'fieldName'    => 'department_permissions',
-                                       'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
-                                       'mappedBy' => 'person'
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'department_permissions',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\DepartmentPermission',
+            'mappedBy'     => 'person'
         ));
 
-        $metadata->mapOneToMany(array( 'fieldName'    => 'report_dashboard_permissions',
-                                       'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardPermission',
-                                       'mappedBy' => 'agent'
+        $metadata->mapOneToMany(array(
+            'fieldName'    => 'report_dashboard_permissions',
+            'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardPermission',
+            'mappedBy'     => 'agent'
         ));
 
         $metadata->mapManyToMany(array(

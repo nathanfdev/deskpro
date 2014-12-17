@@ -247,6 +247,11 @@ $definition->setClass('Application\\ApiBundle\\Service\\Dashboard');
 $definition->setArguments(array(new Reference('doctrine.orm.entity_manager')));
 $container->setDefinition('dashboard.service', $definition);
 
+$definition = new Definition();
+$definition->setClass('Application\\ApiBundle\\Service\\DashboardPermission');
+$definition->setArguments(array(new Reference('doctrine.orm.entity_manager')));
+$container->setDefinition('dashboard.pemissionservice', $definition);
+
 ############################################################################
 # Validators and Constraints
 ############################################################################
