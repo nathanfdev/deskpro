@@ -95,15 +95,18 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
             $finder->files()->name('*.twig')->in($this->getBaseTemplateDir());
 
             foreach ($finder as $temp) {
-
                 // turn twig filename/path into Theme:x:y.html.twig syntax
                 $path        = $temp->getRelativePathname();
                 $name        = $temp->getFilename();
                 $path_broken = explode('/', $path);
-                array_pop($path_broken);
-                $ctrl          = implode('/', $path_broken);
-                $template_name = "Theme:$ctrl:$name";
-
+                $controller = array_shift($path_broken);
+                if (count($path_broken) == 0){
+                    $name = $controller;
+                    $controller = '';
+                } else {
+                    $name = implode('/', $path_broken);
+                }
+                $template_name = "Theme:$controller:$name";
                 $temps[$template_name] = $temp->getRealPath();
             }
         }
