@@ -1,3 +1,5 @@
-{% if pager.haveToPaginate %}
-    {{ pagerfanta(pager, null, { routeParams: {tag_options: null} }) }}
-{% endif %}
+{%- if show_pagination -%}
+    {% if pager.haveToPaginate %}
+        {{ pagerfanta(pager, null, { routeParams: {tag_options: null} }) }}
+    {% endif %}
+{%- endif -%}

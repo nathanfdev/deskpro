@@ -121,22 +121,23 @@ class PortalController extends AbstractController
 
     /**
      * @Tag(name="pager")
+     *
+     * @TagOptions(
+     *      required={"pager"},
+     *      defaults={
+     *          "show_pagination": true
+     *      },
+     *      allowed_types={
+     *          "pager":"Pagerfanta\Pagerfanta",
+     *          "show_pagination":"bool"
+     *      }
+     * )
      */
-    public function pagerAction(TagRequest $tag_request)
+    public function pagerAction(TagRequest $request, array $options)
     {
-        $resolver = new OptionsResolver();
-        $resolver->setRequired('pager');
-        $resolver->setDefault('show_pagination', true);
-        $resolver->setAllowedTypes(array('pager' => 'Pagerfanta\Pagerfanta'));
-
-        $options = $resolver->resolve($tag_request->query->get('tag_options'));
-
-        if (!$options['show_pagination']) {
-            return new Response('');
-        }
-
         return $this->render('Theme:Portal:pager.html.twig', array(
-            'pager' => $options['pager']
+            'pager' => $options['pager'],
+            'show_pagination' => $options['show_pagination']
         ));
     }
 
