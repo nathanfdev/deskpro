@@ -134,6 +134,9 @@ class DownloadsController extends AbstractController
             if (!$category instanceof DownloadCategory) {
                 $category = $this->getDownloadCategoriesRepo()->find($category);
             }
+            if (!$category) {
+                throw $this->createNotFoundException('cannot find category');
+            }
             $categories = $category->children;
         } else {
             $categories = $this->getDownloadCategoriesRepo()->findBy(array('parent' => null));
