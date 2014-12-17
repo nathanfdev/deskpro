@@ -1,4 +1,4 @@
-define(function () {
+define(['cutstring'], function (cutstring) {
   return function ($http, $q, $window, $sce) {
 
     var meta = {
@@ -16,6 +16,11 @@ define(function () {
       },
       fieldValue: function (id, val) {
         if (!val) return val;
+
+        if ('description' === id) {
+          if (val.length < 300) return val;
+          return cutstring(val, 300) + '...';
+        }
 
         var fieldMeta = meta.fields[id];
         if (fieldMeta && fieldMeta.schema) {
@@ -105,10 +110,10 @@ define(function () {
       isEnabled: function (type, id) {
         return this.fields[id] && this.fields[id]['_' + type];
       },
-      renderComment: function (comment) {
+      renderComment: function (comment, url) {
         return comment.author.name === meta.user
           ? comment.body
-          : ('[' + comment.author.displayName + ' via JIRA]: ' + comment.body);
+          : ('<a href="' + url + '">'+ comment.author.displayName + ' via JIRA</a>: ' + comment.body);
       },
       windowHeight: function() {
           return $($window).height();
@@ -125,8 +130,6 @@ define(function () {
 
         // fields metadata
         if (data.fields) {
-          //var commentIdx = data.default_fields_list.indexOf('comment');
-          //if (commentIdx > -1) data.default_fields_list.splice(commentIdx, 1);
           data.fields.each(function (field) {
             field._list = data.default_fields_list.indexOf(field.id) > -1;
             field._summary = data.default_fields_summary.indexOf(field.id) > -1;

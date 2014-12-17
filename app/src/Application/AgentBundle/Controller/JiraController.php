@@ -139,11 +139,7 @@ class JiraController extends AbstractController
 		$ticket = null;
 
 		foreach ($issues as $issue) {
-			$response = $js->createComment(
-				$issue['issue_id'],
-				'[' . $this->person->getDisplayName() . ' via DeskPRO]: ' . $message
-			);
-
+			$response = $js->createComment($issue['issue_id'], $this->person, $issue->ticket, $message);
 			$ticket = $ticket ?: $issue->ticket;
 		}
 
@@ -199,11 +195,11 @@ class JiraController extends AbstractController
 
 		// check if issue exists in jira
 		$result = $this->service()->searchIssues('id = ' . $issueId);
-
 		if (!$result['issues']) {
 			return $this->createJsonResponse($result);
 		}
 
+        // issue link on DP side
 		$issue = new JiraIssue();
 		$issue['issue_id'] = $issueId;
 		$fields = $result['issues'][0]['fields'];
@@ -212,9 +208,13 @@ class JiraController extends AbstractController
 		}
 		$issue->ticket = $ticket;
 
+        // create remote issue link on JIRA side
+        $this->service()->createRemoteIssueLink($issueId, $ticket);
+
 		$this->em->persist($issue);
 		$this->em->flush($issue);
 
+        // trigger an update event
 		$ticket->getStateChangeRecorder()->recordData('jira.linked', $result['issues'][0]);
 		$manager = $this->container->getTicketManager();
 		$context = $manager->createSystemExecutorContext(ExecutorContext::EVENT_UPDATE, ExecutorContext::METHOD_WEB);
@@ -242,6 +242,8 @@ class JiraController extends AbstractController
 		if (!$issue) {
 			throw new NotFoundHttpException;
 		}
+
+        $this->service()->removeRemoteIssueLink($issue);
 
 		$this->em->remove($issue);
 		$this->em->flush($issue);

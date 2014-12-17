@@ -35,6 +35,7 @@
 
 namespace Application\DeskPRO\Command;
 
+use Orb\Util\Strings;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
@@ -64,7 +65,6 @@ class TestCommand extends ContainerAwareCommand
     {
         echo DP_ROOT;
         echo "\n";
-
         return 0;
     }
 }

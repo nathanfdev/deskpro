@@ -48,6 +48,11 @@ class EmailAccountsSettings
         'sendemail_attach_maxsize' => 7340032,
     );
 
+    protected $other_values = array(
+        'core_tickets.enable_dupe_checking' => true,
+        'core_tickets.enable_exact_subject_matching' => false,
+    );
+
     public function __construct(Settings $settings)
     {
         $this->settings = $settings;
@@ -70,6 +75,10 @@ class EmailAccountsSettings
             }
 
             $data[$k] = $this->values[$k] = $storedValue ?: $v;
+        }
+
+        foreach ($this->other_values as $k => $v) {
+            $data[str_replace('.', '_', $k)] = (bool)$this->settings->get($k);
         }
 
         return $data;
@@ -96,6 +105,17 @@ class EmailAccountsSettings
             } else {
                 $this->settings->setSetting(self::PREFIX . '.' . $k, $storeValue);
             }
+        }
+
+        foreach ($data as $k => $v) {
+            $k = str_replace('core_tickets_', 'core_tickets.', $k);
+            if (!isset($this->other_values[$k])) {
+                continue;
+            }
+
+            $v = (int)((bool)$v);
+            $this->settings->setSetting($k, $v);
+            $this->other_values[$k] = $v;
         }
     }
 }

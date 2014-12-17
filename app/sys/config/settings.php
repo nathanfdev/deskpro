@@ -480,6 +480,12 @@
 
     'core_tickets.enable_like_search_mode' => true,
 
+    // See TicketMessage::checkDupeMessage
+    'core_tickets.enable_dupe_checking' => true,
+
+    // See TicketGatewayProcessor::createTicketDetector and SubjectMatchDetector::enableExactSubjectMatching
+    'core_tickets.enable_exact_subject_matching' => false,
+
     // True to force agent emails to have the marker line
     'core_tickets.gateway_agent_require_marker' => true,
 
@@ -745,6 +751,11 @@
      * How long in seconds before old alerts are cleaned up
      */
     'agent.alerts_cleanup_time' => 129600,
+
+    /**
+     * Max age of undismissed alerts before they are cleaned up
+     */
+    'agent.alerts_cleanup_time_always' => 604800,
 
     ####################################################################################################################
     # user

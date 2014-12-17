@@ -176,6 +176,11 @@ class TicketMessage extends AbstractEntityRepository
             return false;
         }
 
+        if (!App::getSetting('core_tickets.enable_dupe_checking')) {
+            if ($logger) $logger->logDebug("core_tickets.enable_dupe_checking is disabled");
+            return false;
+        }
+
         $timesnip = date_create('-' . $secs_ago . ' seconds');
 
         if ($ticket) {

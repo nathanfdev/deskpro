@@ -44,10 +44,13 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 {
-    const STATUS_INSERTED   = 'pending';
+    const STATUS_INSERTED   = 'inserted';
+    const STATUS_PENDING    = 'pending';
     const STATUS_PROCESSING = 'processing';
     const STATUS_COMPLETE   = 'complete';
     const STATUS_ERROR      = 'error';
+    const STATUS_RETRY      = 'retry';
+    const STATUS_ABORTED    = 'aborted';
 
     /**
      * @var int
@@ -112,7 +115,7 @@ class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
-    protected $status = self::STATUS_INSERTED;
+    protected $status = self::STATUS_PENDING;
 
     public function __construct()
     {

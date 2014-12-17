@@ -1,4 +1,4 @@
-<section>
+<section class="sidebar-app with-header with-sub-header">
     <header>
         <h4>JIRA</h4>
     </header>
@@ -28,7 +28,7 @@
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="404 === search_issue_state">Issue not found. Please enter a valid issue ID.</div>
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="407 === search_issue_state">Issue already linked.</div>
     </header>
-    <article ng-if="!meta.error">
+    <article class="app-content" ng-if="!meta.error">
         <div ng-show="issues.loading" style="margin: 10px;">
             <i class="flat-spinner"></i>
         </div>
@@ -43,7 +43,13 @@
                     <ul class="jira-fields">
                         <li ng-repeat="field in meta.default_fields_list" ng-if="meta.fieldHasValue(field, issue.fields[field])">
                             <div class="field-title">{{ meta.fieldName(field) }}</div>
-                            <div class="field-value" ng-if="'comment' != field">{{ meta.fieldValue(field, issue.fields[field]) }}</div>
+                            <div class="field-value" ng-if="'comment' != field">
+                                <div ng-if="issue.renderedFields[field]" ng-bind-html="meta.fieldValue(field, issue.fields[field])">
+                                </div>
+                                <div ng-if="!issue.renderedFields[field]">
+                                    {{ meta.fieldValue(field, issue.fields[field]) }}
+                                </div>
+                            </div>
                             <div class="field-value" ng-if="'comment' == field">
                                 <a href="#" ng-click="issueModal(issue)">
                                     {{ issue.fields[field].total }} Comment{{ 1 == issue.fields[field].total ? '' : 's' }}

@@ -224,13 +224,13 @@ define [
 			# JIRA
 			#------------------------------
 
-			if @options_data?.jira_settings?.enabled && 'TriggersUpdate' == mode
+			if @options_data?.jira_settings?.enabled
 				options = []
 
 				options.push({
 					title: 'New JIRA Comment'
 					value: 'CheckJIRANewComment'
-				})
+				}) if 'TriggersUpdate' == mode
 
 				options.push({
 					title: 'Issue Status'
@@ -240,7 +240,7 @@ define [
 				options.push({
 					title: 'New Linked Issue'
 					value: 'CheckJIRANewLinkedIssue'
-				})
+				}) if 'TriggersUpdate' == mode
 
 				set_options.push({
 					title: 'JIRA',

@@ -30,6 +30,9 @@ namespace Application\DeskPRO\Service;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\AppInstance;
+use Application\DeskPRO\Entity\JiraIssue;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\Meta;
 
@@ -272,6 +275,7 @@ class JIRA
 			$result = $this->getApi()->post('/search', array(
 				'jql' => $jql,
 				'fields' => $this->getMeta()->getAllFields(),
+                'expand' => array('renderedFields'),
 			));
 		} catch (\Exception $e) {
 			// todo
@@ -281,19 +285,79 @@ class JIRA
 		return $result;
 	}
 
-	public function createComment($issueId, $message)
+    /**
+     * @param        $issueId
+     * @param Person $author
+     * @param Ticket $ticket
+     * @param        $message
+     * @throws \Exception
+     * @throws \Exceptions
+     */
+	public function createComment($issueId, Person $author, Ticket $ticket, $message)
 	{
+        $url = $this->container->get('router')->generateUrl('agent', array(), true)
+            . '#app.tickets,t.o:' . $ticket['id'];
+
 		try {
 
-			$result = $this->getApi()->post('/issue/' . $issueId . '/comment?expand=renderedBody', array(
-				'body' => $message,
+			return $this->getApi()->post('/issue/' . $issueId . '/comment?expand=renderedBody', array(
+				'body' => sprintf('[%s via DeskPRO #%d|%s]: %s', $author->getDisplayName(), $ticket['id'], $url, $message),
 			));
 
 		} catch (\Exceptions $e) {
 			// todo
 			throw $e;
 		}
-
-		return $result;
 	}
+
+    /**
+     * @param        $issueId
+     * @param Ticket $ticket
+     * @param        $url
+     * @return mixed
+     * @throws \Exception
+     * @throws \Exceptions
+     */
+    public function createRemoteIssueLink($issueId, Ticket $ticket)
+    {
+        try {
+
+            $url = $this->container->get('router')->generateUrl('agent', array(), true)
+                . '#app.tickets,t.o:' . $ticket['id'];
+
+            $data = array(
+                'globalId' => 'deskpro_ticket_' . $ticket['id'],
+                'relationship' => 'linked with',
+                'object' => array(
+                    'title' => 'DeskPRO #' . $ticket['id'],
+                    'summary' => $ticket['subject'],
+                    'url' => $url,
+                ),
+            );
+
+            return $this->getApi()->post('/issue/' . $issueId . '/remotelink', $data);
+
+        } catch (\Exceptions $e) {
+            // todo
+            throw $e;
+        }
+    }
+
+    /**
+     * @param JiraIssue $issue
+     * @throws \Exception
+     * @throws \Exceptions
+     */
+    public function removeRemoteIssueLink(JiraIssue $issue)
+    {
+        try {
+            return $this->getApi()->delete(
+                '/issue/' . $issue['issue_id'] . '/remotelink?globalId=deskpro_ticket_' . $issue['ticket_id']
+            );
+
+        } catch (\Exceptions $e) {
+            // todo
+            throw $e;
+        }
+    }
 } 

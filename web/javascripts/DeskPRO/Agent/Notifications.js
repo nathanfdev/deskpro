@@ -98,7 +98,7 @@ DeskPRO.Agent.Notifications = new Orb.Class({
 			notifyBox.find(".no-notifications").hide();
 			notifyBox.find(".notification-progress-on").show();
 			$.ajax({
-				url: '/get_messages.php',
+				url: BASE_PATH + 'get_messages.php',
 				data: {dismissed: true},
 				type: 'get',
 				dataType: 'json',

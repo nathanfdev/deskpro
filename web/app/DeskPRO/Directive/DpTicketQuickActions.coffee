@@ -109,7 +109,7 @@ define ->
 					return if action.select2 && !action.model
 					if action.model then action.params[action.prop] = action.model.id
 
-					$http.post(BASE_PATH + "agent/tickets/#{$scope.ticket_id}/ajax-save-actions", {actions: action.params}).success () ->
+					$http.post(BASE_URL + "agent/tickets/#{$scope.ticket_id}/ajax-save-actions", {actions: action.params}).success () ->
 						window.DeskPRO_Window.getMessageChanneler().poller.send();
 					$scope.$root.$emit 'tickets.quick_actions.hide'
 
