@@ -1,21 +1,21 @@
 {% if pager|length > 0 %}
     <ul class="download-list">
-        {% for download in pager %}
+        {% for dl in pager %}
             <li>
                 <div class="controls">
                     <ul>
-                        <li class="the-file"><a href="{{ path('portal_downloads_view', { slug: download.slug }) }}">Download
+                        <li class="the-file"><a href="{{ path('portal_downloads_view', { slug: dl.slug }) }}">Download
                                 <i class="fa fa-file-pdf-o"></i></a></li>
                         <li class="the-comments"><a href="#"><i class="fa fa-comments"></i> 0</a></li>
                         <li class="the-cudos has-cudos"><a href="#"><i class="fa fa-thumbs-up"></i> 15</a></li>
                     </ul>
                 </div>
 
-                <h1><a href="#"><i class="fa fa-file-pdf-o"></i> {{ download.realTitle }}</a></h1>
-                <span class="date">Uploaded: {{ download.date_created | date('Y-m-d') }}</span>
+                <h1><a href="#"><i class="fa fa-file-pdf-o"></i> {{ dl.realTitle }}</a></h1>
+                <span class="date">Uploaded: {{ dl.date_created | date('Y-m-d') }}</span>
 
                 <p>
-                    {{ download.content_html|raw }}
+                    {{ dl.content_html|raw }}
                 </p>
             </li>
         {% endfor %}

@@ -1,0 +1,11 @@
+{% if category_children|length > 0 %}
+<ul>
+    {% for category in category_children %}
+        <li>
+            <a href="{{ path('portal_downloads_browse', { slug: category.slug }) }}">
+                <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"> {{ category.title }} - [{{ category.downloads|length }}]
+            </a>
+        </li>
+    {% endfor %}
+</ul>
+{% endif %}
