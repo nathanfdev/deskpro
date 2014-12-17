@@ -35,6 +35,8 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\Meta;
+use Application\DeskPRO\Tickets\ExecutorContext;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class JIRA
 {
@@ -260,30 +262,37 @@ class JIRA
 	}
 
 
-
-
-	// todo move these methods to Api?
-
-	/**
-	 * @param $jql
-	 * @return array
-	 * @throws \Exception
-	 */
-	public function searchIssues($jql)
+    /**
+     * @param $q
+     * @return array|null
+     */
+	public function searchByKey($key)
 	{
-		try {
-			$result = $this->getApi()->post('/search', array(
-				'jql' => $jql,
-				'fields' => $this->getMeta()->getAllFields(),
-                'expand' => array('renderedFields'),
-			));
-		} catch (\Exception $e) {
-			// todo
-			throw $e;
-		}
+        if (!preg_match('/[A-Za-z]+\-\d+/', $key, $matches)) {
+            return null;
+        }
 
-		return $result;
+        // todo search all matches?
+        $issueId = reset($matches);
+        try {
+            return $this->getApi()->searchIssues('issuekey = ' . $issueId, $this->getMeta()->getAllFields());
+        } catch (\Exception $e) {
+            return null;
+        }
 	}
+
+    /**
+     * @param $id
+     * @return array|null
+     */
+    public function searchByIds(array $ids)
+    {
+        try {
+            return $this->getApi()->searchIssues(sprintf('id IN (%s)', implode(',', $ids)), $this->getMeta()->getAllFields());
+        } catch (\Exception $e) {
+            return null;
+        }
+    }
 
     /**
      * @param        $issueId
@@ -318,7 +327,7 @@ class JIRA
      * @throws \Exception
      * @throws \Exceptions
      */
-    public function createRemoteIssueLink($issueId, Ticket $ticket)
+    public function createRemoteIssueLink(Ticket $ticket, $issueId)
     {
         try {
 
@@ -351,13 +360,172 @@ class JIRA
     public function removeRemoteIssueLink(JiraIssue $issue)
     {
         try {
-            return $this->getApi()->delete(
+            $this->getApi()->delete(
                 '/issue/' . $issue['issue_id'] . '/remotelink?globalId=deskpro_ticket_' . $issue['ticket_id']
             );
+            return true;
 
         } catch (\Exceptions $e) {
             // todo
             throw $e;
         }
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param        $issueId
+     * @param Person $byPerson
+     * @return array|null
+     * @throws \Exception
+     * @throws \Exceptions
+     */
+    public function link(Ticket $ticket, $issueId, Person $byPerson)
+    {
+        $rep = $this->container->getEm()->getRepository('DeskPRO:JiraIssue');
+
+        // already linked
+        if ($issue = $rep->findOneBy(array('ticket' => $ticket['id'], 'issue_id' => $issueId))) {
+            return null;
+        }
+
+        // api error
+        if (!$result = $this->searchByIds(array($issueId))) {
+            return null;
+        }
+
+        // issue link on DP side
+        $issue = new JiraIssue();
+        $issue['issue_id'] = $issueId;
+        $fields = $result['issues'][0]['fields'];
+        if (isset($fields['status'])) {
+            $issue['status_id'] = $fields['status']['id'];
+        }
+        $issue->ticket = $ticket;
+
+        // create remote issue link on JIRA side
+        $this->createRemoteIssueLink($ticket, $issueId);
+
+        $em = $this->container->getEm();
+
+        $em->persist($issue);
+        $em->flush($issue);
+
+        // trigger an update event
+        $manager = $this->container->getTicketManager();
+        $state = $ticket->getStateChangeRecorder();
+        $context = $manager->createAppExecutorContext($this->getApp(), 'issue_update');
+
+        $state->recordData('jira.linked', $result['issues'][0]);
+        $manager->markAsManaged($ticket);
+        $manager->saveTicket($ticket, $context);
+
+        return $result;
+    }
+
+    /**
+     * @param Ticket $ticket
+     * @param        $issueId
+     * @return bool|null
+     * @throws \Exception
+     * @throws \Exceptions
+     */
+    public function unlink(Ticket $ticket, $issueId)
+    {
+        $em = $this->container->getEm();
+        $rep = $em->getRepository('DeskPRO:JiraIssue');
+        $issue = $rep->findOneBy(array('ticket' => $ticket['id'], 'issue_id' => $issueId));
+        if (!$issue) {
+            return null;
+        }
+
+        $this->removeRemoteIssueLink($issue);
+
+        $em->remove($issue);
+        $em->flush($issue);
+
+        return true;
+    }
+
+    /**
+     * @param $ticketId
+     * @return array|null
+     */
+    public function issues($ticketId)
+    {
+        $em = $this->container->getEm();
+        $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('ticket' => $ticketId));
+        $map = array();
+        foreach ($issues as $issue) {
+            $map[$issue['issue_id']] = $issue;
+        }
+
+        $result = null;
+        if ($map) {
+            $result = $this->searchByIds(array_keys($map));
+            // cleanup deleted issues
+            foreach ($result['issues'] as $data) {
+                unset($map[$data['id']]);
+            }
+            foreach ($map as $issue) {
+                $em->remove($issue);
+            }
+            $em->flush();
+        }
+
+        return $result;
+    }
+
+    /**
+     * @param $data
+     * @return array
+     */
+    public function createIssueJson($data)
+    {
+        return $this->getApi()->createIssueJson($data);
+    }
+
+    /**
+     * @param        $message
+     * @param        $ticketId
+     * @param Person $performer
+     * @param null   $issueId
+     * @return array|void
+     * @throws \Exception
+     * @throws \Exceptions
+     */
+    public function addComment($message, $ticketId, Person $performer, $issueId = null)
+    {
+        $rep = $this->container->getEm()->getRepository('DeskPRO:JiraIssue');
+
+        if (!$issueId) {
+            if (!$issues = $rep->findBy(array('ticket' => $ticketId))) {
+                throw new NotFoundHttpException;
+            }
+        } else {
+            if (!$issue = $rep->findOneBy(array('ticket' => $ticketId, 'issue_id' => $issueId))) {
+                throw new NotFoundHttpException;
+            }
+            $issues = array($issue);
+        }
+
+        $response = array('body' => '');
+        /** @var Ticket $ticket */
+        $ticket = null;
+
+        foreach ($issues as $issue) {
+            $response = $this->createComment($issue['issue_id'], $performer, $issue->ticket, $message);
+            $ticket = $ticket ?: $issue->ticket;
+        }
+
+        $manager = $this->container->getTicketManager();
+        $state = $issue->ticket->getStateChangeRecorder();
+        $context = $manager->createAppExecutorContext($this->getApp(), 'issue_update');
+
+        $state->recordData('jira.comment', $response);
+        $context->getUserVars()->set('jira.comment', $response['body']);
+        $manager->markAsManaged($ticket);
+        $manager->saveTicket($ticket, $context);
+
+        return $response;
     }
 } 
