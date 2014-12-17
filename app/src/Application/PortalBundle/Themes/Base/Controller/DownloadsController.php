@@ -38,6 +38,9 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\PortalBundle\Request\TagRequest;
+use Doctrine\Common\Collections\ArrayCollection;
+use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Pagerfanta;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Response;
@@ -119,7 +122,7 @@ class DownloadsController extends AbstractController
      *
      * @TagOptions(
      *      defaults={
-     *          "style": "small",
+     *          "style": "overview",
      *          "category": null
      *      },
      *      allowed_values={"style": {"small","overview"}}
