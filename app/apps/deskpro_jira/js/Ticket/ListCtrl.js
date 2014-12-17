@@ -1,13 +1,19 @@
 define([
   'angular',
-  'deskpro_jira/Ticket/CreateIssueCtrl'
+  'deskpro_jira/Ticket/CreateIssueCtrl',
+  'DeskPRO/Util/Functions'
 ], function (angular,
-             CreateIssueCtrl) {
+             CreateIssueCtrl,
+             Functions
+  ) {
   return function ($scope, $tabScope, $ticket, $http, $modal, $app, $timeout, $q, $meta, Issues) {
     $tabScope.btnImg = $app.getResourcePath('jira.png');
 
-    var issues = $scope.issues = new Issues($ticket);
+    var issues = $scope.issues = new Issues($ticket),
+      lastSearchTime = 0;
     $scope.meta = $meta;
+    $scope.search_results = [];
+    $scope.active_searches = 0;
 
     $scope.$watch('issues.length', function(l) {
       if (!l || l < 1) {
@@ -17,76 +23,79 @@ define([
       }
     });
 
-	  $scope.enableSearchMode = function() {
-		  $scope.link_search_mode = true;
-	  };
-
-    /**
-     * search issue for linking
-     * @returns {number}
-     */
-    $scope.search = function () {
-      $scope.search_issue_state = 1;
-	    if (!$scope.search_issue) {
-          return $scope.search_issue_state = 404;
-	    }
-
-      for (var i = 0; i < issues.length; i++) {
-        if ($scope.search_issue.toLowerCase().indexOf(issues[i].key.toLowerCase()) > -1) {
-          return $scope.search_issue_state = 409;
-        }
-      }
-
-      issues.search($scope.search_issue).then(
-        function (issue) {
-
-          if (!issue) {
-            return $scope.search_issue_state = 404;
-          }
-          $scope.search_issue = null;
-          $scope.search_issue_state = 0;
-          var $parent = $scope;
-
-          $modal.open({
-            templateUrl: 'deskpro_jira/Ticket/link-issue-modal.html',
-            controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
-
-              $scope.meta = $meta;
-              $scope.issue = issue;
-              $scope.names = issues.names;
-
-              if (!issue.filtered_fields) {
-                issue.filtered_fields = [];
-                $.each(issue.fields, function (id, field) {
-                  if ('comment' === id) return;
-                  if ($meta.isEnabled('summary', id)) {
-                    issue.filtered_fields.push({id: id, value: field});
-                  }
-                });
-              }
-
-              $scope.confirm = function () {
-                $scope.search_issue_state = 1;
-                $modalInstance.dismiss();
-
-                issues.link(issue).then(
-                  function () {
-                    $parent.search_issue_state = 0;
-                    $scope.link_search_mode = false;
-                  },
-                  function (status) {
-                    $parent.search_issue_state = status;
-                  }
-                );
-              };
-
-	            $scope.dismiss = $modalInstance.dismiss;
-            }]
-          });
-        }
-      );
+    $scope.enableSearchMode = function() {
+        $scope.link_search_mode = true;
     };
 
+    var startSearch = Functions.debounce(function(val){
+
+      if (!val) {
+        lastSearchTime = new Date().getTime();
+        $scope.search_results.length = 0;
+        $scope.active_searches = 0;
+        return;
+      }
+
+      var time = new Date().getTime();
+      $scope.active_searches++;
+      issues.search($scope.search).then(
+        function (issues) {
+          $scope.active_searches--;
+          if (time < lastSearchTime) return;
+          if (!issues || !issues.length) return;
+
+          $scope.search_results.length = 0;
+          issues.each(function(el){$scope.search_results.push(el);});
+          lastSearchTime = time;
+        },
+        function() {
+          $scope.active_searches--;
+        }
+      );
+
+    }, 150);
+
+    $scope.$watch('search', startSearch);
+
+    $scope.openLinkModal = function(issue) {
+      var $parent = $scope;
+      $modal.open({
+        templateUrl: 'deskpro_jira/Ticket/link-issue-modal.html',
+        controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+
+          $scope.meta = $meta;
+          $scope.issue = issue;
+          $scope.names = issues.names;
+
+          if (!issue.filtered_fields) {
+            issue.filtered_fields = [];
+            $.each(issue.fields, function (id, field) {
+              if ('comment' === id) return;
+              if ($meta.isEnabled('summary', id)) {
+                issue.filtered_fields.push({id: id, value: field});
+              }
+            });
+          }
+
+          $scope.confirm = function () {
+            $parent.search_issue_state = 1;
+            $modalInstance.dismiss();
+
+            issues.link(issue).then(
+              function () {
+                $parent.search_issue_state = 0;
+                $scope.link_search_mode = false;
+              },
+              function (status) {
+                $parent.search_issue_state = status;
+              }
+            );
+          };
+
+          $scope.dismiss = $modalInstance.dismiss;
+        }]
+      });
+    };
 
     /**
      * unlink issue
@@ -108,16 +117,15 @@ define([
 			    $scope.issue = issue;
 			    $scope.meta = $meta;
 			    $scope.confirm = function (msg) {
-				    $scope.search_issue_state = 1;
+				    $scope.active_searches = 1;
 				    issues.unlink(issue).then(function () {
-				      $scope.search_issue_state = 0;
+				      $scope.active_searches = 0;
 				    });
 				    $modalInstance.dismiss();
 			    };
 			    $scope.dismiss = $modalInstance.dismiss;
 		    }]
 	    });
-
     };
 
 

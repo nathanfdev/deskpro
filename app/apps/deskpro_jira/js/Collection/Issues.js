@@ -135,8 +135,7 @@ define(function () {
 
         $http.get('/agent/jira/search?q=' + $window.encodeURI(q))
           .success(function (data, status, headers, config) {
-		        var issue = data.issues ? data.issues[data.issues.length - 1] : null;
-            d.resolve(issue);
+            d.resolve(data.issues);
           })
           .error(function (data, status, headers, config) {
             console.error('Search JIRA Issue: ', status, {data: data});

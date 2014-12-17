@@ -88,6 +88,10 @@ class Api
 				throw new ApiErrorsException($json['errors']);
 			}
 
+            if (!empty($json['errorMessages'])) {
+                throw new ApiCoreException($json['errorMessages']);
+            }
+
 			throw new \Exception($e->getResponse()->getReasonPhrase(), $code);
 		}
 	}
