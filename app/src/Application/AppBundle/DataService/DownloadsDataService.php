@@ -37,6 +37,7 @@ namespace Application\AppBundle\DataService;
 
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -62,8 +63,9 @@ class DownloadsDataService
      * @param $max_per_page
      * @return Pagerfanta
      */
-    public function getDownloadsPager(DownloadCategory $category = null, $page, $max_per_page)
+    public function getCategoryPager(DownloadCategory $category = null, $page, $max_per_page)
     {
+        // TODO: optimize this query
         if ($category) {
             $dls = $category->downloads;
         } else {
@@ -78,11 +80,83 @@ class DownloadsDataService
     }
 
     /**
+     * Takes null, a category ID, or a DownloadCategory and returns an iterable collection of DownloadCategories
+     *
+     * Null means ruturn the roots.
+     *
+     * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
+     *
+     * @param int|null|DownloadCategory $category
+     * @return DownloadCategory[]
+     * @throws \InvalidArgumentException
+     */
+    public function getCategoryChildren($category)
+    {
+        if (!$category) { // get root categories
+            return $this->getDownloadCategoriesRepo()->findBy(array('parent' => null));
+        }
+
+        if (!$category instanceof DownloadCategory) { // if not already category, try to make it one
+            if (!$category = $this->getCategory($category)) {
+                throw new \InvalidArgumentException(sprintf('could not convert "%s" into a download category'));
+            }
+        }
+
+        return $category->children;
+    }
+
+    /**
+     * @param int|null|Download $download
+     * @return Download|null
+     */
+    public function getDownload($download)
+    {
+        if (!$download) { // we need some input
+            return null;
+        }
+
+        if ($download instanceof Download) { // already have what you seek
+            return $download;
+        }
+
+        return $this->getDownloadsRepo()->find($download);
+    }
+
+    /**
+     * Get a category based on arbirtary input
+     *
+     * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")
+     *
+     * @param int|null|DownloadCategory $category
+     * @return DownloadCategory|null
+     */
+    public function getCategory($category)
+    {
+        if (!$category) { // we need some input
+            return null;
+        }
+
+        if ($category instanceof DownloadCategory) { // already have what you seek
+            return $category;
+        }
+
+        return $this->getDownloadCategoriesRepo()->find($category);
+    }
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\Download
      */
     public function getDownloadsRepo()
     {
         return $this->em->getRepository('DeskPRO:Download');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\DownloadCategory
+     */
+    public function getDownloadCategoriesRepo()
+    {
+        return $this->em->getRepository('DeskPRO:DownloadCategory');
     }
 }
  
