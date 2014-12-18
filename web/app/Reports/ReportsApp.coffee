@@ -9,6 +9,7 @@ define [
 
   'Reports/App/Service/Dashboard'
   'Reports/App/Service/DashboardWidget'
+  'Reports/App/Service/DashboardPermissions'
 
   'Reports/App/Directive/DashboardAmcharts',
   'Reports/App/Directive/DashboardStat',
@@ -23,6 +24,7 @@ define [
 
   Reports_App_Service_Dashboard,
   Reports_App_Service_DashboardWidget,
+  Reports_App_Service_DashboardPermissions,
 
   Reports_App_Directive_DashboardAmcharts,
   Reports_App_Directive_DashboardStat,
@@ -56,6 +58,10 @@ define [
 
   ReportsApp.service('DashboardWidgetService', ['Api', '$q', (Api, $q) ->
     return new Reports_App_Service_DashboardWidget(Api, $q)
+  ])
+
+  ReportsApp.service('DashboardPermissionsService', ['Api', '$q', (Api, $q) ->
+    return new Reports_App_Service_DashboardPermissions(Api, $q)
   ])
 
   ###

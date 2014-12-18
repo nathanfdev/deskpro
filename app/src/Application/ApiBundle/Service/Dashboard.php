@@ -67,6 +67,19 @@ class Dashboard
         return $data;
     }
 
+    public function deleteDashboard(DashboardEntity $dashboard)
+    {
+        $this->em->remove($dashboard);
+        $this->em->flush();
+    }
+
+    public function saveDashboard(DashboardEntity $dashboard)
+    {
+        $this->em->persist($dashboard);
+        $this->em->flush();
+        return $this->getDashboardData($dashboard);
+    }
+
 
 
     ///

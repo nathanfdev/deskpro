@@ -99,11 +99,16 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
     {
         if( $p->getIsAgent() ) {
             $this->setModelField('agent', $p);
+            $this->person_id = $p->getId();
         } else {
             //possibly we gonna throw an Exception here, cause it's wrong trying to add just a person here
         }
-
         return $this;
+    }
+
+    public function getPerson()
+    {
+        return $this->person;
     }
 
     /**

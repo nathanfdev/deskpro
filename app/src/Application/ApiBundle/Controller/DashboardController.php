@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
 
 use Application\ApiBundle\Service\Dashboard as DashboardService;
+use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionService;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -57,12 +58,19 @@ class DashboardController extends AbstractController
     /** @var DashboardService */
     protected $service;
 
+    /** @var DashboardPermissionService */
+    protected $permissionsService;
+
+    /**
+     * {@inherited}
+     */
     public function init()
     {
         parent::init();
-        $this->person->loadHelper('DashboardPermissions');
         $this->service = $this->get('dashboard.service');
+        $this->permissionsService = $this->get('dashboard.permissions.service');
     }
+
 
 	/**
 	 * @SWG\Api(
@@ -82,7 +90,7 @@ class DashboardController extends AbstractController
         $dashboards = $this->em->getRepository('DeskPRO:ReportDashboard')->findAll();
         foreach ($dashboards as $k => $dashboard) {
             /** @var Dashboard $dashboard */
-            if ($this->person->getHelper('DashboardPermissions')->isAllowedToEdit($dashboard)) {
+            if ($this->permissionsService->isAllowedToEdit($this->person, $dashboard)) {
                 $data[$k] = $this->service->getDashboardData($dashboard);
             }
 //            $data[$k] = $this->_getDashboardData($dashboard);
@@ -92,28 +100,23 @@ class DashboardController extends AbstractController
         return $this->createApiResponse($data);
     }
 
-    public function getWidgetDataAction($widget)
-    {
-        $widgetData = $this->_getWidgetData($widget);
-        return $this->createApiResponse($widgetData);
-    }
-
-
-
+    /**
+     * @param $id
+     * @return Response
+     */
     public function getAction($id)
     {
         $dashboard = $this->service->getDashboard($id);
+        if(!$this->permissionsService->isAllowedToView($this->person, $dashboard))
+        {
+            throw $this->createNotFoundException('Dashboard not found!');
+        }
         $data = $this->service->getDashboardData($dashboard);
         $data['loaded'] = true;
         $data['reports'] = $this->service->getReportsData($dashboard);
         return $this->createApiResponse($data);
     }
 
-    public function getWidgetAction($id)
-    {
-        $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $id);
-        return $this->createApiResponse($this->_getWidgetData($widget));
-    }
 
     /**
      *
@@ -182,24 +185,30 @@ class DashboardController extends AbstractController
     {
         if($id) {
             $dashboard = $this->service->getDashboard($id);
+            if(!$this->permissionsService->isAllowedToView($this->person, $dashboard))
+            {
+                throw $this->createNotFoundException('Dashboard not found!');
+            }
         } else {
             $dashboard = new Dashboard();
         }
         $title = $this->in->getCleanValue('title', 'string');
         $dashboard
             ->setTitle($title);
-        $this->em->persist($dashboard);
-        $this->em->flush();
-        return $this->createSuccessResponse(array(
-            'id' => $dashboard->getId(),
-            'title' => $dashboard->getTitle(),
-        ));
+        return $this->service->saveDashboard($dashboard);
     }
 
+    /**
+     * @param $id
+     * @return array
+     */
     public function cloneAction($id)
     {
         $prototype = $this->service->getDashboard($id);
-
+        if(!$this->permissionsService->isAllowedToView($this->person, $prototype))
+        {
+            throw $this->createNotFoundException('Dashboard not found!');
+        }
         $dashboard = new Dashboard();
         $dashboard -> setTitle($prototype->getTitle().'_clone');
 
@@ -213,14 +222,7 @@ class DashboardController extends AbstractController
             $dashboard->addReport($report);
         }
 
-        $this->em->persist($dashboard);
-        $this->em->flush();
-        return $this->createSuccessResponse(array(
-            'id' => $dashboard->getId(),
-            'title' => $dashboard->getTitle(),
-            'loaded' => false,
-            'reports' => array(),
-        ));
+        return $this->service->saveDashboard($dashboard);
     }
 
     /**
@@ -228,18 +230,18 @@ class DashboardController extends AbstractController
      * @throws NotFoundHttpException
      * @return Response
      * @SWG\Api(
-     *    path="/dashboards/widgets/{id}",
+     *    path="/dashboards/{id}",
      *
      * 	@SWG\Operation(
-     *      @SWG\ResponseMessage(code=404, message="Widget not found"),
+     *      @SWG\ResponseMessage(code=404, message="Dashboard not found"),
      *      @SWG\ResponseMessage(code=200, message="deleted"),
      *        method="DELETE",
-     *        summary="Delete widget",
+     *        summary="Delete dashboard with all widgets contains",
      *        type="array",
      *      @SWG\Parameters (
      *			@SWG\Parameter(
      *                name="id",
-     *                description="Widget id",
+     *                description="Dashboard id",
      *                paramType="path",
      *                required=true,
      *                type="integer"
@@ -248,94 +250,16 @@ class DashboardController extends AbstractController
      *    )
      * )
      */
-    public function deleteWidgetAction($id)
+    public function deleteAction($id)
     {
-        $widget = $this->em->getRepository('DeskPRO:ReportDashboardStat')->find($id);
-        if($widget) {
-            $this->em->remove($widget);
-            $this->em->flush();
-            return $this->createApiDeleteResponse();
-        } else {
-            throw $this->createNotFoundException('Widget not found!');
+        $dashboard = $this->service->getDashboard($id);
+        if(!$this->permissionsService->isAllowedToView($this->person, $dashboard))
+        {
+            throw $this->createNotFoundException('Dashboard not found!');
         }
-    }
+        $this->service->deleteDashboard($dashboard);
 
-    /**
-     *
-     * @throws NotFoundHttpException
-     * @SWG\Api(
-     * 	path="/dashboards/widgets/{id}",
-     *
-     * 	@SWG\Operation(
-     *      @SWG\ResponseMessage(code=404, message="Widget not found"),
-     *      @SWG\ResponseMessage(code=200, message="success"),
-     * 		method="POST",
-     * 		summary="Save dashboard with new parameters",
-     *		type="array",
-     *      @SWG\Parameters (
-     *			@SWG\Parameter(
-     *				name="id",
-     *				description="Widget ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
-     *            ),
-     *          @SWG\Parameter(
-     *				name="col",
-     *				description="Horizontal widget position",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *            ),
-     *          @SWG\Parameter(
-     *				name="row",
-     *				description="Vertical widget position",
-     *				paramType="query",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *          @SWG\Parameter(
-     *				name="size_x",
-     *				description="Widget width",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
-     *            ),
-     *          @SWG\Parameter(
-     *				name="size_y",
-     *				description="Widget height",
-     *				paramType="query",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *      )
-     * 	)
-     * )
-     */
-    public function saveWidgetAction($id)
-    {
-        if($id) {
-            $widget = $this->em->getRepository('DeskPRO:ReportDashboardStat')->find($id);
-            if(!$widget) {
-                throw $this->createNotFoundException('Widget not found!');
-            }
-        } else {
-            $widget = new Widget();
-        }
-        list($sizeX, $sizeY) = array
-        (
-            $this->in->getCleanValue('size_x', 'int'),
-            $this->in->getCleanValue('size_y', 'int')
-        );
-        list($row, $col) = array
-        (
-            $this->in->getCleanValue('row', 'int'),
-            $this->in->getCleanValue('col', 'int')
-        );
-        $widget->setSize(array($sizeX, $sizeY))->setPosition(array($row, $col));
-        $this->em->persist($widget);
-        $this->em->flush();
-        return $this->createApiSuccessResponse();
+        return $this->createApiDeleteResponse();
     }
 
     /**
@@ -428,22 +352,112 @@ class DashboardController extends AbstractController
     }
 
     /**
+     *
+     * @throws NotFoundHttpException
+     * @SWG\Api(
+     * 	path="/dashboards/widgets/{id}",
+     *
+     * 	@SWG\Operation(
+     *      @SWG\ResponseMessage(code=404, message="Widget not found"),
+     *      @SWG\ResponseMessage(code=200, message="success"),
+     * 		method="POST",
+     * 		summary="Save dashboard with new parameters",
+     *		type="array",
+     *      @SWG\Parameters (
+     *			@SWG\Parameter(
+     *				name="id",
+     *				description="Widget ID",
+     *				paramType="path",
+     *				required=true,
+     *				type="integer"
+     *            ),
+     *          @SWG\Parameter(
+     *				name="col",
+     *				description="Horizontal widget position",
+     *				paramType="query",
+     *				required=true,
+     *				type="string"
+     *            ),
+     *          @SWG\Parameter(
+     *				name="row",
+     *				description="Vertical widget position",
+     *				paramType="query",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *          @SWG\Parameter(
+     *				name="size_x",
+     *				description="Widget width",
+     *				paramType="query",
+     *				required=true,
+     *				type="string"
+     *            ),
+     *          @SWG\Parameter(
+     *				name="size_y",
+     *				description="Widget height",
+     *				paramType="query",
+     *				required=true,
+     *				type="integer"
+     *			),
+     *      )
+     * 	)
+     * )
+     */
+    public function saveWidgetAction($id)
+    {
+        if($id) {
+            $widget = $this->em->getRepository('DeskPRO:ReportDashboardStat')->find($id);
+            if(!$widget) {
+                throw $this->createNotFoundException('Widget not found!');
+            }
+        } else {
+            $widget = new Widget();
+        }
+        list($sizeX, $sizeY) = array
+        (
+            $this->in->getCleanValue('size_x', 'int'),
+            $this->in->getCleanValue('size_y', 'int')
+        );
+        list($row, $col) = array
+        (
+            $this->in->getCleanValue('row', 'int'),
+            $this->in->getCleanValue('col', 'int')
+        );
+        $widget->setSize(array($sizeX, $sizeY))->setPosition(array($row, $col));
+        $this->em->persist($widget);
+        $this->em->flush();
+        return $this->createApiSuccessResponse();
+    }
+
+    public function getWidgetDataAction($widget)
+    {
+        $widgetData = $this->_getWidgetData($widget);
+        return $this->createApiResponse($widgetData);
+    }
+
+    public function getWidgetAction($id)
+    {
+        $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $id);
+        return $this->createApiResponse($this->_getWidgetData($widget));
+    }
+
+    /**
      * @param $id
      * @throws NotFoundHttpException
      * @return Response
      * @SWG\Api(
-     *    path="/dashboards/{id}",
+     *    path="/dashboards/widgets/{id}",
      *
      * 	@SWG\Operation(
-     *      @SWG\ResponseMessage(code=404, message="Dashboard not found"),
+     *      @SWG\ResponseMessage(code=404, message="Widget not found"),
      *      @SWG\ResponseMessage(code=200, message="deleted"),
      *        method="DELETE",
-     *        summary="Delete dashboard with all widgets contains",
+     *        summary="Delete widget",
      *        type="array",
      *      @SWG\Parameters (
      *			@SWG\Parameter(
      *                name="id",
-     *                description="Dashboard id",
+     *                description="Widget id",
      *                paramType="path",
      *                required=true,
      *                type="integer"
@@ -452,19 +466,17 @@ class DashboardController extends AbstractController
      *    )
      * )
      */
-    public function deleteAction($id)
+    public function deleteWidgetAction($id)
     {
-        $dashboard = $this->service->getDashboard($id);
-        if($dashboard) {
-        $this->em->remove($dashboard);
-        $this->em->flush();
-        return $this->createApiDeleteResponse();
+        $widget = $this->em->getRepository('DeskPRO:ReportDashboardStat')->find($id);
+        if($widget) {
+            $this->em->remove($widget);
+            $this->em->flush();
+            return $this->createApiDeleteResponse();
+        } else {
+            throw $this->createNotFoundException('Widget not found!');
+        }
     }
-    }
-
-
-
-
 
 
 }

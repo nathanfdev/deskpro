@@ -104,21 +104,51 @@ class DashboardPermissions
      */
     public function setPermissions(PersonEntity $person, DashboardEntity $dashboard, $permissions)
     {
-        $permissions = $this->getPersonPermissions($person, $dashboard);
+        $personPermissions = $this->getPersonPermissions($person, $dashboard);
         switch($permissions)
         {
             case self::PERMISSION_FULL:
-                $permissions->setName(Permission::FULL);
-                $this->save($permissions);
+                $personPermissions->setName(Permission::FULL);
+                $this->save($personPermissions);
                 break;
             case self::PERMISSION_VIEW:
-                $permissions->setName(Permission::FULL);
-                $this->save($permissions);
+                $personPermissions->setName(Permission::FULL);
+                $this->save($personPermissions);
                 break;
             case self::PERMISSION_NONE:
                 break;
         }
         $this->em->getRepository('DeskPRO:ReportDashboardPermission');
+    }
+
+    protected function mapPermissions($permissions)
+    {
+        switch($permissions)
+        {
+            case Permission::FULL:
+                return self::PERMISSION_FULL;
+            case Permission::VIEW:
+                return self::PERMISSION_VIEW;
+            default:
+                return self::PERMISSION_NONE;
+        }
+    }
+
+    public function getDashboardPermissions(DashboardEntity $dashboard)
+    {
+        /** @var Permission[] $permissions */
+        $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy(
+            array('dashboard_id' => $dashboard->getId())
+        );
+
+        $data = array();
+
+        foreach($permissions as $permission)
+        {
+            $data[$permission->getAgent()->getId()] = $this->mapPermissions($permission->getName());
+        }
+        return $data;
+
     }
 
     public function save(Permission $permissions)

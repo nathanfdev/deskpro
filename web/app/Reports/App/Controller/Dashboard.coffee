@@ -1,6 +1,6 @@
 define -> [
-  '$scope', '$q', '$modal', '$rootScope', 'DashboardService', 'DashboardWidgetService',
-  ($scope, $q, $modal, $rootScope, DashboardService, DashboardWidgetService) ->
+  '$scope', '$q', '$modal', '$rootScope', 'DashboardService', 'DashboardWidgetService', 'DashboardPermissionsService',
+  ($scope, $q, $modal, $rootScope, DashboardService, DashboardWidgetService, DashboardPermissionsService) ->
 
     DashboardService.setWidgetService(DashboardWidgetService)
 
@@ -12,6 +12,7 @@ define -> [
     $scope.reports = DashboardService.storage.reports
     $scope.expandedDashboard = []
     $scope.dashboards = []
+    $scope.permissions = {}
     $scope.newReport =
       title: ''
       loaded: false
@@ -31,6 +32,8 @@ define -> [
     ###
     $scope.changeDashboard = (newDb) ->
       deferred = $q.defer()
+      DashboardPermissionsService.getPermissions(newDb).then (permissions) ->
+        $scope.permissions = permissions
       if newDb.loaded is false
         DashboardService
         .getDashboard newDb
