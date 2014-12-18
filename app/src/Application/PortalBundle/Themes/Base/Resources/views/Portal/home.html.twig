@@ -1,31 +1,35 @@
-<!-- Full width news -->
 <section>
     <div class="column-full">
         <article class="news front-page-news">
             <div class="large-title clearfix"><h1>News</h1></div>
-            {{ news_posts_pretty({ count: 3 }) }}
+            {{ news_posts_pretty({ count: 2 }) }}
         </article>
     </div>
 </section>
 
-
-<!-- Knowledge Base -->
 <section>
-    {{ knowledgebase({'articles': { sort: 'title asc' }}) }}
+    {{ knowledgebase({ articles_options: { count: 1 }}) }}
 </section>
 
-
-<!-- Three Columns -->
 <section>
     <div class="column-third">
-        {{ news_posts_list({ count: 10 }) }}
+        <article class="panel-tiny front-page-downloads">
+            <div class="large-title clearfix"><h1>Knowledgebase</h1></div>
+            {{ news_posts_list({ count: 3 }) }}
+        </article>
     </div>
 
     <div class="column-third">
-        {{ feedback_items_list({ count: 10 }) }}
+        <article class="panel-tiny front-page-downloads">
+            <div class="large-title clearfix"><h1>Feedback</h1></div>
+            {{ feedback_items_list({ count: 3 }) }}
+        </article>
     </div>
 
     <div class="column-third omega">
-        {{ downloads_files_list() }}
+        <article class="panel-tiny front-page-downloads">
+            <div class="large-title clearfix"><h1>Downloads</h1></div>
+            {{ downloads_files_list({ count: 3 }) }}
+        </article>
     </div>
 </section>
