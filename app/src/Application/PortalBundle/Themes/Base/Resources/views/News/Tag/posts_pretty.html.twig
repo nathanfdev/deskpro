@@ -1,0 +1,29 @@
+{% if pager|length %}
+    <ul>
+        {% for item in pager %}
+            <li>
+                <div class="calendar-decoration"><span class="month">{{ item.date_published | date('M') }}</span>
+                    <hr>
+                    <span class="day">{{ item.date_published | date('j') }}</span></div>
+                <h1><a href="{{ path('portal_news_view', { slug: item.slug }) }}">{{ item.title }}</a></h1>
+
+                <h2>{% if item.person %}by <a href="#">{{ item.person.name }}</a> {% endif %}in <a
+                            href="{{ path('portal_news_browse', { slug: item.category.slug }) }}">{{ item.category.title }}</a>
+                </h2>
+
+                <p>{{ item.getExcerptHtml|raw }}</p>
+                <a href="{{ path('portal_news_view', {slug: item.slug}) }}" class="expand"><i class="fa fa-expand"></i></a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    {% if show_category_link %}
+        {#{% if pager.haveToPaginate %}#}
+            <div class="list-meta">
+                <a href="{{ category ? path('portal_news_browse', { slug: category.slug }) : path('portal_news') }}">View
+                    <span>{{ pager|length }}</span> articles<img
+                            src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+            </div>
+        {#{% endif %}#}
+    {% endif %}
+{% endif %}

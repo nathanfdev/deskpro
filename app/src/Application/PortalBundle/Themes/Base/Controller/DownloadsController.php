@@ -37,17 +37,13 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
-use Application\PortalBundle\Request\TagRequest;
-use Doctrine\Common\Collections\ArrayCollection;
-use Pagerfanta\Adapter\DoctrineCollectionAdapter;
-use Pagerfanta\Pagerfanta;
-use Symfony\Component\HttpFoundation\Request;
-use Application\PortalBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Response;
-use Symfony\Component\OptionsResolver\OptionsResolver;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Annotation\Tag;
+use Application\PortalBundle\Annotation\TagOptions;
+use Application\PortalBundle\Controller\AbstractController;
+use Application\PortalBundle\Request\TagRequest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpFoundation\Response;
 
 class DownloadsController extends AbstractController
 {
@@ -63,7 +59,9 @@ class DownloadsController extends AbstractController
     {
         return $this->render('Theme:Downloads:browse.html.twig', array(
                 'category' => $category,
-                'page' => $request->query->get('page', 1)
+                'page' => $request->query->get('page', 1),
+                'max_per_page' => 2,
+                'show_pagination' => true
             )
         );
     }
@@ -100,7 +98,7 @@ class DownloadsController extends AbstractController
      *          "max_per_page": 10
      *      },
      *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int",null}
+     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","null"}
      *      }
      * )
      */
@@ -111,7 +109,7 @@ class DownloadsController extends AbstractController
         }
 
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
-        $pager = $this->getDownloadsDataService()->getCategoryPager($category, $options['page'], $options['max_per_page']);
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['max_per_page']);
 
         return $this->render('Theme:Portal:pager.html.twig', array(
                 'pager' => $pager
@@ -123,8 +121,8 @@ class DownloadsController extends AbstractController
      * @Tag(name="downloads_breadcrumbs")
      *
      * @TagOptions(
-     *      required={"category"},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\DownloadCategory", "int"}}
+     *      defaults={"category": null},
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "null"}}
      * )
      */
     public function breadcrumbsAction(TagRequest $request, array $options)
@@ -192,7 +190,7 @@ class DownloadsController extends AbstractController
     public function listAction(TagRequest $request, array $options)
     {
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
-        $pager = $this->getDownloadsDataService()->getCategoryPager($category, $options['page'], $options['max_per_page']);
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['max_per_page']);
 
         return $this->render(
             sprintf('Theme:Downloads:Tag/files_%s.html.twig', $options['style']),

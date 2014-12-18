@@ -1,7 +1,10 @@
 <!-- Full width news -->
 <section>
     <div class="column-full">
-        {{ news_posts({ count: 3 }) }}
+        <article class="news front-page-news">
+            <div class="large-title clearfix"><h1>News</h1></div>
+            {{ news_posts_pretty({ count: 3 }) }}
+        </article>
     </div>
 </section>
 

@@ -1,0 +1,2 @@
+{% import 'Theme:News:_macros.html.twig' as macros %}
+{{ macros.news_cat_breadcrumbs(category|default(null), category.treeParents|default(null)) }}

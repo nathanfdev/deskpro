@@ -4,15 +4,15 @@
 {# TODO #}
 
 {% block inner_content %}
-    {{ macros.kb_news_cat_breadcrumbs(cat, cat.treeParents, article) }}
+    {{ news_breadcrumbs({ category: category }) }}
 
     <article class="news kb-article">
         <header>
-            <h1>{{ article.realTitle }}</h1>
+            <h1>{{ post.realTitle }}</h1>
 
             <div class="article-meta">
                 <span class="agent-avatar agent-avatar-mini"></span>
-                {{ phrase('portal.articles.by-line', { name: article.person.name, date: article.date_published | date('Y-m-d') }) }}
+                {{ phrase('portal.articles.by-line', { name: post.person.name, date: post.date_published | date('Y-m-d') }) }}
                 <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: 1}) }}</a></span>
             </div>
         </header>
@@ -27,14 +27,14 @@
         </div>
 
         <div class="article-content padded">
-            {{ article.realContent|raw }}
+            {{ post.realContent|raw }}
         </div>
 
-        {% if article.labels|length %}
+        {% if post.labels|length %}
             <div class="tag-list">
                 <ul>
                     <li class="tag-list-header"><i class="fa fa-tags"></i> Tags</li>
-                    {% for l in article.labels %}
+                    {% for l in post.labels %}
                         <li class="tag-list-item"><a href="#">{{ l }}</a></li>
                     {% endfor %}
                 </ul>

@@ -37,33 +37,18 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\PortalBundle\Annotation\Tag;
+use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
-use Doctrine\Common\Collections\ArrayCollection;
-use Pagerfanta\Adapter\DoctrineCollectionAdapter;
-use Pagerfanta\Adapter\DoctrineORMAdapter;
-use Pagerfanta\Pagerfanta;
-use Symfony\Component\HttpFoundation\Request;
-use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Application\PortalBundle\Annotation\TagOptions;
-use Application\PortalBundle\Annotation\Tag;
+use Symfony\Component\HttpFoundation\Request;
 
 class NewsController extends AbstractController
 {
     public function indexAction(Request $request)
     {
-        $qb = $this->getNewsRepo()->createQueryBuilder('n');
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter(new ArrayCollection($qb->select('n')->getQuery()->execute())));
-        $pager->setCurrentPage($request->get('page', 1));
-        $pager->setMaxPerPage(10);
-
-        return $this->render('Theme:News:index.html.twig',
-            array(
-                'pager' => $pager,
-                'news_articles' => $pager->getCurrentPageResults()
-            )
-        );
+        return $this->render('Theme:News:index.html.twig');
     }
 
 
@@ -72,22 +57,13 @@ class NewsController extends AbstractController
      */
     public function browseAction(Request $request, NewsCategory $category)
     {
-        if (!$category) {
-            throw $this->createNotFoundException('news category "' . $slug . '" not found');
-        }
-
-        $qb    = $this->getNewsRepo()->createQueryBuilder('n');
-        $qb->andWhere('n.category = :cat')->setParameter('cat', $category);
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-        $pager->setCurrentPage($request->get('page', 1));
-        $pager->setMaxPerPage(3);
-
         return $this->render(
             'Theme:News:browse.html.twig',
             array(
-                'cat'           => $category,
-                'pager'         => $pager,
-                'news_articles' => $pager->getCurrentPageResults()
+                'category' => $category,
+                'page' => $request->query->get('page', 1),
+                'count' => 2,
+                'show_pagination' => true
             )
         );
     }
@@ -100,8 +76,8 @@ class NewsController extends AbstractController
         return $this->render(
             'Theme:News:view.html.twig',
             array(
-                'cat'     => $news->category,
-                'article' => $news
+                'category' => $news->category,
+                'post' => $news
             )
         );
     }
@@ -109,35 +85,32 @@ class NewsController extends AbstractController
 
     /**
      * @Tag(name="news")
-     * @Tag(name="news_list", default_options={"style":"small"})
+     * @Tag(name="news_list", default_options={"style":"list"})
      * @Tag(name="news_dropdown", default_options={"style":"dropdown"})
      *
      * @TagOptions(
      *      defaults={
-     *          "style": "small",
+     *          "style": "pretty",
      *          "category": null
      *      },
      *      allowed_values={
-     *          "style": {"small", "dropdown"}
+     *          "style": {"list", "dropdown"}
+     *      },
+     *      allowed_types={
+     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","null"}
      *      }
      * )
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
-        if ($category = $options['category']) {
-            if (!$category instanceof NewsCategory) {
-                $category = $this->getNewsCategoriesRepo()->find($category);
-            }
-            $categories = $category->children;
-        } else {
-            $categories = $this->getNewsCategoriesRepo()->findBy(array('category' => $category));
-        }
+        $category = $options['category'];
+        $category_children = $this->getNewsDataService()->getCategoryChildren($category);
 
         return $this->render(
-            sprintf('Theme:News:cats_%s.html.twig', $options['style']),
+            sprintf('Theme:News:Tag/%s.html.twig', $options['style']),
             array(
-                'cat'        => $category,
-                'child_cats' => $categories
+                'category' => $category,
+                'category_children' => $category_children
             )
         );
     }
@@ -145,30 +118,88 @@ class NewsController extends AbstractController
 
     /**
      * @Tag(name="news_posts")
-     * @Tag(name="news_posts_list", default_options={"style":"small"})
+     * @Tag(name="news_posts_list", default_options={"style":"list"})
+     * @Tag(name="news_posts_pretty", default_options={"style":"pretty"})
      *
      * @TagOptions(
      *      defaults={
-     *          "style": "small",
-     *          "count": 5
+     *          "category": null,
+     *          "style": "pretty",
+     *          "page": 1,
+     *          "count": 5,
+     *          "show_category_link": true
      *      },
      *      allowed_values={
-     *          "style": {"posts", "small"}
+     *          "style": {"pretty", "list"}
+     *      },
+     *      allowed_types={
+     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","null"}
      *      }
      * )
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
-        $news  = $this->getNewsRepo()->getNewest($options['count']);
-        $total = $this->getNewsRepo()->countPublished();
+        $pager = $this->getNewsDataService()->getNewsPager($options['category'], $options['page'], $options['count']);
 
         return $this->render(
-            sprintf('Theme:News:list_%s.html.twig', $options['style']),
+            sprintf('Theme:News:Tag/posts_%s.html.twig', $options['style']),
             array(
-                'news_count_total' => $total,
-                'news_articles'    => $news
+                'pager' => $pager,
+                'show_category_link' => $options['show_category_link'],
+                'category' => $options['category']
             )
         );
+    }
+
+    /**
+     * @Tag(name="news_pager")
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "category": null,
+     *          "style": "pretty",
+     *          "show_pagination": true,
+     *          "page": 1,
+     *          "count": 5
+     *      },
+     *      allowed_values={
+     *          "style": {"pretty", "list"}
+     *      },
+     *      allowed_types={
+     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","null"}
+     *      }
+     * )
+     */
+    public function pagerAction(TagRequest $tag_request, array $options)
+    {
+        if (!$options['show_pagination']) {
+            return new Response('');
+        }
+
+        $category = $this->getNewsDataService()->getCategory($options['category']);
+        $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count']);
+
+        return $this->render('Theme:Portal:pager.html.twig', array(
+                'pager' => $pager
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="news_breadcrumbs")
+     *
+     * @TagOptions(
+     *      defaults={"category": null},
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\NewsCategory", "int", "null"}}
+     * )
+     */
+    public function breadcrumbsAction(TagRequest $request, array $options)
+    {
+        $category = $this->getNewsDataService()->getCategory($options['category']);
+
+        return $this->render('Theme:News:Tag/breadcrumbs.html.twig', array(
+            'category' => $category
+        ));
     }
 
 
