@@ -248,15 +248,16 @@ define [
       return if not suffix or not (@ugEffectivePerms?[typename]? || @perm_form[typename]?)
 
       suffix = "_" + suffix
+      prefix = "modify_"
 
       if @ugEffectivePerms?[typename]?
         for own name, val of @ugEffectivePerms[typename]
-          if val and name.indexOf(suffix) != -1
+          if val and (name.indexOf(suffix) != -1 and name.indexOf(prefix) == 0)
             return true
 
       if @perm_form?[typename]?
         for own name, val of @perm_form[typename]
-          if val and name.indexOf(suffix) != -1
+          if val and (name.indexOf(suffix) != -1 and name.indexOf(prefix) == 0)
             return true
 
       return false
