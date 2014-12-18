@@ -15,6 +15,7 @@ define [
     @DEPS      = ['DpLicense']
 
     init: ->
+      window.AGENT_CTRL = this
       @agentId = parseInt(@$stateParams.id)
       @form = {email_primary: '', emails_list: []}
       @hasPermOverrides = false
@@ -74,7 +75,7 @@ define [
       promise.then( (result) =>
         if @agentId
           @agent = result.data.agent.agent
-          @perm_form = result.data.agent.perms
+          @perm_form = result.data.agent.perm_overrides
         else
           @agent = {
             id: 0,

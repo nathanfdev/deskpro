@@ -94,14 +94,20 @@ class PermissionNamesLoader
 
 
     /**
-     * @param  Usergroup $group
+     * @param  Usergroup|string $group Usergroup or string sys_name
      * @return array
      */
-    public function getEnabledForGroup(Usergroup $group)
+    public function getEnabledForGroup($group)
     {
-        if ($group->sys_name == 'agent_all_perms') {
+        if ($group instanceof $group) {
+            $sys_name = $group->sys_name;
+        } else {
+            $sys_name = $group;
+        }
+
+        if ($sys_name == 'agent_all_perms') {
             return $this->getNames();
-        } elseif ($group->sys_name == 'agent_all_safe_perms') {
+        } elseif ($sys_name == 'agent_all_safe_perms') {
             return $this->getNames();
         } else {
             return array();
