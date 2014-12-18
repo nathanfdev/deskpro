@@ -35,9 +35,9 @@
 namespace Application\AppBundle\DataService;
 
 
-use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
+use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
-use Application\DeskPRO\Entity\Person;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
@@ -62,12 +62,98 @@ class ArticlesDataService
      */
     public function getArticlesPager(ArticleCategory $category, $page, $max_per_page)
     {
+        // TODO: optimize this query
+        if ($category) {
+            $articles = $category->articles;
+        } else {
+            $articles = new ArrayCollection($this->getArticlesRepo()->findAll());
+        }
         // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($category->articles));
+        $pager = new Pagerfanta(new DoctrineCollectionAdapter($articles));
         $pager->setMaxPerPage($max_per_page);
         $pager->setCurrentPage($page);
 
         return $pager;
+    }
+
+    /**
+     * Takes null, a category ID, or a ArticleCategory and returns an iterable collection of ArticleCategories
+     *
+     * Null means ruturn the roots.
+     *
+     * TODO: this is using the doctrine proxy as a method of finding children of the category. Might be able to improve that.
+     *
+     * @param int|null|ArticleCategory $category
+     * @return ArticleCategory[]
+     * @throws \InvalidArgumentException
+     */
+    public function getCategoryChildren($category)
+    {
+        if (!$category) { // get root categories
+            return $this->getArticleCategoriesRepo()->findBy(array('parent' => null));
+        }
+
+        if (!$category instanceof ArticleCategory) { // if not already category, try to make it one
+            if (!$category = $this->getCategory($category)) {
+                throw new \InvalidArgumentException(sprintf('could not convert "%s" into an article category'));
+            }
+        }
+
+        return $category->children;
+    }
+
+    /**
+     * @param int|null|Article $article
+     * @return Article|null
+     */
+    public function getArticle($article)
+    {
+        if (!$article) { // we need some input
+            return null;
+        }
+
+        if ($article instanceof Article) { // already have what you seek
+            return $article;
+        }
+
+        return $this->getArticlesRepo()->find($article);
+    }
+
+    /**
+     * Get a category based on arbirtary input
+     *
+     * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")
+     *
+     * @param int|null|ArticleCategory $category
+     * @return ArticleCategory|null
+     */
+    public function getCategory($category)
+    {
+        if (!$category) { // we need some input
+            return null;
+        }
+
+        if ($category instanceof ArticleCategory) { // already have what you seek
+            return $category;
+        }
+
+        return $this->getArticleCategoriesRepo()->find($category);
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Article
+     */
+    public function getArticlesRepo()
+    {
+        return $this->em->getRepository('DeskPRO:Article');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\ArticleCategory
+     */
+    public function getArticleCategoriesRepo()
+    {
+        return $this->em->getRepository('DeskPRO:ArticleCategory');
     }
 }
  
