@@ -164,7 +164,7 @@ class Dashboard
         $data = array(
             'title'        => $report->getTitle(),
             'id'           => $report->getId(),
-            'dasbhoard_id' => $report->getDashboard()->getId(),
+            'dashboard_id' => $report->getDashboard()->getId(),
             'loaded'       => false,
             'widgets'      => $report->getWidgets(),
         );

@@ -10,15 +10,9 @@ define -> [
 
     #just to simplify at the first time, but who knows :)
     $scope.reports = DashboardService.storage.reports
-    $scope.expandedDashboard = []
+
     $scope.dashboards = []
     $scope.permissions = {}
-    $scope.newReport =
-      title: ''
-      loaded: false
-      id: 0
-      widgets: []
-      columns: 0
 
     DashboardService.getDashboards().then (dbs) ->
       $scope.dashboards = dbs
@@ -58,17 +52,6 @@ define -> [
       .then () =>
         $scope.changeDashboard Arrays.last $scope.dashboards
 
-    $scope.expandDashboard = (dashboard) ->
-      if dashboard.loaded is false
-        DashboardService.getDashboard(dashboard)
-      $scope.expandedDashboard[dashboard.id] = true
-
-    $scope.collide = (dashboard) ->
-      $scope.expandedDashboard[dashboard.id] = false
-
-    $scope.isExpanded = (dashboard) ->
-      $scope.expandedDashboard[dashboard.id]? and $scope.expandedDashboard[dashboard.id] is true
-
     ###
     # Dashboard modal instasnces
     ###
@@ -79,10 +62,12 @@ define -> [
     $scope.newDashboardModal = () ->
       modalInstance = $modal.open {
         templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
-        controller: "Reports.App.ModalInstance"
+        controller: "Reports.App.ModalDashboard"
         resolve:
-          dashboard: () =>
+          dashboard: () ->
             return null
+          state: () ->
+            return 'info'
       }
 
       modalInstance.result.then (dashboard) =>
@@ -97,13 +82,19 @@ define -> [
     ###
     # Just as previous one, but the dashboard object resolves to current dashboard
     ###
-    $scope.editDashboardModal = () ->
+    $scope.editDashboardModal = (state) ->
       modalInstance = $modal.open {
         templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
-        controller: "Reports.App.ModalInstance"
+        controller: "Reports.App.ModalDashboard"
         resolve:
-          dashboard: () =>
+          dashboard: () ->
             return $scope.dashboard
+          currentReport: () ->
+            return $scope.currentReport
+          permissions: () ->
+            return $scope.permissions
+          state: () ->
+            if state? then state else 'info'
       }
 
       modalInstance.result.then (dashboard) =>
@@ -122,7 +113,7 @@ define -> [
         $scope.changeDashboard(clonedOne).then (dashboard)->
           modalInstance = $modal.open {
             templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
-            controller: "Reports.App.ModalInstance"
+            controller: "Reports.App.ModalDashboard"
             resolve:
               dashboard: () ->
                 db = JSON.parse(JSON.stringify(dashboard))
@@ -135,11 +126,6 @@ define -> [
               .changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
               .then ->
                 $scope.editDashboardModal()
-
-
-
-
-
 
     ###
     # Operations about reports
@@ -159,20 +145,41 @@ define -> [
         .getReports
 
     $scope.createReport = () ->
-      $scope.newReport.dashboard_id = $scope.dashboard.id
-      DashboardService
-        .createReport $scope.newReport
-        .then (report) ->
-          $scope.dashboard.reports.push report
-          $scope.changeReport report
+      modalInstance = $modal.open {
+        templateUrl: 'ReportsInterfaceBundle:Dashboard:add_report.html',
+        controller: "Reports.App.ModalReport"
+        resolve:
+          dashboard: () ->
+            return $scope.dashboard
+          dashboards: () ->
+            return $scope.dashboards
+      }
+      modalInstance.result.then (newReport) ->
+        newReport.dashboard_id = $scope.dashboard.id
+        # This is very ugly hack ;(
+        if newReport.cloned?
+          $scope.dashboard.reports.push newReport
+          $scope.changeReport newReport
+        else
+          DashboardService
+            .createReport newReport
+            .then (report) ->
+              $scope.dashboard.reports.push report
+              $scope.changeReport report
 
     $scope.cloneReport = (report) ->
       DashboardService
         .cloneReport report, $scope.dashboard.id
         .then (report) ->
           $scope.dashboard.reports.push report
+          console.log $scope.dashboard.reports
           $scope.changeReport report
 
+    $scope.removeReport = (report) ->
+      DashboardService
+      .removeReport(report)
+      .then (reports) ->
+        $scope.dashboard.reports = reports
 
 
 

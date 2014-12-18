@@ -20,7 +20,7 @@
     <button class="btn btn-warning" ng-click="ReportsModalInstanceCtrl.cancel()">Cancel</button>
 </div>#}
 
-<section class="popup" ng-init="state='info'">
+<section class="popup">
 
     <!-- Popup Header & Title -->
     <header>
@@ -47,7 +47,6 @@
 
     <!-- Popup Content -->
     <div class="popup-content">
-    {{ ng_var('state') }}
         <!-- Content Form -->
         {# FFFFFFFFFUUUUUUUU #}
         <form ng-show="state == 'info'" class="popup-form-default">
@@ -183,89 +182,31 @@
                 <td>Edit</td>
                 </thead>
 
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar3.jpg)"></span>Ben Henley</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></span></td>
+                <tr ng-repeat="agent in permissions track by id">
+                    <td class="agent-name">
+                        <span class="avatar" style="background-image: url({{ ng_var('agent.avatar') }})"></span>
+                        {{ ng_var('agent.name') }}
+                    </td>
+                    <td>
+                        <span class="c-check">
+                            <input ng-click='setPermissions(agent, 1)'
+                                   ng-checked="agent.permissions == 1 || agent.permissions == 2"
+                                   type="checkbox"
+                                   id="checkbox3">
+                            <label for="checkbox3"></label>
+                        </span>
+                    </td>
+                    <td>
+                        <span class="c-check">
+                            <input ng-click='setPermissions(agent, 2)'
+                                   ng-checked="agent.permissions == 2"
+                                   type="checkbox"
+                                   id="checkbox4">
+                            <label for="checkbox4"></label>
+                        </span>
+                    </td>
                 </tr>
 
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar4.jpg)"></span>Jane Doe Longname</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox5"><label for="checkbox5"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox6"><label for="checkbox6"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar3.jpg)"></span>Ben Henley</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar4.jpg)"></span>Jane Doe Longname</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox5"><label for="checkbox5"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox6"><label for="checkbox6"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar3.jpg)"></span>Ben Henley</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar4.jpg)"></span>Jane Doe Longname</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox5"><label for="checkbox5"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox6"><label for="checkbox6"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar3.jpg)"></span>Ben Henley</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox3"><label for="checkbox3"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox4"><label for="checkbox4"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar4.jpg)"></span>Jane Doe Longname</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox5"><label for="checkbox5"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox6"><label for="checkbox6"></label></span></td>
-                </tr>
-
-                <tr>
-                    <td class="agent-name"><span class="avatar" style="background-image: url(./img/avatar.jpg)"></span>Dennis Schipper</td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox7"><label for="checkbox7"></label></span></td>
-                    <td><span class="c-check"><input type="checkbox" id="checkbox8"><label for="checkbox8"></label></span></td>
-                </tr>
             </table>
         </div>
     </div>

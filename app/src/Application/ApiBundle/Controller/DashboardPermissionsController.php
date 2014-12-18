@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReport;
+use Application\DeskPRO\Entity\Person;
 use Application\ApiBundle\Service\Dashboard as DashboardService;
 use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionsService;
 
@@ -88,57 +89,17 @@ class DashboardPermissionsController extends AbstractController
         if(!$this->permissionsService->isAllowedToView($this->person, $dashboard)) {
             throw $this->createNotFoundException('Dashboard not found!');
         }
-        return $this->createApiSuccessResponse($permissions = $this->permissionsService->getDashboardPermissions($dashboard));
-    }
-
-    public function cloneAction($id, $dashboard_id)
-    {
-        $prototype = $this->service->getReport($id);
-        $dashboard = $this->service->getDashboard($dashboard_id);
-        $report = new DashboardReport();
-        $report
-            ->setTitle($prototype->getTitle().'_clone')
-            ->setColumns($prototype->getColumns())
-            ->setDashboard($dashboard)
-            ->setSortOrder($this->service->getLastSortOrder($dashboard));
-        return $this->createApiSuccessResponse($this->service->saveReport($report));
+        return $this->createApiResponse($permissions = $this->permissionsService->getDashboardPermissions($dashboard));
     }
 
     public function saveAction($id)
     {
-        $report = $this->service->getReport($id);
-
-        $title = $this->in->getCleanValue('title', 'string');
-        $columns = $this->in->getCleanValue('columns', 'string');
-
-        $report
-            ->setTitle($title)
-            ->setColumns($columns);
-
-        return $this->createApiSuccessResponse($this->service->saveReport($report));
-    }
-
-    public function createAction($dashboard_id)
-    {
-        $dashboard = $this->service->getDashboard($dashboard_id);
-        $report = new DashboardReport();
-        $title = $this->in->getCleanValue('title', 'string');
-        $columns = $this->in->getCleanValue('columns', 'string');
-
-        $report
-            ->setTitle($title)
-            ->setDashboard($dashboard)
-            ->setSortOrder($this->service->getLastSortOrder($dashboard))
-            ->setColumns($columns);
-        return $this->createApiSuccessResponse($this->service->saveReport($report));
-
-    }
-
-    public function deleteAction($id)
-    {
-        $report = $this->service->getReport($id);
-        $this->em->remove($report);
-        $this->em->flush();
-        return $this->createApiDeleteResponse();
+        $dashboard = $this->service->getDashboard($id);
+        $agent_id = $this->in->getCleanValue('agent_id', 'integer');
+        /** @var Person $agent */
+        $agent = $this->em->getRepository('DeskPRO:Person')->find($agent_id);
+        $permissions = $this->in->getCleanValue('permissions', 'integer');
+        $this->permissionsService->setPermissions($dashboard, $agent, $permissions);
+        return $this->createApiSuccessResponse();
     }
 }

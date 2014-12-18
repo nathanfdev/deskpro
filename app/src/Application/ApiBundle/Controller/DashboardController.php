@@ -195,7 +195,7 @@ class DashboardController extends AbstractController
         $title = $this->in->getCleanValue('title', 'string');
         $dashboard
             ->setTitle($title);
-        return $this->service->saveDashboard($dashboard);
+        return $this->createApiSuccessResponse($this->service->saveDashboard($dashboard));
     }
 
     /**

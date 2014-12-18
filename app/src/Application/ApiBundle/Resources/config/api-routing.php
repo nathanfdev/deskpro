@@ -4915,6 +4915,14 @@ $collection->create('dashboards_permissions_list', array(
     'methods'      => array('GET',),
 ));
 
+$collection->create('dashboards_permissions_save', array(
+    'path'         => '/dashboards/permissions/{id}',
+    'controller'   => 'ApiBundle:DashboardPermissions:save',
+    'defaults'     => array('action' => 'save'),
+    'requirements' => array('id' => '\\d+'),
+    'methods'      => array('POST',),
+));
+
 
 ########################################################################################################################
 # Plugins

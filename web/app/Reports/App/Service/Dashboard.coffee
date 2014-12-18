@@ -164,6 +164,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         if(response)
           clonedOne = response.data
           db_index = @getDbIndexById @storage.dbs, response.data.dashboard_id
+          clonedOne.dashboard_id = dashboard_id
+          clonedOne.cloned = true
           @storage.reports.push clonedOne
           deferred.resolve clonedOne
       , () =>

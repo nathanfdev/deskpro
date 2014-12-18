@@ -7,15 +7,20 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     getPermissions: (dashboard) ->
       deferred = @$q.defer()
-      if @storage[dashboard.id]?
-        deferred.resolve @storage[dashboard.id]
+      if @storage[dashboard]?
+        deferred.resolve @storage[dashboard]
       else
-        @getDashboardPermissions(dashboard).then (permissions) ->
-          @storage[dashboard.id] = permissions
-          deferred.resolve(@sotrage[dashboard.id])
+        @getDashboardPermissions(dashboard).then (response) =>
+          console.log(response)
+          permissions = response.data
+          @storage[dashboard] = permissions
+          deferred.resolve(@storage[dashboard])
       deferred.promise
 
     getDashboardPermissions: (dashboard) ->
       @Api.sendGet("/dashboards/permissions/#{dashboard.id}")
+
+    savePermissions: (agent, dashboard) ->
+      @Api.sendPost("/dashboards/permissions/#{dashboard.id}", {agent_id: agent.id, permissions: agent.permissions})
 
 

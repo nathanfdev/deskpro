@@ -1,17 +1,34 @@
 define -> [
-  '$scope', '$modalInstance','DashboardService', 'DashboardWidgetService', 'dashboard'
-  ($scope, $modalInstance, DashboardService, DashboardWidgetService, dashboard) ->
+  '$scope',
+  '$modalInstance',
+  'DashboardService',
+  'DashboardPermissionsService',
+  'DashboardWidgetService',
+  'dashboard',
+  'currentReport',
+  'permissions',
+  'state',
+  ($scope,
+   $modalInstance,
+   DashboardService,
+   DashboardPermissionsService,
+   DashboardWidgetService,
+   dashboard,
+   currentReport,
+   permissions,
+   state) ->
 
-    $scope.newWidget =
-      title: ''
-      sizeX: 0
-      sizeY: 1
-
-    $scope.wtype = ''
-    $scope.selectedSource = {}
-    $scope.selectedSource.name = 'Select source'
+#    $scope.newWidget =
+#      title: ''
+#      sizeX: 0
+#      sizeY: 1
+#
+#    $scope.wtype = ''
+#    $scope.selectedSource = {}
+#    $scope.selectedSource.name = 'Select source'
     DashboardService.setWidgetService(DashboardWidgetService)
-
+    $scope.permissions = permissions
+    $scope.state = state
     if dashboard?
       $scope.dashboard = dashboard
     else
@@ -58,6 +75,19 @@ define -> [
         .removeReport(report)
         .then (reports) ->
           $scope.dashboard.reports = reports
+          if(report.id == currentReport.id)
+            currentReport = $scope.dashboard.reports[0]
+
+    $scope.setPermissions = (agent, permission) ->
+      if(permission == 1 && agent.permissions > 0)
+        agent.permissions = 0
+      else if(permission == 2 && agent.permissions < 1)
+        agent.permissions = 2
+      else if(permission == agent.permissions == 2)
+        agent.permissions = 1
+      else if(permission == agent.permissions == 1)
+        agent.permissions = 0
+      DashboardPermissionsService.savePermissions(agent, $scope.dashboard)
 #
 #    $scope.createDashboard = () ->
 #      dashboard =

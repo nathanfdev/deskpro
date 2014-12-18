@@ -94,17 +94,35 @@ class DashboardPermissions
         $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy(
             $criteria
         );
-        return $resolve($permissions);
+        if($permissions){
+            return $resolve($permissions);
+        }
+        return false;
     }
 
     /**
      * @param PersonEntity    $person
      * @param DashboardEntity $dashboard
-     * @param string          $permissions
+     * @param string          $permission
      */
-    public function setPermissions(PersonEntity $person, DashboardEntity $dashboard, $permissions)
+    public function setPermissions(PersonEntity $person, DashboardEntity $dashboard, $permission)
     {
         $personPermissions = $this->getPersonPermissions($person, $dashboard);
+
+        $criteria = array(
+            'dashboard_id' => $dashboard->getId(),
+            'person_id'    => $person->getId()
+        );
+        $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy($criteria);
+        if(!$personPermissions) {
+            $permissions = new Permission();
+            $permissions->setPerson($person)
+                ->setDashboard($dashboard);
+        } else {
+            $permissions = array_shift($permissions);
+        }
+        $permissions->setName($this->mapPermissions($permission));
+
         switch($permissions)
         {
             case self::PERMISSION_FULL:
@@ -112,7 +130,7 @@ class DashboardPermissions
                 $this->save($personPermissions);
                 break;
             case self::PERMISSION_VIEW:
-                $personPermissions->setName(Permission::FULL);
+                $personPermissions->setName(Permission::VIEW);
                 $this->save($personPermissions);
                 break;
             case self::PERMISSION_NONE:
@@ -129,6 +147,10 @@ class DashboardPermissions
                 return self::PERMISSION_FULL;
             case Permission::VIEW:
                 return self::PERMISSION_VIEW;
+            case self::PERMISSION_FULL:
+                return Permission::FULL;
+            case self::PERMISSION_VIEW:
+                return Permission::VIEW;
             default:
                 return self::PERMISSION_NONE;
         }
@@ -145,15 +167,28 @@ class DashboardPermissions
 
         foreach($permissions as $permission)
         {
-            $data[$permission->getAgent()->getId()] = $this->mapPermissions($permission->getName());
+            $data[$permission->getAgent()->getId()] = array(
+                'permissions' => $this->mapPermissions($permission->getName()),
+                'id' => $permission->getAgent()->getId(),
+            );
         }
-        return $data;
+        $persons = $this->em->getRepository('DeskPRO:Person')->findBy(
+            array('id' => array_keys($data))
+        );
+        foreach($persons as $person)
+        {
+            /** @var PersonEntity $person */
+            $data[$person->getId()]['name'] = $person->getDisplayName();
+            $data[$person->getId()]['avatar'] = $person->getPictureUrl();
+        }
+        return array_values($data);
 
     }
 
-    public function save(Permission $permissions)
+    public function save(Permission $permission)
     {
-        $this->em->persist($permissions);
+
+        $this->em->persist($permission);
         $this->em->flush();
     }
 
