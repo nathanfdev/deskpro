@@ -124,7 +124,7 @@ class PortalController extends AbstractController
     public function loginSidebarAction(TagRequest $tag_request)
     {
         return $this->render(
-            'Theme:Portal:login_sidebar.html.twig',
+            'Theme:Portal:sidebar_login.html.twig',
             array(
                 'auth_manager' => $this->get('dp_authentication_manager.user')
             )
@@ -138,7 +138,7 @@ class PortalController extends AbstractController
     {
         $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($this->getUser());
 
-        return $this->render('Theme:Portal:user_sidebar.html.twig', array(
+        return $this->render('Theme:Portal:sidebar_user.html.twig', array(
             'has_tickets' => $ticket_count > 0
         ));
     }
