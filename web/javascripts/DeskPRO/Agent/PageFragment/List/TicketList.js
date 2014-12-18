@@ -296,6 +296,14 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			}
 		}, null, [this.OBJ_ID]);
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
+			var ticketId = parseInt(info.ticket_id),
+				byAgentId = info.locked_by ? (parseInt(info.locked_by) || null) : null,
+				isLocked = info.is_locked;
+
+			self.mergeTicketData(ticketId, { locked_by_agent: byAgentId });
+		}, null, [this.OBJ_ID]);
+
 		if (this.meta.groupBy && this.filterId) {
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.filter-update', function(data) {
 				var filterId = parseInt(data.filter_id);

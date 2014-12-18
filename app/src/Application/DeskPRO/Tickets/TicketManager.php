@@ -376,6 +376,20 @@ class TicketManager
             ));
         }
 
+        if ($ticket->getStateChangeRecorder()->hasChangedField('locked_by_agent')) {
+            $this->db->insert('client_messages', array(
+                'channel'      => 'agent-notification.tickets.locked-status',
+                'auth'         => Strings::random(15, Strings::CHARS_KEY),
+                'date_created' => date('Y-m-d H:i:s'),
+                'data' => serialize(array(
+                    'ticket_id'       => $ticket->getId(),
+                    'is_locked'       => $ticket->getIsLocked(),
+                    'locked_by'       => $ticket->locked_by_agent ? $ticket->locked_by_agent->id : null,
+                    'via_person'      => $context->getPersonContext() ? $context->getPersonContext()->getId() : null
+                ))
+            ));
+        }
+
         if (!$is_noop) {
             $search_updater = new TicketSearchUpdater($this->db, $ticket);
             \DpShutdown::add(

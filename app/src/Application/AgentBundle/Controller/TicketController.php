@@ -3830,18 +3830,8 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(array('success' => true));
         }
 
-        $lock_cm = new ClientMessage();
-        $lock_cm->fromArray(array(
-            'channel' => 'agent-notification.tickets.unlocked',
-            'data' => array(
-                'ticket_id' => $ticket['id'],
-                'agent_id' => $ticket['id'],
-            ),
-            'created_by_client' => 0,
-        ));
-        $this->em->persist($lock_cm);
-
         $ticket->setLockedByAgent(null);
+        $this->em->persist($ticket);
         $this->em->flush();
 
         return $this->createJsonResponse(array('success' => true));
@@ -3852,17 +3842,6 @@ class TicketController extends AbstractController
         $ticket = $this->getTicketOr404($ticket_id);
 
         if ($ticket->hasLock() && $ticket->locked_by_agent->id == $this->person->id) {
-            $lock_cm = new ClientMessage();
-            $lock_cm->fromArray(array(
-                'channel' => 'agent-notification.tickets.unlocked',
-                'data' => array(
-                    'ticket_id' => $ticket['id'],
-                    'agent_id' => $ticket['id'],
-                ),
-                'created_by_client' => 0,
-            ));
-            $this->em->persist($lock_cm);
-
             $ticket->setLockedByAgent(null);
             $this->em->persist($ticket);
             $this->em->flush();
