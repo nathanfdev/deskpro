@@ -272,9 +272,11 @@ class JIRA
 	public function searchIssues($jql)
 	{
 		try {
+            $meta = $this->getMeta();
+
 			$result = $this->getApi()->post('/search', array(
 				'jql' => $jql,
-				'fields' => $this->getMeta()->getAllFields(),
+				'fields' => array_merge($meta->getAllFields(), $meta->getSystemFields()),
                 'expand' => array('renderedFields'),
 			));
 		} catch (\Exception $e) {

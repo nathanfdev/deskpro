@@ -22,9 +22,13 @@
                 <i class="flat-spinner"></i>
             </div>
 
-            <div ng-repeat="issue in search_results">
-                {{ issue.id }}
-            </div>
+            <ul>
+                <li ng-repeat="issue in search_results">
+                    <a href="#" ng-click="$event.preventDefault();openLinkModal(issue)">
+                        {{ issue.key }} - {{ issue.fields.summary }}
+                    </a>
+                </li>
+            </ul>
         </div>
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="404 === search_issue_state">Issue not found. Please enter a valid issue ID.</div>
         <div style="margin: 8px; background: #fff; padding: 4px; font-size: 11px; border: 1px solid #ccc; border-radius: 2px;" ng-show="407 === search_issue_state">Issue already linked.</div>

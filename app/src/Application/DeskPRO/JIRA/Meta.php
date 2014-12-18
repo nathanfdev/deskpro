@@ -58,6 +58,7 @@ class Meta
 	protected $default_issuetype;
 	protected $default_fields_summary = array();
 	protected $default_fields_list = array();
+    protected $system_fields = array('project', 'issuetype', 'summary');
 
 	/**
 	 * @return array
@@ -98,6 +99,11 @@ class Meta
 	{
 		return array_values(array_unique(array_merge($this->default_fields_summary, $this->default_fields_list)));
 	}
+
+    public function getSystemFields()
+    {
+        return $this->system_fields;
+    }
 
 	/**
 	 * @return string

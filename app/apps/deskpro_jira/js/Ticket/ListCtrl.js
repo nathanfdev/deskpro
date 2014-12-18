@@ -36,22 +36,22 @@ define([
         return;
       }
 
-      var time = new Date().getTime();
-      $scope.active_searches++;
-      issues.search($scope.search).then(
-        function (issues) {
-          $scope.active_searches--;
-          if (time < lastSearchTime) return;
-          if (!issues || !issues.length) return;
-
-          $scope.search_results.length = 0;
-          issues.each(function(el){$scope.search_results.push(el);});
-          lastSearchTime = time;
-        },
-        function() {
-          $scope.active_searches--;
-        }
-      );
+      (function(time){
+        $scope.active_searches++;
+        issues.search($scope.search).then(
+          function (issues) {
+            $scope.active_searches--;
+            if (time < lastSearchTime) return;
+            lastSearchTime = time;
+            $scope.search_results.length = 0;
+            if (!issues || !issues.length) return;
+            issues.each(function(el){$scope.search_results.push(el);console.info(el);});
+          },
+          function() {
+            $scope.active_searches--;
+          }
+        );
+      })(new Date().getTime());
 
     }, 150);
 
@@ -67,6 +67,11 @@ define([
           $scope.issue = issue;
           $scope.names = issues.names;
 
+          $scope.already_linked = false;
+          issues.each(function(el){
+            if (el.key == issue.key) $scope.already_linked = true;
+          });
+
           if (!issue.filtered_fields) {
             issue.filtered_fields = [];
             $.each(issue.fields, function (id, field) {
@@ -78,18 +83,20 @@ define([
           }
 
           $scope.confirm = function () {
-            $parent.search_issue_state = 1;
-            $modalInstance.dismiss();
-
+            $parent.active_searches++;
             issues.link(issue).then(
               function () {
-                $parent.search_issue_state = 0;
-                $scope.link_search_mode = false;
+                $parent.search = '';
+                $parent.active_searches--;
+                $parent.link_search_mode = false;
               },
               function (status) {
+                $parent.search = '';
+                $parent.active_searches--;
                 $parent.search_issue_state = status;
               }
             );
+            $modalInstance.dismiss();
           };
 
           $scope.dismiss = $modalInstance.dismiss;
