@@ -70,38 +70,6 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="get_in_touch")
-     */
-    public function getInTouchAction(TagRequest $tag_request)
-    {
-        return $this->render('Theme:Portal:get_in_touch.html.twig');
-    }
-
-    /**
-     * @Tag(name="alerts")
-     */
-    public function alertsAction(TagRequest $tag_request)
-    {
-        return $this->render('Theme:Portal:alerts.html.twig');
-    }
-
-    /**
-     * @Tag(name="flashes")
-     */
-    public function flashesAction(TagRequest $tag_request)
-    {
-        $flashes = array();
-        $session = $tag_request->getSession();
-        if (null !== $session && $session->isStarted()) {
-            $flashes = $session->getFlashBag()->all();
-        }
-
-        return $this->render('Theme:Portal:flashes.html.twig', array(
-            'flashes' => $flashes
-        ));
-    }
-
-    /**
      * @Tag(name="page_top")
      */
     public function topBarAction(TagRequest $tag_request)
@@ -117,28 +85,6 @@ class PortalController extends AbstractController
                 'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
             )
         );
-    }
-
-    /**
-     * @Tag(name="pager")
-     *
-     * @TagOptions(
-     *      required={"pager"},
-     *      defaults={
-     *          "show_pagination": true
-     *      },
-     *      allowed_types={
-     *          "pager":"Pagerfanta\Pagerfanta",
-     *          "show_pagination":"bool"
-     *      }
-     * )
-     */
-    public function pagerAction(TagRequest $request, array $options)
-    {
-        return $this->render('Theme:Portal:pager.html.twig', array(
-            'pager' => $options['pager'],
-            'show_pagination' => $options['show_pagination']
-        ));
     }
 
     /**
