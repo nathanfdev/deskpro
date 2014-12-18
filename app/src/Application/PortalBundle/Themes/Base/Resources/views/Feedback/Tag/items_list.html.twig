@@ -1,6 +1,4 @@
-<article class="panel-tiny feedback front-page-feedback">
-    <div class="large-title clearfix"><h1>Feedback</h1></div>
-
+{% if pager|length > 0 %}
     <ul>
         {% for item in pager %}
         <li>
@@ -11,8 +9,6 @@
     </ul>
 
     <div class="list-meta">
-        <a href="{{ path('portal_feedback') }}">View <span>{{ count_feedback }}</span> feedback items<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+        <a href="{{ path('portal_feedback') }}">View <span>{{ pager|length }}</span> feedback items<img src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
     </div>
-
-
-</article>
+{% endif %}
