@@ -60,7 +60,7 @@ class DownloadsController extends AbstractController
         return $this->render('Theme:Downloads:browse.html.twig', array(
                 'category' => $category,
                 'page' => $request->query->get('page', 1),
-                'max_per_page' => 2,
+                'count' => 2,
                 'show_pagination' => true
             )
         );
@@ -95,7 +95,7 @@ class DownloadsController extends AbstractController
      *          "category": null,
      *          "show_pagination": true,
      *          "page": 1,
-     *          "max_per_page": 10
+     *          "count": 2
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","null"}
@@ -109,7 +109,7 @@ class DownloadsController extends AbstractController
         }
 
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
-        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['max_per_page']);
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);
 
         return $this->render('Theme:Common:pager.html.twig', array(
                 'pager' => $pager
@@ -154,13 +154,13 @@ class DownloadsController extends AbstractController
     public function categoriesAction(TagRequest $request, array $options)
     {
         $category = $options['category'];
-        $categories = $this->getDownloadsDataService()->getCategoryChildren($category);
+        $category_children = $this->getDownloadsDataService()->getCategoryChildren($category);
 
         return $this->render(
             sprintf('Theme:Downloads:Tag/%s.html.twig', $options['style']),
             array(
                 'category' => $category,
-                'category_children' => $categories
+                'category_children' => $category_children
             )
         );
     }
@@ -177,7 +177,7 @@ class DownloadsController extends AbstractController
      *          "category": null,
      *          "style": "small",
      *          "page": 1,
-     *          "max_per_page": 10
+     *          "count": 10
      *      },
      *      allowed_values={
      *          "style": {"small","simple","items"}
@@ -190,11 +190,12 @@ class DownloadsController extends AbstractController
     public function listAction(TagRequest $request, array $options)
     {
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
-        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['max_per_page']);
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);
 
         return $this->render(
             sprintf('Theme:Downloads:Tag/files_%s.html.twig', $options['style']),
             array(
+                'category' => $category,
                 'pager' => $pager
             )
         );
@@ -207,23 +208,5 @@ class DownloadsController extends AbstractController
     public function getDownloadsDataService()
     {
         return $this->get('data.downloads');
-    }
-
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\Download
-     */
-    protected function getDownloadsRepo()
-    {
-        return $this->getDoctrine()->getRepository('DeskPRO:Download');
-    }
-
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\DownloadCategory
-     */
-    protected function getDownloadCategoriesRepo()
-    {
-        return $this->getDoctrine()->getRepository('DeskPRO:DownloadCategory');
     }
 }

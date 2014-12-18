@@ -1,7 +1,4 @@
 {% if pager|length > 0 %}
-    <article class="panel-tiny front-page-downloads">
-        <div class="large-title clearfix"><h1>Downloads</h1></div>
-
         <ul>
             {% for dl in pager %}
                 <li>
@@ -20,7 +17,6 @@
             <a href="{{ path('portal_downloads') }}">View <span>{{ pager|length }}</span> downloads<img
                         src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
         </div>
-    </article>
 {% else %}
     <strong>No downloads yet</strong>
 {% endif %}

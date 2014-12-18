@@ -9,12 +9,10 @@
     </ul>
 
     {% if show_category_link %}
-        {#{% if pager.haveToPaginate %}#}
-            <div class="list-meta">
-                <a href="{{ category ? path('portal_news_browse', { slug: category.slug }) : path('portal_news') }}">View
-                    <span>{{ pager|length }}</span> articles<img
-                            src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
-            </div>
-        {#{% endif %}#}
+        <div class="list-meta">
+            <a href="{{ category ? path('portal_news_browse', { slug: category.slug }) : path('portal_news') }}">View
+                <span>{{ pager|length }}</span> articles<img
+                        src="{{ asset('web/portal/base/img/icon-view-more.png') }}"></a>
+        </div>
     {% endif %}
 {% endif %}

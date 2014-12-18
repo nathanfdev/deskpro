@@ -213,21 +213,4 @@ class NewsController extends AbstractController
     {
         return $this->get('data.news');
     }
-
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\News
-     */
-    protected function getNewsRepo()
-    {
-        return $this->getDoctrine()->getRepository('DeskPRO:News');
-    }
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\NewsCategory
-     */
-    protected function getNewsCategoriesRepo()
-    {
-        return $this->getDoctrine()->getRepository('DeskPRO:NewsCategory');
-    }
 }
