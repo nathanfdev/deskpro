@@ -299,7 +299,16 @@
     {% if app.getSetting('core.apps_tasks') %}<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></a></li>{% endif %}
 </ul>
 
-<dp-ticket-quick-actions></dp-ticket-quick-actions>
+<dp-ticket-quick-actions
+	data-phrases="{{ {
+		assign_me:          phrase('agent.general.assign_me'),
+		assign_agent:       phrase('agent.general.assign_agent'),
+		unassign:           phrase('agent.general.unassign'),
+		assign_team:        phrase('agent.general.assign_team'),
+		set_awaiting_agent: phrase('agent.tickets.set_awaiting_agent'),
+		set_resolved:       phrase('agent.tickets.set_resolved'),
+	}|json_encode }}"
+></dp-ticket-quick-actions>
 <dp-datetime></dp-datetime>
 
 </body>

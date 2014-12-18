@@ -612,7 +612,7 @@ pageMeta.lang = {{ {
 	{% if ticket_perms.modify_merge %}<li data-action="split">{{ phrase('agent.tickets.split_messages_into_ticket') }}</li>{% endif %}
 	{% if app.user.hasPerm('agent_tickets.create') %}
 		<li data-action="linked_ticket">{{ phrase('agent.tickets.create_linked_ticket') }}</li>
-		<li data-action="link_existing_ticket">Link Existing Ticket</li>
+		<li data-action="link_existing_ticket">{{ phrase('agent.tickets.link_existing_ticket') }}</li>
 	{% endif %}
 	<li data-action="kb-pending">{{ phrase('agent.tickets.create_new_pending_article') }}</li>
 	<li><a target="_blank" href="{{ path('agent_ticket_view', {'ticket_id': ticket.id,'view_print': 1, '_rt': security_token('request_token', 10800)}) }}">{{ phrase('agent.general.print') }}</a></li>

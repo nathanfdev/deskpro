@@ -391,6 +391,7 @@
 	'agent.tickets.your_teams_tickets'                  => 'Your teams tickets',
 	'agent.tickets.your_tickets'                        => 'Your tickets',
 	'agent.tickets.create_linked_ticket'                => 'Create Linked Ticket',
+	'agent.tickets.link_existing_ticket'                => 'Link Existing Ticket',
 	'agent.tickets.linked_tickets'                      => 'Linked Tickets',
 	'agent.tickets.linking_with_ticket'                 => 'Linking with ticket:',
 );

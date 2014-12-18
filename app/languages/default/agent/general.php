@@ -57,6 +57,8 @@
     'agent.general.ask_delete_selected'                     => 'Are you sure you would like to delete the selected items?',
     'agent.general.assign'                                  => 'Assign',
     'agent.general.assign_agent'                            => 'Assign Agent',
+    'agent.general.assign_team'                             => 'Assign Team',
+    'agent.general.assign_me'                               => 'Assign Me',
     'agent.general.assign_to'                               => 'Assign to',
     'agent.general.assign_to_me'                            => 'Assign to Me',
     'agent.general.assign_to_my_team'                       => 'Assign to My Team',
