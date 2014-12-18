@@ -49,9 +49,9 @@ class DevController extends AbstractController
     }
 
     /**
-     * @Tag(name="statisfaction_stats_list", default_options={"tpl":"Theme:Portal:satisfaction_stats_list.html.twig"})
-     * @Tag(name="agents_online_list", default_options={"tpl":"Theme:Portal:agents_online_list.html.twig"})
-     * @Tag(name="news_date_list", default_options={"tpl":"Theme:News:news_date_list.html.twig"})
+     * @Tag(name="statisfaction_stats_list", default_options={"tpl":"Theme:Portal:Dev/satisfaction_stats_list.html.twig"})
+     * @Tag(name="agents_online_list", default_options={"tpl":"Theme:Portal:Dev/agents_online_list.html.twig"})
+     * @Tag(name="news_date_list", default_options={"tpl":"Theme:News:Dev/news_date_list.html.twig"})
      *
      * @TagOptions(
      *      required={"tpl"}
