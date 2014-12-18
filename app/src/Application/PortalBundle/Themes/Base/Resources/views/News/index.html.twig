@@ -5,5 +5,6 @@
     {{ news_breadcrumbs({ category: null }) }}
     <h1>News Phrase</h1>
 
-    {{ news_posts_pretty({show_category_link: false}) }}
+    {{ news_posts_pretty({ show_category_link: false, page: page, count: count }) }}
+    {{ news_pager({ page: page, count: count }) }}
 {% endblock inner_content %}

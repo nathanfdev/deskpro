@@ -111,7 +111,7 @@ class DownloadsController extends AbstractController
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
         $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['max_per_page']);
 
-        return $this->render('Theme:Portal:pager.html.twig', array(
+        return $this->render('Theme:Common:pager.html.twig', array(
                 'pager' => $pager
             )
         );

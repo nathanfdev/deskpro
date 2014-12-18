@@ -48,7 +48,10 @@ class NewsController extends AbstractController
 {
     public function indexAction(Request $request)
     {
-        return $this->render('Theme:News:index.html.twig');
+        return $this->render('Theme:News:index.html.twig', array(
+            'page' => $request->query->get('page', 1),
+            'count' => 2
+        ));
     }
 
 
@@ -126,7 +129,7 @@ class NewsController extends AbstractController
      *          "category": null,
      *          "style": "pretty",
      *          "page": 1,
-     *          "count": 5,
+     *          "count": 2,
      *          "show_category_link": true
      *      },
      *      allowed_values={
@@ -179,7 +182,7 @@ class NewsController extends AbstractController
         $category = $this->getNewsDataService()->getCategory($options['category']);
         $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count']);
 
-        return $this->render('Theme:Portal:pager.html.twig', array(
+        return $this->render('Theme:Common:pager.html.twig', array(
                 'pager' => $pager
             )
         );
