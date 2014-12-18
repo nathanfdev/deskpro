@@ -296,7 +296,9 @@
         <li id="create_download_btn"><a><div class="wrap"><i class="icon-dp-download"></i></div>{{ phrase('agent.chrome.create_new-download') }} <kbd>d</kbd></a></li>
         <li id="create_feedback_btn"><a><div class="wrap"><i class="icon-dp-feedback" title="{{ phrase('agent.chrome.quicksearch_title-feedback') }}"></i></div>{{ phrase('agent.chrome.create_new-feedback') }} <kbd>i</kbd></a></li>
     {% endif %}
-    {% if app.getSetting('core.apps_tasks') %}<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></a></li>{% endif %}
+	{% if app.getSetting('core.apps_tasks') and app.user.hasPerm('agent_tasks.use')  %}
+		<li id="create_task_btn" class="last"><a><div class="wrap"><i class="icon-dp-task"></i></div>{{ phrase('agent.chrome.create_new-task') }} <kbd>k</kbd></a></li>
+	{% endif %}
 </ul>
 
 <dp-ticket-quick-actions
