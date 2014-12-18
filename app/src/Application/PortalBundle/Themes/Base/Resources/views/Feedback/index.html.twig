@@ -1,5 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ feedback() }}
+    {{ feedback_breadcrumbs() }}
+    {{ feedback({ page: page, count: count, show_pagination: show_pagination }) }}
 {% endblock inner_content %}

@@ -1,4 +1,4 @@
-{% macro kb_feedback_breadcrumbs(feedback) %}
+{% macro feedback_breadcrumbs(item) %}
     <div class="breadcrumbs">
         <ul>
             <li>
@@ -7,12 +7,12 @@
             </li>
 
             <li>
-                <a href="{{ path('portal_feedback') }}">Feedback</a> <i class="fa fa-angle-right"></i>
+                <a href="{{ path('portal_feedback') }}">Feedback</a>{% if item %}<i class="fa fa-angle-right">{% endif %}</i>
             </li>
 
-            {% if feedback %}
+            {% if item %}
                 <li>
-                    <a href="{{ path('portal_feedback_view', { slug:feedback.slug }) }}">{{ feedback.title }}</a>
+                    <a href="{{ path('portal_feedback_view', { slug:item.slug }) }}">{{ item.title }}</a>
                 </li>
             {% endif %}
         </ul>

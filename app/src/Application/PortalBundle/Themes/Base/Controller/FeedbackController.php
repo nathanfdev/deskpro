@@ -49,67 +49,117 @@ class FeedbackController extends AbstractController
 {
     public function indexAction(Request $request)
     {
-        return $this->render('Theme:Feedback:index.html.twig');
+        return $this->render('Theme:Feedback:index.html.twig', array(
+            'page' => $request->query->get('page', 1),
+            'count' => 2,
+            'show_pagination' => true
+        ));
     }
 
 
     /**
-     * @ParamConverter(name="feedback", converter="deskpro_slug")
+     * @ParamConverter(name="item", converter="deskpro_slug")
      */
-    public function viewAction(Request $request, Feedback $feedback)
+    public function viewAction(Request $request, Feedback $item)
     {
         return $this->render(
             'Theme:Feedback:view.html.twig', array(
-                'feedback' => $feedback
+                'item' => $item
             )
         );
     }
 
     /**
      * @Tag(name="feedback")
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "count": 2,
+     *          "page": 1,
+     *          "show_pagination": true
+     *      }
+     * )
      */
-    public function feedbackAction(TagRequest $request)
+    public function feedbackAction(TagRequest $tag_request, array $options)
     {
-        $allFeedback = $this->getFeedbackRepo()->createQueryBuilder('f');
-        $pager = new Pagerfanta(new DoctrineORMAdapter($allFeedback));
-        $pager->setMaxPerPage(3);
-        $pager->setCurrentPage($request->get('page', 1));
-
         return $this->render(
-            'Theme:Feedback:feedback.html.twig',
+            'Theme:Feedback:Tag/feedback.html.twig',
             array(
-                'pager' => $pager,
-                'feedbacks' => $pager->getCurrentPageResults()
+                'count' => $options['count'],
+                'page' => $options['page'],
+                'show_pagination' => $options['show_pagination']
             )
         );
     }
 
     /**
-     * @Tag(name="feedback_items", default_options={"style":"items"})
-     * @Tag(name="feedback_items_list", default_options={"style":"small"})
+     * @Tag(name="feedback_items")
+     * @Tag(name="feedback_items_list", default_options={"style":"list"})
+     * @Tag(name="feedback_items_row", default_options={"style":"row"})
      *
      * @TagOptions(
      *      defaults={
-     *          "style": "small",
-     *          "count": 5
+     *          "style": "row",
+     *          "count": 2,
+     *          "page": 1
      *      },
      *      allowed_values={
-     *          "style": {"items","small"}
+     *          "style": {"list","row"}
      *      }
      * )
      */
-    public function listAction(TagRequest $request, array $options)
+    public function listAction(TagRequest $tag_request, array $options)
     {
-        $feedback  = $this->getFeedbackRepo()->getNewest(false, $options['count']);
-        $total = $this->getFeedbackRepo()->countNotClosedNotHidden();
+        $pager = $this->getFeedbackDataService()->getItemsPager($options['page'], $options['count']);
 
         return $this->render(
-            sprintf('Theme:Feedback:list_%s.html.twig', $options['style']),
+            sprintf('Theme:Feedback:Tag/items_%s.html.twig', $options['style']),
             array(
-                'count_feedback' => $total,
-                'feedback'    => $feedback
+                'pager' => $pager
             )
         );
+    }
+
+    /**
+     * @Tag(name="feedback_pager")
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "show_pagination": true,
+     *          "count": 2,
+     *          "page": 1
+     *      },
+     * )
+     */
+    public function pagerAction(TagRequest $tag_request, array $options)
+    {
+        if (!$options['show_pagination']) {
+            return new Response('');
+        }
+
+        $pager = $this->getFeedbackDataService()->getItemsPager($options['page'], $options['count']);
+
+        return $this->render('Theme:Common:pager.html.twig', array(
+                'pager' => $pager
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="feedback_breadcrumbs")
+     *
+     * @TagOptions(
+     *      defaults={"item": null},
+     *      allowed_types={"item": {"Application\DeskPRO\Entity\Feedback", "int", "null"}}
+     * )
+     */
+    public function breadcrumbsAction(TagRequest $request, array $options)
+    {
+        $item = $this->getFeedbackDataService()->getItem($options['item']);
+
+        return $this->render('Theme:Feedback:Tag/breadcrumbs.html.twig', array(
+            'item' => $item
+        ));
     }
 
     /**
@@ -118,14 +168,5 @@ class FeedbackController extends AbstractController
     public function getFeedbackDataService()
     {
         return $this->get('data.feedback');
-    }
-
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\Feedback
-     */
-    protected function getFeedbackRepo()
-    {
-        return $this->getDoctrine()->getRepository('DeskPRO:Feedback');
     }
 }

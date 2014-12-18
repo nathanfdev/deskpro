@@ -2,7 +2,7 @@
     <div class="large-title clearfix"><h1>Feedback</h1></div>
 
     <ul>
-        {% for item in feedback %}
+        {% for item in pager %}
         <li>
             <span class="thumbs"><i class="fa fa-thumbs-up"></i> {{ item.popularity }}</span>
             <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>

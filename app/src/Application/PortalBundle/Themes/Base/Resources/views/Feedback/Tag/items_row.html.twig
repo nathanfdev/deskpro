@@ -1,6 +1,5 @@
 {# TODO #}
-
-{% for item in feedback %}
+{% for item in pager %}
     <div class="feedback-item">
         <div class="feedback-item-controls">
             <a href="#" class="i-agree">
@@ -15,7 +14,12 @@
 
         <div class="feedback-item-content">
             <span class="feedback-status">Awaiting Feedback</span>
-            <h1><span class="text-tag">Feature Request</span> {{ item.title }}</h1>
+            <h1>
+                <span class="text-tag">Feature Request</span>
+                <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">
+                    {{ item.title }}
+                </a>
+            </h1>
 
             <div class="comment">
                 <p>{{ item.content_html|raw }}</p>

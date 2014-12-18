@@ -9,9 +9,6 @@
 
     {% include 'Theme:Feedback:controls.html.twig' %}
 
-    {{ feedback_items() }}
-
-    {% if pager.haveToPaginate %}
-        {{ pagerfanta(pager) }}
-    {% endif %}
+    {{ feedback_items({ count: count, page: page }) }}
 </div>
+{{ feedback_pager({ count: count, page: page, show_pagination: show_pagination }) }}
