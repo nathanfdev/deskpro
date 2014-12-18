@@ -121,7 +121,7 @@ class GroupDbPersister
     {
         $current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE person_id = ?", array($person->id));
 
-        $group_perms = new GroupsDbLoader($person->usergroups, $this->em);
+        $group_perms = new GroupsDbLoader($person->usergroups ? $person->usergroups->toArray() : array(), $this->em);
         $via_groups = array();
         $names_loader = new PermissionNamesLoader();
 
