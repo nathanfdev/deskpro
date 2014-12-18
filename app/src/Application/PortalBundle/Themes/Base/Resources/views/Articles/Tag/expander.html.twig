@@ -1,0 +1,22 @@
+{% if category_children|length > 0 %}
+    {% for category in category_children %}
+        <article class="article-categories-expandable">
+            <header>
+                <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">
+                    <h1><img src="{{ asset('web/portal/base/img/icon-star.png') }}">{{ category.title }}</h1>
+                    <div class="article-controls single-line">
+                        <span class="article-tag pointy">{{ category.articles|length }} articles</span>
+                        <span class="expandable-control"><i class="fa fa-angle-up"></i></span>
+                    </div>
+                </a>
+            </header>
+
+            {{ knowledgebase_articles_simple({ category:category.id}|merge(articles_options)) }}
+
+            <div class="list-meta">
+                <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">View
+                    <span>{{ category.articles|length }}</span> articles</a>
+            </div>
+        </article>
+    {% endfor %}
+{% endif %}

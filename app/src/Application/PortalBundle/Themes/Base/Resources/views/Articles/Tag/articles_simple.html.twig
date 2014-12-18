@@ -2,11 +2,10 @@
     <ul>
         {% for article in pager %}
             <li>
-                <a href="{{ path('portal_kb_view', { slug:article.slug }) }}">{{ article.realTitle }}</a>
+                <a href="{{ path('portal_kb_view', { slug: article.slug }) }}">{{ article.realTitle }}</a>
             </li>
         {% endfor %}
     </ul>
-    {{ pager({pager: pager, show_pagination: show_pagination}) }}
 {% else %}
     <strong>No articles yet</strong>
 {% endif %}

@@ -1,0 +1,19 @@
+{% if category_children|length > 0 %}
+    <ul>
+        {% for category in category_children %}
+            <li>
+                <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
+                <h1>
+                    <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">
+                        {{ category.title }}
+                        <span>{{ category.articles|length }}</span>
+                    </a>
+                </h1>
+                <span class="meta">
+                    {{ knowledgebase_comma_list({ category: category }) }}
+                </span>
+            </li>
+
+        {% endfor %}
+    </ul>
+{% endif %}

@@ -1,7 +1,8 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ knowledgebase_breadcrumbs({ category: cat }) }}
-    {{ knowledgebase({category: cat}) }}
-    {{ knowedgebase_articles_simple({category: cat, show_pagination: true, page: page, max_per_page: 2}) }}
+    {{ knowledgebase_breadcrumbs({ category: category }) }}
+    {{ knowledgebase({category: category}) }}
+    {{ knowledgebase_articles_simple({category: category, page: page, count: count}) }}
+    {{ knowledgebase_pager({category: category, page: page, count: count}) }}
 {% endblock inner_content %}

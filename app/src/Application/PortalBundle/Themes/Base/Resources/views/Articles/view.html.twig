@@ -4,7 +4,7 @@
 {# TODO #}
 
 {% block inner_content %}
-    {{ macros.kb_article_cat_breadcrumbs(article.categories.first, article.categories.first.treeParents, article) }}
+    {{ knowledgebase_breadcrumbs({ category: article.categories.first }) }}
 
     <article class="news kb-article">
         <header>

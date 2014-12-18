@@ -9,12 +9,14 @@
         </ul>
     </article>
 
-    <div class="list-meta">
-        <a href="{{ path('portal_kb_browse', { 'slug':cat.slug }) }}">
-            View <span>{{ pager|length }}</span> articles
-            <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
-        </a>
-    </div>
+    {% if show_category_link %}
+        <div class="list-meta">
+            <a href="{{ path('portal_kb_browse', { slug: category.slug }) }}">
+                View <span>{{ pager|length }}</span> articles
+                <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
+            </a>
+        </div>
+    {% endif %}
 {% else %}
     <strong>No articles yet</strong>
 {% endif %}

@@ -2,5 +2,6 @@
 {% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-        {{ knowledgebase() }}
+        {{ knowledgebase_breadcrumbs() }}
+        {{ knowledgebase( { articles_options: { count: 5 }} ) }}
 {% endblock inner_content %}

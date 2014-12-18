@@ -67,8 +67,10 @@ class ArticlesController extends AbstractController
     public function browseAction(Request $request, ArticleCategory $category)
     {
         return $this->render('Theme:Articles:browse.html.twig', array(
-                'cat' => $category,
-                'page' => $request->get('page', 1)
+                'category' => $category,
+                'page' => $request->get('page', 1),
+                'count' => 2,
+                'show_pagination' => true
             )
         );
     }
@@ -79,82 +81,36 @@ class ArticlesController extends AbstractController
      */
     public function viewAction(Request $request, Article $article)
     {
-        return $this->render('Theme:Articles:view.html.twig', array('article' => $article));
+        return $this->render('Theme:Articles:view.html.twig', array(
+            'article' => $article
+        ));
     }
 
     /**
-     * @Tag(name="knowledgebase", default_options={"style":"home"})
-     * @Tag(name="knowledgebase_compact", default_options={"style":"summary"})
-     * @Tag(name="knowledgebase_list", default_options={"style":"expander"})
-     * @Tag(name="knowledgebase_small", default_options={"style":"small"})
+     * @Tag(name="knowledgebase_pager")
      *
      * @TagOptions(
      *      defaults={
-     *          "style": "small",
      *          "category": null,
-     *          "articles": {
-     *              "include_subcategories": false
-     *          }
+     *          "show_pagination": true,
+     *          "page": 1,
+     *          "count": 2
      *      },
-     *      allowed_values={
-     *          "style": {"expander", "home", "small", "summary"}
+     *      allowed_types={
+     *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","null"}
      *      }
      * )
      */
-    public function categoriesAction(TagRequest $request, array $options)
+    public function pagerAction(TagRequest $tag_request, array $options)
     {
-        /** @var \Application\DeskPRO\EntityRepository\ArticleCategory $categories */
-        if ($options['category']) {
-            $categories = $this->getArticleCategoryRepo()->findBy(array('parent' => $options['category']));
-        } else {
-            $categories = $this->getArticleCategoryRepo()->findAll();
+        if (!$options['show_pagination']) {
+            return new Response('');
         }
 
-        return $this->render(
-            sprintf('Theme:Articles:cats_%s.html.twig', $options['style']),
-            array(
-                'cats' => $categories,
-                'articles_options' => $options['articles']
-            )
-        );
-    }
+        $category = $this->getArticlesDataService()->getCategory($options['category']);
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
 
-    /**
-     * @Tag(name="knowedgebase_articles")
-     * @Tag(name="knowedgebase_articles_forcat", default_options={"style":"forcat"})
-     * @Tag(name="knowedgebase_articles_small", default_options={"style":"small"})
-     * @Tag(name="knowedgebase_articles_xsmall", default_options={"style":"xsmall"})
-     * @Tag(name="knowedgebase_articles_simple", default_options={"style":"simple"})
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "show_pagination": false,
-     *          "page": 1,
-     *          "max_per_page": 10,
-     *          "style": "small",
-     *          "include_subcategories": false,
-     *          "count": 10,
-     *          "labelled": "",
-     *          "sort": "date_published desc"
-     *      },
-     *      allowed_values={
-     *          "style": {"forcat", "small", "xsmall", "simple"}
-     *      },
-     *      required={"category"}
-     * )
-     */
-    public function listAction(TagRequest $request, array $options)
-    {
-        if (!$options['category'] instanceof ArticleCategory) {
-            $options['category'] = $this->getArticleCategoryRepo()->find($options['category']);
-        }
-        $pager = $this->getArticlesDataService()->getArticlesPager($options['category'], $options['page'], $options['max_per_page']);
-
-        return $this->render(
-            sprintf('Theme:Articles:list_%s.html.twig', $options['style']),
-            array(
-                'show_pagination' => $options['show_pagination'],
-                'cat' => $options['category'],
+        return $this->render('Theme:Common:pager.html.twig', array(
                 'pager' => $pager
             )
         );
@@ -164,21 +120,85 @@ class ArticlesController extends AbstractController
      * @Tag(name="knowledgebase_breadcrumbs")
      *
      * @TagOptions(
-     *      required={"category"},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int"}
-     *      }
+     *      defaults={"category": null},
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "null"}}
      * )
      */
     public function breadcrumbsAction(TagRequest $request, array $options)
     {
-        if (!$options['category'] instanceof ArticleCategory) {
-            $options['category'] = $this->getArticleCategoryRepo()->find($options['category']);
-        }
+        $category = $this->getArticlesDataService()->getCategory($options['category']);
 
-        return $this->render('Theme:Articles:breadcrumbs.html.twig', array(
-            'category' => $options['category']
+        return $this->render('Theme:Articles:Tag/breadcrumbs.html.twig', array(
+            'category' => $category
         ));
+    }
+
+    /**
+     * @Tag(name="knowledgebase")
+     * @Tag(name="knowledgebase_compact", default_options={"style":"compact"})
+     * @Tag(name="knowledgebase_expander", default_options={"style":"expander"})
+     * @Tag(name="knowledgebase_list", default_options={"style":"list"})
+     * @Tag(name="knowledgebase_comma_list", default_options={"style":"comma_list"})
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "style": "home",
+     *          "category": null,
+     *          "articles_options": {}
+     *      },
+     *      allowed_values={
+     *          "style": {"expander", "compact", "home", "list"}
+     *      }
+     * )
+     */
+    public function categoriesAction(TagRequest $request, array $options)
+    {
+        $category = $options['category'];
+        $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
+
+        return $this->render(
+            sprintf('Theme:Articles:Tag/%s.html.twig', $options['style']),
+            array(
+                'category' => $category,
+                'category_children' => $category_children,
+                'articles_options' => $options['articles_options']
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="knowledgebase_articles")
+     * @Tag(name="knowledgebase_articles_forcat", default_options={"style":"forcat"})
+     * @Tag(name="knowledgebase_articles_list", default_options={"style":"list"})
+     * @Tag(name="knowledgebase_articles_small", default_options={"style":"small"})
+     * @Tag(name="knowledgebase_articles_simple", default_options={"style":"simple"})
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "style": "small",
+     *          "page": 1,
+     *          "count": 2,
+     *          "show_category_link": true
+     *      },
+     *      allowed_values={
+     *          "style": {"forcat", "list", "small", "simple"}
+     *      },
+     *      required={"category"}
+     * )
+     */
+    public function listAction(TagRequest $request, array $options)
+    {
+        $category = $this->getArticlesDataService()->getCategory($options['category']);
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
+
+        return $this->render(
+            sprintf('Theme:Articles:Tag/articles_%s.html.twig', $options['style']),
+            array(
+                'pager' => $pager,
+                'category' => $category,
+                'show_category_link' => $options['show_category_link']
+            )
+        );
     }
 
     /**
