@@ -1,2 +1,2 @@
 {% import 'Theme:Downloads:_macros.html.twig' as macros %}
-{{ macros.kb_downloads_cat_breadcrumbs(category, category.treeParents) }}
+{{ macros.kb_downloads_cat_breadcrumbs(category|default(null), category.treeParents|default(null)) }}

@@ -1,6 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
+    {{ downloads_breadcrumbs({ category: null }) }}
     <div class="downloads main-downloads">
     <header class="section-header">
         <h1>{{ phrase('portal.downloads.section-title') }}</h1>

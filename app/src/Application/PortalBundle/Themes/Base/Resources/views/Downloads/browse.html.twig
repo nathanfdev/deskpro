@@ -3,7 +3,7 @@
 {% block inner_content %}
     {{ downloads_breadcrumbs({ category: category }) }}
     {{ downloads_list({category: category}) }}
-    {{ downloads_files_items({category: category, page: page, max_per_page: 2}) }}
-    {{ downloads_pager({category: category, show_pagination: true, page: page, max_per_page: 2}) }}
+    {{ downloads_files_items({category: category, page: page, max_per_page: max_per_page}) }}
+    {{ downloads_pager({category: category, show_pagination: show_pagination, page: page, max_per_page: max_per_page}) }}
 {% endblock inner_content %}
 

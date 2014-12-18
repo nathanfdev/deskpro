@@ -63,7 +63,7 @@ class DownloadsDataService
      * @param $max_per_page
      * @return Pagerfanta
      */
-    public function getCategoryPager(DownloadCategory $category = null, $page, $max_per_page)
+    public function getDownloadsPager(DownloadCategory $category = null, $page, $max_per_page)
     {
         // TODO: optimize this query
         if ($category) {
