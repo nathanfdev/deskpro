@@ -45,7 +45,7 @@ define([
             lastSearchTime = time;
             $scope.search_results.length = 0;
             if (!issues || !issues.length) return;
-            issues.each(function(el){$scope.search_results.push(el);console.info(el);});
+            issues.each(function(el){$scope.search_results.push(el);});
           },
           function() {
             $scope.active_searches--;
