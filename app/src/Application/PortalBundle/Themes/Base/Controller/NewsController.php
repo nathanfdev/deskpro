@@ -160,7 +160,6 @@ class NewsController extends AbstractController
      * @TagOptions(
      *      defaults={
      *          "category": null,
-     *          "style": "pretty",
      *          "show_pagination": true,
      *          "page": 1,
      *          "count": 5
