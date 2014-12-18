@@ -66,7 +66,7 @@ class PortalController extends AbstractController
      */
     public function homeAction(TagRequest $tag_request)
     {
-        return $this->render('Theme:Portal:home.html.twig');
+        return $this->render('Theme:Portal:Tag/home.html.twig');
     }
 
     /**
@@ -77,7 +77,7 @@ class PortalController extends AbstractController
         /** @var \Application\LanguageBundle\Language\LanguageManager $language_manager */
         $language_manager = $this->get('language_manager');
 
-        return $this->render('Theme:Portal:top_bar.html.twig',
+        return $this->render('Theme:Portal:Tag/top_bar.html.twig',
             array(
                 'enabled_languages' => $language_manager->getEnabledLanguages(),
                 'current_language' => $language_manager->getLanguageStack()->getActive(),
@@ -92,7 +92,7 @@ class PortalController extends AbstractController
      */
     public function topSearchAction(TagRequest $tag_request)
     {
-        return $this->render('Theme:Portal:top_search.html.twig');
+        return $this->render('Theme:Portal:Tag/top_search.html.twig');
     }
 
     /**
@@ -103,7 +103,7 @@ class PortalController extends AbstractController
         $path_parts = explode('/', ltrim($tag_request->getPathInfo(), '/'));
 
         return $this->render(
-            'Theme:Portal:top_tabs.html.twig',
+            'Theme:Portal:Tag/top_tabs.html.twig',
             array(
                 'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null
             )
@@ -115,7 +115,7 @@ class PortalController extends AbstractController
      */
     public function sidebarAction(TagRequest $tag_request)
     {
-        return $this->render('Theme:Portal:sidebar.html.twig');
+        return $this->render('Theme:Portal:Tag/sidebar.html.twig');
     }
 
     /**
@@ -124,7 +124,7 @@ class PortalController extends AbstractController
     public function loginSidebarAction(TagRequest $tag_request)
     {
         return $this->render(
-            'Theme:Portal:sidebar_login.html.twig',
+            'Theme:Portal:Tag/sidebar_login.html.twig',
             array(
                 'auth_manager' => $this->get('dp_authentication_manager.user')
             )
@@ -138,7 +138,7 @@ class PortalController extends AbstractController
     {
         $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($this->getUser());
 
-        return $this->render('Theme:Portal:sidebar_user.html.twig', array(
+        return $this->render('Theme:Portal:Tag/sidebar_user.html.twig', array(
             'has_tickets' => $ticket_count > 0
         ));
     }
