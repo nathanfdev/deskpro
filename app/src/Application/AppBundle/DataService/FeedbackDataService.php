@@ -38,9 +38,11 @@ namespace Application\AppBundle\DataService;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
@@ -58,19 +60,46 @@ class FeedbackDataService
     }
 
     /**
-     * @param FeedbackCategory $category
      * @param $page
      * @param $max_per_page
      * @return Pagerfanta
      */
-    public function getFeedbackPager(FeedbackCategory $category, $page, $max_per_page)
+    public function getItemsPager($page, $max_per_page)
     {
+        // TODO: this needs to be a full blown search with filters
+        $items = new ArrayCollection($this->getItemsRepo()->findAll());
+
         // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($category->feedbacks));
+        $pager = new Pagerfanta(new DoctrineCollectionAdapter($items));
         $pager->setMaxPerPage($max_per_page);
         $pager->setCurrentPage($page);
 
         return $pager;
+    }
+
+    /**
+     * @param int|null|Feedback $item
+     * @return null|Feedback
+     */
+    public function getItem($item)
+    {
+        if (!$item) { // we need some input
+            return null;
+        }
+
+        if ($item instanceof Feedback) { // already have what you seek
+            return $item;
+        }
+
+        return $this->getItemsRepo()->find($item);
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\Feedback
+     */
+    public function getItemsRepo()
+    {
+        return $this->em->getRepository('DeskPRO:Feedback');
     }
 }
  
