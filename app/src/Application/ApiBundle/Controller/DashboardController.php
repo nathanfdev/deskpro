@@ -185,7 +185,7 @@ class DashboardController extends AbstractController
     {
         if($id) {
             $dashboard = $this->service->getDashboard($id);
-            if(!$this->permissionsService->isAllowedToView($this->person, $dashboard))
+            if(!$this->permissionsService->isAllowedToEdit($this->person, $dashboard))
             {
                 throw $this->createNotFoundException('Dashboard not found!');
             }
@@ -195,7 +195,9 @@ class DashboardController extends AbstractController
         $title = $this->in->getCleanValue('title', 'string');
         $dashboard
             ->setTitle($title);
-        return $this->createApiSuccessResponse($this->service->saveDashboard($dashboard));
+        $data = $this->service->saveDashboard($dashboard);
+        $this->permissionsService->setPermissions($this->person, $dashboard, DashboardPermissionService::PERMISSION_FULL);
+        return $this->createApiSuccessResponse($data);
     }
 
     /**

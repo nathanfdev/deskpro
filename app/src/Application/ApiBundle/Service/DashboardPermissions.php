@@ -109,21 +109,16 @@ class DashboardPermissions
     {
         $personPermissions = $this->getPersonPermissions($person, $dashboard);
 
-        $criteria = array(
-            'dashboard_id' => $dashboard->getId(),
-            'person_id'    => $person->getId()
-        );
-        $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy($criteria);
         if(!$personPermissions) {
-            $permissions = new Permission();
-            $permissions->setPerson($person)
+            $personPermissions = new Permission();
+            $personPermissions->setPerson($person)
                 ->setDashboard($dashboard);
         } else {
-            $permissions = array_shift($permissions);
+            $personPermissions = array_shift($personPermissions);
         }
-        $permissions->setName($this->mapPermissions($permission));
+//        $personPermissions->setName($this->mapPermissions($permission));
 
-        switch($permissions)
+        switch($permission)
         {
             case self::PERMISSION_FULL:
                 $personPermissions->setName(Permission::FULL);
@@ -187,7 +182,6 @@ class DashboardPermissions
 
     public function save(Permission $permission)
     {
-
         $this->em->persist($permission);
         $this->em->flush();
     }

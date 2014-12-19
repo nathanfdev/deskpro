@@ -205,7 +205,7 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
             ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array(
-            'fieldName'    => 'department',
+            'fieldName'    => 'dashboard',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboard',
             'mappedBy'     => null,
             'inversedBy'   => null,

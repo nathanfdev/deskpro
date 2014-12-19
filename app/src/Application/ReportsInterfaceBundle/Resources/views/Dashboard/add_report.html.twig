@@ -1,41 +1,4 @@
 <section class="popup">
-    <div class="reports-dropdown expanded">
-        <header>
-            <a ng-click="cancel()" class="hide-dropdown"><i class="fa fa-times"></i></a>
-            <i class="fa fa-plus"></i> Create new report
-        </header>
-        <div class="reports-dropdown-content">
-            <p>Bit of text about adding a report into your current dashboard lorel ipsum.</p>
-        </div>
-        <hr>
-        <div class="reports-dropdown-content">
-            <h2>Create new report</h2>
-            <form>
-                <button ng-click="createReport()">Create report</button>
-                <div class="input-bucket"><input type="text" ng-model='newReport.title' placeholder="Name your report"></div>
-            </form>
-        </div>
-        <hr>
-        <div class="reports-dropdown-content">
-            <h2>Or clone an existing report</h2>
-            <ul class="clone-list">
-                <li ng-repeat="db in dashboards track by db.id"
-                    ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded(db)}">
 
-                    <a ng-show='!isExpanded(db)' ng-click="expandDashboard(db)" class="control"><i class="fa fa-plus-square-o"></i></a>
-                    <a ng-show='isExpanded(db)' ng-click="collide(db)" class="control">
-                        <i class="fa fa-minus-square-o"></i>
-                    </a>
-
-                    <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
-                    <ul ng-show='isExpanded(db) && db.reports.length > 0'>
-                        <li ng-repeat="report in db.reports track by report.id">
-                            <a ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
-                        </li>
-                    </ul>
-                </li>
-            </ul>
-        </div>
-    </div>
 </section>
 <div class="cover"></div><!-- Transparent background to the popup -->
