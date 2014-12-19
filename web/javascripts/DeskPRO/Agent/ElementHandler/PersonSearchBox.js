@@ -14,6 +14,11 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		this.idInput     = $('input.person-id', this.el);
 		this.resultsBox  = $('.person-search-box', this.el);
 		this.resultsList = $('.results-list', this.resultsBox);
+		this.lastUpdate  = (new Date()).getTime();
+		this.runningAjax = []
+		this.loadingEl   = $('<div class="loading-el"><i class="spinner-flat"></i></div>')
+
+		this.loadingEl.appendTo(this.resultsBox);
 
 		this.termInput.on('focus', function() {
 			self.open();
@@ -40,13 +45,20 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		// Update caller schedules the update requests
 		//------------------------------
 
-		var updateCaller;
-		this.updateCaller = new DeskPRO.TouchCaller({
+		var touchCaller = new DeskPRO.TouchCaller({
 			timeout: 500,
 			callback: this.updateResults,
 			context: this
 		});
-		updateCaller = this.updateCaller;
+
+		this.updateCaller = function() {
+			if (self.runningAjax.length == 0) {
+				self.updateResults();
+			} else {
+				touchCaller.touch(null);
+			}
+		};
+		var updateCaller = this.updateCaller;
 
 		//------------------------------
 		// Input events
@@ -108,9 +120,9 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 			if (ev.keyCode == 13 /* enter key */) {
 			} else if (ev.keyCode == 40 /* down key */ || ev.keyCode == 38 /* up key */) {
 			} else {
-				updateCaller.touch(self.getTerm());
+				updateCaller();
 			}
-		}).on('change', function() { updateCaller.touch(self.getTerm()); });
+		}).on('change', function() { updateCaller(); });
 
 		// Stop bubbling so it doesnt reach the document and close itself
 		this.termInput.on('click', function(ev) { ev.stopPropagation(); });
@@ -176,10 +188,13 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 * Reset the box back to empty
 	 */
 	reset: function() {
-		if (this.runningAjax) {
-			this.runningAjax.abort();
-			this.runningAjax = null;
+		if (this.runningAjax.length) {
+			this.runningAjax.forEach(function(x) {
+				try {x.abort();} catch (e) {};
+			});
+			this.runningAjax.length = 0;
 		}
+		this.resultsBox.removeClass('loading');
 		this.termInput.val('');
 		this.resultsList.empty();
 	},
@@ -194,7 +209,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 		var termH   = this.boundEl.outerHeight();
 
 		this.resultsBox.css({
-			top: termPos.top + termH - 1,
+			top: termPos.top + termH,
 			left: termPos.left,
 			width: termW
 		});
@@ -218,6 +233,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 
 		var url = this.el.data('search-url');
 		var term = this.getTerm();
+		var now = (new Date()).getTime();
 
 		var postData = [];
 		postData.push({
@@ -225,20 +241,29 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 			value: term
 		});
 
-		this.termInput.parent().addClass('loading');
-		this.runningAjax = $.ajax({
+		this.resultsBox.addClass('loading');
+		var ajax = $.ajax({
 			type: 'GET',
 			url: url,
 			data: postData,
 			dataType: 'json',
 			context: this,
-			complete: function() {
-				this.termInput.parent().removeClass('loading');
-				this.runningAjax = null;
+			error: function(xhr, textStatus, errorThrown) {
+				if (textStatus != 'abort') {
+					this.reduceRunningAjax(ajax);
+				}
+				if (this.runningAjax.length == 0) {
+					this.resultsBox.removeClass('loading');
+				}
 			},
 			success: function(data) {
+				this.reduceRunningAjax(ajax);
 				var currentPersonId = parseInt($('li.on', this.resultsList).data('person-id')) || 0;
 				this.resultsList.empty();
+
+				if (this.runningAjax.length == 0) {
+					this.resultsBox.removeClass('loading');
+				}
 
 				Array.each(data, function(user) {
 					var row = $(this.tplHtml);
@@ -275,10 +300,45 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 
 					this.resultsList.append(row);
 				}, this);
+
+				if (data.length) {
+					this.open();
+				}
+
+				this.lastUpdate = now;
 			}
 		});
+		this.runningAjax.push({ ajax: ajax, time: now });
 	},
 
+	reduceRunningAjax: function(ajax) {
+		var keepAjax   = [];
+		var self = this;
+		var cnt = 1;
+
+		this.runningAjax.forEach(function(x) {
+			if (ajax && x.ajax === ajax) {
+				// nothing, its done
+			} else if (x.time < self.lastUpdate) {
+				try { x.ajax.abort(); } catch (e) { }
+			} else {
+				keepAjax.push(x);
+			}
+		});
+
+		this.runningAjax.length = 0;
+
+		if (keepAjax.length) {
+			keepAjax = keepAjax.sort(function(a, b) { return b.time - a.time; });
+			keepAjax.forEach(function (x) {
+				if (cnt++ < 2) {
+					self.runningAjax.push(x);
+				} else {
+					try { x.ajax.abort(); } catch (e) { }
+				}
+			});
+		}
+	},
 
 	/**
 	 * Opens the results box
@@ -296,6 +356,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 */
 	close: function() {
 		if (this.resultsBox) {
+			this.reset();
 			this.resultsBox.hide();
 		}
 	},
@@ -306,6 +367,7 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 */
 	destroy: function() {
 		if (this._hasInitResultsBox) {
+			this.reset();
 			this.resultsBox.remove();
 		}
 
