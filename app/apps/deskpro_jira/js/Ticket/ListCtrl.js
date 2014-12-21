@@ -15,6 +15,37 @@ define([
     $scope.search_results = [];
     $scope.active_searches = 0;
 
+
+    $scope.$on('deskpro_app.ticket.new_reply', function($event, ticket, action){
+
+      if (!ticket.ticket_messages || !ticket.ticket_messages.length) return;
+      var msg = ticket.ticket_messages[ticket.ticket_messages.length - 1];
+
+      if ('send_comment' === action) {
+
+        issues.sendComment(msg.message);
+
+      } else if ('create_issue' === action) {
+
+        var fields = {
+          project: {id: $meta.default_project},
+          issuetype: {id: $meta.default_issuetype},
+          summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject,
+          duedate: '2015-02-02',
+          description: msg.message
+        };
+
+        issues.create({fields: fields}).then(
+          function () {
+          },
+          function (data) {
+            $scope.createIssueModal();
+          }
+        );
+
+      }
+    });
+
     $scope.$watch('issues.length', function(l) {
       if (!l || l < 1) {
         $tabScope.btnBadge = null;

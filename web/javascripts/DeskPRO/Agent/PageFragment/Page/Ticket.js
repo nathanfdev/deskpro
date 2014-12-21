@@ -1119,7 +1119,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 
 					DeskPRO_Window.showAlert('Your reply was saved but the status was not set to resolved because of form errors. You should correct these errors and then you may set the status to resolved.');
 					keepOpen = true;
-				}
+				} else if (DeskPRO_Window.$scope) {
+                    var trigger = false,
+                        action = null;
+                    for (var i = 0; i < formData.length; i++) {
+                        var data = formData[i];
+                        if ('options[do_trigger_jira_app]' === data.name) trigger = true;
+                        if ('options[jira_app_action]' === data.name) action = data.value;
+                    }
+
+                    if (trigger && action) {
+                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.new_reply', result, action);
+                    }
+                }
 
 				if (result.notified_agents && DeskPRO.Agent.Widget.AgentChatWin_Registry) {
 					Array.each(result.notified_agents, function(aid) {
