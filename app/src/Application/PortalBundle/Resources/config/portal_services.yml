@@ -17,6 +17,10 @@ services:
     class: Application\PortalBundle\Theme\ThemeResolver
     arguments: [@service_container, @theme_repository, @logger]
 
+  theme_view_factory:
+    class: Application\PortalBundle\Theme\ThemeViewFactory
+    arguments: [@brand_stack]
+
   theme_repository:
     class: Application\PortalBundle\Theme\ThemeRepository
     arguments: [@portal_cache.themes, @annotation_reader, @logger]
