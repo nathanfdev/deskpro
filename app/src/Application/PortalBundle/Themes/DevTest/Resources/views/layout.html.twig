@@ -2,33 +2,32 @@
 {% block body %}
 
     <div class="world">
-
         <section>
             <div class="column-full">
-                {{ page_top() }}
+                {{ page.page_top()|raw }}
             </div>
         </section>
 
         <section>
             <div class="column-full">
-                {{ page_search_box() }}
+                {{ page.page_search_box()|raw }}
             </div>
         </section>
 
         <section>
             <div class="column-full">
-                {{ page_tabs() }}
+                {{ page.page_tabs()|raw }}
             </div>
         </section>
 
         <div class="wrapper">
-            {{ flashes() }}
+            {{ page.flashes()|raw }}
             <div class="column-half-plus">
                 {% block page_content %}
                     <h1>this theme's proprietary tags will appear below here</h1>
-                    <h3>{{ hello_world() }}</h3>
-                    <h3>{{ hello_world({"name": "Christopher!"}) }}</h3>
-                    <h3>{{ hello_henry() }}</h3>
+                    <h3>{{ page.hello_world()|raw }}</h3>
+                    <h3>{{ page.hello_world({"name": "Christopher!"})|raw }}</h3>
+                    <h3>{{ page.hello_henry()|raw }}</h3>
                     <section>
                         <div class="column-full">
                             {% block inner_content %}
@@ -39,7 +38,7 @@
             </div>
 
             <aside class="sidebar">
-                {{ sidebar() }}
+                {{ page.sidebar()|raw }}
             </aside>
         </div>
 

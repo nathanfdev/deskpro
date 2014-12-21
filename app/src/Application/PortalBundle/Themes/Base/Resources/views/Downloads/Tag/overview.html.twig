@@ -7,7 +7,7 @@
                 <hr>
             </header>
 
-            {{ downloads_files_simple({category: category.id}) }}
+            {{ page.downloads_files_simple({category: category.id})|raw }}
         </article>
     </div>
 {% endfor %}

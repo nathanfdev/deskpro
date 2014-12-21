@@ -4,7 +4,7 @@
 {# TODO #}
 
 {% block inner_content %}
-    {{ news_breadcrumbs({ category: category }) }}
+    {{ page.news_breadcrumbs({ category: category })|raw }}
 
     <article class="news kb-article">
         <header>

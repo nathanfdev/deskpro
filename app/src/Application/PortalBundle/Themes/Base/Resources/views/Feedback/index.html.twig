@@ -1,6 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ feedback_breadcrumbs() }}
-    {{ feedback({ page: page, count: count, show_pagination: show_pagination }) }}
+    {{ page.feedback_breadcrumbs()|raw }}
+    {{ page.feedback({ page: pg, count: count, show_pagination: show_pagination })|raw }}
 {% endblock inner_content %}

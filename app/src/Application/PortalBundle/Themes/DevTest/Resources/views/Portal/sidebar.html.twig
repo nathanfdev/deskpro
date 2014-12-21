@@ -1,48 +1,48 @@
 <div class="row">
     {% if is_granted('ROLE_USER') %}
-        {{ user_sidebar() }}
+        {{ page.user_sidebar()|raw }}
     {% else %}
-        {{ login_sidebar() }}
+        {{ page.login_sidebar()|raw }}
     {% endif %}
 </div>
 
 <div class="row">
-    {{ get_in_touch() }}
+    {{ page.get_in_touch()|raw }}
 </div>
 
 <div class="row">
     <h1>KB Articles</h1>
-    {{ knowledgebase_articles_small({category: 2}) }}
+    {{ page.knowledgebase_articles_small({category: 2})|raw }}
     <hr/>
 </div>
 
 <div class="row">
     <h1>KB Cats</h1>
-    {{ knowledgebase_list() }}
+    {{ page.knowledgebase_list()|raw }}
     <hr/>
 </div>
 
 <div class="row">
     <h1>News Cats</h1>
-    {{ news_posts_list() }}
+    {{ page.news_posts_list()|raw }}
     <hr/>
 </div>
 
 <div class="row">
     <h1>Download Cats</h1>
-    {{ downloads_list() }}
+    {{ page.downloads_list()|raw }}
     <hr/>
 </div>
 
 <div class="row">
     <h1>News by Date</h1>
-    {{ news_date_list() }}
+    {{ page.news_date_list()|raw }}
 </div>
 
 <div class="row">
     <h1>Satisfaction</h1>
-    {{ statisfaction_stats_list() }}
+    {{ page.statisfaction_stats_list()|raw }}
     <hr/>
 </div>
 
-{{ agents_online_list() }}
+{{ page.agents_online_list()|raw }}

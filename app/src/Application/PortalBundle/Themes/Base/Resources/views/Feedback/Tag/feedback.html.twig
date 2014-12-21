@@ -7,8 +7,9 @@
         </p>
     </header>
 
+
     {% include 'Theme:Feedback:controls.html.twig' %}
 
-    {{ feedback_items({ count: count, page: page }) }}
+    {{ page.feedback_items({ count: count, page: pg })|raw }}
 </div>
-{{ feedback_pager({ count: count, page: page, show_pagination: show_pagination }) }}
+{{ page.feedback_pager({ count: count, page: pg, show_pagination: show_pagination })|raw }}

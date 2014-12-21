@@ -2,11 +2,11 @@
 {% import 'Theme:News:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-    {{ news_breadcrumbs({ category: category }) }}
-    {{ news_list({ category: category }) }}
+    {{ page.news_breadcrumbs({ category: category })|raw }}
+    {{ page.news_list({ category: category })|raw }}
 
     <h1>{{ category.realTitle }}</h1>
 
-    {{ news_posts_pretty({category: category, page: page, count: count, show_category_link: false}) }}
-    {{ news_pager({category: category, show_pagination: show_pagination, page: page, count: count}) }}
+    {{ page.news_posts_pretty({category: category, page: pg, count: count, show_category_link: false})|raw }}
+    {{ page.news_pager({category: category, show_pagination: show_pagination, page: pg, count: count})|raw }}
 {% endblock inner_content %}

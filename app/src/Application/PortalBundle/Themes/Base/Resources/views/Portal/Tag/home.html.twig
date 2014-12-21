@@ -2,34 +2,34 @@
     <div class="column-full">
         <article class="news front-page-news">
             <div class="large-title clearfix"><h1>News</h1></div>
-            {{ news_posts_pretty({ count: 2 }) }}
+            {{ page.news_posts_pretty({ count: 2 })|raw }}
         </article>
     </div>
 </section>
 
 <section>
-    {{ knowledgebase({ articles_options: { count: 5 }}) }}
+    {{ page.knowledgebase({ articles_options: { count: 5 }})|raw }}
 </section>
 
 <section>
     <div class="column-third">
         <article class="panel-tiny front-page-downloads">
             <div class="large-title clearfix"><h1>Knowledgebase</h1></div>
-            {{ news_posts_list({ count: 3 }) }}
+            {{ page.news_posts_list({ count: 3 })|raw }}
         </article>
     </div>
 
     <div class="column-third">
         <article class="panel-tiny front-page-downloads">
             <div class="large-title clearfix"><h1>Feedback</h1></div>
-            {{ feedback_items_list({ count: 3 }) }}
+            {{ page.feedback_items_list({ count: 3 })|raw }}
         </article>
     </div>
 
     <div class="column-third omega">
         <article class="panel-tiny front-page-downloads">
             <div class="large-title clearfix"><h1>Downloads</h1></div>
-            {{ downloads_files_list({ count: 3 }) }}
+            {{ page.downloads_files_list({ count: 3 })|raw }}
         </article>
     </div>
 </section>
