@@ -9,7 +9,7 @@
                     <hr>
                 </header>
 
-                {{ page.knowledgebase_articles_forcat({ category: category.id }|merge(articles_options))|raw }}
+                {{ page.knowledgebase_articles_forcat({ category: category })|raw }}
             </article>
         </div>
     {% endfor %}

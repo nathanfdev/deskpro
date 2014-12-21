@@ -1,7 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ page.feedback_breadcrumbs({ item: item} )|raw }}
+    {{ page.feedback_breadcrumbs()|raw }}
     <h1>{{ item.title }}</h1>
     <pre>
         num_comments: {{ item.num_comments }}

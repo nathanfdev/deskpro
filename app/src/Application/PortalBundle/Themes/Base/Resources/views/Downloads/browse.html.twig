@@ -1,8 +1,8 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ page.downloads_breadcrumbs({ category: category })|raw }}
-    {{ page.downloads_list({category: category})|raw }}
-    {{ page.downloads_files_items({category: category, page: pg, count: count})|raw }}
-    {{ page.downloads_pager({category: category, show_pagination: show_pagination, page: pg, count: count})|raw }}
+    {{ page.downloads_breadcrumbs()|raw }}
+    {{ page.downloads_list()|raw }}
+    {{ page.downloads_files_items()|raw }}
+    {{ page.downloads_pager()|raw }}
 {% endblock inner_content %}

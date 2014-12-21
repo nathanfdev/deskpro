@@ -1,8 +1,8 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ page.knowledgebase_breadcrumbs({ category: category })|raw }}
-    {{ page.knowledgebase({category: category})|raw }}
-    {{ page.knowledgebase_articles_simple({category: category, page: pg, count: count})|raw }}
-    {{ page.knowledgebase_pager({category: category, page: pg, count: count})|raw }}
+    {{ page.knowledgebase_breadcrumbs()|raw }}
+    {{ page.knowledgebase()|raw }}
+    {{ page.knowledgebase_articles_simple()|raw }}
+    {{ page.knowledgebase_pager()|raw }}
 {% endblock inner_content %}

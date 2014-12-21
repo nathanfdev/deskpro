@@ -2,9 +2,9 @@
 {% import 'Theme:News:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-    {{ page.news_breadcrumbs({ category: null })|raw }}
+    {{ page.news_breadcrumbs()|raw }}
     <h1>News Phrase</h1>
 
-    {{ page.news_posts_pretty({ show_category_link: false, page: pg, count: count })|raw }}
-    {{ page.news_pager({ page: pg, count: count })|raw }}
+    {{ page.news_posts_pretty({ show_category_link: false })|raw }}
+    {{ page.news_pager()|raw }}
 {% endblock inner_content %}
