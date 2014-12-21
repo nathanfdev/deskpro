@@ -190,7 +190,7 @@ class ThemeResolver
 
     public function processTag(ThemeInterface $theme, $tag_name, array $arguments)
     {
-        $tag = $this->resolveTag($theme, $tag_name);
+        $tag = $theme->resolveTag($tag_name);
 
         if (!$tag) {
             throw new \InvalidArgumentException("Could not resolve tag: $tag_name");
@@ -225,23 +225,5 @@ class ThemeResolver
         $tag_request->setOptionsResolver(new OptionsResolver());
 
         return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();
-    }
-
-    /**
-     * @param  ThemeInterface $theme
-     * @param                 $tag_name
-     * @return Tag|null       will return null if tag doesn't exist for this theme or its parent heirarchy
-     */
-    public function resolveTag(ThemeInterface $theme, $tag_name)
-    {
-        if ($tag = $theme->getTag($tag_name)) {
-            return $tag;
-        }
-
-        if ($parent = $theme->getParent()) {
-            return $this->resolveTag($parent, $tag_name);
-        }
-
-        return null;
     }
 }

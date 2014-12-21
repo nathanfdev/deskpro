@@ -86,6 +86,23 @@ abstract class AbstractTheme implements ThemeInterface, \Serializable
         return isset($this->tags[$tag_name]) ? $this->tags[$tag_name] : null;
     }
 
+    /**
+     * @param           $tag_name
+     * @return Tag|null will return null if tag doesn't exist for this theme or its parent heirarchy
+     */
+    public function resolveTag($tag_name)
+    {
+        if ($tag = $this->getTag($tag_name)) {
+            return $tag;
+        }
+
+        if ($parent = $this->getParent()) {
+            return $parent->resolveTag($tag_name);
+        }
+
+        return null;
+    }
+
 
     public function getTemplateMap()
     {
