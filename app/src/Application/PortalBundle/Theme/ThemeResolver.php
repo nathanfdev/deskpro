@@ -204,7 +204,7 @@ class ThemeResolver
         }
 
         $current_request = $this->container->get('request_stack')->getCurrentRequest();
-        $query       = array('tag_options' => array_merge($tag->getParams(), $arguments));
+        $query       = array('tag_options' => array_merge($tag->getDefaultOptions(), $arguments));
 
         // construct and return the proper ESI tag content
         if ($tag->isEsi()) {

@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Theme;
 
 use Application\PortalBundle\Annotation\Tag as TagAnnotation;
+use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Themes\Base\BaseTheme;
 use Application\PortalBundle\Themes\DevTest\DevTestTheme;
 use Application\PortalBundle\Themes\Sidebar\SidebarTheme;
@@ -44,6 +45,8 @@ use Application\PortalBundle\Themes\TabBar\TabBarTheme;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Config\ConfigCache;
+use Symfony\Component\OptionsResolver\OptionsResolver;
+use Symfony\Component\Security\Core\Util\ClassUtils;
 
 /**
  * A reporistory of themes.
@@ -194,7 +197,9 @@ class ThemeRepository
                             $method_name = str_replace('Action', '', $method->getName());
                             $callable = sprintf('%s:%s:%s', 'Theme', $class_name, $method_name);
 
-                            $tag = new Tag($name, $callable, $default_options, $esi);
+                            $defined_options = $this->findTagOptions($refl->getName(), $method->getName());
+
+                            $tag = new Tag($name, $callable, $defined_options, $default_options, $esi);
                             $tags[$tag->getName()] = $tag;
                         }
                     }
@@ -204,6 +209,40 @@ class ThemeRepository
         }
 
         $theme->setTags($tags);
+    }
+
+    private function findTagOptions($controller, $method)
+    {
+        $object = new \ReflectionClass($controller);
+        $method = $object->getMethod($method);
+
+        $annotations = $this->reader->getMethodAnnotations($method);
+
+        $temp_options_resolver = new OptionsResolver();
+
+        foreach ($annotations as $annotation) {
+            if ($annotation instanceof TagOptions) {
+                if (count($annotation->defaults)) {
+                    $temp_options_resolver->setDefaults($annotation->defaults);
+                }
+
+                if (count($annotation->required)) {
+                    $temp_options_resolver->setRequired($annotation->required);
+                }
+
+                if (count($annotation->allowed_types)) {
+                    $temp_options_resolver->setAllowedTypes($annotation->allowed_types);
+                }
+
+                if (count($annotation->allowed_values)) {
+                    $temp_options_resolver->setAllowedValues($annotation->allowed_values);
+                }
+
+                break; // we only care about finding one TagOptions here
+            }
+        }
+
+        return $temp_options_resolver->getDefinedOptions();
     }
 
     /**

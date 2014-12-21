@@ -42,35 +42,47 @@ class Tag implements \Serializable
     protected $name;
     protected $controller_name;
     protected $esi;
-    protected $get_params;
-
+    protected $default_options;
+    protected $defined_options;
 
     /**
      * @param string $name            the tag's name
      * @param string $controller_name Theme:Portal:index
-     * @param array  $get_params      GET params to pass the controller - might change come tag specific params like template name
+     * @param array  $defined_options An indexed array of options names (if not in this list, an exception thrown)
+     * @param array  $default_options A map of pre-determined default values for some or all options (can override)
      * @param bool   $esi             true if this should be an edge side include
      */
-    public function __construct($name, $controller_name, $get_params = array(), $esi = false)
+    public function __construct($name, $controller_name, $defined_options = array(), $default_options = array(), $esi = false)
     {
-        $this->name            = $name;
+        $this->name = $name;
         $this->controller_name = $controller_name;
-        $this->esi             = $esi;
-        $this->get_params      = $get_params;
+        $this->defined_options = $defined_options;
+        $this->default_options = $default_options;
+        $this->esi = $esi;
     }
 
     public function serialize()
     {
-        return serialize(array('name'=>$this->name, 'controller_name'=>$this->controller_name,'esi'=>$this->esi,'get_params'=>$this->get_params));
+        return serialize(
+            array(
+                'name' => $this->name,
+                'controller_name' => $this->controller_name,
+                'defined_options' => $this->defined_options,
+                'default_options' => $this->default_options,
+                'esi' => $this->esi
+            )
+        );
     }
 
     public function unserialize($serialized)
     {
         $unserialized = unserialize($serialized);
+
         $this->name = $unserialized['name'];
         $this->controller_name = $unserialized['controller_name'];
+        $this->defined_options = $unserialized['defined_options'];
+        $this->default_options = $unserialized['default_options'];
         $this->esi = $unserialized['esi'];
-        $this->get_params = $unserialized['get_params'];
     }
 
     /**
@@ -90,11 +102,19 @@ class Tag implements \Serializable
     }
 
     /**
-     * @return array params sent as GET params on the request
+     * @return array a map of pre-determined default values for some or all options
      */
-    public function getParams()
+    public function getDefaultOptions()
     {
-        return $this->get_params;
+        return $this->default_options;
+    }
+
+    /**
+     * @return array an indexed array of defined option names
+     */
+    public function getDefinedOptions()
+    {
+        return $this->defined_options;
     }
 
     /**
