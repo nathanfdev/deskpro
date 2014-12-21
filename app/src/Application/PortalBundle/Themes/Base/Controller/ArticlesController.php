@@ -157,7 +157,7 @@ class ArticlesController extends AbstractController
      *          "articles_options": {}
      *      },
      *      allowed_values={
-     *          "style": {"expander", "compact", "home", "list"}
+     *          "style": {"expander", "compact", "home", "list", "comma_list"}
      *      }
      * )
      */

@@ -63,7 +63,7 @@ class NewsController extends AbstractController
      */
     public function browseAction(Request $request, NewsCategory $category)
     {
-        return $this->render(
+        return $this->renderThemeView(
             'Theme:News:browse.html.twig',
             array(
                 'category' => $category,
