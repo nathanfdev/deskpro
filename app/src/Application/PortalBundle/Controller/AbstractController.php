@@ -58,6 +58,46 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @param array $options
+     * @return \Application\PortalBundle\Theme\ThemeView
+     */
+    public function createThemeView(array $options = array())
+    {
+        return $this->getThemeViewFactory()->createView($options);
+    }
+
+    public function renderThemeView($template_name, array $options = array())
+    {
+        $page_vars = array(
+            'page' => $this->createThemeView($options)
+        );
+
+        // since "page" is a reserved template var, we need to rename it on the way in.
+        // Templates use "pg" instead of "page" for that option name.
+        $pg = false;
+        if (array_key_exists('page', $options)) {
+            $pg = $options['page'];
+        }
+
+        // TODO: this is probably where we can create view objects??
+        $page_vars = array_merge($options, $page_vars);
+
+        if ($pg) {
+            $page_vars['pg'] = $pg;
+        }
+
+        return $this->render($template_name, $page_vars);
+    }
+
+    /**
+     * @return \Application\PortalBundle\Theme\ThemeViewFactory
+     */
+    public function getThemeViewFactory()
+    {
+        return $this->get('theme_view_factory');
+    }
+
+    /**
      * @return \Application\DeskPRO\Brand\BrandContainer
      */
     public function getBrandContainer()
