@@ -52,48 +52,6 @@ use Application\PortalBundle\Annotation\Tag;
 class ArticlesController extends AbstractController
 {
     /**
-     * @Security("is_granted('USE_ARTICLES')")
-     */
-    public function indexAction(Request $request)
-    {
-        return $this->renderThemeView(
-            'Theme:Articles:index.html.twig'
-        );
-    }
-
-
-    /**
-     * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES')")
-     */
-    public function browseAction(Request $request, ArticleCategory $category)
-    {
-        return $this->renderThemeView(
-            'Theme:Articles:browse.html.twig',
-            array(
-                'category' => $category,
-                'page' => $request->get('page', 1),
-                'count' => 2,
-                'show_pagination' => true
-            )
-        );
-    }
-
-    /**
-     * @ParamConverter(name="article", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES')")
-     */
-    public function viewAction(Request $request, Article $article)
-    {
-        return $this->renderThemeView(
-            'Theme:Articles:view.html.twig',
-            array(
-                'article' => $article
-            )
-        );
-    }
-
-    /**
      * @Tag(name="knowledgebase_pager")
      *
      * @TagOptions(
@@ -217,23 +175,5 @@ class ArticlesController extends AbstractController
     protected function getArticlesDataService()
     {
         return $this->get('data.articles');
-    }
-
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\Article
-     */
-    protected function getArticlesRepo()
-    {
-        return $this->getDoctrine()->getRepository('DeskPRO:Article');
-    }
-
-
-    /**
-     * @return \Application\DeskPRO\EntityRepository\ArticleCategory
-     */
-    protected function getArticleCategoryRepo()
-    {
-        return $this->getDoctrine()->getRepository('DeskPRO:ArticleCategory');
     }
 }

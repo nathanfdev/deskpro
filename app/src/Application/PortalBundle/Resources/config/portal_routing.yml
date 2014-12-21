@@ -1,14 +1,7 @@
-# Main
-portal_index:
-    path: /
-    defaults:
-      _controller: Theme:Portal:index
-
-# Login and Auth
-portal_login:
-    path: /login
-    defaults:
-        _controller: Theme:Portal:login
+# Annotations
+portal:
+    resource: "@PortalBundle/Controller"
+    type:     annotation
 
 # The following are caught by our security system, and therefore do not need to have default controllers set on them
 portal_logout:
@@ -26,98 +19,32 @@ portal_login_callback:
 portal_login_usersource_sso:
     path: /login/usersource-sso/{usersource_id}
 
-# Knowledgebase
-portal_kb:
-    path: /kb
-    defaults:
-      _controller: Theme:Articles:index
-portal_kb_browse:
-    path: /kb/{slug}
-    defaults:
-      _controller: Theme:Articles:browse
-portal_kb_view:
-    path: /kb/posts/{slug}
-    defaults:
-      _controller: Theme:Articles:view
 
-# Downloads
-portal_downloads:
-    path: /downloads
-    defaults:
-      _controller: Theme:Downloads:index
-portal_downloads_browse:
-    path: /downloads/{slug}
-    defaults:
-      _controller: Theme:Downloads:browse
-portal_downloads_view:
-    path: /downloads/files/{slug}
-    defaults:
-      _controller: Theme:Downloads:view
-portal_downloads_download:
-    path: /downloads/files/{slug}/download
-    defaults:
-      _controller: Theme:Downloads:download
-
-# News
-portal_news:
-    path: /news
-    defaults:
-      _controller: Theme:News:index
-portal_news_browse:
-    path: /news/{slug}
-    defaults:
-      _controller: Theme:News:browse
-portal_news_view:
-    path: /news/posts/{slug}
-    defaults:
-      _controller: Theme:News:view
-
-# Feedback
-portal_feedback:
-    path: /feedback
-    defaults:
-      _controller: Theme:Feedback:index
-portal_feedback_view:
-    path: /feedback/view/{slug}
-    defaults:
-      _controller: Theme:Feedback:view
-
-# Search
-portal_search:
-  path: /search
-  defaults:
-    _controller: Theme:Search:index
-
-# New Ticket
-portal_new_ticket:
-    path: /new-ticket
-    defaults:
-      _controller: Theme:NewTicket:newTicket
 
 # Tickets
 portal_tickets:
     path: /tickets
     defaults:
-      _controller: Theme:Tickets:index
+      _controller: PortalBundle:Tickets:index
 portal_tickets_view:
     path: /tickets/view/{id}
     defaults:
-      _controller: Theme:Tickets:view
+      _controller: PortalBundle:Tickets:view
 portal_tickets_edit:
     path: /tickets/{id}
     defaults:
-      _controller: Theme:Tickets:edit
+      _controller: PortalBundle:Tickets:edit
 
 # User Account / Profile / Login / Registration
 portal_user_profile:
     path: /profile
     defaults:
-      _controller: Theme:Profile:edit
+      _controller: PortalBundle:Profile:edit
 
 portal_user_registration:
     path: /register
     defaults:
-      _controller: Theme:Profile:register
+      _controller: PortalBundle:Profile:register
 
 
 # DEV

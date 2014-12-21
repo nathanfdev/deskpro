@@ -35,62 +35,14 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
-use Application\DeskPRO\Entity\Download;
-use Application\DeskPRO\Entity\DownloadCategory;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
 class DownloadsController extends AbstractController
 {
-    public function indexAction(Request $request)
-    {
-        return $this->renderThemeView('Theme:Downloads:index.html.twig');
-    }
-
-    /**
-     * @ParamConverter(name="category", converter="deskpro_slug")
-     */
-    public function browseAction(Request $request, DownloadCategory $category)
-    {
-        return $this->renderThemeView(
-            'Theme:Downloads:browse.html.twig',
-            array(
-                'category' => $category,
-                'page' => $request->query->get('page', 1),
-                'count' => 2,
-                'show_pagination' => true
-            )
-        );
-    }
-
-
-    /**
-     * @ParamConverter(name="download", converter="deskpro_slug")
-     */
-    public function viewAction(Request $request, Download $download)
-    {
-        return $this->renderThemeView(
-            'Theme:Downloads:view.html.twig',
-            array(
-                'download' => $download
-            )
-        );
-    }
-
-
-    /**
-     * @ParamConverter(name="download", converter="deskpro_slug")
-     */
-    public function downloadAction(Request $request, Download $download)
-    {
-        return new Response('downlading file...');
-    }
-
     /**
      * @Tag(name="downloads_pager")
      *

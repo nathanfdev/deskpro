@@ -32,13 +32,14 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\Themes\Base\Controller;
+namespace Application\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Person;
 use Application\PersonBundle\Person\Context\CreatePersonContext;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class ProfileController extends AbstractController
 {

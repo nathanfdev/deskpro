@@ -45,22 +45,6 @@ use Application\PortalBundle\Annotation\TagOptions;
 
 class PortalController extends AbstractController
 {
-    public function indexAction(Request $request)
-    {
-        return $this->renderThemeView('Theme:Portal:index.html.twig');
-    }
-
-    public function loginAction(Request $request)
-    {
-        return $this->renderThemeView(
-            'Theme:Portal:login.html.twig',
-            array(
-                'auth_manager' => $this->get('dp_authentication_manager.user'),
-                'login_error' => $request->get('retry') == 'auth'
-            )
-        );
-    }
-
     /**
      * @Tag(name="home")
      */

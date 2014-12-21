@@ -32,14 +32,14 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\Themes\Base\Controller;
+namespace Application\PortalBundle\Controller;
 
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\PortalBundle\Controller\AbstractController;
 use Doctrine\Common\Collections\ArrayCollection;
-use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
 
 class TicketsController extends AbstractController
 {

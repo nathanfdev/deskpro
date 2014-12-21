@@ -46,49 +46,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class NewsController extends AbstractController
 {
-    public function indexAction(Request $request)
-    {
-        return $this->renderThemeView(
-            'Theme:News:index.html.twig',
-            array(
-                'page' => $request->query->get('page', 1),
-                'count' => 2
-            )
-        );
-    }
-
-
-    /**
-     * @ParamConverter(name="category", converter="deskpro_slug")
-     */
-    public function browseAction(Request $request, NewsCategory $category)
-    {
-        return $this->renderThemeView(
-            'Theme:News:browse.html.twig',
-            array(
-                'category' => $category,
-                'page' => $request->query->get('page', 1),
-                'count' => 2,
-                'show_pagination' => true
-            )
-        );
-    }
-
-    /**
-     * @ParamConverter(name="news", converter="deskpro_slug")
-     */
-    public function viewAction(Request $request, News $news)
-    {
-        return $this->renderThemeView(
-            'Theme:News:view.html.twig',
-            array(
-                'category' => $news->category,
-                'post' => $news
-            )
-        );
-    }
-
-
     /**
      * @Tag(name="news")
      * @Tag(name="news_list", default_options={"style":"list"})

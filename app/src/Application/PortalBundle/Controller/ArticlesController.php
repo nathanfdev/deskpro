@@ -32,15 +32,67 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\Themes\Base\Controller;
+namespace Application\PortalBundle\Controller;
 
 
-use Application\PortalBundle\Controller\AbstractController;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleCategory;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Request;
 
-class SearchController extends AbstractController
+class ArticlesController extends AbstractController
 {
-    public function indexAction()
+    /**
+     * @Route("/kb", name="portal_kb")
+     * @Security("is_granted('USE_ARTICLES')")
+     */
+    public function indexAction(Request $request)
     {
-        return $this->renderThemeView('Theme:Search:index.html.twig');
+        return $this->renderThemeView(
+            'Theme:Articles:index.html.twig'
+        );
+    }
+
+    /**
+     * @Route("/kb/{slug}", name="portal_kb_browse")
+     * @ParamConverter(name="category", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES')")
+     */
+    public function browseAction(Request $request, ArticleCategory $category)
+    {
+        return $this->renderThemeView(
+            'Theme:Articles:browse.html.twig',
+            array(
+                'category' => $category,
+                'page' => $request->get('page', 1),
+                'count' => 2,
+                'show_pagination' => true
+            )
+        );
+    }
+
+    /**
+     * @Route("/kb/posts/{slug}", name="portal_kb_view")
+     * @ParamConverter(name="article", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES')")
+     */
+    public function viewAction(Request $request, Article $article)
+    {
+        return $this->renderThemeView(
+            'Theme:Articles:view.html.twig',
+            array(
+                'article' => $article
+            )
+        );
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\ArticlesDataService
+     */
+    protected function getArticlesDataService()
+    {
+        return $this->get('data.articles');
     }
 }

@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\Themes\Base\Controller;
+namespace Application\PortalBundle\Controller;
 
 
 use Application\DeskPRO\Entity\Person;
@@ -43,10 +43,12 @@ use Application\DeskPRO\Tickets\DuplicateTicketException;
 use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class NewTicketController extends AbstractController
 {
     /**
+     * @Route("/new-ticket", name="portal_new_ticket")
      * @Security("is_granted('USE_TICKETS')")
      */
     public function newTicketAction(Request $request)

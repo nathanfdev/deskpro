@@ -47,32 +47,6 @@ use Symfony\Component\HttpFoundation\Request;
 
 class FeedbackController extends AbstractController
 {
-    public function indexAction(Request $request)
-    {
-        return $this->renderThemeView(
-            'Theme:Feedback:index.html.twig',
-            array(
-                'page' => $request->query->get('page', 1),
-                'count' => 2,
-                'show_pagination' => true
-            )
-        );
-    }
-
-
-    /**
-     * @ParamConverter(name="item", converter="deskpro_slug")
-     */
-    public function viewAction(Request $request, Feedback $item)
-    {
-        return $this->renderThemeView(
-            'Theme:Feedback:view.html.twig',
-            array(
-                'item' => $item
-            )
-        );
-    }
-
     /**
      * @Tag(name="feedback")
      *
