@@ -56,9 +56,12 @@ class TicketsController extends AbstractController
                 )
             );
 
-        return $this->render('Theme:Tickets:index.html.twig', array(
-            'tickets' => $tickets
-        ));
+        return $this->renderThemeView(
+            'Theme:Tickets:index.html.twig',
+            array(
+                'tickets' => $tickets
+            )
+        );
     }
 
     /**
@@ -68,18 +71,17 @@ class TicketsController extends AbstractController
     {
         $form_data = array(
             'ticket_message' => $message = new TicketMessage(),
-            'attachments'    => new ArrayCollection()
+            'attachments' => new ArrayCollection()
         );
 
         $form = $this->createForm('ticket_reply', $form_data, array(
-            'ticket'         => $ticket,
+            'ticket' => $ticket,
             'ticket_message' => $message,
-            'person'         => $this->getUser(),
-            'settings'       => $this->getBrandContainer()->getSettings()
+            'person' => $this->getUser(),
+            'settings' => $this->getBrandContainer()->getSettings()
         ));
 
         $form->handleRequest($request);
-
 
 
         if ($form->isValid()) {
@@ -95,10 +97,13 @@ class TicketsController extends AbstractController
             }
         }
 
-        return $this->render('Theme:Tickets:view.html.twig', array(
-            'ticket' => $ticket,
-            'form'   => $form->createView()
-        ));
+        return $this->renderThemeView(
+            'Theme:Tickets:view.html.twig',
+            array(
+                'ticket' => $ticket,
+                'form' => $form->createView()
+            )
+        );
     }
 
     /**
@@ -107,9 +112,9 @@ class TicketsController extends AbstractController
     public function editAction(Ticket $ticket, Request $request)
     {
         $form = $this->createForm('ticket', $ticket, array(
-            'person'            => $this->getUser(),
+            'person' => $this->getUser(),
             'ticket_visibility' => 'edit',
-            'settings'          => $this->getBrandContainer()->getSettings()
+            'settings' => $this->getBrandContainer()->getSettings()
         ));
 
         $form->handleRequest($request);
@@ -124,9 +129,12 @@ class TicketsController extends AbstractController
             return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
         }
 
-        return $this->render('Theme:Tickets:edit.html.twig', array(
+        return $this->renderThemeView(
+            'Theme:Tickets:edit.html.twig',
+            array(
                 'ticket' => $ticket,
-                'form'   => $form->createView())
+                'form' => $form->createView()
+            )
         );
     }
 

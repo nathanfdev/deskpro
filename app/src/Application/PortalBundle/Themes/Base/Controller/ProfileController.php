@@ -60,9 +60,12 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_login');
         }
 
-        return $this->render('Theme:Profile:register.html.twig', array(
-            'form' => $form->createView()
-        ));
+        return $this->renderThemeView(
+            'Theme:Profile:register.html.twig',
+            array(
+                'form' => $form->createView()
+            )
+        );
     }
 
     /**
@@ -130,11 +133,13 @@ class ProfileController extends AbstractController
             return $this->redirectToRoute('portal_user_profile');
         }
 
-        return $this->render('Theme:Profile:edit.html.twig', array(
-            'profile_form' => $profile_form->createView(),
-            'password_form' => $password_form->createView(),
-            'emails_form' => $emails_form->createView()
-        ));
+        return $this->renderThemeView(
+            'Theme:Profile:edit.html.twig', array(
+                'profile_form' => $profile_form->createView(),
+                'password_form' => $password_form->createView(),
+                'emails_form' => $emails_form->createView()
+            )
+        );
     }
 
     /**

@@ -41,6 +41,6 @@ class SearchController extends AbstractController
 {
     public function indexAction()
     {
-        return $this->render('Theme:Search:index.html.twig');
+        return $this->renderThemeView('Theme:Search:index.html.twig');
     }
 }

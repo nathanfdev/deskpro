@@ -49,11 +49,14 @@ class FeedbackController extends AbstractController
 {
     public function indexAction(Request $request)
     {
-        return $this->render('Theme:Feedback:index.html.twig', array(
-            'page' => $request->query->get('page', 1),
-            'count' => 2,
-            'show_pagination' => true
-        ));
+        return $this->renderThemeView(
+            'Theme:Feedback:index.html.twig',
+            array(
+                'page' => $request->query->get('page', 1),
+                'count' => 2,
+                'show_pagination' => true
+            )
+        );
     }
 
 
@@ -62,8 +65,9 @@ class FeedbackController extends AbstractController
      */
     public function viewAction(Request $request, Feedback $item)
     {
-        return $this->render(
-            'Theme:Feedback:view.html.twig', array(
+        return $this->renderThemeView(
+            'Theme:Feedback:view.html.twig',
+            array(
                 'item' => $item
             )
         );
@@ -82,7 +86,7 @@ class FeedbackController extends AbstractController
      */
     public function feedbackAction(TagRequest $tag_request, array $options)
     {
-        return $this->render(
+        return $this->renderThemeView(
             'Theme:Feedback:Tag/feedback.html.twig',
             array(
                 'count' => $options['count'],
@@ -112,7 +116,7 @@ class FeedbackController extends AbstractController
     {
         $pager = $this->getFeedbackDataService()->getItemsPager($options['page'], $options['count']);
 
-        return $this->render(
+        return $this->renderThemeView(
             sprintf('Theme:Feedback:Tag/items_%s.html.twig', $options['style']),
             array(
                 'pager' => $pager
@@ -139,7 +143,9 @@ class FeedbackController extends AbstractController
 
         $pager = $this->getFeedbackDataService()->getItemsPager($options['page'], $options['count']);
 
-        return $this->render('Theme:Common:pager.html.twig', array(
+        return $this->renderThemeView(
+            'Theme:Common:pager.html.twig',
+            array(
                 'pager' => $pager
             )
         );
@@ -157,9 +163,12 @@ class FeedbackController extends AbstractController
     {
         $item = $this->getFeedbackDataService()->getItem($options['item']);
 
-        return $this->render('Theme:Feedback:Tag/breadcrumbs.html.twig', array(
-            'item' => $item
-        ));
+        return $this->renderThemeView(
+            'Theme:Feedback:Tag/breadcrumbs.html.twig',
+            array(
+                'item' => $item
+            )
+        );
     }
 
     /**

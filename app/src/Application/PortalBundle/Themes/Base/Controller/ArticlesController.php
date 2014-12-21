@@ -56,7 +56,9 @@ class ArticlesController extends AbstractController
      */
     public function indexAction(Request $request)
     {
-        return $this->render('Theme:Articles:index.html.twig');
+        return $this->renderThemeView(
+            'Theme:Articles:index.html.twig'
+        );
     }
 
 
@@ -66,7 +68,9 @@ class ArticlesController extends AbstractController
      */
     public function browseAction(Request $request, ArticleCategory $category)
     {
-        return $this->render('Theme:Articles:browse.html.twig', array(
+        return $this->renderThemeView(
+            'Theme:Articles:browse.html.twig',
+            array(
                 'category' => $category,
                 'page' => $request->get('page', 1),
                 'count' => 2,
@@ -81,9 +85,12 @@ class ArticlesController extends AbstractController
      */
     public function viewAction(Request $request, Article $article)
     {
-        return $this->render('Theme:Articles:view.html.twig', array(
-            'article' => $article
-        ));
+        return $this->renderThemeView(
+            'Theme:Articles:view.html.twig',
+            array(
+                'article' => $article
+            )
+        );
     }
 
     /**
@@ -110,7 +117,8 @@ class ArticlesController extends AbstractController
         $category = $this->getArticlesDataService()->getCategory($options['category']);
         $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
 
-        return $this->render('Theme:Common:pager.html.twig', array(
+        return $this->renderThemeView(
+            'Theme:Common:pager.html.twig', array(
                 'pager' => $pager
             )
         );
@@ -128,9 +136,11 @@ class ArticlesController extends AbstractController
     {
         $category = $this->getArticlesDataService()->getCategory($options['category']);
 
-        return $this->render('Theme:Articles:Tag/breadcrumbs.html.twig', array(
-            'category' => $category
-        ));
+        return $this->renderThemeView(
+            'Theme:Articles:Tag/breadcrumbs.html.twig', array(
+                'category' => $category
+            )
+        );
     }
 
     /**
@@ -156,7 +166,7 @@ class ArticlesController extends AbstractController
         $category = $options['category'];
         $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
 
-        return $this->render(
+        return $this->renderThemeView(
             sprintf('Theme:Articles:Tag/%s.html.twig', $options['style']),
             array(
                 'category' => $category,
@@ -191,7 +201,7 @@ class ArticlesController extends AbstractController
         $category = $this->getArticlesDataService()->getCategory($options['category']);
         $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
 
-        return $this->render(
+        return $this->renderThemeView(
             sprintf('Theme:Articles:Tag/articles_%s.html.twig', $options['style']),
             array(
                 'pager' => $pager,

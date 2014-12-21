@@ -105,9 +105,11 @@ class NewTicketController extends AbstractController
             }
         }
 
-        return $this->render('Theme:NewTicket:new_ticket.html.twig', array(
-            'form' => $form->createView()
-        ));
+        return $this->renderThemeView(
+            'Theme:NewTicket:new_ticket.html.twig', array(
+                'form' => $form->createView()
+            )
+        );
     }
 
     /**

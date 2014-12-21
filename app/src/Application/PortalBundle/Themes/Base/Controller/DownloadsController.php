@@ -49,7 +49,7 @@ class DownloadsController extends AbstractController
 {
     public function indexAction(Request $request)
     {
-        return $this->render('Theme:Downloads:index.html.twig');
+        return $this->renderThemeView('Theme:Downloads:index.html.twig');
     }
 
     /**
@@ -57,7 +57,9 @@ class DownloadsController extends AbstractController
      */
     public function browseAction(Request $request, DownloadCategory $category)
     {
-        return $this->render('Theme:Downloads:browse.html.twig', array(
+        return $this->renderThemeView(
+            'Theme:Downloads:browse.html.twig',
+            array(
                 'category' => $category,
                 'page' => $request->query->get('page', 1),
                 'count' => 2,
@@ -72,7 +74,9 @@ class DownloadsController extends AbstractController
      */
     public function viewAction(Request $request, Download $download)
     {
-        return $this->render('Theme:Downloads:view.html.twig', array(
+        return $this->renderThemeView(
+            'Theme:Downloads:view.html.twig',
+            array(
                 'download' => $download
             )
         );
@@ -111,7 +115,9 @@ class DownloadsController extends AbstractController
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
         $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);
 
-        return $this->render('Theme:Common:pager.html.twig', array(
+        return $this->renderThemeView(
+            'Theme:Common:pager.html.twig',
+            array(
                 'pager' => $pager
             )
         );
@@ -129,9 +135,12 @@ class DownloadsController extends AbstractController
     {
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
 
-        return $this->render('Theme:Downloads:Tag/breadcrumbs.html.twig', array(
-            'category' => $category
-        ));
+        return $this->renderThemeView(
+            'Theme:Downloads:Tag/breadcrumbs.html.twig',
+            array(
+                'category' => $category
+            )
+        );
     }
 
     /**
@@ -156,7 +165,7 @@ class DownloadsController extends AbstractController
         $category = $options['category'];
         $category_children = $this->getDownloadsDataService()->getCategoryChildren($category);
 
-        return $this->render(
+        return $this->renderThemeView(
             sprintf('Theme:Downloads:Tag/%s.html.twig', $options['style']),
             array(
                 'category' => $category,
@@ -192,7 +201,7 @@ class DownloadsController extends AbstractController
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
         $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);
 
-        return $this->render(
+        return $this->renderThemeView(
             sprintf('Theme:Downloads:Tag/files_%s.html.twig', $options['style']),
             array(
                 'category' => $category,

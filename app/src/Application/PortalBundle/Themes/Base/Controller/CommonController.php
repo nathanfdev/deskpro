@@ -58,10 +58,13 @@ class CommonController extends AbstractController
      */
     public function pagerAction(TagRequest $request, array $options)
     {
-        return $this->render('Theme:Common:pager.html.twig', array(
-            'pager' => $options['pager'],
-            'show_pagination' => $options['show_pagination']
-        ));
+        return $this->renderThemeView(
+            'Theme:Common:pager.html.twig',
+            array(
+                'pager' => $options['pager'],
+                'show_pagination' => $options['show_pagination']
+            )
+        );
     }
 
     /**
@@ -69,7 +72,7 @@ class CommonController extends AbstractController
      */
     public function getInTouchAction(TagRequest $tag_request)
     {
-        return $this->render('Theme:Common:get_in_touch.html.twig');
+        return $this->renderThemeView('Theme:Common:get_in_touch.html.twig');
     }
 
     /**
@@ -77,7 +80,7 @@ class CommonController extends AbstractController
      */
     public function alertsAction(TagRequest $tag_request)
     {
-        return $this->render('Theme:Common:alerts.html.twig');
+        return $this->renderThemeView('Theme:Common:alerts.html.twig');
     }
 
     /**
@@ -91,8 +94,11 @@ class CommonController extends AbstractController
             $flashes = $session->getFlashBag()->all();
         }
 
-        return $this->render('Theme:Common:flashes.html.twig', array(
-            'flashes' => $flashes
-        ));
+        return $this->renderThemeView(
+            'Theme:Common:flashes.html.twig',
+            array(
+                'flashes' => $flashes
+            )
+        );
     }
 }

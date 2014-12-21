@@ -45,7 +45,7 @@ class DevController extends AbstractController
 {
     public function devAction()
     {
-        return $this->render('Theme:Dev:dev.html.twig');
+        return $this->renderThemeView('Theme:Dev:dev.html.twig');
     }
 
     /**
@@ -59,6 +59,6 @@ class DevController extends AbstractController
      */
     public function renderAction(TagRequest $request, array $options)
     {
-        return $this->render($options['tpl']);
+        return $this->renderThemeView($options['tpl']);
     }
 }
