@@ -123,6 +123,7 @@ class PortalController extends AbstractController
      */
     public function loginSidebarAction(TagRequest $tag_request)
     {
+        //TODO: dont pass the auth manager into the template...
         return $this->render(
             'Theme:Portal:Tag/sidebar_login.html.twig',
             array(
