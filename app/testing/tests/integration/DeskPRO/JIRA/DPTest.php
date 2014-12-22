@@ -143,7 +143,7 @@ class DPTest extends \DpIntegrationTestCase
 
 
         // test webhooks
-        $handler = new WebhookHandler($this->helper->getSymfonyContainer());
+        $handler = new WebhookHandler($this->helper->getSymfonyContainer()->__value());
         foreach ($this->data['webhook'] as $data) {
             $data = json_decode(sprintf($data, $response['id']), 1);
             $this->assertArrayHasKey('webhookEvent', $data);
