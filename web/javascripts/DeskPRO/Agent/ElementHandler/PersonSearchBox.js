@@ -356,8 +356,14 @@ DeskPRO.Agent.ElementHandler.PersonSearchBox = new Orb.Class({
 	 */
 	close: function() {
 		if (this.resultsBox) {
-			this.reset();
+			this.resultsBox.removeClass('loading');
 			this.resultsBox.hide();
+		}
+		if (this.runningAjax.length) {
+			this.runningAjax.forEach(function(x) {
+				try {x.abort();} catch (e) {};
+			});
+			this.runningAjax.length = 0;
 		}
 	},
 
