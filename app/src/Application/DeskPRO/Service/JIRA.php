@@ -279,7 +279,8 @@ class JIRA
         }
 
         try {
-            return $this->searchIssues($query);
+            $meta = $this->getMeta();
+            return $this->getApi()->searchIssues($query, array_merge($meta->getAllFields(), $meta->getSystemFields()));
         } catch (\Exception $e) {
             return null;
         }
