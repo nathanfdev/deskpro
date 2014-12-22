@@ -362,4 +362,14 @@ class JIRA
             throw $e;
         }
     }
+
+    /**
+     * just a proxy for integration testing
+     * @param $id
+     * @param $json
+     */
+    public function updateIssueJson($id, $json)
+    {
+        return $this->getApi()->updateIssueJson($id, $json);
+    }
 } 

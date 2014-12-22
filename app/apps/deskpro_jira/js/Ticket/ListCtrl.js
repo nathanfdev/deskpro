@@ -45,6 +45,13 @@ define([
       }
     });
 
+    $scope.$on('deskpro_app.ticket.updated', function($event, ticket){
+      if (!issues.length) return;
+      if (ticket.subject) {
+
+      }
+    });
+
     $scope.$watch('issues.length', function(l) {
       if (!l || l < 1) {
         $tabScope.btnBadge = null;

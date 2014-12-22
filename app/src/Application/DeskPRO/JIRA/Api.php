@@ -154,4 +154,31 @@ class Api
 	{
 		return $this->call(self::API_BASE_PATH . '/issue', 'POST', array('content-type' => 'application/json'), $json);
 	}
+
+    /**
+     * @param $id
+     * @param array $data
+     * @return mixed
+     */
+    public function updateIssue($id, array $data)
+    {
+        return $this->put(sprintf('/issue/%d', $id), $data);
+    }
+
+    /**
+     * @param $id
+     * @param $json
+     * @throws ApiCoreException
+     * @throws ApiErrorsException
+     * @throws \Exception
+     */
+    public function updateIssueJson($id, $json)
+    {
+        return $this->call(
+            sprintf('%s/issue/%d', self::API_BASE_PATH, $id),
+            'POST',
+            array('content-type' => 'application/json'),
+            $json
+        );
+    }
 } 

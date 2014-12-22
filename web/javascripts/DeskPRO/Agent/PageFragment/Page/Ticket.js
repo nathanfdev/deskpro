@@ -3106,7 +3106,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/'+self.meta.ticket_id+'/ajax-save-subject.json',
 				type: 'POST',
-				data: postData
+				data: postData,
+                success: function(){
+                    if (DeskPRO_Window.$scope) {
+                        DeskPRO_Window.$scope.$root.$emit('deskpro_app', 'ticket.updated', {subject: setName});
+                    }
+                }
 			});
 
 			self.meta.title = setName;

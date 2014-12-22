@@ -82,6 +82,32 @@ class JiraController extends AbstractController
 		}
 	}
 
+    /**
+     * @param Request $request
+     * @param $issueId
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateIssueAction(Request $request, $issueId)
+    {
+        if (!$issue = $this->em->getRepository('DeskPRO:JiraIssue')->findOneBy(array('issue_id' => $issueId))) {
+            throw new NotFoundHttpException;
+        }
+
+        try {
+
+            $this->service()->updateIssueJson($issueId, $request->getContent());
+            return $this->createJsonResponse(true);
+
+        } catch (\Exception $e) {
+
+            if ($e instanceof ApiErrorsException) {
+                return $this->createJsonResponse(array('errors' => $e->errors), 400);
+            } else {
+                return $this->createJsonResponse(array('errors' => (array) $e->getMessage()), $e->getCode());
+            }
+        }
+    }
+
 	/**
 	 * @param $ticketId
 	 * @return \Symfony\Component\HttpFoundation\Response
