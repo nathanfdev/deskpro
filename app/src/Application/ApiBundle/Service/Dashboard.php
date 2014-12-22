@@ -85,6 +85,44 @@ class Dashboard
     ///
     /// REPORTS SECTION
     ///
+
+    /**
+     * @param $report
+     * @return array
+     */
+    public function getReportData($report)
+    {
+        $report = $this->getReport($report);
+        $widgets = array();
+        foreach($report->getWidgets() as $widget) {
+            $pos  = $widget->getPosition();
+            $size = $widget->getSize();
+            $widgets[] = array(
+                'id'    => $widget->getId(),
+                'name'  => $widget->getTitle(),
+                "row"   => $pos[0],
+                "col"   => $pos[1],
+                "sizeX" => $size[0],
+                "sizeY" => $size[1],
+                "type"  => "graph",
+                "data"  => array(),
+            );
+        }
+        $data = array(
+            'title'        => $report->getTitle(),
+            'id'           => $report->getId(),
+            'dashboard_id' => $report->getDashboard()->getId(),
+            'loaded'       => true,
+            'options'      => array(
+                'columns'  => $report->getColumns(),
+                "floating" => false,
+                "swapping" => false,
+            ),
+            'widgets'      => $widgets,
+        );
+        return $data;
+    }
+
     /**
      * @param $dashboard
      * @return array
@@ -96,20 +134,7 @@ class Dashboard
         $reports_data = array();
         foreach ($dashboard->getReports() as $report)
         {
-//            $widgets = array();
-//            foreach($report->getWidgets() as $widget) {
-//                $pos  = $widget->getPosition();
-//                $size = $widget->getSize();
-//                $widgets[] = array(
-//                    'id'    => $widget->getId(),
-//                    'name'  => $widget->getTitle(),
-//                    "row"   => $pos[0],
-//                    "col"   => $pos[1],
-//                    "sizeX" => $size[0],
-//                    "sizeY" => $size[1],
-//                    "type"  => "graph",
-//                );
-//            }
+
             $data = array(
                 'title'        => $report->getTitle(),
                 'id'           => $report->getId(),
@@ -120,7 +145,7 @@ class Dashboard
                     "floating" => false,
                     "swapping" => false,
                 ),
-                //                'widgets'  => $widgets,
+                'widgets'      => array()
             );
             $reports_data[] = $data;
         }
@@ -154,22 +179,7 @@ class Dashboard
         return $this->getReportData($report);
     }
 
-    /**
-     * @param $report
-     * @return array
-     */
-    public function getReportData($report)
-    {
-        $report = $this->getReport($report);
-        $data = array(
-            'title'        => $report->getTitle(),
-            'id'           => $report->getId(),
-            'dashboard_id' => $report->getDashboard()->getId(),
-            'loaded'       => false,
-            'widgets'      => $report->getWidgets(),
-        );
-        return $data;
-    }
+
 
     public function getLastSortOrder($dashboard) {
         $dashboard = $this->getDashboard($dashboard);
@@ -205,4 +215,18 @@ class Dashboard
         return $data;
     }
 
+    public function copyWidgetLinks(DashboardReportEntity $report, DashboardReportEntity $reportPrototype)
+    {
+        foreach($reportPrototype->getWidgets() as $widget_prototype) {
+            $widget = new DashboardWidgetEntity();
+            $widget
+                ->setTitle($widget_prototype->getTitle())
+                ->setPosition($widget_prototype->getPosition())
+                ->setSize($widget_prototype->getSize())
+                ->setReport($report)
+                ->setWidget($widget_prototype->getWidget());
+            $this->em->persist($widget);
+        }
+        $this->em->flush();
+    }
 }

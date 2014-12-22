@@ -41,7 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
 /**
- * ReportDashboardStat
+ * ReportDashboardWidget
  *
  * @property int             $id
  * @property string          $title
@@ -57,9 +57,14 @@ class ReportDashboardWidget extends DomainObject
 	protected $id = null;
 
     /**
-     * @var ReportBuilder it's a reference to ReportBuilder Entity that holds DPQL
+     * @var ReportDashboardReport
      */
     protected $report = null;
+
+    /**
+     * @var ReportBuilder it's a reference to ReportBuilder Entity that holds DPQL
+     */
+    protected $widget = null;
 
 	/**
 	 * @var string
@@ -144,7 +149,7 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return ReportBuilder
+     * @return ReportDashboardReport
      */
     public function getReport()
     {
@@ -152,11 +157,11 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @param ReportBuilder $report
+     * @param ReportDashboardReport $report
      *
      * @return $this
      */
-    public function setReport(ReportBuilder $report)
+    public function setReport(ReportDashboardReport $report)
     {
         $this->report = $report;
         return $this;
@@ -192,21 +197,21 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return ReportDashboard
+     * @return ReportBuilder
      */
-    public function getDashboard()
+    public function getWidget()
     {
-        return $this->dashboard;
+        return $this->widget;
     }
 
     /**
-     * @param ReportDashboard $dashboard
+     * @param ReportBuilder $report
      *
      * @return $this
      */
-    public function setDashboard(ReportDashboard $dashboard)
+    public function setWidget(ReportBuilder $report)
     {
-        $this->dashboard = $dashboard;
+        $this->widget = $report;
         return $this;
     }
 

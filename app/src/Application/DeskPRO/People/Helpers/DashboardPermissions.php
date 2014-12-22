@@ -67,8 +67,8 @@ class DashboardPermissions implements \Orb\Helper\ShortCallableInterface
             ->getRepository('DeskPRO:ReportDashboardPermission')
             ->findBy(
                 array(
-                    'dashboard_id'=>$dashboard->getId(),
-                    'person_id'=>$this->person->getId(),
+                    'dashboard'=>$dashboard->getId(),
+                    'person'=>$this->person->getId(),
                     'name' => Entity\ReportDashboardPermission::FULL,
                 )
             );
@@ -86,9 +86,8 @@ class DashboardPermissions implements \Orb\Helper\ShortCallableInterface
             ->getRepository('DeskPRO:ReportDashboardPermission')
             ->findBy(
                 array(
-                    'dashboard_id'=>$dashboard->getId(),
-                    'person_id'=>$this->person->getId(),
-                    'name' => array(Entity\ReportDashboardPermission::FULL, Entity\ReportDashboardPermission::VIEW)
+                    'dashboard'=>$dashboard->getId(),
+                    'person'=>$this->person->getId(),
                 )
             );
         if($permissions) {

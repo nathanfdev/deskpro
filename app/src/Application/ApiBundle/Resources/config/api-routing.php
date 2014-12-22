@@ -4829,7 +4829,7 @@ $collection->create('dashboard_delete', array(
 
 $collection->create('dashboard_widget_get    ', array(
     'path'         => '/dashboards/widgets/{id}',
-    'controller'   => 'ApiBundle:Dashboard:getWidget',
+    'controller'   => 'ApiBundle:DashboardWidget:getWidget',
     'requirements' => array('id' => '\\d+'),
     'defaults'     => array('action' => 'getWidget'),
     'methods'      => array('GET',),
@@ -4837,7 +4837,7 @@ $collection->create('dashboard_widget_get    ', array(
 
 $collection->create('dashboard_widget_save', array(
     'path'         => '/dashboards/widgets/{id}',
-    'controller'   => 'ApiBundle:Dashboard:saveWidget',
+    'controller'   => 'ApiBundle:DashboardWidget:saveWidget',
     'requirements' => array('id' => '\\d+'),
     'defaults'     => array('action' => 'saveWidget'),
     'methods'      => array('POST',),
@@ -4845,7 +4845,7 @@ $collection->create('dashboard_widget_save', array(
 
 $collection->create('dashboard_widget_create', array(
     'path'         => '/dashboards/{id}/widgets',
-    'controller'   => 'ApiBundle:Dashboard:addWidget',
+    'controller'   => 'ApiBundle:DashboardWidget:addWidget',
     'requirements' => array('id' => '\\d+'),
     'defaults'     => array('action' => 'addWidget'),
     'methods'      => array('POST',),
@@ -4853,7 +4853,7 @@ $collection->create('dashboard_widget_create', array(
 
 $collection->create('dashboard_widget_delete    ', array(
     'path'         => '/dashboards/widgets/{id}',
-    'controller'   => 'ApiBundle:Dashboard:deleteWidget',
+    'controller'   => 'ApiBundle:DashboardWidget:deleteWidget',
     'requirements' => array('id' => '\\d+'),
     'defaults'     => array('action' => 'deleteWidget'),
     'methods'      => array('DELETE',),
@@ -4869,6 +4869,15 @@ $collection->create('dashboards_reports_list', array(
     'defaults'     => array('action' => 'list'),
     'methods'      => array('GET',),
 ));
+
+$collection->create('dashboard_reports_get', array(
+    'path'         => '/dashboards/reports/{id}',
+    'controller'   => 'ApiBundle:DashboardReport:get',
+    'requirements' => array('id' => '\\d+'),
+    'defaults'     => array('action' => 'get'),
+    'methods'      => array('GET',),
+));
+
 
 $collection->create('dashboard_reports_create', array(
     'path'         => '/dashboards/reports/{dashboard_id}',

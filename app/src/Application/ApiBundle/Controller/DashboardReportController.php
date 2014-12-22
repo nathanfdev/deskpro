@@ -90,6 +90,7 @@ class DashboardReportController extends AbstractController
             ->setColumns($prototype->getColumns())
             ->setDashboard($dashboard)
             ->setSortOrder($this->service->getLastSortOrder($dashboard));
+//        $this->service->copyWidgetLinks($report, $prototype);
         return $this->createApiSuccessResponse($this->service->saveReport($report));
     }
 
@@ -129,5 +130,13 @@ class DashboardReportController extends AbstractController
         $this->em->remove($report);
         $this->em->flush();
         return $this->createApiDeleteResponse();
+    }
+
+    public function getAction($id)
+    {
+        $report = $this->service->getReport($id);
+        $data = $this->service->getReportData($report);
+        $data['loaded'] = true;
+        return $this->createApiResponse($data);
     }
 }

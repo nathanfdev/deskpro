@@ -74,5 +74,11 @@
   "Agent":                           "app-build/Agent",
   "Interface":                       "app-build/Interface",
   "Reports":                         "app-build/Reports",
-  "ReportsRouting":                  "app/Reports/Resources/config/routing"
+  "ReportsRouting":                  "app/Reports/Resources/config/routing",
+
+  "angularGridster":                 "bower_components/angular-gridster/src/angular-gridster",
+  "ngTable":                         "bower_components/ng-table/ng-table",
+  "amcharts":                        "//cdn.amcharts.com/lib/3/amcharts",
+  "amcharts.pie":                    "//cdn.amcharts.com/lib/3/pie",
+  "amcharts.serial":                 "//cdn.amcharts.com/lib/3/serial"
 }

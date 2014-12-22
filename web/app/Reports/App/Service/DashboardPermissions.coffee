@@ -11,7 +11,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         deferred.resolve @storage[dashboard]
       else
         @getDashboardPermissions(dashboard).then (response) =>
-          console.log(response)
           permissions = response.data
           @storage[dashboard] = permissions
           deferred.resolve(@storage[dashboard])

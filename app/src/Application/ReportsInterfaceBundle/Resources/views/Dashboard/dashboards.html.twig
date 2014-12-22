@@ -4,7 +4,7 @@
         <div class="report-access-avatars">
             <span class="title">On this dashboard:</span>
             <a
-                    ng-repeat='agent in permissions track by id'
+                    ng-repeat='agent in permissions track by agent.id'
                     class="avatar"
                     title="{{ ng_var('agent.name') }}"
                     style="background-image: url({{ ng_var('agent.avatar') }});">
@@ -152,28 +152,133 @@
 <div class="graph-container">
     <div class="graph-container-controls">
         <!-- default or control-active(when selected) or control-inactive(when disabled for default dashboards) -->
-        <a href="#" class="control control-inactive">Dashboard Layout <i class="fa fa-columns"></i></a>
-        <a href="./presentation-only-active-filters.html" class="control">Filters <i class="fa fa-filter"></i></a>
+        <a ng-click="toggleLayoutEdit()" class="control" ng-class = "{'control-active': layoutEditing}">Dashboard Layout <i class="fa fa-columns"></i></a>
+        {#<a href="./presentation-only-active-filters.h tml" class="control">Filters <i class="fa fa-filter"></i></a>#}
 
         <span class="generated-graph-info">Report generated at 6.32PM, Aug 24, 2014 <a href="#"><i class="fa fa-refresh"></i></a></span>
     </div>
 
-    <!--<div class="graph-filters">
+   {# <!--<div class="graph-filters">
       <span class="label">Departments:</span> <a href="#" class="active">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
       <span class="label">Agents:</span> <a href="#">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
-    </div>-->
+    </div>-->#}
 </div>
 
-<div style="padding: 50px; width: 500px;">
-
+<div class="list-group">
+    <div gridster="gridsterOptions" class="dashboard">
+    <ul>
+        <li gridster-item="widget" ng-repeat="widget in currentReport.widgets">
+            <div class="box-header">
+                <h3 class="ng-binding">{{ ng_var('widget.name') }}</h3>
+                <div class="box-header-btns pull-right">
+                    <a title="Remove widget" ng-click="DashboardCtrl.removeWidget(widget)"><i class="glyphicon glyphicon-trash">XXX</i></a>
+                </div>
+            </div>
+            <div class="box" ng-if="widget.type=='stat'">
+                <dashboard-stat title="{{ ng_var('widget.name') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
+            </div>
+            <div class="box" ng-show="widget.type=='graph'">
+                <dashboard-amcharts
+                        my-index="{{ ng_var('$index') }}"
+                        title="{{ ng_var('widget.name') }}"
+                        chart-id = "{{ ng_var('widget.id') }}"
+                        chart-data = "{{ ng_var('widget.data') }}"
+                        chtype="{{ ng_var('widget.type') }}">
+                </dashboard-amcharts>
+            </div>
+            <div class="box" ng-if="widget.type=='table'">
+                <dashboard-table my-index="{{ ng_var('$index') }}" title="{{ ng_var('widget.name') }}" table-data="{{ ng_var('widget.data') }}" wtype="{{ ng_var('widget.type') }}"> </dashboard-table>
+            </div>
+        </li>
+    </ul>
 </div>
-
-
-
-<!-- Inline styles for rpesentation, remove -->
-<div style="padding: 50px; width: 500px;">
-
 </div>
+{#
+<script>
+var chart = AmCharts.makeChart("chartdiv", {
+    "type": "serial",
+    "theme": "none",
+    "dataProvider": [{
+        "country": "USA",
+        "visits": 2025
+    }, {
+        "country": "China",
+        "visits": 1882
+    }, {
+        "country": "Japan",
+        "visits": 1809
+    }, {
+        "country": "Germany",
+        "visits": 1322
+    }, {
+        "country": "UK",
+        "visits": 1122
+    }, {
+        "country": "France",
+        "visits": 1114
+    }, {
+        "country": "India",
+        "visits": 984
+    }, {
+        "country": "Spain",
+        "visits": 711
+    }, {
+        "country": "Netherlands",
+        "visits": 665
+    }, {
+        "country": "Russia",
+        "visits": 580
+    }, {
+        "country": "South Korea",
+        "visits": 443
+    }, {
+        "country": "Canada",
+        "visits": 441
+    }, {
+        "country": "Brazil",
+        "visits": 395
+    }],
+    "valueAxes": [{
+        "gridColor":"#FFFFFF",
+		"gridAlpha": 0.2,
+		"dashLength": 0
+    }],
+    "gridAboveGraphs": true,
+    "startDuration": 1,
+    "graphs": [{
+        "balloonText": "[[category]]: <b>[[value]]</b>",
+        "fillAlphas": 0.8,
+        "lineAlpha": 0.2,
+        "type": "column",
+        "valueField": "visits"
+    }],
+    "chartCursor": {
+        "categoryBalloonEnabled": false,
+        "cursorAlpha": 0,
+        "zoomable": false
+    },
+    "categoryField": "country",
+    "categoryAxis": {
+        "gridPosition": "start",
+        "gridAlpha": 0,
+         "tickPosition":"start",
+         "tickLength":20
+    },
+	"exportConfig":{
+	  "menuTop": 0,
+	  "menuItems": [{
+      "icon": '/lib/3/images/export.png',
+      "format": 'png'
+      }]
+	}
+});
+</script>#}
+{#
+###################ATTENTION!!!##################
+THIS IS USEFUL STAFF FOR FUTURE FEATURES
+DO NOT REMOVE IT!
+#################################################
+
 
 
 
@@ -219,8 +324,6 @@
         </div>
     </div>
 </div>
-
-
 
 <!-- Can be any width, padding is for presentation on html, remove -->
 <div style="padding: 50px; width: 650px;">
@@ -281,8 +384,6 @@
     </div><!-- End reports-dropdown -->
 </div><!-- End presentation div -->
 
-
-
 <!-- Can be any width, padding is for presentation on html, remove -->
 <div style="padding: 50px; width: 650px;">
     <div class="reports-dropdown expanded">
@@ -323,7 +424,6 @@
     </div><!-- End reports-dropdown -->
 </div><!-- End presentation div -->
 
-
 <!-- Expanded filters dropdown content - needs to be placed and width adjusted with js -->
 <div class="graph-filters">
     <span class="label">Departments:</span> <a href="#" class="active">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
@@ -347,12 +447,14 @@
     </div>
 </div>
 
-
-
 <!-- inline styles for presentation, not needed -->
 <div class="tooltip t-reports-disabled" style="margin: 20px; margin-top: 140px;">
     <i class="fa fa-ban tooltip-icon"></i>
     <h1>This item is disabled</h1>
     <p>Lorel ipsum dolor sit amet lorel ipsum dolor</p>
-</div>
+</div>#}
+
+
+
+
 </section>

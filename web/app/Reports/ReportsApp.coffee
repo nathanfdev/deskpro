@@ -16,6 +16,13 @@ define [
   'Reports/App/Directive/DashboardStat',
   'Reports/App/Directive/DashboardTable',
 
+  #angular modules
+  'ngTable',
+  'angularGridster',
+  'amcharts',
+  'amcharts.pie',
+  'amcharts.serial',
+
 ], (
   angular,
   DeskPRO_Main_Service_DpApi,
@@ -33,7 +40,7 @@ define [
   Reports_App_Directive_DashboardTable,
 
 ) ->
-  ReportsApp = angular.module('DeskPRO.ReportsApp', ['DeskPRO.InterfaceApp'])
+  ReportsApp = angular.module('DeskPRO.ReportsApp', ['DeskPRO.InterfaceApp', 'gridster'])
 
 
   ###
@@ -70,8 +77,8 @@ define [
   ###
   # Directives section
   ###
-  ReportsApp.directive('DashboardAmchartsDirective', Reports_App_Directive_DashboardAmcharts)
-  ReportsApp.directive('DashboardStatDirective', Reports_App_Directive_DashboardStat)
-  ReportsApp.directive('DashboardTableDirective', Reports_App_Directive_DashboardTable)
+  ReportsApp.directive('dashboardAmcharts', Reports_App_Directive_DashboardAmcharts)
+#  ReportsApp.directive('dashboardStat', Reports_App_Directive_DashboardStat)
+#  ReportsApp.directive('dashboardTable', Reports_App_Directive_DashboardTable)
 
   return ReportsApp

@@ -8,12 +8,7 @@
 
 namespace Application\ApiBundle\Service;
 
-use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-
 use \Doctrine\ORM\EntityManager;
-use Doctrine\Common\Collections\ArrayCollection;
-
-use Application\DeskPRO\Dpql\Statement\Display;
 
 use Application\DeskPRO\Entity\ReportDashboard as DashboardEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
@@ -65,7 +60,7 @@ class DashboardPermissions
             ->getRepository('DeskPRO:ReportDashboardPermission')
             ->findBy(
                 array(
-                    'dashboard_id'=>$dashboard->getId(),
+                    'dashboard'=>$dashboard->getId(),
                 )
             );
     }
@@ -79,23 +74,21 @@ class DashboardPermissions
     public function getPersonPermissions(PersonEntity $person, DashboardEntity $dashboard = null)
     {
         $criteria = array(
-            'person_id' => $person->getId(),
+            'person' => $person->getId(),
         );
         if($dashboard) {
-            $criteria['dashboard_id'] = $dashboard->getId();
-            $resolve = function($permissions) {
-                return array_shift($permissions);
-            };
+            $criteria['dashboard'] = $dashboard->getId();
+            $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findOneBy(
+                $criteria
+            );
         } else {
-            $resolve = function($permissions) {
-                return $permissions;
-            };
+            $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy(
+                $criteria
+            );
         }
-        $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy(
-            $criteria
-        );
+
         if($permissions){
-            return $resolve($permissions);
+            return $permissions;
         }
         return false;
     }
@@ -108,16 +101,6 @@ class DashboardPermissions
     public function setPermissions(PersonEntity $person, DashboardEntity $dashboard, $permission)
     {
         $personPermissions = $this->getPersonPermissions($person, $dashboard);
-
-        if(!$personPermissions) {
-            $personPermissions = new Permission();
-            $personPermissions->setPerson($person)
-                ->setDashboard($dashboard);
-        } else {
-            $personPermissions = array_shift($personPermissions);
-        }
-//        $personPermissions->setName($this->mapPermissions($permission));
-
         switch($permission)
         {
             case self::PERMISSION_FULL:
@@ -131,7 +114,6 @@ class DashboardPermissions
             case self::PERMISSION_NONE:
                 break;
         }
-        $this->em->getRepository('DeskPRO:ReportDashboardPermission');
     }
 
     protected function mapPermissions($permissions)
@@ -142,22 +124,30 @@ class DashboardPermissions
                 return self::PERMISSION_FULL;
             case Permission::VIEW:
                 return self::PERMISSION_VIEW;
-            case self::PERMISSION_FULL:
-                return Permission::FULL;
-            case self::PERMISSION_VIEW:
-                return Permission::VIEW;
             default:
                 return self::PERMISSION_NONE;
         }
     }
 
-    public function getDashboardPermissions(DashboardEntity $dashboard)
+    /**
+     * @param DashboardEntity $dashboard
+     *
+     * @return Permission[]
+     */
+    protected function getDashboardPermissions(DashboardEntity $dashboard)
     {
         /** @var Permission[] $permissions */
         $permissions = $this->em->getRepository('DeskPRO:ReportDashboardPermission')->findBy(
-            array('dashboard_id' => $dashboard->getId())
+            array('dashboard' => $dashboard->getId())
         );
+        return $permissions;
+    }
 
+
+    public function getApiDashboardPermissions(DashboardEntity $dashboard)
+    {
+
+        $permissions = $this->getDashboardPermissions($dashboard);
         $data = array();
 
         foreach($permissions as $permission)
@@ -176,12 +166,31 @@ class DashboardPermissions
             $data[$person->getId()]['name'] = $person->getDisplayName();
             $data[$person->getId()]['avatar'] = $person->getPictureUrl();
         }
-        return array_values($data);
+        $data = array_values($data);
+        return $data;
 
     }
 
-    public function save(Permission $permission)
+    public function clonePermissions(DashboardEntity $dashboard)
     {
+        $reportDashboardPermissions = $this->getDashboardPermissions($dashboard);
+        foreach($reportDashboardPermissions as $permission_prototype)
+        {
+            $permission = new Permission();
+            $permission
+                ->setDashboard($dashboard)
+                ->setPerson($permission_prototype->getPerson())
+                ->setName($permission_prototype->getName());
+            $this->save($permission);
+        }
+    }
+
+    public function save($permission)
+    {
+        if(is_array($permission))
+        {
+
+        }
         $this->em->persist($permission);
         $this->em->flush();
     }

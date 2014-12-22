@@ -41,19 +41,6 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
 
       return deferred.promise
 
-    fillElement: (element) ->
-      element.options.resizable =
-        enabled: true,
-        handles: ['n', 's', 'w', 'ne', 'se', 'sw', 'nw'],
-        stop: (event, $element, $widget) =>
-          @saveWidget($widget)
-
-      element.options.draggable =
-        enable:true,
-        stop: (event, $element, $widget) =>
-          @saveWidget($widget)
-      return element
-
     getReports: () ->
       @Api.sendGet "/reports/builder"
 
@@ -76,6 +63,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       return index
 
     saveWidget: (widget) ->
+#      console.log(widget);
       @Api.sendPost \
         "/dashboards/widgets/#{widget.id}",
         {

@@ -1,15 +1,16 @@
 define ->
-  Reports_Directive_Amchart = ['$compile', '$state', 'DataService', ($compile, $state, DataService) ->
+  Reports_Directive_Amcharts = ['$compile', '$state', ($compile, $state) ->
     return {
       restrict: 'E'
       replace: true
       scope:
         chartId: '@'
         myIndex: '@'
+        chartData: '@'
 
       link: (scope, element, attrs) ->
-        i = attrs.myIndex
-        template = "<div style='height: 100%' id='ch#{i}'></div>"
+        i = attrs.chartId
+        template = "<div style='height: 90%;' id=\"ch#{i}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
         element.replaceWith(content)
@@ -17,36 +18,35 @@ define ->
 
         chart = false
         conf = scope.chartId || 0;
+        chartData = scope.chartData || {}
 
         initChart = () ->
           if chart
             chart.destroy()
-          widgetService = DataService.get('DashboardWidgetService')
-          service = DataService.get('DashboardService');
-          service.setWidgetService(widgetService)
-          widgetService
-            .getWidget(conf)
-            .then (widget) =>
-              chart = new AmCharts.makeChart('ch' + i, widget);
-              chart.handleResize()
-              chart.invalidateSize()
+#          widgetService = DataService.get('DashboardWidgetService')
+#          service = DataService.get('DashboardService');
+#          service.setWidgetService(widgetService)
+#          widgetService
+#            .getWidget(conf)
+#            .then (widget) =>
+          chart = new AmCharts.makeChart('ch' + i, JSON.parse(chartData));
+          chart.handleResize()
+          chart.invalidateSize()
+          c = document.getElementById("ch" + i).parentNode.parentNode
+          width = c.style.width;
+          height = c.style.height;
 
-              c = document.getElementById("ch" + i).parentNode.parentNode
+          setInterval \
+            () ->
+              w = c.style.width
+              h = c.style.height
 
-              width = c.style.width;
-              height = c.style.height;
+              if h != height or width != w
+                chart.handleResize();
 
-              setInterval \
-                () ->
-                  w = c.style.width
-                  h = c.style.height
-
-                  if h != height or width != w
-                    chart.handleResize();
-
-                    width = w
-                    height = h
-                , 200
+                width = w
+                height = h
+            , 200
 
         if attrs.chtype == 'graph'
           initChart()
@@ -59,4 +59,4 @@ define ->
     }
   ]
 
-  return Reports_Directive_Amchart
+  return Reports_Directive_Amcharts

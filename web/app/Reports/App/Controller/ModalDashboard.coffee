@@ -79,14 +79,13 @@ define -> [
             currentReport = $scope.dashboard.reports[0]
 
     $scope.setPermissions = (agent, permission) ->
+
       if(permission == 1 && agent.permissions > 0)
         agent.permissions = 0
-      else if(permission == 2 && agent.permissions < 1)
+      else if(permission == 2 && agent.permissions < 2)
         agent.permissions = 2
-      else if(permission == agent.permissions == 2)
+      else if(permission == 2 && agent.permissions == 2)
         agent.permissions = 1
-      else if(permission == agent.permissions == 1)
-        agent.permissions = 0
       DashboardPermissionsService.savePermissions(agent, $scope.dashboard)
 #
 #    $scope.createDashboard = () ->

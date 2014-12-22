@@ -6,9 +6,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @data = {}
       @storage = { dbs: [], reports: [] }
 
-    ping: ->
-      console.log('this is widget service!')
-
     setWidgetService: (service) ->
       @widgetService = service
       @widgetService.setDashboardService(@)
@@ -66,7 +63,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           (resp) =>
             dbs = []
             if resp? and resp.data.length > 0
-#              dbs.push(el = @widgetService.fillElement element) for element in resp.data
+
               dbs.push element for element in resp.data
             @storage.dbs = dbs;
             deferred.resolve(@storage.dbs)
@@ -82,6 +79,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @Api
         .sendGet "/dashboards/#{dashboard.id}"
         .then (resp) =>
+          data = resp.data
+          reports = []
           @storage.dbs[dashboardIndex] = resp.data
           deferred.resolve(resp.data)
       return deferred.promise
@@ -98,6 +97,24 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     ###
     # Operations about reports
     ###
+
+    getReport: (report) ->
+      deferred = @$q.defer()
+      reportIndex = Arrays.findIndex @storage.dbs
+      , (v, i) ->
+        if v.id is report.id then true else false
+      if(!report.loaded)
+        @Api
+          .sendGet("/dashboards/reports/#{report.id}")
+          .then (resp) =>
+            @storage.reports[reportIndex] = resp.data
+            deferred.resolve @storage.reports[reportIndex]
+            return deferred.promise
+      else
+        deferred.resolve @storage.reports[reportIndex]
+        return deferred.promise
+
+
     getReportsData: () ->
       @Api.sendGet('/dashboards/reports')
 
@@ -108,7 +125,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           (resp) =>
             reports = []
             if resp? and resp.data.length > 0
-              reports.push element for element in resp.data
+              reports.push = element for element in resp.data
             @storage.reports = reports;
             deferred.resolve(reports)
       else deferred.resolve(@storage.reports)

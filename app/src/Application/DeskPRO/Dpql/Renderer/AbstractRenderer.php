@@ -41,9 +41,10 @@ abstract class AbstractRenderer
 {
     /** @var array */
     protected static $_rendererMap = array(
-        'csv' => 'Csv',
+        'csv'  => 'Csv',
         'html' => 'Html',
-        'pdf' => 'Pdf'
+        'pdf'  => 'Pdf',
+        'json' => 'Json'
     );
 
     /**

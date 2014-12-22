@@ -64,16 +64,10 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var \Application\DeskPRO\Entity\Person
      */
-    protected $agent = null;
+    protected $person = null;
 
     /** @var \Application\DeskPRO\Entity\ReportDashboard */
     protected $dashboard = null;
-
-    /** @var integer */
-    protected $dashboard_id;
-
-    /** @var integer */
-    protected $person_id;
 
     /**
      * The name of the permission
@@ -90,16 +84,26 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
         return $this->id;
     }
 
+    /**
+     * @param ReportDashboard $dashboard
+     *
+     * @return $this
+     */
     public function setDashboard(ReportDashboard $dashboard)
     {
         $this->dashboard = $dashboard;
+        return $this;
     }
 
+    /**
+     * @param Person $p
+     *
+     * @return $this
+     */
     public function setPerson(Person $p)
     {
         if( $p->getIsAgent() ) {
-            $this->setModelField('agent', $p);
-            $this->person_id = $p->getId();
+            $this->setModelField('person', $p);
         } else {
             //possibly we gonna throw an Exception here, cause it's wrong trying to add just a person here
         }
@@ -122,8 +126,6 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
-
-
     /**
      * A name that identifies this permission (eg could be used as an map key)
      *
@@ -141,7 +143,7 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
      */
     public function getAgent()
     {
-        return $this->agent;
+        return $this->person;
     }
 
     /**
@@ -167,9 +169,8 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DepartmentPermission';
         $metadata->setPrimaryTable(array( 'name' => 'report_dashboard_permission', ));
-        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
+        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
         $metadata->mapField(array('fieldName'  => 'id',
                                   'type'       => 'integer',
                                   'precision'  => 0,
@@ -187,22 +188,6 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
                                   'columnName' => 'name',
             ));
 
-        $metadata->mapField(array('fieldName'  => 'dashboard_id',
-                                  'type'       => 'integer',
-                                  'precision'  => 0,
-                                  'scale'      => 0,
-                                  'nullable'   => false,
-                                  'columnName' => 'dashboard_id',
-                                  'id'         => false,
-            ));
-        $metadata->mapField(array('fieldName'  => 'person_id',
-                                  'type'       => 'integer',
-                                  'precision'  => 0,
-                                  'scale'      => 0,
-                                  'nullable'   => false,
-                                  'columnName' => 'person_id',
-                                  'id'         => false,
-            ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
         $metadata->mapManyToOne(array(
             'fieldName'    => 'dashboard',
@@ -213,14 +198,14 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
                 0 => array(
                     'name'                 => 'dashboard_id',
                     'referencedColumnName' => 'id',
-                    'nullable'             => true,
+                    'nullable'             => false,
                     'onDelete'             => 'cascade',
                     'columnDefinition'     => null,
                 ),
             ),
         ));
         $metadata->mapManyToOne(array(
-            'fieldName'    => 'agent',
+            'fieldName'    => 'person',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
             'mappedBy'     => null,
             'inversedBy'   => 'report_dashboard_permissions',
@@ -228,7 +213,7 @@ class ReportDashboardPermission extends \Application\DeskPRO\Domain\DomainObject
                 0 => array(
                     'name'                 => 'person_id',
                     'referencedColumnName' => 'id',
-                    'nullable'             => true,
+                    'nullable'             => false,
                     'onDelete'             => 'cascade'
                 ),
             ),

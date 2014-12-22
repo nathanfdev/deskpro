@@ -2815,7 +2815,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         $metadata->mapOneToMany(array(
             'fieldName'    => 'report_dashboard_permissions',
             'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportDashboardPermission',
-            'mappedBy'     => 'agent'
+            'mappedBy'     => 'person'
         ));
 
         $metadata->mapManyToMany(array(

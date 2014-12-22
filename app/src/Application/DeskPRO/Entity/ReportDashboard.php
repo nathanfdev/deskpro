@@ -143,6 +143,12 @@ class ReportDashboard extends DomainObject
         return (bool) $this->is_default;
     }
 
+    public function setDefault($default)
+    {
+        $this->is_default = (bool) $default;
+        return $this;
+    }
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -151,7 +157,6 @@ class ReportDashboard extends DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-//		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportBuilder';
 		$metadata->setPrimaryTable(
 			array(
                 'name' => 'report_dashboard',

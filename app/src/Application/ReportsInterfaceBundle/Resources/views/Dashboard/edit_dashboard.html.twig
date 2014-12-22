@@ -182,7 +182,7 @@
                 <td>Edit</td>
                 </thead>
 
-                <tr ng-repeat="agent in permissions track by id">
+                <tr ng-repeat="agent in permissions track by agent.id">
                     <td class="agent-name">
                         <span class="avatar" style="background-image: url({{ ng_var('agent.avatar') }})"></span>
                         {{ ng_var('agent.name') }}
@@ -192,8 +192,8 @@
                             <input ng-click='setPermissions(agent, 1)'
                                    ng-checked="agent.permissions == 1 || agent.permissions == 2"
                                    type="checkbox"
-                                   id="checkbox3">
-                            <label for="checkbox3"></label>
+                                   id="checkbox1_{{ ng_var('$index') }}">
+                            <label for="checkbox1_{{ ng_var('$index') }}"></label>
                         </span>
                     </td>
                     <td>
@@ -201,8 +201,8 @@
                             <input ng-click='setPermissions(agent, 2)'
                                    ng-checked="agent.permissions == 2"
                                    type="checkbox"
-                                   id="checkbox4">
-                            <label for="checkbox4"></label>
+                                   id="checkbox2_{{ ng_var('$index') }}">
+                            <label for="checkbox2_{{ ng_var('$index') }}"></label>
                         </span>
                     </td>
                 </tr>

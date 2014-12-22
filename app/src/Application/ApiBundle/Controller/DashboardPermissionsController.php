@@ -89,7 +89,7 @@ class DashboardPermissionsController extends AbstractController
         if(!$this->permissionsService->isAllowedToView($this->person, $dashboard)) {
             throw $this->createNotFoundException('Dashboard not found!');
         }
-        return $this->createApiResponse($permissions = $this->permissionsService->getDashboardPermissions($dashboard));
+        return $this->createApiResponse($permissions = $this->permissionsService->getApiDashboardPermissions($dashboard));
     }
 
     public function saveAction($id)
@@ -99,7 +99,7 @@ class DashboardPermissionsController extends AbstractController
         /** @var Person $agent */
         $agent = $this->em->getRepository('DeskPRO:Person')->find($agent_id);
         $permissions = $this->in->getCleanValue('permissions', 'integer');
-        $this->permissionsService->setPermissions($dashboard, $agent, $permissions);
+        $this->permissionsService->setPermissions($agent, $dashboard, $permissions);
         return $this->createApiSuccessResponse();
     }
 }
