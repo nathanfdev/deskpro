@@ -18,12 +18,11 @@ define([
 
     $scope.$on('deskpro_app.ticket.new_reply', function($event, ticket, action){
 
-      if (!ticket.ticket_messages || !ticket.ticket_messages.length) return;
-      var msg = ticket.ticket_messages[ticket.ticket_messages.length - 1];
+      if (!ticket.message) return;
 
       if ('send_comment' === action) {
 
-        issues.sendComment(msg.message);
+        issues.sendComment(ticket.message);
 
       } else if ('create_issue' === action) {
 
@@ -32,7 +31,7 @@ define([
           issuetype: {id: $meta.default_issuetype},
           summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject,
           duedate: '2015-02-02',
-          description: msg.message
+          description: ticket.message
         };
 
         issues.create({fields: fields}).then(

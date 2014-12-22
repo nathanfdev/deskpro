@@ -112,7 +112,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var bool
      */
-    public $is_agent_note = false;
+    protected $is_agent_note = false;
 
     /**
      * @var string
@@ -154,7 +154,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
      * The message, will be in HTML!
      * @var string
      */
-    public $message;
+    protected $message;
 
     /**
      * This is the full message, including all quotes/cut content.

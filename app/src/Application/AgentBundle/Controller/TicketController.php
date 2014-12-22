@@ -1482,7 +1482,9 @@ class TicketController extends AbstractController
             'error_messages'                   => $error_messages ?: false,
             'notified_agents'                  => $notify_agent_ids,
             'can_view'                         => $can_view,
-            'api_data'                         => $ticket->toApiData()
+            'api_data'                         => $ticket->toApiData(),
+
+            'message'                          => $message['message'],
         ));
 
         return $this->createJsonResponse($data);
