@@ -279,7 +279,7 @@ class JIRA
         }
 
         try {
-            return $this->service()->searchIssues($query);
+            return $this->searchIssues($query);
         } catch (\Exception $e) {
             return null;
         }
@@ -468,7 +468,7 @@ class JIRA
 
         try {
 
-            $result = $this->service()->searchIssues(sprintf('id IN (%s)', implode(',', array_keys($map))));
+            $result = $this->searchIssues(sprintf('id IN (%s)', implode(',', array_keys($map))));
             return $result;
 
         } catch (ApiCoreException $e) {
