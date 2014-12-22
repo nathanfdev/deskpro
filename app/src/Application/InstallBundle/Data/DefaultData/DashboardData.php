@@ -141,7 +141,7 @@ class DashboardData extends AbstractDefaultData
         $widgetPrototype = $this->getEm()->getRepository('DeskPRO:ReportBuilder')->find(1);
         /** @var Person $admin */
         $admin = $this->getEm()->getRepository('DeskPRO:Person')->find(1);
-
+        $agents = $this->getEm()->getRepository('DeskPRO:Person')->findBy(array('is_agent'=>1));
         foreach($this->dashboards as $dashboard)
         {
             $dashboardEntity = new Dashboard();
@@ -170,6 +170,16 @@ class DashboardData extends AbstractDefaultData
             $permissions = new Permission();
             $permissions->setDashboard($dashboardEntity)->setPerson($admin)->setName(Permission::FULL);
             $this->getEm()->persist($permissions);
+            foreach($agents as $agent) {
+                if($agent->getId() != 1) {
+                    $permissions = new Permission();
+                    $permissions
+                        ->setName(Permission::VIEW)
+                        ->setDashboard($dashboardEntity)
+                        ->setPerson($agent);
+                    $this->getEm()->persist($permissions);
+                }
+            }
             $this->getEm()->flush();
         }
     }
