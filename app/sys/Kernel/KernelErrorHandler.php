@@ -310,9 +310,11 @@ class KernelErrorHandler
             $errinfo['email'] = true;
         }
 
-        if (!empty($errinfo['set_setting'])) {
+        if (!empty($errinfo['set_setting']) && class_exists('Application\DeskPRO\App', false)) {
             try {
-                App::getContainer()->getSettingsHandler()->setSetting($errinfo['set_setting'], 1);
+                if (App::getContainer() && App::getContainer()->getSettingsHandler()) {
+                    App::getContainer()->getSettingsHandler()->setSetting($errinfo['set_setting'], 1);
+                }
             } catch (\Exception $e) {}
         }
 

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,88 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category People
+ * @subpackage
  */
 
-namespace Application\DeskPRO\People\AgentPermissions;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Application\DeskPRO\Entity\Usergroup;
-use Application\InstallBundle\Data\AgentGroupPermScanner;
-
-class PermissionNamesLoader
+class Build1418900478 extends AbstractBuild
 {
-    /**
-     * @var bool
-     */
-    private $debug = false;
-
-    /**
-     * @var array
-     */
-    private $all_names = null;
-
-    /**
-     * @var array
-     */
-    private $all_safe_names = null;
-
-
-    private function load()
+    public function run()
     {
-        $cache_path = DP_ROOT . '/sys/Resources/agent-perm-names.php';
-        if ($this->debug || !file_exists($cache_path)) {
-            $scanner = new AgentGroupPermScanner();
-            $perm_names = array(
-                'all' => $scanner->getNames(),
-                'safe' => $scanner->getSafeNames()
-            );
-        } else {
-            $perm_names = require($cache_path);
-        }
-
-        $this->all_names = $perm_names['all'];
-        $this->all_safe_names = $perm_names['safe'];
-    }
-
-
-    /**
-     * @return array
-     */
-    public function getNames()
-    {
-        if ($this->all_names === null) $this->load();
-        return $this->all_names;
-    }
-
-
-    /**
-     * @return array
-     */
-    public function getSafeNames()
-    {
-        if ($this->all_safe_names === null) $this->load();
-        return $this->all_safe_names;
-    }
-
-
-    /**
-     * @param  Usergroup|string $group Usergroup or string sys_name
-     * @return array
-     */
-    public function getEnabledForGroup($group)
-    {
-        if ($group instanceof $group) {
-            $sys_name = $group->sys_name;
-        } else {
-            $sys_name = $group;
-        }
-
-        if ($sys_name == 'agent_all_perms') {
-            return $this->getNames();
-        } elseif ($sys_name == 'agent_all_safe_perms') {
-            return $this->getNames();
-        } else {
-            return array();
-        }
+        $this->out("Update date_resolved on tickets where it might be missing");
+        $this->execMutateSql("
+            UPDATE tickets
+            SET date_resolved = COALESCE(date_status, date_last_agent_reply, date_last_user_reply, date_created)
+            WHERE status = 'resolved' AND date_resolved IS NULL
+        ");
     }
 }

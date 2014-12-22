@@ -36,12 +36,12 @@ define ->
             ui-select2
             style="min-width: 100px;"
           >
-            <option value="minutes">minutes</option>
-            <option value="hours">hours</option>
-            <option value="days">days</option>
-            <option value="weeks">weeks</option>
-            <option value="months">months</option>
-            <option value="years">years</option>
+            <option ng-if="has_minutes" value="minutes">{{phrases.minutes}}</option>
+            <option ng-if="has_hours" value="hours">{{phrases.hours}}</option>
+            <option ng-if="has_days" value="days">{{phrases.days}}</option>
+            <option ng-if="has_weeks" value="weeks">{{phrases.weeks}}</option>
+            <option ng-if="has_months" value="months">{{phrases.months}}</option>
+            <option ng-if="has_years" value="years">{{phrases.years}}</option>
           </select>
         </div>
       """,
@@ -52,6 +52,30 @@ define ->
 
         scope.time_num = ''
         scope.time_unit = 'minutes'
+
+        availableUnits = null
+        if iAttrs.availableUnits
+          availableUnits = scope.$eval(iAttrs.availableUnits)
+        if not availableUnits
+          availableUnits = ['minutes', 'hours', 'days', 'weeks', 'months', 'years'];
+
+        unitPhrases = null
+        if iAttrs.unitPhrases
+          unitPhrases = scope.$eval(iAttrs.unitPhrases)
+        if not unitPhrases
+          unitPhrases = {
+            minutes: 'minutes',
+            hours: 'hours',
+            days: 'days',
+            weeks: 'weeks',
+            months: 'months',
+            years: 'years'
+          };
+
+        scope.phrases = unitPhrases
+
+        for v in availableUnits
+          scope['has_' + v] = true
 
         modelType = 'seconds';
         objModelKeys = null
@@ -88,6 +112,7 @@ define ->
           'months',
           'years'
         ]
+
         multiplierTypes.reverse()
 
         ngModel.$parsers.push( (viewValue) ->
@@ -136,6 +161,19 @@ define ->
 
               if modelValue
                 num = modelValue / multiplierMap[unit]
+
+          # not an allowed unit, keep going 'down' until we get one
+          if not scope['has_' + unit]
+            secs = multiplierMap[unit] * num
+            unitIdx = multiplierTypes.indexOf(unit)
+            while true
+              unitIdx += 1
+              newUnit = if multiplierTypes[unitIdx]? then multiplierTypes[unitIdx] else null
+              break if not newUnit or scope['has_' + newUnit]
+
+            if newUnit
+              unit = newUnit
+              num = secs / multiplierMap[unit]
 
           return {
             unit: unit,

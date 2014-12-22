@@ -241,6 +241,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			self.getReplyTextArea().trigger('dp_autosave_trigger');
 		});
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked-status', function(info) {
+			var ticketId = parseInt(info.ticket_id),
+				byAgentId = info.locked_by ? (parseInt(info.locked_by) || null) : null,
+				isLocked = info.is_locked;
+
+			if (self.meta.ticket_id == ticketId) {
+				if (byAgentId && byAgentId != DESKPRO_PERSON_ID) {
+					// Reload the ticket page
+					DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true});
+					self.closeSelf();
+					return;
+				} else if (!byAgentId) {
+					self.wrapper.find('.lock-overlay').remove();
+					self.getEl('locked_message').hide();
+					self.getEl('locked_message').data('locked-self', false);
+					self.getEl('lock_ticket').show();
+					self.getEl('unlock_ticket').hide();
+				}
+			}
+		}, null, [this.OBJ_ID]);
+
 		this.addEvent('shortcutFocusReply', function(ev) {
 			ev.preventDefault();
 
@@ -1327,7 +1348,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 	},
 
 	updateUi: function(toReplyHeight) {
-		var x;
+		var x, pageHeaderEl, pos;
 		if (!this.IS_ACTIVE) {
 			return;
 		}
@@ -1351,6 +1372,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Orb.Class({
 			}
 
 			this.getEl('labels_wrap').find('.select2-input').width('95%');
+
+			pageHeaderEl = this.getEl('layout_header_first');
+			if (pageHeaderEl && pageHeaderEl.length) {
+				pos = pageHeaderEl.position();
+				if (pos && pos.top > 20) {
+					this.getEl('layout_sidebar_icons').css('top', pos.top + 10)
+				} else {
+					this.getEl('layout_sidebar_icons').css('top', 0)
+				}
+			}
 		}
 	},
 

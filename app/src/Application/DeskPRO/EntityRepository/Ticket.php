@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
+use Orb\Util\Strings;
 
 class Ticket extends AbstractEntityRepository
 {
@@ -466,18 +467,34 @@ class Ticket extends AbstractEntityRepository
             ", array($person->id));
         } else {
             if ($person->organization && $person->organization_manager) {
-                $count = App::getDb()->fetchColumn("
-                    SELECT COUNT(DISTINCT tickets.id)
-                    FROM tickets
-                    LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                    WHERE (tickets.person_id = ? OR (tickets_participants.person_id = ? AND tickets.organization_id != ?)) " . ($status ? " AND tickets.status IN ($status) " : '') . "
-                ", array($person->id, $person->id, $person->getOrganizationId()));
+                $count = array_sum(App::getDb()->fetchAllCol("
+                    (
+                        SELECT COUNT(DISTINCT tickets.id)
+                        FROM tickets
+                        WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    )
+                    UNION
+                    (
+                        SELECT COUNT(DISTINCT tickets.id)
+                        FROM tickets
+                        LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+                        WHERE tickets_participants.person_id = ? AND tickets.organization_id != ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    )
+                ", array($person->id, $person->id, $person->getOrganizationId())));
             } else {
                 $count = App::getDb()->fetchColumn("
-                    SELECT COUNT(DISTINCT tickets.id)
-                    FROM tickets
-                    LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
-                    WHERE (tickets.person_id = ? OR tickets_participants.person_id = ?) " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    (
+                        SELECT COUNT(DISTINCT tickets.id)
+                        FROM tickets
+                        WHERE tickets.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    )
+                    UNION
+                    (
+                        SELECT COUNT(DISTINCT tickets.id)
+                        FROM tickets
+                        LEFT JOIN tickets_participants ON tickets_participants.ticket_id = tickets.id
+                        WHERE tickets_participants.person_id = ? " . ($status ? " AND tickets.status IN ($status) " : '') . "
+                    )
                 ", array($person->id, $person->id));
             }
         }
@@ -841,13 +858,115 @@ class Ticket extends AbstractEntityRepository
      */
     public function unlockOfflineAgentsTickets($offlineOffset = 120)
     {
-        $datecut = date('Y-m-d H:i:s', strtotime(- (int) $offlineOffset . ' seconds'));
+        $cut_ts = strtotime(- (int) $offlineOffset . ' seconds');
+        $datecut = date('Y-m-d H:i:s', $cut_ts);
 
-        return $this->_em->getConnection()->executeUpdate("
-            UPDATE tickets
-            JOIN sessions ON (sessions.person_id = tickets.locked_by_agent AND sessions.date_last IS NOT NULL AND sessions.date_last < ?)
-            SET tickets.locked_by_agent = null, tickets.date_locked = null
-            WHERE tickets.locked_by_agent IS NOT NULL
+        $db = App::$container->getDb();
+
+        // map of ticket->agent of tickets that are still locked after the offset
+        $agents_to_tickets = $db->fetchAllGrouped("
+            SELECT id, COALESCE(locked_by_agent, 0) AS locked_by_agent
+            FROM tickets
+            WHERE date_locked < ?
+            ORDER BY date_locked ASC
+            LIMIT 2500
+        ", array($datecut), 'locked_by_agent', null, 'id');
+
+        if (!$agents_to_tickets) {
+            return 0;
+        }
+
+        // Check session times for these agents
+        $agents_to_times = $db->fetchAllKeyValue("
+            SELECT sessions.person_id, sessions.date_last
+            FROM sessions
+            LEFT OUTER JOIN sessions AS lookup ON (
+                lookup.person_id = sessions.person_id
+                AND sessions.date_last < lookup.date_last
+            )
+            WHERE sessions.person_id IN (?) AND lookup.person_id IS NULL
+        ", array(array_keys($agents_to_tickets)), array(Connection::PARAM_INT_ARRAY));
+
+        $release_locks = array();
+        foreach ($agents_to_tickets as $agent_id => $ticket_ids) {
+            if (!isset($agents_to_times[$agent_id])) {
+                $release_locks = array_merge($release_locks, $ticket_ids);
+            } else {
+                $ts = \DateTime::createFromFormat('Y-m-d H:i:s', $agents_to_times[$agent_id])->getTimestamp();
+                if ($ts < $cut_ts) {
+                    $release_locks = array_merge($release_locks, $ticket_ids);
+                }
+            }
+        }
+
+        if ($release_locks) {
+            // re-fetch to make sure we have valid records
+            $release_locks = $db->fetchAllCol("
+                SELECT id
+                FROM tickets
+                WHERE date_locked < ? AND id IN (?)
+            ", array($datecut, $release_locks), array(\PDO::PARAM_STR, Connection::PARAM_INT_ARRAY));
+        }
+
+        return $this->unlockTickets($release_locks);
+    }
+
+    public function unlockTicketsByTime($offset)
+    {
+        if (!$offset) {
+            return 0;
+        }
+
+        $db = App::$container->getDb();
+
+        $cut_ts = strtotime(- (int) $offset . ' seconds');
+        $datecut = date('Y-m-d H:i:s', $cut_ts);
+
+        $ticket_ids = $db->fetchAllCol("
+            SELECT id
+            FROM tickets
+            WHERE date_locked < ?
         ", array($datecut));
+
+        return $this->unlockTickets($ticket_ids);
+    }
+
+    public function unlockTickets(array $ticket_ids)
+    {
+        if (!$ticket_ids) {
+            return 0;
+        }
+
+        $db = App::$container->getDb();
+
+        $db->updateIn('tickets', array(
+            'date_locked' => null,
+            'locked_by_agent' => null,
+        ), $ticket_ids);
+
+        if (count($ticket_ids) < 250) {
+            $batch = array();
+
+            $d = date('Y-m-d H:i:s');
+            foreach ($ticket_ids as $id) {
+                $batch[] = array(
+                    'channel'      => 'agent-notification.tickets.locked-status',
+                    'auth'         => Strings::random(15, Strings::CHARS_KEY),
+                    'date_created' => $d,
+                    'data' => serialize(array(
+                        'ticket_id'       => $id,
+                        'is_locked'       => false,
+                        'locked_by'       => null,
+                        'via_person'      => null
+                    ))
+                );
+            }
+
+            foreach (array_chunk($batch, 40, false) as $b) {
+                $db->batchInsert('client_messages', $b, true);
+            }
+        }
+
+        return count($ticket_ids);
     }
 }
