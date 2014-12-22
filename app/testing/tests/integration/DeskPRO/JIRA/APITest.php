@@ -125,7 +125,7 @@ class APITest extends \DpIntegrationTestCase
         ));
 
         // test search issue
-        $searchResult = $service->searchByKey($issue['key']);
+        $searchResult = $service->searchIssues($issue['key']);
         $this->assertArrayHasKey('issues', $searchResult);
         $this->assertArrayHasKey(0, $searchResult['issues']);
         $issue = $searchResult['issues'][0];
