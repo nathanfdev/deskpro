@@ -48,7 +48,9 @@ define([
     $scope.$on('deskpro_app.ticket.updated', function($event, ticket){
       if (!issues.length) return;
       if (ticket.subject) {
-
+	      issues.each(function(issue){
+		      issues.update(issue, {summary: '[Ticket #' + $ticket.id + '] ' + ticket.subject});
+	      });
       }
     });
 

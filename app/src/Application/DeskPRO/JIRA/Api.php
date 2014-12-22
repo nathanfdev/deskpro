@@ -183,7 +183,7 @@ class Api
     {
         return $this->call(
             sprintf('%s/issue/%d', self::API_BASE_PATH, $id),
-            'POST',
+            'PUT',
             array('content-type' => 'application/json'),
             $json
         );

@@ -469,7 +469,7 @@ class JIRA
 
         try {
 
-            $result = $this->searchIssues(sprintf('id IN (%s)', implode(',', array_keys($map))));
+            $result = $this->searchByIds(array_keys($map));
             return $result;
 
         } catch (ApiCoreException $e) {

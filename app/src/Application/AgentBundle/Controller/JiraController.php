@@ -96,7 +96,7 @@ class JiraController extends AbstractController
         try {
 
             $this->service()->updateIssueJson($issueId, $request->getContent());
-            return $this->createJsonResponse(true);
+            return $this->createJsonResponse(array());
 
         } catch (\Exception $e) {
 

@@ -80,6 +80,37 @@ define(function () {
         return d.promise;
       };
 
+	    /**
+	     * updates an issue
+	     * @param data
+	     * @returns {*}
+	     */
+	    this.update = function (issue, fields) {
+		    if (!issue.id) return;
+		    for (var i = 0; i < this.length; i++) {
+			    if (this[i].id === issue.id) {
+				    issue = this[i];
+			    }
+		    }
+		    var d = $q.defer();
+
+		    $http.put('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id, {fields: fields})
+				    .success(function (data, status, headers, config) {
+					    for (var i in fields) {
+						    if (undefined !== issue.fields[i]) {
+							    issue.fields[i] = fields[i];
+						    }
+					    }
+					    d.resolve(self.last());
+				    })
+				    .error(function (data, status, headers, config) {
+					    console.error('Update JIRA Issue: ', status, {data: data});
+					    d.reject(data);
+				    });
+
+		    return d.promise;
+	    };
+
       /**
        * send a comment to exact issue, or to all linked issues
        * @param msg
