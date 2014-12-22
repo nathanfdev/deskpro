@@ -114,36 +114,7 @@ class JiraController extends AbstractController
 	 */
 	public function issuesAction($ticketId)
 	{
-		$issues = $this->em->getRepository('DeskPRO:JiraIssue')->findBy(array('ticket' => $ticketId));
-		$map = array();
-		foreach ($issues as $issue) {
-			$map[$issue['issue_id']] = $issue;
-		}
-
-		$result = null;
-		if (!$map) {
-            return $this->createJsonResponse($result);
-        }
-
-        try {
-
-            $result = $this->service()->searchIssues(sprintf('id IN (%s)', implode(',', array_keys($map))));
-            return $this->createJsonResponse($result);
-
-        } catch (ApiCoreException $e) {
-
-            foreach ($e->errors as $error) {
-                if (!preg_match('/A value with ID \'(\d+)\' does not exist for the field \'id\'\./', $error, $matches)) {
-                    continue;
-                }
-                if (isset($map[$matches[1]])) {
-                    $this->em->remove($map[$matches[1]]);
-                }
-            }
-            $this->em->flush();
-
-            return $this->issuesAction($ticketId);
-        }
+        return $this->createJsonResponse($this->service()->issues($ticketId));
 	}
 
 	/**
@@ -166,22 +137,7 @@ class JiraController extends AbstractController
 	 */
 	public function searchAction(Request $request)
 	{
-        $q = trim($request->get('q'));
-        $query = sprintf('summary ~ "%s*"', $q);
-
-        // issue key
-		if (preg_match('/^[A-Za-z]+\-\d+/', $q, $matches)) {
-            $query = sprintf('issuekey = %s or ', mb_strtoupper(reset($matches))) . $query;
-		}
-
-        try {
-            $result = $this->service()->searchIssues($query);
-        } catch (\Exception $e) {
-            $result = null;
-        }
-
-        return $this->createJsonResponse($result);
-
+        return $this->createJsonResponse($this->service()->searchIssues($request->get('q')));
 	}
 
 	/**

@@ -189,9 +189,6 @@ class Api
         );
     }
 
-
-
-
     /**
      * @param $jql
      * @return array

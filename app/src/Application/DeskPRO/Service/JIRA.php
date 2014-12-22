@@ -34,6 +34,7 @@ use Application\DeskPRO\Entity\JiraIssue;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\Api;
+use Application\DeskPRO\JIRA\ApiCoreException;
 use Application\DeskPRO\JIRA\Meta;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -267,26 +268,25 @@ class JIRA
      * @return array
      * @throws \Exception
      */
-    public function searchIssues($jql)
+    public function searchIssues($q)
     {
-        try {
-            $meta = $this->getMeta();
+        $q = trim($q);
+        $query = sprintf('summary ~ "%s*"', $q);
 
-            $result = $this->getApi()->post('/search', array(
-                'jql' => $jql,
-                'fields' => array_merge($meta->getAllFields(), $meta->getSystemFields()),
-                'expand' => array('renderedFields'),
-            ));
-        } catch (\Exception $e) {
-            // todo
-            throw $e;
+        // issue key
+        if (preg_match('/^[A-Za-z]+\-\d+/', $q, $matches)) {
+            $query = sprintf('issuekey = %s or ', mb_strtoupper(reset($matches))) . $query;
         }
 
-        return $result;
+        try {
+            return $this->service()->searchIssues($query);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 
     /**
-     * @param $id
+     * @param array $ids
      * @return array|null
      */
     public function searchByIds(array $ids)
@@ -324,10 +324,8 @@ class JIRA
 	}
 
     /**
-     * @param        $issueId
      * @param Ticket $ticket
-     * @param        $url
-     * @return mixed
+     * @param $issueId
      * @throws \Exception
      * @throws \Exceptions
      */
@@ -464,19 +462,29 @@ class JIRA
         }
 
         $result = null;
-        if ($map) {
-            $result = $this->searchByIds(array_keys($map));
-            // cleanup deleted issues
-            foreach ($result['issues'] as $data) {
-                unset($map[$data['id']]);
-            }
-            foreach ($map as $issue) {
-                $em->remove($issue);
-            }
-            $em->flush();
+        if (!$map) {
+            return $result;
         }
 
-        return $result;
+        try {
+
+            $result = $this->service()->searchIssues(sprintf('id IN (%s)', implode(',', array_keys($map))));
+            return $result;
+
+        } catch (ApiCoreException $e) {
+
+            foreach ($e->errors as $error) {
+                if (!preg_match('/A value with ID \'(\d+)\' does not exist for the field \'id\'\./', $error, $matches)) {
+                    continue;
+                }
+                if (isset($map[$matches[1]])) {
+                    $em->remove($map[$matches[1]]);
+                }
+            }
+            $em->flush();
+
+            return $this->issues($ticketId);
+        }
     }
 
     /**
