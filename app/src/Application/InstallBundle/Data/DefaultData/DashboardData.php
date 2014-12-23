@@ -71,6 +71,23 @@ class DashboardData extends AbstractDefaultData
                         ),
                     ),
                 ),
+                array(
+                    'title' => 'Billing',
+                    'columns' => 10,
+                    'sort_order' => 3,
+                    'widgets' => array(
+                        array(
+                            'title' => 'Ticket Satisfaction1',
+                            'position' => "0:0",
+                            'size'     => '4:3',
+                        ),
+                        array(
+                            'title' => 'Ticket Satisfaction2',
+                            'position' => "0:4",
+                            'size'     => '6:3',
+                        ),
+                    ),
+                ),
             ),
         ),
         array(

@@ -209,7 +209,7 @@ class ReportDashboardWidget extends DomainObject
      *
      * @return $this
      */
-    public function setWidget(ReportBuilder $report)
+    public function setWidget(ReportBuilder $report = null)
     {
         $this->widget = $report;
         return $this;
@@ -292,7 +292,7 @@ class ReportDashboardWidget extends DomainObject
 					 0 => array(
 						 'name'                 => 'widget_id',
 						 'referencedColumnName' => 'id',
-						 'nullable'             => false,
+						 'nullable'             => true,
 						 'onDelete'             => 'cascade',
 						 'columnDefinition'     => null,
 					 ),

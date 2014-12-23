@@ -78,7 +78,7 @@
 
   "angularGridster":                 "bower_components/angular-gridster/src/angular-gridster",
   "ngTable":                         "bower_components/ng-table/ng-table",
-  "amcharts":                        "//cdn.amcharts.com/lib/3/amcharts",
-  "amcharts.pie":                    "//cdn.amcharts.com/lib/3/pie",
-  "amcharts.serial":                 "//cdn.amcharts.com/lib/3/serial"
+  "amcharts":                        "bower_components/amcharts/dist/amcharts/amcharts",
+  "amcharts.pie":                    "bower_components/amcharts/dist/amcharts/pie",
+  "amcharts.serial":                 "bower_components/amcharts/dist/amcharts/serial"
 }
