@@ -104,6 +104,7 @@ class TicketManager
         $this->save_actions[] = new TicketSaveActions\VerifyCreationSystem();
         $this->save_actions[] = new TicketSaveActions\VerifyRef($container->getRefGenerator());
         $this->save_actions[] = new TicketSaveActions\VerifyOrgManagers($container->getEm()->getRepository('DeskPRO:Organization'));
+        $this->save_actions[] = new TicketSaveActions\VerifyAgent($container->getAgentData());
         $this->save_actions[] = new TicketSaveActions\DetectAutoresponders(
             $container->getEm(),
             $container->getSetting('core_email.antiflood_newtickets'),

@@ -2720,6 +2720,7 @@ class Person extends DomainObject implements HighlightableModelInterface
             'name' => 'people',
             'indexes' => array(
                 'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ),
+                'was_agent_idx' => array( 'columns' => array( 0 => 'was_agent', ), ),
                 'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed', ), ),
             )
         ));
