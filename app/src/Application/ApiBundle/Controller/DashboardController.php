@@ -211,6 +211,7 @@ class DashboardController extends AbstractController
         $dashboard = new Dashboard();
         $dashboard -> setTitle($prototype->getTitle().'_clone');
 
+        $reportsToClone = array();
         foreach($prototype->getReports() as $report_prototype)
         {
             $report = new Tab();
@@ -219,11 +220,15 @@ class DashboardController extends AbstractController
                 ->setColumns($report_prototype->getColumns())
                 ->setSortOrder($report_prototype->getSortOrder());
             $dashboard->addReport($report);
-//            $this->service->copyWidgetLinks($report, $report_prototype);
+            $reportsToClone[] = array('report'=>$report, 'prototype'=>$report_prototype);
         }
-        $this->permissionsService->clonePermissions($dashboard);
+        $data = $this->service->saveDashboard($dashboard);
+        foreach($reportsToClone as $reportToClone) {
+            $this->service->copyWidgetLinks($reportToClone['report'], $reportsToClone['prototype']);
+        }
+        $this->permissionsService->clonePermissions($dashboard, $prototype);
 
-        return $this->createApiResponse($this->service->saveDashboard($dashboard));
+        return $this->createApiResponse($data);
     }
 
     /**

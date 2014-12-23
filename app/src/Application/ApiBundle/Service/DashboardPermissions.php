@@ -171,9 +171,9 @@ class DashboardPermissions
 
     }
 
-    public function clonePermissions(DashboardEntity $dashboard)
+    public function clonePermissions(DashboardEntity $dashboard, DashboardEntity $prototype)
     {
-        $reportDashboardPermissions = $this->getDashboardPermissions($dashboard);
+        $reportDashboardPermissions = $this->getDashboardPermissions($prototype);
         foreach($reportDashboardPermissions as $permission_prototype)
         {
             $permission = new Permission();
