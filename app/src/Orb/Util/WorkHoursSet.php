@@ -60,6 +60,9 @@ class WorkHoursSet implements WorkHoursInterface
      *
      * A true value means the day is on. E.g., m-f is: array(false, true, true, true, true, true, false)
      *
+     * NOTE: This array is stored differently than it is passed into the constructor. Read constructor
+     * doc for usage.
+     *
      * @var array
      */
     protected $work_days = array();
@@ -80,11 +83,11 @@ class WorkHoursSet implements WorkHoursInterface
 
 
     /**
-     * @param int   $work_start
-     * @param int   $work_end
-     * @param array $work_days
-     * @param int   $work_timezone
-     * @param array $work_holidays
+     * @param int   $work_start         Seconds into the day when work day starts
+     * @param int   $work_end           Seconds into the day when work day ends
+     * @param array $work_days          Array of days of week. 0 = Sunday, 6 = Saturday. Eg: array(1,3,5) is Monday, Wed, Friday
+     * @param int   $work_timezone      Timezone string for the hours
+     * @param array $work_holidays      Array of holidays
      */
     public function __construct($work_start, $work_end, array $work_days, $work_timezone, array $work_holidays = array())
     {
@@ -97,9 +100,18 @@ class WorkHoursSet implements WorkHoursInterface
             $work_timezone = 'UTC';
         }
 
+        // Converts array of day numbers into
+        // an array of dow=>true/false
+        $work_days_array = array_fill(0, 6, false);
+        foreach ($work_days as $k) {
+            if (isset($work_days_array[$k])) {
+                $work_days_array[$k] = true;
+            }
+        }
+
         $this->work_start = $work_start;
         $this->work_end = $work_end;
-        $this->work_days = $work_days;
+        $this->work_days = $work_days_array;
         $this->work_timezone = $work_timezone;
         $this->work_holidays = $work_holidays;
 
