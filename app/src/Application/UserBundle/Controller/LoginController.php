@@ -136,7 +136,12 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
                 // Announce if its an agent
                 if ($set_active) {
                     $this->session->set('active_status', 'available');
-                    $this->session->set('is_chat_available', 1);
+
+                    if ($person->hasPerm('agent_chat.use')) {
+                        $this->session->set('is_chat_available', 1);
+                    } else {
+                        $this->session->set('is_chat_available', 0);
+                    }
                 }
 
                 $this->session->save();
@@ -456,7 +461,12 @@ HTML;
             if (!isset($GLOBALS['DP_LOGIN_VIA_TOKEN'])) {
                 // Set their status to available by default
                 $this->session->set('active_status', 'available');
-                $this->session->set('is_chat_available', 1);
+
+                if ($person->hasPerm('agent_chat.use')) {
+                    $this->session->set('is_chat_available', 1);
+                } else {
+                    $this->session->set('is_chat_available', 0);
+                }
 
                 $data = array(
                     'agent_id'   => $person['id'],
