@@ -13,6 +13,8 @@ use \Doctrine\ORM\EntityManager;
 use Application\DeskPRO\Entity\ReportDashboard as DashboardEntity;
 use Application\DeskPRO\Entity\Person as PersonEntity;
 use Application\DeskPRO\Entity\ReportDashboardPermission as Permission;
+use Application\DeskPRO\EntityRepository\Person as PersonRepository;
+
 class DashboardPermissions
 {
     const PERMISSION_FULL = 2;
@@ -101,6 +103,10 @@ class DashboardPermissions
     public function setPermissions(PersonEntity $person, DashboardEntity $dashboard, $permission)
     {
         $personPermissions = $this->getPersonPermissions($person, $dashboard);
+        if(!$personPermissions) {
+            $personPermissions = new Permission();
+            $personPermissions->setDashboard($dashboard)->setPerson($person);
+        }
         switch($permission)
         {
             case self::PERMISSION_FULL:
@@ -112,6 +118,8 @@ class DashboardPermissions
                 $this->save($personPermissions);
                 break;
             case self::PERMISSION_NONE:
+                $this->em->remove($personPermissions);
+                $this->em->flush($personPermissions);
                 break;
         }
     }
@@ -143,28 +151,40 @@ class DashboardPermissions
         return $permissions;
     }
 
+    protected function getAllAgents()
+    {
+        $personRepository = $this->em->getRepository('DeskPRO:Person');
+        $agents = $personRepository->getAgents();
+        return $agents;
+    }
 
     public function getApiDashboardPermissions(DashboardEntity $dashboard)
     {
 
         $permissions = $this->getDashboardPermissions($dashboard);
+        $agents = $this->getAllAgents();
         $data = array();
 
         foreach($permissions as $permission)
         {
-            $data[$permission->getAgent()->getId()] = array(
-                'permissions' => $this->mapPermissions($permission->getName()),
-                'id' => $permission->getAgent()->getId(),
-            );
+            if(isset($agents[$permission->getAgent()->getId()])) {
+                $data[$permission->getAgent()->getId()] = array(
+                    'permissions' => $this->mapPermissions($permission->getName()),
+                    'id' => $permission->getAgent()->getId(),
+                );
+            }
         }
-        $persons = $this->em->getRepository('DeskPRO:Person')->findBy(
-            array('id' => array_keys($data))
-        );
-        foreach($persons as $person)
+        foreach($agents as $agent)
         {
-            /** @var PersonEntity $person */
-            $data[$person->getId()]['name'] = $person->getDisplayName();
-            $data[$person->getId()]['avatar'] = $person->getPictureUrl();
+            /** @var PersonEntity $agent */
+            if(!isset($data[$agent->getId()])) {
+                $data[$agent->getId()] = array(
+                    'permissions' => self::PERMISSION_NONE,
+                    'id' => $agent->getId(),
+                );
+            }
+            $data[$agent->getId()]['name'] = $agent->getDisplayName();
+            $data[$agent->getId()]['avatar'] = $agent->getPictureUrl();
         }
         $data = array_values($data);
         return $data;

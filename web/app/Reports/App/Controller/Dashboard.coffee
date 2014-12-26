@@ -95,7 +95,7 @@ define -> [
     ###
 
     ###
-    # Creates modal instance and resolves dashboard as null, so ModalInstace controller will have to create new object
+    # Creates modal instance and resolves dashboard as null, so ModalInstance controller will have to create new object
     ###
     $scope.newDashboardModal = () ->
       modalInstance = $modal.open {

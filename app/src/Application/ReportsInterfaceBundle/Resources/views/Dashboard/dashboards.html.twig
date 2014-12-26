@@ -5,6 +5,7 @@
             <span class="title">On this dashboard:</span>
             <a
                     ng-repeat='agent in permissions track by agent.id'
+                    ng-if="agent.permissions != 0"
                     class="avatar"
                     title="{{ ng_var('agent.name') }}"
                     style="background-image: url({{ ng_var('agent.avatar') }});">
