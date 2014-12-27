@@ -603,12 +603,14 @@ class PersonController extends AbstractController
                     : array();
 
                 foreach ($person->usergroups as $personGroup) {
+                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
                     if (false === in_array($personGroup, $usergroups, true)) {
                         $person->removeUsergroup($personGroup);
                     }
                 }
 
                 foreach ($usergroups as $personGroup) {
+                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
                     $person->addUsergroup($personGroup);
                 }
 

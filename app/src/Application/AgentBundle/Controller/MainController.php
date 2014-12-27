@@ -34,6 +34,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -121,18 +122,29 @@ class MainController extends AbstractController
             WHERE p.is_agent = true AND s.date_last > ?
         ", array($cutoff));
 
-        $agent_chat_depmap = $this->db->fetchAllGrouped("
-            SELECT department_permissions.person_id, department_permissions.department_id
-            FROM department_permissions
-            WHERE
-                department_permissions.person_id IS NOT NULL
-                AND department_permissions.app = 'chat' AND department_permissions.value = 1
-        ", array(), 'person_id', null, 'department_id');
-
-        foreach ($agent_chat_depmap as &$v) {
-            if ($v) {
-                $v = array_unique($v, \SORT_NUMERIC);
+        $with_chat_perm = array();
+        foreach ($this->container->getAgentData()->getAgents() as $a) {
+            if ($a->hasPerm('agent_chat.use')) {
+                $with_chat_perm[] = $a->id;
             }
+        }
+
+        if ($with_chat_perm) {
+            $agent_chat_depmap = $this->db->fetchAllGrouped("
+                SELECT department_permissions.person_id, department_permissions.department_id
+                FROM department_permissions
+                WHERE
+                    department_permissions.person_id IN (?)
+                    AND department_permissions.app = 'chat' AND department_permissions.value = 1
+            ", array($with_chat_perm), 'person_id', null, 'department_id', array(Connection::PARAM_INT_ARRAY));
+
+            foreach ($agent_chat_depmap as &$v) {
+                if ($v) {
+                    $v = array_unique($v, \SORT_NUMERIC);
+                }
+            }
+        } else {
+            $agent_chat_depmap = array();
         }
 
         $is_first_login = false;

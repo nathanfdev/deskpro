@@ -525,7 +525,7 @@
 
     'core_tickets.default_ticket_reverse_order' => true,
 
-    'core_tickets.work_hours' => 'a:8:{s:11:"active_time";s:3:"all";s:10:"start_hour";i:9;s:12:"start_minute";i:0;s:8:"end_hour";i:17;s:10:"end_minute";i:0;s:4:"days";a:5:{i:1;b:1;i:2;b:1;i:3;b:1;i:4;b:1;i:5;b:1;}s:8:"timezone";N;s:8:"holidays";a:0:{}}',
+    'core_tickets.work_hours' => 'a:7:{s:8:"timezone";s:3:"UTC";s:10:"start_hour";i:9;s:9:"start_min";i:0;s:8:"end_hour";i:17;s:7:"end_min";i:0;s:8:"holidays";a:0:{}s:9:"work_days";a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}}',
 
     /**
      * The account to use when forwarding messages out

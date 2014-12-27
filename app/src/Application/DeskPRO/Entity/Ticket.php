@@ -2975,7 +2975,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                     return new WorkHoursSet(
                         $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
                         $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
-                        $work_hours->get('work_days', array(false, true, true, true, true, true, false)),
+                        $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
                         $work_hours->get('timezone', 'UTC'),
                         $work_hours->get('holidays', array())
                     );
