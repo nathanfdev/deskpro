@@ -4,7 +4,7 @@
         <div class="report-access-avatars">
             <span class="title">On this dashboard:</span>
             <a
-                    ng-repeat='agent in permissions track by agent.id'
+                    ng-repeat='agent in permissions track by $index'
                     ng-if="agent.permissions != 0"
                     class="avatar"
                     title="{{ ng_var('agent.name') }}"
@@ -22,7 +22,7 @@
             </a>
 
             <ul ng-show="selecting">
-                <li ng-repeat="db in dashboards track by db.id">
+                <li ng-repeat="db in dashboards track by $index">
                     <a class='link-pointer' ng-class='{"current": db.id === dashboard.id}' ng-click="changeDashboard(db)">
                         <span class='logo-deskpro' ng-show="db.default"></span>
                         {{ ng_var('db.title') }}
@@ -69,7 +69,7 @@
     <ul>
         <li class="add-report-link">
             <a ng-click='addReport()'><i class="fa fa-plus"></i></a>
-            <div ng-show='addingReport' class="reports-dropdown expanded">
+            <div ng-show='addingReport' style="z-index: 3333" class="reports-dropdown expanded">
                 <header>
                     <a ng-click="addingReport = !addingReport" class="hide-dropdown"><i class="fa fa-times"></i></a>
                     <i class="fa fa-plus"></i> Create new report
@@ -89,7 +89,7 @@
                 <div class="reports-dropdown-content">
                     <h2>Or clone an existing report</h2>
                     <ul class="clone-list">
-                        <li ng-repeat="db in dashboards track by db.id"
+                        <li ng-repeat="db in dashboards track by $index"
                             ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded(db)}">
 
                             <a ng-show='!isExpanded(db)' ng-click="expandDashboard(db)" class="control"><i class="fa fa-plus-square-o"></i></a>
@@ -99,7 +99,7 @@
 
                             <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
                             <ul ng-show='isExpanded(db) && db.reports.length > 0'>
-                                <li ng-repeat="report in db.reports track by report.id">
+                                <li ng-repeat="report in db.reports track by $index">
                                     <a ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
                                 </li>
                             </ul>
@@ -109,7 +109,7 @@
             </div>
         </li>
 
-        <li ng-repeat="report in dashboard.reports track by report.id" ng-class="{'active-tab':currentReport.id===report.id}">
+        <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ng-class="{'active-tab':currentReport.id===report.id}">
             <a ng-click="changeReport(report)">{{ ng_var('report.title') }}</a>
         </li>
     </ul>
@@ -133,7 +133,7 @@
     <nav class="reports-control">
         <ul>
             <li><a ng-click='editReport()' ng-class="{'control-inactive':dashboard.default}"><i class="fa fa-cog"></i> Edit Report</a></li>
-            <li><a ng-click="cloneReport(currentReport)"><i class="fa fa-copy"></i> Clone Report</a></li>
+            <li><a ng-click="cloneReport(currentReport)" ng-class="{'control-inactive':dashboard.default}"><i class="fa fa-copy"></i> Clone Report</a></li>
         </ul>
     </nav>
 
@@ -153,7 +153,12 @@
 <div class="graph-container">
     <div class="graph-container-controls">
         <!-- default or control-active(when selected) or control-inactive(when disabled for default dashboards) -->
-        <a ng-click="toggleLayoutEdit()" class="control" ng-class = "{'control-active': layoutEditing}">Dashboard Layout <i class="fa fa-columns"></i></a>
+        <a
+                ng-click="toggleLayoutEdit()"
+                class="control"
+                ng-class = "{'control-active': layoutEditing, 'control-inactive': dashboard.default}">
+            Dashboard Layout <i class="fa fa-columns"></i>
+        </a>
         {#<a href="./presentation-only-active-filters.h tml" class="control">Filters <i class="fa fa-filter"></i></a>#}
 
         <span class="generated-graph-info">Report generated at 6.32PM, Aug 24, 2014 <a href="#"><i class="fa fa-refresh"></i></a></span>
@@ -172,7 +177,7 @@
             <div class="box-header">
                 <h3 class="ng-binding">{{ ng_var('widget.name') }}</h3>
                 <div class="box-header-btns pull-right">
-                    <a title="Remove widget" ng-click="DashboardCtrl.removeWidget(widget)"><i class="glyphicon glyphicon-trash">XXX</i></a>
+                    <a title="Remove widget" ng-click="removeWidget(widget)"><i class="glyphicon glyphicon-trash">XXX</i></a>
                 </div>
             </div>
             <div class="box" ng-if="widget.type=='stat'">

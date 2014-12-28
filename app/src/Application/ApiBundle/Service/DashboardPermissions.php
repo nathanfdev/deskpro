@@ -158,6 +158,13 @@ class DashboardPermissions
         return $agents;
     }
 
+    public function getAgent($agent_id)
+    {
+        /** @var PersonRepository $personRepository */
+        $personRepository = $this->em->getRepository("DeskPRO:Person");
+        return $personRepository->getAgent($agent_id);
+    }
+
     public function getApiDashboardPermissions(DashboardEntity $dashboard)
     {
 
@@ -203,6 +210,11 @@ class DashboardPermissions
                 ->setName($permission_prototype->getName());
             $this->save($permission);
         }
+    }
+
+    public function checkEditableDashboard(DashboardEntity $dashboard)
+    {
+        return !$dashboard->isDefault();
     }
 
     public function save($permission)

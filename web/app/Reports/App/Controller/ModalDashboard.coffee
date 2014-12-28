@@ -31,12 +31,14 @@ define -> [
     $scope.state = state
     if dashboard?
       $scope.dashboard = dashboard
+      $scope.dashboard.permissions = permissions
     else
       $scope.dashboard =
         title: '',
         reports: [],
         loaded: false,
         default: false,
+        permissions: []
 #
 #    DashboardWidgetService
 #      .getReports()
@@ -71,12 +73,23 @@ define -> [
       $modalInstance.close($scope.dashboard)
 
     $scope.removeReport = (report) ->
-      DashboardService
-        .removeReport(report)
-        .then (reports) ->
-          $scope.dashboard.reports = reports
-          if(report.id == currentReport.id)
-            currentReport = $scope.dashboard.reports[0]
+      index = DashboardService.findReportIndex report, $scope.dashboard.reports
+      if index >= 0
+        $scope.dashboard.reports[index].deleted = true
+
+    $scope.addNewReport = () ->
+      $scope.dashboard.reports.push {widgets:[], title: '', columns: 10, loaded: false, deleted: false}
+
+    $scope.cloneNewReport = () ->
+      report =
+        widgets:[]
+        title: ''
+        columns: 10
+        loaded: false
+        deleted: false
+      $scope.dashboard.reports.push report
+      report
+
 
     $scope.setPermissions = (agent, permission) ->
 
@@ -87,30 +100,4 @@ define -> [
       else if(permission == 2 && agent.permissions == 2)
         agent.permissions = 1
       DashboardPermissionsService.savePermissions(agent, $scope.dashboard)
-#
-#    $scope.createDashboard = () ->
-#      dashboard =
-#        name: $scope.newDashboard.name,
-#        options:
-#          margins: [20, 20],
-#          columns: parseInt($scope.newDashboard.cols),
-#          floating: true,
-#          swapping: false,
-#          draggable:
-#            handle: 'h3'
-#          resizable:
-#            enabled: true,
-#            handles: ['n', 's', 'w', 'ne', 'se', 'sw', 'nw'],
-#          #start: function (event, $element, widget) { }, // optional callback fired when resize is started,
-#          #resize: function (event, $element, widget) { }, // optional callback fired when item is resized,
-#            stop: $scope.updateWidgetSize # optional callback fired when item is finished resizing
-#        widgets: []
-#
-#      $modalInstance.close(dashboard)
-#
-#    $scope.updateWidgetSize = (event, $element, widget) ->
-#      w = widget;
-#      k = w.$$hashKey;
-#
-#      alert 'found' for widget, i in $scope.dashboard.widgets when widget.$$hashKey == k
 ]

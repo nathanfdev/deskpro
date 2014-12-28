@@ -150,6 +150,17 @@ class ReportDashboardReport extends DomainObject
     }
 
     /**
+     * @param ReportDashboardWidget $widget
+     *
+     * @return $this
+     */
+    public function addWidget(ReportDashboardWidget $widget)
+    {
+        $this->widgets->add($widget);
+        return $this;
+    }
+
+    /**
      * @return int
      */
     public function getSortOrder()
@@ -243,6 +254,7 @@ class ReportDashboardReport extends DomainObject
                 'precision'  => 0,
                 'scale'      => 0,
                 'nullable'   => false,
+                'default'    => 10,
                 'columnName' => 'columns',
             )
         );

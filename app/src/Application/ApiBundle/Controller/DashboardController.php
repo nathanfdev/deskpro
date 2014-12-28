@@ -182,19 +182,52 @@ class DashboardController extends AbstractController
     {
         if($id) {
             $dashboard = $this->service->getDashboard($id);
-            if(!$this->permissionsService->isAllowedToEdit($this->person, $dashboard))
+
+            if(
+                !$this->permissionsService->isAllowedToEdit($this->person, $dashboard)
+                ||
+                !$this->permissionsService->checkEditableDashboard($dashboard)
+            )
             {
                 throw $this->createNotFoundException('Dashboard not found!');
             }
         } else {
             $dashboard = new Dashboard();
         }
-        $title = $this->in->getCleanValue('title', 'string');
+        $postData = $this->in->getAll('post');
         $dashboard
-            ->setTitle($title);
-        $data = $this->service->saveDashboard($dashboard);
+            ->setTitle($postData['title']);
+
+        foreach($postData['reports'] as $report) {
+            if(isset($report['deleted']) && $report['deleted']) {
+                $reportEntity = $this->service->getReport($report['id']);
+                $dashboard->removeReport($reportEntity);
+                $this->service->deleteReport($reportEntity);
+            } else {
+                if(isset($report['id'])) {
+                    $reportEntity = $this->service->getReport($report['id']);
+//                    $reportEntity->setSortOrder($report['sort_order']);
+                } else {
+                    $reportEntity = new Tab();
+                    $reportEntity->setDashboard($dashboard);
+                    $reportEntity->setSortOrder($this->service->getLastSortOrder($dashboard));
+                    $dashboard->addReport($reportEntity);
+                }
+                $reportEntity->setTitle($report['title']);
+                $this->service->saveReport($reportEntity);
+            }
+        }
+        $returnData = $this->service->saveDashboard($dashboard);
+        $returnData['reports'] = $this->service->getReportsData($dashboard);
+        if(isset($postData['permissions'])) {
+            foreach($postData['permissions'] as $permission) {
+                $agent = $this->permissionsService->getAgent($permission['id']);
+                $dashboard = $this->service->getDashboard($permission['dashboard_id']);
+                $this->permissionsService->setPermissions($agent, $dashboard, $permission['permissions']);
+            }
+        }
         $this->permissionsService->setPermissions($this->person, $dashboard, DashboardPermissionService::PERMISSION_FULL);
-        return $this->createApiSuccessResponse($data);
+        return $this->createApiSuccessResponse($returnData);
     }
 
     /**
@@ -204,14 +237,13 @@ class DashboardController extends AbstractController
     public function cloneAction($id)
     {
         $prototype = $this->service->getDashboard($id);
-        if(!$this->permissionsService->isAllowedToEdit($this->person, $prototype))
+        if(!$this->permissionsService->isAllowedToView($this->person, $prototype))
         {
             throw $this->createNotFoundException('Dashboard not found!');
         }
         $dashboard = new Dashboard();
         $dashboard -> setTitle($prototype->getTitle().'_clone');
 
-        $reportsToClone = array();
         foreach($prototype->getReports() as $report_prototype)
         {
             $report = new Tab();
@@ -220,12 +252,11 @@ class DashboardController extends AbstractController
                 ->setColumns($report_prototype->getColumns())
                 ->setSortOrder($report_prototype->getSortOrder());
             $dashboard->addReport($report);
-            $reportsToClone[] = array('report'=>$report, 'prototype'=>$report_prototype);
+            $this->service->copyWidgetLinks($report, $report_prototype);
+
         }
         $data = $this->service->saveDashboard($dashboard);
-        foreach($reportsToClone as $reportToClone) {
-            $this->service->copyWidgetLinks($reportToClone['report'], $reportsToClone['prototype']);
-        }
+
         $this->permissionsService->clonePermissions($dashboard, $prototype);
 
         return $this->createApiResponse($data);
@@ -259,7 +290,11 @@ class DashboardController extends AbstractController
     public function deleteAction($id)
     {
         $dashboard = $this->service->getDashboard($id);
-        if(!$this->permissionsService->isAllowedToView($this->person, $dashboard))
+        if(
+            !$this->permissionsService->isAllowedToEdit($this->person, $dashboard)
+            ||
+            $this->permissionsService->checkEditableDashboard($dashboard)
+        )
         {
             throw $this->createNotFoundException('Dashboard not found!');
         }

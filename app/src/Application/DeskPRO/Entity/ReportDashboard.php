@@ -136,6 +136,17 @@ class ReportDashboard extends DomainObject
     }
 
     /**
+     * @param ReportDashboardReport $report
+     *
+     * @return $this
+     */
+    public function removeReport(ReportDashboardReport $report)
+    {
+        $this->reports->removeElement($report);
+        return $this;
+    }
+
+    /**
      * @return bool
      */
     public function isDefault()

@@ -140,6 +140,7 @@ class Dashboard
                 'id'           => $report->getId(),
                 'dashboard_id' => $dashboard->getId(),
                 'loaded'       => false,
+                'deleted'      => false,
                 'options'      => array(
                     'columns'  => $report->getColumns(),
                     "floating" => false,
@@ -162,20 +163,33 @@ class Dashboard
     public function getReport($report)
     {
         if(! ($report instanceof DashboardReportEntity)) {
-            $report = $this->em->getRepository('DeskPRO:ReportDashboardReport')->find((int) $report);
-            if (!$report) throw new NotFoundHttpException('DashboardReport not found!');
+            $report_id = $report;
+            $report = $this->em->getRepository('DeskPRO:ReportDashboardReport')->find((int) $report_id);
+            if (!$report) throw new NotFoundHttpException(sprintf('DashboardReport[%d] not found!', $report_id));
         }
         return $report;
+    }
+
+    public function deleteReport($report, $flush = false)
+    {
+        $report = $this->getReport($report);
+        $this->em->remove($report);
+        if($flush) {
+            $this->em->flush();
+        }
+
     }
 
     /**
      * @param DashboardReportEntity $report
      * @return array
      */
-    public function saveReport(DashboardReportEntity $report)
+    public function saveReport(DashboardReportEntity $report, $flush = false)
     {
         $this->em->persist($report);
-        $this->em->flush();
+        if($flush) {
+            $this->em->flush();
+        }
         return $this->getReportData($report);
     }
 
@@ -226,7 +240,7 @@ class Dashboard
                 ->setReport($report)
                 ->setWidget($widget_prototype->getWidget());
             $this->em->persist($widget);
+            $report->addWidget($widget);
         }
-        $this->em->flush();
     }
 }

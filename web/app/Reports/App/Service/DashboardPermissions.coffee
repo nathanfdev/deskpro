@@ -3,17 +3,23 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     constructor: (Api, $q) ->
       @Api = Api
       @$q = $q
-      @storage = {}
+      @storage = []
 
     getPermissions: (dashboard) ->
       deferred = @$q.defer()
-      if @storage[dashboard]?
-        deferred.resolve @storage[dashboard]
+
+      index = Arrays.findIndex @storage,
+        (v) ->
+          if v? and v.id is dashboard.id
+            return true
+
+      if @storage[index]?
+        deferred.resolve @storage[index]
       else
         @getDashboardPermissions(dashboard).then (response) =>
           permissions = response.data
-          @storage[dashboard] = permissions
-          deferred.resolve(@storage[dashboard])
+          @storage.push permissions
+          deferred.resolve permissions
       deferred.promise
 
     getDashboardPermissions: (dashboard) ->

@@ -54,9 +54,9 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       else
         return  @Api.sendGet "#{@hostname}#{filePath}"
 
-    getDbIndexById: (dbs, id) ->
+    getIndexById: (storage, id) ->
       index = -1
-      index = Arrays.findIndex dbs,
+      index = Arrays.findIndex storage,
       (v) ->
         if v? and v.id is id
           return true
@@ -91,7 +91,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
         widget.id = response.data.id
         widget.data = response.data.data
         widget.type = response.data.type
-        ind = @getDbIndexById(@dashboardService.storage.dbs, dbId)
+        ind = @getIndexById(@dashboardService.storage.dbs, dbId)
         if ind != -1
           @dashboardService.storage.dbs[ind].widgets.push widget
           @storage[widget.id] = widget

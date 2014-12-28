@@ -19,6 +19,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           return true
       return index
 
+    findReportIndex: (report, reports) ->
+      index = -1
+      index = Arrays.findIndex reports,
+        (v) ->
+          if v? and v.id is report.id
+            return true
+      return index
+
 
     ###
     # Operations about dashboards
@@ -30,17 +38,37 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       if dashboard.id
         oldOne = true
         url += "/#{dashboard.id}";
+
+      data =
+        title: dashboard.title
+        reports: dashboard.reports
+#      dashboard.reports.map (report) ->
+#        data.reports.push report.id
+#        if report.deleted
+#          data.reports_to_delete: report.id
+#        name = "report#{report.id}"
+#        data[name] = report
+
       @Api
-        .sendPost url, {title: dashboard.title}
+        .sendPostJson url, data
         .then (response) =>
             if(response)
               dashboard.id = response.data.id
+              dashboard.reports = response.data.reports
               if !oldOne
                 @storage.dbs.push(dashboard)
               deferred.resolve dashboard
           , () =>
             console.error 'something goes wrong!'
       deferred.promise
+
+    fillReportData: (report, data) ->
+      name = "report#{report.id}"
+      data[name] =
+        deleted: report.deleted
+        title: report.title
+        id: report.id
+
 
     cloneDashboard: (dashboard) ->
       deferred = @$q.defer()
@@ -100,7 +128,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     getReport: (report) ->
       deferred = @$q.defer()
-      reportIndex = Arrays.findIndex @storage.dbs
+      reportIndex = Arrays.findIndex @storage.reports
       , (v, i) ->
         if v.id is report.id then true else false
       if(!report.loaded)
@@ -152,6 +180,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         title: report.title
         columns: if report.columns? then report.columns else 0
         loaded: false
+        deleted: false
         widgets: []
 
       @Api
@@ -184,6 +213,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           clonedOne.dashboard_id = dashboard_id
           clonedOne.cloned = true
           @storage.reports.push clonedOne
+          console.log clonedOne
           deferred.resolve clonedOne
       , () =>
         console.error 'something goes wrong!'

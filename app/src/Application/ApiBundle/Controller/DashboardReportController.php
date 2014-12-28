@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReport;
 use Application\ApiBundle\Service\Dashboard as DashboardService;
+use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionService;
 
 /**
  * @SWG\Resource(
@@ -51,10 +52,14 @@ class DashboardReportController extends AbstractController
     /** @var DashboardService */
     protected $service;
 
+    /** @var DashboardPermissionService */
+    protected $permissionsService;
+
     public function init()
     {
         parent::init();
         $this->service = $this->get('dashboard.service');
+        $this->permissionsService = $this->get('dashboard.permissions.service');
     }
 
     /**
@@ -84,19 +89,25 @@ class DashboardReportController extends AbstractController
     {
         $prototype = $this->service->getReport($id);
         $dashboard = $this->service->getDashboard($dashboard_id);
+        if(!$this->permissionsService->checkEditableDashboard($dashboard)) {
+            throw $this->createNotFoundException();
+        }
         $report = new DashboardReport();
         $report
             ->setTitle($prototype->getTitle().'_clone')
             ->setColumns($prototype->getColumns())
             ->setDashboard($dashboard)
             ->setSortOrder($this->service->getLastSortOrder($dashboard));
-//        $this->service->copyWidgetLinks($report, $prototype);
-        return $this->createApiSuccessResponse($this->service->saveReport($report));
+        $this->service->copyWidgetLinks($report, $prototype);
+        return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }
 
     public function saveAction($id)
     {
         $report = $this->service->getReport($id);
+        if(!$this->permissionsService->checkEditableDashboard($report->getDashboard())) {
+            throw $this->createNotFoundException();
+        }
 
         $title = $this->in->getCleanValue('title', 'string');
         $columns = $this->in->getCleanValue('columns', 'string');
@@ -105,12 +116,15 @@ class DashboardReportController extends AbstractController
             ->setTitle($title)
             ->setColumns($columns);
 
-        return $this->createApiSuccessResponse($this->service->saveReport($report));
+        return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }
 
     public function createAction($dashboard_id)
     {
         $dashboard = $this->service->getDashboard($dashboard_id);
+        if(!$this->permissionsService->checkEditableDashboard($dashboard)) {
+            throw $this->createNotFoundException();
+        }
         $report = new DashboardReport();
         $title = $this->in->getCleanValue('title', 'string');
         $columns = $this->in->getCleanValue('columns', 'string');
@@ -120,13 +134,16 @@ class DashboardReportController extends AbstractController
             ->setDashboard($dashboard)
             ->setSortOrder($this->service->getLastSortOrder($dashboard))
             ->setColumns($columns);
-        return $this->createApiSuccessResponse($this->service->saveReport($report));
+        return $this->createApiSuccessResponse($this->service->saveReport($report, true));
 
     }
 
     public function deleteAction($id)
     {
         $report = $this->service->getReport($id);
+        if(!$this->permissionsService->checkEditableDashboard($report->getDashboard())) {
+            throw $this->createNotFoundException();
+        }
         $this->em->remove($report);
         $this->em->flush();
         return $this->createApiDeleteResponse();
