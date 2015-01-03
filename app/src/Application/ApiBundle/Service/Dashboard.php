@@ -95,9 +95,10 @@ class Dashboard
         $report = $this->getReport($report);
         $widgets = array();
         foreach($report->getWidgets() as $widget) {
+
             $pos  = $widget->getPosition();
             $size = $widget->getSize();
-            $widgets[] = array(
+            $wdata = array(
                 'id'    => $widget->getId(),
                 'name'  => $widget->getTitle(),
                 "row"   => $pos[0],
@@ -107,6 +108,12 @@ class Dashboard
                 "type"  => "graph",
                 "data"  => array(),
             );
+            if($hc_data = $widget->getHcData()) {
+                $wdata['type'] = 'hardcoded';
+                $wdata['inner_type'] = $hc_data['inner_type'];
+                $wdata['outer_type'] = $hc_data['outer_type'];
+            }
+            $widgets[] = $wdata;
         }
         $data = array(
             'title'        => $report->getTitle(),

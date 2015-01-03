@@ -1,0 +1,80 @@
+<section class="report-wrapper">
+    <header>
+        <h2 style="float: left;">
+            {{ ng_var('chats_created.sum') }} Chats were Created
+        </h2>
+
+        <div style="float: left; padding-bottom: 5px;">
+            <select ui-select2 ng-model="chats_created.date_choice" style="min-width: 120px" class="no-search"
+                    ng-change="getStats('chats_created')">
+                {% for field,title in {
+                'today': 'Today',
+                'this_week': 'This Week',
+                'this_month': 'This Month',
+                'this_year': 'This Year',
+                } %}
+                    <option value="{{ field }}">
+                        {{ title }}
+                    </option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <div class="clearfix"></div>
+
+        <h3>
+            Showing Grouped by
+            <select ui-select2 ng-model="chats_created.grouping_field" style="min-width: 120px" class="no-search"
+                    ng-change="getStats('chats_created')">
+                <optgroup label="Chat Fields">
+                    <option {% if chats_created.grouping_field == 'department' %}selected="selected"{% endif %}
+                            value="department">Department
+                    </option>
+                    <option {% if chats_created.grouping_field == 'agent' %}selected="selected"{% endif %} value="agent">Agent
+                    </option>
+                </optgroup>
+                <optgroup label="User Fields">
+                    <option {% if chats_created.grouping_field == 'user' %}selected="selected"{% endif %} value="user">User
+                    </option>
+                    <option {% if chats_created.grouping_field == 'organization' %}selected="selected"{% endif %}
+                            value="organization">Organization
+                    </option>
+                    <option {% if chats_created.grouping_field == 'usergroup' %}selected="selected"{% endif %} value="usergroup">
+                        Usergroup
+                    </option>
+                    {% for field_def in app.getCustomFieldManager('people').getFields() %}
+                        <option {% if chats_created.grouping_field == ('user_field.' ~ field_def.id) %}selected="selected"{% endif %}
+                                value="user_field.{{ field_def.id }}">{{ field_def.title }}</option>
+                    {% endfor %}
+                </optgroup>
+            </select>
+        </h3>
+    </header>
+    <article>
+        <div class="dp-layout-loading" ng-show="chats_created.loading"><i></i></div>
+        <table class="stat-table" width="100%" ng-if="!chats_created.empty" ng-hide="chats_created.loading">
+            <tr ng-repeat="stat in chats_created.stats">
+                <td class="title"><span>{{ ng_var('stat.title') }}</span></td>
+                <td width="100%">
+                    <table width="100%" class="stat-value">
+                        <tr>
+                            <td class="value" width="{{ ng_var('stat.left_percentage') }}%">
+                                <div>&nbsp;</div>
+                            </td>
+                            <td width="{{ ng_var('stat.right_percentage') }}%">
+                                {{ ng_var('stat.value') }}
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+            <tr class="total-row">
+                <td class="title">Total:</td>
+                <td class="val">{{ ng_var('chats_created.sum') }}</td>
+            </tr>
+        </table>
+        <div class="no-data" ng-if="chats_created.empty" ng-hide="chats_created.loading">
+            <h3>No matching data</h3>
+        </div>
+    </article>
+</section>

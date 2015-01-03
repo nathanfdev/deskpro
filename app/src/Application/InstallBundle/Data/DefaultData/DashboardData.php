@@ -26,14 +26,46 @@ class DashboardData extends AbstractDefaultData
                     'sort_order' => 1,
                     'widgets' => array(
                         array(
-                            'title' => 'Overview1',
+                            'title' => 'Tickets awaiting agent',
                             'position' => "0:0",
-                            'size'     => '4:3',
+                            'size'     => '5:2',
+                            'hc_data'  => 'overview:tickets_awaiting_agent'
                         ),
                         array(
-                            'title' => 'Overview2',
-                            'position' => "0:4",
-                            'size'     => '6:3',
+                            'title' => 'Tickets Resolved',
+                            'position' => "0:5",
+                            'size'     => '5:2',
+                            'hc_data'  => 'overview:tickets_resolved'
+                        ),
+                        array(
+                            'title' => 'Tickets Response Time',
+                            'position' => "2:0",
+                            'size'     => '5:2',
+                            'hc_data'  => 'overview:tickets_response_time'
+                        ),
+                        array(
+                            'title' => 'Tickets User Waiting Time',
+                            'position' => "2:5",
+                            'size'     => '5:2',
+                            'hc_data'  => 'overview:tickets_user_waiting_time'
+                        ),
+                        array(
+                            'title' => 'Tickets Opened Hour',
+                            'position' => "4:0",
+                            'size'     => '5:2',
+                            'hc_data'  => 'overview:tickets_opened_hour'
+                        ),
+                        array(
+                            'title' => 'Tickets SLA Status',
+                            'position' => "4:5",
+                            'size'     => '5:2',
+                            'hc_data'  => 'overview:tickets_sla_status'
+                        ),
+                        array(
+                            'title' => 'Chats Created',
+                            'position' => "6:0",
+                            'size'     => '10:3',
+                            'hc_data'  => 'overview:chats_created'
                         ),
                     ),
                 ),
@@ -178,8 +210,13 @@ class DashboardData extends AbstractDefaultData
                         ->setTitle($widget['title'])
                         ->setSize($widget['size'])
                         ->setPosition($widget['position'])
-                        ->setReport($tab)
-                        ->setWidget($widgetPrototype);
+                        ->setReport($tab);
+                        if(isset($widget['hc_data'])) {
+                            $widgetEntity->setHcData($widget['hc_data']);
+                        } else {
+                            $widgetEntity->setWidget($widgetPrototype);
+                        }
+
                     $this->getEm()->persist($widgetEntity);
                 }
             }

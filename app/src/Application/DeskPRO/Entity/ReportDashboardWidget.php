@@ -48,6 +48,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property ReportBuilder   $report
  * @property string          $position simple 1:1 position just explode to own x and y (col & row)
  * @property string          $size     same as previous, explode and you'll have sizeX and sizeY
+ * @property string          $hc_data  hardcoded data for default dashboards
  */
 class ReportDashboardWidget extends DomainObject
 {
@@ -80,6 +81,11 @@ class ReportDashboardWidget extends DomainObject
      * @var string
      */
     protected $size = '1:1';
+
+    /**
+     * @var string
+     */
+    protected $hc_data = null;
 
     /**
      * @return int
@@ -215,6 +221,31 @@ class ReportDashboardWidget extends DomainObject
         return $this;
     }
 
+    /**
+     * @return string
+     */
+    public function getHcData()
+    {
+        if(!is_null($this->hc_data) && !is_array($this->hc_data)) {
+            $temp = explode(':', $this->hc_data);
+            $this->hc_data = array(
+                'inner_type' => $temp[1],
+                'outer_type' => $temp[0],
+            );
+        }
+        return $this->hc_data;
+    }
+
+    /**
+     * @param string $data
+     * @return $this
+     */
+    public function setHcData($data)
+    {
+        $this->hc_data = $data;
+        return $this;
+    }
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -277,6 +308,17 @@ class ReportDashboardWidget extends DomainObject
 				 'scale'      => 0,
 				 'nullable'   => false,
 				 'columnName' => 'size',
+			)
+		);
+        $metadata->mapField(
+			array(
+				 'fieldName'  => 'hc_data',
+				 'type'       => 'string',
+				 'length'     => 50,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => true,
+				 'columnName' => 'hc_data',
 			)
 		);
 

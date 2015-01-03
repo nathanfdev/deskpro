@@ -183,7 +183,7 @@
             <div class="box" ng-if="widget.type=='stat'">
                 <dashboard-stat title="{{ ng_var('widget.name') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
             </div>
-            <div class="box" ng-show="widget.type=='graph'">
+            <div class="box" ng-if="widget.type=='graph'">
                 <dashboard-amcharts
                         my-index="{{ ng_var('$index') }}"
                         title="{{ ng_var('widget.name') }}"
@@ -194,6 +194,15 @@
             </div>
             <div class="box" ng-if="widget.type=='table'">
                 <dashboard-table my-index="{{ ng_var('$index') }}" title="{{ ng_var('widget.name') }}" table-data="{{ ng_var('widget.data') }}" wtype="{{ ng_var('widget.type') }}"> </dashboard-table>
+            </div>
+            <div class="box" ng-if="widget.type=='hardcoded'">
+                <dashboard-hardcoded
+                        my-index="{{ ng_var('$index') }}"
+                        title="{{ ng_var('widget.name') }}"
+                        inner-type="{{ ng_var('widget.inner_type') }}"
+                        outer-type="{{ ng_var('widget.outer_type') }}"
+                        wtype="{{ ng_var('widget.type') }}">
+                </dashboard-hardcoded>
             </div>
         </li>
     </ul>

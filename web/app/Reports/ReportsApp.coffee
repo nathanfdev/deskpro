@@ -9,10 +9,12 @@ define [
 
 
   'Reports/App/Service/Dashboard'
+  'Reports/App/Service/Hardcoded'
   'Reports/App/Service/DashboardWidget'
   'Reports/App/Service/DashboardPermissions'
 
   'Reports/App/Directive/DashboardAmcharts',
+  'Reports/App/Directive/DashboardHardcoded',
   'Reports/App/Directive/DashboardStat',
   'Reports/App/Directive/DashboardTable',
 
@@ -32,10 +34,12 @@ define [
   Reports_App_Controller_ModalReport,
 
   Reports_App_Service_Dashboard,
+  Reports_App_Service_Hardcoded,
   Reports_App_Service_DashboardWidget,
   Reports_App_Service_DashboardPermissions,
 
   Reports_App_Directive_DashboardAmcharts,
+  Reports_App_Directive_DashboardHardcoded,
   Reports_App_Directive_DashboardStat,
   Reports_App_Directive_DashboardTable,
 
@@ -66,6 +70,10 @@ define [
     return new Reports_App_Service_Dashboard(Api, $q)
   ])
 
+  ReportsApp.service('HardcodedService', ['Api', '$q', (Api, $q) ->
+    return new Reports_App_Service_Hardcoded(Api, $q)
+  ])
+
   ReportsApp.service('DashboardWidgetService', ['Api', '$q', (Api, $q) ->
     return new Reports_App_Service_DashboardWidget(Api, $q)
   ])
@@ -78,6 +86,7 @@ define [
   # Directives section
   ###
   ReportsApp.directive('dashboardAmcharts', Reports_App_Directive_DashboardAmcharts)
+  ReportsApp.directive('dashboardHardcoded', Reports_App_Directive_DashboardHardcoded)
 #  ReportsApp.directive('dashboardStat', Reports_App_Directive_DashboardStat)
 #  ReportsApp.directive('dashboardTable', Reports_App_Directive_DashboardTable)
 

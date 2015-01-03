@@ -4,9 +4,17 @@ define -> [
   '$modal',
   '$rootScope',
   'DashboardService',
+  'HardcodedService',
   'DashboardWidgetService',
   'DashboardPermissionsService',
-  ($scope, $q, $modal, $rootScope, DashboardService, DashboardWidgetService, DashboardPermissionsService) ->
+  ($scope,
+   $q,
+   $modal,
+   $rootScope,
+   DashboardService,
+   HardcodedService,
+   DashboardWidgetService,
+   DashboardPermissionsService) ->
 
     DashboardService.setWidgetService(DashboardWidgetService)
 
