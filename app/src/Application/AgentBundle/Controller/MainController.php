@@ -36,10 +36,13 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MainController extends AbstractController
 {
@@ -467,7 +470,7 @@ class MainController extends AbstractController
     {
         $rows = array();
 
-        $render_person = function (Person $person) {
+        $render_person = function (Person $person, array $counts = array()) {
             $data = array();
             $data['picture_url']    = $person->getPictureUrl();
             $data['picture_url_80'] = $person->getPictureUrl(80);
@@ -488,6 +491,10 @@ class MainController extends AbstractController
                 );
             } else {
                 $data['primary_email'] = null;
+            }
+
+            if (isset($counts[$person['id']])) {
+                $data['tickets_count'] = $counts[$person['id']];
             }
 
             return $data;
@@ -523,8 +530,9 @@ class MainController extends AbstractController
                 break;
 
             case 'person':
+                $counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($results);
                 foreach ($results as $r) {
-                    $rows[] = $render_person($r);
+                    $rows[] = $render_person($r, $counts);
                 }
                 break;
 
@@ -574,5 +582,21 @@ class MainController extends AbstractController
         }
 
         return $rows;
+    }
+
+    public function getPersonTicketsAction(Request $request)
+    {
+        if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
+            throw new NotFoundHttpException;
+        }
+
+        /** @var TicketRepository $rep */
+        $rep = $this->em->getRepository('DeskPRO:Ticket');
+        $limit = $request->get('all') ? null : 15;
+        $tickets = $rep->getPersonTickets($person, $limit);
+
+        return $this->createJsonResponse(array(
+            'results' => $this->renderSearchResults('ticket', $tickets),
+        ));
     }
 }
