@@ -41,6 +41,14 @@ function deskpro_install_check_reqs()
         $errors['openssl_ext'] = 'recommended';
     }
 
+    if (!extension_loaded('imap')) {
+        $errors['imap_check'] = 'recommended';
+    }
+
+    if (!extension_loaded('soap')) {
+        $errors['soap_check'] = 'recommended';
+    }
+
     $enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
     $enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
     $enabledOpcache = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
