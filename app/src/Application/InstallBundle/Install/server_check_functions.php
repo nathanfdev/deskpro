@@ -43,7 +43,7 @@ function deskpro_install_check_reqs()
 
     $enabledApc = function_exists('apc_store') && (int) ini_get('apc.enabled');
     $enabledWincache = extension_loaded('wincache') && (int) ini_get('wincache.ocenabled');
-    $enabledOpcache = (int) ini_get('opcache.enable') || extension_loaded('Zend OPcache');
+    $enabledOpcache = (int) ini_get('opcache.enable') && extension_loaded('Zend OPcache');
 
     if (!($enabledApc || $enabledWincache || $enabledOpcache)) {
         $errors['apc_check'] = 'recommended';
