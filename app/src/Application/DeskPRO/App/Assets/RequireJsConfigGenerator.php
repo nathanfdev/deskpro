@@ -42,6 +42,12 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
     public function __construct(AppManagerInterface $manager, $native_file_root = null)
     {
         foreach ($manager->getAllPackages() as $package) {
+
+            // No app is installed, dont need to output rjs map for it
+            if (!count($manager->getPackageApps($package->name))) {
+                continue;
+            }
+
             if ($native_file_root && $package->native_name) {
                 $native_baseurl = $native_file_root . '/' . $package->native_name;
             } else {
