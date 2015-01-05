@@ -29,43 +29,44 @@ class DashboardData extends AbstractDefaultData
                             'title' => 'Tickets awaiting agent',
                             'position' => "0:0",
                             'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_awaiting_agent'
+                            'hc_data'  => 'overview:tickets_awaiting_agent',
+                            'variables' => array('test'=>'test', 'test1'=>'test1'),
                         ),
                         array(
                             'title' => 'Tickets Resolved',
                             'position' => "0:5",
                             'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_resolved'
+                            'hc_data'  => 'overview:tickets_resolved',
                         ),
                         array(
                             'title' => 'Tickets Response Time',
                             'position' => "2:0",
                             'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_response_time'
+                            'hc_data'  => 'overview:tickets_response_time',
                         ),
                         array(
                             'title' => 'Tickets User Waiting Time',
                             'position' => "2:5",
                             'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_user_waiting_time'
+                            'hc_data'  => 'overview:tickets_user_waiting_time',
                         ),
                         array(
                             'title' => 'Tickets Opened Hour',
                             'position' => "4:0",
                             'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_opened_hour'
+                            'hc_data'  => 'overview:tickets_opened_hour',
                         ),
                         array(
                             'title' => 'Tickets SLA Status',
                             'position' => "4:5",
                             'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_sla_status'
+                            'hc_data'  => 'overview:tickets_sla_status',
                         ),
                         array(
                             'title' => 'Chats Created',
                             'position' => "6:0",
                             'size'     => '10:3',
-                            'hc_data'  => 'overview:chats_created'
+                            'hc_data'  => 'overview:chats_created',
                         ),
                     ),
                 ),
@@ -78,13 +79,13 @@ class DashboardData extends AbstractDefaultData
                             'title' => 'Agent Activity',
                             'position' => "0:0",
                             'size'     => '10:3',
-                            'hc_data'  => 'performance:agent_activity'
+                            'hc_data'  => 'performance:agent_activity',
                         ),
                         array(
                             'title' => 'Agent Hours',
                             'position' => "4:0",
                             'size'     => '10:3',
-                            'hc_data'  => 'performance:agent_hours'
+                            'hc_data'  => 'performance:agent_hours',
                         ),
                     ),
                 ),
@@ -97,13 +98,13 @@ class DashboardData extends AbstractDefaultData
                             'title' => 'Feedback',
                             'position' => "0:0",
                             'size'     => '10:3',
-                            'hc_data'  => 'ticket_satisfaction:feed'
+                            'hc_data'  => 'ticket_satisfaction:feed',
                         ),
                         array(
                             'title' => 'Summary',
                             'position' => "4:0",
                             'size'     => '10:3',
-                            'hc_data'  => 'ticket_satisfaction:summary'
+                            'hc_data'  => 'ticket_satisfaction:summary',
                         ),
                     ),
                 ),
@@ -167,9 +168,14 @@ class DashboardData extends AbstractDefaultData
                         ->setReport($tab);
                         if(isset($widget['hc_data'])) {
                             $widgetEntity->setHcData($widget['hc_data']);
+                            $widgetEntity->setType(Widget::WIDGET_TYPE_HARDCODED);
                         } else {
                             $widgetEntity->setWidget($widgetPrototype);
+                            $widgetEntity->setType(Widget::WIDGET_TYPE_BAR);
                         }
+                    if(isset($widget['variables'])) {
+                        $widgetEntity->setVariables($widget['variables']);
+                    }
 
                     $this->getEm()->persist($widgetEntity);
                 }

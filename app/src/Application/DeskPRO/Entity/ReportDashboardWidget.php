@@ -52,6 +52,11 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  */
 class ReportDashboardWidget extends DomainObject
 {
+
+    const WIDGET_TYPE_HARDCODED = 'hardcoded';
+    const WIDGET_TYPE_BAR       = 'bar';
+    const WIDGET_TYPE_PIE       = 'pie';
+    const WIDGET_TYPE_TABLE     = 'table';
 	/**
 	 * @var int
 	 */
@@ -86,6 +91,16 @@ class ReportDashboardWidget extends DomainObject
      * @var string
      */
     protected $hc_data = null;
+
+    /**
+     * @var string
+     */
+    protected $type;
+
+    /**
+     * @var array
+     */
+    protected $variables;
 
     /**
      * @return int
@@ -246,6 +261,28 @@ class ReportDashboardWidget extends DomainObject
         return $this;
     }
 
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
+
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    public function getVariables()
+    {
+        return $this->variables;
+    }
+
+    public function setVariables(array $variables)
+    {
+        $this->variables = $variables;
+        return $this;
+    }
+
 
 	############################################################################
 	# Doctrine Metadata
@@ -321,6 +358,30 @@ class ReportDashboardWidget extends DomainObject
 				 'columnName' => 'hc_data',
 			)
 		);
+
+        $metadata->mapField(
+			array(
+				 'fieldName'  => 'type',
+				 'type'       => 'string',
+				 'length'     => 50,
+				 'precision'  => 0,
+				 'scale'      => 0,
+				 'nullable'   => true,
+				 'columnName' => 'type',
+			)
+		);
+
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'variables',
+                'type'       => 'json_array',
+                'length'     => 250,
+                'precision'  => 0,
+                'scale'      => 0,
+                'nullable'   => true,
+                'columnName' => 'variables',
+            )
+        );
 
 		$metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 

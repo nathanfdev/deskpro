@@ -120,6 +120,7 @@ class Dashboard
                 "type"  => "graph",
                 "data"  => array(),
             );
+            $variables = $widget->getVariables();
             if($hc_data = $widget->getHcData()) {
                 switch ($hc_data['outer_type']) {
                     case self::OUTER_TYPE_OVERVIEW:

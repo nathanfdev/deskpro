@@ -30,8 +30,6 @@
     }
   }
 
-
-
   > ul > li ul {
     .list-counter {
       background: #dcddde;
@@ -162,6 +160,68 @@
       background: #fff;
     }
   }
+
+
+  .sidebar-brand {
+    padding: 5px;
+    background: #e1e6eb;
+    border-bottom: 1px solid #dedfe0;
+
+    * {
+      vertical-align: middle;
+    }
+
+    a {
+      @extend %whitespace;
+      display: block;
+      text-decoration: none;
+      background: #f1f4f6;
+      border: 1px solid #c1cad4;
+      border-radius: 2px;
+      padding: 2px;
+      padding-right: 20px;
+      position: relative;
+
+      i {
+        position: absolute;
+        right: 10px;
+        top: 9px;
+      }
+    }
+
+    .faded {
+      opacity: 0.5;
+    }
+
+    .brand-logo {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 2px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.1);
+      margin-right: 5px;
+    }
+
+    ul {
+      @extend %flat-list;
+
+      li {
+        a {
+          border-bottom: 0px;
+          border-radius: 0px;
+        }
+
+        &:last-child {
+          a {
+            border-bottom: 1px solid #c1cad4;
+          }
+        }
+      }
+    }
+  }
+
+
 
 
   .flag {

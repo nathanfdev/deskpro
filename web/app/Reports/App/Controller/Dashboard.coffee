@@ -166,6 +166,7 @@ define -> [
     # Just as previous one, but the dashboard object resolves to current dashboard
     ###
     $scope.editDashboardModal = (state) ->
+      reportsLength = $scope.dashboard.reports.length + 1 - 1
       $scope.closeAllDropdowns()
       modalInstance = $modal.open {
         templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
@@ -182,15 +183,13 @@ define -> [
       }
 
       modalInstance.result.then (dashboard) =>
-        reportsLength = $scope.dashboard.reports.length
         DashboardService
           .saveDashboard dashboard
           .then (saved) ->
             $scope.dashboard = saved
-            console.log(saved)
             if $scope.currentReport.deleted
               $scope.changeReport $scope.dashboard.reports[0]
-            else if reportsLength > $scope.dashboard.reports.length
+            else if reportsLength < $scope.dashboard.reports.length
               $scope.changeReport $scope.dashboard.reports[$scope.dashboard.reports.length - 1]
 
 
