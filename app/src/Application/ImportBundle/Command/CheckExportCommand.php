@@ -32,19 +32,21 @@
 namespace Application\ImportBundle\Command;
 
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\ProgressBar;
+use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
+use Application\ImportBundle\Generator\GeneratorFactory;
 
+/**
+ * Class CheckExportCommand
+ * @package Application\ImportBundle\Command
+ */
 class CheckExportCommand extends ContainerAwareCommand
 {
-    /** @var ProgressBar */
-    protected $progress_bar;
-
     /**
      * {@inheritDoc}
      */
@@ -57,7 +59,6 @@ class CheckExportCommand extends ContainerAwareCommand
         $this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
@@ -65,7 +66,6 @@ class CheckExportCommand extends ContainerAwareCommand
     {
         return parent::getContainer();
     }
-
 
     /**
      * {@inheritDoc}
@@ -79,13 +79,14 @@ class CheckExportCommand extends ContainerAwareCommand
             $logger->err('You must supply an "input-path" argument while using CSV exporter');
         }
 
-        $this->progress_bar = $this->getHelperSet()->get('progress');
+        /** @var ProgressHelper $progress_bar */
+        $progress_bar = $this->getHelperSet()->get('progress');
 
-        $factory = new \Application\ImportBundle\GeneratorFactory($this->getContainer(), $input);
+        /** @var GeneratorFactory $factory */
+        $factory = $this->getContainer()->get('deskpro.import.generator.factory');
 
-        $generator_config = $factory->createGeneratorConfig();
-
-        $generator_config->progress_bar	= $this->progress_bar;
+        $generator_config = $factory->createGeneratorConfig($input);
+        $generator_config->setProgressBarHelper($progress_bar);
         $generator_config->output	= $output;
 
         $generator = $factory->createGenerator($generator_config, $logger);

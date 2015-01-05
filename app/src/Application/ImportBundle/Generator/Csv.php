@@ -34,7 +34,6 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Exception\BadDataException;
-use Application\ImportBundle\GeneratorConfig;
 use Orb\Util\Arrays;
 use Psr\Log\LoggerInterface;
 
@@ -73,8 +72,8 @@ class Csv extends AbstractGenerator
 
         if ($this->config->mode == 'live') {
             foreach (array('people', 'tickets') as $n) {
-                if (!is_dir($config->output_path . $n)) {
-                    mkdir($config->output_path . $n, 0777, true);
+                if (!is_dir($config->getOutputPath() . $n)) {
+                    mkdir($config->getOutputPath() . $n, 0777, true);
                 }
             }
         }
@@ -87,11 +86,9 @@ class Csv extends AbstractGenerator
      */
     public function generateJson()
     {
-        $steps = $this->getRecordCount('people') +
-            $this->getRecordCount('tickets') +
-            $this->getRecordCount('messages');
+        $steps = $this->getRecordCount('people') + $this->getRecordCount('tickets') + $this->getRecordCount('messages');
 
-        $this->config->progress_bar->start($this->config->output, $steps);
+        $this->config->getProgressBarHelper()->start($this->config->output, $steps);
 
         try {
             $this->exportPeople();
@@ -110,7 +107,7 @@ class Csv extends AbstractGenerator
      */
     protected function getFileName($data_source)
     {
-        return $this->config->input_path . DIRECTORY_SEPARATOR . $data_source . '.csv';
+        return $this->config->getInputPath() . DIRECTORY_SEPARATOR . $data_source . '.csv';
     }
 
     /**
@@ -171,14 +168,14 @@ class Csv extends AbstractGenerator
         foreach ($this->getData('people') as $person) {
             if (!count(Arrays::removeEmptyString($person))) {
                 $index++;
-                $this->config->progress_bar->advance();
+                $this->config->getProgressBarHelper()->advance();
                 continue;
             }
 
             if (!isset($person['email'])) {
                 $this->logger->warning(sprintf('Invalid person record found (Skipping): %s'));
                 $index++;
-                $this->config->progress_bar->advance();
+                $this->config->getProgressBarHelper()->advance();
                 continue;
             }
 
@@ -205,7 +202,7 @@ class Csv extends AbstractGenerator
 
             $this->logger->info(sprintf('%s exported successfully!', $file_name));
 
-            $this->config->progress_bar->advance();
+            $this->config->getProgressBarHelper()->advance();
 
             $index++;
         }
@@ -221,14 +218,14 @@ class Csv extends AbstractGenerator
         foreach ($this->getData('tickets') as $ticket) {
             if (!count(Arrays::removeEmptyString($ticket))) {
                 $index++;
-                $this->config->progress_bar->advance();
+                $this->config->getProgressBarHelper()->advance();
                 continue;
             }
 
             if (!isset($ticket['subject']) || !isset($ticket['user'])) {
                 $this->logger->warning(sprintf('Invalid ticket record found (Skipping)'));
                 $index++;
-                $this->config->progress_bar->advance();
+                $this->config->getProgressBarHelper()->advance();
                 continue;
             }
 
@@ -250,7 +247,7 @@ class Csv extends AbstractGenerator
             $this->logger->info(sprintf('%s exported successfully!', $file_name));
             $this->read_ticket_ids[$ticket['id']] = true;
 
-            $this->config->progress_bar->advance();
+            $this->config->getProgressBarHelper()->advance();
 
             $index++;
         }
@@ -266,14 +263,14 @@ class Csv extends AbstractGenerator
         foreach ($this->getData('messages') as $ticket_message) {
             if (!count(Arrays::removeEmptyString($ticket_message))) {
                 $index++;
-                $this->config->progress_bar->advance();
+                $this->config->getProgressBarHelper()->advance();
                 continue;
             }
 
             if (!isset($ticket_message['message_text']) || !isset($ticket_message['user'])) {
                 $this->logger->warning(sprintf('Invalid ticket message record found (Skipping)'));
                 $index++;
-                $this->config->progress_bar->advance();
+                $this->config->getProgressBarHelper()->advance();
                 continue;
             }
 
@@ -312,7 +309,7 @@ class Csv extends AbstractGenerator
 
             $index++;
 
-            $this->config->progress_bar->advance();
+            $this->config->getProgressBarHelper()->advance();
         }
     }
 
@@ -341,7 +338,7 @@ class Csv extends AbstractGenerator
         }
 
         if ($handle) {
-            while (($row = fgetcsv($handle, 0, $sep)) !== FALSE) {
+            while (($row = fgetcsv($handle, 0, $sep)) !== false) {
                 if(!$header) {
                     $header = array_map('trim',$row);
                     $header_count = count($header);

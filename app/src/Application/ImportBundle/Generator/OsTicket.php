@@ -33,7 +33,6 @@
 
 namespace Application\ImportBundle\Generator;
 
-use Application\ImportBundle\GeneratorConfig;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -80,13 +79,13 @@ class OsTicket extends AbstractGenerator
         $db_username = $os_config['db_username'];
         $db_password = $os_config['db_password'];
 
-        if (!is_dir($config->output_path)) {
-            throw new \Exception('Invalid output-path ' . $config->output_path);
+        if (!is_dir($config->getOutputPath())) {
+            throw new \Exception('Invalid output-path ' . $config->getOutputPath());
         }
 
         $this->config = $config;
 
-        $this->output_path = $config->output_path;
+        $this->output_path = $config->getOutputPath();
 
         $this->batch_size = 10;
 
@@ -102,7 +101,7 @@ class OsTicket extends AbstractGenerator
     {
         $steps = $this->getPeopleCount() + $this->getTicketCount();
 
-        $this->config->progress_bar->start($this->config->output, $steps);
+        $this->config->getProgressBarHelper()->start($this->config->output, $steps);
 
         try {
             $this->exportPeople();
@@ -331,7 +330,7 @@ class OsTicket extends AbstractGenerator
                 file_put_contents($file_path . $file_name, json_encode($transformedArray));
             }
 
-            $this->config->progress_bar->advance();
+            $this->config->getProgressBarHelper()->advance();
 
             //$this->logger->info(sprintf('%s exported successfully!', $file_name));
 
@@ -409,7 +408,7 @@ class OsTicket extends AbstractGenerator
 
                 //$this->logger->info(sprintf('%s exported successfully!', $file_name));
 
-                $this->config->progress_bar->advance();
+                $this->config->getProgressBarHelper()->advance();
             }
 
             $ticket_batch = $this->findAllTickets($offset);

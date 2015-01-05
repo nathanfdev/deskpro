@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator;
 
-use Application\ImportBundle\GeneratorConfig;
 use Psr\Log\LoggerInterface;
 
 /**
@@ -55,7 +54,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function getExportPeopleOutputPath()
     {
-        return $this->config->output_path . self::EXPORT_PEOPLE_PATH;
+        return $this->config->getOutputPath() . self::EXPORT_PEOPLE_PATH;
     }
 
     /**
@@ -65,7 +64,7 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function getExportTicketsOutputPath()
     {
-        return $this->config->output_path . self::EXPORT_TICKETS_PATH;
+        return $this->config->getOutputPath() . self::EXPORT_TICKETS_PATH;
     }
 
     /**
@@ -75,6 +74,6 @@ abstract class AbstractGenerator implements GeneratorInterface
      */
     protected function getExportTicketMessagesOutputPath()
     {
-        return $this->config->output_path . self::EXPORT_TICKET_MESSAGES_PATH;
+        return $this->config->getOutputPath() . self::EXPORT_TICKET_MESSAGES_PATH;
     }
 }

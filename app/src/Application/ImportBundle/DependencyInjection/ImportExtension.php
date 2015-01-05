@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,59 +25,20 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
-* DeskPRO
-*
-* @package DeskPRO
-*/
+namespace Application\ImportBundle\DependencyInjection;
 
-namespace Application\ImportBundle;
-
-use Symfony\Component\Console\Application;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
-use Application\ImportBundle\DependencyInjection;
+use Symfony\Component\DependencyInjection\Definition;
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
-class ImportBundle extends Bundle
+class ImportExtension extends Extension
 {
-    public function __construct()
-    {
-        $this->name = 'Import';
-    }
-
     /**
      * {@inheritdoc}
      */
-    public function build(ContainerBuilder $container)
+    public function load(array $config, ContainerBuilder $container)
     {
-        $container->registerExtension(new DependencyInjection\ImportExtension());
-    }
-
-    /**
-     * @param Application $application An Application instance
-     */
-    public function registerCommands(Application $application)
-    {
-        $commands = array(
-            'Application\\ImportBundle\\Command\\CheckImportCommand',
-            'Application\\ImportBundle\\Command\\CheckExportCommand',
-            'Application\\ImportBundle\\Command\\ExportCommand',
-            'Application\\ImportBundle\\Command\\ImportCommand',
-            'Application\\ImportBundle\\Command\\ResetCommand',
-        );
-
-        foreach ($commands as $cmd) {
-            $application->add(new $cmd);
-        }
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        $definition = new Definition('Application\ImportBundle\Generator\GeneratorFactory');
+        $container->setDefinition('deskpro.import.generator.factory', $definition);
     }
 }

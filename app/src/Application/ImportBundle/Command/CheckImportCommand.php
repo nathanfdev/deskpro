@@ -56,7 +56,6 @@ class CheckImportCommand extends ContainerAwareCommand
         $this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
     }
 
-
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */

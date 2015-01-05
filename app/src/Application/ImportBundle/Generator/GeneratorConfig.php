@@ -29,11 +29,15 @@
  * @package Importer
  */
 
-namespace Application\ImportBundle;
+namespace Application\ImportBundle\Generator;
 
 use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Output\ConsoleOutput;
 
+/**
+ * Class GeneratorConfig
+ * @package Application\ImportBundle\Generator
+ */
 class GeneratorConfig
 {
     /**
@@ -44,17 +48,17 @@ class GeneratorConfig
     /**
      * @var string
      */
-    public $input_path;
+    private $input_path;
 
     /**
      * @var string
      */
-    public $output_path;
+    private $output_path;
 
     /**
      * @var string
      */
-    public $log_path;
+    private $log_path;
 
     /**
      * 'test' or 'live'
@@ -70,12 +74,88 @@ class GeneratorConfig
     public $mark_done = true;
 
     /**
-     * @var ProgressHelper
-     */
-    public $progress_bar;
-
-    /**
      * @var ConsoleOutput
      */
     public $output;
+
+    /**
+     * @var ProgressHelper
+     */
+    private $progress_bar;
+
+    /**
+     * @return string
+     */
+    public function getInputPath()
+    {
+        return $this->input_path;
+    }
+
+    /**
+     * @param string $input_path
+     * @return $this
+     */
+    public function setInputPath($input_path)
+    {
+        $this->input_path = $input_path;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOutputPath()
+    {
+        return $this->output_path;
+    }
+
+    /**
+     * @param string $output_path
+     * @return $this
+     */
+    public function setOutputPath($output_path)
+    {
+        $this->output_path = $output_path;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLogPath()
+    {
+        return $this->log_path;
+    }
+
+    /**
+     * @param string $log_path
+     * @return $this
+     */
+    public function setLogPath($log_path)
+    {
+        $this->log_path = $log_path;
+        return $this;
+    }
+
+    /**
+     * Set progress bar helper
+     *
+     * @param ProgressHelper $progress_bar
+     * @return $this
+     */
+    public function setProgressBarHelper(ProgressHelper $progress_bar)
+    {
+        $this->progress_bar = $progress_bar;
+        return $this;
+    }
+
+    /**
+     * Get progress bar helper
+     *
+     * @return ProgressHelper
+     */
+    public function getProgressBarHelper()
+    {
+        return $this->progress_bar;
+    }
 }

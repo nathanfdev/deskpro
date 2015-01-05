@@ -29,10 +29,8 @@
  * @package Generator
  */
 
-namespace Application\ImportBundle;
+namespace Application\ImportBundle\Generator;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Orb\Util\OptionsArray;
 use Symfony\Component\Console\Input\InputInterface;
 use Psr\Log\LoggerInterface;
@@ -40,20 +38,10 @@ use Exception;
 
 /**
  * Class GeneratorFactory
- * @package Application\ImportBundle
+ * @package Application\ImportBundle\Generator
  */
 class GeneratorFactory
 {
-    /**
-     * @var \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    private $container;
-
-    /**
-     * @var \Symfony\Component\Console\Input\InputInterface|null
-     */
-    private $input;
-
     /** @var array */
     protected $generators_map = array(
         'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket',
@@ -61,55 +49,46 @@ class GeneratorFactory
     );
 
     /**
-     * @param DeskproContainer $container
-     * @param InputInterface   $input
-     */
-    public function __construct(DeskproContainer $container, InputInterface $input = null)
-    {
-        $this->container = $container;
-        $this->input = $input;
-    }
-
-    /**
+     * @param InputInterface $input
      * @return GeneratorConfig
      */
-    public function createGeneratorConfig()
+    public function createGeneratorConfig(InputInterface $input)
     {
         $config = new GeneratorConfig();
 
         $import_config = new OptionsArray(dp_get_config('import', array()));
-        $config->output_path = $import_config->get('output_path');
-        $config->log_path	 = $import_config->get('log_path', dp_get_log_dir() . '/export');
+        $config->setOutputPath($import_config->get('output_path'));
+        $config->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export'));
         $config->mode		 = $import_config->get('mode', 'test');
         $config->mark_done	 = $import_config->get('mark_done', true);
 
-        if ($this->input) {
-            if ($this->input->hasArgument('script')) {
-                $config->script = $this->input->getArgument('script');
-            }
-
-            if ($this->input->hasOption('output-path')) {
-                $config->output_path = rtrim($this->input->getOption('output-path'), "\\/") . "/";
-            }
-            if ($this->input->hasOption('input-path')) {
-                $config->input_path = $this->input->getOption('input-path');
-            }
-            if ($this->input->hasOption('log-path')) {
-                $config->log_path = $this->input->getOption('log-path');
-            }
-            if ($this->input->hasOption('mode')) {
-                $config->mode = $this->input->getOption('mode');
-            }
-            if ($this->input->hasOption('live')) {
-                $config->mode = 'live';
-            }
-            if ($this->input->hasOption('mark-done')) {
-                $config->mark_done = (bool)$this->input->getOption('mark-done');
-            }
+        if ($input->hasArgument('script')) {
+            $config->script = $input->getArgument('script');
+        }
+        if ($input->hasOption('output-path')) {
+            $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
+        }
+        if ($input->hasOption('input-path')) {
+            $config->setInputPath($input->getOption('input-path'));
+        }
+        if ($input->hasOption('log-path')) {
+            $config->setLogPath($input->getOption('log-path'));
+        }
+        if ($input->hasOption('mode')) {
+            $config->mode = $input->getOption('mode');
+        }
+        if ($input->hasOption('live')) {
+            $config->mode = 'live';
+        }
+        if ($input->hasOption('mark-done')) {
+            $config->mark_done = (bool)$input->getOption('mark-done');
         }
 
-        if (!is_dir($config->output_path)) {
-            throw new \InvalidArgumentException(sprintf("Invalid configuration: data_path is invalid (got %s)", $config->output_path));
+        if (!is_dir($config->getOutputPath())) {
+            throw new \InvalidArgumentException(sprintf(
+                'Invalid configuration: data_path is invalid (got %s)',
+                $config->getOutputPath())
+            );
         }
 
         return $config;
