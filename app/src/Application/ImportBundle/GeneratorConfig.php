@@ -31,12 +31,20 @@
 
 namespace Application\ImportBundle;
 
+use Symfony\Component\Console\Helper\ProgressHelper;
+use Symfony\Component\Console\Output\ConsoleOutput;
+
 class GeneratorConfig
 {
     /**
      * @var string
      */
     public $script;
+
+    /**
+     * @var string
+     */
+    public $input_path;
 
     /**
      * @var string
@@ -60,4 +68,14 @@ class GeneratorConfig
      * @var bool
      */
     public $mark_done = true;
+
+    /**
+     * @var ProgressHelper
+     */
+    public $progress_bar;
+
+    /**
+     * @var ConsoleOutput
+     */
+    public $output;
 }

@@ -39,6 +39,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class CheckImportCommand
+ * @package Application\ImportBundle\Command
+ */
 class CheckImportCommand extends ContainerAwareCommand
 {
     /**
@@ -60,7 +64,6 @@ class CheckImportCommand extends ContainerAwareCommand
     {
         return parent::getContainer();
     }
-
 
     /**
      * {@inheritDoc}

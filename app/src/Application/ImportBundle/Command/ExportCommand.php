@@ -40,6 +40,10 @@ use Symfony\Component\Console\Output\OutputInterface;
 use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
+/**
+ * Class ExportCommand
+ * @package Application\ImportBundle\Command
+ */
 class ExportCommand extends ContainerAwareCommand
 {
     /** @var ProgressBar */
@@ -65,7 +69,6 @@ class ExportCommand extends ContainerAwareCommand
     {
         return parent::getContainer();
     }
-
 
     /**
      * {@inheritDoc}

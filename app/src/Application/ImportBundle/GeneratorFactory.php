@@ -36,7 +36,12 @@ use Application\ImportBundle\Generator\GeneratorInterface;
 use Orb\Util\OptionsArray;
 use Symfony\Component\Console\Input\InputInterface;
 use Psr\Log\LoggerInterface;
+use Exception;
 
+/**
+ * Class GeneratorFactory
+ * @package Application\ImportBundle
+ */
 class GeneratorFactory
 {
     /**
@@ -55,7 +60,6 @@ class GeneratorFactory
         'csv'		=> 'Application\\ImportBundle\\Generator\\Csv',
     );
 
-
     /**
      * @param DeskproContainer $container
      * @param InputInterface   $input
@@ -66,7 +70,6 @@ class GeneratorFactory
         $this->input = $input;
     }
 
-
     /**
      * @return GeneratorConfig
      */
@@ -75,10 +78,10 @@ class GeneratorFactory
         $config = new GeneratorConfig();
 
         $import_config = new OptionsArray(dp_get_config('import', array()));
-        $config->output_path	= $import_config->get('output_path');
-        $config->log_path	= $import_config->get('log_path', dp_get_log_dir() . '/export');
-        $config->mode		= $import_config->get('mode', 'test');
-        $config->mark_done	= $import_config->get('mark_done', true);
+        $config->output_path = $import_config->get('output_path');
+        $config->log_path	 = $import_config->get('log_path', dp_get_log_dir() . '/export');
+        $config->mode		 = $import_config->get('mode', 'test');
+        $config->mark_done	 = $import_config->get('mark_done', true);
 
         if ($this->input) {
             if ($this->input->hasArgument('script')) {
@@ -114,21 +117,19 @@ class GeneratorFactory
 
 
     /**
-     * @param  LoggerInterface $logger
-     * @return Generator
+     * @param GeneratorConfig $config
+     * @param LoggerInterface $logger
+     *
+     * @return GeneratorInterface
+     * @throws Exception
      */
     public function createGenerator(GeneratorConfig $config, LoggerInterface $logger = null)
     {
         $generator_class = $this->generators_map[$config->script];
 
         $generator = new $generator_class($config, $logger);
-
         if (!$generator instanceof GeneratorInterface) {
-            throw new \Exception($generator_class . ' is not a valid generator');
-        }
-
-        if (!method_exists($generator,'generateJson')) {
-            throw new \Exception($generator_class . ' does not have a "generateJson" method');
+            throw new Exception($generator_class . ' is not a valid generator');
         }
 
         return $generator;

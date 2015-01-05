@@ -34,30 +34,44 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\GeneratorConfig;
+use Psr\Log\LoggerInterface;
 
 /**
  * Description of OsTicket
  *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  */
-class OsTicket implements GeneratorInterface
+class OsTicket extends AbstractGenerator
 {
-    /** @var \PDO */
+    /**
+     * @var \PDO
+     */
     protected $db;
-    /** @var string */
+
+    /**
+     * @var string
+     */
     protected $output_path;
-    /** @var int|null */
+
+    /**
+     * @var int|null
+     */
     protected $ticket_offset;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     protected $batch_size;
 
-    /** @var \Psr\Log\LoggerInterface */
-    protected $logger;
-
-    /** @var GeneratorConfig */
-    protected $config;
-
-    public function __construct(GeneratorConfig $config, $logger)
+    /**
+     * Constructor
+     *
+     * @param GeneratorConfig $config
+     * @param LoggerInterface $logger
+     *
+     * @throws \Exception
+     */
+    public function __construct(GeneratorConfig $config, LoggerInterface $logger)
     {
         $os_config = dp_get_config('osticket_import');
 
@@ -81,7 +95,24 @@ class OsTicket implements GeneratorInterface
         $this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
     }
 
-    public function getTicketCount()
+    /**
+     * {@inheritdoc}
+     */
+    public function generateJson()
+    {
+        $steps = $this->getPeopleCount() + $this->getTicketCount();
+
+        $this->config->progress_bar->start($this->config->output, $steps);
+
+        try {
+            $this->exportPeople();
+            $this->exportTickets();
+        } catch (\Exception $ex) {
+            //$this->logger->warning($ex->getMessage());
+        }
+    }
+
+    protected function getTicketCount()
     {
         $query = 'SELECT count(ticket_id) FROM ost_ticket';
 
@@ -92,7 +123,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchColumn();
     }
 
-    public function getPeopleCount()
+    protected function getPeopleCount()
     {
         $query = 'SELECT count(staff_id) FROM ost_staff';
         $stmt   = $this->db->prepare($query);
@@ -107,7 +138,7 @@ class OsTicket implements GeneratorInterface
         return $staff_count + $user_count;
     }
 
-    public function findAllTickets($offset)
+    protected function findAllTickets($offset)
     {
         $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
         . ' LIMIT :limit'
@@ -122,7 +153,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function findTicketAttachment($ticket_id)
+    protected function findTicketAttachment($ticket_id)
     {
         $ticket_id = (int) $ticket_id;
 
@@ -136,7 +167,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function findAllStaff($offset = 0)
+    protected function findAllStaff($offset = 0)
     {
         $query = 'SELECT * FROM ost_staff LIMIT :limit OFFSET :offset';
 
@@ -149,7 +180,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function findAllUser($offset = 0)
+    protected function findAllUser($offset = 0)
     {
         $query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id'
         . ' LIMIT :limit'
@@ -164,7 +195,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function findDepartmentFromId($id)
+    protected function findDepartmentFromId($id)
     {
         $query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
 
@@ -174,7 +205,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchColumn();
     }
 
-    public function findUserEmailFromId($id)
+    protected function findUserEmailFromId($id)
     {
         $query = 'SELECT address FROM ost_user_email e'
         . ' LEFT JOIN ost_user u '
@@ -187,7 +218,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchColumn();
     }
 
-    public function findStaffEmailFromId($id)
+    protected function findStaffEmailFromId($id)
     {
         $query = 'SELECT email FROM ost_staff WHERE id = ?';
 
@@ -197,7 +228,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchColumn();
     }
 
-    public function findTeamNameFromId($id)
+    protected function findTeamNameFromId($id)
     {
         $query = 'SELECT name FROM ost_team WHERE id = ?';
 
@@ -207,7 +238,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchColumn();
     }
 
-    public function findMessageThreadFromId($ticket_id)
+    protected function findMessageThreadFromId($ticket_id)
     {
         $query = 'SELECT thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
 
@@ -217,7 +248,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function findTimezoneFromId($id)
+    protected function findTimezoneFromId($id)
     {
         $query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
 
@@ -227,7 +258,7 @@ class OsTicket implements GeneratorInterface
         return $stmt->fetchColumn();
     }
 
-    public function getFileData($file_id)
+    protected function getFileData($file_id)
     {
         $data = '';
 
@@ -245,7 +276,7 @@ class OsTicket implements GeneratorInterface
         return $data;
     }
 
-    public function exportPeople()
+    protected function exportPeople()
     {
         $file_path = $this->output_path . 'people/';
 
@@ -308,7 +339,7 @@ class OsTicket implements GeneratorInterface
         }
     }
 
-    public function exportTickets()
+    protected function exportTickets()
     {
         $ticketPath = $this->output_path . '/tickets/';
 
@@ -382,20 +413,6 @@ class OsTicket implements GeneratorInterface
             }
 
             $ticket_batch = $this->findAllTickets($offset);
-        }
-    }
-
-    public function generateJson()
-    {
-        $steps = $this->getPeopleCount() + $this->getTicketCount();
-
-        $this->config->progress_bar->start($this->config->output, $steps);
-
-        try {
-            $this->exportPeople();
-            $this->exportTickets();
-        } catch (\Exception $ex) {
-            //$this->logger->warning($ex->getMessage());
         }
     }
 }

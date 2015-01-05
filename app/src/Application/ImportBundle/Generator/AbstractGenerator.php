@@ -27,21 +27,54 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\GeneratorConfig;
+use Psr\Log\LoggerInterface;
+
 /**
- * Description of GeneratorInterface
+ * Base generator class methods
  *
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
+ * Class AbstractGenerator
+ * @package Application\ImportBundle\Generator
  */
-interface GeneratorInterface
+abstract class AbstractGenerator implements GeneratorInterface
 {
-    const EXPORT_PEOPLE_PATH          = 'people/';
-    const EXPORT_TICKETS_PATH         = 'tickets/';
-    const EXPORT_TICKET_MESSAGES_PATH = 'tickets/';
+    /**
+     * @var GeneratorConfig
+     */
+    protected $config;
 
     /**
-     * Generates json files
-     *
-     * @return void
+     * @var LoggerInterface
      */
-    public function generateJson();
+    protected $logger;
+
+    /**
+     * Directory to generated people json files
+     *
+     * @return string
+     */
+    protected function getExportPeopleOutputPath()
+    {
+        return $this->config->output_path . self::EXPORT_PEOPLE_PATH;
+    }
+
+    /**
+     * Directory to generated tickets json files
+     *
+     * @return string
+     */
+    protected function getExportTicketsOutputPath()
+    {
+        return $this->config->output_path . self::EXPORT_TICKETS_PATH;
+    }
+
+    /**
+     * Directory to generated ticket messages json files
+     *
+     * @return string
+     */
+    protected function getExportTicketMessagesOutputPath()
+    {
+        return $this->config->output_path . self::EXPORT_TICKET_MESSAGES_PATH;
+    }
 }

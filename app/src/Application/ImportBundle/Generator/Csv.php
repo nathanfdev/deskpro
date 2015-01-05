@@ -33,69 +33,111 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\GeneratorConfig;
 use Orb\Util\Arrays;
+use Psr\Log\LoggerInterface;
 
 /**
- * Description of OsTicket
+ * Description of Csv
  *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  */
-class Csv implements GeneratorInterface
+class Csv extends AbstractGenerator
 {
-    /** @var string */
-    protected $input_path;
-    /** @var string */
-    protected $output_path;
-    /** @var int|null */
+    /**
+     * @var int|null
+     */
     protected $ticket_offset;
-    /** @var int */
+
+    /**
+     * @var int
+     */
     protected $batch_size;
 
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $read_ticket_ids = array();
 
-    /** @var \Psr\Log\LoggerInterface */
-    protected $logger;
-
-    /** @var GeneratorConfig */
-    protected $config;
-
-    public function __construct(GeneratorConfig $config, $logger)
+    /**
+     * Constructor
+     *
+     * @param GeneratorConfig $config
+     * @param LoggerInterface $logger
+     */
+    public function __construct(GeneratorConfig $config, LoggerInterface $logger)
     {
         $this->config = $config;
-
-        $this->input_path = $config->input_path;
-
-        $this->output_path = $config->output_path;
+        $this->logger = $logger;
 
         if ($this->config->mode == 'live') {
             foreach (array('people', 'tickets') as $n) {
-                if (!is_dir($this->output_path.$n)) {
-                    mkdir($this->output_path . $n, 0777, true);
+                if (!is_dir($config->output_path . $n)) {
+                    mkdir($config->output_path . $n, 0777, true);
                 }
             }
         }
 
         $this->batch_size = 10;
-
-        $this->logger = $logger;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function generateJson()
+    {
+        $steps = $this->getRecordCount('people') +
+            $this->getRecordCount('tickets') +
+            $this->getRecordCount('messages');
+
+        $this->config->progress_bar->start($this->config->output, $steps);
+
+        try {
+            $this->exportPeople();
+            $this->exportTickets();
+            $this->exportTicketMessages();
+        } catch (\Exception $ex) {
+            $this->logger->warning($ex->getMessage());
+        }
+    }
+
+    /**
+     * Get full file path
+     *
+     * @param string $data_source
+     * @return string
+     */
     protected function getFileName($data_source)
     {
-        return $this->input_path . DIRECTORY_SEPARATOR . $data_source . '.csv';
+        return $this->config->input_path . DIRECTORY_SEPARATOR . $data_source . '.csv';
     }
 
-
+    /**
+     * Get file pointer resource
+     *
+     * @param string $data_source
+     *
+     * @return resource
+     * @throws BadDataException
+     */
     protected function getFile($data_source)
     {
-        $data_file = $this->getFileName($data_source);
+        $path = $this->getFileName($data_source);
+        if (!file_exists($path)) {
+            throw new BadDataException(sprintf('File `%s` not found', $path));
+        }
 
-        return fopen($data_file, 'rt');
+        return fopen($path, 'rt');
     }
 
-    public function getRecordCount($data_source)
+    /**
+     * @param string $data_source
+     *
+     * @return int
+     * @throws BadDataException
+     */
+    protected function getRecordCount($data_source)
     {
         $data_file = $this->getFile($data_source);
 
@@ -119,11 +161,12 @@ class Csv implements GeneratorInterface
         return $records;
     }
 
-    public function exportPeople()
+    /**
+     * @return void
+     */
+    protected function exportPeople()
     {
         $index = 1;
-
-        $output_file_path = $this->output_path . 'people/';
 
         foreach ($this->getData('people') as $person) {
             if (!count(Arrays::removeEmptyString($person))) {
@@ -150,14 +193,14 @@ class Csv implements GeneratorInterface
 
             $transformedArray = array();
 
-            $transformedArray['oid']		= $index;
-            $transformedArray['is_agent']		= isset($person['is_agent']) ? (bool) $person['is_agent'] : FALSE;
-            $transformedArray['first_name']		= $names[0];
-            $transformedArray['last_name']		= isset($names[1]) ? $names[1] : '';
-            $transformedArray['emails']		= array($person['email']);
+            $transformedArray['oid']        = $index;
+            $transformedArray['is_agent']   = isset($person['is_agent']) ? (bool) $person['is_agent'] : FALSE;
+            $transformedArray['first_name'] = $names[0];
+            $transformedArray['last_name']  = isset($names[1]) ? $names[1] : '';
+            $transformedArray['emails']     = array($person['email']);
 
             if ($this->config->mode === 'live') {
-                file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
+                file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
             }
 
             $this->logger->info(sprintf('%s exported successfully!', $file_name));
@@ -166,14 +209,14 @@ class Csv implements GeneratorInterface
 
             $index++;
         }
-
     }
 
-    public function exportTickets()
+    /**
+     * @return void
+     */
+    protected function exportTickets()
     {
         $index = 1;
-
-        $output_file_path = $this->output_path . 'tickets/';
 
         foreach ($this->getData('tickets') as $ticket) {
             if (!count(Arrays::removeEmptyString($ticket))) {
@@ -193,15 +236,15 @@ class Csv implements GeneratorInterface
 
             $transformedArray = array();
 
-            $transformedArray['ref']		= $ticket['id'];
-            $transformedArray['person']		= $ticket['user'];
-            $transformedArray['agent']		= isset($ticket['agent']) ? $ticket['agent'] : null;
-            $transformedArray['status']		= isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent';
-            $transformedArray['date_created']	= isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s');
-            $transformedArray['subject']		= $ticket['subject'];
+            $transformedArray['ref']          = $ticket['id'];
+            $transformedArray['person']       = $ticket['user'];
+            $transformedArray['agent']        = isset($ticket['agent']) ? $ticket['agent'] : null;
+            $transformedArray['status']       = isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent';
+            $transformedArray['date_created'] = isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s');
+            $transformedArray['subject']      = $ticket['subject'];
 
             if ($this->config->mode === 'live') {
-                file_put_contents($output_file_path . $file_name, json_encode($transformedArray));
+                file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformedArray));
             }
 
             $this->logger->info(sprintf('%s exported successfully!', $file_name));
@@ -213,10 +256,11 @@ class Csv implements GeneratorInterface
         }
     }
 
-    public function exportTicketMessages()
+    /**
+     * @return void
+     */
+    protected function exportTicketMessages()
     {
-        $output_file_path = $this->output_path . 'tickets/';
-
         $index = 0;
 
         foreach ($this->getData('messages') as $ticket_message) {
@@ -237,7 +281,7 @@ class Csv implements GeneratorInterface
 
             $ticket_file_name = 'ticket_' . $ticket_id . '.json';
 
-            $ticket_file_path = $output_file_path . $ticket_file_name;
+            $ticket_file_path = $this->getExportTicketMessagesOutputPath() . $ticket_file_name;
 
             if ($this->config->mode === 'live') {
                 if (is_file($ticket_file_path)) {
@@ -272,7 +316,13 @@ class Csv implements GeneratorInterface
         }
     }
 
-    public function getData($data_source)
+    /**
+     * @param string $data_source
+     *
+     * @return array
+     * @throws BadDataException
+     */
+    protected function getData($data_source)
     {
         $handle = $this->getFile($data_source);
 
@@ -315,23 +365,5 @@ class Csv implements GeneratorInterface
         }
 
         return $data;
-    }
-
-
-    public function generateJson()
-    {
-        $steps = $this->getRecordCount('people') +
-            $this->getRecordCount('tickets') +
-            $this->getRecordCount('messages');
-
-        $this->config->progress_bar->start($this->config->output, $steps);
-
-        try {
-            $this->exportPeople();
-            $this->exportTickets();
-            $this->exportTicketMessages();
-        } catch (\Exception $ex) {
-            $this->logger->warning($ex->getMessage());
-        }
     }
 }
