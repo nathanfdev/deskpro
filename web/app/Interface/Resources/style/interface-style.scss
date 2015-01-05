@@ -33,6 +33,7 @@ p {
 }
 
 a { color: $link-color; }
+a.link-pointer {cursor: pointer}
 
 // So we don't have to repeat it every time we want to reposition an icon
 .fa { position: relative; }
@@ -49,6 +50,9 @@ a { color: $link-color; }
 @import 'reports';
 @import 'tooltips';
 @import 'stats';
+@import 'reports-overview';
+@import 'ticket_satisfaction';
+@import 'agent_performance';
 
 // To keep a set width sidebar with a full width content columns: float left and give the content container
 // padding-left equal to the full width of the sidebars.

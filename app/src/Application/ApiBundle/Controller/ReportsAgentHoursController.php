@@ -49,7 +49,7 @@ class ReportsAgentHoursController extends AbstractController
         $html_vars = $reports_agent_hours->getVarsForHtmlView($date1, $date2);
 
         return $this->createApiResponse(array(
-            'html' => $this->renderView('ReportsInterfaceBundle:AgentHours:results.html.twig', $html_vars),
+            'html' => $this->renderView('ReportsInterfaceBundle:AgentPerformance:agent_hours.html.twig', $html_vars),
         ));
     }
 }

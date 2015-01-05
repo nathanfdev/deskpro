@@ -1,18 +1,20 @@
 define -> [
   '$scope',
+  '$document',
   '$q',
   '$modal',
   '$rootScope',
   'DashboardService',
-  'HardcodedService',
+  'ReportsOverviewService',
   'DashboardWidgetService',
   'DashboardPermissionsService',
   ($scope,
+   $document,
    $q,
    $modal,
    $rootScope,
    DashboardService,
-   HardcodedService,
+   ReportsOverviewService,
    DashboardWidgetService,
    DashboardPermissionsService) ->
 
@@ -21,6 +23,10 @@ define -> [
     ###
     # intialize
     ###
+    ###body = $document.find 'body'
+
+    body.bind 'click', () ->
+      $scope.toggleDropdown 'selectingDashboard'###
 
     #just to simplify at the first time, but who knows :)
     $scope.reports = DashboardService.storage.reports
@@ -34,6 +40,9 @@ define -> [
       id: 0
       widgets: []
       columns: 10
+    $scope.addingReport = false
+    $scope.addingDashboard = false
+    $scope.selectingDashboard = false
 
     $scope.gridsterOptions =
       margins: [20, 20],
@@ -63,19 +72,19 @@ define -> [
       deferred = $q.defer()
       DashboardPermissionsService.getPermissions(newDb).then (permissions) ->
         $scope.permissions = permissions
-      if newDb.loaded is false
-        DashboardService
-        .getDashboard newDb
-        .then (db) =>
-          $scope.dashboard = db
+        if newDb.loaded is false
+          DashboardService
+          .getDashboard newDb
+          .then (db) =>
+            $scope.dashboard = db
+            $scope.changeReport $scope.dashboard.reports[0]
+            deferred.resolve $scope.dashboard
+            return deferred.promise
+        else
+          $scope.dashboard = newDb
           $scope.changeReport $scope.dashboard.reports[0]
           deferred.resolve $scope.dashboard
           return deferred.promise
-      else
-        $scope.dashboard = newDb
-        $scope.changeReport $scope.dashboard.reports[0]
-        deferred.resolve $scope.dashboard
-        return deferred.promise
 
 
     ###
@@ -98,6 +107,29 @@ define -> [
     $scope.isExpanded = (dashboard) ->
       $scope.expandedDashboard[dashboard.id]? and $scope.expandedDashboard[dashboard.id] is true
 
+    $scope.closeAllDropdowns = ->
+      $scope.addingReport = false
+      $scope.addingDashboard = false
+      $scope.selectingDashboard = false
+
+    $scope.toggleDropdown = (dropdownName) ->
+      switch dropdownName
+        when 'addingReport'
+          $scope.addingReport = !$scope.addingReport
+          $scope.addingDashboard = false
+          $scope.selectingDashboard = false
+        when 'addingDashboard'
+          $scope.addingReport = false
+          $scope.addingDashboard = !$scope.addingDashboard
+          $scope.selectingDashboard = false
+        when 'selectingDashboard'
+          $scope.addingReport = false
+          $scope.addingDashboard = false
+          $scope.selectingDashboard = !$scope.selectingDashboard
+        else
+          $scope.closeAllDropdowns()
+
+
     ###
     # Dashboard modal instasnces
     ###
@@ -106,8 +138,9 @@ define -> [
     # Creates modal instance and resolves dashboard as null, so ModalInstance controller will have to create new object
     ###
     $scope.newDashboardModal = () ->
+      $scope.closeAllDropdowns()
       modalInstance = $modal.open {
-        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
+        templateUrl: 'ReportsInterfaceBundle:Dashboard:new_dashboard.html',
         controller: "Reports.App.ModalDashboard"
         resolve:
           dashboard: () ->
@@ -133,6 +166,7 @@ define -> [
     # Just as previous one, but the dashboard object resolves to current dashboard
     ###
     $scope.editDashboardModal = (state) ->
+      $scope.closeAllDropdowns()
       modalInstance = $modal.open {
         templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
         controller: "Reports.App.ModalDashboard"
@@ -148,6 +182,7 @@ define -> [
       }
 
       modalInstance.result.then (dashboard) =>
+        reportsLength = $scope.dashboard.reports.length
         DashboardService
           .saveDashboard dashboard
           .then (saved) ->
@@ -155,6 +190,9 @@ define -> [
             console.log(saved)
             if $scope.currentReport.deleted
               $scope.changeReport $scope.dashboard.reports[0]
+            else if reportsLength > $scope.dashboard.reports.length
+              $scope.changeReport $scope.dashboard.reports[$scope.dashboard.reports.length - 1]
+
 
 
     ###
@@ -162,6 +200,7 @@ define -> [
     # open editDashboardModal with newly created dashboard.
     ###
     $scope.cloneDashboardModal = () ->
+      $scope.closeAllDropdowns()
       DashboardService
       .cloneDashboard $scope.dashboard
       .then ->
@@ -192,6 +231,7 @@ define -> [
     # ui staff for reports
     ###
     $scope.changeReport = (report) ->
+      $scope.closeAllDropdowns()
       if report?
         wdata =
           "type": "serial",
@@ -292,13 +332,14 @@ define -> [
         $scope.currentReport = {widgets:[]}
 
     $scope.addReport = () ->
-      $scope.addingReport = true
+      $scope.toggleDropdown('addingReport', true)
       if $scope.reports.length < 1
         DashboardService
         .getReports
 
     $scope.createReport = () ->
       $scope.newReport.dashboard_id = $scope.dashboard.id
+      $scope.closeAllDropdowns()
       DashboardService
       .createReport $scope.newReport
       .then (report) ->
@@ -306,6 +347,7 @@ define -> [
         $scope.changeReport report
 
     $scope.cloneReport = (report) ->
+      $scope.closeAllDropdowns()
       DashboardService
         .cloneReport report, $scope.dashboard.id
         .then (clonedReport) ->
@@ -327,6 +369,7 @@ define -> [
 
 
     $scope.toggleLayoutEdit = () ->
+      $scope.closeAllDropdowns()
       if !$scope.dashboard.default
         $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
         $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled

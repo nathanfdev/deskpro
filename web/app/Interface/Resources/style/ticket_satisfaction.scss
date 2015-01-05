@@ -1,0 +1,205 @@
+.feedback-table {
+  margin-bottom: 25px;
+  width: 800px;
+}
+.feedback-table > table > thead > tr > th {
+  text-align: left;
+  padding: 8px !important;
+  padding-top: 10px !important;
+}
+.feedback-table > table > thead > tr > th .timeago {
+  font-size: 11px;
+  font-weight: normal;
+}
+.feedback-table > table > thead > tr > th > h3 {
+  font-size: 12pt;
+  font-weight: normal;
+  margin: 5px 0 !important;
+}
+.feedback-table a.user-link {
+  display: block;
+  line-height: 31px;
+  background-position: 0 50%;
+  background-repeat: no-repeat;
+  padding: 2px 0 2px 29px;
+}
+.feedback-table .user-message {
+  margin: 0px 30px 0 29px;
+  font-size: 11px;
+  padding: 6px;
+  -webkit-border-radius: 5px;
+  -moz-border-radius: 5px;
+  border-radius: 5px;
+}
+.feedback-table .user-message i {
+  font-size: 15pt;
+  font-weight: normal;
+  font-style: normal;
+  display: inline;
+  text-align: center;
+  line-height: 10px;
+  position: relative;
+  top: 2px;
+}
+.feedback-table .user-message.rating-up {
+  background-color: #D2FCD5;
+}
+.feedback-table .user-message.rating-neutral {
+  background-color: #E8E8E8;
+}
+.feedback-table .user-message.rating-down {
+  background-color: #FFE7DF;
+}
+.feedback-table.check-grid {
+  border: 1px solid #D9DBDB;
+}
+.feedback-table.check-grid.item-list > table thead th {
+  padding: 5px 0 5px 0;
+}
+.feedback-table.check-grid > table > thead > tr > th {
+  font-size: 13px;
+  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e9e9e9") repeat-x bottom left /*gradient_v:20:ffffff:e9e9e9*/;
+  background: #ffffff url("../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e9e9e9") repeat-x bottom left /*gradient_v:20:ffffff:e9e9e9*/;
+  border-bottom: 1px solid #D9DBDB;
+  padding: 3px 8px 2px 8px !important;
+  vertical-align: middle;
+}
+.feedback-table.check-grid > table > tbody > tr > th,
+.feedback-table.check-grid > table > thead > tr > th,
+.feedback-table.check-grid > table > thead > tr > td,
+.feedback-table.check-grid > table > tbody > tr > td {
+  padding: 4px 0 4px 0;
+  font-size: 13px;
+}
+.feedback-table.check-grid.item-list > table > thead > tr > td,
+.feedback-table.check-grid.item-list > table > tbody > tr > td {
+  border-top: 1px solid #D9DBDB;
+}
+.feedback-table.check-grid.item-list > table > tbody > tr > th,
+.feedback-table.check-grid.item-list > table > thead > tr > th,
+.feedback-table.check-grid.item-list > table > thead > tr > td,
+.feedback-table.check-grid.item-list > table > tbody > tr > td {
+  vertical-align: middle;
+}
+.feedback-table.check-grid.item-list > table > thead > tr > th,
+.feedback-table.check-grid.item-list > table > tbody > tr > th,
+.feedback-table.check-grid.item-list > table > thead > tr > td,
+.feedback-table.check-grid.item-list > table > tbody > tr > td {
+  padding: 5px 2px 5px 5px;
+}
+.feedback-table.check-grid.item-list > table > thead > tr > th:last-child,
+.feedback-table.check-grid.item-list > table > tbody > tr > th:last-child,
+.feedback-table.check-grid.item-list > table > thead > tr > td:last-child,
+.feedback-table.check-grid.item-list > table > tbody > tr > td:last-child {
+  padding-right: 5px;
+}
+.feedback-table.check-grid > table > thead > tr > td.title,
+.feedback-table.check-grid > table > tbody > tr > td.title {
+  padding-left: 5px;
+}
+.feedback-table.check-grid > table td.title.title-group {
+  color: #8E8F91;
+}
+.feedback-table.check-grid > table td.prop {
+  text-align: center;
+  background-color: #F8F8F8;
+}
+.feedback-table.check-grid > table td.prop.new,
+.feedback-table.check-grid > table td.prop.highlight {
+  background-color: #ebebeb;
+  border-left: 1px solid #D9DBDB;
+  border-right: 1px solid #D9DBDB;
+}
+.feedback-table.check-grid > table td.prop.new.no-border,
+.feedback-table.check-grid > table td.prop.highlight.no-border {
+  border-left: none;
+  border-right: none;
+}
+.feedback-table.check-grid > table tr:hover td.prop {
+  background-color: #D0D1D1;
+}
+.feedback-table.check-grid > table tr:hover td.title,
+.feedback-table .check-grid > table tr td.title.on {
+  background-color: #E8EAEA;
+}
+.feedback-table.check-grid > table > tbody {
+  border-top: 1px solid #D9DBDB;
+}
+.feedback-table.check-grid > table > tbody:first-of-type {
+  border-top: none;
+}
+.feedback-table.check-grid > header:first-of-type {
+  border-top: none;
+}
+.feedback-table.check-grid > header {
+  background: #ffffff url("../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  background: #ffffff url("../../../../../file.php/gradient?size=20&start_color=ffffff&end_color=e5e5e5") repeat-x bottom left /*gradient_v:20:ffffff:e5e5e5*/;
+  border-bottom: 1px solid #B3B6B8;
+  border-top: 1px solid #c2c6cc;
+  line-height: 22px;
+  padding-left: 5px;
+  font-size: 13px;
+  font-weight: bold;
+}
+.reports_agent_feedback_summary_section > table .border-right {
+  border-right-style: dashed;
+  border-right-color: #AAAAAA;
+  border-right-width: 1px;
+}
+.reports_agent_feedback_summary_section > table tr.border-top {
+  border-top-style: dashed;
+  border-top-color: #AAAAAA;
+  border-top-width: 1px;
+}
+.reports_agent_feedback_summary_section > table .border-bottom {
+  border-bottom-style: dashed;
+  border-bottom-color: #AAAAAA;
+  border-bottom-width: 1px;
+}
+.reports_agent_feedback_summary_section > table td.rating_1,
+.reports_agent_feedback_summary_section table td.left-column {
+  text-align: right;
+}
+.reports_agent_feedback_summary_section > table th {
+  font-weight: normal;
+  font-size: 16px;
+}
+.reports_agent_feedback_summary_section > table th,
+.reports_agent_feedback_summary_section > table td {
+  padding: 18px;
+  vertical-align: middle;
+}
+.reports_agent_feedback_summary_section > table img {
+  vertical-align: middle;
+  opacity: .7;
+}
+.reports_agent_feedback_summary_section i.rating {
+  font-size: 15pt;
+  font-weight: normal;
+  font-style: normal;
+  display: inline;
+  text-align: center;
+  line-height: 10px;
+  position: relative;
+  top: 2px;
+}
+.reports_agent_feedback_summary_section i.rating.positive {
+  color: #16B300;
+}
+.reports_agent_feedback_summary_section i.rating.neutral {
+  color: #849C96;
+}
+.reports_agent_feedback_summary_section i.rating.negative {
+  color: #A21B22;
+}
+.chart_parent_table td {
+  height: 24px;
+  vertical-align: middle;
+}
+.chart_container {
+  vertical-align: top !important;
+}
+.chart_container td {
+  height: 25px;
+  vertical-align: middle;
+}

@@ -1,5 +1,5 @@
 define ['DeskPRO/Util/Strings'], (Strings) ->
-  Reports_Directive_Hardcoded = ['$compile', 'HardcodedService', '$http', ($compile, HardcodedService, $http) ->
+  Reports_Directive_ReportsOverview = ['$compile', 'ReportsOverviewService', '$http', ($compile, ReportsOverviewService, $http) ->
     return {
       restrict: 'E'
       replace: true
@@ -12,19 +12,20 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
 
         scope.outerType = Strings.ucFirst scope.outerType
         templateUrl = "ReportsInterfaceBundle:#{scope.outerType}:#{scope.innerType}.html"
-        HardcodedService.getData(scope.innerType).then (data) ->
+        ReportsOverviewService.getData(scope.innerType).then (data) ->
           scope[scope.innerType] = data.data
           $http.get(templateUrl).then (response) ->
             linkFn = $compile(response.data)
             content = linkFn(scope)
             element.replaceWith(content)
+            scope.getStats scope.innerType
 
         scope.getStats = (data_key) ->
-          HardcodedService
+          ReportsOverviewService
             .getStats data_key
             .then (response) ->
               scope[scope.innerType] = response.data
     }
   ]
 
-  return Reports_Directive_Hardcoded
+  return Reports_Directive_ReportsOverview

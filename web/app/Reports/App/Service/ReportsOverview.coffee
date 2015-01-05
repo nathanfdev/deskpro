@@ -1,5 +1,5 @@
 define ['DeskPRO/Util/Util'], (Util) ->
-  class HardcodedService
+  class ReportsOverview
     constructor: (Api, $q) ->
       @overviewUrl = '/reports/overview/data/';
       @statsUrl = '/reports/overview/get-stats/';

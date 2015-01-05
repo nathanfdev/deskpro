@@ -4,24 +4,25 @@
         <div class="report-access-avatars">
             <span class="title">On this dashboard:</span>
             <a
-                    ng-repeat='agent in permissions track by $index'
+                    ng-repeat='agent in permissions | limitTo : 7 track by $index '
                     ng-if="agent.permissions != 0"
                     class="avatar"
                     title="{{ ng_var('agent.name') }}"
                     style="background-image: url({{ ng_var('agent.avatar') }});">
             </a>
-            {#<a href="#" class="avatar avatar-blank"><span>+4</span></a>#}
-            <a ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit user access <i class="fa fa-user"></i></span></a>
+            {#Uuuuuh, Magic numbers!#}
+            <a ng-if="permissions.length > 7" class="avatar avatar-blank"><span>+{{ ng_var('permissions.length - 7') }}</span></a>
+            <a ng-if="!dashboard.default" ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit user access <i class="fa fa-user"></i></span></a>
         </div>
     </div>
 
     <div class="left">
-        <div class="dashboard-main-list" ng-click='selecting=!selecting' ng-class = "{'expanded': selecting}">
+        <div class="dashboard-main-list" ng-click='toggleDropdown("selectingDashboard")' ng-class = "{'expanded': selectingDashboard}">
             <a class="link-pointer">
                 <span>Dashboard:</span> {{ ng_var('dashboard.title') }} <i class="fa fa-sort"></i>
             </a>
 
-            <ul ng-show="selecting">
+            <ul ng-show="selectingDashboard">
                 <li ng-repeat="db in dashboards track by $index">
                     <a class='link-pointer' ng-class='{"current": db.id === dashboard.id}' ng-click="changeDashboard(db)">
                         <span class='logo-deskpro' ng-show="db.default"></span>
@@ -33,12 +34,12 @@
 
         <nav class="reports-control">
             <ul>
-                <li{# ng-show="!dashboard.default"#}><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
+                <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
                 <li>
-                    <a class='link-pointer' ng-click='addingDashboard = true'><i class="fa fa-plus"></i>Create Dashboard</a>
+                    <a class='link-pointer' ng-click='toggleDropdown("addingDashboard")'><i class="fa fa-plus"></i>Create Dashboard</a>
                     <div ng-show="addingDashboard" class="reports-dropdown expanded">
                         <header>
-                            <a ng-click="addingDashboard = !addingDashboard" class="hide-dropdown"><i class="fa fa-times"></i></a>
+                            <a ng-click="toggleDropdown('addingDashboard')" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
                             <i class="fa fa-plus"></i> Create Dashboard
                         </header>
                         <hr>
@@ -67,11 +68,11 @@
 
 <div class="report-tabs">
     <ul>
-        <li class="add-report-link">
-            <a ng-click='addReport()'><i class="fa fa-plus"></i></a>
+        <li ng-if='!dashboard.default' class="add-report-link">
+            <a class='link-pointer' ng-click='addReport()'><i class="fa fa-plus"></i></a>
             <div ng-show='addingReport' style="z-index: 3333" class="reports-dropdown expanded">
                 <header>
-                    <a ng-click="addingReport = !addingReport" class="hide-dropdown"><i class="fa fa-times"></i></a>
+                    <a ng-click="toggleDropdown('addingReport')" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
                     <i class="fa fa-plus"></i> Create new report
                 </header>
                 <div class="reports-dropdown-content">
@@ -110,7 +111,7 @@
         </li>
 
         <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ng-class="{'active-tab':currentReport.id===report.id}">
-            <a ng-click="changeReport(report)">{{ ng_var('report.title') }}</a>
+            <a class='link-pointer' ng-click="changeReport(report)">{{ ng_var('report.title') }}</a>
         </li>
     </ul>
 </div>
@@ -195,14 +196,32 @@
             <div class="box" ng-if="widget.type=='table'">
                 <dashboard-table my-index="{{ ng_var('$index') }}" title="{{ ng_var('widget.name') }}" table-data="{{ ng_var('widget.data') }}" wtype="{{ ng_var('widget.type') }}"> </dashboard-table>
             </div>
-            <div class="box" ng-if="widget.type=='hardcoded'">
-                <dashboard-hardcoded
+            <div class="box" ng-if="widget.type=='reports_overview'">
+                <reports-overview
                         my-index="{{ ng_var('$index') }}"
                         title="{{ ng_var('widget.name') }}"
                         inner-type="{{ ng_var('widget.inner_type') }}"
                         outer-type="{{ ng_var('widget.outer_type') }}"
                         wtype="{{ ng_var('widget.type') }}">
-                </dashboard-hardcoded>
+                </reports-overview>
+            </div>
+            <div class="box" ng-if="widget.type=='agent_performance'">
+                <agent-performance
+                        my-index="{{ ng_var('$index') }}"
+                        title="{{ ng_var('widget.name') }}"
+                        inner-type="{{ ng_var('widget.inner_type') }}"
+                        outer-type="{{ ng_var('widget.outer_type') }}"
+                        wtype="{{ ng_var('widget.type') }}">
+                </agent-performance>
+            </div>
+            <div class="box" ng-if="widget.type=='ticket_satisfaction'">
+                <ticket-satisfaction
+                        my-index="{{ ng_var('$index') }}"
+                        title="{{ ng_var('widget.name') }}"
+                        inner-type="{{ ng_var('widget.inner_type') }}"
+                        outer-type="{{ ng_var('widget.outer_type') }}"
+                        wtype="{{ ng_var('widget.type') }}">
+                </ticket-satisfaction>
             </div>
         </li>
     </ul>

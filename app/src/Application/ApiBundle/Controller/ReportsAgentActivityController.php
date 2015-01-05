@@ -55,7 +55,7 @@ class ReportsAgentActivityController extends AbstractController
         return $this->createApiResponse(array(
              'all_agents'  => $this->getApiData(Arrays::flatten($all_agents)),
              'agent_teams' => $this->getApiData($agent_teams),
-             'html'        => $this->renderView('ReportsInterfaceBundle:AgentActivity:results.html.twig', $html_vars),
+             'html'        => $this->renderView('ReportsInterfaceBundle:AgentPerformance:agent_activity.html.twig', $html_vars),
         ));
     }
 }

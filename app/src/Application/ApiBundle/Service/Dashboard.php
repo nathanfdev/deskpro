@@ -23,6 +23,20 @@ use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 
 class Dashboard
 {
+
+    const OUTER_TYPE_OVERVIEW            = 'overview';
+    const OUTER_TYPE_PERFORMANCE         = 'performance';
+    const OUTER_TYPE_TICKET_SATISFACTION = 'ticket_satisfaction';
+
+    const WIDGET_TYPE_HARDCODED_OVERVIEW            = 'reports_overview';
+    const WIDGET_TYPE_HARDCODED_PERFORMANCE         = 'agent_performance';
+    const WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION = 'ticket_satisfaction';
+    const WIDGET_TYPE_HARDCODED_UNDEFINED           = 'hardcoded';
+
+    const WIDGET_TYPE_GRAPH = 'graph';
+    const WIDGET_TYPE_TABLE = 'table';
+    const WIDGET_TYPE_STAT  = 'stat';
+
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
@@ -80,8 +94,6 @@ class Dashboard
         return $this->getDashboardData($dashboard);
     }
 
-
-
     ///
     /// REPORTS SECTION
     ///
@@ -109,7 +121,19 @@ class Dashboard
                 "data"  => array(),
             );
             if($hc_data = $widget->getHcData()) {
-                $wdata['type'] = 'hardcoded';
+                switch ($hc_data['outer_type']) {
+                    case self::OUTER_TYPE_OVERVIEW:
+                        $wdata['type'] = self::WIDGET_TYPE_HARDCODED_OVERVIEW;
+                        break;
+                    case self::OUTER_TYPE_PERFORMANCE:
+                        $wdata['type'] = self::WIDGET_TYPE_HARDCODED_PERFORMANCE;
+                        break;
+                    case self::OUTER_TYPE_TICKET_SATISFACTION:
+                        $wdata['type'] = self::WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION;
+                        break;
+                    default:
+                        $wdata['type'] = self::WIDGET_TYPE_HARDCODED_UNDEFINED;
+                }
                 $wdata['inner_type'] = $hc_data['inner_type'];
                 $wdata['outer_type'] = $hc_data['outer_type'];
             }

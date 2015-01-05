@@ -1,0 +1,34 @@
+<div dp-tab-body="ticket.satisfaction.feed">
+    <div class="panel panel-fill indent">
+        <section class="padd clearfix">
+            <div class="dp-btn-pagination pull-left" ng-show="service.num_pages > 1">
+					<span dp-show-spinning="loading_feed_results" class="padd">
+						<i class="spinner-flat"></i>
+					</span>
+                <button class="btn" ng-show="service.page != 1" ng-click="service.goPrevPage()">
+                    &lt; Prev
+                </button>
+                <select
+                        ng-model="Ctrl.page"
+                        ui-select2
+                        style="width: 130px;"
+                        ng-change="service.changePage()"
+                        >
+                    <option ng-repeat="page in service.page_nums" value="{{ ng_var('page') }}">
+                        Page {{ ng_var('page') }}
+                    </option>
+                </select>
+                <button class="btn" ng-show="service.page < service.num_pages"
+                        ng-click="service.goNextPage()">
+                    Next &gt;
+                </button>
+            </div>
+        </section>
+        <span dp-show-spinning="service.loading_feed_results" class="padd">
+            <i class="spinner-flat"></i>
+        </span>
+        <section class="padd" ng-bind-html="service.feed_html" dp-hide-spinning="service.loading_feed_results">
+
+        </section>
+    </div>
+</div>

@@ -209,7 +209,8 @@ class DashboardController extends AbstractController
 //                    $reportEntity->setSortOrder($report['sort_order']);
                 } else {
                     $reportEntity = new Tab();
-                    $reportEntity->setDashboard($dashboard);
+                    $reportEntity->setColumns(10)
+                                 ->setDashboard($dashboard);
                     $reportEntity->setSortOrder($this->service->getLastSortOrder($dashboard));
                     $dashboard->addReport($reportEntity);
                 }

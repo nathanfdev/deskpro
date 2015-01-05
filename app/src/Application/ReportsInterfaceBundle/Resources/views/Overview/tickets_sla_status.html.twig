@@ -1,4 +1,4 @@
-<section class="report-wrapper" ng-if="tickets_sla_status.has_slas">
+<section class="report-overview-wrapper" ng-if="tickets_sla_status.has_slas">
     <header>
         <div style="float: left; padding-bottom: 5px;">
             <select ui-select2 ng-model="tickets_sla_status.sla_id" ng-init="tickets_sla_status.sla_id = (tickets_sla_status.sla_id || '')+''" style="min-width: 120px" class="no-search" ng-change="getStats('tickets_sla_status')">

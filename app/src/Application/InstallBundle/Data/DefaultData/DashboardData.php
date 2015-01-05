@@ -75,14 +75,16 @@ class DashboardData extends AbstractDefaultData
                     'sort_order' => 2,
                     'widgets' => array(
                         array(
-                            'title' => 'Agent Performance1',
+                            'title' => 'Agent Activity',
                             'position' => "0:0",
-                            'size'     => '4:3',
+                            'size'     => '10:3',
+                            'hc_data'  => 'performance:agent_activity'
                         ),
                         array(
-                            'title' => 'Agent Performance2',
-                            'position' => "0:4",
-                            'size'     => '6:3',
+                            'title' => 'Agent Hours',
+                            'position' => "4:0",
+                            'size'     => '10:3',
+                            'hc_data'  => 'performance:agent_hours'
                         ),
                     ),
                 ),
@@ -92,14 +94,16 @@ class DashboardData extends AbstractDefaultData
                     'sort_order' => 3,
                     'widgets' => array(
                         array(
-                            'title' => 'Ticket Satisfaction1',
+                            'title' => 'Feedback',
                             'position' => "0:0",
-                            'size'     => '4:3',
+                            'size'     => '10:3',
+                            'hc_data'  => 'ticket_satisfaction:feed'
                         ),
                         array(
-                            'title' => 'Ticket Satisfaction2',
-                            'position' => "0:4",
-                            'size'     => '6:3',
+                            'title' => 'Summary',
+                            'position' => "4:0",
+                            'size'     => '10:3',
+                            'hc_data'  => 'ticket_satisfaction:summary'
                         ),
                     ),
                 ),
@@ -108,16 +112,6 @@ class DashboardData extends AbstractDefaultData
                     'columns' => 10,
                     'sort_order' => 3,
                     'widgets' => array(
-                        array(
-                            'title' => 'Ticket Satisfaction1',
-                            'position' => "0:0",
-                            'size'     => '4:3',
-                        ),
-                        array(
-                            'title' => 'Ticket Satisfaction2',
-                            'position' => "0:4",
-                            'size'     => '6:3',
-                        ),
                     ),
                 ),
             ),
@@ -130,26 +124,6 @@ class DashboardData extends AbstractDefaultData
                     'columns' => 10,
                     'sort_order' => 1,
                     'widgets' => array(
-                        array(
-                            'title' => 'Overview1',
-                            'position' => "0:0",
-                            'size'     => '4:3',
-                        ),
-                        array(
-                            'title' => 'Overview2',
-                            'position' => "0:4",
-                            'size'     => '6:3',
-                        ),
-                        array(
-                            'title' => 'Overview3',
-                            'position' => "3:0",
-                            'size'     => '4:3',
-                        ),
-                        array(
-                            'title' => 'Overview4',
-                            'position' => "3:4",
-                            'size'     => '6:3',
-                        ),
                     ),
                 ),
                 array(
@@ -157,26 +131,6 @@ class DashboardData extends AbstractDefaultData
                     'columns' => 10,
                     'sort_order' => 2,
                     'widgets' => array(
-                        array(
-                            'title' => 'Chat Satisfaction',
-                            'position' => "0:0",
-                            'size'     => '4:3',
-                        ),
-                        array(
-                            'title' => 'Chat Satisfaction',
-                            'position' => "0:4",
-                            'size'     => '6:3',
-                        ),
-                        array(
-                            'title' => 'Chat Satisfaction',
-                            'position' => "3:0",
-                            'size'     => '4:3',
-                        ),
-                        array(
-                            'title' => 'Chat Satisfaction',
-                            'position' => "3:4",
-                            'size'     => '6:3',
-                        ),
                     ),
                 ),
             ),
