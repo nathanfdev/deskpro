@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,30 +25,46 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\DependencyInjection;
+namespace Application\ImportBundle\Generator\Plugin;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Application\ImportBundle\Generator\AbstractGenerator;
+use Application\ImportBundle\Generator\LoggerAwareInterface;
 
-class ImportExtension extends Extension
+/**
+ * Base generator class methods
+ *
+ * Class AbstractPlugin
+ * @package Application\ImportBundle\Generator\Plugin
+ */
+abstract class AbstractPlugin extends AbstractGenerator implements GeneratorPluginInterface, LoggerAwareInterface
 {
     /**
-     * {@inheritdoc}
+     * Directory to generated people json files
+     *
+     * @return string
      */
-    public function load(array $config, ContainerBuilder $container)
+    protected function getExportPeopleOutputPath()
     {
-        $definition = new Definition('Application\ImportBundle\Generator\Plugin\Csv');
-        $container->setDefinition('deskpro.import.generator.plugin.csv', $definition);
+        return $this->config->getOutputPath() . self::EXPORT_PEOPLE_PATH;
+    }
 
-        $definition = new Definition('Application\ImportBundle\Generator\Plugin\OsTicket');
-        $container->setDefinition('deskpro.import.generator.plugin.osticket', $definition);
+    /**
+     * Directory to generated tickets json files
+     *
+     * @return string
+     */
+    protected function getExportTicketsOutputPath()
+    {
+        return $this->config->getOutputPath() . self::EXPORT_TICKETS_PATH;
+    }
 
-        $definition = new Definition('Application\ImportBundle\Generator\Generator');
-        $definition->addMethodCall('addPlugin', array(new Reference('deskpro.import.generator.plugin.csv')));
-        $definition->addMethodCall('addPlugin', array(new Reference('deskpro.import.generator.plugin.osticket')));
-
-        $container->setDefinition('deskpro.import.generator', $definition);
+    /**
+     * Directory to generated ticket messages json files
+     *
+     * @return string
+     */
+    protected function getExportTicketMessagesOutputPath()
+    {
+        return $this->config->getOutputPath() . self::EXPORT_TICKET_MESSAGES_PATH;
     }
 }

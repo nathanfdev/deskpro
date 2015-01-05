@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -30,12 +30,10 @@ namespace Application\ImportBundle\Generator;
 use Psr\Log\LoggerInterface;
 
 /**
- * Base generator class methods
- *
  * Class AbstractGenerator
  * @package Application\ImportBundle\Generator
  */
-abstract class AbstractGenerator implements GeneratorInterface
+abstract class AbstractGenerator
 {
     /**
      * @var GeneratorConfig
@@ -48,32 +46,20 @@ abstract class AbstractGenerator implements GeneratorInterface
     protected $logger;
 
     /**
-     * Directory to generated people json files
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function getExportPeopleOutputPath()
+    public function setConfig(GeneratorConfig $config)
     {
-        return $this->config->getOutputPath() . self::EXPORT_PEOPLE_PATH;
+        $this->config = $config;
+        return $this;
     }
 
     /**
-     * Directory to generated tickets json files
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    protected function getExportTicketsOutputPath()
+    public function setLogger(LoggerInterface $logger)
     {
-        return $this->config->getOutputPath() . self::EXPORT_TICKETS_PATH;
-    }
-
-    /**
-     * Directory to generated ticket messages json files
-     *
-     * @return string
-     */
-    protected function getExportTicketMessagesOutputPath()
-    {
-        return $this->config->getOutputPath() . self::EXPORT_TICKET_MESSAGES_PATH;
+        $this->logger = $logger;
+        return $this;
     }
 }

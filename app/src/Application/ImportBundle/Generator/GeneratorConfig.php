@@ -43,7 +43,7 @@ class GeneratorConfig
     /**
      * @var string
      */
-    public $script;
+    private $type;
 
     /**
      * @var string
@@ -82,6 +82,24 @@ class GeneratorConfig
      * @var ProgressHelper
      */
     private $progress_bar;
+
+    /**
+     * @return string
+     */
+    public function getType()
+    {
+        return $this->type;
+    }
+
+    /**
+     * @param string $type
+     * @return $this
+     */
+    public function setType($type)
+    {
+        $this->type = $type;
+        return $this;
+    }
 
     /**
      * @return string
@@ -138,6 +156,16 @@ class GeneratorConfig
     }
 
     /**
+     * Get progress bar helper
+     *
+     * @return ProgressHelper
+     */
+    public function getProgressBarHelper()
+    {
+        return $this->progress_bar;
+    }
+
+    /**
      * Set progress bar helper
      *
      * @param ProgressHelper $progress_bar
@@ -147,15 +175,5 @@ class GeneratorConfig
     {
         $this->progress_bar = $progress_bar;
         return $this;
-    }
-
-    /**
-     * Get progress bar helper
-     *
-     * @return ProgressHelper
-     */
-    public function getProgressBarHelper()
-    {
-        return $this->progress_bar;
     }
 }

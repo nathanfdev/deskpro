@@ -31,18 +31,18 @@
 * @package DeskPRO
 */
 
-namespace Application\ImportBundle\Generator;
+namespace Application\ImportBundle\Generator\Plugin;
 
 use Application\ImportBundle\Exception\BadDataException;
 use Orb\Util\Arrays;
-use Psr\Log\LoggerInterface;
 
 /**
  * Description of Csv
  *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
+ * @package Application\ImportBundle\Generator\Plugin
  */
-class Csv extends AbstractGenerator
+class Csv extends AbstractPlugin
 {
     /**
      * @var int|null
@@ -61,24 +61,18 @@ class Csv extends AbstractGenerator
 
     /**
      * Constructor
-     *
-     * @param GeneratorConfig $config
-     * @param LoggerInterface $logger
      */
-    public function __construct(GeneratorConfig $config, LoggerInterface $logger)
+    public function __construct()
     {
-        $this->config = $config;
-        $this->logger = $logger;
-
-        if ($this->config->mode == 'live') {
-            foreach (array('people', 'tickets') as $n) {
-                if (!is_dir($config->getOutputPath() . $n)) {
-                    mkdir($config->getOutputPath() . $n, 0777, true);
-                }
-            }
-        }
-
         $this->batch_size = 10;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_CSV;
     }
 
     /**

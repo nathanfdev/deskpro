@@ -31,22 +31,21 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\Generator\Plugin\GeneratorPluginInterface;
 use Orb\Util\OptionsArray;
 use Symfony\Component\Console\Input\InputInterface;
-use Psr\Log\LoggerInterface;
 use Exception;
 
 /**
- * Class GeneratorFactory
+ * Class Generator
  * @package Application\ImportBundle\Generator
  */
-class GeneratorFactory
+class Generator extends AbstractGenerator implements GeneratorInterface, LoggerAwareInterface
 {
-    /** @var array */
-    protected $generators_map = array(
-        'osticket'	=> 'Application\\ImportBundle\\Generator\\OsTicket',
-        'csv'		=> 'Application\\ImportBundle\\Generator\\Csv',
-    );
+    /**
+     * @var array
+     */
+    private $plugins = array();
 
     /**
      * @param InputInterface $input
@@ -59,11 +58,11 @@ class GeneratorFactory
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config->setOutputPath($import_config->get('output_path'));
         $config->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export'));
-        $config->mode		 = $import_config->get('mode', 'test');
-        $config->mark_done	 = $import_config->get('mark_done', true);
+        $config->mode = $import_config->get('mode', 'test');
+        $config->mark_done = $import_config->get('mark_done', true);
 
         if ($input->hasArgument('script')) {
-            $config->script = $input->getArgument('script');
+            $config->setType($input->getArgument('script'));
         }
         if ($input->hasOption('output-path')) {
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
@@ -86,31 +85,71 @@ class GeneratorFactory
 
         if (!is_dir($config->getOutputPath())) {
             throw new \InvalidArgumentException(sprintf(
-                'Invalid configuration: data_path is invalid (got %s)',
-                $config->getOutputPath())
+                    'Invalid configuration: data_path is invalid (got %s)',
+                    $config->getOutputPath())
             );
         }
 
         return $config;
     }
 
+    /**
+     * Attach a generator
+     *
+     * @param GeneratorPluginInterface $plugin
+     * @return $this
+     */
+    public function addPlugin(GeneratorPluginInterface $plugin)
+    {
+        $this->plugins[] = $plugin;
+        return $this;
+    }
 
     /**
-     * @param GeneratorConfig $config
-     * @param LoggerInterface $logger
-     *
-     * @return GeneratorInterface
-     * @throws Exception
+     * {@inheritdoc}
      */
-    public function createGenerator(GeneratorConfig $config, LoggerInterface $logger = null)
+    public function generateJson()
     {
-        $generator_class = $this->generators_map[$config->script];
-
-        $generator = new $generator_class($config, $logger);
-        if (!$generator instanceof GeneratorInterface) {
-            throw new Exception($generator_class . ' is not a valid generator');
+        if (!$this->config) {
+            throw new \Exception('Generator configuration is not set up');
+        }
+        if ($this->config->mode == 'live') {
+            foreach (array('people', 'tickets') as $n) {
+                if (!is_dir($this->config->getOutputPath() . $n)) {
+                    mkdir($this->config->getOutputPath() . $n, 0777, true);
+                }
+            }
         }
 
-        return $generator;
+        $this->getPlugin()->generateJson();
+    }
+
+    /**
+     * Get generator plugin by configuration
+     *
+     * @return GeneratorPluginInterface
+     * @throws Exception
+     */
+    private function getPlugin()
+    {
+        if (!$this->config) {
+            throw new \Exception('Generator configuration is not set up');
+        }
+
+        foreach ($this->plugins as $plugin) {
+            /** @var GeneratorPluginInterface $plugin */
+            if ($plugin->getType() === $this->config->getType()) {
+                $plugin->setConfig($this->config);
+
+                if ($this->logger && $plugin instanceof LoggerAwareInterface) {
+                    /** @var LoggerAwareInterface $plugin */
+                    $plugin->setLogger($this->logger);
+                }
+
+                return $plugin;
+            }
+        }
+
+        throw new \Exception(sprintf('Generator `%s` not found', $this->config->getType()));
     }
 }

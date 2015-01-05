@@ -30,13 +30,23 @@ namespace Application\ImportBundle\Generator;
 /**
  * Description of GeneratorInterface
  *
+ * Interface GeneratorPluginInterface
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
+ * @package Application\ImportBundle\Generator
  */
 interface GeneratorInterface
 {
     const EXPORT_PEOPLE_PATH          = 'people/';
     const EXPORT_TICKETS_PATH         = 'tickets/';
     const EXPORT_TICKET_MESSAGES_PATH = 'tickets/';
+
+    /**
+     * Set service configuration
+     *
+     * @param GeneratorConfig $config
+     * @return $this
+     */
+    public function setConfig(GeneratorConfig $config);
 
     /**
      * Generates json files

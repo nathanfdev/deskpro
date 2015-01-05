@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,30 +25,21 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\DependencyInjection;
+namespace Application\ImportBundle\Generator;
 
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Definition;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\HttpKernel\DependencyInjection\Extension;
+use Psr\Log\LoggerInterface;
 
-class ImportExtension extends Extension
+/**
+ * Interface LoggerAwareInterface
+ * @package Application\ImportBundle\Generator
+ */
+interface LoggerAwareInterface
 {
     /**
-     * {@inheritdoc}
+     * Set output logger
+     *
+     * @param LoggerInterface $logger
+     * @return $this
      */
-    public function load(array $config, ContainerBuilder $container)
-    {
-        $definition = new Definition('Application\ImportBundle\Generator\Plugin\Csv');
-        $container->setDefinition('deskpro.import.generator.plugin.csv', $definition);
-
-        $definition = new Definition('Application\ImportBundle\Generator\Plugin\OsTicket');
-        $container->setDefinition('deskpro.import.generator.plugin.osticket', $definition);
-
-        $definition = new Definition('Application\ImportBundle\Generator\Generator');
-        $definition->addMethodCall('addPlugin', array(new Reference('deskpro.import.generator.plugin.csv')));
-        $definition->addMethodCall('addPlugin', array(new Reference('deskpro.import.generator.plugin.osticket')));
-
-        $container->setDefinition('deskpro.import.generator', $definition);
-    }
+    public function setLogger(LoggerInterface $logger);
 }

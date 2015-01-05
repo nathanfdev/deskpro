@@ -39,7 +39,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Application\ImportBundle\Generator\GeneratorFactory;
+use Application\ImportBundle\Generator\Generator;
 
 /**
  * Class CheckExportCommand
@@ -81,17 +81,14 @@ class CheckExportCommand extends ContainerAwareCommand
 
         /** @var ProgressHelper $progress_bar */
         $progress_bar = $this->getHelperSet()->get('progress');
+        /** @var Generator $generator */
+        $generator = $this->getContainer()->get('deskpro.import.generator');
 
-        /** @var GeneratorFactory $factory */
-        $factory = $this->getContainer()->get('deskpro.import.generator.factory');
-
-        $generator_config = $factory->createGeneratorConfig($input);
+        $generator_config = $generator->createGeneratorConfig($input);
         $generator_config->setProgressBarHelper($progress_bar);
         $generator_config->output	= $output;
 
-        $generator = $factory->createGenerator($generator_config, $logger);
-
-        $generator->generateJson();
+        $generator->setConfig($generator_config)->generateJson();
 
         echo "\n";
         echo "Done";

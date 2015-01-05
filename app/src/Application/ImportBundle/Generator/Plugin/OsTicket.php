@@ -31,26 +31,20 @@
 * @package DeskPRO
 */
 
-namespace Application\ImportBundle\Generator;
-
-use Psr\Log\LoggerInterface;
+namespace Application\ImportBundle\Generator\Plugin;
 
 /**
  * Description of OsTicket
  *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
+ * @package Application\ImportBundle\Generator\Plugin
  */
-class OsTicket extends AbstractGenerator
+class OsTicket extends AbstractPlugin
 {
     /**
      * @var \PDO
      */
     protected $db;
-
-    /**
-     * @var string
-     */
-    protected $output_path;
 
     /**
      * @var int|null
@@ -65,12 +59,9 @@ class OsTicket extends AbstractGenerator
     /**
      * Constructor
      *
-     * @param GeneratorConfig $config
-     * @param LoggerInterface $logger
-     *
      * @throws \Exception
      */
-    public function __construct(GeneratorConfig $config, LoggerInterface $logger)
+    public function __construct()
     {
         $os_config = dp_get_config('osticket_import');
 
@@ -79,19 +70,16 @@ class OsTicket extends AbstractGenerator
         $db_username = $os_config['db_username'];
         $db_password = $os_config['db_password'];
 
-        if (!is_dir($config->getOutputPath())) {
-            throw new \Exception('Invalid output-path ' . $config->getOutputPath());
-        }
-
-        $this->config = $config;
-
-        $this->output_path = $config->getOutputPath();
-
         $this->batch_size = 10;
+//        $this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
+    }
 
-        //$this->logger = $logger;
-
-        $this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_OS_TICKET;
     }
 
     /**
@@ -277,10 +265,7 @@ class OsTicket extends AbstractGenerator
 
     protected function exportPeople()
     {
-        $file_path = $this->output_path . 'people/';
-
         $index = 1;
-
         $offset = 0;
 
         $person_batch = $this->findAllStaff($offset);
@@ -300,7 +285,7 @@ class OsTicket extends AbstractGenerator
                 $file_name = 'person' . $index . '.json';
 
                 if ($this->config->mode === 'live') {
-                    file_put_contents($file_path . $file_name, json_encode($transformedArray));
+                    file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
                 }
 
                 //$this->logger->info(sprintf('%s exported successfully!', $file_name));
@@ -327,7 +312,7 @@ class OsTicket extends AbstractGenerator
             $file_name = 'person' . $index . '.json';
 
             if ($this->config->mode === 'live') {
-                file_put_contents($file_path . $file_name, json_encode($transformedArray));
+                file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
             }
 
             $this->config->getProgressBarHelper()->advance();
@@ -340,10 +325,7 @@ class OsTicket extends AbstractGenerator
 
     protected function exportTickets()
     {
-        $ticketPath = $this->output_path . '/tickets/';
-
         $index = 1;
-
         $offset = 0;
 
         $ticket_batch = $this->findAllTickets($offset);
@@ -399,7 +381,7 @@ class OsTicket extends AbstractGenerator
                 $file_name = 'ticket' . $index++ . '.json';
 
                 if ($this->config->mode === 'live') {
-                    file_put_contents($ticketPath . $file_name, json_encode($transformedArray));
+                    file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformedArray));
                 }
 
                 unset($transformedArray);
