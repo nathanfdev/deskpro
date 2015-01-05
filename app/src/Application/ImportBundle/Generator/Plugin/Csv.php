@@ -81,13 +81,13 @@ class Csv extends AbstractPlugin
     public function generateJson()
     {
         $steps = $this->getRecordCount('people') + $this->getRecordCount('tickets') + $this->getRecordCount('messages');
-
         $this->config->getProgressBarHelper()->start($this->config->output, $steps);
 
         try {
             $this->exportPeople();
             $this->exportTickets();
             $this->exportTicketMessages();
+
         } catch (\Exception $ex) {
             $this->logger->warning($ex->getMessage());
         }
@@ -165,32 +165,29 @@ class Csv extends AbstractPlugin
                 $this->config->getProgressBarHelper()->advance();
                 continue;
             }
-
             if (!isset($person['email'])) {
                 $this->logger->warning(sprintf('Invalid person record found (Skipping): %s'));
                 $index++;
                 $this->config->getProgressBarHelper()->advance();
                 continue;
             }
-
             if (empty($person['name'])) {
                 $e = explode('@', $person['email'], 2);
                 $person['name'] = $e[0];
             }
 
             $file_name = 'person' . $index . '.json';
-
             $names = explode(' ', $person['name']);
 
-            $transformedArray = array();
+            $transformedArray = array(
+                'oid'        => $index,
+                'is_agent'   => isset($person['is_agent']) ? (bool) $person['is_agent'] : false,
+                'first_name' => $names[0],
+                'last_name'  => isset($names[1]) ? $names[1] : '',
+                'emails'     => array($person['email']),
+            );
 
-            $transformedArray['oid']        = $index;
-            $transformedArray['is_agent']   = isset($person['is_agent']) ? (bool) $person['is_agent'] : FALSE;
-            $transformedArray['first_name'] = $names[0];
-            $transformedArray['last_name']  = isset($names[1]) ? $names[1] : '';
-            $transformedArray['emails']     = array($person['email']);
-
-            if ($this->config->mode === 'live') {
+            if ($this->config->isLive()) {
                 file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
             }
 
@@ -224,17 +221,16 @@ class Csv extends AbstractPlugin
             }
 
             $file_name = 'ticket_' . trim($ticket['id']) . '.json';
+            $transformedArray = array(
+                'ref'          => $ticket['id'],
+                'person'       => $ticket['user'],
+                'agent'        => isset($ticket['agent']) ? $ticket['agent'] : null,
+                'status'       => isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent',
+                'date_created' => isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s'),
+                'subject'      => $ticket['subject'],
+            );
 
-            $transformedArray = array();
-
-            $transformedArray['ref']          = $ticket['id'];
-            $transformedArray['person']       = $ticket['user'];
-            $transformedArray['agent']        = isset($ticket['agent']) ? $ticket['agent'] : null;
-            $transformedArray['status']       = isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent';
-            $transformedArray['date_created'] = isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s');
-            $transformedArray['subject']      = $ticket['subject'];
-
-            if ($this->config->mode === 'live') {
+            if ($this->config->isLive()) {
                 file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformedArray));
             }
 
@@ -274,19 +270,19 @@ class Csv extends AbstractPlugin
 
             $ticket_file_path = $this->getExportTicketMessagesOutputPath() . $ticket_file_name;
 
-            if ($this->config->mode === 'live') {
+            if ($this->config->isLive()) {
                 if (is_file($ticket_file_path)) {
                     $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
 
                     $message = array(
-                        'person' => $ticket_message['user'],
+                        'person'       => $ticket_message['user'],
                         'date_created' => isset($ticket_message['date_created']) ? $ticket_message['date_created'] : date('Y-m-d H:i:s'),
                         'message_text' => $ticket_message['message_text']
                     );
 
                     @$ticket_array['messages'][] = $message;
 
-                    if ($this->config->mode === 'live') {
+                    if ($this->config->isLive()) {
                         file_put_contents($ticket_file_path, json_encode($ticket_array));
                     }
 

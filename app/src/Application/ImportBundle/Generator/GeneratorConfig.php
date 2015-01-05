@@ -40,6 +40,9 @@ use Symfony\Component\Console\Output\ConsoleOutput;
  */
 class GeneratorConfig
 {
+    const MODE_TEST = 'test';
+    const MODE_LIVE = 'live';
+
     /**
      * @var string
      */
@@ -62,9 +65,10 @@ class GeneratorConfig
 
     /**
      * 'test' or 'live'
+     *
      * @var string
      */
-    public $mode = 'test';
+    private $mode = self::MODE_TEST;
 
     /**
      * Mark files as done when they are finished importing?
@@ -174,6 +178,52 @@ class GeneratorConfig
     public function setProgressBarHelper(ProgressHelper $progress_bar)
     {
         $this->progress_bar = $progress_bar;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMode()
+    {
+        return $this->mode;
+    }
+
+    /**
+     * @param string $mode
+     * @return $this
+     */
+    public function setMode($mode)
+    {
+        $this->mode = $mode;
+        return $this;
+    }
+
+    /**
+     * Is live mode
+     *
+     * @return bool
+     */
+    public function isLive()
+    {
+        return $this->mode === self::MODE_LIVE;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isMarkDone()
+    {
+        return $this->mark_done;
+    }
+
+    /**
+     * @param boolean $mark_done
+     * @return $this
+     */
+    public function setMarkDone($mark_done)
+    {
+        $this->mark_done = (bool)$mark_done;
         return $this;
     }
 }

@@ -263,66 +263,67 @@ class OsTicket extends AbstractPlugin
         return $data;
     }
 
+    /**
+     * @return void
+     */
     protected function exportPeople()
     {
-        $index = 1;
+        $index  = 1;
         $offset = 0;
 
         $person_batch = $this->findAllStaff($offset);
 
-        while($person_batch) {
+        while ($person_batch) {
             foreach ($person_batch as $person) {
-                $transformedArray = array();
-
-                $transformedArray['oid']		= $index;
-                $transformedArray['is_agent']		= true;
-                $transformedArray['first_name']		= $person['firstname'];
-                $transformedArray['last_name']		= $person['lastname'];
-                $transformedArray['timezone']		= $this->findTimezoneFromId($person['timezone_id']);
-                $transformedArray['date_created']	= $person['created'];
-                $transformedArray['emails']		= array($person['email']);
+                $transformedArray = array(
+                    'oid'          => $index,
+                    'is_agent'     => true,
+                    'first_name'   => $person['firstname'],
+                    'last_name'    => $person['lastname'],
+                    'timezone'     => $this->findTimezoneFromId($person['timezone_id']),
+                    'date_created' => $person['created'],
+                    'emails'       => array($person['email']),
+                );
 
                 $file_name = 'person' . $index . '.json';
-
-                if ($this->config->mode === 'live') {
+                if ($this->config->isLive()) {
                     file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
                 }
 
                 //$this->logger->info(sprintf('%s exported successfully!', $file_name));
 
                 $index++;
-
                 $offset++;
             }
 
             unset($person);
-
             $person_batch = $this->findAllStaff($offset);
         }
 
         foreach ($this->findAllUser() as $person) {
-            $transformedArray = array();
-
-            $transformedArray['oid']		= $index;
-            $transformedArray['is_user']		= true;
-            $transformedArray['name']		= $person['name'];
-            $transformedArray['date_created']	= $person['created'];
-            $transformedArray['emails']		= array($person['address']);
+            $transformedArray = array(
+                'oid'          => $index,
+                'is_user'      => true,
+                'name'         => $person['name'],
+                'date_created' => $person['created'],
+                'emails'       => array($person['address']),
+            );
 
             $file_name = 'person' . $index . '.json';
-
-            if ($this->config->mode === 'live') {
+            if ($this->config->isLive()) {
                 file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
             }
 
             $this->config->getProgressBarHelper()->advance();
-
             //$this->logger->info(sprintf('%s exported successfully!', $file_name));
 
             $index++;
         }
     }
 
+    /**
+     * @return void
+     */
     protected function exportTickets()
     {
         $index = 1;
@@ -332,21 +333,20 @@ class OsTicket extends AbstractPlugin
 
         while ($ticket_batch) {
             foreach ($ticket_batch as $ticket) {
-                //print_r($ticket);
-
-                $transformedArray = array();
-
-                $transformedArray['ref']            = !empty($ticket['number']) ? $ticket['number'] : null;
-                $transformedArray['department']     = $this->findDepartmentFromId($ticket['dept_id']);
-                $transformedArray['person']         = $this->findUserEmailFromId($ticket['user_id']);
-                $transformedArray['agent']          = $this->findUserEmailFromId($ticket['staff_id']) ?: null;
-                $transformedArray['agent_team']     = $this->findUserEmailFromId($ticket['team_id']) ?: null;
-                $transformedArray['status']         = $ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent';
-                $transformedArray['date_created']   = $ticket['created'];
-                $transformedArray['subject']        = $ticket['subject'];
-                $transformedArray['priority']       = $ticket['priority'];
+                $transformedArray = array(
+                    'ref'          => !empty($ticket['number']) ? $ticket['number'] : null,
+                    'department'   => $this->findDepartmentFromId($ticket['dept_id']),
+                    'person'       => $this->findUserEmailFromId($ticket['user_id']),
+                    'agent'        => $this->findUserEmailFromId($ticket['staff_id']) ?: null,
+                    'agent_team'   => $this->findUserEmailFromId($ticket['team_id']) ?: null,
+                    'status'       => $ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent',
+                    'date_created' => $ticket['created'],
+                    'subject'      => $ticket['subject'],
+                    'priority'     => $ticket['priority'],
+                );
 
                 foreach ($this->findMessageThreadFromId($ticket['ticket_id']) as $message_thread) {
+                    $person_email = null;
                     if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {
                         $person_email = $this->findStaffEmailFromId($message_thread['staff_id']);
 
@@ -355,9 +355,9 @@ class OsTicket extends AbstractPlugin
                     }
 
                     $message_array = array(
-                        'person'	=> $person_email,
-                        'date_created'	=> $message_thread['created'],
-                        'message_text'	=> $message_thread['body']
+                        'person'       => $person_email,
+                        'date_created' => $message_thread['created'],
+                        'message_text' => $message_thread['body']
                     );
 
                     if ($this->findTicketAttachment($ticket['ticket_id'])) {
@@ -367,10 +367,10 @@ class OsTicket extends AbstractPlugin
                             $file_data = $this->getFileData($attachment['file_id']);
 
                             $message_array['attachments'][] = array(
-                                'oid'		=> $index,
-                                'blob_data'	=> base64_encode($file_data),
-                                'file_name'	=> $attachment['name'],
-                                'content_type'	=> $attachment['type']
+                                'oid'          => $index,
+                                'blob_data'    => base64_encode($file_data),
+                                'file_name'    => $attachment['name'],
+                                'content_type' => $attachment['type']
                             );
                         }
                     }
@@ -380,7 +380,7 @@ class OsTicket extends AbstractPlugin
 
                 $file_name = 'ticket' . $index++ . '.json';
 
-                if ($this->config->mode === 'live') {
+                if ($this->config->isLive()) {
                     file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformedArray));
                 }
 

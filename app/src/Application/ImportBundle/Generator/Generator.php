@@ -32,11 +32,12 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Generator\Plugin\GeneratorPluginInterface;
-use Orb\Util\OptionsArray;
-use Symfony\Component\Console\Input\InputInterface;
 use Exception;
 
 /**
+ * Generator importer service
+ * Data exporter (what we call "generators") from 3rd party systems
+ *
  * Class Generator
  * @package Application\ImportBundle\Generator
  */
@@ -46,52 +47,6 @@ class Generator extends AbstractGenerator implements GeneratorInterface, LoggerA
      * @var array
      */
     private $plugins = array();
-
-    /**
-     * @param InputInterface $input
-     * @return GeneratorConfig
-     */
-    public function createGeneratorConfig(InputInterface $input)
-    {
-        $config = new GeneratorConfig();
-
-        $import_config = new OptionsArray(dp_get_config('import', array()));
-        $config->setOutputPath($import_config->get('output_path'));
-        $config->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export'));
-        $config->mode = $import_config->get('mode', 'test');
-        $config->mark_done = $import_config->get('mark_done', true);
-
-        if ($input->hasArgument('script')) {
-            $config->setType($input->getArgument('script'));
-        }
-        if ($input->hasOption('output-path')) {
-            $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
-        }
-        if ($input->hasOption('input-path')) {
-            $config->setInputPath($input->getOption('input-path'));
-        }
-        if ($input->hasOption('log-path')) {
-            $config->setLogPath($input->getOption('log-path'));
-        }
-        if ($input->hasOption('mode')) {
-            $config->mode = $input->getOption('mode');
-        }
-        if ($input->hasOption('live')) {
-            $config->mode = 'live';
-        }
-        if ($input->hasOption('mark-done')) {
-            $config->mark_done = (bool)$input->getOption('mark-done');
-        }
-
-        if (!is_dir($config->getOutputPath())) {
-            throw new \InvalidArgumentException(sprintf(
-                    'Invalid configuration: data_path is invalid (got %s)',
-                    $config->getOutputPath())
-            );
-        }
-
-        return $config;
-    }
 
     /**
      * Attach a generator
@@ -110,18 +65,34 @@ class Generator extends AbstractGenerator implements GeneratorInterface, LoggerA
      */
     public function generateJson()
     {
+        $this->createOutputDirsIfNotExist();
+        $this->getPlugin()->generateJson();
+    }
+
+    /**
+     * Make output directories if not exist
+     *
+     * @throws Exception
+     */
+    private function createOutputDirsIfNotExist()
+    {
         if (!$this->config) {
             throw new \Exception('Generator configuration is not set up');
         }
-        if ($this->config->mode == 'live') {
+
+        if (!is_dir($this->config->getOutputPath())) {
+            throw new \InvalidArgumentException(sprintf(
+                    'Invalid configuration: data_path is invalid (got %s)',
+                    $this->config->getOutputPath())
+            );
+        }
+        if ($this->config->isLive()) {
             foreach (array('people', 'tickets') as $n) {
                 if (!is_dir($this->config->getOutputPath() . $n)) {
                     mkdir($this->config->getOutputPath() . $n, 0777, true);
                 }
             }
         }
-
-        $this->getPlugin()->generateJson();
     }
 
     /**

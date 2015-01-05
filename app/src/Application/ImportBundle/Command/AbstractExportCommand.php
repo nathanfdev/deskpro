@@ -25,74 +25,57 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
-use Symfony\Component\Console\Helper\ProgressHelper;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
-use Symfony\Component\Console\Output\OutputInterface;
-use Monolog\Logger;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Application\ImportBundle\Generator\Generator;
+use Orb\Util\OptionsArray;
 
 /**
- * Class ExportCommand
+ * Class AbstractExportCommand
  * @package Application\ImportBundle\Command
  */
-class ExportCommand extends AbstractExportCommand
+abstract class AbstractExportCommand extends ContainerAwareCommand
 {
     /**
-     * {@inheritDoc}
+     * Creates a new generator config instance
+     *
+     * @param InputInterface $input
+     * @return GeneratorConfig
      */
-    protected function configure()
+    public function createGeneratorConfig(InputInterface $input)
     {
-        $this->setName('dp:export:run');
-        $this->setHelp('The actual export process');
-        $this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-        $this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
-        $this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
-    }
+        $config = new GeneratorConfig();
+        $import_config = new OptionsArray(dp_get_config('import', array()));
+        $config
+            ->setOutputPath($import_config->get('output_path'))
+            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export'))
+            ->setMode($import_config->get('mode', GeneratorConfig::MODE_TEST))
+            ->setMarkDone($import_config->get('mark_done', true));
 
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    protected function execute(InputInterface $input, OutputInterface $output)
-    {
-        $out_handler = new ConsoleHandler($output);
-        $out_handler->setLevel(Logger::NOTICE);
-
-        $logger = new Logger('exporter', array($out_handler));
-
-        if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
-            $logger->err('You must supply an "input-path" argument while using CSV exporter');
+        if ($input->hasArgument('script')) {
+            $config->setType($input->getArgument('script'));
+        }
+        if ($input->hasOption('output-path')) {
+            $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
+        }
+        if ($input->hasOption('input-path')) {
+            $config->setInputPath($input->getOption('input-path'));
+        }
+        if ($input->hasOption('log-path')) {
+            $config->setLogPath($input->getOption('log-path'));
+        }
+        if ($input->hasOption('mode')) {
+            $config->setMode($input->getOption('mode'));
+        }
+        if ($input->hasOption('live')) {
+            $config->setMode(GeneratorConfig::MODE_LIVE);
+        }
+        if ($input->hasOption('mark-done')) {
+            $config->setMarkDone($input->getOption('mark-done'));
         }
 
-        /** @var ProgressHelper $progress_bar */
-        $progress_bar = $this->getHelperSet()->get('progress');
-        /** @var Generator $generator */
-        $generator = $this->getContainer()->get('deskpro.import.generator');
-
-        $generator_config = $this->createGeneratorConfig($input);
-        $generator_config->setProgressBarHelper($progress_bar);
-        $generator_config->output	= $output;
-        $generator_config->setMode(GeneratorConfig::MODE_LIVE);
-
-        $generator->setConfig($generator_config)->generateJson();
-
-        echo "\nDone\n";
+        return $config;
     }
 }

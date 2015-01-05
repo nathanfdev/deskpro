@@ -31,7 +31,6 @@
 
 namespace Application\ImportBundle\Command;
 
-use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -45,7 +44,7 @@ use Application\ImportBundle\Generator\Generator;
  * Class CheckExportCommand
  * @package Application\ImportBundle\Command
  */
-class CheckExportCommand extends ContainerAwareCommand
+class CheckExportCommand extends AbstractExportCommand
 {
     /**
      * {@inheritDoc}
@@ -84,7 +83,7 @@ class CheckExportCommand extends ContainerAwareCommand
         /** @var Generator $generator */
         $generator = $this->getContainer()->get('deskpro.import.generator');
 
-        $generator_config = $generator->createGeneratorConfig($input);
+        $generator_config = $this->createGeneratorConfig($input);
         $generator_config->setProgressBarHelper($progress_bar);
         $generator_config->output	= $output;
 
