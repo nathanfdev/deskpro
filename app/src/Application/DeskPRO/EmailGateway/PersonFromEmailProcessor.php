@@ -85,14 +85,39 @@ class PersonFromEmailProcessor
      * Finds a person based on the From in the email address.
      *
      * @param  string                             $email_address The email address as a string
+     * @param  string|null $name
      * @return \Application\DeskPRO\Entity\Person
      */
-    public function findPersonByEmailAddress($email_address)
+    public function findPersonByEmailAddress($email_address, $name = null)
     {
         $email = new EmailAddress();
         $email->email = $email_address;
 
+        if ($name) {
+            $email->name = $name;
+            $email->name_utf8 = $name;
+        }
+
         return $this->findPerson($email);
+    }
+
+
+    /**
+     * @param $email_address
+     * @param null $name
+     * @return Entity\Person
+     */
+    public function createPersonByEmailAddress($email_address, $name = null)
+    {
+        $email = new EmailAddress();
+        $email->email = $email_address;
+
+        if ($name) {
+            $email->name = $name;
+            $email->name_utf8 = $name;
+        }
+
+        return $this->createPerson($email, true);
     }
 
 
@@ -112,7 +137,6 @@ class PersonFromEmailProcessor
 
         if ($person) {
             App::getDb()->commit();
-
             return $person;
         }
 

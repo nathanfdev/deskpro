@@ -35,6 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\Ticket as Ticket;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
@@ -328,11 +329,11 @@ class TicketController extends AbstractController
             if (!\Orb\Validator\StringEmail::isValueValid($email) || !App::getSystemService('email_address_validator')->isValidUserEmail($email)) {
                 $errors['person_email'] = array('invalid_email', 'Invalid email address');
             } else {
-                $person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+                $person_processor = new PersonFromEmailProcessor();
+                $person = $person_processor->findPersonByEmailAddress($email, $this->in->getString('person_name'));
                 if (!$person) {
-                    $person = new \Application\DeskPRO\Entity\Person();
-                    $person->setEmail($email);
-                    $person->setName($this->in->getString('person_name'));
+
+                    $person = $person_processor->createPersonByEmailAddress($email, $this->in->getString('person_name'));
 
                     if ($this->in->checkIsset('person_organization')) {
                         $orgName = $this->in->getString('person_organization');
