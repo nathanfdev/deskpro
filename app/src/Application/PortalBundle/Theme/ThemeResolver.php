@@ -34,6 +34,7 @@
 
 namespace Application\PortalBundle\Theme;
 
+use Application\DeskPRO\Domain\DomainObject;
 use Application\PortalBundle\Request\TagRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -192,6 +193,8 @@ class ThemeResolver
     {
         $tag = $theme->resolveTag($tag_name);
 
+        $arguments = $this->filterArguments($arguments);
+
         if (!$tag) {
             throw new \InvalidArgumentException("Could not resolve tag: $tag_name");
         }
@@ -225,5 +228,20 @@ class ThemeResolver
         $tag_request->setOptionsResolver(new OptionsResolver());
 
         return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();
+    }
+
+    private function filterArguments(array $arguments)
+    {
+        $new_args = array();
+
+        foreach ($arguments as $arg => $val) {
+            if ($val instanceof DomainObject) {
+                $val = $val->id;
+            }
+
+            $new_args[$arg] = $val;
+        }
+
+        return $new_args;
     }
 }
