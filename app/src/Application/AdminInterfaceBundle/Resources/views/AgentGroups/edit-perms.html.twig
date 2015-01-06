@@ -90,6 +90,7 @@
 		{% if app.getSetting('core_tickets.enable_billing') or app.getSetting('core_tickets.enable_timelog') %}
 			{{ _self.perm_row('ticket', 'modify_billing') }}
 		{% endif %}
+		{{ _self.perm_row('ticket', 'create_labels') }}
 		</tbody>
 		<tbody>
 		{{ _self.perm_row('ticket', 'reply_own',                     {first: true}) }}
@@ -189,6 +190,7 @@
 		{{ _self.perm_row('people', 'validate') }}
 		{{ _self.perm_row('people', 'manage_emails') }}
 		{{ _self.perm_row('people', 'reset_password') }}
+		{{ _self.perm_row('people', 'create_labels') }}
 		{{ _self.perm_row('people', 'notes') }}
 		{{ _self.perm_row('people', 'delete', {destructive: true}) }}
 		{{ _self.perm_row('people', 'disable') }}
@@ -199,6 +201,7 @@
 		{{ _self.perm_row('org', 'create', {first: true}) }}
 		{{ _self.perm_row('org', 'edit') }}
 		{{ _self.perm_row('org', 'notes') }}
+		{{ _self.perm_row('org', 'create_labels') }}
 		{{ _self.perm_row('org', 'delete', {destructive: true}) }}
 		</tbody>
 	</table>
@@ -212,6 +215,7 @@
 			{{ _self.perm_row('chat', 'view_transcripts') }}
 			{{ _self.perm_row('chat', 'view_unassigned') }}
 			{{ _self.perm_row('chat', 'view_others') }}
+			{{ _self.perm_row('chat', 'create_labels') }}
 			{{ _self.perm_row('chat', 'delete', {destructive: true}) }}
 			</tbody>
 		</table>
@@ -240,6 +244,12 @@
 		{{ _self.perm_row('publish', 'delete') }}
 		{{ _self.perm_row('publish', 'edit') }}
 		{{ _self.perm_row('publish', 'validate') }}
+		</tbody>
+		<tbody>
+		{{ _self.perm_row('publish', 'articles_create_labels') }}
+		{{ _self.perm_row('publish', 'downloads_create_labels') }}
+		{{ _self.perm_row('publish', 'news_create_labels') }}
+		{{ _self.perm_row('publish', 'feedback_create_labels') }}
 		</tbody>
 	</table>
 	{# /PUBLISH PERMISSIONS #}

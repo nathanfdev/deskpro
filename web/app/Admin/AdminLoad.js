@@ -41,7 +41,6 @@ define([
   'Admin/CustomFields/Org/Ctrl/Edit',
   'Admin/Labels/Ctrl/List',
   'Admin/Labels/Ctrl/Edit',
-  'Admin/Labels/Ctrl/Settings',
   'Admin/Languages/Ctrl/Edit',
   'Admin/Languages/Ctrl/Install',
   'Admin/Languages/Ctrl/List',
