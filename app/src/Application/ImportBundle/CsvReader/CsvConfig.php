@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\CsvReader;
 
 /**
+ * Csv data parser configuration
+ *
  * Class CsvConfig
  * @package Application\ImportBundle\CsvReader
  */

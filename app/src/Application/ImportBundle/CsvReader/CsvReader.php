@@ -27,13 +27,14 @@
 
 namespace Application\ImportBundle\CsvReader;
 
-use Application\ImportBundle\Exception\BadDataException;
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
 use SplFileObject;
 use LimitIterator;
 
 /**
+ * Csv data parser
+ *
  * Class CsvReader
  * @package Application\ImportBundle\CsvReader
  */
@@ -47,7 +48,14 @@ class CsvReader implements CsvReaderInterface
         $count = 0;
         $iterator = $this->getIterator($config);
         foreach ($iterator as $row) {
-            $count++;
+            if (is_array($row)) {
+                $count++;
+            }
+        }
+
+        // removing header from count value
+        if ($count > 0) {
+            $count--;
         }
 
         return $count;
@@ -60,11 +68,23 @@ class CsvReader implements CsvReaderInterface
     {
         $iterator = $this->getIterator($config);
 
+        $header = null;
         $data   = array();
-        $header = $iterator->current();
-
         foreach ($iterator as $row) {
-            $data[] = $row;
+            if (!is_array($row)) {
+                continue;
+            }
+
+            if (!$header) {
+                $header = $row;
+            } else {
+                $record = array();
+                foreach ($header as $num => $key) {
+                    $record[$key] = $row[$num];
+                }
+
+                $data[] = $record;
+            }
         }
 
         return $data;

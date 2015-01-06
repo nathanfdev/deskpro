@@ -36,7 +36,6 @@ use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Application\ImportBundle\Generator\Generator;
 
@@ -59,29 +58,24 @@ class CheckExportCommand extends AbstractExportCommand
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $out_handler = new ConsoleHandler($output);
-        $logger = new Logger('exporter', array($out_handler));
+        $config = $this->createGeneratorConfig($input);
+        $logger = $this->createLogger($config, new ConsoleHandler($output));
 
         /** @var ProgressHelper $progress_bar */
         $progress_bar = $this->getHelperSet()->get('progress');
         /** @var Generator $generator */
         $generator = $this->getContainer()->get('deskpro.import.generator');
         $generator
-            ->setConfig($this->createGeneratorConfig($input))
-            ->setLogger($logger)
-            ->setProgressBarHelper($progress_bar);
+            ->setConfig($config)
+            ->setLogger($logger);
+
+        if (!$config->isVerbose()) {
+            $generator->setProgressBarHelper($progress_bar);
+        }
 
         $progress_bar->start($output, $generator->getTotalRecordsCount());
         $generator->generateJson();

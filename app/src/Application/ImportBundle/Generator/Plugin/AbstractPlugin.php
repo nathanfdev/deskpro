@@ -31,7 +31,7 @@ use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 
 /**
- * Base generator class methods
+ * Base data generator class methods
  *
  * Class AbstractPlugin
  * @package Application\ImportBundle\Generator\Plugin

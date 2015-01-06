@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Plugin;
 use Application\ImportBundle\Generator\GeneratorInterface;
 
 /**
+ * Data generator interface
+ *
  * Interface GeneratorPluginInterface
  * @package Application\ImportBundle\Generator\Plugin
  */

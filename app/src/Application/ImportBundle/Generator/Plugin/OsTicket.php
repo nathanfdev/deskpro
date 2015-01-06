@@ -34,7 +34,7 @@
 namespace Application\ImportBundle\Generator\Plugin;
 
 /**
- * Description of OsTicket
+ * Data generator from OsTicket
  *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator\Plugin

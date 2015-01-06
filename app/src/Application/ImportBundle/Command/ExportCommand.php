@@ -60,24 +60,16 @@ class ExportCommand extends AbstractExportCommand
     }
 
     /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    public function getContainer()
-    {
-        return parent::getContainer();
-    }
-
-    /**
      * {@inheritDoc}
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $out_handler = new ConsoleHandler($output);
-        $out_handler->setLevel(Logger::NOTICE);
-
-        $logger = new Logger('exporter', array($out_handler));
         $config = $this->createGeneratorConfig($input);
         $config->setMode(GeneratorConfig::MODE_LIVE);
+
+        $out_handler = new ConsoleHandler($output);
+        $out_handler->setLevel(Logger::NOTICE);
+        $logger = $this->createLogger($config, $out_handler);
 
         /** @var ProgressHelper $progress_bar */
         $progress_bar = $this->getHelperSet()->get('progress');
@@ -85,8 +77,11 @@ class ExportCommand extends AbstractExportCommand
         $generator = $this->getContainer()->get('deskpro.import.generator');
         $generator
             ->setConfig($config)
-            ->setLogger($logger)
-            ->setProgressBarHelper($progress_bar);
+            ->setLogger($logger);
+
+        if (!$config->isVerbose()) {
+            $generator->setProgressBarHelper($progress_bar);
+        }
 
         $progress_bar->start($output, $generator->getTotalRecordsCount());
         $generator->generateJson();

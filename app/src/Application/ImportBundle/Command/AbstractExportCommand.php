@@ -29,9 +29,13 @@ namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Plugin\GeneratorPluginInterface;
+use Monolog\Handler\StreamHandler;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Orb\Util\OptionsArray;
+use Monolog\Logger;
+use Psr\Log\LoggerInterface;
 
 /**
  * Base export command
@@ -66,7 +70,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
-            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export'))
+            ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'))
             ->setMode($import_config->get('mode', GeneratorConfig::MODE_TEST))
             ->setMarkDone($import_config->get('mark_done', true));
     }
@@ -111,5 +115,39 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($input->hasOption('mark-done')) {
             $config->setMarkDone($input->getOption('mark-done'));
         }
+        if ($input->hasOption('verbose')) {
+            $config->setVerbose($input->getOption('verbose'));
+        }
+    }
+
+    /**
+     * Create a logger
+     *
+     * @param GeneratorConfig $config
+     * @param ConsoleHandler  $consoleHandler
+     *
+     * @return LoggerInterface
+     */
+    protected function createLogger(GeneratorConfig $config, ConsoleHandler $consoleHandler)
+    {
+        $logger = new Logger('exporter');
+        if ($config->getLogPath()) {
+            $logger->pushHandler(new StreamHandler($config->getLogPath()));
+        }
+        if ($config->isVerbose()) {
+            $logger->pushHandler($consoleHandler);
+        }
+
+        return $logger;
+    }
+
+    /**
+     * Override container to set correct type hinting
+     *
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    protected function getContainer()
+    {
+        return parent::getContainer();
     }
 }

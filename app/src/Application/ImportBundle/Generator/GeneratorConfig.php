@@ -60,7 +60,7 @@ class GeneratorConfig
     /**
      * @var string
      */
-    private $log_path;
+    private $log_path = '/import.log';
 
     /**
      * 'test' or 'live'
@@ -80,6 +80,11 @@ class GeneratorConfig
      * @var int
      */
     private $batch_size = 10;
+
+    /**
+     * @var bool
+     */
+    private $verbose = false;
 
     /**
      * Not used yet
@@ -221,6 +226,24 @@ class GeneratorConfig
     public function setBatchSize($batch_size)
     {
         $this->batch_size = (int)$batch_size;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isVerbose()
+    {
+        return $this->verbose;
+    }
+
+    /**
+     * @param boolean $verbose
+     * @return $this
+     */
+    public function setVerbose($verbose)
+    {
+        $this->verbose = (bool)$verbose;
         return $this;
     }
 }
