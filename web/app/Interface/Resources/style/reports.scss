@@ -641,11 +641,30 @@
 }
 
 
+// I'm adding this here instead of below because if we absolute position all the
+// dropdowns, the ones at the bottom of the reports page will also show up here (which will break the presentation)
+// Should move these styles directly to .reports-dropdown later (see commented styles below)
+.reports-control {
+  .reports-dropdown {
+    position: absolute;
+    top: -5px;
+  }
+}
 
 .reports-dropdown {
   border-radius: 2px;
   overflow: hidden;
   background: #efeeeb;
+  min-width: 300px;
+  // Delete the .reports-control .reports-dropdown above and uncomment these when done with needing the dropdowns at the bottom of the page
+  // position: absolute;
+  // top: -5px;
+
+  li {
+    display: block;
+    width: 100%;
+    border: 0px;
+  }
 
   p {
     color: $text-grey;
@@ -658,6 +677,13 @@
     display: block;
     margin-bottom: 5px;
   }
+
+  hr {
+    position: relative;
+    top: 0px;
+    left: 0px;
+  }
+
 
   form {
     display: block;

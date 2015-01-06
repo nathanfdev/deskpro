@@ -7,7 +7,7 @@
 .setup {
   padding: 20px;
   background: #fff;
-  width: 840px;
+  max-width: 840px;
   // position: absolute;
 }
 
@@ -63,13 +63,13 @@
 
 
 .content-section {
-  margin-bottom: 20px;
+  margin-bottom: 10px;
 }
 
 
 
 .select-portal-mode {
-  @include clearfix;
+  @include clearfix();
   text-align: center;
   margin-top: 40px;
   margin-bottom: 40px;
@@ -99,6 +99,8 @@
       position: relative;
       top: -6px;
     }
+
+    @include media($tablet) { display: none; }
   }
 
   a {
@@ -142,6 +144,14 @@
         padding: 4px;
       }
     }
+
+    @include media($tablet) {
+      max-width: none;
+      width: 100%;
+      margin: 0;
+      margin-top: 5px;
+      margin-bottom: 5px;
+    }
   }
 
   a.selected {
@@ -155,6 +165,11 @@
   a:hover {
     border: 2px dashed #dfdfdf;
   }
+
+  @include media($tablet) {
+    margin-top: 5px;
+    margin-bottom: 5px;
+  }
 }
 
 
@@ -167,6 +182,11 @@
 .col-half {
   width: 50%;
   float: left;
+
+  @include media($tablet) {
+    float: none;
+    width: 100%;
+  }
 }
 
 .omega:after {
@@ -182,11 +202,19 @@
 
   .form-text {
     margin-top: 25px;
+
+    @include media($tablet) {
+      margin-top: 10px;
+    }
   }
 
   //
   .widget-preview:last-child {
     margin-bottom: 0px;
+
+    @include media($tablet) {
+      margin-right: 0;
+    }
   }
 }
 

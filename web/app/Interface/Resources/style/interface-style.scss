@@ -5,6 +5,9 @@
 @import "../../../../bower_components/font-awesome/css/font-awesome.min.css";
 
 @import 'variables';
+$tablet: new-breakpoint(max-width 960px 6);
+$mobile: new-breakpoint(max-width 640px 6);
+
 body {
   background: #f6f6f6;
   font-family: Lato, "proxima nova";
@@ -119,6 +122,7 @@ $content-width: $app-width + $sidebar-width;
     height: 2400px;
   }
 }
+
 
 .wrapper {
   @include clearfix;

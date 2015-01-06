@@ -1,10 +1,15 @@
 // http://bourbon.io
-@import "../../../../bower_components/bourbon/dist/bourbon";
-@import "../../../../bower_components/neat/app/assets/stylesheets/neat";
+@import "./bourbon/bourbon";
+@import "./neat/neat";
 // Font awesome: http://fortawesome.github.io/Font-Awesome/cheatsheet/
-@import "../../../../bower_components/font-awesome/css/font-awesome.min.css";
+@import "../fonts/font-awesome/css/font-awesome.min.css";
 
 @import 'variables';
+
+
+$tablet: new-breakpoint(max-width 960px 6);
+$mobile: new-breakpoint(max-width 640px 6);
+
 body {
   background: #f6f6f6;
   font-family: Lato, "proxima nova";
@@ -39,9 +44,6 @@ a { color: $link-color; }
 @import 'tooltips';
 @import 'stats';
 @import 'editor';
-@import 'reports-overview';
-@import 'ticket_satisfaction';
-@import 'agent_performance';
 
 // Just for presentation
 .content, .sidebar, .app-bar { min-height: 3000px; }
@@ -120,160 +122,7 @@ $content-width: $app-width + $sidebar-width;
   }
 }
 
+
 .wrapper {
   @include clearfix;
-}
-
-//######################################################################################################################
-//# Report Dashboard
-//######################################################################################################################
-
-@import "dash/gridster";
-@import "dash/ng-tables";
-body {
-}
-
-.stat {
-  width: 100%;
-  height: 100%;
-  border: 1px solid #78a535;
-  border: 0px;
-}
-
-#stat-title {
-  width: 100%;
-  text-align: center;
-  font-size: 28px;
-  color: black;
-  margin-bottom: 5px;
-}
-
-#stat-value {
-  width: 100%;
-  text-align: center;
-  font-size: 30px;
-  color: ActiveCaption;
-}
-
-.pull-right {
-  float: right !important;
-}
-
-.edit-zone {
-  height: 40px;
-  width: 100%;
-  margin-top: 15px;
-}
-
-.div-label {
-  display: block;
-  margin-bottom: 5px;
-  font-weight: bold;
-}
-
-input[type='radio'].active {
-  background-color: ActiveCaption;
-}
-
-/*.dropdown-modal{
-    min-width:300px;
-}*/
-
-.add-btn {
-  margin-left: 5px;
-}
-
-.box-header {
-  background-color: #eee;
-  padding: 0 30px 0 10px;
-  border-bottom: 1px solid #ccc;
-  cursor: move;
-  position: relative;
-}
-
-.box-header-btns {
-  top: 15px;
-  right: 10px;
-  cursor: pointer;
-  position: absolute;
-}
-
-.box-header h3 {
-  margin-top: 10px;
-  display: inline-block;
-  width: 70%;
-}
-
-.box {
-  height: 100%;
-  position: relative;
-}
-
-.ng-table {
-  border-top: 0px;
-  border-bottom: 1px solid #ccc;
-}
-
-
-.db-title .list-group-item-heading a {
-  float: right;
-}
-
-.db-title {
-  height: 45px;
-}
-
-.list-group-item-heading a > i {
-  color: white;
-  position: relative;
-  top: 3px;
-  cursor: pointer;
-}
-
-
-table.dataTable thead th, table.dataTable thead td {
-  border-bottom: 0;
-}
-
-
-table.dataTable tfoot th, table.dataTable tfoot td {
-  padding: 10px 18px 6px 18px;
-  border-top: 1px solid #ccc;
-}
-
-.dataTables_wrapper.no-footer .dataTables_scrollBody {
-  border-bottom: 1px solid #ccc;
-  border-top: 1px solid #ccc;
-}
-
-.dataTables_wrapper.no-footer .dataTables_scrollHead {
-  border-bottom: 1px solid #ccc;
-}
-
-ul.scroll-menu {
-  position: relative;
-  overflow-x: auto;
-  -webkit-overflow-scrolling: touch;
-  -moz-overflow-scrolling: touch;
-  -ms-overflow-scrolling: touch;
-  -o-overflow-scrolling: touch;
-  overflow-scrolling: touch;
-  top: 0 !important;
-  left: 0 !important;
-  width: 100%;
-  height: auto;
-  max-height: 500px;
-  margin: 0;
-  border-left: none;
-  border-right: none;
-  -webkit-border-radius: 0 !important;
-  -moz-border-radius: 0 !important;
-  -ms-border-radius: 0 !important;
-  -o-border-radius: 0 !important;
-  border-radius: 0 !important;
-  -webkit-box-shadow: none;
-  -moz-box-shadow: none;
-  -ms-box-shadow: none;
-  -o-box-shadow: none;
-  box-shadow: none;
 }

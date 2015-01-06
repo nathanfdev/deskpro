@@ -3,8 +3,15 @@
 // Font Stacks
 $stack-1: "Open Sans", Helvetica, Arial, Sans-Serif;
 $stack-2: Baskerville, Georgia, Serif;
-$stack-3: Lato, "Myriad Pro", Arial, Sans-Serif;
+$stack-3: Lato, "Myriad Pro", Myriad, Arial, Sans-Serif;
 $stack-4: "Ubuntu", "Trebuchet Ms", Arial, Sans-Serif;
+
+// About the font stacks:
+// Lato, Open Sans & Ubuntu all come from google fonts. Should only load the extra fonts
+// on the editor page for performance.
+//
+// Baskerville is a default font on osx with georgia the indentical on windows & linux. It also exists on osx but baskerville looks better.
+// Myriad Pro is available on every windows version from winXP and on, and all osxes.
 
 .stack-1 { font-family: $stack-1; }
 .stack-2 { font-family: $stack-2; }
@@ -12,9 +19,7 @@ $stack-4: "Ubuntu", "Trebuchet Ms", Arial, Sans-Serif;
 .stack-4 { font-family: $stack-4; }
 
 // Overall wrapper
-.editor {
-  background: url(/web/images/report/icons/grid.png);
-}
+.editor { background: url(/web/images/report/icons/grid.png); }
 
 
 
@@ -68,6 +73,23 @@ $total-width: $panel-width + 960px + $editor-gutters;
   background: #fff;
   box-shadow: 0px 0px 10px 10px rgba(0, 0, 0, 0.1);
   z-index: 99;
+
+
+  // Warning for small screens
+  .widescreen-info {
+    display: none;
+    background: #f5f5ed;
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+    padding: 10px;
+    text-align: center;
+    border-top-right-radius: 4px;
+    border-top-left-radius: 4px;
+
+    @include media($tablet) {
+      display: block;
+    }
+
+  }
 
   // Preview buttons for ""*user visiting with a *device" over the preview
   .preview-tools {
