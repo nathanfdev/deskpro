@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\Usersource;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Auth\Adapter\FormLoginInterface;
 use Orb\Auth\Result;
+use Symfony\Component\HttpFoundation\Session\Session;
 use Symfony\Component\Security\Core\Authentication\Provider\AuthenticationProviderInterface;
 use Symfony\Component\Security\Core\Authentication\Token\TokenInterface;
 use Symfony\Component\Security\Core\Exception\AuthenticationException;
@@ -59,11 +60,16 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
      * @var \Application\AuthBundle\Security\DpPersonUserProvider
      */
     private $dp_person_provider;
+    /**
+     * @var Session
+     */
+    private $session;
 
-    public function __construct(DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider)
+    public function __construct(DpAuthManager $dp_auth_manager, DpPersonUserProvider $dp_person_provider, Session $session)
     {
         $this->dp_auth_manager    = $dp_auth_manager;
         $this->dp_person_provider = $dp_person_provider;
+        $this->session = $session;
     }
 
     /**
@@ -80,6 +86,8 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
         if ($token->isAuthenticated()) {
             return $token;
         }
+
+        $this->session->set('last_username', $token->getUsername());
 
         /** @var Usersource $usersource */
         /** @var Result $authResult */

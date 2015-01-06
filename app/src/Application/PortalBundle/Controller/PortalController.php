@@ -57,7 +57,8 @@ class PortalController extends AbstractController
             'Theme:Portal:login.html.twig',
             array(
                 'auth_manager' => $this->get('dp_authentication_manager.user'),
-                'login_error' => $request->get('retry') == 'auth'
+                'login_error' => $request->get('retry') == 'auth',
+                'last_username' => $this->getSession()->get('last_username')
             )
         );
     }

@@ -49,6 +49,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Symfony\Component\HttpFoundation\Session\Session
+     */
+    public function getSession()
+    {
+        return $this->get('session');
+    }
+
+    /**
      * @param string $entity_name
      * @return \Doctrine\ORM\EntityRepository
      */

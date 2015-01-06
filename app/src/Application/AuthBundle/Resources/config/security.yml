@@ -57,7 +57,7 @@ services:
 
     dp_security.form_login.provider:
         class: Application\AuthBundle\Security\Authentication\Provider\DpFormLoginProvider
-        arguments: [@dp_authentication_manager.user,@dp_person_user_provider]
+        arguments: [@dp_authentication_manager.user,@dp_person_user_provider,@session]
 
     dp_security.form_login.listener:
         class: Application\AuthBundle\Security\Firewall\DpAuthListener
