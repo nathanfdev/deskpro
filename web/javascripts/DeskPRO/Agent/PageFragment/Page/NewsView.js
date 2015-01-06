@@ -309,7 +309,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	removeAutoUnPubOptions: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			data: {action: 'remove-auto-unpub'},
 			context: this,
@@ -342,7 +342,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -394,7 +394,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	removeAutoPubOptions: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			data: {action: 'remove-auto-pub'},
 			context: this,
@@ -422,7 +422,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -515,7 +515,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			context: this,
 			data: data,
