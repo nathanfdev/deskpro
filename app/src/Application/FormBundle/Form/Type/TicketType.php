@@ -307,9 +307,6 @@ class TicketType extends AbstractType
             case FormFields::TICKET_FIELD:
                 $this->addCustomTicketField($form_context, $field);
                 break;
-            case FormFields::CUSTOM_FIELD:
-                $this->addCustomCustomField($form_context, $field);
-                break;
 
         }
     }
@@ -428,11 +425,6 @@ class TicketType extends AbstractType
                 'label'           => false
             )
         );
-    }
-
-    private function addCustomCustomField(TicketFormContext $form_context, LayoutField $field)
-    {
-        // TODO: custom-custom user fields
     }
 
     private function addCategory(TicketFormContext $form_context, LayoutField $field)
