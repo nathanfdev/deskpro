@@ -6,9 +6,23 @@
                 <a href="{{ path('portal_tickets') }}">My Tickets</a>
             </li>
         {% endif %}
+
         <li>
             <a href="{{ path('portal_user_profile') }}">My Profile</a>
         </li>
+
+        {% if app.user.is_agent and app.user.can_agent %}
+            <li>
+                <a href="{{ path('agent_interface') }}">{{ phrase('agent.general.agent_interface') }}</a>
+            </li>
+        {% endif %}
+
+        {% if app.user.is_agent and app.user.can_admin %}
+            <li>
+                <a href="{{ path('admin_interface') }}">{{ phrase('agent.general.admin_interface') }}</a>
+            </li>
+        {% endif %}
+
         <li>
             <a href="{{ path('portal_logout') }}">Logout</a>
         </li>

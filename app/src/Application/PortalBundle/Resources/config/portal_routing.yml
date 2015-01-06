@@ -1,3 +1,9 @@
+# Links to known existing URLs (admin, agent, etc)
+admin_interface:
+    path: /admin
+agent_interface:
+    path: /agent
+
 # Annotations
 portal:
     resource: "@PortalBundle/Controller"
