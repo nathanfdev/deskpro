@@ -231,6 +231,10 @@ class Manager
             $this->logger ?: null
         );
 
+        // Dont fail the upgrade at this point
+        // but log the error so we can know something went wrong with an app
+        $app_syncer->setExceptionHandler(function($e) { KernelErrorHandler::logException($e); });
+
         $app_syncer->runUpdates();
         $app_syncer->runSync();
 
