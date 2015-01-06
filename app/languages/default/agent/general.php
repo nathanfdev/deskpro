@@ -102,6 +102,8 @@
     'agent.general.ccs'                                     => 'CC\'s',
     'agent.general.change_password'                         => 'Change Password',
     'agent.general.set_password'                            => 'Set Password',
+    'agent.general.generate_password'                       => 'Generate random password',
+    'agent.general.send_welcome_email'                      => 'Send welcome email',
     'agent.general.change_pic_for'                          => 'Change picture for {{name}}',
     'agent.general.upload_vcard_for'                        => 'Upload vCard for {{name}}',
     'agent.general.change_status'                           => 'Change Status',
