@@ -44,6 +44,30 @@ ul.jira-issues-list > li {
     border-radius: 3px;
 }
 
+div.jira-search-results-list {
+    background: #EEEFF1;
+    margin: 8px;
+    border: 1px solid #ADAEB4;
+    text-align: left;
+}
+
+div.jira-search-results-list ul {
+    padding: 0;
+    margin: 0;
+}
+
+div.jira-search-results-list ul li:first-child {
+    border-top: none;
+}
+
+div.jira-search-results-list ul li {
+    background: #fff;
+    border-top: 1px solid #ADAEB4;
+    border-radius: 3px;
+    padding: 3px;
+    font-size: 12px;
+    border-radius: 0;
+}
 
 /*******************************************************/
 /* JIRA FIELDS LIST */
