@@ -1045,6 +1045,9 @@ HTML;
                     $user_rule_proc->newRegister($person);
                 }
 
+                // Delete old sessions for this user
+                $this->db->delete('sessions', array('person_id' => $person->getId()));
+
                 $this->session->setFlash('password_reset', 1);
 
                 $this->session->set('auth_person_id', $person->getId());
