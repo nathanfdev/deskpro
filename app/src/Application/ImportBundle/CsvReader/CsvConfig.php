@@ -25,23 +25,113 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Plugin;
-
-use Application\ImportBundle\Generator\GeneratorInterface;
+namespace Application\ImportBundle\CsvReader;
 
 /**
- * Interface GeneratorPluginInterface
- * @package Application\ImportBundle\Generator\Plugin
+ * Class CsvConfig
+ * @package Application\ImportBundle\CsvReader
  */
-interface GeneratorPluginInterface extends GeneratorInterface
+class CsvConfig
 {
-    const GENERATOR_TYPE_CSV       = 'csv';
-    const GENERATOR_TYPE_OS_TICKET = 'osticket';
+    /**
+     * @var string
+     */
+    private $resource;
 
     /**
-     * Get plugin type
+     * @var string
+     */
+    private $delimiter = ';';
+
+    /**
+     * @var string
+     */
+    private $enclosure = '"';
+
+    /**
+     * @var string
+     */
+    private $escape = '\\';
+
+    /**
+     * Constructor
      *
+     * @param string $resource
+     */
+    public function __construct($resource)
+    {
+        $this->resource = $resource;
+    }
+
+    /**
      * @return string
      */
-    public function getType();
+    public function getResource()
+    {
+        return $this->resource;
+    }
+
+    /**
+     * @param string $resource
+     * @return $this
+     */
+    public function setResource($resource)
+    {
+        $this->resource = $resource;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDelimiter()
+    {
+        return $this->delimiter;
+    }
+
+    /**
+     * @param string $delimiter
+     * @return $this
+     */
+    public function setDelimiter($delimiter)
+    {
+        $this->delimiter = $delimiter;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    /**
+     * @param string $enclosure
+     * @return $this
+     */
+    public function setEnclosure($enclosure)
+    {
+        $this->enclosure = $enclosure;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEscape()
+    {
+        return $this->escape;
+    }
+
+    /**
+     * @param string $escape
+     * @return $this
+     */
+    public function setEscape($escape)
+    {
+        $this->escape = $escape;
+        return $this;
+    }
 }

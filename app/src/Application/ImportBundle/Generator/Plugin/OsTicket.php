@@ -68,7 +68,7 @@ class OsTicket extends AbstractPlugin
      */
     public function getType()
     {
-        return self::TYPE_OS_TICKET;
+        return self::GENERATOR_TYPE_OS_TICKET;
     }
 
     /**
@@ -105,7 +105,7 @@ class OsTicket extends AbstractPlugin
             $this->exportTickets();
 
         } catch (\Exception $ex) {
-            //$this->logger->warning($ex->getMessage());
+            $this->logWarning($ex->getMessage());
         }
     }
 
@@ -290,7 +290,7 @@ class OsTicket extends AbstractPlugin
 
         while ($person_batch) {
             foreach ($person_batch as $person) {
-                $transformedArray = array(
+                $transformed = array(
                     'oid'          => $index,
                     'is_agent'     => true,
                     'first_name'   => $person['firstname'],
@@ -302,10 +302,10 @@ class OsTicket extends AbstractPlugin
 
                 $file_name = 'person' . $index . '.json';
                 if ($this->config->isLive()) {
-                    file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
+                    file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformed));
                 }
 
-                //$this->logger->info(sprintf('%s exported successfully!', $file_name));
+                $this->logInfo(sprintf('%s exported successfully!', $file_name));
 
                 $index++;
                 $offset++;
@@ -316,7 +316,7 @@ class OsTicket extends AbstractPlugin
         }
 
         foreach ($this->findAllUser() as $person) {
-            $transformedArray = array(
+            $transformed = array(
                 'oid'          => $index,
                 'is_user'      => true,
                 'name'         => $person['name'],
@@ -326,11 +326,11 @@ class OsTicket extends AbstractPlugin
 
             $file_name = 'person' . $index . '.json';
             if ($this->config->isLive()) {
-                file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
+                file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformed));
             }
 
             $this->advanceProgressBar();
-            //$this->logger->info(sprintf('%s exported successfully!', $file_name));
+            $this->logInfo(sprintf('%s exported successfully!', $file_name));
 
             $index++;
         }
@@ -348,7 +348,7 @@ class OsTicket extends AbstractPlugin
 
         while ($ticket_batch) {
             foreach ($ticket_batch as $ticket) {
-                $transformedArray = array(
+                $transformed = array(
                     'ref'          => !empty($ticket['number']) ? $ticket['number'] : null,
                     'department'   => $this->findDepartmentFromId($ticket['dept_id']),
                     'person'       => $this->findUserEmailFromId($ticket['user_id']),
@@ -380,7 +380,6 @@ class OsTicket extends AbstractPlugin
 
                         foreach ($attachments as $attachment) {
                             $file_data = $this->getFileData($attachment['file_id']);
-
                             $message_array['attachments'][] = array(
                                 'oid'          => $index,
                                 'blob_data'    => base64_encode($file_data),
@@ -390,18 +389,18 @@ class OsTicket extends AbstractPlugin
                         }
                     }
 
-                    $transformedArray['messages'][] = $message_array;
+                    $transformed['messages'][] = $message_array;
                 }
 
                 $file_name = 'ticket' . $index++ . '.json';
                 if ($this->config->isLive()) {
-                    file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformedArray));
+                    file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformed));
                 }
 
-                unset($transformedArray);
+                unset($transformed);
                 $offset++;
 
-//                $this->logInfo(sprintf('%s exported successfully!', $file_name));
+                $this->logInfo(sprintf('%s exported successfully!', $file_name));
                 $this->advanceProgressBar();
             }
 

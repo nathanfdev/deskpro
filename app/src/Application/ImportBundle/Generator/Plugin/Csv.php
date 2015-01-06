@@ -33,7 +33,8 @@
 
 namespace Application\ImportBundle\Generator\Plugin;
 
-use Application\ImportBundle\Exception\BadDataException;
+use Application\ImportBundle\CsvReader\CsvConfig;
+use Application\ImportBundle\CsvReader\CsvReaderInterface;
 use Orb\Util\Arrays;
 
 /**
@@ -45,16 +46,31 @@ use Orb\Util\Arrays;
 class Csv extends AbstractPlugin
 {
     /**
+     * @var CsvReaderInterface
+     */
+    private $csv_reader;
+
+    /**
      * @var array
      */
     private $read_ticket_ids = array();
+
+    /**
+     * Constructor
+     *
+     * @param CsvReaderInterface $csv_reader
+     */
+    public function __construct(CsvReaderInterface $csv_reader)
+    {
+        $this->csv_reader = $csv_reader;
+    }
 
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return self::TYPE_CSV;
+        return self::GENERATOR_TYPE_CSV;
     }
 
     /**
@@ -72,24 +88,29 @@ class Csv extends AbstractPlugin
      */
     public function getRecordsCountByType($type)
     {
-        $data_file = $this->getFile($type);
-        $records = -1;
+        return $this->csv_reader->getRowsCount($this->getCsvReaderConfig($type));
+    }
 
-        $line1 = fgets($data_file);
-        rewind($data_file);
+    /**
+     * Returns exporting raw data
+     *
+     * @param string $type
+     * @return array
+     */
+    protected function getDataByRecordType($type)
+    {
+        return $this->csv_reader->getData($this->getCsvReaderConfig($type));
+    }
 
-        if (substr_count($line1, ';') > substr_count($line1, ',')) {
-            $sep = ';';
-        } else {
-            $sep = ',';
-        }
-
-        while (($row = fgetcsv($data_file, 4096, $sep)) !== false) {
-            ++$records;
-        }
-
-        fclose($data_file);
-        return $records;
+    /**
+     * Get absolute file path
+     *
+     * @param string $record_type
+     * @return CsvConfig
+     */
+    protected function getCsvReaderConfig($record_type)
+    {
+        return new CsvConfig(sprintf('%s/%s.csv', $this->config->getInputPath(), $record_type));
     }
 
     /**
@@ -108,42 +129,14 @@ class Csv extends AbstractPlugin
     }
 
     /**
-     * Get full file path
-     *
-     * @param string $data_source
-     * @return string
-     */
-    protected function getFileName($data_source)
-    {
-        return $this->config->getInputPath() . DIRECTORY_SEPARATOR . $data_source . '.csv';
-    }
-
-    /**
-     * Get file pointer resource
-     *
-     * @param string $data_source
-     *
-     * @return resource
-     * @throws BadDataException
-     */
-    protected function getFile($data_source)
-    {
-        $path = $this->getFileName($data_source);
-        if (!file_exists($path)) {
-            throw new BadDataException(sprintf('File `%s` not found', $path));
-        }
-
-        return fopen($path, 'rt');
-    }
-
-    /**
      * @return void
      */
     protected function exportPeople()
     {
         $index = 1;
+        $data  = $this->getDataByRecordType(self::RECORD_TYPE_PEOPLE);
 
-        foreach ($this->getData('people') as $person) {
+        foreach ($data as $person) {
             if (!count(Arrays::removeEmptyString($person))) {
                 $index++;
                 $this->advanceProgressBar();
@@ -163,7 +156,7 @@ class Csv extends AbstractPlugin
             $file_name = 'person' . $index . '.json';
             $names = explode(' ', $person['name']);
 
-            $transformedArray = array(
+            $transformed = array(
                 'oid'        => $index,
                 'is_agent'   => isset($person['is_agent']) ? (bool) $person['is_agent'] : false,
                 'first_name' => $names[0],
@@ -172,7 +165,7 @@ class Csv extends AbstractPlugin
             );
 
             if ($this->config->isLive()) {
-                file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
+                file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformed));
             }
 
             $this->logInfo(sprintf('%s exported successfully!', $file_name));
@@ -188,14 +181,14 @@ class Csv extends AbstractPlugin
     protected function exportTickets()
     {
         $index = 1;
+        $data  = $this->getDataByRecordType(self::RECORD_TYPE_TICKETS);
 
-        foreach ($this->getData('tickets') as $ticket) {
+        foreach ($data as $ticket) {
             if (!count(Arrays::removeEmptyString($ticket))) {
                 $index++;
                 $this->advanceProgressBar();
                 continue;
             }
-
             if (!isset($ticket['subject']) || !isset($ticket['user'])) {
                 $this->logWarning(sprintf('Invalid ticket record found (Skipping)'));
                 $index++;
@@ -204,7 +197,7 @@ class Csv extends AbstractPlugin
             }
 
             $file_name = 'ticket_' . trim($ticket['id']) . '.json';
-            $transformedArray = array(
+            $transformed = array(
                 'ref'          => $ticket['id'],
                 'person'       => $ticket['user'],
                 'agent'        => isset($ticket['agent']) ? $ticket['agent'] : null,
@@ -214,7 +207,7 @@ class Csv extends AbstractPlugin
             );
 
             if ($this->config->isLive()) {
-                file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformedArray));
+                file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformed));
             }
 
             $this->logInfo(sprintf('%s exported successfully!', $file_name));
@@ -232,8 +225,9 @@ class Csv extends AbstractPlugin
     protected function exportTicketMessages()
     {
         $index = 0;
+        $data  = $this->getDataByRecordType(self::RECORD_TYPE_MESSAGES);
 
-        foreach ($this->getData('messages') as $ticket_message) {
+        foreach ($data as $ticket_message) {
             if (!count(Arrays::removeEmptyString($ticket_message))) {
                 $index++;
                 $this->advanceProgressBar();
@@ -279,59 +273,7 @@ class Csv extends AbstractPlugin
             }
 
             $index++;
-
             $this->advanceProgressBar();
         }
-    }
-
-    /**
-     * @param string $data_source
-     *
-     * @return array
-     * @throws BadDataException
-     */
-    protected function getData($data_source)
-    {
-        $handle = $this->getFile($data_source);
-
-        $header = NULL;
-        $header_count = 0;
-
-        $data = array();
-
-        $line1 = fgets($handle);
-        rewind($handle);
-
-        if (substr_count($line1, ';') > substr_count($line1, ',')) {
-            $sep = ';';
-        } else {
-            $sep = ',';
-        }
-
-        if ($handle) {
-            while (($row = fgetcsv($handle, 0, $sep)) !== false) {
-                if(!$header) {
-                    $header = array_map('trim',$row);
-                    $header_count = count($header);
-                } else {
-                    $c = count($row);
-
-                    // Fixes mis-matching column counts
-                    if ($header_count > $c) {
-                        // missing header cols, empty value
-                        for ($i = $c; $i < $header_count; $i++) $row[$i] = '';
-                    } else if ($c > $header_count) {
-                        // too many cols, discard them
-                        for ($i = $header_count; $i < $c; $i++) unset($row[$i]);
-                    }
-
-                    $data[] = array_combine($header, array_map('trim',$row));
-                }
-            }
-
-            fclose($handle);
-        }
-
-        return $data;
     }
 }

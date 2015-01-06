@@ -39,7 +39,11 @@ class ImportExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
+        $definition = new Definition('Application\ImportBundle\CsvReader\CsvReader');
+        $container->setDefinition('deskpro.import.csv_reader', $definition);
+
         $definition = new Definition('Application\ImportBundle\Generator\Plugin\Csv');
+        $definition->addArgument(new Reference('deskpro.import.csv_reader'));
         $container->setDefinition('deskpro.import.generator.plugin.csv', $definition);
 
         $definition = new Definition('Application\ImportBundle\Generator\Plugin\OsTicket');

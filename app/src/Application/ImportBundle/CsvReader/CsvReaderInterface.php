@@ -25,23 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Plugin;
-
-use Application\ImportBundle\Generator\GeneratorInterface;
+namespace Application\ImportBundle\CsvReader;
 
 /**
- * Interface GeneratorPluginInterface
- * @package Application\ImportBundle\Generator\Plugin
+ * Import csv data parser interface
+ *
+ * Interface CsvReaderInterface
+ * @package Application\ImportBundle\CsvReader
  */
-interface GeneratorPluginInterface extends GeneratorInterface
+interface CsvReaderInterface
 {
-    const GENERATOR_TYPE_CSV       = 'csv';
-    const GENERATOR_TYPE_OS_TICKET = 'osticket';
+    /**
+     * Returns rows count of csv file
+     *
+     * @param CsvConfig $config
+     * @return int
+     */
+    public function getRowsCount(CsvConfig $config);
 
     /**
-     * Get plugin type
+     * Parse csv file into raw array
      *
-     * @return string
+     * @param CsvConfig $config
+     * @return array
      */
-    public function getType();
+    public function getData(CsvConfig $config);
 }
