@@ -75,11 +75,26 @@
 
 <% if (group.type == 'person') { var person = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}">
-	<div class="userinfo">
+	<div class="userinfo" style="height: auto; overflow: auto;">
 		<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>');"><%- person.display_name %></span></a>
 		<span class="email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
-		<div class="bound-fade"></div>
+		<div class="bound-fade">
+			<% if (person.tickets_count > 0) { %>
+			<a href="javascript:;" ng-click="loadPersonTickets(result)">+</a>
+			<%- person.tickets_count + ' Ticket' + (1 === person.tickets_count ? '' : 's') %>
+			<% } %>
+		</div>
+		<ul style="margin-left: 20px;" ng-if="result == expandedPerson">
+			<li ng-repeat="ticket in result.tickets">
+				<a class="click-through" route-notabreload="1" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '{{ ticket.id }}'})|raw }}">
+					{{ ng_var('ticket.subject') }}
+				</a>
+			</li>
+			<li ng-if="result.tickets && result.tickets_count > 15" style="text-align: right; padding-right: 40px;">
+				<a href="javascript:;" ng-click="openAllTickets(result)">View all <%- person.tickets_count %> tickets</a>
+			</li>
+		</ul>
 	</div>
 </article>
 <% } %>

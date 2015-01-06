@@ -1,4 +1,4 @@
-<div class="dp-omnibox" ng-class="{'is-active': isActive}" dp-omnibox id="dp_omnibox">
+<div class="dp-omnibox" ng-class="{'is-active': isActive}" dp-omnibox id="dp_omnibox" ng-init="search_url = '{{ path('agent_ticketsearch_runcustomfilter') }}';">
 	<div class="input-area">
 		<i class="search-icon fa fa-search"></i>
 		<div class="input-wrap">
