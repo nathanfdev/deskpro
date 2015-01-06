@@ -1,58 +1,73 @@
-<nav class="tabs">
-    <ul>
-        <li{% if url_starts_with == 'kb' %} class="tab-active"{% endif %}>
-            <a href="{{ path('portal_kb') }}">
-                <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
+{% if tabs|length > 0 %}
+    <nav class="tabs">
+        <ul>
+            {% for tab in tabs %}
 
-                <div>
-                    <span class="title">Knowledge Base</span>
-                    <span class="subtitle">Read help articles</span>
-                </div>
-            </a>
-        </li>
+                {% if tab == 'articles' %}
+                    <li{% if url_starts_with == 'kb' %} class="tab-active"{% endif %}>
+                        <a href="{{ path('portal_kb') }}">
+                            <img src="{{ asset('web/portal/base/img/icon-view-more.png') }}">
 
-        <li{% if url_starts_with == 'downloads' %} class="tab-active"{% endif %}>
-            <a href="{{ path('portal_downloads') }}">
-                <img src="{{ asset('web/portal/base/img/icon-star.png') }}">
+                            <div>
+                                <span class="title">Knowledge Base</span>
+                                <span class="subtitle">Read help articles</span>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
 
-                <div>
-                    <span class="title">Downloads</span>
-                    <span class="subtitle">Browse our downloads</span>
-                </div>
-            </a>
-        </li>
+                {% if tab == 'downloads' %}
+                    <li{% if url_starts_with == 'downloads' %} class="tab-active"{% endif %}>
+                        <a href="{{ path('portal_downloads') }}">
+                            <img src="{{ asset('web/portal/base/img/icon-star.png') }}">
 
-        <li{% if url_starts_with == 'feedback' %} class="tab-active"{% endif %}>
-            <a href="{{ path('portal_feedback') }}">
-                <img src="{{ asset('web/portal/base/img/icon-shield.png') }}">
+                            <div>
+                                <span class="title">Downloads</span>
+                                <span class="subtitle">Browse our downloads</span>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
 
-                <div>
-                    <span class="title">Feedback</span>
-                    <span class="subtitle">Customer Suggestions</span>
-                </div>
-            </a>
-        </li>
+                {% if tab == 'feedback' %}
+                    <li{% if url_starts_with == 'feedback' %} class="tab-active"{% endif %}>
+                        <a href="{{ path('portal_feedback') }}">
+                            <img src="{{ asset('web/portal/base/img/icon-shield.png') }}">
 
-        <li{% if url_starts_with == 'new-ticket' %} class="tab-active"{% endif %}>
-            <a href="{{ path('portal_new_ticket') }}">
-                <img src="{{ asset('web/portal/base/img/icon-shield.png') }}">
+                            <div>
+                                <span class="title">Feedback</span>
+                                <span class="subtitle">Customer Suggestions</span>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
 
-                <div>
-                    <span class="title">Contact Us</span>
-                    <span class="subtitle">We're here to help</span>
-                </div>
-            </a>
-        </li>
+                {% if tab == 'newticket' %}
+                    <li{% if url_starts_with == 'new-ticket' %} class="tab-active"{% endif %}>
+                        <a href="{{ path('portal_new_ticket') }}">
+                            <img src="{{ asset('web/portal/base/img/icon-shield.png') }}">
 
-        <li{% if url_starts_with == 'news' %} class="tab-active"{% endif %}>
-            <a href="{{ path('portal_news') }}">
-                <img src="{{ asset('web/portal/base/img/icon-star.png') }}">
+                            <div>
+                                <span class="title">Contact Us</span>
+                                <span class="subtitle">We're here to help</span>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
 
-                <div>
-                    <span class="title">News</span>
-                    <span class="subtitle">News & Updates</span>
-                </div>
-            </a>
-        </li>
-    </ul>
-</nav>
+                {% if tab == 'news' %}
+                    <li{% if url_starts_with == 'news' %} class="tab-active"{% endif %}>
+                        <a href="{{ path('portal_news') }}">
+                            <img src="{{ asset('web/portal/base/img/icon-star.png') }}">
+
+                            <div>
+                                <span class="title">News</span>
+                                <span class="subtitle">News & Updates</span>
+                            </div>
+                        </a>
+                    </li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    </nav>
+{% endif %}

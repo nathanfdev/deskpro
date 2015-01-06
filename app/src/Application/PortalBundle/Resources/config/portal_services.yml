@@ -2,7 +2,10 @@ parameters:
   router.options.matcher.cache_class: null
   portal.session.name: sess_data
 
-### This file will be split / cleaned up into more logical files. Hard to follow at the moment with all these service defs piled together.
+### This file will be split / cleaned up into more logical files and imported like below. Hard to follow at the moment with all these service defs piled together.
+
+imports:
+  - { resource: 'portal_helpers.yml' }
 
 services:
   templating.portal:

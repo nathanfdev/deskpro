@@ -87,10 +87,13 @@ class PortalController extends AbstractController
     {
         $path_parts = explode('/', ltrim($tag_request->getPathInfo(), '/'));
 
+        $tabs = $this->get('tabs_helper')->getTabsDisplay();
+
         return $this->renderThemeView(
             'Theme:Portal:Tag/top_tabs.html.twig',
             array(
-                'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null
+                'url_starts_with' => isset($path_parts[0]) ? $path_parts[0] : null,
+                'tabs' => $tabs
             )
         );
     }

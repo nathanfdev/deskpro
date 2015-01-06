@@ -1,0 +1,5 @@
+# Helpers we use in portal controllers
+services:
+  tabs_helper:
+      class: Application\PortalBundle\Helper\PortalTabsHelper
+      arguments: [@brand_stack, @security.authorization_checker]
