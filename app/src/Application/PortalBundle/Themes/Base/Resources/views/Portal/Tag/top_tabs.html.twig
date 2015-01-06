@@ -43,5 +43,16 @@
                 </div>
             </a>
         </li>
+
+        <li{% if url_starts_with == 'news' %} class="tab-active"{% endif %}>
+            <a href="{{ path('portal_news') }}">
+                <img src="{{ asset('web/portal/base/img/icon-star.png') }}">
+
+                <div>
+                    <span class="title">News</span>
+                    <span class="subtitle">News & Updates</span>
+                </div>
+            </a>
+        </li>
     </ul>
 </nav>
