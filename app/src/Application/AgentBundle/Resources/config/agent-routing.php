@@ -2219,6 +2219,13 @@ $collection->create('agent_jira_ticket_issues_create', array(
 	'requirements'  => array('ticketId' => '\\d+'),
 ));
 
+$collection->create('agent_jira_ticket_issue_update', array(
+    'path'          => '/jira/ticket/{ticketId}/issue/{issueId}',
+    'controller'    => 'AgentBundle:Jira:updateIssue',
+    'methods'       => array('PUT'),
+    'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
+));
+
 $collection->create('agent_jira_ticket_issues_list', array(
 	'path'          => '/jira/ticket/{ticketId}/issue',
 	'controller'    => 'AgentBundle:Jira:issues',
