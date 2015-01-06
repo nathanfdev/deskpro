@@ -1,312 +1,235 @@
 <section class="content reports">
-<header class="reports-header">
-    <div class="right">
-        <div class="report-access-avatars">
-            <span class="title">On this dashboard:</span>
-            <a
-                    ng-repeat='agent in permissions | limitTo : 7 track by $index '
-                    ng-if="agent.permissions != 0"
-                    class="avatar"
-                    title="{{ ng_var('agent.name') }}"
-                    style="background-image: url({{ ng_var('agent.avatar') }});">
-            </a>
-            {#Uuuuuh, Magic numbers!#}
-            <a ng-if="permissions.length > 7" class="avatar avatar-blank"><span>+{{ ng_var('permissions.length - 7') }}</span></a>
-            <a ng-if="!dashboard.default" ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit user access <i class="fa fa-user"></i></span></a>
+    <header class="reports-header">
+        <div class="right">
+            <div class="report-access-avatars">
+                <span class="title">On this dashboard:</span>
+                <a
+                        ng-repeat='agent in permissions | limitTo : 7 track by $index '
+                        ng-if="agent.permissions != 0"
+                        class="avatar"
+                        title="{{ ng_var('agent.name') }}"
+                        style="background-image: url({{ ng_var('agent.avatar') }});">
+                </a>
+                {#Uuuuuh, Magic numbers!#}
+                <a ng-if="permissions.length > 7" class="avatar avatar-blank"><span>+{{ ng_var('permissions.length - 7') }}</span></a>
+                <a ng-if="!dashboard.default" ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit user access <i class="fa fa-user"></i></span></a>
+            </div>
         </div>
+
+        <div class="left">
+            <div class="dashboard-main-list" ng-click='toggleDropdown("selectingDashboard")' ng-class = "{'expanded': selectingDashboard}">
+                <a class="link-pointer">
+                    <span>Dashboard:</span> {{ ng_var('dashboard.title') }} <i class="fa fa-sort"></i>
+                </a>
+
+                <ul ng-show="selectingDashboard">
+                    <li ng-repeat="db in dashboards track by $index">
+                        <a class='link-pointer' ng-class='{"current": db.id === dashboard.id}' ng-click="changeDashboard(db)">
+                            <span class='logo-deskpro' ng-show="db.default"></span>
+                            {{ ng_var('db.title') }}
+                        </a>
+                    </li>
+                </ul>
+            </div>
+
+            <nav class="reports-control">
+                <ul>
+                    <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
+                    <li>
+                        <a class='link-pointer' ng-click='toggleDropdown("addingDashboard")'><i class="fa fa-plus"></i>Create Dashboard</a>
+                        <div ng-show="addingDashboard" class="reports-dropdown expanded">
+                            <header>
+                                <a ng-click="toggleDropdown('addingDashboard')" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
+                                <i class="fa fa-plus"></i> Create Dashboard
+                            </header>
+                            <hr>
+
+                            <div class="dropdown-content">
+                                <ul class="big-actions">
+                                    <li>
+                                        <a ng-click="newDashboardModal()"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
+                                    </li>
+
+                                    <li>
+                                        <a ng-click="cloneDashboardModal()"><i class="fa fa-copy"></i> Clone the <span>{{ ng_var('dashboard.title') }}</span> dashboard</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </li>
+                </ul>
+            </nav>
+            <hr>
+        </div>
+    </header>
+
+    <div class="report-tabs">
+        <ul>
+            <li ng-if='!dashboard.default' class="add-report-link">
+                <a class='link-pointer' ng-click='addReport()'><i class="fa fa-plus"></i></a>
+                <div ng-show='addingReport' style="z-index: 3333" class="reports-dropdown expanded">
+                    <header>
+                        <a ng-click="toggleDropdown('addingReport')" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
+                        <i class="fa fa-plus"></i> Create new report
+                    </header>
+                    <div class="reports-dropdown-content">
+                        <p>Bit of text about adding a report into your current dashboard lorel ipsum.</p>
+                    </div>
+                    <hr>
+                    <div class="reports-dropdown-content">
+                        <h2>Create new report</h2>
+                        <form>
+                            <button ng-click="createReport()">Create report</button>
+                            <div class="input-bucket"><input type="text" ng-model='newReport.title' placeholder="Name your report"></div>
+                        </form>
+                    </div>
+                    <hr>
+                    <div class="reports-dropdown-content">
+                        <h2>Or clone an existing report</h2>
+                        <ul class="clone-list">
+                            <li ng-repeat="db in dashboards track by $index"
+                                ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded(db)}">
+
+                                <a ng-show='!isExpanded(db)' ng-click="expandDashboard(db)" class="control"><i class="fa fa-plus-square-o"></i></a>
+                                <a ng-show='isExpanded(db)' ng-click="collide(db)" class="control">
+                                    <i class="fa fa-minus-square-o"></i>
+                                </a>
+
+                                <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
+                                <ul ng-show='isExpanded(db) && db.reports.length > 0'>
+                                    <li ng-repeat="report in db.reports track by $index">
+                                        <a ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </li>
+
+            <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ng-class="{'active-tab':currentReport.id===report.id}">
+                <a class='link-pointer' ng-click="changeReport(report)">{{ ng_var('report.title') }}</a>
+            </li>
+        </ul>
     </div>
 
-    <div class="left">
-        <div class="dashboard-main-list" ng-click='toggleDropdown("selectingDashboard")' ng-class = "{'expanded': selectingDashboard}">
-            <a class="link-pointer">
-                <span>Dashboard:</span> {{ ng_var('dashboard.title') }} <i class="fa fa-sort"></i>
+    <div class="report-info">
+        <div class="report-extras">
+            <a href="#">
+                <div><i class="fa fa-print"></i></div>
+                <span>Print Report</span>
             </a>
 
-            <ul ng-show="selectingDashboard">
-                <li ng-repeat="db in dashboards track by $index">
-                    <a class='link-pointer' ng-class='{"current": db.id === dashboard.id}' ng-click="changeDashboard(db)">
-                        <span class='logo-deskpro' ng-show="db.default"></span>
-                        {{ ng_var('db.title') }}
-                    </a>
-                </li>
-            </ul>
+            <a href="#">
+                <div><i class="fa fa-file-pdf-o"></i></div>
+                <span>Download PDF</span>
+            </a>
         </div>
+
+        <h1><span>Report:</span> {{ ng_var('currentReport.title') }}</h1>
 
         <nav class="reports-control">
             <ul>
-                <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
                 <li>
-                    <a class='link-pointer' ng-click='toggleDropdown("addingDashboard")'><i class="fa fa-plus"></i>Create Dashboard</a>
-                    <div ng-show="addingDashboard" class="reports-dropdown expanded">
-                        <header>
-                            <a ng-click="toggleDropdown('addingDashboard')" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
-                            <i class="fa fa-plus"></i> Create Dashboard
-                        </header>
-                        <hr>
+                    <a ng-click='typeWidgetModal(currentReport)'
+                       class="link-pointer"
+                       ng-class="{'control-inactive':dashboard.default}">
+                        <i class="fa fa-cog"></i> Edit Report
+                    </a>
+                </li>
+                <li><a ng-click="cloneReport(currentReport)" ng-class="{'control-inactive':dashboard.default}"><i class="fa fa-copy"></i> Clone Report</a></li>
+            </ul>
+        </nav>
 
-                        <div class="dropdown-content">
-                            <ul class="big-actions">
-                                <li>
-                                    <a ng-click="newDashboardModal()"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
-                                </li>
+        <div class="report-date-range-picker">
+            <a href="#" class="date-range-button">Date range <i class="fa fa-calendar-o"></i></a>
 
-                                <li>
-                                    <a ng-click="cloneDashboardModal()"><i class="fa fa-copy"></i> Clone the <span>{{ ng_var('dashboard.title') }}</span> dashboard</a>
-                                </li>
-                            </ul>
+            <span class="selected-date"><span>Selected:</span> January 2014</span>
+
+                  <span class="date-jumper">
+                    <a href="#"><i class="fa fa-caret-left"></i></a>
+                    <a href="#"><i class="fa fa-caret-right"></i></a>
+                  </span>
+        </div>
+    </div>
+
+
+    <div class="graph-container">
+        <div class="graph-container-controls">
+            <!-- default or control-active(when selected) or control-inactive(when disabled for default dashboards) -->
+            <a
+                    ng-click="toggleLayoutEdit()"
+                    class="control"
+                    ng-class = "{'control-active': layoutEditing, 'control-inactive': dashboard.default}">
+                Dashboard Layout <i class="fa fa-columns"></i>
+            </a>
+            {#<a href="./presentation-only-active-filters.h tml" class="control">Filters <i class="fa fa-filter"></i></a>#}
+
+            <span class="generated-graph-info">Report generated at 6.32PM, Aug 24, 2014 <a href="#"><i class="fa fa-refresh"></i></a></span>
+        </div>
+
+       {# <!--<div class="graph-filters">
+          <span class="label">Departments:</span> <a href="#" class="active">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
+          <span class="label">Agents:</span> <a href="#">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
+        </div>-->#}
+    </div>
+
+    <div class="list-group">
+        <div gridster="gridsterOptions" class="dashboard">
+            <ul>
+                <li gridster-item="widget" ng-repeat="widget in currentReport.widgets">
+                    <div class="box-header">
+                        <h3 class="ng-binding">{{ ng_var('widget.name') }}</h3>
+                        <div class="box-header-btns pull-right">
+                            <a title="Remove widget" ng-click="removeWidget(widget)"><i class="glyphicon glyphicon-trash">XXX</i></a>
                         </div>
+                    </div>
+                    <div class="box" ng-if="widget.type=='stat'">
+                        <dashboard-stat title="{{ ng_var('widget.name') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
+                    </div>
+                    <div class="box" ng-if="widget.type=='graph'">
+                        <dashboard-amcharts
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.name') }}"
+                                chart-id = "{{ ng_var('widget.id') }}"
+                                chart-data = "{{ ng_var('widget.data') }}"
+                                chtype="{{ ng_var('widget.type') }}">
+                        </dashboard-amcharts>
+                    </div>
+                    <div class="box" ng-if="widget.type=='table'">
+                        <dashboard-table my-index="{{ ng_var('$index') }}" title="{{ ng_var('widget.name') }}" table-data="{{ ng_var('widget.data') }}" wtype="{{ ng_var('widget.type') }}"> </dashboard-table>
+                    </div>
+                    <div class="box" ng-if="widget.type=='reports_overview'">
+                        <reports-overview
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.name') }}"
+                                inner-type="{{ ng_var('widget.inner_type') }}"
+                                outer-type="{{ ng_var('widget.outer_type') }}"
+                                wtype="{{ ng_var('widget.type') }}">
+                        </reports-overview>
+                    </div>
+                    <div class="box" ng-if="widget.type=='agent_performance'">
+                        <agent-performance
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.name') }}"
+                                inner-type="{{ ng_var('widget.inner_type') }}"
+                                outer-type="{{ ng_var('widget.outer_type') }}"
+                                wtype="{{ ng_var('widget.type') }}">
+                        </agent-performance>
+                    </div>
+                    <div class="box" ng-if="widget.type=='ticket_satisfaction'">
+                        <ticket-satisfaction
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.name') }}"
+                                inner-type="{{ ng_var('widget.inner_type') }}"
+                                outer-type="{{ ng_var('widget.outer_type') }}"
+                                wtype="{{ ng_var('widget.type') }}">
+                        </ticket-satisfaction>
                     </div>
                 </li>
             </ul>
-        </nav>
-        <hr>
+        </div>
     </div>
-
-</header>
-
-
-
-<div class="report-tabs">
-    <ul>
-        <li ng-if='!dashboard.default' class="add-report-link">
-            <a class='link-pointer' ng-click='addReport()'><i class="fa fa-plus"></i></a>
-            <div ng-show='addingReport' style="z-index: 3333" class="reports-dropdown expanded">
-                <header>
-                    <a ng-click="toggleDropdown('addingReport')" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
-                    <i class="fa fa-plus"></i> Create new report
-                </header>
-                <div class="reports-dropdown-content">
-                    <p>Bit of text about adding a report into your current dashboard lorel ipsum.</p>
-                </div>
-                <hr>
-                <div class="reports-dropdown-content">
-                    <h2>Create new report</h2>
-                    <form>
-                        <button ng-click="createReport()">Create report</button>
-                        <div class="input-bucket"><input type="text" ng-model='newReport.title' placeholder="Name your report"></div>
-                    </form>
-                </div>
-                <hr>
-                <div class="reports-dropdown-content">
-                    <h2>Or clone an existing report</h2>
-                    <ul class="clone-list">
-                        <li ng-repeat="db in dashboards track by $index"
-                            ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded(db)}">
-
-                            <a ng-show='!isExpanded(db)' ng-click="expandDashboard(db)" class="control"><i class="fa fa-plus-square-o"></i></a>
-                            <a ng-show='isExpanded(db)' ng-click="collide(db)" class="control">
-                                <i class="fa fa-minus-square-o"></i>
-                            </a>
-
-                            <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
-                            <ul ng-show='isExpanded(db) && db.reports.length > 0'>
-                                <li ng-repeat="report in db.reports track by $index">
-                                    <a ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
-        </li>
-
-        <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ng-class="{'active-tab':currentReport.id===report.id}">
-            <a class='link-pointer' ng-click="changeReport(report)">{{ ng_var('report.title') }}</a>
-        </li>
-    </ul>
-</div>
-
-<div class="report-info">
-    <div class="report-extras">
-        <a href="#">
-            <div><i class="fa fa-print"></i></div>
-            <span>Print Report</span>
-        </a>
-
-        <a href="#">
-            <div><i class="fa fa-file-pdf-o"></i></div>
-            <span>Download PDF</span>
-        </a>
-    </div>
-
-    <h1><span>Report:</span> {{ ng_var('currentReport.title') }}</h1>
-
-    <nav class="reports-control">
-        <ul>
-            <li><a ng-click='editReport()' ng-class="{'control-inactive':dashboard.default}"><i class="fa fa-cog"></i> Edit Report</a></li>
-            <li><a ng-click="cloneReport(currentReport)" ng-class="{'control-inactive':dashboard.default}"><i class="fa fa-copy"></i> Clone Report</a></li>
-        </ul>
-    </nav>
-
-    <div class="report-date-range-picker">
-        <a href="#" class="date-range-button">Date range <i class="fa fa-calendar-o"></i></a>
-
-        <span class="selected-date"><span>Selected:</span> January 2014</span>
-
-              <span class="date-jumper">
-                <a href="#"><i class="fa fa-caret-left"></i></a>
-                <a href="#"><i class="fa fa-caret-right"></i></a>
-              </span>
-    </div>
-</div>
-
-
-<div class="graph-container">
-    <div class="graph-container-controls">
-        <!-- default or control-active(when selected) or control-inactive(when disabled for default dashboards) -->
-        <a
-                ng-click="toggleLayoutEdit()"
-                class="control"
-                ng-class = "{'control-active': layoutEditing, 'control-inactive': dashboard.default}">
-            Dashboard Layout <i class="fa fa-columns"></i>
-        </a>
-        {#<a href="./presentation-only-active-filters.h tml" class="control">Filters <i class="fa fa-filter"></i></a>#}
-
-        <span class="generated-graph-info">Report generated at 6.32PM, Aug 24, 2014 <a href="#"><i class="fa fa-refresh"></i></a></span>
-    </div>
-
-   {# <!--<div class="graph-filters">
-      <span class="label">Departments:</span> <a href="#" class="active">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
-      <span class="label">Agents:</span> <a href="#">Billing &amp; Sales <i class="fa fa-caret-down"></i></a>
-    </div>-->#}
-</div>
-
-<div class="list-group">
-    <div gridster="gridsterOptions" class="dashboard">
-    <ul>
-        <li gridster-item="widget" ng-repeat="widget in currentReport.widgets">
-            <div class="box-header">
-                <h3 class="ng-binding">{{ ng_var('widget.name') }}</h3>
-                <div class="box-header-btns pull-right">
-                    <a title="Remove widget" ng-click="removeWidget(widget)"><i class="glyphicon glyphicon-trash">XXX</i></a>
-                </div>
-            </div>
-            <div class="box" ng-if="widget.type=='stat'">
-                <dashboard-stat title="{{ ng_var('widget.name') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
-            </div>
-            <div class="box" ng-if="widget.type=='graph'">
-                <dashboard-amcharts
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widget.name') }}"
-                        chart-id = "{{ ng_var('widget.id') }}"
-                        chart-data = "{{ ng_var('widget.data') }}"
-                        chtype="{{ ng_var('widget.type') }}">
-                </dashboard-amcharts>
-            </div>
-            <div class="box" ng-if="widget.type=='table'">
-                <dashboard-table my-index="{{ ng_var('$index') }}" title="{{ ng_var('widget.name') }}" table-data="{{ ng_var('widget.data') }}" wtype="{{ ng_var('widget.type') }}"> </dashboard-table>
-            </div>
-            <div class="box" ng-if="widget.type=='reports_overview'">
-                <reports-overview
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widget.name') }}"
-                        inner-type="{{ ng_var('widget.inner_type') }}"
-                        outer-type="{{ ng_var('widget.outer_type') }}"
-                        wtype="{{ ng_var('widget.type') }}">
-                </reports-overview>
-            </div>
-            <div class="box" ng-if="widget.type=='agent_performance'">
-                <agent-performance
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widget.name') }}"
-                        inner-type="{{ ng_var('widget.inner_type') }}"
-                        outer-type="{{ ng_var('widget.outer_type') }}"
-                        wtype="{{ ng_var('widget.type') }}">
-                </agent-performance>
-            </div>
-            <div class="box" ng-if="widget.type=='ticket_satisfaction'">
-                <ticket-satisfaction
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widget.name') }}"
-                        inner-type="{{ ng_var('widget.inner_type') }}"
-                        outer-type="{{ ng_var('widget.outer_type') }}"
-                        wtype="{{ ng_var('widget.type') }}">
-                </ticket-satisfaction>
-            </div>
-        </li>
-    </ul>
-</div>
-</div>
-{#
-<script>
-var chart = AmCharts.makeChart("chartdiv", {
-    "type": "serial",
-    "theme": "none",
-    "dataProvider": [{
-        "country": "USA",
-        "visits": 2025
-    }, {
-        "country": "China",
-        "visits": 1882
-    }, {
-        "country": "Japan",
-        "visits": 1809
-    }, {
-        "country": "Germany",
-        "visits": 1322
-    }, {
-        "country": "UK",
-        "visits": 1122
-    }, {
-        "country": "France",
-        "visits": 1114
-    }, {
-        "country": "India",
-        "visits": 984
-    }, {
-        "country": "Spain",
-        "visits": 711
-    }, {
-        "country": "Netherlands",
-        "visits": 665
-    }, {
-        "country": "Russia",
-        "visits": 580
-    }, {
-        "country": "South Korea",
-        "visits": 443
-    }, {
-        "country": "Canada",
-        "visits": 441
-    }, {
-        "country": "Brazil",
-        "visits": 395
-    }],
-    "valueAxes": [{
-        "gridColor":"#FFFFFF",
-		"gridAlpha": 0.2,
-		"dashLength": 0
-    }],
-    "gridAboveGraphs": true,
-    "startDuration": 1,
-    "graphs": [{
-        "balloonText": "[[category]]: <b>[[value]]</b>",
-        "fillAlphas": 0.8,
-        "lineAlpha": 0.2,
-        "type": "column",
-        "valueField": "visits"
-    }],
-    "chartCursor": {
-        "categoryBalloonEnabled": false,
-        "cursorAlpha": 0,
-        "zoomable": false
-    },
-    "categoryField": "country",
-    "categoryAxis": {
-        "gridPosition": "start",
-        "gridAlpha": 0,
-         "tickPosition":"start",
-         "tickLength":20
-    },
-	"exportConfig":{
-	  "menuTop": 0,
-	  "menuItems": [{
-      "icon": '/lib/3/images/export.png',
-      "format": 'png'
-      }]
-	}
-});
-</script>#}
 {#
 ###################ATTENTION!!!##################
 THIS IS USEFUL STAFF FOR FUTURE FEATURES
@@ -487,8 +410,4 @@ DO NOT REMOVE IT!
     <h1>This item is disabled</h1>
     <p>Lorel ipsum dolor sit amet lorel ipsum dolor</p>
 </div>#}
-
-
-
-
 </section>

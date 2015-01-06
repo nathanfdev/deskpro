@@ -4,8 +4,11 @@ define [
 
   'Reports/App/Controller/Main',
   'Reports/App/Controller/Dashboard',
+
+  # Modal controllers
   'Reports/App/Controller/ModalDashboard',
-  'Reports/App/Controller/ModalReport',
+  'Reports/App/Controller/ModalWidgetType',
+  'Reports/App/Controller/ModalWidgetEdit',
 
   # STANDARD SERVICES
   'Reports/App/Service/Dashboard'
@@ -45,8 +48,11 @@ define [
   DeskPRO_Main_Service_DpApi,
   Reports_App_Controller_Main,
   Reports_App_Controller_Dashboard,
+
+  # Modal controllers
   Reports_App_Controller_ModalDashboard,
-  Reports_App_Controller_ModalReport,
+  Reports_App_Controller_ModalWidgetType,
+  Reports_App_Controller_ModalWidgetEdit,
 
   Reports_App_Service_Dashboard,
   Reports_App_Service_DashboardWidget,
@@ -79,8 +85,11 @@ define [
   ###
   ReportsApp.controller('Reports.App.Main', Reports_App_Controller_Main)
   ReportsApp.controller('Reports.App.Dashboard', Reports_App_Controller_Dashboard)
+
+  # Modal controllers
   ReportsApp.controller('Reports.App.ModalDashboard', Reports_App_Controller_ModalDashboard)
-  ReportsApp.controller('Reports.App.ModalReport', Reports_App_Controller_ModalReport)
+  ReportsApp.controller('Reports.App.ModalWidgetType', Reports_App_Controller_ModalWidgetType)
+  ReportsApp.controller('Reports.App.ModalWidgetEdit', Reports_App_Controller_ModalWidgetEdit)
 
   ###
   # Service section

@@ -86,15 +86,21 @@ define -> [
           deferred.resolve $scope.dashboard
           return deferred.promise
 
+    $scope.deleteDashboard = (dashboard) ->
+      DashboardService.deleteDashboard dashboard
+      .then () =>
+        $scope.changeDashboard Arrays.last $scope.dashboards
 
     ###
     # ui staff
     ###
 
-    $scope.deleteDashboard = (dashboard) ->
-      DashboardService.deleteDashboard dashboard
-      .then () =>
-        $scope.changeDashboard Arrays.last $scope.dashboards
+    $scope.toggleLayoutEdit = () ->
+      $scope.closeAllDropdowns()
+      if !$scope.dashboard.default
+        $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
+        $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled
+        $scope.layoutEditing = !$scope.layoutEditing
 
     $scope.expandDashboard = (dashboard) ->
       if dashboard.loaded is false
@@ -132,6 +138,8 @@ define -> [
 
     ###
     # Dashboard modal instasnces
+    # TODO mb refactor to modal service?
+    # TODO think about state and modals (have to spend some time with experiments)
     ###
 
     ###
@@ -153,8 +161,8 @@ define -> [
             return 'info'
       }
 
-      modalInstance.result.then (dashboard) =>
-        DashboardService.saveDashboard(dashboard).then () =>
+      modalInstance.result.then (dashboard) ->
+        DashboardService.saveDashboard(dashboard).then () ->
           $scope
           .changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
           .then ->
@@ -182,7 +190,7 @@ define -> [
             if state? then state else 'info'
       }
 
-      modalInstance.result.then (dashboard) =>
+      modalInstance.result.then (dashboard) ->
         DashboardService
           .saveDashboard dashboard
           .then (saved) ->
@@ -222,12 +230,7 @@ define -> [
                 $scope.editDashboardModal()
 
     ###
-    # Operations about reports
-    ###
-
-
-    ###
-    # ui staff for reports
+      # Operations about reports
     ###
     $scope.changeReport = (report) ->
       $scope.closeAllDropdowns()
@@ -359,48 +362,60 @@ define -> [
       .then (reports) ->
         $scope.dashboard.reports = reports
 
+
+    ###
+    # Operations about widgets
+    ###
+
     $scope.removeWidget = (widget) ->
       index = DashboardWidgetService.getIndexById $scope.currentReport.widgets, widget.id
       DashboardWidgetService
-        .removeWidget(widget)
-        .then () ->
-          $scope.currentReport.widgets.splice(index, 1)
+      .removeWidget(widget)
+      .then () ->
+        $scope.currentReport.widgets.splice(index, 1)
 
+    $scope.typeWidgetModal = (report, widget) ->
+      modalInstance = $modal.open {
+        templateUrl: "ReportsInterfaceBundle:Dashboard:widget_type_choice.html",
+        controller: "Reports.App.ModalWidgetType"
+        resolve:
+          report: () ->
+            return report
+          widget: () ->
+            return if widget? then widget else {
+              col: "0"
+              row: "0"
+              data: []
+              id: 0
+              name: "new widget"
+              sizeX: "5"
+              sizeY: "2"
+              type: null
+              widget_id: 0
+              widget_variables: null
+              changeType: false
+            }
+      }
+      modalInstance.result.then (result) ->
+        $scope.editWidgetModal result.report, result.widget,
 
-    $scope.toggleLayoutEdit = () ->
-      $scope.closeAllDropdowns()
-      if !$scope.dashboard.default
-        $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
-        $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled
-        $scope.layoutEditing = !$scope.layoutEditing
+    $scope.editWidgetModal = (report, widget) ->
+      modalInstance = $modal.open {
+        templateUrl: "ReportsInterfaceBundle:Dashboard:widget_edit.html",
+        controller: "Reports.App.ModalWidgetEdit"
+        resolve:
+          report: () ->
+            report
+          widget: () ->
+            widget
+      }
+      modalInstance.result.then (result) ->
+        if result.widget.changeType? and result.widget.changeType == true
+          result.widget.changeType = false
+          $scope.typeWidgetModal result.report, result.widget
+        else
+          $scope.addWidget result.report, result.widget
 
-
-#    $scope.removeWidget = (widget) ->
-#      DashboardWidgetService
-#      .removeWidget(widget) \
-#        Arrays.findAndRemove \
-#          $scope.dashboard.widgets
-#        , (v, i) ->
-#          if v.id is widget.id then true else false
-#        , 1
-#
-#    $scope.NewWidgetModal = ->
-#      modalInstance = $modal.open {
-##        templateUrl: getTemplatePath('Dashboard/new_widget.html'),
-#        controller: "Reports.App.ModalInstance"
-#        resolve:
-#          db: () =>
-#            return $scope.dashboard
-#      }
-#
-#      modalInstance.result.then (widgetInfo) =>
-#        $scope.addWidget(widgetInfo)
-#
-#    $scope.addWidget = (widgetInfo) ->
-#      widget =
-#        name: widgetInfo.title,
-#        col: 0,
-#        row: 0,
-#        sizeY: widgetInfo.y,
-#        sizeX: widgetInfo.x,
+    $scope.addWidget = (report, widget) ->
+      DashboardWidgetService.addWidget report, widget
 ]

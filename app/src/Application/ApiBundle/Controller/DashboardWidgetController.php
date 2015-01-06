@@ -35,7 +35,7 @@
 namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\ReportDashboard as Dashboard;
+use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
 
 use Application\ApiBundle\Service\Dashboard as DashboardService;
@@ -123,42 +123,48 @@ class DashboardWidgetController extends AbstractController
      */
     public function addWidgetAction($id)
     {
-        /** @var Dashboard $dashboard */
-        $dashboard = $this->service->getDashboard($id);
+        /** @var Tab $tab */
+        $tab = $this->service->getReport($id);
 
-
+        $postData = $this->in->getAll('post');
         /**
          * @var \Application\DeskPRO\Reports\Builder $reports_builder
          */
         $reports_builder = $this->container->getSystemService('reports_builder');
-        $report          = $reports_builder->getById($this->in->getCleanValue('report', 'int'));
-        if(!$report) {
-            throw $this->createNotFoundException('Dashboard not found!');
+        $report_widget = $reports_builder->getById($postData['widget_id']);
+        if(!$report_widget) {
+            throw $this->createNotFoundException('ReportWidget not found!');
         }
 
         $widget = new Widget();
+        if($postData['widget_variables']) {
+            $widget->setVariables($postData['widget_variables']);
+        }
 
         $widget
-            ->setTitle($this->in->getCleanValue('name', 'string'))
+            ->setTitle($postData['name'])
+            ->setType($postData['type'])
+
             ->setSize(
                 array
                 (
-                    $this->in->getCleanValue('size_x', 'int'),
-                    $this->in->getCleanValue('size_y', 'int')
+                    $postData['sizeX'],
+                    $postData['sizeY']
                 )
             )
             ->setPosition(
                 array(
-                    $this->in->getCleanValue('row', 'int'),
-                    $this->in->getCleanValue('col', 'int')
+                    $postData['row'],
+                    $postData['col']
                 )
             )
-            ->setDashboard($dashboard)
-            ->setReport($report);
+            ->setReport($tab)
+            ->setWidget($report_widget);
+
         $this->em->persist($widget);
         $this->em->flush();
 
-        return $this->createApiSuccessResponse($this->_getWidgetData($widget));
+        return $this->createApiSuccessResponse($this->service->getWidgetData($widget));
     }
 
     /**
@@ -249,6 +255,20 @@ class DashboardWidgetController extends AbstractController
     {
         $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $id);
         return $this->createApiResponse($this->_getWidgetData($widget));
+    }
+
+    public function reportsListAction()
+    {
+        /** @var \Application\DeskPRO\EntityRepository\ReportBuilder $repository */
+        $repository = $this->em->getRepository('DeskPRO:ReportBuilder');
+        $reports = $repository->getAllReports();
+        $api_data = array();
+        foreach ($reports as $report) {
+            $datum = $report->toApiData();
+            $datum['labels'] = array('agent', 'user', 'another label');
+            $api_data[] = $datum;
+        }
+        return $this->createApiResponse($api_data);
     }
 
     /**

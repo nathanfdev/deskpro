@@ -4,66 +4,128 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @Api = Api
       @$q = $q
       @data = {}
-      @storage = {}
+      @storage = []
       @hostname = window.location.origin;
       @selectedSource =
         id: 0
+      @wdata =
+        "type": "serial",
+        "theme": "none",
+        "dataProvider": [
+          {
+            "country": "USA",
+            "visits": 2025
+          },
+          {
+            "country": "China",
+            "visits": 1882
+          },
+          {
+            "country": "Japan",
+            "visits": 1809
+          },
+          {
+            "country": "Germany",
+            "visits": 1322
+          },
+          {
+            "country": "UK",
+            "visits": 1122
+          },
+          {
+            "country": "France",
+            "visits": 1114
+          },
+          {
+            "country": "India",
+            "visits": 984
+          },
+          {
+            "country": "Spain",
+            "visits": 711
+          },
+          {
+            "country": "Netherlands",
+            "visits": 665
+          },
+          {
+            "country": "Russia",
+            "visits": 580
+          },
+          {
+            "country": "South Korea",
+            "visits": 443
+          },
+          {
+            "country": "Canada",
+            "visits": 441
+          },
+          {
+            "country": "Brazil",
+            "visits": 395
+          }
+        ],
+        "valueAxes": [{
+          "gridColor":"#FFFFFF",
+          "gridAlpha": 0.2,
+          "dashLength": 0
+        }],
+        "gridAboveGraphs": true,
+        "startDuration": 1,
+        "graphs": [{
+          "balloonText": "[[category]]: <b>[[value]]</b>",
+          "fillAlphas": 0.8,
+          "lineAlpha": 0.2,
+          "type": "column",
+          "valueField": "visits"
+        }],
+        "chartCursor": {
+          "categoryBalloonEnabled": false,
+          "cursorAlpha": 0,
+          "zoomable": false
+        },
+        "categoryField": "country",
+        "categoryAxis": {
+          "gridPosition": "start",
+          "gridAlpha": 0,
+          "tickPosition":"start",
+          "tickLength":20
+        },
+        "exportConfig":{
+          "menuTop": 0,
+          "menuItems": [{
+            "icon": '/lib/3/images/export.png',
+            "format": 'png'
+          }]
+        }
+
+    getIndexById: (storage, id) ->
+      index = -1
+      index = Arrays.findIndex storage,
+        (v) ->
+          if v? and v.id is id
+            return true
+      return index
 
     updateWidgetsSize: (widgets, cols) ->
       ws = []
       ws.push widget for widget, i in widgets when widget != 'last' and widget.sizeX > cols
       return ws
 
-    getWidgetData: (dsName, wtype) ->
-      deferred = @$q.defer()
-
-      switch wtype
-        when 'graph' then getData = @getGraphs()
-        when 'stat'  then getData = @getStats()
-        when 'table' then getData = @getTables()
-        else getData = false
-      if getData
-        getData
-          .then \
-            (rdata) =>
-              datum = Arrays.find rdata,
-                (v, i, rdata) ->
-                  if v? and v.name is dsName
-                    return true
-              return @getFileData datum.filename, wtype
-          .then \
-            (fileData)->
-              deferred.resolve(fileData)
-            , (reason) ->
-              deferred.reject(reason.message)
-              alert "Unable to load data from file #{reason.statusText}"
-      else console.error 'This isn`t widget type you want'
-
-      return deferred.promise
-
     getReports: () ->
-      @Api.sendGet "/reports/builder"
-
-    getFileData: (fileName, wtype) ->
-      filePath = fileName
-
-      if wtype == 'table'
-        deferred = @$q.defer()
-        deferred.resolve(filePath)
-        return deferred.promise
+      deferred = @$q.defer()
+      if @storage.length == 0
+        @Api
+          .sendGet "/dashboards/widgets/reports/list"
+          .then (result) ->
+            @storage = result.data
+            deferred.resolve @storage
+            return deferred.promise
       else
-        return  @Api.sendGet "#{@hostname}#{filePath}"
-
-    getIndexById: (storage, id) ->
-      index = -1
-      index = Arrays.findIndex storage,
-      (v) ->
-        if v? and v.id is id
-          return true
-      return index
+        deferred.resolve @storage
+        return deferred.promise
 
     saveWidget: (widget) ->
-#      console.log(widget);
       @Api.sendPost \
         "/dashboards/widgets/#{widget.id}",
         {
@@ -76,26 +138,15 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
     setDashboardService: (service) ->
       @dashboardService = service
 
-    addWidget: (dbId, widget) ->
+    addWidget: (report, widget) ->
+      url = "/dashboards/#{report.id}/widgets"
+      data = widget
       @Api
-      .sendPost "/dashboards/#{dbId}/widgets",
-        {
-          "name": widget.name
-          "size_x": widget.sizeX,
-          "size_y": widget.sizeY
-          "cols":   widget.cols
-          "rows":   widget.rows
-          "report": @selectedSource.id
-        }
+      .sendPostJson url, data
       .then (response) =>
-        widget.id = response.data.id
-        widget.data = response.data.data
-        widget.type = response.data.type
-        ind = @getIndexById(@dashboardService.storage.dbs, dbId)
-        if ind != -1
-          @dashboardService.storage.dbs[ind].widgets.push widget
-          @storage[widget.id] = widget
-        return widget
+        newWidget = response.data
+        newWidget.data = @wdata
+        report.widgets.push newWidget
 
 
     removeWidget: (widget) ->

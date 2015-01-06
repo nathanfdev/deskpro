@@ -4859,6 +4859,13 @@ $collection->create('dashboard_widget_delete    ', array(
     'methods'      => array('DELETE',),
 ));
 
+$collection->create('dashboard_widget_reports_list', array(
+    'path'         => '/dashboards/widgets/reports/list',
+    'controller'   => 'ApiBundle:DashboardWidget:reportsList',
+    'defaults'     => array('action' => 'reportsList'),
+    'methods'      => array('GET',),
+));
+
 ########################################################################################################################
 # Report Dashboards Reports
 ########################################################################################################################

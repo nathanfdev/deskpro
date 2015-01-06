@@ -18,14 +18,6 @@ define -> [
    permissions,
    state) ->
 
-#    $scope.newWidget =
-#      title: ''
-#      sizeX: 0
-#      sizeY: 1
-#
-#    $scope.wtype = ''
-#    $scope.selectedSource = {}
-#    $scope.selectedSource.name = 'Select source'
     DashboardService.setWidgetService(DashboardWidgetService)
     $scope.permissions = permissions
     $scope.state = state
@@ -39,36 +31,10 @@ define -> [
         loaded: false,
         default: false,
         permissions: []
-#
-#    DashboardWidgetService
-#      .getReports()
-#      .then \
-#        (response) =>
-#          $scope.dataSources = response.data.reports
-#          console.log($scope.dataSources)
-#        ,(reason) ->
-#            alert('Unable to load data from file. ' + reason.statusText)
-#            console.error('wow, take it easy, laddie')
-#
-#    $scope.createWidget = () ->
-#      widget =
-#        title: $scope.newWidget.title,
-#        wtype: $scope.wtype,
-#        dsName: $scope.selectedSource.name,
-#        x: $scope.newWidget.sizeX,
-#        y: $scope.newWidget.sizeY
-#
-#      $modalInstance.close(widget);
-#
-#    $scope.chooseWtype = (wtype) ->
-#      $scope.wtype = wtype;
-#
+
     $scope.cancel = ->
       $modalInstance.dismiss('cancel')
-#
-#    $scope.setSource: (dataSource) ->
-#      DashboardWidgetService.selectedSource.id = dataSource.id
-#
+
     $scope.saveDashboard = ->
       $modalInstance.close($scope.dashboard)
 
@@ -89,7 +55,6 @@ define -> [
         deleted: false
       $scope.dashboard.reports.push report
       report
-
 
     $scope.setPermissions = (agent, permission) ->
 

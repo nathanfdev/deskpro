@@ -1,0 +1,98 @@
+<section class="popup no-footer" style="width: 850px">
+
+    <!-- Popup Header & Title -->
+    <header>
+        <h1>Add new stat</h1>
+        <div class="controls"><a class="link-pointer" ng-click="cancel()"><i class="fa fa-times"></i></a></div>
+    </header>
+
+    <div class="popup-breadcrumbs">
+        You are creating a bar chart <i class="fa fa-bar-chart"></i>
+        <a ng-click="changeType()" class="link-pointer">Change stat type?</a>
+    </div>
+
+    <div class="big-list-of-stats-filters">
+        <div class="bucket">
+            <form>
+                <label>Filter:</label>
+                <div class="box">
+                    <input type="text" placeholder="Filter stats by name">
+                </div>
+            </form>
+        </div>
+
+        <div class="bucket">
+            <a href="#" class="select">Select labels: <i class="fa fa-caret-down"></i></a>
+
+            <!-- Needs to be same width as the .select above -->
+            <div class="select-label-dropdown">
+               {# <a href="#" class="stat-label"><i class="fa fa-tag"></i> Awaiting Agent</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Awaiting User</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Resolved</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agent</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Failed</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Today</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Yesterday</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Tomorrow</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Resolved</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agent</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Something else</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Lorel ipsum</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Yesterday</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Tomorrow</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Resolved</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agent</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Something else</a>
+                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Lorel ipsum</a>#}
+            </div>
+        </div>
+    </div>
+
+    <div class="big-list-of-stats">
+        <ul class="stat-list">
+            {#<li class="active">#}
+                {#<span class="mark"></span>#}
+                {#<h1>Number of tickets grouped by <a href="#" class="select-data">Awaiting Agent <i class="fa fa-caret-down"></i></a> and something else.</h1>#}
+                {#<p>#}
+                    {#Print this page to PDF for the complete set of vectors. Or to use on the desktop, install FontAwesome.otf, set it as the font in your application, and copy and paste the icons (not the unicode) directly from this page into your designs.#}
+                    {#<a href="#" class="stat-label"><i class="fa fa-tag"></i> Agents</a> <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agents</a>#}
+                {#</p>#}
+                {#<div class="controls">#}
+                    {#<a href="./reports-main.html">Preview <i class="fa fa-external-link"></i></a> <a href="./reports-main.html">Insert into report</a>#}
+                {#</div>#}
+            {#</li>#}
+
+            <li ng-class="{'active': report.id == widget.widget_id}" ng-repeat="report in reports" ng-click="makeChoice(report)">
+                <span class="mark"></span>
+                <h1>{{ ng_var('report.title') }}</h1>
+                <p>
+                    <a ng-repeat="label in report.labels" class="link-pointer stat-label"><i class="fa fa-tag"></i> {{ ng_var('label') }}</a>
+                </p>
+                <div class="controls" ng-show="report.id == widget.widget_id">
+                    <a class='link-pointer' ng-click="preview()">Preview <i class="fa fa-external-link"></i></a> <a class='link-pointer' ng-click="insert()">Insert into report</a>
+                </div>
+            </li>
+
+            {#<li>
+                <span class="mark"></span>
+                <h1>Number of tickets grouped by <a href="#" class="select-data">Field 1 <i class="fa fa-caret-down"></i></a> &amp; <a href="#" class="select-data">Field 2 <i class="fa fa-caret-down"></i></a>.</h1>
+                <p><a href="#" class="stat-label"><i class="fa fa-tag"></i> Agents</a> <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agents</a></p>
+                <div class="select-data-dropdown">
+                    <ul>
+                        <li><a href="#">Agent</a></li>
+                        <li><a href="#">User</a></li>
+                        <li><a href="#">Awaiting User</a></li>
+                        <li><a href="#">Awaiting Agent</a></li>
+                        <li><a href="#">Resolved</a></li>
+                        <li><a href="#">Agent</a></li>
+                    </ul>
+                </div>
+            </li>
+
+          #}
+        </ul>
+    </div>
+
+</section>
+
+<div class="cover"></div><!-- Transparent background to the popup -->

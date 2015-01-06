@@ -108,36 +108,7 @@ class Dashboard
         $widgets = array();
         foreach($report->getWidgets() as $widget) {
 
-            $pos  = $widget->getPosition();
-            $size = $widget->getSize();
-            $wdata = array(
-                'id'    => $widget->getId(),
-                'name'  => $widget->getTitle(),
-                "row"   => $pos[0],
-                "col"   => $pos[1],
-                "sizeX" => $size[0],
-                "sizeY" => $size[1],
-                "type"  => "graph",
-                "data"  => array(),
-            );
-            $variables = $widget->getVariables();
-            if($hc_data = $widget->getHcData()) {
-                switch ($hc_data['outer_type']) {
-                    case self::OUTER_TYPE_OVERVIEW:
-                        $wdata['type'] = self::WIDGET_TYPE_HARDCODED_OVERVIEW;
-                        break;
-                    case self::OUTER_TYPE_PERFORMANCE:
-                        $wdata['type'] = self::WIDGET_TYPE_HARDCODED_PERFORMANCE;
-                        break;
-                    case self::OUTER_TYPE_TICKET_SATISFACTION:
-                        $wdata['type'] = self::WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION;
-                        break;
-                    default:
-                        $wdata['type'] = self::WIDGET_TYPE_HARDCODED_UNDEFINED;
-                }
-                $wdata['inner_type'] = $hc_data['inner_type'];
-                $wdata['outer_type'] = $hc_data['outer_type'];
-            }
+            $wdata = $this->getWidgetData($widget);
             $widgets[] = $wdata;
         }
         $data = array(
@@ -245,9 +216,6 @@ class Dashboard
         }
         $pos  = $widget->getPosition();
         $size = $widget->getSize();
-        $report = $widget->getReport();
-        $widget_data = Display::renderQuery('json', $report->query);
-
         $data = array(
             'id'    => $widget->getId(),
             'name'  => $widget->getTitle(),
@@ -255,9 +223,28 @@ class Dashboard
             "col"   => $pos[1],
             "sizeX" => $size[0],
             "sizeY" => $size[1],
+            "widget_id" => $widget->getReport() ? $widget->getReport()->getId() : 0,
+            "widget_variables" => $widget->getVariables(),
             "type"  => "graph",
-            "data"  => $widget_data,
+            "data"  => array(),
         );
+        if($hc_data = $widget->getHcData()) {
+            switch ($hc_data['outer_type']) {
+                case self::OUTER_TYPE_OVERVIEW:
+                    $data['type'] = self::WIDGET_TYPE_HARDCODED_OVERVIEW;
+                    break;
+                case self::OUTER_TYPE_PERFORMANCE:
+                    $data['type'] = self::WIDGET_TYPE_HARDCODED_PERFORMANCE;
+                    break;
+                case self::OUTER_TYPE_TICKET_SATISFACTION:
+                    $data['type'] = self::WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION;
+                    break;
+                default:
+                    $data['type'] = self::WIDGET_TYPE_HARDCODED_UNDEFINED;
+            }
+            $data['inner_type'] = $hc_data['inner_type'];
+            $data['outer_type'] = $hc_data['outer_type'];
+        }
         return $data;
     }
 
