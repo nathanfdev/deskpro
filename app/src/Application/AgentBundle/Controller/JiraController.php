@@ -51,7 +51,15 @@ class JiraController extends AbstractController
 			$meta = null;
 		}
 
-		return $this->createJsonResponse($meta ? $meta->toArray() : null);
+		return $this->createJsonResponse($meta ? $meta->toArray() : array());
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function getCreateMetaAction(Request $request)
+	{
+		return $this->createJsonResponse($this->service()->getCreateMeta($request->get('project_id')));
 	}
 
 	/**

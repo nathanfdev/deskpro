@@ -35,7 +35,6 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\JIRA\Api;
 use Application\DeskPRO\JIRA\Meta;
-use Application\DeskPRO\Tickets\ExecutorContext;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class JIRA
@@ -208,29 +207,31 @@ class JIRA
 
 		try {
 
-            unset($properties['projects'], $properties['fields'], $properties['api_username']);
+            unset($properties['projects'], $properties['statuses'], $properties['fields'], $properties['api_username']);
+            $api = $this->getApi();
+
             if ($metadata = $app->getSetting(self::PARAM_META)) {
                 $properties = array_merge($metadata, $properties);
             }
 
-			$session = $this->getApi()->call('rest/auth/1/session');
+			$session = $api->call('rest/auth/1/session');
 			$properties['api_username'] = $session['name'];
 
-			$res = $this->getApi()->get('/issue/createmeta', array('expand' => 'projects.issuetypes.fields'));
-			$priority = $this->getApi()->get('/priority');
-			$fields = $this->getApi()->get('/field');
-			$properties['statuses'] = $this->getApi()->get('/status');
-			$properties['projects'] = isset($res['projects']) ? $res['projects'] : array();
-			$properties['priorities'] = $priority;
+//            $res = $this->getCreateMeta();
+//            $properties['projects'] = $res['projects'];
+            $meta = Meta::fromArray($properties);
 
+            $fields = $api->get('/field');
             $keys = array_flip($this->allowed);
             $keysCustom = array_flip($this->allowed_custom);
             $fields = array_filter($fields, function($a) use ($keys, $keysCustom) {
                 return isset($keys[$a['id']]) || (isset($a['schema']['custom']) && isset($keysCustom[$a['schema']['custom']]));
             });
-			$properties['fields'] = array_values($fields);
 
-			$meta = Meta::fromArray($properties);
+            $meta->setFields(array_values($fields));
+            $meta->setProjects($api->get('/project'));
+            $meta->setStatuses($api->get('/status'));
+            $meta->setIssuetypes($api->get('/issuetype'));
 
 			$app->setSetting(self::PARAM_META, $meta->toArray());
 			$this->container->getEm()->flush($app);
@@ -242,6 +243,19 @@ class JIRA
 
 		return $meta;
 	}
+
+    public function getCreateMeta($projectId = null)
+    {
+        if ($api = $this->getApi()) {
+            $projectId = (int) $projectId;
+            $params = array('expand' => 'projects.issuetypes.fields');
+            if ($projectId) {
+                $params['projectIds'] = $projectId;
+            }
+            return $api->get('/issue/createmeta', $params);
+        }
+        return array();
+    }
 
 	/**
 	 * @return Meta|null

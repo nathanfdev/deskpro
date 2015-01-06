@@ -2200,6 +2200,12 @@ $collection->create('agent_jira_meta', array(
 	'methods'       => array('GET'),
 ));
 
+$collection->create('agent_jira_createmeta', array(
+    'path'          => '/jira/createmeta',
+    'controller'    => 'AgentBundle:Jira:getCreateMeta',
+    'methods'       => array('GET'),
+));
+
 $collection->create('agent_jira_search', array(
 	'path'          => '/jira/search',
 	'controller'    => 'AgentBundle:Jira:search',
