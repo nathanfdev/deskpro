@@ -10,18 +10,19 @@ define(function () {
     }, issue;
 
     $scope.$watch('issue.project.id', function (val) {
-      $meta.projects.each(function (project) {
-        if (val != project.id) return;
-        $scope.project = project;
+      $scope.project = null;
+      $meta.getCreateMeta(val).then(function(project){
+        $scope.project = project
+        if (!project && $meta.projects.length) {
+          issue.project.id = $meta.projects[0].id;
+        }
       });
-
-      if (!$scope.project && $meta.projects.length) {
-        issue.project.id = $meta.projects[0].id;
-      }
     });
 
     var refreshFields = function () {
-      if (!$scope.project) return;
+      if (!$scope.project) {
+        return $scope.fields.length = 0;
+      }
 
       var fields = [];
       $scope.project.issuetypes.each(function (type) {

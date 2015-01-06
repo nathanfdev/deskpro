@@ -54,6 +54,12 @@ class Meta
 	 */
 	protected $statuses = array();
 
+	/**
+	 * available issue types
+	 * @var array
+	 */
+	protected $issuetypes = array();
+
 	protected $default_project;
 	protected $default_issuetype;
 	protected $default_fields_summary = array();
@@ -105,5 +111,53 @@ class Meta
 	public function getApiUsername()
 	{
 		return $this->api_username;
+	}
+
+	public function setProjects(array $projects = array())
+	{
+		$this->projects = array();
+		foreach ($projects as $project) {
+			$this->projects[] = array(
+				'id' => $project['id'],
+				'key' => $project['key'],
+				'name' => $project['name'],
+			);
+		}
+	}
+
+	public function setIssuetypes(array $issuetypes = array())
+	{
+		$this->issuetypes = array();
+		foreach ($issuetypes as $issuetype) {
+			$this->issuetypes[] = array(
+				'id' => $issuetype['id'],
+				'name' => $issuetype['name'],
+				'subtask' => false,
+			);
+		}
+	}
+
+	public function setStatuses(array $statuses = array())
+	{
+		$this->statuses = array();
+		foreach ($statuses as $status) {
+			$this->statuses[] = array(
+				'id' => $status['id'],
+				'name' => $status['name'],
+			);
+		}
+	}
+
+	public function setFields(array $fields = array())
+	{
+		$this->fields = array();
+		foreach ($fields as $field) {
+			$this->fields[] = array(
+				'id' => $field['id'],
+				'name' => $field['name'],
+				'custom' => $field['custom'],
+				'schema' => $field['schema'],
+			);
+		}
 	}
 } 
