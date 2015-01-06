@@ -779,6 +779,8 @@
     'user.portal_tab_articles' => 1,
     'user.portal_tab_feedback' => 1,
     'user.portal_tab_tickets' => 1,
+    'user.portal_tab_downloads' => 1,
+    'user.portal_tabs_order' => 'articles,downloads,feedback,newticket,news',
     'user.disable_chat_element' => false,
     'user.portal_default_news_cat' => 0,
 
