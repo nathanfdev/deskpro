@@ -590,10 +590,15 @@ class MainController extends AbstractController
             throw new NotFoundHttpException;
         }
 
+        $sort = 'date_created';
+        if ('date_active' === $request->get('sort')) {
+            $sort = 'date_last_reply';
+        }
+
         /** @var TicketRepository $rep */
         $rep = $this->em->getRepository('DeskPRO:Ticket');
         $limit = $request->get('all') ? null : 15;
-        $tickets = $rep->getPersonTickets($person, $limit);
+        $tickets = $rep->getPersonTickets($person, $limit, $sort);
 
         return $this->createJsonResponse(array(
             'results' => $this->renderSearchResults('ticket', $tickets),
