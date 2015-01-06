@@ -147,6 +147,10 @@ class LabelManager
             $type_name = 'feedback';
         }
 
+        if ($type_name == 'newss') {
+            $type_name = 'news';
+        }
+
         /** @var LabelDef $rep */
         $rep = $this->em->getRepository('DeskPRO:LabelDef');
         if ('chat_conversations' === $type_name) {
@@ -235,9 +239,27 @@ class LabelManager
         /** @var LabelDef $rep */
         $rep     = $this->em->getRepository('DeskPRO:LabelDef');
         $type    = $rep->getTypeByEntityName($this->label_entity_name);
-        $perm_name = sprintf('labels.%s.agent_can_create', $type);
 
-        if ($added && !App::getSetting(sprintf('labels.%s.agent_can_create', $type))) {
+        if (App::getCurrentPerson() && !App::getCurrentPerson()->isGuest() && App::getCurrentPerson()->is_agent) {
+            $person = App::getCurrentPerson();
+            switch ($this->label_entity_name) {
+                case 'DeskPRO:LabelTicket':           $perm = $person->hasPerm("agent_tickets.create_labels"); break;
+                case 'DeskPRO:LabelPerson':           $perm = $person->hasPerm("agent_people.create_labels"); break;
+                case 'DeskPRO:LabelOrganization':     $perm = $person->hasPerm("agent_org.create_labels"); break;
+                case 'DeskPRO:LabelChatConversation': $perm = $person->hasPerm("agent_chat.create_labels"); break;
+                case 'DeskPRO:LabelArticle':          $perm = $person->hasPerm("agent_publish.articles_create_labels"); break;
+                case 'DeskPRO:LabelNews':             $perm = $person->hasPerm("agent_publish.news_create_labels"); break;
+                case 'DeskPRO:LabelDownload':         $perm = $person->hasPerm("agent_publish.downloads_create_labels"); break;
+                case 'DeskPRO:LabelFeedback':         $perm = $person->hasPerm("agent_publish.feedback_create_labels"); break;
+                default: $perm = false;
+            }
+        } else {
+            // no user at the moment which means
+            // probably cron/trigger
+            $perm = true;
+        }
+
+        if ($added && !$perm) {
             $added = $rep->correctLabels($type, $added, false);
         } else {
             $added = $rep->correctLabels($type, $added, true);

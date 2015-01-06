@@ -24,6 +24,45 @@
 				</div>
 			</div>
 		</article>
+		<article ng-if="Ctrl.app.with_permissions" class="form-horizontal dp-form">
+			<div class="panel panel-fill indent">
+				<div class="panel-body">
+					<div class="col-lg-3">
+						<h3>Permissions</h3>
+					</div>
+					<div class="col-lg-9">
+						<label><input type="radio" ng-model="perms.type" value="global" /> This app will be enabled for everyone in the agent interface</label><br/>
+						<label><input type="radio" ng-model="perms.type" value="set" /> Only show this app for specific agents or permission groups</label>
+						<div ng-show="perms.type == 'set'" style="margin-top: 5px;">
+							<ul class="checkbox-list" style="min-width: 260px; max-height: 225px; overflow: auto;">
+								<li style="border-bottom: 1px solid #ccc; padding: 4px;">
+									<strong>Agents</strong>
+								</li>
+								<li ng-repeat="opt in perms.agents">
+									<label>
+										<input type="checkbox" ng-model="opt.checked" />
+										{{ ng_var('opt.name') }}
+									</label>
+								</li>
+								<li style="border-top: 1px solid #ccc; border-bottom: 1px solid #ccc; padding: 4px;">
+									<strong>Permission Groups</strong>
+								</li>
+								<li ng-repeat="opt in perms.usergroups">
+									<label>
+										<input type="checkbox" ng-model="opt.checked" />
+										{{ ng_var('opt.name') }}
+									</label>
+								</li>
+							</ul>
+							<div style="font-size: 11px; margin-top: 4px;">
+								Selected: {{ ng_var('selected_agents_count()') }} Agents
+								&bull; {{ ng_var('selected_groups_count()') }} Permission Groups
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</article>
 		<article ng-if="default_form" class="form-horizontal dp-form">
 			<div class="panel panel-fill indent">
 				<div class="panel-body" ng-show="!has_display_settings">

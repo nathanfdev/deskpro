@@ -54,11 +54,16 @@ class APITest extends \DpIntegrationTestCase
         $data = $meta->toArray();
         $this->assertEquals('test-user', @$data['api_username']);
         $this->assertArrayHasKey('projects', $data);
+        $this->assertArrayHasKey('issuetypes', $data);
+        $this->assertArrayHasKey('fields', $data);
+
+        $createmeta = $this->js()->getCreateMeta();
+        $this->assertArrayHasKey('projects', $createmeta);
 
         $project = null;
         $issuetype = null;
 
-        foreach ($data['projects'] as $val) {
+        foreach ($createmeta['projects'] as $val) {
             if ('Sandbox' === $val['name']) {
                 $project = $val;
             }
@@ -125,7 +130,7 @@ class APITest extends \DpIntegrationTestCase
         ));
 
         // test search issue
-        $searchResult = $service->searchByKey($issue['key']);
+        $searchResult = $service->searchIssues($issue['key']);
         $this->assertArrayHasKey('issues', $searchResult);
         $this->assertArrayHasKey(0, $searchResult['issues']);
         $issue = $searchResult['issues'][0];

@@ -51,4 +51,29 @@ class AppInstance extends EntityRepository
 			->getQuery()
 			->getOneOrNullResult();
 	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\AppInstance $app
+	 * @return array
+	 */
+	public function getPermissionsForInstance(\Application\DeskPRO\Entity\AppInstance $app)
+	{
+		$ret = array('usergroup_ids' => array(), 'person_ids' => array());
+
+		if ($app->perm_type != 'set') {
+			return $ret;
+		}
+
+		$perms = $this->_em->getConnection()->fetchAll("SELECT * FROM app_instance_permissions WHERE app_instance_id = ?", array($app->id));
+
+		foreach ($perms as $p) {
+			if ($p['usergroup_id']) {
+				$ret['usergroup_ids'][] = (int)$p['usergroup_id'];
+			} elseif ($p['person_id']) {
+				$ret['person_ids'][] = (int)$p['person_id'];
+			}
+		}
+
+		return $ret;
+	}
 }

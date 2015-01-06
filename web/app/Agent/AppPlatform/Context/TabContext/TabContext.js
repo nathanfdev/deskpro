@@ -264,6 +264,13 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
             updateClassFn;
 
           tplScope = $rootScope.$new();
+
+          // proxy DeskPRO App events
+          $rootScope.$on('deskpro_app', function($event, name, data){
+            [].splice.call(arguments, 0, 2, 'deskpro_app.' + name);
+            tplScope.$broadcast.apply(tplScope, arguments);
+          });
+
           tplScope.btnClass   = {'is-enabled': true};
           tplScope.btnImg     = null;
           tplScope.btnBadge   = null;
@@ -354,6 +361,12 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 
         self.loadTemplate(tplName).then(function(tplSource) {
           tplScope = $rootScope.$new();
+
+          // proxy DeskPRO App events
+          $rootScope.$on('deskpro_app', function($event, name){
+            [].splice.call(arguments, 0, 2, 'deskpro_app.' + name);
+            tplScope.$broadcast.apply(tplScope, arguments);
+          });
 
           ctrlLocals = ctrlLocals || {}
           if (!ctrlLocals.containerElementId) {
