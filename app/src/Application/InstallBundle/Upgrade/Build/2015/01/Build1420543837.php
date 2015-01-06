@@ -29,51 +29,21 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\EntityRepository;
-
-/**
- * Class AppInstance
- * @package Application\DeskPRO\EntityRepository
- */
-class AppInstance extends EntityRepository
+class Build1420543837 extends AbstractBuild
 {
-	public function getInstanceByName($name)
-	{
-		return $this->createQueryBuilder('a')
-			->select('a')
-			->where('a.package = ?0')
-			->setParameter(0, $name)
-			->getQuery()
-			->getOneOrNullResult();
-	}
-
-	/**
-	 * @param \Application\DeskPRO\Entity\AppInstance $app
-	 * @return array
-	 */
-	public function getPermissionsForInstance(\Application\DeskPRO\Entity\AppInstance $app)
-	{
-		$ret = array('usergroup_ids' => array(), 'person_ids' => array());
-
-		if ($app->perm_type != 'set') {
-			return $ret;
-		}
-
-		$perms = $this->_em->getConnection()->fetchAll("SELECT * FROM app_instance_permissions WHERE app_instance_id = ?", array($app->id));
-
-		foreach ($perms as $p) {
-			if ($p['usergroup_id']) {
-				$ret['usergroup_ids'][] = (int)$p['usergroup_id'];
-			} elseif ($p['person_id']) {
-				$ret['person_ids'][] = (int)$p['person_id'];
-			}
-		}
-
-		return $ret;
-	}
+    public function run()
+    {
+        $this->out("Add app permissions");
+		$this->execMutateSql("CREATE TABLE app_instance_permissions (id INT AUTO_INCREMENT NOT NULL, app_instance_id INT DEFAULT NULL, usergroup_id INT DEFAULT NULL, person_id INT DEFAULT NULL, INDEX IDX_2B1F184E63B454A1 (app_instance_id), INDEX IDX_2B1F184ED2112630 (usergroup_id), INDEX IDX_2B1F184E217BBB47 (person_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE app_instance_permissions ADD CONSTRAINT FK_2B1F184E63B454A1 FOREIGN KEY (app_instance_id) REFERENCES app_instances (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE app_instance_permissions ADD CONSTRAINT FK_2B1F184ED2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE app_instance_permissions ADD CONSTRAINT FK_2B1F184E217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE app_instances ADD perm_type VARCHAR(15) NOT NULL");
+		$this->execMutateSql("UPDATE app_instances SET perm_type = 'global' WHERE perm_type = ''");
+    }
 }

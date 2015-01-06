@@ -39,12 +39,12 @@ use Application\DeskPRO\Assets\RequireJsConfigGenerator as BaseRequireJsConfigGe
 
 class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
 {
-    public function __construct(AppManagerInterface $manager, $native_file_root = null)
+    public function __construct(AppManagerInterface $manager, $native_file_root = null, $only_installed = true)
     {
         foreach ($manager->getAllPackages() as $package) {
 
             // No app is installed, dont need to output rjs map for it
-            if (!count($manager->getPackageApps($package->name))) {
+            if ($only_installed && !count($manager->getPackageApps($package->name))) {
                 continue;
             }
 
