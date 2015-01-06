@@ -45,18 +45,30 @@ class AppManagerService
     {
         $em = $container->getEm();
 
-        $packages = $em->createQuery("
-            SELECT package, asset
-            FROM DeskPRO:AppPackage package
-            LEFT JOIN package.assets asset
-            ORDER BY package.title
-        ")->execute();
-
         $apps = $em->createQuery("
-            SELECT app, package, asset
+            SELECT app, package
             FROM DeskPRO:AppInstance app
             LEFT JOIN app.package package
-            LEFT JOIN package.assets asset
+        ")->execute();
+
+        if (count($apps)) {
+            $names = array_map(function($a) { return $a->package->name; }, $apps);
+
+            // This loads assets for installed apps
+            // into the EM so we dont have a query-per-app
+            $em->createQuery("
+                SELECT partial package.{name}, asset
+                FROM DeskPRO:AppPackage package
+                LEFT JOIN package.assets asset
+                WHERE package.name IN (:names)
+                ORDER BY package.title
+            ")->execute(array('names' => $names));
+        }
+
+        $packages = $em->createQuery("
+            SELECT package
+            FROM DeskPRO:AppPackage package
+            ORDER BY package.title
         ")->execute();
 
         $usersources = $em->createQuery("

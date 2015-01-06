@@ -2438,8 +2438,14 @@ class TicketSearch extends SearcherAbstract
             $status = $data['options']['status'];
         }
 
-        if(isset($status) && $op == 'is' && $status != 'awaiting_agent') {
-            return false;
+        if (isset($status)) {
+            if (!is_array($status)) {
+                $status = array($status);
+            }
+
+            if (isset($status) && $op == 'is' && !in_array('awaiting_agent', $status)) {
+                return false;
+            }
         }
 
         return true;
