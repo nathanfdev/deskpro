@@ -274,6 +274,8 @@ class KernelBooter
             }
             $request = Request::createFromGlobals();
             $response = $kernel->handle($request);
+            // below: a log from the kernel of cache hits/misses
+            //dump($kernel->getLog());exit;
             $response->send();
             $kernel->terminate($request, $response);
             exit;
