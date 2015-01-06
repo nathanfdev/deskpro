@@ -330,6 +330,7 @@ class TicketController extends AbstractController
                 $errors['person_email'] = array('invalid_email', 'Invalid email address');
             } else {
                 $person_processor = new PersonFromEmailProcessor();
+                $person_processor->creation_system = 'web.api';
                 $person = $person_processor->findPersonByEmailAddress($email, $this->in->getString('person_name'));
                 if (!$person) {
 

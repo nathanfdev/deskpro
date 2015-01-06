@@ -36,6 +36,7 @@ namespace Application\DeskPRO\EmailGateway;
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item\EmailAddress;
 use Application\DeskPRO\Entity;
+use Orb\Util\Arrays;
 
 /**
  * This finds a user based on the email sent, or creates a new user
@@ -43,6 +44,13 @@ use Application\DeskPRO\Entity;
  */
 class PersonFromEmailProcessor
 {
+    private $is_running = false;
+
+    /**
+     * @var string
+     */
+    public $creation_system = 'gateway.person';
+
     /**
      * When we have any email from a user, perform basic routines on the user its from.
      *
@@ -125,43 +133,94 @@ class PersonFromEmailProcessor
     /**
      * Creates a person based on the From email address.
      *
+     * This should NOT be called within a transaction because the record needs to be committed so we can be sure it
+     * is properly saved.
+     *
      * @param $from
      * @param  bool                               $do_validated True to validate user, false to use whatever is default
      * @return \Application\DeskPRO\Entity\Person
      */
     public function createPerson(EmailAddress $from, $do_validated = false)
     {
-        App::getDb()->beginTransaction();
-
         $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
-
         if ($person) {
-            App::getDb()->commit();
             return $person;
         }
 
-        $email = new Entity\PersonEmail();
-        $email->setEmail($from->getEmail());
+        $db = App::getDb();
 
-        $person = Entity\Person::newContactPerson();
-        $person->creation_system = 'gateway.person';
-        $person->name = $from->getNameUtf8();
+        $last_e = null;
 
-        $email->person = $person;
-        $person->addEmailAddress($email);
+        // - Creating a new user can often result in duplicate key errors on the email address
+        // because two processes might try to commit the same row at the same time.
+        // - To prevent this, this method should be called OUTSIDE of a transaction (so the result is available immediately).
+        // - We insert raw records outside of Doctrine because an error during a normal Doctrine flush would
+        // result in the EM being closed and that is not recoverable.
 
-        $email->is_validated = true;
-        $person->is_confirmed = true;
+        $db->beginTransaction();
+        try {
+            $tmp_person = Entity\Person::newContactPerson(array(
+                'creation_system'    => $this->creation_system,
+                'name'               => $from->getNameUtf8() ?: '',
+                'is_confirmed'       => 1,
+                'is_agent_confirmed' => App::getSetting('core.agent_validation') ? 0 : 1
+            ));
 
-        if (App::getSetting('core.agent_validation')) {
-            $person->is_agent_confirmed = false;
+            // Create new person record (no chance of conflicts here)
+            $db->insert('people', Arrays::removeFalsey($tmp_person->toArray(Entity\Person::TOARRAY_ONLY_PRIMATIVES)));
+            $person_id = $db->lastInsertId();
+
+            // Attempt to create email record,
+            // this may fail (races)
+
+            $email_address = strtolower($from->getEmail());
+            list (, $email_domain) = explode('@', $email_address, 2);
+
+            $db->insert('people_emails', array(
+                'person_id' => $person_id,
+                'email' => $email_address,
+                'email_domain' => $email_domain,
+                'is_validated' => 1,
+                'date_created' => date('Y-m-d H:i:s'),
+                'date_validated' => date('Y-m-d H:i:s'),
+            ));
+            $email_id = $db->lastInsertId();
+
+            $db->update('people', array(
+                'primary_email_id' => $email_id
+            ), array('id' => $person_id));
+
+            $db->commit();
+        } catch (\Exception $e) {
+
+            // We expect/handle a duplicate key error here
+            // and re-run ourselves which should fetch the (now available)
+            // person record.
+
+            $db->rollback(false);
+            if ($this->is_running) {
+                $this->is_running = false;
+                throw $e;
+            }
+
+            $last_e = $e;
         }
 
-        App::getOrm()->persist($person);
-        App::getOrm()->persist($email);
-        App::getOrm()->flush();
+        $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail(), true);
 
-        App::getDb()->commit();
+        if (!$person) {
+            if ($this->is_running) {
+                if ($last_e) {
+                    throw $last_e;
+                } else {
+                    throw new \RuntimeException();
+                }
+            }
+
+            $this->is_running = true;
+            $person = $this->createPerson($from);
+            $this->is_running = false;
+        }
 
         return $person;
     }

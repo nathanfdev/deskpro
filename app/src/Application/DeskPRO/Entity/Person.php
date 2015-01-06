@@ -112,6 +112,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     const CREATED_WEB_AGENT = 'web.agent';
     const CREATED_WEB_USERSOURCE = 'web.usersource';
     const CREATED_GATEWAT_PERSON = 'gateway.person';
+    const CREATED_WEB_API           = 'web.api';
 
     /**
      * The unique ID.
