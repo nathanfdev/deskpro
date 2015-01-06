@@ -27,50 +27,19 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Symfony\Component\Console\Helper\ProgressHelper;
+
 /**
- * Description of GeneratorInterface
- *
- * Interface GeneratorPluginInterface
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
+ * Interface ProgressBarAwareInterface
  * @package Application\ImportBundle\Generator
  */
-interface GeneratorInterface
+interface ProgressBarAwareInterface
 {
-    const RECORD_TYPE_PEOPLE   = 'people';
-    const RECORD_TYPE_TICKETS  = 'tickets';
-    const RECORD_TYPE_MESSAGES = 'messages';
-
-    const EXPORT_PEOPLE_PATH          = 'people/';
-    const EXPORT_TICKETS_PATH         = 'tickets/';
-    const EXPORT_TICKET_MESSAGES_PATH = 'tickets/';
-
     /**
-     * Set service configuration
+     * Set progress bar helper
      *
-     * @param GeneratorConfig $config
+     * @param ProgressHelper $progress_bar
      * @return $this
      */
-    public function setConfig(GeneratorConfig $config);
-
-    /**
-     * Returns amount of records of all types to be exported
-     *
-     * @return int
-     */
-    public function getTotalRecordsCount();
-
-    /**
-     * Returns amount of records of the current type to be exported
-     *
-     * @param string $type
-     * @return int
-     */
-    public function getRecordsCountByType($type);
-
-    /**
-     * Generates json files
-     *
-     * @return void
-     */
-    public function generateJson();
+    public function setProgressBarHelper(ProgressHelper $progress_bar);
 }

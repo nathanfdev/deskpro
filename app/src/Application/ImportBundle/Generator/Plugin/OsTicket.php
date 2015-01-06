@@ -44,17 +44,7 @@ class OsTicket extends AbstractPlugin
     /**
      * @var \PDO
      */
-    protected $db;
-
-    /**
-     * @var int|null
-     */
-    protected $ticket_offset;
-
-    /**
-     * @var int
-     */
-    protected $batch_size;
+    private $db;
 
     /**
      * Constructor
@@ -70,7 +60,6 @@ class OsTicket extends AbstractPlugin
         $db_username = $os_config['db_username'];
         $db_password = $os_config['db_password'];
 
-        $this->batch_size = 10;
 //        $this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
     }
 
@@ -85,24 +74,47 @@ class OsTicket extends AbstractPlugin
     /**
      * {@inheritdoc}
      */
+    public function getTotalRecordsCount()
+    {
+        return $this->getRecordsCountByType(self::RECORD_TYPE_PEOPLE)
+             + $this->getRecordsCountByType(self::RECORD_TYPE_TICKETS);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecordsCountByType($type)
+    {
+        switch ($type) {
+            case self::RECORD_TYPE_PEOPLE:
+                return $this->getPeopleCount();
+            case self::RECORD_TYPE_TICKETS:
+                return $this->getTicketCount();
+            default:
+                throw new \Exception(sprintf('Unknown type `%s`', $type));
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function generateJson()
     {
-        $steps = $this->getPeopleCount() + $this->getTicketCount();
-
-        $this->config->getProgressBarHelper()->start($this->config->output, $steps);
-
         try {
             $this->exportPeople();
             $this->exportTickets();
+
         } catch (\Exception $ex) {
             //$this->logger->warning($ex->getMessage());
         }
     }
 
+    /**
+     * @return int
+     */
     protected function getTicketCount()
     {
         $query = 'SELECT count(ticket_id) FROM ost_ticket';
-
         $stmt   = $this->db->prepare($query);
 
         $stmt->execute();
@@ -110,6 +122,9 @@ class OsTicket extends AbstractPlugin
         return $stmt->fetchColumn();
     }
 
+    /**
+     * @return int
+     */
     protected function getPeopleCount()
     {
         $query = 'SELECT count(staff_id) FROM ost_staff';
@@ -133,7 +148,7 @@ class OsTicket extends AbstractPlugin
 
         $stmt   = $this->db->prepare($query);
 
-        $stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int) $this->config->getBatchSize(), \PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
         $stmt->execute();
 
@@ -160,7 +175,7 @@ class OsTicket extends AbstractPlugin
 
         $stmt   = $this->db->prepare($query);
 
-        $stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int) $this->config->getBatchSize(), \PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
         $stmt->execute();
 
@@ -175,7 +190,7 @@ class OsTicket extends AbstractPlugin
 
         $stmt   = $this->db->prepare($query);
 
-        $stmt->bindValue(':limit', (int) $this->batch_size, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit', (int) $this->config->getBatchSize(), \PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
         $stmt->execute();
 
@@ -314,7 +329,7 @@ class OsTicket extends AbstractPlugin
                 file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
             }
 
-            $this->config->getProgressBarHelper()->advance();
+            $this->advanceProgressBar();
             //$this->logger->info(sprintf('%s exported successfully!', $file_name));
 
             $index++;
@@ -379,18 +394,15 @@ class OsTicket extends AbstractPlugin
                 }
 
                 $file_name = 'ticket' . $index++ . '.json';
-
                 if ($this->config->isLive()) {
                     file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformedArray));
                 }
 
                 unset($transformedArray);
-
                 $offset++;
 
-                //$this->logger->info(sprintf('%s exported successfully!', $file_name));
-
-                $this->config->getProgressBarHelper()->advance();
+//                $this->logInfo(sprintf('%s exported successfully!', $file_name));
+                $this->advanceProgressBar();
             }
 
             $ticket_batch = $this->findAllTickets($offset);

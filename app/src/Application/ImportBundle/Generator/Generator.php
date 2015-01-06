@@ -41,7 +41,7 @@ use Exception;
  * Class Generator
  * @package Application\ImportBundle\Generator
  */
-class Generator extends AbstractGenerator implements GeneratorInterface, LoggerAwareInterface
+class Generator extends AbstractGenerator
 {
     /**
      * @var array
@@ -58,6 +58,22 @@ class Generator extends AbstractGenerator implements GeneratorInterface, LoggerA
     {
         $this->plugins[] = $plugin;
         return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getTotalRecordsCount()
+    {
+        return $this->getPlugin()->getTotalRecordsCount();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecordsCountByType($type)
+    {
+        return $this->getPlugin()->getRecordsCountByType($type);
     }
 
     /**
@@ -115,6 +131,10 @@ class Generator extends AbstractGenerator implements GeneratorInterface, LoggerA
                 if ($this->logger && $plugin instanceof LoggerAwareInterface) {
                     /** @var LoggerAwareInterface $plugin */
                     $plugin->setLogger($this->logger);
+                }
+                if ($this->progress_bar && $plugin instanceof ProgressBarAwareInterface) {
+                    /** @var ProgressBarAwareInterface $plugin */
+                    $plugin->setProgressBarHelper($this->progress_bar);
                 }
 
                 return $plugin;

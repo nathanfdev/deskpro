@@ -45,27 +45,9 @@ use Orb\Util\Arrays;
 class Csv extends AbstractPlugin
 {
     /**
-     * @var int|null
-     */
-    protected $ticket_offset;
-
-    /**
-     * @var int
-     */
-    protected $batch_size;
-
-    /**
      * @var array
      */
-    protected $read_ticket_ids = array();
-
-    /**
-     * Constructor
-     */
-    public function __construct()
-    {
-        $this->batch_size = 10;
-    }
+    private $read_ticket_ids = array();
 
     /**
      * {@inheritdoc}
@@ -78,18 +60,50 @@ class Csv extends AbstractPlugin
     /**
      * {@inheritdoc}
      */
+    public function getTotalRecordsCount()
+    {
+        return $this->getRecordsCountByType(self::RECORD_TYPE_PEOPLE)
+             + $this->getRecordsCountByType(self::RECORD_TYPE_TICKETS)
+             + $this->getRecordsCountByType(self::RECORD_TYPE_MESSAGES);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecordsCountByType($type)
+    {
+        $data_file = $this->getFile($type);
+        $records = -1;
+
+        $line1 = fgets($data_file);
+        rewind($data_file);
+
+        if (substr_count($line1, ';') > substr_count($line1, ',')) {
+            $sep = ';';
+        } else {
+            $sep = ',';
+        }
+
+        while (($row = fgetcsv($data_file, 4096, $sep)) !== false) {
+            ++$records;
+        }
+
+        fclose($data_file);
+        return $records;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function generateJson()
     {
-        $steps = $this->getRecordCount('people') + $this->getRecordCount('tickets') + $this->getRecordCount('messages');
-        $this->config->getProgressBarHelper()->start($this->config->output, $steps);
-
         try {
             $this->exportPeople();
             $this->exportTickets();
             $this->exportTicketMessages();
 
         } catch (\Exception $ex) {
-            $this->logger->warning($ex->getMessage());
+            $this->logWarning($ex->getMessage());
         }
     }
 
@@ -123,36 +137,6 @@ class Csv extends AbstractPlugin
     }
 
     /**
-     * @param string $data_source
-     *
-     * @return int
-     * @throws BadDataException
-     */
-    protected function getRecordCount($data_source)
-    {
-        $data_file = $this->getFile($data_source);
-
-        $records = -1;
-
-        $line1 = fgets($data_file);
-        rewind($data_file);
-
-        if (substr_count($line1, ';') > substr_count($line1, ',')) {
-            $sep = ';';
-        } else {
-            $sep = ',';
-        }
-
-        while (($row = fgetcsv($data_file, 4096, $sep)) !== false) {
-            ++$records;
-        }
-
-        fclose($data_file);
-
-        return $records;
-    }
-
-    /**
      * @return void
      */
     protected function exportPeople()
@@ -162,13 +146,13 @@ class Csv extends AbstractPlugin
         foreach ($this->getData('people') as $person) {
             if (!count(Arrays::removeEmptyString($person))) {
                 $index++;
-                $this->config->getProgressBarHelper()->advance();
+                $this->advanceProgressBar();
                 continue;
             }
             if (!isset($person['email'])) {
-                $this->logger->warning(sprintf('Invalid person record found (Skipping): %s'));
+                $this->logWarning(sprintf('Invalid person record found (Skipping): %s'));
                 $index++;
-                $this->config->getProgressBarHelper()->advance();
+                $this->advanceProgressBar();
                 continue;
             }
             if (empty($person['name'])) {
@@ -191,9 +175,8 @@ class Csv extends AbstractPlugin
                 file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformedArray));
             }
 
-            $this->logger->info(sprintf('%s exported successfully!', $file_name));
-
-            $this->config->getProgressBarHelper()->advance();
+            $this->logInfo(sprintf('%s exported successfully!', $file_name));
+            $this->advanceProgressBar();
 
             $index++;
         }
@@ -209,14 +192,14 @@ class Csv extends AbstractPlugin
         foreach ($this->getData('tickets') as $ticket) {
             if (!count(Arrays::removeEmptyString($ticket))) {
                 $index++;
-                $this->config->getProgressBarHelper()->advance();
+                $this->advanceProgressBar();
                 continue;
             }
 
             if (!isset($ticket['subject']) || !isset($ticket['user'])) {
-                $this->logger->warning(sprintf('Invalid ticket record found (Skipping)'));
+                $this->logWarning(sprintf('Invalid ticket record found (Skipping)'));
                 $index++;
-                $this->config->getProgressBarHelper()->advance();
+                $this->advanceProgressBar();
                 continue;
             }
 
@@ -234,10 +217,10 @@ class Csv extends AbstractPlugin
                 file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformedArray));
             }
 
-            $this->logger->info(sprintf('%s exported successfully!', $file_name));
+            $this->logInfo(sprintf('%s exported successfully!', $file_name));
             $this->read_ticket_ids[$ticket['id']] = true;
 
-            $this->config->getProgressBarHelper()->advance();
+            $this->advanceProgressBar();
 
             $index++;
         }
@@ -253,21 +236,19 @@ class Csv extends AbstractPlugin
         foreach ($this->getData('messages') as $ticket_message) {
             if (!count(Arrays::removeEmptyString($ticket_message))) {
                 $index++;
-                $this->config->getProgressBarHelper()->advance();
+                $this->advanceProgressBar();
                 continue;
             }
 
             if (!isset($ticket_message['message_text']) || !isset($ticket_message['user'])) {
-                $this->logger->warning(sprintf('Invalid ticket message record found (Skipping)'));
+                $this->logWarning(sprintf('Invalid ticket message record found (Skipping)'));
                 $index++;
-                $this->config->getProgressBarHelper()->advance();
+                $this->advanceProgressBar();
                 continue;
             }
 
             $ticket_id = trim($ticket_message['ticket_id']);
-
             $ticket_file_name = 'ticket_' . $ticket_id . '.json';
-
             $ticket_file_path = $this->getExportTicketMessagesOutputPath() . $ticket_file_name;
 
             if ($this->config->isLive()) {
@@ -286,20 +267,20 @@ class Csv extends AbstractPlugin
                         file_put_contents($ticket_file_path, json_encode($ticket_array));
                     }
 
-                    $this->logger->info(sprintf('%s exported successfully!', $ticket_file_path));
+                    $this->logInfo(sprintf('%s exported successfully!', $ticket_file_path));
 
                 } else {
-                    $this->logger->warning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
+                    $this->logWarning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
                 }
             } else {
                 if (!isset($this->read_ticket_ids[$ticket_id])) {
-                    $this->logger->warning(sprintf('Source record for ticket #%s not read', $ticket_id));
+                    $this->logWarning(sprintf('Source record for ticket #%s not read', $ticket_id));
                 }
             }
 
             $index++;
 
-            $this->config->getProgressBarHelper()->advance();
+            $this->advanceProgressBar();
         }
     }
 

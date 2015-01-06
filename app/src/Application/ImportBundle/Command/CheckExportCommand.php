@@ -74,20 +74,17 @@ class CheckExportCommand extends AbstractExportCommand
         $out_handler = new ConsoleHandler($output);
         $logger = new Logger('exporter', array($out_handler));
 
-        if (strtolower($input->getArgument('script')) === 'csv' && !$input->getOption('input-path')) {
-            $logger->err('You must supply an "input-path" argument while using CSV exporter');
-        }
-
         /** @var ProgressHelper $progress_bar */
         $progress_bar = $this->getHelperSet()->get('progress');
         /** @var Generator $generator */
         $generator = $this->getContainer()->get('deskpro.import.generator');
+        $generator
+            ->setConfig($this->createGeneratorConfig($input))
+            ->setLogger($logger)
+            ->setProgressBarHelper($progress_bar);
 
-        $generator_config = $this->createGeneratorConfig($input);
-        $generator_config->setProgressBarHelper($progress_bar);
-        $generator_config->output	= $output;
-
-        $generator->setConfig($generator_config)->generateJson();
+        $progress_bar->start($output, $generator->getTotalRecordsCount());
+        $generator->generateJson();
 
         echo "\n";
         echo "Done";

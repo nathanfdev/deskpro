@@ -31,10 +31,9 @@
 
 namespace Application\ImportBundle\Generator;
 
-use Symfony\Component\Console\Helper\ProgressHelper;
-use Symfony\Component\Console\Output\ConsoleOutput;
-
 /**
+ * Configuration of generator importer service
+ *
  * Class GeneratorConfig
  * @package Application\ImportBundle\Generator
  */
@@ -75,17 +74,19 @@ class GeneratorConfig
      *
      * @var bool
      */
-    public $mark_done = true;
+    private $mark_done = true;
 
     /**
-     * @var ConsoleOutput
+     * @var int
      */
-    public $output;
+    private $batch_size = 10;
 
     /**
-     * @var ProgressHelper
+     * Not used yet
+     *
+     * @var int|null
      */
-    private $progress_bar;
+//    private $ticket_offset;
 
     /**
      * @return string
@@ -160,28 +161,6 @@ class GeneratorConfig
     }
 
     /**
-     * Get progress bar helper
-     *
-     * @return ProgressHelper
-     */
-    public function getProgressBarHelper()
-    {
-        return $this->progress_bar;
-    }
-
-    /**
-     * Set progress bar helper
-     *
-     * @param ProgressHelper $progress_bar
-     * @return $this
-     */
-    public function setProgressBarHelper(ProgressHelper $progress_bar)
-    {
-        $this->progress_bar = $progress_bar;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getMode()
@@ -224,6 +203,24 @@ class GeneratorConfig
     public function setMarkDone($mark_done)
     {
         $this->mark_done = (bool)$mark_done;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getBatchSize()
+    {
+        return $this->batch_size;
+    }
+
+    /**
+     * @param int $batch_size
+     * @return $this
+     */
+    public function setBatchSize($batch_size)
+    {
+        $this->batch_size = (int)$batch_size;
         return $this;
     }
 }

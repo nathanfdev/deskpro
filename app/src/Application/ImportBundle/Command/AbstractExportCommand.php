@@ -28,11 +28,14 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\Plugin\GeneratorPluginInterface;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputInterface;
 use Orb\Util\OptionsArray;
 
 /**
+ * Base export command
+ *
  * Class AbstractExportCommand
  * @package Application\ImportBundle\Command
  */
@@ -44,25 +47,58 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * @param InputInterface $input
      * @return GeneratorConfig
      */
-    public function createGeneratorConfig(InputInterface $input)
+    protected function createGeneratorConfig(InputInterface $input)
     {
         $config = new GeneratorConfig();
+        $this->setParamsByDeskProConfig($config);
+        $this->setParamsByInputInterface($config, $input);
+
+        return $config;
+    }
+
+    /**
+     * Use project config to set up generator config params
+     *
+     * @param GeneratorConfig $config
+     */
+    protected function setParamsByDeskProConfig(GeneratorConfig $config)
+    {
         $import_config = new OptionsArray(dp_get_config('import', array()));
         $config
             ->setOutputPath($import_config->get('output_path'))
             ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export'))
             ->setMode($import_config->get('mode', GeneratorConfig::MODE_TEST))
             ->setMarkDone($import_config->get('mark_done', true));
+    }
 
+    /**
+     * Use CLI to set up generator config params
+     *
+     * @param GeneratorConfig $config
+     * @param InputInterface  $input
+     *
+     * @throws \Exception
+     */
+    protected function setParamsByInputInterface(GeneratorConfig $config, InputInterface $input)
+    {
         if ($input->hasArgument('script')) {
             $config->setType($input->getArgument('script'));
+        } else {
+            throw new \Exception('Source type argument is not defined');
         }
+
         if ($input->hasOption('output-path')) {
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
+
         if ($input->hasOption('input-path')) {
             $config->setInputPath($input->getOption('input-path'));
+        } else {
+            if ($config->getType() === GeneratorPluginInterface::TYPE_CSV) {
+                throw new \Exception('You must supply an "input-path" argument while using CSV exporter');
+            }
         }
+
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));
         }
@@ -75,7 +111,5 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($input->hasOption('mark-done')) {
             $config->setMarkDone($input->getOption('mark-done'));
         }
-
-        return $config;
     }
 }
