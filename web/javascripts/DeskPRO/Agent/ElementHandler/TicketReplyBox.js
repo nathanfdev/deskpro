@@ -31,6 +31,10 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		var teamSelText   = this.getElById('agent_team_sel_text');
 		var teamSelCheck  = this.getElById('agent_team_sel_check');
 
+        var jiraActionSel = this.getElById('jira_app_action'),
+            jiraActionText = this.getElById('jira_app_action_text'),
+            jiraActionCheck = this.getElById('jira_app_action_check');
+
 		var storedReplyText = '';
 		var storedNoteText = '';
 
@@ -811,6 +815,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		window.setTimeout(function() {
 			DP.select(agentSel);
 			DP.select(teamSel);
+            DP.select(jiraActionSel);
 		}, 150);
 
 		agentSel.on('change', function() {
@@ -831,11 +836,16 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 			teamSelText.text($(this).find(':selected').text());
 			teamSelCheck.prop('checked', true);
 		});
+        jiraActionSel.on('change', function() {
+          jiraActionText.text($(this).find(':selected').text());
+          jiraActionCheck.prop('checked', true);
+        });
 
 		var option = agentSel.find(':selected');
 		agentSelText.text(option.data('name-short'));
 		agentSelText.css('background-image', 'url(' + option.data('icon')+ ')');
 		teamSelText.text(teamSel.find(':selected').text());
+        jiraActionText.text(jiraActionSel.find(':selected').text());
 
 		if (agentSel.data('auto-switch-status')) {
 			agentSelCheck.on('change', function() {
@@ -1153,7 +1163,7 @@ DeskPRO.Agent.ElementHandler.TicketReplyBox = new Orb.Class({
 		if (this.el.hasClass('dp-note-on')) {
 			this.getElById('replybox_notetab_btn').click();
 		}
-	},
+    },
 
 	setReplyAsOptionName: function(name) {
 		var item = this.getElById('status_menu').find('li[data-type="' + name + '"]').first();

@@ -108,7 +108,7 @@ class PermissionNamesLoader
         if ($sys_name == 'agent_all_perms') {
             return $this->getNames();
         } elseif ($sys_name == 'agent_all_safe_perms') {
-            return $this->getNames();
+            return $this->getSafeNames();
         } else {
             return array();
         }

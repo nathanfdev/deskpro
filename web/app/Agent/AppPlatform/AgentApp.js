@@ -690,7 +690,7 @@ define([
 			link: function(scope, $el, attr) {
 
 				window.DP_CLOSE_SEARCH = function() {
-					scope.$apply(function() {
+					scope.$safeApply(function() {
 						scope.isActive = false;
 					});
 				};
@@ -811,9 +811,11 @@ define([
 
 				scope.clearSearch = function() {
 					scope.searchQuery = '';
+					scope.expandedPerson = null;
 					closeAll();
 					$timeout(function() {
 						scope.searchQuery = '';
+						scope.expandedPerson = null;
 						closeAll();
 					});
 				};
@@ -961,6 +963,35 @@ define([
 						resizeDebounced();
 					}
 				});
+
+				scope.loadPersonTickets = function(person) {
+
+					if (person === scope.expandedPerson) {
+						return scope.expandedPerson = null;
+					}
+
+					scope.expandedPerson = person;
+					if (person.tickets) {
+						return;
+					}
+
+					$http({
+						method: 'GET',
+						params: { person_id: person.id },
+						url: 'DP_URL/agent/quick-search/get-person-tickets.json'
+					}).success(function(data) {
+						if (data.results) {
+							person.tickets = data.results;
+						}
+					}).error(function() {
+
+					});
+				};
+
+				scope.openAllTickets = function(person) {
+					scope.clearSearch();
+					DeskPRO_Window.loadListPane(scope.search_url, {postData: {search_person_id: person.id}});
+				};
 			}
 		}
 	}]);
