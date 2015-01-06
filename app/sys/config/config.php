@@ -390,10 +390,10 @@ $container->loadFromExtension(
                             ),
                         ),
                         'analyzer' => array(
-                            'whitespace_analyzer' => array(
+                            'text_content_analyzer' => array(
                                 'type'      => 'custom',
-                                'tokenizer' => 'whitespace',
-                                'filter'    => array('lowercase', 'asciifolding')
+                                'tokenizer' => 'standard',
+                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding')
                             ),
                             'name_analyzer' => array(
                                 'type'      => 'custom',
@@ -417,8 +417,8 @@ $container->loadFromExtension(
                 'types'    => array(
                     'article'           => array(
                         'mappings'    => array(
-                            'title'        => array(),
-                            'content'      => array(),
+                            'title'        => array('analyzer' => 'text_content_analyzer'),
+                            'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_ids' => array('type' => 'integer'),
                             'labels'       => array(),
@@ -438,10 +438,10 @@ $container->loadFromExtension(
                     ),
                     'news'              => array(
                         'mappings'    => array(
-                            'title'        => array(),
+                            'title'        => array('analyzer' => 'text_content_analyzer'),
                             'labels'       => array(),
                             'sticky_words' => array(),
-                            'content'      => array(),
+                            'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_id'  => array('type' => 'integer'),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -459,10 +459,10 @@ $container->loadFromExtension(
                     ),
                     'download'          => array(
                         'mappings'    => array(
-                            'title'        => array(),
+                            'title'        => array('analyzer' => 'text_content_analyzer'),
                             'labels'       => array(),
                             'sticky_words' => array(),
-                            'content'      => array(),
+                            'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_id'  => array('type' => 'integer'),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -480,10 +480,10 @@ $container->loadFromExtension(
                     ),
                     'feedback'          => array(
                         'mappings'    => array(
-                            'title'        => array(),
+                            'title'        => array('analyzer' => 'text_content_analyzer'),
                             'labels'       => array(),
                             'sticky_words' => array(),
-                            'content'      => array(),
+                            'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_id'  => array('type' => 'integer'),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),

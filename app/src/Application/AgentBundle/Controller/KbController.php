@@ -135,6 +135,10 @@ class KbController extends AbstractController
             $this->em->flush($article);
         }
 
+        $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+        $glossary_words = $glossary->findWords($article->content);
+        $word_defs = $glossary->getWordDefs($glossary_words);
+
         $vars = array(
             'article'              => $article,
             'trans_langs'          => $trans_langs,
@@ -152,6 +156,9 @@ class KbController extends AbstractController
             'glossary_words'       => $glossary_words,
             'perms'                => $perms,
             'user_view_count'      => $user_view_count,
+
+            'glossary_words'       => $glossary_words,
+            'word_defs'            => $word_defs,
         );
 
         if($is_pdf) {

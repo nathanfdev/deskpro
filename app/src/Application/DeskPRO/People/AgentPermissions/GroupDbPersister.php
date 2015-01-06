@@ -130,9 +130,16 @@ class GroupDbPersister
                 $ug_perms = $names_loader->getEnabledForGroup($ug);
                 if ($ug_perms) {
                     $ug_perms = array_fill_keys($ug_perms, true);
+                } else {
+                    $ug_perms = array();
                 }
             } else {
                 $ug_perms = $group_perms->getGroupPermissions($ug->id);
+                if ($ug_perms) {
+                    $ug_perms = $ug_perms->toArray();
+                } else {
+                    $ug_perms = array();
+                }
             }
             $via_groups = array_merge($via_groups, $ug_perms);
         }

@@ -26,57 +26,51 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @category File
+ * @package DeskPRO
+ * @category Tickets
  */
 
-namespace Application\DeskPRO\Distribution;
+namespace Application\DeskPRO\Tickets\TicketSaveActions;
 
-class ChecksumChecker extends \Orb\File\ChecksumChecker
+use Application\DeskPRO\DependencyInjection\SystemServices\AgentDataService;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Tickets\ExecutorContextInterface;
+
+/**
+ * Takes care of unassigning an agent when the status becomes awaiting_agent and the agent is deleted.
+ */
+class VerifyAgent implements TicketSaveActionInterface
 {
-    public function __construct($chunk_size = 200)
-    {
-        parent::__construct(realpath(DP_ROOT.'/../'));
-        $this->finder->notName('distro-checksums.php')
-            ->notName('.gitignore')
-            ->notName('.gitmodules')
-            ->notName('.buildpath')
-            ->notName('.project')
-            ->notName('.DS_Store')
-            ->notName('dev_debug.php')
-            ->notName('config.php')
-            ->notName('config.new.php')
-            ->notName('classes.map')
-            ->notName('.htaccess')
-            ->notName('web.config')
-            ->notName('README.txt')
-            ->ignoreVCS(true)
-            ->exclude('sys/cache/dev')
-            ->exclude('.settings')
-            ->exclude('.idea')
-            ->notName('.travis.yml')
-            ->exclude('data')
-            ->exclude('.feedback');
-    }
+    /**
+     * @var AgentDataService
+     */
+    private $agent_data;
+
 
     /**
-     * Compare the current fileset with the distributed list
-     *
-     * @return array
+     * @param AgentDataService $agent_data
      */
-    public function compareWithStandard()
+    public function __construct(AgentDataService $agent_data)
     {
-        return $this->compareWithDump(DP_ROOT.'/sys/Resources/distro-checksums.php');
+        $this->agent_data = $agent_data;
     }
 
 
     /**
-     * Dump current hashes to standard checksum file for deskpro
+     * @param  Ticket                   $ticket
+     * @param  ExecutorContextInterface $context
+     * @return void
      */
-    public function dumpToStardnardFile()
+    public function processTicket(Ticket $ticket, ExecutorContextInterface $context)
     {
-        return $this->dumpToFile(DP_ROOT.'/sys/Resources/distro-checksums.php');
+        if ($ticket->status == 'awaiting_agent' && $ticket->agent) {
+            $context->getLogger()->info("Checking assigned agent is not deleted");
+            if (!$this->agent_data->has($ticket->agent->id)) {
+                $context->getLogger()->info("Unassigning deleted agent");
+                $ticket->agent = null;
+            }
+        }
     }
 }

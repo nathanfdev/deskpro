@@ -68,7 +68,10 @@
 							<ul class="dp-item-list" ng-if="List.eventType == 'update'">
 								<li ng-repeat="dep in List.depList" dp-state-mark="id:tickets.triggers.editdepchanged.department-changed-{{ ng_var('dep.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-changed-' + dep.id}") }}">
-										<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+										<h4>
+											<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[dep.id]') }}</span>
+											<span class="title-text">{{ ng_var('dep.title') }}</span>
+										</h4>
 									</a>
 									<ul class="dp-item-list sublist" ng-show="dep.children.length">
 										<li ng-repeat="subdep in dep.children" dp-state-mark="id:tickets.triggers.editdepchanged.department-changed-{{ ng_var('subdep.id') }}">

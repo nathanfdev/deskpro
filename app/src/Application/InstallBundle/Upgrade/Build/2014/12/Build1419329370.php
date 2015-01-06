@@ -26,57 +26,18 @@
 \**************************************************************************/
 
 /**
- * Orb
+ * DeskPRO
  *
- * @package Orb
- * @category File
+ * @package DeskPRO
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Distribution;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class ChecksumChecker extends \Orb\File\ChecksumChecker
+class Build1419329370 extends AbstractBuild
 {
-    public function __construct($chunk_size = 200)
+    public function run()
     {
-        parent::__construct(realpath(DP_ROOT.'/../'));
-        $this->finder->notName('distro-checksums.php')
-            ->notName('.gitignore')
-            ->notName('.gitmodules')
-            ->notName('.buildpath')
-            ->notName('.project')
-            ->notName('.DS_Store')
-            ->notName('dev_debug.php')
-            ->notName('config.php')
-            ->notName('config.new.php')
-            ->notName('classes.map')
-            ->notName('.htaccess')
-            ->notName('web.config')
-            ->notName('README.txt')
-            ->ignoreVCS(true)
-            ->exclude('sys/cache/dev')
-            ->exclude('.settings')
-            ->exclude('.idea')
-            ->notName('.travis.yml')
-            ->exclude('data')
-            ->exclude('.feedback');
-    }
-
-    /**
-     * Compare the current fileset with the distributed list
-     *
-     * @return array
-     */
-    public function compareWithStandard()
-    {
-        return $this->compareWithDump(DP_ROOT.'/sys/Resources/distro-checksums.php');
-    }
-
-
-    /**
-     * Dump current hashes to standard checksum file for deskpro
-     */
-    public function dumpToStardnardFile()
-    {
-        return $this->dumpToFile(DP_ROOT.'/sys/Resources/distro-checksums.php');
+		$this->execMutateSql("CREATE INDEX was_agent_idx ON people (was_agent)");
     }
 }

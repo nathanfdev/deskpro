@@ -194,7 +194,7 @@
 					<button dp-toggle-switch ng-model="options.on_viewticket"></button> Let the user view this field after the ticket is created
 					<div style="margin-left: 49px; margin-top: -10px;" ng-show="options.on_viewticket">
 						<label style="font-weight: normal;">
-							<input type="checkbox" ng-model="options.on_viewticket_mode" ng-true-value="value" /> Only show when there is a value
+							<input type="checkbox" ng-model="options.on_viewticket_mode" ng-true-value="value" ng-false-value="always" /> Only show when there is a value
 						</label>
 					</div>
 				</p>
@@ -242,7 +242,7 @@
 						<button dp-toggle-switch ng-model="options.on_viewticket"></button> Show the field to agents when viewing the ticket
 					<div style="margin-left: 49px; margin-top: -10px;" ng-show="options.on_viewticket">
 						<label style="font-weight: normal;">
-							<input type="checkbox" ng-model="options.on_viewticket_mode" ng-true-value="value" /> Only show when there is a value
+							<input type="checkbox" ng-model="options.on_viewticket_mode" ng-true-value="value" ng-false-value="always" /> Only show when there is a value
 						</label>
 					</div>
 					</p>

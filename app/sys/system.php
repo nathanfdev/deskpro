@@ -195,7 +195,7 @@ abstract class AbstractKernel extends BaseKernel
         }
 
         // Make sure we arent offline
-        if (!preg_match('#^/admin/?#', $path) && $this->isHelpdeskOffline()) {
+        if (!(preg_match('#^/admin/?#', $path) || preg_match('#^/agent/(login|logout)#', $path)) && $this->isHelpdeskOffline()) {
             $response = new Response();
             $response->setContent(HelpdeskOfflineMessage::getOfflinePage());
 

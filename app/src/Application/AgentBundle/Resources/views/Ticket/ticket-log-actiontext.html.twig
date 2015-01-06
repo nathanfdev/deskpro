@@ -25,7 +25,7 @@
 	{% elseif log.details.event == 'new.web.agent.portal' %}
 		{{ phrase('agent.tickets.log_new_web_agent_portal') }}
 	{% elseif log.details.event == 'new.web.api' %}
-		{{ phrase('agent.tickets.log_new_email_api') }}
+		{{ phrase('agent.tickets.log_new_api_agent') }}
 	{% elseif log.details.event == 'update.agent' %}
 		{% if log.details.has_reply  %}
 			{{ phrase('agent.tickets.log_update_agent_reply') }}

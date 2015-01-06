@@ -405,6 +405,11 @@ pageMeta.lang = {{ {
 								<option {% if agent.id == ticket.agent.id %}selected="selected"{% endif %} data-icon="{{ agent.getPictureUrl(20) }}" value="{{ agent.id }}">{{ agent.display_name }}</option>
 							{% endif %}
 						{% endfor %}
+						{% if ticket.agent and (ticket.agent.is_deleted or not ticket.agent.is_agent) %}
+							<option selected="selected" value="{{ ticket.agent.id }}" data-icon="{{ agent.getPictureUrl(20) }}">
+								{{ ticket.agent.display_name }}
+							</option>
+						{% endif %}
 					</select>
 			</td>
 			{% if agent_teams|length %}
