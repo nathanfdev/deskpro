@@ -1458,7 +1458,7 @@ class PersonController extends AbstractController
                         $mailer = $this->get('mailer');
                         $message = $mailer->createMessage();
                         $message->setToPerson($person);
-                        $message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
+                        $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
                             'person' => $person
                         ));
                         $mailer->sendNow($message);
@@ -1505,7 +1505,7 @@ class PersonController extends AbstractController
                 $mailer = $this->get('mailer');
                 $message = $mailer->createMessage();
                 $message->setToPerson($person);
-                $message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
+                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
                     'person' => $person
                 ));
 
