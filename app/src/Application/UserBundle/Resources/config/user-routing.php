@@ -369,12 +369,6 @@ $collection->create('user_articles_unsub_all', array(
     'controller'  => 'UserBundle:Articles:unsubscribeAll',
 ));
 
-$collection->create('user_articles_article_agent_iframe', array(
-    'path'          => '/kb/articles/agent-iframe/{article_id}/{agent_session_id}',
-    'controller'    => 'UserBundle:Articles:articleAgentIframe',
-    'requirements'  => array('article_id' => '\\d+'),
-));
-
 $collection->create('user_articles_newcomment', array(
     'path'        => '/kb/new-comment/{article_id}',
     'controller'  => 'UserBundle:Articles:newComment',

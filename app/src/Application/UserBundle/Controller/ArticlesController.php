@@ -332,42 +332,6 @@ class ArticlesController extends AbstractController
         ));
     }
 
-    public function articleAgentIframeAction($article_id, $agent_session_id)
-    {
-        $agent_session = null;
-
-        if (!$this->person->is_agent) {
-            $agent_session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($agent_session_id);
-            if (!$agent_session || !$agent_session->person || !$agent_session->person->is_agent) {
-                $agent_session = null;
-            }
-        }
-
-        if ($agent_session) {
-            $this->person = $agent_session->person;
-        }
-
-        if (!$this->person->is_agent) {
-            return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
-        }
-
-        $article = $this->em->getRepository('DeskPRO:Article')->find($article_id);
-        if (!$article) {
-            return $this->renderStandardError('@user.knowledgebase.article_not_found', '@user.error.not-found', 404);
-        }
-
-        $glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
-        $glossary_words = $glossary->findWords($article->content);
-        $word_defs = $glossary->getWordDefs($glossary_words);
-
-        return $this->render('UserBundle:Articles:article-agent-iframe.html.twig', array(
-            'article' => $article,
-            'glossary_words' => $glossary_words,
-            'word_defs' => $word_defs,
-        ));
-    }
-
-
     /**
      * @param $article_id
      */
