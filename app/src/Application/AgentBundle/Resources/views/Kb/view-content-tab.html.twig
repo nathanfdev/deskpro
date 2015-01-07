@@ -1,7 +1,7 @@
 <div class="full-tab-content">
 	<div class="article-content-wrap content-post-wrap">
 		<span class="article-loading"><i class="spinner-flat"></i></span>
-		<iframe src="{{ path('user_articles_article_agent_iframe', {article_id: article.id, '_' : 'now'|date('U'), agent_session_id: app.getSession().getId(), 'real': 1 }) }}" style="width: 100%" class="article-iframe" frameborder="0"></iframe>
+		<iframe src="{{ path('agent_content_preview_article', {id: article.id}) }}" style="width: 100%" class="article-iframe" frameborder="0"></iframe>
 		{% if article.attachments|length %}
 		<ul class="attachment-list">
 			{% for attach in article.attachments %}

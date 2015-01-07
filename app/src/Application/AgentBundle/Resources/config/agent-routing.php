@@ -42,6 +42,11 @@ $collection->create('agent_load_recent_tabs', array(
     'controller'  => 'AgentBundle:Main:loadRecentTabs',
 ));
 
+$collection->create('agent_content_preview_article', array(
+    'path'        => '/content-preview/article/{id}',
+    'controller'  => 'AgentBundle:ContentPreview:articlePreview',
+));
+
 $collection->create('agent_accept_upload', array(
     'path'        => '/misc/accept-upload',
     'controller'  => 'AgentBundle:Misc:acceptTempUpload',
