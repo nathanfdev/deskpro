@@ -99,7 +99,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="sidebar")
+     * @Tag(name="sidebar", esi=true)
      */
     public function sidebarAction(TagRequest $tag_request)
     {
@@ -107,7 +107,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="login_sidebar")
+     * @Tag(name="login_sidebar", esi=true)
      */
     public function loginSidebarAction(TagRequest $tag_request)
     {
@@ -121,7 +121,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="user_sidebar")
+     * @Tag(name="user_sidebar", esi=true)
      */
     public function userSidebarAction(TagRequest $tag_request)
     {

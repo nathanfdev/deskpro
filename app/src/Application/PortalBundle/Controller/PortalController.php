@@ -37,11 +37,13 @@ namespace Application\PortalBundle\Controller;
 
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class PortalController extends AbstractController
 {
     /**
      * @Route("/", name="portal_index")
+     * @Cache(smaxage="10 minutes")
      */
     public function indexAction(Request $request)
     {
