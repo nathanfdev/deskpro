@@ -130,7 +130,7 @@ class FeedbackController extends AbstractController
      *
      * @TagOptions(
      *      defaults={"item": null},
-     *      allowed_types={"item": {"Application\DeskPRO\Entity\Feedback", "int", "null"}}
+     *      allowed_types={"item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}}
      * )
      */
     public function breadcrumbsAction(TagRequest $request, array $options)

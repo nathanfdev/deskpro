@@ -46,6 +46,7 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Annotation\Tag;
 
@@ -62,7 +63,7 @@ class ArticlesController extends AbstractController
      *          "count": 2
      *      },
      *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","null"}
+     *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
      *      }
      * )
      */
@@ -87,10 +88,10 @@ class ArticlesController extends AbstractController
      *
      * @TagOptions(
      *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "null"}}
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\ArticleCategory", "int","string", "null"}}
      * )
      */
-    public function breadcrumbsAction(TagRequest $request, array $options)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {
         $category = $this->getArticlesDataService()->getCategory($options['category']);
 
@@ -119,7 +120,7 @@ class ArticlesController extends AbstractController
      *      }
      * )
      */
-    public function categoriesAction(TagRequest $request, array $options)
+    public function categoriesAction(TagRequest $tag_request, array $options)
     {
         $category = $options['category'];
         $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
@@ -143,6 +144,7 @@ class ArticlesController extends AbstractController
      *
      * @TagOptions(
      *      defaults={
+     *          "category":null,
      *          "style": "small",
      *          "page": 1,
      *          "count": 2,
@@ -151,10 +153,12 @@ class ArticlesController extends AbstractController
      *      allowed_values={
      *          "style": {"forcat", "list", "small", "simple"}
      *      },
-     *      required={"category"}
+     *      allowed_types={
+     *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
+     *      }
      * )
      */
-    public function listAction(TagRequest $request, array $options)
+    public function listAction(TagRequest $tag_request, array $options)
     {
         $category = $this->getArticlesDataService()->getCategory($options['category']);
         $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);

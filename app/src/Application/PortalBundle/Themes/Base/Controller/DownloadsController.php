@@ -54,7 +54,7 @@ class DownloadsController extends AbstractController
      *          "count": 2
      *      },
      *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","null"}
+     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","string","null"}
      *      }
      * )
      */
@@ -80,10 +80,10 @@ class DownloadsController extends AbstractController
      *
      * @TagOptions(
      *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "null"}}
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"}}
      * )
      */
-    public function breadcrumbsAction(TagRequest $request, array $options)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
 
@@ -108,11 +108,11 @@ class DownloadsController extends AbstractController
      *          "style": {"list","overview"}
      *      },
      *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","null"}
+     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","string","null"}
      *      }
      * )
      */
-    public function categoriesAction(TagRequest $request, array $options)
+    public function categoriesAction(TagRequest $tag_request, array $options)
     {
         $category = $options['category'];
         $category_children = $this->getDownloadsDataService()->getCategoryChildren($category);
@@ -144,11 +144,11 @@ class DownloadsController extends AbstractController
      *          "style": {"small","simple","items"}
      *      },
      *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","null"}
+     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","string","null"}
      *      }
      * )
      */
-    public function listAction(TagRequest $request, array $options)
+    public function listAction(TagRequest $tag_request, array $options)
     {
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
         $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);

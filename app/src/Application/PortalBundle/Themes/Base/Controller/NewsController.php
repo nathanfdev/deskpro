@@ -60,7 +60,7 @@ class NewsController extends AbstractController
      *          "style": {"list", "dropdown"}
      *      },
      *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","null"}
+     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
      *      }
      * )
      */
@@ -96,13 +96,14 @@ class NewsController extends AbstractController
      *          "style": {"pretty", "list"}
      *      },
      *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","null"}
+     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
      *      }
      * )
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
-        $pager = $this->getNewsDataService()->getNewsPager($options['category'], $options['page'], $options['count']);
+        $category = $this->getNewsDataService()->getCategory($options['category']);
+        $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count']);
 
         return $this->renderThemeView(
             sprintf('Theme:News:Tag/posts_%s.html.twig', $options['style']),
@@ -125,7 +126,7 @@ class NewsController extends AbstractController
      *          "count": 5
      *      },
      *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","null"}
+     *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
      *      }
      * )
      */
@@ -151,7 +152,7 @@ class NewsController extends AbstractController
      *
      * @TagOptions(
      *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\NewsCategory", "int", "null"}}
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"}}
      * )
      */
     public function breadcrumbsAction(TagRequest $request, array $options)

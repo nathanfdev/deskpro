@@ -51,8 +51,7 @@ class CommonController extends AbstractController
      *          "show_pagination": true
      *      },
      *      allowed_types={
-     *          "pager":"Pagerfanta\Pagerfanta",
-     *          "show_pagination":"bool"
+     *          "pager":"Pagerfanta\Pagerfanta"
      *      }
      * )
      */
