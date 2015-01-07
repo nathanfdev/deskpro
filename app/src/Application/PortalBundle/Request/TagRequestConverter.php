@@ -72,7 +72,7 @@ class TagRequestConverter implements ParamConverterInterface
         $tag = $this->brand_stack->getActive()->getTheme()->resolveTag($tag_name);
 
         $current_request = $request;
-        $query = array('tag_options' => array_merge($tag->getDefaultOptions(), $current_request->query->all()));
+        $query = array('tag_options' => array_merge($tag->getDefaultOptions(), $current_request->query->get('tag_options', array())));
         $attrs = array_merge($current_request->attributes->all(), array('_tag_name' => $tag_name));
 
         $tag_request = new TagRequest($query, array(), $attrs);
