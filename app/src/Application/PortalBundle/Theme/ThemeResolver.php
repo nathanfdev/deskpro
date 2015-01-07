@@ -209,6 +209,7 @@ class ThemeResolver
         $current_request = $this->container->get('request_stack')->getCurrentRequest();
         $query = array('tag_options' => array_merge($tag->getDefaultOptions(), array_merge($arguments, array('_tag_name' => $tag_name))));
         $attrs = array_merge($current_request->attributes->all(), array('_tag_name' => $tag_name));
+        unset($attrs['tag_request']);
 
         // construct and return the proper ESI tag content
         if ($tag->isEsi()) {
@@ -228,6 +229,7 @@ class ThemeResolver
         $tag_request = new TagRequest($query, array(), $attrs);
         $tag_request->attributes->set('_controller', $tag->getControllerName());
         $tag_request->setOptionsResolver(new OptionsResolver());
+        $tag_request->setSession($current_request->getSession());
 
         return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();
     }

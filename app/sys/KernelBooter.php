@@ -277,6 +277,7 @@ class KernelBooter
             // below: a log from the kernel of cache hits/misses
             //dump($kernel->getLog());exit;
             $response->send();
+            dump($kernel->getLog());
             $kernel->terminate($request, $response);
             exit;
             //
