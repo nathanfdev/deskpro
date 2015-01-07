@@ -206,17 +206,23 @@ class ThemeResolver
             return '';
         }
 
+        // Note: a few hacks here, but if you change anything, check TagRequestConverter (does similar for ESIs)
         $current_request = $this->container->get('request_stack')->getCurrentRequest();
-        $query = array('tag_options' => array_merge($tag->getDefaultOptions(), array_merge($arguments, array('_tag_name' => $tag_name))));
+        $tag_options = array_merge($tag->getDefaultOptions(), array_merge($arguments, array('_tag_name' => $tag_name)));
+        $query = array('tag_options' => $tag_options);
         $attrs = array_merge($current_request->attributes->all(), array('_tag_name' => $tag_name));
         unset($attrs['tag_request']);
         unset($attrs['_security']);
+        $tag_request = new TagRequest($query, array(), $attrs);
+        $tag_request->setOptionsResolver(new OptionsResolver());
+        $tag_request->setSession($current_request->getSession());
+        $tag_request->headers->replace($current_request->headers->all());
 
         // construct and return the proper ESI tag content
         if ($tag->isEsi()) {
             unset($attrs['_cache']);
             $esi = $this->container->get('fragment.renderer.esi')->render(
-                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $current_request
+                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request
             );
 
             $esi_content = $esi->getContent();
@@ -227,10 +233,7 @@ class ThemeResolver
         }
 
         // construct and return the actual tag response content
-        $tag_request = new TagRequest($query, array(), $attrs);
         $tag_request->attributes->set('_controller', $tag->getControllerName());
-        $tag_request->setOptionsResolver(new OptionsResolver());
-        $tag_request->setSession($current_request->getSession());
 
         return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();
     }
