@@ -113,71 +113,6 @@ class FilterChangeDetector
 
 
     /**
-     * Goes through filters to determine which filters are affected
-     * by the changes.
-     *
-     * @param  Ticket                                           $ticket
-     * @param  Logger                                           $logger
-     * @return \Application\DeskPRO\Entity\TicketFilter[]|array
-     */
-    private function getAffectedFilters(Ticket $ticket, Logger $logger)
-    {
-
-        if (!$logger) {
-            $logger = new NullLogger();
-        }
-
-        $affected_filters = array();
-        $logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> Checking %d filters", $ticket->id, count($this->filters)));
-
-        $changed_fields = $ticket->getStateChangeRecorder()->getChangedFields();
-        $logger->debug(sprintf("[FilterChangeDetector] <Ticket:%d> Changed fields: %s", $ticket->id, implode(', ', $changed_fields)));
-
-        // Convert the detected changed fields into names
-        // the searcher defines
-        $changed_fields = array_map(function ($field_name) {
-            switch ($field_name) {
-                case 'language': return 'ticket.language_id';
-                case 'agent': return 'ticket.agent_id';
-                case 'department': return 'ticket.department_id';
-                case 'category': return 'ticket.category_id';
-                case 'priority': return 'ticket.priority_id';
-                case 'workflow': return 'ticket.workflow_id';
-                case 'product': return 'ticket.product_id';
-                case 'person': return 'ticket.person_id';
-                case 'agent_team': return 'ticket.agent_team_id';
-                case 'organization': return 'ticket.organization_id';
-                default: return "ticket.$field_name";
-            }
-        }, $changed_fields);
-
-        if ($changed_fields) {
-            $changed_fields = array_combine($changed_fields, $changed_fields);
-        }
-
-        $is_hidden_change = false;
-        if (isset($changed_fields['ticket.hidden_status'])) {
-            $is_hidden_change = true;
-        }
-
-        $is_new_messages = false;
-        if (isset($changed_fields['ticket.message'])) {
-            $is_new_messages = true;
-        }
-
-        foreach ($this->filters as $f) {
-            if ($is_new_messages || $is_hidden_change || $f->getSearcher()->hasAnyAffectedFields($changed_fields)) {
-                $affected_filters[] = $f;
-            }
-        }
-
-        $logger->info(sprintf("[FilterChangeDetector] <Ticket:%d> %d filters with affected fields", $ticket->id, count($affected_filters)));
-
-        return $affected_filters;
-    }
-
-
-    /**
      * @param  array $affected_filters
      * @return array
      */
@@ -234,12 +169,24 @@ class FilterChangeDetector
         $logger = $context->getLogger();
         $state = $ticket->getStateChangeRecorder();
 
-        // See if theres a cached verson on the context
+        /** @var FilterChangeSet $exist_set */
+        $exist_set = null;
+
+        // Use the last change set to use values we have already calculated
         if ($context && $context->getVars()->has('filter_change_set')) {
-            $set = $context->getVars()->get('filter_change_set');
-            if ($set->getTicket()->id == $ticket->id && $set->getStateId() >= $state->getStateVersion()) {
-                return $set;
+            $exist_set = $context->getVars()->get('filter_change_set');
+            if ($exist_set->getTicket()->id != $ticket->id) {
+                $exist_set = null;
             }
+        }
+
+        // If the states are exactly the same, then we might be able to just return the same
+        if ($exist_set && $exist_set->getStateId() >= $state->getStateVersion()) {
+            return $exist_set;
+        }
+
+        if ($exist_set) {
+            $logger->info(sprintf("[FilterChangeDetector] Have exist set. Will try to use cached values from last run."));
         }
 
         $old_dep_id = null;
@@ -268,7 +215,17 @@ class FilterChangeDetector
         /** @var FilterChange[] $changed */
         $changed = array();
 
-        $affected_filters = $this->getAffectedFilters($ticket, $logger);
+        $checker = new AffectedFiltersCheck($ticket, $this->filters, $logger);
+        if ($exist_set) {
+            $checker->setPreviousFieldVersions($exist_set->getFieldVersions());
+        }
+
+        $affected_filters = $checker->getNewAffectedFilters();
+
+        if ($exist_set) {
+            $logger->info(sprintf("[FilterChangeDetector] Affected filters: %d -- Filters with affected changes since last run: %d", count($checker->getAffectedFilters()), count($affected_filters)));
+        }
+
         $filter_checks = $this->buildFilterCheckList($affected_filters);
 
         $logger->info(sprintf("[FilterChangeDetector] Checking %d filters", count($filter_checks)));
@@ -406,7 +363,23 @@ class FilterChangeDetector
 
         $logger->info(sprintf("[FilterChangeDetector] Found %d filters in %d iterations taking %.4fs", count($changed_filters), $scope_counts, microtime(true)-$time));
 
-        $set = new FilterChangeSet($ticket, $state->getStateVersion(), $affected_filters, $changed_filters);
+        // Add changed filters from previous set
+        if ($exist_set) {
+            $old_changed_filters = $exist_set->getChangedFilters();
+            $copied_ids = array();
+            foreach ($checker->getAffectedFiltersWithNoChanges() as $f) {
+                if (isset($old_changed_filters[$f->id]) && !isset($changed_filters[$f->id])) {
+                    $changed_filters[$f->id] = $old_changed_filters[$f->id];
+                    $copied_ids[] = $f->id;
+                }
+            }
+
+            if ($copied_ids) {
+                $logger->info(sprintf("[FilterChangeDetector] Found %d additional filters from previous detection set", count($copied_ids)));
+            }
+        }
+
+        $set = new FilterChangeSet($ticket, $state->getStateVersion(), $checker->getAffectedFilters(), $changed_filters, $checker->getNewestFieldVersions());
 
         if ($context) {
             $context->getVars()->set('filter_change_set', $set);
