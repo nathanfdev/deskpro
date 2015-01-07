@@ -93,6 +93,22 @@ class DeskproSlugConverter implements ParamConverterInterface
             );
         }
 
+        $id = $slug_route_param;
+        if ($obj = $repo->find($id)) {
+            // it exists and we are on the old url at the moment, lets flag a 301 response
+            $new_slug_attribute = array(
+                $slug_attribute_name => $obj->slug
+            );
+
+            throw new PermanentRedirectException(
+                $request->attributes->get('_route'),
+                array_merge(
+                    $request->attributes->get('_route_params'),
+                    $new_slug_attribute
+                )
+            );
+        }
+
         throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $param_class, $slug_attribute_name, $slug_route_param));
     }
 
