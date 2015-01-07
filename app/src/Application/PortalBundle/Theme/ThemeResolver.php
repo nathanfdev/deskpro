@@ -210,6 +210,7 @@ class ThemeResolver
         $query = array('tag_options' => array_merge($tag->getDefaultOptions(), array_merge($arguments, array('_tag_name' => $tag_name))));
         $attrs = array_merge($current_request->attributes->all(), array('_tag_name' => $tag_name));
         unset($attrs['tag_request']);
+        unset($attrs['_security']);
 
         // construct and return the proper ESI tag content
         if ($tag->isEsi()) {
