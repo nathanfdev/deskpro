@@ -89,4 +89,25 @@ class NewsController extends AbstractController
             )
         );
     }
+
+    /**
+     * Need to force a redirect here to support old permalinks!
+     *
+     * @Route("/news/view/{slug}", name="portal_news_view_LEGACY")
+     */
+    public function viewLEGACYAction(Request $request, $slug)
+    {
+        $news = $this->getRepo('DeskPRO:News')->getBySlug($slug);
+
+        if (!$news) {
+            throw $this->createNotFoundException('could not find new post for slug "'.$slug.'"');
+        }
+
+        return $this->redirect(
+            $this->generateUrl('portal_news_view', array(
+                'slug' => $news->getSlug()
+            )),
+            301
+        );
+    }
 }
