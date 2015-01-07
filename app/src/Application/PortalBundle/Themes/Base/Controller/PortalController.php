@@ -107,25 +107,21 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="login_sidebar")
-     */
-    public function loginSidebarAction(TagRequest $tag_request)
-    {
-        //TODO: dont pass the auth manager into the template...
-        return $this->renderThemeView(
-            'Theme:Portal:Tag/sidebar_login.html.twig',
-            array(
-                'auth_manager' => $this->get('dp_authentication_manager.user')
-            )
-        );
-    }
-
-    /**
      * @Tag(name="user_sidebar", esi=true)
      */
     public function userSidebarAction(TagRequest $tag_request)
     {
-        $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($this->getUser());
+        if (!$user = $this->getUser()) {
+            //TODO: dont pass the auth manager into the template...
+            return $this->renderThemeView(
+                'Theme:Portal:Tag/sidebar_login.html.twig',
+                array(
+                    'auth_manager' => $this->get('dp_authentication_manager.user')
+                )
+            );
+        }
+
+        $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($user);
 
         return $this->renderThemeView(
             'Theme:Portal:Tag/sidebar_user.html.twig',

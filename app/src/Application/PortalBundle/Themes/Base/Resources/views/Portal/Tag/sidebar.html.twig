@@ -1,8 +1,4 @@
-{% if is_granted('ROLE_USER') %}
-    {{ page.user_sidebar()|raw }}
-{% else %}
-    {{ page.login_sidebar()|raw }}
-{% endif %}
+{{ page.user_sidebar()|raw }}
 {{ page.get_in_touch()|raw }}
 Knowledgebase
 {{ page.knowledgebase_list()|raw }}
