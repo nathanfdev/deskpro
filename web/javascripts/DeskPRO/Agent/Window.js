@@ -3737,7 +3737,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				cancelRouteSelection(ev);
 			});
 			$(context).on('click', '[data-route]', function(ev) {
-				if ($(this).is('.as-popover')) {
+				if ($(this).is('.as-popover') || $(this).is('.cancel-route')) {
 					return;
 				}
 

@@ -207,6 +207,11 @@
     array(
         'typeId'         => 'user',
         'groupId'        => 'account',
+        'name'           => 'DeskPRO:emails_user:register-welcome-byagent.html.twig'
+    ),
+    array(
+        'typeId'         => 'user',
+        'groupId'        => 'account',
         'name'           => 'DeskPRO:emails_user:register-validate.html.twig'
     ),
     array(

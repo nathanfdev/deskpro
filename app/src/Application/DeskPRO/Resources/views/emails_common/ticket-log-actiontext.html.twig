@@ -446,6 +446,8 @@
 				<li>Removed: {{ part.name }} &lt;{{ part.email }}&gt;</li>
 			{% endfor %}
 		</ul>
+	{% elseif log.action_type == 'feedback_rating' %}
+		User set feedback rating to {{ log.details.rating }}
 	{% elseif not hide_unknow%}
 		Unknown action type: {{ log.action_type }}
 	{% endif %}
