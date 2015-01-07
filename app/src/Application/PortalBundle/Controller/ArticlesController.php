@@ -74,7 +74,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Route("/kb/posts/{slug}", name="portal_kb_view")
+     * @Route("/kb/articles/{slug}", name="portal_kb_view")
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES')")
      */
