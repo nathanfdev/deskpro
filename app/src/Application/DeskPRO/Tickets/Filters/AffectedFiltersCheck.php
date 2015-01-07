@@ -102,7 +102,7 @@ class AffectedFiltersCheck
         }
         $this->has_run = true;
 
-        $this->logger->info(sprintf("[AffectedFilters] Checking %d filters", $this->ticket->id, count($this->filters)));
+        $this->logger->info(sprintf("[AffectedFilters] Checking %d filters", count($this->filters)));
 
         $state = $this->ticket->getStateChangeRecorder();
 
@@ -128,10 +128,10 @@ class AffectedFiltersCheck
             $with_new_check = false;
         }
 
-        $this->logger->debug(sprintf("[AffectedFilters] Changed fields: %s", $this->ticket->id, implode(', ', $changed_fields)));
+        $this->logger->debug(sprintf("[AffectedFilters] Changed fields: %s", implode(', ', $changed_fields)));
 
         if ($with_new_check) {
-            $this->logger->debug(sprintf("[AffectedFilters] New changed fields: %s", $this->ticket->id, implode(', ', $new_changed_fields)));
+            $this->logger->debug(sprintf("[AffectedFilters] New changed fields: %s", implode(', ', $new_changed_fields)));
         }
 
         // Convert the detected changed fields into names
@@ -180,10 +180,10 @@ class AffectedFiltersCheck
             }
         }
 
-        $this->logger->info(sprintf("[AffectedFilters] <Ticket:%d> %d filters with affected fields", $this->ticket->id, count($affected_filters)));
+        $this->logger->info(sprintf("[AffectedFilters] %d filters with affected fields", count($affected_filters)));
 
         if ($with_new_check) {
-            $this->logger->info(sprintf("[AffectedFilters] <Ticket:%d> %d filters with affected fields but no changes since last run", $this->ticket->id, count($affected_filters_nochange)));
+            $this->logger->info(sprintf("[AffectedFilters] %d filters with affected fields but no changes since last run", count($affected_filters_nochange)));
         }
 
         $this->affected_filters_nochange = $affected_filters_nochange;

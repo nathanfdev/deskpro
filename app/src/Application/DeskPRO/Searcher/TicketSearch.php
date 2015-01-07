@@ -1729,6 +1729,8 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'tickets_flagged';
                         $joins[] = 'tickets_flagged';
 
+                        $this->used_person_context = true;
+
                         $color = $choice;
                         if ($color == 'any') {
                             $wheres[] = 'tickets_flagged.person_id = '. $this->person->id;
