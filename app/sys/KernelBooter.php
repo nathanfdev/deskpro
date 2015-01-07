@@ -260,6 +260,15 @@ class KernelBooter
         } else {
             define('DP_INTERFACE', 'user');
 
+
+            // debug code
+
+            $start = microtime(true);
+
+            // end debug code
+
+
+
             //
             // boot and run portal
             //
@@ -274,19 +283,34 @@ class KernelBooter
             }
             $request = Request::createFromGlobals();
             $response = $kernel->handle($request);
-            // below: a log from the kernel of cache hits/misses
-            //dump($kernel->getLog());exit;
-            $response->send();
+
+
+            // debug code, erase comments to see (erase from $start variable above, as well)
+            // note: ignore the output that might appear at bottom of page due to web profiler
+
+            // below: a log from the kernel of cache hits/misses and a simple profile of page load
+            $log = explode(';',$kernel->getLog());
+            print implode("\n<br>", $log);
+            $starting = "booting: " . $start;
+            $starting .= "<br><br>\n\n";
+            print "<br><br>\n\n" . $starting;
+            $end = microtime(true);
+            print "done: " . $end;
+            print "<br><br>\n\n";
+            print "total: " . ($end - $start);
             dump($kernel->getLog());
+            //
+
+            // end debug code
+
+
             $kernel->terminate($request, $response);
+            $response->send();
+
             exit;
             //
             // end boot and run portal
             //
-
-//			list($kernel, $e, $DP_CONFIG) = self::_oldUserInterfaceBootCode(
-//				$request, $request_uri, $path, $request_method, $kernel_class, $env, $debug, $DP_CONFIG
-//			);
         }
 
         // No access to install or dev from cloud
