@@ -8,7 +8,7 @@ parameters:
     doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
 
 framework:
-    esi:             ~
+    esi:             { enabled: true }
     fragments:       { path: /_proxy }
     #translator:      { fallback: "%locale%" }
     secret:          "%secret%"
