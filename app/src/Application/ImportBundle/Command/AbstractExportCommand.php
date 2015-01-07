@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
-use Application\ImportBundle\Generator\Plugin\GeneratorPluginInterface;
+use Application\ImportBundle\Generator\Exporter\GeneratorExporterInterface;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -86,7 +86,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function setParamsByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
         if ($input->hasArgument('script')) {
-            $config->setType($input->getArgument('script'));
+            $config->setExporterType($input->getArgument('script'));
         } else {
             throw new \Exception('Source type argument is not defined');
         }
@@ -98,7 +98,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($input->hasOption('input-path')) {
             $config->setInputPath($input->getOption('input-path'));
         } else {
-            if ($config->getType() === GeneratorPluginInterface::GENERATOR_TYPE_CSV) {
+            if ($config->getExporterType() === GeneratorExporterInterface::GENERATOR_TYPE_CSV) {
                 throw new \Exception('You must supply an "input-path" argument while using CSV exporter');
             }
         }

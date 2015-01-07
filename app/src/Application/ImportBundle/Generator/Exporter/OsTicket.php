@@ -31,36 +31,31 @@
 * @package DeskPRO
 */
 
-namespace Application\ImportBundle\Generator\Plugin;
+namespace Application\ImportBundle\Generator\Exporter;
+
+use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 
 /**
  * Data generator from OsTicket
  *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
- * @package Application\ImportBundle\Generator\Plugin
+ * @package Application\ImportBundle\Generator\Exporter
  */
-class OsTicket extends AbstractPlugin
+class OsTicket extends AbstractGeneratorExporter
 {
     /**
-     * @var \PDO
+     * @var OsTicketReaderInterface
      */
-    private $db;
+    private $os_ticket_reader;
 
     /**
      * Constructor
      *
-     * @throws \Exception
+     * @param OsTicketReaderInterface $os_ticket_reader
      */
-    public function __construct()
+    public function __construct(OsTicketReaderInterface $os_ticket_reader)
     {
-        $os_config = dp_get_config('osticket_import');
-
-        $db_host = $os_config['db_host'];
-        $db_name = $os_config['db_name'];
-        $db_username = $os_config['db_username'];
-        $db_password = $os_config['db_password'];
-
-//        $this->db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
+        $this->os_ticket_reader = $os_ticket_reader;
     }
 
     /**
@@ -87,11 +82,11 @@ class OsTicket extends AbstractPlugin
     {
         switch ($type) {
             case self::RECORD_TYPE_PEOPLE:
-                return $this->getPeopleCount();
+                return $this->os_ticket_reader->getPeopleCount();
             case self::RECORD_TYPE_TICKETS:
-                return $this->getTicketCount();
+                return $this->os_ticket_reader->getTicketCount();
             default:
-                throw new \Exception(sprintf('Unknown type `%s`', $type));
+                throw new \Exception(sprintf('Unknown record type `%s`', $type));
         }
     }
 
@@ -107,175 +102,6 @@ class OsTicket extends AbstractPlugin
         } catch (\Exception $ex) {
             $this->logWarning($ex->getMessage());
         }
-    }
-
-    /**
-     * @return int
-     */
-    protected function getTicketCount()
-    {
-        $query = 'SELECT count(ticket_id) FROM ost_ticket';
-        $stmt   = $this->db->prepare($query);
-
-        $stmt->execute();
-
-        return $stmt->fetchColumn();
-    }
-
-    /**
-     * @return int
-     */
-    protected function getPeopleCount()
-    {
-        $query = 'SELECT count(staff_id) FROM ost_staff';
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute();
-        $staff_count = $stmt->fetchColumn();
-
-        $query = 'SELECT count(id) FROM ost_user';
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute();
-        $user_count = $stmt->fetchColumn();
-
-        return $staff_count + $user_count;
-    }
-
-    protected function findAllTickets($offset)
-    {
-        $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
-        . ' LIMIT :limit'
-        . ' OFFSET :offset';
-
-        $stmt   = $this->db->prepare($query);
-
-        $stmt->bindValue(':limit', (int) $this->config->getBatchSize(), \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    protected function findTicketAttachment($ticket_id)
-    {
-        $ticket_id = (int) $ticket_id;
-
-        $query = 'SELECT f.name, f.type, a.file_id  FROM ost_file f JOIN ost_ticket_attachment a '
-        . ' ON f.id = a.file_id'
-        . ' WHERE ticket_id = ?';
-
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($ticket_id));
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    protected function findAllStaff($offset = 0)
-    {
-        $query = 'SELECT * FROM ost_staff LIMIT :limit OFFSET :offset';
-
-        $stmt   = $this->db->prepare($query);
-
-        $stmt->bindValue(':limit', (int) $this->config->getBatchSize(), \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    protected function findAllUser($offset = 0)
-    {
-        $query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id'
-        . ' LIMIT :limit'
-        . ' OFFSET :offset';
-
-        $stmt   = $this->db->prepare($query);
-
-        $stmt->bindValue(':limit', (int) $this->config->getBatchSize(), \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    protected function findDepartmentFromId($id)
-    {
-        $query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
-
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($id));
-
-        return $stmt->fetchColumn();
-    }
-
-    protected function findUserEmailFromId($id)
-    {
-        $query = 'SELECT address FROM ost_user_email e'
-        . ' LEFT JOIN ost_user u '
-        . ' ON e.user_id=u.id'
-        . ' WHERE u.id = ?';
-
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($id));
-
-        return $stmt->fetchColumn();
-    }
-
-    protected function findStaffEmailFromId($id)
-    {
-        $query = 'SELECT email FROM ost_staff WHERE id = ?';
-
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($id));
-
-        return $stmt->fetchColumn();
-    }
-
-    protected function findTeamNameFromId($id)
-    {
-        $query = 'SELECT name FROM ost_team WHERE id = ?';
-
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($id));
-
-        return $stmt->fetchColumn();
-    }
-
-    protected function findMessageThreadFromId($ticket_id)
-    {
-        $query = 'SELECT thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
-
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($ticket_id));
-
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
-    }
-
-    protected function findTimezoneFromId($id)
-    {
-        $query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
-
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($id));
-
-        return $stmt->fetchColumn();
-    }
-
-    protected function getFileData($file_id)
-    {
-        $data = '';
-
-        $query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = ?';
-
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($file_id));
-
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
-        foreach ($rows as $chunk) {
-            $data .= $chunk['filedata'];
-        }
-
-        return $data;
     }
 
     /**

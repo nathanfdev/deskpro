@@ -31,7 +31,7 @@
 
 namespace Application\ImportBundle\Generator;
 
-use Application\ImportBundle\Generator\Plugin\GeneratorPluginInterface;
+use Application\ImportBundle\Generator\Exporter\GeneratorExporterInterface;
 use Exception;
 
 /**
@@ -46,17 +46,17 @@ class Generator extends AbstractGenerator
     /**
      * @var array
      */
-    private $plugins = array();
+    private $exporters = array();
 
     /**
      * Attach a generator
      *
-     * @param GeneratorPluginInterface $plugin
+     * @param GeneratorExporterInterface $exporter
      * @return $this
      */
-    public function addPlugin(GeneratorPluginInterface $plugin)
+    public function addExporter(GeneratorExporterInterface $exporter)
     {
-        $this->plugins[] = $plugin;
+        $this->exporters[] = $exporter;
         return $this;
     }
 
@@ -65,7 +65,7 @@ class Generator extends AbstractGenerator
      */
     public function getTotalRecordsCount()
     {
-        return $this->getPlugin()->getTotalRecordsCount();
+        return $this->getExporter()->getTotalRecordsCount();
     }
 
     /**
@@ -73,7 +73,7 @@ class Generator extends AbstractGenerator
      */
     public function getRecordsCountByType($type)
     {
-        return $this->getPlugin()->getRecordsCountByType($type);
+        return $this->getExporter()->getRecordsCountByType($type);
     }
 
     /**
@@ -82,7 +82,7 @@ class Generator extends AbstractGenerator
     public function generateJson()
     {
         $this->createOutputDirsIfNotExist();
-        $this->getPlugin()->generateJson();
+        $this->getExporter()->generateJson();
     }
 
     /**
@@ -114,33 +114,33 @@ class Generator extends AbstractGenerator
     /**
      * Get generator plugin by configuration
      *
-     * @return GeneratorPluginInterface
+     * @return GeneratorExporterInterface
      * @throws Exception
      */
-    private function getPlugin()
+    private function getExporter()
     {
         if (!$this->config) {
             throw new \Exception('Generator configuration is not set up');
         }
 
-        foreach ($this->plugins as $plugin) {
-            /** @var GeneratorPluginInterface $plugin */
-            if ($plugin->getType() === $this->config->getType()) {
-                $plugin->setConfig($this->config);
+        foreach ($this->exporters as $exporter) {
+            /** @var GeneratorExporterInterface $exporter */
+            if ($exporter->getType() === $this->config->getExporterType()) {
+                $exporter->setConfig($this->config);
 
-                if ($this->logger && $plugin instanceof LoggerAwareInterface) {
-                    /** @var LoggerAwareInterface $plugin */
-                    $plugin->setLogger($this->logger);
+                if ($this->logger && $exporter instanceof LoggerAwareInterface) {
+                    /** @var LoggerAwareInterface $exporter */
+                    $exporter->setLogger($this->logger);
                 }
-                if ($this->progress_bar && $plugin instanceof ProgressBarAwareInterface) {
-                    /** @var ProgressBarAwareInterface $plugin */
-                    $plugin->setProgressBarHelper($this->progress_bar);
+                if ($this->progress_bar && $exporter instanceof ProgressBarAwareInterface) {
+                    /** @var ProgressBarAwareInterface $exporter */
+                    $exporter->setProgressBarHelper($this->progress_bar);
                 }
 
-                return $plugin;
+                return $exporter;
             }
         }
 
-        throw new \Exception(sprintf('Generator `%s` not found', $this->config->getType()));
+        throw new \Exception(sprintf('Generator exporter `%s` not found', $this->config->getExporterType()));
     }
 }

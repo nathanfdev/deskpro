@@ -39,19 +39,33 @@ class ImportExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
+//        $os_config = dp_get_config('osticket_import');
+//
+//        $db_host = $os_config['db_host'];
+//        $db_name = $os_config['db_name'];
+//        $db_username = $os_config['db_username'];
+//        $db_password = $os_config['db_password'];
+//
+//        $db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
+
         $definition = new Definition('Application\ImportBundle\CsvReader\CsvReader');
         $container->setDefinition('deskpro.import.csv_reader', $definition);
 
-        $definition = new Definition('Application\ImportBundle\Generator\Plugin\Csv');
-        $definition->addArgument(new Reference('deskpro.import.csv_reader'));
-        $container->setDefinition('deskpro.import.generator.plugin.csv', $definition);
+        $definition = new Definition('Application\ImportBundle\OsTicket\OsTicketReader');
+        $definition->addArgument(null);
+        $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
 
-        $definition = new Definition('Application\ImportBundle\Generator\Plugin\OsTicket');
-        $container->setDefinition('deskpro.import.generator.plugin.osticket', $definition);
+        $definition = new Definition('Application\ImportBundle\Generator\Exporter\Csv');
+        $definition->addArgument(new Reference('deskpro.import.csv_reader'));
+        $container->setDefinition('deskpro.import.generator.exporter.csv', $definition);
+
+        $definition = new Definition('Application\ImportBundle\Generator\Exporter\OsTicket');
+        $definition->addArgument(new Reference('deskpro.import.os_ticket_reader'));
+        $container->setDefinition('deskpro.import.generator.exporter.osticket', $definition);
 
         $definition = new Definition('Application\ImportBundle\Generator\Generator');
-        $definition->addMethodCall('addPlugin', array(new Reference('deskpro.import.generator.plugin.csv')));
-        $definition->addMethodCall('addPlugin', array(new Reference('deskpro.import.generator.plugin.osticket')));
+        $definition->addMethodCall('addExporter', array(new Reference('deskpro.import.generator.exporter.csv')));
+        $definition->addMethodCall('addExporter', array(new Reference('deskpro.import.generator.exporter.osticket')));
 
         $container->setDefinition('deskpro.import.generator', $definition);
     }

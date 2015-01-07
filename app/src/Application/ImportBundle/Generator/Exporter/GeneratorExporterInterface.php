@@ -25,7 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Plugin;
+namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\GeneratorInterface;
 
@@ -33,9 +33,9 @@ use Application\ImportBundle\Generator\GeneratorInterface;
  * Data generator interface
  *
  * Interface GeneratorPluginInterface
- * @package Application\ImportBundle\Generator\Plugin
+ * @package Application\ImportBundle\Generator\Exporter
  */
-interface GeneratorPluginInterface extends GeneratorInterface
+interface GeneratorExporterInterface extends GeneratorInterface
 {
     const GENERATOR_TYPE_CSV       = 'csv';
     const GENERATOR_TYPE_OS_TICKET = 'osticket';

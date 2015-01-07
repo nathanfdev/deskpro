@@ -25,225 +25,236 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
+namespace Application\ImportBundle\Entity;
 
-namespace Application\ImportBundle\Generator;
+use DateTime;
 
 /**
- * Configuration of generator importer service
+ * Exported person entity
  *
- * Class GeneratorConfig
- * @package Application\ImportBundle\Generator
+ * Class Person
+ * @package Application\ImportBundle\Entity
  */
-class GeneratorConfig
+class Person implements ToArrayInterface
 {
-    const MODE_TEST = 'test';
-    const MODE_LIVE = 'live';
-
-    /**
-     * @var string
-     */
-    private $exporterType;
-
-    /**
-     * @var string
-     */
-    private $input_path;
-
-    /**
-     * @var string
-     */
-    private $output_path;
-
-    /**
-     * @var string
-     */
-    private $log_path = '/import.log';
-
-    /**
-     * 'test' or 'live'
-     *
-     * @var string
-     */
-    private $mode = self::MODE_TEST;
-
-    /**
-     * Mark files as done when they are finished importing?
-     *
-     * @var bool
-     */
-    private $mark_done = true;
-
     /**
      * @var int
      */
-    private $batch_size = 10;
+    private $oid;
 
     /**
      * @var bool
      */
-    private $verbose = false;
+    private $is_agent = false;
 
     /**
-     * Not used yet
+     * Can we merge isAgent and isUser?
      *
-     * @var int|null
+     * @var bool
      */
-//    private $ticket_offset;
+    private $is_user = false;
 
     /**
-     * @return string
+     * @var string
      */
-    public function getExporterType()
-    {
-        return $this->exporterType;
-    }
+    private $first_name;
 
     /**
-     * @param string $exporterType
-     * @return $this
+     * @var string
      */
-    public function setExporterType($exporterType)
-    {
-        $this->exporterType = $exporterType;
-        return $this;
-    }
+    private $last_name;
 
     /**
-     * @return string
-     */
-    public function getInputPath()
-    {
-        return $this->input_path;
-    }
-
-    /**
-     * @param string $input_path
-     * @return $this
-     */
-    public function setInputPath($input_path)
-    {
-        $this->input_path = $input_path;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getOutputPath()
-    {
-        return $this->output_path;
-    }
-
-    /**
-     * @param string $output_path
-     * @return $this
-     */
-    public function setOutputPath($output_path)
-    {
-        $this->output_path = $output_path;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLogPath()
-    {
-        return $this->log_path;
-    }
-
-    /**
-     * @param string $log_path
-     * @return $this
-     */
-    public function setLogPath($log_path)
-    {
-        $this->log_path = $log_path;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMode()
-    {
-        return $this->mode;
-    }
-
-    /**
-     * @param string $mode
-     * @return $this
-     */
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
-        return $this;
-    }
-
-    /**
-     * Is live mode
+     * Should we use name or just first name?
      *
-     * @return bool
+     * @var string
      */
-    public function isLive()
-    {
-        return $this->mode === self::MODE_LIVE;
-    }
+    private $name;
 
     /**
-     * @return boolean
+     * @var string or int? Can we merge it to date created?
      */
-    public function isMarkDone()
-    {
-        return $this->mark_done;
-    }
+    private $timezone;
 
     /**
-     * @param boolean $mark_done
-     * @return $this
+     * @var DateTime
      */
-    public function setMarkDone($mark_done)
-    {
-        $this->mark_done = (bool)$mark_done;
-        return $this;
-    }
+    private $date_created;
+
+    /**
+     * @var array
+     */
+    private $emails = array();
 
     /**
      * @return int
      */
-    public function getBatchSize()
+    public function getOid()
     {
-        return $this->batch_size;
+        return $this->oid;
     }
 
     /**
-     * @param int $batch_size
+     * @param int $oid
      * @return $this
      */
-    public function setBatchSize($batch_size)
+    public function setOid($oid)
     {
-        $this->batch_size = (int)$batch_size;
+        $this->oid = (int)$oid;
         return $this;
     }
 
     /**
      * @return boolean
      */
-    public function isVerbose()
+    public function isAgent()
     {
-        return $this->verbose;
+        return $this->is_agent;
     }
 
     /**
-     * @param boolean $verbose
+     * @param boolean $is_agent
      * @return $this
      */
-    public function setVerbose($verbose)
+    public function setAsAgent($is_agent)
     {
-        $this->verbose = (bool)$verbose;
+        $this->is_agent = (bool)$is_agent;
         return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isUser()
+    {
+        return $this->is_user;
+    }
+
+    /**
+     * @param boolean $is_user
+     * @return $this
+     */
+    public function setAsUser($is_user)
+    {
+        $this->is_user = (bool)$is_user;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFirstName()
+    {
+        return $this->first_name;
+    }
+
+    /**
+     * @param string $first_name
+     * @return $this
+     */
+    public function setFirstName($first_name)
+    {
+        $this->first_name = $first_name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getLastName()
+    {
+        return $this->last_name;
+    }
+
+    /**
+     * @param string $last_name
+     * @return $this
+     */
+    public function setLastName($last_name)
+    {
+        $this->last_name = $last_name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * @param string $name
+     * @return $this
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getTimezone()
+    {
+        return $this->timezone;
+    }
+
+    /**
+     * @param string $timezone
+     * @return $this
+     */
+    public function setTimezone($timezone)
+    {
+        $this->timezone = $timezone;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created)
+    {
+        $this->date_created = $date_created;
+        return $this;
+    }
+
+    /**
+     * @param string $email
+     * @return $this
+     */
+    public function addEmail($email)
+    {
+        $this->emails[] = $email;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return array(
+            'oid'          => $this->oid,
+            'is_agent'     => $this->is_agent,
+            'is_user'      => $this->is_user,
+            'first_name'   => $this->first_name,
+            'last_name'    => $this->last_name,
+            'name'         => $this->name,
+            'timezone'     => $this->timezone,
+            'date_created' => $this->date_created->format('Y-m-d H:i:s'),
+            'emails'       => $this->emails,
+        );
     }
 }

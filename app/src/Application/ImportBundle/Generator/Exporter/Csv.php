@@ -31,19 +31,18 @@
 * @package DeskPRO
 */
 
-namespace Application\ImportBundle\Generator\Plugin;
+namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\CsvReader\CsvConfig;
 use Application\ImportBundle\CsvReader\CsvReaderInterface;
-use Orb\Util\Arrays;
 
 /**
  * Data generator from csv files
  *
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
- * @package Application\ImportBundle\Generator\Plugin
+ * @package Application\ImportBundle\Generator\Exporter
  */
-class Csv extends AbstractPlugin
+class Csv extends AbstractGeneratorExporter
 {
     /**
      * @var CsvReaderInterface
@@ -139,9 +138,6 @@ class Csv extends AbstractPlugin
         foreach ($data as $index => $person) {
             $this->advanceProgressBar();
 
-            if (!count(Arrays::removeEmptyString($person))) {
-                continue;
-            }
             if (!isset($person['email'])) {
                 $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $index));
                 continue;
@@ -181,11 +177,8 @@ class Csv extends AbstractPlugin
         foreach ($data as $index => $ticket) {
             $this->advanceProgressBar();
 
-            if (!count(Arrays::removeEmptyString($ticket))) {
-                continue;
-            }
             if (!isset($ticket['subject']) || !isset($ticket['user'])) {
-                $this->logWarning(sprintf('Invalid ticket record found (Skipping)'));
+                $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $index));
                 continue;
             }
 
@@ -216,18 +209,15 @@ class Csv extends AbstractPlugin
     protected function exportTicketMessages()
     {
         $data = $this->getDataByRecordType(self::RECORD_TYPE_MESSAGES);
-        foreach ($data as $index => $ticket_message) {
+        foreach ($data as $index => $message) {
             $this->advanceProgressBar();
 
-            if (!count(Arrays::removeEmptyString($ticket_message))) {
-                continue;
-            }
-            if (!isset($ticket_message['message_text']) || !isset($ticket_message['user'])) {
-                $this->logWarning(sprintf('Invalid ticket message record found (Skipping)'));
+            if (!isset($message['message_text']) || !isset($message['user'])) {
+                $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $index));
                 continue;
             }
 
-            $ticket_id = trim($ticket_message['ticket_id']);
+            $ticket_id = trim($message['ticket_id']);
             $ticket_file_name = 'ticket_' . $ticket_id . '.json';
             $ticket_file_path = $this->getExportTicketMessagesOutputPath() . $ticket_file_name;
 
@@ -235,9 +225,9 @@ class Csv extends AbstractPlugin
                 if (is_file($ticket_file_path)) {
                     $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
                     @$ticket_array['messages'][] = array(
-                        'person'       => $ticket_message['user'],
-                        'date_created' => isset($ticket_message['date_created']) ? $ticket_message['date_created'] : date('Y-m-d H:i:s'),
-                        'message_text' => $ticket_message['message_text']
+                        'person'       => $message['user'],
+                        'date_created' => isset($message['date_created']) ? $message['date_created'] : date('Y-m-d H:i:s'),
+                        'message_text' => $message['message_text']
                     );
 
                     if ($this->config->isLive()) {

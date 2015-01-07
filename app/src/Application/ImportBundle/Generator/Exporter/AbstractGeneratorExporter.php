@@ -25,7 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Plugin;
+namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
@@ -34,9 +34,10 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
  * Base data generator class methods
  *
  * Class AbstractPlugin
- * @package Application\ImportBundle\Generator\Plugin
+ * @package Application\ImportBundle\Generator\Exporter
  */
-abstract class AbstractPlugin extends AbstractGenerator implements GeneratorPluginInterface, LoggerAwareInterface
+abstract class AbstractGeneratorExporter
+    extends AbstractGenerator implements GeneratorExporterInterface, LoggerAwareInterface
 {
     /**
      * Directory to generated people json files

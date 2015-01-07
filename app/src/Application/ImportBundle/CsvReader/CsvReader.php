@@ -29,6 +29,7 @@ namespace Application\ImportBundle\CsvReader;
 
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
+use Orb\Util\Arrays;
 use SplFileObject;
 use LimitIterator;
 
@@ -53,7 +54,7 @@ class CsvReader implements CsvReaderInterface
             }
         }
 
-        // removing header from count value
+        // remove header from count value
         if ($count > 0) {
             $count--;
         }
@@ -72,6 +73,9 @@ class CsvReader implements CsvReaderInterface
         $data   = array();
         foreach ($iterator as $row) {
             if (!is_array($row)) {
+                continue;
+            }
+            if (!count(Arrays::removeEmptyString($row))) {
                 continue;
             }
 
