@@ -220,7 +220,7 @@ class ThemeResolver
 
         // construct and return the proper ESI tag content
         if ($tag->isEsi()) {
-            unset($attrs['_cache']);
+            $attrs = $this->filterArguments($attrs);
             $esi = $this->container->get('fragment.renderer.esi')->render(
                 $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request
             );
@@ -243,6 +243,14 @@ class ThemeResolver
         $new_args = array();
 
         foreach ($arguments as $arg => $val) {
+            if (in_array($arg, array(
+                '_cache',
+                '_security',
+                '_converters'
+            ))) {
+                continue; // reserved attributes that we don't want to ship to the tag
+            }
+
             if ($val instanceof DomainObject) {
                 $val = $val->id;
             }
