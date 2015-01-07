@@ -39,6 +39,7 @@ use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\PortalBundle\Annotation\TagOptions;
+use Application\PortalBundle\Request\TagRequest;
 use Doctrine\Common\Annotations\AnnotationReader;
 use Doctrine\Common\Annotations\FileCacheReader;
 use Doctrine\Common\Util\ClassUtils;
@@ -73,6 +74,15 @@ class TagOptionsListener implements EventSubscriberInterface
 
         /** @var \Application\PortalBundle\Request\TagRequest $tag_request */
         $tag_request = $event->getRequest();
+        $request_backup = false;
+
+        if (!$tag_request instanceof TagRequest) {
+            if (!$tag_request->attributes->has('tag_request')) {
+                return;
+            }
+            $request_backup = $tag_request;
+            $tag_request = $tag_request->attributes->get('tag_request');
+        }
 
         $className = ClassUtils::getClass($controller[0]);
         $object = new \ReflectionClass($className);
@@ -99,6 +109,9 @@ class TagOptionsListener implements EventSubscriberInterface
                 }
 
                 $tag_request->attributes->set('options', $tag_request->getTagOptions());
+                if ($request_backup) {
+                    $request_backup->attributes->set('options', $tag_request->attributes->get('options'));
+                }
 
                 break; // we only care about finding one TagOptions here
             }
