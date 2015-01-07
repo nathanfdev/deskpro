@@ -65,6 +65,12 @@ services:
     tags:
       - { name: request.param_converter, priority: -1, converter: deskpro_slug }
 
+  param_converter.tag_request:
+    class: Application\PortalBundle\Request\TagRequestConverter
+    arguments: [@brand_stack]
+    tags:
+      - { name: request.param_converter, priority: 1, converter: tag_request }
+
   portal_loadder.twig:
     class: Application\PortalBundle\Twig\PortalLoader
     arguments: [@brand_stack, @template_repository]

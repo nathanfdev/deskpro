@@ -67,6 +67,8 @@ class DeskproSlugConverter implements ParamConverterInterface
         $slug_route_param = $request->attributes->get($slug_attribute_name);
         $slug_col         = $param_options['slug_col'];
 
+        if ($param_name === 'tag_request') return;
+
         $repo = $this->em->getRepository($param_class);
         if ($obj = $repo->findOneBy(array($slug_col => $slug_route_param))) {
             $request->attributes->set($param_name, $obj);

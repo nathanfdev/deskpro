@@ -207,15 +207,12 @@ class ThemeResolver
         }
 
         $current_request = $this->container->get('request_stack')->getCurrentRequest();
-        $query           = array('tag_options' => array_merge($tag->getDefaultOptions(), $arguments));
-        $attrs           = array_merge($current_request->attributes->all(), array('_tag_name' => $tag_name));
-        $tag_request     = new TagRequest($query, array(), $attrs);
-        $attrs['tag_request'] = $tag_request;
-        $tag_request->attributes->set('tag_request', $tag_request);
-        unset($attrs['_cache']);
+        $query = array('tag_options' => array_merge($tag->getDefaultOptions(), array_merge($arguments, array('_tag_name' => $tag_name))));
+        $attrs = array_merge($current_request->attributes->all(), array('_tag_name' => $tag_name));
 
         // construct and return the proper ESI tag content
         if ($tag->isEsi()) {
+            unset($attrs['_cache']);
             $esi = $this->container->get('fragment.renderer.esi')->render(
                 $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $current_request
             );
@@ -228,6 +225,7 @@ class ThemeResolver
         }
 
         // construct and return the actual tag response content
+        $tag_request = new TagRequest($query, array(), $attrs);
         $tag_request->attributes->set('_controller', $tag->getControllerName());
         $tag_request->setOptionsResolver(new OptionsResolver());
 

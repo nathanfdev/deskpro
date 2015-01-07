@@ -57,6 +57,7 @@ class TagRequest extends SymfonyRequest
      */
     public function setOptionsResolver(OptionsResolver $options_resolver)
     {
+        $options_resolver->setDefined('_tag_name');
         $this->options_resolver = $options_resolver;
     }
 
