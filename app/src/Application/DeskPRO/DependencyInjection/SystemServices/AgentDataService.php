@@ -151,7 +151,7 @@ class AgentDataService
             FROM agent_team_members
         ", array(), 'team_id', null, 'person_id');
 
-        $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true);
+        $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true, true);
 
         if ($this->ids) {
             $this->agent_to_groups = $this->db->fetchAllGrouped("
@@ -477,23 +477,28 @@ class AgentDataService
      */
     public function isAgentMemberOfTeam($agent, $team)
     {
-        if (!is_object($agent)) {
+        if (is_object($agent)) {
+            $agent_id = $agent->id;
+        } else {
             try {
-                $agent = $this->get($agent);
+                $agent_id = $this->get($agent)->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
         }
 
-        if (!is_object($team)) {
+        if (is_object($team)) {
+            $team_id = $team->id;
+        } else {
             try {
-                $team = $this->getTeam($team);
+                $team_id = $this->getTeam($team)->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
         }
 
-        return in_array($agent, $this->getAgentsForTeam($team), true);
+        $this->preloadTeamMap();
+        return isset($this->agent_to_teams[$agent->id][$team->id]);
     }
 
 
