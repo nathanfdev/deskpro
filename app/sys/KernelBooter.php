@@ -298,7 +298,6 @@ class KernelBooter
             print "done: " . $end;
             print "<br><br>\n\n";
             print "total: " . ($end - $start);
-            dump($kernel->getLog());
             //
 
             // end debug code
