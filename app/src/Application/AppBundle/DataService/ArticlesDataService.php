@@ -60,13 +60,13 @@ class ArticlesDataService
      * @param $max_per_page
      * @return Pagerfanta
      */
-    public function getArticlesPager(ArticleCategory $category, $page, $max_per_page)
+    public function getArticlesPager($category, $page, $max_per_page)
     {
         // TODO: optimize this query
         if ($category) {
-            $articles = $category->articles;
+            $articles = new ArrayCollection($this->getArticlesRepo()->getNewest(25000, $category));
         } else {
-            $articles = new ArrayCollection($this->getArticlesRepo()->findAll());
+            $articles = new ArrayCollection($this->getArticlesRepo()->getNewest(25000));
         }
         // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
         $pager = new Pagerfanta(new DoctrineCollectionAdapter($articles));
