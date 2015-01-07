@@ -260,51 +260,66 @@ class KernelBooter
         } else {
             define('DP_INTERFACE', 'user');
 
+            try {
 
-            // debug code
+                // debug code
 
-            $start = microtime(true);
+                $start = microtime(true);
 
-            // end debug code
+                // end debug code
 
 
+                //
+                // boot and run portal
+                //
+                self::bootstrapLib($debug);
+                self::bootstrapEnv();
+                require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
+                $kernel = new PortalKernel($env, $debug);
+                if ('dev' === $env) {
+                    require_once DP_ROOT . "/src/Application/PortalBundle/HttpKernel/PortalHttpCache.php";
+                    $kernel = new PortalHttpCache($kernel);
+                    Debug::enable();
+                }
+                $request = Request::createFromGlobals();
+                $response = $kernel->handle($request);
 
-            //
-            // boot and run portal
-            //
-            self::bootstrapLib($debug);
-            self::bootstrapEnv();
-            require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
-            $kernel = new PortalKernel($env, $debug);
-            if ('dev' === $env) {
-                require_once DP_ROOT . "/src/Application/PortalBundle/HttpKernel/PortalHttpCache.php";
-                $kernel = new PortalHttpCache($kernel);
-                Debug::enable();
+
+                // debug code, erase comments to see (erase from $start variable above, as well)
+                // note: ignore the output that might appear at bottom of page due to web profiler
+
+                // below: a log from the kernel of cache hits/misses and a simple profile of page load
+                $log = explode(';', $kernel->getLog());
+                print implode("\n<br>", $log);
+                $starting = "booting: " . $start;
+                $starting .= "<br><br>\n\n";
+                print "<br><br>\n\n" . $starting;
+                $end = microtime(true);
+                print "done: " . $end;
+                print "<br><br>\n\n";
+                print "total: " . ($end - $start);
+                //
+
+                // end debug code
+
+
+                $kernel->terminate($request, $response);
+                $response->send();
+
+
+            } catch (DBALException $e) {
+
+                // note: this try catch block is directly copied from old portal code in this booter
+
+                if ($e->getCode() == '2002' || $e->getCode() == '1049' || $e->getCode() == '1044' || $e->getCode() == '1045') {
+                    // This will show an error page if already installed, so the redirect to install wont happen
+                    deskpro_handle_boot_db_exception($e);
+
+                    header('Location: ' . $request->getBasePath() . '/index.php/install/');
+                    exit;
+                }
+                throw $e;
             }
-            $request = Request::createFromGlobals();
-            $response = $kernel->handle($request);
-
-
-            // debug code, erase comments to see (erase from $start variable above, as well)
-            // note: ignore the output that might appear at bottom of page due to web profiler
-
-            // below: a log from the kernel of cache hits/misses and a simple profile of page load
-            $log = explode(';',$kernel->getLog());
-            print implode("\n<br>", $log);
-            $starting = "booting: " . $start;
-            $starting .= "<br><br>\n\n";
-            print "<br><br>\n\n" . $starting;
-            $end = microtime(true);
-            print "done: " . $end;
-            print "<br><br>\n\n";
-            print "total: " . ($end - $start);
-            //
-
-            // end debug code
-
-
-            $kernel->terminate($request, $response);
-            $response->send();
 
             exit;
             //
