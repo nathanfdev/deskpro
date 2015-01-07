@@ -251,13 +251,6 @@ class TicketController extends AbstractController
         $active_drafts = $this->em->getRepository('DeskPRO:Draft')->getActiveDrafts('ticket', $ticket->id);
         unset($active_drafts[$this->person->id]);
 
-        if (App::getSetting('core_tickets.lock_on_view') && !$ticket->hasLock()) {
-            $ticket->setLockedByAgent($this->person);
-
-            $this->em->persist($ticket);
-            $this->em->flush();
-        }
-
         $edit_person = $this->person->hasPerm('agent_people.edit');
         if ($edit_person) {
             if (!$this->person->can_admin && $ticket->person->is_agent && $ticket->person->getId() != $this->person->getId()) {
@@ -438,6 +431,12 @@ class TicketController extends AbstractController
             $vars['print'] = true;
 
             return $this->render('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
+        }
+
+        if (App::getSetting('core_tickets.lock_on_view') && !$ticket->hasLock()) {
+            $ticket->setLockedByAgent($this->person);
+            $this->em->persist($ticket);
+            $this->em->flush();
         }
 
         return $this->render($tpl, $vars);
