@@ -6,6 +6,7 @@
     'portal.general.rate-page-positive' => 'This page was helpful',
     'portal.general.rate-page-negative' => 'This page was not helpful',
     'portal.general.btn-subscribe'      => 'Subscribe',
+    'portal.general.btn-unsubscribe'    => 'Unsubscribe',
     'portal.general.btn-email'          => 'Email',
     'portal.general.btn-print'          => 'Print',
     'portal.general.btn-download-pdf'   => 'Download PDF',

@@ -37,6 +37,7 @@ namespace Application\PortalBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller as BaseController;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+use Doctrine\DBAL\Connection;
 
 class AbstractController extends BaseController
 {
@@ -46,6 +47,14 @@ class AbstractController extends BaseController
     public function getEm()
     {
         return $this->get('doctrine.orm.default_entity_manager');
+    }
+
+    /**
+     * @return Connection
+     */
+    public function getDb()
+    {
+        return $this->getDoctrine()->getConnection();
     }
 
     /**
