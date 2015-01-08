@@ -19,12 +19,27 @@
 
         <div class="header-button-container">
             <div class="header-buttons">
-                <a href="#">{{ phrase('portal.general.btn-subscribe') }} <i class="fa fa-rss"></i></a>
+                <a href="{{ path('portal_kb_article_toggle_subscription', { slug: article.slug }) }}">
+                    {% if is_subscribed %}
+                        {{ phrase('portal.general.btn-unsubscribe') }}
+                    {% else %}
+                        {{ phrase('portal.general.btn-subscribe') }}
+                    {% endif %}
+                    <i class="fa fa-rss"></i>
+                </a>
                 <a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>
                 <a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>
                 <a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
             </div>
         </div>
+
+        {% if is_subscribed %}
+            <div>
+                <hr/>
+                <strong>You are subscribed to recieve notifications about this article</strong>
+                <hr/>
+            </div>
+        {% endif %}
 
         <div class="article-content padded">
             {{ article.realContent|raw }}

@@ -82,13 +82,54 @@ class ArticlesController extends AbstractController
     {
         $related = $this->getArticlesDataService()->getRelatedArticles($article);
 
+        $is_subscribed = false;
+        if ($this->isGranted('ROLE_USER') && $this->getBrandContainer()->getSetting('user.kb_subscriptions')) {
+            $is_subscribed = $this->getDb()->fetchColumn("
+                SELECT id
+                FROM kb_subscriptions
+                WHERE person_id = ? AND article_id = ?
+            ", array($this->getUser()->getId(), $article->getId()));
+        }
+
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             array(
                 'article' => $article,
-                'related_articles' => $related
+                'related_articles' => $related,
+                'is_subscribed' => $is_subscribed
             )
         );
+    }
+
+    /**
+     * @Route("/kb/articles/{slug}/toggle-subscription", name="portal_kb_article_toggle_subscription")
+     * @ParamConverter(name="article", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLES')")
+     */
+    public function articleSubscriptionAction(Article $article)
+    {
+        $exist = $this->getDb()->fetchColumn("
+            SELECT id
+            FROM kb_subscriptions
+            WHERE person_id = ? AND article_id = ?
+        ", array($this->getUser()->getId(), $article->getId()));
+
+        if ($exist) {
+            $this->getDb()->delete('kb_subscriptions', array(
+                'person_id' => $this->getUser()->getId(),
+                'article_id' => $article->getId()
+            ));
+            $this->addFlash('success', 'Successfully unsubscribed from this article.');
+        } else {
+            $this->getDb()->insert('kb_subscriptions', array(
+                'person_id' => $this->getUser()->getId(),
+                'article_id' => $article->getId()
+            ));
+            $this->addFlash('success', 'You have successfully subscribed to this article. You will be notified when it is updated.');
+        }
+
+
+        return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
     }
 
     /**
