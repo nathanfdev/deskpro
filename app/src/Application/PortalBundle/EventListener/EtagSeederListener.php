@@ -32,19 +32,56 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\PortalBundle\HttpKernel;
+namespace Application\PortalBundle\EventListener;
 
-use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
+use Application\AppBundle\Http\Cache\EtagManager;
+use Application\DeskPRO\Brand\BrandStack;
+use Application\DeskPRO\EntityRepository\Brand;
+use Application\DeskPRO\Entity\Brand as BrandEntity;
+use Application\DeskPRO\NewSettings\SettingsResolver;
+use Psr\Log\LoggerInterface;
+use Symfony\Component\EventDispatcher\EventSubscriberInterface;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 
-class PortalHttpCache extends HttpCache
+/**
+ * Early in a request on the portal, we decide on a generic etag "seed" for this user (guest, or authenticated usergroup ids)
+ */
+class EtagSeederListener implements EventSubscriberInterface
 {
     /**
-     * Returns an array of options to customize the Cache configuration.
-     *
-     * @return array An array of options
+     * @var EtagManager
      */
-    protected function getOptions()
+    private $etag_manager;
+
+    /**
+     * @var \Psr\Log\LoggerInterface
+     */
+    private $logger;
+
+
+    public function __construct(EtagManager $etag_manager, LoggerInterface $logger)
     {
-        return array('private_headers' => array(), 'debug' => true);
+        $this->etag_manager = $etag_manager;
+        $this->logger = $logger;
+    }
+
+    public function onKernelRequest(GetResponseEvent $event)
+    {
+        if (!$event->isMasterRequest()) {
+            // only run this on the master request - we only calc once per request.
+            //return;
+        }
+
+        $event->getRequest()->attributes->set('etag_seed', $this->etag_manager->getEtagForCurrentUser());
+    }
+
+    public static function getSubscribedEvents()
+    {
+        return array(
+            // low prioirty, let security and filtering happen first
+            KernelEvents::REQUEST => array('onKernelRequest', -12)
+        );
     }
 }

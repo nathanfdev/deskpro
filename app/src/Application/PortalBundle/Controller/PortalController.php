@@ -43,7 +43,7 @@ class PortalController extends AbstractController
 {
     /**
      * @Route("/", name="portal_index")
-     * @Cache(smaxage="10 minutes")
+     * @Cache(smaxage="10 minutes", etag="etag_seed", public=true)
      */
     public function indexAction(Request $request)
     {

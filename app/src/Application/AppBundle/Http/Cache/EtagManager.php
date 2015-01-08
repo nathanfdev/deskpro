@@ -32,19 +32,58 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\PortalBundle\HttpKernel;
+namespace Application\AppBundle\Http\Cache;
 
-use Symfony\Bundle\FrameworkBundle\HttpCache\HttpCache;
+use Application\AuthBundle\Permissions\Portal\PortalUsergroupDecider;
+use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
+use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
+use Application\DeskPRO\Entity\Person;
 
-class PortalHttpCache extends HttpCache
+/**
+ * A central service that helps generate the proper etag for a page.
+ */
+class EtagManager 
 {
     /**
-     * Returns an array of options to customize the Cache configuration.
-     *
-     * @return array An array of options
+     * @var AuthorizationChecker
      */
-    protected function getOptions()
+    private $auth_checker;
+
+    /**
+     * @var TokenStorage
+     */
+    private $token_storage;
+
+    /**
+     * @var PortalUsergroupDecider
+     */
+    private $portal_usergroup_decider;
+
+    public function __construct(AuthorizationChecker $auth_checker, TokenStorage $token_storage, PortalUsergroupDecider $portal_usergroup_decider)
     {
-        return array('private_headers' => array(), 'debug' => true);
+        $this->auth_checker = $auth_checker;
+        $this->token_storage = $token_storage;
+        $this->portal_usergroup_decider = $portal_usergroup_decider;
+    }
+
+    public function getEtagForCurrentUser()
+    {
+        if ($this->auth_checker->isGranted('ROLE_USER')) {
+            return $this->generateByPersonUsergroups($this->token_storage->getToken()->getUser());
+        }
+
+        return $this->generateForGuest();
+    }
+
+    public function generateForGuest()
+    {
+        return 'guest';
+    }
+
+    public function generateByPersonUsergroups(Person $person)
+    {
+        $usergroup_ids = $this->portal_usergroup_decider->getUsergroupIdsForPerson($person);
+
+        return 'usergroups' . implode('-', $usergroup_ids);
     }
 }
