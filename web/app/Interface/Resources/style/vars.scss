@@ -2,6 +2,9 @@ $web-path: "../../../..";
 $ifce-res-path: $web-path + "/app/Interface/Resources";
 $ifce-img-path: $ifce-res-path + "/img";
 
+$tablet: new-breakpoint(max-width 960px 6);
+$mobile: new-breakpoint(max-width 640px 6);
+
 // Agent interface variables
 
 $global-border: #cacfd3;

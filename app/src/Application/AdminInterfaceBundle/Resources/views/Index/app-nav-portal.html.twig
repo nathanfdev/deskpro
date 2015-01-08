@@ -12,7 +12,7 @@
 	</div>
 
 	{{ nav.list() }}
-		{{ nav.list_item('Setup', 'portal.portal_editor', 'portal.portal_editor', 'fa-cog') }}
+		{{ nav.list_item('Setup', ng_href('portal.setup'), 'portal.setup', 'fa-cog') }}
 
 		{{ nav.list_item_group('User Interfaces', 'fa-th-large') }}
 			{{ nav.list_subitem('Portal', 'portal.setup_portal', 'portal.setup_portal', 'fa-home') }}

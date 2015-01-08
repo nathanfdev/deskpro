@@ -1470,7 +1470,7 @@ define(function() {
 	routes.push({
 		id: 'portal.setup',
 		url: '/setup',
-		templateName: 'Index/blank.html',
+		templateName: 'Portal/setup.html',
 		controller: 'Admin_Main_Ctrl_Bare'
 	});
 
