@@ -49,6 +49,7 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         $this->addOption('post', null, InputOption::VALUE_NONE, 'Send a POST request (default when data is sent)');
         $this->addOption('put', null, InputOption::VALUE_NONE, 'Send a PUT request');
         $this->addOption('delete', null, InputOption::VALUE_NONE, 'Send a DELETE request');
+        $this->addOption('url', null, InputOption::VALUE_REQUIRED, 'Use this API url instead of generating the URL automatically based on the current helpdesk.');
         $this->addOption('api-key', null, InputOption::VALUE_REQUIRED, 'Use this API key. When this option is not used, the command will create a key for the first admin in the database.');
         $this->addOption('raw', null, InputOption::VALUE_NONE, 'Output the API result directly without any other info or JSON decoding');
         $this->addOption('printr', null, InputOption::VALUE_NONE, 'Output as PHP array');
@@ -107,8 +108,21 @@ class DevTestApiCommand extends \Symfony\Bundle\FrameworkBundle\Command\Containe
         # Get the path and api token
         #------------------------------
 
-        $base_url = trim(App::getSetting('core.deskpro_url'), '/').'/index.php/api/';
-        $path     = trim($input->getArgument('path'), '/');
+        if ($input->getOption('url')) {
+            $base_url = trim($input->getOption('url'), '/') . '/';
+            if (strpos($base_url, '/api/') === false) {
+                if (strpos($base_url, '/index.php/') === false) {
+                    $base_url .= 'index.php/';
+                }
+                $base_url .= 'api/';
+            }
+            if (!preg_match('#^https?://#', $base_url)) {
+                $base_url = "http://" . $base_url;
+            }
+        } else {
+            $base_url = trim(App::getSetting('core.deskpro_url'), '/') . '/index.php/api/';
+        }
+        $path = trim($input->getArgument('path'), '/');
 
         $api_key = $input->getOption('api-key');
         if (!$api_key) {
