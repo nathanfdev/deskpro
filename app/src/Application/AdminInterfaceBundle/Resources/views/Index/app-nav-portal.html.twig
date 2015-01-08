@@ -1,29 +1,30 @@
 {% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
 {% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
+	<div class="sidebar-list">
+		<div class="sidebar-brand">
+			<ul>
+				<li>
+					<span class="faded">Brand:</span> <span>Default Brand <i class="fa fa-sort"></i></span>
+				</li>
+			</ul>
+		</div>
+	</div>
+
 	{{ nav.list() }}
-		{{ nav.list_item('Portal Editor', 'portal.portal_editor', 'portal.portal_editor', 'fa-columns') }}
-		{{ nav.list_item('Settings', 'portal.settings', 'portal.settings', 'fa-cog') }}
-		{{ nav.list_item('Website Embeds', 'portal.embeds', 'portal.embed', 'fa-code') }}
-		{{ nav.list_item('Templates', 'portal.templates', 'portal.templates', 'fa-columns') }}
-		{{ nav.list_item_group('Knowledgebase', 'fa-caret-down') }}
-			{{ nav.list_item('', 'portal.kb_settings', 'portal.kb_settings', 'fa-cog') }}
-			{{ nav.list_item('', 'portal.kb_labels', 'portal.kb_labels', 'fa-tag') }}
+		{{ nav.list_item('Setup', 'portal.portal_editor', 'portal.portal_editor', 'fa-cog') }}
+
+		{{ nav.list_item_group('User Interfaces', 'fa-th-large') }}
+			{{ nav.list_subitem('Portal', 'portal.setup_portal', 'portal.setup_portal', 'fa-home') }}
+			{{ nav.list_subitem('Widget', 'portal.setup_widget', 'portal.setup_widget', 'fa-puzzle-piece') }}
+			{{ nav.list_subitem('Forms', 'portal.setup_forms', 'portal.setup_forms', 'fa-keyboard-o') }}
 		{{ nav.list_item_group_end() }}
-		{{ nav.list_item_group('Fields', 'fa-terminal') }}
-			{{ nav.list_item('', 'portal.downloads_settings', 'portal.downloads_settings', 'fa-cog') }}
-			{{ nav.list_item('', 'portal.downloads_labels', 'portal.downloads_labels', 'fa-tag') }}
-		{{ nav.list_item_group_end() }}
-		{{ nav.list_item_group('News', 'fa-terminal') }}
-			{{ nav.list_item('', 'portal.news_settings', 'portal.news_settings', 'fa-cog') }}
-			{{ nav.list_item('', 'portal.news_labels', 'portal.news_labels', 'fa-tag') }}
-		{{ nav.list_item_group_end() }}
-		{{ nav.list_item_group('Feedback', 'fa-terminal') }}
-			{{ nav.list_item('', 'portal.feedback_settings', 'portal.feedback_settings', 'fa-cog') }}
-			{{ nav.list_item('', 'portal.feedback_statuses', 'portal.feedback_statuses', 'fa-ticket') }}
-			{{ nav.list_item('', 'portal.feedback_types', 'portal.feedback_types', 'fa-sitemap') }}
-			{{ nav.list_item('', 'portal.feedback_categories', 'portal.feedback_categories', 'fa-folder-open') }}
-			{{ nav.list_item('', 'portal.feedback_labels', 'portal.feedback_labels', 'fa-tag') }}
+
+		{{ nav.list_item_group('Portal Apps', 'fa-th-large') }}
+			{{ nav.list_subitem('Knowledgebase', 'portal.app_kb', 'portal.app_kb', 'fa-book') }}
+			{{ nav.list_subitem('News', 'portal.app_news', 'portal.app_news', 'fa-clock-o') }}
+			{{ nav.list_subitem('Feedback', 'portal.app_feedback', 'portal.app_feedback', 'fa-thumbs-up') }}
+			{{ nav.list_subitem('Downloads', 'portal.app_downloads', 'portal.app_downloads', 'fa-download') }}
 		{{ nav.list_item_group_end() }}
 	{{ nav.list_end() }}
 {% endblock %}
