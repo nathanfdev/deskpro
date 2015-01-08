@@ -75,11 +75,12 @@ class BrandContainer
 
     /**
      * @param $setting_name
+     * @param $default
      * @return mixed
      */
-    public function getSetting($setting_name)
+    public function getSetting($setting_name, $default = null)
     {
-        return $this->getSettings()->get($setting_name);
+        return $this->getSettings()->get($setting_name, $default);
     }
 
     /**

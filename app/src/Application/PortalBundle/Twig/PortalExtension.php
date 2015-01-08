@@ -67,8 +67,14 @@ class PortalExtension extends \Twig_Extension
     public function getFunctions()
     {
         return array(
+            new \Twig_SimpleFunction('brand_setting', array($this, 'getBrandSetting'), array('is_safe' => array('html'))),
             new \Twig_SimpleFunction('*', array($this, 'processPortalTag'), array('is_safe' => array('html'))),
         );
+    }
+
+    public function getBrandSetting($setting, $default = null)
+    {
+        return $this->brand_stack->getActive()->getSetting($setting, $default);
     }
 
     /**
