@@ -35,8 +35,13 @@ use DateTime;
  * Class Person
  * @package Application\ImportBundle\Entity
  */
-class Person implements ToArrayInterface
+final class Person implements EntityInterface
 {
+    /**
+     * @var string
+     */
+    private $destination;
+
     /**
      * @var int
      */
@@ -85,6 +90,24 @@ class Person implements ToArrayInterface
      * @var array
      */
     private $emails = array();
+
+    /**
+     * @param string $destination
+     * @return $this
+     */
+    public function setDestination($destination)
+    {
+        $this->destination = $destination;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDestination()
+    {
+        return $this->destination;
+    }
 
     /**
      * @return int

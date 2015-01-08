@@ -28,15 +28,20 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Interface ToArrayInterface
+ * Class Collection
  * @package Application\ImportBundle\Entity
  */
-interface ToArrayInterface
+class Collection
 {
+    private $collection;
+
     /**
-     * Convert to array
-     *
-     * @return array
+     * @param EntityInterface $entity
+     * @return $this
      */
-    public function toArray();
+    public function attach(EntityInterface $entity)
+    {
+        $this->collection[] = $entity;
+        return $this;
+    }
 }

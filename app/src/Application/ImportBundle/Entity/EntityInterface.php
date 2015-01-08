@@ -25,21 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Entity;
 
 /**
- * Tickets data generator validator
- *
- * Class Tickets
- * @package Application\ImportBundle\Generator\Validator
+ * Interface EntityInterface
+ * @package Application\ImportBundle\Entity
  */
-class Tickets implements ValidatorInterface
+interface EntityInterface
 {
     /**
-     * {@inheritdoc}
+     * Get entity destination
+     *
+     * @return string
      */
-    public function validateRawRecordData(array $data)
-    {
-        return true;
-    }
+    public function getDestination();
+
+    /**
+     * Convert to array
+     *
+     * @return array
+     */
+    public function toArray();
 }

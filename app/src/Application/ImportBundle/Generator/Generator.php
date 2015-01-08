@@ -31,7 +31,9 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Exporter\GeneratorExporterInterface;
+use Application\ImportBundle\Generator\Writer\GeneratorWriterInterface;
 use Exception;
 
 /**
@@ -49,6 +51,21 @@ class Generator extends AbstractGenerator
     private $exporters = array();
 
     /**
+     * @var GeneratorWriterInterface
+     */
+    private $outputWriter;
+
+    /**
+     * Constructor
+     *
+     * @param GeneratorWriterInterface $outputWriter
+     */
+    public function __construct(GeneratorWriterInterface $outputWriter)
+    {
+        $this->outputWriter = $outputWriter;
+    }
+
+    /**
      * Attach a generator
      *
      * @param GeneratorExporterInterface $exporter
@@ -61,11 +78,20 @@ class Generator extends AbstractGenerator
     }
 
     /**
-     * {@inheritdoc}
+     * Returns amount of records of all types to be exported
+     *
+     * @return int
      */
     public function getTotalRecordsCount()
     {
-        return $this->getExporter()->getTotalRecordsCount();
+        $count    = 0;
+        $exporter = $this->getExporter();
+
+        foreach ($this->config->getRecordTypes() as $record_type) {
+            $count += $exporter->getRecordsCountByType($record_type);
+        }
+
+        return $count;
     }
 
     /**
@@ -79,34 +105,22 @@ class Generator extends AbstractGenerator
     /**
      * {@inheritdoc}
      */
-    public function generateJson()
+    public function exportRecordsByType($type)
     {
-        $this->createOutputDirsIfNotExist();
-        $this->getExporter()->generateJson();
+        return $this->getExporter()->exportRecordsByType($type);
     }
 
     /**
-     * Make output directories if not exist
-     *
-     * @throws Exception
+     * Generate and write collection
      */
-    private function createOutputDirsIfNotExist()
+    public function generate()
     {
-        if (!$this->config) {
-            throw new \Exception('Generator configuration is not set up');
-        }
-
-        if (!is_dir($this->config->getOutputPath())) {
-            throw new \InvalidArgumentException(sprintf(
-                    'Invalid configuration: data_path is invalid (got %s)',
-                    $this->config->getOutputPath())
-            );
-        }
-        if ($this->config->isLive()) {
-            foreach (array('people', 'tickets') as $n) {
-                if (!is_dir($this->config->getOutputPath() . $n)) {
-                    mkdir($this->config->getOutputPath() . $n, 0777, true);
-                }
+        $exporter = $this->getExporter();
+        foreach ($this->config->getRecordTypes() as $record_type) {
+            $collection = $exporter->exportRecordsByType($record_type);
+            foreach ($collection as $record) {
+                /** @var EntityInterface $record */
+                $this->outputWriter->writeData($record);
             }
         }
     }
@@ -120,7 +134,7 @@ class Generator extends AbstractGenerator
     private function getExporter()
     {
         if (!$this->config) {
-            throw new \Exception('Generator configuration is not set up');
+            throw new Exception('Generator configuration is not set up');
         }
 
         foreach ($this->exporters as $exporter) {
@@ -141,6 +155,6 @@ class Generator extends AbstractGenerator
             }
         }
 
-        throw new \Exception(sprintf('Generator exporter `%s` not found', $this->config->getExporterType()));
+        throw new Exception(sprintf('Generator exporter `%s` not found', $this->config->getExporterType()));
     }
 }

@@ -35,7 +35,7 @@ use DateTime;
  * Class TicketMessage
  * @package Application\ImportBundle\Entity
  */
-class TicketMessage implements ToArrayInterface
+final class TicketMessage implements EntityInterface
 {
     /**
      * @var string
@@ -56,6 +56,14 @@ class TicketMessage implements ToArrayInterface
      * @var array
      */
     private $attachments = array();
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDestination()
+    {
+        return '';
+    }
 
     /**
      * @return string

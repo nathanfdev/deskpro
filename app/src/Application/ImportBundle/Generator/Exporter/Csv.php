@@ -35,6 +35,9 @@ namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\CsvReader\CsvConfig;
 use Application\ImportBundle\CsvReader\CsvReaderInterface;
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
+use DateTime;
 
 /**
  * Data generator from csv files
@@ -75,16 +78,6 @@ class Csv extends AbstractGeneratorExporter
     /**
      * {@inheritdoc}
      */
-    public function getTotalRecordsCount()
-    {
-        return $this->getRecordsCountByType(self::RECORD_TYPE_PEOPLE)
-             + $this->getRecordsCountByType(self::RECORD_TYPE_TICKETS)
-             + $this->getRecordsCountByType(self::RECORD_TYPE_MESSAGES);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getRecordsCountByType($type)
     {
         return $this->csv_reader->getRowsCount($this->getCsvReaderConfig($type));
@@ -93,15 +86,17 @@ class Csv extends AbstractGeneratorExporter
     /**
      * {@inheritdoc}
      */
-    public function generateJson()
+    public function exportRecordsByType($type)
     {
-        try {
-            $this->exportPeople();
-            $this->exportTickets();
-            $this->exportTicketMessages();
-
-        } catch (\Exception $ex) {
-            $this->logWarning($ex->getMessage());
+        switch ($type) {
+            case GeneratorInterface::RECORD_TYPE_PEOPLE:
+                return $this->exportPeople();
+            case GeneratorInterface::RECORD_TYPE_TICKETS:
+                return $this->exportTickets();
+            case GeneratorInterface::RECORD_TYPE_MESSAGES:
+                return $this->exportTicketMessages();
+            default:
+                throw new \Exception('This record type `%s` is not supported', $type);
         }
     }
 
@@ -130,10 +125,11 @@ class Csv extends AbstractGeneratorExporter
     /**
      * Export people csv file
      *
-     * @return void
+     * @return array
      */
     protected function exportPeople()
     {
+        $collection = array();
         $data = $this->getDataByRecordType(self::RECORD_TYPE_PEOPLE);
         foreach ($data as $index => $person) {
             $this->advanceProgressBar();
@@ -147,32 +143,31 @@ class Csv extends AbstractGeneratorExporter
                 $person['name'] = $e[0];
             }
 
-            $file_name = 'person' . $index . '.json';
-            $names = explode(' ', $person['name']);
+            $names  = explode(' ', $person['name']);
+            $person_entity = new Entity\Person();
+            $person_entity
+                ->setDestination('person_' . $index)
+                ->setOid($index)
+                ->setAsAgent(isset($person['is_agent']) ? (bool) $person['is_agent'] : false)
+                ->setFirstName($names[0])
+                ->setLastName(isset($names[1]) ? $names[1] : '')
+                ->addEmail($person['email']);
 
-            $transformed = array(
-                'oid'        => $index,
-                'is_agent'   => isset($person['is_agent']) ? (bool) $person['is_agent'] : false,
-                'first_name' => $names[0],
-                'last_name'  => isset($names[1]) ? $names[1] : '',
-                'emails'     => array($person['email']),
-            );
-
-            if ($this->config->isLive()) {
-                file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformed));
-            }
-
-            $this->logInfo(sprintf('%s exported successfully!', $file_name));
+            $collection[] = $person_entity;
+            $this->logInfo(sprintf('%s exported successfully!', $person_entity->getDestination()));
         }
+
+        return $collection;
     }
 
     /**
      * Export tickets csv file
      *
-     * @return void
+     * @return array
      */
     protected function exportTickets()
     {
+        $collection = array();
         $data = $this->getDataByRecordType(self::RECORD_TYPE_TICKETS);
         foreach ($data as $index => $ticket) {
             $this->advanceProgressBar();
@@ -182,32 +177,32 @@ class Csv extends AbstractGeneratorExporter
                 continue;
             }
 
-            $file_name = 'ticket_' . trim($ticket['id']) . '.json';
-            $transformed = array(
-                'ref'          => $ticket['id'],
-                'person'       => $ticket['user'],
-                'agent'        => isset($ticket['agent']) ? $ticket['agent'] : null,
-                'status'       => isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent',
-                'date_created' => isset($ticket['date_created']) ? $ticket['date_created'] : date('Y-m-d H:i:s'),
-                'subject'      => $ticket['subject'],
-            );
+            $ticket_entity = new Entity\Ticket();
+            $ticket_entity
+                ->setDestination('ticket_' . trim($ticket['id']))
+                ->setRef($ticket['id'])
+                ->setPerson($ticket['user'])
+                ->setAgent(isset($ticket['agent']) ? $ticket['agent'] : null)
+                ->setStatus(isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent')
+                ->setDateCreated(isset($ticket['date_created']) ? new DateTime($ticket['date_created']) : new DateTime())
+                ->setSubject($ticket['subject']);
 
-            if ($this->config->isLive()) {
-                file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformed));
-            }
-
-            $this->logInfo(sprintf('%s exported successfully!', $file_name));
+            $collection[] = $ticket_entity;
             $this->read_ticket_ids[$ticket['id']] = true;
+            $this->logInfo(sprintf('%s exported successfully!', $ticket_entity->getDestination()));
         }
+
+        return $collection;
     }
 
     /**
      * Export ticket messages csv file
      *
-     * @return void
+     * @return array
      */
     protected function exportTicketMessages()
     {
+        $collection = array();
         $data = $this->getDataByRecordType(self::RECORD_TYPE_MESSAGES);
         foreach ($data as $index => $message) {
             $this->advanceProgressBar();
@@ -217,34 +212,41 @@ class Csv extends AbstractGeneratorExporter
                 continue;
             }
 
-            $ticket_id = trim($message['ticket_id']);
-            $ticket_file_name = 'ticket_' . $ticket_id . '.json';
-            $ticket_file_path = $this->getExportTicketMessagesOutputPath() . $ticket_file_name;
+//            $ticket_id = trim($message['ticket_id']);
+            $message_entity = new Entity\TicketMessage();
+            $message_entity
+                ->setPersonEmail($message['user'])
+                ->setMessageText($message['message_text'])
+                ->setDateCreated(isset($message['date_created']) ? new DateTime($message['date_created']) : new DateTime());
 
-            if ($this->config->isLive()) {
-                if (is_file($ticket_file_path)) {
-                    $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
-                    @$ticket_array['messages'][] = array(
-                        'person'       => $message['user'],
-                        'date_created' => isset($message['date_created']) ? $message['date_created'] : date('Y-m-d H:i:s'),
-                        'message_text' => $message['message_text']
-                    );
+            $collection[] = $message_entity;
 
-                    if ($this->config->isLive()) {
-                        file_put_contents($ticket_file_path, json_encode($ticket_array));
-                    }
+            // todo destination move to writter?
+            // $ticket_file_name = 'ticket_' . $ticket_id . '.json';
+            // $ticket_file_path = $this->getExportTicketMessagesOutputPath() . $ticket_file_name;
 
-                    $this->logInfo(sprintf('%s exported successfully!', $ticket_file_path));
+//            if ($this->config->isLive()) {
+//                if (is_file($ticket_file_path)) {
+//                    $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
+//                    @$ticket_array['messages'][] = array(
+//                        'person'       => $message['user'],
+//                        'date_created' => isset($message['date_created']) ? $message['date_created'] : date('Y-m-d H:i:s'),
+//                        'message_text' => $message['message_text']
+//                    );
 
-                } else {
-                    $this->logWarning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
-                }
+//                    $this->logInfo(sprintf('%s exported successfully!', $ticket_file_path));
+//
+//                } else {
+//                    $this->logWarning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
+//                }
 
-            } else {
-                if (!isset($this->read_ticket_ids[$ticket_id])) {
-                    $this->logWarning(sprintf('Source record for ticket #%s not read', $ticket_id));
-                }
-            }
+//            } else {
+//                if (!isset($this->read_ticket_ids[$ticket_id])) {
+//                    $this->logWarning(sprintf('Source record for ticket #%s not read', $ticket_id));
+//                }
+//            }
         }
+
+        return $collection;
     }
 }

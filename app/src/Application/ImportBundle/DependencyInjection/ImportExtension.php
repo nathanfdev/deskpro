@@ -63,7 +63,11 @@ class ImportExtension extends Extension
         $definition->addArgument(new Reference('deskpro.import.os_ticket_reader'));
         $container->setDefinition('deskpro.import.generator.exporter.osticket', $definition);
 
+        $definition = new Definition('Application\ImportBundle\Generator\Writer\JsonWriter');
+        $container->setDefinition('deskpro.import.generator.writer.json', $definition);
+
         $definition = new Definition('Application\ImportBundle\Generator\Generator');
+        $definition->addArgument(new Reference('deskpro.import.generator.writer.json'));
         $definition->addMethodCall('addExporter', array(new Reference('deskpro.import.generator.exporter.csv')));
         $definition->addMethodCall('addExporter', array(new Reference('deskpro.import.generator.exporter.osticket')));
 

@@ -84,7 +84,7 @@ class ExportCommand extends AbstractExportCommand
         }
 
         $progress_bar->start($output, $generator->getTotalRecordsCount());
-        $generator->generateJson();
+        $generator->generate();
 
         echo "\nDone\n";
     }

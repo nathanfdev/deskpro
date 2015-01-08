@@ -34,30 +34,11 @@ namespace Application\ImportBundle\Generator;
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator
  */
-interface GeneratorInterface
+interface GeneratorInterface extends GeneratorConfigAwareInterface
 {
     const RECORD_TYPE_PEOPLE   = 'people';
     const RECORD_TYPE_TICKETS  = 'tickets';
     const RECORD_TYPE_MESSAGES = 'messages';
-
-    const EXPORT_PEOPLE_PATH          = 'people/';
-    const EXPORT_TICKETS_PATH         = 'tickets/';
-    const EXPORT_TICKET_MESSAGES_PATH = 'tickets/';
-
-    /**
-     * Set service configuration
-     *
-     * @param GeneratorConfig $config
-     * @return $this
-     */
-    public function setConfig(GeneratorConfig $config);
-
-    /**
-     * Returns amount of records of all types to be exported
-     *
-     * @return int
-     */
-    public function getTotalRecordsCount();
 
     /**
      * Returns amount of records of the current type to be exported
@@ -68,9 +49,10 @@ interface GeneratorInterface
     public function getRecordsCountByType($type);
 
     /**
-     * Generates json files
+     * Returns a collection of records of the current type
      *
-     * @return void
+     * @param string $type
+     * @return array
      */
-    public function generateJson();
+    public function exportRecordsByType($type);
 }

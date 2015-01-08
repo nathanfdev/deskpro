@@ -45,7 +45,12 @@ class GeneratorConfig
     /**
      * @var string
      */
-    private $exporterType;
+    private $exporter_type;
+
+    /**
+     * @var array
+     */
+    private $record_types = array();
 
     /**
      * @var string
@@ -98,16 +103,34 @@ class GeneratorConfig
      */
     public function getExporterType()
     {
-        return $this->exporterType;
+        return $this->exporter_type;
     }
 
     /**
-     * @param string $exporterType
+     * @param string $exporter_type
      * @return $this
      */
-    public function setExporterType($exporterType)
+    public function setExporterType($exporter_type)
     {
-        $this->exporterType = $exporterType;
+        $this->exporter_type = $exporter_type;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getRecordTypes()
+    {
+        return $this->record_types;
+    }
+
+    /**
+     * @param string $record_type
+     * @return $this
+     */
+    public function addRecordType($record_type)
+    {
+        $this->record_types[] = $record_type;
         return $this;
     }
 

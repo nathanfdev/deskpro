@@ -35,8 +35,13 @@ use DateTime;
  * Class Ticket
  * @package Application\ImportBundle\Entity
  */
-class Ticket implements ToArrayInterface
+final class Ticket implements EntityInterface
 {
+    /**
+     * @var string
+     */
+    private $destination;
+
     /**
      * @var int
      */
@@ -86,6 +91,24 @@ class Ticket implements ToArrayInterface
      * @var array
      */
     private $messages = array();
+
+    /**
+     * @param string $destination
+     * @return $this
+     */
+    public function setDestination($destination)
+    {
+        $this->destination = $destination;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDestination()
+    {
+        return $this->destination;
+    }
 
     /**
      * @return int

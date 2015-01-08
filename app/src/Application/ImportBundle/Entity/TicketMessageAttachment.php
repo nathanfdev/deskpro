@@ -33,7 +33,7 @@ namespace Application\ImportBundle\Entity;
  * Class TicketMessageAttachment
  * @package Application\ImportBundle\Entity
  */
-class TicketMessageAttachment implements ToArrayInterface
+final class TicketMessageAttachment implements EntityInterface
 {
     /**
      * @var int
@@ -54,6 +54,14 @@ class TicketMessageAttachment implements ToArrayInterface
      * @var string
      */
     private $content_type;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDestination()
+    {
+        return '';
+    }
 
     /**
      * @return int

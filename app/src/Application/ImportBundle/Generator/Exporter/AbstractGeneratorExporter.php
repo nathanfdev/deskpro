@@ -39,33 +39,5 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
 abstract class AbstractGeneratorExporter
     extends AbstractGenerator implements GeneratorExporterInterface, LoggerAwareInterface
 {
-    /**
-     * Directory to generated people json files
-     *
-     * @return string
-     */
-    protected function getExportPeopleOutputPath()
-    {
-        return $this->config->getOutputPath() . self::EXPORT_PEOPLE_PATH;
-    }
 
-    /**
-     * Directory to generated tickets json files
-     *
-     * @return string
-     */
-    protected function getExportTicketsOutputPath()
-    {
-        return $this->config->getOutputPath() . self::EXPORT_TICKETS_PATH;
-    }
-
-    /**
-     * Directory to generated ticket messages json files
-     *
-     * @return string
-     */
-    protected function getExportTicketMessagesOutputPath()
-    {
-        return $this->config->getOutputPath() . self::EXPORT_TICKET_MESSAGES_PATH;
-    }
 }
