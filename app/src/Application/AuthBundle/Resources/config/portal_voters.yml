@@ -14,3 +14,8 @@ services:
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+    content_subscriptions.voter:
+        class: Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter
+        arguments: [@service_container]
+        tags:
+            - { name: security.voter }
