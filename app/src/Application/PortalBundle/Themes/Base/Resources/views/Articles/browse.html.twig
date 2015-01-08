@@ -2,6 +2,22 @@
 
 {% block inner_content %}
     {{ page.knowledgebase_breadcrumbs()|raw }}
+
+    <hr/>
+    <hr/>
+    {% if is_subscribed %}
+    You are subscribed.
+    {% endif %}
+    <a href="{{ path('portal_kb_article_category_toggle_subscription', { slug: category.slug }) }}">
+        {% if is_subscribed %}
+            {{ phrase('portal.general.btn-unsubscribe') }} from this category
+        {% else %}
+            {{ phrase('portal.general.btn-subscribe') }} to get an email notification when new articles are published
+        {% endif %}
+    </a>
+    <hr/>
+    <hr/>
+
     {{ page.knowledgebase()|raw }}
     {{ page.knowledgebase_articles_simple()|raw }}
     {{ page.knowledgebase_pager()|raw }}

@@ -44,10 +44,11 @@ use Application\AuthBundle\Voter\AbstractVoter;
 class ContentSubscriptionsVoter extends AbstractVoter
 {
     const SUBSCRIBE_ARTICLES = 'SUBSCRIBE_ARTICLES';
+    const SUBSCRIBE_ARTICLE_CATEGORIES = 'SUBSCRIBE_ARTICLE_CATEGORIES';
 
     protected function getSupportedAttributes()
     {
-        return array(self::SUBSCRIBE_ARTICLES);
+        return array(self::SUBSCRIBE_ARTICLES, self::SUBSCRIBE_ARTICLE_CATEGORIES);
     }
 
     protected function isGranted($attribute, $object, $user = null)
@@ -62,6 +63,8 @@ class ContentSubscriptionsVoter extends AbstractVoter
 
         switch($attribute) {
             case static::SUBSCRIBE_ARTICLES:
+                return $brand_settings->get('user.kb_subscriptions');
+            case static::SUBSCRIBE_ARTICLE_CATEGORIES:
                 return $brand_settings->get('user.kb_subscriptions');
         }
 
