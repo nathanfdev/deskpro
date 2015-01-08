@@ -67,24 +67,31 @@ class CheckJIRAIssueStatus extends AbstractTriggerTerm
 		$all = (bool) $options->get('all');
 		$status = $options->get('status');
 
+		$changeData = array();
 		if ($change = $ticket->getStateChangeRecorder()->getCombinedChangeForField('jira.status')) {
-			$data = $change->getData();
-			switch ($op) {
-				case 'changed':
-					return true;
-				case 'changed_to':
-					return isset($data['to']) && $data['to'] == $status;
-				case 'changed_from':
-					return isset($data['from']) && $data['from'] == $status;
-			}
+			$changeData = $change->getData();
 		}
 
 		$match = false;
 		foreach ($ticket->jira_issues as $issue) {
-			$match =
-				('is' === $op && $issue['status_id'] == $status)
-				||
-				('not' === $op && $issue['status_id'] != $status);
+
+			switch ($op) {
+				case 'changed':
+					$match = (bool) $changeData;
+					break;
+				case 'changed_to':
+					$match = isset($changeData['to']) && $changeData['to'] == $status;
+					break;
+				case 'changed_from':
+					$match = isset($changeData['from']) && $changeData['from'] == $status;
+					break;
+				case 'is':
+					$match = $issue['status_id'] == $status;
+					break;
+				case 'not':
+					$match = $issue['status_id'] != $status;
+					break;
+			}
 
 			// break on first false if all
 			if ($all && !$match) {
