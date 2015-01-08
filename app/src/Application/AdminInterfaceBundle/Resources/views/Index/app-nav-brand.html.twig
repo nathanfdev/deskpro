@@ -1,6 +1,16 @@
 {% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
 {% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
+	<div class="sidebar-list">
+		<div class="sidebar-brand">
+			<ul>
+				<li>
+					<a href="#"><span class="faded">Brand:</span> <span>Default Brand <i class="fa fa-sort"></i></span></a>
+				</li>
+			</ul>
+		</div>
+	</div>
+
 	{{ nav.list() }}
 		{{ nav.list_item('Brand Setup', ng_href('brand.setup'), 'brand.setup', 'fa-cogs') }}
 	{{ nav.list_end() }}
