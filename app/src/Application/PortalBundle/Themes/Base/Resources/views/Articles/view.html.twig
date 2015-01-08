@@ -52,25 +52,21 @@
             </div>
         </div>
 
-        <div class="related">
+        {% if related_articles|length %}
+            <div class="related">
 
-            <div class="titled-header">
-                <h1>{{ phrase('portal.general.related-pages') }}</h1>
+                <div class="titled-header">
+                    <h1>{{ phrase('portal.general.related-pages') }}</h1>
+                </div>
+
+                <ul>
+                    {% for related in related_articles %}
+                    <li>
+                        <a href="{{ path('portal_kb_view', { slug:related.slug }) }}"><i class="fa fa-file-text-o"></i> {{ related.realTitle }}</a>
+                    </li>
+                    {% endfor %}
+                </ul>
             </div>
-
-            <ul>
-                <li>
-                    <a href="#"><i class="fa fa-file-text-o"></i> Using a custom email address with DeskPRO Cloud <span class="text-tag">New!</span></a>
-                </li>
-
-                <li>
-                    <a href="#"><i class="fa fa-file-text-o"></i> Do you provide training?</a>
-                </li>
-
-                <li>
-                    <a href="#"><i class="fa fa-file-text-o"></i> Productivity tips for agents</a>
-                </li>
-            </ul>
-        </div>
+        {% endif %}
     </article>
 {% endblock inner_content %}

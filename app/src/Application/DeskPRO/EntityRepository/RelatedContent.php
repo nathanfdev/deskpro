@@ -2,6 +2,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
+use Application\DeskPRO\Entity\Article as ArticleEntity;
+
 /**
  * RelatedContent
  *
@@ -10,4 +12,12 @@ namespace Application\DeskPRO\EntityRepository;
  */
 class RelatedContent extends AbstractEntityRepository
 {
+    public function findRelatedArticles(ArticleEntity $article)
+    {
+       return $this->findBy(array(
+            'object_type' => 'articles',
+            'rel_object_type' => 'articles',
+            'object_id' => $article->getId()
+        ));
+    }
 }

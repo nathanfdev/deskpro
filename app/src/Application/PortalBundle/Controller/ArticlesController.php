@@ -80,10 +80,13 @@ class ArticlesController extends AbstractController
      */
     public function viewAction(Request $request, Article $article)
     {
+        $related = $this->getArticlesDataService()->getRelatedArticles($article);
+
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             array(
-                'article' => $article
+                'article' => $article,
+                'related_articles' => $related
             )
         );
     }
