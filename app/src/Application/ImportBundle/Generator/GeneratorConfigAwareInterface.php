@@ -25,21 +25,19 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator;
 
 /**
- * Tickets data generator validator
- *
- * Class Tickets
- * @package Application\ImportBundle\Generator\Validator
+ * Interface GeneratorConfigAwareInterface
+ * @package Application\ImportBundle\Generator
  */
-class Tickets implements ValidatorInterface
+interface GeneratorConfigAwareInterface
 {
     /**
-     * {@inheritdoc}
+     * Set service configuration
+     *
+     * @param GeneratorConfig $config
+     * @return $this
      */
-    public function validateRawRecordData(array $data)
-    {
-        return true;
-    }
+    public function setConfig(GeneratorConfig $config);
 }

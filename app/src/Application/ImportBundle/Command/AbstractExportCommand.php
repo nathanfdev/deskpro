@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\GeneratorExporterInterface;
+use Application\ImportBundle\Generator\GeneratorInterface;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
@@ -54,6 +55,10 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     protected function createGeneratorConfig(InputInterface $input)
     {
         $config = new GeneratorConfig();
+        $config
+            ->addRecordType(GeneratorInterface::RECORD_TYPE_PEOPLE)
+            ->addRecordType(GeneratorInterface::RECORD_TYPE_MESSAGES);
+
         $this->setParamsByDeskProConfig($config);
         $this->setParamsByInputInterface($config, $input);
 

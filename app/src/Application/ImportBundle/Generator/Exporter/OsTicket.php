@@ -33,7 +33,10 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
+use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
+use Application\ImportBundle\Entity;
+use DateTime;
 
 /**
  * Data generator from OsTicket
@@ -69,15 +72,6 @@ class OsTicket extends AbstractGeneratorExporter
     /**
      * {@inheritdoc}
      */
-    public function getTotalRecordsCount()
-    {
-        return $this->getRecordsCountByType(self::RECORD_TYPE_PEOPLE)
-             + $this->getRecordsCountByType(self::RECORD_TYPE_TICKETS);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
     public function getRecordsCountByType($type)
     {
         switch ($type) {
@@ -93,45 +87,47 @@ class OsTicket extends AbstractGeneratorExporter
     /**
      * {@inheritdoc}
      */
-    public function generateJson()
+    public function exportRecordsByType($type)
     {
-        try {
-            $this->exportPeople();
-            $this->exportTickets();
-
-        } catch (\Exception $ex) {
-            $this->logWarning($ex->getMessage());
+        switch ($type) {
+            case GeneratorInterface::RECORD_TYPE_PEOPLE:
+                return $this->exportPeople();
+            case GeneratorInterface::RECORD_TYPE_TICKETS:
+                return $this->exportTickets();
+            default:
+                throw new \Exception('This record type `%s` is not supported', $type);
         }
     }
 
     /**
-     * @return void
+     * @return array
      */
     protected function exportPeople()
     {
         $index  = 1;
         $offset = 0;
 
+        $collection   = array();
         $person_batch = $this->findAllStaff($offset);
 
         while ($person_batch) {
             foreach ($person_batch as $person) {
-                $transformed = array(
-                    'oid'          => $index,
-                    'is_agent'     => true,
-                    'first_name'   => $person['firstname'],
-                    'last_name'    => $person['lastname'],
-                    'timezone'     => $this->findTimezoneFromId($person['timezone_id']),
-                    'date_created' => $person['created'],
-                    'emails'       => array($person['email']),
-                );
+                $this->advanceProgressBar();
 
-                $file_name = 'person' . $index . '.json';
-                if ($this->config->isLive()) {
-                    file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformed));
-                }
+                $person_entity = new Entity\Person();
+                $person_entity
+                    ->setOid($index)
+                    ->setAsAgent(true)
+                    ->setFirstName($person['firstname'])
+                    ->setLastName($person['lastname'])
+                    ->setTimezone($this->findTimezoneFromId($person['timezone_id']))
+                    ->setDateCreated(new DateTime($person['created']))
+                    ->addEmail($person['email']);
 
-                $this->logInfo(sprintf('%s exported successfully!', $file_name));
+                $collection[] = $person_entity;
+
+//                $file_name = $this->getExportPeopleOutputPath() . 'person' . $index . '.json';
+//                $this->logInfo(sprintf('%s exported successfully!', $file_name));
 
                 $index++;
                 $offset++;
@@ -142,51 +138,54 @@ class OsTicket extends AbstractGeneratorExporter
         }
 
         foreach ($this->findAllUser() as $person) {
-            $transformed = array(
-                'oid'          => $index,
-                'is_user'      => true,
-                'name'         => $person['name'],
-                'date_created' => $person['created'],
-                'emails'       => array($person['address']),
-            );
-
-            $file_name = 'person' . $index . '.json';
-            if ($this->config->isLive()) {
-                file_put_contents($this->getExportPeopleOutputPath() . $file_name, json_encode($transformed));
-            }
-
             $this->advanceProgressBar();
-            $this->logInfo(sprintf('%s exported successfully!', $file_name));
+
+            $person_entity = new Entity\Person();
+            $person_entity
+                ->setOid($index)
+                ->setAsUser(true)
+                ->setName($person['name'])
+                ->setDateCreated(new DateTime($person['created']))
+                ->addEmail($person['address']);
+
+            $collection[] = $person_entity;
+
+//            $file_name = $this->getExportPeopleOutputPath() . 'person' . $index . '.json';
+//            $this->logInfo(sprintf('%s exported successfully!', $file_name));
 
             $index++;
         }
+
+        return $collection;
     }
 
     /**
-     * @return void
+     * @return array
      */
     protected function exportTickets()
     {
         $index = 1;
         $offset = 0;
 
+        $collection   = array();
         $ticket_batch = $this->findAllTickets($offset);
 
-        while ($ticket_batch) {
+        while ($ticket_batch = $this->findAllTickets($offset)) {
             foreach ($ticket_batch as $ticket) {
-                $transformed = array(
-                    'ref'          => !empty($ticket['number']) ? $ticket['number'] : null,
-                    'department'   => $this->findDepartmentFromId($ticket['dept_id']),
-                    'person'       => $this->findUserEmailFromId($ticket['user_id']),
-                    'agent'        => $this->findUserEmailFromId($ticket['staff_id']) ?: null,
-                    'agent_team'   => $this->findUserEmailFromId($ticket['team_id']) ?: null,
-                    'status'       => $ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent',
-                    'date_created' => $ticket['created'],
-                    'subject'      => $ticket['subject'],
-                    'priority'     => $ticket['priority'],
-                );
+                $ticket_entity = new Entity\Ticket();
+                $ticket_entity
+                    ->setRef(!empty($ticket['number']) ? $ticket['number'] : null)
+                    ->setDepartment($this->findDepartmentFromId($ticket['dept_id']))
+                    ->setPerson($this->findUserEmailFromId($ticket['user_id']))
+                    ->setAgent($this->findUserEmailFromId($ticket['staff_id']) ?: null)
+                    ->setAgentTeam($this->findUserEmailFromId($ticket['team_id']) ?: null)
+                    ->setStatus($ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent')
+                    ->setDateCreated(new DateTime($ticket['created']))
+                    ->setSubject($ticket['subject'])
+                    ->setPriority($ticket['priority']);
 
-                foreach ($this->findMessageThreadFromId($ticket['ticket_id']) as $message_thread) {
+                $ticket_messages = $this->findMessageThreadFromId($ticket['ticket_id']);
+                foreach ($ticket_messages as $message_thread) {
                     $person_email = null;
                     if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {
                         $person_email = $this->findStaffEmailFromId($message_thread['staff_id']);
@@ -195,42 +194,40 @@ class OsTicket extends AbstractGeneratorExporter
                         $person_email = $this->findUserEmailFromId($message_thread['user_id']);
                     }
 
-                    $message_array = array(
-                        'person'       => $person_email,
-                        'date_created' => $message_thread['created'],
-                        'message_text' => $message_thread['body']
-                    );
+                    $message_entity = new Entity\TicketMessage();
+                    $message_entity
+                        ->setPersonEmail($person_email)
+                        ->setDateCreated(new DateTime($message_thread['created']))
+                        ->setMessageText($message_thread['body']);
 
-                    if ($this->findTicketAttachment($ticket['ticket_id'])) {
-                        $attachments = $this->findTicketAttachment($ticket['ticket_id']);
-
+                    $attachments = $this->findTicketAttachment($ticket['ticket_id']);
+                    if ($attachments) {
                         foreach ($attachments as $attachment) {
                             $file_data = $this->getFileData($attachment['file_id']);
-                            $message_array['attachments'][] = array(
-                                'oid'          => $index,
-                                'blob_data'    => base64_encode($file_data),
-                                'file_name'    => $attachment['name'],
-                                'content_type' => $attachment['type']
-                            );
+                            $attachment_entity = new Entity\TicketMessageAttachment();
+                            $attachment_entity
+                                ->setOid($index)
+                                ->setBlobData(base64_encode($file_data))
+                                ->setFileName($attachment['name'])
+                                ->setContentType($attachment['type']);
+
+                            $message_entity->addAttachment($attachment_entity);
                         }
                     }
 
-                    $transformed['messages'][] = $message_array;
+                    $ticket_entity->addMessage($message_entity);
                 }
 
-                $file_name = 'ticket' . $index++ . '.json';
-                if ($this->config->isLive()) {
-                    file_put_contents($this->getExportTicketsOutputPath() . $file_name, json_encode($transformed));
-                }
+//                $file_name = $this->getExportTicketsOutputPath() . 'ticket' . $index++ . '.json';
+//                $this->logInfo(sprintf('%s exported successfully!', $file_name));
 
-                unset($transformed);
+                $collection[] = $ticket_entity;
+
                 $offset++;
-
-                $this->logInfo(sprintf('%s exported successfully!', $file_name));
                 $this->advanceProgressBar();
             }
-
-            $ticket_batch = $this->findAllTickets($offset);
         }
+
+        return $collection;
     }
 }

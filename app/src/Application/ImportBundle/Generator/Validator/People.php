@@ -38,7 +38,7 @@ class People implements ValidatorInterface
     /**
      * {@inheritdoc}
      */
-    public function validateRawData(array $data)
+    public function validateRawRecordData(array $data)
     {
         return true;
     }

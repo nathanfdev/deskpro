@@ -41,5 +41,5 @@ interface ValidatorInterface
      * @param array $data
      * @return bool
      */
-    public function validateRawData(array $data);
+    public function validateRawRecordData(array $data);
 }

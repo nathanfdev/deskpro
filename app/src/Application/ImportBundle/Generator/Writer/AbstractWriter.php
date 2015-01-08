@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,21 +25,27 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Writer;
+
+use Application\ImportBundle\Generator\GeneratorConfig;
 
 /**
- * Tickets data generator validator
- *
- * Class Tickets
- * @package Application\ImportBundle\Generator\Validator
+ * Class AbstractWriter
+ * @package Application\ImportBundle\Generator\Writer
  */
-class Tickets implements ValidatorInterface
+abstract class AbstractWriter implements GeneratorWriterInterface
 {
+    /**
+     * @var GeneratorConfig
+     */
+    protected $config;
+
     /**
      * {@inheritdoc}
      */
-    public function validateRawRecordData(array $data)
+    public function setConfig(GeneratorConfig $config)
     {
-        return true;
+        $this->config = $config;
+        return $this;
     }
 }

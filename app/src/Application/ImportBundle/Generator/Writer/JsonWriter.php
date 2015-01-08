@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,21 +25,50 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Writer;
 
 /**
- * Tickets data generator validator
- *
- * Class Tickets
- * @package Application\ImportBundle\Generator\Validator
+ * Class JsonWriter
+ * @package Application\ImportBundle\Generator\Writer
  */
-class Tickets implements ValidatorInterface
+class JsonWriter extends AbstractWriter
 {
     /**
      * {@inheritdoc}
      */
-    public function validateRawRecordData(array $data)
+    public function writeData($destination, array $data)
     {
+        $this->createOutputDirsIfNotExist();
+        if ($this->config->isLive()) {
+            file_put_contents($destination, json_encode($data));
+        }
+
         return true;
+    }
+
+    /**
+     * Make output directories if not exist
+     *
+     * @throws \Exception
+     */
+    private function createOutputDirsIfNotExist()
+    {
+        if (!$this->config) {
+            throw new \Exception('Generator configuration is not set up');
+        }
+
+        if (!is_dir($this->config->getOutputPath())) {
+            throw new \InvalidArgumentException(sprintf(
+                'Invalid configuration: data_path is invalid (got %s)',
+                $this->config->getOutputPath())
+            );
+        }
+        if ($this->config->isLive()) {
+            foreach ($this->config->getRecordTypes() as $n) {
+                if (!is_dir($this->config->getOutputPath() . $n)) {
+                    mkdir($this->config->getOutputPath() . $n, 0777, true);
+                }
+            }
+        }
     }
 }
