@@ -1,0 +1,32 @@
+{% macro list() %}
+    <div class="sidebar-list">
+        <ul>
+{% endmacro %}
+
+{% macro list_end() %}
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro list_item(title, href, state_mark, icon) %}
+    <li>
+        <a href="{{ href }}" class="item" dp-state-mark="{{ state_mark }}"><i class="fa {{ icon }}"></i> {{ title }}</a>
+    </li>
+{% endmacro %}
+
+{% macro list_subitem(title, href, state_mark, icon) %}
+    <li>
+        <a href="{{ href }}" class="item" dp-state-mark="{{ state_mark }}"><i class="fa {{ icon }}"></i> {{ title }}</a>
+    </li>
+{% endmacro %}
+
+{% macro list_item_group(title, icon) %}
+    <li>
+        <a href="{{ href }}" class="item" dp-state-mark="{{ state_mark }}"><i class="fa {{ icon }}"></i> {{ title }}</a>
+        <ul class="with-connectors">
+{% endmacro %}
+
+{% macro list_item_group_end() %}
+        </ul>
+    </li>
+{% endmacro %}

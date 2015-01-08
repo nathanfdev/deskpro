@@ -1,0 +1,599 @@
+// Sidebar contains all the styles for the filter sidebar on the left.
+// Combination of content from sidebar.html (main styles) and sidebar-kb.html (knowledge base specifics)
+//
+
+.sidebar {
+  background: $sidebar-background;
+  font-weight: 400;
+
+  a {
+    text-decoration: none;
+    color: $sidebar-link-color;
+  }
+
+}
+
+
+
+.list-sidebar-title {
+  background: #e1e6eb;
+  padding: 7px;
+  border-top: 1px solid $global-border;
+  border-bottom: 1px solid $global-border;
+  margin-top: 30px;
+  color: #2b77b5;
+  text-transform: uppercase;
+  font-size: 0.95em;
+  font-weight: 600;
+
+  // Controls on the title (me/all buttons on the side of the title)
+  .controls {
+    float: right;
+    font-weight: 800;
+    font-size: 10px;
+
+    a {
+      display: inline-block;
+      line-height: 1em;
+      padding: 3px 5px;
+      font-size: 0.9em;
+      vertical-align: top;
+      margin-left: 5px;
+      border: 1px solid $global-border;
+      color: $global-border;
+    }
+
+    a:hover, a.active {
+      color: $top-bar-blue;
+      background: #fff;
+    }
+  }
+
+  .calendar-controls {
+    font-size: 0.8em;
+
+    a {
+      padding: 3px 5px;
+      display: inline-block;
+      line-height: 1em;
+      border: 1px solid $global-border;
+      border-radius: 2px;
+      background: #fff;
+    }
+
+    .year {
+      color: #5b5b5b;
+      font-weight: 800;
+      padding-left: 8px;
+      padding-right: 8px;
+      margin-left: 7px;
+      margin-right: 3px;
+
+      i { margin-left: 5px; }
+    }
+
+    .calendar {
+      color: $top-bar-blue;
+      i { position: relative; top: -1px; }
+    }
+  }
+}
+
+
+.list-sidebar-title.list-sidebar-title-kb {
+  border: 0px;
+  background: none;
+  margin-top: 5px;
+  margin-bottom: 0px;
+  padding-left: 10px;
+  padding-right: 4px;
+}
+
+
+
+
+// SLA on any kind of sidebar .item | these should work in any .item
+.sla {
+  margin-top: 5px;
+  font-size: 0.8em;
+  font-weight: 700;
+  line-height: 1em;
+
+  span {
+    margin-right: 5px;
+    padding: 0px 5px;
+  }
+
+  .selected, span:hover {
+    background: #1a476d;
+    color: #fff;
+    border-radius: 99px;
+  }
+
+  span:before {
+    content: " ";
+    display: inline-block;
+    width: 5px;
+    height: 5px;
+    position: relative;
+    top: -1px;
+    margin-right: 4px;
+    background: #3acf5d;
+    border-radius: 199px;
+  }
+
+  span.sla-yellow:before {
+    background: #f6be1a;
+  }
+
+  span.sla-red:before {
+    background: #ff5460;
+  }
+}
+
+
+.sidebar-collapse {
+  position: absolute;
+  top: 4px;
+  right: 4px;
+  background: #c5ced8;
+  border-radius: 2px;
+  display: inline-block;
+  padding: 3px 4px;
+  font-size: 0.9em;
+}
+
+// Forms in sidebars
+.sidebar {
+  form {
+    padding: 10px;
+    .title {
+      @include clearfix;
+      position: relative;
+      margin-bottom: 5px;
+
+      span {
+        font-weight: 700;
+        font-size: 1.1em;
+        color: #a8aaaf;
+      }
+
+      a {
+        position: absolute;
+        bottom: 0px;
+        right: 0px;
+        text-decoration: underline;
+        font-size: 0.95em;
+      }
+    }
+
+    input, textarea {
+      display: block;
+      width: 100%;
+      background: #e1e6eb;
+      color: #5b5e68;
+      font-family: Lato;
+      line-height: 1em;
+      padding: 5px 5px;
+      border: 1px solid #bdbdbd;
+      border-radius: 2px;
+      margin-bottom: 5px;
+
+      @include placeholder {
+        color: #5b5e68;
+        font-style: normal;
+        opacity: 1;
+      }
+    }
+
+    input[type="button"], .button, button {
+      background: #6899c1;
+      border: 0px;
+      padding: 8px;
+      color: #fff;
+    }
+  }
+}
+
+// Top of the sidebar tabs
+.sidebar-tabs {
+  @extend %flat-list;
+  @extend %inline-list;
+  font-weight: 700;
+  background: #e1e6eb;
+  border-bottom: 1px solid #cfd0d0;
+  padding-top: 3px;
+  padding-left: 3px;
+  cursor: default;
+
+  li {
+    position: relative;
+    top: 1px;
+    border: 1px solid rgba(0, 0, 0, 0);
+    border-right: 1px solid #d0d4d9;
+    &:last-child { border-right: 0px; }
+  }
+
+  a {
+    display: block;
+    padding: 3px 5px;
+    color: #a0a3a6;
+    text-transform: uppercase;
+    font-size: 0.85em;
+  }
+
+  li.active, li:hover {
+    border: 1px solid #cbcccd;
+    border-bottom: 1px solid rgba(0, 0, 0, 0);
+    background: #f5f6f7;
+    a { color: $sidebar-link-color; }
+  }
+}
+
+// A large list of sidebar items (and sublists)
+.sidebar-list {
+  font-weight: 400;
+  line-height: 18px;
+
+  ul {
+    @extend %flat-list;
+    margin-left: 15px;
+    margin-bottom: 10px;
+  }
+
+  li {
+    display: block;
+    &:last-child { border-bottom: 0px; }
+    position: relative;
+  }
+
+  > ul {
+    margin-left: 0px;
+
+    > li {
+      border-bottom: 1px solid $sidebar-divider;
+      margin-left: 0px;
+      > .item { padding-left: 12px; }
+    }
+  }
+
+  > ul > li ul {
+    .list-counter {
+      background: #dcddde;
+      color: #8c8c8d;
+    }
+  }
+
+  a.item {
+    display: block;
+    padding: 6px 5px;
+    padding-left: 16px;
+    color: #5b5b5b;
+    padding-right: 40px;
+    @extend %whitespace;
+    position: relative;
+
+    > i {
+      display: inline-block;
+      width: 18px;
+      text-align: center;
+      margin-left: -5px;
+      color: #979797;
+    }
+
+    &:hover {
+      background: $top-bar-blue;
+      color: #fff;
+      position: relative;
+      z-index: 89;
+
+      i {
+        color: #fff;
+      }
+
+      &:before {
+        content: "";
+        background: darken($top-bar-blue, 15%);
+        width: 7px;
+        height: 100%;
+        position: absolute;
+        top: 0px;
+        left: -1px;
+        z-index: 999;
+      }
+    }
+  }
+
+  a.item.item-strong {
+    font-weight: 700;
+    border-bottom: 1px solid $sidebar-divider;
+    margin-bottom: 5px;
+    position: relative;
+  }
+
+  .with-connectors {
+    // Between the main line and items (horizontal small lines)
+    position: relative;
+
+    // vertical line on secondary list
+    &:after {
+      display: block;
+      content: " ";
+      position: absolute;
+      left: -0px;
+      top: 0px;
+      width: 1px;
+      height: 100%;
+      background: #c7c8c9;
+      z-index: 81;
+    }
+
+    > li:after {
+      display: block;
+      content: " ";
+      position: absolute;
+      left: 5px;
+      top: 14px;
+      width: 5px;
+      height: 1px;
+      background: #c7c8c9;
+      z-index: 82;
+    }
+  }
+
+  .list-icon {
+    display: inline-block;
+    width: 16px;
+    height: 16px;
+    background-color: $sidebar-background;
+    z-index: 89;
+    text-align: center;
+    border-radius: 2px;
+    overflow: hidden;
+    vertical-align: middle;
+    position: relative;
+    margin-right: 3px;
+    margin-top: -4px;
+  }
+
+
+  // Custom status icons
+  a.status-icon, .status-icon {
+    background: #56b3ff;
+    display: block;
+    width: 16px;
+    height: 16px;
+    border-radius: 2px;
+    color: #fff;
+    font-weight: 700;
+    font-size: 10px;
+    line-height: 1.5em;
+
+    // position text or icons in the container
+    span, .fa {
+      position: relative;
+      top: 3px;
+    }
+
+    &.red { background: red;}
+
+    &.green { background: green; }
+
+    &.black { background: #fff; }
+  }
+
+  .sidebar-brand {
+    padding: 5px;
+    background: #e1e6eb;
+    border-bottom: 1px solid #dedfe0;
+
+    * { vertical-align: middle; }
+
+    a {
+      @extend %whitespace;
+      display: block;
+      text-decoration: none;
+      background: #f1f4f6;
+      border: 1px solid #c1cad4;
+      border-radius: 2px;
+      padding: 2px;
+      padding-right: 20px;
+      position: relative;
+
+      i {
+        position: absolute;
+        right: 10px;
+        top: 9px;
+      }
+    }
+
+    .faded { opacity: 0.5; }
+
+    .brand-logo {
+      display: inline-block;
+      width: 24px;
+      height: 24px;
+      border-radius: 2px;
+      text-align: center;
+      background: rgba(0, 0, 0, 0.1);
+      margin-right: 5px;
+    }
+
+    ul {
+      @extend %flat-list;
+
+      li {
+        a {
+          border-bottom: 0px;
+          border-radius: 0px;
+        }
+
+        &:last-child {
+          a {
+            border-bottom: 1px solid #c1cad4;
+          }
+        }
+      }
+    }
+  }
+
+  .flag {
+    background: none;
+    background-repeat: no-repeat;
+    background-size: 100%;
+    background-position: center center;
+  }
+
+  .avatar {
+    display: block;
+    width: 16px;
+    height: 16px;
+    border-radius: 199px;
+    background-size: cover;
+  }
+
+}
+
+a.item.urgent {
+  color: #fff;
+  padding: 0px;
+  border-radius: 2px;
+  line-height: 20px;
+  margin: 6px 20px;
+  margin-right: 40px;
+  margin-left: 20px;
+  height: 20px;
+  position: relative;
+  top: 5px;
+
+  &.level-1 { background: #70de7d; }
+  &.level-2 { background: #aede70; }
+  &.level-3 { background: #bbde70; }
+  &.level-4 { background: #ffa454; }
+  &.level-5 { background: #ff9454; }
+  &.level-6 { background: #ff7854; }
+  &.level-7 { background: #ff6054; }
+  &.level-8 { background: #e53f3f; }
+  &.level-9 { background: #cf2d2d; }
+
+  .label {
+    display: inline-block;
+    padding: 0px 5px;
+  }
+
+  .level {
+    float: right;
+    border-left: 1px solid rgba(0, 0, 0, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    padding: 0px 7px;
+  }
+
+  &:hover {
+    &:before { display: none; }
+  }
+}
+
+
+// Numbers next to list items
+.list-counter-bucket {
+  display: inline-block;
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding-right: 5px;
+  font-size: 0.9em;
+  z-index: 99;
+
+  a {
+    display: inline-block;
+    line-height: 1em;
+    padding: 4px;
+    text-align: center;
+    position: relative;
+    top: 5px;
+    z-index: 99;
+    color: #fff;
+
+    i {
+      font-size: 1.3em;
+      line-height: 0.4em;
+      position: relative;
+      top: 1px;
+      left: -1px;
+      color: #333;
+    }
+  }
+
+  a.list-counter.list-counter-button {
+    color: #fff;
+    background: $green;
+
+    &:hover {
+      background: darken($green, 10%);
+      color: #fff;
+    }
+  }
+
+  a.list-counter, .list-counter, a.list-counter-dropdown, .list-counter-dropdown  {
+    background: $sidebar-color-selected-counter;
+    border-radius: 2px;
+    color: #fff;
+
+    &.active, &:hover {
+      background: rgba(255, 255, 255, 1);
+      color: #000;
+    }
+  }
+}
+
+
+.sidebar-apps {
+  position: fixed;
+  bottom: 0px;
+  background: #e1e6eb;
+  border-top: 1px solid $global-border;
+  width: 100%;
+  width: 220px;
+  z-index: 99;
+  text-align: center;
+
+  .title {
+    text-transform: uppercase;
+    margin: 8px;
+    font-weight: 800;
+    font-size: 0.9em;
+    color: #646464;
+  }
+
+  .app {
+    display: inline-block;
+    width: 30%;
+    margin-bottom: 10px;
+    position: relative;
+    text-align: center;
+
+    a {
+      display: inline-block;
+      width: 50px;
+      height: 50px;
+      border-radius: 2px;
+      border-bottom: 1px solid #b4b8bc;
+      background: #f0f3f5;
+
+    }
+
+    span {
+      margin-top: 5px;
+      display: block;
+      position: relative;
+      color: #333;
+    }
+
+    i {
+      position: relative;
+      top: 16px;
+      font-size: 1.4em;
+      color: #abacac;
+    }
+  }
+}

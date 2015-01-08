@@ -1,9 +1,8 @@
 {% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
-	<nav class="dp-appnav">
-		<ul>
-			<li dp-state-mark="apps.apps"><a href="#/apps/apps"><i class="fa fa-puzzle-piece"></i> {{ phrase('adm.general.apps') }}</a></li>
-			<li dp-state-mark="apps.api_keys"><a href="#/apps/api_keys"><i class="fa fa-key"></i> {{ phrase('adm.general.api_keys') }}</a></li>
-		</ul>
-	</nav>
+	{{ nav.list() }}
+		{{ nav.list_item(phrase('adm.general.apps'), ng_href('apps.apps'), 'apps.apps', 'fa-puzzle-piece') }}
+		{{ nav.list_item(phrase('adm.general.api_keys'), ng_href('apps.api_keys'), 'apps.api_keys', 'fa-key') }}
+	{{ nav.list_end() }}
 {% endblock %}

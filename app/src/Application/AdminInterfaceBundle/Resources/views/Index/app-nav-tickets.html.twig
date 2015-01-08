@@ -1,60 +1,41 @@
 {% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
-	<nav class="dp-appnav">
-		<ul>
+	{{ nav.list() }}
+		{% if app.getSetting('experimental_admin_features') %}
+			{{ nav.list_item_group('Triggers', 'fa-tasks') }}
+				{{ nav.list_item('Email', ng_href('tickets.ticket_accounts'), 'tickets.ticket_accounts', 'fa-envelope') }}
+				{{ nav.list_item('SMS', ng_href('tickets.channel_sms'), 'tickets.ticket_accounts', 'fa-group') }}
+				{{ nav.list_item('Facebook', ng_href('tickets.channel_facebook'), 'tickets.ticket_accounts', 'fa-group') }}
+			{{ nav.list_item_group_end() }}
+		{% endif %}
 
-			{% if app.getSetting('experimental_admin_features') %}
-			<li>
-				<a href="#"><i class="fa fa-tasks"></i> <span>Channels</span> <i class="fa fa-caret-down"></i></a>
-				<ul dp-nav-subnav>
-					<li dp-state-mark="tickets.ticket_accounts"><a href="#/tickets/ticket_accounts"><i
-								class="fa fa-envelope"></i> <span>Email</span><i class="fa fa-caret-right"></i></a>
-					</li>
-					<li dp-state-mark="tickets.channel_sms"><a href="#/tickets/channel_sms"><i
-								class="fa fa-group"></i> <span>SMS</span><i class="fa fa-caret-right"></i></a>
-					</li>
-					<li dp-state-mark="tickets.channel_facebook"><a href="#/tickets/channel_facebook"><i
-								class="fa fa-group"></i> <span>Facebook</span><i class="fa fa-caret-right"></i></a>
-					</li>
-				</ul>
-			</li>
-			{% endif %}
+		{{ nav.list_item('Departments', ng_href('tickets.ticket_deps'), 'tickets.ticket_deps', 'fa-briefcase') }}
 
+		{%  if not app.getSetting('experimental_admin_features') %}
+			{{ nav.list_item('Email Accounts', ng_href('tickets.ticket_accounts'), 'tickets.ticket_accounts', 'fa-envelope') }}
+		{% endif %}
 
-			<li dp-state-mark="tickets.ticket_deps"><a href="#/tickets/ticket_deps"><i class="fa fa-briefcase"></i>
-					<span>Departments</span><i class="fa fa-caret-right"></i></a></li>
+		{{ nav.list_item('Statuses', ng_href('tickets.statuses'), 'tickets.statuses', 'fa-ticket') }}
+		{{ nav.list_item('Urgency', ng_href('tickets.urgency'), 'tickets.urgency', 'fa-exclamation') }}
+		{{ nav.list_item('Fields', ng_href('tickets.fields'), 'tickets.fields', 'fa-terminal') }}
 
-			{%  if not app.getSetting('experimental_admin_features') %}
-			<li dp-state-mark="tickets.ticket_accounts"><a href="#/tickets/ticket_accounts"><i
-						class="fa fa-envelope"></i> <span>Email Accounts</span><i class="fa fa-caret-right"></i></a>
-			</li>
-			{% endif %}
+		{{ nav.list_item_group('Triggers', 'fa-tasks') }}
+			{{ nav.list_subitem('New Ticket', ng_href('tickets.triggers', {type: "newticket"}), 'type:tickets.triggers.newticket', 'fa-user') }}
+			{{ nav.list_subitem('New Reply', ng_href('tickets.triggers', {type: "newreply"}), 'type:tickets.triggers.newreply', 'fa-group') }}
+			{{ nav.list_subitem('Ticket Update', ng_href('tickets.triggers', {type: "update"}), 'type:tickets.triggers.update', 'fa-group') }}
+		{{ nav.list_item_group_end() }}
 
-			<li dp-state-mark="tickets.statuses"><a href="#/tickets/statuses"><i class="fa fa-ticket"></i> <span>Statuses</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.urgency"><a href="#/tickets/urgency"><i class="fa fa-exclamation"></i> <span>Urgency</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.fields"><a href="#/tickets/fields"><i class="fa fa-terminal"></i> <span>Fields</span><i class="fa fa-caret-right"></i></a></li>
-
-			<li>
-				<a href="#"><i class="fa fa-tasks"></i> <span>Triggers</span> <i class="fa fa-caret-down"></i></a>
-				<ul dp-nav-subnav>
-					<li dp-state-mark="type:tickets.triggers.newticket"><a href="#/tickets/triggers/newticket"><i class="fa fa-user"></i> <span>New Ticket</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="type:tickets.triggers.newreply"><a href="#/tickets/triggers/newreply"><i class="fa fa-group"></i> <span>New Reply</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="type:tickets.triggers.update"><a href="#/tickets/triggers/update"><i class="fa fa-group"></i> <span>Ticket Update</span><i class="fa fa-caret-right"></i></a></li>
-				</ul>
-			</li>
-
-
-			<li dp-state-mark="tickets.macros"><a href="#/tickets/macros"><i class="fa fa-keyboard-o"></i> <span>Macros</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.ticket_filters"><a href="{{ ng_href('tickets.ticket_filters') }}"><i class="fa fa-filter"></i> <span>Filters</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.satisfaction"><a href="{{ ng_href('tickets.satisfaction') }}"><i class="fa fa-smile-o"></i> <span>Satisfaction</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.ticket_escalations"><a href="{{ ng_href('tickets.ticket_escalations') }}"><i class="fa fa-bolt"></i> <span>Escalations</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.slas"><a href="#/tickets/slas"><i class="fa fa-clock-o"></i> <span>SLAs</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.labels"><a href="#/tickets/labels"><i class="fa fa-tags"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
-            <li dp-state-mark="tickets.roundrobin"><a href="#/tickets/roundrobin"><i class="fa fa-refresh"></i> <span>Round Robin</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.timelog_billing"><a href="{{ ng_href('tickets.timelog_billing') }}"><i class="fa fa-usd"></i> <span>Time Log &amp; Billing</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.email_templates"><a href="#/tickets/email_templates"><i class="fa fa-file-text"></i> <span>Email Templates</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.fwd_settings"><a href="{{ ng_href('tickets.fwd_settings') }}"><i class="fa fa-mail-forward"></i> <span>Forward Settings</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="tickets.settings"><a href="#/tickets/settings"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
-		</ul>
-	</nav>
+		{{ nav.list_item('Macros', ng_href('tickets.macros'), 'tickets.macros', 'fa-keyboard-o') }}
+		{{ nav.list_item('Filters', ng_href('tickets.ticket_filters'), 'tickets.ticket_filters', 'fa-filter') }}
+		{{ nav.list_item('Satisfaction', ng_href('tickets.satisfaction'), 'tickets.satisfaction', 'fa-smile-o') }}
+		{{ nav.list_item('Escalations', ng_href('tickets.ticket_escalations'), 'tickets.ticket_escalations', 'fa-bolt') }}
+		{{ nav.list_item('SLAs', ng_href('tickets.slas'), 'tickets.slas', 'fa-clock-o') }}
+		{{ nav.list_item('Labels', ng_href('tickets.labels'), 'tickets.labels', 'fa-tags') }}
+		{{ nav.list_item('Round Robin', ng_href('tickets.roundrobin'), 'tickets.roundrobin', 'fa-refresh') }}
+		{{ nav.list_item('Time Log & Billing', ng_href('tickets.timelog_billing'), 'tickets.timelog_billing', 'fa-usd') }}
+		{{ nav.list_item('Email Templates', ng_href('tickets.email_templates'), 'tickets.email_templates', 'fa-file-text') }}
+		{{ nav.list_item('Forward Settings', ng_href('tickets.fwd_settings'), 'tickets.fwd_settings', 'fa-mail-forward') }}
+		{{ nav.list_item('Settings', ng_href('tickets.settings'), 'tickets.settings', 'fa-cog') }}
+	{{ nav.list_end() }}
 {% endblock %}

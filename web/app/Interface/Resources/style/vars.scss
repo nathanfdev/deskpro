@@ -1,0 +1,57 @@
+$web-path: "../../../..";
+$ifce-res-path: $web-path + "/app/Interface/Resources";
+$ifce-img-path: $ifce-res-path + "/img";
+
+// Agent interface variables
+
+$global-border: #cacfd3;
+$text-color: #333;
+$link-color: #333;
+$text-color-secondary: #757575;
+
+// Live Results Stuff
+$results-text-color: #5b5e68;
+$results-background: #ededed;
+$header-background: #e1e6eb;
+$results-link: #1c4f7a;
+
+// Sidebar
+$sidebar-background: #f5f6f7;
+
+$sidebar-link-color: #5b5b5b;
+$sidebar-divider: #dedfe0;
+$sidebar-left-padding: 10px;// Default left padding for aligning text on the left
+
+$sidebar-color-selected: #2b77b5;
+$sidebar-color-selected-counter: #6899c1;
+
+// Colors
+$yellow: #ffc65e;
+$orange: #fa7313;
+$green: #3bb870;
+$grey: #bfc3c6;
+$text-grey: #898989;
+$blue: #4681b2;
+
+// Top bar
+$top-bar-blue: #4681b2;
+$top-bar-text-color: #fff;
+
+// Invisible classes
+%whitespace {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+%flat-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+%inline-list {
+  li {
+    display: inline-block;
+  }
+}

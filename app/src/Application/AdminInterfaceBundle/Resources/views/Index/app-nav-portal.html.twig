@@ -1,54 +1,29 @@
 {% extends 'AdminInterfaceBundle:Layout:app.html.twig' %}
+{% import 'AdminInterfaceBundle:Index:app-nav-macros.html.twig' as nav %}
 {% block nav_content %}
-	<nav class="dp-appnav">
-		<ul>
-			<li dp-state-mark="portal.portal_editor"><a href="{{ ng_href('portal.portal_editor') }}"><i class="fa fa-columns"></i> <span>Portal Editor</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="portal.settings">
-				<a href="{{ ng_href('portal.settings') }}">
-					<i class="fa fa-cog"></i>
-					<span>Settings</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="portal.embed">
-				<a href="{{ ng_href('portal.embeds') }}">
-					<i class="fa fa-code"></i>
-					<span>Embed</span>
-					<i class="fa fa-caret-right"></i>
-				</a>
-			</li>
-			<li dp-state-mark="portal.templates"><a href="{{ ng_href('portal.templates') }}"><i class="fa fa-columns"></i> <span>Templates</span><i class="fa fa-caret-right"></i></a></li>
-			<li dp-state-mark="portal.kb">
-				<a href="#"><i class="fa fa-files-o"></i> <span>Knowledgebase</span><i class="fa fa-caret-down"></i></a>
-				<ul dp-nav-subnav>
-					<li dp-state-mark="portal.kb_settings"><a href="{{ ng_href('portal.kb_settings') }}"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="portal.kb_labels"><a href="{{ ng_href('portal.kb_labels') }}"><i class="fa fa-tag"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="#"><i class="fa fa-download"></i> Downloads<i class="fa fa-caret-down"></i></a>
-				<ul dp-nav-subnav>
-					<li dp-state-mark="portal.downloads_settings"><a href="{{ ng_href('portal.downloads_settings') }}"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="portal.downloads_labels"><a href="{{ ng_href('portal.downloads_labels') }}"><i class="fa fa-tag"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="#"><i class="fa fa-file-text"></i> News<i class="fa fa-caret-down"></i></a>
-				<ul dp-nav-subnav>
-					<li dp-state-mark="portal.news_settings"><a href="{{ ng_href('portal.news_settings') }}"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="portal.news_labels"><a href="{{ ng_href('portal.news_labels') }}"><i class="fa fa-tag"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
-				</ul>
-			</li>
-			<li>
-				<a href="#"><i class="fa fa-pencil"></i> Feedback<i class="fa fa-caret-down"></i></a>
-				<ul dp-nav-subnav>
-					<li dp-state-mark="portal.feedback_settings"><a href="{{ ng_href('portal.feedback_settings') }}"><i class="fa fa-cog"></i> <span>Settings</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="portal.feedback_statuses"><a href="{{ ng_href('portal.feedback_statuses') }}"><i class="fa fa-ticket"></i> <span>Statuses</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="portal.feedback_types"><a href="{{ ng_href('portal.feedback_types') }}"><i class="fa fa-sitemap"></i> <span>Types</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="portal.feedback_categories"><a href="{{ ng_href('portal.feedback_categories') }}"><i class="fa fa-folder-open"></i> <span>Categories</span><i class="fa fa-caret-right"></i></a></li>
-					<li dp-state-mark="portal.feedback_labels"><a href="{{ ng_href('portal.feedback_labels') }}"><i class="fa fa-tag"></i> <span>Labels</span><i class="fa fa-caret-right"></i></a></li>
-				</ul>
-			</li>
-		</ul>
-	</nav>
+	{{ nav.list() }}
+		{{ nav.list_item('Portal Editor', 'portal.portal_editor', 'portal.portal_editor', 'fa-columns') }}
+		{{ nav.list_item('Settings', 'portal.settings', 'portal.settings', 'fa-cog') }}
+		{{ nav.list_item('Website Embeds', 'portal.embeds', 'portal.embed', 'fa-code') }}
+		{{ nav.list_item('Templates', 'portal.templates', 'portal.templates', 'fa-columns') }}
+		{{ nav.list_item_group('Knowledgebase', 'fa-caret-down') }}
+			{{ nav.list_item('', 'portal.kb_settings', 'portal.kb_settings', 'fa-cog') }}
+			{{ nav.list_item('', 'portal.kb_labels', 'portal.kb_labels', 'fa-tag') }}
+		{{ nav.list_item_group_end() }}
+		{{ nav.list_item_group('Fields', 'fa-terminal') }}
+			{{ nav.list_item('', 'portal.downloads_settings', 'portal.downloads_settings', 'fa-cog') }}
+			{{ nav.list_item('', 'portal.downloads_labels', 'portal.downloads_labels', 'fa-tag') }}
+		{{ nav.list_item_group_end() }}
+		{{ nav.list_item_group('News', 'fa-terminal') }}
+			{{ nav.list_item('', 'portal.news_settings', 'portal.news_settings', 'fa-cog') }}
+			{{ nav.list_item('', 'portal.news_labels', 'portal.news_labels', 'fa-tag') }}
+		{{ nav.list_item_group_end() }}
+		{{ nav.list_item_group('Feedback', 'fa-terminal') }}
+			{{ nav.list_item('', 'portal.feedback_settings', 'portal.feedback_settings', 'fa-cog') }}
+			{{ nav.list_item('', 'portal.feedback_statuses', 'portal.feedback_statuses', 'fa-ticket') }}
+			{{ nav.list_item('', 'portal.feedback_types', 'portal.feedback_types', 'fa-sitemap') }}
+			{{ nav.list_item('', 'portal.feedback_categories', 'portal.feedback_categories', 'fa-folder-open') }}
+			{{ nav.list_item('', 'portal.feedback_labels', 'portal.feedback_labels', 'fa-tag') }}
+		{{ nav.list_item_group_end() }}
+	{{ nav.list_end() }}
 {% endblock %}

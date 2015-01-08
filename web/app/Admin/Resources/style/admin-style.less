@@ -257,93 +257,6 @@ div.info-message {
 	color: #ccc;
 }
 
-//######################################################################################################################
-//# Page Header
-//######################################################################################################################
-
-.dp-app-header {
-	.gradient-v(@agent_header_bg_color, darken(@agent_header_bg_color, 2%), @topHeight);
-	border-top: 1px solid @agent_header_bg_color;
-	border-bottom: 1px solid @agent_header_border_color;
-
-	.user-profile {
-		background-color: @agent_header_userprofile_bg_color;
-		height: (@agent_header_height - 8);
-		width: 234px;
-		margin: 4px 0 0 6px;
-		padding: 3px 5px 3px 3px;
-		border: 1px solid @agent_header_userprofile_border_color;
-		border-radius: 3px;
-		box-shadow: inset 0px 0px 8px 0px rgba(0, 0, 0, 0.2);
-		color: @agent_header_userprofile_text_color;
-		line-height: 100%;
-		white-space: nowrap;
-		overflow: hidden;
-
-		.gravatar {
-			border: 1px solid darken(@agent_header_userprofile_border_color, 30%);
-			margin-right: 4px;
-			border-radius: 3px;
-			overflow: hidden;
-			width: 33px;
-			height: 33px;
-		}
-
-		.username {
-			white-space: nowrap;
-			margin-left: 38px;
-			font-size: 11px;
-			padding: 3px 0 2px 0;
-			line-height: 100%;
-			width: 158px;
-			overflow: hidden;
-			text-overflow: ellipsis;
-		}
-
-		ul.nav-list {
-			margin: 1px 0 0 0;
-			padding: 0;
-			line-height: 15px;
-			width: 200px;
-		}
-
-		ul.nav-list > li {
-			display: inline-block;
-			margin: 0;
-			margin-right: 7px;
-			font-size: 11px;
-			line-height: 100%;
-			color: lighten(@agent_header_userprofile_text_color, 25%);
-		}
-
-		ul.nav-list > li:last-child {
-			margin-right: 0;
-		}
-
-		ul.nav-list > li:hover {
-			cursor: pointer;
-			color: darken(@agent_header_userprofile_text_color, 8%);
-		}
-
-		ul.nav-list > li > a {
-			font-size: 11px;
-			color: lighten(@agent_header_userprofile_text_color, 25%);
-			border-bottom: 1px solid #165d94;
-		}
-
-		ul.nav-list > li > a:hover, ul.nav-list > li:hover > a {
-			color: darken(@agent_header_userprofile_text_color, 8%);
-		}
-	}
-
-	a.logo {
-		display: block;
-		height: 28px;
-		width: 103px;
-		background: url('@{img_path}/header-logo.png') no-repeat left top;
-		margin: 10px 10px 0 10px;
-	}
-}
 
 //######################################################################################################################
 //# App Icons
@@ -1034,6 +947,9 @@ div.dp-appalt-section {
 	background: #fff;
 	border-radius: 2px;
 	border: 1px solid #d0d9e6;
+
+  -webkit-box-shadow: 0 0 3px 0px rgba(178, 187, 201, 0.7);
+  box-shadow: 0 0 3px 0px rgba(178, 187, 201, 0.7);
 
 	> header, header.dp-panelblock-header {
 		nav {
