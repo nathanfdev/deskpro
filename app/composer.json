@@ -3,7 +3,7 @@
 		"doctrine/common": "2.4.*",
 		"doctrine/dbal": "2.4.*",
 		"doctrine/orm": "2.4.*",
-		"symfony/symfony": "2.5.*",
+		"symfony/symfony": "2.5.5",
 		"twig/twig": "~1.15",
 		"swiftmailer/swiftmailer": "4.3.*",
 		"kriswallsmith/assetic": "1.1",
