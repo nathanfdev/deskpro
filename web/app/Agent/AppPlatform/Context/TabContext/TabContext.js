@@ -267,7 +267,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 
           // proxy DeskPRO App events
           $rootScope.$on('deskpro_app', function($event, name, data){
-            [].splice.call(arguments, 0, 2, 'deskpro_app.' + name);
+            [].splice.call(arguments, 0, 2, name);
             tplScope.$broadcast.apply(tplScope, arguments);
           });
 
@@ -364,7 +364,7 @@ define(['angular', 'DeskPRO/Util/Strings'], function(angular, Strings) {
 
           // proxy DeskPRO App events
           $rootScope.$on('deskpro_app', function($event, name){
-            [].splice.call(arguments, 0, 2, 'deskpro_app.' + name);
+            [].splice.call(arguments, 0, 2, name);
             tplScope.$broadcast.apply(tplScope, arguments);
           });
 

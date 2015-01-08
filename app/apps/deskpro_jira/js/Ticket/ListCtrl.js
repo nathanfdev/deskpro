@@ -16,7 +16,7 @@ define([
     $scope.active_searches = 0;
 
 
-    $scope.$on('deskpro_app.ticket.new_reply', function($event, ticket, action){
+    $scope.$on('ticket.new_reply', function($event, ticket, action){
 
       if (!ticket.message) return;
 
@@ -30,7 +30,6 @@ define([
           project: {id: $meta.default_project},
           issuetype: {id: $meta.default_issuetype},
           summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject,
-          duedate: '2015-02-02',
           description: ticket.message
         };
 
@@ -38,14 +37,14 @@ define([
           function () {
           },
           function (data) {
-            $scope.createIssueModal();
+            $scope.createIssueModal(fields);
           }
         );
 
       }
     });
 
-    $scope.$on('deskpro_app.ticket.updated', function($event, ticket){
+    $scope.$on('ticket.updated', function($event, ticket){
       if (!issues.length) return;
       if (ticket.subject) {
 	      issues.each(function(issue){
@@ -178,7 +177,7 @@ define([
     /**
      * create new issue
      */
-    $scope.createIssueModal = function () {
+    $scope.createIssueModal = function (newissue) {
       $modal.open({
         templateUrl: 'deskpro_jira/Ticket/create-issue-modal.html',
         controller: CreateIssueCtrl,
@@ -191,6 +190,9 @@ define([
           },
           issues: function () {
             return issues;
+          },
+          newissue: function () {
+            return newissue;
           }
         }
       });
