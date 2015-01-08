@@ -146,6 +146,9 @@ class AgentDataService
         }
         $this->has_init_teammap = true;
 
+        // needed to preload $this->ids
+        $this->preload();
+
         $this->team_to_agents = $this->db->fetchAllGrouped("
             SELECT team_id, person_id
             FROM agent_team_members
@@ -159,6 +162,8 @@ class AgentDataService
                 FROM person2usergroups
                 WHERE person_id IN (?)
             ", array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+        } else {
+            $this->agent_to_groups = array();
         }
     }
 
