@@ -37,18 +37,18 @@ namespace Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
-class ReportBuilder extends AbstractEntityRepository
+class ReportWidget extends AbstractEntityRepository
 {
     /**
      * Gets all reports
      *
-     * @return \Application\DeskPRO\Entity\ReportBuilder[]
+     * @return \Application\DeskPRO\Entity\ReportWidget[]
      */
     public function getAllReports()
     {
         return $this->getEntityManager()->createQuery('
             SELECT rb
-            FROM DeskPRO:ReportBuilder rb
+            FROM DeskPRO:ReportWidget rb
             ORDER BY rb.display_order, rb.title
         ')->execute();
     }
@@ -57,13 +57,13 @@ class ReportBuilder extends AbstractEntityRepository
     {
         return $this->getEntityManager()->createQuery('
             SELECT rb
-            FROM DeskPRO:ReportBuilder rb
+            FROM DeskPRO:ReportWidget rb
             WHERE rb.unique_key = ?0
         ')->setParameters(array($key))->getOneOrNullResult();
     }
 
     public function findFavorite(
-        \Application\DeskPRO\Entity\ReportBuilder $report,
+        \Application\DeskPRO\Entity\ReportWidget $report,
         \Application\DeskPRO\Entity\Person $person = null,
         array $params = array()
     )
@@ -76,8 +76,8 @@ class ReportBuilder extends AbstractEntityRepository
 
         return $this->getEntityManager()->createQuery('
             SELECT f
-            FROM DeskPRO:ReportBuilderFavorite f
-            WHERE f.report_builder = ?0 AND f.person = ?1 AND f.params = ?2
+            FROM DeskPRO:ReportWidgetFavorite f
+            WHERE f.report_widget = ?0 AND f.person = ?1 AND f.params = ?2
         ')->setParameters(array($report, $person, $params ? implode(',', $params) : ''))->getOneOrNullResult();
     }
 
@@ -89,8 +89,8 @@ class ReportBuilder extends AbstractEntityRepository
 
         return $this->getEntityManager()->createQuery('
             SELECT f, r
-            FROM DeskPRO:ReportBuilderFavorite f
-            JOIN f.report_builder r
+            FROM DeskPRO:ReportWidgetFavorite f
+            JOIN f.report_widget r
             WHERE f.person = ?0
             ORDER BY r.title
         ')->execute(array($person));
@@ -100,7 +100,7 @@ class ReportBuilder extends AbstractEntityRepository
     {
         $output = array();
         foreach ($favorites AS $fav) {
-            $output[] = array('id' => $fav->report_builder->id, 'params' => $fav->params);
+            $output[] = array('id' => $fav->report_widget->id, 'params' => $fav->params);
         }
 
         return $output;

@@ -6,6 +6,6 @@
     'agent.report.current'        => 'Current',
     'agent.report.data_range'     => 'Data Range',
     'agent.report.overview'       => 'Overview',
-    'agent.report.report_builder' => 'Report Builder',
+    'agent.report.report_widget' => 'Report Builder',
     'agent.report.updates'        => 'Updates',
 );

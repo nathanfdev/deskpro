@@ -37,7 +37,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Dpql\Compiler;
 use Application\DeskPRO\Dpql\Exception as DpqlException;
 use Application\DeskPRO\Dpql\Statement\Display;
-use Application\DeskPRO\Entity\ReportBuilder;
+use Application\DeskPRO\Entity\ReportWidget;
 use Doctrine\ORM\EntityManager;
 
 class Builder
@@ -48,14 +48,14 @@ class Builder
     protected $em;
 
     /**
-     * @var \Application\DeskPRO\EntityRepository\ReportBuilder
+     * @var \Application\DeskPRO\EntityRepository\ReportWidget
      */
     protected $repository;
 
     public function __construct(EntityManager $em)
     {
         $this->em         = $em;
-        $this->repository = $this->em->getRepository('DeskPRO:ReportBuilder');
+        $this->repository = $this->em->getRepository('DeskPRO:ReportWidget');
         $this->in         = App::getContainer()->getIn();
     }
 
@@ -101,7 +101,8 @@ class Builder
 
     /**
      * @param  int           $id
-     * @return ReportBuilder
+     *
+*@return ReportWidget
      */
     public function getById($id)
     {
@@ -110,11 +111,11 @@ class Builder
 
 
     /**
-     * @return \Application\DeskPRO\Entity\ReportBuilder
+     * @return \Application\DeskPRO\Entity\ReportWidget
      */
     public function createNew()
     {
-        $report            = ReportBuilder::createReportBuilder();
+        $report            = ReportWidget::createReportWidget();
         $report->is_custom = true;
 
         return $report;
@@ -192,8 +193,9 @@ class Builder
 
 
     /**
-     * @param  \Application\DeskPRO\Entity\ReportBuilder $report
-     * @throws \Exception
+     * @param  \Application\DeskPRO\Entity\ReportWidget $report
+     *
+*@throws \Exception
      */
     public function saveQuery($report)
     {
@@ -254,8 +256,9 @@ class Builder
 
 
     /**
-     * @param  ReportBuilder $report
-     * @throws \Exception
+     * @param  ReportWidget $report
+     *
+*@throws \Exception
      */
     public function remove($report)
     {

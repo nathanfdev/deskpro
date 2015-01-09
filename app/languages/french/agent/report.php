@@ -6,6 +6,6 @@
     'agent.report.current'                                                 => 'Actuel',
     'agent.report.data_range'                                              => 'Série de données',
     'agent.report.overview'                                                => 'Aperçu',
-    'agent.report.report_builder'                                          => 'Editeur de rapport',
+    'agent.report.report_widget'                                          => 'Editeur de rapport',
     'agent.report.updates'                                                 => 'Mises à jour',
 );

@@ -101,7 +101,7 @@ class Compiler
 
     public function replacePlaceholders($input, array $placeholders = array())
     {
-        $repository = \Application\DeskPRO\App::getEntityRepository('DeskPRO:ReportBuilder');
+        $repository = \Application\DeskPRO\App::getEntityRepository('DeskPRO:ReportWidget');
 
         $groupParams = $repository->getReportGroupParams();
 

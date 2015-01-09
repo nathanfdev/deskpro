@@ -49,7 +49,7 @@ class ReportPropsType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                 'data_class' => 'Application\\DeskPRO\\Entity\\ReportBuilder',
+                 'data_class' => 'Application\\DeskPRO\\Entity\\ReportWidget',
             )
         );
     }

@@ -10,7 +10,7 @@ namespace Application\InstallBundle\Data\DefaultData;
 use Application\DeskPRO\Entity\ReportDashboard as Dashboard;
 use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
-use Application\DeskPRO\Entity\ReportBuilder as WidgetPrototype;
+use Application\DeskPRO\Entity\ReportWidget as WidgetPrototype;
 use Application\DeskPRO\Entity\ReportDashboardPermission as Permission;
 use Application\DeskPRO\Entity\Person as Person;
 
@@ -142,7 +142,7 @@ class DashboardData extends AbstractDefaultData
     {
 
         /** @var WidgetPrototype $widgetPrototype */
-        $widgetPrototype = $this->getEm()->getRepository('DeskPRO:ReportBuilder')->find(1);
+        $widgetPrototype = $this->getEm()->getRepository('DeskPRO:ReportWidget')->find(1);
         /** @var Person $admin */
         $admin = $this->getEm()->getRepository('DeskPRO:Person')->find(1);
         $agents = $this->getEm()->getRepository('DeskPRO:Person')->findBy(array('is_agent'=>1));

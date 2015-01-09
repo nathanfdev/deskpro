@@ -259,8 +259,8 @@ class DashboardWidgetController extends AbstractController
 
     public function reportsListAction()
     {
-        /** @var \Application\DeskPRO\EntityRepository\ReportBuilder $repository */
-        $repository = $this->em->getRepository('DeskPRO:ReportBuilder');
+        /** @var \Application\DeskPRO\EntityRepository\ReportWidget $repository */
+        $repository = $this->em->getRepository('DeskPRO:ReportWidget');
         $reports = $repository->getAllReports();
         $api_data = array();
         foreach ($reports as $report) {

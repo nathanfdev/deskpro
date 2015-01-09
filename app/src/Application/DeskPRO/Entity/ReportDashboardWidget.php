@@ -45,7 +45,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  *
  * @property int             $id
  * @property string          $title
- * @property ReportBuilder   $report
+ * @property ReportWidget   $report
  * @property string          $position simple 1:1 position just explode to own x and y (col & row)
  * @property string          $size     same as previous, explode and you'll have sizeX and sizeY
  * @property string          $hc_data  hardcoded data for default dashboards
@@ -68,7 +68,7 @@ class ReportDashboardWidget extends DomainObject
     protected $report = null;
 
     /**
-     * @var ReportBuilder it's a reference to ReportBuilder Entity that holds DPQL
+     * @var ReportWidget it's a reference to ReportWidget Entity that holds DPQL
      */
     protected $widget = null;
 
@@ -218,7 +218,7 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @return ReportBuilder
+     * @return ReportWidget
      */
     public function getWidget()
     {
@@ -226,11 +226,11 @@ class ReportDashboardWidget extends DomainObject
     }
 
     /**
-     * @param ReportBuilder $report
+     * @param ReportWidget $report
      *
      * @return $this
      */
-    public function setWidget(ReportBuilder $report = null)
+    public function setWidget(ReportWidget $report = null)
     {
         $this->widget = $report;
         return $this;
@@ -291,7 +291,7 @@ class ReportDashboardWidget extends DomainObject
 	public static function loadMetadata(ClassMetadata $metadata)
 	{
 		$metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-//		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportBuilder';
+//		$metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\ReportWidget';
         $metadata->setPrimaryTable(
             array(
                 'name'    => 'report_dashboard_widget',
@@ -388,7 +388,7 @@ class ReportDashboardWidget extends DomainObject
 		$metadata->mapManyToOne(
 			array(
 				 'fieldName'    => 'widget',
-				 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder',
+				 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportWidget',
 				 'mappedBy'     => null,
 				 'inversedBy'   => null,
 				 'joinColumns'  => array(

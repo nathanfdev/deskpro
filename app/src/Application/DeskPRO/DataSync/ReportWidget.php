@@ -37,11 +37,11 @@ namespace Application\DeskPRO\DataSync;
 /**
  * Data sync handler for built in report builder queries.
  */
-class ReportBuilder extends AbstractDataSync
+class ReportWidget extends AbstractDataSync
 {
     public function getTableName()
     {
-        return 'report_builder';
+        return 'report_widget';
     }
 
     public function getKeyField()

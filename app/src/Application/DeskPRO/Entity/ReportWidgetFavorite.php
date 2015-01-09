@@ -41,7 +41,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
 /**
  * Report builder favorite
  */
-class ReportBuilderFavorite extends \Application\DeskPRO\Domain\DomainObject
+class ReportWidgetFavorite extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * @var int
@@ -54,9 +54,9 @@ class ReportBuilderFavorite extends \Application\DeskPRO\Domain\DomainObject
     protected $params = array();
 
     /**
-     * @var \Application\DeskPRO\Entity\ReportBuilder
+     * @var \Application\DeskPRO\Entity\ReportWidget
      */
-    protected $report_builder = null;
+    protected $report_widget = null;
 
     /**
      * @var \Application\DeskPRO\Entity\Person
@@ -72,17 +72,53 @@ class ReportBuilderFavorite extends \Application\DeskPRO\Domain\DomainObject
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\Basic';
         $metadata->setPrimaryTable(array(
-            'name' => 'report_builder_favorite',
+            'name' => 'report_widget_favorite',
             'uniqueConstraints' => array(
-                'unique_key_idx' => array('columns' => array('report_builder_id', 'person_id', 'params'))
+                'unique_key_idx' => array('columns' => array('report_widget_id', 'person_id', 'params'))
             )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_DEFERRED_IMPLICIT);
-        $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true, ));
-        $metadata->mapField(array( 'fieldName' => 'params', 'type' => 'string', 'length' => 100, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'params', ));
+        $metadata->mapField(array('fieldName'  => 'id',
+                                  'type'       => 'integer',
+                                  'precision'  => 0,
+                                  'scale'      => 0,
+                                  'nullable'   => false,
+                                  'columnName' => 'id',
+                                  'id'         => true,
+        ));
+        $metadata->mapField(array('fieldName'  => 'params',
+                                  'type'       => 'string',
+                                  'length'     => 100,
+                                  'precision'  => 0,
+                                  'scale'      => 0,
+                                  'nullable'   => false,
+                                  'columnName' => 'params',
+        ));
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);
 
-        $metadata->mapManyToOne(array( 'fieldName' => 'report_builder', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportBuilder', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'report_builder_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL, ), ),  ));
+        $metadata->mapManyToOne(array('fieldName'    => 'report_widget',
+                                      'targetEntity' => 'Application\\DeskPRO\\Entity\\ReportWidget',
+                                      'mappedBy'     => NULL,
+                                      'inversedBy'   => NULL,
+                                      'joinColumns'  => array(0 => array('name'                 => 'report_widget_id',
+                                                                         'referencedColumnName' => 'id',
+                                                                         'nullable'             => true,
+                                                                         'onDelete'             => 'cascade',
+                                                                         'columnDefinition'     => NULL,
+                                      ),
+                                      ),
+        ));
+        $metadata->mapManyToOne(array('fieldName'    => 'person',
+                                      'targetEntity' => 'Application\\DeskPRO\\Entity\\Person',
+                                      'mappedBy'     => NULL,
+                                      'inversedBy'   => NULL,
+                                      'joinColumns'  => array(0 => array('name'                 => 'person_id',
+                                                                         'referencedColumnName' => 'id',
+                                                                         'nullable'             => true,
+                                                                         'onDelete'             => 'cascade',
+                                                                         'columnDefinition'     => NULL,
+                                      ),
+                                      ),
+        ));
     }
 }

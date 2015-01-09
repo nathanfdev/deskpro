@@ -6,6 +6,6 @@
     'agent.report.current'                                                 => 'Momentálny',
     'agent.report.data_range'                                              => 'Rozsah dát',
     'agent.report.overview'                                                => 'Prehľad',
-    'agent.report.report_builder'                                          => 'Nahlásiť staviteľa',
+    'agent.report.report_widget'                                          => 'Nahlásiť staviteľa',
     'agent.report.updates'                                                 => 'Aktualizácie',
 );
