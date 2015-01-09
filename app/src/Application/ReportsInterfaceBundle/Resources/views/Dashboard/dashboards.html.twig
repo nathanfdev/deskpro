@@ -4,15 +4,14 @@
             <div class="report-access-avatars">
                 <span class="title">On this dashboard:</span>
                 <a
-                        ng-repeat='agent in permissions | limitTo : 7 track by $index '
-                        ng-if="agent.permissions != 0"
+                        ng-repeat='agent in permissions | filter:permissionsFilter | limitTo:6 track by $index '
                         class="avatar"
                         title="{{ ng_var('agent.name') }}"
                         style="background-image: url({{ ng_var('agent.avatar') }});">
                 </a>
                 {#Uuuuuh, Magic numbers!#}
-                <a ng-if="permissions.length > 7" class="avatar avatar-blank"><span>+{{ ng_var('permissions.length - 7') }}</span></a>
-                <a ng-if="!dashboard.default" ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit user access <i class="fa fa-user"></i></span></a>
+                <a ng-if="permissions.length > 6" class="avatar avatar-blank"><span>+{{ ng_var('permissions.length - 6') }}</span></a>
+                <a ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit user access <i class="fa fa-user"></i></span></a>
             </div>
         </div>
 

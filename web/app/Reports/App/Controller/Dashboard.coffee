@@ -134,7 +134,11 @@ define -> [
           $scope.selectingDashboard = !$scope.selectingDashboard
         else
           $scope.closeAllDropdowns()
-
+    $scope.permissionsFilter = (value) ->
+      if value.permissions > 0
+        return true
+      else
+        return false
 
     ###
     # Dashboard modal instasnces
