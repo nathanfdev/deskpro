@@ -2426,18 +2426,18 @@ $collection->create('api_settings_values_set', array(
 ));
 
 ########################################################################################################################
-# Portal App Settings
+# Portal Settings
 ########################################################################################################################
 
-$collection->create('api_settings_portalapps', array(
-    'path'        => '/settings/portal/{app}',
-    'controller'  => 'ApiBundle:Settings:portalAppSettings',
+$collection->create('api_settings_portal_general', array(
+    'path'        => '/settings/portal/general',
+    'controller'  => 'ApiBundle:Settings:generalPortalSettings',
     'methods'     => array('GET'),
 ));
 
-$collection->create('api_settings_portalapps_save', array(
-    'path'        => '/settings/portal/{app}',
-    'controller'  => 'ApiBundle:Settings:savePortalAppSettings',
+$collection->create('api_settings_portal_general_save', array(
+    'path'        => '/settings/portal/general',
+    'controller'  => 'ApiBundle:Settings:saveGeneralPortalSettings',
     'methods'     => array('POST'),
 ));
 

@@ -234,7 +234,7 @@ define ['angular'], (angular) ->
       # @param {Integer} minTime The min time the spinner should be visible for
       # @return {promise} A promise that resolves once the spinner stops
       ###
-    startSpinner: (id, minTime = 1050) ->
+    startSpinner: (id = 'saving', minTime = 1050) ->
       if not @$scope.dp_spin_els then @$scope.dp_spin_els = {}
 
       if @$scope.dp_spin_els[id]
