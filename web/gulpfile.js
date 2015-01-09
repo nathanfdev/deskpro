@@ -16,6 +16,7 @@ var gulp       = require('gulp'),
     gulpif     = require('gulp-if'),
     lazypipe   = require('lazypipe'),
     del        = require('del'),
+    runSeq     = require('run-sequence'),
     deskpro    = {util: {}, taskGen: {}};
 
 
@@ -23,9 +24,8 @@ var gulp       = require('gulp'),
 //# Task Runners
 //######################################################################################################################
 
-gulp.task('default', ['coffee', 'less', 'sass', 'cpjs', 'loader']);
-gulp.task('prod', ['coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
-
+gulp.task('default', ['build']);
+gulp.task('prod',    ['build:prod']);
 
 //######################################################################################################################
 //# Setup
@@ -38,21 +38,26 @@ deskpro.isWatching = false;
 //------------------------------
 
 deskpro.watches = [
-  ['./app/Admin*/**/*.coffee', ['coffee-admin']],
-  ['./app/Agent*/**/*.coffee', ['coffee-agent']],
-  ['./app/Interface*/**/*.coffee', ['coffee-interface']],
-  ['./app/Reports/**/*.coffee', ['coffee-reports']],
-  ['./app/DeskPRO/**/*.coffee', ['coffee-deskpro']],
-  ['./app/**/Resources/style/*.less', ['less-app']],
-  ['./app/Admin/Resources/style/*.scss', ['sass-app']],
-  ['./app/AdminStart/Resources/style/*.scss', ['sass-app']],
-  ['./app/AdminUpgrade/Resources/style/*.scss', ['sass-app']],
-  ['./app/Agent/Resources/style/*.scss', ['sass-app']],
-  ['./app/DeskPRO/Resources/style/*.scss', ['sass-app']],
-  ['./app/Portal/Resources/style/*.scss', ['sass-app']],
-  ['./app/Interface/Resources/style/*.scss', ['sass-app-full']],
-  ['./app/**/*.js', ['cpjs-all']],
-  ['./loader/*', ['loader-requirejs']]
+  ['./app/Admin*/**/*.coffee',                ['coffee:admin']],
+  ['./app/Agent*/**/*.coffee',                ['coffee:agent']],
+  ['./app/Interface*/**/*.coffee',            ['coffee:ifce']],
+  ['./app/Reports*/**/*.coffee',              ['coffee:reports']],
+  ['./app/DeskPRO*/**/*.coffee',              ['coffee:deskpro']],
+
+  // Note that CSS gens a single source file
+  // so any time a source is updated, we need to generate new
+  // main -style files. This is why we use :nocache variants,
+  // because some-lib.scss might update but we need to compiled main-style.scss
+  ['./app/Admin*/Resources/style/*.less',     ['less:admin:nocache']],
+  ['./app/Reports*/Resources/style/*.less',   ['less:reports:nocache']],
+  ['./app/Admin*/Resources/style/*.scss',     ['sass:admin:nocache']],
+  ['./app/Agent*/Resources/style/*.scss',     ['sass:agent:nocache']],
+  ['./app/DeskPRO*/Resources/style/*.scss',   ['sass:deskpro:nocache']],
+  ['./app/Portal*/Resources/style/*.scss',    ['sass:portal:nocache']],
+  ['./app/Interface/Resources/style/*.scss',  ['sass:admin:nocache', 'sass:agent:nocache', 'sass:deskpro:nocache', 'sass:interface:nocache']],
+
+  ['./app/**/*.js',                           ['cpjs:app']],
+  ['./loader/*',                              ['loader:app']]
 ];
 
 //------------------------------
@@ -109,21 +114,32 @@ deskpro.taskGen.coffeeScript = function(glob, target_dir) {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 };
 
-deskpro.taskGen.lessCss = function(glob, target_dir) {
+deskpro.taskGen.lessCss = function(glob, target_dir, no_cache) {
 
   if (!target_dir) {
     target_dir = './app-build/';
   }
 
-  return gulp.src(glob)
-    .pipe(cache('watch', {optimizeMemory: true}))
-    .pipe(gulpif(deskpro.isWatching, plumber()))
-    .pipe(sourcemaps.init())
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
-    .pipe(less())
-    .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
-    .pipe(gulp.dest(target_dir))
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+  if (no_cache) {
+    return gulp.src(glob)
+      .pipe(gulpif(deskpro.isWatching, plumber()))
+      .pipe(sourcemaps.init())
+      .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+      .pipe(less())
+      .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+      .pipe(gulp.dest(target_dir))
+      .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+  } else {
+    return gulp.src(glob)
+      .pipe(cache('watch', {optimizeMemory: true}))
+      .pipe(gulpif(deskpro.isWatching, plumber()))
+      .pipe(sourcemaps.init())
+      .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
+      .pipe(less())
+      .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
+      .pipe(gulp.dest(target_dir))
+      .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
+  }
 };
 
 deskpro.taskGen.sassCss = function(glob, target_dir, no_cache) {
@@ -177,53 +193,20 @@ deskpro.taskGen.loaderTpl = function(glob, target_dir) {
 // Coffeescript
 //------------------------------
 
-gulp.task('coffee-admin', function () {
-  return deskpro.taskGen.coffeeScript('./app/Admin*/**/*.coffee');
-});
+gulp.task('coffee:admin',   function() { return deskpro.taskGen.coffeeScript('./app/Admin*/**/*.coffee'); });
+gulp.task('coffee:agent',   function() { return deskpro.taskGen.coffeeScript('./app/Agent*/**/*.coffee'); });
+gulp.task('coffee:reports', function() { return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee'); });
+gulp.task('coffee:portal',  function() { return deskpro.taskGen.coffeeScript('./app/Portal*/**/*.coffee'); });
+gulp.task('coffee:ifce',    function() { return deskpro.taskGen.coffeeScript('./app/Interface*/**/*.coffee'); });
+gulp.task('coffee:deskpro', function() { return deskpro.taskGen.coffeeScript('./app/DeskPRO*/**/*.coffee'); });
 
-gulp.task('coffee-agent', function () {
-  return deskpro.taskGen.coffeeScript('./app/Agent*/**/*.coffee');
-});
-
-gulp.task('coffee-interface', function () {
-  return deskpro.taskGen.coffeeScript('./app/Interface*/**/*.coffee');
-});
-
-gulp.task('coffee-reports', function () {
-  return deskpro.taskGen.coffeeScript('./app/Reports*/**/*.coffee');
-});
-
-gulp.task('coffee-deskpro', function () {
-  return deskpro.taskGen.coffeeScript('./app/DeskPRO*/**/*.coffee');
-});
-
-gulp.task('coffee', ['clean'], function() {
-  return deskpro.taskGen.coffeeScript([
-    './app/Admin*/**/*.coffee',
-    './app/Agent*/**/*.coffee',
-    './app/Interface*/**/*.coffee',
-    './app/Reports*/**/*.coffee',
-    './app/DeskPRO*/**/*.coffee'
-  ]);
-});
+gulp.task('coffee:app', ['coffee:deskpro', 'coffee:ifce', 'coffee:admin', 'coffee:agent', 'coffee:reports', 'coffee:portal']);
 
 //------------------------------
 // Copy JS
 //------------------------------
 
-gulp.task('cpjs-all', function() {
-
-  var glob       = './app/**/*.js';
-  var target_dir = './app-build/';
-
-  return gulp.src(glob)
-    .pipe(cache('watch', {optimizeMemory: true}))
-    .pipe(gulpif(deskpro.isWatching, plumber()))
-    .pipe(gulp.dest(target_dir))
-    .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
-});
-
-gulp.task('cpjs', ['clean'], function() {
+gulp.task('cpjs:app', function() {
 
   var glob       = './app/**/*.js';
   var target_dir = './app-build/';
@@ -239,39 +222,33 @@ gulp.task('cpjs', ['clean'], function() {
 // Less
 //------------------------------
 
-gulp.task('less-app', function () {
-  return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
-});
+gulp.task('less:admin',             function () { return deskpro.taskGen.lessCss('./app/Admin*/Resources/style/*-style.less'); });
+gulp.task('less:reports',           function () { return deskpro.taskGen.lessCss('./app/Reports*/Resources/style/*-style.less'); });
 
-gulp.task('less', ['clean'], function () {
-  return deskpro.taskGen.lessCss('./app/**/Resources/style/*-style.less');
-});
+gulp.task('less:admin:nocache',     function () { return deskpro.taskGen.lessCss('./app/Admin*/Resources/style/*-style.less', null, true); });
+gulp.task('less:reports:nocache',   function () { return deskpro.taskGen.lessCss('./app/Reports*/Resources/style/*-style.less', null, true); });
+
+gulp.task('less:app', ['less:admin', 'less:reports']);
 
 //------------------------------
 // Sass
 //------------------------------
 
-gulp.task('sass-app', function () {
-  return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
-});
+gulp.task('sass:admin',          function () { return deskpro.taskGen.sassCss('./app/Admin*/Resources/style/*-style.scss'); });
+gulp.task('sass:ifce',           function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss'); });
+gulp.task('sass:portal',         function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss'); });
 
-gulp.task('sass-app-full', function () {
-  return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss', null, true);
-});
+gulp.task('sass:admin:nocache',  function () { return deskpro.taskGen.sassCss('./app/Admin*/Resources/style/*-style.scss', null, true); });
+gulp.task('sass:ifce:nocache',   function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss', null, true); });
+gulp.task('sass:portal:nocache', function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss', null, true); });
 
-gulp.task('sass', ['clean'], function () {
-  return deskpro.taskGen.sassCss('./app/**/Resources/style/*-style.scss');
-});
+gulp.task('sass:app', ['sass:admin', 'sass:ifce', 'sass:portal']);
 
 //------------------------------
 // Loader
 //------------------------------
 
-gulp.task('loader-requirejs', function () {
-  return deskpro.taskGen.loaderTpl(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js']);
-});
-
-gulp.task('loader', ['clean'], function () {
+gulp.task('loader:app', function () {
   return deskpro.taskGen.loaderTpl(['./loader/requirejs-config.js', './loader/rjs-optimizer-config.js']);
 });
 
@@ -279,7 +256,7 @@ gulp.task('loader', ['clean'], function () {
 // RJS
 //------------------------------
 
-gulp.task('rjs', ['coffee', 'loader'], function () {
+gulp.task('rjs:app', ['build'], function () {
   var loadFiles = [
     './app/Admin/AdminLoad.js',
     './app/Admin/Cloud/CloudAdminLoad.js',
@@ -323,7 +300,7 @@ gulp.task('rjs', ['coffee', 'loader'], function () {
     .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
 });
 
-gulp.task('rjs-agent', ['coffee', 'loader'], function () {
+gulp.task('rjs:agent', ['build'], function () {
   var loadFiles = [
     './app/Agent/AgentLoad.js',
   ];
@@ -375,6 +352,14 @@ gulp.task('watch', ['precache'], function () {
 //------------------------------
 // Clean
 //------------------------------
+
+gulp.task('build', ['clean'], function (cb) {
+  runSeq(['coffee:app', 'less:app', 'sass:app', 'cpjs:app', 'loader:app'], cb);
+});
+
+gulp.task('build:prod', ['clean'], function (cb) {
+  runSeq(['rjs:app', 'rjs:agent'], cb);
+});
 
 gulp.task('clean', function (cb) {
   del(['./app-build', './loader-build'], cb);

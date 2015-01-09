@@ -22,6 +22,7 @@
     "gulp-using": "0.0.1",
     "gulp-if": "1.2.5",
     "lazypipe": "0.2.2",
+    "run-sequence": "1.0.2",
     "karma": "0.12.24",
     "karma-jasmine": "0.2.3",
     "karma-chrome-launcher": "0.1.5"
