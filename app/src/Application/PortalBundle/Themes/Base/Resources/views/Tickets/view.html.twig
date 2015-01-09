@@ -6,7 +6,7 @@
     <header>
         <h1>
             {{ ticket_view.ticket.subject }}
-            <a href="#" class="ticket-status">Awaiting You</a>
+            <a href="#" class="ticket-status">{{ ticket_status(ticket_view.ticket) }}</a>
         </h1>
         <span class="ticket-reference">
             Ticket reference: {{ ticket_view.ticket.public_id }}
