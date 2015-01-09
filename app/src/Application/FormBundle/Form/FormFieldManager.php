@@ -89,7 +89,7 @@ class FormFieldManager
         return $query->getResult();
     }
 
-    public function getCustomTicketFieldById($id, $agent_interface)
+    public function getCustomTicketFieldById($id)
     {
         return $this->em->getRepository('DeskPRO:CustomDefTicket')->find($id);
     }
