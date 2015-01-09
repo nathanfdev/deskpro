@@ -14,3 +14,6 @@ services:
   data.feedback:
       class: Application\AppBundle\DataService\FeedbackDataService
       arguments: [@doctrine.orm.default_entity_manager]
+  data.ticket_view:
+      class: Application\AppBundle\DataService\TicketViewService
+      arguments: [@form_field_manager, @ticket_layout_factory, @deskpro.core.translate]
