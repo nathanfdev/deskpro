@@ -314,6 +314,103 @@ class Ticket extends AbstractEntityRepository
         return $tickets;
     }
 
+    protected function getTicketIds(Entity\Person $person)
+    {
+        if ($person->is_agent) {
+            $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+                SELECT id
+                FROM tickets
+                WHERE person_id = ?
+                ORDER BY id DESC
+                LIMIT 2000
+            ", array($person->id));
+        } else {
+            $ids = $this->getEntityManager()->getConnection()->fetchAllCol("
+                SELECT id FROM tickets WHERE person_id = ?
+                UNION
+                SELECT ticket_id FROM tickets_participants WHERE person_id = ?
+            ", array($person->id, $person->id));
+        }
+
+        if (!$ids) {
+            return array();
+        }
+
+        return $ids;
+    }
+
+    public function findAwaitingAgentTicketsForPerson(Entity\Person $person)
+    {
+        $sort_by = 'date_last_reply';
+
+        $ids = $this->getTicketIds($person);
+
+        $ids = $this->getEntityManager()->getConnection()->fetchAllCol(
+            '
+            SELECT id
+            FROM tickets
+            WHERE id IN (?)
+            AND status = ?
+            ORDER BY GREATEST(
+					COALESCE(date_last_user_reply,0),
+					COALESCE(date_last_agent_reply,0)
+				) DESC
+            ',
+            array($ids, Entity\Ticket::STATUS_AWAITING_AGENT),
+            array(Connection::PARAM_INT_ARRAY)
+        );
+
+        return $this->getByIds($ids, true);
+    }
+
+    public function findAwaitingUserTicketsForPerson(Entity\Person $person)
+    {
+        $sort_by = 'date_last_reply';
+
+        $ids = $this->getTicketIds($person);
+
+        $ids = $this->getEntityManager()->getConnection()->fetchAllCol(
+            '
+            SELECT id
+            FROM tickets
+            WHERE id IN (?)
+            AND status = ?
+            ORDER BY GREATEST(
+					COALESCE(date_last_user_reply,0),
+					COALESCE(date_last_agent_reply,0)
+				) DESC
+            ',
+            array($ids, Entity\Ticket::STATUS_AWAITING_USER),
+            array(Connection::PARAM_INT_ARRAY)
+        );
+
+        return $this->getByIds($ids, true);
+    }
+
+    public function findResolvedTicketsForPerson(Entity\Person $person)
+    {
+        $sort_by = 'date_last_reply';
+
+        $ids = $this->getTicketIds($person);
+
+        $ids = $this->getEntityManager()->getConnection()->fetchAllCol(
+            '
+            SELECT id
+            FROM tickets
+            WHERE id IN (?)
+            AND status = ?
+            ORDER BY GREATEST(
+					COALESCE(date_last_user_reply,0),
+					COALESCE(date_last_agent_reply,0)
+				) DESC
+            ',
+            array($ids, Entity\Ticket::STATUS_RESOLVED),
+            array(Connection::PARAM_INT_ARRAY)
+        );
+
+        return $this->getByIds($ids, true);
+    }
+
     /**
      * Get all tickets a person owns, or is a participant in.
      * This is usually used to fetch a list of tickets for an end-user.
