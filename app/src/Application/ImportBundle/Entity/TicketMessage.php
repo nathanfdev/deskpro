@@ -128,6 +128,10 @@ final class TicketMessage extends AbstractEntity
      */
     public function toArray()
     {
+        if (!$this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
         $attachments = array();
         foreach ($this->attachments as $attachment) {
             /** @var TicketAttachment $attachment */

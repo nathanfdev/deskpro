@@ -270,6 +270,10 @@ final class Ticket extends AbstractEntity
      */
     public function toArray()
     {
+        if (!$this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
         $messages = array();
         foreach ($this->messages as $message) {
             /** @var TicketMessage $message */

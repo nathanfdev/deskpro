@@ -95,6 +95,8 @@ class OsTicket extends AbstractGeneratorExporter
                 return $this->exportPeople();
             case GeneratorInterface::RECORD_TYPE_TICKETS:
                 return $this->exportTickets();
+            case GeneratorInterface::RECORD_TYPE_TICKET_MESSAGES:
+                return $this->exportTicketMessages();
             default:
                 throw new \Exception('This record type `%s` is not supported', $type);
         }
@@ -183,24 +185,23 @@ class OsTicket extends AbstractGeneratorExporter
                     ->setSubject($ticket['subject'])
                     ->setPriority($ticket['priority']);
 
-                $ticket_messages = $this->os_ticket_reader->findMessageThreadFromId($ticket['ticket_id']);
-                foreach ($ticket_messages as $message_thread) {
+                $messages = $this->os_ticket_reader->findMessagesByTicketId($ticket['ticket_id']);
+                foreach ($messages as $message) {
                     $person_email = null;
-                    if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {
-                        $person_email = $this->os_ticket_reader->findStaffEmailFromId($message_thread['staff_id']);
+                    if ($message['thread_type'] === 'R' && $message['staff_id']) {
+                        $person_email = $this->os_ticket_reader->findStaffEmailFromId($message['staff_id']);
 
-                    } elseif ($message_thread['thread_type'] === 'M' && $message_thread['user_id']) {
-                        $person_email = $this->os_ticket_reader->findUserEmailFromId($message_thread['user_id']);
+                    } elseif ($message['thread_type'] === 'M' && $message['user_id']) {
+                        $person_email = $this->os_ticket_reader->findUserEmailFromId($message['user_id']);
                     }
 
                     $message_entity = new Entity\TicketMessage();
                     $message_entity
                         ->setPersonEmail($person_email)
-                        ->setDateCreated(new DateTime($message_thread['created']))
-                        ->setMessageText($message_thread['body']);
+                        ->setDateCreated(new DateTime($message['created']))
+                        ->setMessageText($message['body']);
 
-                    // todo should get attachments by ticket message id
-                    $attachments = $this->os_ticket_reader->findTicketAttachment($ticket['ticket_id']);
+                    $attachments = $this->os_ticket_reader->findTicketMessageAttachment($message['id']);
                     foreach ($attachments as $attachment) {
                         $file_data = $this->os_ticket_reader->getFileData($attachment['file_id']);
                         $attachment_entity = new Entity\TicketAttachment();
@@ -224,6 +225,16 @@ class OsTicket extends AbstractGeneratorExporter
                 $this->advanceProgressBar();
             }
         }
+
+        return $collection;
+    }
+
+    /**
+     * @return array
+     */
+    protected function exportTicketMessages()
+    {
+        $collection = array();
 
         return $collection;
     }

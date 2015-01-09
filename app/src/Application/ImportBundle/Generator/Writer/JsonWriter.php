@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Generator\Writer;
 
 use Application\ImportBundle\Entity;
+use Exception;
 
 /**
  * Class JsonWriter
@@ -40,6 +41,9 @@ class JsonWriter extends AbstractWriter
      */
     public function writeData(Entity\EntityInterface $entity)
     {
+        if (!$this->config) {
+            throw new Exception('Generator configuration is not set up');
+        }
         if ($this->config->isLive()) {
             $this->createOutputDirsIfNotExist();
             file_put_contents($this->getDestinationPath($entity), json_encode($entity->toArray()));
@@ -64,7 +68,7 @@ class JsonWriter extends AbstractWriter
             case $entity instanceof Entity\Ticket:
                 return $this->getExportTicketsOutputPath() . $entity->getDestination();
             default:
-                throw new \Exception(sprintf('Entity `%s` not supported', get_class($entity)));
+                throw new Exception(sprintf('Entity `%s` not supported', get_class($entity)));
         }
     }
 
@@ -95,20 +99,24 @@ class JsonWriter extends AbstractWriter
      */
     private function createOutputDirsIfNotExist()
     {
-        if (!$this->config) {
-            throw new \Exception('Generator configuration is not set up');
+        if (!$this->config->getOutputPath()) {
+            throw new Exception('Output path is not defined');
+        }
+        if (!is_dir($this->config->getOutputPath())) {
+            if (!mkdir($this->config->getOutputPath(), 0777, true)) {
+                throw new Exception(sprintf('Unable to create output dir `%s`', $this->config->getOutputPath()));
+            }
         }
 
-        if (!is_dir($this->config->getOutputPath())) {
-            throw new \InvalidArgumentException(sprintf(
-                'Invalid configuration: data_path is invalid (got %s)',
-                $this->config->getOutputPath())
-            );
-        }
-        if ($this->config->isLive()) {
-            foreach ($this->config->getRecordTypes() as $n) {
-                if (!is_dir($this->config->getOutputPath() . $n)) {
-                    mkdir($this->config->getOutputPath() . $n, 0777, true);
+        $export_paths = array(
+            $this->getExportPeopleOutputPath(),
+            $this->getExportTicketsOutputPath(),
+        );
+
+        foreach ($export_paths as $path) {
+            if (!is_dir($path)) {
+                if (!mkdir($path, 0777, true)) {
+                    throw new Exception(sprintf('Unable to create output dir `%s`', $path));
                 }
             }
         }

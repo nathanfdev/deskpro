@@ -88,7 +88,7 @@ class Csv extends AbstractGeneratorExporter
                 return $this->exportPeople();
             case GeneratorInterface::RECORD_TYPE_TICKETS:
                 return $this->exportTickets();
-            case GeneratorInterface::RECORD_TYPE_MESSAGES:
+            case GeneratorInterface::RECORD_TYPE_TICKET_MESSAGES:
                 return $this->exportTicketMessages();
             default:
                 throw new \Exception('This record type `%s` is not supported', $type);
@@ -143,9 +143,10 @@ class Csv extends AbstractGeneratorExporter
             $person_entity
                 ->setDestination('person_' . $index)
                 ->setOid($index)
-                ->setAsAgent(isset($person['is_agent']) ? (bool) $person['is_agent'] : false)
+                ->setAsAgent(isset($person['is_agent']) ? (bool)$person['is_agent'] : false)
                 ->setFirstName($names[0])
                 ->setLastName(isset($names[1]) ? $names[1] : '')
+                ->setDateCreated(new DateTime())
                 ->addEmail($person['email']);
 
             $collection[] = $person_entity;
@@ -197,7 +198,7 @@ class Csv extends AbstractGeneratorExporter
     protected function exportTicketMessages()
     {
         $collection = array();
-        $data = $this->getDataByRecordType(self::RECORD_TYPE_MESSAGES);
+        $data = $this->getDataByRecordType(self::RECORD_TYPE_TICKET_MESSAGES);
         foreach ($data as $index => $message) {
             $this->advanceProgressBar();
 

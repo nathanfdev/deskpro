@@ -115,7 +115,9 @@ class Generator extends AbstractGenerator
      */
     public function generate()
     {
+        $this->outputWriter->setConfig($this->config);
         $exporter = $this->getExporter();
+
         foreach ($this->config->getRecordTypes() as $record_type) {
             $collection = $exporter->exportRecordsByType($record_type);
             foreach ($collection as $record) {

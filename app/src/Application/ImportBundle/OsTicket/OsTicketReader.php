@@ -96,16 +96,19 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    public function findTicketAttachment($ticket_id)
+    /**
+     * @param int $message_id
+     * @return array
+     */
+    public function findTicketMessageAttachment($message_id)
     {
-        $ticket_id = (int) $ticket_id;
-
+        $message_id = (int)$message_id;
         $query = 'SELECT f.name, f.type, a.file_id  FROM ost_file f JOIN ost_ticket_attachment a '
             . ' ON f.id = a.file_id'
-            . ' WHERE ticket_id = ?';
+            . ' WHERE a.ref_id = ?';
 
-        $stmt   = $this->db->prepare($query);
-        $stmt->execute(array($ticket_id));
+        $stmt = $this->db->prepare($query);
+        $stmt->execute(array($message_id));
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
@@ -180,11 +183,14 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchColumn();
     }
 
-    public function findMessageThreadFromId($ticket_id)
+    /**
+     * @param int $ticket_id
+     * @return array
+     */
+    public function findMessagesByTicketId($ticket_id)
     {
-        $query = 'SELECT thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
-
-        $stmt   = $this->db->prepare($query);
+        $query = 'SELECT id, thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
+        $stmt  = $this->db->prepare($query);
         $stmt->execute(array($ticket_id));
 
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);

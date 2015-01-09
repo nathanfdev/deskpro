@@ -47,6 +47,14 @@ use Psr\Log\LoggerInterface;
 abstract class AbstractExportCommand extends ContainerAwareCommand
 {
     /**
+     * {@inheritdoc}
+     */
+    protected function configure()
+    {
+        $this->addOption('live');
+    }
+
+    /**
      * Creates a new generator config instance
      *
      * @param InputInterface $input
@@ -58,7 +66,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $config
             ->addRecordType(GeneratorInterface::RECORD_TYPE_PEOPLE)
             ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKETS)
-            ->addRecordType(GeneratorInterface::RECORD_TYPE_MESSAGES);
+            ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKET_MESSAGES);
 
         $this->setParamsByDeskProConfig($config);
         $this->setParamsByInputInterface($config, $input);
@@ -97,7 +105,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             throw new \Exception('Source type argument is not defined');
         }
 
-        if ($input->hasOption('output-path')) {
+        if ($input->hasOption('output-path') && $input->getOption('output-path')) {
             $config->setOutputPath(rtrim($input->getOption('output-path'), "\\/") . "/");
         }
 

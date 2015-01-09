@@ -245,6 +245,10 @@ final class Person extends AbstractEntity
      */
     public function toArray()
     {
+        if (!$this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
         return array(
             'oid'          => $this->oid,
             'is_agent'     => $this->is_agent,
