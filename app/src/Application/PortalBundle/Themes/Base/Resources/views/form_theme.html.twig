@@ -16,7 +16,7 @@
 
 {# A Checkbox #}
 {% block checkbox_widget -%}
-    <input style="margin-left: 20px;" type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
+    <input{% if add_margin is defined %} style="margin-left: 20px;"{% endif %} type="checkbox" {{ block('widget_attributes') }}{% if value is defined %} value="{{ value }}"{% endif %}{% if checked %} checked="checked"{% endif %} />
     {% if form.vars.checkbox_label %}{{ form.vars.checkbox_label }}{% endif %}
 {%- endblock checkbox_widget %}
 
@@ -43,6 +43,7 @@
         {% endif %}
         {{ form.vars.data.blob.filename }}
     </a>
+    [ {{ form_widget(form.delete) }} Delete? ]
     {{ form_widget(form.blob_auth) }}
 {% endif %}
 {% endblock ticket_message_attachment_widget %}

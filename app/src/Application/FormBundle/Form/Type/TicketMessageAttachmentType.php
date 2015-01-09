@@ -66,6 +66,7 @@ class TicketMessageAttachmentType extends AbstractType
                 $form->add('upload', 'file', array('mapped' => false, 'required' => false, 'label' => false));
             } else {
                 $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
             }
         });
 
@@ -83,11 +84,26 @@ class TicketMessageAttachmentType extends AbstractType
                 $form->setData($attachment);
             }
             $form->getData()->setBlob($this->blob_storage->getBlobEntityFromAuthcode($submittedData['blob_auth']));
-            if ($form->has('upload')) {
-                $form->remove('upload');
-            }
-            if (!$form->has('blob_auth')) {
-                $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+
+            // delete?
+            if (array_key_exists('delete', $submittedData)) {
+                if ($submittedData['delete'] != 0) {
+                    $attachment = $form->getData();
+                    if ($blob = $attachment->getBlob()) {
+                        $this->blob_storage->deleteBlobRecord($blob);
+                    }
+                    $form->setData(null);
+                    $form->remove('blob_auth');
+                    $form->remove('delete');
+                    $form->add('upload', 'file', array('mapped' => false, 'required' => false, 'label' => false));
+                }
+            } else {
+                if ($form->has('upload')) {
+                    $form->remove('upload');
+                }
+                if (!$form->has('blob_auth')) {
+                    $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
+                }
             }
         }
     }
@@ -116,6 +132,7 @@ class TicketMessageAttachmentType extends AbstractType
                 $ticket_message->addAttachment($attachment);
 
                 $form->remove('upload');
+                $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
                 $form->add('blob_auth', 'hidden', array('property_path' => 'blob.authcode'));
             } else {
                 $ticket_message->attachments->removeElement($attachment);

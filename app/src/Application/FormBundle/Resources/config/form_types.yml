@@ -62,7 +62,7 @@ services:
 
   form.ticket_message_attachment:
     class: Application\FormBundle\Form\Type\TicketMessageAttachmentType
-    arguments: [@blob.storage]
+    arguments: [@blob.storage, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: ticket_message_attachment }
 
