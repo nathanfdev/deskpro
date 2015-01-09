@@ -15,7 +15,7 @@ services:
 
   form.person_registration:
     class: Application\FormBundle\Form\Type\PersonRegistrationType
-    arguments: [@form_field_manager]
+    arguments: [@form_field_manager, @language_manager]
     tags:
       - { name: form.type, alias: person_registration }
 
@@ -29,7 +29,7 @@ services:
 
   form.person_profile:
     class: Application\FormBundle\Form\Type\PersonEditProfileType
-    arguments: [@form_field_manager]
+    arguments: [@form_field_manager, @language_manager]
     tags:
       - { name: form.type, alias: person_profile }
 

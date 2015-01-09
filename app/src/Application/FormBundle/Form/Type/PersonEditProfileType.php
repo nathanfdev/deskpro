@@ -36,6 +36,7 @@ namespace Application\FormBundle\Form\Type;
 
 
 use Application\FormBundle\Form\FormFieldManager;
+use Application\LanguageBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -49,9 +50,15 @@ class PersonEditProfileType extends AbstractType
      */
     private $field_manager;
 
-    public function __construct(FormFieldManager $field_manager)
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
+    public function __construct(FormFieldManager $field_manager, LanguageManager $language_manager)
     {
         $this->field_manager = $field_manager;
+        $this->language_manager = $language_manager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -61,9 +68,11 @@ class PersonEditProfileType extends AbstractType
 
         $builder->add('timezone', 'timezone', array());
 
-        $builder->add('language_id', 'deskpro_language', array(
-            'view_context' => 'user'
-        ));
+        if ($this->language_manager->isMultiLanguagePortal()) {
+            $builder->add('language_id', 'deskpro_language', array(
+                'view_context' => 'user'
+            ));
+        }
 
 
         $field_manager = $this->field_manager;
