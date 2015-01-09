@@ -276,9 +276,13 @@ class KernelBooter
                 self::bootstrapEnv();
                 require_once DP_ROOT . "/sys/Kernel/PortalKernel.php";
                 $kernel = new PortalKernel($env, $debug);
+
+                // add our reverse proxy
+                require_once DP_ROOT . "/src/Application/PortalBundle/HttpKernel/PortalHttpCache.php";
+                $kernel = new PortalHttpCache($kernel);
+                //
+
                 if ('dev' === $env) {
-                    require_once DP_ROOT . "/src/Application/PortalBundle/HttpKernel/PortalHttpCache.php";
-                    $kernel = new PortalHttpCache($kernel);
                     Debug::enable();
                 }
                 $request = Request::createFromGlobals();
