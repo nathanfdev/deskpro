@@ -134,11 +134,11 @@ class TicketViewService
         switch ($field_def->getHandlerClass()) {
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Date':
                 $datetime = new \DateTime($data->getData());
-                $value = date('Y-m-d', $datetime->getTimestamp());
+                $value = date('F j, Y', $datetime->getTimestamp());
                 break;
             case 'Application\\DeskPRO\\CustomFields\\Handler\\DateTime':
                 $datetime = new \DateTime($data->getData());
-                $value = date('Y-m-d h:m', $datetime->getTimestamp());
+                $value = date('F j, Y, g:i a', $datetime->getTimestamp());
                 break;
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Toggle':
                 if ($data->getData() == 1) {

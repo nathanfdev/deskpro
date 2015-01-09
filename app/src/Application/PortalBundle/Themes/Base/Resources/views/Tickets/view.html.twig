@@ -96,28 +96,34 @@
     </div>
     <hr>
 
+    <div class="ticket-timeline">
 
-    <h2>Messages on Ticket</h2>
-    <ul>
         {% for msg in ticket_view.ticket.messages %}
-            <li>
-                {{ msg.message }}
-                {% if msg.attachments|length > 0 %}
-                    <ul>
+            <div class="item reply">
+                    <span class="badge"
+                          style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+
+                <h1>{{ msg.person.display_name_user }} <span>wrote:</span></h1>
+
+                <div class="comment agent-reply">
+                    {{ msg.message }}
+                    {% if msg.attachments|length > 0 %}
+                        <h3>Attachements:</h3>
                         {% for attachment in msg.attachments %}
-                        <li>
-                            {% if attachment.blob.is_image %}
-                                <img src="{{ attachment.blob.thumbnailUrl }}" alt=""/>
-                            {% endif %}
-                            <strong>{{ attachment.person.name }}</strong> attached <strong>{{ attachment.blob.filename }}</strong>
-                            <a href="{{ attachment.blob.downloadUrl }}">[download link]</a>
-                        </li>
+                            <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
+                                {% if attachment.blob.is_image %}
+                                    <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+                                {% endif %}
+                                {{ attachment.blob.filename }}
+                                <span class="attachement-size">{{ attachment.blob.filesize }} bytes </span>
+                            </a><br>
                         {% endfor %}
-                    </ul>
-                {% endif %}
-            </li>
+                    {% endif %}
+                </div>
+            </div>
         {% endfor %}
-    </ul>
+
+    </div>
 
 <br>
 
