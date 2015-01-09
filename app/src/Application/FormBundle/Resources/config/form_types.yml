@@ -29,7 +29,7 @@ services:
 
   form.person_profile:
     class: Application\FormBundle\Form\Type\PersonEditProfileType
-    arguments: [@form_field_manager, @language_manager]
+    arguments: [@form_field_manager, @language_manager, @blob.storage, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: person_profile }
 
@@ -151,7 +151,7 @@ services:
 
   form.blob:
     class: Application\FormBundle\Form\Type\BlobType
-    arguments: [@doctrine.orm.default_entity_manager]
+    arguments: [@doctrine.orm.default_entity_manager, @blob.storage]
     tags:
       - { name: form.type, alias: deskpro_blob }
 

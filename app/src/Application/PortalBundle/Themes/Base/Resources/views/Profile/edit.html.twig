@@ -7,9 +7,21 @@
     {# PROFILE #}
     <h1>Edit Profile</h1>
     {{ form_start(profile_form) }}
-    {{ form_widget(profile_form) }}
-    <button type="submit">Save Profile</button>
+    {{ form_row(profile_form.first_name) }}
+    {{ form_row(profile_form.last_name) }}
+    {% if profile_form.language_id is defined %}
+        {{ form_row(profile_form.language_id) }}
+    {% endif %}
+    {% if profile_form.delete_picture is defined %}
+        <img src="{{ app.user.picture_url }}"
+             alt="{{ app.user }}"/> {{ form_row(profile_form.delete_picture, { label: 'delete picture? ' }) }}
+    {% else %}
+        {{ form_row(profile_form.upload_picture) }}
+    {% endif %}
+    {{ form_row(profile_form.timezone) }}
+    {{ form_row(profile_form.first_name) }}
     {{ form_rest(profile_form) }}
+    <button type="submit">Save Profile</button>
     {{ form_end(profile_form) }}
 
 
