@@ -15,7 +15,7 @@ var gulp       = require('gulp'),
     using      = require('gulp-using'),
     gulpif     = require('gulp-if'),
     lazypipe   = require('lazypipe'),
-    clean      = require('gulp-clean'),
+    del        = require('del'),
     deskpro    = {util: {}, taskGen: {}};
 
 
@@ -134,10 +134,9 @@ deskpro.taskGen.sassCss = function(glob, target_dir, no_cache) {
 
   if (no_cache) {
     return gulp.src(glob)
-      .pipe(gulpif(deskpro.isWatching, plumber()))
       .pipe(sourcemaps.init())
       .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
-      .pipe(sass())
+      .pipe(sass({sourceComments: false}))
       .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
       .pipe(gulp.dest(target_dir))
       .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
@@ -147,7 +146,7 @@ deskpro.taskGen.sassCss = function(glob, target_dir, no_cache) {
       .pipe(gulpif(deskpro.isWatching, plumber()))
       .pipe(sourcemaps.init())
       .pipe(gulpif(deskpro.isWatching, using({prefix: '<< Build --'})))
-      .pipe(sass())
+      .pipe(sass({sourceComments: false}))
       .pipe(sourcemaps.write('/', {includeContent: false, sourceRoot: deskpro.util.sourceMapRoot}))
       .pipe(gulp.dest(target_dir))
       .pipe(gulpif(deskpro.isWatching, using({prefix: '>> Wrote --'})));
@@ -377,7 +376,6 @@ gulp.task('watch', ['precache'], function () {
 // Clean
 //------------------------------
 
-gulp.task('clean', function () {
-  return gulp.src(['./app-build', './loader-build'])
-    .pipe(clean());
+gulp.task('clean', function (cb) {
+  del(['./app-build', './loader-build'], cb);
 });
