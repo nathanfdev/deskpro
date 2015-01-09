@@ -25,19 +25,102 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
-use Application\ImportBundle\Generator\LoggerAwareInterface;
+use Iterator;
+use Countable;
 
 /**
- * Base data generator class methods
+ * Base collection
  *
- * Class AbstractPlugin
- * @package Application\ImportBundle\Generator\Exporter
+ * Class AbstractCollection
+ * @package Userapi\Collection
  */
-abstract class AbstractGeneratorExporter
-    extends AbstractGenerator implements GeneratorExporterInterface, LoggerAwareInterface
+abstract class AbstractCollection implements Iterator, Countable
 {
+    /**
+     * @var array
+     */
+    protected $collection = array();
 
+    /**
+     * Return the current element
+     *
+     * @return mixed Can return any type.
+     */
+    public function current()
+    {
+        return current($this->collection);
+    }
+
+    /**
+     * Move forward to next element
+     *
+     * @return void Any returned value is ignored.
+     */
+    public function next()
+    {
+        next($this->collection);
+    }
+
+    /**
+     * Return the key of the current element
+     *
+     * @return mixed scalar on success, or null on failure.
+     */
+    public function key()
+    {
+        return key($this->collection);
+    }
+
+    /**
+     * Checks if current position is valid
+     *
+     * @return boolean The return value will be casted to boolean and then evaluated.
+     * Returns true on success or false on failure.
+     */
+    public function valid()
+    {
+        return current($this->collection);
+    }
+
+    /**
+     * Rewind the Iterator to the first element
+     *
+     * @return void Any returned value is ignored.
+     */
+    public function rewind()
+    {
+        reset($this->collection);
+    }
+
+    /**
+     * Count elements of an object
+     *
+     * @return int The custom count as an integer.
+     */
+    public function count()
+    {
+        return count($this->collection);
+    }
+
+    /**
+     * To array
+     *
+     * @return array
+     */
+    public function toArray()
+    {
+        return $this->collection;
+    }
+
+    /**
+     * Get and remove last element of the collection
+     *
+     * @return mixed|null
+     */
+    public function pop()
+    {
+        return array_pop($this->collection);
+    }
 }

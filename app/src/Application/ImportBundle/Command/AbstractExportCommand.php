@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
-use Application\ImportBundle\Generator\Exporter\GeneratorExporterInterface;
+use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\GeneratorInterface;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -65,8 +65,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $config = new GeneratorConfig();
         $config
             ->addRecordType(GeneratorInterface::RECORD_TYPE_PEOPLE)
-            ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKETS)
-            ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKET_MESSAGES);
+            ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKETS);
 
         $this->setParamsByDeskProConfig($config);
         $this->setParamsByInputInterface($config, $input);
@@ -112,7 +111,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($input->hasOption('input-path')) {
             $config->setInputPath($input->getOption('input-path'));
         } else {
-            if ($config->getExporterType() === GeneratorExporterInterface::GENERATOR_TYPE_CSV) {
+            if ($config->getExporterType() === ExporterInterface::GENERATOR_TYPE_CSV) {
                 throw new \Exception('You must supply an "input-path" argument while using CSV exporter');
             }
         }

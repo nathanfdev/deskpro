@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,30 +25,20 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Writer;
 
 use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 
 /**
- * Generator validator interface
- *
- * Interface ValidatorInterface
- * @package Application\ImportBundle\Generator\Validator
+ * Interface WriterInterface
+ * @package Application\ImportBundle\Generator\Writer
  */
-interface ValidatorInterface
+interface WriterInterface extends GeneratorConfigAwareInterface
 {
     /**
-     * Referred record type
-     *
-     * @return string
-     */
-    public function getRecordType();
-
-    /**
-     * Returns true on success or false if data is not valid
-     *
      * @param EntityInterface $entity
-     * @throws \Exception
+     * @return bool
      */
-    public function validate(EntityInterface $entity);
+    public function writeData(EntityInterface $entity);
 }

@@ -27,19 +27,30 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
+use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\Generator\GeneratorInterface;
+
 /**
  * People data generator validator
  *
  * Class People
  * @package Application\ImportBundle\Generator\Validator
  */
-class People implements ValidatorInterface
+final class People implements ValidatorInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function validateRawRecordData(array $data)
+    public function getRecordType()
     {
-        return true;
+        return GeneratorInterface::RECORD_TYPE_PEOPLE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validate(EntityInterface $entity)
+    {
+
     }
 }

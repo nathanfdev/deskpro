@@ -27,28 +27,42 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
-use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Generator validator interface
- *
- * Interface ValidatorInterface
+ * Class Collection
  * @package Application\ImportBundle\Generator\Validator
  */
-interface ValidatorInterface
+class Collection extends AbstractCollection
 {
     /**
-     * Referred record type
+     * Add a validator
      *
-     * @return string
+     * @param ValidatorInterface $validator
+     * @return $this
      */
-    public function getRecordType();
+    public function attach(ValidatorInterface $validator)
+    {
+        $this->collection[] = $validator;
+        return $this;
+    }
 
     /**
-     * Returns true on success or false if data is not valid
+     * Returns a new collection contains validators of current type
      *
-     * @param EntityInterface $entity
-     * @throws \Exception
+     * @param string $type
+     * @return Collection
      */
-    public function validate(EntityInterface $entity);
+    public function getByRecordType($type)
+    {
+        $collection = new Collection();
+        foreach ($this->collection as $validator) {
+            /** @var ValidatorInterface $validator */
+            if ($validator->getRecordType() === $type) {
+                $collection->attach($validator);
+            }
+        }
+
+        return $collection;
+    }
 }

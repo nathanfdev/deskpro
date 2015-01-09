@@ -38,14 +38,16 @@ use Application\ImportBundle\CsvReader\CsvReaderInterface;
 use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
 use DateTime;
+use Exception;
 
 /**
  * Data generator from csv files
  *
+ * Class Csv
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator\Exporter
  */
-class Csv extends AbstractGeneratorExporter
+class Csv extends AbstractExporter
 {
     /**
      * @var CsvReaderInterface
@@ -75,7 +77,14 @@ class Csv extends AbstractGeneratorExporter
      */
     public function getRecordsCountByType($type)
     {
-        return $this->csv_reader->getRowsCount($this->getCsvReaderConfig($type));
+        switch ($type) {
+            case GeneratorInterface::RECORD_TYPE_PEOPLE:
+                return $this->csv_reader->getRowsCount($this->getCsvReaderConfig(self::RECORD_TYPE_PEOPLE));
+            case GeneratorInterface::RECORD_TYPE_TICKETS:
+                return $this->csv_reader->getRowsCount($this->getCsvReaderConfig(self::RECORD_TYPE_TICKETS));
+            default:
+                throw new Exception('This record type `%s` is not supported', $type);
+        }
     }
 
     /**
@@ -88,10 +97,8 @@ class Csv extends AbstractGeneratorExporter
                 return $this->exportPeople();
             case GeneratorInterface::RECORD_TYPE_TICKETS:
                 return $this->exportTickets();
-            case GeneratorInterface::RECORD_TYPE_TICKET_MESSAGES:
-                return $this->exportTicketMessages();
             default:
-                throw new \Exception('This record type `%s` is not supported', $type);
+                throw new Exception('This record type `%s` is not supported', $type);
         }
     }
 
@@ -126,11 +133,11 @@ class Csv extends AbstractGeneratorExporter
     {
         $collection = array();
         $data = $this->getDataByRecordType(self::RECORD_TYPE_PEOPLE);
-        foreach ($data as $index => $person) {
+        foreach ($data as $num => $person) {
             $this->advanceProgressBar();
 
             if (!isset($person['email'])) {
-                $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $index));
+                $this->logWarning(sprintf('Invalid person record found (Skipping): %d', $num));
                 continue;
             }
             if (empty($person['name'])) {
@@ -141,8 +148,8 @@ class Csv extends AbstractGeneratorExporter
             $names = explode(' ', $person['name']);
             $person_entity = new Entity\Person();
             $person_entity
-                ->setDestination('person_' . $index)
-                ->setOid($index)
+                ->setDestination('person_' . $num)
+                ->setOid($num)
                 ->setAsAgent(isset($person['is_agent']) ? (bool)$person['is_agent'] : false)
                 ->setFirstName($names[0])
                 ->setLastName(isset($names[1]) ? $names[1] : '')
@@ -164,12 +171,32 @@ class Csv extends AbstractGeneratorExporter
     protected function exportTickets()
     {
         $collection = array();
-        $data = $this->getDataByRecordType(self::RECORD_TYPE_TICKETS);
-        foreach ($data as $index => $ticket) {
+        $message_collection = array();
+
+        $tickets  = $this->getDataByRecordType(self::RECORD_TYPE_TICKETS);
+        $messages = $this->getDataByRecordType('messages');
+
+        foreach ($messages as $num => $message) {
+            if (!isset($message['message_text']) || !isset($message['user'])) {
+                $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $num));
+                continue;
+            }
+
+            $message_entity = new Entity\TicketMessage();
+            $message_entity
+                ->setDestination('ticket_' . trim($message['ticket_id']))
+                ->setPersonEmail($message['user'])
+                ->setMessageText($message['message_text'])
+                ->setDateCreated(isset($message['date_created']) ? new DateTime($message['date_created']) : new DateTime());
+
+            $message_collection[] = $message_entity;
+        }
+
+        foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
 
             if (!isset($ticket['subject']) || !isset($ticket['user'])) {
-                $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $index));
+                $this->logWarning(sprintf('Invalid ticket record found (Skipping): %d', $num));
                 continue;
             }
 
@@ -183,39 +210,15 @@ class Csv extends AbstractGeneratorExporter
                 ->setDateCreated(isset($ticket['date_created']) ? new DateTime($ticket['date_created']) : new DateTime())
                 ->setSubject($ticket['subject']);
 
-            $collection[] = $ticket_entity;
-            $this->logInfo(sprintf('%s exported successfully!', $ticket_entity->getDestination()));
-        }
-
-        return $collection;
-    }
-
-    /**
-     * Export ticket messages csv file
-     *
-     * @return array
-     */
-    protected function exportTicketMessages()
-    {
-        $collection = array();
-        $data = $this->getDataByRecordType(self::RECORD_TYPE_TICKET_MESSAGES);
-        foreach ($data as $index => $message) {
-            $this->advanceProgressBar();
-
-            if (!isset($message['message_text']) || !isset($message['user'])) {
-                $this->logWarning(sprintf('Invalid ticket message record found (Skipping): %d', $index));
-                continue;
+            foreach ($message_collection as $message_entity) {
+                /** @var Entity\TicketMessage $message_entity */
+                if ($ticket_entity->getDestination() === $message_entity->getDestination()) {
+                    $ticket_entity->addMessage($message_entity);
+                }
             }
 
-            $ticket_id = trim($message['ticket_id']);
-            $message_entity = new Entity\TicketMessage();
-            $message_entity
-                ->setDestination('ticket_' . $ticket_id)
-                ->setPersonEmail($message['user'])
-                ->setMessageText($message['message_text'])
-                ->setDateCreated(isset($message['date_created']) ? new DateTime($message['date_created']) : new DateTime());
-
-            $collection[] = $message_entity;
+            $collection[] = $ticket_entity;
+            $this->logInfo(sprintf('%s exported successfully!', $ticket_entity->getDestination()));
         }
 
         return $collection;

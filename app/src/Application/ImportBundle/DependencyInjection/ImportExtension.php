@@ -48,6 +48,7 @@ class ImportExtension extends Extension
 //
 //        $db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
 
+        // Readers
         $definition = new Definition('Application\ImportBundle\CsvReader\CsvReader');
         $container->setDefinition('deskpro.import.csv_reader', $definition);
 
@@ -55,6 +56,7 @@ class ImportExtension extends Extension
         $definition->addArgument(null);
         $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
 
+        // Exporters
         $definition = new Definition('Application\ImportBundle\Generator\Exporter\Csv');
         $definition->addArgument(new Reference('deskpro.import.csv_reader'));
         $container->setDefinition('deskpro.import.generator.exporter.csv', $definition);
@@ -63,14 +65,32 @@ class ImportExtension extends Extension
         $definition->addArgument(new Reference('deskpro.import.os_ticket_reader'));
         $container->setDefinition('deskpro.import.generator.exporter.osticket', $definition);
 
+        $definition = new Definition('Application\ImportBundle\Generator\Exporter\Collection');
+        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.exporter.csv')));
+        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.exporter.osticket')));
+        $container->setDefinition('deskpro.import.generator.exporter.collection', $definition);
+
+        // Validators
+        $definition = new Definition('Application\ImportBundle\Generator\Validator\People');
+        $container->setDefinition('deskpro.import.generator.validator.people', $definition);
+
+        $definition = new Definition('Application\ImportBundle\Generator\Validator\Tickets');
+        $container->setDefinition('deskpro.import.generator.validator.tickets', $definition);
+
+        $definition = new Definition('Application\ImportBundle\Generator\Validator\Collection');
+        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.validator.people')));
+        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.validator.tickets')));
+        $container->setDefinition('deskpro.import.generator.validator.collection', $definition);
+
+        // Writer
         $definition = new Definition('Application\ImportBundle\Generator\Writer\JsonWriter');
         $container->setDefinition('deskpro.import.generator.writer.json', $definition);
 
+        // Generator
         $definition = new Definition('Application\ImportBundle\Generator\Generator');
         $definition->addArgument(new Reference('deskpro.import.generator.writer.json'));
-        $definition->addMethodCall('addExporter', array(new Reference('deskpro.import.generator.exporter.csv')));
-        $definition->addMethodCall('addExporter', array(new Reference('deskpro.import.generator.exporter.osticket')));
-
+        $definition->addArgument(new Reference('deskpro.import.generator.exporter.collection'));
+        $definition->addArgument(new Reference('deskpro.import.generator.validator.collection'));
         $container->setDefinition('deskpro.import.generator', $definition);
     }
 }

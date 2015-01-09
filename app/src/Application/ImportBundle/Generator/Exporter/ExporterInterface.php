@@ -25,30 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\Generator\GeneratorInterface;
 
 /**
- * Generator validator interface
+ * Data generator interface
  *
- * Interface ValidatorInterface
- * @package Application\ImportBundle\Generator\Validator
+ * Interface ExporterInterface
+ * @package Application\ImportBundle\Generator\Exporter
  */
-interface ValidatorInterface
+interface ExporterInterface extends GeneratorInterface
 {
+    const GENERATOR_TYPE_CSV       = 'csv';
+    const GENERATOR_TYPE_OS_TICKET = 'osticket';
+
     /**
-     * Referred record type
+     * Get plugin type
      *
      * @return string
      */
-    public function getRecordType();
-
-    /**
-     * Returns true on success or false if data is not valid
-     *
-     * @param EntityInterface $entity
-     * @throws \Exception
-     */
-    public function validate(EntityInterface $entity);
+    public function getType();
 }

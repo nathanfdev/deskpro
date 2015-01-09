@@ -33,7 +33,7 @@ use Application\ImportBundle\Generator\GeneratorConfig;
  * Class AbstractWriter
  * @package Application\ImportBundle\Generator\Writer
  */
-abstract class AbstractWriter implements GeneratorWriterInterface
+abstract class AbstractWriter implements WriterInterface
 {
     /**
      * @var GeneratorConfig

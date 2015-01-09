@@ -27,19 +27,30 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
+use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\Generator\GeneratorInterface;
+
 /**
  * Tickets data generator validator
  *
  * Class Tickets
  * @package Application\ImportBundle\Generator\Validator
  */
-class Tickets implements ValidatorInterface
+final class Tickets implements ValidatorInterface
 {
     /**
      * {@inheritdoc}
      */
-    public function validateRawRecordData(array $data)
+    public function getRecordType()
     {
-        return true;
+        return GeneratorInterface::RECORD_TYPE_TICKETS;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function validate(EntityInterface $entity)
+    {
+
     }
 }

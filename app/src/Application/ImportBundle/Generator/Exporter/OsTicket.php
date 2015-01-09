@@ -38,14 +38,16 @@ use Application\ImportBundle\OsTicket\OsTicketReader;
 use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 use Application\ImportBundle\Entity;
 use DateTime;
+use Exception;
 
 /**
  * Data generator from OsTicket
  *
+ * Class OsTicket
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator\Exporter
  */
-class OsTicket extends AbstractGeneratorExporter
+class OsTicket extends AbstractExporter
 {
     /**
      * @var OsTicketReader
@@ -81,7 +83,7 @@ class OsTicket extends AbstractGeneratorExporter
             case self::RECORD_TYPE_TICKETS:
                 return $this->os_ticket_reader->getTicketCount();
             default:
-                throw new \Exception(sprintf('Unknown record type `%s`', $type));
+                throw new Exception('This record type `%s` is not supported', $type);
         }
     }
 
@@ -95,10 +97,8 @@ class OsTicket extends AbstractGeneratorExporter
                 return $this->exportPeople();
             case GeneratorInterface::RECORD_TYPE_TICKETS:
                 return $this->exportTickets();
-            case GeneratorInterface::RECORD_TYPE_TICKET_MESSAGES:
-                return $this->exportTicketMessages();
             default:
-                throw new \Exception('This record type `%s` is not supported', $type);
+                throw new Exception('This record type `%s` is not supported', $type);
         }
     }
 
@@ -225,16 +225,6 @@ class OsTicket extends AbstractGeneratorExporter
                 $this->advanceProgressBar();
             }
         }
-
-        return $collection;
-    }
-
-    /**
-     * @return array
-     */
-    protected function exportTicketMessages()
-    {
-        $collection = array();
 
         return $collection;
     }

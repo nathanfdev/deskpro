@@ -32,8 +32,6 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\Exporter\GeneratorExporterInterface;
-use Application\ImportBundle\Generator\Writer\GeneratorWriterInterface;
 use Exception;
 
 /**
@@ -46,35 +44,35 @@ use Exception;
 class Generator extends AbstractGenerator
 {
     /**
-     * @var array
+     * @var Exporter\Collection
      */
-    private $exporters = array();
+    private $exporters;
 
     /**
-     * @var GeneratorWriterInterface
+     * @var Validator\Collection
+     */
+    private $validators;
+
+    /**
+     * @var Writer\WriterInterface
      */
     private $outputWriter;
 
     /**
      * Constructor
      *
-     * @param GeneratorWriterInterface $outputWriter
+     * @param Writer\WriterInterface $outputWriter
+     * @param Exporter\Collection    $exporters
+     * @param Validator\Collection   $validators
      */
-    public function __construct(GeneratorWriterInterface $outputWriter)
-    {
+    public function __construct(
+        Writer\WriterInterface $outputWriter,
+        Exporter\Collection    $exporters,
+        Validator\Collection   $validators
+    ) {
         $this->outputWriter = $outputWriter;
-    }
-
-    /**
-     * Attach a generator
-     *
-     * @param GeneratorExporterInterface $exporter
-     * @return $this
-     */
-    public function addExporter(GeneratorExporterInterface $exporter)
-    {
-        $this->exporters[] = $exporter;
-        return $this;
+        $this->exporters    = $exporters;
+        $this->validators   = $validators;
     }
 
     /**
@@ -120,9 +118,15 @@ class Generator extends AbstractGenerator
 
         foreach ($this->config->getRecordTypes() as $record_type) {
             $collection = $exporter->exportRecordsByType($record_type);
-            foreach ($collection as $record) {
-                /** @var EntityInterface $record */
-                $this->outputWriter->writeData($record);
+            $validators = $this->validators->getByRecordType($record_type);
+            foreach ($collection as $entity) {
+                foreach ($validators as $validator) {
+                    /** @var Validator\ValidatorInterface $validator */
+                    $validator->validate($entity);
+                }
+
+                /** @var EntityInterface $entity */
+                $this->outputWriter->writeData($entity);
             }
         }
     }
@@ -130,7 +134,7 @@ class Generator extends AbstractGenerator
     /**
      * Get generator plugin by configuration
      *
-     * @return GeneratorExporterInterface
+     * @return Exporter\ExporterInterface
      * @throws Exception
      */
     private function getExporter()
@@ -140,7 +144,7 @@ class Generator extends AbstractGenerator
         }
 
         foreach ($this->exporters as $exporter) {
-            /** @var GeneratorExporterInterface $exporter */
+            /** @var Exporter\ExporterInterface $exporter */
             if ($exporter->getType() === $this->config->getExporterType()) {
                 $exporter->setConfig($this->config);
 

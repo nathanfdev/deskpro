@@ -27,17 +27,14 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Application\ImportBundle\AbstractCollection;
+
 /**
  * Class Collection
  * @package Application\ImportBundle\Entity
  */
-class Collection
+class Collection extends AbstractCollection
 {
-    /**
-     * @var array
-     */
-    private $collection = array();
-
     /**
      * @param EntityInterface $entity
      * @return $this

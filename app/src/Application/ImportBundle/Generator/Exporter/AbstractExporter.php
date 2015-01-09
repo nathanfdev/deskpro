@@ -27,23 +27,16 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Generator\AbstractGenerator;
+use Application\ImportBundle\Generator\LoggerAwareInterface;
 
 /**
- * Data generator interface
+ * Base data generator class methods
  *
- * Interface GeneratorPluginInterface
+ * Class AbstractExporter
  * @package Application\ImportBundle\Generator\Exporter
  */
-interface GeneratorExporterInterface extends GeneratorInterface
+abstract class AbstractExporter extends AbstractGenerator implements ExporterInterface, LoggerAwareInterface
 {
-    const GENERATOR_TYPE_CSV       = 'csv';
-    const GENERATOR_TYPE_OS_TICKET = 'osticket';
 
-    /**
-     * Get plugin type
-     *
-     * @return string
-     */
-    public function getType();
 }
