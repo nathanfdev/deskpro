@@ -47,6 +47,7 @@ use Application\FormBundle\Hierarchy\HierarchyGenerator;
 use Application\FormBundle\TicketLayout\TicketLayoutDiffer;
 use Application\FormBundle\TicketLayout\TicketLayoutFactory;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
+use Application\LanguageBundle\Language\LanguageManager;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
@@ -85,12 +86,18 @@ class TicketType extends AbstractType
      */
     private $hierarchy_generator;
 
+    /**
+     * @var LanguageManager
+     */
+    private $language_manager;
+
     public function __construct(
         FormFieldManager $field_manager,
         TicketLayoutFactory $ticket_layout_factory,
         TicketLayoutDiffer $layout_differ,
         HierarchyGenerator $hierarchy_generator,
-        EntityManager $em
+        EntityManager $em,
+        LanguageManager $language_manager
     )
     {
         $this->layout_differ = $layout_differ;
@@ -98,6 +105,7 @@ class TicketType extends AbstractType
         $this->ticket_layout_factory = $ticket_layout_factory;
         $this->hierarchy_generator = $hierarchy_generator;
         $this->em = $em;
+        $this->language_manager = $language_manager;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
@@ -379,6 +387,10 @@ class TicketType extends AbstractType
 
     private function addUserLanguage(TicketFormContext $form_context, LayoutField $field)
     {
+        if (!$this->language_manager->isMultiLanguagePortal()) {
+            return;
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_language', array(
             'property_path' => 'person.language',
             'view_context'  => $form_context->getViewContext()

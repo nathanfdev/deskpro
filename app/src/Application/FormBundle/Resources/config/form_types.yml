@@ -2,7 +2,7 @@ services:
 
   form.ticket:
     class: Application\FormBundle\Form\Type\TicketType
-    arguments: [@form_field_manager, @ticket_layout_factory, @ticket_layout_differ, @form_hierarchy_generator, @doctrine.orm.default_entity_manager]
+    arguments: [@form_field_manager, @ticket_layout_factory, @ticket_layout_differ, @form_hierarchy_generator, @doctrine.orm.default_entity_manager, @language_manager]
     tags:
       - { name: form.type, alias: ticket }
 
