@@ -78,7 +78,7 @@ class Generator extends AbstractGenerator
     }
 
     /**
-     * Returns amount of records of all types to be exported
+     * Returns count of records of all types to be exported
      *
      * @return int
      */

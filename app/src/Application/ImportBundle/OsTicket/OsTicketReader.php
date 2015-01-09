@@ -81,7 +81,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $staff_count + $user_count;
     }
 
-    protected function findAllTickets($offset)
+    public function findAllTickets($offset)
     {
         $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
             . ' LIMIT :limit'
@@ -96,7 +96,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    protected function findTicketAttachment($ticket_id)
+    public function findTicketAttachment($ticket_id)
     {
         $ticket_id = (int) $ticket_id;
 
@@ -110,7 +110,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    protected function findAllStaff($offset = 0)
+    public function findAllStaff($offset = 0)
     {
         $query = 'SELECT * FROM ost_staff LIMIT :limit OFFSET :offset';
         $stmt  = $this->db->prepare($query);
@@ -122,7 +122,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    protected function findAllUser($offset = 0)
+    public function findAllUser($offset = 0)
     {
         $query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id'
             . ' LIMIT :limit'
@@ -137,7 +137,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    protected function findDepartmentFromId($id)
+    public function findDepartmentFromId($id)
     {
         $query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
 
@@ -147,7 +147,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchColumn();
     }
 
-    protected function findUserEmailFromId($id)
+    public function findUserEmailFromId($id)
     {
         $query = 'SELECT address FROM ost_user_email e'
             . ' LEFT JOIN ost_user u '
@@ -160,7 +160,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchColumn();
     }
 
-    protected function findStaffEmailFromId($id)
+    public function findStaffEmailFromId($id)
     {
         $query = 'SELECT email FROM ost_staff WHERE id = ?';
 
@@ -170,7 +170,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchColumn();
     }
 
-    protected function findTeamNameFromId($id)
+    public function findTeamNameFromId($id)
     {
         $query = 'SELECT name FROM ost_team WHERE id = ?';
 
@@ -180,7 +180,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchColumn();
     }
 
-    protected function findMessageThreadFromId($ticket_id)
+    public function findMessageThreadFromId($ticket_id)
     {
         $query = 'SELECT thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
 
@@ -190,7 +190,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchAll(\PDO::FETCH_ASSOC);
     }
 
-    protected function findTimezoneFromId($id)
+    public function findTimezoneFromId($id)
     {
         $query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
 
@@ -200,7 +200,7 @@ class OsTicketReader implements OsTicketReaderInterface
         return $stmt->fetchColumn();
     }
 
-    protected function getFileData($file_id)
+    public function getFileData($file_id)
     {
         $data = '';
 

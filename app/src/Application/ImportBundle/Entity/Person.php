@@ -35,13 +35,8 @@ use DateTime;
  * Class Person
  * @package Application\ImportBundle\Entity
  */
-final class Person implements EntityInterface
+final class Person extends AbstractEntity
 {
-    /**
-     * @var string
-     */
-    private $destination;
-
     /**
      * @var int
      */
@@ -90,24 +85,6 @@ final class Person implements EntityInterface
      * @var array
      */
     private $emails = array();
-
-    /**
-     * @param string $destination
-     * @return $this
-     */
-    public function setDestination($destination)
-    {
-        $this->destination = $destination;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDestination()
-    {
-        return $this->destination;
-    }
 
     /**
      * @return int

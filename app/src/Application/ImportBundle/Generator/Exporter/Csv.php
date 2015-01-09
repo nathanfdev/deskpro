@@ -53,11 +53,6 @@ class Csv extends AbstractGeneratorExporter
     private $csv_reader;
 
     /**
-     * @var array
-     */
-    private $read_ticket_ids = array();
-
-    /**
      * Constructor
      *
      * @param CsvReaderInterface $csv_reader
@@ -143,7 +138,7 @@ class Csv extends AbstractGeneratorExporter
                 $person['name'] = $e[0];
             }
 
-            $names  = explode(' ', $person['name']);
+            $names = explode(' ', $person['name']);
             $person_entity = new Entity\Person();
             $person_entity
                 ->setDestination('person_' . $index)
@@ -183,12 +178,11 @@ class Csv extends AbstractGeneratorExporter
                 ->setRef($ticket['id'])
                 ->setPerson($ticket['user'])
                 ->setAgent(isset($ticket['agent']) ? $ticket['agent'] : null)
-                ->setStatus(isset($ticket['status']) ? $ticket['status'] : 'awaiting_agent')
+                ->setStatus(isset($ticket['status']) ? $ticket['status'] : Entity\Ticket::STATUS_AWAITING_AGENT)
                 ->setDateCreated(isset($ticket['date_created']) ? new DateTime($ticket['date_created']) : new DateTime())
                 ->setSubject($ticket['subject']);
 
             $collection[] = $ticket_entity;
-            $this->read_ticket_ids[$ticket['id']] = true;
             $this->logInfo(sprintf('%s exported successfully!', $ticket_entity->getDestination()));
         }
 
@@ -212,39 +206,15 @@ class Csv extends AbstractGeneratorExporter
                 continue;
             }
 
-//            $ticket_id = trim($message['ticket_id']);
+            $ticket_id = trim($message['ticket_id']);
             $message_entity = new Entity\TicketMessage();
             $message_entity
+                ->setDestination('ticket_' . $ticket_id)
                 ->setPersonEmail($message['user'])
                 ->setMessageText($message['message_text'])
                 ->setDateCreated(isset($message['date_created']) ? new DateTime($message['date_created']) : new DateTime());
 
             $collection[] = $message_entity;
-
-            // todo destination move to writter?
-            // $ticket_file_name = 'ticket_' . $ticket_id . '.json';
-            // $ticket_file_path = $this->getExportTicketMessagesOutputPath() . $ticket_file_name;
-
-//            if ($this->config->isLive()) {
-//                if (is_file($ticket_file_path)) {
-//                    $ticket_array = json_decode(file_get_contents($ticket_file_path), true);
-//                    @$ticket_array['messages'][] = array(
-//                        'person'       => $message['user'],
-//                        'date_created' => isset($message['date_created']) ? $message['date_created'] : date('Y-m-d H:i:s'),
-//                        'message_text' => $message['message_text']
-//                    );
-
-//                    $this->logInfo(sprintf('%s exported successfully!', $ticket_file_path));
-//
-//                } else {
-//                    $this->logWarning(sprintf('Source ticket file for ticket_%s not found', $ticket_id));
-//                }
-
-//            } else {
-//                if (!isset($this->read_ticket_ids[$ticket_id])) {
-//                    $this->logWarning(sprintf('Source record for ticket #%s not read', $ticket_id));
-//                }
-//            }
         }
 
         return $collection;

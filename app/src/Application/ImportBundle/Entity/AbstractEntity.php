@@ -28,123 +28,31 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Exported ticket message attachment entity
- *
- * Class TicketMessageAttachment
+ * Class AbstractEntity
  * @package Application\ImportBundle\Entity
  */
-final class TicketMessageAttachment implements EntityInterface
+abstract class AbstractEntity implements EntityInterface
 {
     /**
-     * @var int
-     */
-    private $oid;
-
-    /**
      * @var string
      */
-    private $blob_data;
+    protected $destination;
 
     /**
-     * @var string
+     * @param string $destination
+     * @return $this
      */
-    private $file_name;
-
-    /**
-     * @var string
-     */
-    private $content_type;
+    public function setDestination($destination)
+    {
+        $this->destination = $destination;
+        return $this;
+    }
 
     /**
      * {@inheritdoc}
      */
     public function getDestination()
     {
-        return '';
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getBlobData()
-    {
-        return $this->blob_data;
-    }
-
-    /**
-     * @param string $blob_data
-     * @return $this
-     */
-    public function setBlobData($blob_data)
-    {
-        $this->blob_data = $blob_data;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getFileName()
-    {
-        return $this->file_name;
-    }
-
-    /**
-     * @param string $file_name
-     * @return $this
-     */
-    public function setFileName($file_name)
-    {
-        $this->file_name = $file_name;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getContentType()
-    {
-        return $this->content_type;
-    }
-
-    /**
-     * @param string $content_type
-     * @return $this
-     */
-    public function setContentType($content_type)
-    {
-        $this->content_type = $content_type;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function toArray()
-    {
-        return array(
-            'oid'          => $this->oid,
-            'blob_data'    => $this->blob_data,
-            'file_name'    => $this->file_name,
-            'content_type' => $this->content_type,
-        );
+        return $this->destination;
     }
 }

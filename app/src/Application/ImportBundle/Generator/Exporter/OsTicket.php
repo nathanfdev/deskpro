@@ -34,6 +34,7 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\OsTicket\OsTicketReader;
 use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 use Application\ImportBundle\Entity;
 use DateTime;
@@ -47,7 +48,7 @@ use DateTime;
 class OsTicket extends AbstractGeneratorExporter
 {
     /**
-     * @var OsTicketReaderInterface
+     * @var OsTicketReader
      */
     private $os_ticket_reader;
 
@@ -108,7 +109,7 @@ class OsTicket extends AbstractGeneratorExporter
         $offset = 0;
 
         $collection   = array();
-        $person_batch = $this->findAllStaff($offset);
+        $person_batch = $this->os_ticket_reader->findAllStaff($offset);
 
         while ($person_batch) {
             foreach ($person_batch as $person) {
@@ -121,7 +122,7 @@ class OsTicket extends AbstractGeneratorExporter
                     ->setAsAgent(true)
                     ->setFirstName($person['firstname'])
                     ->setLastName($person['lastname'])
-                    ->setTimezone($this->findTimezoneFromId($person['timezone_id']))
+                    ->setTimezone($this->os_ticket_reader->findTimezoneFromId($person['timezone_id']))
                     ->setDateCreated(new DateTime($person['created']))
                     ->addEmail($person['email']);
 
@@ -133,14 +134,16 @@ class OsTicket extends AbstractGeneratorExporter
             }
 
             unset($person);
-            $person_batch = $this->findAllStaff($offset);
+            $person_batch = $this->os_ticket_reader->findAllStaff($offset);
         }
 
-        foreach ($this->findAllUser() as $person) {
+        $users = $this->os_ticket_reader->findAllUser();
+        foreach ($users as $person) {
             $this->advanceProgressBar();
 
             $person_entity = new Entity\Person();
             $person_entity
+                ->setDestination('person_' . $index)
                 ->setOid($index)
                 ->setAsUser(true)
                 ->setName($person['name'])
@@ -148,9 +151,7 @@ class OsTicket extends AbstractGeneratorExporter
                 ->addEmail($person['address']);
 
             $collection[] = $person_entity;
-
-//            $file_name = $this->getExportPeopleOutputPath() . 'person' . $index . '.json';
-//            $this->logInfo(sprintf('%s exported successfully!', $file_name));
+            $this->logInfo(sprintf('%s exported successfully!', $person_entity->getDestination()));
 
             $index++;
         }
@@ -163,34 +164,33 @@ class OsTicket extends AbstractGeneratorExporter
      */
     protected function exportTickets()
     {
-        $index = 1;
+        $index  = 1;
         $offset = 0;
-
         $collection = array();
 
-        while ($ticket_batch = $this->findAllTickets($offset)) {
+        while ($ticket_batch = $this->os_ticket_reader->findAllTickets($offset)) {
             foreach ($ticket_batch as $ticket) {
                 $ticket_entity = new Entity\Ticket();
                 $ticket_entity
                     ->setDestination('ticket_' . $index)
                     ->setRef(!empty($ticket['number']) ? $ticket['number'] : null)
-                    ->setDepartment($this->findDepartmentFromId($ticket['dept_id']))
-                    ->setPerson($this->findUserEmailFromId($ticket['user_id']))
-                    ->setAgent($this->findUserEmailFromId($ticket['staff_id']) ?: null)
-                    ->setAgentTeam($this->findUserEmailFromId($ticket['team_id']) ?: null)
-                    ->setStatus($ticket['closed'] ? 'resolved' : $ticket['isanswered'] ? 'awaiting_user' : 'awaiting_agent')
+                    ->setDepartment($this->os_ticket_reader->findDepartmentFromId($ticket['dept_id']))
+                    ->setPerson($this->os_ticket_reader->findUserEmailFromId($ticket['user_id']))
+                    ->setAgent($this->os_ticket_reader->findUserEmailFromId($ticket['staff_id']) ?: null)
+                    ->setAgentTeam($this->os_ticket_reader->findUserEmailFromId($ticket['team_id']) ?: null)
+                    ->setStatus($this->getTicketStatus($ticket))
                     ->setDateCreated(new DateTime($ticket['created']))
                     ->setSubject($ticket['subject'])
                     ->setPriority($ticket['priority']);
 
-                $ticket_messages = $this->findMessageThreadFromId($ticket['ticket_id']);
+                $ticket_messages = $this->os_ticket_reader->findMessageThreadFromId($ticket['ticket_id']);
                 foreach ($ticket_messages as $message_thread) {
                     $person_email = null;
                     if ($message_thread['thread_type'] === 'R' && $message_thread['staff_id']) {
-                        $person_email = $this->findStaffEmailFromId($message_thread['staff_id']);
+                        $person_email = $this->os_ticket_reader->findStaffEmailFromId($message_thread['staff_id']);
 
                     } elseif ($message_thread['thread_type'] === 'M' && $message_thread['user_id']) {
-                        $person_email = $this->findUserEmailFromId($message_thread['user_id']);
+                        $person_email = $this->os_ticket_reader->findUserEmailFromId($message_thread['user_id']);
                     }
 
                     $message_entity = new Entity\TicketMessage();
@@ -199,19 +199,18 @@ class OsTicket extends AbstractGeneratorExporter
                         ->setDateCreated(new DateTime($message_thread['created']))
                         ->setMessageText($message_thread['body']);
 
-                    $attachments = $this->findTicketAttachment($ticket['ticket_id']);
-                    if ($attachments) {
-                        foreach ($attachments as $attachment) {
-                            $file_data = $this->getFileData($attachment['file_id']);
-                            $attachment_entity = new Entity\TicketMessageAttachment();
-                            $attachment_entity
-                                ->setOid($index)
-                                ->setBlobData(base64_encode($file_data))
-                                ->setFileName($attachment['name'])
-                                ->setContentType($attachment['type']);
+                    // todo should get attachments by ticket message id
+                    $attachments = $this->os_ticket_reader->findTicketAttachment($ticket['ticket_id']);
+                    foreach ($attachments as $attachment) {
+                        $file_data = $this->os_ticket_reader->getFileData($attachment['file_id']);
+                        $attachment_entity = new Entity\TicketAttachment();
+                        $attachment_entity
+                            ->setOid($index)
+                            ->setBlobData(base64_encode($file_data))
+                            ->setFileName($attachment['name'])
+                            ->setContentType($attachment['type']);
 
-                            $message_entity->addAttachment($attachment_entity);
-                        }
+                        $message_entity->addAttachment($attachment_entity);
                     }
 
                     $ticket_entity->addMessage($message_entity);
@@ -227,5 +226,24 @@ class OsTicket extends AbstractGeneratorExporter
         }
 
         return $collection;
+    }
+
+    /**
+     * Get ticket status by raw data
+     *
+     * @param array $ticket
+     * @return string
+     */
+    private function getTicketStatus(array $ticket)
+    {
+        $status = Entity\Ticket::STATUS_AWAITING_AGENT;
+        if ($ticket['isanswered']) {
+            $status = Entity\Ticket::STATUS_AWAITING_USER;
+        }
+        if ($ticket['closed']) {
+            $status = Entity\Ticket::STATUS_RESOLVED;
+        }
+
+        return $status;
     }
 }

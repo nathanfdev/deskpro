@@ -28,23 +28,115 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Class Collection
+ * Exported ticket message attachment entity
+ *
+ * Class TicketMessageAttachment
  * @package Application\ImportBundle\Entity
  */
-class Collection
+final class TicketAttachment extends AbstractEntity
 {
     /**
-     * @var array
+     * @var int
      */
-    private $collection = array();
+    private $oid;
 
     /**
-     * @param EntityInterface $entity
+     * @var string
+     */
+    private $blob_data;
+
+    /**
+     * @var string
+     */
+    private $file_name;
+
+    /**
+     * @var string
+     */
+    private $content_type;
+
+    /**
+     * @return int
+     */
+    public function getOid()
+    {
+        return $this->oid;
+    }
+
+    /**
+     * @param int $oid
      * @return $this
      */
-    public function attach(EntityInterface $entity)
+    public function setOid($oid)
     {
-        $this->collection[] = $entity;
+        $this->oid = $oid;
         return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBlobData()
+    {
+        return $this->blob_data;
+    }
+
+    /**
+     * @param string $blob_data
+     * @return $this
+     */
+    public function setBlobData($blob_data)
+    {
+        $this->blob_data = $blob_data;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getFileName()
+    {
+        return $this->file_name;
+    }
+
+    /**
+     * @param string $file_name
+     * @return $this
+     */
+    public function setFileName($file_name)
+    {
+        $this->file_name = $file_name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getContentType()
+    {
+        return $this->content_type;
+    }
+
+    /**
+     * @param string $content_type
+     * @return $this
+     */
+    public function setContentType($content_type)
+    {
+        $this->content_type = $content_type;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return array(
+            'oid'          => $this->oid,
+            'blob_data'    => $this->blob_data,
+            'file_name'    => $this->file_name,
+            'content_type' => $this->content_type,
+        );
     }
 }

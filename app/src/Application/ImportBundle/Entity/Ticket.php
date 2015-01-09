@@ -35,12 +35,11 @@ use DateTime;
  * Class Ticket
  * @package Application\ImportBundle\Entity
  */
-final class Ticket implements EntityInterface
+final class Ticket extends AbstractEntity
 {
-    /**
-     * @var string
-     */
-    private $destination;
+    const STATUS_AWAITING_AGENT = 'awaiting_agent';
+    const STATUS_AWAITING_USER  = 'awaiting_user';
+    const STATUS_RESOLVED       = 'resolved';
 
     /**
      * @var int
@@ -91,24 +90,6 @@ final class Ticket implements EntityInterface
      * @var array
      */
     private $messages = array();
-
-    /**
-     * @param string $destination
-     * @return $this
-     */
-    public function setDestination($destination)
-    {
-        $this->destination = $destination;
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDestination()
-    {
-        return $this->destination;
-    }
 
     /**
      * @return int

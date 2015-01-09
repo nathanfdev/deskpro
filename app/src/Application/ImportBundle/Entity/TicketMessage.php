@@ -35,7 +35,7 @@ use DateTime;
  * Class TicketMessage
  * @package Application\ImportBundle\Entity
  */
-final class TicketMessage implements EntityInterface
+final class TicketMessage extends AbstractEntity
 {
     /**
      * @var string
@@ -56,14 +56,6 @@ final class TicketMessage implements EntityInterface
      * @var array
      */
     private $attachments = array();
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDestination()
-    {
-        return '';
-    }
 
     /**
      * @return string
@@ -95,7 +87,7 @@ final class TicketMessage implements EntityInterface
      * @param DateTime $date_created
      * @return $this
      */
-    public function setDateCreated($date_created)
+    public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
         return $this;
@@ -122,12 +114,12 @@ final class TicketMessage implements EntityInterface
     /**
      * Add a message attachment
      *
-     * @param TicketMessageAttachment $attachment
+     * @param TicketAttachment $attachment
      * @return $this
      */
-    public function addAttachment(TicketMessageAttachment $attachment)
+    public function addAttachment(TicketAttachment $attachment)
     {
-        $this->attachments = $attachment;
+        $this->attachments[] = $attachment;
         return $this;
     }
 
@@ -138,7 +130,7 @@ final class TicketMessage implements EntityInterface
     {
         $attachments = array();
         foreach ($this->attachments as $attachment) {
-            /** @var TicketMessageAttachment $attachment */
+            /** @var TicketAttachment $attachment */
             $attachments[] = $attachment->toArray();
         }
 
