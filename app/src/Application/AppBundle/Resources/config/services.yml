@@ -1,4 +1,8 @@
 services:
+  new_mailer:
+      class: Application\AppBundle\Mailer\NewMailer
+      arguments: [@service_container]
+
   blob.storage:
       class: Application\DeskPRO\BlobStorage\DeskproBlobStorage
       factory_class: Application\DeskPRO\DependencyInjection\SystemServices\BlobStorageService
