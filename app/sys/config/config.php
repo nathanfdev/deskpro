@@ -74,13 +74,6 @@ $container->setDefinition('twig.helpers.deskpro_templating', $definition);
 //$definition->addTag('twig.extension', array());
 //$container->setDefinition('twig.helpers.deskpro_user_templating', $definition);
 
-// deskpro.mail_logger
-$definition = new Definition();
-$definition->setClass('Orb\\Log\\Logger');
-$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailLoggerService');
-$definition->setFactoryMethod('create');
-$definition->setArguments(array(new Reference('service_container')));
-$container->setDefinition('deskpro.mail_logger', $definition);
 
 // deskpro.exception_logger
 $definition = new Definition();

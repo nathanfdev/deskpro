@@ -144,6 +144,15 @@ $container->loadFromExtension(
 );
 
 
+// deskpro.mail_logger
+$definition = new Definition();
+$definition->setClass('Orb\\Log\\Logger');
+$definition->setFactoryClass('Application\\DeskPRO\\DependencyInjection\\SystemServices\\MailLoggerService');
+$definition->setFactoryMethod('create');
+$definition->setArguments(array(new Reference('service_container')));
+$container->setDefinition('deskpro.mail_logger', $definition);
+
+
 $definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
     new Reference('doctrine.orm.entity_manager')
 ));
