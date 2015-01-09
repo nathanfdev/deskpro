@@ -2,45 +2,104 @@
 
 {% block inner_content %}
 <article class="ticket-page">
+
     <header>
         <h1>
-            {{ ticket.subject }}
+            {{ ticket_view.ticket.subject }}
             <a href="#" class="ticket-status">Awaiting You</a>
         </h1>
         <span class="ticket-reference">
-            Ticket reference: {{ ticket.ref }}
+            Ticket reference: {{ ticket_view.ticket.public_id }}
         </span>
         <span class="ticket-reference">
-            <a href="{{ path('portal_tickets_edit', { id: ticket.id }) }}">
+            <a href="{{ path('portal_tickets_edit', { id: ticket_view.ticket.id }) }}">
                 EDIT TICKET
             </a>
         </span>
     </header>
 
-    <h2 style="margin-top: 15px;">
-        Department
-    </h2>
-    {{ ticket.department }}
+    <div class="container">
 
-    <h2 style="margin-top: 15px;">
-        Date Opened
-    </h2>
-    {{ ticket.date_created|date() }}
+        <div class="ticket-agents">
+
+            <div class="agent">
+                <span class="agent-avatar"
+                      style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover;"></span>
+
+                <div class="agent-info">
+                    <span class="agent-meta">Assigned Agent:</span>
+                    <span class="agent-name">
+                        {% if ticket_view.ticket.agent %}
+                            {{ ticket_view.ticket.agent.display_name_user }}
+                        {% else %}
+                            {{ phrase('user.tickets.unassigned') }}
+                        {% endif %}
+                    </span>
+                </div>
+            </div>
+
+
+            <div class="agent">
+                <span class="agent-avatar"
+                      style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover;"></span>
+
+                <div class="agent-info">
+                    <span class="agent-meta">Opened by:</span>
+                    <span class="agent-name">{{ ticket_view.ticket.person.display_name_user }}</span>
+                </div>
+            </div>
+
+        </div>
+
+        {% if ticket_view.ticket.userParticipants|length %}
+        <div class="agent-extras">
+
+
+            <span class="grey">Also CC'ed:</span>
+
+            {% for person in ticket_view.ticket.userParticipants %}
+                <div class="agent">
+                    <span class="agent-meta">{{ person.display_name_user }}</span>
+                    <span class="agent-avatar agent-avatar-tiny agent-avatar-blank">
+                        <a href="#" class="remove-agent"></a>
+                    </span>
+                </div>
+            {% endfor %}
 
 
 
-    <h2 style="margin-top: 15px;">CC'ed peple</h2>
-    <ul>
-        {% for person in ticket.userParticipants %}
-            <li>{{ person }} ({{ person.primary_email.email }})</li>
-        {% else %}
-            <li>None!</li>
-        {% endfor %}
-    </ul>
+        </div>
+        {% endif %}
+
+    </div>
+    <!-- End Container -->
+
+    <hr>
+
+    <div class="container">
+        <table>
+            
+            <tr>
+                <td>Date Opened</td>
+                <td>{{ ticket_view.ticket.date_created|date() }}</td>
+            </tr>
+
+            {# see the TicketViewService in AppBundle's data services #}
+            {% for attr,val in ticket_view.attribute_list %}
+            <tr>
+                <td>{{ attr }}</td>
+                <td>{{ val }}</td>
+            </tr>
+            {% endfor %}
+
+        </table>
+    </div>
+    <hr>
+
 
     <h2>Messages on Ticket</h2>
     <ul>
-        {% for msg in ticket.messages %}
+        {% for msg in ticket_view.ticket.messages %}
             <li>
                 {{ msg.message }}
                 {% if msg.attachments|length > 0 %}
@@ -75,121 +134,16 @@
 
     <hr style="margin-top:300px;margin-bottom:20px;" />
 
-    <div class="container">
-
-        <div class="ticket-agents">
-
-            <div class="agent">
-                <span class="agent-avatar"
-                    style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover;"></span>
-
-                <div class="agent-info">
-                    <span class="agent-meta">Assigned Agent:</span>
-                    <span class="agent-name">Christopher Padfield</span>
-                </div>
-            </div>
 
 
-            <div class="agent">
-                <span class="agent-avatar"
-                    style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover;"></span>
 
-                <div class="agent-info">
-                    <span class="agent-meta">Opened by:</span>
-                    <span class="agent-name">Dennis Schipper Longernamesonn</span>
-                </div>
-            </div>
-
-        </div>
-
-        <div class="agent-extras">
-
-            <span class="grey">Also CC'ed:</span>
-
-            <div class="agent">
-                <span class="agent-meta">Jane Doe</span>
-                <span class="agent-avatar agent-avatar-tiny"
-                    style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"><a href="#"
-                        class="remove-agent"></a></span>
-            </div>
-
-            <div class="agent">
-                <span class="agent-meta">Jane Doe</span>
-                <span class="agent-avatar agent-avatar-tiny agent-avatar-blank"><a href="#"
-                        class="remove-agent"></a></span>
-            </div>
-
-
-            <span class="grey">And 3 more</span> <a href="#" class="dropdown-control"><i
-                    class="fa fa-caret-down"></i></a>
-
-            <div class="dropdown-active">
-                <span class="dropdown-control"><i class="fa fa-caret-up"></i></span>
-                <ul>
-                    <li>
-                        <span class="agent-avatar agent-avatar-tiny"
-                            style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"><a href="#"
-                                class="remove-agent"></a></span></span>
-                        <span class="agent">Jane Doe</span>
-                    </li>
-                    <li>
-                        <span class="agent-avatar agent-avatar-tiny agent-avatar-blank"><a href="#"
-                                class="remove-agent"></a></span></span>
-                        <span class="agent">John Doesonn</span>
-                    </li>
-                    <li>
-                        <span class="agent-avatar agent-avatar-tiny"
-                            style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"><a href="#"
-                                class="remove-agent"></a></span></span>
-                        <span class="agent">Dennis Schipper</span>
-                    </li>
-                    <li class="option">
-                        <span class="agent-avatar agent-avatar-tiny agent-avatar-add"></span>
-                        <a href="#">Add someone else</a>
-                    </li>
-                </ul>
-            </div>
-
-        </div>
-
-    </div>
-    <!-- End Container -->
-
-    <hr>
-
-    <div class="container">
-        <table>
-            <tr>
-                <td>Department:</td>
-                <td><strong>Sales</strong></td>
-            </tr>
-
-            <tr>
-                <td>Size of your organization:</td>
-                <td>10-20</td>
-            </tr>
-
-            <tr>
-                <td>Problem Type:</td>
-                <td><p>Issues with an excellent feature. Contrary to popular belief, Lorem Ipsum is not simply random
-                        text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000
-                        years old.</td>
-            </tr>
-
-            <tr>
-                <td>Breaking Bug:</td>
-                <td>No</td>
-            </tr>
-        </table>
-    </div>
-    <hr>
 
 
     <div class="ticket-timeline">
 
 
     <div class="item">
-        <span class="badge"><img src="{{ asset('web/portal/base/img/icon-ticket.png') }}"></span>
+        <span class="badge"><img src="{{ asset('web/portal/base/img/icon-ticket_view.ticket.png') }}"></span>
 
         <h1><strong>Ticket opened</strong> by Dennis Schipper</h1>
         <span class="event-happened-at">4 days ago.</span>
@@ -287,7 +241,7 @@
 
 
     <div class="item">
-        <span class="badge"><img src="./img/icon-ticket.png"></span>
+        <span class="badge"><img src="./img/icon-ticket_view.ticket.png"></span>
 
         <h1><strong>Ticket marked as resolved</strong> by Christopher Padfield</h1>
         <span class="event-happened-at">24 hours ago.</span>
@@ -295,7 +249,7 @@
 
 
     <div class="item">
-        <span class="badge"><img src="./img/icon-ticket.png"></span>
+        <span class="badge"><img src="./img/icon-ticket_view.ticket.png"></span>
 
         <h1><strong>Ticket re-opened</strong> by Dennis Schipper</h1>
         <span class="event-happened-at">22 hours ago.</span>
@@ -355,7 +309,7 @@
             <div class="post-satisfaction">
                 <h1>Christopher Padfield <span class="agent-avatar agent-avatar-tiny"
                         style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span> helped you
-                    with your ticket.</h1>
+                    with your ticket_view.ticket.</h1>
 
                 <h2>How would you rate the support you received?</h2>
 

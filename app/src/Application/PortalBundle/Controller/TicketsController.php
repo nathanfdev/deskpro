@@ -97,10 +97,12 @@ class TicketsController extends AbstractController
             }
         }
 
+        $ticket_view = $this->get('data.ticket_view')->getUserTicketView($ticket);
+
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
             array(
-                'ticket' => $ticket,
+                'ticket_view' => $ticket_view,
                 'form' => $form->createView()
             )
         );
