@@ -120,7 +120,11 @@ class PersonFactory
 
         $settings = $this->brand_stack->getActive()->getSettings();
 
-        $email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($guest->getPrimaryEmail()->email);
+        if ($guest->getPrimaryEmail()) {
+            $email = $this->em->getRepository('DeskPRO:PersonEmail')->getEmail($guest->getPrimaryEmail()->email);
+        } else {
+            $email = null;
+        }
 
         // Email already exists on an account
         // Means use the same person, but depending on the setting we
