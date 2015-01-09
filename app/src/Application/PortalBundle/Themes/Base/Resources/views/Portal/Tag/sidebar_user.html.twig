@@ -1,5 +1,7 @@
 {% if is_granted('ROLE_USER') %}
-{{ app.user }}
+    <strong>{{ app.user }}</strong>
+    <br>
+    <img src="{{ person_picture_url(app.user) }}" alt="{{ app.user }}"/>
     <ul class="user-info" style="margin-bottom: 40px;">
         {% if has_tickets %}
             <li>

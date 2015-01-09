@@ -24,7 +24,7 @@
 
             <div class="agent">
                 <span class="agent-avatar"
-                      style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover;"></span>
+                      style="background: url({{ ticket_view.ticket.agent ? person_picture_url(ticket_view.ticket.agent) : asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover;"></span>
 
                 <div class="agent-info">
                     <span class="agent-meta">Assigned Agent:</span>
@@ -41,7 +41,7 @@
 
             <div class="agent">
                 <span class="agent-avatar"
-                      style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover;"></span>
+                      style="background: url({{ person_picture_url(ticket_view.ticket.person) }}) no-repeat; background-size: cover;"></span>
 
                 <div class="agent-info">
                     <span class="agent-meta">Opened by:</span>
@@ -101,7 +101,7 @@
         {% for msg in ticket_view.ticket.messages %}
             <div class="item reply">
                     <span class="badge"
-                          style="background: url({{ asset('web/portal/base/img/avatar.png') }}) no-repeat; background-size: cover"></span>
+                          style="background: url({{ person_picture_url(msg.person, 50) }}) no-repeat; background-size: cover"></span>
 
                 <h1>{{ msg.person.display_name_user }} <span>wrote:</span></h1>
 
