@@ -381,6 +381,13 @@ $collection->create('api_tickets_ticket_label_delete', array(
     'methods'       => array('DELETE'),
 ));
 
+$collection->create('api_tickets_update_dates', array(
+    'path'          => '/tickets/{ticket_id}/update_dates',
+    'controller'    => 'ApiBundle:Ticket:updateTicketDates',
+    'requirements'  => array('ticket_id' => '\\d+'),
+    'methods'       => array('PUT'),
+));
+
 $collection->create('api_tickets_fields', array(
     'path'        => '/tickets/fields',
     'controller'  => 'ApiBundle:Ticket:getFields',
