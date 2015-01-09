@@ -3,21 +3,105 @@
 {% block inner_content %}
     <div class="column-full">
 
-    <ul>
-        {% for ticket in tickets %}
+     {% macro tickets_table(tickets_pager, title) %}
+         <div class="column-full">
+             <div><!-- Table Header -->
+                 <header class="titled-header">
+                     <h1>{{ title }}</h1>
+                 </header>
 
-            <LI>
-                <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">{{ ticket.subject }}</a>
-               [ <a href="{{ path('portal_tickets_edit', { id: ticket.id }) }}">EDIT</a> ]
-            </LI>
+                 <!-- Table Controls -->
+                 <div class="table-meta">
+                     <div class="table-controls">
+                         <a href="#" class="column-control"></a>
+                         <a href="#" class="expand-control"><i class="fa fa-caret-right"></i></a>
+                     </div>
+                 </div>
 
-        {% endfor %}
-    </ul>
+                 <!-- Table -->
+                 <table class="user-ticket-list">
+                     <thead>
+                     <tr>
+                         <td class="table-header">
+                             <a href="#">Department</a> / <a href="#">Subject</a>
+                         </td>
+                         <td class="table-header right">
+                             <a href="#">Last Action</a>
+                         </td>
+                     </tr>
+                     </thead>
 
-    <hr style="margin-bottom: 100px;"/>
+                     <tbody>
+
+                     {% for ticket in tickets_pager %}
+                         <tr class="item-row">
+                             <td>
+                                 <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
+                                     <span class="status-tag">{{ ticket_status(ticket) }}</span>
+                                     <span class="focus">[{{ ticket.department }}]</span>
+                                     {{ ticket.subject }}
+                                 </a>
+                             </td>
+
+                             <td class="info-block">
+                                 {% set last_message = ticket.messages|last %}
+                                 <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
+                                     <img src="{{ person_picture_url(last_message.person) }}" class="avatar">
+                                     <span class="person">{{ last_message.person.display_name_user }}</span>
+                                     <span class="date">{{ last_message.date_created|date }}</span>
+                                 </a>
+                             </td>
+                         </tr>
+                     {% endfor %}
+
+
+                     </tbody>
+                 </table>
+             </div>
+         </div>
+     {% endmacro %}
+
+        {{ _self.tickets_table(awaiting_user_tickets, 'You need to respond') }}
+        {{ _self.tickets_table(awaiting_agent_tickets, 'We need to respond') }}
+        {{ _self.tickets_table(resolved_tickets, 'Resolved') }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <hr style="margin-top:300px;margin-bottom:20px;"/>
 
     <!-- Breadcrumbs -->
-    <div class="column-full">
+    <div class="column-full" style="margin-top: 700px;">
         <div>
             <div class="breadcrumbs">
                 <ul>

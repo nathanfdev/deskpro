@@ -44,28 +44,24 @@ use Symfony\Component\HttpFoundation\Request;
 class TicketsController extends AbstractController
 {
     /**
-     * @Security("is_granted('USE_TICKETS')")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
     public function indexAction()
     {
-        // TODO: we just grab them all for now, without filtering...
-        $tickets = $this->getTicketsRepo()
-            ->findBy(
-                array(
-                    'person' => $this->getUser()
-                )
-            );
+        $person = $this->getUser();
 
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
-                'tickets' => $tickets
+                'awaiting_user_tickets' => $this->getTicketsService()->getAwaitingUserPager($person, 100, 1),
+                'awaiting_agent_tickets' => $this->getTicketsService()->getAwaitingAgentPager($person, 100, 1),
+                'resolved_tickets' => $this->getTicketsService()->getResolvedPager($person, 100, 1),
             )
         );
     }
 
     /**
-     * @Security("is_granted('USE_TICKETS') and is_granted('TICKET_VIEW', ticket)")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS') and is_granted('TICKET_VIEW', ticket)")
      */
     public function viewAction(Ticket $ticket, Request $request)
     {
@@ -109,7 +105,7 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * @Security("is_granted('USE_TICKETS') and is_granted('TICKET_EDIT', ticket)")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS') and is_granted('TICKET_EDIT', ticket)")
      */
     public function editAction(Ticket $ticket, Request $request)
     {
@@ -141,10 +137,10 @@ class TicketsController extends AbstractController
     }
 
     /**
-     * @return \Application\DeskPRO\EntityRepository\Ticket
+     * @return \Application\AppBundle\DataService\TicketService
      */
-    protected function getTicketsRepo()
+    protected function getTicketsService()
     {
-        return $this->getRepo('DeskPRO:Ticket');
+        return $this->get('data.ticket');
     }
 }
