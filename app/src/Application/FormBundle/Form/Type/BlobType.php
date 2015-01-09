@@ -34,6 +34,9 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\DeskPRO\Entity\Blob;
+use Application\DeskPRO\Entity\BlobStorage;
 use Application\FormBundle\Form\DataTransformer\BlobTypeModelTransformer;
 use Application\FormBundle\Form\DataTransformer\BlobTypeViewTransformer;
 use Doctrine\ORM\EntityManager;
@@ -41,6 +44,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\HttpFoundation\File\File;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class BlobType extends AbstractType
@@ -50,24 +54,64 @@ class BlobType extends AbstractType
      */
     private $em;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var DeskproBlobStorage
+     */
+    private $blob_storage;
+
+    public function __construct(EntityManager $em, DeskproBlobStorage $blob_storage)
     {
         $this->em = $em;
+        $this->blob_storage = $blob_storage;
     }
 
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onChange'));
-        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'onChange'));
+        $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));
+        $builder->addEventListener(FormEvents::SUBMIT, array($this, 'onPostSubmit'));
 
         $builder->addModelTransformer(new BlobTypeModelTransformer($this->em->getRepository('DeskPRO:Blob')));
-//        $builder->addViewTransformer(new BlobTypeViewTransformer($this->em->getRepository('DeskPRO:Blob')));
     }
 
-    public function onChange(FormEvent $event)
+    public function onPostSubmit(FormEvent $event)
     {
         /** @var \Application\DeskPRO\Entity\Blob $blob */
         $blob = $event->getData();
+
+        $form = $event->getForm();
+
+        /** @var \Application\DeskPRO\Entity\TicketAttachment $attachment */
+        $blob = $event->getData() instanceof Blob ? $event->getData() : new Blob();
+        $form = $event->getForm();
+
+        if ($form->has('upload')) {
+            $file = $form->get('upload')->getData();
+
+            if ($file instanceof File && $file->getRealPath()) {
+                $blob = $this->blob_storage->createBlobRecordFromFile(
+                    $file->getRealPath(),
+                    $file->getClientOriginalName(),
+                    $file->getClientMimeType()
+                );
+
+                $this->em->persist($blob);
+                $form->setData($blob);
+                $form->remove('upload');
+                $form->add('delete', 'checkbox', array('mapped' => false, 'required' => false));
+                $form->add('blob_auth', 'hidden');
+            }
+        } else {
+            if (!$form->has('blob_auth')) {
+                $form->add('blob_auth', 'hidden');
+            }
+        }
+    }
+
+    public function onPreData(FormEvent $event)
+    {
+        /** @var \Application\DeskPRO\Entity\Blob $blob */
+        $blob = $event->getData();
+
         $form = $event->getForm();
 
         if (!$blob) {
@@ -84,14 +128,15 @@ class BlobType extends AbstractType
             }
 
             return;
+        } else {
+            $form->add('delete_blob', 'checkbox');
+            $form->add('blob_auth', 'hidden');
+
+            if ($form->has('upload')) {
+                $form->remove('upload');
+            }
         }
 
-        $form->add('delete_blob', 'checkbox');
-        $form->add('blob_auth', 'hidden');
-
-        if ($form->has('upload')) {
-            $form->remove('upload');
-        }
     }
 
     public function getName()
@@ -103,7 +148,7 @@ class BlobType extends AbstractType
     {
         $resolver->setDefaults(
             array(
-                'data_class' => 'Application\\DeskPRO\\Entity\\Blob'
+                'data_class' => null
             )
         );
     }
