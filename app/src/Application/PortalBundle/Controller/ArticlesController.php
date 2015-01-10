@@ -91,7 +91,9 @@ class ArticlesController extends AbstractController
     public function viewAction(Request $request, Article $article)
     {
         $related = $this->getArticlesDataService()->getRelatedArticles($article);
+        $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
 
+        // TODO: make this a helper
         $is_subscribed = false;
         if ($this->isGranted('ROLE_USER') && $this->getBrandContainer()->getSetting('user.kb_subscriptions')) {
             $is_subscribed = $this->getDb()->fetchColumn("
@@ -105,10 +107,41 @@ class ArticlesController extends AbstractController
             'Theme:Articles:view.html.twig',
             array(
                 'article' => $article,
+                'rating'  => $rating,
                 'related_articles' => $related,
                 'is_subscribed' => $is_subscribed
             )
         );
+    }
+
+    /**
+     * @Route("/kb/articles/{slug}/vote-up", name="portal_kb_article_vote_up", defaults={"up_or_down":"up"})
+     * @Route("/kb/articles/{slug}/vote-down", name="portal_kb_article_vote_down", defaults={"up_or_down":"down"})
+     * @ParamConverter(name="article", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES')")
+     */
+    public function articleRateAction(Article $article, $visitor_id, $up_or_down)
+    {
+        // need permission here
+        // articles.rate
+
+        $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
+
+        if ('down' === $up_or_down) {
+            $this->getRatingsHelper()->rateContentDown($article, $visitor_id, $person);
+        } else {
+            $this->getRatingsHelper()->rateContentUp($article, $visitor_id, $person);
+        }
+
+        /*
+         * if ($content_object instanceof \Application\DeskPRO\Entity\Feedback) {
+            if ($content_object == 'closed') {
+                return $this->renderStandardError('@user.feedback.voting_closed', '@user.feedback.voting_closed-explain');
+            }
+        }
+         */
+
+        return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug(), 'vote_recorded' => 1));
     }
 
     /**
