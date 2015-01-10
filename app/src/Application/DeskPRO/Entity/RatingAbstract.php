@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person;
 
 /**
  * Basic ratings
@@ -56,6 +57,11 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
+
+    /**
+     * @var string
+     */
+    protected $visitor_id = null;
 
     /**
      * @var string
@@ -118,6 +124,16 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
     }
 
+    public function isPositive()
+    {
+        return $this->rating > 0;
+    }
+
+    public function isNegative()
+    {
+        return !$this->isPositive();
+    }
+
     public function rateUp()
     {
         $this->setRating(1);
@@ -135,6 +151,38 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         return 0;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+    }
+
+    /**
+     * @return string
+     */
+    public function getVisitorId()
+    {
+        return $this->visitor_id;
+    }
+
+    /**
+     * @param string $visitor_id
+     */
+    public function setVisitorId($visitor_id)
+    {
+        $this->setModelField('visitor_id', $visitor_id);
     }
 
     abstract public function setContentObject($obj);
