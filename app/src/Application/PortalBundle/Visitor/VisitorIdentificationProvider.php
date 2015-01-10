@@ -40,7 +40,7 @@ use Psr\Log\LoggerInterface;
 class VisitorIdentificationProvider
 {
     const COOKIE_NAME = 'dp__v';
-    const ATTRIBUTE_NAME = 'visitor_identifier';
+    const ATTRIBUTE_NAME = 'visitor_id';
 
     /**
      * @var RequestStack

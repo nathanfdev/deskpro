@@ -494,4 +494,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('content', $content);
     }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
 }

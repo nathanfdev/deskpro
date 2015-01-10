@@ -115,6 +115,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Application\PortalBundle\Helper\PortalRatingsHelper
+     */
+    public function getRatingsHelper()
+    {
+        return $this->get('ratings_helper');
+    }
+
+    /**
      * @return \Application\DeskPRO\Brand\BrandContainer
      */
     public function getBrandContainer()
