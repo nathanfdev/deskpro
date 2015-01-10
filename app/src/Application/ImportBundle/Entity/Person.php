@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Entity;
 
 use DateTime;
+use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * Exported person entity
@@ -260,5 +262,15 @@ final class Person extends AbstractEntity
             'date_created' => $this->date_created->format('Y-m-d H:i:s'),
             'emails'       => $this->emails,
         );
+    }
+
+    /**
+     * Validator class metadata
+     *
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata->addPropertyConstraint('name', new NotBlank());
     }
 }

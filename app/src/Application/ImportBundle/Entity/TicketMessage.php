@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Entity;
 
 use DateTime;
+use Exception;
 
 /**
  * Exported ticket message entity
@@ -53,9 +54,17 @@ final class TicketMessage extends AbstractEntity
     private $message_text;
 
     /**
-     * @var array
+     * @var Collection
      */
-    private $attachments = array();
+    private $attachments;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->attachments = new Collection();
+    }
 
     /**
      * @return string
@@ -119,7 +128,7 @@ final class TicketMessage extends AbstractEntity
      */
     public function addAttachment(TicketAttachment $attachment)
     {
-        $this->attachments[] = $attachment;
+        $this->attachments->attach($attachment);
         return $this;
     }
 
@@ -129,7 +138,7 @@ final class TicketMessage extends AbstractEntity
     public function toArray()
     {
         if (!$this->date_created) {
-            throw new \Exception('Date created is not set up');
+            throw new Exception('Date created is not set up');
         }
 
         $attachments = array();

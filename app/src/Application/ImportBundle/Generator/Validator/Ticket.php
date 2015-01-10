@@ -30,15 +30,31 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\GeneratorInterface;
 use Exception;
+use Symfony\Component\Validator\Validator;
 
 /**
  * Tickets entities validator
  *
- * Class Tickets
+ * Class Ticket
  * @package Application\ImportBundle\Generator\Validator
  */
-final class Tickets implements ValidatorInterface
+final class Ticket implements ValidatorInterface
 {
+    /**
+     * @var \Symfony\Component\Validator\Validator
+     */
+    private $validator;
+
+    /**
+     * Constructor
+     *
+     * @param Validator $validator
+     */
+    public function __construct(Validator $validator)
+    {
+        $this->validator = $validator;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -57,6 +73,11 @@ final class Tickets implements ValidatorInterface
                 'Entity `%s` is not supported by validator `%s`',
                 get_class($entity), get_class($this)
             ));
+        }
+
+        $errors = $this->validator->validate($entity);
+        if (count($errors) > 0) {
+            throw new Exception(sprintf('Entity `%s` is not valid', get_class($entity)));
         }
     }
 }

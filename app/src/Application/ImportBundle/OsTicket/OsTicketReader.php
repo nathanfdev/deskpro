@@ -56,8 +56,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function getTicketCount()
     {
         $query = 'SELECT count(ticket_id) FROM ost_ticket';
-        $stmt   = $this->db->prepare($query);
-
+        $stmt  = $this->db->prepare($query);
         $stmt->execute();
 
         return $stmt->fetchColumn();
@@ -69,12 +68,12 @@ class OsTicketReader implements OsTicketReaderInterface
     public function getPeopleCount()
     {
         $query = 'SELECT count(staff_id) FROM ost_staff';
-        $stmt   = $this->db->prepare($query);
+        $stmt  = $this->db->prepare($query);
         $stmt->execute();
         $staff_count = $stmt->fetchColumn();
 
         $query = 'SELECT count(id) FROM ost_user';
-        $stmt   = $this->db->prepare($query);
+        $stmt  = $this->db->prepare($query);
         $stmt->execute();
         $user_count = $stmt->fetchColumn();
 
@@ -87,8 +86,7 @@ class OsTicketReader implements OsTicketReaderInterface
             . ' LIMIT :limit'
             . ' OFFSET :offset';
 
-        $stmt   = $this->db->prepare($query);
-
+        $stmt = $this->db->prepare($query);
         $stmt->bindValue(':limit', (int) $this->config->getBatchSize(), \PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
         $stmt->execute();
@@ -143,8 +141,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function findDepartmentFromId($id)
     {
         $query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
-
-        $stmt   = $this->db->prepare($query);
+        $stmt  = $this->db->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -157,7 +154,7 @@ class OsTicketReader implements OsTicketReaderInterface
             . ' ON e.user_id=u.id'
             . ' WHERE u.id = ?';
 
-        $stmt   = $this->db->prepare($query);
+        $stmt = $this->db->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -166,8 +163,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function findStaffEmailFromId($id)
     {
         $query = 'SELECT email FROM ost_staff WHERE id = ?';
-
-        $stmt   = $this->db->prepare($query);
+        $stmt  = $this->db->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -176,8 +172,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function findTeamNameFromId($id)
     {
         $query = 'SELECT name FROM ost_team WHERE id = ?';
-
-        $stmt   = $this->db->prepare($query);
+        $stmt  = $this->db->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -199,8 +194,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function findTimezoneFromId($id)
     {
         $query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
-
-        $stmt   = $this->db->prepare($query);
+        $stmt  = $this->db->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -208,15 +202,12 @@ class OsTicketReader implements OsTicketReaderInterface
 
     public function getFileData($file_id)
     {
-        $data = '';
-
+        $data  = '';
         $query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = ?';
-
-        $stmt   = $this->db->prepare($query);
+        $stmt  = $this->db->prepare($query);
         $stmt->execute(array($file_id));
 
-        $rows = $stmt->fetchAll(\PDO::FETCH_ASSOC);
-
+        $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as $chunk) {
             $data .= $chunk['filedata'];
         }

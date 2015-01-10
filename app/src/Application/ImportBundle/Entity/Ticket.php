@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\Entity;
 
 use DateTime;
+use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
  * Exported ticket entity
@@ -85,6 +86,11 @@ final class Ticket extends AbstractEntity
      * @var int ?
      */
     private $priority;
+
+    /**
+     * @var Collection
+     */
+    private $messages;
 
     /**
      * Constructor
@@ -295,5 +301,15 @@ final class Ticket extends AbstractEntity
             'priority'     => $this->priority,
             'messages'     => $messages,
         );
+    }
+
+    /**
+     * Validator class metadata
+     *
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+
     }
 }

@@ -71,15 +71,17 @@ class ImportExtension extends Extension
         $container->setDefinition('deskpro.import.generator.exporter.collection', $definition);
 
         // Validators
-        $definition = new Definition('Application\ImportBundle\Generator\Validator\People');
-        $container->setDefinition('deskpro.import.generator.validator.people', $definition);
+        $definition = new Definition('Application\ImportBundle\Generator\Validator\Person');
+        $definition->addArgument(new Reference('validator'));
+        $container->setDefinition('deskpro.import.generator.validator.person', $definition);
 
-        $definition = new Definition('Application\ImportBundle\Generator\Validator\Tickets');
-        $container->setDefinition('deskpro.import.generator.validator.tickets', $definition);
+        $definition = new Definition('Application\ImportBundle\Generator\Validator\Ticket');
+        $definition->addArgument(new Reference('validator'));
+        $container->setDefinition('deskpro.import.generator.validator.ticket', $definition);
 
         $definition = new Definition('Application\ImportBundle\Generator\Validator\Collection');
-        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.validator.people')));
-        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.validator.tickets')));
+        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.validator.person')));
+        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.validator.ticket')));
         $container->setDefinition('deskpro.import.generator.validator.collection', $definition);
 
         // Writer

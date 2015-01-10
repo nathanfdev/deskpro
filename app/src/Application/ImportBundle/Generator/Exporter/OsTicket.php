@@ -103,6 +103,8 @@ final class OsTicket extends AbstractExporter
     }
 
     /**
+     * Returns people collection
+     *
      * @return Entity\Collection
      */
     private function exportPeople()
@@ -112,21 +114,21 @@ final class OsTicket extends AbstractExporter
             ->merge($this->exportStaff())
             ->merge($this->exportUsers());
 
-        $index = 1;
-        foreach ($collection as $person) {
+        foreach ($collection as $num => $person) {
             /** @var Entity\Person $person */
             $person
-                ->setDestination('person_' . $index)
-                ->setOid($index);
+                ->setDestination('person_' . $num)
+                ->setOid($num);
 
             $collection->attach($person);
-            $index++;
         }
 
         return $collection;
     }
 
     /**
+     * Return a collection of staff
+     *
      * @return Entity\Collection
      */
     private function exportStaff()
@@ -135,6 +137,8 @@ final class OsTicket extends AbstractExporter
         $collection = new Entity\Collection();
 
         while ($batch = $this->os_ticket_reader->findAllStaff($offset)) {
+            $offset += count($batch);
+
             foreach ($batch as $person) {
                 $this->advanceProgressBar();
 
@@ -153,12 +157,13 @@ final class OsTicket extends AbstractExporter
                     $entity->getFirstName(), $entity->getLastName()
                 ));
             }
-
-            $offset += count($batch);
         }
     }
 
     /**
+     * Return a collection of users
+     * todo batch support?
+     *
      * @return Entity\Collection
      */
     private function exportUsers()
@@ -186,19 +191,23 @@ final class OsTicket extends AbstractExporter
     }
 
     /**
+     * Returns a collection of tickets
+     *
      * @return Entity\Collection
      */
     private function exportTickets()
     {
-        $index  = 1;
+        $num    = 1;
         $offset = 0;
         $collection = new Entity\Collection();
 
         while ($ticket_batch = $this->os_ticket_reader->findAllTickets($offset)) {
             foreach ($ticket_batch as $ticket) {
-                $ticket_entity = new Entity\Ticket();
-                $ticket_entity
-                    ->setDestination('ticket_' . $index)
+                $this->advanceProgressBar();
+
+                $entity = new Entity\Ticket();
+                $entity
+                    ->setDestination('ticket_' . $num)
                     ->setRef(!empty($ticket['number']) ? $ticket['number'] : null)
                     ->setDepartment($this->os_ticket_reader->findDepartmentFromId($ticket['dept_id']))
                     ->setPerson($this->os_ticket_reader->findUserEmailFromId($ticket['user_id']))
@@ -212,15 +221,14 @@ final class OsTicket extends AbstractExporter
                 $messages = $this->exportTicketMessages($ticket['ticket_id']);
                 foreach ($messages as $message) {
                     /** @var Entity\TicketMessage $message */
-                    $ticket_entity->addMessage($message);
+                    $entity->addMessage($message);
                 }
 
-                $this->logInfo(sprintf('%s exported successfully!', $ticket_entity->getDestination()));
-                $collection->attach($ticket_entity);
+                $this->logInfo(sprintf('%s exported successfully!', $entity->getDestination()));
+                $collection->attach($entity);
 
                 $offset++;
-                $index++;
-                $this->advanceProgressBar();
+                $num++;
             }
         }
 
@@ -228,6 +236,8 @@ final class OsTicket extends AbstractExporter
     }
 
     /**
+     * Returns a collection of the ticket messages
+     *
      * @param int $ticket_id
      * @return Entity\Collection
      */
@@ -237,26 +247,44 @@ final class OsTicket extends AbstractExporter
         $collection = new Entity\Collection();
 
         foreach ($messages as $message) {
-            $message_entity = new Entity\TicketMessage();
-            $message_entity
+            $entity = new Entity\TicketMessage();
+            $entity
                 ->setPersonEmail($this->getTicketMessagePersonEmail($message))
                 ->setDateCreated(new DateTime($message['created']))
                 ->setMessageText($message['body']);
 
-            $attachments = $this->os_ticket_reader->findTicketMessageAttachment($message['id']);
-            foreach ($attachments as $index => $attachment) {
-                $file_data = $this->os_ticket_reader->getFileData($attachment['file_id']);
-                $attachment_entity = new Entity\TicketAttachment();
-                $attachment_entity
-                    ->setOid($index)
-                    ->setBlobData(base64_encode($file_data))
-                    ->setFileName($attachment['name'])
-                    ->setContentType($attachment['type']);
-
-                $message_entity->addAttachment($attachment_entity);
+            $attachments = $this->exportTicketMessageAttachments($message['id']);
+            foreach ($attachments as $attachment) {
+                /** @var Entity\TicketAttachment $attachment */
+                $entity->addAttachment($attachment);
             }
 
-            $collection->attach($message_entity);
+            $collection->attach($entity);
+        }
+
+        return $collection;
+    }
+
+    /**
+     * Returns a collection of the ticket message attachments
+     *
+     * @param int $message_id
+     * @return Entity\Collection
+     */
+    private function exportTicketMessageAttachments($message_id)
+    {
+        $collection  = new Entity\Collection();
+        $attachments = $this->os_ticket_reader->findTicketMessageAttachment($message_id);
+        foreach ($attachments as $num => $attachment) {
+            $file_data = $this->os_ticket_reader->getFileData($attachment['file_id']);
+            $entity = new Entity\TicketAttachment();
+            $entity
+                ->setOid($num)
+                ->setBlobData(base64_encode($file_data))
+                ->setFileName($attachment['name'])
+                ->setContentType($attachment['type']);
+
+            $collection->attach($entity);
         }
 
         return $collection;
