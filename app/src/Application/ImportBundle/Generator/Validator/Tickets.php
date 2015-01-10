@@ -27,11 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
-use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\GeneratorInterface;
+use Exception;
 
 /**
- * Tickets data generator validator
+ * Tickets entities validator
  *
  * Class Tickets
  * @package Application\ImportBundle\Generator\Validator
@@ -49,8 +50,13 @@ final class Tickets implements ValidatorInterface
     /**
      * {@inheritdoc}
      */
-    public function validate(EntityInterface $entity)
+    public function validate(Entity\EntityInterface $entity)
     {
-
+        if (!$entity instanceof Entity\Ticket) {
+            throw new Exception(sprintf(
+                'Entity `%s` is not supported by validator `%s`',
+                get_class($entity), get_class($this)
+            ));
+        }
     }
 }

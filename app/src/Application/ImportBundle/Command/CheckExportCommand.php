@@ -80,7 +80,7 @@ class CheckExportCommand extends AbstractExportCommand
         }
 
         $progress_bar->start($output, $generator->getTotalRecordsCount());
-        $generator->generate();
+        $generator->validate();
 
         echo "\n";
         echo "Done";

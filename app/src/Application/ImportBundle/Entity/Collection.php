@@ -44,4 +44,18 @@ class Collection extends AbstractCollection
         $this->collection[] = $entity;
         return $this;
     }
+
+    /**
+     * @param Collection $collection
+     * @return $this
+     */
+    public function merge(Collection $collection)
+    {
+        foreach ($collection as $entity) {
+            /** @var EntityInterface $entity */
+            $this->attach($entity);
+        }
+
+        return $this;
+    }
 }

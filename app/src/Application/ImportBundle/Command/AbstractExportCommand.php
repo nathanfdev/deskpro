@@ -111,7 +111,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         if ($input->hasOption('input-path')) {
             $config->setInputPath($input->getOption('input-path'));
         } else {
-            if ($config->getExporterType() === ExporterInterface::GENERATOR_TYPE_CSV) {
+            if ($config->getExporterType() === ExporterInterface::TYPE_CSV) {
                 throw new \Exception('You must supply an "input-path" argument while using CSV exporter');
             }
         }

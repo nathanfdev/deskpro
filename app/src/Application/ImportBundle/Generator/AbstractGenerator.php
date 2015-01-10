@@ -34,7 +34,7 @@ use Symfony\Component\Console\Helper\ProgressHelper;
  * Class AbstractGenerator
  * @package Application\ImportBundle\Generator
  */
-abstract class AbstractGenerator implements GeneratorInterface, LoggerAwareInterface, ProgressBarAwareInterface
+abstract class AbstractGenerator implements GeneratorConfigAwareInterface, LoggerAwareInterface, ProgressBarAwareInterface
 {
     /**
      * @var GeneratorConfig

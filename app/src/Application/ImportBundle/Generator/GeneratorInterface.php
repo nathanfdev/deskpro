@@ -40,18 +40,19 @@ interface GeneratorInterface extends GeneratorConfigAwareInterface
     const RECORD_TYPE_TICKETS = 'tickets';
 
     /**
-     * Returns amount of records of the current type to be exported
+     * Returns count of records of all types to be exported
      *
-     * @param string $type
      * @return int
      */
-    public function getRecordsCountByType($type);
+    public function getTotalRecordsCount();
 
     /**
-     * Returns a collection of records of the current type
-     *
-     * @param string $type
-     * @return array
+     * Generate and write collection
      */
-    public function exportRecordsByType($type);
+    public function generate();
+
+    /**
+     * Validate exporting collection
+     */
+    public function validate();
 }

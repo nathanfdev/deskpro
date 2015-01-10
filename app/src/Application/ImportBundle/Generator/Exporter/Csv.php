@@ -47,8 +47,12 @@ use Exception;
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator\Exporter
  */
-class Csv extends AbstractExporter
+final class Csv extends AbstractExporter
 {
+    const FILE_PEOPLE          = 'people.csv';
+    const FILE_TICKETS         = 'tickets.csv';
+    const FILE_TICKET_MESSAGES = 'messages.csv';
+
     /**
      * @var CsvReaderInterface
      */
@@ -69,7 +73,7 @@ class Csv extends AbstractExporter
      */
     public function getType()
     {
-        return self::GENERATOR_TYPE_CSV;
+        return self::TYPE_CSV;
     }
 
     /**
@@ -79,9 +83,9 @@ class Csv extends AbstractExporter
     {
         switch ($type) {
             case GeneratorInterface::RECORD_TYPE_PEOPLE:
-                return $this->csv_reader->getRowsCount($this->getCsvReaderConfig(self::RECORD_TYPE_PEOPLE));
+                return $this->csv_reader->getRowsCount($this->getCsvReaderConfig(self::FILE_PEOPLE));
             case GeneratorInterface::RECORD_TYPE_TICKETS:
-                return $this->csv_reader->getRowsCount($this->getCsvReaderConfig(self::RECORD_TYPE_TICKETS));
+                return $this->csv_reader->getRowsCount($this->getCsvReaderConfig(self::FILE_TICKETS));
             default:
                 throw new Exception('This record type `%s` is not supported', $type);
         }
@@ -108,7 +112,7 @@ class Csv extends AbstractExporter
      * @param string $type
      * @return array
      */
-    protected function getDataByRecordType($type)
+    private function getDataByRecordType($type)
     {
         return $this->csv_reader->getData($this->getCsvReaderConfig($type));
     }
@@ -119,21 +123,21 @@ class Csv extends AbstractExporter
      * @param string $record_type
      * @return CsvConfig
      */
-    protected function getCsvReaderConfig($record_type)
+    private function getCsvReaderConfig($record_type)
     {
-        return new CsvConfig(sprintf('%s/%s.csv', $this->config->getInputPath(), $record_type));
+        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
     }
 
     /**
      * Export people csv file
      *
-     * @return array
+     * @return Entity\Collection
      */
-    protected function exportPeople()
+    private function exportPeople()
     {
-        $collection = array();
-        $data = $this->getDataByRecordType(self::RECORD_TYPE_PEOPLE);
-        foreach ($data as $num => $person) {
+        $collection = new Entity\Collection();
+        $people = $this->getDataByRecordType(self::FILE_PEOPLE);
+        foreach ($people as $num => $person) {
             $this->advanceProgressBar();
 
             if (!isset($person['email'])) {
@@ -156,7 +160,7 @@ class Csv extends AbstractExporter
                 ->setDateCreated(new DateTime())
                 ->addEmail($person['email']);
 
-            $collection[] = $person_entity;
+            $collection->attach($person_entity);
             $this->logInfo(sprintf('%s exported successfully!', $person_entity->getDestination()));
         }
 
@@ -166,15 +170,15 @@ class Csv extends AbstractExporter
     /**
      * Export tickets csv file
      *
-     * @return array
+     * @return Entity\Collection
      */
-    protected function exportTickets()
+    private function exportTickets()
     {
-        $collection = array();
-        $message_collection = array();
+        $ticket_collection  = new Entity\Collection();
+        $message_collection = new Entity\Collection();
 
-        $tickets  = $this->getDataByRecordType(self::RECORD_TYPE_TICKETS);
-        $messages = $this->getDataByRecordType('messages');
+        $tickets  = $this->getDataByRecordType(self::FILE_TICKETS);
+        $messages = $this->getDataByRecordType(self::FILE_TICKET_MESSAGES);
 
         foreach ($messages as $num => $message) {
             if (!isset($message['message_text']) || !isset($message['user'])) {
@@ -189,7 +193,7 @@ class Csv extends AbstractExporter
                 ->setMessageText($message['message_text'])
                 ->setDateCreated(isset($message['date_created']) ? new DateTime($message['date_created']) : new DateTime());
 
-            $message_collection[] = $message_entity;
+            $message_collection->attach($message_entity);
         }
 
         foreach ($tickets as $num => $ticket) {
@@ -217,10 +221,10 @@ class Csv extends AbstractExporter
                 }
             }
 
-            $collection[] = $ticket_entity;
+            $ticket_collection->attach($ticket_entity);
             $this->logInfo(sprintf('%s exported successfully!', $ticket_entity->getDestination()));
         }
 
-        return $collection;
+        return $ticket_collection;
     }
 }

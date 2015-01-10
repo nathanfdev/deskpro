@@ -87,9 +87,12 @@ final class Ticket extends AbstractEntity
     private $priority;
 
     /**
-     * @var array
+     * Constructor
      */
-    private $messages = array();
+    public function __construct()
+    {
+        $this->messages = new Collection();
+    }
 
     /**
      * @return int
@@ -261,7 +264,7 @@ final class Ticket extends AbstractEntity
      */
     public function addMessage(TicketMessage $message)
     {
-        $this->messages[] = $message;
+        $this->messages->attach($message);
         return $this;
     }
 

@@ -27,7 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\Entity;
 
 /**
  * Data generator interface
@@ -35,15 +36,31 @@ use Application\ImportBundle\Generator\GeneratorInterface;
  * Interface ExporterInterface
  * @package Application\ImportBundle\Generator\Exporter
  */
-interface ExporterInterface extends GeneratorInterface
+interface ExporterInterface extends GeneratorConfigAwareInterface
 {
-    const GENERATOR_TYPE_CSV       = 'csv';
-    const GENERATOR_TYPE_OS_TICKET = 'osticket';
+    const TYPE_CSV       = 'csv';
+    const TYPE_OS_TICKET = 'osticket';
 
     /**
-     * Get plugin type
+     * Get exporter type
      *
      * @return string
      */
     public function getType();
+
+    /**
+     * Returns count of records of the current type to be exported
+     *
+     * @param string $type
+     * @return int
+     */
+    public function getRecordsCountByType($type);
+
+    /**
+     * Returns a collection of records of the current type
+     *
+     * @param string $type
+     * @return Entity\Collection
+     */
+    public function exportRecordsByType($type);
 }
