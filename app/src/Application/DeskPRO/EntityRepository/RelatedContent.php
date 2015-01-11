@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Article as ArticleEntity;
+use Application\DeskPRO\Entity\News as NewsEntity;
 
 /**
  * RelatedContent
@@ -18,6 +19,15 @@ class RelatedContent extends AbstractEntityRepository
             'object_type' => 'articles',
             'rel_object_type' => 'articles',
             'object_id' => $article->getId()
+        ));
+    }
+
+    public function findRelatedNewsPosts(NewsEntity $post)
+    {
+       return $this->findBy(array(
+            'object_type' => 'news',
+            'rel_object_type' => 'news',
+            'object_id' => $post->getId()
         ));
     }
 }

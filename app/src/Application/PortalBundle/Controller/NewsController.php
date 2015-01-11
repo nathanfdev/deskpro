@@ -85,6 +85,7 @@ class NewsController extends AbstractController
      */
     public function viewAction(Request $request, News $post)
     {
+        $related = $this->getNewsDataService()->getRelatedPosts($post);
         $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
 
         return $this->renderThemeView(
@@ -92,6 +93,7 @@ class NewsController extends AbstractController
             array(
                 'category' => $post->category,
                 'post' => $post,
+                'related_news' => $related,
                 'rating' => $rating
             )
         );
@@ -124,7 +126,7 @@ class NewsController extends AbstractController
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('RATE_NEWS')")
      */
-    public function articleRateAction(News $post, $visitor_id, $up_or_down)
+    public function newsRateAction(News $post, $visitor_id, $up_or_down)
     {
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
@@ -135,5 +137,13 @@ class NewsController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\NewsDataService
+     */
+    public function getNewsDataService()
+    {
+        return $this->get('data.news');
     }
 }

@@ -38,6 +38,7 @@ namespace Application\AppBundle\DataService;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -67,9 +68,9 @@ class NewsDataService
     {
         // TODO: optimize this query
         if ($category) {
-            $dls = $category->articles;
+            $dls = new ArrayCollection($this->getNewsRepo()->getNews($category, 2000));
         } else {
-            $dls = new ArrayCollection($this->getNewsRepo()->findAll());
+            $dls = new ArrayCollection($this->getNewsRepo()->getNews(null, 2000));
         }
         // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
         $pager = new Pagerfanta(new DoctrineCollectionAdapter($dls));
@@ -106,6 +107,23 @@ class NewsDataService
     }
 
     /**
+     * @param int|null|News $post
+     * @return News|null
+     */
+    public function getPost($post)
+    {
+        if (!$post) { // we need some input
+            return null;
+        }
+
+        if ($post instanceof News) { // already have what you seek
+            return $post;
+        }
+
+        return $this->getNewsRepo()->find($post);
+    }
+
+    /**
      * Get a category based on arbirtary input
      *
      * TODO: optimize the heck out of any possible inputs here (if it helps: cache in an array at least, cache long term if desired, should normalize cache key on lowest common denominator "id")
@@ -127,6 +145,28 @@ class NewsDataService
     }
 
     /**
+     * @param int|null|News $post
+     * @return News[]
+     */
+    public function getRelatedPosts($post)
+    {
+        if (!$post = $this->getPost($post)) {
+            return array();
+        }
+
+        $related_associations = $this->getRelatedContentRepo()->findRelatedNewsPosts($post);
+
+        $ids = array();
+        foreach ($related_associations as $related_association) {
+            if ($related_association->rel_object_id) {
+                $ids[] = $related_association->rel_object_id;
+            }
+        }
+
+        return $this->getNewsRepo()->findBy(array('id' => $ids));
+    }
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\News
      */
     public function getNewsRepo()
@@ -140,6 +180,14 @@ class NewsDataService
     public function getNewsCategoriesRepo()
     {
         return $this->em->getRepository('DeskPRO:NewsCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\RelatedContent
+     */
+    public function getRelatedContentRepo()
+    {
+        return $this->em->getRepository('DeskPRO:RelatedContent');
     }
 }
  
