@@ -25,17 +25,35 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\Json;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Exception;
 
 /**
+ * Generator json writer
+ *
  * Class JsonWriter
- * @package Application\ImportBundle\Generator\Writer
+ * @package Application\ImportBundle\Generator\Writer\Json
  */
-class JsonWriter extends AbstractWriter
+final class JsonWriter extends AbstractWriter
 {
+    /**
+     * @var Destination\Collection
+     */
+    private $destinations;
+
+    /**
+     * Constructor
+     *
+     * @param Destination\Collection $destinations
+     */
+    public function __construct(Destination\Collection $destinations)
+    {
+        $this->destinations = $destinations;
+    }
+
     /**
      * {@inheritdoc}
      */
@@ -46,7 +64,7 @@ class JsonWriter extends AbstractWriter
         }
         if ($this->config->isLive()) {
             $this->createOutputDirsIfNotExist();
-            file_put_contents($this->getDestinationPath($entity), json_encode($entity->toArray()));
+            file_put_contents($this->getEntityPath($entity), json_encode($entity->toArray()));
         }
 
         return true;
@@ -60,36 +78,16 @@ class JsonWriter extends AbstractWriter
      * @return string
      * @throws \Exception
      */
-    private function getDestinationPath(Entity\EntityInterface $entity)
+    private function getEntityPath(Entity\EntityInterface $entity)
     {
-        switch (true) {
-            case $entity instanceof Entity\Person:
-                return $this->getExportPeopleOutputPath() . $entity->getDestination();
-            case $entity instanceof Entity\Ticket:
-                return $this->getExportTicketsOutputPath() . $entity->getDestination();
-            default:
-                throw new Exception(sprintf('Entity `%s` not supported', get_class($entity)));
+        foreach ($this->destinations as $destination) {
+            /** @var Destination\DestinationInterface $destination */
+            if ($entity->getType() === $destination->getEntityType()) {
+                return $this->getDestinationOutputPath($destination) . $entity->getDestination();
+            }
         }
-    }
 
-    /**
-     * Directory to generated people json files
-     *
-     * @return string
-     */
-    private function getExportPeopleOutputPath()
-    {
-        return $this->config->getOutputPath() . 'people/';
-    }
-
-    /**
-     * Directory to generated tickets json files
-     *
-     * @return string
-     */
-    private function getExportTicketsOutputPath()
-    {
-        return $this->config->getOutputPath() . 'tickets/';
+        throw new Exception(sprintf('Entity `%s` not supported', get_class($entity)));
     }
 
     /**
@@ -108,17 +106,26 @@ class JsonWriter extends AbstractWriter
             }
         }
 
-        $export_paths = array(
-            $this->getExportPeopleOutputPath(),
-            $this->getExportTicketsOutputPath(),
-        );
+        foreach ($this->destinations as $destination) {
+            /** @var Destination\DestinationInterface $destination */
+            $path = $this->getDestinationOutputPath($destination);
 
-        foreach ($export_paths as $path) {
             if (!is_dir($path)) {
                 if (!mkdir($path, 0777, true)) {
                     throw new Exception(sprintf('Unable to create output dir `%s`', $path));
                 }
             }
         }
+    }
+
+    /**
+     * Returns destination path
+     *
+     * @param Destination\DestinationInterface $destination
+     * @return string
+     */
+    private function getDestinationOutputPath(Destination\DestinationInterface $destination)
+    {
+        return $this->config->getOutputPath() . $destination->getEntityOutputPath();
     }
 }

@@ -85,7 +85,19 @@ class ImportExtension extends Extension
         $container->setDefinition('deskpro.import.generator.validator.collection', $definition);
 
         // Writer
-        $definition = new Definition('Application\ImportBundle\Generator\Writer\JsonWriter');
+        $definition = new Definition('Application\ImportBundle\Generator\Writer\Json\Destination\Person');
+        $container->setDefinition('deskpro.import.generator.writer.json.destination.person', $definition);
+
+        $definition = new Definition('Application\ImportBundle\Generator\Writer\Json\Destination\Ticket');
+        $container->setDefinition('deskpro.import.generator.writer.json.destination.ticket', $definition);
+
+        $definition = new Definition('Application\ImportBundle\Generator\Writer\Json\Destination\Collection');
+        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.writer.json.destination.person')));
+        $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.writer.json.destination.ticket')));
+        $container->setDefinition('deskpro.import.generator.writer.json.destination.collection', $definition);
+
+        $definition = new Definition('Application\ImportBundle\Generator\Writer\Json\JsonWriter');
+        $definition->addArgument(new Reference('deskpro.import.generator.writer.json.destination.collection'));
         $container->setDefinition('deskpro.import.generator.writer.json', $definition);
 
         // Generator

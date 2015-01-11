@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Entity;
 
 /**
+ * Base exporting entity
+ *
  * Class AbstractEntity
  * @package Application\ImportBundle\Entity
  */

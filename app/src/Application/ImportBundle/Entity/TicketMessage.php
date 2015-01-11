@@ -31,7 +31,7 @@ use DateTime;
 use Exception;
 
 /**
- * Exported ticket message entity
+ * Exporting ticket message entity
  *
  * Class TicketMessage
  * @package Application\ImportBundle\Entity
@@ -64,6 +64,14 @@ final class TicketMessage extends AbstractEntity
     public function __construct()
     {
         $this->attachments = new Collection();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_TICKET_MESSAGE;
     }
 
     /**

@@ -28,11 +28,25 @@
 namespace Application\ImportBundle\Entity;
 
 /**
+ * Exporting entity interface
+ *
  * Interface EntityInterface
  * @package Application\ImportBundle\Entity
  */
 interface EntityInterface
 {
+    const TYPE_PERSON                    = 'person';
+    const TYPE_TICKET                    = 'ticket';
+    const TYPE_TICKET_MESSAGE            = 'ticket_message';
+    const TYPE_TICKET_MESSAGE_ATTACHMENT = 'ticket_message_attachment';
+
+    /**
+     * Get entity type
+     *
+     * @return string
+     */
+    public function getType();
+
     /**
      * Get entity destination
      *

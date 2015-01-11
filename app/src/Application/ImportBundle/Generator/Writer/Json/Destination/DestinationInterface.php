@@ -25,22 +25,30 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
-
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 
 /**
- * Generator writer interface
+ * Entity destination interface
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Interface DestinationInterface
+ * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+interface DestinationInterface
 {
+    const ENTITY_PERSON_PATH = 'people/';
+    const ENTITY_TICKET_PATH = 'tickets/';
+
     /**
-     * @param EntityInterface $entity
-     * @return bool
+     * Referred entity type
+     *
+     * @return string
      */
-    public function writeData(EntityInterface $entity);
+    public function getEntityType();
+
+    /**
+     * Relative entity output path
+     *
+     * @return string
+     */
+    public function getEntityOutputPath();
 }

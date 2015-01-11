@@ -32,7 +32,7 @@ use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exported person entity
+ * Exporting person entity
  *
  * Class Person
  * @package Application\ImportBundle\Entity
@@ -87,6 +87,14 @@ final class Person extends AbstractEntity
      * @var array
      */
     private $emails = array();
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_PERSON;
+    }
 
     /**
      * @return int

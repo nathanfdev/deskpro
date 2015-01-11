@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Exported ticket message attachment entity
+ * Exporting ticket message attachment entity
  *
  * Class TicketMessageAttachment
  * @package Application\ImportBundle\Entity
@@ -54,6 +54,14 @@ final class TicketAttachment extends AbstractEntity
      * @var string
      */
     private $content_type;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_TICKET_MESSAGE_ATTACHMENT;
+    }
 
     /**
      * @return int

@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Entity;
 use Application\ImportBundle\AbstractCollection;
 
 /**
+ * Exporting collection of entities
+ *
  * Class Collection
  * @package Application\ImportBundle\Entity
  */

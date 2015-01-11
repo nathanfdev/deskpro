@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,22 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Exporter\Csv;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\CsvReader\CsvReaderInterface;
+use Application\ImportBundle\Generator\Exporter\EntityExporterInterface;
 
 /**
- * Generator writer interface
- *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class AbstractCsv
+ * @package Application\ImportBundle\Generator\Exporter\Csv
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+abstract class AbstractCsv implements EntityExporterInterface
 {
     /**
-     * @param EntityInterface $entity
-     * @return bool
+     * @var CsvReaderInterface
      */
-    public function writeData(EntityInterface $entity);
+    protected $csv_reader;
+
+    /**
+     * Constructor
+     *
+     * @param CsvReaderInterface $csv_reader
+     */
+    public function __construct(CsvReaderInterface $csv_reader)
+    {
+        $this->csv_reader = $csv_reader;
+    }
 }

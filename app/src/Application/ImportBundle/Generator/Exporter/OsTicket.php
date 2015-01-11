@@ -197,12 +197,14 @@ final class OsTicket extends AbstractExporter
      */
     private function exportTickets()
     {
-        $num    = 1;
+        $num    = 0;
         $offset = 0;
         $collection = new Entity\Collection();
 
-        while ($ticket_batch = $this->os_ticket_reader->findAllTickets($offset)) {
-            foreach ($ticket_batch as $ticket) {
+        while ($batch = $this->os_ticket_reader->findAllTickets($offset)) {
+            $offset += count($batch);
+
+            foreach ($batch as $ticket) {
                 $this->advanceProgressBar();
 
                 $entity = new Entity\Ticket();
@@ -227,7 +229,6 @@ final class OsTicket extends AbstractExporter
                 $this->logInfo(sprintf('%s exported successfully!', $entity->getDestination()));
                 $collection->attach($entity);
 
-                $offset++;
                 $num++;
             }
         }

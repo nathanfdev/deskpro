@@ -25,22 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Generator writer interface
+ * Person entity destination
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class Person
+ * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+final class Person implements DestinationInterface
 {
     /**
-     * @param EntityInterface $entity
-     * @return bool
+     * {@inheritdoc}
      */
-    public function writeData(EntityInterface $entity);
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_PERSON;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityOutputPath()
+    {
+        return self::ENTITY_PERSON_PATH;
+    }
 }

@@ -31,7 +31,7 @@ use DateTime;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
- * Exported ticket entity
+ * Exporting ticket entity
  *
  * Class Ticket
  * @package Application\ImportBundle\Entity
@@ -98,6 +98,14 @@ final class Ticket extends AbstractEntity
     public function __construct()
     {
         $this->messages = new Collection();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_TICKET;
     }
 
     /**

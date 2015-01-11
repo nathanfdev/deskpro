@@ -25,22 +25,27 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Generator writer interface
+ * Collection of the supported json writer entities
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class Collection
+ * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+final class Collection extends AbstractCollection
 {
     /**
-     * @param EntityInterface $entity
-     * @return bool
+     * Attach a destination configuration
+     *
+     * @param DestinationInterface $destination
+     * @return $this
      */
-    public function writeData(EntityInterface $entity);
+    public function attach(DestinationInterface $destination)
+    {
+        $this->collection[] = $destination;
+        return $this;
+    }
 }

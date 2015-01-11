@@ -38,5 +38,22 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
  */
 abstract class AbstractExporter extends AbstractGenerator implements ExporterInterface, LoggerAwareInterface
 {
+    /**
+     * Check if a record has all required columns
+     *
+     * @param array $record
+     * @param array $columns
+     *
+     * @return bool
+     */
+    protected function hasRequiredColumns(array $record, array $columns)
+    {
+        foreach ($columns as $column) {
+            if (isset($record[$column]) === false) {
+                return false;
+            }
+        }
 
+        return true;
+    }
 }

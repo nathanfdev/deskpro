@@ -270,23 +270,4 @@ final class Csv extends AbstractExporter
     {
         return $this->hasRequiredColumns($message, array('ticket_id', 'message_text', 'user'));
     }
-
-    /**
-     * Check if record has all required columns
-     *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
-     */
-    private function hasRequiredColumns(array $record, array $columns)
-    {
-        foreach ($columns as $column) {
-            if (isset($record[$column]) === false) {
-                return false;
-            }
-        }
-
-        return true;
-    }
 }

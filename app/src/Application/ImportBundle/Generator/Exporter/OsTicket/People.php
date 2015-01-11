@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,22 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Exporter\OsTicket;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Generator writer interface
- *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class People
+ * @package Application\ImportBundle\Generator\Exporter\OsTicket
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class People extends AbstractOsTicket
 {
     /**
-     * @param EntityInterface $entity
-     * @return bool
+     * {@inheritdoc}
      */
-    public function writeData(EntityInterface $entity);
+    public function getGeneratorRecordType()
+    {
+        return GeneratorInterface::RECORD_TYPE_PEOPLE;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
+    }
 }

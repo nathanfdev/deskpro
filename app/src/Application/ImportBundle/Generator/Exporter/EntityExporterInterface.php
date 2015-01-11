@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,22 +25,34 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Generator writer interface
- *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Interface EntityExporterInterface
+ * @package Application\ImportBundle\Generator\Exporter
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+interface EntityExporterInterface
 {
     /**
-     * @param EntityInterface $entity
-     * @return bool
+     * Referred entity type
+     *
+     * @return string
      */
-    public function writeData(EntityInterface $entity);
+    public function getGeneratorRecordType();
+
+    /**
+     * Returns count of records to be exported
+     *
+     * @return int
+     */
+    public function getCount();
+
+    /**
+     * Returns the collection of exporting entities
+     *
+     * @return Entity\Collection
+     */
+    public function export();
 }
