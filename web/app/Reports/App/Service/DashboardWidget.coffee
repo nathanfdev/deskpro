@@ -4,7 +4,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @Api = Api
       @$q = $q
       @data = {}
-      @storage = []
+      @storage = {reports: [], labels: []}
       @hostname = window.location.origin;
       @selectedSource =
         id: 0
@@ -114,16 +114,27 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
 
     getReports: () ->
       deferred = @$q.defer()
-      if @storage.length == 0
+      if @storage.reports.length == 0
         @Api
           .sendGet "/dashboards/widgets/reports/list"
-          .then (result) ->
-            @storage = result.data
+          .then (result) =>
+            @storage.reports = result.data.reports
+            @storage.labels = result.data.labels
             deferred.resolve @storage
             return deferred.promise
       else
         deferred.resolve @storage
         return deferred.promise
+
+    isActiveLabel: (storage, label) ->
+      index = -1
+      index = Arrays.findIndex storage,
+        (v) ->
+          return true if v? and v is label
+      if index > 0
+        return true
+      else
+        return false
 
     saveWidget: (widget) ->
       @Api.sendPost \

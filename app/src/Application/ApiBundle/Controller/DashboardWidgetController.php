@@ -262,12 +262,16 @@ class DashboardWidgetController extends AbstractController
         /** @var \Application\DeskPRO\EntityRepository\ReportWidget $repository */
         $repository = $this->em->getRepository('DeskPRO:ReportWidget');
         $reports = $repository->getAllReports();
-        $api_data = array();
+        $api_data = array(
+            'reports' => array(),
+            'labels' => array(),
+        );
         foreach ($reports as $report) {
             $datum = $report->toApiData();
-            $datum['labels'] = array('agent', 'user', 'another label');
-            $api_data[] = $datum;
+            $api_data['labels'] = array_merge($api_data['labels'], $datum['labels']);
+            $api_data['reports'][] = $datum;
         }
+        $api_data['labels'] = array_values(array_unique($api_data['labels']));
         return $this->createApiResponse($api_data);
     }
 

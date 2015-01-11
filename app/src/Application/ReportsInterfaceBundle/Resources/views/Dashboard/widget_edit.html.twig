@@ -22,28 +22,14 @@
         </div>
 
         <div class="bucket">
-            <a href="#" class="select">Select labels: <i class="fa fa-caret-down"></i></a>
+            <a ng-click="toggleDropdown()" class="link-pointer select">Select labels: <i class="fa fa-caret-down"></i></a>
 
             <!-- Needs to be same width as the .select above -->
-            <div class="select-label-dropdown">
-               {# <a href="#" class="stat-label"><i class="fa fa-tag"></i> Awaiting Agent</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Awaiting User</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Resolved</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agent</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Failed</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Today</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Yesterday</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Tomorrow</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Resolved</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agent</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Something else</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Lorel ipsum</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Yesterday</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Tomorrow</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Resolved</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Agent</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Something else</a>
-                <a href="#" class="stat-label"><i class="fa fa-tag"></i> Lorel ipsum</a>#}
+            <div ng-show='selecting_labels' class="select-label-dropdown">
+                <a ng-repeat="label in labels track by $index" ng-class="{'active': label.active}"
+                   ng-click="toggleLabel(label)" class="link-pointer stat-label">
+                    <i class="fa fa-tag"></i>{{ ng_var('label.title') }}
+                </a>
             </div>
         </div>
     </div>
@@ -62,14 +48,22 @@
                 {#</div>#}
             {#</li>#}
 
-            <li ng-class="{'active': report.id == widget.widget_id}" ng-repeat="report in reports | filter:filterBySearchText" ng-click="makeChoice(report)">
-                <span class="mark"></span>
+            <li ng-class="{'active': report.id == widget.widget_id}"
+                ng-repeat="report in prefilteredReports | filter:filterBySearchText track by $index">
+                <span ng-click="makeChoice(report)" class="mark"></span>
+
                 <h1>{{ ng_var('report.title') }}</h1>
+
                 <p>
-                    <a ng-repeat="label in report.labels" class="link-pointer stat-label"><i class="fa fa-tag"></i> {{ ng_var('label') }}</a>
+                    <a ng-repeat="label in report.labels" class="link-pointer stat-label"
+                       ng-class="{'active': isActiveLabel(label)}" ng-click="toggleLabel(label)">
+                        <i class="fa fa-tag"></i> {{ ng_var('label') }}
+                    </a>
                 </p>
+
                 <div class="controls" ng-show="report.id == widget.widget_id">
-                    <a class='link-pointer' ng-click="preview()">Preview <i class="fa fa-external-link"></i></a> <a class='link-pointer' ng-click="insert()">Insert into report</a>
+                    <a class='link-pointer' ng-click="preview()">Preview <i class="fa fa-external-link"></i></a>
+                    <a class='link-pointer' ng-click="insert()">Insert into report</a>
                 </div>
             </li>
 
@@ -82,7 +76,7 @@
                         <li><a href="#">Agent</a></li>
                         <li><a href="#">User</a></li>
                         <li><a href="#">Awaiting User</a></li>
-                        <li><a href="#">Awaiting Agent</a></li>
+                        <li><a hrefRD="#">Awaiting Agent</a></li>
                         <li><a href="#">Resolved</a></li>
                         <li><a href="#">Agent</a></li>
                     </ul>

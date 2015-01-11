@@ -50,7 +50,7 @@ use Doctrine\ORM\Mapping\ClassMetadataInfo;
  * @property string $description
  * @property string $query
  * @property boolean $is_custom
- * @property string $category
+ * @property array $labels
  * @property integer $display_order
  */
 class ReportWidget extends DomainObject
@@ -91,9 +91,9 @@ class ReportWidget extends DomainObject
     protected $is_custom = true;
 
     /**
-     * @var string|null
+     * @var array
      */
-    protected $category = null;
+    protected $labels;
 
     /**
      * @var int
@@ -321,6 +321,25 @@ class ReportWidget extends DomainObject
         return false;
     }
 
+
+    /**
+     * @return array
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * @param array $labels
+     *
+     * @return $this
+     */
+    public function setLabels(array $labels = null) {
+        $this->labels = $labels;
+        return $this;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -406,13 +425,13 @@ class ReportWidget extends DomainObject
         );
         $metadata->mapField(
             array(
-                 'fieldName'  => 'category',
-                 'type'       => 'string',
-                 'length'     => 25,
+                 'fieldName'  => 'labels',
+                 'type'       => 'simple_array',
+                 'length'     => 255,
                  'precision'  => 0,
                  'scale'      => 0,
                  'nullable'   => true,
-                 'columnName' => 'category',
+                 'columnName' => 'labels',
             )
         );
         $metadata->mapField(

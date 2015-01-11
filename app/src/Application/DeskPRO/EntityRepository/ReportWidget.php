@@ -113,6 +113,7 @@ class ReportWidget extends AbstractEntityRepository
      *  - builtIn: grouped list of built-in reports. Grouped by printable name of the group.
      *
      * @return array
+     * @deprecated
      */
     public function groupReportsList()
     {
@@ -151,6 +152,7 @@ class ReportWidget extends AbstractEntityRepository
 
     /**
      * @return array
+     * @deprecated
      */
     public function getCustomReports()
     {
@@ -169,6 +171,7 @@ class ReportWidget extends AbstractEntityRepository
 
     /**
      * @return array
+     * @deprecated
      */
     public function getBuiltInReports()
     {
