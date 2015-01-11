@@ -48,9 +48,15 @@ class PortalRatingsHelper
      */
     private $em;
 
-    public function __construct(EntityManager $em)
+    /**
+     * @var RequestStack
+     */
+    private $request_stack;
+
+    public function __construct(EntityManager $em, RequestStack $request_stack)
     {
         $this->em = $em;
+        $this->request_stack = $request_stack;
     }
 
     public function rateContentUp(ContentAbstract $content, $visitor_id, Person $person = null)
@@ -89,6 +95,7 @@ class PortalRatingsHelper
         $content_rating->setContentObject($content);
         $content_rating->setPerson($person);
         $content_rating->setVisitorId($visitor_id);
+        $content_rating->setIpAddress($this->request_stack->getMasterRequest()->getClientIp());
         $content->addRating($content_rating);
 
         $this->em->persist($content_rating);

@@ -185,5 +185,21 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
         $this->setModelField('visitor_id', $visitor_id);
     }
 
+    /**
+     * @return string
+     */
+    public function getIpAddress()
+    {
+        return $this->ip_address;
+    }
+
+    /**
+     * @param string $ip_address
+     */
+    public function setIpAddress($ip_address)
+    {
+        $this->setModelField('ip_address', $ip_address);
+    }
+
     abstract public function setContentObject($obj);
 }

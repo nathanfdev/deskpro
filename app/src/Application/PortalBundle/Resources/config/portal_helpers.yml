@@ -1,8 +1,10 @@
 # Helpers we use in portal controllers
 services:
+
   tabs_helper:
       class: Application\PortalBundle\Helper\PortalTabsHelper
       arguments: [@brand_stack, @security.authorization_checker]
+
   ratings_helper:
       class: Application\PortalBundle\Helper\PortalRatingsHelper
-      arguments: [@doctrine.orm.default_entity_manager]
+      arguments: [@doctrine.orm.default_entity_manager, @request_stack]
