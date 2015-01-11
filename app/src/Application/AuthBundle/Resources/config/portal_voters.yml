@@ -4,18 +4,27 @@ services:
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+
     tickets.voter:
         class: Application\AuthBundle\Voter\Portal\TicketsVoter
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+
     profile.voter:
         class: Application\AuthBundle\Voter\Portal\ProfileVoter
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+
     content_subscriptions.voter:
         class: Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter
+        arguments: [@service_container]
+        tags:
+            - { name: security.voter }
+
+    content_ratings.voter:
+        class: Application\AuthBundle\Voter\Portal\ContentRatingsVoter
         arguments: [@service_container]
         tags:
             - { name: security.voter }

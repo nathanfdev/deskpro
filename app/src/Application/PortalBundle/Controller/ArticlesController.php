@@ -118,13 +118,10 @@ class ArticlesController extends AbstractController
      * @Route("/kb/articles/{slug}/vote-up", name="portal_kb_article_vote_up", defaults={"up_or_down":"up"})
      * @Route("/kb/articles/{slug}/vote-down", name="portal_kb_article_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="article", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES')")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('RATE_ARTICLES')")
      */
     public function articleRateAction(Article $article, $visitor_id, $up_or_down)
     {
-        // need permission here
-        // articles.rate
-
         $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
 
         if ('down' === $up_or_down) {
@@ -133,15 +130,7 @@ class ArticlesController extends AbstractController
             $this->getRatingsHelper()->rateContentUp($article, $visitor_id, $person);
         }
 
-        /*
-         * if ($content_object instanceof \Application\DeskPRO\Entity\Feedback) {
-            if ($content_object == 'closed') {
-                return $this->renderStandardError('@user.feedback.voting_closed', '@user.feedback.voting_closed-explain');
-            }
-        }
-         */
-
-        return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug(), 'vote_recorded' => 1));
+        return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
     }
 
     /**
