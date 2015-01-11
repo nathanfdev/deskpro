@@ -80,16 +80,19 @@ class NewsController extends AbstractController
 
     /**
      * @Route("/news/posts/{slug}", name="portal_news_view")
-     * @ParamConverter(name="news", converter="deskpro_slug")
+     * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS')")
      */
-    public function viewAction(Request $request, News $news)
+    public function viewAction(Request $request, News $post)
     {
+        $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
+
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
             array(
-                'category' => $news->category,
-                'post' => $news
+                'category' => $post->category,
+                'post' => $post,
+                'rating' => $rating
             )
         );
     }
@@ -101,17 +104,36 @@ class NewsController extends AbstractController
      */
     public function viewLEGACYAction(Request $request, $slug)
     {
-        $news = $this->getRepo('DeskPRO:News')->getBySlug($slug);
+        $post = $this->getRepo('DeskPRO:News')->getBySlug($slug);
 
-        if (!$news) {
+        if (!$post) {
             throw $this->createNotFoundException('could not find new post for slug "'.$slug.'"');
         }
 
         return $this->redirect(
             $this->generateUrl('portal_news_view', array(
-                'slug' => $news->getSlug()
+                'slug' => $post->getSlug()
             )),
             301
         );
+    }
+
+    /**
+     * @Route("/news/posts/{slug}/vote-up", name="portal_news_post_vote_up", defaults={"up_or_down":"up"})
+     * @Route("/news/posts/{slug}/vote-down", name="portal_news_post_vote_down", defaults={"up_or_down":"down"})
+     * @ParamConverter(name="post", converter="deskpro_slug")
+     * @Security("is_granted('USE_NEWS') and is_granted('RATE_NEWS')")
+     */
+    public function articleRateAction(News $post, $visitor_id, $up_or_down)
+    {
+        $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
+
+        if ('down' === $up_or_down) {
+            $this->getRatingsHelper()->rateContentDown($post, $visitor_id, $person);
+        } else {
+            $this->getRatingsHelper()->rateContentUp($post, $visitor_id, $person);
+        }
+
+        return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
     }
 }
