@@ -67,10 +67,11 @@ class DownloadsDataService
     {
         // TODO: optimize this query
         if ($category) {
-            $dls = $category->downloads;
+            $dls = new ArrayCollection($this->getDownloadsRepo()->getNewest(2000, $category));
         } else {
-            $dls = new ArrayCollection($this->getDownloadsRepo()->findAll());
+            $dls = new ArrayCollection($this->getDownloadsRepo()->getNewest(2000, null));
         }
+
         // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
         $pager = new Pagerfanta(new DoctrineCollectionAdapter($dls));
         $pager->setMaxPerPage($max_per_page);
@@ -144,6 +145,28 @@ class DownloadsDataService
     }
 
     /**
+     * @param int|null|Download $file
+     * @return Download[]
+     */
+    public function getRelatedFiles($file)
+    {
+        if (!$file = $this->getDownload($file)) {
+            return array();
+        }
+
+        $related_associations = $this->getRelatedContentRepo()->findRelatedFiles($file);
+
+        $ids = array();
+        foreach ($related_associations as $related_association) {
+            if ($related_association->rel_object_id) {
+                $ids[] = $related_association->rel_object_id;
+            }
+        }
+
+        return $this->getDownloadsRepo()->findBy(array('id' => $ids), array('date_created' => 'DESC'));
+    }
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\Download
      */
     public function getDownloadsRepo()
@@ -157,6 +180,14 @@ class DownloadsDataService
     public function getDownloadCategoriesRepo()
     {
         return $this->em->getRepository('DeskPRO:DownloadCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\RelatedContent
+     */
+    public function getRelatedContentRepo()
+    {
+        return $this->em->getRepository('DeskPRO:RelatedContent');
     }
 }
  

@@ -155,7 +155,7 @@ class ArticlesDataService
             }
         }
 
-        return $this->getArticlesRepo()->findBy(array('id' => $ids));
+        return $this->getArticlesRepo()->findBy(array('id' => $ids), array('date_created' => 'DESC'));
     }
 
     /**

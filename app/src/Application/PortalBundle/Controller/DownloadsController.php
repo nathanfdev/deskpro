@@ -72,14 +72,17 @@ class DownloadsController extends AbstractController
 
     /**
      * @Route("/downloads/files/{slug}", name="portal_downloads_view")
-     * @ParamConverter(name="download", converter="deskpro_slug")
+     * @ParamConverter(name="file", converter="deskpro_slug")
      */
-    public function viewAction(Request $request, Download $download)
+    public function viewAction(Request $request, Download $file)
     {
+        $related = $this->getDownloadsDataService()->getRelatedFiles($file);
+
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             array(
-                'download' => $download
+                'download' => $file,
+                'related_files' => $related
             )
         );
     }
@@ -89,8 +92,16 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}/download", name="portal_downloads_download")
      * @ParamConverter(name="download", converter="deskpro_slug")
      */
-    public function downloadAction(Request $request, Download $download)
+    public function downloadAction(Request $request, Download $file)
     {
         return new Response('downlading file...');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\DownloadsDataService
+     */
+    public function getDownloadsDataService()
+    {
+        return $this->get('data.downloads');
     }
 }

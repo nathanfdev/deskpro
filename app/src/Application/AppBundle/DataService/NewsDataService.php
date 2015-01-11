@@ -163,7 +163,7 @@ class NewsDataService
             }
         }
 
-        return $this->getNewsRepo()->findBy(array('id' => $ids));
+        return $this->getNewsRepo()->findBy(array('id' => $ids), array('date_created' => 'DESC'));
     }
 
     /**
