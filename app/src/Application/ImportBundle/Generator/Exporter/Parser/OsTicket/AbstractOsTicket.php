@@ -25,35 +25,30 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractParser;
+use Application\ImportBundle\OsTicket\OsTicketReader;
+use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 
 /**
- * Interface EntityExporterInterface
- * @package Application\ImportBundle\Generator\Exporter
+ * Class AbstractOsTicket
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-interface EntityExporterInterface extends GeneratorConfigAwareInterface
+abstract class AbstractOsTicket extends AbstractParser
 {
     /**
-     * Referred entity type
-     *
-     * @return string
+     * @var OsTicketReader
      */
-    public function getGeneratorRecordType();
+    protected $os_ticket_reader;
 
     /**
-     * Returns count of records to be exported
+     * Constructor
      *
-     * @return int
+     * @param OsTicketReaderInterface $os_ticket_reader
      */
-    public function getCount();
-
-    /**
-     * Returns the collection of exporting entities
-     *
-     * @return Entity\Collection
-     */
-    public function export();
+    public function __construct(OsTicketReaderInterface $os_ticket_reader)
+    {
+        $this->os_ticket_reader = $os_ticket_reader;
+    }
 }

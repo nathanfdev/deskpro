@@ -29,6 +29,8 @@ namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
+use Application\ImportBundle\Generator\ProgressBarAwareInterface;
+use Exception;
 
 /**
  * Base data generator class methods
@@ -36,24 +38,71 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
  * Class AbstractExporter
  * @package Application\ImportBundle\Generator\Exporter
  */
-abstract class AbstractExporter extends AbstractGenerator implements LoggerAwareInterface
+abstract class AbstractExporter extends AbstractGenerator implements ExporterInterface
 {
     /**
-     * Check if a record has all required columns
-     *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
+     * @var Parser\Collection
      */
-    protected function hasRequiredColumns(array $record, array $columns)
+    private $parsers;
+
+    /**
+     * Constructor
+     *
+     * @param Parser\Collection $parsers
+     */
+    public function __construct(Parser\Collection $parsers)
     {
-        foreach ($columns as $column) {
-            if (isset($record[$column]) === false) {
-                return false;
+        $this->parsers = $parsers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getCountByType($type)
+    {
+        return $this->getParserByType($type)->getCount();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function exportByType($type)
+    {
+        return $this->getParserByType($type)->export();
+    }
+
+    /**
+     * Get parser by record type
+     *
+     * @param string $type
+     *
+     * @return Parser\ParserInterface
+     * @throws Exception
+     */
+    private function getParserByType($type)
+    {
+        if (!$this->config) {
+            throw new Exception('Generator configuration is not set up');
+        }
+
+        foreach ($this->parsers as $parser) {
+            /** @var Parser\ParserInterface $parser */
+            if ($parser->getGeneratorRecordType() === $type) {
+                $parser->setConfig($this->config);
+
+                if ($this->logger && $parser instanceof LoggerAwareInterface) {
+                    /** @var LoggerAwareInterface $parser */
+                    $parser->setLogger($this->logger);
+                }
+                if ($this->progress_bar && $parser instanceof ProgressBarAwareInterface) {
+                    /** @var ProgressBarAwareInterface $parser */
+                    $parser->setProgressBarHelper($this->progress_bar);
+                }
+
+                return $parser;
             }
         }
 
-        return true;
+        throw new Exception(sprintf('This record type `%s` is not supported', $type));
     }
 }

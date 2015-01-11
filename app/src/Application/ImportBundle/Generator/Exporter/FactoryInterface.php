@@ -25,59 +25,18 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
-
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Exception;
-use Symfony\Component\Validator\Validator;
+namespace Application\ImportBundle\Generator\Exporter;
 
 /**
- * People entities validator
- *
- * Class Person
- * @package Application\ImportBundle\Generator\Validator
+ * Interface FactoryInterface
+ * @package Application\ImportBundle\Generator\Exporter
  */
-final class Person implements ValidatorInterface
+interface FactoryInterface
 {
     /**
-     * @var Validator
-     */
-    private $validator;
-
-    /**
-     * Constructor
+     * Creates an exporter instance
      *
-     * @param Validator $validator
+     * @return ExporterInterface
      */
-    public function __construct(Validator $validator)
-    {
-        $this->validator = $validator;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRecordType()
-    {
-        return GeneratorInterface::TYPE_PEOPLE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        if (!$entity instanceof Entity\Person) {
-            throw new Exception(sprintf(
-                'Entity `%s` is not supported by validator `%s`',
-                get_class($entity), get_class($this)
-            ));
-        }
-
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new Exception(sprintf('Entity `%s` is not valid', get_class($entity)));
-        }
-    }
+    public function createExporter();
 }

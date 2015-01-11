@@ -25,38 +25,35 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\OsTicket;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 
 /**
- * Class Tickets
- * @package Application\ImportBundle\Generator\Exporter\OsTicket
+ * Interface EntityExporterInterface
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-class Tickets extends AbstractOsTicket
+interface ParserInterface extends GeneratorConfigAwareInterface
 {
     /**
-     * {@inheritdoc}
+     * Referred entity type
+     *
+     * @return string
      */
-    public function getGeneratorRecordType()
-    {
-        return GeneratorInterface::RECORD_TYPE_TICKETS;
-    }
+    public function getGeneratorRecordType();
 
     /**
-     * {@inheritdoc}
+     * Returns count of records to be exported
+     *
+     * @return int
      */
-    public function getCount()
-    {
-        return 0;
-    }
+    public function getCount();
 
     /**
-     * {@inheritdoc}
+     * Returns the collection of exporting entities
+     *
+     * @return Entity\Collection
      */
-    public function export()
-    {
-        return new Entity\Collection();
-    }
+    public function export();
 }

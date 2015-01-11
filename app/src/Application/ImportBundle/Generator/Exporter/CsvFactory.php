@@ -25,30 +25,30 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Csv;
+namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\CsvReader\CsvReaderInterface;
-use Application\ImportBundle\Generator\Exporter\AbstractExporter;
-use Application\ImportBundle\Generator\Exporter\EntityExporterInterface;
 
 /**
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Csv
+ * Class CsvFactory
+ * @package Application\ImportBundle\Generator\Exporter
  */
-abstract class AbstractCsv extends AbstractExporter implements EntityExporterInterface
+class CsvFactory extends AbstractFactory
 {
     /**
-     * @var CsvReaderInterface
+     * {@inheritdoc}
      */
-    protected $csv_reader;
-
-    /**
-     * Constructor
-     *
-     * @param CsvReaderInterface $csv_reader
-     */
-    public function __construct(CsvReaderInterface $csv_reader)
+    public function createExporter()
     {
-        $this->csv_reader = $csv_reader;
+        /** @var CsvReaderInterface $reader */
+        $reader = $this->container->get('deskpro.import.csv_reader');
+
+        $parsers = new Parser\Collection();
+        $parsers
+            ->attach(new Parser\Csv\People($reader))
+            ->attach(new Parser\Csv\Tickets($reader));
+
+
+        return new Csv($parsers);
     }
 }

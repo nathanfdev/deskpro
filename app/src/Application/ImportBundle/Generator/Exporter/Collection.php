@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\ImportBundle\AbstractCollection;
 
 /**
+ * Collection of exporters
+ *
  * Class Collection
  * @package Application\ImportBundle\Generator\Exporter
  */

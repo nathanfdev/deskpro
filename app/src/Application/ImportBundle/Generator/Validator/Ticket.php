@@ -60,7 +60,7 @@ final class Ticket implements ValidatorInterface
      */
     public function getRecordType()
     {
-        return GeneratorInterface::RECORD_TYPE_TICKETS;
+        return GeneratorInterface::TYPE_TICKETS;
     }
 
     /**

@@ -25,38 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Csv;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Application\ImportBundle\Entity;
+use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 
 /**
- * Class Tickets
- * @package Application\ImportBundle\Generator\Exporter\Csv
+ * Class OsTicketFactory
+ * @package Application\ImportBundle\Generator\Exporter
  */
-class Tickets extends AbstractCsv
+class OsTicketFactory extends AbstractFactory
 {
     /**
      * {@inheritdoc}
      */
-    public function getGeneratorRecordType()
+    public function createExporter()
     {
-        return GeneratorInterface::RECORD_TYPE_TICKETS;
-    }
+        /** @var OsTicketReaderInterface $reader */
+        $reader = $this->container->get('deskpro.import.os_ticket_reader');
 
-    /**
-     * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        return 0;
-    }
+        $parsers = new Parser\Collection();
+        $parsers
+            ->attach(new Parser\OsTicket\People($reader))
+            ->attach(new Parser\OsTicket\Tickets($reader));
 
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        return new Entity\Collection();
+        return new Osticket($parsers);
     }
 }

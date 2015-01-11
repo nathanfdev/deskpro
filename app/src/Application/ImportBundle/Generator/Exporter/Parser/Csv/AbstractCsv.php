@@ -25,38 +25,41 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Csv;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Application\ImportBundle\Entity;
+use Application\ImportBundle\CsvReader\CsvConfig;
+use Application\ImportBundle\CsvReader\CsvReaderInterface;
+use Application\ImportBundle\Generator\Exporter\Parser\AbstractParser;
 
 /**
- * Class People
- * @package Application\ImportBundle\Generator\Exporter\Csv
+ * Class AbstractCsv
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-class People extends AbstractCsv
+abstract class AbstractCsv extends AbstractParser
 {
     /**
-     * {@inheritdoc}
+     * @var CsvReaderInterface
      */
-    public function getGeneratorRecordType()
+    protected $csv_reader;
+
+    /**
+     * Constructor
+     *
+     * @param CsvReaderInterface $csv_reader
+     */
+    public function __construct(CsvReaderInterface $csv_reader)
     {
-        return GeneratorInterface::RECORD_TYPE_PEOPLE;
+        $this->csv_reader = $csv_reader;
     }
 
     /**
-     * {@inheritdoc}
+     * Get absolute file path
+     *
+     * @param string $record_type
+     * @return CsvConfig
      */
-    public function getCount()
+    protected function getCsvReaderConfig($record_type)
     {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        return new Entity\Collection();
+        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
     }
 }

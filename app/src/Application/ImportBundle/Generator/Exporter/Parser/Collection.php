@@ -25,31 +25,25 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\OsTicket;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\Generator\Exporter\AbstractExporter;
-use Application\ImportBundle\Generator\Exporter\EntityExporterInterface;
-use Application\ImportBundle\OsTicket\OsTicketReader;
-use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Class AbstractOsTicket
- * @package Application\ImportBundle\Generator\Exporter\OsTicket
+ * Class Collection
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-abstract class AbstractOsTicket extends AbstractExporter implements EntityExporterInterface
+class Collection extends AbstractCollection
 {
     /**
-     * @var OsTicketReader
-     */
-    protected $os_ticket_reader;
-
-    /**
-     * Constructor
+     * Add a parser
      *
-     * @param OsTicketReaderInterface $os_ticket_reader
+     * @param ParserInterface $parser
+     * @return $this
      */
-    public function __construct(OsTicketReaderInterface $os_ticket_reader)
+    public function attach(ParserInterface $parser)
     {
-        $this->os_ticket_reader = $os_ticket_reader;
+        $this->collection[] = $parser;
+        return $this;
     }
 }

@@ -32,6 +32,10 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 
+/**
+ * Class ImportExtension
+ * @package Application\ImportBundle\DependencyInjection
+ */
 class ImportExtension extends Extension
 {
     /**
@@ -48,29 +52,66 @@ class ImportExtension extends Extension
 //
 //        $db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
 
-        // Readers
+        $this->setReaders($container);
+        $this->setExporters($container);
+        $this->setValidators($container);
+        $this->setWriter($container);
+        $this->setGenerator($container);
+    }
+
+    /**
+     * Set readers
+     *
+     * @param ContainerBuilder $container
+     */
+    private function setReaders(ContainerBuilder $container)
+    {
         $definition = new Definition('Application\ImportBundle\CsvReader\CsvReader');
         $container->setDefinition('deskpro.import.csv_reader', $definition);
 
         $definition = new Definition('Application\ImportBundle\OsTicket\OsTicketReader');
         $definition->addArgument(null);
         $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
+    }
 
-        // Exporters
+    /**
+     * Set exporters
+     *
+     * @param ContainerBuilder $container
+     */
+    public function setExporters(ContainerBuilder $container)
+    {
+        $definition = new Definition('Application\ImportBundle\Generator\Exporter\CsvFactory');
+        $definition->addArgument(new Reference('service_container'));
+        $container->setDefinition('deskpro.import.generator.exporter.csv_factory', $definition);
+
+        $definition = new Definition('Application\ImportBundle\Generator\Exporter\OsTicketFactory');
+        $definition->addArgument(new Reference('service_container'));
+        $container->setDefinition('deskpro.import.generator.exporter.osticket_factory', $definition);
+
         $definition = new Definition('Application\ImportBundle\Generator\Exporter\Csv');
-        $definition->addArgument(new Reference('deskpro.import.csv_reader'));
+        $definition->setFactoryService('deskpro.import.generator.exporter.csv_factory');
+        $definition->setFactoryMethod('createExporter');
         $container->setDefinition('deskpro.import.generator.exporter.csv', $definition);
 
         $definition = new Definition('Application\ImportBundle\Generator\Exporter\OsTicket');
-        $definition->addArgument(new Reference('deskpro.import.os_ticket_reader'));
+        $definition->setFactoryService('deskpro.import.generator.exporter.osticket_factory');
+        $definition->setFactoryMethod('createExporter');
         $container->setDefinition('deskpro.import.generator.exporter.osticket', $definition);
 
         $definition = new Definition('Application\ImportBundle\Generator\Exporter\Collection');
         $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.exporter.csv')));
         $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.exporter.osticket')));
         $container->setDefinition('deskpro.import.generator.exporter.collection', $definition);
+    }
 
-        // Validators
+    /**
+     * Set validators
+     *
+     * @param ContainerBuilder $container
+     */
+    private function setValidators(ContainerBuilder $container)
+    {
         $definition = new Definition('Application\ImportBundle\Generator\Validator\Person');
         $definition->addArgument(new Reference('validator'));
         $container->setDefinition('deskpro.import.generator.validator.person', $definition);
@@ -83,8 +124,15 @@ class ImportExtension extends Extension
         $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.validator.person')));
         $definition->addMethodCall('attach', array(new Reference('deskpro.import.generator.validator.ticket')));
         $container->setDefinition('deskpro.import.generator.validator.collection', $definition);
+    }
 
-        // Writer
+    /**
+     * Set writer
+     *
+     * @param ContainerBuilder $container
+     */
+    private function setWriter(ContainerBuilder $container)
+    {
         $definition = new Definition('Application\ImportBundle\Generator\Writer\Json\Destination\Person');
         $container->setDefinition('deskpro.import.generator.writer.json.destination.person', $definition);
 
@@ -99,8 +147,15 @@ class ImportExtension extends Extension
         $definition = new Definition('Application\ImportBundle\Generator\Writer\Json\JsonWriter');
         $definition->addArgument(new Reference('deskpro.import.generator.writer.json.destination.collection'));
         $container->setDefinition('deskpro.import.generator.writer.json', $definition);
+    }
 
-        // Generator
+    /**
+     * Set generator
+     *
+     * @param ContainerBuilder $container
+     */
+    private function setGenerator(ContainerBuilder $container)
+    {
         $definition = new Definition('Application\ImportBundle\Generator\Generator');
         $definition->addArgument(new Reference('deskpro.import.generator.writer.json'));
         $definition->addArgument(new Reference('deskpro.import.generator.exporter.collection'));

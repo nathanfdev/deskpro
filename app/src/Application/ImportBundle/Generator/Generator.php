@@ -84,7 +84,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         $exporter = $this->getExporter();
 
         foreach ($this->config->getRecordTypes() as $record_type) {
-            $count += $exporter->getRecordsCountByType($record_type);
+            $count += $exporter->getCountByType($record_type);
         }
 
         return $count;
@@ -162,7 +162,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     private function getExportingCollectionByRecordType($type)
     {
-       return $this->getExporter()->exportRecordsByType($type);
+       return $this->getExporter()->exportByType($type);
     }
 
     /**

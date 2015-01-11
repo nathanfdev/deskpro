@@ -25,59 +25,33 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Exporter\Parser;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Exception;
-use Symfony\Component\Validator\Validator;
+use Application\ImportBundle\Generator\AbstractGenerator;
 
 /**
- * People entities validator
- *
- * Class Person
- * @package Application\ImportBundle\Generator\Validator
+ * Class AbstractParser
+ * @package Application\ImportBundle\Generator\Exporter\Parser
  */
-final class Person implements ValidatorInterface
+abstract class AbstractParser extends AbstractGenerator implements ParserInterface
 {
-    /**
-     * @var Validator
-     */
-    private $validator;
 
     /**
-     * Constructor
+     * Check if a record has all required columns
      *
-     * @param Validator $validator
+     * @param array $record
+     * @param array $columns
+     *
+     * @return bool
      */
-    public function __construct(Validator $validator)
+    protected function hasRequiredColumns(array $record, array $columns)
     {
-        $this->validator = $validator;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRecordType()
-    {
-        return GeneratorInterface::TYPE_PEOPLE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        if (!$entity instanceof Entity\Person) {
-            throw new Exception(sprintf(
-                'Entity `%s` is not supported by validator `%s`',
-                get_class($entity), get_class($this)
-            ));
+        foreach ($columns as $column) {
+            if (isset($record[$column]) === false) {
+                return false;
+            }
         }
 
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new Exception(sprintf('Entity `%s` is not valid', get_class($entity)));
-        }
+        return true;
     }
 }

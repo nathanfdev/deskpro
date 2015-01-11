@@ -25,59 +25,28 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Validator;
+namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Exception;
-use Symfony\Component\Validator\Validator;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * People entities validator
- *
- * Class Person
- * @package Application\ImportBundle\Generator\Validator
+ * Class AbstractFactory
+ * @package Application\ImportBundle\Generator\Exporter
  */
-final class Person implements ValidatorInterface
+abstract class AbstractFactory implements FactoryInterface
 {
     /**
-     * @var Validator
+     * @var ContainerInterface
      */
-    private $validator;
+    protected $container;
 
     /**
      * Constructor
      *
-     * @param Validator $validator
+     * @param ContainerInterface $container
      */
-    public function __construct(Validator $validator)
+    public function __construct(ContainerInterface $container)
     {
-        $this->validator = $validator;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getRecordType()
-    {
-        return GeneratorInterface::TYPE_PEOPLE;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function validate(Entity\EntityInterface $entity)
-    {
-        if (!$entity instanceof Entity\Person) {
-            throw new Exception(sprintf(
-                'Entity `%s` is not supported by validator `%s`',
-                get_class($entity), get_class($this)
-            ));
-        }
-
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new Exception(sprintf('Entity `%s` is not valid', get_class($entity)));
-        }
+        $this->container = $container;
     }
 }
