@@ -28,13 +28,14 @@
 namespace Application\ImportBundle\Generator\Exporter\Csv;
 
 use Application\ImportBundle\CsvReader\CsvReaderInterface;
+use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Exporter\EntityExporterInterface;
 
 /**
  * Class AbstractCsv
  * @package Application\ImportBundle\Generator\Exporter\Csv
  */
-abstract class AbstractCsv implements EntityExporterInterface
+abstract class AbstractCsv extends AbstractExporter implements EntityExporterInterface
 {
     /**
      * @var CsvReaderInterface

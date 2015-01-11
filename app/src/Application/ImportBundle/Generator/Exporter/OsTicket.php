@@ -47,7 +47,7 @@ use Exception;
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator\Exporter
  */
-final class OsTicket extends AbstractExporter
+final class OsTicket extends AbstractExporter implements ExporterInterface
 {
     /**
      * @var OsTicketReader

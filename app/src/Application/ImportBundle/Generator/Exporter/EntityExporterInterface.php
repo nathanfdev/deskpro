@@ -28,12 +28,13 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 
 /**
  * Interface EntityExporterInterface
  * @package Application\ImportBundle\Generator\Exporter
  */
-interface EntityExporterInterface
+interface EntityExporterInterface extends GeneratorConfigAwareInterface
 {
     /**
      * Referred entity type

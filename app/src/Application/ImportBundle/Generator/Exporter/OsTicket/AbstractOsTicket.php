@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\OsTicket;
 
+use Application\ImportBundle\Generator\Exporter\AbstractExporter;
 use Application\ImportBundle\Generator\Exporter\EntityExporterInterface;
 use Application\ImportBundle\OsTicket\OsTicketReader;
 use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
@@ -35,7 +36,7 @@ use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
  * Class AbstractOsTicket
  * @package Application\ImportBundle\Generator\Exporter\OsTicket
  */
-abstract class AbstractOsTicket implements EntityExporterInterface
+abstract class AbstractOsTicket extends AbstractExporter implements EntityExporterInterface
 {
     /**
      * @var OsTicketReader

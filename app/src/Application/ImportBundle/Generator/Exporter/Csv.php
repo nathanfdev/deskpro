@@ -47,7 +47,7 @@ use Exception;
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
  * @package Application\ImportBundle\Generator\Exporter
  */
-final class Csv extends AbstractExporter
+final class Csv extends AbstractExporter implements ExporterInterface
 {
     const FILE_PEOPLE          = 'people.csv';
     const FILE_TICKETS         = 'tickets.csv';

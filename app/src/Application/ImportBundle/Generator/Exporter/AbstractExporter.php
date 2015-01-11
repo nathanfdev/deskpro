@@ -36,7 +36,7 @@ use Application\ImportBundle\Generator\LoggerAwareInterface;
  * Class AbstractExporter
  * @package Application\ImportBundle\Generator\Exporter
  */
-abstract class AbstractExporter extends AbstractGenerator implements ExporterInterface, LoggerAwareInterface
+abstract class AbstractExporter extends AbstractGenerator implements LoggerAwareInterface
 {
     /**
      * Check if a record has all required columns
