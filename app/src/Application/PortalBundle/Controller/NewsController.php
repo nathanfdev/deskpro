@@ -41,11 +41,13 @@ use Application\PortalBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class NewsController extends AbstractController
 {
     /**
      * @Route("/news", name="portal_news")
+     * @Security("is_granted('USE_NEWS')")
      */
     public function indexAction(Request $request)
     {
@@ -61,6 +63,7 @@ class NewsController extends AbstractController
     /**
      * @Route("/news/{slug}", name="portal_news_browse")
      * @ParamConverter(name="category", converter="deskpro_slug")
+     * @Security("is_granted('USE_NEWS')")
      */
     public function browseAction(Request $request, NewsCategory $category)
     {
@@ -78,6 +81,7 @@ class NewsController extends AbstractController
     /**
      * @Route("/news/posts/{slug}", name="portal_news_view")
      * @ParamConverter(name="news", converter="deskpro_slug")
+     * @Security("is_granted('USE_NEWS')")
      */
     public function viewAction(Request $request, News $news)
     {
