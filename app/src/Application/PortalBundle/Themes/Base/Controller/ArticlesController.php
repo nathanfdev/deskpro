@@ -122,7 +122,7 @@ class ArticlesController extends AbstractController
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
-        $category = $options['category'];
+        $category = $this->getArticlesDataService()->getCategory($options['category']);
         $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
 
         return $this->renderThemeView(

@@ -114,7 +114,7 @@ class DownloadsController extends AbstractController
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
-        $category = $options['category'];
+        $category = $this->getDownloadsDataService()->getCategory($options['category']);
         $category_children = $this->getDownloadsDataService()->getCategoryChildren($category);
 
         return $this->renderThemeView(

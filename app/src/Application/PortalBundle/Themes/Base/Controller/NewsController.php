@@ -66,7 +66,7 @@ class NewsController extends AbstractController
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
-        $category = $options['category'];
+        $category = $this->getNewsDataService()->getCategory($options['category']);
         $category_children = $this->getNewsDataService()->getCategoryChildren($category);
 
         return $this->renderThemeView(
@@ -110,7 +110,7 @@ class NewsController extends AbstractController
             array(
                 'pager' => $pager,
                 'show_category_link' => $options['show_category_link'],
-                'category' => $options['category']
+                'category' => $category
             )
         );
     }
