@@ -124,7 +124,7 @@ class NewsController extends AbstractController
      * @Route("/news/posts/{slug}/vote-up", name="portal_news_post_vote_up", defaults={"up_or_down":"up"})
      * @Route("/news/posts/{slug}/vote-down", name="portal_news_post_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="post", converter="deskpro_slug")
-     * @Security("is_granted('USE_NEWS') and is_granted('RATE_NEWS')")
+     * @Security("is_granted('USE_NEWS') and is_granted('RATE_NEWS', post)")
      */
     public function newsRateAction(News $post, $visitor_id, $up_or_down)
     {

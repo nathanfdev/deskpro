@@ -108,7 +108,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}/vote-up", name="portal_downloads_vote_up", defaults={"up_or_down":"up"})
      * @Route("/downloads/files/{slug}/vote-down", name="portal_downloads_vote_down", defaults={"up_or_down":"down"})
      * @ParamConverter(name="file", converter="deskpro_slug")
-     * @Security("is_granted('USE_DOWNLOADS') and is_granted('RATE_DOWNLOADS')")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('RATE_DOWNLOADS', file)")
      */
     public function downloadRateAction(Download $file, $visitor_id, $up_or_down)
     {

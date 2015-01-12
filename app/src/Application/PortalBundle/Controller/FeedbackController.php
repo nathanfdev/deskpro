@@ -40,12 +40,13 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Zend\Feed\Writer\Extension\ITunes\Renderer\Feed;
 
 class FeedbackController extends AbstractController
 {
     /**
      * @Route("/feedback", name="portal_feedback")
-     * @Security("is_granted('USE_FEEDBACK)")
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function indexAction(Request $request)
     {
@@ -63,15 +64,37 @@ class FeedbackController extends AbstractController
     /**
      * @Route("/feedback/view/{slug}", name="portal_feedback_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
-     * @Security("is_granted('USE_FEEDBACK)")
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function viewAction(Request $request, Feedback $item)
     {
+        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
+
         return $this->renderThemeView(
             'Theme:Feedback:view.html.twig',
             array(
-                'item' => $item
+                'item' => $item,
+                'rating' => $rating
             )
         );
+    }
+
+    /**
+     * @Route("/feedback/view/{slug}/vote-up", name="portal_feedback_vote_up", defaults={"up_or_down":"up"})
+     * @Route("/feedback/view/{slug}/vote-down", name="portal_feedback_vote_down", defaults={"up_or_down":"down"})
+     * @ParamConverter(name="item", converter="deskpro_slug")
+     * @Security("is_granted('USE_FEEDBACK') and is_granted('RATE_FEEDBACK', item)")
+     */
+    public function feedbackRateAction(Feedback $item, $visitor_id, $up_or_down)
+    {
+        $person = $this->isGranted('ROLE_USER') ? $this->getUser() : null;
+
+        if ('down' === $up_or_down) {
+            $this->getRatingsHelper()->rateContentDown($item, $visitor_id, $person);
+        } else {
+            $this->getRatingsHelper()->rateContentUp($item, $visitor_id, $person);
+        }
+
+        return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
     }
 }
