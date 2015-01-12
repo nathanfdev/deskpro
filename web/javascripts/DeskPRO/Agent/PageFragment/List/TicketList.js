@@ -2013,8 +2013,9 @@ DeskPRO.Agent.PageFragment.List.TicketList.MassActions = new Orb.Class({
 				inlineHiddenPosition: this.getElById('is_html_reply'),
 				minHeight: 120,
 				callback: function(obj) {
-					obj.addBtnFirst('dp_attach', 'Click here to attach a file. You may also drag a file from your computer desktop into this reply area to upload attachments faster.', function(){});
-					obj.addBtnAfter('dp_attach', 'dp_snippets', 'Open snippets', function(){});
+					var $translations = self.getEl('editor_translations')
+					obj.addBtnFirst('dp_attach', $translations.data('attach-description'), function(){});
+					obj.addBtnAfter('dp_attach', 'dp_snippets', $translations.data('snippets-description'), function(){});
 					obj.addBtnSeparatorAfter('dp_attach');
 
 					var snippetBtn = obj.$toolbar.find('.redactor_btn_dp_snippets').closest('li');
