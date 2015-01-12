@@ -6,7 +6,6 @@
 
 .list-control-bar{
 	.gradient(#F0F1F3, #DADBDE);
-	height: 27px;
 	position: relative;
 	border-bottom: 1px solid #B6BABF;
 	overflow: hidden;
@@ -21,12 +20,11 @@
 
 .list-control-bar ul li{
 	font-family: @toolbar-font;
-	display: inline;
-	float: left;
+	display: inline-block;
 	color: #828e99;
 	padding: 0 2px;
 	text-shadow: 0 1px 0 #fff;
-	line-height: 30px;
+	line-height: 28px;
 }
 
 .list-control-bar ul li a.button, a.performActTrigger{
@@ -35,14 +33,11 @@
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
 	padding: 2px 8px 2px 6px;
-	float: left;
 	color: #626a73;
 	text-shadow: 0 1px 0 #fff;
 	cursor: pointer;
 	font-family: @toolbar-font;
 	line-height: 100%;
-	position: relative;
-	top: 5px;
 }
 
 .list-control-bar ul a.button.menu-open {
@@ -128,7 +123,7 @@
 
 .list-control-bar ul.btn-controls li a {
 	position: relative;
-	top: 5px;
+	top: 4px;
 }
 
 
