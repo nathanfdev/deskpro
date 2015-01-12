@@ -793,6 +793,8 @@
     'user.always_show_captcha' => false,
     'user.feedback_notify_comments' => true,
     'user.kb_subscriptions' => true,
+    'user.news_subscriptions' => true,
+    'user.downloads_subscriptions' => true,
 
     ####################################################################################################################
     # search

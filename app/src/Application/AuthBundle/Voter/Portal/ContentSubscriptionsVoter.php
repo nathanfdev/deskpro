@@ -45,10 +45,21 @@ class ContentSubscriptionsVoter extends AbstractVoter
 {
     const SUBSCRIBE_ARTICLES = 'SUBSCRIBE_ARTICLES';
     const SUBSCRIBE_ARTICLE_CATEGORIES = 'SUBSCRIBE_ARTICLE_CATEGORIES';
+    const SUBSCRIBE_NEWS = 'SUBSCRIBE_NEWS';
+    const SUBSCRIBE_NEWS_CATEGORIES = 'SUBSCRIBE_NEWS_CATEGORIES';
+    const SUBSCRIBE_DOWNLOADS = 'SUBSCRIBE_DOWNLOADS';
+    const SUBSCRIBE_DOWNLOADS_CATEGORIES = 'SUBSCRIBE_DOWNLOADS_CATEGORIES';
 
     protected function getSupportedAttributes()
     {
-        return array(self::SUBSCRIBE_ARTICLES, self::SUBSCRIBE_ARTICLE_CATEGORIES);
+        return array(
+            self::SUBSCRIBE_ARTICLES,
+            self::SUBSCRIBE_ARTICLE_CATEGORIES,
+            self::SUBSCRIBE_NEWS,
+            self::SUBSCRIBE_NEWS_CATEGORIES,
+            self::SUBSCRIBE_DOWNLOADS,
+            self::SUBSCRIBE_DOWNLOADS_CATEGORIES
+        );
     }
 
     protected function isGranted($attribute, $object, $user = null)
@@ -63,9 +74,14 @@ class ContentSubscriptionsVoter extends AbstractVoter
 
         switch($attribute) {
             case static::SUBSCRIBE_ARTICLES:
-                return $brand_settings->get('user.kb_subscriptions');
             case static::SUBSCRIBE_ARTICLE_CATEGORIES:
                 return $brand_settings->get('user.kb_subscriptions');
+            case static::SUBSCRIBE_NEWS:
+            case static::SUBSCRIBE_NEWS_CATEGORIES:
+                return $brand_settings->get('user.news_subscriptions');
+            case static::SUBSCRIBE_DOWNLOADS:
+            case static::SUBSCRIBE_DOWNLOADS_CATEGORIES:
+                return $brand_settings->get('user.downloads_subscriptions');
         }
 
         return false;
