@@ -321,4 +321,12 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         $metadata->setPrimaryTable(array( 'name' => 'CategoryAbstract'));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
     }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
 }

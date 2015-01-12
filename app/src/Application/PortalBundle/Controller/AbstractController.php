@@ -123,6 +123,24 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Application\PortalBundle\Helper\ContentSubscriptionsHelper
+     */
+    public function getSubscriptionsHelper()
+    {
+        return $this->get('subscriptions_helper');
+    }
+
+    /**
+     * @param $setting
+     * @param null $default
+     * @return mixed
+     */
+    protected function getBrandSetting($setting, $default = null)
+    {
+        return $this->getBrandContainer()->getSetting($setting, $default);
+    }
+
+    /**
      * @return \Application\DeskPRO\Brand\BrandContainer
      */
     public function getBrandContainer()

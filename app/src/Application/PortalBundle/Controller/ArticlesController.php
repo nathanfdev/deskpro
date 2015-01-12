@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -50,6 +51,10 @@ class ArticlesController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
+        //
+        // RSS
+        //
+
         if ('rss' === $_format) {
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 null,
@@ -59,6 +64,11 @@ class ArticlesController extends AbstractController
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => null));
         }
+
+
+        //
+        // RENDER THEME
+        //
 
         return $this->renderThemeView(
             'Theme:Articles:index.html.twig'
@@ -72,6 +82,9 @@ class ArticlesController extends AbstractController
      */
     public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
+        //
+        // RSS
+        //
         if ('rss' === $_format) {
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 $category,
@@ -82,15 +95,22 @@ class ArticlesController extends AbstractController
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => $category));
         }
 
+
+        //
+        // SUBSCRIPTIONS
+        //
         $is_subscribed = false;
-        if ($this->isGranted('ROLE_USER') && $this->getBrandContainer()->getSetting('user.kb_subscriptions')) {
-            $is_subscribed = $this->getDb()->fetchColumn("
-                SELECT id
-                FROM kb_subscriptions
-                WHERE person_id = ? AND category_id = ?
-            ", array($this->getUser()->getId(), $category->getId()));
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
         }
 
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView(
             'Theme:Articles:browse.html.twig',
             array(
@@ -110,18 +130,24 @@ class ArticlesController extends AbstractController
      */
     public function viewAction(Request $request, Article $article)
     {
+        //
+        // RELATED, RATINGS, SUBSCRIPTIONS
+        //
         $related = $this->getArticlesDataService()->getRelatedArticles($article);
         $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
 
-        // TODO: make this a helper
         $is_subscribed = false;
-        if ($this->isGranted('ROLE_USER') && $this->getBrandContainer()->getSetting('user.kb_subscriptions')) {
-            $is_subscribed = $this->getDb()->fetchColumn("
-                SELECT id
-                FROM kb_subscriptions
-                WHERE person_id = ? AND article_id = ?
-            ", array($this->getUser()->getId(), $article->getId()));
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
         }
+
+
+        //
+        // RENDER THEME
+        //
 
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
@@ -161,26 +187,16 @@ class ArticlesController extends AbstractController
      */
     public function articleSubscriptionAction(Article $article)
     {
-        $exist = $this->getDb()->fetchColumn("
-            SELECT id
-            FROM kb_subscriptions
-            WHERE person_id = ? AND article_id = ?
-        ", array($this->getUser()->getId(), $article->getId()));
+        $person = $this->getUser();
+        $subscriptions_helper = $this->getSubscriptionsHelper();
 
-        if ($exist) {
-            $this->getDb()->delete('kb_subscriptions', array(
-                'person_id' => $this->getUser()->getId(),
-                'article_id' => $article->getId()
-            ));
+        if ($subscriptions_helper->isSubscribedContent($article, $person)) {
+            $subscriptions_helper->unsubscribeFromContent($article, $person);
             $this->addFlash('success', 'Successfully unsubscribed from this article.');
         } else {
-            $this->getDb()->insert('kb_subscriptions', array(
-                'person_id' => $this->getUser()->getId(),
-                'article_id' => $article->getId()
-            ));
+            $subscriptions_helper->subscribeToContent($article, $person);
             $this->addFlash('success', 'You have successfully subscribed to this article. You will be notified when it is updated.');
         }
-
 
         return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
     }
@@ -193,26 +209,16 @@ class ArticlesController extends AbstractController
      */
     public function articleCategorySubscriptionAction(ArticleCategory $article_category)
     {
-        $exist = $this->getDb()->fetchColumn("
-            SELECT id
-            FROM kb_subscriptions
-            WHERE person_id = ? AND category_id = ?
-        ", array($this->getUser()->getId(), $article_category->getId()));
+        $person = $this->getUser();
+        $subscriptions_helper = $this->getSubscriptionsHelper();
 
-        if ($exist) {
-            $this->getDb()->delete('kb_subscriptions', array(
-                'person_id' => $this->getUser()->getId(),
-                'category_id' => $article_category->getId()
-            ));
+        if ($subscriptions_helper->isSubscribedCategory($article_category, $person)) {
+            $subscriptions_helper->unsubscribeFromCategory($article_category, $person);
             $this->addFlash('success', 'Successfully unsubscribed from this category.');
         } else {
-            $this->getDb()->insert('kb_subscriptions', array(
-                'person_id' => $this->getUser()->getId(),
-                'category_id' => $article_category->getId()
-            ));
+            $subscriptions_helper->subscribeToCategory($article_category, $person);
             $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
         }
-
 
         return $this->redirectToRoute('portal_kb_browse', array('slug' => $article_category->getSlug()));
     }
