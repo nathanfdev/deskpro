@@ -8,20 +8,20 @@
     </div>
 {% endmacro %}
 
-{% macro list_item(title, href, state_mark, icon) %}
-    <li>
+{% macro list_item(title, href, state_mark, icon, cond) %}
+    <li {% if cond %}ng-show="{{ cond }}"{% endif %}>
         <a href="{{ href }}" class="item" dp-state-mark="{{ state_mark }}"><i class="fa {{ icon }}"></i> {{ title }}</a>
     </li>
 {% endmacro %}
 
-{% macro list_subitem(title, href, state_mark, icon) %}
-    <li>
+{% macro list_subitem(title, href, state_mark, icon, cond) %}
+    <li {% if cond %}ng-show="{{ cond }}"{% endif %}>
         <a href="{{ href }}" class="item" dp-state-mark="{{ state_mark }}"><i class="fa {{ icon }}"></i> {{ title }}</a>
     </li>
 {% endmacro %}
 
-{% macro list_item_group(title, icon) %}
-    <li>
+{% macro list_item_group(title, icon, cond) %}
+    <li {% if cond %}ng-show="{{ cond }}"{% endif %}>
         <a href="{{ href }}" class="item" dp-state-mark="{{ state_mark }}"><i class="fa {{ icon }}"></i> {{ title }}</a>
         <ul class="with-connectors">
 {% endmacro %}

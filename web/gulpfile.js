@@ -51,10 +51,10 @@ deskpro.watches = [
   ['./app/Admin*/Resources/style/*.less',     ['less:admin:nocache']],
   ['./app/Reports*/Resources/style/*.less',   ['less:reports:nocache']],
   ['./app/Admin*/Resources/style/*.scss',     ['sass:admin:nocache']],
-  ['./app/Agent*/Resources/style/*.scss',     ['sass:agent:nocache']],
+  //['./app/Agent*/Resources/style/*.scss',     ['sass:agent:nocache']],
   ['./app/DeskPRO*/Resources/style/*.scss',   ['sass:deskpro:nocache']],
   ['./app/Portal*/Resources/style/*.scss',    ['sass:portal:nocache']],
-  ['./app/Interface/Resources/style/*.scss',  ['sass:admin:nocache', 'sass:agent:nocache', 'sass:deskpro:nocache', 'sass:interface:nocache']],
+  ['./app/Interface/Resources/style/*.scss',  ['sass:admin:nocache', /*'sass:agent:nocache',*/ 'sass:deskpro:nocache', 'sass:ifce:nocache']],
 
   ['./app/**/*.js',                           ['cpjs:app']],
   ['./loader/*',                              ['loader:app']]
@@ -238,9 +238,10 @@ gulp.task('sass:admin',          function () { return deskpro.taskGen.sassCss('.
 gulp.task('sass:ifce',           function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss'); });
 gulp.task('sass:portal',         function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss'); });
 
-gulp.task('sass:admin:nocache',  function () { return deskpro.taskGen.sassCss('./app/Admin*/Resources/style/*-style.scss', null, true); });
-gulp.task('sass:ifce:nocache',   function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss', null, true); });
-gulp.task('sass:portal:nocache', function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss', null, true); });
+gulp.task('sass:admin:nocache',   function () { return deskpro.taskGen.sassCss('./app/Admin*/Resources/style/*-style.scss', null, true); });
+gulp.task('sass:deskpro:nocache', function () { return deskpro.taskGen.sassCss('./app/DeskPRO*/Resources/style/*-style.scss', null, true); });
+gulp.task('sass:ifce:nocache',    function () { return deskpro.taskGen.sassCss('./app/Interface*/Resources/style/*-style.scss', null, true); });
+gulp.task('sass:portal:nocache',  function () { return deskpro.taskGen.sassCss('./app/Portal*/Resources/style/*-style.scss', null, true); });
 
 gulp.task('sass:app', ['sass:admin', 'sass:ifce', 'sass:portal']);
 
