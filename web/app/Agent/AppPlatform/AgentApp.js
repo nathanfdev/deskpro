@@ -58,7 +58,6 @@ define([
 		}
 		$.datepicker.setDefaults(regional);
 	}
-	console.info($.datepicker, regional, $.datepicker.regional, window.DESKPRO_DEFAULT_LANG);
 
 
 	//-------------------------------------------------------------------------
