@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -28,48 +28,51 @@
 namespace Application\ImportBundle\Generator\Validator;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Exception;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
- * Tickets entities validator
- *
- * Class Ticket
+ * Class ValidatorException
  * @package Application\ImportBundle\Generator\Validator
  */
-final class Ticket extends AbstractConstraintValidator
+class ValidatorException extends \Exception
 {
     /**
-     * {@inheritdoc}
+     * @var Entity\EntityInterface
      */
-    public function getRecordType()
+    private $entity;
+
+    /**
+     * @var ConstraintViolationList
+     */
+    private $errors;
+
+    /**
+     * Constructor
+     *
+     * @param Entity\EntityInterface  $entity
+     * @param ConstraintViolationList $errors
+     */
+    public function __construct(Entity\EntityInterface $entity, ConstraintViolationList $errors)
     {
-        return GeneratorInterface::TYPE_TICKETS;
+        $this->entity = $entity;
+        $this->errors = $errors;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns
+     *
+     * @return Entity\EntityInterface
      */
-    public function validate(Entity\EntityInterface $entity)
+    public function getEntity()
     {
-        if (!$entity instanceof Entity\Ticket) {
-            throw new Exception(sprintf(
-                'Entity `%s` is not supported by validator `%s`',
-                get_class($entity), get_class($this)
-            ));
-        }
+        return $this->entity;
+    }
 
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorException($entity, $errors);
-        }
-
-        foreach ($entity->getMessages() as $message) {
-            /** @var Entity\TicketMessage $message */
-            $errors = $this->validator->validate($message);
-            if (count($errors) > 0) {
-                throw new ValidatorException($entity, $errors);
-            }
-        }
+    /**
+     * @return ConstraintViolationList
+     */
+    public function getErrors()
+    {
+        return $this->errors;
     }
 }

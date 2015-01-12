@@ -27,49 +27,39 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Exception;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Tickets entities validator
- *
- * Class Ticket
+ * Class ExceptionCollection
  * @package Application\ImportBundle\Generator\Validator
  */
-final class Ticket extends AbstractConstraintValidator
+class ExceptionCollection extends AbstractCollection
 {
     /**
-     * {@inheritdoc}
+     * Add an exception
+     *
+     * @param ValidatorException $exception
+     * @return $this
      */
-    public function getRecordType()
+    public function attach(ValidatorException $exception)
     {
-        return GeneratorInterface::TYPE_TICKETS;
+        $this->collection[] = $exception;
+        return $this;
     }
 
     /**
-     * {@inheritdoc}
+     * Merge collection
+     *
+     * @param ExceptionCollection $collection
+     * @return $this
      */
-    public function validate(Entity\EntityInterface $entity)
+    public function merge(ExceptionCollection $collection)
     {
-        if (!$entity instanceof Entity\Ticket) {
-            throw new Exception(sprintf(
-                'Entity `%s` is not supported by validator `%s`',
-                get_class($entity), get_class($this)
-            ));
+        foreach ($collection as $exception) {
+            /** @var ValidatorException $exception */
+            $this->attach($exception);
         }
 
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorException($entity, $errors);
-        }
-
-        foreach ($entity->getMessages() as $message) {
-            /** @var Entity\TicketMessage $message */
-            $errors = $this->validator->validate($message);
-            if (count($errors) > 0) {
-                throw new ValidatorException($entity, $errors);
-            }
-        }
+        return $this;
     }
 }

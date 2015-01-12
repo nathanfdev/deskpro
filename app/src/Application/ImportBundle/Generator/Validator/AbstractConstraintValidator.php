@@ -27,49 +27,28 @@
 
 namespace Application\ImportBundle\Generator\Validator;
 
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Exception;
+use Symfony\Component\Validator\Validator;
 
 /**
- * Tickets entities validator
+ * Symfony constraint validator
  *
- * Class Ticket
+ * Class AbstractConstraintValidator
  * @package Application\ImportBundle\Generator\Validator
  */
-final class Ticket extends AbstractConstraintValidator
+abstract class AbstractConstraintValidator implements ValidatorInterface
 {
     /**
-     * {@inheritdoc}
+     * @var Validator
      */
-    public function getRecordType()
-    {
-        return GeneratorInterface::TYPE_TICKETS;
-    }
+    protected $validator;
 
     /**
-     * {@inheritdoc}
+     * Constructor
+     *
+     * @param Validator $validator
      */
-    public function validate(Entity\EntityInterface $entity)
+    public function __construct(Validator $validator)
     {
-        if (!$entity instanceof Entity\Ticket) {
-            throw new Exception(sprintf(
-                'Entity `%s` is not supported by validator `%s`',
-                get_class($entity), get_class($this)
-            ));
-        }
-
-        $errors = $this->validator->validate($entity);
-        if (count($errors) > 0) {
-            throw new ValidatorException($entity, $errors);
-        }
-
-        foreach ($entity->getMessages() as $message) {
-            /** @var Entity\TicketMessage $message */
-            $errors = $this->validator->validate($message);
-            if (count($errors) > 0) {
-                throw new ValidatorException($entity, $errors);
-            }
-        }
+        $this->validator = $validator;
     }
 }

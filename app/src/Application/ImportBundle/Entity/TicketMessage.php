@@ -27,6 +27,8 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints;
 use DateTime;
 use Exception;
 
@@ -161,5 +163,22 @@ final class TicketMessage extends AbstractEntity
             'message_text' => $this->message_text,
             'attachments'  => $attachments,
         );
+    }
+
+    /**
+     * Validator class metadata
+     *
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata
+            ->addPropertyConstraint('person_email', new Constraints\NotBlank())
+            ->addPropertyConstraint('person_email', new Constraints\Email())
+
+            ->addPropertyConstraint('date_created', new Constraints\NotBlank())
+            ->addPropertyConstraint('date_created', new Constraints\DateTime())
+
+            ->addPropertyConstraint('message_text', new Constraints\NotBlank());
     }
 }

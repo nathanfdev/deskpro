@@ -41,13 +41,11 @@ class CsvFactory extends AbstractFactory
     public function createExporter()
     {
         /** @var CsvReaderInterface $reader */
-        $reader = $this->container->get('deskpro.import.csv_reader');
-
+        $reader  = $this->container->get('deskpro.import.csv_reader');
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\Csv\People($reader))
             ->attach(new Parser\Csv\Tickets($reader));
-
 
         return new Csv($parsers);
     }

@@ -41,8 +41,7 @@ class OsTicketFactory extends AbstractFactory
     public function createExporter()
     {
         /** @var OsTicketReaderInterface $reader */
-        $reader = $this->container->get('deskpro.import.os_ticket_reader');
-
+        $reader  = $this->container->get('deskpro.import.os_ticket_reader');
         $parsers = new Parser\Collection();
         $parsers
             ->attach(new Parser\OsTicket\People($reader))

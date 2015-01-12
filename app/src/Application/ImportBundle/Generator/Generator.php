@@ -32,6 +32,7 @@
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity;
+use Application\ImportBundle\Generator\Validator;
 use Exception;
 
 /**
@@ -97,7 +98,10 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     {
         foreach ($this->config->getRecordTypes() as $type) {
             $collection = $this->getExportingCollectionByRecordType($type);
-            $this->validateExportingCollection($type, $collection);
+            $exceptions = $this->validateExportingCollection($type, $collection);
+            if (count($exceptions) > 0) {
+                throw new GeneratorException($exceptions);
+            }
 
             foreach ($collection as $entity) {
                 /** @var Entity\EntityInterface $entity */
@@ -113,10 +117,14 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     public function validate()
     {
+        $exceptions = new Validator\ExceptionCollection();
+
         foreach ($this->config->getRecordTypes() as $type) {
             $collection = $this->getExportingCollectionByRecordType($type);
-            $this->validateExportingCollection($type, $collection);
+            $exceptions->merge($this->validateExportingCollection($type, $collection));
         }
+
+        return $exceptions;
     }
 
     /**
@@ -170,15 +178,25 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      *
      * @param string            $type
      * @param Entity\Collection $collection
+     *
+     * @return Validator\ExceptionCollection
      */
     private function validateExportingCollection($type, Entity\Collection $collection)
     {
+        $exceptions = new Validator\ExceptionCollection();
         $validators = $this->validators->getByRecordType($type);
+
         foreach ($collection as $entity) {
             foreach ($validators as $validator) {
-                /** @var Validator\ValidatorInterface $validator */
-                $validator->validate($entity);
+                try {
+                    /** @var Validator\ValidatorInterface $validator */
+                    $validator->validate($entity);
+                } catch (Validator\ValidatorException $e) {
+                    $exceptions->attach($e);
+                }
             }
         }
+
+        return $exceptions;
     }
 }

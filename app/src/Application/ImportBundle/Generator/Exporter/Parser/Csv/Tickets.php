@@ -78,8 +78,8 @@ class Tickets extends AbstractCsv
                     ->setDestination('ticket_' . trim($ticket['id']))
                     ->setRef($ticket['id'])
                     ->setSubject($ticket['subject'])
-                    ->setPerson($ticket['user'])
-                    ->setAgent(isset($ticket['agent']) ? $ticket['agent'] : null)
+                    ->setPersonEmail($ticket['user'])
+                    ->setAgentEmail(isset($ticket['agent']) ? $ticket['agent'] : null)
                     ->setStatus(isset($ticket['status']) ? $ticket['status'] : Entity\Ticket::STATUS_AWAITING_AGENT)
                     ->setDateCreated(isset($ticket['date_created']) ? new DateTime($ticket['date_created']) : new DateTime());
 

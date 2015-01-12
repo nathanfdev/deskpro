@@ -27,9 +27,9 @@
 
 namespace Application\ImportBundle\Entity;
 
-use DateTime;
-use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use DateTime;
 
 /**
  * Exporting person entity
@@ -279,6 +279,18 @@ final class Person extends AbstractEntity
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-        $metadata->addPropertyConstraint('name', new NotBlank());
+        $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
+            ->addPropertyConstraint('name', new Constraints\NotBlank())
+
+            ->addPropertyConstraint('date_created', new Constraints\NotBlank())
+            ->addPropertyConstraint('date_created', new Constraints\DateTime())
+
+            ->addPropertyConstraint('emails', new Constraints\All(array(
+                'constraints' => array(
+                    new Constraints\NotBlank(),
+                    new Constraints\Email(),
+                ),
+            )));
     }
 }

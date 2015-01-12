@@ -80,8 +80,10 @@ class CheckExportCommand extends AbstractExportCommand
         }
 
         $progress_bar->start($output, $generator->getTotalRecordsCount());
-        $generator->validate();
+        $exceptions = $generator->validate();
 
+        echo "\n";
+        echo sprintf('Errors found `%d`', $exceptions->count());
         echo "\n";
         echo "Done";
         echo "\n";

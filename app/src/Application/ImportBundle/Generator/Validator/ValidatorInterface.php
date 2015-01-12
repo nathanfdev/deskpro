@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Validator;
 
 use Application\ImportBundle\Entity;
-use Exception;
 
 /**
  * Validator interface
@@ -50,7 +49,7 @@ interface ValidatorInterface
      * Returns true on success or false if data is not valid
      *
      * @param Entity\EntityInterface $entity
-     * @throws Exception
+     * @throws ValidatorException
      */
     public function validate(Entity\EntityInterface $entity);
 }

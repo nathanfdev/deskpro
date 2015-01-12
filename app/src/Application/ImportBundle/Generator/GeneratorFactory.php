@@ -27,36 +27,88 @@
 
 namespace Application\ImportBundle\Generator;
 
+use Symfony\Component\DependencyInjection\ContainerInterface;
+
 /**
- * Description of GeneratorInterface
- *
- * Interface GeneratorPluginInterface
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
+ * Class GeneratorFactory
  * @package Application\ImportBundle\Generator
  */
-interface GeneratorInterface extends GeneratorConfigAwareInterface
+class GeneratorFactory
 {
-    const TYPE_PEOPLE  = 'people';
-    const TYPE_TICKETS = 'tickets';
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     /**
-     * Returns count of records of all types to be exported
+     * Constructor
      *
-     * @return int
+     * @param ContainerInterface $container
      */
-    public function getTotalRecordsCount();
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
 
     /**
-     * Generate and write collection
-     *
-     * @throws GeneratorException
+     * @return GeneratorInterface
      */
-    public function generate();
+    public function createGenerator()
+    {
+        return new Generator(
+            $this->createJsonWriter(),
+            $this->createExportersCollection(),
+            $this->createValidatorsCollection()
+        );
+    }
 
     /**
-     * Validate exporting collection
+     * Create a json writer
      *
-     * @return Validator\ExceptionCollection
+     * @return Writer\Json\JsonWriter
      */
-    public function validate();
+    public function createJsonWriter()
+    {
+        $mapping = new Writer\Json\Destination\Collection();
+        $mapping
+            ->attach(new Writer\Json\Destination\Person())
+            ->attach(new Writer\Json\Destination\Ticket());
+
+        return new Writer\Json\JsonWriter($mapping);
+    }
+
+    /**
+     * Returns a collection of exporters
+     *
+     * @return Exporter\Collection
+     */
+    private function createExportersCollection()
+    {
+        $scvReaderFactory      = new Exporter\CsvFactory($this->container);
+        $osTicketReaderFactory = new Exporter\OsTicketFactory($this->container);
+
+        $exporters = new Exporter\Collection();
+        $exporters
+            ->attach($scvReaderFactory->createExporter())
+            ->attach($osTicketReaderFactory->createExporter());
+
+        return $exporters;
+    }
+
+    /**
+     * Returns a collection of validators
+     *
+     * @return Validator\Collection
+     */
+    private function createValidatorsCollection()
+    {
+        /** @var \Symfony\Component\Validator\Validator $validator */
+        $validator  = $this->container->get('validator');
+        $validators = new Validator\Collection();
+        $validators
+            ->attach(new Validator\Person($validator))
+            ->attach(new Validator\Ticket($validator));
+
+        return $validators;
+    }
 }

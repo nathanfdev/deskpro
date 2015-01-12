@@ -42,16 +42,16 @@ final class JsonWriter extends AbstractWriter
     /**
      * @var Destination\Collection
      */
-    private $destinations;
+    private $mapping;
 
     /**
      * Constructor
      *
-     * @param Destination\Collection $destinations
+     * @param Destination\Collection $mapping
      */
-    public function __construct(Destination\Collection $destinations)
+    public function __construct(Destination\Collection $mapping)
     {
-        $this->destinations = $destinations;
+        $this->mapping = $mapping;
     }
 
     /**
@@ -80,7 +80,7 @@ final class JsonWriter extends AbstractWriter
      */
     private function getEntityPath(Entity\EntityInterface $entity)
     {
-        foreach ($this->destinations as $destination) {
+        foreach ($this->mapping as $destination) {
             /** @var Destination\DestinationInterface $destination */
             if ($entity->getType() === $destination->getEntityType()) {
                 return $this->getDestinationOutputPath($destination) . $entity->getDestination();
@@ -106,7 +106,7 @@ final class JsonWriter extends AbstractWriter
             }
         }
 
-        foreach ($this->destinations as $destination) {
+        foreach ($this->mapping as $destination) {
             /** @var Destination\DestinationInterface $destination */
             $path = $this->getDestinationOutputPath($destination);
 

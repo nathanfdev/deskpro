@@ -27,8 +27,10 @@
 
 namespace Application\ImportBundle\Entity;
 
-use DateTime;
+
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use DateTime;
 
 /**
  * Exporting ticket entity
@@ -55,12 +57,12 @@ final class Ticket extends AbstractEntity
     /**
      * @var string or object?
      */
-    private $person;
+    private $person_email;
 
     /**
      * @var int or object?
      */
-    private $agent;
+    private $agent_email;
 
     /**
      * @var int or object?
@@ -147,36 +149,36 @@ final class Ticket extends AbstractEntity
     /**
      * @return string
      */
-    public function getPerson()
+    public function getPersonEmail()
     {
-        return $this->person;
+        return $this->person_email;
     }
 
     /**
-     * @param string $person
+     * @param string $person_email
      * @return $this
      */
-    public function setPerson($person)
+    public function setPersonEmail($person_email)
     {
-        $this->person = $person;
+        $this->person_email = $person_email;
         return $this;
     }
 
     /**
      * @return int
      */
-    public function getAgent()
+    public function getAgentEmail()
     {
-        return $this->agent;
+        return $this->agent_email;
     }
 
     /**
-     * @param int $agent
+     * @param int $agent_email
      * @return $this
      */
-    public function setAgent($agent)
+    public function setAgentEmail($agent_email)
     {
-        $this->agent = $agent;
+        $this->agent_email = $agent_email;
         return $this;
     }
 
@@ -271,6 +273,14 @@ final class Ticket extends AbstractEntity
     }
 
     /**
+     * @return Collection
+     */
+    public function getMessages()
+    {
+        return $this->messages;
+    }
+
+    /**
      * Add a ticket message
      *
      * @param TicketMessage $message
@@ -300,8 +310,8 @@ final class Ticket extends AbstractEntity
         return array(
             'ref'          => $this->ref,
             'department'   => $this->department,
-            'person'       => $this->person,
-            'agent'        => $this->agent,
+            'person'       => $this->person_email,
+            'agent'        => $this->agent_email,
             'agent_team'   => $this->agent_team,
             'status'       => $this->status,
             'date_created' => $this->date_created->format('Y-m-d H:i:s'),
@@ -318,6 +328,12 @@ final class Ticket extends AbstractEntity
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-
+        $metadata
+            ->addPropertyConstraint('ref', new Constraints\NotBlank())
+            ->addPropertyConstraint('person_email', new Constraints\NotBlank())
+            ->addPropertyConstraint('person_email', new Constraints\Email())
+            ->addPropertyConstraint('agent_email', new Constraints\Email())
+            ->addPropertyConstraint('subject', new Constraints\NotBlank())
+            ->addPropertyConstraint('status', new Constraints\NotBlank());
     }
 }
