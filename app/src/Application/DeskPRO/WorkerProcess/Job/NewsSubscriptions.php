@@ -237,11 +237,11 @@ class NewsSubscriptions extends AbstractJob
 
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
-            $message->setTemplate('DeskPRO:emails_user:kb-subscription.html.twig', array(
+            $message->setTemplate('DeskPRO:emails_user:news-subscription.html.twig', array(
                 'person'           => $person,
                 'new_articles'     => $new_articles,
                 'updated_articles' => $updated_articles)
-            ));
+            );
             $message->enableQueueHint(1);
 
             App::getMailer()->sendNow($message);

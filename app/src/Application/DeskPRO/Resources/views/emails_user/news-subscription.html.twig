@@ -27,4 +27,4 @@
 {% endif %}
 
 <div class="dp-hr">&nbsp;</div>
-{{ phrase('user.emails.kb-explain', {unsubscribe_url: url_full('portal_news_unsubscribe_all', {person_id: person.id, auth: unsub_auth}) }) }}
+{{ phrase('user.emails.news-explain', {unsubscribe_url: url_full('portal_news_unsubscribe_all'), deskpro_url: url_full('portal_index') }) }}
