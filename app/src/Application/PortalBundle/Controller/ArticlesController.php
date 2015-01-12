@@ -45,18 +45,28 @@ use Symfony\Component\HttpFoundation\Request;
 class ArticlesController extends AbstractController
 {
     /**
-     * @Route("/kb", name="portal_kb")
+     * @Route("/kb.{_format}", name="portal_kb", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, $_format)
     {
+        if ('rss' === $_format) {
+            $pager = $this->getArticlesDataService()->getArticlesPager(
+                null,
+                $request->get('page', 1),
+                $request->get('per_page', 20)
+            );
+
+            return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => null));
+        }
+
         return $this->renderThemeView(
             'Theme:Articles:index.html.twig'
         );
     }
 
     /**
-     * @Route("/kb/{slug}", name="portal_kb_browse")
+     * @Route("/kb/{slug}", name="portal_kb_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES')")
      */
