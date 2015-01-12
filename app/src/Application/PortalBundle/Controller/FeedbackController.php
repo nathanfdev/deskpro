@@ -112,12 +112,4 @@ class FeedbackController extends AbstractController
 
         return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
     }
-
-    /**
-     * @return \Application\AppBundle\DataService\FeedbackDataService
-     */
-    public function getFeedbackDataService()
-    {
-        return $this->get('data.feedback');
-    }
 }

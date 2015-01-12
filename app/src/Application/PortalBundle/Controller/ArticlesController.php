@@ -235,12 +235,4 @@ class ArticlesController extends AbstractController
 
         return $this->redirectToRoute('portal_index');
     }
-
-    /**
-     * @return \Application\AppBundle\DataService\ArticlesDataService
-     */
-    protected function getArticlesDataService()
-    {
-        return $this->get('data.articles');
-    }
 }

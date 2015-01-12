@@ -161,13 +161,4 @@ class DownloadsController extends AbstractController
             )
         );
     }
-
-
-    /**
-     * @return \Application\AppBundle\DataService\DownloadsDataService
-     */
-    public function getDownloadsDataService()
-    {
-        return $this->get('data.downloads');
-    }
 }

@@ -277,12 +277,4 @@ class NewsController extends AbstractController
 
         return $this->redirectToRoute('portal_index');
     }
-
-    /**
-     * @return \Application\AppBundle\DataService\NewsDataService
-     */
-    public function getNewsDataService()
-    {
-        return $this->get('data.news');
-    }
 }

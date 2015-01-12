@@ -131,6 +131,30 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Application\AppBundle\DataService\DownloadsDataService
+     */
+    public function getDownloadsDataService()
+    {
+        return $this->get('data.downloads');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\NewsDataService
+     */
+    public function getNewsDataService()
+    {
+        return $this->get('data.news');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\FeedbackDataService
+     */
+    public function getFeedbackDataService()
+    {
+        return $this->get('data.feedback');
+    }
+
+    /**
      * @param $setting
      * @param null $default
      * @return mixed
@@ -211,5 +235,13 @@ class AbstractController extends BaseController
         if (!$this->isGranted($attributes, $object)) {
             throw $this->createAccessDeniedException($message);
         }
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\ArticlesDataService
+     */
+    protected function getArticlesDataService()
+    {
+        return $this->get('data.articles');
     }
 }

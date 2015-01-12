@@ -260,12 +260,4 @@ class DownloadsController extends AbstractController
 
         return $this->redirectToRoute('portal_index');
     }
-
-    /**
-     * @return \Application\AppBundle\DataService\DownloadsDataService
-     */
-    public function getDownloadsDataService()
-    {
-        return $this->get('data.downloads');
-    }
 }
