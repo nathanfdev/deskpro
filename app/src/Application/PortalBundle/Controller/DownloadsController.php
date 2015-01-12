@@ -46,27 +46,59 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class DownloadsController extends AbstractController
 {
     /**
-     * @Route("/downloads", name="portal_downloads")
+     * @Route("/downloads.{_format}", name="portal_downloads", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Security("is_granted('USE_DOWNLOADS')")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, $_format)
     {
+        $page = $request->query->get('page', 1);
+        $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
+
+        if ('rss' === $_format) {
+            $pager = $this->getDownloadsDataService()->getDownloadsPager(
+                null,
+                $page,
+                $per_page
+            );
+
+            return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => null
+            ));
+        }
+
         return $this->renderThemeView('Theme:Downloads:index.html.twig');
     }
 
     /**
-     * @Route("/downloads/{slug}", name="portal_downloads_browse")
+     * @Route("/downloads/{slug}.{_format}", name="portal_downloads_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS')")
      */
-    public function browseAction(Request $request, DownloadCategory $category)
+    public function browseAction(Request $request, DownloadCategory $category, $_format)
     {
+        $page = $request->query->get('page', 1);
+        $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
+
+        if ('rss' === $_format) {
+            $pager = $this->getDownloadsDataService()->getDownloadsPager(
+                $category,
+                $page,
+                $per_page
+            );
+
+            return $this->render('PortalBundle:Downloads:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => $category
+            ));
+        }
+
         return $this->renderThemeView(
             'Theme:Downloads:browse.html.twig',
             array(
                 'category' => $category,
-                'page' => $request->query->get('page', 1),
-                'count' => 2,
+                'page' => $page,
+                'count' => $per_page,
                 'show_pagination' => true
             )
         );
