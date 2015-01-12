@@ -54,7 +54,7 @@ class DownloadsSubscriptions extends AbstractJob
             'value' => time()
         ));
 
-        if (!App::getSetting('user.download_subscriptions')) {
+        if (!App::getSetting('user.downloads_subscriptions')) {
             return;
         }
 
@@ -71,7 +71,7 @@ class DownloadsSubscriptions extends AbstractJob
         $published = App::getOrm()->createQuery("
             SELECT n
             FROM DeskPRO:Download n INDEX BY n.id
-            LEFT JOIN n.category
+            JOIN n.category c
             WHERE n.status = 'published' AND n.date_published > :date
             ORDER BY n.date_published DESC
         ")->setMaxResults(250)->execute(array('date' => $last_date));
@@ -79,15 +79,14 @@ class DownloadsSubscriptions extends AbstractJob
         $updated = App::getOrm()->createQuery("
             SELECT n
             FROM DeskPRO:Download n INDEX BY n.id
-            LEFT JOIN n.category
-            WHERE n.status = 'published' AND (n.date_updated > :date OR n.date_last_comment > :date)
+            JOIN n.category c
+            WHERE n.status = 'published' AND (n.date_updated > :date)
             ORDER BY n.date_updated DESC
         ")->setMaxResults(250)->execute(array('date' => $last_date));
 
         if (!$published && !$updated) {
             return;
         }
-
         #------------------------------
         # Get subscriptions
         #------------------------------
@@ -135,10 +134,10 @@ class DownloadsSubscriptions extends AbstractJob
 
         if ($downloads_ids) {
             $article_subs = App::getDb()->fetchAllGrouped("
-                SELECT person_id, article_id
+                SELECT person_id, download_id
                 FROM download_subscriptions
-                WHERE downloads_id IN (?)
-            ", array($downloads_ids), 'person_id', null, 'downloads_id', array(Connection::PARAM_INT_ARRAY));
+                WHERE download_id IN (?)
+            ", array($downloads_ids), 'person_id', null, 'download_id', array(Connection::PARAM_INT_ARRAY));
         }
 
         #------------------------------
@@ -177,41 +176,41 @@ class DownloadsSubscriptions extends AbstractJob
         # Verify permissions
         #------------------------------
 
-        $user_groupmembers = App::getDb()->fetchAllGrouped("
-            SELECT person_id, usergroup_id
-            FROM person2usergroups
-            WHERE person_id IN (?)
-        ", array(array_keys($user_to_downloads)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+        // TODO: should this be the case? Commented out because download's dont have usergroups.
 
-        $cat_groups = App::getDb()->fetchAllGrouped("
-            SELECT category_id, usergroup_id
-            FROM downloads_category2usergroup
-        ", array(), 'category_id', null, 'usergroup_id');
-
-        $all_user_to_articles = $user_to_downloads;
-        $user_to_downloads = array();
-
-        foreach ($all_user_to_articles as $person_id => $articles) {
-
-            $person_ugs = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
-            $person_ugs[] = 1; // Everyone
-
-            foreach ($articles as $downloads) {
-                $add = false;
-                foreach ($downloads->categories as $cat) {
-                    $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
-                    if (Arrays::isIn($person_ugs, $cat_ugs)) {
-                        $add = true;
-                        break;
-                    }
-                }
-
-                if ($add) {
-                    if (!isset($user_to_downloads[$person_id])) $user_to_downloads[$person_id] = array();
-                    $user_to_downloads[$person_id][$downloads->getId()] = $downloads;
-                }
-            }
-        }
+        //$user_groupmembers = App::getDb()->fetchAllGrouped("
+        //    SELECT person_id, usergroup_id
+        //    FROM person2usergroups
+        //    WHERE person_id IN (?)
+        //", array(array_keys($user_to_downloads)), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+        //
+        //$cat_groups = App::getDb()->fetchAllGrouped("
+        //    SELECT category_id, usergroup_id
+        //    FROM downloads_category2usergroup
+        //", array(), 'category_id', null, 'usergroup_id');
+        //
+        //$all_user_to_articles = $user_to_downloads;
+        //$user_to_downloads = array();
+        //
+        //foreach ($all_user_to_articles as $person_id => $articles) {
+        //
+        //    $person_ugs = isset($user_groupmembers[$person_id]) ? $user_groupmembers[$person_id] : array();
+        //    $person_ugs[] = 1; // Everyone
+        //
+        //    foreach ($articles as $downloads) {
+        //        $add = false;
+        //        $cat = $downloads->category;
+        //        $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
+        //        if (Arrays::isIn($person_ugs, $cat_ugs)) {
+        //            $add = true;
+        //        }
+        //
+        //        if ($add) {
+        //            if (!isset($user_to_downloads[$person_id])) $user_to_downloads[$person_id] = array();
+        //            $user_to_downloads[$person_id][$downloads->getId()] = $downloads;
+        //        }
+        //    }
+        //}
 
         unset($all_user_to_articles);
 
@@ -220,6 +219,8 @@ class DownloadsSubscriptions extends AbstractJob
         #------------------------------
 
         foreach ($user_to_downloads as $person_id => $articles) {
+
+            //var_dump($person_id, $articles);exit;
 
             $person = App::getOrm()->find('DeskPRO:Person', $person_id);
             if (!$person) continue;

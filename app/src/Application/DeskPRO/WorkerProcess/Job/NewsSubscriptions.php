@@ -71,18 +71,20 @@ class NewsSubscriptions extends AbstractJob
         $published = App::getOrm()->createQuery("
             SELECT n
             FROM DeskPRO:News n INDEX BY n.id
-            LEFT JOIN n.category
+            JOIN n.category c
             WHERE n.status = 'published' AND n.date_published > :date
             ORDER BY n.date_published DESC
         ")->setMaxResults(250)->execute(array('date' => $last_date));
 
-        $updated = App::getOrm()->createQuery("
-            SELECT n
-            FROM DeskPRO:News n INDEX BY n.id
-            LEFT JOIN n.category
-            WHERE n.status = 'published' AND (n.date_updated > :date OR n.date_last_comment > :date)
-            ORDER BY n.date_updated DESC
-        ")->setMaxResults(250)->execute(array('date' => $last_date));
+        // news does not update
+        $updated = array();
+        //$updated = App::getOrm()->createQuery("
+        //    SELECT n
+        //    FROM DeskPRO:News n INDEX BY n.id
+        //    JOIN n.category c
+        //    WHERE n.status = 'published' AND (n.date_updated > :date OR n.date_last_comment > :date)
+        //    ORDER BY n.date_updated DESC
+        //")->setMaxResults(250)->execute(array('date' => $last_date));
 
         if (!$published && !$updated) {
             return;
@@ -135,7 +137,7 @@ class NewsSubscriptions extends AbstractJob
 
         if ($news_ids) {
             $article_subs = App::getDb()->fetchAllGrouped("
-                SELECT person_id, article_id
+                SELECT person_id, news_id
                 FROM news_subscriptions
                 WHERE news_id IN (?)
             ", array($news_ids), 'person_id', null, 'news_id', array(Connection::PARAM_INT_ARRAY));
@@ -198,12 +200,10 @@ class NewsSubscriptions extends AbstractJob
 
             foreach ($articles as $news) {
                 $add = false;
-                foreach ($news->categories as $cat) {
-                    $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
-                    if (Arrays::isIn($person_ugs, $cat_ugs)) {
-                        $add = true;
-                        break;
-                    }
+                $cat = $news->category;
+                $cat_ugs = isset($cat_groups[$cat->getId()]) ? $cat_groups[$cat->getId()] : array();
+                if (Arrays::isIn($person_ugs, $cat_ugs)) {
+                    $add = true;
                 }
 
                 if ($add) {

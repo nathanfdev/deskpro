@@ -47,7 +47,7 @@ use Orb\Util\Strings;
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
     /**
-     * @var \Application\DeskPRO\Entity\TicketCategory
+     * @var \Application\DeskPRO\Entity\DownloadCategory
      */
     protected $category;
 

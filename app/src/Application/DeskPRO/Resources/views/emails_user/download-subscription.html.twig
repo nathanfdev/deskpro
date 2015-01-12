@@ -12,7 +12,7 @@
 	<h1>{{ phrase('user.emails.download-new-downloads', {count: new_downloads|length}) }}</h1>
 	<ul>
 		{% for download in new_downloads %}
-			<li><a href="{{ url_full('portal_download_view', {slug: download.getSlug()}) }}">{{ download.title }}</a></li>
+			<li><a href="{{ url_full('portal_downloads_view', {slug: download.getSlug()}) }}">{{ download.title }}</a></li>
 		{% endfor %}
 	</ul>
 {% endif %}
@@ -21,10 +21,10 @@
 	<h1>{{ phrase('user.emails.download-updated-downloads', {count: updated_downloads|length}) }}</h1>
 	<ul>
 		{% for download in updated_downloads %}
-			<li><a href="{{ url_full('portal_download_view', {slug: download.getSlug()}) }}">{{ download.title }}</a></li>
+			<li><a href="{{ url_full('portal_downloads_view', {slug: download.getSlug()}) }}">{{ download.title }}</a></li>
 		{% endfor %}
 	</ul>
 {% endif %}
 
 <div class="dp-hr">&nbsp;</div>
-{{ phrase('user.emails.downloads-explain', {unsubscribe_url: url_full('portal_download_unsubscribe_all'), deskpro_url: url_full('portal_index') }) }}
+{{ phrase('user.emails.downloads-explain', {unsubscribe_url: url_full('portal_downloads_unsubscribe_all'), deskpro_url: url_full('portal_index') }) }}
