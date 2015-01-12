@@ -22,6 +22,8 @@
     'user.emails.kb-explain'                  => 'You are receiving this email because you are subscribed to our knowledgebase at <a href="{{ deskpro_url }}">{{ deskpro_url }}</a>.<br />Do not want these emails anymore? <a href="{{ unsubscribe_url }}">Click here to unsubscribe.</a>',
     'user.emails.kb-new-articles'             => '1 New Article|{{count}} New Articles',
     'user.emails.kb-updated-articles'         => '1 Updated Article|{{count}} Updated Articles',
+    'user.emails.news-new-articles'             => '1 New News Article|{{count}} New News Articles',
+    'user.emails.news-updated-articles'         => '1 Updated News Article|{{count}} Updated News Articles',
     'user.emails.label_view-online'           => 'View Online',
     'user.emails.message-clipped'             => '(Message has been clipped)',
     'user.emails.password_agent-reset'        => 'An agent has reset your account password. You can log in with these credentials',
