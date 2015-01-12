@@ -56,7 +56,17 @@ pageMeta.baseId = '{{ baseId }}';
 			<h1>
 				<span id="{{baseId}}_showname">{{ person.getNameWithTitle() }}</span>
 				<span id="{{baseId}}_editname" style="display: none">
-					<input type="text" name="title_prefix" id="{{baseId}}_edittitle" value="{{ person.title_prefix }}" data-choices="Mr., Miss, Mrs., Ms., Dr., Hon., Prof., Rev." style="width: 90px" />
+					{% set titles = [
+						phrase('agent.people.title_mr'),
+						phrase('agent.people.title_miss'),
+						phrase('agent.people.title_mrs'),
+						phrase('agent.people.title_ms'),
+						phrase('agent.people.title_dr'),
+						phrase('agent.people.title_hon'),
+						phrase('agent.people.title_prof'),
+						phrase('agent.people.title_rev')
+					] %}
+					<input type="text" name="title_prefix" id="{{baseId}}_edittitle" value="{{ person.title_prefix }}" data-choices="{{ titles|join(', ') }}" style="width: 90px" />
 					<input type="text" placeholder="{{ phrase('agent.people.enter_name_here') }}" name="name" value="{{ person.getDisplayName() }}" />
 				</span>
 				{% if perms.edit %}<span id="{{baseId}}_editname_start" class="edit-name-gear {% if person.getDisplayName() is empty %}auto-click{% endif %}"></span>{% endif %}
