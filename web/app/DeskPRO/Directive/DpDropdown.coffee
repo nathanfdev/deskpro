@@ -1,42 +1,63 @@
 define ->
-  ###
-    # Description
-    # -----------
-    #
-    # This should be applied to a sub-nav list. It will attach a click handler to the
-    # parent that toggles the sub-nav's visibility.
-    #
-    # Example
-    # -------
-    # <ul>
-    #     <li>
-    #         <a>Parent Option</a>
-  #         <ul dp-nav-subnav>
-    #            <li><a>Sub Option</a><li>
-    #         </ul>
-    #     </li>
-    # </ul>
-    ###
-  DeskPRO_Directive_DpNavSubnav = ['$rootScope', '$state', ($rootScope, $state) ->
+  DeskPRO_Directive_DpDropdown = ['$rootScope', '$document', ($rootScope, $document) ->
     return {
       restrict: 'A',
-      link: (scope, element, attrs) ->
-        $parent = element.parent()
-        $toggler = $parent.find('> a')
-        $toggler.on('click', (ev) ->
-          ev.preventDefault()
-          ev.stopPropagation()
+      scope:
+        dropdownId: "@dpDropdown"
+        openerId: "@dpDropdownOpener"
+        closerId: "@dpDropdownCloser"
 
-          if $parent.hasClass('sublist-open')
-            $parent.removeClass('sublist-open')
-            element.slideUp()
+      link: (scope, element) ->
+
+        scope.visible = false
+
+        closeDropdown = () ->
+          scope.visible = false
+          processDropdown()
+
+        toggleDropdown = () ->
+          scope.visible = !scope.visible
+          processDropdown()
+
+        processDropdown = () ->
+          if scope.visible == true
+            dropdown.show()
           else
-            $parent.addClass('sublist-open')
-            element.slideDown()
+            dropdown.hide()
 
-        )
-        return
+        if scope.openerId?
+          opener = element.find("##{scope.openerId}")
+        else
+          opener = element
+
+        if scope.closerId?
+          closer = element.find("##{scope.closerId}")
+          closer.bind 'click', (event) ->
+            event.stopPropagation()
+            closeDropdown()
+
+        opener.bind 'click', toggleDropdown
+        dropdown = element.find("##{scope.dropdownId}")
+
+        processDropdown()
+        $document.bind 'click', (event) ->
+          event.stopPropagation()
+          target = angular.element event.target
+          clickedSystem = element
+            .find(event.target)
+            .length > 0;
+
+
+
+          if (clickedSystem)
+            if target.attr('dp-dropdown-item')?
+              closeDropdown()
+            else
+              scope.visible = true
+              processDropdown()
+          else
+            closeDropdown()
     }
   ]
 
-  return DeskPRO_Directive_DpNavSubnav
+  return DeskPRO_Directive_DpDropdown

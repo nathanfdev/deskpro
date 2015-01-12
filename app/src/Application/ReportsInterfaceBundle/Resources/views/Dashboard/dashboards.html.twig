@@ -16,14 +16,14 @@
         </div>
 
         <div class="left">
-            <div class="dashboard-main-list" ng-click='toggleDropdown("selectingDashboard")' ng-class = "{'expanded': selectingDashboard}">
-                <a class="link-pointer">
+            <div class="dashboard-main-list" dp-dropdown="dp-select-dashboard-dropdown" dp-dropdown-opener="dp-select-dashboard-opener">
+                <a class="link-pointer" id="dp-select-dashboard-opener">
                     <span>Dashboard:</span> {{ ng_var('dashboard.title') }} <i class="fa fa-sort"></i>
                 </a>
 
-                <ul ng-show="selectingDashboard">
+                <ul id="dp-select-dashboard-dropdown">
                     <li ng-repeat="db in dashboards track by $index">
-                        <a class='link-pointer' ng-class='{"current": db.id === dashboard.id}' ng-click="changeDashboard(db)">
+                        <a class='link-pointer' ng-class='{"current": db.id === dashboard.id}' dp-dropdown-item ng-click="changeDashboard(db)">
                             <span class='logo-deskpro' ng-show="db.default"></span>
                             {{ ng_var('db.title') }}
                         </a>
@@ -34,23 +34,22 @@
             <nav class="reports-control">
                 <ul>
                     <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
-                    <li>
-                        <a class='link-pointer' ng-click='toggleDropdown("addingDashboard")'><i class="fa fa-plus"></i>Create Dashboard</a>
-                        <div ng-show="addingDashboard" class="reports-dropdown expanded">
+                    <li dp-dropdown="dp-add-dashboard-dropdown" dp-dropdown-opener="dp-add-dashboard-opener" dp-dropdown-closer="dp-add-dashboard-closer">
+                        <a class='link-pointer' id="dp-add-dashboard-opener"><i class="fa fa-plus"></i>Create Dashboard</a>
+                        <div class="reports-dropdown" id="dp-add-dashboard-dropdown">
                             <header>
-                                <a ng-click="toggleDropdown('addingDashboard')" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
+                                <a class="link-pointer hide-dropdown" id="dp-add-dashboard-closer"><i class="fa fa-times"></i></a>
                                 <i class="fa fa-plus"></i> Create Dashboard
                             </header>
                             <hr>
 
-                            <div class="dropdown-content">
+                            <div class="dropdown-content"  >
                                 <ul class="big-actions">
                                     <li>
-                                        <a ng-click="newDashboardModal()"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
+                                        <a dp-dropdown-item ng-click="newDashboardModal()"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
                                     </li>
-
                                     <li>
-                                        <a ng-click="cloneDashboardModal()"><i class="fa fa-copy"></i> Clone the <span>{{ ng_var('dashboard.title') }}</span> dashboard</a>
+                                        <a dp-dropdown-item ng-click="cloneDashboardModal()"><i class="fa fa-copy"></i> Clone the <span>{{ ng_var('dashboard.title') }}</span> dashboard</a>
                                     </li>
                                 </ul>
                             </div>
@@ -64,11 +63,12 @@
 
     <div class="report-tabs">
         <ul>
-            <li ng-if='!dashboard.default' class="add-report-link">
-                <a class='link-pointer' ng-click='addReport()'><i class="fa fa-plus"></i></a>
-                <div ng-show='addingReport' style="z-index: 3333" class="reports-dropdown expanded">
+            <li dp-dropdown="dp-add-report-dropdown" dp-dropdown-opener="dp-add-report-opener"
+                dp-dropdown-closer="dp-add-report-closer" ng-if='!dashboard.default' class="add-report-link">
+                <a id="dp-add-report-dropdown-opener" class='link-pointer'><i class="fa fa-plus"></i></a>
+                <div id="dp-add-report-dropdown" style="position: absolute; z-index: 3333" class="reports-dropdown">
                     <header>
-                        <a ng-click="toggleDropdown('addingReport')" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
+                        <a id="dp-add-report-closer" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
                         <i class="fa fa-plus"></i> Create new report
                     </header>
                     <div class="reports-dropdown-content">
@@ -78,7 +78,7 @@
                     <div class="reports-dropdown-content">
                         <h2>Create new report</h2>
                         <form>
-                            <button ng-click="createReport()">Create report</button>
+                            <button dp-dropdown-item ng-click="createReport()">Create report</button>
                             <div class="input-bucket"><input type="text" ng-model='newReport.title' placeholder="Name your report"></div>
                         </form>
                     </div>
@@ -97,7 +97,7 @@
                                 <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
                                 <ul ng-show='isExpanded(db) && db.reports.length > 0'>
                                     <li ng-repeat="report in db.reports track by $index">
-                                        <a ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
+                                        <a dp-dropdown-item ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
                                     </li>
                                 </ul>
                             </li>
@@ -179,7 +179,7 @@
                 <li gridster-item="widget" ng-repeat="widget in currentReport.widgets">
                     <div class="box-header">
                         <h3 class="ng-binding">{{ ng_var('widget.name') }}</h3>
-                        <div class="box-header-btns pull-right">
+                        <div ng-show='layoutEditing' class="box-header-btns pull-right">
                             <a title="Remove widget" ng-click="removeWidget(widget)"><i class="glyphicon glyphicon-trash">XXX</i></a>
                         </div>
                     </div>

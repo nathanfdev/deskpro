@@ -21,11 +21,11 @@
             </form>
         </div>
 
-        <div class="bucket">
-            <a ng-click="toggleDropdown()" class="link-pointer select">Select labels: <i class="fa fa-caret-down"></i></a>
+        <div class="bucket" dp-dropdown="dp-select-label-dropdown" dp-dropdown-opener="dp-select-label-opener" dp-dropdown-toggle="true">
+            <a id="dp-select-label-opener" class="link-pointer select">Select labels: <i class="fa fa-caret-down"></i></a>
 
             <!-- Needs to be same width as the .select above -->
-            <div ng-show='selecting_labels' class="select-label-dropdown">
+            <div id="dp-select-label-dropdown" class="select-label-dropdown">
                 <a ng-repeat="label in labels track by $index" ng-class="{'active': label.active}"
                    ng-click="toggleLabel(label)" class="link-pointer stat-label">
                     <i class="fa fa-tag"></i>{{ ng_var('label.title') }}

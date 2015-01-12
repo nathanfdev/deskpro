@@ -35,6 +35,7 @@ define [
   # DP DIRECTIVES
   'DeskPRO/Directive/DpShowSpinning',
   'DeskPRO/Directive/DpHideSpinning',
+  'DeskPRO/Directive/DpDropdown',
 
   #angular modules
   'ngTable',
@@ -75,6 +76,7 @@ define [
   # DP DIRECTIVES
   Reports_App_Directive_DpShowSpinning,
   Reports_App_Directive_DpHideSpinning,
+  Reports_App_Directive_DpDropdown,
 
 ) ->
   ReportsApp = angular.module('DeskPRO.ReportsApp', ['DeskPRO.InterfaceApp', 'gridster'])
@@ -134,6 +136,7 @@ define [
   ReportsApp.directive('ticketSatisfaction', Reports_App_Directive_TicketSatisfaction)
   ReportsApp.directive('dpShowSpinning', Reports_App_Directive_DpShowSpinning)
   ReportsApp.directive('dpHideSpinning', Reports_App_Directive_DpHideSpinning)
+  ReportsApp.directive('dpDropdown', Reports_App_Directive_DpDropdown)
 #  ReportsApp.directive('dashboardStat', Reports_App_Directive_DashboardStat)
 #  ReportsApp.directive('dashboardTable', Reports_App_Directive_DashboardTable)
 

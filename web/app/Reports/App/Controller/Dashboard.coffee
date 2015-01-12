@@ -24,9 +24,7 @@ define -> [
     # intialize
     ###
     ###body = $document.find 'body'
-
-    body.bind 'click', () ->
-      $scope.toggleDropdown 'selectingDashboard'###
+    ###
 
     #just to simplify at the first time, but who knows :)
     $scope.reports = DashboardService.storage.reports
@@ -96,7 +94,6 @@ define -> [
     ###
 
     $scope.toggleLayoutEdit = () ->
-      $scope.closeAllDropdowns()
       if !$scope.dashboard.default
         $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
         $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled
@@ -113,27 +110,6 @@ define -> [
     $scope.isExpanded = (dashboard) ->
       $scope.expandedDashboard[dashboard.id]? and $scope.expandedDashboard[dashboard.id] is true
 
-    $scope.closeAllDropdowns = ->
-      $scope.addingReport = false
-      $scope.addingDashboard = false
-      $scope.selectingDashboard = false
-
-    $scope.toggleDropdown = (dropdownName) ->
-      switch dropdownName
-        when 'addingReport'
-          $scope.addingReport = !$scope.addingReport
-          $scope.addingDashboard = false
-          $scope.selectingDashboard = false
-        when 'addingDashboard'
-          $scope.addingReport = false
-          $scope.addingDashboard = !$scope.addingDashboard
-          $scope.selectingDashboard = false
-        when 'selectingDashboard'
-          $scope.addingReport = false
-          $scope.addingDashboard = false
-          $scope.selectingDashboard = !$scope.selectingDashboard
-        else
-          $scope.closeAllDropdowns()
     $scope.permissionsFilter = (value) ->
       if value.permissions > 0
         return true
@@ -150,7 +126,6 @@ define -> [
     # Creates modal instance and resolves dashboard as null, so ModalInstance controller will have to create new object
     ###
     $scope.newDashboardModal = () ->
-      $scope.closeAllDropdowns()
       modalInstance = $modal.open {
         templateUrl: 'ReportsInterfaceBundle:Dashboard:new_dashboard.html',
         controller: "Reports.App.ModalDashboard"
@@ -179,7 +154,6 @@ define -> [
     ###
     $scope.editDashboardModal = (state) ->
       reportsLength = $scope.dashboard.reports.length + 1 - 1
-      $scope.closeAllDropdowns()
       modalInstance = $modal.open {
         templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
         controller: "Reports.App.ModalDashboard"
@@ -211,7 +185,6 @@ define -> [
     # open editDashboardModal with newly created dashboard.
     ###
     $scope.cloneDashboardModal = () ->
-      $scope.closeAllDropdowns()
       DashboardService
       .cloneDashboard $scope.dashboard
       .then ->
@@ -237,7 +210,6 @@ define -> [
       # Operations about reports
     ###
     $scope.changeReport = (report) ->
-      $scope.closeAllDropdowns()
       if report?
         wdata =
           "type": "serial",
@@ -338,14 +310,12 @@ define -> [
         $scope.currentReport = {widgets:[]}
 
     $scope.addReport = () ->
-      $scope.toggleDropdown('addingReport', true)
       if $scope.reports.length < 1
         DashboardService
         .getReports
 
     $scope.createReport = () ->
       $scope.newReport.dashboard_id = $scope.dashboard.id
-      $scope.closeAllDropdowns()
       DashboardService
       .createReport $scope.newReport
       .then (report) ->
@@ -353,7 +323,6 @@ define -> [
         $scope.changeReport report
 
     $scope.cloneReport = (report) ->
-      $scope.closeAllDropdowns()
       DashboardService
         .cloneReport report, $scope.dashboard.id
         .then (clonedReport) ->
@@ -372,11 +341,12 @@ define -> [
     ###
 
     $scope.removeWidget = (widget) ->
-      index = DashboardWidgetService.getIndexById $scope.currentReport.widgets, widget.id
-      DashboardWidgetService
-      .removeWidget(widget)
-      .then () ->
-        $scope.currentReport.widgets.splice(index, 1)
+      if $scope.layoutEditing
+        index = DashboardWidgetService.getIndexById $scope.currentReport.widgets, widget.id
+        DashboardWidgetService
+        .removeWidget(widget)
+        .then () ->
+          $scope.currentReport.widgets.splice(index, 1)
 
     $scope.typeWidgetModal = (report, widget) ->
       modalInstance = $modal.open {
