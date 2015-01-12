@@ -45,16 +45,31 @@ use Zend\Feed\Writer\Extension\ITunes\Renderer\Feed;
 class FeedbackController extends AbstractController
 {
     /**
-     * @Route("/feedback", name="portal_feedback")
+     * @Route("/feedback.{_format}", name="portal_feedback", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, $_format)
     {
+        $page = $request->query->get('page', 1);
+        $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
+
+        if ('rss' === $_format) {
+            $pager = $this->getFeedbackDataService()->getItemsPager(
+                $page,
+                $per_page
+            );
+
+            return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => null
+            ));
+        }
+
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
-                'page' => $request->query->get('page', 1),
-                'count' => 2,
+                'page' => $page,
+                'count' => $per_page,
                 'show_pagination' => true
             )
         );
@@ -96,5 +111,13 @@ class FeedbackController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\FeedbackDataService
+     */
+    public function getFeedbackDataService()
+    {
+        return $this->get('data.feedback');
     }
 }
