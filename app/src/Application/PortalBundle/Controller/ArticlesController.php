@@ -139,7 +139,7 @@ class ArticlesController extends AbstractController
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
         }
@@ -203,7 +203,7 @@ class ArticlesController extends AbstractController
 
 
     /**
-     * @Route("/kb/c/toggle-subscription/{slug}", name="portal_kb_article_category_toggle_subscription")
+     * @Route("/kb/category/toggle-subscription/{slug}", name="portal_kb_article_category_toggle_subscription")
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORIES', category)")
      */
@@ -221,6 +221,19 @@ class ArticlesController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_kb_browse', array('slug' => $category->getSlug()));
+    }
+
+    /**
+     * @Route("/kb/articles/subscriptions/unsubscribe", name="portal_kb_unsubscribe_all")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_ARTICLES')")
+     */
+    public function articleUnsubscribeAllAction()
+    {
+        $this->getSubscriptionsHelper()->unsubscribeFromAll('kb', $this->getUser());
+
+        $this->addFlash('success', 'Unsubscribed from all Knowledgebase subscriptions');
+
+        return $this->redirectToRoute('portal_index');
     }
 
     /**
