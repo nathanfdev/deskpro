@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\PortalBundle\Controller\AbstractController;
@@ -54,6 +55,10 @@ class NewsController extends AbstractController
         $page = $request->query->get('page', 1);
         $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
 
+
+        //
+        // RSS
+        //
         if ('rss' === $_format) {
             $pager = $this->getNewsDataService()->getNewsPager(
                 null,
@@ -67,6 +72,10 @@ class NewsController extends AbstractController
             ));
         }
 
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             array(
@@ -86,6 +95,10 @@ class NewsController extends AbstractController
         $page = $request->query->get('page', 1);
         $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
 
+
+        //
+        // RSS
+        //
         if ('rss' === $_format) {
             $pager = $this->getNewsDataService()->getNewsPager(
                 $category,
@@ -99,11 +112,28 @@ class NewsController extends AbstractController
             ));
         }
 
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView(
             'Theme:News:browse.html.twig',
             array(
                 'category' => $category,
                 'page' => $page,
+                'is_subscribed' => $is_subscribed,
                 'count' => $per_page,
                 'show_pagination' => true
             )
@@ -120,11 +150,28 @@ class NewsController extends AbstractController
         $related = $this->getNewsDataService()->getRelatedPosts($post);
         $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
 
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
+        }
+
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
             array(
                 'category' => $post->category,
                 'post' => $post,
+                'is_subscribed' => $is_subscribed,
                 'related_news' => $related,
                 'rating' => $rating
             )
@@ -144,6 +191,10 @@ class NewsController extends AbstractController
             throw $this->createNotFoundException('could not find new post for slug "'.$slug.'"');
         }
 
+
+        //
+        // RENDER THEME
+        //
         return $this->redirect(
             $this->generateUrl('portal_news_view', array(
                 'slug' => $post->getSlug()
@@ -169,6 +220,62 @@ class NewsController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
+    }
+
+    /**
+     * @Route("/news/posts/{slug}/toggle-subscription", name="portal_news_post_toggle_subscription")
+     * @ParamConverter(name="post", converter="deskpro_slug")
+     * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS', post)")
+     */
+    public function newsSubscriptionAction(News $post)
+    {
+        $person = $this->getUser();
+        $subscriptions_helper = $this->getSubscriptionsHelper();
+
+        if ($subscriptions_helper->isSubscribedContent($post, $person)) {
+            $subscriptions_helper->unsubscribeFromContent($post, $person);
+            $this->addFlash('success', 'Successfully unsubscribed from this news article.');
+        } else {
+            $subscriptions_helper->subscribeToContent($post, $person);
+            $this->addFlash('success', 'You have successfully subscribed to this news article. You will be notified when it is updated.');
+        }
+
+        return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
+    }
+
+
+    /**
+     * @Route("/news/category/toggle-subscription/{slug}", name="portal_news_category_toggle_subscription")
+     * @ParamConverter(name="category", converter="deskpro_slug")
+     * @Security("is_granted('USE_NEWS') and is_granted('SUBSCRIBE_NEWS_CATEGORIES', category)")
+     */
+    public function newsCategorySubscriptionAction(NewsCategory $category)
+    {
+        $person = $this->getUser();
+        $subscriptions_helper = $this->getSubscriptionsHelper();
+
+        if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
+            $subscriptions_helper->unsubscribeFromCategory($category, $person);
+            $this->addFlash('success', 'Successfully unsubscribed from this category.');
+        } else {
+            $subscriptions_helper->subscribeToCategory($category, $person);
+            $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
+        }
+
+        return $this->redirectToRoute('portal_news_browse', array('slug' => $category->getSlug()));
+    }
+
+    /**
+     * @Route("/news/posts/subscriptions/unsubscribe", name="portal_news_unsubscribe_all")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_NEWS')")
+     */
+    public function newsUnsubscribeAllAction()
+    {
+        $this->getSubscriptionsHelper()->unsubscribeFromAll('news', $this->getUser());
+
+        $this->addFlash('success', 'Unsubscribed from all News subscriptions');
+
+        return $this->redirectToRoute('portal_index');
     }
 
     /**

@@ -7,6 +7,23 @@
 
     <h1>{{ category.realTitle }}</h1>
 
+    {% if brand_setting('user.news_subscriptions') %}
+        <hr/>
+        <hr/>
+        {% if is_subscribed %}
+            You are subscribed.
+        {% endif %}
+        <a href="{{ path('portal_news_category_toggle_subscription', { slug: category.slug }) }}">
+            {% if is_subscribed %}
+                {{ phrase('portal.general.btn-unsubscribe') }} from this category
+            {% else %}
+                {{ phrase('portal.general.btn-subscribe') }} to get an email notification when new articles are published
+            {% endif %}
+        </a>
+        <hr/>
+        <hr/>
+    {% endif %}
+
     {{ page.news_posts_pretty()|raw }}
     {{ page.news_pager()|raw }}
 {% endblock inner_content %}
