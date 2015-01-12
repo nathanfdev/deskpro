@@ -10,9 +10,9 @@
             <h1>{{ download.title }}</h1>
 
             <div class="article-meta">
-                <span class="agent-avatar agent-avatar-mini"></span>
+                <span class="agent-avatar agent-avatar-mini"><img src="{{ person_picture_url(download.person, 20) }}"></span>
                 {{ phrase('portal.articles.by-line', { name: download.person.name, date: download.date_published | date('Y-m-d') }) }}
-                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: 1}) }}</a></span>
+                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: download.num_comments}) }}</a></span>
             </div>
         </header>
 

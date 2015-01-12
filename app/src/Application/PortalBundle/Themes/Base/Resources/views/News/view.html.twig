@@ -11,9 +11,9 @@
             <h1>{{ post.realTitle }}</h1>
 
             <div class="article-meta">
-                <span class="agent-avatar agent-avatar-mini"></span>
+                <span class="agent-avatar agent-avatar-mini"><img src="{{ person_picture_url(post.person, 20) }}"></span>
                 {{ phrase('portal.articles.by-line', { name: post.person.name, date: post.date_published | date('Y-m-d') }) }}
-                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: 1}) }}</a></span>
+                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: post.num_comments}) }}</a></span>
             </div>
         </header>
 

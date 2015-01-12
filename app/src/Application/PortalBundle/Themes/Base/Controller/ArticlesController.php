@@ -88,7 +88,7 @@ class ArticlesController extends AbstractController
      *
      * @TagOptions(
      *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\ArticleCategory", "int","string", "null"}}
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"}}
      * )
      */
     public function breadcrumbsAction(TagRequest $tag_request, array $options)

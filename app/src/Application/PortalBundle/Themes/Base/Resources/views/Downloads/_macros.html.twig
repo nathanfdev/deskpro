@@ -1,13 +1,13 @@
-{% macro kb_downloads_cat_breadcrumbs(cat, parents, download) %}
+{% macro downloads_cat_breadcrumbs(cat, parents, download) %}
     <div class="breadcrumbs">
         <ul>
             <li>
-                <a href="{{ path('portal_index') }}">{{ global_settings.get('core.deskpro_name') }}</a> <i
+                <a href="{{ path('portal_index') }}">{{ brand_setting('core.deskpro_name') }}</a> <i
                     class="fa fa-angle-right"></i>
             </li>
 
             <li>
-                <a href="{{ path('portal_downloads') }}">Downloads</a>{% if parents|length or cat or download %} <i
+                <a href="{{ path('portal_downloads') }}">{{ phrase('portal.downloads.section-title') }}</a>{% if parents|length or cat or download %} <i
                     class="fa fa-angle-right">{% endif %}</i>
             </li>
 

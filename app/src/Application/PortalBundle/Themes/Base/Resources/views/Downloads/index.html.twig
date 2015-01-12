@@ -9,6 +9,8 @@
         <p>
             {{ phrase('portal.downloads.section-desc') }}
         </p>
+
+        <a href="{{ path('portal_downloads', { _format: 'rss' }) }}">Subscribe to RSS Feed <i class="fa fa-rss"></i></a>
     </header>
 
     {{ downloads() }}
