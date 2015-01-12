@@ -268,7 +268,12 @@ class DashboardWidgetController extends AbstractController
         );
         foreach ($reports as $report) {
             $datum = $report->toApiData();
-            $api_data['labels'] = array_merge($api_data['labels'], $datum['labels']);
+            $translatedLabels = array();
+            foreach($datum['labels'] as $label) {
+               $translatedLabels[] = $this->container->getTranslator()->phrase('reports.labels.'.$label);
+            }
+            $datum['labels'] = $translatedLabels;
+            $api_data['labels'] = array_merge($api_data['labels'], $translatedLabels);
             $api_data['reports'][] = $datum;
         }
         $api_data['labels'] = array_values(array_unique($api_data['labels']));
