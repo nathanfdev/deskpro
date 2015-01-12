@@ -58,7 +58,7 @@ class UseSectionVoter extends AbstractVoter
     protected function isGranted($attribute, $object, $user = null)
     {
         // TODO: we do need the permission bag here, but it is not currently used.... this is purely based on settings atm
-        // if use section does not depend on user permissions, we can remove the section about perm bags below
+        // if use section does not depend on user permissions®, we can remove the section about perm bags below
         if ($this->isLoggedIn($user)) {
             $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
         } else {

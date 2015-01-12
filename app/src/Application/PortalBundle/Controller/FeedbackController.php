@@ -39,11 +39,13 @@ use Application\DeskPRO\Entity\Feedback;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 
 class FeedbackController extends AbstractController
 {
     /**
      * @Route("/feedback", name="portal_feedback")
+     * @Security("is_granted('USE_FEEDBACK)")
      */
     public function indexAction(Request $request)
     {
@@ -61,6 +63,7 @@ class FeedbackController extends AbstractController
     /**
      * @Route("/feedback/view/{slug}", name="portal_feedback_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
+     * @Security("is_granted('USE_FEEDBACK)")
      */
     public function viewAction(Request $request, Feedback $item)
     {
