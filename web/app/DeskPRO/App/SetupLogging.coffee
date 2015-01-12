@@ -36,6 +36,11 @@ define [
         if window.trackJs
           window.trackJs.track(exception)
         else
+          if exception.stack
+            console.error(exception.stack)
+          else if exception.message
+            console.error(exception.message)
+
           throw exception
     ])
 
