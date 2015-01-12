@@ -18,7 +18,8 @@ define([
   'angularSelect2',
   'angularUiSortable',
   'ngContextMenu',
-  'angularSanitize'
+  'angularSanitize',
+	'jquery.ui.i18n'
 ], function(
   angular,
   Functions,
@@ -42,6 +43,23 @@ define([
 	'ui.select2',
     'ngSanitize'
   ]);
+
+	// set default locale for UI DatePicker
+	if ($.datepicker) {
+		var regional = $.datepicker.regional[''];
+		if (window.DESKPRO_DEFAULT_LANG) {
+			var parts = window.DESKPRO_DEFAULT_LANG.split('_');
+
+			if ($.datepicker.regional[parts[0] + '-' + parts[1]]) {
+				regional = $.datepicker.regional[parts[0] + '-' + parts[1]];
+			} else if ($.datepicker.regional[parts[0]]) {
+				regional = $.datepicker.regional[parts[0]];
+			}
+		}
+		$.datepicker.setDefaults(regional);
+	}
+	console.info($.datepicker, regional, $.datepicker.regional, window.DESKPRO_DEFAULT_LANG);
+
 
 	//-------------------------------------------------------------------------
 	// dpAppAssetInterceptor
