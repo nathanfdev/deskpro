@@ -183,7 +183,7 @@ class ArticlesController extends AbstractController
     /**
      * @Route("/kb/articles/{slug}/toggle-subscription", name="portal_kb_article_toggle_subscription")
      * @ParamConverter(name="article", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLES')")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLES', article)")
      */
     public function articleSubscriptionAction(Article $article)
     {
@@ -204,23 +204,23 @@ class ArticlesController extends AbstractController
 
     /**
      * @Route("/kb/c/toggle-subscription/{slug}", name="portal_kb_article_category_toggle_subscription")
-     * @ParamConverter(name="article_category", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORIES')")
+     * @ParamConverter(name="category", converter="deskpro_slug")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('SUBSCRIBE_ARTICLE_CATEGORIES', category)")
      */
-    public function articleCategorySubscriptionAction(ArticleCategory $article_category)
+    public function articleCategorySubscriptionAction(ArticleCategory $category)
     {
         $person = $this->getUser();
         $subscriptions_helper = $this->getSubscriptionsHelper();
 
-        if ($subscriptions_helper->isSubscribedCategory($article_category, $person)) {
-            $subscriptions_helper->unsubscribeFromCategory($article_category, $person);
+        if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
+            $subscriptions_helper->unsubscribeFromCategory($category, $person);
             $this->addFlash('success', 'Successfully unsubscribed from this category.');
         } else {
-            $subscriptions_helper->subscribeToCategory($article_category, $person);
+            $subscriptions_helper->subscribeToCategory($category, $person);
             $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
         }
 
-        return $this->redirectToRoute('portal_kb_browse', array('slug' => $article_category->getSlug()));
+        return $this->redirectToRoute('portal_kb_browse', array('slug' => $category->getSlug()));
     }
 
     /**
