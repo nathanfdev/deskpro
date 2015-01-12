@@ -37,7 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 
-class KbSubscription extends \Application\DeskPRO\Domain\DomainObject
+class DownloadsSubscription extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * @var int
@@ -50,37 +50,37 @@ class KbSubscription extends \Application\DeskPRO\Domain\DomainObject
     protected $person;
 
     /**
-     * @var \Application\DeskPRO\Entity\ArticleCategory
+     * @var \Application\DeskPRO\Entity\DownloadCategory
      */
     protected $category;
 
     /**
-     * @var \Application\DeskPRO\Entity\Article
+     * @var \Application\DeskPRO\Entity\Download
      */
-    protected $article;
+    protected $download;
 
     /**
-     * @param ArticleCategory $category
+     * @param DownloadCategory $category
      */
-    public function setCategory(ArticleCategory $category = null)
+    public function setCategory(DownloadCategory $category = null)
     {
         if ($category) {
-            $this->setModelField('article', null);
+            $this->setModelField('download', null);
         }
 
         $this->setModelField('category', $category);
     }
 
     /**
-     * @param Article $article
+     * @param Download $download
      */
-    public function setArticle(Article $article = null)
+    public function setDownload(Download $download = null)
     {
-        if ($article) {
+        if ($download) {
             $this->setModelField('category', null);
         }
 
-        $this->setModelField('article', $article);
+        $this->setModelField('download', $download);
     }
 
     ############################################################################
@@ -90,9 +90,9 @@ class KbSubscription extends \Application\DeskPRO\Domain\DomainObject
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\KbSubscription';
+        $metadata->customRepositoryClassName = 'Application\DeskPRO\EntityRepository\DownloadSubscription';
         $metadata->setPrimaryTable(array(
-            'name'    => 'kb_subscriptions',
+            'name'    => 'download_subscriptions',
             'indexes' => array(),
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -100,7 +100,31 @@ class KbSubscription extends \Application\DeskPRO\Domain\DomainObject
 
         $metadata->mapField(array( 'fieldName' => 'id', 'type' => 'integer', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'id', 'id' => true));
         $metadata->mapManyToOne(array( 'fieldName' => 'person', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Person', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'person_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
-        $metadata->mapManyToOne(array( 'fieldName' => 'article', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Article', 'mappedBy' => NULL, 'inversedBy' => 'comment', 'joinColumns' => array( 0 => array( 'name' => 'article_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
-        $metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\ArticleCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
+        $metadata->mapManyToOne(array( 'fieldName' => 'article', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Download', 'mappedBy' => NULL, 'inversedBy' => 'comment', 'joinColumns' => array( 0 => array( 'name' => 'download_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL))));
+        $metadata->mapManyToOne(array( 'fieldName' => 'category', 'targetEntity' => 'Application\\DeskPRO\\Entity\\DownloadCategory', 'mappedBy' => NULL, 'inversedBy' => NULL, 'joinColumns' => array( 0 => array( 'name' => 'category_id', 'referencedColumnName' => 'id', 'nullable' => true, 'onDelete' => 'cascade', 'columnDefinition' => NULL)), 'dpApi' => true ));
+    }
+
+    /**
+     * @return DownloadCategory
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @return Download
+     */
+    public function getDownload()
+    {
+        return $this->download;
+    }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
     }
 }
