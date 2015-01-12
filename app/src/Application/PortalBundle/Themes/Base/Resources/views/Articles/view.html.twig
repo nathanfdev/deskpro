@@ -81,21 +81,6 @@
             </div>
         </div>
 
-        {% if related_articles|length %}
-            <div class="related">
-
-                <div class="titled-header">
-                    <h1>{{ phrase('portal.general.related-pages') }}</h1>
-                </div>
-
-                <ul>
-                    {% for related in related_articles %}
-                    <li>
-                        <a href="{{ path('portal_kb_view', { slug:related.slug }) }}"><i class="fa fa-file-text-o"></i> {{ related.realTitle }}</a>
-                    </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+        {{ page.related_content({content_type: 'article', content: article.id })|raw }}
     </article>
 {% endblock inner_content %}

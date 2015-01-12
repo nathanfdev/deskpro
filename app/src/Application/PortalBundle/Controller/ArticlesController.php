@@ -131,11 +131,14 @@ class ArticlesController extends AbstractController
     public function viewAction(Request $request, Article $article)
     {
         //
-        // RELATED, RATINGS, SUBSCRIPTIONS
+        // RATINGS
         //
-        $related = $this->getArticlesDataService()->getRelatedArticles($article);
         $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
 
+
+        //
+        // SUBSCRIPTIONS
+        //
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
@@ -148,14 +151,12 @@ class ArticlesController extends AbstractController
         //
         // RENDER THEME
         //
-
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             array(
                 'article' => $article,
                 'category' => $article->getPrimaryCategory(),
                 'rating'  => $rating,
-                'related_articles' => $related,
                 'is_subscribed' => $is_subscribed
             )
         );

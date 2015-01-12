@@ -35,8 +35,11 @@
 namespace Application\AppBundle\DataService;
 
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\People\PersonGuest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
@@ -138,24 +141,6 @@ class ArticlesDataService
         }
 
         return $this->getArticleCategoriesRepo()->find($category);
-    }
-
-    public function getRelatedArticles($article)
-    {
-        if (!$article = $this->getArticle($article)) {
-            return array();
-        }
-
-        $related_associations = $this->getRelatedContentRepo()->findRelatedArticles($article);
-
-        $ids = array();
-        foreach ($related_associations as $related_association) {
-            if ($related_association->rel_object_id) {
-                $ids[] = $related_association->rel_object_id;
-            }
-        }
-
-        return $this->getArticlesRepo()->findBy(array('id' => $ids), array('date_created' => 'DESC'));
     }
 
     /**
