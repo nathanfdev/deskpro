@@ -1480,7 +1480,7 @@ define(function() {
 	routes.push({
 		id: 'portal.portal_editor',
 		url: '/portal_editor',
-		templateName: 'PortalEditor/frame.html',
+		templateName: 'Portal/portal-editor.html',
 		controller: 'Admin_Portal_Ctrl_PortalEditor'
 	});
 
