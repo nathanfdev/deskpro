@@ -66,12 +66,22 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Route("/kb/{slug}", name="portal_kb_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
+     * @Route("/kb/{slug}.{_format}", name="portal_kb_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function browseAction(Request $request, ArticleCategory $category)
+    public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
+        if ('rss' === $_format) {
+            $pager = $this->getArticlesDataService()->getArticlesPager(
+                $category,
+                $request->get('page', 1),
+                $request->get('per_page', 20)
+            );
+
+            return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => $category));
+        }
+
         $is_subscribed = false;
         if ($this->isGranted('ROLE_USER') && $this->getBrandContainer()->getSetting('user.kb_subscriptions')) {
             $is_subscribed = $this->getDb()->fetchColumn("
