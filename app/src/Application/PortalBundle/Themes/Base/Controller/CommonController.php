@@ -35,10 +35,13 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\People\PersonGuest;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
+use Symfony\Component\HttpFoundation\Response;
 
 class CommonController extends AbstractController
 {
@@ -80,6 +83,42 @@ class CommonController extends AbstractController
     public function alertsAction(TagRequest $tag_request)
     {
         return $this->renderThemeView('Theme:Common:alerts.html.twig');
+    }
+
+    /**
+     * @Tag(name="related_content")
+     * @TagOptions(
+     *      required={"content_type", "content"},
+     *      allowed_types={"content_type":"string", "content":{"string","int"}},
+     *      allowed_values={"content_type":{"article","post","file"}}
+     * )
+     */
+    public function relatedContentAction(TagRequest $tag_request, array $options)
+    {
+        $content = null;
+        switch ($content_type = $options['content_type']) {
+            case 'article':
+                $content = $this->getArticlesDataService()->getArticle($options['content']);
+                break;
+            case 'download':
+                $content = $this->getArticlesDataService()->getArticle($options['content']);
+                break;
+            case 'news':
+                $content = $this->getArticlesDataService()->getArticle($options['content']);
+                break;
+        }
+
+        if (!$content) {
+            return new Response('');
+        }
+
+        $related_content_finder = new RelatedContentFinder($this->getUser() ?: new PersonGuest(), $content);
+
+        return $this->render('Theme:Common:related_content.html.twig', array(
+            'content_type' => $content_type,
+            'content' => $content,
+            'related_content' => $related_content_finder->getRelatedEntities()
+        ));
     }
 
     /**
