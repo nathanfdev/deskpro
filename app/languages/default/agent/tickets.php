@@ -246,6 +246,8 @@
 	'agent.tickets.priority_highestlowest'              => 'Priority (Highest-Lowest)',
 	'agent.tickets.priority_lowesthighest'              => 'Priority (Lowest-Highest)',
 	'agent.tickets.raw_message'                         => 'Raw Message',
+	'agent.tickets.real_time_updates'                   => 'Real-time updates are enabled',
+	'agent.tickets.real_time_updates_description'       => 'With real-time updates enabled, this list will update with new information as tickets are updated in the helpdesk.',
 	'agent.tickets.recalculate_sla_status_action'       => 'Recalcalculate SLA status',
 	'agent.tickets.receiving_gateway'                   => 'Receiving gateway',
 	'agent.tickets.receiving_gateway_account'           => 'Receiving gateway account',
