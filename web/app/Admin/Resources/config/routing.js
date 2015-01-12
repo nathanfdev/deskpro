@@ -63,7 +63,7 @@ define(function() {
 		id: 'portal',
 		url: '/portal',
 		templateName: 'Index/app-nav-portal.html',
-		controller: 'Admin_Main_Ctrl_Nav'
+		controller: 'Admin_Portal_Ctrl_Nav'
 	});
 
 	routes.push({
@@ -1471,7 +1471,7 @@ define(function() {
 		id: 'portal.setup',
 		url: '/setup',
 		templateName: 'Portal/setup.html',
-		controller: 'Admin_Main_Ctrl_Bare'
+		controller: 'Admin_Portal_Ctrl_Setup'
 	});
 
 	//###

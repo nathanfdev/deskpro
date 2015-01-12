@@ -234,6 +234,18 @@
   text-decoration: none;
   padding: 4px;
   margin-right: 5px;
+
+  &.switch-off {
+    background: #dcdcdc;
+    color:rgba(0, 0, 0, 0.2);
+  }
+
+  &.switch-on {
+    .off-text, .off-icon { display: none; }
+  }
+  &.switch-off {
+    .on-text, .on-icon { display: none; }
+  }
 }
 
 .on-off-inlet {
@@ -264,11 +276,6 @@
   i {
     top: 4px;
   }
-}
-
-.on-off-disabled {
-  background: #dcdcdc;
-  color:rgba(0, 0, 0, 0.2);
 }
 
 

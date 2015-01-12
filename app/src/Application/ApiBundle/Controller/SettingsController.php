@@ -200,7 +200,7 @@ class SettingsController extends AbstractController implements ProtectedControll
         $portal_settings = new GeneralPortalSettings($this->settings);
 
         return $this->createApiResponse(array(
-            'portal_settings' => $portal_settings
+            'portal_settings' => $portal_settings->toArray()
         ));
     }
 
@@ -208,6 +208,7 @@ class SettingsController extends AbstractController implements ProtectedControll
     {
         $portal_settings = new GeneralPortalSettings($this->settings);
         $portal_settings->setArray($this->in->getArrayValue('portal_settings'));
+        $portal_settings->saveSettings();
 
         return $this->createSuccessResponse();
     }

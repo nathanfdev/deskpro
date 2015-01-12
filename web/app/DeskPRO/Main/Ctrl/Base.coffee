@@ -278,7 +278,7 @@ define ['angular'], (angular) ->
       # @param {Boolean} force True to stop the spinner even if the minTime timer is still going
     # @return {promise} A promise that resolves once the spinner stops
       ###
-    stopSpinner: (id, force = false) ->
+    stopSpinner: (id = 'saving', force = false) ->
       if not @$scope.dp_spin_els?[id]
         d = @$q.defer()
         d.resolve()

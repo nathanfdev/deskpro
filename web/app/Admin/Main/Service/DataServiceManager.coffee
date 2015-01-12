@@ -25,7 +25,8 @@ define [
   'Admin/AgentTeams/DataService/AgentTeams',
   'Admin/Tasks/DataService/Tasks',
   'Admin/Labels/DataService/Settings'
-  'Admin/Usersources/DataService/Usersources'
+  'Admin/Usersources/DataService/Usersources',
+  'Admin/Portal/DataService/PortalGeneralSettings'
 ], (
   Strings,
   DataService_TicketFields,
@@ -53,7 +54,8 @@ define [
   DataService_AgentTeams,
   DataService_Tasks,
   DataService_LabelSettings,
-  DataService_Usersources
+  DataService_Usersources,
+  DataService_PortalGeneralSettings
 ) ->
   ###
   # A simple wrapper around the data services
@@ -62,8 +64,6 @@ define [
     constructor: (@$injector) ->
       @ds_cache = {}
       @registered = {}
-
-
 
     get: (serviceId, args...) ->
       cacheKey = serviceId
@@ -80,8 +80,6 @@ define [
         @ds_cache[cacheKey] = obj
 
       obj
-
-
 
     factory: (serviceId) ->
       # If this class has a custom initXXX method, call that

@@ -127,10 +127,10 @@ class GeneralPortalSettings
             $v = $this->settings->get($info[0]);
             switch ($info[1]) {
                 case 'bool':
-                    $this->$f = (bool)$v;
+                    $this->$name = (bool)$v;
                     break;
                 default:
-                    $this->$f = $v ? (($v . '') ?: '') : '';
+                    $this->$name = $v ? (($v . '') ?: '') : '';
             }
         }
     }
@@ -169,13 +169,10 @@ class GeneralPortalSettings
     public function setArray(array $set_settings)
     {
         if (isset($set_settings['portal_mode'])) {
-            if ($set_settings['portal_mode'] == 'publish') {
-                $set = 0;
-            } else {
-                $set = 1;
-            }
-            foreach (array('apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads') as $n) {
-                $set_settings[$n] = $set;
+            if ($set_settings['portal_mode'] != 'publish') {
+                foreach (array('apps_feedback', 'apps_kb', 'apps_news', 'apps_downloads') as $n) {
+                    $set_settings[$n] = 0;
+                }
             }
         }
 
@@ -187,10 +184,10 @@ class GeneralPortalSettings
 
             switch ($info[1]) {
                 case 'bool':
-                    $this->$f = (bool)$v;
+                    $this->$name = (bool)$v;
                     break;
                 default:
-                    $this->$f = $v ? (($v . '') ?: '') : '';
+                    $this->$name = $v ? (($v . '') ?: '') : '';
             }
         }
     }

@@ -346,6 +346,9 @@
      */
     'core.apps_downloads' => 1,
 
+    'core.iface_portal' => true,
+    'core.iface_widget' => true,
+
     /**
      * Maximum SMS chunks to send for a single message
      */

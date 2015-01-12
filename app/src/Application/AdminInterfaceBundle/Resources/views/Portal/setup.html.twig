@@ -4,7 +4,9 @@
         <h1><i class="fa fa-cog"></i> Portal Setup</h1>
 
         <form>
-
+            {##########################################################################################################}
+            {# WEBSITE #}
+            {##########################################################################################################}
 
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Website Settings</span></h2>
@@ -13,13 +15,13 @@
                     <div class="bucket-third">
                         <div class="inline-input">
                             <label>Website name:</label>
-                            <input type="text" placeholder="Website name">
+                            <input type="text" placeholder="Website name" ng-model="Ctrl.settings.site_name" />
                         </div>
                     </div>
 
                     <div class="bucket-two-thirds">
                         <div class="form-text">
-                            <p>This is the name of your helpdesk. Lorel ipsum dolor.</p>
+                            <p>This is the name of your main website.</p>
                         </div>
                     </div>
                 </div>
@@ -28,20 +30,22 @@
                 <div class="row">
                     <div class="bucket-third">
                         <div class="inline-input">
-                            <label>Website title:</label>
-                            <input type="text" placeholder="Website title">
+                            <label>Website URL:</label>
+                            <input type="text" placeholder="Website title" ng-model="Ctrl.settings.site_url" />
                         </div>
                     </div>
 
                     <div class="bucket-two-thirds">
                         <div class="form-text">
-                            <p>This is the name of your helpdesk. Lorel ipsum dolor.</p>
+                            <p>This is the URL to your main website.</p>
                         </div>
                     </div>
                 </div>
             </div><!-- End .content-section -->
 
-
+            {##########################################################################################################}
+            {# HELPDESK #}
+            {##########################################################################################################}
 
             <div class="content-section">
                 <h2 class="with-divider form-header"><span>Helpdesk Settings</span></h2>
@@ -49,14 +53,14 @@
                 <div class="row">
                     <div class="bucket-third">
                         <div class="inline-input">
-                            <label>Helpdesk title:</label>
-                            <input type="text" placeholder="Helpdesk title">
+                            <label>Helpdesk name:</label>
+                            <input type="text" placeholder="Helpdesk title" ng-model="Ctrl.settings.deskpro_name" />
                         </div>
                     </div>
 
                     <div class="bucket-two-thirds">
                         <div class="form-text">
-                            <p>This is the name of your helpdesk. Lorel ipsum dolor.</p>
+                            <p>This is the name of your helpdesk..</p>
                         </div>
                     </div>
                 </div>
@@ -65,117 +69,57 @@
                     <div class="bucket-third">
                         <div class="inline-input">
                             <label>Helpdesk URL:</label>
-                            <input type="text" placeholder="Helpdesk URL" value="http://hmrc.deskpro.com/admin" disabled>
+                            <input type="text" placeholder="Helpdesk URL" ng-model="Ctrl.settings.deskpro_url" />
                         </div>
                     </div>
 
                     <div class="bucket-two-thirds">
                         <div class="form-text">
-                            <p>This is the name of your helpdesk. Lorel ipsum dolor.</p>
+                            <p>This is the URL to your helpdesk.</p>
                         </div>
                     </div>
                 </div>
-
-                <div class="row">
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label></label>
-                            <a class="publish-on-off" href="#">
-                    <span class="on-off-inlet">
-                      <span class="on-off-status">On</span>
-                      <span class="on-off-cover"><i class="fa fa-check"></i></span>
-                    </span>
-                            </a>
-                            <span class="title">Use a custom domain?</span>
-                        </div>
-                    </div>
-                </div>
-
-
-                <div class="row">
-                    <div class="bucket-third">
-                        <div class="inline-input">
-                            <label>Your Domain:</label>
-                            <input type="text" placeholder="Your custom domain">
-                        </div>
-                    </div>
-                    <div class="bucket-two-thirds">
-                        <button>Test</button>
-                    </div>
-                </div>
-
-
-
-                <div class="bucket">
-                    <div class="form-blurb on-inline note-paragraph">
-                        <p>Having a precise set of gems also avoids the issue of version conflicts between projects, which can cause difficult-to-trace errors and hours of hair loss.</p>
-                        <p>With named gemsets, you can reliably and immediately push changes from one environment to another. And, <a href="#" class="note">http://hmrc.deskpro.com/admin</a> is for Ruby applications, *not just for Rails*! Any Ruby based application will benefit from your use of RVM.</p>
-                        <hr>
-                        <p><strong>Important:</strong> You must edit you DNS to create a <span class="note">CNAME</span> record to <span class="note">hmrc.deskpro.com</span>. For more information refer to <a href="#">lorel ipsum dolor sit amet base</a>.</p>
-                    </div>
-                </div>
-
 
             </div><!-- End .content-section -->
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+            {##########################################################################################################}
+            {# PORTAL MODE #}
+            {##########################################################################################################}
 
             <div class="content-section">
                 <h2 class="with-divider"><span>Portal Mode</span></h2>
 
                 <div class="select-portal-mode">
-              <span class="or">
-                <span class="text">or</span>
-              </span>
+                    <span class="or"><span class="text">or</span></span>
 
-                    <a href="#" class="selected">
-                        <span class="title"><span class="icon"><i class="fa fa-check"></i></span>Ticket only mode</span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididun t ut labore et dolore magna aliqua.</p>
+                    <a ng-class="{'selected': Ctrl.settings.portal_mode == 'publish'}" ng-click="Ctrl.setPortalMode('publish')" style="width: 320px;">
+                        <span class="title"><span class="icon" ng-show="Ctrl.settings.portal_mode == 'publish'"><i class="fa fa-check"></i></span>Ticket &amp; publish mode</span>
+                        <p>Enable content publishing features (articles, news and downloads).</p>
                     </a>
 
-                    <a href="#">
-                        <span class="title">Ticket &amp; publish mode</span>
-                        <p>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididun t ut labore et dolore magna aliqua.</p>
+                    <a ng-class="{'selected': Ctrl.settings.portal_mode == 'tickets'}" ng-click="Ctrl.setPortalMode('tickets')" style="width: 320px;">
+                        <span class="title"><span class="icon" ng-show="Ctrl.settings.portal_mode == 'tickets'"><i class="fa fa-check"></i></span>Tickets-only mode</span>
+                        <p>Only enable tickets.<br/>No other features.</p>
                     </a>
                 </div>
             </div><!-- End .content-section -->
 
 
-            <div class="content-section">
+            {##########################################################################################################}
+            {# APPS #}
+            {##########################################################################################################}
+
+            <div class="content-section" ng-show="Ctrl.settings.portal_mode == 'publish'">
                 <h2 class="with-divider"><span>Publish Apps</span></h2>
 
                 <div class="apps-list">
 
                     <div class="col-half">
-                        <div class="widget-preview">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_kb, 'widget-preview-disabled': !Ctrl.settings.apps_kb}">
                             <div class="widget-header">
-                                <a href="#" class="publish-on-off">
-                      <span class="on-off-inlet">
-                        <span class="on-off-status">On</span>
-                        <span class="on-off-cover"><i class="fa fa-check"></i></span>
-                      </span>
-                                </a>
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_kb" />
                                 <span class="title">Knowledgebase</span>
-                                <a href="#" class="control">Manage <i class="fa fa-cog"></i></a>
+                                <a class="control">Manage <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
                                 <img src="{{ asset('app/Interface/Resources/img/widget-preview-kb.png') }}" alt="Widget Preview: Knowledgebase">
@@ -189,16 +133,11 @@
                     </div>
 
                     <div class="col-half omega">
-                        <div class="widget-preview-disabled">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_downloads, 'widget-preview-disabled': !Ctrl.settings.apps_downloads}">
                             <div class="widget-header">
-                                <a href="#" class="publish-on-off on-off-disabled">
-                      <span class="on-off-inlet">
-                        <span class="on-off-status">Off</span>
-                        <span class="on-off-cover"><i class="fa fa-times"></i></span>
-                      </span>
-                                </a>
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_downloads" />
                                 <span class="title">Downloads</span>
-                                <a href="#" class="control">Manage  <i class="fa fa-cog"></i></a>
+                                <a class="control">Manage  <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
                                 <img src="{{ asset('app/Interface/Resources/img/widget-preview-downloads.png') }}" alt="Widget Preview: Knowledgebase">
@@ -213,16 +152,11 @@
 
 
                     <div class="col-half">
-                        <div class="widget-preview">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_news, 'widget-preview-disabled': !Ctrl.settings.apps_news}">
                             <div class="widget-header">
-                                <a href="#" class="publish-on-off">
-                      <span class="on-off-inlet">
-                        <span class="on-off-status">On</span>
-                        <span class="on-off-cover"><i class="fa fa-check"></i></span>
-                      </span>
-                                </a>
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_news" />
                                 <span class="title">News</span>
-                                <a href="#" class="control">Manage  <i class="fa fa-cog"></i></a>
+                                <a class="control">Manage  <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
                                 <img src="{{ asset('app/Interface/Resources/img/widget-preview-news.png') }}" alt="Widget Preview: Knowledgebase">
@@ -236,16 +170,11 @@
                     </div>
 
                     <div class="col-half omega">
-                        <div class="widget-preview">
+                        <div ng-class="{'widget-preview': Ctrl.settings.apps_feedback, 'widget-preview-disabled': !Ctrl.settings.apps_feedback}">
                             <div class="widget-header">
-                                <a href="#" class="publish-on-off">
-                      <span class="on-off-inlet">
-                        <span class="on-off-status">On</span>
-                        <span class="on-off-cover"><i class="fa fa-check"></i></span>
-                      </span>
-                                </a>
+                                <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.apps_feedback" />
                                 <span class="title">Feedback</span>
-                                <a href="#" class="control">Manage  <i class="fa fa-cog"></i></a>
+                                <a class="control">Manage  <i class="fa fa-cog"></i></a>
                             </div>
                             <div class="widget-image">
                                 <img src="{{ asset('app/Interface/Resources/img/widget-preview-feedback.png') }}" alt="Widget Preview: Knowledgebase">
@@ -262,8 +191,9 @@
 
             </div><!-- End .content-section -->
 
-
-
+            {##########################################################################################################}
+            {# INTERFACES #}
+            {##########################################################################################################}
 
             <div class="content-section">
                 <h2 class="with-divider"><span>User Interfaces</span></h2>
@@ -273,14 +203,10 @@
                         <div class="col-half">
                             <div class="widget-preview">
                                 <div class="widget-header">
-                                    <a href="#" class="publish-on-off">
-                        <span class="on-off-inlet">
-                          <span class="on-off-status">On</span>
-                          <span class="on-off-cover"><i class="fa fa-check"></i></span>
-                        </span>
+                                    <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.iface_portal" />
                                     </a>
                                     <span class="title">Portal</span>
-                                    <a href="#" class="control">Manage  <i class="fa fa-cog"></i></a>
+                                    <a class="control">Manage  <i class="fa fa-cog"></i></a>
                                 </div>
                                 <div class="widget-image">
                                     <img src="{{ asset('app/Interface/Resources/img/widget-preview-portal.png') }}" alt="Widget Preview: Knowledgebase">
@@ -301,14 +227,9 @@
                         <div class="col-half">
                             <div class="widget-preview">
                                 <div class="widget-header">
-                                    <a href="#" class="publish-on-off">
-                        <span class="on-off-inlet">
-                          <span class="on-off-status">On</span>
-                          <span class="on-off-cover"><i class="fa fa-check"></i></span>
-                        </span>
-                                    </a>
+                                    <button dp-onoff-switch onoff-class="publish-on-off" ng-model="Ctrl.settings.iface_widget" />
                                     <span class="title">Widget</span>
-                                    <a href="#" class="control">Manage  <i class="fa fa-cog"></i></a>
+                                    <a class="control">Manage  <i class="fa fa-cog"></i></a>
                                 </div>
                                 <div class="widget-image">
                                     <img src="{{ asset('app/Interface/Resources/img/widget-preview-widget.png') }}" alt="Widget Preview: Knowledgebase">
@@ -324,68 +245,22 @@
                         </div>
                     </div>
 
-
-
-                    <div class="row">
-                        <div class="col-half">
-                            <div class="widget-preview">
-                                <div class="widget-header">
-                                    <a href="#" class="publish-on-off">
-                        <span class="on-off-inlet">
-                          <span class="on-off-status">On</span>
-                          <span class="on-off-cover"><i class="fa fa-check"></i></span>
-                        </span>
-                                    </a>
-                                    <span class="title">Feedback</span>
-                                    <a href="#" class="control">Manage  <i class="fa fa-cog"></i></a>
-                                </div>
-                                <div class="widget-image">
-                                    <img src="{{ asset('app/Interface/Resources/img/widget-preview-feedback.png') }}" alt="Widget Preview: Knowledgebase">
-                                </div>
-                            </div>
-
-                        </div>
-
-                        <div class="col-half">
-                            <div class="form-text">
-                                <p>A news app lorel ipsum dolor sit amet ipsum. This is the text info for an app lorel ipsum dolor. A news app lorel ipsum dolor sit amet ipsum.</p>
-                            </div>
-                        </div>
-                    </div>
-
                 </div><!-- End .apps-list -->
-
 
             </div><!-- End .content-section -->
 
-
+            {##########################################################################################################}
 
             <div class="form-footer">
                 <hr>
-                <input type="submit" value="Save Changes">
+                <div dp-hide-spinning="saving">
+                    <button type="submit" ng-click="Ctrl.saveSettings()">Save Settings</button>
+                </div>
+                <div dp-show-spinning="saving">
+                    <i class="spinner-flat"></i>
+                </div>
             </div>
 
         </form>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
     </section>
-
-
-
 </div><!-- End content wrapper -->
