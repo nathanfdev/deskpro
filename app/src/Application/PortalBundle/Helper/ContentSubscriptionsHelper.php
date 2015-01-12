@@ -64,6 +64,64 @@ class ContentSubscriptionsHelper
         $this->em = $em;
     }
 
+    protected function getSubscriptionsTableName($input)
+    {
+        if (
+            'kb' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Article' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\ArticleCategory' === get_class($input)
+        ) {
+                    return 'kb_subscriptions';
+        }
+
+        if (
+            'news' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\News' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\NewsCategory' === get_class($input)
+        ) {
+                    return 'news_subscriptions';
+        }
+
+        if (
+            'downloads' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Download' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
+        ) {
+                    return 'download_subscriptions';
+        }
+
+        throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
+    }
+
+    protected function getSubscriptionsIdName($input)
+    {
+        if (
+            'kb' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Article' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\ArticleCategory' === get_class($input)
+        ) {
+                    return 'article_id';
+        }
+
+        if (
+            'news' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\News' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\NewsCategory' === get_class($input)
+        ) {
+                    return 'news_id';
+        }
+
+        if (
+            'downloads' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Download' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
+        ) {
+                    return 'download_id';
+        }
+
+        throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
+    }
+
     /**
      * @param CategoryAbstract $category
      * @param Person $person
@@ -73,7 +131,7 @@ class ContentSubscriptionsHelper
     {
         return (bool) $this->getDb()->fetchColumn("
                 SELECT id
-                FROM kb_subscriptions
+                FROM {$this->getSubscriptionsTableName($category)}
                 WHERE person_id = ? AND category_id = ?
             ", array($person->getId(), $category->getId()));
     }
@@ -87,8 +145,8 @@ class ContentSubscriptionsHelper
     {
         return (bool) $this->getDb()->fetchColumn("
                 SELECT id
-                FROM kb_subscriptions
-                WHERE person_id = ? AND article_id = ?
+                FROM {$this->getSubscriptionsTableName($content)}
+                WHERE person_id = ? AND {$this->getSubscriptionsIdName($content)} = ?
             ", array($person->getId(), $content->getId()));
     }
 
@@ -103,7 +161,7 @@ class ContentSubscriptionsHelper
             return true;
         }
 
-        $this->getDb()->insert('kb_subscriptions', array(
+        $this->getDb()->insert($this->getSubscriptionsTableName($category), array(
             'person_id' => $person->getId(),
             'category_id' => $category->getId()
         ));
@@ -119,7 +177,7 @@ class ContentSubscriptionsHelper
     public function unsubscribeFromCategory(CategoryAbstract $category, Person $person)
     {
         if ($this->isSubscribedCategory($category, $person)) {
-            $this->getDb()->delete('kb_subscriptions', array(
+            $this->getDb()->delete($this->getSubscriptionsTableName($category), array(
                 'person_id' => $person->getId(),
                 'category_id' => $category->getId()
             ));
@@ -141,9 +199,9 @@ class ContentSubscriptionsHelper
             return true;
         }
 
-        $this->getDb()->insert('kb_subscriptions', array(
+        $this->getDb()->insert($this->getSubscriptionsTableName($content), array(
             'person_id' => $person->getId(),
-            'article_id' => $content->getId()
+            $this->getSubscriptionsIdName($content) => $content->getId()
         ));
 
         return true;
@@ -157,15 +215,24 @@ class ContentSubscriptionsHelper
     public function unsubscribeFromContent(ContentAbstract $content, Person $person)
     {
         if ($this->isSubscribedContent($content, $person)) {
-            $this->getDb()->delete('kb_subscriptions', array(
+            $this->getDb()->delete($this->getSubscriptionsTableName($content), array(
                 'person_id' => $person->getId(),
-                'article_id' => $content->getId()
+                $this->getSubscriptionsIdName($content) => $content->getId()
             ));
 
             return true;
         }
 
         return true;
+    }
+
+    /**
+     * @param $content_type
+     * @param Person $person
+     */
+    public function unsubscribeFromAll($content_type, Person $person)
+    {
+        $this->getDb()->delete($this->getSubscriptionsTableName($content_type), array('person_id' => $person->getId()));
     }
 
     /**
