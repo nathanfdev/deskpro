@@ -57,7 +57,13 @@ pageMeta.baseId = '{{ baseId }}';
 									<li>
 										<label>
 											<input class="ug-check ug-{{ ug.id }} {% if ug.sys_name %}ug-{{ ug.sys_name }}{% endif %}" type="checkbox" name="category[usergroups][]" value="{{ ug.id }}" checked="checked" />
-											{{ ug.title }}
+											{% if 1 == ug.id %}
+												{{ phrase('agent.defaults.usergroup_everyone') }}
+											{% elseif 2 == ug.id %}
+												{{ phrase('agent.defaults.usergroup_registered') }}
+											{% else %}
+												{{ ug.title }}
+											{% endif %}
 										</label>
 									</li>
 								{% endfor %}
