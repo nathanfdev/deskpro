@@ -25,6 +25,7 @@
   "select2":                         ["jquery"],
   "toastr":                          ["jquery"],
   "ColorPicker":                     ["jquery"],
+  "perfect-scrollbar":               ["jquery"],
   "underscore":                      { "exports": "_" },
   "stacktrace":                      { "exports": "printStackTrace"},
   "trackjs":                         { "exports": "trackJs"},

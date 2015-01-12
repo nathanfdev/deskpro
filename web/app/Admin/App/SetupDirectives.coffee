@@ -11,6 +11,7 @@ define [
   'DeskPRO/Directive/DpHideSpinning',
   'DeskPRO/Directive/DpJsonData',
   'DeskPRO/Directive/DpNgTemplate',
+  'DeskPRO/Directive/DpScrollable',
   'DeskPRO/Directive/DpShowSpinning',
   'DeskPRO/Directive/DpSubmitForm',
   'DeskPRO/Directive/DpErrorClass',
@@ -60,6 +61,7 @@ define [
   DeskPRO_Directive_DpHideSpinning,
   DeskPRO_Directive_DpJsonData,
   DeskPRO_Directive_DpNgTemplate,
+  DeskPRO_Directive_DpScrollable,
   DeskPRO_Directive_DpShowSpinning,
   DeskPRO_Directive_DpSubmitForm,
   DeskPRO_Directive_DpErrorClass,
@@ -110,6 +112,7 @@ define [
     Module.directive('dpHideSpinning',                 DeskPRO_Directive_DpHideSpinning)
     Module.directive('script',                         DeskPRO_Directive_DpJsonData)
     Module.directive('script',                         DeskPRO_Directive_DpNgTemplate)
+    Module.directive('dpScrollable',                   DeskPRO_Directive_DpScrollable)
     Module.directive('dpShowSpinning',                 DeskPRO_Directive_DpShowSpinning)
     Module.directive('dpSubmitForm',                   DeskPRO_Directive_DpSubmitForm)
     Module.directive('dpErrorClass',                   DeskPRO_Directive_DpErrorClass)
