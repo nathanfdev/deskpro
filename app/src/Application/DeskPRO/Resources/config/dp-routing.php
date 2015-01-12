@@ -93,6 +93,11 @@ $collection->create('sys_go_billing', array(
 	'controller'  => 'DeskPRO:Misc:goToBilling',
 ));
 
+$collection->create('sys_go_reports', array(
+	'path'        => '/reports/',
+	'controller'  => 'DeskPRO:Misc:goToReports',
+));
+
 $collection->create('data_interface_data', array(
 	'path'          => '/data/interface-data.{_format}',
 	'controller'    => 'DeskPRO:Data:interfaceData',
