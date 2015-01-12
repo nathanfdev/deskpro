@@ -2,6 +2,26 @@
 
 {% block inner_content %}
     {{ page.downloads_breadcrumbs()|raw }}
+
+    <h1>{{ category.realTitle }}</h1>
+
+    {% if brand_setting('user.downloads_subscriptions') %}
+        <hr/>
+        <hr/>
+        {% if is_subscribed %}
+            You are subscribed.
+        {% endif %}
+        <a href="{{ path('portal_downloads_category_toggle_subscription', { slug: category.slug }) }}">
+            {% if is_subscribed %}
+                {{ phrase('portal.general.btn-unsubscribe') }} from this category
+            {% else %}
+                {{ phrase('portal.general.btn-subscribe') }} to get an email notification when new downloads are published
+            {% endif %}
+        </a>
+        <hr/>
+        <hr/>
+    {% endif %}
+
     {{ page.downloads_list()|raw }}
     {{ page.downloads_files_items()|raw }}
     {{ page.downloads_pager()|raw }}

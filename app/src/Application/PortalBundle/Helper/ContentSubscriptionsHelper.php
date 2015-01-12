@@ -64,64 +64,6 @@ class ContentSubscriptionsHelper
         $this->em = $em;
     }
 
-    protected function getSubscriptionsTableName($input)
-    {
-        if (
-            'kb' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Article' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\ArticleCategory' === get_class($input)
-        ) {
-                    return 'kb_subscriptions';
-        }
-
-        if (
-            'news' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\News' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\NewsCategory' === get_class($input)
-        ) {
-                    return 'news_subscriptions';
-        }
-
-        if (
-            'downloads' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Download' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
-        ) {
-                    return 'download_subscriptions';
-        }
-
-        throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
-    }
-
-    protected function getSubscriptionsIdName($input)
-    {
-        if (
-            'kb' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Article' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\ArticleCategory' === get_class($input)
-        ) {
-                    return 'article_id';
-        }
-
-        if (
-            'news' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\News' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\NewsCategory' === get_class($input)
-        ) {
-                    return 'news_id';
-        }
-
-        if (
-            'downloads' === $input
-            || is_object($input) && 'Application\DeskPRO\Entity\Download' === get_class($input)
-            || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
-        ) {
-                    return 'download_id';
-        }
-
-        throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
-    }
-
     /**
      * @param CategoryAbstract $category
      * @param Person $person
@@ -233,6 +175,64 @@ class ContentSubscriptionsHelper
     public function unsubscribeFromAll($content_type, Person $person)
     {
         $this->getDb()->delete($this->getSubscriptionsTableName($content_type), array('person_id' => $person->getId()));
+    }
+
+    protected function getSubscriptionsTableName($input)
+    {
+        if (
+            'kb' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Article' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\ArticleCategory' === get_class($input)
+        ) {
+            return 'kb_subscriptions';
+        }
+
+        if (
+            'news' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\News' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\NewsCategory' === get_class($input)
+        ) {
+            return 'news_subscriptions';
+        }
+
+        if (
+            'downloads' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Download' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
+        ) {
+            return 'download_subscriptions';
+        }
+
+        throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
+    }
+
+    protected function getSubscriptionsIdName($input)
+    {
+        if (
+            'kb' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Article' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\ArticleCategory' === get_class($input)
+        ) {
+            return 'article_id';
+        }
+
+        if (
+            'news' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\News' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\NewsCategory' === get_class($input)
+        ) {
+            return 'news_id';
+        }
+
+        if (
+            'downloads' === $input
+            || is_object($input) && 'Application\DeskPRO\Entity\Download' === get_class($input)
+            || is_object($input) && 'Application\DeskPRO\Entity\DownloadCategory' === get_class($input)
+        ) {
+            return 'download_id';
+        }
+
+        throw new \InvalidArgumentException(sprintf('could not find subscriptions table name for input "%s"', $input));
     }
 
     /**

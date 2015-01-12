@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -54,6 +55,10 @@ class DownloadsController extends AbstractController
         $page = $request->query->get('page', 1);
         $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
 
+
+        //
+        // RSS
+        //
         if ('rss' === $_format) {
             $pager = $this->getDownloadsDataService()->getDownloadsPager(
                 null,
@@ -67,6 +72,10 @@ class DownloadsController extends AbstractController
             ));
         }
 
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView('Theme:Downloads:index.html.twig');
     }
 
@@ -80,6 +89,10 @@ class DownloadsController extends AbstractController
         $page = $request->query->get('page', 1);
         $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
 
+
+        //
+        // RSS
+        //
         if ('rss' === $_format) {
             $pager = $this->getDownloadsDataService()->getDownloadsPager(
                 $category,
@@ -93,10 +106,27 @@ class DownloadsController extends AbstractController
             ));
         }
 
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView(
             'Theme:Downloads:browse.html.twig',
             array(
                 'category' => $category,
+                'is_subscribed' => $is_subscribed,
                 'page' => $page,
                 'count' => $per_page,
                 'show_pagination' => true
@@ -112,13 +142,33 @@ class DownloadsController extends AbstractController
      */
     public function viewAction(Request $request, Download $file)
     {
+        //
+        // RELATED, RATING
+        //
         $related = $this->getDownloadsDataService()->getRelatedFiles($file);
         $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
 
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
+        }
+
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             array(
                 'download' => $file,
+                'is_subscribed' => $is_subscribed,
                 'related_files' => $related,
                 'rating' => $rating
             )
@@ -153,6 +203,62 @@ class DownloadsController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
+    }
+
+    /**
+     * @Route("/downloads/files/{slug}/toggle-subscription", name="portal_downloads_files_toggle_subscription")
+     * @ParamConverter(name="file", converter="deskpro_slug")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOADS', file)")
+     */
+    public function downloadsSubscriptionAction(Download $file)
+    {
+        $person = $this->getUser();
+        $subscriptions_helper = $this->getSubscriptionsHelper();
+
+        if ($subscriptions_helper->isSubscribedContent($file, $person)) {
+            $subscriptions_helper->unsubscribeFromContent($file, $person);
+            $this->addFlash('success', 'Successfully unsubscribed from this download.');
+        } else {
+            $subscriptions_helper->subscribeToContent($file, $person);
+            $this->addFlash('success', 'You have successfully subscribed to this download. You will be notified when it is updated.');
+        }
+
+        return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
+    }
+
+
+    /**
+     * @Route("/downloads/category/toggle-subscription/{slug}", name="portal_downloads_category_toggle_subscription")
+     * @ParamConverter(name="category", converter="deskpro_slug")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('SUBSCRIBE_DOWNLOADS_CATEGORIES', category)")
+     */
+    public function downloadsCategorySubscriptionAction(DownloadCategory $category)
+    {
+        $person = $this->getUser();
+        $subscriptions_helper = $this->getSubscriptionsHelper();
+
+        if ($subscriptions_helper->isSubscribedCategory($category, $person)) {
+            $subscriptions_helper->unsubscribeFromCategory($category, $person);
+            $this->addFlash('success', 'Successfully unsubscribed from this category.');
+        } else {
+            $subscriptions_helper->subscribeToCategory($category, $person);
+            $this->addFlash('success', 'You have successfully subscribed to this category. You will be notified when it is updated.');
+        }
+
+        return $this->redirectToRoute('portal_downloads_browse', array('slug' => $category->getSlug()));
+    }
+
+    /**
+     * @Route("/downloads/files/subscriptions/unsubscribe", name="portal_downloads_unsubscribe_all")
+     * @Security("is_granted('ROLE_USER') and is_granted('USE_DOWNLOADS')")
+     */
+    public function downloadsUnsubscribeAllAction()
+    {
+        $this->getSubscriptionsHelper()->unsubscribeFromAll('downloads', $this->getUser());
+
+        $this->addFlash('success', 'Unsubscribed from all Downloads subscriptions');
+
+        return $this->redirectToRoute('portal_index');
     }
 
     /**
