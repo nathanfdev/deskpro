@@ -46,33 +46,65 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 class NewsController extends AbstractController
 {
     /**
-     * @Route("/news", name="portal_news")
+     * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Security("is_granted('USE_NEWS')")
      */
-    public function indexAction(Request $request)
+    public function indexAction(Request $request, $_format)
     {
+        $page = $request->query->get('page', 1);
+        $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
+
+        if ('rss' === $_format) {
+            $pager = $this->getNewsDataService()->getNewsPager(
+                null,
+                $page,
+                $per_page
+            );
+
+            return $this->render('PortalBundle:News:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => null
+            ));
+        }
+
         return $this->renderThemeView(
             'Theme:News:index.html.twig',
             array(
-                'page' => $request->query->get('page', 1),
-                'count' => 2
+                'page' => $page,
+                'count' => $per_page
             )
         );
     }
 
     /**
-     * @Route("/news/{slug}", name="portal_news_browse")
+     * @Route("/news/{slug}.{_format}", name="portal_news_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS')")
      */
-    public function browseAction(Request $request, NewsCategory $category)
+    public function browseAction(Request $request, NewsCategory $category, $_format)
     {
+        $page = $request->query->get('page', 1);
+        $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
+
+        if ('rss' === $_format) {
+            $pager = $this->getNewsDataService()->getNewsPager(
+                $category,
+                $page,
+                $per_page
+            );
+
+            return $this->render('PortalBundle:News:feed.rss.twig', array(
+                'pager' => $pager,
+                'category' => $category
+            ));
+        }
+
         return $this->renderThemeView(
             'Theme:News:browse.html.twig',
             array(
                 'category' => $category,
-                'page' => $request->query->get('page', 1),
-                'count' => 2,
+                'page' => $page,
+                'count' => $per_page,
                 'show_pagination' => true
             )
         );
