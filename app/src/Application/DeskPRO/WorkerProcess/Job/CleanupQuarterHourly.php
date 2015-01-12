@@ -56,33 +56,6 @@ class CleanupQuarterHourly extends AbstractJob
 		$cache->cleanup();
 
 		#------------------------------
-		# ticket locks
-		#------------------------------
-
-		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core_tickets.lock_lifetime'));
-		$num = App::getDb()->executeUpdate("UPDATE tickets SET date_locked = null, locked_by_agent = null  WHERE date_locked < ?", array($datetime));
-
-		if ($num) {
-			$this->logStatus("Cleaned up $num ticket locks");
-		}
-
-		#------------------------------
-		# Agent alerts
-		#------------------------------
-
-		if ($maxage = App::getSetting('agent.alerts_cleanup_time')) {
-			$datetime = date('Y-m-d H:i:s', time() - $maxage);
-			$num = App::getDb()->executeUpdate("
-				DELETE FROM agent_alerts
-				WHERE date_created < ? AND is_dismissed = 1
-			", array($datetime));
-
-			if ($num) {
-				$this->logStatus("Cleaned up $num agent alerts");
-			}
-		}
-
-		#------------------------------
 		# Old API logs
 		#------------------------------
 

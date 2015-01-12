@@ -29,7 +29,7 @@ class BucketStyleListener implements EventSubscriberInterface
      */
     public static function getSubscribedEvents()
     {
-        return array('command.after_prepare' => array('onCommandAfterPrepare', -255));
+        return array('command.before_send' => array('onCommandBeforeSend', -255));
     }
 
     /**
@@ -37,7 +37,7 @@ class BucketStyleListener implements EventSubscriberInterface
      *
      * @param Event $event Event emitted
      */
-    public function onCommandAfterPrepare(Event $event)
+    public function onCommandBeforeSend(Event $event)
     {
         $command = $event['command'];
         $bucket = $command['Bucket'];

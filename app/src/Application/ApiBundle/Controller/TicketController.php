@@ -34,8 +34,12 @@
 
 namespace Application\ApiBundle\Controller;
 
+use Application\ApiBundle\PermissionStrategy\MultiPermissions;
+use Application\ApiBundle\PermissionStrategy\SuperKeyPermission;
 use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\PersonFromEmailProcessor;
 use Application\DeskPRO\Entity\Ticket as Ticket;
+use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use DeskPRO\Kernel\KernelErrorHandler;
@@ -47,8 +51,19 @@ use DeskPRO\Kernel\KernelErrorHandler;
  * 	basePath="/api"
  * )
  */
-class TicketController extends AbstractController
+class TicketController extends AbstractController implements ProtectedControllerInterface
 {
+    /**
+     * {@inheritDoc}
+     */
+    public function getPermissionStrategy()
+    {
+        $multi = new MultiPermissions();
+        $multi->addPermissionStrategy(new SuperKeyPermission(), 'updateTicketDatesAction');
+
+        return $multi;
+    }
+
     /**
      * @SWG\Api(
      * 	path="/tickets",
@@ -328,11 +343,12 @@ class TicketController extends AbstractController
             if (!\Orb\Validator\StringEmail::isValueValid($email) || !App::getSystemService('email_address_validator')->isValidUserEmail($email)) {
                 $errors['person_email'] = array('invalid_email', 'Invalid email address');
             } else {
-                $person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+                $person_processor = new PersonFromEmailProcessor();
+                $person_processor->creation_system = 'web.api';
+                $person = $person_processor->findPersonByEmailAddress($email, $this->in->getString('person_name'));
                 if (!$person) {
-                    $person = new \Application\DeskPRO\Entity\Person();
-                    $person->setEmail($email);
-                    $person->setName($this->in->getString('person_name'));
+
+                    $person = $person_processor->createPersonByEmailAddress($email, $this->in->getString('person_name'));
 
                     if ($this->in->checkIsset('person_organization')) {
                         $orgName = $this->in->getString('person_organization');
@@ -2578,5 +2594,29 @@ class TicketController extends AbstractController
         }
 
         return true;
+    }
+
+    /**
+     * @param $ticket_id
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
+    public function updateTicketDatesAction($ticket_id, Request $request)
+    {
+        $fields = json_decode($request->getContent(), 1);
+        $vals = array();
+
+        foreach ($fields as $k => $v) {
+            $v = 0 === strpos($k, 'date_') ? date('Y-m-d H:i:s', strtotime($v)) : (int) $v;
+            $vals[] = sprintf('%s = "%s"', $k, $v);
+        }
+
+        if ($vals) {
+            $this->em->getConnection()->executeQuery(sprintf(
+                'update tickets set %s where id = %d',
+                implode(',', $vals), $ticket_id
+            ));
+        }
+
+        return $this->createJsonResponse($vals);
     }
 }

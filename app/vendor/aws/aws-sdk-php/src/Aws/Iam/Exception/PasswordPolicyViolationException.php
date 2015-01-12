@@ -17,6 +17,7 @@
 namespace Aws\Iam\Exception;
 
 /**
- * The request was rejected because the provided password did not meet the requirements imposed by the account password policy.
+ * The request was rejected because the provided password did not meet the requirements imposed by the account password
+ *  policy.
  */
 class PasswordPolicyViolationException extends IamException {}

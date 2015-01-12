@@ -18,9 +18,9 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
         is_enabled: true,
         text: {
           user_validation:          '0',
-          user_min_length:          '1',
-          user_max_length:          '',
-          user_regex:               '',
+          min_length:               '1',
+          max_length:               '',
+          regex:                    '',
           agent_validation:         '0',
           agent_min_length:         '1',
           agent_max_length:         '',
@@ -243,8 +243,8 @@ define ['moment', 'DeskPRO/Util/Util'], (moment, Util) ->
 
           if formTypeOpts.user_validation == 'required'
             postData.validation_type = 'required'
-            postData.min_length = formTypeOpts.agent_min_length
-            postData.max_length = formTypeOpts.agent_max_length
+            postData.min_length = formTypeOpts.min_length
+            postData.max_length = formTypeOpts.max_length
           else if formTypeOpts.user_validation == 'regex'
             postData.validation_type = 'regex'
             postData.regex = formTypeOpts.validation_regex

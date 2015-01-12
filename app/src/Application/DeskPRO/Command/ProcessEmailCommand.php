@@ -52,7 +52,7 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $this->setName('dp:process-email');
         $this->addOption('account', null, InputOption::VALUE_REQUIRED, 'ID or email address of the gateway to process the source under. -1 for default. If not provided, then the account will be detected based on the to/cc address.');
         $this->addOption('account-force', null, InputOption::VALUE_NONE, 'Use the account even if its disabled');
-        $this->addOption('to', null, InputOption::VALUE_REQUIRED, 'The TO address to interpret the email to. If provided, the gateway will be determiend based on this.');
+        $this->addOption('to', null, InputOption::VALUE_REQUIRED, 'Legacy option. Use --account instead.');
         $this->addOption('source', null, InputOption::VALUE_REQUIRED,  'ID of an existing source ID to re-process.');
         $this->addOption('file', null, InputOption::VALUE_OPTIONAL,  'Path to an email file to process. No filename is required if you are sending the file through standard input (e.g., piping).');
         $this->addOption('success-string', null, InputOption::VALUE_OPTIONAL,  'A special string to output in case of success (e.g., use as a trigger for external tool). Note that this command will return 0 on success, so you can use that instead.');
@@ -75,6 +75,10 @@ class ProcessEmailCommand extends ContainerAwareCommand
         $success_string = $input->getOption('success-string');
         $error_string   = $input->getOption('error-string');
         $insert_only    = $input->getOption('insert-only');
+
+        if ($input->hasOption('to') && $input->getOption('to')) {
+            $input->setOption('account', $input->getOption('to'));
+        }
 
         #----------------------------------------
         # Read/save source object
@@ -179,6 +183,11 @@ class ProcessEmailCommand extends ContainerAwareCommand
         if (!$source->email_account && !$account_id) {
             $output->writeln("<error>Could not find account for email. Specify an account using --account</error>");
 
+            $source->status = 'error';
+            $source->error_code = 'invalid_address';
+            App::getOrm()->persist($source);
+            App::getOrm()->flush();
+
             return 1;
         }
 
@@ -199,6 +208,11 @@ class ProcessEmailCommand extends ContainerAwareCommand
                 if (!$account) {
                     $output->writeln("<error>No account with address $account_id</error>");
 
+                    $source->status = 'error';
+                    $source->error_code = 'invalid_address';
+                    App::getOrm()->persist($source);
+                    App::getOrm()->flush();
+
                     return 1;
                 }
             }
@@ -206,10 +220,19 @@ class ProcessEmailCommand extends ContainerAwareCommand
 
             if ($input->getOption('account-force') && !$account->is_enabled) {
                 $output->writeln("<error>Account $account_id is disabled (use --account-force if you want to use it anyway)</error>");
+
+                $source->status = 'error';
+                $source->error_code = 'invalid_address';
+                App::getOrm()->persist($source);
+                App::getOrm()->flush();
             }
         }
 
-        $source->email_account = $account;
+        if ($source->email_account !== $account) {
+            $source->email_account = $account;
+            App::getOrm()->persist($source);
+            App::getOrm()->flush();
+        }
 
         #----------------------------------------
         # Run the gateway

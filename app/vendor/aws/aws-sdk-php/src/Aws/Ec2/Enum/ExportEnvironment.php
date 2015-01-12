@@ -25,5 +25,4 @@ class ExportEnvironment extends Enum
 {
     const CITRIX = 'citrix';
     const VMWARE = 'vmware';
-    const MICROSOFT = 'microsoft';
 }

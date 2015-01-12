@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * SNS has responded that there is a problem with the SND topic specified.
+ * Exception that occurs when a SNSInvalidTopicException error is encountered
  */
 class SNSInvalidTopicException extends RdsException {}

@@ -17,6 +17,6 @@
 namespace Aws\Swf\Exception;
 
 /**
- * Returned when the specified activity or workflow type was already deprecated.
+ * Exception that occurs when a TypeDeprecatedException error is encountered
  */
 class TypeDeprecatedException extends SwfException {}

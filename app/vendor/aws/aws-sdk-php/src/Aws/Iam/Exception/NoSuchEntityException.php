@@ -17,6 +17,7 @@
 namespace Aws\Iam\Exception;
 
 /**
- * The request was rejected because it referenced an entity that does not exist. The error message describes the entity.
+ * The request was rejected because it referenced an entity that does not exist. The error message describes the entity
+ * .
  */
 class NoSuchEntityException extends IamException {}

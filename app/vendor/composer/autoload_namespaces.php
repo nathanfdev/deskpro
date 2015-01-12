@@ -43,7 +43,7 @@ return array(
     'Doctrine\\Common\\Annotations\\' => array($vendorDir . '/doctrine/annotations/lib'),
     'Doctrine\\Common\\' => array($vendorDir . '/doctrine/common/lib'),
     'Doctrine\\Bundle\\FixturesBundle' => array($vendorDir . '/doctrine/doctrine-fixtures-bundle'),
-    'Doctrine\\Bundle\\DoctrineBundle' => array($vendorDir . '/doctrine/doctrine-bundle'),
+    'Doctrine\\Bundle\\DoctrineCacheBundle' => array($vendorDir . '/doctrine/doctrine-cache-bundle'),
     'Contrib\\Component' => array($vendorDir . '/satooshi/php-coveralls/src'),
     'Contrib\\Bundle' => array($vendorDir . '/satooshi/php-coveralls/src'),
     'Codeception' => array($vendorDir . '/codeception/codeception/src'),

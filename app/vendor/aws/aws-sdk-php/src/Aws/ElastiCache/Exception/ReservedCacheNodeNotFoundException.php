@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * The requested reserved cache node was not found.
+ * Exception that occurs when a ReservedCacheNodeNotFoundException error is encountered
  */
 class ReservedCacheNodeNotFoundException extends ElastiCacheException {}

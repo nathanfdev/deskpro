@@ -1025,6 +1025,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var isActive = false;
 			var isClosingTimeout = false;
 
+			if (!btnMenu.find('li').length) {
+				wrap.hide();
+				return;
+			}
+
 			// Bug in IE10 means the li's dont render properly
 			// until you force a repaint somehow while they are displayed
 			// So we show with no opacity, toggle the display on li's
@@ -3732,7 +3737,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				cancelRouteSelection(ev);
 			});
 			$(context).on('click', '[data-route]', function(ev) {
-				if ($(this).is('.as-popover')) {
+				if ($(this).is('.as-popover') || $(this).is('.cancel-route')) {
 					return;
 				}
 

@@ -16,29 +16,75 @@
 
 namespace Aws\Common\Signature;
 
-use Aws\Common\Credentials\CredentialsInterface;
 use Guzzle\Http\Message\RequestInterface;
 
+/**
+ * Abstract signature class that can be used when implementing new concrete
+ * AWS signature protocol strategies
+ */
 abstract class AbstractSignature implements SignatureInterface
 {
     /**
-     * Provides the timestamp used for the class (used for mocking PHP's time() function)
-     *
-     * @return int
+     * @var int Timestamp
      */
-    protected function getTimestamp()
+    private $timestamp;
+
+    /**
+     * Get the canonicalized query string for a request
+     *
+     * @param  RequestInterface $request
+     * @return string
+     */
+    protected function getCanonicalizedQueryString(RequestInterface $request)
     {
-        return time();
+        $queryParams = $request->getQuery()->getAll();
+        unset($queryParams['X-Amz-Signature']);
+        if (empty($queryParams)) {
+            return '';
+        }
+
+        $qs = '';
+        ksort($queryParams);
+        foreach ($queryParams as $key => $values) {
+            if (is_array($values)) {
+                sort($values);
+            } elseif (!$values) {
+                $values = array('');
+            }
+
+            foreach ((array) $values as $value) {
+                $qs .= rawurlencode($key) . '=' . rawurlencode($value) . '&';
+            }
+        }
+
+        return substr($qs, 0, -1);
     }
 
     /**
-     * @codeCoverageIgnore
+     * Provides the timestamp used for the class
+     *
+     * @param bool $refresh Set to TRUE to refresh the cached timestamp
+     *
+     * @return int
      */
-    public function createPresignedUrl(
-        RequestInterface $request,
-        CredentialsInterface $credentials,
-        $expires
-    ) {
-        throw new \BadMethodCallException(__METHOD__ . ' not implemented');
+    protected function getTimestamp($refresh = false)
+    {
+        if (!$this->timestamp || $refresh) {
+            $this->timestamp = time();
+        }
+
+        return $this->timestamp;
+    }
+
+    /**
+     * Get a date for one of the parts of the requests
+     *
+     * @param string $format Date format
+     *
+     * @return string
+     */
+    protected function getDateTime($format)
+    {
+        return gmdate($format, $this->getTimestamp());
     }
 }

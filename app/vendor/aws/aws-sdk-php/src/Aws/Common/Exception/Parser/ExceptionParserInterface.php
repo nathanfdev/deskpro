@@ -16,7 +16,6 @@
 
 namespace Aws\Common\Exception\Parser;
 
-use Guzzle\Http\Message\RequestInterface;
 use Guzzle\Http\Message\Response;
 
 /**
@@ -33,10 +32,9 @@ interface ExceptionParserInterface
      * - request_id: Request ID
      * - parsed:     The parsed representation of the data (array, SimpleXMLElement, etc)
      *
-     * @param RequestInterface $request
-     * @param Response         $response Unsuccessful response
+     * @param Response $response Unsuccessful response
      *
      * @return array
      */
-    public function parse(RequestInterface $request, Response $response);
+    public function parse(Response $response);
 }

@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * Your request contains more trusted signers than are allowed per distribution.
+ * Exception that occurs when a TooManyTrustedSignersException error is encountered
  */
 class TooManyTrustedSignersException extends CloudFrontException {}

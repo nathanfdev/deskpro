@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * The specified distribution does not exist.
+ * Exception that occurs when a NoSuchDistributionException error is encountered
  */
 class NoSuchDistributionException extends CloudFrontException {}

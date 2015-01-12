@@ -53,5 +53,15 @@ class Build1400056729 extends AbstractBuild
 			$this->execMutateSql("ALTER TABLE blobs ADD storage_loc_specific VARCHAR(50) DEFAULT NULL");
 			$this->container->getDb()->insertIgnore('install_data', array('build' => '1413803749', 'name' => 'did_pre_alter', 'data' => '1'));
 		}
+
+		$app_syncer = new NativeAppsSync(
+			$this->container,
+			$this->container->getAppManager(),
+			new PackageInstaller($this->container->getEm(), $this->container->getBlobStorage(), $this->container->getImagine()),
+			null
+		);
+
+		$app_syncer->runUpdates();
+		$app_syncer->runSync();
 	}
 }

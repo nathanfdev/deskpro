@@ -17,6 +17,6 @@
 namespace Aws\CloudWatch\Exception;
 
 /**
- * Parameters that must not be used together were used together.
+ * Exception that occurs when a InvalidParameterCombinationException error is encountered
  */
 class InvalidParameterCombinationException extends CloudWatchException {}

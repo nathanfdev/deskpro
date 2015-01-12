@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * DBSecurityGroupName does not refer to an existing DB security group.
+ * Exception that occurs when a DBSecurityGroupNotFoundException error is encountered
  */
 class DBSecurityGroupNotFoundException extends RdsException {}

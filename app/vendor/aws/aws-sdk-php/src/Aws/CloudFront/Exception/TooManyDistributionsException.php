@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * Processing your request would cause you to exceed the maximum number of distributions allowed.
+ * Exception that occurs when a TooManyDistributionsException error is encountered
  */
 class TooManyDistributionsException extends CloudFrontException {}

@@ -10,7 +10,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<nav class="dp-blocktabs">
-				<menu>
+				<menu dropdown>
 					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
 					<ul class="dropdown-menu pull-right">
 						<li><a ng-click="ViewSource.startDelete()"><i class="fa fa-trash-o"></i> Delete Email</a></li>
@@ -27,7 +27,7 @@
 					<td dp-date="ViewSource.source.date_created" format="fulltime"></td>
 				</tr>
 				<tr>
-					<th>Status <i class="fa fa-question-circle qmark-icon" ng-click="showStatusHelp(ViewSource.source.status)" tooltip="Click for more details" tooltip-placement="left" style="cursor: pointer;"></i></th>
+					<th>Status <i class="fa fa-question-circle qmark-icon" ng-click="showStatusHelp(ViewSource.source.status)" tooltip="Click for more details" tooltip-placement="right" style="cursor: pointer;"></i></th>
 					<td ng-class="{'danger': ViewSource.source.status == 'error', 'warning': ViewSource.source.status == 'rejected', 'success': ViewSource.source.status == 'complete'}">
 						{{ ng_var('ViewSource.source.status | uppercase') }} (<span dp-date="ViewSource.source.date_status" format="fulltime"></span>)
 						<div ng-if="ViewSource.source.status == 'error'">
@@ -75,35 +75,66 @@
 					</td>
 				</tr>
 				<tr>
-					<th>Raw "From"</th>
+					<th>From</th>
 					<td>{{ ng_var('ViewSource.source.header_from') }}</td>
 				</tr>
 				<tr>
-					<th>Raw "To"</th>
+					<th>To</th>
 					<td>{{ ng_var('ViewSource.source.header_to') }}</td>
 				</tr>
 				<tr>
-					<th>Raw "Subject"</th>
+					<th>Subject</th>
 					<td>{{ ng_var('ViewSource.source.header_subject') }}</td>
 				</tr>
 				<tr>
 					<th>
-						Raw Source
-						<br/>
-						<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.blob.download_url') }}" target="_blank">Download</a>
+						<label style="line-height: 15px; font-weight: bold;">
+							<input type="radio" ng-model="render_type" value="raw" style="vertical-align: middle; margin: 0 2px 0 0;" />
+							Raw Source
+						</label>
+						<label style="line-height: 15px; font-weight: bold;">
+							<input type="radio" ng-model="render_type" value="summary" style="vertical-align: middle; margin: 0 2px 0 0;" />
+							Summary
+						</label>
+						<label style="line-height: 15px; font-weight: bold;">
+							<input type="radio" ng-model="render_type" value="rendered" style="vertical-align: middle; margin: 0 2px 0 0;" />
+							Rendered
+						</label>
 					</th>
 					<td>
-						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.source_raw') }}</textarea>
+						<div ng-show="render_type == 'raw'">
+							<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.source_raw') }}</textarea>
+							<div style="margin-top: 2px;">
+								<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.blob.download_url') }}" target="_blank" style="font-weight: normal;"><i class="fa fa-download" style="margin: 0;"></i> Download Email</a>
+							</div>
+						</div>
+						<div ng-show="render_type == 'summary'">
+							<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;" ng-if="ViewSource.rendered.summary">{{ ng_var('ViewSource.rendered.summary') }}</textarea>
+						</div>
+						<div ng-show="render_type == 'rendered'">
+							<div ng-if="ViewSource.rendered.html" style="margin-bottom: 10px;">
+								<strong>Rendered HTML</strong><br/>
+								<div style="width: 95%; max-height: 500px; overflow: auto; border: 1px solid #cccccc; padding: 8px; border-radius: 2px;" ng-bind-html="ViewSource.rendered.html"></div>
+							</div>
+							<div ng-if="ViewSource.rendered.text">
+								<strong>Plain Text</strong><br/>
+								<textarea class="form-control" style="width: 95%; height: 200px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.rendered.text') }}</textarea>
+							</div>
+						</div>
+						<div ng-show="loading_render_type">
+							<i class="flat-spinner"></i>
+						</div>
 					</td>
 				</tr>
 				<tr ng-if="ViewSource.source.log_blob">
 					<th>
 						Process Log
-						<br/>
-						<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.log_blob.download_url') }}" target="_blank">Download</a>
 					</th>
 					<td>
 						<textarea class="form-control" style="width: 95%; height: 300px; font-family: Monaco, Consolas, monospace;">{{ ng_var('ViewSource.source_log') }}</textarea>
+						<div style="margin-top: 2px;">
+							<a class="btn btn-default btn-xs" ng-href="{{ ng_var('ViewSource.source.log_blob.download_url') }}" target="_blank"><i class="fa fa-download" style="margin: 0;"></i> Download Log File</a>
+						</div>
 					</td>
 				</tr>
 				<tr ng-if="ViewSource.source_info">

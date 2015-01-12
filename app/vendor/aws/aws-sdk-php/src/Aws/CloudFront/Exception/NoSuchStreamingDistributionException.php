@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * The specified streaming distribution does not exist.
+ * Exception that occurs when a NoSuchStreamingDistributionException error is encountered
  */
 class NoSuchStreamingDistributionException extends CloudFrontException {}

@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * The quota of 20 option groups was exceeded for this AWS account.
+ * Exception that occurs when a OptionGroupQuotaExceededException error is encountered
  */
 class OptionGroupQuotaExceededException extends RdsException {}

@@ -43,24 +43,24 @@ class Build1400056709 extends AbstractBuild
         $this->out("Modify indexes and FKs to new app tables");
 
         // Remove keys
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE custom_def_article DROP FOREIGN KEY FK_B651E6F4EC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE custom_def_article DROP KEY IDX_B651E6F4EC942BCF");
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE custom_def_chat DROP FOREIGN KEY FK_2DE86CE5EC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE custom_def_chat DROP KEY IDX_2DE86CE5EC942BCF");
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE custom_def_feedback DROP FOREIGN KEY FK_CC9CDDD8EC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE custom_def_feedback DROP KEY IDX_CC9CDDD8EC942BCF");
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE custom_def_organizations DROP FOREIGN KEY FK_240601E7EC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE custom_def_organizations DROP KEY IDX_240601E7EC942BCF");
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE custom_def_people DROP FOREIGN KEY FK_4840CFDAEC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE custom_def_people DROP KEY IDX_4840CFDAEC942BCF");
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE custom_def_products DROP FOREIGN KEY FK_AD0FC3DAEC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE custom_def_products DROP KEY IDX_AD0FC3DAEC942BCF");
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE custom_def_ticket DROP FOREIGN KEY FK_F7F6085FEC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE custom_def_ticket DROP KEY IDX_F7F6085FEC942BCF");
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE ticket_trigger_plugin_actions DROP FOREIGN KEY FK_1D905890EC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE ticket_trigger_plugin_actions DROP KEY IDX_1D905890EC942BCF");
-        /* [FK]  plugin_id */ $db->exec("ALTER TABLE usersource_plugins DROP FOREIGN KEY FK_E484A367EC942BCF");
-        /* [IDX] plugin_id */ $db->exec("ALTER TABLE usersource_plugins DROP KEY IDX_E484A367EC942BCF");
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_article DROP FOREIGN KEY FK_B651E6F4EC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_article DROP KEY IDX_B651E6F4EC942BCF", true);
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_chat DROP FOREIGN KEY FK_2DE86CE5EC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_chat DROP KEY IDX_2DE86CE5EC942BCF", true);
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_feedback DROP FOREIGN KEY FK_CC9CDDD8EC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_feedback DROP KEY IDX_CC9CDDD8EC942BCF", true);
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_organizations DROP FOREIGN KEY FK_240601E7EC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_organizations DROP KEY IDX_240601E7EC942BCF", true);
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_people DROP FOREIGN KEY FK_4840CFDAEC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_people DROP KEY IDX_4840CFDAEC942BCF", true);
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_products DROP FOREIGN KEY FK_AD0FC3DAEC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_products DROP KEY IDX_AD0FC3DAEC942BCF", true);
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_ticket DROP FOREIGN KEY FK_F7F6085FEC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE custom_def_ticket DROP KEY IDX_F7F6085FEC942BCF", true);
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE ticket_trigger_plugin_actions DROP FOREIGN KEY FK_1D905890EC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE ticket_trigger_plugin_actions DROP KEY IDX_1D905890EC942BCF", true);
+        /* [FK]  plugin_id */ $this->execMutateSql("ALTER TABLE usersource_plugins DROP FOREIGN KEY FK_E484A367EC942BCF", true);
+        /* [IDX] plugin_id */ $this->execMutateSql("ALTER TABLE usersource_plugins DROP KEY IDX_E484A367EC942BCF", true);
 
         // Remove fields
         $db->exec("ALTER TABLE custom_def_article DROP plugin_id");

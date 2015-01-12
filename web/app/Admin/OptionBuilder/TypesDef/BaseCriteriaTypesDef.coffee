@@ -69,7 +69,8 @@ define [
 				options.single = true
 				return @getStandardSelect(options)
 			else
-				if not options.operators then options.operators = ['is', 'not', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
+				console.info(options)
+				if not options.operators then options.operators = ['is', 'not', 'touched', 'nottouched', 'contains', 'notcontains', 'is_regex', 'not_regex', 'isset', 'not_isset']
 				return @getStandardInput(options)
 
 		###

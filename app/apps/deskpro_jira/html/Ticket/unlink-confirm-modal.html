@@ -13,7 +13,13 @@
                 </tr>
                 <tr ng-repeat="field in issue.filtered_fields">
                     <th style="text-align: left; text-wrap: none;" nowrap="nowrap">{{ meta.fieldName(field.id) }}</th>
-                    <td width="100%">{{ meta.fieldValue(field.id, field.value) }}</td>
+                    <td width="100%">
+                        <div ng-if="issue.renderedFields[field.id]" ng-bind-html="meta.fieldValue(field.id, field.value)">
+                        </div>
+                        <div ng-if="!issue.renderedFields[field.id]">
+                            {{ meta.fieldValue(field.id, field.value) }}
+                        </div>
+                    </td>
                 </tr>
             </table>
         </div>

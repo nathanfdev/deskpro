@@ -62,7 +62,7 @@ class AcpListener implements EventSubscriberInterface
 
                 // Add the correct headers/body based parameters to the command
                 if ($operation->hasParam('Grants')) {
-                    $command->overwriteWith($acp->toArray());
+                    $command->merge($acp->toArray());
                 } else {
                     $acp->updateCommand($command);
                 }

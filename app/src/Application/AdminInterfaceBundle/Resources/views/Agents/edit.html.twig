@@ -3,8 +3,8 @@
 	<form class="form-horizontal dp-form" role="form" name="form_props" ng-submit="form_props.$valid && EditCtrl.saveAgent()">
 		<section class="dp-paneblock dp-editpane">
 			<nav class="dp-blocktabs responsive">
-				<menu>
-					<button class="btn btn-default dropdown-toggle"><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
+				<menu dropdown>
+					<button class="btn btn-default" type="button" dropdown-toggle><span><i class="fa fa-cog"></i></span> <i class="fa fa-caret-down"></i></button>
 					<ul class="dropdown-menu pull-right">
 						<li><a ng-click="EditCtrl.showCopySettings()"><i class="fa fa-copy"></i> Copy settings from another agent</a></li>
 						<li ng-if="EditCtrl.agent.id" class="divider"></li>

@@ -39,9 +39,15 @@ use Application\DeskPRO\Assets\RequireJsConfigGenerator as BaseRequireJsConfigGe
 
 class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
 {
-    public function __construct(AppManagerInterface $manager, $native_file_root = null)
+    public function __construct(AppManagerInterface $manager, $native_file_root = null, $only_installed = true)
     {
         foreach ($manager->getAllPackages() as $package) {
+
+            // No app is installed, dont need to output rjs map for it
+            if ($only_installed && !count($manager->getPackageApps($package->name))) {
+                continue;
+            }
+
             if ($native_file_root && $package->native_name) {
                 $native_baseurl = $native_file_root . '/' . $package->native_name;
             } else {
@@ -81,10 +87,14 @@ class RequireJsConfigGenerator extends BaseRequireJsConfigGenerator
             // Otherwise, we need to use the download URL that will contain unique auth codes
             } else {
                 foreach ($package->getTaggedAssets('js') as $asset) {
+                    // JS assets can be named without the '/js/' part, so we have $name and $name2 for legacy
                     $name = $package->name . '/' . str_replace('.js', '', $asset->name);
+                    $name2 = $package->name . '/js/' . str_replace('.js', '', $asset->name);
+
                     $asset_path = preg_replace('#\.js$#', '', $asset->blob->getDownloadUrl(false, false));
 
                     $this->addPath($name, $asset_path);
+                    $this->addPath($name2, $asset_path);
                 }
             }
         }

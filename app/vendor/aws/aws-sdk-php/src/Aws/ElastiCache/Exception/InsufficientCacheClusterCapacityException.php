@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * The requested cache node type is not available in the specified Availability Zone.
+ * Exception that occurs when a InsufficientCacheClusterCapacityException error is encountered
  */
 class InsufficientCacheClusterCapacityException extends ElastiCacheException {}

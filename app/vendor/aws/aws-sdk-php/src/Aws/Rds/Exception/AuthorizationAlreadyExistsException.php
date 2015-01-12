@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * The specified CIDRIP or EC2 security group is already authorized for the specified DB security group.
+ * Exception that occurs when a AuthorizationAlreadyExistsException error is encountered
  */
 class AuthorizationAlreadyExistsException extends RdsException {}

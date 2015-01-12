@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The account already has a cluster with the given identifier.
+ * Exception that occurs when a ClusterAlreadyExistsException error is encountered
  */
 class ClusterAlreadyExistsException extends RedshiftException {}

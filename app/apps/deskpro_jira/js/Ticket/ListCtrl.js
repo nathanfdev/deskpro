@@ -1,13 +1,57 @@
 define([
   'angular',
-  'deskpro_jira/Ticket/CreateIssueCtrl'
+  'deskpro_jira/Ticket/CreateIssueCtrl',
+  'DeskPRO/Util/Functions'
 ], function (angular,
-             CreateIssueCtrl) {
+             CreateIssueCtrl,
+             Functions
+  ) {
   return function ($scope, $tabScope, $ticket, $http, $modal, $app, $timeout, $q, $meta, Issues) {
     $tabScope.btnImg = $app.getResourcePath('jira.png');
 
-    var issues = $scope.issues = new Issues($ticket);
+    var issues = $scope.issues = new Issues($ticket),
+      lastSearchTime = 0;
     $scope.meta = $meta;
+    $scope.search_results = [];
+    $scope.active_searches = 0;
+
+
+    $scope.$on('ticket.new_reply', function($event, ticket, action){
+
+      if (!ticket.message) return;
+
+      if ('send_comment' === action) {
+
+        issues.sendComment(ticket.message);
+
+      } else if ('create_issue' === action) {
+
+        var fields = {
+          project: {id: $meta.default_project},
+          issuetype: {id: $meta.default_issuetype},
+          summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject,
+          description: ticket.message
+        };
+
+        issues.create({fields: fields}).then(
+          function () {
+          },
+          function (data) {
+            $scope.createIssueModal(fields);
+          }
+        );
+
+      }
+    });
+
+    $scope.$on('ticket.updated', function($event, ticket){
+      if (!issues.length) return;
+      if (ticket.subject) {
+	      issues.each(function(issue){
+		      issues.update(issue, {summary: '[Ticket #' + $ticket.id + '] ' + ticket.subject});
+	      });
+      }
+    });
 
     $scope.$watch('issues.length', function(l) {
       if (!l || l < 1) {
@@ -17,76 +61,86 @@ define([
       }
     });
 
-	  $scope.enableSearchMode = function() {
-		  $scope.link_search_mode = true;
-	  };
-
-    /**
-     * search issue for linking
-     * @returns {number}
-     */
-    $scope.search = function () {
-      $scope.search_issue_state = 1;
-	    if (!$scope.search_issue) {
-		    return;
-	    }
-
-      for (var i = 0; i < issues.length; i++) {
-        if ($scope.search_issue.toLowerCase().indexOf(issues[i].key.toLowerCase()) > -1) {
-          return $scope.search_issue_state = 409;
-        }
-      }
-
-      issues.search($scope.search_issue).then(
-        function (issue) {
-
-          if (!issue) {
-            return $scope.search_issue_state = 404;
-          }
-          $scope.search_issue = null;
-          $scope.search_issue_state = 0;
-          var $parent = $scope;
-
-          $modal.open({
-            templateUrl: 'deskpro_jira/Ticket/link-issue-modal.html',
-            controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
-
-              $scope.meta = $meta;
-              $scope.issue = issue;
-              $scope.names = issues.names;
-
-              if (!issue.filtered_fields) {
-                issue.filtered_fields = [];
-                $.each(issue.fields, function (id, field) {
-                  if ('comment' === id) return;
-                  if ($meta.isEnabled('summary', id)) {
-                    issue.filtered_fields.push({id: id, value: field});
-                  }
-                });
-              }
-
-              $scope.confirm = function () {
-                $scope.search_issue_state = 1;
-                $modalInstance.dismiss();
-
-                issues.link(issue).then(
-                  function () {
-                    $parent.search_issue_state = 0;
-                    $scope.link_search_mode = false;
-                  },
-                  function (status) {
-                    $parent.search_issue_state = status;
-                  }
-                );
-              };
-
-	            $scope.dismiss = $modalInstance.dismiss;
-            }]
-          });
-        }
-      );
+    $scope.enableSearchMode = function() {
+        $scope.link_search_mode = true;
     };
 
+    var startSearch = Functions.debounce(function(val){
+
+      if (!val) {
+        lastSearchTime = new Date().getTime();
+        $scope.search_results.length = 0;
+        $scope.active_searches = 0;
+        return;
+      }
+
+      (function(time){
+        $scope.active_searches++;
+        issues.search($scope.search).then(
+          function (issues) {
+            $scope.active_searches--;
+            if (time < lastSearchTime) return;
+            lastSearchTime = time;
+            $scope.search_results.length = 0;
+            if (!issues || !issues.length) return;
+            issues.each(function(el){$scope.search_results.push(el);});
+          },
+          function() {
+            $scope.active_searches--;
+          }
+        );
+      })(new Date().getTime());
+
+    }, 150);
+
+    $scope.$watch('search', startSearch);
+
+    $scope.openLinkModal = function(issue) {
+      var $parent = $scope;
+      $modal.open({
+        templateUrl: 'deskpro_jira/Ticket/link-issue-modal.html',
+        controller: ['$scope', '$modalInstance', function ($scope, $modalInstance) {
+
+          $scope.meta = $meta;
+          $scope.issue = issue;
+          $scope.names = issues.names;
+
+          $scope.already_linked = false;
+          issues.each(function(el){
+            if (el.key == issue.key) $scope.already_linked = true;
+          });
+
+          if (!issue.filtered_fields) {
+            issue.filtered_fields = [];
+            $.each(issue.fields, function (id, field) {
+              if ('comment' === id) return;
+              if ($meta.isEnabled('summary', id)) {
+                issue.filtered_fields.push({id: id, value: field});
+              }
+            });
+          }
+
+          $scope.confirm = function () {
+            $parent.active_searches++;
+            issues.link(issue).then(
+              function () {
+                $parent.search = '';
+                $parent.active_searches--;
+                $parent.link_search_mode = false;
+              },
+              function (status) {
+                $parent.search = '';
+                $parent.active_searches--;
+                $parent.search_issue_state = status;
+              }
+            );
+            $modalInstance.dismiss();
+          };
+
+          $scope.dismiss = $modalInstance.dismiss;
+        }]
+      });
+    };
 
     /**
      * unlink issue
@@ -108,23 +162,22 @@ define([
 			    $scope.issue = issue;
 			    $scope.meta = $meta;
 			    $scope.confirm = function (msg) {
-				    $scope.search_issue_state = 1;
+				    $scope.active_searches = 1;
 				    issues.unlink(issue).then(function () {
-				      $scope.search_issue_state = 0;
+				      $scope.active_searches = 0;
 				    });
 				    $modalInstance.dismiss();
 			    };
 			    $scope.dismiss = $modalInstance.dismiss;
 		    }]
 	    });
-
     };
 
 
     /**
      * create new issue
      */
-    $scope.createIssueModal = function () {
+    $scope.createIssueModal = function (newissue) {
       $modal.open({
         templateUrl: 'deskpro_jira/Ticket/create-issue-modal.html',
         controller: CreateIssueCtrl,
@@ -137,6 +190,9 @@ define([
           },
           issues: function () {
             return issues;
+          },
+          newissue: function () {
+            return newissue;
           }
         }
       });

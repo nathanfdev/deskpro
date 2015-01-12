@@ -6,10 +6,10 @@ $vendorDir = dirname(dirname(__FILE__));
 $baseDir = dirname($vendorDir);
 
 return array(
-    'True\\' => array($vendorDir . '/true/punycode/src'),
     'Symfony\\Bundle\\MonologBundle\\' => array($vendorDir . '/symfony/monolog-bundle'),
     'Monolog\\' => array($vendorDir . '/monolog/monolog/src/Monolog'),
     'League\\Url\\' => array($vendorDir . '/league/url/src'),
     'FOS\\ElasticaBundle\\' => array($vendorDir . '/friendsofsymfony/elastica-bundle'),
-    'DeskPRO\\' => array($vendorDir . '/deskpro/deskpro-api-php/src'),
+    'Doctrine\\Bundle\\DoctrineBundle\\' => array($vendorDir . '/doctrine/doctrine-bundle'),
+    'DeskPRO\\' => array($vendorDir . '/deskpro/deskpro-api-php/src/DeskPRO'),
 );

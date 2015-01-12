@@ -130,6 +130,20 @@ class RunnerExecSource
         }
 
         #------------------------------
+        # Save proper header values
+        #------------------------------
+
+        if ($h = $reader->getHeader('To')) {
+            $this->source->header_to = implode(', ', $h->getAllParts());
+        }
+        if ($h = $reader->getHeader('Subject')) {
+            $this->source->header_subject = implode(', ', $h->getAllParts());
+        }
+        if ($h = $reader->getHeader('From')) {
+            $this->source->header_from = implode(', ', $h->getAllParts());
+        }
+
+        #------------------------------
         # Output debug TO
         #------------------------------
 

@@ -494,15 +494,21 @@ class TicketEmail
             $lang = $this->to_person->getLanguage();
         }
 
+        $this->logger->info(sprintf("[TicketEmail] Language: %s", $lang->sys_name));
+
+        $start = microtime(true);
         $translator->setTemporaryLanguage($lang, function () use ($message) {
             $message->prepare();
         });
+        $this->logger->info(sprintf("[TicketEmail] Prepare took %.3fs", microtime(true) - $start));
 
         foreach ($this->headers as $header) {
             $message->getHeaders()->addTextHeader($header['name'], $header['value']);
         }
 
+        $start = microtime(true);
         $mailer->send($message);
+        $this->logger->info(sprintf("[TicketEmail] Send took %.3fs", microtime(true) - $start));
 
         foreach ($mailer->getLogMessages() as $log_msg) {
             $this->logger->debug("[TicketEmail][Mailer] $log_msg");

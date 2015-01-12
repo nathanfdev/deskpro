@@ -50,7 +50,6 @@ class RefreshableInstanceProfileCredentials extends AbstractRefreshableCredentia
     protected function refresh()
     {
         $credentials = $this->client->getInstanceProfileCredentials();
-        // Expire the token 1 minute before it actually expires to pre-fetch before expiring
         $this->credentials->setAccessKeyId($credentials->getAccessKeyId())
             ->setSecretKey($credentials->getSecretKey())
             ->setSecurityToken($credentials->getSecurityToken())

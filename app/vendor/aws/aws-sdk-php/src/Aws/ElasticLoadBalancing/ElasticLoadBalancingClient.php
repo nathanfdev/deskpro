@@ -18,15 +18,14 @@ namespace Aws\ElasticLoadBalancing;
 
 use Aws\Common\Client\AbstractClient;
 use Aws\Common\Client\ClientBuilder;
+use Aws\Common\Credentials\Credentials;
 use Aws\Common\Enum\ClientOptions as Options;
 use Guzzle\Common\Collection;
 use Guzzle\Service\Resource\Model;
-use Guzzle\Service\Resource\ResourceIteratorInterface;
 
 /**
  * Client to interact with Elastic Load Balancing
  *
- * @method Model addTags(array $args = array()) {@command ElasticLoadBalancing AddTags}
  * @method Model applySecurityGroupsToLoadBalancer(array $args = array()) {@command ElasticLoadBalancing ApplySecurityGroupsToLoadBalancer}
  * @method Model attachLoadBalancerToSubnets(array $args = array()) {@command ElasticLoadBalancing AttachLoadBalancerToSubnets}
  * @method Model configureHealthCheck(array $args = array()) {@command ElasticLoadBalancing ConfigureHealthCheck}
@@ -40,39 +39,60 @@ use Guzzle\Service\Resource\ResourceIteratorInterface;
  * @method Model deleteLoadBalancerPolicy(array $args = array()) {@command ElasticLoadBalancing DeleteLoadBalancerPolicy}
  * @method Model deregisterInstancesFromLoadBalancer(array $args = array()) {@command ElasticLoadBalancing DeregisterInstancesFromLoadBalancer}
  * @method Model describeInstanceHealth(array $args = array()) {@command ElasticLoadBalancing DescribeInstanceHealth}
- * @method Model describeLoadBalancerAttributes(array $args = array()) {@command ElasticLoadBalancing DescribeLoadBalancerAttributes}
  * @method Model describeLoadBalancerPolicies(array $args = array()) {@command ElasticLoadBalancing DescribeLoadBalancerPolicies}
  * @method Model describeLoadBalancerPolicyTypes(array $args = array()) {@command ElasticLoadBalancing DescribeLoadBalancerPolicyTypes}
  * @method Model describeLoadBalancers(array $args = array()) {@command ElasticLoadBalancing DescribeLoadBalancers}
- * @method Model describeTags(array $args = array()) {@command ElasticLoadBalancing DescribeTags}
  * @method Model detachLoadBalancerFromSubnets(array $args = array()) {@command ElasticLoadBalancing DetachLoadBalancerFromSubnets}
  * @method Model disableAvailabilityZonesForLoadBalancer(array $args = array()) {@command ElasticLoadBalancing DisableAvailabilityZonesForLoadBalancer}
  * @method Model enableAvailabilityZonesForLoadBalancer(array $args = array()) {@command ElasticLoadBalancing EnableAvailabilityZonesForLoadBalancer}
- * @method Model modifyLoadBalancerAttributes(array $args = array()) {@command ElasticLoadBalancing ModifyLoadBalancerAttributes}
  * @method Model registerInstancesWithLoadBalancer(array $args = array()) {@command ElasticLoadBalancing RegisterInstancesWithLoadBalancer}
- * @method Model removeTags(array $args = array()) {@command ElasticLoadBalancing RemoveTags}
  * @method Model setLoadBalancerListenerSSLCertificate(array $args = array()) {@command ElasticLoadBalancing SetLoadBalancerListenerSSLCertificate}
  * @method Model setLoadBalancerPoliciesForBackendServer(array $args = array()) {@command ElasticLoadBalancing SetLoadBalancerPoliciesForBackendServer}
  * @method Model setLoadBalancerPoliciesOfListener(array $args = array()) {@command ElasticLoadBalancing SetLoadBalancerPoliciesOfListener}
- * @method ResourceIteratorInterface getDescribeInstanceHealthIterator(array $args = array()) The input array uses the parameters of the DescribeInstanceHealth operation
- * @method ResourceIteratorInterface getDescribeLoadBalancerPoliciesIterator(array $args = array()) The input array uses the parameters of the DescribeLoadBalancerPolicies operation
- * @method ResourceIteratorInterface getDescribeLoadBalancerPolicyTypesIterator(array $args = array()) The input array uses the parameters of the DescribeLoadBalancerPolicyTypes operation
- * @method ResourceIteratorInterface getDescribeLoadBalancersIterator(array $args = array()) The input array uses the parameters of the DescribeLoadBalancers operation
  *
- * @link http://docs.aws.amazon.com/aws-sdk-php/guide/latest/service-elasticloadbalancing.html User guide
- * @link http://docs.aws.amazon.com/aws-sdk-php/latest/class-Aws.ElasticLoadBalancing.ElasticLoadBalancingClient.html API docs
+ * @link http://docs.aws.amazon.com/aws-sdk-php-2/guide/latest/service-elasticloadbalancing.html User guide
+ * @link http://docs.aws.amazon.com/aws-sdk-php-2/latest/class-Aws.ElasticLoadBalancing.ElasticLoadBalancingClient.html API docs
  */
 class ElasticLoadBalancingClient extends AbstractClient
 {
     const LATEST_API_VERSION = '2012-06-01';
 
     /**
-     * Factory method to create a new Elastic Load Balancing client using an array of configuration options.
+     * Factory method to create a new Elastic Load Balancing client using an array of configuration options:
+     *
+     * Credential options (`key`, `secret`, and optional `token` OR `credentials` is required)
+     *
+     * - key: AWS Access Key ID
+     * - secret: AWS secret access key
+     * - credentials: You can optionally provide a custom `Aws\Common\Credentials\CredentialsInterface` object
+     * - token: Custom AWS security token to use with request authentication
+     * - token.ttd: UNIX timestamp for when the custom credentials expire
+     * - credentials.cache.key: Optional custom cache key to use with the credentials
+     *
+     * Region and Endpoint options (a `region` and optional `scheme` OR a `base_url` is required)
+     *
+     * - region: Region name (e.g. 'us-east-1', 'us-west-1', 'us-west-2', 'eu-west-1', etc...)
+     * - scheme: URI Scheme of the base URL (e.g. 'https', 'http').
+     * - base_url: Instead of using a `region` and `scheme`, you can specify a custom base URL for the client
+     *
+     * Generic client options
+     *
+     * - ssl.certificate_authority: Set to true to use the bundled CA cert (default), system to use the certificate
+     *   bundled with your system, or pass the full path to an SSL certificate bundle. This option should be used when
+     *   you encounter curl error code 60.
+     * - curl.options: Array of cURL options to apply to every request.
+     *   See http://www.php.net/manual/en/function.curl-setopt.php for a list of available options
+     * - signature: You can optionally provide a custom signature implementation used to sign requests
+     * - signature.service: Set to explicitly override the service name used in signatures
+     * - signature.region:  Set to explicitly override the region name used in signatures
+     * - client.backoff.logger: `Guzzle\Log\LogAdapterInterface` object used to log backoff retries. Use
+     *   'debug' to emit PHP warnings when a retry is issued.
+     * - client.backoff.logger.template: Optional template to use for exponential backoff log messages. See
+     *   `Guzzle\Plugin\Backoff\BackoffLogger` for formatting information.
      *
      * @param array|Collection $config Client configuration data
      *
      * @return self
-     * @link http://docs.aws.amazon.com/aws-sdk-php/guide/latest/configuration.html#client-configuration-options
      */
     public static function factory($config = array())
     {

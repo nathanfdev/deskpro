@@ -115,6 +115,7 @@ class Person extends DomainObject implements HighlightableModelInterface
     const CREATED_WEB_AGENT = 'web.agent';
     const CREATED_WEB_USERSOURCE = 'web.usersource';
     const CREATED_GATEWAT_PERSON = 'gateway.person';
+    const CREATED_WEB_API           = 'web.api';
 
     /**
      * The unique ID.
@@ -2727,6 +2728,7 @@ class Person extends DomainObject implements HighlightableModelInterface
             'name' => 'people',
             'indexes' => array(
                 'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ),
+                'was_agent_idx' => array( 'columns' => array( 0 => 'was_agent', ), ),
                 'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed', ), ),
             )
         ));

@@ -493,7 +493,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
     protected $_sent_to_addresses;
 
     /**
-	 * @var null|\Application\DeskPRO\Labels\c
+	 * @var null|\Application\DeskPRO\Labels\LabelManager
      */
     protected $_label_manager = null;
 
@@ -562,6 +562,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this->_original_id  = null;
         $this->_is_new       = true;
         $this->participants  = new ArrayCollection();
+        $this->jira_issues   = new ArrayCollection();
         $this->messages      = new ArrayCollection();
         $this->sms_messages  = new ArrayCollection();
         $this->custom_data   = new ArrayCollection();
@@ -938,7 +939,6 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * Check if a person ID or a person object is current a participant.
      *
      * @param  $person_or_id
-     * @param $only_parts Only check participants (not assigned agent)
      * @return bool
      */
     public function hasParticipantPerson($person_or_id)
@@ -2935,8 +2935,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             if ($escape) {
                 $v = htmlspecialchars($v);
             }
-            $string = str_replace("{{ $k }}", $v, $string);
-            $string = str_replace("{{{$k}}}", $v, $string);
+            $string = str_replace("{{". $k ."}}", $v, $string);
+            $string = str_replace("{{" . $k . "}}", $v, $string);
         }
 
         return $string;
@@ -2975,7 +2975,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
                     return new WorkHoursSet(
                         $work_hours->get('start_hour', 9) * 3600 + $work_hours->get('start_minute', 0) * 60,
                         $work_hours->get('end_hour', 18) * 3600 + $work_hours->get('end_minute', 0) * 60,
-                        $work_hours->get('work_days', array(false, true, true, true, true, true, false)),
+                        $work_hours->get('work_days', array(1, 2, 3, 4, 5)),
                         $work_hours->get('timezone', 'UTC'),
                         $work_hours->get('holidays', array())
                     );

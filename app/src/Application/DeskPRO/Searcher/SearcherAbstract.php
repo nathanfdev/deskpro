@@ -65,6 +65,14 @@ abstract class SearcherAbstract implements PersonContextInterface
     protected $person = array();
 
     /**
+     * When processing terms, this turns to TRUE
+     * if the person context was used.
+     *
+     * @var bool
+     */
+    protected $used_person_context = false;
+
+    /**
      * Array of terms we've set.
      * term_type=>array(op_type, choice)
      *
@@ -120,6 +128,18 @@ abstract class SearcherAbstract implements PersonContextInterface
         }
 
         return $this->logger;
+    }
+
+
+    /**
+     * Checks to see if the terms set on this searcher requires a person context.
+     *
+     * @return bool
+     */
+    public function needsPersonContext()
+    {
+        $this->getSqlParts();
+        return $this->used_person_context;
     }
 
 
@@ -1039,12 +1059,14 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($c === 0) {
                 $unassigned = true;
             } elseif ($c == -1) {
+                $this->used_person_context = true;
                 if ($this->getPersonContext()) {
                     $agent_ids[] = $this->getPersonContext()->getId();
                 } else {
                     $agent_ids[] = -1;
                 }
             } elseif ($c == -2) {
+                $this->used_person_context = true;
                 if ($this->getPersonContext()) {
                     $not_id = $this->getPersonContext()->getId();
                 } else {
@@ -1082,11 +1104,13 @@ abstract class SearcherAbstract implements PersonContextInterface
             if ($c === 0) {
                 $no_team = true;
             } elseif ($c == -1) {
+                $this->used_person_context = true;
                 if ($agent) {
                     $team_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
                 }
                 $team_ids[] = -1;
             } elseif ($c == -2) {
+                $this->used_person_context = true;
                 if ($agent) {
                     $not_ids = array_merge($team_ids, Arrays::removeFalsey($agent->getAgentTeamIds()));
                 }

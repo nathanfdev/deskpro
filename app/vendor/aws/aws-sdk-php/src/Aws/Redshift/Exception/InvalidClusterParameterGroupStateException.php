@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The cluster parameter group action can not be completed because another task is in progress that involves the parameter group. Wait a few moments and try the operation again.
+ * Exception that occurs when a InvalidClusterParameterGroupStateException error is encountered
  */
 class InvalidClusterParameterGroupStateException extends RedshiftException {}

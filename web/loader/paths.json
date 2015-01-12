@@ -13,7 +13,6 @@
   "angularSlider":                   "bower_components/angular-slider/slider",
   "angularSelectize":                "bower_components/angular-selectize.js/angular-selectize",
   "angularGrid":                     "bower_components/angular-grid/build/ng-grid.min",
-  "angularBootstrapDatetime":        "bower_components/angular-bootstrap-datetimepicker/src/js/datetimepicker.js",
   "angularUiDatetime":               "vendor/ui-datetime",
   "angularOcLazyLoad":               "bower_components/oclazyload/dist/ocLazyLoad",
 
@@ -46,6 +45,9 @@
   "jstz":                            "vendor/detect_timezone",
   "intl-tel-input":                  "bower_components/intl-tel-input/build/js/intlTelInput.min",
   "redactor":                        "vendor/redactor/redactor.min",
+  "cutstring":                       "vendor/cuthtmlstring/cutstring",
+
+  "json3":                           "bower_components/json3/lib/json3.min",
 
   "selectize":                       "bower_components/selectize/dist/js/selectize",
   "sifter":                          "bower_components/sifter/sifter",

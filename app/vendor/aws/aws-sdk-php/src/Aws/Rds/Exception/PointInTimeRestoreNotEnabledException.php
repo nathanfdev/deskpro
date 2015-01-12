@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * SourceDBInstanceIdentifier refers to a DB instance with BackupRetentionPeriod equal to 0.
+ * Exception that occurs when a PointInTimeRestoreNotEnabledException error is encountered
  */
 class PointInTimeRestoreNotEnabledException extends RdsException {}

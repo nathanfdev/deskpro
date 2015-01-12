@@ -39,6 +39,13 @@ class LogApiCallListener
 {
     public function onControllerPostAction(PrePostEvent $event, $eventName, ContainerAwareEventDispatcher $dispatcher)
     {
+        try {
+            $this->_do($event, $eventName, $dispatcher);
+        } catch (\Exception $e) {}
+    }
+
+    private function _do(PrePostEvent $event, $eventName, ContainerAwareEventDispatcher $dispatcher)
+    {
         /** @var $auth RequestAuth */
         if (!$auth = $dispatcher->getContainer()->get('deskpro.api.request_auth')) {
             return;

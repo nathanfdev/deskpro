@@ -167,7 +167,7 @@ class Importer
      */
     public function resetDoneMarkers()
     {
-        foreach ($this->getDirectoryIterator($this->config->data_path, false) as $file) {
+        foreach ($this->getDirectoryIterator('/', false) as $file) {
             if (file_exists($file->getPath() . '.done')) {
                 unlink(@file_exists($file->getPath() . '.done'));
                 if ($this->status_callback) $this->status_callback->postResetDoneMarker($this, $file);
@@ -327,6 +327,9 @@ class Importer
      */
     public function getDirectoryIterator($dir, $exclude_done)
     {
+        if (!is_dir($this->config->data_path . '/' . $dir)) {
+            return array();
+        }
         $iterator = new RecursiveDirectoryIterator($this->config->data_path . '/' . $dir, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO);
 
         $filter = new DirectoryIteratorFilter($iterator);

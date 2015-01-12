@@ -16,6 +16,7 @@
 
 namespace Aws\S3\Command;
 
+use Aws\S3\Exception\RedirectException;
 use Guzzle\Service\Command\OperationCommand;
 use Guzzle\Service\Resource\Model;
 use Guzzle\Common\Event;

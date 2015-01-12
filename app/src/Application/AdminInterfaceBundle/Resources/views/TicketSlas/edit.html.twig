@@ -56,7 +56,10 @@
 					</div>
 					<div class="dp-ob-set">
 						<p>
-							After <dp-time-with-unit ng-model="EditCtrl.form.warn_time" model-type="array"></dp-time-with-unit> the ticket is close to failing and the warning status is applied.
+							After
+							<dp-time-with-unit ng-if="EditCtrl.form.active_time != 'all'" ng-model="EditCtrl.form.warn_time" model-type="array" available-units="['minutes', 'hours']" unit-phrases="{minutes: 'working minutes', hours: 'working hours'}"></dp-time-with-unit>
+							<dp-time-with-unit ng-if="EditCtrl.form.active_time == 'all'" ng-model="EditCtrl.form.warn_time" model-type="array"></dp-time-with-unit>
+							the ticket is close to failing and the warning status is applied.
 						</p>
 						<div class="dp-ob-setrow" style="margin-top: 5px;">
 							<header>
@@ -80,7 +83,10 @@
 					</div>
 					<div class="dp-ob-set">
 						<p>
-							After <dp-time-with-unit ng-model="EditCtrl.form.fail_time" model-type="array"></dp-time-with-unit> the ticket has failed and the failed status is applied.
+							After
+							<dp-time-with-unit ng-if="EditCtrl.form.active_time != 'all'" ng-model="EditCtrl.form.fail_time" model-type="array" available-units="['minutes', 'hours']" unit-phrases="{minutes: 'working minutes', hours: 'working hours'}"></dp-time-with-unit>
+							<dp-time-with-unit ng-if="EditCtrl.form.active_time == 'all'" ng-model="EditCtrl.form.fail_time" model-type="array"></dp-time-with-unit>
+							the ticket has failed and the failed status is applied.
 						</p>
 						<div class="dp-ob-setrow" style="margin-top: 5px;">
 							<header>

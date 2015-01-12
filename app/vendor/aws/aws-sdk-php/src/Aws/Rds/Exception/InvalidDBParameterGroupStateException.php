@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * The DB parameter group cannot be deleted because it is in use.
+ * Exception that occurs when a InvalidDBParameterGroupStateException error is encountered
  */
 class InvalidDBParameterGroupStateException extends RdsException {}

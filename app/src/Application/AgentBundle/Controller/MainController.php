@@ -34,11 +34,15 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\EntityRepository\Ticket as TicketRepository;
 use Application\DeskPRO\People\PrefNoticeSet;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class MainController extends AbstractController
 {
@@ -121,18 +125,29 @@ class MainController extends AbstractController
             WHERE p.is_agent = true AND s.date_last > ?
         ", array($cutoff));
 
-        $agent_chat_depmap = $this->db->fetchAllGrouped("
-            SELECT department_permissions.person_id, department_permissions.department_id
-            FROM department_permissions
-            WHERE
-                department_permissions.person_id IS NOT NULL
-                AND department_permissions.app = 'chat' AND department_permissions.value = 1
-        ", array(), 'person_id', null, 'department_id');
-
-        foreach ($agent_chat_depmap as &$v) {
-            if ($v) {
-                $v = array_unique($v, \SORT_NUMERIC);
+        $with_chat_perm = array();
+        foreach ($this->container->getAgentData()->getAgents() as $a) {
+            if ($a->hasPerm('agent_chat.use')) {
+                $with_chat_perm[] = $a->id;
             }
+        }
+
+        if ($with_chat_perm) {
+            $agent_chat_depmap = $this->db->fetchAllGrouped("
+                SELECT department_permissions.person_id, department_permissions.department_id
+                FROM department_permissions
+                WHERE
+                    department_permissions.person_id IN (?)
+                    AND department_permissions.app = 'chat' AND department_permissions.value = 1
+            ", array($with_chat_perm), 'person_id', null, 'department_id', array(Connection::PARAM_INT_ARRAY));
+
+            foreach ($agent_chat_depmap as &$v) {
+                if ($v) {
+                    $v = array_unique($v, \SORT_NUMERIC);
+                }
+            }
+        } else {
+            $agent_chat_depmap = array();
         }
 
         $is_first_login = false;
@@ -455,7 +470,7 @@ class MainController extends AbstractController
     {
         $rows = array();
 
-        $render_person = function (Person $person) {
+        $render_person = function (Person $person, array $counts = array()) {
             $data = array();
             $data['picture_url']    = $person->getPictureUrl();
             $data['picture_url_80'] = $person->getPictureUrl(80);
@@ -476,6 +491,10 @@ class MainController extends AbstractController
                 );
             } else {
                 $data['primary_email'] = null;
+            }
+
+            if (isset($counts[$person['id']])) {
+                $data['tickets_count'] = $counts[$person['id']];
             }
 
             return $data;
@@ -511,8 +530,9 @@ class MainController extends AbstractController
                 break;
 
             case 'person':
+                $counts = $this->em->getRepository('DeskPRO:Ticket')->getTicketCountsForPeople($results);
                 foreach ($results as $r) {
-                    $rows[] = $render_person($r);
+                    $rows[] = $render_person($r, $counts);
                 }
                 break;
 
@@ -562,5 +582,26 @@ class MainController extends AbstractController
         }
 
         return $rows;
+    }
+
+    public function getPersonTicketsAction(Request $request)
+    {
+        if (!$person = $this->em->find('DeskPRO:Person', $request->get('person_id'))) {
+            throw new NotFoundHttpException;
+        }
+
+        $sort = 'date_created';
+        if ('date_active' === $request->get('sort')) {
+            $sort = 'date_last_reply';
+        }
+
+        /** @var TicketRepository $rep */
+        $rep = $this->em->getRepository('DeskPRO:Ticket');
+        $limit = $request->get('all') ? null : 15;
+        $tickets = $rep->getPersonTickets($person, $limit, $sort);
+
+        return $this->createJsonResponse(array(
+            'results' => $this->renderSearchResults('ticket', $tickets),
+        ));
     }
 }

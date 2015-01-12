@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * You already have a cache cluster with the given identifier.
+ * Exception that occurs when a CacheClusterAlreadyExistsException error is encountered
  */
 class CacheClusterAlreadyExistsException extends ElastiCacheException {}

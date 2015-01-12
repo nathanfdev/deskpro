@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The operation would exceed the number of nodes allowed for a cluster.
+ * Exception that occurs when a NumberOfNodesPerClusterLimitExceededException error is encountered
  */
 class NumberOfNodesPerClusterLimitExceededException extends RedshiftException {}

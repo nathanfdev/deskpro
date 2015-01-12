@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * The argument is invalid.
+ * Exception that occurs when a InvalidArgumentException error is encountered
  */
 class InvalidArgumentException extends CloudFrontException {}

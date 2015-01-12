@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * The VPC network is in an invalid state.
+ * Exception that occurs when a InvalidVPCNetworkStateException error is encountered
  */
 class InvalidVPCNetworkStateException extends ElastiCacheException {}

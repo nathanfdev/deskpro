@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * A DB security group is not allowed for this action.
+ * Exception that occurs when a DBSecurityGroupNotSupportedException error is encountered
  */
 class DBSecurityGroupNotSupportedException extends RdsException {}

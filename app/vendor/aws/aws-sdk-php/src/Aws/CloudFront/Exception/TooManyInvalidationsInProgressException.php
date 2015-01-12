@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * You have exceeded the maximum number of allowable InProgress invalidation batch requests, or invalidation objects.
+ * Exception that occurs when a TooManyInvalidationsInProgressException error is encountered
  */
 class TooManyInvalidationsInProgressException extends CloudFrontException {}

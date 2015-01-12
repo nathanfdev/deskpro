@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * You do not have permission to publish to the SNS topic ARN.
+ * Exception that occurs when a SNSNoAuthorizationException error is encountered
  */
 class SNSNoAuthorizationException extends RdsException {}

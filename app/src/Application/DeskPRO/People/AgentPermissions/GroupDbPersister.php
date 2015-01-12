@@ -121,12 +121,39 @@ class GroupDbPersister
     {
         $current_perms = $this->db->fetchAllCol("SELECT name FROM permissions WHERE person_id = ?", array($person->id));
 
+        $group_perms = new GroupsDbLoader($person->usergroups ? $person->usergroups->toArray() : array(), $this->em);
+        $via_groups = array();
+        $names_loader = new PermissionNamesLoader();
+
+        foreach ($person->usergroups as $ug) {
+            if ($ug->sys_name == 'agent_all_perms' || $ug->sys_name == 'agent_all_safe_perms') {
+                $ug_perms = $names_loader->getEnabledForGroup($ug);
+                if ($ug_perms) {
+                    $ug_perms = array_fill_keys($ug_perms, true);
+                } else {
+                    $ug_perms = array();
+                }
+            } else {
+                $ug_perms = $group_perms->getGroupPermissions($ug->id);
+                if ($ug_perms) {
+                    $ug_perms = $ug_perms->toArray();
+                } else {
+                    $ug_perms = array();
+                }
+            }
+            $via_groups = array_merge($via_groups, $ug_perms);
+        }
+
         $set_perms = array();
         foreach (GroupsDbLoader::$prefix_map as $real_name => $coll_name) {
             $obj = $perms->$coll_name;
             foreach ($obj->getNames() as $prop) {
                 if ($obj->$prop) {
-                    $set_perms[] = $real_name . '.' . $prop;
+                    $n = $real_name . '.' . $prop;
+
+                    if (!isset($via_groups[$n])) {
+                        $set_perms[] = $n;
+                    }
                 }
             }
         }

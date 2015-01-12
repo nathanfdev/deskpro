@@ -11,20 +11,28 @@ define(function () {
 
 	    this.last = function() {
 		    return this[this.length - 1];
-	    }
+	    };
 
 	    this.push = function() {
-		    for (var i = 0; i < arguments.length; i++) {
-			    var issue = arguments[i];
-			    if (!issue) continue;
+          for (var i = 0; i < arguments.length; i++) {
+            var issue = arguments[i];
+            if (!issue) continue;
 
-			    if (issue instanceof Array) {
-				    return issue.each(function(el){self.push(el);});
-			    }
+            if (issue instanceof Array) {
+                return issue.each(function(el){self.push(el);});
+            }
 
-			    Array.prototype.push.call(self, issue);
-			    issue.url = issue.self.replace('rest/api/2/issue/' + issue.id, 'browse/' + issue.key);
-		    }
+            Array.prototype.push.call(self, issue);
+            issue.url = issue.self.replace('rest/api/2/issue/' + issue.id, 'browse/' + issue.key);
+
+            // replace fields with rendered format
+            if (issue.renderedFields) {
+              for (var i in issue.renderedFields) {
+                issue.fields[i] = issue.renderedFields[i];
+                issue.renderedFields[i] = true;
+              }
+            }
+          }
 	    };
 
       /**
@@ -39,7 +47,7 @@ define(function () {
         $http.get('/agent/jira/ticket/' + $ticket.id + '/issue')
           .success(function (data, status, headers, config) {
             self.loading = false;
-		        data && self.push(data.issues);
+            data && self.push(data.issues);
             d.resolve(self);
           })
           .error(function (data, status, headers, config) {
@@ -61,7 +69,7 @@ define(function () {
 
         $http.post('/agent/jira/ticket/' + $ticket.id + '/issue', data)
           .success(function (data, status, headers, config) {
-		        data && self.push(data.issues);
+            data && self.push(data.issues);
             d.resolve(self.last());
           })
           .error(function (data, status, headers, config) {
@@ -71,6 +79,37 @@ define(function () {
 
         return d.promise;
       };
+
+	    /**
+	     * updates an issue
+	     * @param data
+	     * @returns {*}
+	     */
+	    this.update = function (issue, fields) {
+		    if (!issue.id) return;
+		    for (var i = 0; i < this.length; i++) {
+			    if (this[i].id === issue.id) {
+				    issue = this[i];
+			    }
+		    }
+		    var d = $q.defer();
+
+		    $http.put('/agent/jira/ticket/' + $ticket.id + '/issue/' + issue.id, {fields: fields})
+				    .success(function (data, status, headers, config) {
+					    for (var i in fields) {
+						    if (undefined !== issue.fields[i]) {
+							    issue.fields[i] = fields[i];
+						    }
+					    }
+					    d.resolve(self.last());
+				    })
+				    .error(function (data, status, headers, config) {
+					    console.error('Update JIRA Issue: ', status, {data: data});
+					    d.reject(data);
+				    });
+
+		    return d.promise;
+	    };
 
       /**
        * send a comment to exact issue, or to all linked issues
@@ -86,7 +125,10 @@ define(function () {
           .success(function (data, status, headers, config) {
             if (!data) return d.resolve(data);
 
-		        if (issue) {
+            // replace with rendered
+            data.body = data.renderedBody;
+
+            if (issue) {
               if (issue.fields.comment) {
                 issue.fields.comment.comments.push(data);
                 issue.fields.comment.total++;
@@ -124,8 +166,7 @@ define(function () {
 
         $http.get('/agent/jira/search?q=' + $window.encodeURI(q))
           .success(function (data, status, headers, config) {
-		        var issue = data.issues ? data.issues[data.issues.length - 1] : null;
-            d.resolve(issue);
+            d.resolve(data.issues);
           })
           .error(function (data, status, headers, config) {
             console.error('Search JIRA Issue: ', status, {data: data});

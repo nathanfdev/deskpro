@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The parameter group name does not refer to an existing parameter group.
+ * Exception that occurs when a ClusterParameterGroupNotFoundException error is encountered
  */
 class ClusterParameterGroupNotFoundException extends RedshiftException {}

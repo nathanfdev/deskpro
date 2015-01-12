@@ -71,6 +71,10 @@ class Identity implements \ArrayAccess
     {
         $this->identity = $identity;
         $this->raw_userinfo = $raw_userinfo;
+
+        if (isset($raw_userinfo['friendly_identity'])) {
+            $this->friendly_identity = $raw_userinfo['friendly_identity'];
+        }
     }
 
     /**
