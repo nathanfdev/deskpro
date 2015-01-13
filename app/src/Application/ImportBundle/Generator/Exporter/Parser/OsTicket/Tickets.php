@@ -64,7 +64,7 @@ class Tickets extends AbstractOsTicket
         $offset = 0;
         $collection = new Entity\Collection();
 
-        while ($batch = $this->os_ticket_reader->findAllTickets($offset)) {
+        while ($batch = $this->os_ticket_reader->findTickets($this->config->getBatchSize(), $offset)) {
             $offset += count($batch);
 
             foreach ($batch as $ticket) {
@@ -89,7 +89,7 @@ class Tickets extends AbstractOsTicket
                     $entity->addMessage($message);
                 }
 
-                $this->logInfo(sprintf('%s exported successfully!', $entity->getDestination()));
+                $this->logInfo(sprintf('%s parsed successfully!', $entity->getDestination()));
                 $collection->attach($entity);
 
                 $num++;

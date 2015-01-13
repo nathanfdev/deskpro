@@ -87,7 +87,7 @@ class People extends AbstractOsTicket
         $offset     = 0;
         $collection = new Entity\Collection();
 
-        while ($batch = $this->os_ticket_reader->findAllStaff($offset)) {
+        while ($batch = $this->os_ticket_reader->findAllStaff($this->config->getBatchSize(), $offset)) {
             $offset += count($batch);
 
             foreach ($batch as $person) {
@@ -104,7 +104,7 @@ class People extends AbstractOsTicket
 
                 $collection->attach($entity);
                 $this->logInfo(sprintf(
-                    'Person `%s %s` exported successfully!',
+                    'Person `%s %s` parsed successfully!',
                     $entity->getFirstName(), $entity->getLastName()
                 ));
             }
@@ -120,7 +120,7 @@ class People extends AbstractOsTicket
     private function exportUsers()
     {
         $collection = new Entity\Collection();
-        $users = $this->os_ticket_reader->findAllUser();
+        $users = $this->os_ticket_reader->findAllUsers($this->config->getBatchSize(), 0);
         foreach ($users as $person) {
             $this->advanceProgressBar();
 
@@ -133,7 +133,7 @@ class People extends AbstractOsTicket
 
             $collection->attach($entity);
             $this->logInfo(sprintf(
-                'Person `%s` exported successfully!',
+                'Person `%s` parsed successfully!',
                 $entity->getName()
             ));
         }

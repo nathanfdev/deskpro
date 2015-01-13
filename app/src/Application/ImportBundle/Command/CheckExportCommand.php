@@ -32,14 +32,15 @@
 namespace Application\ImportBundle\Command;
 
 use Symfony\Component\Console\Helper\ProgressHelper;
-use Symfony\Component\Console\Input\InputArgument;
-use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Application\ImportBundle\Generator\Generator;
+use Application\ImportBundle\Generator;
 
 /**
+ * Check export command
+ * Read and parse an external data to check if it's valid
+ *
  * Class CheckExportCommand
  * @package Application\ImportBundle\Command
  */
@@ -51,10 +52,7 @@ class CheckExportCommand extends AbstractExportCommand
     protected function configure()
     {
         $this->setName('dp:export:check');
-        $this->setHelp('Performs a dry run of the export process');
-        $this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-        $this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
-        $this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
+        $this->setHelp('Export validation process');
 
         parent::configure();
     }
@@ -69,7 +67,7 @@ class CheckExportCommand extends AbstractExportCommand
 
         /** @var ProgressHelper $progress_bar */
         $progress_bar = $this->getHelperSet()->get('progress');
-        /** @var Generator $generator */
+        /** @var Generator\Generator $generator */
         $generator = $this->getContainer()->get('deskpro.import.generator');
         $generator
             ->setConfig($config)
@@ -81,11 +79,19 @@ class CheckExportCommand extends AbstractExportCommand
 
         $progress_bar->start($output, $generator->getTotalRecordsCount());
         $exceptions = $generator->validate();
+        foreach ($exceptions as $exception) {
+            /** @var Generator\Validator\ValidatorException $exception */
+            $logger->alert($exception);
+        }
 
-        echo "\n";
-        echo sprintf('Errors found `%d`', $exceptions->count());
-        echo "\n";
-        echo "Done";
-        echo "\n";
+        $output->writeln('');
+        if ($config->isVerbose()) {
+            $output->writeln("Done.");
+        } else {
+            $output->writeln(sprintf(
+                "Done. Errors found `%d`. Look at the log file `%s` to see details.",
+                $exceptions->count(), $config->getLogPath()
+            ));
+        }
     }
 }

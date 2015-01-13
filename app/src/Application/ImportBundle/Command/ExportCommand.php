@@ -32,6 +32,8 @@
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\GeneratorException;
+use Application\ImportBundle\Generator\Validator\ValidatorException;
 use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -42,6 +44,9 @@ use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Application\ImportBundle\Generator\Generator;
 
 /**
+ * Export command
+ * Read and parse an external data and save it locally
+ *
  * Class ExportCommand
  * @package Application\ImportBundle\Command
  */
@@ -54,9 +59,12 @@ class ExportCommand extends AbstractExportCommand
     {
         $this->setName('dp:export:run');
         $this->setHelp('The actual export process');
-        $this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
-        $this->addOption('output-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the files should be exported');
-        $this->addOption('input-path', null, InputOption::VALUE_REQUIRED, 'The path to the directory where the CSV files are present');
+        $this->addOption(
+            'output-path',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'The path to the directory where the files should be exported'
+        );
 
         parent::configure();
     }
@@ -67,11 +75,7 @@ class ExportCommand extends AbstractExportCommand
     protected function execute(InputInterface $input, OutputInterface $output)
     {
         $config = $this->createGeneratorConfig($input);
-        $config->setMode(GeneratorConfig::MODE_LIVE);
-
-        $out_handler = new ConsoleHandler($output);
-        $out_handler->setLevel(Logger::NOTICE);
-        $logger = $this->createLogger($config, $out_handler);
+        $logger = $this->createLogger($config, new ConsoleHandler($output));
 
         /** @var ProgressHelper $progress_bar */
         $progress_bar = $this->getHelperSet()->get('progress');
@@ -86,8 +90,23 @@ class ExportCommand extends AbstractExportCommand
         }
 
         $progress_bar->start($output, $generator->getTotalRecordsCount());
-        $generator->generate();
 
-        echo "\nDone\n";
+        try {
+            $generator->generate();
+            $output->writeln('Done.');
+
+        } catch (GeneratorException $e) {
+            $output->writeln('');
+            foreach ($e->getExceptions() as $exception) {
+                /** @var ValidatorException $exception */
+                $logger->critical($exception);
+            }
+            if ($config->isVerbose() === false) {
+                $output->writeln(sprintf(
+                    "An error has occurred while exporting. Look at the log file `%s` to see details.",
+                    $config->getLogPath()
+                ));
+            }
+        }
     }
 }

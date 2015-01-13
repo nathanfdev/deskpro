@@ -62,10 +62,9 @@ final class JsonWriter extends AbstractWriter
         if (!$this->config) {
             throw new Exception('Generator configuration is not set up');
         }
-        if ($this->config->isLive()) {
-            $this->createOutputDirsIfNotExist();
-            file_put_contents($this->getEntityPath($entity), json_encode($entity->toArray()));
-        }
+
+        $this->createOutputDirsIfNotExist();
+        file_put_contents($this->getEntityPath($entity), json_encode($entity->toArray()));
 
         return true;
     }

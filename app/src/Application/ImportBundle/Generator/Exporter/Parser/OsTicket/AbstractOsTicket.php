@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\ImportBundle\Generator\Exporter\Parser\AbstractParser;
-use Application\ImportBundle\OsTicket\OsTicketReader;
 use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 
 /**
@@ -38,7 +37,7 @@ use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 abstract class AbstractOsTicket extends AbstractParser
 {
     /**
-     * @var OsTicketReader
+     * @var OsTicketReaderInterface
      */
     protected $os_ticket_reader;
 

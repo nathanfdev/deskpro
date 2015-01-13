@@ -88,7 +88,7 @@ class People extends AbstractCsv
                     ->addEmail($person['email']);
 
                 $collection->attach($entity);
-                $this->logInfo(sprintf('%s exported successfully!', $entity->getDestination()));
+                $this->logInfo(sprintf('%s parsed successfully!', $entity->getDestination()));
             }
         }
 

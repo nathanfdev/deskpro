@@ -31,6 +31,8 @@ use Application\ImportBundle\Entity;
 use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
+ * Exporter validator exception
+ *
  * Class ValidatorException
  * @package Application\ImportBundle\Generator\Validator
  */
@@ -59,7 +61,7 @@ class ValidatorException extends \Exception
     }
 
     /**
-     * Returns
+     * Returns the fail entity
      *
      * @return Entity\EntityInterface
      */
@@ -69,10 +71,22 @@ class ValidatorException extends \Exception
     }
 
     /**
+     * Returns a collection of the errors
+     *
      * @return ConstraintViolationList
      */
     public function getErrors()
     {
         return $this->errors;
+    }
+
+    /**
+     * Parse to string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf("%s: %s", $this->entity->getDestination(), $this->errors);
     }
 }

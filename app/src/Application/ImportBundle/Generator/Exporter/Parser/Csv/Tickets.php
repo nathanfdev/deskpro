@@ -91,7 +91,7 @@ class Tickets extends AbstractCsv
                 }
 
                 $collection->attach($entity);
-                $this->logInfo(sprintf('%s exported successfully!', $entity->getDestination()));
+                $this->logInfo(sprintf('%s parsed successfully!', $entity->getDestination()));
             }
         }
 

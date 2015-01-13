@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\AbstractCollection;
 
 /**
+ * Collection of exporter validators exceptions
+ *
  * Class ExceptionCollection
  * @package Application\ImportBundle\Generator\Validator
  */

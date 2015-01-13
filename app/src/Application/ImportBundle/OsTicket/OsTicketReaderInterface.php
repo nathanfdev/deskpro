@@ -36,10 +36,82 @@ interface OsTicketReaderInterface
     /**
      * @return int
      */
-    public function getTicketCount();
+    public function getPeopleCount();
 
     /**
      * @return int
      */
-    public function getPeopleCount();
+    public function getTicketCount();
+
+    /**
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return mixed
+     */
+    public function findAllStaff($limit, $offset);
+
+    /**
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return mixed
+     */
+    public function findAllUsers($limit, $offset);
+
+    /**
+     * @param int $limit
+     * @param int $offset
+     *
+     * @return array|false
+     */
+    public function findTickets($limit, $offset);
+
+    /**
+     * @param int $message_id
+     * @return array
+     */
+    public function findTicketMessageAttachment($message_id);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function findDepartmentFromId($id);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function findUserEmailFromId($id);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function findStaffEmailFromId($id);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function findTeamNameFromId($id);
+
+    /**
+     * @param $ticket_id
+     * @return mixed
+     */
+    public function findMessagesByTicketId($ticket_id);
+
+    /**
+     * @param $id
+     * @return mixed
+     */
+    public function findTimezoneFromId($id);
+
+    /**
+     * @param $file_id
+     * @return mixed
+     */
+    public function getFileData($file_id);
 }

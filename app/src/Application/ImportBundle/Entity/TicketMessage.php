@@ -131,6 +131,16 @@ final class TicketMessage extends AbstractEntity
     }
 
     /**
+     * Returns the collection of the message attachments
+     *
+     * @return Collection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
+    /**
      * Add a message attachment
      *
      * @param TicketAttachment $attachment

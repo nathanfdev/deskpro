@@ -39,9 +39,6 @@ namespace Application\ImportBundle\Generator;
  */
 class GeneratorConfig
 {
-    const MODE_TEST = 'test';
-    const MODE_LIVE = 'live';
-
     /**
      * @var string
      */
@@ -68,15 +65,6 @@ class GeneratorConfig
     private $log_path = '/import.log';
 
     /**
-     * 'test' or 'live'
-     *
-     * @var string
-     */
-    private $mode = self::MODE_TEST;
-
-    /**
-     * Mark files as done when they are finished importing?
-     *
      * @var bool
      */
     private $mark_done = true;
@@ -186,34 +174,6 @@ class GeneratorConfig
     {
         $this->log_path = $log_path;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getMode()
-    {
-        return $this->mode;
-    }
-
-    /**
-     * @param string $mode
-     * @return $this
-     */
-    public function setMode($mode)
-    {
-        $this->mode = $mode;
-        return $this;
-    }
-
-    /**
-     * Is live mode
-     *
-     * @return bool
-     */
-    public function isLive()
-    {
-        return $this->mode === self::MODE_LIVE;
     }
 
     /**

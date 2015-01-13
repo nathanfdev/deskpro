@@ -33,10 +33,13 @@ use Application\ImportBundle\Generator\GeneratorInterface;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
 use Orb\Util\OptionsArray;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
+use Exception;
 
 /**
  * Base export command
@@ -51,7 +54,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function configure()
     {
-        $this->addOption('live');
+        $this->addArgument('script', InputArgument::REQUIRED, 'The target script to use');
+        $this->addOption(
+            'input-path',
+            null,
+            InputOption::VALUE_REQUIRED,
+            'The path to the directory where the CSV files are present'
+        );
     }
 
     /**
@@ -84,24 +93,23 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         $config
             ->setOutputPath($import_config->get('output_path'))
             ->setLogPath($import_config->get('log_path', dp_get_log_dir() . '/export.log'))
-            ->setMode($import_config->get('mode', GeneratorConfig::MODE_TEST))
             ->setMarkDone($import_config->get('mark_done', true));
     }
 
     /**
-     * Use CLI to set up generator config params
+     * Use cli to set up generator config params
      *
      * @param GeneratorConfig $config
      * @param InputInterface  $input
      *
-     * @throws \Exception
+     * @throws Exception
      */
     protected function setParamsByInputInterface(GeneratorConfig $config, InputInterface $input)
     {
         if ($input->hasArgument('script')) {
             $config->setExporterType($input->getArgument('script'));
         } else {
-            throw new \Exception('Source type argument is not defined');
+            throw new Exception('Source type argument is not defined');
         }
 
         if ($input->hasOption('output-path') && $input->getOption('output-path')) {
@@ -112,18 +120,12 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             $config->setInputPath($input->getOption('input-path'));
         } else {
             if ($config->getExporterType() === ExporterInterface::TYPE_CSV) {
-                throw new \Exception('You must supply an "input-path" argument while using CSV exporter');
+                throw new Exception('You must supply an "input-path" argument while using CSV exporter');
             }
         }
 
         if ($input->hasOption('log-path')) {
             $config->setLogPath($input->getOption('log-path'));
-        }
-        if ($input->hasOption('mode')) {
-            $config->setMode($input->getOption('mode'));
-        }
-        if ($input->hasOption('live')) {
-            $config->setMode(GeneratorConfig::MODE_LIVE);
         }
         if ($input->hasOption('mark-done')) {
             $config->setMarkDone($input->getOption('mark-done'));

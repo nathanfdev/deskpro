@@ -41,6 +41,9 @@ abstract class AbstractEntity implements EntityInterface
     protected $destination;
 
     /**
+     * Set entity destination
+     * It could be a file name or db name
+     *
      * @param string $destination
      * @return $this
      */

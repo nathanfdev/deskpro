@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Validator;
 use Symfony\Component\Validator\Validator;
 
 /**
- * Symfony constraint validator
+ * A symfony constraint validator
  *
  * Class AbstractConstraintValidator
  * @package Application\ImportBundle\Generator\Validator

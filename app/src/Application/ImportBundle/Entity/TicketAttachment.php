@@ -27,6 +27,9 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+use Symfony\Component\Validator\Constraints;
+
 /**
  * Exporting ticket message attachment entity
  *
@@ -146,5 +149,18 @@ final class TicketAttachment extends AbstractEntity
             'file_name'    => $this->file_name,
             'content_type' => $this->content_type,
         );
+    }
+
+    /**
+     * Validator class metadata
+     *
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+        $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
+            ->addPropertyConstraint('file_name', new Constraints\NotBlank())
+            ->addPropertyConstraint('content_type', new Constraints\NotBlank());
     }
 }
