@@ -34,6 +34,12 @@ services:
       - { name: form.type, alias: person_profile }
 
 
+  form.comment:
+    class: Application\FormBundle\Form\Type\CommentType
+    tags:
+      - { name: form.type, alias: comment }
+
+
   form.person_change_password:
     class: Application\FormBundle\Form\Type\PersonChangePasswordType
     tags:
