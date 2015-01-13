@@ -28,3 +28,9 @@ services:
         arguments: [@service_container]
         tags:
             - { name: security.voter }
+
+    content_comment.voter:
+        class: Application\AuthBundle\Voter\Portal\ContentCommentVoter
+        arguments: [@service_container]
+        tags:
+            - { name: security.voter }

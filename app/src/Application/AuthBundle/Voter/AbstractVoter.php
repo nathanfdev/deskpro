@@ -121,6 +121,16 @@ abstract class AbstractVoter extends \Symfony\Component\Security\Core\Authorizat
     }
 
     /**
+     * @param $setting
+     * @param mixed $default
+     * @return mixed
+     */
+    public function getActiveBrandSetting($setting, $default = null)
+    {
+        return $this->getActiveBrandContainer()->getSetting($setting, $default);
+    }
+
+    /**
      * @return \Symfony\Component\Security\Core\Authorization\AuthorizationChecker
      */
     public function getAuthorizationChecker()
