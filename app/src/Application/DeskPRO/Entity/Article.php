@@ -46,6 +46,8 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
  */
 class Article extends ContentAbstract implements HighlightableModelInterface
 {
+    const CONTENT_TYPE = 'article';
+
     const END_ACTION_DELETE  = 'delete';
     const END_ACTION_ARCHIVE = 'archive';
 

@@ -44,6 +44,8 @@ use Orb\Util\Util;
  */
 abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
+    const CONTENT_TYPE = null;
+
     const STATUS_PUBLISHED   = 'published';
     const STATUS_ARCHIVED    = 'archived';
     const STATUS_HIDDEN      = 'hidden';

@@ -36,6 +36,10 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\People\PersonGuest;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
@@ -88,26 +92,27 @@ class CommonController extends AbstractController
     /**
      * @Tag(name="related_content")
      * @TagOptions(
-     *      required={"content_type", "content"},
-     *      allowed_types={"content_type":"string", "content":{"string","int"}},
+     *      required={"content_type", "content_id"},
+     *      allowed_types={"content_type":"string", "content_id":{"string","int"}},
      *      allowed_values={"content_type":{"article","news","download","feedback"}}
      * )
      */
     public function relatedContentAction(TagRequest $tag_request, array $options)
     {
         $content = null;
+        $content_id = $options['content_id'];
         switch ($content_type = $options['content_type']) {
-            case 'article':
-                $content = $this->getArticlesDataService()->getArticle($options['content']);
+            case Article::CONTENT_TYPE:
+                $content = $this->getArticlesDataService()->getArticle($content_id);
                 break;
-            case 'download':
-                $content = $this->getDownloadsDataService()->getDownload($options['content']);
+            case Download::CONTENT_TYPE:
+                $content = $this->getDownloadsDataService()->getDownload($content_id);
                 break;
-            case 'news':
-                $content = $this->getNewsDataService()->getPost($options['content']);
+            case News::CONTENT_TYPE:
+                $content = $this->getNewsDataService()->getPost($content_id);
                 break;
-            case 'feedback':
-                $content = $this->getFeedbackDataService()->getItem($options['content']);
+            case Feedback::CONTENT_TYPE:
+                $content = $this->getFeedbackDataService()->getItem($content_id);
                 break;
         }
 
@@ -116,11 +121,13 @@ class CommonController extends AbstractController
         }
 
         $related_content_finder = new RelatedContentFinder($this->getUser() ?: new PersonGuest(), $content);
+        $related_content = $related_content_finder->getRelatedEntities();
 
         return $this->render('Theme:Common:related_content.html.twig', array(
             'content_type' => $content_type,
+            'content_id' => $content_id,
             'content' => $content,
-            'related_content' => $related_content_finder->getRelatedEntities()
+            'related_content' => $related_content
         ));
     }
 

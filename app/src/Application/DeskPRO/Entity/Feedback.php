@@ -45,6 +45,8 @@ use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
  */
 class Feedback extends ContentAbstract implements HighlightableModelInterface
 {
+    const CONTENT_TYPE = 'feedback';
+
     const STATUS_NEW      = 'new';
     const STATUS_ACTIVE   = 'active';
     const STATUS_CLOSED   = 'closed';

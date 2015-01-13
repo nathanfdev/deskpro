@@ -48,6 +48,8 @@ use Orb\Util\Strings;
  */
 class News extends ContentAbstract implements HighlightableModelInterface
 {
+    const CONTENT_TYPE = 'news';
+
     /**
      * @var \Application\DeskPRO\Entity\NewsCategory
      *

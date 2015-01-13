@@ -46,6 +46,8 @@ use Orb\Util\Strings;
  */
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
+    const CONTENT_TYPE = 'download';
+
     /**
      * @var \Application\DeskPRO\Entity\DownloadCategory
      */
