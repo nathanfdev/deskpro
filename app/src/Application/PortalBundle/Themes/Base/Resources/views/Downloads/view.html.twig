@@ -17,7 +17,17 @@
         </header>
 
         <div class="article-extras">
-            <a href="{{ path('portal_downloads_download', { slug:download.slug }) }}">{{ phrase('portal.downloads.btn-download', { size: download.readableFileSize }) }}</a>
+            <a href="{{ path('portal_downloads_download', { slug: download.slug, authcode: download.blob.authcode }) }}">
+            
+                {% if download.blob and download.blob.is_image %}
+                    <img style="max-width: 100%;" src="{{ path('serve_blob', { blob_auth_id: download.blob.authcode, filename: download.blob.filenameSafe }) }}"
+                         alt="{{ download.title }}"/><br>
+                {% endif %}
+
+                [{{ download.blob.content_type }}]
+                {{ phrase('portal.downloads.btn-download', { size: download.readableFileSize }) }}
+
+            </a>
         </div>
 
         <div class="header-button-container">

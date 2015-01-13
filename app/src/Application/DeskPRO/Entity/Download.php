@@ -117,6 +117,12 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         $this->setModelField('date_updated', new \DateTime());
     }
 
+    public function incrementDownloadCount()
+    {
+        $new = (int) $this->num_downloads + 1;
+        $this->setModelField('num_downloads', $new);
+    }
+
     /**
      * @param Blob $blob
      */
@@ -540,5 +546,13 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         );
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
+    }
+
+    /**
+     * @return Blob
+     */
+    public function getBlob()
+    {
+        return $this->blob;
     }
 }

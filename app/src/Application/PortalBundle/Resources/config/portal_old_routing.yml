@@ -1,0 +1,2 @@
+serve_blob:
+    path: '/file.php/{blob_auth_id}/{filename}'

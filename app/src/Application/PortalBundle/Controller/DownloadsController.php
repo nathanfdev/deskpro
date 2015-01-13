@@ -36,6 +36,7 @@ namespace Application\PortalBundle\Controller;
 
 
 use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
+use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -142,6 +143,11 @@ class DownloadsController extends AbstractController
      */
     public function viewAction(Request $request, Download $file)
     {
+        // TODO: is there ever an instance that there would NOT be a blob associated with a download entity??
+        if (!$file->getBlob()) {
+            throw $this->createNotFoundException('could not find downloadable content for download id='.$file->getId());
+        }
+
         //
         // RATING
         //
@@ -177,13 +183,28 @@ class DownloadsController extends AbstractController
 
 
     /**
-     * @Route("/downloads/files/{slug}/download", name="portal_downloads_download")
-     * @ParamConverter(name="download", converter="deskpro_slug")
+     * @Route("/downloads/files/{slug}/download/{authcode}", name="portal_downloads_download")
+     * @ParamConverter("file", options={"slug" = "slug"})
+     * @ParamConverter("blob", options={"authcode" = "authcode"})
      * @Security("is_granted('USE_DOWNLOADS')")
      */
-    public function downloadAction(Request $request, Download $file)
+    public function downloadAction(Request $request, Download $file, Blob $blob)
     {
-        return new Response('downlading file...');
+        if ($file->blob->getId() !== $blob->getId()) {
+            throw $this->createNotFoundException('invalid authcode for this file');
+        }
+
+        $file->incrementDownloadCount();
+        $this->getEm()->flush($file);
+
+        if ($file->fileurl) {
+            return $this->redirect($file->fileurl);
+        }
+
+        return $this->redirectToRoute('serve_blob', array(
+            'blob_auth_id' => $file->blob->auth_id,
+            'filename' => $file->getFilenameSafe()
+        ));
     }
 
     /**

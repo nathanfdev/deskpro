@@ -4,6 +4,9 @@ admin_interface:
 agent_interface:
     path: /agent
 
+dp_routing:
+    resource: "@PortalBundle/Resources/config/portal_old_routing.yml"
+
 # Annotations
 portal:
     resource: "@PortalBundle/Controller"
