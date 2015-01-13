@@ -116,6 +116,28 @@ class NewsController extends AbstractController
     }
 
     /**
+     * @Tag(name="news_comments")
+     * @TagOptions(
+     *      defaults={
+     *          "post": null
+     *      },
+     *      allowed_types={
+     *          "post":{"Application\DeskPRO\Entity\News","int","string","null"}
+     *      }
+     * )
+     */
+    public function commentsAction(TagRequest $tag_request, array $options)
+    {
+        $post = $this->getNewsDataService()->getPost($options['post']);
+        $comments = $this->getNewsDataService()->getPostComments($post);
+
+        return $this->renderThemeView('Theme:News:Tag/comments.html.twig', array(
+            'post' => $post,
+            'comments' => $comments
+        ));
+    }
+
+    /**
      * @Tag(name="news_pager")
      *
      * @TagOptions(

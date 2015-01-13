@@ -144,6 +144,13 @@ class NewsDataService
         return $this->getNewsCategoriesRepo()->find($category);
     }
 
+    public function getPostComments($post, Person $person = null)
+    {
+        $post = $this->getPost($post);
+
+        return $this->getNewsCommentRepo()->getDisplayComments($post, $person);
+    }
+
     /**
      * @return \Application\DeskPRO\EntityRepository\News
      */
@@ -158,6 +165,14 @@ class NewsDataService
     public function getNewsCategoriesRepo()
     {
         return $this->em->getRepository('DeskPRO:NewsCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\NewsComment
+     */
+    public function getNewsCommentRepo()
+    {
+        return $this->em->getRepository('DeskPRO:NewsComment');
     }
 
     /**
