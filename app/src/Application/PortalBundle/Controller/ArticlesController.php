@@ -155,6 +155,8 @@ class ArticlesController extends AbstractController
             'Theme:Articles:view.html.twig',
             array(
                 'article' => $article,
+                'content_id' => $article->getId(),
+                'content_type' => Article::CONTENT_TYPE,
                 'category' => $article->getPrimaryCategory(),
                 'rating'  => $rating,
                 'is_subscribed' => $is_subscribed

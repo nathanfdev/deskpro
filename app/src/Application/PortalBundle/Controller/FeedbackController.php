@@ -101,6 +101,8 @@ class FeedbackController extends AbstractController
             'Theme:Feedback:view.html.twig',
             array(
                 'item' => $item,
+                'content_id' => $item->getId(),
+                'content_type' => Feedback::CONTENT_TYPE,
                 'rating' => $rating
             )
         );

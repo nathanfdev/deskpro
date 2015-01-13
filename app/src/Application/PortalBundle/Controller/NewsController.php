@@ -170,6 +170,8 @@ class NewsController extends AbstractController
             array(
                 'category' => $post->category,
                 'post' => $post,
+                'content_id' => $post->getId(),
+                'content_type' => News::CONTENT_TYPE,
                 'is_subscribed' => $is_subscribed,
                 'rating' => $rating
             )
