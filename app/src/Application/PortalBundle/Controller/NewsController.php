@@ -35,14 +35,18 @@
 namespace Application\PortalBundle\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\PortalBundle\Controller\AbstractController;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\RequestStack;
 
 class NewsController extends AbstractController
 {
@@ -162,6 +166,25 @@ class NewsController extends AbstractController
         }
 
 
+
+        //
+        // COMMENT FORM
+        //
+        $new_comment_form = null;
+        if ($this->isGranted('COMMENT_NEWS')) {
+            $comment = new NewsComment();
+            $comment->setObject($post);
+            $new_comment_form = $this->createForm('comment', $comment, array(
+                'person' => $this->getUser()
+            ));
+            $new_comment_form->handleRequest($request);
+            if ($new_comment_form->isValid()) {
+                $post->addComment($comment);
+                $this->persistAndFlushEntity($comment);
+            }
+        }
+
+
         //
         // RENDER THEME
         //
@@ -173,7 +196,8 @@ class NewsController extends AbstractController
                 'content_id' => $post->getId(),
                 'content_type' => News::CONTENT_TYPE,
                 'is_subscribed' => $is_subscribed,
-                'rating' => $rating
+                'rating' => $rating,
+                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );
     }

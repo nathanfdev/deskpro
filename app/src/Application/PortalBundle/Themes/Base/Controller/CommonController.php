@@ -37,14 +37,19 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\People\PersonGuest;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
+use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
 
 class CommonController extends AbstractController
@@ -99,24 +104,10 @@ class CommonController extends AbstractController
      */
     public function relatedContentAction(TagRequest $tag_request, array $options)
     {
-        $content = null;
         $content_id = $options['content_id'];
-        switch ($content_type = $options['content_type']) {
-            case Article::CONTENT_TYPE:
-                $content = $this->getArticlesDataService()->getArticle($content_id);
-                break;
-            case Download::CONTENT_TYPE:
-                $content = $this->getDownloadsDataService()->getDownload($content_id);
-                break;
-            case News::CONTENT_TYPE:
-                $content = $this->getNewsDataService()->getPost($content_id);
-                break;
-            case Feedback::CONTENT_TYPE:
-                $content = $this->getFeedbackDataService()->getItem($content_id);
-                break;
-        }
+        $content_type = $options['content_type'];
 
-        if (!$content) {
+        if (!$content = $this->extractContent($content_type, $content_id)) {
             return new Response('');
         }
 
@@ -148,5 +139,30 @@ class CommonController extends AbstractController
                 'flashes' => $flashes
             )
         );
+    }
+
+    /**
+     * @param $content_type
+     * @param $content_id
+     * @return Article|Download|Feedback|News|null
+     */
+    protected function extractContent($content_type, $content_id)
+    {
+        $content = null;
+        switch ($content_type) {
+            case Article::CONTENT_TYPE:
+                $content = $this->getArticlesDataService()->getArticle($content_id);
+                break;
+            case Download::CONTENT_TYPE:
+                $content = $this->getDownloadsDataService()->getDownload($content_id);
+                break;
+            case News::CONTENT_TYPE:
+                $content = $this->getNewsDataService()->getPost($content_id);
+                break;
+            case Feedback::CONTENT_TYPE:
+                $content = $this->getFeedbackDataService()->getItem($content_id);
+                break;
+        }
+        return $content;
     }
 }

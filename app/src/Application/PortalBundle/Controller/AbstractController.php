@@ -49,6 +49,12 @@ class AbstractController extends BaseController
         return $this->get('doctrine.orm.default_entity_manager');
     }
 
+    public function persistAndFlushEntity($object)
+    {
+        $this->getEm()->persist($object);
+        $this->getEm()->flush($object);
+    }
+
     /**
      * @return Connection
      */
