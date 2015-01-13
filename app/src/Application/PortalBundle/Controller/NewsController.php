@@ -147,7 +147,6 @@ class NewsController extends AbstractController
      */
     public function viewAction(Request $request, News $post)
     {
-        $related = $this->getNewsDataService()->getRelatedPosts($post);
         $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
 
 
@@ -172,7 +171,6 @@ class NewsController extends AbstractController
                 'category' => $post->category,
                 'post' => $post,
                 'is_subscribed' => $is_subscribed,
-                'related_news' => $related,
                 'rating' => $rating
             )
         );

@@ -34,6 +34,9 @@
                 <span>:(</span> {{ phrase('portal.general.rate-page-negative') }}
             </a>
         </div>
+
+
+        {{ page.related_content({content_type: 'feedback', content: item.id })|raw }}
     </div>
     </article>
 {% endblock inner_content %}

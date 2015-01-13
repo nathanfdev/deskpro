@@ -145,28 +145,6 @@ class NewsDataService
     }
 
     /**
-     * @param int|null|News $post
-     * @return News[]
-     */
-    public function getRelatedPosts($post)
-    {
-        if (!$post = $this->getPost($post)) {
-            return array();
-        }
-
-        $related_associations = $this->getRelatedContentRepo()->findRelatedNewsPosts($post);
-
-        $ids = array();
-        foreach ($related_associations as $related_association) {
-            if ($related_association->rel_object_id) {
-                $ids[] = $related_association->rel_object_id;
-            }
-        }
-
-        return $this->getNewsRepo()->findBy(array('id' => $ids), array('date_created' => 'DESC'));
-    }
-
-    /**
      * @return \Application\DeskPRO\EntityRepository\News
      */
     public function getNewsRepo()

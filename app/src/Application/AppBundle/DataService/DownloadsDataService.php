@@ -145,28 +145,6 @@ class DownloadsDataService
     }
 
     /**
-     * @param int|null|Download $file
-     * @return Download[]
-     */
-    public function getRelatedFiles($file)
-    {
-        if (!$file = $this->getDownload($file)) {
-            return array();
-        }
-
-        $related_associations = $this->getRelatedContentRepo()->findRelatedFiles($file);
-
-        $ids = array();
-        foreach ($related_associations as $related_association) {
-            if ($related_association->rel_object_id) {
-                $ids[] = $related_association->rel_object_id;
-            }
-        }
-
-        return $this->getDownloadsRepo()->findBy(array('id' => $ids), array('date_created' => 'DESC'));
-    }
-
-    /**
      * @return \Application\DeskPRO\EntityRepository\Download
      */
     public function getDownloadsRepo()

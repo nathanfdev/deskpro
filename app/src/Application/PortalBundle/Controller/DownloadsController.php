@@ -143,9 +143,8 @@ class DownloadsController extends AbstractController
     public function viewAction(Request $request, Download $file)
     {
         //
-        // RELATED, RATING
+        // RATING
         //
-        $related = $this->getDownloadsDataService()->getRelatedFiles($file);
         $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
 
 
@@ -169,7 +168,6 @@ class DownloadsController extends AbstractController
             array(
                 'download' => $file,
                 'is_subscribed' => $is_subscribed,
-                'related_files' => $related,
                 'rating' => $rating
             )
         );

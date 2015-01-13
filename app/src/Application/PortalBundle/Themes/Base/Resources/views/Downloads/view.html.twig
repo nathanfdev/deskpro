@@ -78,22 +78,7 @@
             </div>
         </div>
 
-        {% if related_files|length %}
-            <div class="related">
 
-                <div class="titled-header">
-                    <h1>{{ phrase('portal.general.related-pages') }}</h1>
-                </div>
-
-                <ul>
-                    {% for related in related_files %}
-                        <li>
-                            <a href="{{ path('portal_downloads_view', { slug:related.slug }) }}"><i
-                                        class="fa fa-file-text-o"></i> {{ related.realTitle }}</a>
-                        </li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
+        {{ page.related_content({content_type: 'download', content: download.id })|raw }}
     </article>
 {% endblock inner_content %}

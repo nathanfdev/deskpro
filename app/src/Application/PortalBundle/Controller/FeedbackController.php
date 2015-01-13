@@ -53,6 +53,10 @@ class FeedbackController extends AbstractController
         $page = $request->query->get('page', 1);
         $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
 
+
+        //
+        // RSS
+        //
         if ('rss' === $_format) {
             $pager = $this->getFeedbackDataService()->getItemsPager(
                 $page,
@@ -65,6 +69,10 @@ class FeedbackController extends AbstractController
             ));
         }
 
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
             array(
@@ -85,6 +93,10 @@ class FeedbackController extends AbstractController
     {
         $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
 
+
+        //
+        // RENDER THEME
+        //
         return $this->renderThemeView(
             'Theme:Feedback:view.html.twig',
             array(

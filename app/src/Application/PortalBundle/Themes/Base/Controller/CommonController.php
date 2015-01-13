@@ -90,7 +90,7 @@ class CommonController extends AbstractController
      * @TagOptions(
      *      required={"content_type", "content"},
      *      allowed_types={"content_type":"string", "content":{"string","int"}},
-     *      allowed_values={"content_type":{"article","post","file"}}
+     *      allowed_values={"content_type":{"article","news","download","feedback"}}
      * )
      */
     public function relatedContentAction(TagRequest $tag_request, array $options)
@@ -101,10 +101,13 @@ class CommonController extends AbstractController
                 $content = $this->getArticlesDataService()->getArticle($options['content']);
                 break;
             case 'download':
-                $content = $this->getArticlesDataService()->getArticle($options['content']);
+                $content = $this->getDownloadsDataService()->getDownload($options['content']);
                 break;
             case 'news':
-                $content = $this->getArticlesDataService()->getArticle($options['content']);
+                $content = $this->getNewsDataService()->getPost($options['content']);
+                break;
+            case 'feedback':
+                $content = $this->getFeedbackDataService()->getItem($options['content']);
                 break;
         }
 
