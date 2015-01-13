@@ -43,7 +43,7 @@ class Build1420543837 extends AbstractBuild
 		$this->execMutateSql("ALTER TABLE app_instance_permissions ADD CONSTRAINT FK_2B1F184E63B454A1 FOREIGN KEY (app_instance_id) REFERENCES app_instances (id) ON DELETE CASCADE");
 		$this->execMutateSql("ALTER TABLE app_instance_permissions ADD CONSTRAINT FK_2B1F184ED2112630 FOREIGN KEY (usergroup_id) REFERENCES usergroups (id) ON DELETE CASCADE");
 		$this->execMutateSql("ALTER TABLE app_instance_permissions ADD CONSTRAINT FK_2B1F184E217BBB47 FOREIGN KEY (person_id) REFERENCES people (id) ON DELETE CASCADE");
-		$this->execMutateSql("ALTER TABLE app_instances ADD perm_type VARCHAR(15) NOT NULL");
+		$this->execMutateSql("ALTER TABLE app_instances ADD perm_type VARCHAR(15) NOT NULL", true);
 		$this->execMutateSql("UPDATE app_instances SET perm_type = 'global' WHERE perm_type = ''");
     }
 }
