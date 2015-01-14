@@ -94,12 +94,27 @@ class FeedbackDataService
         return $this->getItemsRepo()->find($item);
     }
 
+    public function getItemComments($item, Person $person = null)
+    {
+        $item = $this->getItem($item);
+
+        return $this->getItemCommetRepo()->getDisplayComments($item, $person);
+    }
+
     /**
      * @return \Application\DeskPRO\EntityRepository\Feedback
      */
     public function getItemsRepo()
     {
         return $this->em->getRepository('DeskPRO:Feedback');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\FeedbackComment
+     */
+    public function getItemCommetRepo()
+    {
+        return $this->em->getRepository('DeskPRO:FeedbackComment');
     }
 }
  

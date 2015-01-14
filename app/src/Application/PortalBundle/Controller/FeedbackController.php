@@ -35,7 +35,9 @@
 namespace Application\PortalBundle\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\Entity\FeedbackComment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -95,6 +97,26 @@ class FeedbackController extends AbstractController
 
 
         //
+        // COMMENT FORM
+        //
+        $new_comment_form = null;
+        if ($this->isGranted(ContentCommentVoter::COMMENT_FEEDBACK)) {
+            $comment = new FeedbackComment();
+            $comment->setObject($item);
+            $new_comment_form = $this->createForm('comment', $comment, array(
+                'person' => $this->getUser()
+            ));
+            $new_comment_form->handleRequest($request);
+            if ($new_comment_form->isValid()) {
+                $item->addComment($comment);
+                $this->persistAndFlushEntity($comment);
+
+                return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
+            }
+        }
+
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -103,7 +125,8 @@ class FeedbackController extends AbstractController
                 'item' => $item,
                 'content_id' => $item->getId(),
                 'content_type' => Feedback::CONTENT_TYPE,
-                'rating' => $rating
+                'rating' => $rating,
+                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );
     }

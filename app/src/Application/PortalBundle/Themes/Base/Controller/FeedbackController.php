@@ -144,4 +144,26 @@ class FeedbackController extends AbstractController
             )
         );
     }
+
+    /**
+     * @Tag(name="feedback_comments")
+     * @TagOptions(
+     *      defaults={
+     *          "item": null
+     *      },
+     *      allowed_types={
+     *          "item":{"Application\DeskPRO\Entity\Feedback","int","string","null"}
+     *      }
+     * )
+     */
+    public function commentsAction(TagRequest $tag_request, array $options)
+    {
+        $item = $this->getFeedbackDataService()->getItem($options['item']);
+        $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
+
+        return $this->renderThemeView('Theme:Feedback:Tag/comments.html.twig', array(
+            'item' => $item,
+            'comments' => $comments
+        ));
+    }
 }

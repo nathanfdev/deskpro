@@ -35,6 +35,7 @@
 namespace Application\FormBundle\Form\Type;
 
 
+use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
@@ -56,6 +57,13 @@ class CommentType extends AbstractType
             } else {
                 $form->add('name', 'text', array('label' => 'Your Name'));
                 $form->add('email', 'email', array('label' => 'Your Email'));
+                $form->add('captcha', 'deskpro_captcha', array(
+                    'mapped' => false,
+                    'error_bubbling' => false,
+                    'constraints' => array(
+                        new ValidCaptcha()
+                    )
+                ));
             }
         });
     }
