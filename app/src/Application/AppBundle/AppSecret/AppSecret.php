@@ -32,41 +32,13 @@
  * @subpackage
  */
 
-namespace Application\AppBundle;
+namespace Application\AppBundle\AppSecret;
 
-use Application\AppBundle\DependencyInjection\AppExtension;
-use Application\AppBundle\DependencyInjection\Compiler\AppSecretPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
-use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class AppBundle extends Bundle
+class AppSecret 
 {
-    public function getContainerExtension()
+    public function getAppSecret()
     {
-        return new AppExtension();
-    }
-
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-
-        $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
-    }
-
-
-    public function registerCommands(Application $application)
-    {
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        return 'both kernels use this string now as a secret. config.shared.php service definition. use filesystem/whatever.';
     }
 }

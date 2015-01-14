@@ -205,8 +205,7 @@ foreach (array(
 ############################################################################
 
 $container->loadFromExtension('framework', array(
-    //TODO: make this secret a config.php responsibility. at least give an option to change it.
-    'secret' => 'mube224etsmhxky1gvwixc4b',
+    'secret' => "irrelevant - compiler pass will override this",
     'templating' => array(
         'engines' => array('twig', 'php'/*, 'jsonphp'*/),
         'assets_base_urls' => 'CONFIG_HTTP'

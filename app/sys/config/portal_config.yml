@@ -11,7 +11,7 @@ framework:
     esi:             { enabled: true }
     fragments:       { path: /_proxy }
     #translator:      { fallback: "%locale%" }
-    secret:          "%secret%"
+    secret:          "irrelevant - compiler pass will override this"
     router:
         resource: "%kernel.root_dir%/config/portal_routing.yml"
         strict_requirements: ~

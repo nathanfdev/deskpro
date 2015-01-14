@@ -32,41 +32,42 @@
  * @subpackage
  */
 
-namespace Application\AppBundle;
+namespace Application\AppBundle\DependencyInjection\Compiler;
 
-use Application\AppBundle\DependencyInjection\AppExtension;
-use Application\AppBundle\DependencyInjection\Compiler\AppSecretPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\ExpressionLanguage\Expression;
 
-class AppBundle extends Bundle
+class AppSecretPass implements CompilerPassInterface
 {
-    public function getContainerExtension()
+    public function process(ContainerBuilder $container)
     {
-        return new AppExtension();
-    }
+        $exp = new Expression("service('app_secret').getAppSecret()");
 
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
+        foreach ($container->getDefinitions() as $service_id => $def) {
 
-        $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
-    }
+            if ('security.authentication.rememberme.services.simplehash.portal' === $service_id) {
+                $def->replaceArgument(1, $exp);
+            }
 
+            if ('security.authentication.provider.rememberme.portal' === $service_id) {
+                $def->replaceArgument(1, $exp);
+            }
 
-    public function registerCommands(Application $application)
-    {
-    }
+            if ('security.authentication.provider.anonymous.portal' === $service_id) {
+                $def->replaceArgument(0, $exp);
+            }
 
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
+            if ('dp_security.form_login.listener' === $service_id) {
+                $def->replaceArgument(4, $exp);
+            }
 
-    public function getPath()
-    {
-        return __DIR__;
+            foreach ($def->getArguments() as $arg_num => $argument) {
+                if ('%kernel.secret%' === $argument || '%secret%' === $argument) {
+                    $def->replaceArgument($arg_num, $exp);
+                }
+            }
+        }
     }
 }

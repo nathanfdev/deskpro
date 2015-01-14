@@ -5,13 +5,17 @@ use Symfony\Component\DependencyInjection\Reference;
 
 $container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
-// TODO: make this secret just a config.php global
-$container->setParameter('secret', 'LkanlkaJDnKajkdkaKSKDn32Nln2KNb@bn');
+$container->setParameter('secret', "irrelevant - compiler pass will override this");
 $container->setParameter('locale', 'en');
 
 ####################################################################
 # This config is shared between kernels (DpKernel and PortalKernel)
 ####################################################################
+
+// app secret
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\AppSecret\AppSecret');
+$container->setDefinition('app_secret', $definition);
 
 // settings
 $definition = new Definition();

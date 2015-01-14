@@ -1,4 +1,5 @@
 services:
+
   new_mailer:
       class: Application\AppBundle\Mailer\NewMailer
       arguments: [@service_container]

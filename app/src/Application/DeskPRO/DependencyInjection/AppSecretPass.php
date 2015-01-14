@@ -32,41 +32,33 @@
  * @subpackage
  */
 
-namespace Application\AppBundle;
+namespace Application\DeskPRO\DependencyInjection;
 
-use Application\AppBundle\DependencyInjection\AppExtension;
-use Application\AppBundle\DependencyInjection\Compiler\AppSecretPass;
-use Symfony\Component\Console\Application;
-use Symfony\Component\DependencyInjection\Compiler\PassConfig;
+
+use Symfony\Component\DependencyInjection\Compiler\CompilerPassInterface;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\HttpKernel\Bundle\Bundle;
+use Symfony\Component\ExpressionLanguage\Expression;
 
-class AppBundle extends Bundle
+class AppSecretPass implements CompilerPassInterface
 {
-    public function getContainerExtension()
+
+    /**
+     * You can modify the container here before it is dumped to PHP code.
+     *
+     * @param ContainerBuilder $container
+     *
+     * @api
+     */
+    public function process(ContainerBuilder $container)
     {
-        return new AppExtension();
-    }
+        $exp = new Expression("service('app_secret').getAppSecret()");
 
-    public function build(ContainerBuilder $container)
-    {
-        parent::build($container);
-
-        $container->addCompilerPass(new AppSecretPass(), PassConfig::TYPE_BEFORE_OPTIMIZATION);
-    }
-
-
-    public function registerCommands(Application $application)
-    {
-    }
-
-    public function getNamespace()
-    {
-        return __NAMESPACE__;
-    }
-
-    public function getPath()
-    {
-        return __DIR__;
+        foreach ($container->getDefinitions() as $def) {
+            foreach ($def->getArguments() as $arg_num => $argument) {
+                if ('%kernel.secret%' === $argument || '%secret%' === $argument) {
+                    $def->replaceArgument($arg_num, $exp);
+                }
+            }
+        }
     }
 }
