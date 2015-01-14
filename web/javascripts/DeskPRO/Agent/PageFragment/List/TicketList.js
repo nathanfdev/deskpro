@@ -534,7 +534,7 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 					insertPos = self.listTicketIds.length - 1;// fallback, append
 				}
 
-				var spliceArgs = $scope.tickets.map(function(t) { console.log(t.id); return t.id; });
+				var spliceArgs = $scope.tickets.map(function(t) { return t.id; });
 				spliceArgs.unshift(0);
 				spliceArgs.unshift(insertPos);
 
