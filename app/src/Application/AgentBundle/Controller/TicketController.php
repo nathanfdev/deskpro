@@ -251,13 +251,6 @@ class TicketController extends AbstractController
         $active_drafts = $this->em->getRepository('DeskPRO:Draft')->getActiveDrafts('ticket', $ticket->id);
         unset($active_drafts[$this->person->id]);
 
-        if (App::getSetting('core_tickets.lock_on_view') && !$ticket->hasLock()) {
-            $ticket->setLockedByAgent($this->person);
-
-            $this->em->persist($ticket);
-            $this->em->flush();
-        }
-
         $edit_person = $this->person->hasPerm('agent_people.edit');
         if ($edit_person) {
             if (!$this->person->can_admin && $ticket->person->is_agent && $ticket->person->getId() != $this->person->getId()) {
@@ -438,6 +431,12 @@ class TicketController extends AbstractController
             $vars['print'] = true;
 
             return $this->render('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
+        }
+
+        if (App::getSetting('core_tickets.lock_on_view') && !$ticket->hasLock()) {
+            $ticket->setLockedByAgent($this->person);
+            $this->em->persist($ticket);
+            $this->em->flush();
         }
 
         return $this->render($tpl, $vars);
@@ -1182,19 +1181,19 @@ class TicketController extends AbstractController
 
         $message->convertEmbeddedImagesToInlineAttach();
 
-                if ($this->in->getBool('options.is_snippet')) {
-                    $snippet = $this->em->find('DeskPRO:TextSnippet', (int) $this->in->getString('options.snippet_id'));
+        if ($this->in->getBool('options.is_snippet')) {
+            $snippet = $this->em->find('DeskPRO:TextSnippet', (int) $this->in->getString('options.snippet_id'));
 
-                    if ($snippet) {
-                        $snippetLog = new Entity\TextSnippetLog();
+            if ($snippet) {
+                $snippetLog = new Entity\TextSnippetLog();
 
-                        $snippetLog['ticket']   = $ticket;
-                        $snippetLog['person']   = $this->getPerson();
-                        $snippetLog['snippet']  = $snippet;
+                $snippetLog['ticket']   = $ticket;
+                $snippetLog['person']   = $this->getPerson();
+                $snippetLog['snippet']  = $snippet;
 
-                        $this->em->persist($snippetLog);
-                        $this->em->flush();
-                    }
+                $this->em->persist($snippetLog);
+                $this->em->flush();
+            }
         }
 
         if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
@@ -1287,10 +1286,6 @@ class TicketController extends AbstractController
             }
         }
 
-        if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
-            $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
-        }
-
         #------------------------------
         # Save
         #------------------------------
@@ -1300,6 +1295,10 @@ class TicketController extends AbstractController
         $changed_agent = false;
         $changed_team  = false;
         try {
+
+            if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
+                $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+            }
 
             if ($add_parts) {
                 foreach ($add_parts as $p) {

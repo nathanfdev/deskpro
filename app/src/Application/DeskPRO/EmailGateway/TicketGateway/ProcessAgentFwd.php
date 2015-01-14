@@ -563,6 +563,7 @@ class ProcessAgentFwd extends ProcessAbstract
         return array(
             'via'                  => 'fwd',
             'ticket'               => $ticket,
+            'ticket_message'       => $agent_ticket_message,
             'agent_ticket_message' => $agent_ticket_message,
             'user_ticket_message'  => $ticket_message
         );

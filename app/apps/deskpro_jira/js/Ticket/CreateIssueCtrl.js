@@ -1,20 +1,20 @@
-define(function () {
+define(['angular'], function (angular) {
 
-  return function ($scope, $modalInstance, $ticket, $meta, issues) {
+  return function ($scope, $modalInstance, $ticket, $meta, issues, newissue) {
 
     var staticFields = {
       project: 1,
       issuetype: 1,
       summary: 1,
       reporter: 1
-    }, issue;
+    };
 
     $scope.$watch('issue.project.id', function (val) {
       $scope.project = null;
       $meta.getCreateMeta(val).then(function(project){
         $scope.project = project
         if (!project && $meta.projects.length) {
-          issue.project.id = $meta.projects[0].id;
+          $scope.issue.project.id = $meta.projects[0].id;
         }
       });
     });
@@ -26,7 +26,7 @@ define(function () {
 
       var fields = [];
       $scope.project.issuetypes.each(function (type) {
-        if (issue.issuetype.id != type.id) return;
+        if ($scope.issue.issuetype.id != type.id) return;
 
         $.each(type.fields, function (id, field) {
           if (staticFields[id]) return;
@@ -62,11 +62,13 @@ define(function () {
 
     $scope.meta = $meta;
     $scope.fields = [];
-    $scope.issue = issue = {
+
+    $scope.issue = angular.extend({
       project: {id: $meta.default_project},
       issuetype: {id: $meta.default_issuetype},
       summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject
-    };
+    }, newissue || {});
+
     $scope.dismiss = $modalInstance.dismiss;
   };
 });
