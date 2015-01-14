@@ -221,8 +221,9 @@ class ThemeResolver
         // construct and return the proper ESI tag content
         if ($tag->isEsi()) {
             $attrs = $this->filterArguments($attrs);
+
             $esi = $this->container->get('fragment.renderer.esi')->render(
-                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request
+                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => true)
             );
 
             $esi_content = $esi->getContent();
@@ -235,7 +236,17 @@ class ThemeResolver
         // construct and return the actual tag response content
         $tag_request->attributes->set('_controller', $tag->getControllerName());
 
-        return $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST)->getContent();
+        $response = $this->container->get('http_kernel')->handle($tag_request, HttpKernelInterface::SUB_REQUEST);
+
+        if (!$response->isSuccessful()) {
+            $this->logger->info(sprintf('theme resolver: 404 while attempting to process tag "%s"', $tag->getName()));
+
+            return '';
+        }
+
+        $this->logger->info(sprintf('theme resolver: successfully processed tag "%s"', $tag->getName()));
+
+        return $response->getContent();
     }
 
     private function filterArguments(array $arguments)
