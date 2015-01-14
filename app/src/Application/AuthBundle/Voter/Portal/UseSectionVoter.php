@@ -79,7 +79,7 @@ class UseSectionVoter extends AbstractVoter
             case static::USE_NEWS:
                 return $brand_settings->get('core.apps_news');
             case static::USE_TICKETS:
-                return true; // all of these settings seems to have changed names recently, this update reflects those changes as best as I can see.
+                return true; // not sure this should ever be false?
         }
 
         return false;

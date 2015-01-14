@@ -53,56 +53,6 @@ use Application\PortalBundle\Annotation\Tag;
 class ArticlesController extends AbstractController
 {
     /**
-     * @Tag(name="knowledgebase_pager")
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "category": null,
-     *          "show_pagination": true,
-     *          "page": 1,
-     *          "count": 2
-     *      },
-     *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
-     *      }
-     * )
-     */
-    public function pagerAction(TagRequest $tag_request, array $options)
-    {
-        if (!$options['show_pagination']) {
-            return new Response('');
-        }
-
-        $category = $this->getArticlesDataService()->getCategory($options['category']);
-        $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
-
-        return $this->renderThemeView(
-            'Theme:Common:pager.html.twig', array(
-                'pager' => $pager
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="knowledgebase_breadcrumbs")
-     *
-     * @TagOptions(
-     *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"}}
-     * )
-     */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options)
-    {
-        $category = $this->getArticlesDataService()->getCategory($options['category']);
-
-        return $this->renderThemeView(
-            'Theme:Articles:Tag/breadcrumbs.html.twig', array(
-                'category' => $category
-            )
-        );
-    }
-
-    /**
      * @Tag(name="knowledgebase")
      * @Tag(name="knowledgebase_compact", default_options={"style":"compact"})
      * @Tag(name="knowledgebase_expander", default_options={"style":"expander"})
@@ -119,6 +69,8 @@ class ArticlesController extends AbstractController
      *          "style": {"expander", "compact", "home", "list", "comma_list"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_ARTICLES')")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -157,6 +109,8 @@ class ArticlesController extends AbstractController
      *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_ARTICLES')")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -183,6 +137,8 @@ class ArticlesController extends AbstractController
      *          "article":{"Application\DeskPRO\Entity\Article","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_ARTICLES')")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -193,5 +149,59 @@ class ArticlesController extends AbstractController
             'article' => $article,
             'comments' => $comments
         ));
+    }
+
+    /**
+     * @Tag(name="knowledgebase_pager")
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "category": null,
+     *          "show_pagination": true,
+     *          "page": 1,
+     *          "count": 2
+     *      },
+     *      allowed_types={
+     *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_ARTICLES')")
+     */
+    public function pagerAction(TagRequest $tag_request, array $options)
+    {
+        if (!$options['show_pagination']) {
+            return new Response('');
+        }
+
+        $category = $this->getArticlesDataService()->getCategory($options['category']);
+        $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
+
+        return $this->renderThemeView(
+            'Theme:Common:pager.html.twig', array(
+                'pager' => $pager
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="knowledgebase_breadcrumbs")
+     *
+     * @TagOptions(
+     *      defaults={"category": null},
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"}}
+     * )
+     *
+     * @Security("is_granted('USE_ARTICLES')")
+     */
+    public function breadcrumbsAction(TagRequest $tag_request, array $options)
+    {
+        $category = $this->getArticlesDataService()->getCategory($options['category']);
+
+        return $this->renderThemeView(
+            'Theme:Articles:Tag/breadcrumbs.html.twig', array(
+                'category' => $category
+            )
+        );
     }
 }

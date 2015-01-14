@@ -43,6 +43,7 @@ use Application\PortalBundle\Request\TagRequest;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
 
 class FeedbackController extends AbstractController
@@ -57,6 +58,8 @@ class FeedbackController extends AbstractController
      *          "show_pagination": true
      *      }
      * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function feedbackAction(TagRequest $tag_request, array $options)
     {
@@ -85,6 +88,8 @@ class FeedbackController extends AbstractController
      *          "style": {"list","row"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -108,6 +113,8 @@ class FeedbackController extends AbstractController
      *          "page": 1
      *      },
      * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -132,6 +139,8 @@ class FeedbackController extends AbstractController
      *      defaults={"item": null},
      *      allowed_types={"item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}}
      * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function breadcrumbsAction(TagRequest $request, array $options)
     {
@@ -155,6 +164,8 @@ class FeedbackController extends AbstractController
      *          "item":{"Application\DeskPRO\Entity\Feedback","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {

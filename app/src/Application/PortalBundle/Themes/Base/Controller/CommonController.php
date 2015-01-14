@@ -55,30 +55,6 @@ use Symfony\Component\HttpFoundation\Response;
 class CommonController extends AbstractController
 {
     /**
-     * @Tag(name="pager")
-     *
-     * @TagOptions(
-     *      required={"pager"},
-     *      defaults={
-     *          "show_pagination": true
-     *      },
-     *      allowed_types={
-     *          "pager":"Pagerfanta\Pagerfanta"
-     *      }
-     * )
-     */
-    public function pagerAction(TagRequest $request, array $options)
-    {
-        return $this->renderThemeView(
-            'Theme:Common:pager.html.twig',
-            array(
-                'pager' => $options['pager'],
-                'show_pagination' => $options['show_pagination']
-            )
-        );
-    }
-
-    /**
      * @Tag(name="get_in_touch")
      */
     public function getInTouchAction(TagRequest $tag_request)
@@ -92,6 +68,25 @@ class CommonController extends AbstractController
     public function alertsAction(TagRequest $tag_request)
     {
         return $this->renderThemeView('Theme:Common:alerts.html.twig');
+    }
+
+    /**
+     * @Tag(name="flashes")
+     */
+    public function flashesAction(TagRequest $tag_request)
+    {
+        $flashes = array();
+        $session = $tag_request->getSession();
+        if (null !== $session && $session->isStarted()) {
+            $flashes = $session->getFlashBag()->all();
+        }
+
+        return $this->renderThemeView(
+            'Theme:Common:flashes.html.twig',
+            array(
+                'flashes' => $flashes
+            )
+        );
     }
 
     /**
@@ -120,25 +115,6 @@ class CommonController extends AbstractController
             'content' => $content,
             'related_content' => $related_content
         ));
-    }
-
-    /**
-     * @Tag(name="flashes")
-     */
-    public function flashesAction(TagRequest $tag_request)
-    {
-        $flashes = array();
-        $session = $tag_request->getSession();
-        if (null !== $session && $session->isStarted()) {
-            $flashes = $session->getFlashBag()->all();
-        }
-
-        return $this->renderThemeView(
-            'Theme:Common:flashes.html.twig',
-            array(
-                'flashes' => $flashes
-            )
-        );
     }
 
     /**

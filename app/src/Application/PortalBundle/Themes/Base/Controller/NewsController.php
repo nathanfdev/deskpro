@@ -37,6 +37,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
@@ -63,6 +64,8 @@ class NewsController extends AbstractController
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_NEWS')")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -99,6 +102,8 @@ class NewsController extends AbstractController
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_NEWS')")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -125,6 +130,8 @@ class NewsController extends AbstractController
      *          "post":{"Application\DeskPRO\Entity\News","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_NEWS')")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -151,6 +158,8 @@ class NewsController extends AbstractController
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_NEWS')")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -176,6 +185,8 @@ class NewsController extends AbstractController
      *      defaults={"category": null},
      *      allowed_types={"category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"}}
      * )
+     *
+     * @Security("is_granted('USE_NEWS')")
      */
     public function breadcrumbsAction(TagRequest $request, array $options)
     {

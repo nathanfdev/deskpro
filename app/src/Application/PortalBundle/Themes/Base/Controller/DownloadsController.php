@@ -39,62 +39,11 @@ use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 
 class DownloadsController extends AbstractController
 {
-    /**
-     * @Tag(name="downloads_pager")
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "category": null,
-     *          "show_pagination": true,
-     *          "page": 1,
-     *          "count": 2
-     *      },
-     *      allowed_types={
-     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","string","null"}
-     *      }
-     * )
-     */
-    public function pagerAction(TagRequest $tag_request, array $options)
-    {
-        if (!$options['show_pagination']) {
-            return new Response('');
-        }
-
-        $category = $this->getDownloadsDataService()->getCategory($options['category']);
-        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);
-
-        return $this->renderThemeView(
-            'Theme:Common:pager.html.twig',
-            array(
-                'pager' => $pager
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="downloads_breadcrumbs")
-     *
-     * @TagOptions(
-     *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"}}
-     * )
-     */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options)
-    {
-        $category = $this->getDownloadsDataService()->getCategory($options['category']);
-
-        return $this->renderThemeView(
-            'Theme:Downloads:Tag/breadcrumbs.html.twig',
-            array(
-                'category' => $category
-            )
-        );
-    }
-
     /**
      * @Tag(name="downloads")
      * @Tag(name="downloads_list", default_options={"style":"list"})
@@ -111,6 +60,8 @@ class DownloadsController extends AbstractController
      *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_DOWNLOADS')")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -147,6 +98,8 @@ class DownloadsController extends AbstractController
      *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_DOWNLOADS')")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -172,6 +125,8 @@ class DownloadsController extends AbstractController
      *          "download":{"Application\DeskPRO\Entity\Download","int","string","null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_DOWNLOADS')")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -182,5 +137,61 @@ class DownloadsController extends AbstractController
             'download' => $download,
             'comments' => $comments
         ));
+    }
+
+    /**
+     * @Tag(name="downloads_pager")
+     *
+     * @TagOptions(
+     *      defaults={
+     *          "category": null,
+     *          "show_pagination": true,
+     *          "page": 1,
+     *          "count": 2
+     *      },
+     *      allowed_types={
+     *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","string","null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_DOWNLOADS')")
+     */
+    public function pagerAction(TagRequest $tag_request, array $options)
+    {
+        if (!$options['show_pagination']) {
+            return new Response('');
+        }
+
+        $category = $this->getDownloadsDataService()->getCategory($options['category']);
+        $pager = $this->getDownloadsDataService()->getDownloadsPager($category, $options['page'], $options['count']);
+
+        return $this->renderThemeView(
+            'Theme:Common:pager.html.twig',
+            array(
+                'pager' => $pager
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="downloads_breadcrumbs")
+     *
+     * @TagOptions(
+     *      defaults={"category": null},
+     *      allowed_types={"category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"}}
+     * )
+     *
+     * @Security("is_granted('USE_DOWNLOADS')")
+     */
+    public function breadcrumbsAction(TagRequest $tag_request, array $options)
+    {
+        $category = $this->getDownloadsDataService()->getCategory($options['category']);
+
+        return $this->renderThemeView(
+            'Theme:Downloads:Tag/breadcrumbs.html.twig',
+            array(
+                'category' => $category
+            )
+        );
     }
 }
