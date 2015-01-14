@@ -144,6 +144,13 @@ class DownloadsDataService
         return $this->getDownloadCategoriesRepo()->find($category);
     }
 
+    public function getDownloadComments($file, Person $person = null)
+    {
+        $file = $this->getDownload($file);
+
+        return $this->getDownloadCommentRepo()->getDisplayComments($file, $person);
+    }
+
     /**
      * @return \Application\DeskPRO\EntityRepository\Download
      */
@@ -158,6 +165,14 @@ class DownloadsDataService
     public function getDownloadCategoriesRepo()
     {
         return $this->em->getRepository('DeskPRO:DownloadCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\DownloadComment
+     */
+    public function getDownloadCommentRepo()
+    {
+        return $this->em->getRepository('DeskPRO:DownloadComment');
     }
 
     /**

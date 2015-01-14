@@ -88,6 +88,9 @@
             </div>
         </div>
 
+        {{ page.download_comments()|raw }}
+
+        {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
 
         {{ page.related_content()|raw }}
     </article>

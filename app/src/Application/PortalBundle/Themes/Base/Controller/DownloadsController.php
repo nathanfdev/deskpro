@@ -161,4 +161,26 @@ class DownloadsController extends AbstractController
             )
         );
     }
+
+    /**
+     * @Tag(name="download_comments")
+     * @TagOptions(
+     *      defaults={
+     *          "download": null
+     *      },
+     *      allowed_types={
+     *          "download":{"Application\DeskPRO\Entity\Download","int","string","null"}
+     *      }
+     * )
+     */
+    public function commentsAction(TagRequest $tag_request, array $options)
+    {
+        $download = $this->getDownloadsDataService()->getDownload($options['download']);
+        $comments = $this->getDownloadsDataService()->getDownloadComments($download, $this->getUser());
+
+        return $this->renderThemeView('Theme:Downloads:Tag/comments.html.twig', array(
+            'download' => $download,
+            'comments' => $comments
+        ));
+    }
 }

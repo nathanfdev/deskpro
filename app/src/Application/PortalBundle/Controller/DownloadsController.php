@@ -35,10 +35,12 @@
 namespace Application\PortalBundle\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Blob;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\DownloadCategory;
+use Application\DeskPRO\Entity\DownloadComment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -167,6 +169,26 @@ class DownloadsController extends AbstractController
 
 
         //
+        // COMMENT FORM
+        //
+        $new_comment_form = null;
+        if ($this->isGranted(ContentCommentVoter::COMMENT_DOWNLOADS)) {
+            $comment = new DownloadComment();
+            $comment->setObject($file);
+            $new_comment_form = $this->createForm('comment', $comment, array(
+                'person' => $this->getUser()
+            ));
+            $new_comment_form->handleRequest($request);
+            if ($new_comment_form->isValid()) {
+                $file->addComment($comment);
+                $this->persistAndFlushEntity($comment);
+
+                return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
+            }
+        }
+
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -176,7 +198,8 @@ class DownloadsController extends AbstractController
                 'content_type' => Download::CONTENT_TYPE,
                 'content_id' => $file->getId(),
                 'is_subscribed' => $is_subscribed,
-                'rating' => $rating
+                'rating' => $rating,
+                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );
     }

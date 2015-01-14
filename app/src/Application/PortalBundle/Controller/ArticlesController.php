@@ -164,6 +164,8 @@ class ArticlesController extends AbstractController
             if ($new_comment_form->isValid()) {
                 $article->addComment($comment);
                 $this->persistAndFlushEntity($comment);
+
+                return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
             }
         }
 
