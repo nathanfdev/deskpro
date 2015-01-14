@@ -46,7 +46,20 @@ if (!window.DP_NO_JS_SCROLL) {
 				if (!element) return;
 
 				// hardcoded update of list height
-				$('.view-body:visible').height($('.source-pane-content').height() - $('.view-header:visible').height() - $('.view-subheader:visible').height());
+				var sh = $('.source-pane-content:visible').height(),
+						hh = 0,
+						$listing = $('.list-listing:visible');
+
+				$listing.siblings('header:visible').each(function(){
+					hh += $(this).outerHeight(true);
+				});
+
+				if (!hh) {
+					$listing.closest('.view-body').siblings('header:visible').each(function(){
+						hh += $(this).outerHeight(true);
+					});
+				}
+				$listing.height(sh - hh - 1);
 
 				initScroll();
 				if (element.tinyscrollbar_update) {
