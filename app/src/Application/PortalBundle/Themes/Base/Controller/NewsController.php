@@ -129,7 +129,7 @@ class NewsController extends AbstractController
     public function commentsAction(TagRequest $tag_request, array $options)
     {
         $post = $this->getNewsDataService()->getPost($options['post']);
-        $comments = $this->getNewsDataService()->getPostComments($post);
+        $comments = $this->getNewsDataService()->getPostComments($post, $this->getUser());
 
         return $this->renderThemeView('Theme:News:Tag/comments.html.twig', array(
             'post' => $post,

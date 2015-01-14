@@ -35,9 +35,11 @@
 namespace Application\PortalBundle\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
+use Application\DeskPRO\Entity\ArticleComment;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -149,17 +151,36 @@ class ArticlesController extends AbstractController
 
 
         //
+        // COMMENT FORM
+        //
+        $new_comment_form = null;
+        if ($this->isGranted(ContentCommentVoter::COMMENT_ARTICLES)) {
+            $comment = new ArticleComment();
+            $comment->setObject($article);
+            $new_comment_form = $this->createForm('comment', $comment, array(
+                'person' => $this->getUser()
+            ));
+            $new_comment_form->handleRequest($request);
+            if ($new_comment_form->isValid()) {
+                $article->addComment($comment);
+                $this->persistAndFlushEntity($comment);
+            }
+        }
+
+
+        //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:Articles:view.html.twig',
             array(
                 'article' => $article,
+                'category' => $article->getPrimaryCategory(),
                 'content_id' => $article->getId(),
                 'content_type' => Article::CONTENT_TYPE,
-                'category' => $article->getPrimaryCategory(),
                 'rating'  => $rating,
-                'is_subscribed' => $is_subscribed
+                'is_subscribed' => $is_subscribed,
+                'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );
     }

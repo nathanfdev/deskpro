@@ -76,16 +76,7 @@
 
         {{ page.news_comments()|raw }}
 
-        {%  if new_comment_form != null %}
-
-            <br>
-            <h3>New Comment</h3>
-
-            {{ form_start(new_comment_form) }}
-            {{ form_rest(new_comment_form) }}
-            <button type="submit">Save Comment</button>
-            {{ form_end(new_comment_form) }}
-        {% endif %}
+        {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
 
         {{ page.related_content()|raw }}
     </article>

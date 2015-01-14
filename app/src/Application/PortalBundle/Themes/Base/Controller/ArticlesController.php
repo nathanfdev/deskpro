@@ -172,4 +172,26 @@ class ArticlesController extends AbstractController
             )
         );
     }
+
+    /**
+     * @Tag(name="article_comments")
+     * @TagOptions(
+     *      defaults={
+     *          "article": null
+     *      },
+     *      allowed_types={
+     *          "article":{"Application\DeskPRO\Entity\Article","int","string","null"}
+     *      }
+     * )
+     */
+    public function commentsAction(TagRequest $tag_request, array $options)
+    {
+        $article = $this->getArticlesDataService()->getArticle($options['article']);
+        $comments = $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
+
+        return $this->renderThemeView('Theme:Articles:Tag/comments.html.twig', array(
+            'article' => $article,
+            'comments' => $comments
+        ));
+    }
 }

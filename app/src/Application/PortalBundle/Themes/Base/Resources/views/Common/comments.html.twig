@@ -1,0 +1,9 @@
+{% if comments|length %}
+    {% for comment in comments %}
+    <li>
+        "{{ comment.content }}"
+
+        <strong>{{ comment.userName(true) }}</strong> at <i>{{ comment.date_created|date }}</i>
+    </li>
+    {% endfor %}
+{% endif %}

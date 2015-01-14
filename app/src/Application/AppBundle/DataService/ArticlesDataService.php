@@ -143,6 +143,13 @@ class ArticlesDataService
         return $this->getArticleCategoriesRepo()->find($category);
     }
 
+    public function getArticleComments($article, Person $person = null)
+    {
+        $article = $this->getArticle($article);
+
+        return $this->getArticleCommentRepo()->getDisplayComments($article, $person);
+    }
+
     /**
      * @return \Application\DeskPRO\EntityRepository\Article
      */
@@ -157,6 +164,14 @@ class ArticlesDataService
     public function getArticleCategoriesRepo()
     {
         return $this->em->getRepository('DeskPRO:ArticleCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\ArticleComment
+     */
+    public function getArticleCommentRepo()
+    {
+        return $this->em->getRepository('DeskPRO:ArticleComment');
     }
 
     /**

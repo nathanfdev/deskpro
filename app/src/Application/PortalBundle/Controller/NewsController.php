@@ -171,7 +171,7 @@ class NewsController extends AbstractController
         // COMMENT FORM
         //
         $new_comment_form = null;
-        if ($this->isGranted('COMMENT_NEWS')) {
+        if ($this->isGranted(ContentCommentVoter::COMMENT_NEWS)) {
             $comment = new NewsComment();
             $comment->setObject($post);
             $new_comment_form = $this->createForm('comment', $comment, array(
@@ -191,12 +191,12 @@ class NewsController extends AbstractController
         return $this->renderThemeView(
             'Theme:News:view.html.twig',
             array(
-                'category' => $post->category,
                 'post' => $post,
+                'category' => $post->category,
                 'content_id' => $post->getId(),
                 'content_type' => News::CONTENT_TYPE,
-                'is_subscribed' => $is_subscribed,
                 'rating' => $rating,
+                'is_subscribed' => $is_subscribed,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );
