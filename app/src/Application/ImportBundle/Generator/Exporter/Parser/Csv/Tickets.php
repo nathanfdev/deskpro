@@ -37,7 +37,7 @@ use DateTime;
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-class Tickets extends AbstractCsv
+class Tickets extends AbstractParser
 {
     const FILE_TICKETS         = 'tickets.csv';
     const FILE_TICKET_MESSAGES = 'messages.csv';
@@ -45,9 +45,9 @@ class Tickets extends AbstractCsv
     /**
      * {@inheritdoc}
      */
-    public function getGeneratorRecordType()
+    public function getRecordType()
     {
-        return GeneratorInterface::TYPE_TICKETS;
+        return GeneratorInterface::RECORD_TYPE_TICKETS;
     }
 
     /**

@@ -37,16 +37,16 @@ use DateTime;
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-class People extends AbstractCsv
+class People extends AbstractParser
 {
     const FILE_PEOPLE = 'people.csv';
 
     /**
      * {@inheritdoc}
      */
-    public function getGeneratorRecordType()
+    public function getRecordType()
     {
-        return GeneratorInterface::TYPE_PEOPLE;
+        return GeneratorInterface::RECORD_TYPE_PEOPLE;
     }
 
     /**

@@ -84,13 +84,15 @@ class GeneratorFactory
      */
     private function createExportersCollection()
     {
-        $scvReaderFactory      = new Exporter\CsvFactory($this->container);
-        $osTicketReaderFactory = new Exporter\OsTicketFactory($this->container);
+        $csvFactory      = new Exporter\CsvFactory($this->container);
+        $osTicketFactory = new Exporter\OsTicketFactory($this->container);
+        $zenDeskFactory  = new Exporter\ZenDeskFactory($this->container);
 
         $exporters = new Exporter\Collection();
         $exporters
-            ->attach($scvReaderFactory->createExporter())
-            ->attach($osTicketReaderFactory->createExporter());
+            ->attach($csvFactory->createExporter())
+            ->attach($osTicketFactory->createExporter())
+            ->attach($zenDeskFactory->createExporter());
 
         return $exporters;
     }

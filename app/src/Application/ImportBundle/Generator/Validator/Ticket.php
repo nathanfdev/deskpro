@@ -44,7 +44,7 @@ final class Ticket extends AbstractConstraintValidator
      */
     public function getRecordType()
     {
-        return GeneratorInterface::TYPE_TICKETS;
+        return GeneratorInterface::RECORD_TYPE_TICKETS;
     }
 
     /**

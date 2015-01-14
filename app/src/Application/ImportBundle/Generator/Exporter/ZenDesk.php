@@ -25,29 +25,19 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
-
-use Application\ImportBundle\Generator\Exporter\Parser\AbstractParser;
-use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
+namespace Application\ImportBundle\Generator\Exporter;
 
 /**
- * Class AbstractOsTicket
- * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
+ * Class ZenDesk
+ * @package Application\ImportBundle\Generator\Exporter
  */
-abstract class AbstractOsTicket extends AbstractParser
+final class ZenDesk extends AbstractExporter
 {
     /**
-     * @var OsTicketReaderInterface
+     * {@inheritdoc}
      */
-    protected $os_ticket_reader;
-
-    /**
-     * Constructor
-     *
-     * @param OsTicketReaderInterface $os_ticket_reader
-     */
-    public function __construct(OsTicketReaderInterface $os_ticket_reader)
+    public function getType()
     {
-        $this->os_ticket_reader = $os_ticket_reader;
+        return self::TYPE_ZENDESK;
     }
 }

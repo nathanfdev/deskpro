@@ -43,20 +43,15 @@ class ImportExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
-//        $os_config = dp_get_config('osticket_import');
-//
-//        $db_host = $os_config['db_host'];
-//        $db_name = $os_config['db_name'];
-//        $db_username = $os_config['db_username'];
-//        $db_password = $os_config['db_password'];
-//
-//        $db = new \PDO("mysql:dbname={$db_name};host={$db_host}", $db_username, $db_password);
-
         $definition = new Definition('Application\ImportBundle\CsvReader\CsvReader');
         $container->setDefinition('deskpro.import.csv_reader', $definition);
 
+        $definition = new Definition('Application\ImportBundle\OsTicket\OsTicketReaderFactory');
+        $container->setDefinition('deskpro.import.os_ticket_reader_factory', $definition);
+
         $definition = new Definition('Application\ImportBundle\OsTicket\OsTicketReader');
-        $definition->addArgument(null);
+        $definition->setFactoryService('deskpro.import.os_ticket_reader_factory');
+        $definition->setFactoryMethod('createReaderByDeskproConfig');
         $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
 
         $definition = new Definition('Application\ImportBundle\Generator\GeneratorFactory');

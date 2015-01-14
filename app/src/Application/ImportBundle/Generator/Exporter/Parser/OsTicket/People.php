@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
 use DateTime;
+use Exception;
 
 /**
  * People os ticket parser
@@ -37,14 +38,14 @@ use DateTime;
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class People extends AbstractOsTicket
+class People extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
-    public function getGeneratorRecordType()
+    public function getRecordType()
     {
-        return GeneratorInterface::TYPE_PEOPLE;
+        return GeneratorInterface::RECORD_TYPE_PEOPLE;
     }
 
     /**
@@ -60,6 +61,10 @@ class People extends AbstractOsTicket
      */
     public function export()
     {
+        if (!($this->config->getBatchSize() > 0)) {
+            throw new Exception('Invalid batch size set up');
+        }
+
         $collection = new Entity\Collection();
         $collection
             ->merge($this->exportStaff())
@@ -87,57 +92,87 @@ class People extends AbstractOsTicket
         $offset     = 0;
         $collection = new Entity\Collection();
 
-        while ($batch = $this->os_ticket_reader->findAllStaff($this->config->getBatchSize(), $offset)) {
+        while ($batch = $this->os_ticket_reader->findStaff($this->config->getBatchSize(), $offset)) {
             $offset += count($batch);
 
-            foreach ($batch as $person) {
+            foreach ($batch as $num => $person) {
                 $this->advanceProgressBar();
 
-                $entity = new Entity\Person();
-                $entity
-                    ->setAsAgent(true)
-                    ->setFirstName($person['firstname'])
-                    ->setLastName($person['lastname'])
-                    ->setTimezone($this->os_ticket_reader->findTimezoneFromId($person['timezone_id']))
-                    ->setDateCreated(new DateTime($person['created']))
-                    ->addEmail($person['email']);
+                if ($this->hasRequiredStaffColumns($person) === false) {
+                    $this->logWarning(sprintf('Invalid staff person record found (Skipping): %d', $num + $offset));
+                } else {
+                    $entity = new Entity\Person();
+                    $entity
+                        ->setDestination('person_' . ($num + $offset))
+                        ->setAsAgent(true)
+                        ->setFirstName($person['firstname'])
+                        ->setLastName($person['lastname'])
+                        ->setTimezone($this->os_ticket_reader->findTimezoneFromId($person['timezone_id']))
+                        ->setDateCreated(new DateTime($person['created']))
+                        ->addEmail($person['email']);
 
-                $collection->attach($entity);
-                $this->logInfo(sprintf(
-                    'Person `%s %s` parsed successfully!',
-                    $entity->getFirstName(), $entity->getLastName()
-                ));
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('Staff %s parsed successfully!', $entity->getDestination()));
+                }
             }
         }
     }
 
     /**
      * Return a collection of users
-     * todo batch support?
      *
      * @return Entity\Collection
      */
     private function exportUsers()
     {
+        $offset     = 0;
         $collection = new Entity\Collection();
-        $users = $this->os_ticket_reader->findAllUsers($this->config->getBatchSize(), 0);
-        foreach ($users as $person) {
-            $this->advanceProgressBar();
 
-            $entity = new Entity\Person();
-            $entity
-                ->setAsUser(true)
-                ->setName($person['name'])
-                ->setDateCreated(new DateTime($person['created']))
-                ->addEmail($person['address']);
+        while ($batch = $this->os_ticket_reader->findUsers($this->config->getBatchSize(), $offset)) {
+            $offset += count($batch);
 
-            $collection->attach($entity);
-            $this->logInfo(sprintf(
-                'Person `%s` parsed successfully!',
-                $entity->getName()
-            ));
+            foreach ($batch as $num => $person) {
+                $this->advanceProgressBar();
+
+                if ($this->hasRequiredUserColumns($person) === false) {
+                    $this->logWarning(sprintf('Invalid user record found (Skipping): %d', $num + $offset));
+                } else {
+                    $entity = new Entity\Person();
+                    $entity
+                        ->setDestination('person_' . ($num + $offset))
+                        ->setAsUser(true)
+                        ->setName($person['name'])
+                        ->setDateCreated(new DateTime($person['created']))
+                        ->addEmail($person['address']);
+
+                    $collection->attach($entity);
+                    $this->logInfo(sprintf('User %s parsed successfully!', $entity->getDestination()));
+                }
+            }
         }
 
         return $collection;
+    }
+
+    /**
+     * Check if staff person has all required columns
+     *
+     * @param array $person
+     * @return bool
+     */
+    private function hasRequiredStaffColumns(array $person)
+    {
+        return $this->hasRequiredColumns($person, array('firstname', 'lastname', 'timezone_id', 'created', 'email'));
+    }
+
+    /**
+     * Check if user has all required columns
+     *
+     * @param array $person
+     * @return bool
+     */
+    private function hasRequiredUserColumns(array $person)
+    {
+        return $this->hasRequiredColumns($person, array('name', 'created', 'address'));
     }
 }

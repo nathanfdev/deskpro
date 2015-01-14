@@ -29,13 +29,12 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
 use Application\ImportBundle\CsvReader\CsvConfig;
 use Application\ImportBundle\CsvReader\CsvReaderInterface;
-use Application\ImportBundle\Generator\Exporter\Parser\AbstractParser;
 
 /**
  * Class AbstractCsv
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-abstract class AbstractCsv extends AbstractParser
+abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
     /**
      * @var CsvReaderInterface

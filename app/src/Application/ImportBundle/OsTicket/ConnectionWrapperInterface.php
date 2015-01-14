@@ -25,38 +25,18 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator;
+namespace Application\ImportBundle\OsTicket;
 
 /**
- * Description of GeneratorInterface
- *
- * Interface GeneratorPluginInterface
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
- * @package Application\ImportBundle\Generator
+ * Interface GetConnectionInterface
+ * @package Application\ImportBundle\OsTicket
  */
-interface GeneratorInterface extends GeneratorConfigAwareInterface
+interface ConnectionWrapperInterface
 {
-    const RECORD_TYPE_PEOPLE  = 'people';
-    const RECORD_TYPE_TICKETS = 'tickets';
-
     /**
-     * Returns count of records of all types to be exported
+     * Returns pdo connection
      *
-     * @return int
+     * @return \PDO
      */
-    public function getTotalRecordsCount();
-
-    /**
-     * Generate and write collection
-     *
-     * @throws GeneratorException
-     */
-    public function generate();
-
-    /**
-     * Validate exporting collection
-     *
-     * @return Validator\ExceptionCollection
-     */
-    public function validate();
+    public function getConnection();
 }

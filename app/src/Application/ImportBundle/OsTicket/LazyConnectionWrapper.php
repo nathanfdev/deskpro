@@ -25,38 +25,74 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator;
+namespace Application\ImportBundle\OsTicket;
+
+use PDO;
 
 /**
- * Description of GeneratorInterface
+ * Prevent exceptions if pdo configuration is not valid
  *
- * Interface GeneratorPluginInterface
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
- * @package Application\ImportBundle\Generator
+ * Class PdoConnection
+ * @package Application\ImportBundle\OsTicket
  */
-interface GeneratorInterface extends GeneratorConfigAwareInterface
+class LazyConnectionWrapper implements ConnectionWrapperInterface
 {
-    const RECORD_TYPE_PEOPLE  = 'people';
-    const RECORD_TYPE_TICKETS = 'tickets';
+    /**
+     * @var string
+     */
+    private $dsn;
 
     /**
-     * Returns count of records of all types to be exported
-     *
-     * @return int
+     * @var string
      */
-    public function getTotalRecordsCount();
+    private $user;
 
     /**
-     * Generate and write collection
-     *
-     * @throws GeneratorException
+     * @var string
      */
-    public function generate();
+    private $password;
 
     /**
-     * Validate exporting collection
-     *
-     * @return Validator\ExceptionCollection
+     * @var array
      */
-    public function validate();
+    private $options;
+
+    /**
+     * @var PDO
+     */
+    private $adapter;
+
+    /**
+     * Constructor
+     *
+     * @param string $dsn
+     * @param string $user
+     * @param string $password
+     * @param array  $options
+     */
+    public function __construct($dsn, $user = null, $password = null, array $options = null)
+    {
+        $this->dsn      = $dsn;
+        $this->user     = $user;
+        $this->password = $password;
+        $this->options  = $options;
+    }
+
+    /**
+     * Returns pdo connection
+     *
+     * @return PDO
+     */
+    public function getConnection()
+    {
+        if (!$this->adapter) {
+            $this->adapter = new PDO(
+                $this->dsn,
+                $this->user,
+                $this->password
+            );
+        }
+
+        return $this->adapter;
+    }
 }

@@ -25,38 +25,28 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
+
+use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 
 /**
- * Description of GeneratorInterface
- *
- * Interface GeneratorPluginInterface
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
- * @package Application\ImportBundle\Generator
+ * Class AbstractParser
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-interface GeneratorInterface extends GeneratorConfigAwareInterface
+abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
-    const RECORD_TYPE_PEOPLE  = 'people';
-    const RECORD_TYPE_TICKETS = 'tickets';
+    /**
+     * @var OsTicketReaderInterface
+     */
+    protected $os_ticket_reader;
 
     /**
-     * Returns count of records of all types to be exported
+     * Constructor
      *
-     * @return int
+     * @param OsTicketReaderInterface $os_ticket_reader
      */
-    public function getTotalRecordsCount();
-
-    /**
-     * Generate and write collection
-     *
-     * @throws GeneratorException
-     */
-    public function generate();
-
-    /**
-     * Validate exporting collection
-     *
-     * @return Validator\ExceptionCollection
-     */
-    public function validate();
+    public function __construct(OsTicketReaderInterface $os_ticket_reader)
+    {
+        $this->os_ticket_reader = $os_ticket_reader;
+    }
 }

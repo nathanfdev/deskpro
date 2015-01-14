@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\OsTicket;
 
 /**
+ * Os ticket reader interface
+ *
  * Interface OsTicketReaderInterface
  * @package Application\ImportBundle\OsTicket
  */
@@ -49,7 +51,7 @@ interface OsTicketReaderInterface
      *
      * @return mixed
      */
-    public function findAllStaff($limit, $offset);
+    public function findStaff($limit, $offset);
 
     /**
      * @param int $limit
@@ -57,7 +59,7 @@ interface OsTicketReaderInterface
      *
      * @return mixed
      */
-    public function findAllUsers($limit, $offset);
+    public function findUsers($limit, $offset);
 
     /**
      * @param int $limit
@@ -71,19 +73,19 @@ interface OsTicketReaderInterface
      * @param int $message_id
      * @return array
      */
-    public function findTicketMessageAttachment($message_id);
+    public function findMessageAttachments($message_id);
 
     /**
      * @param $id
      * @return mixed
      */
-    public function findDepartmentFromId($id);
+    public function findDepartmentById($id);
 
     /**
      * @param $id
      * @return mixed
      */
-    public function findUserEmailFromId($id);
+    public function findUserEmailById($id);
 
     /**
      * @param $id
@@ -101,7 +103,7 @@ interface OsTicketReaderInterface
      * @param $ticket_id
      * @return mixed
      */
-    public function findMessagesByTicketId($ticket_id);
+    public function findMessages($ticket_id);
 
     /**
      * @param $id
@@ -113,5 +115,5 @@ interface OsTicketReaderInterface
      * @param $file_id
      * @return mixed
      */
-    public function getFileData($file_id);
+    public function getAttachmentData($file_id);
 }

@@ -44,7 +44,7 @@ final class Person extends AbstractConstraintValidator
      */
     public function getRecordType()
     {
-        return GeneratorInterface::TYPE_PEOPLE;
+        return GeneratorInterface::RECORD_TYPE_PEOPLE;
     }
 
     /**

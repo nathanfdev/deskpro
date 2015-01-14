@@ -1,0 +1,39 @@
+<?php
+
+namespace Application\ImportBundle\OsTicket;
+
+use Exception;
+
+/**
+ * Os ticket reader factory
+ *
+ * Class OsTicketReaderFactory
+ * @package Application\ImportBundle\OsTicket
+ */
+class OsTicketReaderFactory
+{
+    /**
+     * Create os ticket reader using deskpro config
+     *
+     * @return OsTicketReader
+     * @throws Exception
+     */
+    public function createReaderByDeskproConfig()
+    {
+        $os_config = dp_get_config('osticket_import');
+        if (empty($os_config)) {
+            throw new Exception('Deskpro os ticket import config is not defined');
+        }
+
+        $db_host     = $os_config['db_host'];
+        $db_name     = $os_config['db_name'];
+        $db_username = $os_config['db_username'];
+        $db_password = $os_config['db_password'];
+
+        return new OsTicketReader(new LazyConnectionWrapper(
+            sprintf('mysql:dbname=%s;host=%s', $db_name, $db_host),
+            $db_username,
+            $db_password
+        ));
+    }
+}

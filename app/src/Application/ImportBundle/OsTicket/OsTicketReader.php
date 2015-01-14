@@ -30,24 +30,26 @@ namespace Application\ImportBundle\OsTicket;
 use Pdo;
 
 /**
+ * Os ticket reader
+ *
  * Class OsTicketReader
  * @package Application\ImportBundle\OsTicket
  */
 class OsTicketReader implements OsTicketReaderInterface
 {
     /**
-     * @var PDO
+     * @var ConnectionWrapperInterface
      */
-    private $db;
+    private $connection_wrapper;
 
     /**
      * Constructor
      *
-     * @param PDO $db
+     * @param ConnectionWrapperInterface $connection_wrapper
      */
-    public function __construct(/*PDO*/ $db)
+    public function __construct(ConnectionWrapperInterface $connection_wrapper)
     {
-        $this->db = $db;
+        $this->connection_wrapper = $connection_wrapper;
     }
 
     /**
@@ -56,7 +58,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function getTicketCount()
     {
         $query = 'SELECT count(ticket_id) FROM ost_ticket';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute();
 
         return $stmt->fetchColumn();
@@ -68,14 +70,14 @@ class OsTicketReader implements OsTicketReaderInterface
     public function getPeopleCount()
     {
         $query = 'SELECT count(staff_id) FROM ost_staff';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute();
-        $staff_count = $stmt->fetchColumn();
+        $staff_count = (int)$stmt->fetchColumn();
 
         $query = 'SELECT count(id) FROM ost_user';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute();
-        $user_count = $stmt->fetchColumn();
+        $user_count = (int)$stmt->fetchColumn();
 
         return $staff_count + $user_count;
     }
@@ -89,70 +91,66 @@ class OsTicketReader implements OsTicketReaderInterface
             . ' LIMIT :limit'
             . ' OFFSET :offset';
 
-        $stmt = $this->db->prepare($query);
-        $stmt->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findAllStaff($limit, $offset)
+    public function findStaff($limit, $offset)
     {
         $query = 'SELECT * FROM ost_staff LIMIT :limit OFFSET :offset';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
 
-        $stmt->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findAllUsers($limit, $offset)
+    public function findUsers($limit, $offset)
     {
-        $query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id'
-            . ' LIMIT :limit'
-            . ' OFFSET :offset';
+        $query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id LIMIT :limit OFFSET :offset';
+        $stmt  = $this->getConnection()->prepare($query);
 
-        $stmt   = $this->db->prepare($query);
-
-        $stmt->bindValue(':limit', (int) $limit, \PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int) $offset, \PDO::PARAM_INT);
+        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         $stmt->execute();
 
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findTicketMessageAttachment($message_id)
+    public function findMessageAttachments($message_id)
     {
-        $message_id = (int)$message_id;
         $query = 'SELECT f.name, f.type, a.file_id  FROM ost_file f JOIN ost_ticket_attachment a '
             . ' ON f.id = a.file_id'
             . ' WHERE a.ref_id = ?';
 
-        $stmt = $this->db->prepare($query);
-        $stmt->execute(array($message_id));
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->execute(array((int)$message_id));
 
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findDepartmentFromId($id)
+    public function findDepartmentById($id)
     {
         $query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -161,14 +159,14 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findUserEmailFromId($id)
+    public function findUserEmailById($id)
     {
         $query = 'SELECT address FROM ost_user_email e'
             . ' LEFT JOIN ost_user u '
             . ' ON e.user_id=u.id'
             . ' WHERE u.id = ?';
 
-        $stmt = $this->db->prepare($query);
+        $stmt = $this->getConnection()->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -180,7 +178,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function findStaffEmailFromId($id)
     {
         $query = 'SELECT email FROM ost_staff WHERE id = ?';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -192,7 +190,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function findTeamNameFromId($id)
     {
         $query = 'SELECT name FROM ost_team WHERE id = ?';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -201,13 +199,13 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findMessagesByTicketId($ticket_id)
+    public function findMessages($ticket_id)
     {
         $query = 'SELECT id, thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute(array($ticket_id));
 
-        return $stmt->fetchAll(\PDO::FETCH_ASSOC);
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -216,7 +214,7 @@ class OsTicketReader implements OsTicketReaderInterface
     public function findTimezoneFromId($id)
     {
         $query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute(array($id));
 
         return $stmt->fetchColumn();
@@ -225,11 +223,11 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getFileData($file_id)
+    public function getAttachmentData($file_id)
     {
         $data  = '';
         $query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = ?';
-        $stmt  = $this->db->prepare($query);
+        $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute(array($file_id));
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
@@ -238,5 +236,15 @@ class OsTicketReader implements OsTicketReaderInterface
         }
 
         return $data;
+    }
+
+    /**
+     * Returns pdo connection
+     *
+     * @return PDO
+     */
+    private function getConnection()
+    {
+        return $this->connection_wrapper->getConnection();
     }
 }

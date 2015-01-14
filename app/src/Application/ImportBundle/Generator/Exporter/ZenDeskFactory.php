@@ -25,38 +25,19 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator;
+namespace Application\ImportBundle\Generator\Exporter;
 
 /**
- * Description of GeneratorInterface
- *
- * Interface GeneratorPluginInterface
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
- * @package Application\ImportBundle\Generator
+ * Class ZenDeskFactory
+ * @package Application\ImportBundle\Generator\Exporter
  */
-interface GeneratorInterface extends GeneratorConfigAwareInterface
+class ZenDeskFactory extends AbstractFactory
 {
-    const RECORD_TYPE_PEOPLE  = 'people';
-    const RECORD_TYPE_TICKETS = 'tickets';
-
     /**
-     * Returns count of records of all types to be exported
-     *
-     * @return int
+     * {@inheritdoc}
      */
-    public function getTotalRecordsCount();
-
-    /**
-     * Generate and write collection
-     *
-     * @throws GeneratorException
-     */
-    public function generate();
-
-    /**
-     * Validate exporting collection
-     *
-     * @return Validator\ExceptionCollection
-     */
-    public function validate();
+    public function createExporter()
+    {
+        return new ZenDesk(new Parser\Collection());
+    }
 }
