@@ -85,7 +85,7 @@ class DownloadsController extends AbstractController
     /**
      * @Route("/downloads/{slug}.{_format}", name="portal_downloads_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_DOWNLOADS')")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD_CATEGORY', category)")
      */
     public function browseAction(Request $request, DownloadCategory $category, $_format)
     {
@@ -141,7 +141,7 @@ class DownloadsController extends AbstractController
     /**
      * @Route("/downloads/files/{slug}", name="portal_downloads_view")
      * @ParamConverter(name="file", converter="deskpro_slug")
-     * @Security("is_granted('USE_DOWNLOADS')")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD', file)")
      */
     public function viewAction(Request $request, Download $file)
     {
@@ -209,7 +209,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}/download/{authcode}", name="portal_downloads_download")
      * @ParamConverter("file", options={"slug" = "slug"})
      * @ParamConverter("blob", options={"authcode" = "authcode"})
-     * @Security("is_granted('USE_DOWNLOADS')")
+     * @Security("is_granted('USE_DOWNLOADS') and is_granted('DOWNLOAD_DOWNLOAD', file)")
      */
     public function downloadAction(Request $request, Download $file, Blob $blob)
     {

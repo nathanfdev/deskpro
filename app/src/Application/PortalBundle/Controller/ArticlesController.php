@@ -80,7 +80,7 @@ class ArticlesController extends AbstractController
     /**
      * @Route("/kb/{slug}.{_format}", name="portal_kb_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES')")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE_CATEGORY', category)")
      */
     public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
@@ -128,7 +128,7 @@ class ArticlesController extends AbstractController
     /**
      * @Route("/kb/articles/{slug}", name="portal_kb_view")
      * @ParamConverter(name="article", converter="deskpro_slug")
-     * @Security("is_granted('USE_ARTICLES')")
+     * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
      */
     public function viewAction(Request $request, Article $article)
     {

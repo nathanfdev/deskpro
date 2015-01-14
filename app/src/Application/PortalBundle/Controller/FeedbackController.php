@@ -89,7 +89,7 @@ class FeedbackController extends AbstractController
     /**
      * @Route("/feedback/view/{slug}", name="portal_feedback_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
-     * @Security("is_granted('USE_FEEDBACK')")
+     * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
      */
     public function viewAction(Request $request, Feedback $item)
     {

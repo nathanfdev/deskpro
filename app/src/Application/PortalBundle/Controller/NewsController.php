@@ -92,7 +92,7 @@ class NewsController extends AbstractController
     /**
      * @Route("/news/{slug}.{_format}", name="portal_news_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
-     * @Security("is_granted('USE_NEWS')")
+     * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS_CATEGORY', category)")
      */
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
@@ -147,7 +147,7 @@ class NewsController extends AbstractController
     /**
      * @Route("/news/posts/{slug}", name="portal_news_view")
      * @ParamConverter(name="post", converter="deskpro_slug")
-     * @Security("is_granted('USE_NEWS')")
+     * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
      */
     public function viewAction(Request $request, News $post)
     {
