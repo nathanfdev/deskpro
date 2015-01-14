@@ -473,6 +473,42 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			listTicketIdsMap = {};
 			self.listTicketIds.forEach(function(tid) { listTicketIdsMap[tid] = true; });
 
+			// - This adds new tickets to the current collection of loaded tickets.
+			// - At this point we dont know if the tickets sholud actually be visible
+			// - So we add the tickets to the collection, then sort them (client side)
+			// - After they are sorted, we can adjust the cursor to show new
+			//   tickets in the proper position (or dont show them at all, if they are out of view)
+
+			// $scope.tickets is our current view (what is in the browser)
+			//
+			// self.listTicketIds is an array of ALL ticket IDs in this result set
+			//     - order matters in listTicketIds because this is how we determine our cursor location. We know where the
+			//       first ID in the current browser view is in the listTicketIds, and the length of listTicketIds,
+			//       means we can calculate the cursor.
+			//     - order is not guaranteed for any id out of the current browser view though. as new tickets come in,
+			//       we only know if they are before or after the current list. (But that is all we need to calculate the cursor, so its ok)
+			//     - we only know correct order when the ticket is inserted somewhere WITHIN the current view, not elsewhere.
+			//           ~ eg: if i am on page 5 and a ticket comes in to position 1 in the current view,
+			//             we dont know if that new ticket is really at that position or just "somewhere before the first ticket in this list"
+			//             (it might be all the way back on page 2, for example)
+			//           ~ this is why we have 'sliding' cursors, the current view is always fixed at a known point
+			//                 Eg. Before:    Showing 51-100 of 247  <- Say position 1 is ticket ID 1234.
+			//                     After:     Showing 52-101 of 248  <- position 1 stays 1234, we just slid the cursor up so the numbers match the view
+			//                                                          Because all we know is that a new ticket was added to the list somewhere before our #1234.
+			//           ~ So a dynamic PREPEND never happens if we are not on page1. page1 is special just because it is known, we know
+			//             the order is correct and there can be no other previous rows, so we can prepend dynamically.
+
+			// EXAMPLE
+			// Assume set: [<BEFORE range>, Abra, Bar, Baz, Gin, Hol, <AFTER range>]
+			//   - Add 'DOG' (middle): [???, Abra, Bar, Baz, DOG, Gin, Hol, ???]
+			//     We keep the current range, so pop Hol off: [???, Abra, Bar, Baz, DOG, Gin, ???]
+			//   - Add 'Aadvark' (first): [???, Aadvark, Abra, Bar, Baz, Gin, Hol, ???]
+			//     If page1, we anchor cursor to the top and Hol is popped: [Aadvark, Abra, Bar, Baz, Gin, ???]
+			//     Else, cursor remains the same and Aadvark is out of view: [???, Abra, Bar, Baz, Gin, Hol, ???]
+			//   - Add 'Zebdra' (last): [???, Abra, Bar, Baz, Gin, Hol, Zebra, ???]
+			//     Cursor remains the same, Zebra is out of view: [???, Abra, Bar, Baz, Gin, Hol, ???]
+
+
 			tickets.forEach(function(ticket) {
 				if (!currentTicketIdsMap[ticket.id] && self.isTicketGroupMatch(ticket)) {
 					$scope.tickets.push(ticket);
@@ -485,43 +521,41 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 			});
 
 			if (didAdd.length) {
-
 				$scope.tickets.sort(function(ticketA, ticketB) {
 					return self.fieldUtil.getOrder(ticketA, ticketB, self.orderBy, self.orderByDir);
 				});
 
-				// Add to IDs array
-				$scope.tickets.forEach(function(ticket, idx) {
-					if (didAdd.indexOf(ticket.id) !== -1) {
-						if (!listTicketIdsMap[ticket.id]) {
-							if (!lastId) {
-								if (idx === 0) {
-									self.listTicketIds.unshift(ticket.id);
-								} else {
-									self.listTicketIds.push(ticket);
-								}
-							} else {
-								tmp = self.listTicketIds.indexOf(lastId);
-								if (tmp !== -1) {
-									self.listTicketIds.splice(tmp, 0, ticket.id);
-								} else {
-									appendIds.push(ticket.id);
-								}
-							}
-						}
-					}
-					lastId = ticket.id;
-				});
-				if (appendIds.length) {
-					appendIds.forEach(function(tid) {
-						if (!listTicketIdsMap[tid]) {
-							self.listTicketIds.push(tid);
-						}
-					});
+				var insertPos = -1;
+				if (firstId) {
+					insertPos = self.listTicketIds.indexOf(firstId);
 				}
 
+				if (insertPos == -1) {
+					insertPos = self.listTicketIds.length - 1;// fallback, append
+				}
+
+				var spliceArgs = $scope.tickets.map(function(t) { console.log(t.id); return t.id; });
+				spliceArgs.unshift(0);
+				spliceArgs.unshift(insertPos);
+
+				console.log("A1: " + self.listTicketIds.join(', '));
+
+				self.listTicketIds.splice.apply(self.listTicketIds, spliceArgs); // splice(insertPos, 0, id1, id2, id3...)
+
+				// De-dupe
+				self.listTicketIds = self.listTicketIds.filter(function() {
+					var seen = {};
+					return function(element, index, array) {
+						return !(element in seen) && (seen[element] = 1);
+					};
+				}());
+
+				console.log("A2: " + self.listTicketIds.join(', '));
+
 				// Truncate list to max perPage
-				if ($scope.tickets.length >= self.perPage) {
+				// Or alternatively, if we are on last page, we never prepend results (because we dont know where the
+				// ticket *actually* is in the list, it might be in a previous page)
+				if ($scope.tickets.length >= self.perPage || ($scope.tickets.length <= self.perPage && self.realCursorStart !== 1)) {
 
 					if (self.realCursorStart !== 1 && firstId) {
 						for (var i = 0; i < $scope.tickets.length; i++) {
