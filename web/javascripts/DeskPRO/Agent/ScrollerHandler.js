@@ -44,6 +44,10 @@ if (!window.DP_NO_JS_SCROLL) {
 
 			function updateSize() {
 				if (!element) return;
+
+				// hardcoded update of list height
+				$('.view-body:visible').height($('.source-pane-content').height() - $('.view-header:visible').height() - $('.view-subheader:visible').height());
+
 				initScroll();
 				if (element.tinyscrollbar_update) {
 					element.tinyscrollbar_update();
