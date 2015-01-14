@@ -1181,19 +1181,19 @@ class TicketController extends AbstractController
 
         $message->convertEmbeddedImagesToInlineAttach();
 
-                if ($this->in->getBool('options.is_snippet')) {
-                    $snippet = $this->em->find('DeskPRO:TextSnippet', (int) $this->in->getString('options.snippet_id'));
+        if ($this->in->getBool('options.is_snippet')) {
+            $snippet = $this->em->find('DeskPRO:TextSnippet', (int) $this->in->getString('options.snippet_id'));
 
-                    if ($snippet) {
-                        $snippetLog = new Entity\TextSnippetLog();
+            if ($snippet) {
+                $snippetLog = new Entity\TextSnippetLog();
 
-                        $snippetLog['ticket']   = $ticket;
-                        $snippetLog['person']   = $this->getPerson();
-                        $snippetLog['snippet']  = $snippet;
+                $snippetLog['ticket']   = $ticket;
+                $snippetLog['person']   = $this->getPerson();
+                $snippetLog['snippet']  = $snippet;
 
-                        $this->em->persist($snippetLog);
-                        $this->em->flush();
-                    }
+                $this->em->persist($snippetLog);
+                $this->em->flush();
+            }
         }
 
         if ($dupe_message = $this->em->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($message, $ticket)) {
@@ -1286,10 +1286,6 @@ class TicketController extends AbstractController
             }
         }
 
-        if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
-            $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
-        }
-
         #------------------------------
         # Save
         #------------------------------
@@ -1299,6 +1295,10 @@ class TicketController extends AbstractController
         $changed_agent = false;
         $changed_team  = false;
         try {
+
+            if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
+                $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+            }
 
             if ($add_parts) {
                 foreach ($add_parts as $p) {
