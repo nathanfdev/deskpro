@@ -538,8 +538,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 				spliceArgs.unshift(0);
 				spliceArgs.unshift(insertPos);
 
-				console.log("A1: " + self.listTicketIds.join(', '));
-
 				self.listTicketIds.splice.apply(self.listTicketIds, spliceArgs); // splice(insertPos, 0, id1, id2, id3...)
 
 				// De-dupe
@@ -549,8 +547,6 @@ DeskPRO.Agent.PageFragment.List.TicketList = new Orb.Class({
 						return !(element in seen) && (seen[element] = 1);
 					};
 				}());
-
-				console.log("A2: " + self.listTicketIds.join(', '));
 
 				// Truncate list to max perPage
 				// Or alternatively, if we are on last page, we never prepend results (because we dont know where the
