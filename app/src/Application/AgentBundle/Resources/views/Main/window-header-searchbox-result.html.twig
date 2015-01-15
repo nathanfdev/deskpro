@@ -75,13 +75,58 @@
 
 <% if (group.type == 'person') { var person = result; %>
 <article class="row-item single-row" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}">
-	<div class="userinfo">
+	<div class="userinfo" style="height: auto; overflow: auto;">
 		<a class="name click-through" route-notabreload="1" data-route="person:{{ path('agent_people_view', {'person_id': '0000'})|replace({'0000': '<%= person.id %>'})|raw }}" data-route-title="@selector(.person-tip)">
 			<span class="with-icon" style="background-image: url('<%- person.picture_url_16 %>');"><%- person.display_name %></span></a>
 		<span class="email">&lt;<%- (person.primary_email || {}).email %>&gt;</span>
-		<div class="bound-fade"></div>
+		<div class="bound-fade">
+			<% if (person.tickets_count > 0) { %>
+				<span class="sub-items-link" ng-click="loadPersonTickets(result); $event.stopPropagation()">
+					<%- person.tickets_count + ' Ticket' + (1 === person.tickets_count ? '' : 's') %>
+				</span>
+			<% } %>
+		</div>
 	</div>
 </article>
+<div ng-if="expandedPerson && result === expandedPerson && expandedPerson.tickets && expandedPerson.tickets.length">
+	<article ng-repeat="ticket in result.tickets" class="row-item single-row sub-item" route-notabreload="1" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '{{ ticket.id }}'})|raw }}">
+		<div class="top-row">
+			<div class="top-row-left">
+				<h3>
+					<span class="obj-id">#{{ ng_var('ticket.id') }}</span>
+					<a class="subject click-through">
+						{{ ng_var('ticket.subject') }}
+					</a>
+				</h3>
+			</div>
+			<div class="top-row-right">
+				<div class="on-hold" ng-if="ticket.is_hold">{{ phrase('agent.tickets.on_hold') }}</div>
+				<div class="status-pill status urgency-{{ ng_var('ticket.urgency') }} {{ ng_var('ticket.status') }}">
+					<span ng-switch="ticket.status">
+						<label ng-switch-when="awaiting_agent">{{ phrase('agent.tickets.status_awaiting_agent') }}</label>
+						<label ng-switch-when="awaiting_user">{{ phrase('agent.tickets.status_awaiting_user') }}</label>
+						<label ng-switch-when="resolved">{{ phrase('agent.tickets.status_resolved') }}</label>
+						<label ng-switch-when="archived">{{ phrase('agent.tickets.status_archived') }}</label>
+						<label ng-switch-when="hidden">{{ phrase('agent.tickets.status_hidden') }}</label>
+					</span>
+
+					<i ng-if="ticket.status == 'awaiting_agent'" class="ticket-urgency">{{ ng_var('ticket.urgency') }}</i>
+				</div>
+			</div>
+		</div>
+	</article>
+	<article ng-if="result.tickets && result.tickets_count > 15" class="row-item single-row sub-item" ng-click="openAllTickets(result); $event.stopPropagation()">
+		<div class="top-row">
+			<div class="top-row-left">
+				<h3>
+					<a class="subject click-through">
+						View all <%- person.tickets_count %> tickets
+					</a>
+				</h3>
+			</div>
+		</div>
+	</article>
+</div>
 <% } %>
 
 {#########################################################################}

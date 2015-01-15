@@ -17,6 +17,7 @@
 namespace Aws\S3\Model;
 
 use Aws\Common\Client\AwsClientInterface;
+use Aws\Common\Iterator\AwsResourceIterator;
 use Guzzle\Common\AbstractHasDispatcher;
 use Guzzle\Batch\FlushingBatch;
 use Guzzle\Batch\ExceptionBufferingBatch;
@@ -112,11 +113,11 @@ class ClearBucket extends AbstractHasDispatcher
      * only specific keys from a bucket (e.g. keys that match a certain prefix or delimiter, or perhaps keys that
      * pass through a filtered, decorated iterator).
      *
-     * @param \Iterator $iterator Iterator used to yield the keys to be deleted
+     * @param AwsResourceIterator $iterator Iterator used to yield the keys to be deleted
      *
      * @return self
      */
-    public function setIterator(\Iterator $iterator)
+    public function setIterator(AwsResourceIterator $iterator)
     {
         $this->iterator = $iterator;
 

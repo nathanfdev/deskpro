@@ -17,6 +17,6 @@
 namespace Aws\ElasticLoadBalancing\Exception;
 
 /**
- * Load balancer name already exists for this account. Please choose another name.
+ * LoadBalancer name already exists for this account. Please choose another name.
  */
 class DuplicateAccessPointNameException extends ElasticLoadBalancingException {}

@@ -19,10 +19,8 @@ namespace Aws\Common\Client;
 use Aws\Common\Aws;
 use Aws\Common\Credentials\Credentials;
 use Aws\Common\Credentials\CredentialsInterface;
-use Aws\Common\Credentials\NullCredentials;
 use Aws\Common\Enum\ClientOptions as Options;
 use Aws\Common\Exception\InvalidArgumentException;
-use Aws\Common\Exception\TransferException;
 use Aws\Common\Signature\EndpointSignatureInterface;
 use Aws\Common\Signature\SignatureInterface;
 use Aws\Common\Signature\SignatureListener;
@@ -31,7 +29,6 @@ use Aws\Common\Waiter\CompositeWaiterFactory;
 use Aws\Common\Waiter\WaiterFactoryInterface;
 use Aws\Common\Waiter\WaiterConfigFactory;
 use Guzzle\Common\Collection;
-use Guzzle\Http\Exception\CurlException;
 use Guzzle\Service\Client;
 use Guzzle\Service\Description\ServiceDescriptionInterface;
 
@@ -85,25 +82,23 @@ abstract class AbstractClient extends Client implements AwsClientInterface
 
         // Add the event listener so that requests are signed before they are sent
         $dispatcher = $this->getEventDispatcher();
-        if (!$credentials instanceof NullCredentials) {
-            $dispatcher->addSubscriber(new SignatureListener($credentials, $signature));
-        }
+        $dispatcher->addSubscriber(new SignatureListener($credentials, $signature));
 
         if ($backoff = $config->get(Options::BACKOFF)) {
             $dispatcher->addSubscriber($backoff, -255);
         }
     }
 
-    public function __call($method, $args)
+    /**
+     * {@inheritdoc}
+     */
+    public function __call($method, $args = null)
     {
-        if (substr($method, 0, 3) === 'get' && substr($method, -8) === 'Iterator') {
-            // Allow magic method calls for iterators (e.g. $client->get<CommandName>Iterator($params))
-            $commandOptions = isset($args[0]) ? $args[0] : null;
-            $iteratorOptions = isset($args[1]) ? $args[1] : array();
-            return $this->getIterator(substr($method, 3, -8), $commandOptions, $iteratorOptions);
-        } elseif (substr($method, 0, 9) == 'waitUntil') {
-            // Allow magic method calls for waiters (e.g. $client->waitUntil<WaiterName>($params))
-            return $this->waitUntil(substr($method, 9), isset($args[0]) ? $args[0]: array());
+        if (substr($method, 0, 9) == 'waitUntil') {
+            // Allow magic method calls for waiters (e.g. $client->waitUntil<WaiterName>($resource, $options))
+            array_unshift($args, substr($method, 9));
+
+            return call_user_func_array(array($this, 'waitUntil'), $args);
         } else {
             return parent::__call(ucfirst($method), $args);
         }
@@ -138,11 +133,17 @@ abstract class AbstractClient extends Client implements AwsClientInterface
         return $scheme . '://' . $regions[$region]['hostname'];
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getCredentials()
     {
         return $this->credentials;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setCredentials(CredentialsInterface $credentials)
     {
         $formerCredentials = $this->credentials;
@@ -157,21 +158,33 @@ abstract class AbstractClient extends Client implements AwsClientInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getSignature()
     {
         return $this->signature;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getRegions()
     {
         return $this->serviceDescription->getData('regions');
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getRegion()
     {
         return $this->getConfig(Options::REGION);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setRegion($region)
     {
         $config = $this->getConfig();
@@ -201,6 +214,9 @@ abstract class AbstractClient extends Client implements AwsClientInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function waitUntil($waiter, array $input = array())
     {
         $this->getWaiter($waiter, $input)->wait();
@@ -208,6 +224,9 @@ abstract class AbstractClient extends Client implements AwsClientInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWaiter($waiter, array $input = array())
     {
         return $this->getWaiterFactory()->build($waiter)
@@ -215,6 +234,9 @@ abstract class AbstractClient extends Client implements AwsClientInterface
             ->setConfig($input);
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function setWaiterFactory(WaiterFactoryInterface $waiterFactory)
     {
         $this->waiterFactory = $waiterFactory;
@@ -222,6 +244,9 @@ abstract class AbstractClient extends Client implements AwsClientInterface
         return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getWaiterFactory()
     {
         if (!$this->waiterFactory) {
@@ -231,34 +256,18 @@ abstract class AbstractClient extends Client implements AwsClientInterface
                 new WaiterClassFactory(substr($clientClass, 0, strrpos($clientClass, '\\')) . '\\Waiter')
             ));
             if ($this->getDescription()) {
-                $waiterConfig = $this->getDescription()->getData('waiters') ?: array();
-                $this->waiterFactory->addFactory(new WaiterConfigFactory($waiterConfig));
+                $this->waiterFactory->addFactory(new WaiterConfigFactory($this->getDescription()->getData('waiters')));
             }
         }
 
         return $this->waiterFactory;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function getApiVersion()
     {
         return $this->serviceDescription->getApiVersion();
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws \Aws\Common\Exception\TransferException
-     */
-    public function send($requests)
-    {
-        try {
-            return parent::send($requests);
-        } catch (CurlException $e) {
-            $wrapped = new TransferException($e->getMessage(), null, $e);
-            $wrapped->setCurlHandle($e->getCurlHandle())
-                ->setCurlInfo($e->getCurlInfo())
-                ->setError($e->getError(), $e->getErrorNo())
-                ->setRequest($e->getRequest());
-            throw $wrapped;
-        }
     }
 }

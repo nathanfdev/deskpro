@@ -17,6 +17,7 @@
 namespace Aws\CloudSearch\Exception;
 
 /**
- * An internal error occurred while processing the request. If this problem persists, report an issue from the Service Health Dashboard.
+ * An internal error occurred while processing the request. If this problem persists, report an issue from the Service
+ * Health Dashboard.
  */
 class InternalException extends CloudSearchException {}

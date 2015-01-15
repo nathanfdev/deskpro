@@ -34,6 +34,7 @@
 namespace Application\DeskPRO\Controller;
 
 use Application\DeskPRO\Entity\JiraIssue;
+use Application\DeskPRO\JIRA\WebhookHandler;
 use Application\DeskPRO\Service\JIRA;
 use Application\DeskPRO\Tickets\ExecutorContext;
 use Symfony\Component\DependencyInjection\Container;
@@ -62,96 +63,9 @@ class JIRAWebhookController extends AbstractController
             return $response;
         }
 
-        if (!isset($json['webhookEvent'])) {
-            return $response;
-        }
-
-        if (!isset($json['issue'])) {
-            return $response;
-        }
-
-        $method = 'on' . Container::camelize(str_replace('jira:', '', $json['webhookEvent']));
-        if (!method_exists($this, $method)) {
-            return new $response;
-        }
-
-        $this->{$method}($json);
+        $handler = new WebhookHandler($this->container);
+        $handler->handle($json);
 
         return $response;
     }
-
-	/**
-	 * @param array $data
-	 * @throws \Exception
-	 */
-    protected function onIssueUpdated(array $data)
-    {
-		$app = $this->container->getAppManager()->getPackageApp('deskpro_jira');
-		if (!$app) {
-			throw $this->createNotFoundException();
-		}
-
-	    $manager = $this->container->getTicketManager();
-	    $em = $this->em;
-	    $issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
-	    $meta = $this->get(JIRA::NAME)->getMeta();
-
-	    foreach ($issues as $issue) {
-		    /** @var $issue JiraIssue */
-		    $state = $issue->ticket->getStateChangeRecorder();
-			$context = $manager->createAppExecutorContext($app, 'issue_update');
-
-		    if (isset($data['comment']) && $meta->getApiUsername() !== $data['comment']['author']['name']) {
-			    $state->recordData('jira.comment', $data['comment']);
-			    $context->getUserVars()->set('jira.comment', $data['comment']['body']);
-		    }
-
-		    if (isset($data['changelog'])) {
-			    foreach ($data['changelog']['items'] as $change) {
-				    // skip comments as handled above
-				    if ('comment' === $change['field']) continue;
-
-				    // store new status if exists
-				    if ('status' === $change['field'] && $issue['status_id'] != $change['to']) {
-					    $issue['status_id'] = $change['to'];
-					    $em->flush($issue);
-				    }
-
-				    $state->recordData('jira.' . $change['field'], $change);
-			    }
-		    }
-
-		    if (!$state->isTrivialChangeSet()) {
-				$manager->markAsManaged($issue->ticket);
-			    $manager->saveTicket($issue->ticket, $context);
-		    }
-	    }
-    }
-
-	/**
-	 * @param array $data
-	 * @throws \Exception
-	 */
-	protected function onIssueDeleted(array $data)
-	{
-		$app = $this->container->getAppManager()->getPackageApp('deskpro_jira');
-		if (!$app) {
-			throw $this->createNotFoundException();
-		}
-
-		$manager = $this->container->getTicketManager();
-		$em = $this->em;
-		$issues = $em->getRepository('DeskPRO:JiraIssue')->findBy(array('issue_id' => $data['issue']['id']));
-
-		foreach ($issues as $issue) {
-			$ticket = $issue->ticket;
-			$manager->markAsManaged($issue->ticket);
-
-			$em->remove($issue);
-			$em->flush($issue);
-
-			$context = $manager->createAppExecutorContext($app, 'issue_delete');
-			$manager->saveTicket($ticket, $context);
-		}
-	}
 }

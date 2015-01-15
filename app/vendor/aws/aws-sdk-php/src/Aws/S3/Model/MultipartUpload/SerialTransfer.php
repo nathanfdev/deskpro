@@ -74,7 +74,7 @@ class SerialTransfer extends AbstractTransfer
 
             $this->state->addPart(UploadPart::fromArray(array(
                 'PartNumber'   => count($this->state) + 1,
-                'ETag'         => $response->getEtag(),
+                'ETag'         => $response->getHeader('ETag', true),
                 'Size'         => $body->getContentLength(),
                 'LastModified' => gmdate(DateFormat::RFC2822)
             )));

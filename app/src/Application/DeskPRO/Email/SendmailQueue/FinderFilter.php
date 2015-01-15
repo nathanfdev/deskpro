@@ -153,6 +153,7 @@ class FinderFilter
     {
         static $valid = array(
             SendmailQueue::STATUS_INSERTED,
+            SendmailQueue::STATUS_PENDING,
             SendmailQueue::STATUS_PROCESSING,
             SendmailQueue::STATUS_COMPLETE,
             SendmailQueue::STATUS_ERROR,

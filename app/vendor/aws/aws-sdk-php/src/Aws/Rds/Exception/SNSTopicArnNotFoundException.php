@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * The SNS topic ARN does not exist.
+ * Exception that occurs when a SNSTopicArnNotFoundException error is encountered
  */
 class SNSTopicArnNotFoundException extends RdsException {}

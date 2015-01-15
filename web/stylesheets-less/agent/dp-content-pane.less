@@ -1345,7 +1345,8 @@ article.content-message .content header .comment-validate-btn {
 }
 
 article.content-message .content .body-text {
-	padding: 6px;
+  padding: 6px;
+  word-wrap: break-word; // prevents text going off-screen instead of wrapping.
 }
 
 .page-ticket article.content-message.as-first .content .body-text {
@@ -8256,6 +8257,24 @@ a.assign-self-link {
 	}
 }
 
+.layout-pintop {
+  display: none;
+
+  .row {
+	font-size: 11px;
+	padding: 5px;
+  }
+  .row + .row {
+	margin-top: 8px;
+  }
+  .row-warn {
+
+  }
+  .row-info {
+
+  }
+}
+
 .layout-content {
 	z-index: 1;
 }
@@ -8366,6 +8385,7 @@ a.assign-self-link {
 		position: absolute;
 		top: 9px;
 		right: 10px;
+		z-index: 11;
 
 		color: #959a9e;
 		cursor: pointer;
@@ -8375,10 +8395,39 @@ a.assign-self-link {
 		}
 	}
 
-	section {
+  .dp-app-context {
+	position: absolute;
+	top: 0; right: 0; bottom: 0; left: 0;
+  }
+
+	section.sidebar-app {
+	  position: absolute;
+	  top: 0; right: 0; bottom: 0; left: 0;
+
+	  article.app-content {
+		position: absolute;
+		top: 0; right: 0; bottom: 0; left: 0;
+		overflow: auto;
+		z-index: 5;
+	  }
+
+	  &.with-header {
+		article.app-content {
+		  top: 31px;
+		}
+	  }
+	  &.with-header.with-sub-header {
+		article.app-content {
+		  top: 73px;
+		}
+	  }
+
 	  header {
+		position: relative;
 		background: #d4d5da;
 		border-bottom: 1px solid #BBBDC2;
+		height: 30px;
+		z-index: 10;
 
 		h4 {
 		  font-size: 14px;
@@ -8389,6 +8438,7 @@ a.assign-self-link {
 	  header.sub-header {
 		background: #EBEBEB;
 		padding: 5px;
+		height: 31px;
 
 		&.centered {
 		  text-align: center;
@@ -8410,4 +8460,12 @@ a.assign-self-link {
 		display: block;
 		box-shadow: none;
 	}
+}
+
+.with-docked-apps-sidebar .layout-content {
+  overflow: auto;
+
+  .dp-page-content {
+	min-width: 575px;
+  }
 }

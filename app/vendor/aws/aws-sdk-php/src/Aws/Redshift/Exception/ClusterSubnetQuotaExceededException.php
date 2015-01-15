@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The request would result in user exceeding the allowed number of subnets in a cluster subnet groups. For information about increasing your quota, go to Limits in Amazon Redshift in the Amazon Redshift Management Guide.
+ * Exception that occurs when a ClusterSubnetQuotaExceededException error is encountered
  */
 class ClusterSubnetQuotaExceededException extends RedshiftException {}

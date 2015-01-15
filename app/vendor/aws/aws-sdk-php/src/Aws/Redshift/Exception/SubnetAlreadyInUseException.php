@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * A specified subnet is already in use by another cluster.
+ * Exception that occurs when a SubnetAlreadyInUseException error is encountered
  */
 class SubnetAlreadyInUseException extends RedshiftException {}

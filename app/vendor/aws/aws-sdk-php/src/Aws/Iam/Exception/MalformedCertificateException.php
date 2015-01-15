@@ -17,6 +17,7 @@
 namespace Aws\Iam\Exception;
 
 /**
- * The request was rejected because the certificate was malformed or expired. The error message describes the specific error.
+ * The request was rejected because the certificate was malformed or expired. The error message describes the specific
+ * error.
  */
 class MalformedCertificateException extends IamException {}

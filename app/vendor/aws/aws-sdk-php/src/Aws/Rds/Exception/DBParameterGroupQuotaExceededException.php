@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * Request would result in user exceeding the allowed number of DB parameter groups.
+ * Exception that occurs when a DBParameterGroupQuotaExceededException error is encountered
  */
 class DBParameterGroupQuotaExceededException extends RdsException {}

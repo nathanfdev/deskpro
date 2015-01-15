@@ -212,8 +212,8 @@ class EditAgent
         # Groups
         #------------------------------
 
-        $group_coll_helper = new CollectionHelper($agent, 'usergroups', function ($x) {
-            return $x->is_agent_group;
+        $group_coll_helper = new CollectionHelper($agent, 'usergroups', null, function($item) {
+            return !$item->is_agent_group;
         });
         if ($this->agent_groups instanceof ArrayCollection) {
             $this->agent_groups = $this->agent_groups->toArray();

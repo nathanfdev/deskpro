@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * Origin and CallerReference cannot be updated.
+ * Exception that occurs when a IllegalUpdateException error is encountered
  */
 class IllegalUpdateException extends CloudFrontException {}

@@ -51,6 +51,11 @@ class CollectionHelper
      */
     protected $fn_filter;
 
+    /**
+     * @var callback
+     */
+    protected $fn_keep_filter;
+
 
     /**
      * $fn_filter is useful if you only want to modify parts of a set.
@@ -60,12 +65,16 @@ class CollectionHelper
      *
      * @param string        $entity
      * @param string        $prop
-     * @param Callback|null $fn_filter Callback to filter valid items of the set
+     * @param Callback|null $fn_filter Callback to filter valid items of the set. Return true to allow the item.
+     * @param Callback|null $fn_keep_filter Existing items are passed through this filter to determine if they should be kept.
+     *                                      E.g., use this to keep records that might otherwise be deleted because they dont match the 'set'.
      */
-    public function __construct($entity, $prop, $fn_filter = null)
+    public function __construct($entity, $prop, $fn_filter = null, $fn_keep_filter = null)
     {
-        $this->entity = $entity;
-        $this->prop = $prop;
+        $this->entity    = $entity;
+        $this->prop      = $prop;
+        $this->fn_filter = $fn_filter;
+        $this->fn_keep_filter = $fn_keep_filter;
     }
 
 
@@ -84,8 +93,13 @@ class CollectionHelper
         $want_ids = array();
 
         foreach ($this->entity->$prop as $item) {
+            if ($this->fn_keep_filter) {
+                if (call_user_func($this->fn_keep_filter, $item)) {
+                    continue;
+                }
+            }
             if ($this->fn_filter) {
-                if ($this->fn_filter($item)) {
+                if (call_user_func($this->fn_filter, $item)) {
                     $have_ids[] = $item->id;
                 }
             } else {
@@ -95,7 +109,7 @@ class CollectionHelper
 
         foreach ($set as $item) {
             if ($this->fn_filter) {
-                if ($this->fn_filter($item)) {
+                if (call_user_func($this->fn_filter, $item)) {
                     $want_ids[] = $item->id;
                 }
             } else {

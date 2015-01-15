@@ -17,6 +17,6 @@
 namespace Aws\Swf\Exception;
 
 /**
- * Returned by StartWorkflowExecution when an open execution with the same workflowId is already running in the specified domain.
+ * Exception that occurs when a WorkflowExecutionAlreadyStartedException error is encountered
  */
 class WorkflowExecutionAlreadyStartedException extends SwfException {}

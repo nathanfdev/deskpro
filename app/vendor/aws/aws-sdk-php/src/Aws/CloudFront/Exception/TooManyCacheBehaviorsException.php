@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * You cannot create anymore cache behaviors for the distribution.
+ * Exception that occurs when a TooManyCacheBehaviorsException error is encountered
  */
 class TooManyCacheBehaviorsException extends CloudFrontException {}

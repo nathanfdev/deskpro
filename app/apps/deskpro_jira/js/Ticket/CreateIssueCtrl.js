@@ -1,31 +1,32 @@
-define(function () {
+define(['angular'], function (angular) {
 
-  return function ($scope, $modalInstance, $ticket, $meta, issues) {
+  return function ($scope, $modalInstance, $ticket, $meta, issues, newissue) {
 
     var staticFields = {
       project: 1,
       issuetype: 1,
       summary: 1,
       reporter: 1
-    }, issue;
+    };
 
     $scope.$watch('issue.project.id', function (val) {
-      $meta.projects.each(function (project) {
-        if (val != project.id) return;
-        $scope.project = project;
+      $scope.project = null;
+      $meta.getCreateMeta(val).then(function(project){
+        $scope.project = project
+        if (!project && $meta.projects.length) {
+          $scope.issue.project.id = $meta.projects[0].id;
+        }
       });
-
-      if (!$scope.project && $meta.projects.length) {
-        issue.project.id = $meta.projects[0].id;
-      }
     });
 
     var refreshFields = function () {
-      if (!$scope.project) return;
+      if (!$scope.project) {
+        return $scope.fields.length = 0;
+      }
 
       var fields = [];
       $scope.project.issuetypes.each(function (type) {
-        if (issue.issuetype.id != type.id) return;
+        if ($scope.issue.issuetype.id != type.id) return;
 
         $.each(type.fields, function (id, field) {
           if (staticFields[id]) return;
@@ -61,11 +62,13 @@ define(function () {
 
     $scope.meta = $meta;
     $scope.fields = [];
-    $scope.issue = issue = {
+
+    $scope.issue = angular.extend({
       project: {id: $meta.default_project},
       issuetype: {id: $meta.default_issuetype},
       summary: '[Ticket #' + $ticket.id + '] ' + $ticket.subject
-    };
-	  $scope.dismiss = $modalInstance.dismiss;
+    }, newissue || {});
+
+    $scope.dismiss = $modalInstance.dismiss;
   };
 });

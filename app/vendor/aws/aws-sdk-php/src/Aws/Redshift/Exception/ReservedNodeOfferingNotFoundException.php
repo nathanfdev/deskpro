@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * Specified offering does not exist.
+ * Exception that occurs when a ReservedNodeOfferingNotFoundException error is encountered
  */
 class ReservedNodeOfferingNotFoundException extends RedshiftException {}

@@ -23,21 +23,23 @@ use Guzzle\Service\Resource\Model;
  * Iterator for an S3 ListObjects command
  *
  * This iterator includes the following additional options:
- *
- * - return_prefixes: Set to true to receive both prefixes and objects in results
- * - sort_results: Set to true to sort mixed (object/prefix) results
- * - names_only: Set to true to receive only the object/prefix names
+ * @option bool return_prefixes Set to true to receive both prefixes and objects in results
+ * @option bool sort_results    Set to true to sort mixed (object/prefix) results
+ * @option bool names_only      Set to true to receive only the object/prefix names
  */
 class ListObjectsIterator extends AwsResourceIterator
 {
+    /**
+     * {@inheritdoc}
+     */
     protected function handleResults(Model $result)
     {
         // Get the list of objects and record the last key
         $objects = $result->get('Contents') ?: array();
         $numObjects = count($objects);
         $lastKey = $numObjects ? $objects[$numObjects - 1]['Key'] : false;
-        if ($lastKey && !$result->hasKey($this->get('output_token'))) {
-            $result->set($this->get('output_token'), $lastKey);
+        if ($lastKey && !$result->hasKey($this->get('token_key'))) {
+            $result->set($this->get('token_key'), $lastKey);
         }
 
         // Closure for getting the name of an object or prefix

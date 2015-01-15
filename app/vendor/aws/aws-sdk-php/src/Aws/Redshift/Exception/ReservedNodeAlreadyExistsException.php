@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * User already has a reservation with the given identifier.
+ * Exception that occurs when a ReservedNodeAlreadyExistsException error is encountered
  */
 class ReservedNodeAlreadyExistsException extends RedshiftException {}

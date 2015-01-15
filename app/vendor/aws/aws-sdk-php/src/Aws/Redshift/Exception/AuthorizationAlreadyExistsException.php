@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The specified CIDR block or EC2 security group is already authorized for the specified cluster security group.
+ * Exception that occurs when a AuthorizationAlreadyExistsException error is encountered
  */
 class AuthorizationAlreadyExistsException extends RedshiftException {}

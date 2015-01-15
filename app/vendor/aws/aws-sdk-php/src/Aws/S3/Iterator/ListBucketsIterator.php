@@ -23,8 +23,7 @@ use Guzzle\Service\Resource\Model;
  * Iterator for the S3 ListBuckets command
  *
  * This iterator includes the following additional options:
- *
- * - names_only: Set to true to receive only the object/prefix names
+ * @option bool names_only Set to true to receive only the object/prefix names
  */
 class ListBucketsIterator extends AwsResourceIterator
 {

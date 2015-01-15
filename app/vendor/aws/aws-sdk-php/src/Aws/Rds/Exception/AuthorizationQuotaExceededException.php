@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * DB security group authorization quota has been reached.
+ * Exception that occurs when a AuthorizationQuotaExceededException error is encountered
  */
 class AuthorizationQuotaExceededException extends RdsException {}

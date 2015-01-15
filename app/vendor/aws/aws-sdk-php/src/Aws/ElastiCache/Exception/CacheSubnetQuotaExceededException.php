@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * The request cannot be processed because it would exceed the allowed number of subnets in a cache subnet group.
+ * Exception that occurs when a CacheSubnetQuotaExceededException error is encountered
  */
 class CacheSubnetQuotaExceededException extends ElastiCacheException {}

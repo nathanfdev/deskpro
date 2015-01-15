@@ -47,39 +47,6 @@ class LabelsController extends AbstractController implements ProtectedController
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-    /**
-     * get settings
-     */
-    public function getSettingsAction($type)
-    {
-        $rep = $this->rep();
-        if (!$rep::valid($type)) {
-            throw new NotFoundHttpException;
-        }
-
-        return $this->createApiResponse(array(
-            'agent_can_create' => (bool) $this->settings->get(sprintf('labels.%s.agent_can_create', $type), false),
-        ));
-    }
-
-    /**
-     * get settings
-     */
-    public function setSettingsAction($type)
-    {
-        $rep = $this->rep();
-        if (!$rep::valid($type)) {
-            throw new NotFoundHttpException;
-        }
-
-        $this->settings->setSetting(
-            sprintf('labels.%s.agent_can_create', $type),
-            $this->in->getBool('agent_can_create')
-        );
-
-        return $this->getSettingsAction($type);
-    }
-
     public function listDefinitionsAction()
     {
         return $this->createApiResponse($this->rep()->getAllDefinitions());

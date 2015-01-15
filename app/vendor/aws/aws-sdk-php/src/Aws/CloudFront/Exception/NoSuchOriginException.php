@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * No origin exists with the specified Origin Id.
+ * Exception that occurs when a NoSuchOriginException error is encountered
  */
 class NoSuchOriginException extends CloudFrontException {}

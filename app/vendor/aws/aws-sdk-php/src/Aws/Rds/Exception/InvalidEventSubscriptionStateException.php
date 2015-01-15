@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * This error can occur if someone else is modifying a subscription. You should retry the action.
+ * Exception that occurs when a InvalidEventSubscriptionStateException error is encountered
  */
 class InvalidEventSubscriptionStateException extends RdsException {}

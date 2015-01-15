@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * The specified reserved DB Instance not found.
+ * Exception that occurs when a ReservedDBInstanceNotFoundException error is encountered
  */
 class ReservedDBInstanceNotFoundException extends RdsException {}

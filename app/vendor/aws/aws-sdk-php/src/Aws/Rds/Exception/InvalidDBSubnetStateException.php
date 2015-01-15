@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * The DB subnet is not in the available state.
+ * Exception that occurs when a InvalidDBSubnetStateException error is encountered
  */
 class InvalidDBSubnetStateException extends RdsException {}

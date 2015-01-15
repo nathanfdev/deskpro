@@ -17,6 +17,6 @@
 namespace Aws\Swf\Exception;
 
 /**
- * Returned if the specified domain already exists. You will get this fault even if the existing domain is in deprecated status.
+ * Exception that occurs when a DomainAlreadyExistsException error is encountered
  */
 class DomainAlreadyExistsException extends SwfException {}

@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * The specified Amazon EC2 security group is already authorized for the specified cache security group.
+ * Exception that occurs when a AuthorizationAlreadyExistsException error is encountered
  */
 class AuthorizationAlreadyExistsException extends ElastiCacheException {}

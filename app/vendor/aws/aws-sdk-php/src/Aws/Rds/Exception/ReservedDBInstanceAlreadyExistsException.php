@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * User already has a reservation with the given identifier.
+ * Exception that occurs when a ReservedDBInstanceAlreadyExistsException error is encountered
  */
 class ReservedDBInstanceAlreadyExistsException extends RdsException {}

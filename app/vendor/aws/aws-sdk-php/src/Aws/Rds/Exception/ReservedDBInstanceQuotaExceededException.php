@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * Request would exceed the user's DB Instance quota.
+ * Exception that occurs when a ReservedDBInstanceQuotaExceededException error is encountered
  */
 class ReservedDBInstanceQuotaExceededException extends RdsException {}

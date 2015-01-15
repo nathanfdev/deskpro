@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * The value for a parameter is invalid.
+ * Exception that occurs when a InvalidParameterValueException error is encountered
  */
 class InvalidParameterValueException extends ElastiCacheException {}

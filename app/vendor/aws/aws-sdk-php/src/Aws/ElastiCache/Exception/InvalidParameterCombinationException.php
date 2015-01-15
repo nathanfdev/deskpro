@@ -17,6 +17,6 @@
 namespace Aws\ElastiCache\Exception;
 
 /**
- * Two or more incompatible parameters were specified.
+ * Exception that occurs when a InvalidParameterCombinationException error is encountered
  */
 class InvalidParameterCombinationException extends ElastiCacheException {}

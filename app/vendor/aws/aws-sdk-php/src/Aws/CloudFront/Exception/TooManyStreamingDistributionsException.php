@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * Processing your request would cause you to exceed the maximum number of streaming distributions allowed.
+ * Exception that occurs when a TooManyStreamingDistributionsException error is encountered
  */
 class TooManyStreamingDistributionsException extends CloudFrontException {}

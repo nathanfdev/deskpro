@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * The value of Quantity and the size of Items do not match.
+ * Exception that occurs when a InconsistentQuantitiesException error is encountered
  */
 class InconsistentQuantitiesException extends CloudFrontException {}

@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * You have reached the maximum number of event subscriptions.
+ * Exception that occurs when a EventSubscriptionQuotaExceededException error is encountered
  */
 class EventSubscriptionQuotaExceededException extends RdsException {}

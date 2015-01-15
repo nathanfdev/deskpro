@@ -1,4 +1,4 @@
-define(function () {
+define(['cutstring'], function (cutstring) {
   return function ($http, $q, $window, $sce) {
 
     var meta = {
@@ -11,11 +11,18 @@ define(function () {
 
       fields: {},
 
+      create_meta: {},
+
       fieldName: function (id) {
         if (this.fields[id]) return this.fields[id].name;
       },
       fieldValue: function (id, val) {
         if (!val) return val;
+
+        if ('description' === id) {
+          if (val.length < 300) return val;
+          return cutstring(val, 300) + '...';
+        }
 
         var fieldMeta = meta.fields[id];
         if (fieldMeta && fieldMeta.schema) {
@@ -105,13 +112,40 @@ define(function () {
       isEnabled: function (type, id) {
         return this.fields[id] && this.fields[id]['_' + type];
       },
-      renderComment: function (comment) {
+      renderComment: function (comment, url) {
         return comment.author.name === meta.user
           ? comment.body
-          : ('[' + comment.author.displayName + ' via JIRA]: ' + comment.body);
+          : ('<a href="' + url + '">'+ comment.author.displayName + ' via JIRA</a>: ' + comment.body);
       },
       windowHeight: function() {
           return $($window).height();
+      },
+      getCreateMeta: function(projectId) {
+        var d = $q.defer();
+
+        if (!projectId) {
+          return d.resolve(null);
+        }
+
+        if (undefined !== this.create_meta[projectId]) {
+          d.resolve(this.create_meta[projectId]);
+        }
+
+        var query = meta.projects.length > 3 ? ('?project_id=' + projectId) : '';
+
+        $http.get('/agent/jira/createmeta' + query)
+          .success(function (data, status, headers, config) {
+              if (!data.projects) return d.resolve(null);
+              data.projects.each(function(project){
+                meta.create_meta[project.id] = project;
+              });
+              d.resolve(meta.create_meta[projectId]);
+          })
+          .error(function (data, status, headers, config) {
+              d.resolve(null);
+          });
+
+        return d.promise;
       }
     };
 
@@ -125,8 +159,6 @@ define(function () {
 
         // fields metadata
         if (data.fields) {
-          //var commentIdx = data.default_fields_list.indexOf('comment');
-          //if (commentIdx > -1) data.default_fields_list.splice(commentIdx, 1);
           data.fields.each(function (field) {
             field._list = data.default_fields_list.indexOf(field.id) > -1;
             field._summary = data.default_fields_summary.indexOf(field.id) > -1;
@@ -134,12 +166,9 @@ define(function () {
           });
         }
 
-        // 'create' metadata
-        if (data.projects) {
-          data.projects.each(function (project) {
-            meta.projects.push(project);
-          });
-        }
+        data.projects.each(function (project) {
+          meta.projects.push(project);
+        });
 
         data.default_fields_list.each(function (id) {
           meta.default_fields_list.push(id);

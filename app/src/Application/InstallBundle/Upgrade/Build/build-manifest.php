@@ -1636,7 +1636,52 @@
 
 	1417766996 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1417766996.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\deskpro/www/app/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1417766996'
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1417766996'
+	),
+
+	1418032449 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418032449.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418032449'
+	),
+
+	1418321332 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418321332.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418321332'
+	),
+
+	1418900478 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418900478.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418900478'
+	),
+
+	1418912765 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418912765.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418912765'
+	),
+
+	1418985574 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418985574.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418985574'
+	),
+
+	1419329370 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1419329370.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1419329370'
+	),
+
+	1419340526 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1419340526.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1419340526'
+	),
+
+	1420541683 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1420541683.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1420541683'
+	),
+
+	1420543837 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1420543837.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1420543837'
 	),
 
 );

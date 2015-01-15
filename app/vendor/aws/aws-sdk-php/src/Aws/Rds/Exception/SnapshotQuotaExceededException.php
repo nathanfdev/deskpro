@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * Request would result in user exceeding the allowed number of DB snapshots.
+ * Exception that occurs when a SnapshotQuotaExceededException error is encountered
  */
 class SnapshotQuotaExceededException extends RdsException {}

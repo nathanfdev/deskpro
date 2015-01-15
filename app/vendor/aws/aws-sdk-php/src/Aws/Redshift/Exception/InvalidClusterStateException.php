@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The specified cluster is not in the available state.
+ * Exception that occurs when a InvalidClusterStateException error is encountered
  */
 class InvalidClusterStateException extends RedshiftException {}

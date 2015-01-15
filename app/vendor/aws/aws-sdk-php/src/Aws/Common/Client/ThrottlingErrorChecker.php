@@ -68,7 +68,8 @@ class ThrottlingErrorChecker extends AbstractBackoffStrategy
         HttpException $e = null
     ) {
         if ($response && $response->isClientError()) {
-            $parts = $this->exceptionParser->parse($request, $response);
+            $parts = $this->exceptionParser->parse($response);
+
             return isset(self::$throttlingExceptions[$parts['code']]) ? true : null;
         }
     }

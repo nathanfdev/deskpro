@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * The DB subnet group cannot be deleted because it is in use.
+ * Exception that occurs when a InvalidDBSubnetGroupStateException error is encountered
  */
 class InvalidDBSubnetGroupStateException extends RdsException {}

@@ -2572,8 +2572,11 @@ class PersonController extends AbstractController
                 case 'reset_password':
                 case 'manage_emails':
                 case 'notes':
-                    if (!$this->person->hasPerm('agent_people.' . $check_perm) || !$this->isPersonEditable($person)) {
-                        throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                    if (!$this->isPersonEditable($person)) {
+                        throw $this->createAccessDeniedException("Only admins may edit other agents.");
+                    }
+                    if (!$this->person->hasPerm('agent_people.' . $check_perm)) {
+                        throw $this->createAccessDeniedException("Insufficient permission. Required: agent_people." . $check_perm);
                     }
                     break;
 

@@ -17,6 +17,6 @@
 namespace Aws\Swf\Exception;
 
 /**
- * Returned by any operation if a system imposed limitation has been reached. To address this fault you should either clean up unused resources or increase the limit by contacting AWS.
+ * Exception that occurs when a LimitExceededException error is encountered
  */
 class LimitExceededException extends SwfException {}

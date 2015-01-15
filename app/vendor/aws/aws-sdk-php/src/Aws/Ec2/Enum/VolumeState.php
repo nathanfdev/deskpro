@@ -27,6 +27,5 @@ class VolumeState extends Enum
     const AVAILABLE = 'available';
     const IN_USE = 'in-use';
     const DELETING = 'deleting';
-    const DELETED = 'deleted';
     const ERROR = 'error';
 }

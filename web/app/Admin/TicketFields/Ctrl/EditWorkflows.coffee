@@ -17,7 +17,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Arrays'], (Admin_Ctrl_Base, Arrays
         'layouts': '/ticket_layouts/fields/workflow'
       }).then( (res) =>
         @works          = res.data.info.workflows
-        @default_id     = res.data.info.default_id
+        @default_id     = res.data.info.default_id + ""
         @agent_required = res.data.info.agent_required
         @user_required  = res.data.info.user_required
         @enabled        = res.data.info.enabled

@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * User already has a DB instance with the given identifier.
+ * Exception that occurs when a DBInstanceAlreadyExistsException error is encountered
  */
 class DBInstanceAlreadyExistsException extends RdsException {}

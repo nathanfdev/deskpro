@@ -48,7 +48,7 @@ class ConsoleOutputFormatter extends \Orb\Filter\AbstractFilter
     {
         if (!$log_item) return null;
 
-        $message = $log_item[LogItem::MESSAGE];
+        $message = isset($log_item[LogItem::MESSAGE_LINE]) ? $log_item[LogItem::MESSAGE_LINE] : $log_item[LogItem::MESSAGE];
 
         switch ($log_item[LogItem::PRIORITY]) {
             case Logger::ERR:

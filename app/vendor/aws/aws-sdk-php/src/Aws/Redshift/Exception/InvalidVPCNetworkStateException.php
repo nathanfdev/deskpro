@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The cluster subnet group does not cover all Availability Zones.
+ * Exception that occurs when a InvalidVPCNetworkStateException error is encountered
  */
 class InvalidVPCNetworkStateException extends RedshiftException {}

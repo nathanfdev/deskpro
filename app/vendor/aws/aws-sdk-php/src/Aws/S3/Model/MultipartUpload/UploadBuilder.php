@@ -16,6 +16,7 @@
 
 namespace Aws\S3\Model\MultipartUpload;
 
+use Aws\Common\Enum\Size;
 use Aws\Common\Enum\UaString as Ua;
 use Aws\Common\Exception\InvalidArgumentException;
 use Aws\Common\Model\MultipartUpload\AbstractUploadBuilder;
@@ -56,11 +57,6 @@ class UploadBuilder extends AbstractUploadBuilder
      * @var array Array of initiate command options
      */
     protected $commandOptions = array();
-
-    /**
-     * @var array Array of transfer options
-     */
-    protected $transferOptions = array();
 
     /**
      * Set the bucket to upload the object to
@@ -189,34 +185,6 @@ class UploadBuilder extends AbstractUploadBuilder
     }
 
     /**
-     * Add an array of options to pass to the initial CreateMultipartUpload operation
-     *
-     * @param array $options Array of CreateMultipartUpload operation parameters
-     *
-     * @return self
-     */
-    public function addOptions(array $options)
-    {
-        $this->commandOptions = array_replace($this->commandOptions, $options);
-
-        return $this;
-    }
-
-    /**
-     * Set an array of transfer options to apply to the upload transfer object
-     *
-     * @param array $options Transfer options
-     *
-     * @return self
-     */
-    public function setTransferOptions(array $options)
-    {
-        $this->transferOptions = $options;
-
-        return $this;
-    }
-
-    /**
      * {@inheritdoc}
      * @throws InvalidArgumentException when attempting to resume a transfer using a non-seekable stream
      * @throws InvalidArgumentException when missing required properties (bucket, key, client, source)
@@ -248,11 +216,11 @@ class UploadBuilder extends AbstractUploadBuilder
             $this->state = $this->initiateMultipartUpload();
         }
 
-        $options = array_replace(array(
+        $options = array(
             'min_part_size' => $this->minPartSize,
             'part_md5'      => (bool) $this->calculatePartMd5,
             'concurrency'   => $this->concurrency
-        ), $this->transferOptions);
+        );
 
         return $this->concurrency > 1
             ? new ParallelTransfer($this->client, $this->state, $this->source, $options)
@@ -265,10 +233,8 @@ class UploadBuilder extends AbstractUploadBuilder
     protected function initiateMultipartUpload()
     {
         // Determine Content-Type
-        if (!isset($this->commandOptions['ContentType'])) {
-            if ($mimeType = $this->source->getContentType()) {
-                $this->commandOptions['ContentType'] = $mimeType;
-            }
+        if ($mimeType = $this->source->getContentType()) {
+            $this->commandOptions['ContentType'] = $mimeType;
         }
 
         $params = array_replace(array(

@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * The If-Match version is missing or not valid for the distribution.
+ * Exception that occurs when a InvalidIfMatchVersionException error is encountered
  */
 class InvalidIfMatchVersionException extends CloudFrontException {}

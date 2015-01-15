@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * Specified offering does not exist.
+ * Exception that occurs when a ReservedDBInstancesOfferingNotFoundException error is encountered
  */
 class ReservedDBInstancesOfferingNotFoundException extends RdsException {}

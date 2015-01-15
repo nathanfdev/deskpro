@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The specified reserved compute node not found.
+ * Exception that occurs when a ReservedNodeNotFoundException error is encountered
  */
 class ReservedNodeNotFoundException extends RedshiftException {}

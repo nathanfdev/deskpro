@@ -471,32 +471,32 @@ class TicketSearch extends SearcherAbstract
 
             $where_perm = array();
 
-            if ($this->person->getDisallowedDepartments()) {
-                $where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL OR $assigned_perm_part)";
-            }
-
-            if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
-                $where_perm[] = 'tickets.agent_id IS NOT NULL';
-            }
-
-            if (!$this->person->hasPerm('agent_tickets.view_others')) {
-                $part = array();
-                $part[] = "tickets.agent_id = {$this->person['id']}";
-                if ($this->person->getAgentTeamIds()) {
-                    $part[] = "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ")";
-                }
-                if ($this->person->hasPerm('agent_tickets.view_unassigned')) {
-                    $part[] = 'tickets.agent_id IS NULL';
+            // Cant view anything else:
+            // -> No departments
+            // -> Or if you cant view unassigned and cant view others, then that leaves nothing (the 'always' perm above will get your own still)
+            if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
+                $where_perm[] = "0";
+            } else {
+                if ($this->person->getDisallowedDepartments()) {
+                    $where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL)";
                 }
 
-                $where_perm[] = '(' . implode(' OR ', $part) . ')';
+                if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
+                    $where_perm[] = '(tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL)';
+                }
+
+                if (!$this->person->hasPerm('agent_tickets.view_others')) {
+                    $where_perm[] = "tickets.agent_id IS NULL";
+                    $where_perm[] = "tickets.agent_team_id IS NULL";
+                }
             }
 
             if ($where_perm) {
-                $where_perm = '(' . implode(' AND ', $where_perm) . ')';
+                $where_perm = '(' . $assigned_perm_part . ' OR (' . implode(' AND ', $where_perm) . '))';
             } else {
                 $where_perm = '';
             }
+
             $with_part_union = true;
 
         } else {
@@ -663,6 +663,15 @@ class TicketSearch extends SearcherAbstract
 
         $with_part_union = false;
 
+        /*
+         * Permission resolution is like:
+         * (ALWAYS OWN) OR (
+         *     NOT IN DISALLOWED DEPS
+         *     AND <if not view unassigned: IS NOT UNASSIGNED>
+         *     AND <if not view others: IS UNASSIGNED>
+         * )
+         */
+
         if ($this->person AND $this->person['is_agent']) {
 
             $assigned_perm_part = "tickets.agent_id = {$this->person['id']}";
@@ -672,32 +681,32 @@ class TicketSearch extends SearcherAbstract
 
             $where_perm = array();
 
-            if ($this->person->getDisallowedDepartments()) {
-                $where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL OR $assigned_perm_part)";
-            }
-
-            if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
-                $where_perm[] = 'tickets.agent_id IS NOT NULL';
-            }
-
-            if (!$this->person->hasPerm('agent_tickets.view_others')) {
-                $part = array();
-                $part[] = "tickets.agent_id = {$this->person['id']}";
-                if ($this->person->getAgentTeamIds()) {
-                    $part[] = "tickets.agent_team_id IN (" . implode(',', $this->person->getAgentTeamIds()) . ")";
-                }
-                if ($this->person->hasPerm('agent_tickets.view_unassigned')) {
-                    $part[] = 'tickets.agent_id IS NULL';
+            // Cant view anything else:
+            // -> No departments
+            // -> Or if you cant view unassigned and cant view others, then that leaves nothing (the 'always' perm above will get your own still)
+            if (!$this->person->getAllowedDepartments() || (!$this->person->hasPerm('agent_tickets.view_unassigned') && !$this->person->hasPerm('agent_tickets.view_others'))) {
+                $where_perm[] = "0";
+            } else {
+                if ($this->person->getDisallowedDepartments()) {
+                    $where_perm[] = "(tickets.department_id NOT IN (" . implode(',', $this->person->getDisallowedDepartments()) . ") OR tickets.department_id IS NULL)";
                 }
 
-                $where_perm[] = '(' . implode(' OR ', $part) . ')';
+                if (!$this->person->hasPerm('agent_tickets.view_unassigned')) {
+                    $where_perm[] = '(tickets.agent_id IS NOT NULL OR tickets.agent_team_id IS NOT NULL)';
+                }
+
+                if (!$this->person->hasPerm('agent_tickets.view_others')) {
+                    $where_perm[] = "tickets.agent_id IS NULL";
+                    $where_perm[] = "tickets.agent_team_id IS NULL";
+                }
             }
 
             if ($where_perm) {
-                $where_perm = '(' . implode(' AND ', $where_perm) . ')';
+                $where_perm = '(' . $assigned_perm_part . ' OR (' . implode(' AND ', $where_perm) . '))';
             } else {
                 $where_perm = '';
             }
+
             $with_part_union = true;
 
         } else {
@@ -1720,6 +1729,8 @@ class TicketSearch extends SearcherAbstract
                         $this->affected_fields[] = 'tickets_flagged';
                         $joins[] = 'tickets_flagged';
 
+                        $this->used_person_context = true;
+
                         $color = $choice;
                         if ($color == 'any') {
                             $wheres[] = 'tickets_flagged.person_id = '. $this->person->id;
@@ -2429,8 +2440,14 @@ class TicketSearch extends SearcherAbstract
             $status = $data['options']['status'];
         }
 
-        if(isset($status) && $op == 'is' && $status != 'awaiting_agent') {
-            return false;
+        if (isset($status)) {
+            if (!is_array($status)) {
+                $status = array($status);
+            }
+
+            if (isset($status) && $op == 'is' && !in_array('awaiting_agent', $status)) {
+                return false;
+            }
         }
 
         return true;

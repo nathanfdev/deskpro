@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * The cluster subnet group name does not refer to an existing cluster subnet group.
+ * Exception that occurs when a ClusterSubnetGroupNotFoundException error is encountered
  */
 class ClusterSubnetGroupNotFoundException extends RedshiftException {}

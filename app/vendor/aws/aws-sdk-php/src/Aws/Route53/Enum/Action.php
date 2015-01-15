@@ -25,5 +25,4 @@ class Action extends Enum
 {
     const CREATE = 'CREATE';
     const DELETE = 'DELETE';
-    const UPSERT = 'UPSERT';
 }

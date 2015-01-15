@@ -66,346 +66,14 @@ return array (
         ),
     ),
     'operations' => array(
-        'AllocateConnectionOnInterconnect' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'Connection',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.AllocateConnectionOnInterconnect',
-                ),
-                'bandwidth' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'connectionName' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'ownerAccount' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'interconnectId' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'vlan' => array(
-                    'required' => true,
-                    'type' => 'numeric',
-                    'location' => 'json',
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
-        'AllocatePrivateVirtualInterface' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'VirtualInterface',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.AllocatePrivateVirtualInterface',
-                ),
-                'connectionId' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'ownerAccount' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'newPrivateVirtualInterfaceAllocation' => array(
-                    'required' => true,
-                    'type' => 'object',
-                    'location' => 'json',
-                    'properties' => array(
-                        'virtualInterfaceName' => array(
-                            'required' => true,
-                            'type' => 'string',
-                        ),
-                        'vlan' => array(
-                            'required' => true,
-                            'type' => 'numeric',
-                        ),
-                        'asn' => array(
-                            'required' => true,
-                            'type' => 'numeric',
-                        ),
-                        'authKey' => array(
-                            'type' => 'string',
-                        ),
-                        'amazonAddress' => array(
-                            'type' => 'string',
-                        ),
-                        'customerAddress' => array(
-                            'type' => 'string',
-                        ),
-                    ),
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
-        'AllocatePublicVirtualInterface' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'VirtualInterface',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.AllocatePublicVirtualInterface',
-                ),
-                'connectionId' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'ownerAccount' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'newPublicVirtualInterfaceAllocation' => array(
-                    'required' => true,
-                    'type' => 'object',
-                    'location' => 'json',
-                    'properties' => array(
-                        'virtualInterfaceName' => array(
-                            'required' => true,
-                            'type' => 'string',
-                        ),
-                        'vlan' => array(
-                            'required' => true,
-                            'type' => 'numeric',
-                        ),
-                        'asn' => array(
-                            'required' => true,
-                            'type' => 'numeric',
-                        ),
-                        'authKey' => array(
-                            'type' => 'string',
-                        ),
-                        'amazonAddress' => array(
-                            'required' => true,
-                            'type' => 'string',
-                        ),
-                        'customerAddress' => array(
-                            'required' => true,
-                            'type' => 'string',
-                        ),
-                        'routeFilterPrefixes' => array(
-                            'required' => true,
-                            'type' => 'array',
-                            'items' => array(
-                                'name' => 'RouteFilterPrefix',
-                                'type' => 'object',
-                                'properties' => array(
-                                    'cidr' => array(
-                                        'type' => 'string',
-                                    ),
-                                ),
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
-        'ConfirmConnection' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'ConfirmConnectionResponse',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.ConfirmConnection',
-                ),
-                'connectionId' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
-        'ConfirmPrivateVirtualInterface' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'ConfirmPrivateVirtualInterfaceResponse',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.ConfirmPrivateVirtualInterface',
-                ),
-                'virtualInterfaceId' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'virtualGatewayId' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
-        'ConfirmPublicVirtualInterface' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'ConfirmPublicVirtualInterfaceResponse',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.ConfirmPublicVirtualInterface',
-                ),
-                'virtualInterfaceId' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
         'CreateConnection' => array(
             'httpMethod' => 'POST',
             'uri' => '/',
             'class' => 'Aws\\Common\\Command\\JsonCommand',
             'responseClass' => 'Connection',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Creates a new network connection between the customer network and a specific AWS Direct Connect location.',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -421,65 +89,12 @@ return array (
                     'location' => 'header',
                     'default' => 'OvertureService.CreateConnection',
                 ),
-                'location' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'bandwidth' => array(
+                'offeringId' => array(
                     'required' => true,
                     'type' => 'string',
                     'location' => 'json',
                 ),
                 'connectionName' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
-        'CreateInterconnect' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'Interconnect',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.CreateInterconnect',
-                ),
-                'interconnectName' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'bandwidth' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'location' => array(
                     'required' => true,
                     'type' => 'string',
                     'location' => 'json',
@@ -502,6 +117,8 @@ return array (
             'class' => 'Aws\\Common\\Command\\JsonCommand',
             'responseClass' => 'VirtualInterface',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Creates a new private virtual interface. A virtual interface is the VLAN that transports AWS Direct Connect traffic. A private virtual interface supports sending traffic to a single Virtual Private Cloud (VPC).',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -518,25 +135,21 @@ return array (
                     'default' => 'OvertureService.CreatePrivateVirtualInterface',
                 ),
                 'connectionId' => array(
-                    'required' => true,
                     'type' => 'string',
                     'location' => 'json',
                 ),
                 'newPrivateVirtualInterface' => array(
-                    'required' => true,
+                    'description' => 'Detailed information of the private virtual interface to be created.',
                     'type' => 'object',
                     'location' => 'json',
                     'properties' => array(
                         'virtualInterfaceName' => array(
-                            'required' => true,
                             'type' => 'string',
                         ),
                         'vlan' => array(
-                            'required' => true,
                             'type' => 'numeric',
                         ),
                         'asn' => array(
-                            'required' => true,
                             'type' => 'numeric',
                         ),
                         'authKey' => array(
@@ -549,7 +162,6 @@ return array (
                             'type' => 'string',
                         ),
                         'virtualGatewayId' => array(
-                            'required' => true,
                             'type' => 'string',
                         ),
                     ),
@@ -572,6 +184,8 @@ return array (
             'class' => 'Aws\\Common\\Command\\JsonCommand',
             'responseClass' => 'VirtualInterface',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Creates a new public virtual interface. A virtual interface is the VLAN that transports AWS Direct Connect traffic. A public virtual interface supports sending traffic to public services of AWS such as Amazon Simple Storage Service (Amazon S3).',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -588,46 +202,41 @@ return array (
                     'default' => 'OvertureService.CreatePublicVirtualInterface',
                 ),
                 'connectionId' => array(
-                    'required' => true,
                     'type' => 'string',
                     'location' => 'json',
                 ),
                 'newPublicVirtualInterface' => array(
-                    'required' => true,
+                    'description' => 'Detailed information of the public virtual interface to be created.',
                     'type' => 'object',
                     'location' => 'json',
                     'properties' => array(
                         'virtualInterfaceName' => array(
-                            'required' => true,
                             'type' => 'string',
                         ),
                         'vlan' => array(
-                            'required' => true,
                             'type' => 'numeric',
                         ),
                         'asn' => array(
-                            'required' => true,
                             'type' => 'numeric',
                         ),
                         'authKey' => array(
                             'type' => 'string',
                         ),
                         'amazonAddress' => array(
-                            'required' => true,
                             'type' => 'string',
                         ),
                         'customerAddress' => array(
-                            'required' => true,
                             'type' => 'string',
                         ),
                         'routeFilterPrefixes' => array(
-                            'required' => true,
                             'type' => 'array',
                             'items' => array(
                                 'name' => 'RouteFilterPrefix',
+                                'description' => 'A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.',
                                 'type' => 'object',
                                 'properties' => array(
                                     'cidr' => array(
+                                        'description' => 'CIDR notation for the advertised route. Multiple routes are separated by commas',
                                         'type' => 'string',
                                     ),
                                 ),
@@ -653,6 +262,8 @@ return array (
             'class' => 'Aws\\Common\\Command\\JsonCommand',
             'responseClass' => 'Connection',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Deletes the connection.',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -685,50 +296,14 @@ return array (
                 ),
             ),
         ),
-        'DeleteInterconnect' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'DeleteInterconnectResponse',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.DeleteInterconnect',
-                ),
-                'interconnectId' => array(
-                    'required' => true,
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
         'DeleteVirtualInterface' => array(
             'httpMethod' => 'POST',
             'uri' => '/',
             'class' => 'Aws\\Common\\Command\\JsonCommand',
             'responseClass' => 'DeleteVirtualInterfaceResponse',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Deletes a virtual interface.',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -745,6 +320,45 @@ return array (
                     'default' => 'OvertureService.DeleteVirtualInterface',
                 ),
                 'virtualInterfaceId' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+            ),
+            'errorResponses' => array(
+                array(
+                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
+                    'class' => 'DirectConnectServerException',
+                ),
+                array(
+                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
+                    'class' => 'DirectConnectClientException',
+                ),
+            ),
+        ),
+        'DescribeConnectionDetail' => array(
+            'httpMethod' => 'POST',
+            'uri' => '/',
+            'class' => 'Aws\\Common\\Command\\JsonCommand',
+            'responseClass' => 'ConnectionDetail',
+            'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Displays details about a specific connection including the order steps for the connection and the current state of the connection order.',
+            'parameters' => array(
+                'Content-Type' => array(
+                    'static' => true,
+                    'location' => 'header',
+                    'default' => 'application/x-amz-json-1.1',
+                ),
+                'command.expects' => array(
+                    'static' => true,
+                    'default' => 'application/json',
+                ),
+                'X-Amz-Target' => array(
+                    'static' => true,
+                    'location' => 'header',
+                    'default' => 'OvertureService.DescribeConnectionDetail',
+                ),
+                'connectionId' => array(
                     'required' => true,
                     'type' => 'string',
                     'location' => 'json',
@@ -767,6 +381,8 @@ return array (
             'class' => 'Aws\\Common\\Command\\JsonCommand',
             'responseClass' => 'Connections',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Displays all connections in this region.',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -798,12 +414,14 @@ return array (
                 ),
             ),
         ),
-        'DescribeConnectionsOnInterconnect' => array(
+        'DescribeOfferingDetail' => array(
             'httpMethod' => 'POST',
             'uri' => '/',
             'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'Connections',
+            'responseClass' => 'OfferingDetail',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Displays additional ordering step details for a specified offering.',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -817,9 +435,9 @@ return array (
                 'X-Amz-Target' => array(
                     'static' => true,
                     'location' => 'header',
-                    'default' => 'OvertureService.DescribeConnectionsOnInterconnect',
+                    'default' => 'OvertureService.DescribeOfferingDetail',
                 ),
-                'interconnectId' => array(
+                'offeringId' => array(
                     'required' => true,
                     'type' => 'string',
                     'location' => 'json',
@@ -836,12 +454,14 @@ return array (
                 ),
             ),
         ),
-        'DescribeInterconnects' => array(
+        'DescribeOfferings' => array(
             'httpMethod' => 'POST',
             'uri' => '/',
             'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'Interconnects',
+            'responseClass' => 'Offerings',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Describes one or more of the offerings that are currently available for creating new connections. The results include offerings for all regions.',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -855,44 +475,7 @@ return array (
                 'X-Amz-Target' => array(
                     'static' => true,
                     'location' => 'header',
-                    'default' => 'OvertureService.DescribeInterconnects',
-                ),
-                'interconnectId' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-            'errorResponses' => array(
-                array(
-                    'reason' => 'A server-side error occurred during the API call. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectServerException',
-                ),
-                array(
-                    'reason' => 'The API was called with invalid parameters. The error message will contain additional details about the cause.',
-                    'class' => 'DirectConnectClientException',
-                ),
-            ),
-        ),
-        'DescribeLocations' => array(
-            'httpMethod' => 'POST',
-            'uri' => '/',
-            'class' => 'Aws\\Common\\Command\\JsonCommand',
-            'responseClass' => 'Locations',
-            'responseType' => 'model',
-            'parameters' => array(
-                'Content-Type' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'application/x-amz-json-1.1',
-                ),
-                'command.expects' => array(
-                    'static' => true,
-                    'default' => 'application/json',
-                ),
-                'X-Amz-Target' => array(
-                    'static' => true,
-                    'location' => 'header',
-                    'default' => 'OvertureService.DescribeLocations',
+                    'default' => 'OvertureService.DescribeOfferings',
                 ),
             ),
             'errorResponses' => array(
@@ -912,6 +495,8 @@ return array (
             'class' => 'Aws\\Common\\Command\\JsonCommand',
             'responseClass' => 'VirtualGateways',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Returns a list of virtual private gateways owned by the AWS account.',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -945,6 +530,8 @@ return array (
             'class' => 'Aws\\Common\\Command\\JsonCommand',
             'responseClass' => 'VirtualInterfaces',
             'responseType' => 'model',
+            'responseNotes' => 'Returns a json_decoded array of the response body',
+            'summary' => 'Displays all virtual interfaces for an AWS account. Virtual interfaces deleted fewer than 15 minutes before DescribeVirtualInterfaces is called are also returned. If a virtual interface ID is included then only a single virtual interface will be returned.',
             'parameters' => array(
                 'Content-Type' => array(
                     'static' => true,
@@ -986,10 +573,6 @@ return array (
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'ownerAccount' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
                 'connectionId' => array(
                     'type' => 'string',
                     'location' => 'json',
@@ -1010,28 +593,12 @@ return array (
                     'type' => 'string',
                     'location' => 'json',
                 ),
-                'bandwidth' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'vlan' => array(
-                    'type' => 'numeric',
-                    'location' => 'json',
-                ),
-                'partnerName' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
             ),
         ),
         'VirtualInterface' => array(
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'ownerAccount' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
                 'virtualInterfaceId' => array(
                     'type' => 'string',
                     'location' => 'json',
@@ -1069,6 +636,7 @@ return array (
                     'location' => 'json',
                 ),
                 'customerAddress' => array(
+                    'description' => 'IP address assigned to the customer interface.',
                     'type' => 'string',
                     'location' => 'json',
                 ),
@@ -1077,6 +645,7 @@ return array (
                     'location' => 'json',
                 ),
                 'customerRouterConfig' => array(
+                    'description' => 'Information for generating the customer router configuration.',
                     'type' => 'string',
                     'location' => 'json',
                 ),
@@ -1089,9 +658,11 @@ return array (
                     'location' => 'json',
                     'items' => array(
                         'name' => 'RouteFilterPrefix',
+                        'description' => 'A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.',
                         'type' => 'object',
                         'properties' => array(
                             'cidr' => array(
+                                'description' => 'CIDR notation for the advertised route. Multiple routes are separated by commas',
                                 'type' => 'string',
                             ),
                         ),
@@ -1099,49 +670,29 @@ return array (
                 ),
             ),
         ),
-        'ConfirmConnectionResponse' => array(
+        'DeleteVirtualInterfaceResponse' => array(
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
+                'virtualInterfaceState' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+            ),
+        ),
+        'ConnectionDetail' => array(
+            'type' => 'object',
+            'additionalProperties' => true,
+            'properties' => array(
+                'connectionId' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+                'connectionName' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
                 'connectionState' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-        ),
-        'ConfirmPrivateVirtualInterfaceResponse' => array(
-            'type' => 'object',
-            'additionalProperties' => true,
-            'properties' => array(
-                'virtualInterfaceState' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-        ),
-        'ConfirmPublicVirtualInterfaceResponse' => array(
-            'type' => 'object',
-            'additionalProperties' => true,
-            'properties' => array(
-                'virtualInterfaceState' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-            ),
-        ),
-        'Interconnect' => array(
-            'type' => 'object',
-            'additionalProperties' => true,
-            'properties' => array(
-                'interconnectId' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'interconnectName' => array(
-                    'type' => 'string',
-                    'location' => 'json',
-                ),
-                'interconnectState' => array(
                     'type' => 'string',
                     'location' => 'json',
                 ),
@@ -1157,25 +708,67 @@ return array (
                     'type' => 'string',
                     'location' => 'json',
                 ),
-            ),
-        ),
-        'DeleteInterconnectResponse' => array(
-            'type' => 'object',
-            'additionalProperties' => true,
-            'properties' => array(
-                'interconnectState' => array(
-                    'type' => 'string',
+                'connectionCosts' => array(
+                    'type' => 'array',
                     'location' => 'json',
+                    'items' => array(
+                        'name' => 'ConnectionCost',
+                        'description' => 'Cost description.',
+                        'type' => 'object',
+                        'properties' => array(
+                            'name' => array(
+                                'description' => 'The name of the cost item.',
+                                'type' => 'string',
+                            ),
+                            'unit' => array(
+                                'description' => 'The unit used in cost calculation.',
+                                'type' => 'string',
+                            ),
+                            'currencyCode' => array(
+                                'description' => 'Currency code based on ISO 4217.',
+                                'type' => 'string',
+                            ),
+                            'amount' => array(
+                                'description' => 'The amount of charge per unit.',
+                                'type' => 'string',
+                            ),
+                        ),
+                    ),
                 ),
-            ),
-        ),
-        'DeleteVirtualInterfaceResponse' => array(
-            'type' => 'object',
-            'additionalProperties' => true,
-            'properties' => array(
-                'virtualInterfaceState' => array(
-                    'type' => 'string',
+                'orderSteps' => array(
+                    'type' => 'array',
                     'location' => 'json',
+                    'items' => array(
+                        'name' => 'ConnectionOrderStep',
+                        'description' => 'A step in the connection order process.',
+                        'type' => 'object',
+                        'properties' => array(
+                            'number' => array(
+                                'description' => 'Number of an order step.',
+                                'type' => 'string',
+                            ),
+                            'name' => array(
+                                'description' => 'Name of the order step.',
+                                'type' => 'string',
+                            ),
+                            'description' => array(
+                                'description' => 'More detailed description of the order step.',
+                                'type' => 'string',
+                            ),
+                            'owner' => array(
+                                'description' => 'The entity who owns the completion of the order step.',
+                                'type' => 'string',
+                            ),
+                            'sla' => array(
+                                'description' => 'Time to complete the order step in minutes.',
+                                'type' => 'numeric',
+                            ),
+                            'stepState' => array(
+                                'description' => 'State of the connection step. Pending: This step is not yet completed. Completed: This step has been completed',
+                                'type' => 'string',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
@@ -1184,15 +777,14 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'connections' => array(
+                    'description' => 'A list of connections.',
                     'type' => 'array',
                     'location' => 'json',
                     'items' => array(
                         'name' => 'Connection',
+                        'description' => 'A connection represents the physical network connection between the Direct Connect location and the customer.',
                         'type' => 'object',
                         'properties' => array(
-                            'ownerAccount' => array(
-                                'type' => 'string',
-                            ),
                             'connectionId' => array(
                                 'type' => 'string',
                             ),
@@ -1208,38 +800,113 @@ return array (
                             'location' => array(
                                 'type' => 'string',
                             ),
-                            'bandwidth' => array(
+                        ),
+                    ),
+                ),
+            ),
+        ),
+        'OfferingDetail' => array(
+            'type' => 'object',
+            'additionalProperties' => true,
+            'properties' => array(
+                'offeringId' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+                'region' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+                'location' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+                'offeringName' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+                'description' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+                'bandwidth' => array(
+                    'type' => 'string',
+                    'location' => 'json',
+                ),
+                'connectionCosts' => array(
+                    'type' => 'array',
+                    'location' => 'json',
+                    'items' => array(
+                        'name' => 'ConnectionCost',
+                        'description' => 'Cost description.',
+                        'type' => 'object',
+                        'properties' => array(
+                            'name' => array(
+                                'description' => 'The name of the cost item.',
                                 'type' => 'string',
                             ),
-                            'vlan' => array(
+                            'unit' => array(
+                                'description' => 'The unit used in cost calculation.',
+                                'type' => 'string',
+                            ),
+                            'currencyCode' => array(
+                                'description' => 'Currency code based on ISO 4217.',
+                                'type' => 'string',
+                            ),
+                            'amount' => array(
+                                'description' => 'The amount of charge per unit.',
+                                'type' => 'string',
+                            ),
+                        ),
+                    ),
+                ),
+                'orderSteps' => array(
+                    'type' => 'array',
+                    'location' => 'json',
+                    'items' => array(
+                        'name' => 'OfferingOrderStep',
+                        'description' => 'A step in the offering order process.',
+                        'type' => 'object',
+                        'properties' => array(
+                            'number' => array(
+                                'description' => 'Number of an order step.',
+                                'type' => 'string',
+                            ),
+                            'name' => array(
+                                'description' => 'Name of the order step.',
+                                'type' => 'string',
+                            ),
+                            'description' => array(
+                                'description' => 'More detailed description of the order step.',
+                                'type' => 'string',
+                            ),
+                            'owner' => array(
+                                'description' => 'The entity who owns the completion of the order step.',
+                                'type' => 'string',
+                            ),
+                            'sla' => array(
+                                'description' => 'Time to complete the order step in minutes.',
                                 'type' => 'numeric',
-                            ),
-                            'partnerName' => array(
-                                'type' => 'string',
                             ),
                         ),
                     ),
                 ),
             ),
         ),
-        'Interconnects' => array(
+        'Offerings' => array(
             'type' => 'object',
             'additionalProperties' => true,
             'properties' => array(
-                'interconnects' => array(
+                'offerings' => array(
+                    'description' => 'A list of offerings.',
                     'type' => 'array',
                     'location' => 'json',
                     'items' => array(
-                        'name' => 'Interconnect',
+                        'name' => 'Offering',
+                        'description' => 'An offer to create a new connection for a specific price and terms.',
                         'type' => 'object',
                         'properties' => array(
-                            'interconnectId' => array(
-                                'type' => 'string',
-                            ),
-                            'interconnectName' => array(
-                                'type' => 'string',
-                            ),
-                            'interconnectState' => array(
+                            'offeringId' => array(
                                 'type' => 'string',
                             ),
                             'region' => array(
@@ -1248,30 +915,41 @@ return array (
                             'location' => array(
                                 'type' => 'string',
                             ),
+                            'offeringName' => array(
+                                'description' => 'Name of the offering.',
+                                'type' => 'string',
+                            ),
+                            'description' => array(
+                                'type' => 'string',
+                            ),
                             'bandwidth' => array(
                                 'type' => 'string',
                             ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-        'Locations' => array(
-            'type' => 'object',
-            'additionalProperties' => true,
-            'properties' => array(
-                'locations' => array(
-                    'type' => 'array',
-                    'location' => 'json',
-                    'items' => array(
-                        'name' => 'Location',
-                        'type' => 'object',
-                        'properties' => array(
-                            'locationCode' => array(
-                                'type' => 'string',
-                            ),
-                            'locationName' => array(
-                                'type' => 'string',
+                            'connectionCosts' => array(
+                                'type' => 'array',
+                                'items' => array(
+                                    'name' => 'ConnectionCost',
+                                    'description' => 'Cost description.',
+                                    'type' => 'object',
+                                    'properties' => array(
+                                        'name' => array(
+                                            'description' => 'The name of the cost item.',
+                                            'type' => 'string',
+                                        ),
+                                        'unit' => array(
+                                            'description' => 'The unit used in cost calculation.',
+                                            'type' => 'string',
+                                        ),
+                                        'currencyCode' => array(
+                                            'description' => 'Currency code based on ISO 4217.',
+                                            'type' => 'string',
+                                        ),
+                                        'amount' => array(
+                                            'description' => 'The amount of charge per unit.',
+                                            'type' => 'string',
+                                        ),
+                                    ),
+                                ),
                             ),
                         ),
                     ),
@@ -1283,10 +961,12 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'virtualGateways' => array(
+                    'description' => 'A list of virtual gateways.',
                     'type' => 'array',
                     'location' => 'json',
                     'items' => array(
                         'name' => 'VirtualGateway',
+                        'description' => 'You can create one or more Direct Connect private virtual interfaces linking to your virtual private gateway.',
                         'type' => 'object',
                         'properties' => array(
                             'virtualGatewayId' => array(
@@ -1305,15 +985,14 @@ return array (
             'additionalProperties' => true,
             'properties' => array(
                 'virtualInterfaces' => array(
+                    'description' => 'A list of virtual interfaces.',
                     'type' => 'array',
                     'location' => 'json',
                     'items' => array(
                         'name' => 'VirtualInterface',
+                        'description' => 'A virtual interface (VLAN) transmits the traffic between the Direct Connect location and the customer.',
                         'type' => 'object',
                         'properties' => array(
-                            'ownerAccount' => array(
-                                'type' => 'string',
-                            ),
                             'virtualInterfaceId' => array(
                                 'type' => 'string',
                             ),
@@ -1342,12 +1021,14 @@ return array (
                                 'type' => 'string',
                             ),
                             'customerAddress' => array(
+                                'description' => 'IP address assigned to the customer interface.',
                                 'type' => 'string',
                             ),
                             'virtualInterfaceState' => array(
                                 'type' => 'string',
                             ),
                             'customerRouterConfig' => array(
+                                'description' => 'Information for generating the customer router configuration.',
                                 'type' => 'string',
                             ),
                             'virtualGatewayId' => array(
@@ -1357,9 +1038,11 @@ return array (
                                 'type' => 'array',
                                 'items' => array(
                                     'name' => 'RouteFilterPrefix',
+                                    'description' => 'A route filter prefix that the customer can advertise through Border Gateway Protocol (BGP) over a public virtual interface.',
                                     'type' => 'object',
                                     'properties' => array(
                                         'cidr' => array(
+                                            'description' => 'CIDR notation for the advertised route. Multiple routes are separated by commas',
                                             'type' => 'string',
                                         ),
                                     ),
@@ -1369,26 +1052,6 @@ return array (
                     ),
                 ),
             ),
-        ),
-    ),
-    'iterators' => array(
-        'DescribeConnections' => array(
-            'result_key' => 'connections',
-        ),
-        'DescribeConnectionsOnInterconnect' => array(
-            'result_key' => 'connections',
-        ),
-        'DescribeInterconnects' => array(
-            'result_key' => 'interconnects',
-        ),
-        'DescribeLocations' => array(
-            'result_key' => 'locations',
-        ),
-        'DescribeVirtualGateways' => array(
-            'result_key' => 'virtualGateways',
-        ),
-        'DescribeVirtualInterfaces' => array(
-            'result_key' => 'virtualInterfaces',
         ),
     ),
 );

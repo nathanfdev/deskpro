@@ -17,6 +17,6 @@
 namespace Aws\Rds\Exception;
 
 /**
- * The requested source could not be found.
+ * Exception that occurs when a SourceNotFoundException error is encountered
  */
 class SourceNotFoundException extends RdsException {}

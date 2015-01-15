@@ -20,10 +20,9 @@ use Aws\Common\Exception\RuntimeException;
 use Aws\S3\Exception\S3Exception;
 use Aws\S3\Exception\NoSuchKeyException;
 use Aws\S3\Iterator\ListObjectsIterator;
+use Guzzle\Http\QueryString;
 use Guzzle\Http\EntityBody;
 use Guzzle\Http\CachingEntityBody;
-use Guzzle\Http\Mimetypes;
-use Guzzle\Iterator\FilterIterator;
 use Guzzle\Stream\PhpStreamRequestFactory;
 use Guzzle\Service\Command\CommandInterface;
 
@@ -72,6 +71,7 @@ use Guzzle\Service\Command\CommandInterface;
  * Stream context options:
  *
  * - "seekable": Set to true to create a seekable "r" (read only) stream by using a php://temp stream buffer
+ * - "throw_exceptions": Set to true to throw exceptions instead of trigger_errors
  * - For "unlink" only: Any option that can be passed to the DeleteObject operation
  */
 class StreamWrapper
@@ -128,11 +128,10 @@ class StreamWrapper
      */
     public static function register(S3Client $client)
     {
-        if (in_array('s3', stream_get_wrappers())) {
-            stream_wrapper_unregister('s3');
+        if (!in_array('s3', stream_get_wrappers())) {
+            stream_wrapper_register('s3', __CLASS__, STREAM_IS_URL);
         }
 
-        stream_wrapper_register('s3', get_called_class(), STREAM_IS_URL);
         self::$client = $client;
     }
 
@@ -172,8 +171,8 @@ class StreamWrapper
         }
 
         // When using mode "x" validate if the file exists before attempting to read
-        if ($mode == 'x' && self::$client->doesObjectExist($params['Bucket'], $params['Key'], $this->getOptions())) {
-            $errors[] = "{$path} already exists on Amazon S3";
+        if ($mode == 'x' && !self::$client->doesObjectExist($params['Bucket'], $params['Key'], $this->getOptions())) {
+            $errors[] = "{$path} does not exist on Amazon S3";
         }
 
         if (!$errors) {
@@ -209,14 +208,6 @@ class StreamWrapper
         $this->body->rewind();
         $params = $this->params;
         $params['Body'] = $this->body;
-
-        // Attempt to guess the ContentType of the upload based on the
-        // file extension of the key
-        if (!isset($params['ContentType']) &&
-            ($type = Mimetypes::getInstance()->fromFilename($params['Key']))
-        ) {
-            $params['ContentType'] = $type;
-        }
 
         try {
             self::$client->putObject($params);
@@ -295,13 +286,7 @@ class StreamWrapper
      */
     public function stream_stat()
     {
-        $stat = fstat($this->body->getStream());
-        // Add the size of the underlying stream if it is known
-        if ($this->mode == 'r' && $this->body->getSize()) {
-            $stat[7] = $stat['size'] = $this->body->getSize();
-        }
-
-        return $stat;
+        return fstat($this->body->getStream());
     }
 
     /**
@@ -322,30 +307,25 @@ class StreamWrapper
 
         $parts = $this->getParams($path);
 
+        // Stat a bucket or just s3://
+        if (!$parts['Key'] && (!$parts['Bucket'] || self::$client->doesBucketExist($parts['Bucket']))) {
+            return $this->formatUrlStat($path);
+        }
+
+        // You must pass either a bucket or a bucket + key
         if (!$parts['Key']) {
-            // Stat "directories": buckets, or "s3://"
-            if (!$parts['Bucket'] || self::$client->doesBucketExist($parts['Bucket'])) {
-                return $this->formatUrlStat($path);
-            } else {
-                return $this->triggerError("File or directory not found: {$path}", $flags);
-            }
+            return $this->triggerError("File or directory not found: {$path}", $flags);
         }
 
         try {
             try {
-                $result = self::$client->headObject($parts)->toArray();
-                if (substr($parts['Key'], -1, 1) == '/' && $result['ContentLength'] == 0) {
-                    // Return as if it is a bucket to account for console bucket objects (e.g., zero-byte object "foo/")
-                    return $this->formatUrlStat($path);
-                } else {
-                    // Attempt to stat and cache regular object
-                    return $this->formatUrlStat($result);
-                }
+                // Attempt to stat and cache regular object
+                return $this->formatUrlStat(self::$client->headObject($parts)->toArray());
             } catch (NoSuchKeyException $e) {
                 // Maybe this isn't an actual key, but a prefix. Do a prefix listing of objects to determine.
                 $result = self::$client->listObjects(array(
                     'Bucket'  => $parts['Bucket'],
-                    'Prefix'  => rtrim($parts['Key'], '/') . '/',
+                    'Prefix'  => $parts['Key'],
                     'MaxKeys' => 1
                 ));
                 if (!$result['Contents'] && !$result['CommonPrefixes']) {
@@ -365,7 +345,7 @@ class StreamWrapper
      * @param string $path    Directory which should be created.
      * @param int    $mode    Permissions. 700-range permissions map to ACL_PUBLIC. 600-range permissions map to
      *                        ACL_AUTH_READ. All other permissions map to ACL_PRIVATE. Expects octal form.
-     * @param int    $options A bitwise mask of values, such as STREAM_MKDIR_RECURSIVE.
+     * @param int    $options A bitwise mask of values, such as STREAM_MKDIR_RECURSIVE. (unused)
      *
      * @return bool
      * @link http://www.php.net/manual/en/streamwrapper.mkdir.php
@@ -373,17 +353,28 @@ class StreamWrapper
     public function mkdir($path, $mode, $options)
     {
         $params = $this->getParams($path);
-        if (!$params['Bucket']) {
+        $this->clearStatInfo($path);
+
+        if (!$params['Bucket'] || $params['Key']) {
             return false;
         }
 
-        if (!isset($params['ACL'])) {
-            $params['ACL'] = $this->determineAcl($mode);
+        try {
+            if (!isset($params['ACL'])) {
+                $mode = decoct($mode);
+                if ($mode >= 700 and $mode <= 799) {
+                    $params['ACL'] = 'public-read';
+                } elseif ($mode >= 600 && $mode <= 699) {
+                    $params['ACL'] = 'authenticated-read';
+                } else {
+                    $params['ACL'] = 'private';
+                }
+            }
+            self::$client->createBucket($params);
+            return true;
+        } catch (\Exception $e) {
+            return $this->triggerError($e->getMessage());
         }
-
-        return !isset($params['Key']) || $params['Key'] === '/'
-            ? $this->createBucket($path, $params)
-            : $this->createPseudoDirectory($path, $params);
     }
 
     /**
@@ -399,40 +390,14 @@ class StreamWrapper
         $params = $this->getParams($path);
         if (!$params['Bucket']) {
             return $this->triggerError('You cannot delete s3://. Please specify a bucket.');
+        } elseif ($params['Key']) {
+            return $this->triggerError('rmdir() only supports bucket deletion');
         }
 
         try {
-
-            if (!$params['Key']) {
-                self::$client->deleteBucket(array('Bucket' => $params['Bucket']));
-                $this->clearStatInfo($path);
-                return true;
-            }
-
-            // Use a key that adds a trailing slash if needed.
-            $prefix = rtrim($params['Key'], '/') . '/';
-
-            $result = self::$client->listObjects(array(
-                'Bucket'  => $params['Bucket'],
-                'Prefix'  => $prefix,
-                'MaxKeys' => 1
-            ));
-
-            // Check if the bucket contains keys other than the placeholder
-            if ($result['Contents']) {
-                foreach ($result['Contents'] as $key) {
-                    if ($key['Key'] == $prefix) {
-                        continue;
-                    }
-                    return $this->triggerError('Psuedo folder is not empty');
-                }
-                return $this->unlink(rtrim($path, '/') . '/');
-            }
-
-            return $result['CommonPrefixes']
-                ? $this->triggerError('Pseudo folder contains nested folders')
-                : true;
-
+            self::$client->deleteBucket(array('Bucket' => $params['Bucket']));
+            $this->clearStatInfo($path);
+            return true;
         } catch (\Exception $e) {
             return $this->triggerError($e->getMessage());
         }
@@ -440,11 +405,6 @@ class StreamWrapper
 
     /**
      * Support for opendir().
-     *
-     * The opendir() method of the Amazon S3 stream wrapper supports a stream
-     * context option of "listFilter". listFilter must be a callable that
-     * accepts an associative array of object data and returns true if the
-     * object should be yielded when iterating the keys in a bucket.
      *
      * @param string $path    The path to the directory (e.g. "s3://dir[</prefix>]")
      * @param string $options Whether or not to enforce safe_mode (0x04). Unused.
@@ -457,40 +417,21 @@ class StreamWrapper
         // Reset the cache
         $this->clearStatInfo();
         $params = $this->getParams($path);
-        $delimiter = $this->getOption('delimiter');
-        $filterFn = $this->getOption('listFilter');
-
-        if ($delimiter === null) {
-            $delimiter = '/';
-        }
-
+        $delim = $this->getOption('delimiter') ?: '/';
         if ($params['Key']) {
-            $params['Key'] = rtrim($params['Key'], $delimiter) . $delimiter;
+            $params['Key'] = rtrim($params['Key'], $delim) . $delim;
         }
 
         $this->openedBucket = $params['Bucket'];
         $this->openedBucketPrefix = $params['Key'];
-        $operationParams = array('Bucket' => $params['Bucket'], 'Prefix' => $params['Key']);
-
-        if ($delimiter) {
-            $operationParams['Delimiter'] = $delimiter;
-        }
-
-        $objectIterator = self::$client->getIterator('ListObjects', $operationParams, array(
+        $this->objectIterator = self::$client->getIterator('ListObjects', array(
+            'Bucket'    => $params['Bucket'],
+            'Delimiter' => $delim,
+            'Prefix'    => $params['Key']
+        ), array(
             'return_prefixes' => true,
             'sort_results'    => true
         ));
-
-        // Filter our "/" keys added by the console as directories, and ensure
-        // that if a filter function is provided that it passes the filter.
-        $this->objectIterator = new FilterIterator(
-            $objectIterator,
-            function ($key) use ($filterFn) {
-                // Each yielded results can contain a "Key" or "Prefix"
-                return (!$filterFn || call_user_func($filterFn, $key)) &&
-                    (!isset($key['Key']) || substr($key['Key'], -1, 1) !== '/');
-            }
-        );
 
         $this->objectIterator->next();
 
@@ -531,31 +472,25 @@ class StreamWrapper
      */
     public function dir_readdir()
     {
-        // Skip empty result keys
-        if (!$this->objectIterator->valid()) {
-            return false;
-        }
+        $result = false;
+        if ($this->objectIterator->valid()) {
+            $current = $this->objectIterator->current();
+            if (isset($current['Prefix'])) {
+                // Include "directories"
+                $result = str_replace($this->openedBucketPrefix, '', $current['Prefix']);
+                $key = "s3://{$this->openedBucket}/{$current['Prefix']}";
+                $stat = $this->formatUrlStat($current['Prefix']);
+            } else {
+                // Remove the prefix from the result to emulate other stream wrappers
+                $result = str_replace($this->openedBucketPrefix, '', $current['Key']);
+                $key = "s3://{$this->openedBucket}/{$current['Key']}";
+                $stat = $this->formatUrlStat($current);
+            }
 
-        $current = $this->objectIterator->current();
-        if (isset($current['Prefix'])) {
-            // Include "directories". Be sure to strip a trailing "/"
-            // on prefixes.
-            $prefix = rtrim($current['Prefix'], '/');
-            $result = str_replace($this->openedBucketPrefix, '', $prefix);
-            $key = "s3://{$this->openedBucket}/{$prefix}";
-            $stat = $this->formatUrlStat($prefix);
-        } else {
-            // Remove the prefix from the result to emulate other
-            // stream wrappers.
-            $result = str_replace($this->openedBucketPrefix, '', $current['Key']);
-            $key = "s3://{$this->openedBucket}/{$current['Key']}";
-            $stat = $this->formatUrlStat($current);
+            // Cache the object data for quick url_stat lookups used with RecursiveDirectoryIterator
+            self::$nextStat = array($key => $stat);
+            $this->objectIterator->next();
         }
-
-        // Cache the object data for quick url_stat lookups used with
-        // RecursiveDirectoryIterator.
-        self::$nextStat = array($key => $stat);
-        $this->objectIterator->next();
 
         return $result;
     }
@@ -652,6 +587,7 @@ class StreamWrapper
 
         $params = $this->getOptions();
         unset($params['seekable']);
+        unset($params['throw_exceptions']);
 
         return array(
             'Bucket' => $parts[0],
@@ -744,18 +680,13 @@ class StreamWrapper
      */
     protected function triggerError($errors, $flags = null)
     {
-        if ($flags & STREAM_URL_STAT_QUIET) {
-          // This is triggered with things like file_exists()
-
-          if ($flags & STREAM_URL_STAT_LINK) {
-            // This is triggered for things like is_link()
-            return $this->formatUrlStat(false);
-          }
-          return false;
+        if ($flags != STREAM_URL_STAT_QUIET) {
+            if ($this->getOption('throw_exceptions')) {
+                throw new RuntimeException(implode("\n", (array) $errors));
+            } else {
+                trigger_error(implode("\n", (array) $errors), E_USER_WARNING);
+            }
         }
-
-        // This is triggered when doing things like lstat() or stat()
-        trigger_error(implode("\n", (array) $errors), E_USER_WARNING);
 
         return false;
     }
@@ -786,17 +717,18 @@ class StreamWrapper
         );
 
         $stat = $statTemplate;
-        $type = gettype($result);
 
         // Determine what type of data is being cached
-        if ($type == 'NULL' || $type == 'string') {
+        if (!$result || is_string($result)) {
             // Directory with 0777 access - see "man 2 stat".
             $stat['mode'] = $stat[2] = 0040777;
-        } elseif ($type == 'array' && isset($result['LastModified'])) {
+        } elseif (is_array($result) && isset($result['LastModified'])) {
             // ListObjects or HeadObject result
             $stat['mtime'] = $stat[9] = $stat['ctime'] = $stat[10] = strtotime($result['LastModified']);
             $stat['size'] = $stat[7] = (isset($result['ContentLength']) ? $result['ContentLength'] : $result['Size']);
             // Regular file with 0777 access - see "man 2 stat".
+            $stat['mode'] = $stat[2] = 0100777;
+        } else {
             $stat['mode'] = $stat[2] = 0100777;
         }
 
@@ -814,78 +746,5 @@ class StreamWrapper
         if ($path) {
             clearstatcache(true, $path);
         }
-    }
-
-    /**
-     * Creates a bucket for the given parameters.
-     *
-     * @param string $path   Stream wrapper path
-     * @param array  $params A result of StreamWrapper::getParams()
-     *
-     * @return bool Returns true on success or false on failure
-     */
-    private function createBucket($path, array $params)
-    {
-        if (self::$client->doesBucketExist($params['Bucket'])) {
-            return $this->triggerError("Directory already exists: {$path}");
-        }
-
-        try {
-            self::$client->createBucket($params);
-            $this->clearStatInfo($path);
-            return true;
-        } catch (\Exception $e) {
-            return $this->triggerError($e->getMessage());
-        }
-    }
-
-    /**
-     * Creates a pseudo-folder by creating an empty "/" suffixed key
-     *
-     * @param string $path   Stream wrapper path
-     * @param array  $params A result of StreamWrapper::getParams()
-     *
-     * @return bool
-     */
-    private function createPseudoDirectory($path, array $params)
-    {
-        // Ensure the path ends in "/" and the body is empty.
-        $params['Key'] = rtrim($params['Key'], '/') . '/';
-        $params['Body'] = '';
-
-        // Fail if this pseudo directory key already exists
-        if (self::$client->doesObjectExist($params['Bucket'], $params['Key'])) {
-            return $this->triggerError("Directory already exists: {$path}");
-        }
-
-        try {
-            self::$client->putObject($params);
-            $this->clearStatInfo($path);
-            return true;
-        } catch (\Exception $e) {
-            return $this->triggerError($e->getMessage());
-        }
-    }
-
-    /**
-     * Determine the most appropriate ACL based on a file mode.
-     *
-     * @param int $mode File mode
-     *
-     * @return string
-     */
-    private function determineAcl($mode)
-    {
-        $mode = decoct($mode);
-
-        if ($mode >= 700 && $mode <= 799) {
-            return 'public-read';
-        }
-
-        if ($mode >= 600 && $mode <= 699) {
-            return 'authenticated-read';
-        }
-
-        return 'private';
     }
 }

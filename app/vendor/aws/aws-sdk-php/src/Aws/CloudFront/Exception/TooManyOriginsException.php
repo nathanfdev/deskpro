@@ -17,6 +17,6 @@
 namespace Aws\CloudFront\Exception;
 
 /**
- * You cannot create anymore origins for the distribution.
+ * Exception that occurs when a TooManyOriginsException error is encountered
  */
 class TooManyOriginsException extends CloudFrontException {}

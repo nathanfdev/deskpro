@@ -17,6 +17,6 @@
 namespace Aws\Redshift\Exception;
 
 /**
- * A request option was specified that is not supported.
+ * Exception that occurs when a UnsupportedOptionException error is encountered
  */
 class UnsupportedOptionException extends RedshiftException {}
