@@ -37,7 +37,7 @@
 		"friendsofsymfony/elastica-bundle": "3.0.*@dev",
 		"fzaninotto/faker": "1.4.*@dev",
 		"firebase/php-jwt": "dev-master",
-		"league/url": "3.0.*@dev",
+		"league/url": "3.2.1",
 		"onelogin/php-saml": "~2.1.0",
 		"google/apiclient": "1.0.*@dev",
 		"sensio/framework-extra-bundle": "~3.0",
