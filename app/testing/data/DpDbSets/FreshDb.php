@@ -146,15 +146,6 @@ class FreshDb extends AbstractDbSet
                 ('user.kb_subscriptions_last', '".time()."');
         ");
 
-        $this->getDb()->exec(
-            "
-                        INSERT INTO `brands` (`id`, `name`, `theme_id`)
-                        VALUES
-                            (1, 'Default Brand', 'base')
-                            ;
-        "
-        );
-
         $count++;
 
         return $count;
