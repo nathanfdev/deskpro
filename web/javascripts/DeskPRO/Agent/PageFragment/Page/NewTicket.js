@@ -584,6 +584,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		if (this.pauseSend) {
 			window.setTimeout(this.submit.bind(this), 250);
+			return;
 		}
 
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
@@ -1167,9 +1168,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					lastH = ed.height();
 					self.doScrollBottom = true;
 					window.setTimeout(function() {
-						if (self.page) {
-							self.page.updateUi();
-						}
+						self.updateUi();
 					}, 50);
 				}
 			});
@@ -1214,7 +1213,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
 								dataType: 'json',
 								complete: function () {
-									if (self.page) self.page.pauseSend = false;
+									self.pauseSend = false;
 								},
 								success: function (data) {
 
