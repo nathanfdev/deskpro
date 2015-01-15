@@ -35,66 +35,21 @@
 namespace Application\FormBundle\Form\Type;
 
 
+use Application\FormBundle\Form\FormFieldManager;
+use Application\LanguageBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Security\Core\Validator\Constraints\UserPassword;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
-class PersonChangePasswordType extends AbstractType
+class PasswordResetRequestType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
-        if ($options['require_current_password']) {
-            $builder->add('current_password', 'password', array(
-                'required' => true,
-                'constraints' => array(
-                    new UserPassword()
-                ),
-                'mapped' => false // not mapping this, just using it for validation
-            ));
-        }
-
-        $builder->add('new_password', 'repeated', array(
-            'first_name' => 'password',
-            'first_options' => array('label' => 'New Password'),
-            'second_name' => 'confirm',
-            'second_options' => array('label' => 'Confirm'),
-            'type' => 'password',
-            'required' => true,
-            'constraints' => array(
-                new NotBlank()
-            ),
-            'mapped' => false
-        ));
-
-        $builder->addEventListener(FormEvents::POST_SUBMIT, function (FormEvent $event) {
-            $event->getData()->setPassword($event->getForm()->get('new_password')->getData());
-        });
+        $builder->add('email', 'email', array());
     }
-
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(
-            array(
-                'data_class' => 'Application\DeskPRO\Entity\Person',
-                'require_current_password' => true
-            )
-        );
-
-        $resolver->setRequired(
-            array('settings')
-        );
-
-        $resolver->setAllowedTypes(
-            array(
-                'settings' => 'Application\DeskPRO\NewSettings\SettingsBag'
-            )
-        );
-    }
-
 
     /**
      * Returns the name of this type.
@@ -103,6 +58,6 @@ class PersonChangePasswordType extends AbstractType
      */
     public function getName()
     {
-        return 'person_change_password';
+        return 'request_password_reset';
     }
 }

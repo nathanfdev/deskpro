@@ -40,6 +40,12 @@ services:
       - { name: form.type, alias: comment }
 
 
+  form.request_password_reset:
+    class: Application\FormBundle\Form\Type\PasswordResetRequestType
+    tags:
+      - { name: form.type, alias: request_password_reset }
+
+
   form.person_change_password:
     class: Application\FormBundle\Form\Type\PersonChangePasswordType
     tags:

@@ -137,6 +137,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Application\AppBundle\DataService\PersonDataService
+     */
+    public function getPersonDataService()
+    {
+        return $this->get('data.person');
+    }
+
+    /**
      * @return \Application\AppBundle\DataService\DownloadsDataService
      */
     public function getDownloadsDataService()

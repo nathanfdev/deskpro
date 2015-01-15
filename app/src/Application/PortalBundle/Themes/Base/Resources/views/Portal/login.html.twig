@@ -8,6 +8,10 @@
             <h1>Log in to the support portal</h1>
         </header>
 
+        {% if reset_success %}
+            <strong>Your password has been reset. You may now login with your new password.</strong>
+        {% endif %}
+
         {% if login_error %}
             <!-- just using this until we get proper error alerts :) -->
             <div class="error"
