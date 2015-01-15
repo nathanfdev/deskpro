@@ -1,4 +1,5 @@
-{% if not is_granted('ROLE_USER') and auth_manager.isAuthVisible %}
+{# NOTE: despite the template name, this is part of the sidebar_user tag #}
+{% if (not is_granted('ROLE_USER')) and auth_manager.isAuthVisible %}
     <div class="small-form">
         <h1>Log in</h1>
 

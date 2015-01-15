@@ -85,7 +85,13 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
             return $this->matchNonGetRequest($request, $code, $split);
         }
 
+        if (!$code) {
+            $code = $request->get('lang_url_code', null);
+        }
+
         if ($code) {
+            $request->attributes->set('lang_url_code', $code);
+
             return $this->processUrlLangCode($code, $split);
         }
 
