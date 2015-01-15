@@ -48,6 +48,12 @@ use Symfony\Component\Routing\RouterInterface;
 
 class Router implements WarmableInterface, RouterInterface, RequestMatcherInterface
 {
+    public static $generating_ignored_routes = array(
+        'serve_blob_sizefit',
+        'serve_default_picture',
+        'serve_blob',
+    );
+
     /**
      * @var \Symfony\Bundle\FrameworkBundle\Routing\Router
      */
@@ -95,6 +101,10 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         $generated = $this->router->generate($name, $parameters, $referenceType);
 
         if (!$this->language_manager->isMultiLanguagePortal()) {
+            return $generated;
+        }
+
+        if (in_array($name, static::$generating_ignored_routes)) {
             return $generated;
         }
 
