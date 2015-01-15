@@ -1,4 +1,7 @@
 services:
+  data.person:
+      class: Application\AppBundle\DataService\PersonDataService
+      arguments: [@doctrine.orm.default_entity_manager]
   data.departments:
       class: Application\AppBundle\DataService\DepartmentDataService
       arguments: [@doctrine.orm.default_entity_manager, @portal_permissions_manager]
