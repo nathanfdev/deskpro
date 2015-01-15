@@ -784,6 +784,11 @@
     'user.disable_chat_element' => false,
     'user.portal_default_news_cat' => 0,
 
+    /**
+     * Invalidate the "password reset" code after this many seconds
+     */
+    'user.password_reset_code_time_limit' => 86400,
+
     'user.show_ratings' => true,
     'user.show_ratings_min_votes' => 1,
     'user.show_num_votes' => false,
