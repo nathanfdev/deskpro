@@ -59,8 +59,8 @@ class AppSecretPass implements CompilerPassInterface
                 $def->replaceArgument(0, $exp);
             }
 
-            if ('dp_security.form_login.listener' === $service_id) {
-                $def->replaceArgument(4, $exp);
+            if ('security.authentication.listener.anonymous.portal' === $service_id) {
+                $def->replaceArgument(1, $exp);
             }
 
             foreach ($def->getArguments() as $arg_num => $argument) {
@@ -69,5 +69,6 @@ class AppSecretPass implements CompilerPassInterface
                 }
             }
         }
+
     }
 }
