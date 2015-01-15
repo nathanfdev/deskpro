@@ -43,6 +43,7 @@ class Build1417766996 extends AbstractBuild
 		$this->execMutateSql("RENAME TABLE report_builder_favorite to report_widget_favorite;");
 		$this->execMutateSql("
 			ALTER TABLE report_widget ADD labels TINYTEXT DEFAULT NULL COMMENT '(DC2Type:simple_array)', DROP category;
+			ALTER TABLE report_widget ADD display_types LONGTEXT NOT NULL COMMENT '(DC2Type:simple_array)';
 			ALTER TABLE `report_widget_favorite` DROP FOREIGN KEY `FK_CCD5CB1186DD4ADF`;
 			ALTER TABLE `report_widget_favorite` CHANGE COLUMN `report_builder_id` `report_widget_id` INT(11) NULL DEFAULT NULL AFTER `id`,
 			ADD CONSTRAINT `FK_CCD5CB1186DD4ADF` FOREIGN KEY (`report_widget_id`) REFERENCES `report_widget` (`id`) ON DELETE CASCADE;");

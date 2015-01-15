@@ -100,6 +100,11 @@ class ReportWidget extends DomainObject
      */
     protected $display_order = 0;
 
+    /**
+     * @var array
+     */
+    protected $display_types ;
+
 
     public function __construct()
     {
@@ -340,6 +345,27 @@ class ReportWidget extends DomainObject
         return $this;
     }
 
+    /**
+     * @return array
+     */
+    public function getDisplayTypes()
+    {
+        return $this->display_types;
+    }
+
+    /**
+     * @param array $display_types
+     *
+     * @return $this
+     */
+    public function setDisplayTypes($display_types)
+    {
+        $this->display_types = $display_types;
+        return $this;
+    }
+
+
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -442,6 +468,14 @@ class ReportWidget extends DomainObject
                  'scale'      => 0,
                  'nullable'   => false,
                  'columnName' => 'display_order',
+            )
+        );
+        $metadata->mapField(
+            array(
+                'fieldName'  => 'display_types',
+                'type'       => 'simple_array',
+                'nullable'   => false,
+                'columnName' => 'display_types',
             )
         );
         $metadata->setIdGeneratorType(ClassMetadataInfo::GENERATOR_TYPE_IDENTITY);

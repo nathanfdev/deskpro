@@ -24,7 +24,7 @@ class DashboardData extends AbstractDefaultData
                     'title' => 'Overview',
                     'columns' => 10,
                     'sort_order' => 1,
-                    'widgets' => array(
+                    /*'widgets' => array(
                         array(
                             'title' => 'Tickets awaiting agent',
                             'position' => "0:0",
@@ -68,13 +68,13 @@ class DashboardData extends AbstractDefaultData
                             'size'     => '10:3',
                             'hc_data'  => 'overview:chats_created',
                         ),
-                    ),
+                    ),*/
                 ),
                 array(
                     'title' => 'Agent Performance',
                     'columns' => 10,
                     'sort_order' => 2,
-                    'widgets' => array(
+                    /*'widgets' => array(
                         array(
                             'title' => 'Agent Activity',
                             'position' => "0:0",
@@ -87,13 +87,13 @@ class DashboardData extends AbstractDefaultData
                             'size'     => '10:3',
                             'hc_data'  => 'performance:agent_hours',
                         ),
-                    ),
+                    ),*/
                 ),
                 array(
                     'title' => 'Ticket Satisfaction',
                     'columns' => 10,
                     'sort_order' => 3,
-                    'widgets' => array(
+                    /*'widgets' => array(
                         array(
                             'title' => 'Feedback',
                             'position' => "0:0",
@@ -106,7 +106,7 @@ class DashboardData extends AbstractDefaultData
                             'size'     => '10:3',
                             'hc_data'  => 'ticket_satisfaction:summary',
                         ),
-                    ),
+                    ),*/
                 ),
                 array(
                     'title' => 'Billing',
@@ -159,13 +159,14 @@ class DashboardData extends AbstractDefaultData
                     ->setDashboard($dashboardEntity)
                     ->setSortOrder($report['sort_order']);
                 $this->getEm()->persist($tab);
-                foreach($report['widgets'] as $widget) {
-                    $widgetEntity = new Widget();
-                    $widgetEntity
-                        ->setTitle($widget['title'])
-                        ->setSize($widget['size'])
-                        ->setPosition($widget['position'])
-                        ->setReport($tab);
+                if(isset($report['widgets'])) {
+                    foreach($report['widgets'] as $widget) {
+                        $widgetEntity = new Widget();
+                        $widgetEntity
+                            ->setTitle($widget['title'])
+                            ->setSize($widget['size'])
+                            ->setPosition($widget['position'])
+                            ->setReport($tab);
                         if(isset($widget['hc_data'])) {
                             $widgetEntity->setHcData($widget['hc_data']);
                             $widgetEntity->setType(Widget::WIDGET_TYPE_HARDCODED);
@@ -173,11 +174,12 @@ class DashboardData extends AbstractDefaultData
                             $widgetEntity->setWidget($widgetPrototype);
                             $widgetEntity->setType(Widget::WIDGET_TYPE_BAR);
                         }
-                    if(isset($widget['variables'])) {
-                        $widgetEntity->setVariables($widget['variables']);
-                    }
+                        if(isset($widget['variables'])) {
+                            $widgetEntity->setVariables($widget['variables']);
+                        }
 
-                    $this->getEm()->persist($widgetEntity);
+                        $this->getEm()->persist($widgetEntity);
+                    }
                 }
             }
             $this->getEm()->persist($dashboardEntity);
