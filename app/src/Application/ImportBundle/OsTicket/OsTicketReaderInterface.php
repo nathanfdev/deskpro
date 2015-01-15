@@ -52,6 +52,8 @@ interface OsTicketReaderInterface
     public function getTicketsCount();
 
     /**
+     * Returns staff
+     *
      * @param int $limit
      * @param int $offset
      *
@@ -60,6 +62,8 @@ interface OsTicketReaderInterface
     public function findStaff($limit, $offset);
 
     /**
+     * Returns users
+     *
      * @param int $limit
      * @param int $offset
      *
@@ -68,6 +72,8 @@ interface OsTicketReaderInterface
     public function findUsers($limit, $offset);
 
     /**
+     * Returns tickets
+     *
      * @param int $limit
      * @param int $offset
      *
@@ -76,50 +82,66 @@ interface OsTicketReaderInterface
     public function findTickets($limit, $offset);
 
     /**
+     * Returns ticket messages
+     *
+     * @param int $ticket_id
+     * @return mixed
+     */
+    public function findMessages($ticket_id);
+
+    /**
+     * Returns ticket message attachments
+     *
      * @param int $message_id
      * @return array
      */
     public function findMessageAttachments($message_id);
 
     /**
-     * @param $id
+     * Returns department
+     *
+     * @param int $id
      * @return mixed
      */
     public function findDepartmentById($id);
 
     /**
-     * @param $id
-     * @return mixed
-     */
-    public function findUserEmailById($id);
-
-    /**
-     * @param $id
+     * Returns staff email by id
+     *
+     * @param int $id
      * @return mixed
      */
     public function findStaffEmailById($id);
 
     /**
-     * @param $id
+     * Returns user email by id
+     *
+     * @param int $id
+     * @return mixed
+     */
+    public function findUserEmailById($id);
+
+    /**
+     * Returns team name by id
+     *
+     * @param int $id
      * @return mixed
      */
     public function findTeamNameById($id);
 
     /**
-     * @param $ticket_id
-     * @return mixed
-     */
-    public function findMessages($ticket_id);
-
-    /**
-     * @param $id
+     * Returns timezone by id
+     *
+     * @param int $id
      * @return mixed
      */
     public function findTimezoneById($id);
 
     /**
-     * @param $file_id
+     * Returns ticket message attachment by id
+     *
+     * @param int $file_id
      * @return mixed
      */
-    public function getAttachmentData($file_id);
+    public function findAttachmentData($file_id);
 }

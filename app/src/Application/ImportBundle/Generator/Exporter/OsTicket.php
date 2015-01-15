@@ -25,12 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
-* DeskPRO
-*
-* @package DeskPRO
-*/
-
 namespace Application\ImportBundle\Generator\Exporter;
 
 use Application\ImportBundle\Entity;

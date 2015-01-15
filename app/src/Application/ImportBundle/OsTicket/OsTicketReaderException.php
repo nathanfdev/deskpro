@@ -28,27 +28,46 @@
 namespace Application\ImportBundle\OsTicket;
 
 /**
+ * Os ticket exception (pdo exceptions)
+ *
  * Class OsTicketReaderException
  * @package Application\ImportBundle\OsTicket
  */
 class OsTicketReaderException extends \Exception
 {
     /**
+     * @var string
+     */
+    private $error_code;
+
+    /**
      * @var array
      */
-    private $info;
+    private $error_info;
 
     /**
      * Constructor
      *
      * @param string $message
-     * @param int    $code
-     * @param array  $info
+     * @param string $error_code
+     * @param array  $error_info
      */
-    public function __construct($message, $code, array $info = null)
+    public function __construct($message, $error_code, array $error_info = null)
     {
-        parent::__construct($message, $code);
-        $this->info = $info;
+        parent::__construct($message);
+
+        $this->error_code = $error_code;
+        $this->error_info = $error_info;
+    }
+
+    /**
+     * Returns error code
+     *
+     * @return string
+     */
+    public function getErrorCode()
+    {
+        return $this->error_code;
     }
 
     /**
@@ -56,8 +75,8 @@ class OsTicketReaderException extends \Exception
      *
      * @return array
      */
-    public function getInfo()
+    public function getErrorInfo()
     {
-        return $this->info;
+        return $this->error_info;
     }
 }

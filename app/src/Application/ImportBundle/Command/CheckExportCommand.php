@@ -25,13 +25,8 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
-use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
@@ -62,22 +57,10 @@ class CheckExportCommand extends AbstractExportCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->createGeneratorConfig($input);
-        $logger = $this->createLogger($config, new ConsoleHandler($output));
+        $config     = $this->createGeneratorConfig($input);
+        $logger     = $this->createLogger($config, new ConsoleHandler($output));
+        $generator  = $this->createGenerator($config, $output, $logger);
 
-        /** @var ProgressHelper $progress_bar */
-        $progress_bar = $this->getHelperSet()->get('progress');
-        /** @var Generator\Generator $generator */
-        $generator = $this->getContainer()->get('deskpro.import.generator');
-        $generator
-            ->setConfig($config)
-            ->setLogger($logger);
-
-        if (!$config->isVerbose()) {
-            $generator->setProgressBarHelper($progress_bar);
-        }
-
-        $progress_bar->start($output, $generator->getTotalRecordsCount());
         $exceptions = $generator->validate();
         foreach ($exceptions as $exception) {
             /** @var Generator\Validator\ValidatorException $exception */
@@ -86,12 +69,19 @@ class CheckExportCommand extends AbstractExportCommand
 
         $output->writeln('');
         if ($config->isVerbose()) {
-            $output->writeln("Done.");
+            $output->writeln('Done.');
         } else {
-            $output->writeln(sprintf(
-                "Done. Errors found `%d`. Look at the log file `%s` to see details.",
-                $exceptions->count(), $config->getLogPath()
-            ));
+            if ($exceptions->count() > 0) {
+                $output->writeln(sprintf(
+                    'Done. Errors found `%d`. Look at the log file `%s` to see details.',
+                    $exceptions->count(), $config->getLogPath()
+                ));
+            } else {
+                $output->writeln(sprintf(
+                    'Done. Checking was successful. Look at the log file `%s` to see details.',
+                    $config->getLogPath()
+                ));
+            }
         }
     }
 }

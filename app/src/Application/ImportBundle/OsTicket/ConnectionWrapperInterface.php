@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\OsTicket;
 
 /**
+ * Pdo connection wrapper interface
+ *
  * Interface GetConnectionInterface
  * @package Application\ImportBundle\OsTicket
  */

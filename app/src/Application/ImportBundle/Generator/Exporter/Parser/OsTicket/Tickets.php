@@ -79,8 +79,8 @@ class Tickets extends AbstractParser
                 } else {
                     $entity = new Entity\Ticket();
                     $entity
-                        ->setDestination('ticket_' . $num)
-                        ->setRef(!empty($ticket['number']) ? $ticket['number'] : null)
+                        ->setDestination('ticket_' . ($num + $offset))
+                        ->setRef($ticket['number'])
                         ->setDepartment($this->os_ticket_reader->findDepartmentById($ticket['dept_id']))
                         ->setPersonEmail($this->os_ticket_reader->findUserEmailById($ticket['user_id']))
                         ->setAgentEmail($this->os_ticket_reader->findUserEmailById($ticket['staff_id']) ? : null)
@@ -88,7 +88,7 @@ class Tickets extends AbstractParser
                         ->setStatus($this->getTicketStatus($ticket))
                         ->setDateCreated(new DateTime($ticket['created']))
                         ->setSubject($ticket['subject'])
-                        ->setPriority($ticket['priority']);
+                        ->setPriority($ticket['priority_id']);
 
                     $messages = $this->exportMessages($ticket['ticket_id']);
                     foreach ($messages as $message) {
@@ -156,7 +156,7 @@ class Tickets extends AbstractParser
                 $entity = new Entity\TicketAttachment();
                 $entity
                     ->setOid($num)
-                    ->setBlobData(base64_encode($this->os_ticket_reader->getAttachmentData($attachment['file_id'])))
+                    ->setBlobData(base64_encode($this->os_ticket_reader->findAttachmentData($attachment['file_id'])))
                     ->setFileName($attachment['name'])
                     ->setContentType($attachment['type']);
 
@@ -214,6 +214,7 @@ class Tickets extends AbstractParser
     private function hasRequiredTicketColumns(array $ticket)
     {
         return $this->hasRequiredColumns($ticket, array(
+            'ticket_id',
             'number',
             'dept_id',
             'user_id',
@@ -221,7 +222,7 @@ class Tickets extends AbstractParser
             'team_id',
             'created',
             'subject',
-            'priority',
+            'priority_id',
             'isanswered',
             'closed',
         ));

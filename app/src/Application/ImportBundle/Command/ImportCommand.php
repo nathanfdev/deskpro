@@ -54,7 +54,7 @@ class ImportCommand extends ContainerAwareCommand
     /**
      * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
      */
-    public function getContainer()
+    protected function getContainer()
     {
         return parent::getContainer();
     }

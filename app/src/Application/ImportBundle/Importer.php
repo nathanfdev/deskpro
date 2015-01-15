@@ -104,9 +104,11 @@ class Importer
 
 
     /**
-     * @param Connection      $db
-     * @param ImporterConfig  $config
-     * @param LoggerInterface $logger
+     * Constructor
+     *
+     * @param DeskproContainer $container
+     * @param ImporterConfig   $config
+     * @param LoggerInterface  $logger
      */
     public function __construct(DeskproContainer $container, ImporterConfig $config, LoggerInterface $logger = null)
     {

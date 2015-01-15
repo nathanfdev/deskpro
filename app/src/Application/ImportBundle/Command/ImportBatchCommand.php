@@ -25,33 +25,39 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
+namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Output\OutputInterface;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 /**
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Exporting and importing batch command
+ *
+ * Class ImportBatchCommand
+ * @package Application\ImportBundle\Command
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+class ImportBatchCommand extends AbstractExportCommand
 {
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure()
+    {
+        $this->setName('dp:import:batch');
+
+        parent::configure();
+    }
 
     /**
-     * Check if a record has all required columns
-     *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
+     * {@inheritDoc}
      */
-    protected function hasRequiredColumns(array $record, array $columns)
+    protected function execute(InputInterface $input, OutputInterface $output)
     {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $record) === false) {
-                return false;
-            }
-        }
+        $config    = $this->createGeneratorConfig($input);
+        $logger    = $this->createLogger($config, new ConsoleHandler($output));
+        $generator = $this->createGenerator($config, $output, $logger);
 
-        return true;
+        $generator->generate();
     }
 }

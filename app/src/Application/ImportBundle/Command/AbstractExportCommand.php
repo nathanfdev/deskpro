@@ -30,9 +30,11 @@ namespace Application\ImportBundle\Command;
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
 use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Generator;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Helper\ProgressHelper;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
@@ -40,6 +42,7 @@ use Orb\Util\OptionsArray;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Exception;
+use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Base export command
@@ -154,6 +157,33 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         }
 
         return $logger;
+    }
+
+    /**
+     * Create a generator
+     *
+     * @param GeneratorConfig $config
+     * @param OutputInterface $output
+     * @param LoggerInterface $logger
+     *
+     * @return Generator\Generator
+     */
+    protected function createGenerator(GeneratorConfig $config, OutputInterface $output, LoggerInterface $logger)
+    {
+        /** @var ProgressHelper $progress_bar */
+        $progress_bar = $this->getHelperSet()->get('progress');
+        /** @var Generator\Generator $generator */
+        $generator = $this->getContainer()->get('deskpro.import.generator');
+        $generator
+            ->setConfig($config)
+            ->setLogger($logger);
+
+        if (!$config->isVerbose()) {
+            $progress_bar->start($output, $generator->getTotalRecordsCount());
+            $generator->setProgressBarHelper($progress_bar);
+        }
+
+        return $generator;
     }
 
     /**

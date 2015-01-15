@@ -25,23 +25,14 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\GeneratorException;
 use Application\ImportBundle\Generator\Validator\ValidatorException;
-use Symfony\Component\Console\Helper\ProgressHelper;
-use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
-use Application\ImportBundle\Generator\Generator;
 
 /**
  * Export command
@@ -74,26 +65,17 @@ class ExportCommand extends AbstractExportCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config = $this->createGeneratorConfig($input);
-        $logger = $this->createLogger($config, new ConsoleHandler($output));
-
-        /** @var ProgressHelper $progress_bar */
-        $progress_bar = $this->getHelperSet()->get('progress');
-        /** @var Generator $generator */
-        $generator = $this->getContainer()->get('deskpro.import.generator');
-        $generator
-            ->setConfig($config)
-            ->setLogger($logger);
-
-        if (!$config->isVerbose()) {
-            $generator->setProgressBarHelper($progress_bar);
-        }
-
-        $progress_bar->start($output, $generator->getTotalRecordsCount());
+        $config    = $this->createGeneratorConfig($input);
+        $logger    = $this->createLogger($config, new ConsoleHandler($output));
+        $generator = $this->createGenerator($config, $output, $logger);
 
         try {
             $generator->generate();
-            $output->writeln('Done.');
+            $output->writeln('');
+            $output->writeln(sprintf(
+                'Done. Look at the log file `%s` to see details.',
+                $config->getLogPath()
+            ));
 
         } catch (GeneratorException $e) {
             $output->writeln('');
@@ -103,7 +85,7 @@ class ExportCommand extends AbstractExportCommand
             }
             if ($config->isVerbose() === false) {
                 $output->writeln(sprintf(
-                    "An error has occurred while exporting. Look at the log file `%s` to see details.",
+                    'An error has occurred while exporting. Look at the log file `%s` to see details.',
                     $config->getLogPath()
                 ));
             }

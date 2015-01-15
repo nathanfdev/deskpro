@@ -32,6 +32,29 @@ use Pdo;
 /**
  * Os ticket reader
  *
+ * Table os ticket not found by default, use this query to create:
+ *
+ * CREATE TABLE ost_ticket__cdata (
+ *     PRIMARY KEY (ticket_id)
+ * ) AS SELECT entry.object_id AS ticket_id,
+ *     MAX(IF(field.name = 'subject',
+ *         ans.value,
+ *         NULL)) AS `subject`,
+ *     MAX(IF(field.name = 'priority',
+ *         ans.value,
+ *         NULL)) AS `priority_desc`,
+ *     MAX(IF(field.name = 'priority',
+ *         ans.value_id,
+ *         NULL)) AS `priority_id` FROM
+ *     ost_form_entry entry
+ *         LEFT JOIN
+ *     ost_form_entry_values ans ON ans.entry_id = entry.id
+ *         LEFT JOIN
+ *     ost_form_field field ON field.id = ans.field_id
+ * WHERE
+ *     entry.object_type = 'T'
+ * GROUP BY entry.object_id;
+ *
  * Class OsTicketReader
  * @package Application\ImportBundle\OsTicket
  */
@@ -72,21 +95,18 @@ class OsTicketReader implements OsTicketReaderInterface
     public function getPeopleCount()
     {
         $query = 'SELECT count(staff_id) FROM ost_staff';
-        $stmt  = $this->getConnection()->prepare($query);
-        if ($stmt->execute() === false) {
-            throw new OsTicketReaderException('Unable to get staff count', $stmt->errorCode(), $stmt->errorInfo());
+        $staff_stmt = $this->getConnection()->prepare($query);
+        if ($staff_stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get staff count', $staff_stmt->errorCode(), $staff_stmt->errorInfo());
         }
-
-        $staff_count = (int)$stmt->fetchColumn();
 
         $query = 'SELECT count(id) FROM ost_user';
-        $stmt  = $this->getConnection()->prepare($query);
-        if ($stmt->execute() === false) {
-            throw new OsTicketReaderException('Unable to get users count', $stmt->errorCode(), $stmt->errorInfo());
+        $user_stmt = $this->getConnection()->prepare($query);
+        if ($user_stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get users count', $user_stmt->errorCode(), $user_stmt->errorInfo());
         }
 
-        $user_count = (int)$stmt->fetchColumn();
-        return $staff_count + $user_count;
+        return (int)$staff_stmt->fetchColumn() + (int)$user_stmt->fetchColumn();
     }
 
     /**
@@ -96,9 +116,9 @@ class OsTicketReader implements OsTicketReaderInterface
     {
         $query = 'SELECT * FROM ost_staff LIMIT :limit OFFSET :offset';
         $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
-        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find staff', $stmt->errorCode(), $stmt->errorInfo());
         }
@@ -113,9 +133,9 @@ class OsTicketReader implements OsTicketReaderInterface
     {
         $query = 'SELECT * FROM ost_user u LEFT JOIN ost_user_email e ON u.id = e.user_id LIMIT :limit OFFSET :offset';
         $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
-        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
         }
@@ -128,13 +148,11 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findTickets($limit, $offset)
     {
-        $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
-            . ' LIMIT :limit'
-            . ' OFFSET :offset';
+        $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id LIMIT :limit OFFSET :offset';
+        $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':limit',  $limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
 
-        $stmt = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
         if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find tickets', $stmt->errorCode(), $stmt->errorInfo());
         }
@@ -147,9 +165,11 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findMessages($ticket_id)
     {
-        $query = 'SELECT id, thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
+        $query = 'SELECT id, thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = :ticket_id';
         $stmt  = $this->getConnection()->prepare($query);
-        if ($stmt->execute($ticket_id) === false) {
+        $stmt->bindValue(':ticket_id', $ticket_id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find ticket messages', $stmt->errorCode(), $stmt->errorInfo());
         }
 
@@ -161,12 +181,11 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findMessageAttachments($message_id)
     {
-        $query = 'SELECT f.name, f.type, a.file_id  FROM ost_file f JOIN ost_ticket_attachment a '
-            . ' ON f.id = a.file_id'
-            . ' WHERE a.ref_id = ?';
+        $query = 'SELECT f.name, f.type, a.file_id FROM ost_file f JOIN ost_ticket_attachment a ON f.id = a.file_id WHERE a.ref_id = :message_id';
+        $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':message_id', $message_id, PDO::PARAM_INT);
 
-        $stmt = $this->getConnection()->prepare($query);
-        if ($stmt->execute(array((int)$message_id)) === false) {
+        if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find message attachments', $stmt->errorCode(), $stmt->errorInfo());
         }
 
@@ -178,9 +197,11 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findDepartmentById($id)
     {
-        $query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
+        $query = 'SELECT dept_name FROM ost_department WHERE dept_id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        if ($stmt->execute(array((int)$id)) === false) {
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find department', $stmt->errorCode(), $stmt->errorInfo());
         }
 
@@ -192,13 +213,11 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findUserEmailById($id)
     {
-        $query = 'SELECT address FROM ost_user_email e'
-            . ' LEFT JOIN ost_user u '
-            . ' ON e.user_id=u.id'
-            . ' WHERE u.id = ?';
+        $query = 'SELECT address FROM ost_user_email e LEFT JOIN ost_user u ON e.user_id = u.id WHERE u.id = :id';
+        $stmt  = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
 
-        $stmt = $this->getConnection()->prepare($query);
-        if ($stmt->execute(array((int)$id)) === false) {
+        if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find user email', $stmt->errorCode(), $stmt->errorInfo());
         }
 
@@ -210,9 +229,11 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findStaffEmailById($id)
     {
-        $query = 'SELECT email FROM ost_staff WHERE id = ?';
+        $query = 'SELECT email FROM ost_staff WHERE id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        if ($stmt->execute(array((int)$id)) === false) {
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find staff email', $stmt->errorCode(), $stmt->errorInfo());
         }
 
@@ -224,9 +245,11 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findTeamNameById($id)
     {
-        $query = 'SELECT name FROM ost_team WHERE id = ?';
+        $query = 'SELECT name FROM ost_team WHERE id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        if ($stmt->execute(array((int)$id)) === false) {
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find team name', $stmt->errorCode(), $stmt->errorInfo());
         }
 
@@ -238,9 +261,11 @@ class OsTicketReader implements OsTicketReaderInterface
      */
     public function findTimezoneById($id)
     {
-        $query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
+        $query = 'SELECT timezone FROM ost_timezone WHERE id = :id';
         $stmt  = $this->getConnection()->prepare($query);
-        if ($stmt->execute(array((int)$id)) === false) {
+        $stmt->bindValue(':id', $id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find timezone', $stmt->errorCode(), $stmt->errorInfo());
         }
 
@@ -250,13 +275,14 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getAttachmentData($file_id)
+    public function findAttachmentData($file_id)
     {
         $data  = '';
-        $query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = ?';
+        $query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = :file_id';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute(array($file_id));
-        if ($stmt->execute(array((int)$file_id)) === false) {
+        $stmt->bindValue(':file_id', $file_id, PDO::PARAM_INT);
+
+        if ($stmt->execute() === false) {
             throw new OsTicketReaderException('Unable to find attachment data', $stmt->errorCode(), $stmt->errorInfo());
         }
 

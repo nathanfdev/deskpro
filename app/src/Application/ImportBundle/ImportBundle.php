@@ -63,6 +63,7 @@ class ImportBundle extends Bundle
             'Application\\ImportBundle\\Command\\CheckExportCommand',
             'Application\\ImportBundle\\Command\\ExportCommand',
             'Application\\ImportBundle\\Command\\ImportCommand',
+            'Application\\ImportBundle\\Command\\ImportBatchCommand',
             'Application\\ImportBundle\\Command\\ResetCommand',
         );
 
