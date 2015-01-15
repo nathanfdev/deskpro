@@ -64,4 +64,18 @@ class PortalController extends AbstractController
             )
         );
     }
+
+    /**
+     * @Route("/login/reset-password", name="portal_reset_password")
+     */
+    public function requestPasswordResetAction(Request $request)
+    {
+        if ($this->isGranted('ROLE_USER')) {
+            return $this->redirectToRoute('portal_index');
+        }
+
+        return $this->render('Theme:Portal:request-password-reset.html.twig', array(
+            'auth_manager' => $this->get('dp_authentication_manager.user'),
+        ));
+    }
 }

@@ -1,4 +1,4 @@
-{% if not is_granted('ROLE_USER')  and auth_manager.isAuthVisible %}
+{% if not is_granted('ROLE_USER') and auth_manager.isAuthVisible %}
     <div class="small-form">
         <h1>Log in</h1>
 
@@ -25,7 +25,7 @@
 
                 {% if auth_manager.isForgotPasswordVisible %}
                     <div class="secondary-action">
-                        <a href="#">Forgot your password?</a>
+                        <a href="{{ path('portal_reset_password') }}">Forgot your password?</a>
                     </div>
                 {% endif %}
             </form>
