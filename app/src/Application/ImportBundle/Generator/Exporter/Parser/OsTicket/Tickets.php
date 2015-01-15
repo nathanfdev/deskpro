@@ -53,7 +53,7 @@ class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->os_ticket_reader->getTicketCount();
+        return $this->os_ticket_reader->getTicketsCount();
     }
 
     /**
@@ -196,7 +196,7 @@ class Tickets extends AbstractParser
     {
         $email = null;
         if ($message['thread_type'] === 'R' && $message['staff_id']) {
-            $email = $this->os_ticket_reader->findStaffEmailFromId($message['staff_id']);
+            $email = $this->os_ticket_reader->findStaffEmailById($message['staff_id']);
 
         } elseif ($message['thread_type'] === 'M' && $message['user_id']) {
             $email = $this->os_ticket_reader->findUserEmailById($message['user_id']);

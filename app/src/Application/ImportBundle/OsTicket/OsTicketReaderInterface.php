@@ -36,14 +36,20 @@ namespace Application\ImportBundle\OsTicket;
 interface OsTicketReaderInterface
 {
     /**
+     * Returns total count of people records
+     * todo batch support offset?
+     *
      * @return int
      */
     public function getPeopleCount();
 
     /**
+     * Returns total count of ticket records
+     * todo batch support offset?
+     *
      * @return int
      */
-    public function getTicketCount();
+    public function getTicketsCount();
 
     /**
      * @param int $limit
@@ -91,13 +97,13 @@ interface OsTicketReaderInterface
      * @param $id
      * @return mixed
      */
-    public function findStaffEmailFromId($id);
+    public function findStaffEmailById($id);
 
     /**
      * @param $id
      * @return mixed
      */
-    public function findTeamNameFromId($id);
+    public function findTeamNameById($id);
 
     /**
      * @param $ticket_id
@@ -109,7 +115,7 @@ interface OsTicketReaderInterface
      * @param $id
      * @return mixed
      */
-    public function findTimezoneFromId($id);
+    public function findTimezoneById($id);
 
     /**
      * @param $file_id

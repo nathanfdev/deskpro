@@ -75,8 +75,6 @@ class People extends AbstractParser
             $person
                 ->setDestination('person_' . $num)
                 ->setOid($num);
-
-            $collection->attach($person);
         }
 
         return $collection;
@@ -105,9 +103,10 @@ class People extends AbstractParser
                     $entity
                         ->setDestination('person_' . ($num + $offset))
                         ->setAsAgent(true)
+                        ->setName($person['firstname'] . $person['lastname'])
                         ->setFirstName($person['firstname'])
                         ->setLastName($person['lastname'])
-                        ->setTimezone($this->os_ticket_reader->findTimezoneFromId($person['timezone_id']))
+                        ->setTimezone($this->os_ticket_reader->findTimezoneById($person['timezone_id']))
                         ->setDateCreated(new DateTime($person['created']))
                         ->addEmail($person['email']);
 
@@ -116,6 +115,8 @@ class People extends AbstractParser
                 }
             }
         }
+
+        return $collection;
     }
 
     /**

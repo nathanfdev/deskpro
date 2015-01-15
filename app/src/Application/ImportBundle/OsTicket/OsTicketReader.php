@@ -55,11 +55,13 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getTicketCount()
+    public function getTicketsCount()
     {
         $query = 'SELECT count(ticket_id) FROM ost_ticket';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute();
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get tickets count', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchColumn();
     }
@@ -71,32 +73,20 @@ class OsTicketReader implements OsTicketReaderInterface
     {
         $query = 'SELECT count(staff_id) FROM ost_staff';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute();
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get staff count', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
         $staff_count = (int)$stmt->fetchColumn();
 
         $query = 'SELECT count(id) FROM ost_user';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute();
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to get users count', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
         $user_count = (int)$stmt->fetchColumn();
-
         return $staff_count + $user_count;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findTickets($limit, $offset)
-    {
-        $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
-            . ' LIMIT :limit'
-            . ' OFFSET :offset';
-
-        $stmt = $this->getConnection()->prepare($query);
-        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
-        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        $stmt->execute();
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
     /**
@@ -109,7 +99,9 @@ class OsTicketReader implements OsTicketReaderInterface
 
         $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        $stmt->execute();
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find staff', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -124,7 +116,42 @@ class OsTicketReader implements OsTicketReaderInterface
 
         $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
         $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
-        $stmt->execute();
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find users', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findTickets($limit, $offset)
+    {
+        $query = 'SELECT * FROM ost_ticket t LEFT JOIN ost_ticket__cdata c ON t.ticket_id = c.ticket_id'
+            . ' LIMIT :limit'
+            . ' OFFSET :offset';
+
+        $stmt = $this->getConnection()->prepare($query);
+        $stmt->bindValue(':limit',  (int)$limit,  PDO::PARAM_INT);
+        $stmt->bindValue(':offset', (int)$offset, PDO::PARAM_INT);
+        if ($stmt->execute() === false) {
+            throw new OsTicketReaderException('Unable to find tickets', $stmt->errorCode(), $stmt->errorInfo());
+        }
+
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findMessages($ticket_id)
+    {
+        $query = 'SELECT id, thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
+        $stmt  = $this->getConnection()->prepare($query);
+        if ($stmt->execute($ticket_id) === false) {
+            throw new OsTicketReaderException('Unable to find ticket messages', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -139,7 +166,9 @@ class OsTicketReader implements OsTicketReaderInterface
             . ' WHERE a.ref_id = ?';
 
         $stmt = $this->getConnection()->prepare($query);
-        $stmt->execute(array((int)$message_id));
+        if ($stmt->execute(array((int)$message_id)) === false) {
+            throw new OsTicketReaderException('Unable to find message attachments', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -151,7 +180,9 @@ class OsTicketReader implements OsTicketReaderInterface
     {
         $query = 'SELECT dept_name FROM ost_department WHERE dept_id = ?';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute(array($id));
+        if ($stmt->execute(array((int)$id)) === false) {
+            throw new OsTicketReaderException('Unable to find department', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchColumn();
     }
@@ -167,7 +198,9 @@ class OsTicketReader implements OsTicketReaderInterface
             . ' WHERE u.id = ?';
 
         $stmt = $this->getConnection()->prepare($query);
-        $stmt->execute(array($id));
+        if ($stmt->execute(array((int)$id)) === false) {
+            throw new OsTicketReaderException('Unable to find user email', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchColumn();
     }
@@ -175,11 +208,13 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findStaffEmailFromId($id)
+    public function findStaffEmailById($id)
     {
         $query = 'SELECT email FROM ost_staff WHERE id = ?';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute(array($id));
+        if ($stmt->execute(array((int)$id)) === false) {
+            throw new OsTicketReaderException('Unable to find staff email', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchColumn();
     }
@@ -187,11 +222,13 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findTeamNameFromId($id)
+    public function findTeamNameById($id)
     {
         $query = 'SELECT name FROM ost_team WHERE id = ?';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute(array($id));
+        if ($stmt->execute(array((int)$id)) === false) {
+            throw new OsTicketReaderException('Unable to find team name', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchColumn();
     }
@@ -199,23 +236,13 @@ class OsTicketReader implements OsTicketReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function findMessages($ticket_id)
-    {
-        $query = 'SELECT id, thread_type, staff_id, user_id, body, created FROM ost_ticket_thread WHERE ticket_id = ?';
-        $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute(array($ticket_id));
-
-        return $stmt->fetchAll(PDO::FETCH_ASSOC);
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findTimezoneFromId($id)
+    public function findTimezoneById($id)
     {
         $query = 'SELECT timezone FROM ost_timezone WHERE id = ?';
         $stmt  = $this->getConnection()->prepare($query);
-        $stmt->execute(array($id));
+        if ($stmt->execute(array((int)$id)) === false) {
+            throw new OsTicketReaderException('Unable to find timezone', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         return $stmt->fetchColumn();
     }
@@ -229,6 +256,9 @@ class OsTicketReader implements OsTicketReaderInterface
         $query = 'SELECT filedata FROM ost_file_chunk WHERE file_id = ?';
         $stmt  = $this->getConnection()->prepare($query);
         $stmt->execute(array($file_id));
+        if ($stmt->execute(array((int)$file_id)) === false) {
+            throw new OsTicketReaderException('Unable to find attachment data', $stmt->errorCode(), $stmt->errorInfo());
+        }
 
         $rows = $stmt->fetchAll(PDO::FETCH_ASSOC);
         foreach ($rows as $chunk) {

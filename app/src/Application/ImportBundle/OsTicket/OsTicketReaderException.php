@@ -25,31 +25,39 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\ImportBundle\OsTicket;
+
 /**
- * Orb
- *
- * @package Orb
- * @subpackage Service
- * @category Highrise
+ * Class OsTicketReaderException
+ * @package Application\ImportBundle\OsTicket
  */
-
-namespace Orb\Service\Zendesk;
-
-class ApiException extends \Exception
+class OsTicketReaderException extends \Exception
 {
-    const REQUEST_FAILED   = 1;
-    const INVALID_RESPONSE = 2;
-    const API_ERROR        = 3;
+    /**
+     * @var array
+     */
+    private $info;
 
-    /** @var string|null */
-    public $api_error_code;
-    /** @var string|null */
-    public $output;
-
-    public function __construct($message = "", $code = 0, $api__code = null, $output = null, \Exception $previous = null)
+    /**
+     * Constructor
+     *
+     * @param string $message
+     * @param int    $code
+     * @param array  $info
+     */
+    public function __construct($message, $code, array $info = null)
     {
-        parent::__construct($message, $code, $previous);
-        $this->output = $output;
-        $this->api_error_code = $api__code;
+        parent::__construct($message, $code);
+        $this->info = $info;
+    }
+
+    /**
+     * Returns error info
+     *
+     * @return array
+     */
+    public function getInfo()
+    {
+        return $this->info;
     }
 }
