@@ -46,10 +46,10 @@ class ApiException extends \Exception
     /** @var string|null */
     public $output;
 
-    public function __construct($message = "", $code = 0, $api__code = null, $output = null, \Exception $previous = null)
+    public function __construct($message = "", $code = 0, $api_error_code = null, $output = null, \Exception $previous = null)
     {
         parent::__construct($message, $code, $previous);
         $this->output = $output;
-        $this->api_error_code = $api__code;
+        $this->api_error_code = $api_error_code;
     }
 }
