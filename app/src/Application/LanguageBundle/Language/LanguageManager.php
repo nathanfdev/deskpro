@@ -137,6 +137,16 @@ class LanguageManager
      */
     public function getTranslator($lang = null)
     {
+        if (!$lang) {
+            if (!$lang = $this->language_stack->getActive()) {
+                $lang = $this->language_stack->getDefaultLanguage();
+            }
+        } elseif (!$lang instanceof Language) {
+            $lang = $this->getLanguage($lang);
+        }
+
+        $this->translate->setLanguage($lang);
+
         return $this->translate;
     }
 }
