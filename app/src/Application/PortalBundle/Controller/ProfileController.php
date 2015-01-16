@@ -57,6 +57,7 @@ class ProfileController extends AbstractController
             $context = new CreatePersonContext('gateway.person');
             $this->getPersonFactory()->saveNewPerson($person, $context);
             $this->addFlash('success', 'thank.you.for.registering');
+            $request->getSession()->set('last_username', $person->getPrimaryEmail());
 
             return $this->redirectToRoute('portal_login');
         }

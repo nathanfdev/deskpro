@@ -34,6 +34,7 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\DeskPRO\Entity\CustomDataTicket;
 use Application\FormBundle\Form\FormFieldManager;
 use Doctrine\ORM\EntityManager;
@@ -70,6 +71,15 @@ class CustomDataPersonType extends AbstractType
         $config = $form->getConfig();
         /** @var \Application\DeskPRO\Entity\CustomDefTicket $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
+
+        if (!$custom_data) {
+            $custom_data = new CustomDataPerson();
+            $event->setData($custom_data);
+        }
+
+        if (!$custom_data->getData()) {
+            $custom_data->setData($custom_data_field->default_value);
+        }
 
         list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));
         $form->add($value_name, $form_type, $options);

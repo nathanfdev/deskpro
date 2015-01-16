@@ -35,12 +35,14 @@
 namespace Application\FormBundle\Form\Type;
 
 
+use Application\DeskPRO\Entity\CustomDataPerson;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\LanguageBundle\Language\LanguageManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\NotBlank;
 
@@ -102,7 +104,7 @@ class PersonRegistrationType extends AbstractType
         $builder->addEventListener(FormEvents::PRE_SET_DATA, function(FormEvent $event) use ($field_manager) {
             foreach ($field_manager->getAvailablePersonFields() as $field_def) {
                 if (!$field_def->is_enabled) {
-                    return false;
+                    continue;
                 }
 
                 $id = $field_def->getId();
