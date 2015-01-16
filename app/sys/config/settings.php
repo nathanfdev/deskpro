@@ -298,6 +298,12 @@
     'core.deskpro_source_enabled' => true,
 
     /**
+     * True if we always replace local name (fname, lname, name) with usersource name on every login if usersource provides one.
+     * False means we only do this on first login with that usersource.
+     */
+    'core.usersource_login_always_update_name' => true,
+
+    /**
      * True to have links from chat intercepted and sent through the security page
      */
     'core.agent_intercept_external_link' => false,
@@ -416,19 +422,6 @@
     'core.agent_translate_debug' => false,
     'core.agent_enable_kb_shortcuts' => true,
 
-    /**#@+
-     * If agents can create various labels
-     */
-    'labels.downloads.agent_can_create'     => true,
-    'labels.feedback.agent_can_create'      => true,
-    'labels.articles.agent_can_create'      => true,
-    'labels.news.agent_can_create'          => true,
-    'labels.organizations.agent_can_create' => true,
-    'labels.people.agent_can_create'        => true,
-    'labels.tickets.agent_can_create'       => true,
-    'labels.chat.agent_can_create'          => true,
-    /**#@-*/
-
     ####################################################################################################################
     # core_tickets
     ####################################################################################################################
@@ -514,7 +507,7 @@
 
     'core_tickets.default_ticket_reverse_order' => true,
 
-    'core_tickets.work_hours' => 'a:8:{s:11:"active_time";s:3:"all";s:10:"start_hour";i:9;s:12:"start_minute";i:0;s:8:"end_hour";i:17;s:10:"end_minute";i:0;s:4:"days";a:5:{i:1;b:1;i:2;b:1;i:3;b:1;i:4;b:1;i:5;b:1;}s:8:"timezone";N;s:8:"holidays";a:0:{}}',
+    'core_tickets.work_hours' => 'a:7:{s:8:"timezone";s:3:"UTC";s:10:"start_hour";i:9;s:9:"start_min";i:0;s:8:"end_hour";i:17;s:7:"end_min";i:0;s:8:"holidays";a:0:{}s:9:"work_days";a:5:{i:0;i:1;i:1;i:2;i:2;i:3;i:3;i:4;i:4;i:5;}}',
 
     /**
      * The account to use when forwarding messages out

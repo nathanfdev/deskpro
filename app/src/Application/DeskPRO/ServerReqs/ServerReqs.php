@@ -259,6 +259,20 @@ class ServerReqs
                 'readMore'       => App::get('deskpro.service_urls')->get('dp.kb.install.error_magic_quotes'),
                 'recommendation' => true,
             ),
+
+            'imap_check' => array(
+                'description'    => 'Checking for the <a href="http://php.net/manual/en/book.imap.php">IMAP</a> extension',
+                'error'          => 'We recommend installing the IMAP extension so you can use IMAP mail functions.',
+                'readMore'       => '',
+                'recommendation' => true,
+            ),
+
+            'soap_check' => array(
+                'description'    => 'Checking for the <a href="http://php.net/manual/en/book.soap.php">SOAP</a> extension',
+                'error'          => 'We recommend installing the SOAP extension so you can use MS Exchange.',
+                'readMore'       => '',
+                'recommendation' => true,
+            ),
         );
 
         $recommendOpcache = version_compare(phpversion(), '5.5.0', '<')

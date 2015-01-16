@@ -723,66 +723,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	//#################################################################
 
 	_initArticleArea: function() {
-		var loader = this.wrapper.find('.article-loading');
 
-		loader.show();
-
-		var iframe = this.wrapper.find('.article-iframe');
-		var iframeLoad = function() {
-			if (this.contentWindow && this.contentWindow.document) {
-				loader.hide();
-				$(this).css({
-					overflow: 'hidden',
-					border: 'none',
-					padding: 0,
-					margin: 0
-				});
-				$(this).height($(this.contentWindow.document).height());
-
-				var doc = this.contentWindow.document, iframeWindow = this.contentWindow;
-
-				var wheel = function(e) {
-					e = e || iframeWindow.event;
-					var scroller = iframe.closest('.with-scrollbar').get(0), proxyE;
-					if (scroller && scroller.dispatchEvent) {
-						try {
-							proxyE = document.createEvent('MouseWheelEvent');
-							proxyE.initMouseWheelEvent(
-								e.type, e.bubbles, e.cancelable, window, e.detail,
-								e.screenX, e.screenY, e.clientX, e.clientY,
-								e.button, null, '', e.wheelDelta
-							);
-						} catch (e) {
-							proxyE = null;
-						}
-
-						if (!proxyE) {
-							proxyE = document.createEvent('MouseEvent');
-							proxyE.initMouseEvent(
-								e.type, e.bubbles, e.cancelable, window, e.detail,
-								e.screenX, e.screenY, e.clientX, e.clientY,
-								e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button,
-								null
-							);
-						}
-						iframe.closest('.with-scrollbar').get(0).dispatchEvent(proxyE);
-					} else {
-						proxyE = document.createEventObject(e);
-						proxyE.view = window;
-						iframe.closest('.with-scrollbar').get(0).fireEvent("onmousewheel", proxyE);
-					}
-				};
-				if (doc.addEventListener){
-					doc.addEventListener('DOMMouseScroll', wheel, false);
-					doc.addEventListener('mousewheel', wheel, false);
-				} else {
-					doc.onmousewheel = wheel;
-				}
-			}
-		};
-
-		iframe.on('load', iframeLoad);
-		iframeLoad.call(iframe);
 	},
 
 	//#################################################################

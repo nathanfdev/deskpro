@@ -1766,19 +1766,7 @@ class TicketSearchController extends AbstractController
 
         foreach ($tickets as $ticket) {
             $ticket->unlockTicket();
-
-            $lock_cm = new ClientMessage();
-            $lock_cm->fromArray(array(
-                'channel' => 'agent-notification.tickets.unlocked',
-                'data' => array(
-                    'ticket_id' => $ticket['id'],
-                    'agent_id' => $ticket['id'],
-                ),
-                'created_by_client' => 0,
-            ));
-
             $this->em->persist($ticket);
-            $this->em->persist($lock_cm);
         }
 
         $this->em->flush();

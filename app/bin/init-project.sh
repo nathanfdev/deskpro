@@ -24,10 +24,10 @@ echo ".. done"
 echo ">> Installing web dependencies"
 cd $DIR_ROOT/web
 npm install --save
-bower install --allow-root
+bower install --config.interactive=false --allow-root
 echo ".. done"
 
 echo ">> Building web assets"
-gulp prod
+gulp
 echo ".. done"
 echo

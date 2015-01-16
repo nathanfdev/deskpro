@@ -559,13 +559,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		var datacounts = rawdata.counts;
 
 		var viewingFilterId = null;
-		var refreshUrl = null;
+		var viewingFilter = null;
 		if (this.listPage && this.listPage.meta) {
 			if (this.listPage.meta.filter_id) {
+				viewingFilter  = this.listPage;
 				viewingFilterId = this.listPage.meta.filter_id;
-			}
-			if (this.listPage.meta.refreshUrl) {
-				refreshUrl = this.listPage.meta.refreshUrl;
 			}
 		}
 
@@ -593,8 +591,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				this.setFilterCount(filterId, newCount);
 
 				// If we are currently viewing this filter that is out of date, we need to refresh it now
-				if (viewingFilterId == filterId && refreshUrl) {
-					DeskPRO_Window.runPageRoute('listpane:' + refreshUrl, {isBackgroundLoad: true});
+				if (viewingFilterId == filterId) {
+					viewingFilter.queuePostChangeEvent(function() {
+						viewingFilter.refreshCursor(null, true);
+					});
 				}
 			}
 		}, this);
@@ -615,7 +615,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 				// If we are currently viewing this filter that is out of date, we need to refresh it now
 				if (viewingFilterId == filterId && refreshUrl) {
-					DeskPRO_Window.runPageRoute('listpane:' + refreshUrl, {isBackgroundLoad: true});
+					viewingFilter.queuePostChangeEvent(function() {
+						viewingFilter.refreshCursor(null, true);
+					});
 				}
 			}
 		}, this);

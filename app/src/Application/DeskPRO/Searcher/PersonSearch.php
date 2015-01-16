@@ -500,7 +500,7 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_CONTACT_PHONE:
 
-                    if (is_array($choice)) $choice = $choice['phone'];
+                    if (is_array($choice) && isset($choice['phone'])) $choice = $choice['phone'];
 
                     $choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
                     $joins[] = array(
@@ -513,7 +513,7 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_CONTACT_ADDRESS:
 
-                    if (is_array($choice)) $choice = $choice['address'];
+                    if (is_array($choice) && isset($choice['address'])) $choice = $choice['address'];
 
                     $joins[] = array(
                         'people_contact_data',
@@ -525,7 +525,7 @@ class PersonSearch extends SearcherAbstract
 
                 case self::TERM_CONTACT_IM:
 
-                    if (is_array($choice)) $choice = $choice['im'];
+                    if (is_array($choice) && isset($choice['im'])) $choice = $choice['im'];
 
                     $joins[] = array(
                         'people_contact_data',
@@ -633,6 +633,10 @@ class PersonSearch extends SearcherAbstract
 
                             if (is_array($choice)) {
                                 $choice = array_pop($choice);
+                            }
+
+                            if ($choice === null){
+                                $choice = 'DP_NO_SELECTION';
                             }
 
                             $field = 'custom_data_person_'.$join_id.'.'.$search_type;

@@ -559,6 +559,35 @@
 .list-listing .row-item.no-check .top-row {
 	left: 5px;
 }
+.list-listing .row-item .sub-items-link {
+  font-size: 11px;
+  background: #eee;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  padding: 1px 3px;
+  line-height: 100%;
+  cursor: pointer;
+  float: right;
+  position: relative;
+  top: 7px;
+  right: 5px;
+
+  &:hover {
+	color: #000;
+  }
+}
+.list-listing .row-item.single-row.sub-item {
+  padding:0;
+  background: #eee;
+
+  .top-row { padding: 3px 21px 3px 21px; }
+  .top-row .top-row-left .obj-id { font-size: 11px; padding: 0 1px 0 1px; }
+  .top-row .top-row-left h3 a { font-size: 11px; font-weight: normal; }
+  .top-row .top-row-right {
+	background: transparent;
+	padding-right: 21px;
+  }
+}
 .list-listing .row-item.single-row .top-row {
 	position: relative;
 	top: 0;

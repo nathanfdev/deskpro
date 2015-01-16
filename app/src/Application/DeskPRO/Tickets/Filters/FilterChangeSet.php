@@ -59,12 +59,18 @@ class FilterChangeSet
      */
     private $changed_filters  = array();
 
-    public function __construct(Ticket $ticket, $state_id, array $affected_filters, array $changed_filters)
+    /**
+     * @var array
+     */
+    private $field_versions = array();
+
+    public function __construct(Ticket $ticket, $state_id, array $affected_filters, array $changed_filters, array $field_versions)
     {
         $this->ticket           = $ticket;
         $this->state_id         = $state_id;
         $this->affected_filters = $affected_filters;
         $this->changed_filters  = $changed_filters;
+        $this->field_versions   = $field_versions;
     }
 
 
@@ -85,6 +91,13 @@ class FilterChangeSet
         return $this->changed_filters;
     }
 
+    /**
+     * @return array
+     */
+    public function getFieldVersions()
+    {
+        return $this->field_versions;
+    }
 
     /**
      * @return int

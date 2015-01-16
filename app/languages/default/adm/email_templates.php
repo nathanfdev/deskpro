@@ -67,6 +67,8 @@
     'adm.email_templates.user_account'                                => 'Account Emails',
     'adm.email_templates.emails_user_register-welcome_title'          => 'Welcome Email',
     'adm.email_templates.emails_user_register-welcome_desc'           => 'Email sent to a user after they have registered.',
+    'adm.email_templates.emails_user_register-welcome-byagent_title'  => 'Welcome Email (By Agent)',
+    'adm.email_templates.emails_user_register-welcome-byagent_desc'   => 'Email sent to a user after an agent has created an account for them.',
     'adm.email_templates.emails_user_ticket-new-validate-email_title' => 'Validation Required',
     'adm.email_templates.emails_user_ticket-new-validate-email_desc'  => 'Email sent to a user after they have registered to tell them they must validate their email address.',
     'adm.email_templates.emails_user_reset-password_title'            => 'Reset Password',

@@ -75,8 +75,8 @@
 									<option value="{{ ng_var('cat.id') }}" ng-repeat="cat in TicketCats.cat_parent_list">{{ ng_var('cat.title') }}</option>
 								</select>
 							<span class="help-block">
-								Choose the category selected by default on the new ticket form (for both agents and users). This default will
-								also be used in the email gateway.
+								Choose the category selected by default on new ticket forms (for both agents and users). To set a value
+								for tickets created via email, you should use <a href="{{ ng_href('tickets.triggers', "{type: 'newticket'}") }}">triggers</a>.
 							</span>
 							</div>
 						</div>

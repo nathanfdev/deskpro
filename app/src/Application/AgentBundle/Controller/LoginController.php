@@ -108,6 +108,9 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
                     }
 
                     $this->db->delete('tmp_data', array('id' => $code_data->getId()));
+
+                    // Delete old sessions for this user
+                    $this->db->delete('sessions', array('person_id' => $person->getId()));
                 } else {
                     return $this->render('AgentBundle:Login:reset-password.html.twig', array(
                         'reset_code'    => $this->in->getString('reset_code'),

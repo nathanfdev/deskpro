@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Exception\ValidationException;
 use Application\DeskPRO\Validator\ViolationApiRenderer;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Symfony\Component\Form\Form;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\Security\Core\Exception\AccessDeniedException;
@@ -632,6 +633,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             $message->setTemplate('DeskPRO:emails_user:comment-approved.html.twig', array(
                 'comment' => $comment
             ));
+            $message->enableQueueHint();
             $this->container->getMailer()->send($message);
         }
 
@@ -654,6 +656,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
             $message->setTemplate('DeskPRO:emails_user:comment-deleted.html.twig', array(
                 'comment' => $comment
             ));
+            $message->enableQueueHint();
             $this->container->getMailer()->send($message);
         }
     }
@@ -687,6 +690,14 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
                 'error_code' => 403,
                 'error_message' => $e->getMessage() ?: 'Access Denied',
             ), 404);
+        } else {
+            KernelErrorHandler::logException($e);
+            return $this->createApiResponse(array(
+                'error_code'     => 500,
+                'error_message'  => $e->getMessage(),
+                'exception_code' => $e->getCode(),
+                'exception_type' => get_class($e),
+            ), 500);
         }
 
         return null;

@@ -10,7 +10,14 @@
 	<td class="col-<%- field %>">
 		<div class="cell-value">
 		<% if (field == 'subject') { %>
-			<span class="prop-val"><span class="obj-id">#<%= ticket_display.id %></span> <span class="obj-link"><%- ticket_display.subject %></span></span>
+			<span class="prop-val">
+                <span class="obj-id">#<%= ticket_display.id %></span>
+                <span class="obj-link"
+                      ng-mouseenter="$emit('tickets.quick_actions.show', $event, ticket, 900)"
+                      ng-mouseleave="$emit('tickets.quick_actions.hide')">
+                    <%- ticket_display.subject %>
+                </span>
+            </span>
 		<% } %>
 		<% if (field == 'user') { %>
 			<span class="prop-val" title="<%- ticket_display.person.primary_email.email %>">

@@ -584,6 +584,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		if (this.pauseSend) {
 			window.setTimeout(this.submit.bind(this), 250);
+			return;
 		}
 
 		this.getEl('action').val(this.getEl('reply_as_type').data('type'));
@@ -1167,9 +1168,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 					lastH = ed.height();
 					self.doScrollBottom = true;
 					window.setTimeout(function() {
-						if (self.page) {
-							self.page.updateUi();
-						}
+						self.updateUi();
 					}, 50);
 				}
 			});
@@ -1211,13 +1210,70 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 							var personId = self.getEl('user_searchbox').find('input.person-id').val() || 0;
 							self.pauseSend = true
 							$.ajax({
-								url: BASE_URL + 'agent/tickets/0/get-snippet/' + snippetId,
-								dataType: 'text',
-								data: {person_id: personId},
+								url: BASE_URL + 'agent/text-snippets/tickets/' + snippetId + '.json',
+								dataType: 'json',
 								complete: function () {
 									self.pauseSend = false;
 								},
 								success: function (data) {
+
+									var snippet = data.snippet;
+									var ticketLangId = self.getEl('value_form').find('.language_id').val();
+									var snippetId = snippet.id;
+									var snippetCode = snippet.snippet;
+
+									var agentText;
+									var defaultText;
+									var wantText;
+									var useText;
+									var result;
+
+									Array.each(snippetCode, function(info) {
+										if (info.value) {
+											if (info.language_id == ticketLangId) {
+												wantText = info.value;
+											}
+											if (info.language_id == DESKPRO_PERSON_LANG_ID) {
+												agentText = info.value;
+											}
+											if (info.language_id == DESKPRO_DEFAULT_LANG_ID) {
+												defaultText = info.value;
+											}
+											useText = info.value;
+										}
+									});
+
+
+									if (wantText) {
+										useText = wantText;
+									} else if (agentText) {
+										useText = agentText;
+									} else if (defaultText) {
+										useText = defaultText;
+									}
+
+									try {
+										var tpl = twig({
+											data: useText,
+											strict_variables: true
+										});
+										result = tpl.render({
+											ticket: {
+												person: self.meta.person_api_data
+											}
+										}, {
+											strict_variables: true
+										});
+										if (!result) {
+											result = useText;
+										}
+									} catch(e) {
+										console.log("Snippet render failed: %o", e);
+										result = useText;
+									}
+
+									var data = result;
+
 									var el = api.$editor.find('.editor-inserting-var.snippet-' + snippetId);
 									data = $('<div>' + data + '</div>');
 
@@ -1280,6 +1336,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 
 		var self = this;
 
+
 		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
 			positionMode: this.meta.isPopover ? 'over' : 'side',
 			onBeforeOpen: function() {
@@ -1289,7 +1346,6 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Orb.Class({
 				}
 			},
 			onSnippetClick: function(info) {
-
 				var ticketLangId = self.getEl('value_form').find('.language_id').val();
 				if (!ticketLangId) {
 					ticketLangId = info.language_id == DESKPRO_DEFAULT_LANG_ID;

@@ -10,6 +10,8 @@
 			<option ng-if="operators.indexOf('not_isset') !== -1" value="not_isset">does not exist</option>
 			<option ng-if="operators.indexOf('is') !== -1" value="is">is</option>
 			<option ng-if="operators.indexOf('not') !== -1" value="not">is not</option>
+			<option ng-if="operators.indexOf('touched') !== -1" value="nottouched">was set during this event</option>
+			<option ng-if="operators.indexOf('nottouched') !== -1" value="nottouched">was not set during this event</option>
 			<option ng-if="operators.indexOf('contains') !== -1" value="contains">contains</option>
 			<option ng-if="operators.indexOf('notcontains') !== -1" value="notcontains">does not contain</option>
 			<option ng-if="operators.indexOf('is_regex') !== -1" value="is_regex">matches regex</option>
@@ -22,6 +24,6 @@
 			<option ng-if="operators.indexOf('lt') !== -1" value="lt">&lt;</option>
 			<option ng-if="operators.indexOf('lte') !== -1" value="lte">&lt;=</option>
 		</select>
-		<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset'" />
+		<input type="text" class="form-control" ng-model="model.value" ng-hide="model.op == 'changed' || model.op == 'changed_to' || model.op == 'changed_from' || model.op == 'isset' || model.op == 'not_isset' || model.op == 'touched' || model.op == 'nottouched'" />
 	</div>
 </dp-optionbuilder-row>
