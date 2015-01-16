@@ -248,6 +248,8 @@ class FormFieldManager
             $constraints[] = new Length($opts);
         }
 
+        $options['help'] = $field_type->getRealDescription();
+
         // regex
         if ($regex = $field_type->getRegex($isAgent)) {
             $constraints[] = new Regex(array('pattern' => Strings::getInputRegexPattern($regex)));

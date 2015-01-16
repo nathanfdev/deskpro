@@ -63,6 +63,41 @@
 {% endblock ticket_message_attachment_collection_widget %}
 
 
+{# DATES #}
+{% block datetime_widget -%}
+    {% if widget == 'single_text' %}
+        {{- block('form_widget_simple') -}}
+    {% else -%}
+        <div {{ block('widget_container_attributes') }}>
+            {{- form_errors(form.date) -}}
+            {{- form_errors(form.time) -}}
+            {{- form_widget(form.date) -}}
+            {{- form_widget(form.time) -}}
+        </div>
+    {%- endif %}
+    {% if form.vars.help %}
+        <small class="help">{{ form.vars.help }}</small>
+    {% endif %}
+{%- endblock datetime_widget %}
+
+{% block date_widget -%}
+    {% if widget == 'single_text' %}
+        {{- block('form_widget_simple') -}}
+    {% else -%}
+        <div {{ block('widget_container_attributes') }}>
+            {{- date_pattern|replace({
+            '{{ year }}':  form_widget(form.year),
+            '{{ month }}': form_widget(form.month),
+            '{{ day }}':   form_widget(form.day),
+            })|raw -}}
+        </div>
+    {%- endif %}
+    {% if form.vars.help %}
+        <small class="help">{{ form.vars.help }}</small>
+    {% endif %}
+{%- endblock date_widget %}
+
+
 {# DISPLAY HTML #}
 {% block deskpro_display_html_widget %}
 {% set value = 'html' %}
@@ -111,6 +146,9 @@ HEIRARCHY
         {{- block('deskpro_heirarchical_choice_widget_expanded') -}}
     {% else %}
         {{- block('deskpro_heirarchical_choice_widget_collapsed') -}}
+    {% endif %}
+    {% if form.vars.help %}
+        <small class="help">{{ form.vars.help }}</small>
     {% endif %}
 {% endblock %}
 
@@ -174,6 +212,9 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
         {{- block('deskpro_custom_field_choice_widget_expanded') -}}
     {% else %}
         {{- block('deskpro_custom_field_choice_widget_collapsed') -}}
+    {% endif %}
+    {% if form.vars.help %}
+        <small class="help">{{ form.vars.help }}</small>
     {% endif %}
 {% endblock %}
 
