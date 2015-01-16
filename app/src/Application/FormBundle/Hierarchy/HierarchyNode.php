@@ -52,11 +52,10 @@ class HierarchyNode extends BaseNode
 
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
-            if (count($node)) {
-                $choices[(string)$node] = $node->getChoices();
-            } else {
-                $nodeId = $this->hierarchy->getNodeId($node);
-                $choices[$nodeId] = $nodeId;
+            $nodeId = $this->hierarchy->getNodeId($node);
+            $choices[$nodeId] = $nodeId;
+            foreach ($node->getChoices() as $id => $nid) {
+                $choices[$id] = $nid;
             }
         }
 
@@ -74,11 +73,10 @@ class HierarchyNode extends BaseNode
 
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
-            if (count($node)) {
-                $labels[(string)$node] = $node->getLabels();
-            } else {
-                $nodeId = $this->hierarchy->getNodeId($node);
-                $labels[$nodeId] = (string) $node;
+            $nodeId = $this->hierarchy->getNodeId($node);
+            $labels[$nodeId] = (string)$node;
+            foreach ($node->getLabels() as $id => $nl) {
+                $labels[$id] = $nl;
             }
         }
 
