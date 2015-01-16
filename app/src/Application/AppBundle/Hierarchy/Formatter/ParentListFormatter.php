@@ -32,41 +32,25 @@
  * @subpackage
  */
 
-namespace Application\FormBundle\Form\Type;
+namespace Application\AppBundle\Hierarchy\Formatter;
 
-use Application\FormBundle\Form\DataTransformer\EntityToIdTransformer;
-use Application\FormBundle\Hierarchy\HierarchyGenerator;
-use Doctrine\ORM\EntityManager;
-use Symfony\Component\Form\AbstractType;
-use Symfony\Component\Form\FormBuilderInterface;
-use Symfony\Component\OptionsResolver\Options;
-use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\NotNull;
 
-class DepartmentType extends AbstractType
+use Application\AppBundle\Hierarchy\HierarchyNode;
+
+class ParentListFormatter extends AbstractFormatter
 {
-    public function getName()
+    /**
+     * {@inheritdoc}
+     */
+    public function format(HierarchyNode $node)
     {
-        return 'deskpro_department';
-    }
+        $formatted = '';
 
-    public function getParent()
-    {
-        return 'entity_hierarchy';
-    }
+        foreach($node->getParents() as $parent) {
+            $formatted .= sprintf('%s > ', $parent->getData()->title);
+        }
 
-    public function setDefaultOptions(OptionsResolverInterface $resolver)
-    {
-        $resolver->setDefaults(array(
-            'choice_list' => function (Options $options) {
-                /** @var \Application\FormBundle\Hierarchy\HierarchyGenerator $hierarchy_generator */
-                $hierarchy_generator = $options['hierarchy_generator'];
-
-                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'])->getChoiceList();
-            }
-        ));
-
-        $resolver->setRequired(array('person'));
+        return $formatted . sprintf("%s", $node->getData()->title);
     }
 }
  

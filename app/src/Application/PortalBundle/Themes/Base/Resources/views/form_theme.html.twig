@@ -152,10 +152,9 @@ HEIRARCHY
                     {% if def.id is defined %} data-id="{{ def.id }}"{% endif %}
                     {% if def.children is defined and def.children|length > 0 %} disabled="disabled"{% endif %}
                     {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
+                    data-name="{{ choice.label|trans({}, translation_domain) }}"
                     value="{{ choice.value }}"
-            >
-                {{ choice.label|trans({}, translation_domain) }}
-            </option>
+            >{% if def.parent is defined and def.parent is not null %}&mdash; {% endif %}{% if def.depth > 1 %}{% for i in range(2, def.depth) %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}{% endif %}{{ choice.label|trans({}, translation_domain) }}</option>
         {%- endif -%}
     {% endfor %}
 {%- endblock deskpro_heirarchical_choice_widget_options %}
@@ -182,8 +181,11 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div data-heirarcy="" {{ block('widget_container_attributes') }}>
         {%- for child in form %}
+            {% if form.vars.choices[loop.index0].data|length == 0 %}
             {{- form_widget(child) -}}
             {{- form_label(child) -}}
+                <br>
+            {% endif %}
         {% endfor -%}
     </div>
 {% endblock deskpro_custom_field_choice_widget_expanded %}
@@ -227,3 +229,64 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 {###
 END HEIRARCHY
 ###}
+
+
+
+
+
+{% block entity_hierarchy_widget %}
+    {% if expanded %}
+        {{- block('entity_hierarchy_expanded') -}}
+    {% else %}
+        {{- block('entity_hierarchy_collapsed') -}}
+    {% endif %}
+{% endblock %}
+
+
+{% block entity_hierarchy_expanded -%}
+    <div data-heirarcy="" {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            {% if form.vars.choices[loop.index0].data|length == 0 %}
+                {{- form_widget(child) -}}
+                {{- form_label(child) -}}
+                <br>
+            {% endif %}
+        {% endfor -%}
+    </div>
+{% endblock entity_hierarchy_expanded %}
+
+{% block entity_hierarchy_collapsed -%}
+    {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+    <select dp-select="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {% if empty_value is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+        {%- endif %}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {{- block('entity_hierarchy_widget_options') -}}
+            {% if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif %}
+        {%- endif -%}
+        {% set options = choices -%}
+        {{- block('entity_hierarchy_widget_options') -}}
+    </select>
+{%- endblock entity_hierarchy_collapsed %}
+
+{% block entity_hierarchy_widget_options -%}
+    {% for group_label, choice in options %}
+        {%- if choice is not iterable -%}
+            {% set def = choice.data %}
+            <option
+                    {% if def.parent is not null %} data-parent="{{ def.parent.data.id }}"{% endif %}
+                    {% if def.data.id is defined %} data-id="{{ def.data.id }}"{% endif %}
+                    {% if def|length > 0 %} disabled="disabled"{% endif %}
+                    {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
+                    data-name="{{ choice.label|trans({}, translation_domain) }}"
+                    value="{{ choice.value }}"
+                    >{% if def.depth > 1 %}{% for i in range(2, def.depth) %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}{% endif %}{% if def.depth %}&mdash; {% endif %}{{ choice.label|trans({}, translation_domain) }}</option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock entity_hierarchy_widget_options %}

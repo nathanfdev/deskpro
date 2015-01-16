@@ -595,7 +595,6 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
             $this->setModelField('timezone', 'UTC');
         }
 
-        $this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
         $this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
         $this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
         $this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
@@ -644,7 +643,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
 
     public function getCustomDataCollection()
     {
-        return $this->cdc = $this->cdc ? : new CustomDataCollection($this->custom_data ? $this->custom_data : new ArrayCollection(), $this);
+        return $this->cdc = ($this->cdc ? : new CustomDataCollection($this->custom_data ? $this->custom_data : new ArrayCollection(), $this));
     }
 
     /**
@@ -1543,6 +1542,9 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function addCustomData(CustomDataPerson $data)
     {
+        if (!$this->custom_data) {
+            $this->custom_data = new ArrayCollection();
+        }
         $this->custom_data->add($data);
         $data->person = $this;
         $this->_onPropertyChanged('custom_data', $this->custom_data, $this->custom_data);

@@ -34,39 +34,48 @@
 
 namespace Application\FormBundle\Form\Type;
 
-use Application\FormBundle\Form\DataTransformer\EntityToIdTransformer;
+
+use Application\FormBundle\Form\DataTransformer\HierarchyNodeTransformer;
 use Application\FormBundle\Hierarchy\HierarchyGenerator;
-use Doctrine\ORM\EntityManager;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
-use Symfony\Component\Validator\Constraints\NotNull;
 
-class DepartmentType extends AbstractType
+class EntityHeirarchyType extends AbstractType
 {
+    /**
+     * @var HierarchyGenerator
+     */
+    private $hierarchy_generator;
+
+    public function __construct(HierarchyGenerator $hierarchy_generator)
+    {
+        $this->hierarchy_generator = $hierarchy_generator;
+    }
+
+    public function buildForm(FormBuilderInterface $builder, array $options)
+    {
+        $builder->addModelTransformer(new HierarchyNodeTransformer($options['choice_list'], $options['expanded']));
+    }
+
     public function getName()
     {
-        return 'deskpro_department';
+        return 'entity_hierarchy';
     }
 
     public function getParent()
     {
-        return 'entity_hierarchy';
+        return 'choice';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'choice_list' => function (Options $options) {
-                /** @var \Application\FormBundle\Hierarchy\HierarchyGenerator $hierarchy_generator */
-                $hierarchy_generator = $options['hierarchy_generator'];
-
-                return $hierarchy_generator->generateTicketDepartmentsHierarchy($options['person'])->getChoiceList();
-            }
+            'hierarchy_generator' => $this->hierarchy_generator
         ));
 
-        $resolver->setRequired(array('person'));
+        $resolver->setRequired('choice_list');
     }
 }
  

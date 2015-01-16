@@ -36,6 +36,7 @@ namespace Application\FormBundle\Form\Type;
 
 use Doctrine\ORM\EntityRepository;
 use Symfony\Component\Form\AbstractType;
+use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class ProductType extends AbstractType
@@ -47,23 +48,18 @@ class ProductType extends AbstractType
 
     public function getParent()
     {
-        return 'deskpro_heirarchical_entity';
+        return 'entity_hierarchy';
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'class'         => 'Application\\DeskPRO\\Entity\\Product',
-            'property'      => 'title',
-            'required' => true,
-            'empty_data'    => null,
-            'query_builder' => function (EntityRepository $repo) {
-                    return $repo
-                        ->createQueryBuilder('p')
-                        ->select('p')
-                        ->addOrderBy('p.display_order')
-                    ;
-                }
+            'choice_list' => function(Options $options) {
+                /** @var \Application\FormBundle\Hierarchy\HierarchyGenerator $hierarchy_generator */
+                $hierarchy_generator = $options['hierarchy_generator'];
+
+                return $hierarchy_generator->generateTicketProductsHierarchy()->getChoiceList();
+            }
         ));
     }
 }

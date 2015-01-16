@@ -85,7 +85,7 @@ class TicketsController extends AbstractController
                 // We don't continue here if they just clicked the "add more attachments" button
 
                 // TODO: fire an event (Ticket::ADD_MESSAGE)
-                $this->getTicketsRepo()->saveNewMessage($ticket, $message);
+                $this->getRepo('DeskPRO:Ticket')->saveNewMessage($ticket, $message);
 
                 $this->addFlash('success', 'ticket.successful_new_reply.translated');
 
@@ -120,7 +120,7 @@ class TicketsController extends AbstractController
         if ($form->isValid()) {
 
             // TODO: fire an event (Ticket::EDIT)
-            $this->getTicketsRepo()->saveTicket($ticket);
+            $this->getRepo('DeskPRO:Ticket')->saveTicket($ticket);
 
             $this->addFlash('success', 'updated.ticket.translated');
 

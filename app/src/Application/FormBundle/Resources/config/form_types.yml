@@ -119,7 +119,6 @@ services:
 
   form.department:
     class: Application\FormBundle\Form\Type\DepartmentType
-    arguments: [@form_hierarchy_generator, @doctrine.orm.default_entity_manager]
     tags:
       - { name: form.type, alias: deskpro_department }
 
@@ -155,12 +154,6 @@ services:
       - { name: form.type, alias: deskpro_captcha }
 
 
-  form.attach:
-    class: Application\FormBundle\Form\Type\AttachType
-    tags:
-      - { name: form.type, alias: deskpro_attach }
-
-
   form.blob:
     class: Application\FormBundle\Form\Type\BlobType
     arguments: [@doctrine.orm.default_entity_manager, @blob.storage]
@@ -191,3 +184,10 @@ services:
     class: Application\FormBundle\Form\Type\HeirarchicalEntityType
     tags:
       - { name: form.type, alias: deskpro_heirarchical_entity }
+
+
+  form.entity_hierarchy:
+    class: Application\FormBundle\Form\Type\EntityHeirarchyType
+    arguments: [@form_hierarchy_generator]
+    tags:
+      - { name: form.type, alias: entity_hierarchy }

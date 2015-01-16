@@ -106,7 +106,7 @@ class Hierarchy extends BaseHierarchy
                 $label = (string)$node;
                 $key = $this->getNodeId($node);
 
-                $choices[$key] = $key;
+                $choices[$key] = $node;
                 $labels[$key] = $label;
             }
 
@@ -142,7 +142,7 @@ class Hierarchy extends BaseHierarchy
      */
     public function countSelectable()
     {
-        return $this->count();
+        return $this->countTree(); // for now this acts as an alias, but we should preserve the concept
     }
 
     /**
@@ -155,6 +155,23 @@ class Hierarchy extends BaseHierarchy
         foreach ($this->root_nodes as $node) {
             return $node->getData();
         }
+    }
+
+    /**
+     * Counts all nodes in the tree
+     *
+     * @param bool $only_count_left_nodes
+     * @return int
+     */
+    public function countTree($only_count_left_nodes = false)
+    {
+        $count = 0;
+
+        foreach ($this->root_nodes as $root) {
+            $count += $root->countTree($only_count_left_nodes);
+        }
+
+        return $count;
     }
 }
  
