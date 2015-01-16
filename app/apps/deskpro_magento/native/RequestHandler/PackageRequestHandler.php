@@ -110,7 +110,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
             }
 
             $v = libxml_disable_entity_loader(false);
-            $c = new \SoapClient($url);
+            $c = new \Application\DeskPRO\SoapClient\SafeSoapClient($url);
             libxml_disable_entity_loader($v);
             return $c;
         };

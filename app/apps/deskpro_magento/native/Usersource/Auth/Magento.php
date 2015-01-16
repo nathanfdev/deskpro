@@ -275,7 +275,7 @@ class Magento implements Adapter\FormLoginInterface, Adapter\CookieLoginInterfac
             $error = error_reporting();
             error_reporting($error & ~E_WARNING);
             $v = libxml_disable_entity_loader(false);
-            $client = new \SoapClient($url . '/api?wsdl');
+            $client = new \Application\DeskPRO\SoapClient\SafeSoapClient($url . '/api?wsdl');
             libxml_disable_entity_loader($v);
             error_reporting($error);
         } catch (\SoapFault $e) {
