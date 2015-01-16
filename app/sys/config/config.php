@@ -243,14 +243,20 @@ $definition->setAbstract(true);
 $container->setDefinition('fos_elastica.provider.prototype.orm', $definition);
 
 $definition = new Definition();
-$definition->setClass('Application\\ApiBundle\\Service\\Dashboard');
-$definition->setArguments(array(new Reference('doctrine.orm.entity_manager')));
-$container->setDefinition('dashboard.service', $definition);
-
-$definition = new Definition();
 $definition->setClass('Application\\ApiBundle\\Service\\DashboardPermissions');
 $definition->setArguments(array(new Reference('doctrine.orm.entity_manager')));
 $container->setDefinition('dashboard.permissions.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\ApiBundle\\Service\\DashboardWidget');
+$definition->setArguments(array(new Reference('doctrine.orm.entity_manager')));
+$container->setDefinition('dashboard.widget.service', $definition);
+
+$definition = new Definition();
+$definition->setClass('Application\\ApiBundle\\Service\\Dashboard');
+$definition->setArguments(array(new Reference('doctrine.orm.entity_manager'), new Reference('dashboard.widget.service')));
+$container->setDefinition('dashboard.service', $definition);
+
 
 ############################################################################
 # Validators and Constraints

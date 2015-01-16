@@ -8,40 +8,30 @@
 
 namespace Application\ApiBundle\Service;
 
+
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
-use \Doctrine\ORM\EntityManager;
+use Doctrine\ORM\EntityManager;
 use Doctrine\Common\Collections\ArrayCollection;
-
-use Application\DeskPRO\Dpql\Statement\Display;
 
 use Application\DeskPRO\Entity\ReportDashboard as DashboardEntity;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
-use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 
-
-
+/**
+ * Class Dashboard
+ * @package Application\ApiBundle\Service
+ */
 class Dashboard
 {
-
-    const OUTER_TYPE_OVERVIEW            = 'overview';
-    const OUTER_TYPE_PERFORMANCE         = 'performance';
-    const OUTER_TYPE_TICKET_SATISFACTION = 'ticket_satisfaction';
-
-    const WIDGET_TYPE_HARDCODED_OVERVIEW            = 'reports_overview';
-    const WIDGET_TYPE_HARDCODED_PERFORMANCE         = 'agent_performance';
-    const WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION = 'ticket_satisfaction';
-    const WIDGET_TYPE_HARDCODED_UNDEFINED           = 'hardcoded';
-
-    const WIDGET_TYPE_GRAPH = 'graph';
-    const WIDGET_TYPE_TABLE = 'table';
-    const WIDGET_TYPE_STAT  = 'stat';
-
-    public function __construct(EntityManager $em)
+    /**
+     * @param EntityManager   $em
+     * @param DashboardWidget $widgetService
+     */
+    public function __construct(EntityManager $em, DashboardWidget $widgetService)
     {
         $this->em = $em;
+        $this->widgetService = $widgetService;
     }
-
 
     ///
     /// DASHBOARD SECTION
@@ -81,12 +71,20 @@ class Dashboard
         return $data;
     }
 
+    /**
+     * @param DashboardEntity $dashboard
+     */
     public function deleteDashboard(DashboardEntity $dashboard)
     {
         $this->em->remove($dashboard);
         $this->em->flush();
     }
 
+    /**
+     * @param DashboardEntity $dashboard
+     *
+     * @return array
+     */
     public function saveDashboard(DashboardEntity $dashboard)
     {
         $this->em->persist($dashboard);
@@ -108,7 +106,7 @@ class Dashboard
         $widgets = array();
         foreach($report->getWidgets() as $widget) {
 
-            $wdata = $this->getWidgetData($widget);
+            $wdata = $this->widgetService->getWidgetData($widget);
             $widgets[] = $wdata;
         }
         $data = array(
@@ -173,6 +171,10 @@ class Dashboard
         return $report;
     }
 
+    /**
+     * @param      $report
+     * @param bool $flush
+     */
     public function deleteReport($report, $flush = false)
     {
         $report = $this->getReport($report);
@@ -183,8 +185,11 @@ class Dashboard
 
     }
 
+
     /**
      * @param DashboardReportEntity $report
+     * @param bool                  $flush
+     *
      * @return array
      */
     public function saveReport(DashboardReportEntity $report, $flush = false)
@@ -197,7 +202,11 @@ class Dashboard
     }
 
 
-
+    /**
+     * @param $dashboard
+     *
+     * @return int
+     */
     public function getLastSortOrder($dashboard) {
         $dashboard = $this->getDashboard($dashboard);
         /** @var ArrayCollection $allReports */
@@ -205,61 +214,5 @@ class Dashboard
         return $allReports->last() ? $allReports->last()->getSortOrder() + 1 : 1;
     }
 
-    ///
-    /// WIDGETS SECTION
-    ///
 
-    public function getWidgetData($widget)
-    {
-        if(! ($widget instanceof DashboardWidgetEntity)) {
-            $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget);
-        }
-        $pos  = $widget->getPosition();
-        $size = $widget->getSize();
-        $data = array(
-            'id'    => $widget->getId(),
-            'name'  => $widget->getTitle(),
-            "row"   => $pos[0],
-            "col"   => $pos[1],
-            "sizeX" => $size[0],
-            "sizeY" => $size[1],
-            "widget_id" => $widget->getReport() ? $widget->getReport()->getId() : 0,
-            "widget_variables" => $widget->getVariables(),
-            "type"  => "graph",
-            "data"  => array(),
-        );
-        if($hc_data = $widget->getHcData()) {
-            switch ($hc_data['outer_type']) {
-                case self::OUTER_TYPE_OVERVIEW:
-                    $data['type'] = self::WIDGET_TYPE_HARDCODED_OVERVIEW;
-                    break;
-                case self::OUTER_TYPE_PERFORMANCE:
-                    $data['type'] = self::WIDGET_TYPE_HARDCODED_PERFORMANCE;
-                    break;
-                case self::OUTER_TYPE_TICKET_SATISFACTION:
-                    $data['type'] = self::WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION;
-                    break;
-                default:
-                    $data['type'] = self::WIDGET_TYPE_HARDCODED_UNDEFINED;
-            }
-            $data['inner_type'] = $hc_data['inner_type'];
-            $data['outer_type'] = $hc_data['outer_type'];
-        }
-        return $data;
-    }
-
-    public function copyWidgetLinks(DashboardReportEntity $report, DashboardReportEntity $reportPrototype)
-    {
-        foreach($reportPrototype->getWidgets() as $widget_prototype) {
-            $widget = new DashboardWidgetEntity();
-            $widget
-                ->setTitle($widget_prototype->getTitle())
-                ->setPosition($widget_prototype->getPosition())
-                ->setSize($widget_prototype->getSize())
-                ->setReport($report)
-                ->setWidget($widget_prototype->getWidget());
-            $this->em->persist($widget);
-            $report->addWidget($widget);
-        }
-    }
 }

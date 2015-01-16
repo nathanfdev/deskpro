@@ -41,6 +41,7 @@ use Application\DeskPRO\Dpql\Statement\Display;
 
 use Application\ApiBundle\Service\Dashboard as DashboardService;
 use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionService;
+use Application\ApiBundle\Service\DashboardWidget as DashboardWidgetService;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -61,6 +62,9 @@ class DashboardWidgetController extends AbstractController
     /** @var DashboardPermissionService */
     protected $permissionsService;
 
+    /** @var DashboardWidgetService */
+    protected $widgetService;
+
     /** @var  array */
     protected $widgetGraphTypesMapping = array(
         'simple_bars'  => 'BAR',
@@ -80,60 +84,62 @@ class DashboardWidgetController extends AbstractController
         parent::init();
         $this->service = $this->get('dashboard.service');
         $this->permissionsService = $this->get('dashboard.permissions.service');
+        $this->widgetService = $this->get('dashboard.widget.service');
     }
 
-
-
     /**
+     * @param $id integer
+     *
      * @SWG\Api(
-     * 	path="/dashboards/{id}/widgets",
+     *    path="/dashboards/{id}/widgets",
      * 	@SWG\Operation(
      *      @SWG\ResponseMessage(code=404, message="Dashboard not found"),
      *      @SWG\ResponseMessage(code=404, message="Report not found"),
      *      @SWG\ResponseMessage(code=200, message="success"),
-     * 		method="POST",
-     * 		summary="Create new widget",
-     * 		notes="Returns list of dashboards",
-     *		type="array",
+     *        method="POST",
+     *        summary="Create new widget",
+     *        notes="Returns list of dashboards",
+     *        type="array",
      *      @SWG\Parameters (
      *			@SWG\Parameter(
-     *				name="id",
-     *				description="Dashboard id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
+     *                name="id",
+     *                description="Dashboard id",
+     *                paramType="path",
+     *                required=true,
+     *                type="integer"
      *            ),
      *          @SWG\Parameter(
-     *				name="col",
-     *				description="Horizontal widget position",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
+     *                name="col",
+     *                description="Horizontal widget position",
+     *                paramType="query",
+     *                required=true,
+     *                type="string"
      *            ),
      *          @SWG\Parameter(
-     *				name="row",
-     *				description="Vertical widget position",
-     *				paramType="query",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *          @SWG\Parameter(
-     *				name="size_x",
-     *				description="Widget width",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
+     *                name="row",
+     *                description="Vertical widget position",
+     *                paramType="query",
+     *                required=true,
+     *                type="integer"
      *            ),
      *          @SWG\Parameter(
-     *				name="size_y",
-     *				description="Widget height",
-     *				paramType="query",
-     *				required=true,
-     *				type="integer"
+     *                name="size_x",
+     *                description="Widget width",
+     *                paramType="query",
+     *                required=true,
+     *                type="string"
+     *            ),
+     *          @SWG\Parameter(
+     *                name="size_y",
+     *                description="Widget height",
+     *                paramType="query",
+     *                required=true,
+     *                type="integer"
      *          ),
      *      )
-     * 	)
+     *    )
      * )
+     * @return Response
      */
     public function addWidgetAction($id)
     {
@@ -178,60 +184,63 @@ class DashboardWidgetController extends AbstractController
         $this->em->persist($widget);
         $this->em->flush();
 
-        return $this->createApiSuccessResponse($this->service->getWidgetData($widget));
+        return $this->createApiSuccessResponse($this->widgetService->getWidgetData($widget));
     }
 
     /**
+     * @param $id integer
      *
+     * @return Response
      * @throws NotFoundHttpException
      * @SWG\Api(
-     * 	path="/dashboards/widgets/{id}",
+     *    path="/dashboards/widgets/{id}",
      *
      * 	@SWG\Operation(
      *      @SWG\ResponseMessage(code=404, message="Widget not found"),
      *      @SWG\ResponseMessage(code=200, message="success"),
-     * 		method="POST",
-     * 		summary="Save dashboard with new parameters",
-     *		type="array",
+     *        method="POST",
+     *        summary="Save dashboard with new parameters",
+     *        type="array",
      *      @SWG\Parameters (
      *			@SWG\Parameter(
-     *				name="id",
-     *				description="Widget ID",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
+     *                name="id",
+     *                description="Widget ID",
+     *                paramType="path",
+     *                required=true,
+     *                type="integer"
      *            ),
      *          @SWG\Parameter(
-     *				name="col",
-     *				description="Horizontal widget position",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
+     *                name="col",
+     *                description="Horizontal widget position",
+     *                paramType="query",
+     *                required=true,
+     *                type="string"
      *            ),
      *          @SWG\Parameter(
-     *				name="row",
-     *				description="Vertical widget position",
-     *				paramType="query",
-     *				required=true,
-     *				type="integer"
-     *			),
-     *          @SWG\Parameter(
-     *				name="size_x",
-     *				description="Widget width",
-     *				paramType="query",
-     *				required=true,
-     *				type="string"
+     *                name="row",
+     *                description="Vertical widget position",
+     *                paramType="query",
+     *                required=true,
+     *                type="integer"
      *            ),
      *          @SWG\Parameter(
-     *				name="size_y",
-     *				description="Widget height",
-     *				paramType="query",
-     *				required=true,
-     *				type="integer"
-     *			),
+     *                name="size_x",
+     *                description="Widget width",
+     *                paramType="query",
+     *                required=true,
+     *                type="string"
+     *            ),
+     *          @SWG\Parameter(
+     *                name="size_y",
+     *                description="Widget height",
+     *                paramType="query",
+     *                required=true,
+     *                type="integer"
+     *            ),
      *      )
-     * 	)
+     *    )
      * )
+     *
      */
     public function saveWidgetAction($id)
     {
