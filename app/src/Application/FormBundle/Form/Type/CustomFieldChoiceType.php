@@ -34,11 +34,15 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\FormBundle\Form\DataTransformer\CustomDefHierarchyNodeTransformer;
 use Application\FormBundle\Form\DataTransformer\StringToArrayTransformer;
 use Application\FormBundle\Form\DataTransformer\StringToIntegerArrayTransformer;
 use Application\FormBundle\Hierarchy\HierarchyGenerator;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
@@ -59,6 +63,7 @@ class CustomFieldChoiceType extends AbstractType
         if ($options['multiple']) {
             $builder->addModelTransformer(new StringToIntegerArrayTransformer(','));
         }
+        $builder->addModelTransformer(new CustomDefHierarchyNodeTransformer($options['choice_list'], $options['multiple']), true);
     }
 
     public function getName()

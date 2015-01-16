@@ -91,7 +91,21 @@ class CustomDataTicketType extends AbstractType
     {
         /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
         $custom_data = $event->getData();
+        $form = $event->getForm();
+        $config = $form->getConfig();
+
         if ($custom_data->input === null) {
+            $custom_data->input = '';
+        }
+        if ($custom_data->input) {
+            $custom_data->value = 0;
+        }
+
+        // if admin switched from multi select to single select, we need to fix the data object
+        $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
+        list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));
+
+        if (array_key_exists('multiple', $options) && !$options['multiple']) {
             $custom_data->input = '';
         }
     }

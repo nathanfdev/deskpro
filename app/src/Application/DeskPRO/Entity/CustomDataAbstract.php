@@ -108,6 +108,20 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
         return $this->value ? $this->value : $this->input;
     }
 
+    /**
+     * Set the value or input (use the individual methods if you don't want auto detection)
+     *
+     * @param mixed $data
+     */
+    public function setData($data)
+    {
+        if (is_int($data)) {
+            $this->setModelField('value', $data);
+        } else {
+            $this->setModelField('input', (string) $data);
+        }
+    }
+
     public function getValue()
     {
         return (int) $this->value;

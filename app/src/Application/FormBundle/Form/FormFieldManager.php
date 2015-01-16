@@ -166,7 +166,7 @@ class FormFieldManager
 
                 return array(
                     'deskpro_custom_field_choice',
-                    $multiple ? 'input' : 'value',
+                    'data',
                     $this->getGeneralOptionsForField($field_type, array(
                         'expanded'     => $expanded,
                         'multiple'     => $multiple,
