@@ -83,6 +83,7 @@ class FormFieldManager
         FROM DeskPRO:CustomDefPerson f
         WHERE f.is_user_enabled = true
         AND f.is_enabled = true
+        AND f.handler_class IS NOT NULL
         ORDER BY f.display_order
         ');
 
