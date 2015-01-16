@@ -151,6 +151,19 @@ class TicketViewService
             case 'Application\\DeskPRO\\CustomFields\\Handler\\TextArea':
                 $value = $data->getData();
                 break;
+            case 'Application\\DeskPRO\\CustomFields\\Handler\\Choice':
+                if (!$data->value) {
+                    $ids = explode(',', $data->input);
+                } else {
+                    $ids = array($data->value);
+                }
+                $selected = array();
+                foreach ($ids as $id) {
+                    $selected_field = $field_def->getChildById($id);
+                    $selected[] = $selected_field->title;
+                }
+                $value = implode(', ', $selected);
+                break;
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Hidden':
             case 'Application\\DeskPRO\\CustomFields\\Handler\\Display':
             default:

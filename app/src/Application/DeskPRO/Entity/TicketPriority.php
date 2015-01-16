@@ -70,6 +70,10 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
         return $this->id;
     }
 
+    public function __toString()
+    {
+        return $this->title;
+    }
 
     /**
      * @return string

@@ -103,7 +103,7 @@ class CustomDataTicketType extends AbstractType
 
         // if admin switched from multi select to single select, we need to fix the data object
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
-        list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));
+        list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($custom_data_field, $config->getOption('agent_interface'));
 
         if (array_key_exists('multiple', $options) && !$options['multiple']) {
             $custom_data->input = '';

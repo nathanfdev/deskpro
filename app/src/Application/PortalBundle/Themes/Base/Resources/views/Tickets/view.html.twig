@@ -81,7 +81,7 @@
             
             <tr>
                 <td>Date Opened</td>
-                <td>{{ ticket_view.ticket.date_created|date() }}</td>
+                <td>{{ ticket_view.ticket.date_created|date('F j, Y') }}</td>
             </tr>
 
             {# see the TicketViewService in AppBundle's data services #}
