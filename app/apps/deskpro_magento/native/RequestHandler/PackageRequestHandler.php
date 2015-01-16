@@ -109,7 +109,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 return null;
             }
 
-            return new \SoapClient($url);
+            $v = libxml_disable_entity_loader(false);
+            $c = new \SoapClient($url);
+            libxml_disable_entity_loader($v);
+            return $c;
         };
 
         $tests[] = function () use (&$log, &$client, $url, $get_client) {
