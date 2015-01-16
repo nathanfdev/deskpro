@@ -109,7 +109,7 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 return null;
             }
 
-            return new \SoapClient($url . '/api?wsdl');
+            return new \SoapClient($url);
         };
 
         $tests[] = function () use (&$log, &$client, $url, $get_client) {
