@@ -32,7 +32,7 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\Mail\SourceMapper;
+namespace Application\EmailBundle\SwiftMailer\SourceMapper;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\DBAL\Connection;
@@ -61,6 +61,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
     /**
      * @param Connection $db
      * @param DeskproBlobStorage $bs
+     * @param EmailAccountManager $email_accounts
      */
     public function __construct(Connection $db, DeskproBlobStorage $bs, EmailAccountManager $email_accounts)
     {

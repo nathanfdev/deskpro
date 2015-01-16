@@ -1,18 +1,15 @@
 services:
   swiftmailer.mailer.default:
-    class: Application\EmailBundle\Mail\Mailer
-    arguments: [@swiftmailer.mailer.default.transport, @email.message_factory]
+    class: Application\EmailBundle\SwiftMailer\Mailer
+    arguments: [@swiftmailer.mailer.default.transport, @email.message_factory, @logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.outgoing }
 
   swiftmailer.mailer.default.transport:
     class: Application\EmailBundle\Mail\Transport\DeskproTransport
-    arguments: [@email.source_mapper, @email.email_account_manager, @swiftmailer.mailer.default.transport.real, @swiftmailer.mailer.default.transport.eventdispatcher]
-
-  swiftmailer.mailer.default.transport.real:
-    class: Application\EmailBundle\Mail\Transport\EmailAccountTransport
-    arguments: [@email.email_account_manager, @swiftmailer.mailer.default.transport.real.eventdispatcher]
-
-  swiftmailer.mailer.default.transport.real.eventdispatcher:
-    parent: swiftmailer.transport.eventdispatcher.abstract
+    arguments: [@email.source_mapper, @email.email_account_manager, @swiftmailer.mailer.default.transport.real, @swiftmailer.mailer.default.transport.eventdispatcher, @logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.outgoing }
 
   email.message_factory:
     class: Application\EmailBundle\Mail\Message\MessageFactory

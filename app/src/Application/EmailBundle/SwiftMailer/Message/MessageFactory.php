@@ -32,24 +32,39 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\SwiftMailer\RawTransport;
+namespace Application\EmailBundle\SwiftMailer\Message;
 
-class RawSendmailTransport extends RawSmtpTransport
+use Symfony\Bundle\FrameworkBundle\Templating\EngineInterface;
+
+class MessageFactory implements MessageFactoryInterface
 {
     /**
-     * @var \Swift_SendmailTransport
+     * @var EngineInterface
      */
-    private $tr;
+    private $templating;
 
     /**
-     * @param \Swift_SendmailTransport $tr
+     * @param EngineInterface $templating
      */
-    public function __construct(\Swift_SendmailTransport $tr)
+    public function __construct(EngineInterface $templating)
     {
-        $this->tr = $tr;
+        $this->templating = $templating;
     }
 
-    // This extends RawSmtpTransport because the only difference is the transport
-    // being used. If we use the Sendmail transport, then the '-bs' flag makes
-    // it act like a normal SMTP server, so everything else stays the same.
+    /**
+     * @param string $type
+     * @return \Swift_Message
+     */
+    public function createMessage($type)
+    {
+        if ($type == 'message') {
+            $message = Message::newInstance();
+            $message->setEncoder(\Swift_Encoding::get8BitEncoding());
+            $message->setTemplateEngine($this->templating);
+
+            return $message;
+        }
+
+        return null;
+    }
 }

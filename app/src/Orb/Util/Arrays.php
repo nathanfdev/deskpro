@@ -2337,4 +2337,35 @@ class Arrays
             return $object;
         }
     }
+
+    /**
+     * Given an array of k=>v, return array(array(k, v))
+     *
+     * @param array|\Traversable $array
+     * @param string|null        $k_name  Optionally specify a key for the 'key' value
+     * @param string|null        $v_name  Optionally specify a key for the 'value' value
+     * @return array
+     */
+    public static function kvpairs($array, $k_name = null, $v_name = null)
+    {
+        $pairs = array();
+
+        if ($array === null) {
+            return array();
+        }
+
+        if (!is_array($array)) {
+            $array = array($array);
+        }
+
+        foreach ($array as $k => $v) {
+            if ($k_name || $v_name) {
+                $pairs[] = array($k_name => $k, $v_name => $v);
+            } else {
+                $pairs[] = array($k, $v);
+            }
+        }
+
+        return $pairs;
+    }
 }

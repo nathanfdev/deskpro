@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace Application\EmailBundle\Mail\Plugins;
+namespace Application\EmailBundle\SwiftMailer\Plugins;
 
 use Swift_Events_SendEvent;
 

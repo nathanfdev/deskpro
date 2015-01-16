@@ -32,13 +32,80 @@
  * @subpackage
  */
 
-namespace Application\EmailBundle\Mail\Message;
+namespace Application\DeskPRO\Monolog\Processor;
 
-interface MessageFactoryInterface
+/**
+ * This just keeps a record of messages grouped by something in the record data.
+ *
+ * For example, you might use this to retrieve all log messages for a particular run of a certain iteration.
+ */
+class GroupRecordsProcessor
 {
     /**
-     * @param string $type
-     * @return \Swift_Message
+     * @var string[]
      */
-    public function createMessage($type);
+    private $record_ids = array();
+
+    /**
+     * @var array
+     */
+    private $records = array();
+
+    /**
+     * @var string
+     */
+    private $group_key;
+
+    /**
+     * @var int
+     */
+    private $max_history;
+
+    /**
+     * The thing in each record that indicates the group
+     *
+     * @param string $group_key  The key in each record which indicates the group to put the messages in
+     * @param int $max_history   How many groups of records to keep. This helps prevent massive logs filling memory.
+     */
+    public function __construct($group_key, $max_history = 50)
+    {
+        $this->group_key   = $group_key;
+        $this->max_history = $max_history;
+    }
+
+    /**
+     * @param array $record
+     */
+    public function processRecord(array $record)
+    {
+        $id = isset($record[$this->group_key]) ? $record[$this->group_key] : null;
+        if ($id === null) {
+            $id = isset($record['extra'][$this->group_key]) ? $record['extra'][$this->group_key] : null;
+        }
+
+        if ($id === null) {
+            return;
+        }
+
+        if (!isset($this->records[$id])) {
+            $this->record_ids[] = $id;
+            $this->records[$id] = array();
+
+            if (count($this->record_ids) > $this->max_history) {
+                $old_id = array_shift($this->record_ids);
+                unset($this->record_ids[$old_id]);
+            }
+        }
+
+        $this->records[$id][] = $record;
+    }
+
+    /**
+     * @param string $id
+     * @return array
+     */
+    public function getRecords($id)
+    {
+        return isset($this->records[$id]) ? $this->records[$id] : array();
+    }
 }

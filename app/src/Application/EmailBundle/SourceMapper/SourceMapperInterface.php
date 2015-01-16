@@ -32,24 +32,76 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\SwiftMailer\RawTransport;
+namespace Application\EmailBundle\SwiftMailer\SourceMapper;
+use Application\DeskPRO\Entity\EmailAccount;
 
-class RawSendmailTransport extends RawSmtpTransport
+/**
+ * Handles saving/fetching sources. NOTE: mappers work on ARRAYs, not entities.
+ */
+interface SourceMapperInterface
 {
     /**
-     * @var \Swift_SendmailTransport
+     * @param $source_id
+     * @return array|null
      */
-    private $tr;
+    public function getSource($source_id);
 
     /**
-     * @param \Swift_SendmailTransport $tr
+     * Get a resource for a source (the actual message data)
+     *
+     * @param array $source
+     * @return resource
      */
-    public function __construct(\Swift_SendmailTransport $tr)
-    {
-        $this->tr = $tr;
-    }
+    public function getRowBlobHandle(array $source);
 
-    // This extends RawSmtpTransport because the only difference is the transport
-    // being used. If we use the Sendmail transport, then the '-bs' flag makes
-    // it act like a normal SMTP server, so everything else stays the same.
+    /**
+     * @param \Swift_Mime_Message $message
+     * @param $status
+     * @param \DateTime $queue_date
+     * @return array
+     */
+    public function createSourceForMessage(\Swift_Mime_Message $message, $status, \DateTime $queue_date = null);
+
+    /**
+     * @param array $source
+     * @param null $log_text
+     * @return mixed
+     */
+    public function markSourceComplete(array $source, $log_text = null);
+
+    /**
+     * @param array $source
+     * @param null $log_text
+     * @return mixed
+     */
+    public function markSourceAborted(array $source, $log_text = null);
+
+    /**
+     * @param array $source
+     * @param null $log_text
+     * @param \DateTime $next_date
+     * @return mixed
+     */
+    public function markSourceRetry(array $source, $log_text = null, \DateTime $next_date = null);
+
+    /**
+     * @param array $source
+     * @param string $error_code
+     * @param null $log_text
+     * @return mixed
+     */
+    public function markSourceError(array $source, $error_code, $log_text = null);
+
+    /**
+     * @param array $source
+     * @param \DateTime $next_date
+     * @return mixed
+     */
+    public function setSourcePending(array $source, \DateTime $next_date = null);
+
+    /**
+     * @param array $source
+     * @return mixed
+     */
+    public function setSourceProcessing(array $source);
 }

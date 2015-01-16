@@ -32,24 +32,12 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\SwiftMailer\RawTransport;
+namespace Application\EmailBundle\SwiftMailer\Message;
 
-class RawSendmailTransport extends RawSmtpTransport
+use Application\DeskPRO\Mail\Message as DeskproMessage;
+
+// This is a backwards-compat class
+class Message extends DeskproMessage
 {
-    /**
-     * @var \Swift_SendmailTransport
-     */
-    private $tr;
 
-    /**
-     * @param \Swift_SendmailTransport $tr
-     */
-    public function __construct(\Swift_SendmailTransport $tr)
-    {
-        $this->tr = $tr;
-    }
-
-    // This extends RawSmtpTransport because the only difference is the transport
-    // being used. If we use the Sendmail transport, then the '-bs' flag makes
-    // it act like a normal SMTP server, so everything else stays the same.
 }

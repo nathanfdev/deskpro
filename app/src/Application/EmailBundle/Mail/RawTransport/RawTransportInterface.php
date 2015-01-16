@@ -32,7 +32,7 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\Mail\RawTransport;
+namespace Application\EmailBundle\SwiftMailer\RawTransport;
 
 interface RawTransportInterface
 {
