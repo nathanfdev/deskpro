@@ -115,7 +115,7 @@ class Hierarchy extends BaseHierarchy
 
         /** @var HierarchyNode $node */
         foreach ($this as $node) {
-            $choices[$this->getNodeId($node)] = $this->getNodeId($node);
+            $choices[$this->getNodeId($node)] = $node;
             $labels[$this->getNodeId($node)] = (string)$node;
             foreach ($node->getChoices() as $id => $nid) {
                 $choices[$id] = $nid;

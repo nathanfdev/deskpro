@@ -145,16 +145,12 @@ HEIRARCHY
 
 {% block deskpro_heirarchical_choice_widget_options -%}
     {% for group_label, choice in options %}
-        {%- if choice is iterable -%}
-            <optgroup label="{{ group_label|trans({}, translation_domain) }}">
-                {% set options = choice %}
-                {{- block('deskpro_heirarchical_choice_widget_options') -}}
-            </optgroup>
-        {%- else -%}
+        {%- if choice is not iterable -%}
+            {% set def = choice.data %}
             <option
-                    {% if choice.data.parent is defined and choice.data.parent is not null %} data-parent="{{ choice.data.parent.id }}"{% endif %}
-                    {% if choice.data.id is defined %} data-id="{{ choice.data.id }}"{% endif %}
-                    {% if choice.data.children is defined and choice.data.children|length > 0 %} disabled="disabled"{% endif %}
+                    {% if def.parent is defined and def.parent is not null %} data-parent="{{ def.parent.id }}"{% endif %}
+                    {% if def.id is defined %} data-id="{{ def.id }}"{% endif %}
+                    {% if def.children is defined and def.children|length > 0 %} disabled="disabled"{% endif %}
                     {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
                     value="{{ choice.value }}"
             >
@@ -163,6 +159,70 @@ HEIRARCHY
         {%- endif -%}
     {% endfor %}
 {%- endblock deskpro_heirarchical_choice_widget_options %}
+
+{###
+END HEIRARCHY
+###}
+
+
+
+{###
+CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
+###}
+
+{% block deskpro_custom_field_choice_widget %}
+    {% if expanded %}
+        {{- block('deskpro_custom_field_choice_widget_expanded') -}}
+    {% else %}
+        {{- block('deskpro_custom_field_choice_widget_collapsed') -}}
+    {% endif %}
+{% endblock %}
+
+
+{% block deskpro_custom_field_choice_widget_expanded -%}
+    <div data-heirarcy="" {{ block('widget_container_attributes') }}>
+        {%- for child in form %}
+            {{- form_widget(child) -}}
+            {{- form_label(child) -}}
+        {% endfor -%}
+    </div>
+{% endblock deskpro_custom_field_choice_widget_expanded %}
+
+{% block deskpro_custom_field_choice_widget_collapsed -%}
+    {% if required and empty_value is none and not empty_value_in_choices and not multiple -%}
+        {% set required = false %}
+    {%- endif -%}
+    <select dp-select="" {{ block('widget_attributes') }}{% if multiple %} multiple="multiple"{% endif %}>
+        {% if empty_value is not none -%}
+            <option value=""{% if required and value is empty %} selected="selected"{% endif %}>{{ empty_value|trans({}, translation_domain) }}</option>
+        {%- endif %}
+        {%- if preferred_choices|length > 0 -%}
+            {% set options = preferred_choices %}
+            {{- block('deskpro_heirarchical_choice_widget_options') -}}
+            {% if choices|length > 0 and separator is not none -%}
+                <option disabled="disabled">{{ separator }}</option>
+            {%- endif %}
+        {%- endif -%}
+        {% set options = choices -%}
+        {{- block('deskpro_custom_field_choice_widget_options') -}}
+    </select>
+{%- endblock deskpro_custom_field_choice_widget_collapsed %}
+
+{% block deskpro_custom_field_choice_widget_options -%}
+    {% for group_label, choice in options %}
+        {%- if choice is not iterable -%}
+            {% set def = choice.data.data %}
+            <option
+                    {% if def.getOption('parent_id') is not null %} data-parent="{{ def.getOption('parent_id') }}"{% endif %}
+                    {% if def.id is defined %} data-id="{{ def.id }}"{% endif %}
+                    {% if choice.data|length > 0 %} disabled="disabled"{% endif %}
+                    {% if choice is selectedchoice(value) %} selected="selected"{% endif %}
+                    data-name="{{ choice.label|trans({}, translation_domain) }}"
+                    value="{{ choice.value }}"
+                    >{% if choice.data.depth > 1 %}{% for i in range(2, choice.data.depth) %}&nbsp;&nbsp;&nbsp;&nbsp;{% endfor %}{% endif %}{% if choice.data.depth %}&mdash; {% endif %}{{ choice.label|trans({}, translation_domain) }}</option>
+        {%- endif -%}
+    {% endfor %}
+{%- endblock deskpro_custom_field_choice_widget_options %}
 
 {###
 END HEIRARCHY

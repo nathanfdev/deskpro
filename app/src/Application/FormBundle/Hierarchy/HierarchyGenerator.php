@@ -36,6 +36,7 @@ namespace Application\FormBundle\Hierarchy;
 
 
 use Application\AppBundle\DataService\DepartmentDataService;
+use Application\AppBundle\Hierarchy\Formatter\FlatListFormatter;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
@@ -78,7 +79,7 @@ class HierarchyGenerator
             }
         }
 
-        $hierarchy = new Hierarchy($root_nodes, new DashesFormatter('title'));
+        $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
         $hierarchy->markOnlyLeafSelections();
 
         foreach ($field->children as $field_child) {
