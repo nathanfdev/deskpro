@@ -38,6 +38,7 @@ namespace Application\FormBundle\Hierarchy;
 use Application\AppBundle\DataService\DepartmentDataService;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\CustomDefAbstract;
+use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
 use Application\DeskPRO\Entity\Person;
@@ -67,14 +68,7 @@ class HierarchyGenerator
         $this->department_data_service = $department_data_service;
     }
 
-    public function generateForCustomTicketFormField(CustomDefTicket $field)
-    {
-        $repo = $this->em->getRepository('DeskPRO:CustomDefTicket');
-
-        return $this->generateForCustomFormField($repo, $field);
-    }
-
-    public function generateForCustomFormField(EntityRepository $repo, CustomDefAbstract $field)
+    public function generateForCustomFormField(CustomDefAbstract $field)
     {
         $root_nodes = array();
         foreach ($field->children as $field_child) {

@@ -136,7 +136,7 @@ class PersonEditProfileType extends AbstractType
 
             foreach ($field_manager->getAvailablePersonFields() as $field_def) {
                 if (!$field_def->is_enabled) {
-                    return false;
+                    continue;
                 }
 
                 $id = $field_def->getId();

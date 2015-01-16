@@ -78,7 +78,7 @@ class CustomFieldChoiceType extends AbstractType
         $resolver->setDefaults(array(
             'empty_data' => null,
             'choice_list'    => function (Options $options) use ($hierarchy_generator) {
-                    return $hierarchy_generator->generateForCustomTicketFormField($options['custom_field'])->getChoiceList();
+                    return $hierarchy_generator->generateForCustomFormField($options['custom_field'])->getChoiceList();
                 }
         ));
 
