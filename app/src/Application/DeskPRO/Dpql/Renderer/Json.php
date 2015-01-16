@@ -585,7 +585,6 @@ class Json extends AbstractRenderer
                 'fillAlphas' => 1,
             ),
             'line' => array(
-                'type' => 'line',
                 'lineThickness' => 2,
                 'bullet' => "round",
                 'bulletSize' => 6

@@ -37,6 +37,7 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
+use Application\DeskPRO\Dpql\Statement\Display;
 
 use Application\ApiBundle\Service\Dashboard as DashboardService;
 use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionService;
@@ -60,6 +61,17 @@ class DashboardWidgetController extends AbstractController
     /** @var DashboardPermissionService */
     protected $permissionsService;
 
+    /** @var  array */
+    protected $widgetGraphTypesMapping = array(
+        'simple_bars'  => 'BAR',
+        'bars'         => 'BAR',
+        'simple_lines' => 'LINE',
+        'lines'        => 'LINE',
+        'area'         => 'AREA',
+        'simple_area'  => 'AREA',
+        'pie'          => 'PIE',
+    );
+
     /**
      * {@inherited}
      */
@@ -69,6 +81,8 @@ class DashboardWidgetController extends AbstractController
         $this->service = $this->get('dashboard.service');
         $this->permissionsService = $this->get('dashboard.permissions.service');
     }
+
+
 
     /**
      * @SWG\Api(
@@ -255,6 +269,31 @@ class DashboardWidgetController extends AbstractController
     {
         $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $id);
         return $this->createApiResponse($this->_getWidgetData($widget));
+    }
+
+    protected function _getWidgetData($widget)
+    {
+        if(! ($widget instanceof Widget)) {
+            $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget);
+        }
+        $pos  = $widget->getPosition();
+        $size = $widget->getSize();
+        $report = $widget->getWidget();
+        $query = $report->query;
+        $mapped = isset($this->widgetGraphTypesMapping[$widget['type']]) ? $this->widgetGraphTypesMapping[$widget['type']] : 'TABLE';
+        $query = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
+        $widget_data = Display::renderQuery('json', $query);
+        $data = array(
+            'id'    => $widget->getId(),
+            'name'  => $widget->getTitle(),
+            "row"   => $pos[0],
+            "col"   => $pos[1],
+            "sizeX" => $size[0],
+            "sizeY" => $size[1],
+            "type"  => "graph",
+            "data"  => $widget_data,
+        );
+        return $data;
     }
 
     public function reportsListAction()

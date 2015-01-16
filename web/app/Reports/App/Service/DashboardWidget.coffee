@@ -5,6 +5,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @$q = $q
       @data = {}
       @storage = {reports: [], labels: []}
+      @widgets = {}
       @hostname = window.location.origin;
       @selectedSource =
         id: 0

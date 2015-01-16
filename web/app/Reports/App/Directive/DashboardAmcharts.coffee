@@ -1,5 +1,5 @@
 define ->
-  Reports_Directive_Amcharts = ['$compile', '$state', ($compile, $state) ->
+  Reports_Directive_Amcharts = ['$compile', '$state', 'DashboardWidgetService', 'DashboardService', ($compile, $state, DashboardWidgetService, DashboardService) ->
     return {
       restrict: 'E'
       replace: true
@@ -23,30 +23,29 @@ define ->
         initChart = () ->
           if chart
             chart.destroy()
-#          widgetService = DataService.get('DashboardWidgetService')
-#          service = DataService.get('DashboardService');
-#          service.setWidgetService(widgetService)
-#          widgetService
-#            .getWidget(conf)
-#            .then (widget) =>
-          chart = new AmCharts.makeChart('ch' + i, JSON.parse(chartData));
-          chart.handleResize()
-          chart.invalidateSize()
-          c = document.getElementById("ch" + i).parentNode.parentNode
-          width = c.style.width;
-          height = c.style.height;
+          DashboardService.setWidgetService(DashboardWidgetService)
+          DashboardWidgetService
+            .getWidget(conf)
+            .then (widget) =>
+              if widget?
+                chart = new AmCharts.makeChart('ch' + i, widget);
+                chart.handleResize()
+                chart.invalidateSize()
+                c = document.getElementById("ch" + i).parentNode.parentNode
+                width = c.style.width;
+                height = c.style.height;
 
-          setInterval \
-            () ->
-              w = c.style.width
-              h = c.style.height
+                setInterval \
+                  () ->
+                    w = c.style.width
+                    h = c.style.height
 
-              if h != height or width != w
-                chart.handleResize();
+                    if h != height or width != w
+                      chart.handleResize();
 
-                width = w
-                height = h
-            , 200
+                      width = w
+                      height = h
+                  , 200
 
         if attrs.chtype == 'graph'
           initChart()
