@@ -41,6 +41,11 @@ use Exception;
 final class TicketMessage extends AbstractEntity
 {
     /**
+     * @var int
+     */
+    private $oid;
+
+    /**
      * @var string
      */
     private $person_email;
@@ -56,6 +61,16 @@ final class TicketMessage extends AbstractEntity
     private $message_text;
 
     /**
+     * @var string
+     */
+    private $message_html;
+
+    /**
+     * @var bool
+     */
+    private $is_note = false;
+
+    /**
      * @var Collection
      */
     private $attachments;
@@ -66,6 +81,24 @@ final class TicketMessage extends AbstractEntity
     public function __construct()
     {
         $this->attachments = new Collection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getOid()
+    {
+        return $this->oid;
+    }
+
+    /**
+     * @param int $oid
+     * @return $this
+     */
+    public function setOid($oid)
+    {
+        $this->oid = (int)$oid;
+        return $this;
     }
 
     /**
@@ -127,6 +160,42 @@ final class TicketMessage extends AbstractEntity
     public function setMessageText($message_text)
     {
         $this->message_text = $message_text;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getMessageHtml()
+    {
+        return $this->message_html;
+    }
+
+    /**
+     * @param string $message_html
+     * @return $this
+     */
+    public function setMessageHtml($message_html)
+    {
+        $this->message_html = $message_html;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isNote()
+    {
+        return $this->is_note;
+    }
+
+    /**
+     * @param boolean $is_note
+     * @return $this
+     */
+    public function setAsNote($is_note)
+    {
+        $this->is_note = $is_note;
         return $this;
     }
 

@@ -41,6 +41,8 @@ class RecordMapperRegistry implements \ArrayAccess, \IteratorAggregate
     /**
      * @param string                $type
      * @param RecordMapperInterface $mapper
+     *
+     * @return $this
      */
     public function addMapper($type, RecordMapperInterface $mapper)
     {
@@ -49,6 +51,7 @@ class RecordMapperRegistry implements \ArrayAccess, \IteratorAggregate
         }
 
         $this->mappers[$type] = $mapper;
+        return $this;
     }
 
     /**

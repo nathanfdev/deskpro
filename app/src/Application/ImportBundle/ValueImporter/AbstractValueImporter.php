@@ -67,18 +67,20 @@ abstract class AbstractValueImporter
     private $container;
 
     /**
-     * @param string               $mode;
-     * @param Connection           $db
+     * Constructor
+     *
+     * @param string               $mode
+     * @param DeskproContainer     $container
      * @param LoggerInterface      $logger
      * @param RecordMapperRegistry $mappers
      */
     public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers)
     {
-        $this->mode    = $mode;
+        $this->mode      = $mode;
         $this->container = $container;
-        $this->db      = $container->getDb();
-        $this->logger  = $logger;
-        $this->mappers = $mappers;
+        $this->db        = $container->getDb();
+        $this->logger    = $logger;
+        $this->mappers   = $mappers;
     }
 
     /**

@@ -34,7 +34,7 @@ use Countable;
  * Base collection
  *
  * Class AbstractCollection
- * @package Userapi\Collection
+ * @package Application\ImportBundle
  */
 abstract class AbstractCollection implements Iterator, Countable
 {

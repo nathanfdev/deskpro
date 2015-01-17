@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\ValueImporter;
 
 use Application\ImportBundle\Exception\BadDataException;
@@ -36,11 +32,17 @@ use Application\ImportBundle\Value\TicketValue;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
+/**
+ * Class TicketValueImporter
+ * @package Application\ImportBundle\ValueImporter
+ */
 class TicketValueImporter extends AbstractValueImporter
 {
     /**
-     * @param  mixed                                                $tval
-     * @throws \Application\ImportBundle\Exception\BadDataException
+     * @param mixed $tval
+     *
+     * @return bool
+     * @throws BadDataException
      */
     public function importValue($tval)
     {
@@ -185,9 +187,9 @@ class TicketValueImporter extends AbstractValueImporter
         }
 
         //Date fields
-        $record['date_created']		= $tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['date_archived']		= $tval->date_archived ? $tval->date_archived->format('Y-m-d H:i:s') : null;
-        $record['date_resolved']	= $tval->date_resolved ? $tval->date_resolved->format('Y-m-d H:i:s') : null;
+        $record['date_created']  = $tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+        $record['date_archived'] = $tval->date_archived ? $tval->date_archived->format('Y-m-d H:i:s') : null;
+        $record['date_resolved'] = $tval->date_resolved ? $tval->date_resolved->format('Y-m-d H:i:s') : null;
 
         // Org
         if ($tval->organization) {

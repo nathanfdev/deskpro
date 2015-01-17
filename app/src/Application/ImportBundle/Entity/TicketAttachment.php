@@ -51,12 +51,27 @@ final class TicketAttachment extends AbstractEntity
     /**
      * @var string
      */
+    private $blob_url;
+
+    /**
+     * @var string
+     */
+    private $blob_path;
+
+    /**
+     * @var string
+     */
     private $file_name;
 
     /**
      * @var string
      */
     private $content_type;
+
+    /**
+     * @var bool
+     */
+    private $is_inline = false;
 
     /**
      * {@inheritdoc}
@@ -105,6 +120,42 @@ final class TicketAttachment extends AbstractEntity
     /**
      * @return string
      */
+    public function getBlobUrl()
+    {
+        return $this->blob_url;
+    }
+
+    /**
+     * @param string $blob_url
+     * @return $this
+     */
+    public function setBlobUrl($blob_url)
+    {
+        $this->blob_url = $blob_url;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getBlobPath()
+    {
+        return $this->blob_path;
+    }
+
+    /**
+     * @param string $blob_path
+     * @return $this
+     */
+    public function setBlobPath($blob_path)
+    {
+        $this->blob_path = $blob_path;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getFileName()
     {
         return $this->file_name;
@@ -135,6 +186,24 @@ final class TicketAttachment extends AbstractEntity
     public function setContentType($content_type)
     {
         $this->content_type = $content_type;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isInline()
+    {
+        return $this->is_inline;
+    }
+
+    /**
+     * @param boolean $is_inline
+     * @return $this
+     */
+    public function setAsInline($is_inline)
+    {
+        $this->is_inline = $is_inline;
         return $this;
     }
 

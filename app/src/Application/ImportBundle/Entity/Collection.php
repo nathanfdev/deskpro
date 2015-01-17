@@ -48,6 +48,8 @@ class Collection extends AbstractCollection
     }
 
     /**
+     * Merge another entity collection
+     *
      * @param Collection $collection
      * @return $this
      */

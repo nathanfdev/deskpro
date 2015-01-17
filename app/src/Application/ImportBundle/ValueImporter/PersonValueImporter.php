@@ -47,7 +47,7 @@ class PersonValueImporter extends AbstractValueImporter
     );
 
     /**
-     * @param  mixed                                                $pval
+     * @param  mixed $pval
      * @throws \Application\ImportBundle\Exception\BadDataException
      */
     public function importValue($pval)

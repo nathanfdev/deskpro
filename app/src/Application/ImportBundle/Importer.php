@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -56,21 +52,24 @@ use Application\ImportBundle\ValueImporter\NewsValueImporter;
 use Application\ImportBundle\ValueImporter\FeedbackValueImporter;
 use Application\ImportBundle\ValueImporter\DownloadValueImporter;
 use DeskPRO\Kernel\KernelErrorHandler;
-use Application\DeskPRO\DBAL\Connection;
 use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
+/**
+ * Class Importer
+ * @package Application\ImportBundle
+ */
 class Importer
 {
-    const EVENT_RESET_DONE       = 'reset_done_marker';
-    const EVENT_PRE_IMPORT_READ  = 'pre_import_read';
-    const EVENT_PRE_IMPORT       = 'pre_import';
-    const EVENT_POST_IMPORT      = 'post_import';
-    const EVENT_PRE_STEP         = 'pre_step';
-    const EVENT_POST_STEP        = 'post_step';
+    const EVENT_RESET_DONE      = 'reset_done_marker';
+    const EVENT_PRE_IMPORT_READ = 'pre_import_read';
+    const EVENT_PRE_IMPORT      = 'pre_import';
+    const EVENT_POST_IMPORT     = 'post_import';
+    const EVENT_PRE_STEP        = 'pre_step';
+    const EVENT_POST_STEP       = 'post_step';
 
     /**
      * @var \Application\DeskPRO\DBAL\Connection
@@ -102,7 +101,6 @@ class Importer
      */
     private $container;
 
-
     /**
      * Constructor
      *
@@ -113,38 +111,35 @@ class Importer
     public function __construct(DeskproContainer $container, ImporterConfig $config, LoggerInterface $logger = null)
     {
         $this->container = $container;
-
-        $this->db = $container->getDb();
-
-        $this->config = $config;
-
-        $this->mappers = new RecordMapperRegistry();
-        $this->mappers['person']		= new PersonRecordMapper($this->db);
-        $this->mappers['ticket_department']	= new TicketDepartmentRecordMapper($this->db);
-        $this->mappers['ticket_category']	= new CommonRecordMapper($this->db, 'ticket_categories', 'title');
-        $this->mappers['ticket_workflow']	= new CommonRecordMapper($this->db, 'ticket_workflows', 'title');
-        $this->mappers['ticket_priority']	= new CommonRecordMapper($this->db, 'ticket_priorities', 'title');
-        $this->mappers['ticket_status']		= new TicketStatusRecordMapper();
-        $this->mappers['department']		= new CommonRecordMapper($this->db, 'departments', 'title');
-        $this->mappers['product']		= new CommonRecordMapper($this->db, 'products', 'title');
-        $this->mappers['usergroup']		= new CommonRecordMapper($this->db, 'usergroups', 'title');
-        $this->mappers['organization']		= new CommonRecordMapper($this->db, 'organizations', 'name');
-        $this->mappers['language']		= new CommonRecordMapper($this->db, 'languages', 'title');
-        $this->mappers['article_category']	= new CommonRecordMapper($this->db, 'article_categories', 'title');
-        $this->mappers['article']		= new CommonRecordMapper($this->db, 'articles', 'title');
-        $this->mappers['news_category']		= new CommonRecordMapper($this->db, 'news_categories', 'title');
-        $this->mappers['news']			= new CommonRecordMapper($this->db, 'news', 'title');
-        $this->mappers['feedback_category']	= new CommonRecordMapper($this->db, 'feedback_categories', 'title');
-        $this->mappers['feedback']		= new CommonRecordMapper($this->db, 'feedback', 'title');
-        $this->mappers['download_category']	= new CommonRecordMapper($this->db, 'download_categories', 'title');
-        $this->mappers['download']		= new CommonRecordMapper($this->db, 'download', 'title');
-        $this->mappers['custom_def_ticket']	= new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title');
-        $this->mappers['custom_def_people']	= new CommonRecordMapper($this->db, 'custom_def_people', 'title');
+        $this->db        = $container->getDb();
+        $this->config    = $config;
+        $this->mappers   = new RecordMapperRegistry();
+        $this->mappers
+            ->addMapper('person', new PersonRecordMapper($this->db))
+            ->addMapper('ticket_department', new TicketDepartmentRecordMapper($this->db))
+            ->addMapper('ticket_category', new CommonRecordMapper($this->db, 'ticket_categories', 'title'))
+            ->addMapper('ticket_workflow', new CommonRecordMapper($this->db, 'ticket_workflows', 'title'))
+            ->addMapper('ticket_priority', new CommonRecordMapper($this->db, 'ticket_priorities', 'title'))
+            ->addMapper('ticket_status', new TicketStatusRecordMapper())
+            ->addMapper('department', new CommonRecordMapper($this->db, 'departments', 'title'))
+            ->addMapper('product', new CommonRecordMapper($this->db, 'products', 'title'))
+            ->addMapper('usergroup', new CommonRecordMapper($this->db, 'usergroups', 'title'))
+            ->addMapper('organization', new CommonRecordMapper($this->db, 'organizations', 'name'))
+            ->addMapper('language', new CommonRecordMapper($this->db, 'languages', 'title'))
+            ->addMapper('article_category', new CommonRecordMapper($this->db, 'article_categories', 'title'))
+            ->addMapper('article', new CommonRecordMapper($this->db, 'articles', 'title'))
+            ->addMapper('news_category', new CommonRecordMapper($this->db, 'news_categories', 'title'))
+            ->addMapper('news', new CommonRecordMapper($this->db, 'news', 'title'))
+            ->addMapper('feedback_category', new CommonRecordMapper($this->db, 'feedback_categories', 'title'))
+            ->addMapper('feedback', new CommonRecordMapper($this->db, 'feedback', 'title'))
+            ->addMapper('download_category', new CommonRecordMapper($this->db, 'download_categories', 'title'))
+            ->addMapper('download', new CommonRecordMapper($this->db, 'download', 'title'))
+            ->addMapper('custom_def_ticket', new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title'))
+            ->addMapper('custom_def_people', new CommonRecordMapper($this->db, 'custom_def_people', 'title'));
 
         if (!$logger) {
             $logger = new Logger('importer');
         }
-
         if ($config->log_path) {
             $logger->pushHandler(new StreamHandler($config->log_path . '.full.log', Logger::INFO));
             $logger->pushHandler(new StreamHandler($config->log_path . '.notice.log', Logger::NOTICE));
@@ -154,7 +149,6 @@ class Importer
         $this->logger = $logger;
     }
 
-
     /**
      * @param ImporterStatusCallback $callback
      */
@@ -162,7 +156,6 @@ class Importer
     {
         $this->status_callback = $callback;
     }
-
 
     /**
      * Reset all done markers.
@@ -177,7 +170,6 @@ class Importer
         }
     }
 
-
     public function processImports()
     {
         $this->processDirectory('people', new PersonValueImporter(
@@ -191,7 +183,8 @@ class Importer
             $this->config->mode,
             $this->container,
             $this->logger,
-            $this->mappers, function ($container) {
+            $this->mappers,
+            function ($container) {
                 $container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
             }
         ));
@@ -225,17 +218,20 @@ class Importer
         ));
     }
 
-
     /**
      * @param  string                $dir
      * @param  AbstractValueImporter $value_importer
+     * @param  $callback
+     *
      * @throws \Exception
      */
     private function processDirectory($dir, AbstractValueImporter $value_importer, $callback = null)
     {
-        if ($this->status_callback) $this->status_callback->preStep($this, $value_importer, $dir);
-        $step_start = microtime(true);
+        if ($this->status_callback) {
+            $this->status_callback->preStep($this, $value_importer, $dir);
+        }
 
+        $step_start = microtime(true);
         $it = $this->getDirectoryIterator($dir, true);
 
         $count = 0;
@@ -244,19 +240,18 @@ class Importer
             /** @var \SplFileInfo $file */
             $json = @file_get_contents($file->getRealPath());
 
-            if ($this->status_callback) $this->status_callback->preImportValueRead($this, $value_importer, $file, $count);
-
+            if ($this->status_callback) {
+                $this->status_callback->preImportValueRead($this, $value_importer, $file, $count);
+            }
             if (!$json) {
-                $this->getLogger()
-                    ->warning("File is not readable or empty: " . $file->getRealPath());
+                $this->getLogger()->warning("File is not readable or empty: " . $file->getRealPath());
                 continue;
             }
 
             $data = json_decode($json, true);
             unset($json);
             if (!$data) {
-                $this->getLogger()
-                    ->warning("Invalid JSON data file: " . $file->getRealPath());
+                $this->getLogger()->warning("Invalid JSON data file: " . $file->getRealPath());
                 continue;
             }
 
@@ -317,10 +312,9 @@ class Importer
         if ($this->status_callback) {
             $this->status_callback->postStep($this, $value_importer, $dir, $count, microtime(true) - $step_start);
         } elseif (is_callable($callback)) {
-            call_user_fun($callback, $this->container);
+            call_user_func($callback, $this->container);
         }
     }
-
 
     /**
      * @param  string                     $dir

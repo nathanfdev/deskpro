@@ -47,6 +47,11 @@ final class Ticket extends AbstractEntity
     /**
      * @var int
      */
+    private $oid;
+
+    /**
+     * @var int
+     */
     private $ref;
 
     /**
@@ -80,6 +85,16 @@ final class Ticket extends AbstractEntity
     private $date_created;
 
     /**
+     * @var DateTime
+     */
+    private $date_resolved;
+
+    /**
+     * @var DateTime
+     */
+    private $date_archived;
+
+    /**
      * @var string
      */
     private $subject;
@@ -88,6 +103,51 @@ final class Ticket extends AbstractEntity
      * @var int ?
      */
     private $priority;
+
+    /**
+     * @var string
+     */
+    private $language;
+
+    /**
+     * @var string
+     */
+    private $category;
+
+    /**
+     * @var string
+     */
+    private $workflow;
+
+    /**
+     * @var string
+     */
+    private $product;
+
+    /**
+     * @var string
+     */
+    private $organization;
+
+    /**
+     * @var bool
+     */
+    private $is_hold = false;
+
+    /**
+     * @var int
+     */
+    private $urgency = 1;
+
+    /**
+     * @var string
+     */
+    private $participants;
+
+    /**
+     * @var string[]
+     */
+    private $labels = array();
 
     /**
      * @var Collection
@@ -100,6 +160,24 @@ final class Ticket extends AbstractEntity
     public function __construct()
     {
         $this->messages = new Collection();
+    }
+
+    /**
+     * @return int
+     */
+    public function getOid()
+    {
+        return $this->oid;
+    }
+
+    /**
+     * @param int $oid
+     * @return $this
+     */
+    public function setOid($oid)
+    {
+        $this->oid = (int)$oid;
+        return $this;
     }
 
     /**
@@ -230,9 +308,45 @@ final class Ticket extends AbstractEntity
      * @param DateTime $date_created
      * @return $this
      */
-    public function setDateCreated($date_created)
+    public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateArchived()
+    {
+        return $this->date_archived;
+    }
+
+    /**
+     * @param DateTime $date_archived
+     * @return $this
+     */
+    public function setDateArchived(DateTime $date_archived)
+    {
+        $this->date_archived = $date_archived;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateResolved()
+    {
+        return $this->date_resolved;
+    }
+
+    /**
+     * @param DateTime $date_resolved
+     * @return $this
+     */
+    public function setDateResolved(DateTime $date_resolved)
+    {
+        $this->date_resolved = $date_resolved;
         return $this;
     }
 
@@ -273,11 +387,165 @@ final class Ticket extends AbstractEntity
     }
 
     /**
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
+     * @param string $language
+     * @return $this
+     */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getCategory()
+    {
+        return $this->category;
+    }
+
+    /**
+     * @param string $category
+     * @return $this
+     */
+    public function setCategory($category)
+    {
+        $this->category = $category;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWorkflow()
+    {
+        return $this->workflow;
+    }
+
+    /**
+     * @param string $workflow
+     * @return $this
+     */
+    public function setWorkflow($workflow)
+    {
+        $this->workflow = $workflow;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getProduct()
+    {
+        return $this->product;
+    }
+
+    /**
+     * @param string $product
+     * @return $this
+     */
+    public function setProduct($product)
+    {
+        $this->product = $product;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * @param string $organization
+     * @return $this
+     */
+    public function setOrganization($organization)
+    {
+        $this->organization = $organization;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isHold()
+    {
+        return $this->is_hold;
+    }
+
+    /**
+     * @param boolean $is_hold
+     * @return $this
+     */
+    public function setAsHold($is_hold)
+    {
+        $this->is_hold = $is_hold;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUrgency()
+    {
+        return $this->urgency;
+    }
+
+    /**
+     * @param int $urgency
+     * @return $this
+     */
+    public function setUrgency($urgency)
+    {
+        $this->urgency = $urgency;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getParticipants()
+    {
+        return $this->participants;
+    }
+
+    /**
+     * @param string $participants
+     * @return $this
+     */
+    public function setParticipants($participants)
+    {
+        $this->participants = $participants;
+        return $this;
+    }
+
+    /**
      * @return Collection
      */
     public function getMessages()
     {
         return $this->messages;
+    }
+
+    /**
+     * @param string $label
+     * @return $this
+     */
+    public function addLabel($label)
+    {
+        $this->labels[] = $label;
+        return $this;
     }
 
     /**
@@ -330,8 +598,10 @@ final class Ticket extends AbstractEntity
     {
         $metadata
             ->addPropertyConstraint('ref', new Constraints\NotBlank())
+
             ->addPropertyConstraint('person_email', new Constraints\NotBlank())
             ->addPropertyConstraint('person_email', new Constraints\Email())
+
             ->addPropertyConstraint('agent_email', new Constraints\Email())
             ->addPropertyConstraint('subject', new Constraints\NotBlank())
             ->addPropertyConstraint('status', new Constraints\NotBlank());

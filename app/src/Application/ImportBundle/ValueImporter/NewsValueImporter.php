@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\ValueImporter;
 
 use Application\ImportBundle\Value\NewsValue;
@@ -36,11 +32,17 @@ use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
 use Orb\Validator\StringEmail;
 
+/**
+ * Class NewsValueImporter
+ * @package Application\ImportBundle\ValueImporter
+ */
 class NewsValueImporter extends AbstractValueImporter
 {
     /**
-     * @param  mixed                                                $nval
-     * @throws \Application\ImportBundle\Exception\BadDataException
+     * @param mixed $nval
+     *
+     * @throws BadDataException
+     * @throws DuplicateValueException
      */
     public function importValue($nval)
     {
@@ -56,10 +58,8 @@ class NewsValueImporter extends AbstractValueImporter
             throw new DuplicateValueException(sprintf("A News item with the title \"%s\" already exists (skipping)", $nval->title));
         }
 
-        $log_id = "News Item :: " . $nval->oid . " ";
-
-        $record = array();
-
+        $log_id  = "News Item :: " . $nval->oid . " ";
+        $record  = array();
         $news_id = null;
 
         #------------------------------
@@ -95,34 +95,32 @@ class NewsValueImporter extends AbstractValueImporter
         # Category
         #------------------------------
         if ($nval->category) {
-            $category = $nval->category;
-
+            $category    = $nval->category;
             $category_id = $this->getMappers()->findIdFromMappedValue('news_category', $category);
 
             if ($category_id) {
                 $this->getLogger()->info(sprintf("[%s] Found existing news category %s", $log_id, $category));
-
                 $record['category_id'] = $category_id;
             } else {
                 $this->getLogger()->warning(sprintf("[%s] New news category %s (creating)", $log_id, $category));
-
                 $this->getDb()->insert('news_categories', array('title' => $category));
 
                 $record['category_id'] = $this->getDb()->lastInsertId();
-
                 $this->getMappers()->learnMapping('news_category', array('id' => $record['category_id'], 'title' => $category));
             }
         }
 
-        $record['title']		= $nval->title;
-        $record['content']		= $nval->content;
-        $record['slug']			= $nval->slug;
-        $record['date_created']		= isset($nval->date_created) ? $nval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['date_published']	= isset($nval->date_published) ? $nval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['total_rating']		= $nval->total_rating;
-        $record['num_comments']		= $nval->num_comments;
-        $record['num_ratings']		= $nval->num_ratings;
-        $record['view_count']		= $nval->view_count;
+        $record = array_merge($record, array(
+            'title'          => $nval->title,
+            'content'        => $nval->content,
+            'slug'           => $nval->slug,
+            'date_created'   => isset($nval->date_created) ? $nval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+            'date_published' => isset($nval->date_published) ? $nval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+            'total_rating'   => $nval->total_rating,
+            'num_comments'   => $nval->num_comments,
+            'num_ratings'    => $nval->num_ratings,
+            'view_count'     => $nval->view_count
+        ));
 
         if ($nval->date_published) {
             $record['status'] = 'published';

@@ -39,6 +39,8 @@ use DateTime;
  */
 final class Person extends AbstractEntity
 {
+    const PASSWORD_SCHEME_PLAIN = 'plain';
+
     /**
      * @var int
      */
@@ -55,6 +57,13 @@ final class Person extends AbstractEntity
      * @var bool
      */
     private $is_user = false;
+
+    /**
+     * Can we merge isAgent and isUser and isAdmin?
+     *
+     * @var bool
+     */
+    private $is_admin = false;
 
     /**
      * @var string
@@ -74,7 +83,28 @@ final class Person extends AbstractEntity
     private $name;
 
     /**
-     * @var string or int? Can we merge it to date created?
+     * Too much names, something merge?
+     *
+     * @var string
+     */
+    private $override_display_name;
+
+    /**
+     * @var string
+     */
+    private $password;
+
+    /**
+     * Available schemes?
+     *
+     * @var string
+     */
+    private $password_scheme = self::PASSWORD_SCHEME_PLAIN;
+
+    /**
+     * Can we merge it to date created?
+     *
+     * @var string or int?
      */
     private $timezone;
 
@@ -84,9 +114,34 @@ final class Person extends AbstractEntity
     private $date_created;
 
     /**
+     * @var string
+     */
+    private $language;
+
+    /**
+     * @var string
+     */
+    private $organization;
+
+    /**
+     * @var string
+     */
+    private $organization_position;
+
+    /**
      * @var array
      */
     private $emails = array();
+
+    /**
+     * @var string[]
+     */
+    private $labels = array();
+
+    /**
+     * @var string[]
+     */
+    private $user_groups = array();
 
     /**
      * {@inheritdoc}
@@ -151,6 +206,24 @@ final class Person extends AbstractEntity
     }
 
     /**
+     * @return boolean
+     */
+    public function isAdmin()
+    {
+        return $this->is_admin;
+    }
+
+    /**
+     * @param boolean $is_admin
+     * @return $this
+     */
+    public function setAsAdmin($is_admin)
+    {
+        $this->is_admin = (bool)$is_admin;
+        return $this;
+    }
+
+    /**
      * @return string
      */
     public function getFirstName()
@@ -207,6 +280,60 @@ final class Person extends AbstractEntity
     /**
      * @return string
      */
+    public function getOverrideDisplayName()
+    {
+        return $this->override_display_name;
+    }
+
+    /**
+     * @param string $override_display_name
+     * @return $this
+     */
+    public function setOverrideDisplayName($override_display_name)
+    {
+        $this->override_display_name = $override_display_name;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPassword()
+    {
+        return $this->password;
+    }
+
+    /**
+     * @param string $password
+     * @return $this
+     */
+    public function setPassword($password)
+    {
+        $this->password = $password;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPasswordScheme()
+    {
+        return $this->password_scheme;
+    }
+
+    /**
+     * @param string $password_scheme
+     * @return $this
+     */
+    public function setPasswordScheme($password_scheme)
+    {
+        $this->password_scheme = $password_scheme;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
     public function getTimezone()
     {
         return $this->timezone;
@@ -241,12 +368,86 @@ final class Person extends AbstractEntity
     }
 
     /**
+     * @return string
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
+     * @param string $language
+     * @return $this
+     */
+    public function setLanguage($language)
+    {
+        $this->language = $language;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
+    /**
+     * @param string $organization
+     * @return $this
+     */
+    public function setOrganization($organization)
+    {
+        $this->organization = $organization;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getOrganizationPosition()
+    {
+        return $this->organization_position;
+    }
+
+    /**
+     * @param string $organization_position
+     * @return $this
+     */
+    public function setOrganizationPosition($organization_position)
+    {
+        $this->organization_position = $organization_position;
+        return $this;
+    }
+
+    /**
      * @param string $email
      * @return $this
      */
     public function addEmail($email)
     {
         $this->emails[] = $email;
+        return $this;
+    }
+
+    /**
+     * @param string $label
+     * @return $this
+     */
+    public function addLabel($label)
+    {
+        $this->labels[] = $label;
+        return $this;
+    }
+
+    /**
+     * @param string $user_group
+     * @return $this
+     */
+    public function addUserGroup($user_group)
+    {
+        $this->user_groups[] = $user_group;
         return $this;
     }
 

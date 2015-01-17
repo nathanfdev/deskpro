@@ -1,34 +1,29 @@
 <?php
-
-/* * ************************************************************************\
-  | DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
-  | a British company located in London, England.                            |
-  |                                                                          |
-  | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
-  |                                                                          |
-  | The license agreement under which this software is released              |
-  | can be found at https://www.deskpro.com/eula/                            |
-  |                                                                          |
-  | By using this software, you acknowledge having read the license          |
-  | and agree to be bound thereby.                                           |
-  |                                                                          |
-  | Please note that DeskPRO is not free software. We release the full       |
-  | source code for our software because we trust our users to pay us for    |
-  | the huge investment in time and energy that has gone into both creating  |
-  | this software and supporting our customers. By providing the source code |
-  | we preserve our customers' ability to modify, audit and learn from our   |
-  | work. We have been developing DeskPRO since 2001, please help us make it |
-  | another decade.                                                          |
-  |                                                                          |
-  | Like the work you see? Think you could make it better? We are always     |
-  | looking for great developers to join us: http://www.deskpro.com/jobs/    |
-  |                                                                          |
-  | ~ Thanks, Everyone at Team DeskPRO                                       |
-  \************************************************************************* */
-
-/**
- * @package Importer
- */
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
 
 namespace Application\ImportBundle\ValueImporter;
 
@@ -37,6 +32,10 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Psr\Log\LoggerInterface;
 
+/**
+ * Class AbstractCustomDefValueImporter
+ * @package Application\ImportBundle\ValueImporter
+ */
 abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 {
     /** @var string */
@@ -58,26 +57,40 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
         'Application\DeskPRO\CustomFields\Handler\Date'
     );
 
+    /**
+     * Constructor
+     *
+     * @param string               $mode
+     * @param DeskproContainer     $container
+     * @param LoggerInterface      $logger
+     * @param RecordMapperRegistry $mappers
+     * @param mixed                $mapped_value
+     */
     public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers, $mapped_value)
     {
         parent::__construct($mode, $container, $logger, $mappers);
-
         $this->mapped_value = $mapped_value;
     }
 
+    /**
+     * @param $field_type
+     * @return bool
+     */
     protected function isCustomFieldTypeSupported($field_type)
     {
         return in_array($field_type, $this->supported_custom_field_types);
     }
 
+    /**
+     * @param CustomDefValue $custom_def_value
+     */
     protected function processCustomField(CustomDefValue $custom_def_value)
     {
         $record = array(
             $this->mapped_column => $this->mapped_value,
         );
 
-        $field_key = $custom_def_value->key;
-
+        $field_key       = $custom_def_value->key;
         $mapped_field_id = $this->getMapper()->findIdFromValue($field_key);
 
         if ($mapped_field_id && $this->isCustomFieldTypeSupported($this->getMapper()->fetchHandlerClass($field_key))) {
@@ -133,9 +146,11 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
         }
     }
 
+    /**
+     * @return \Application\ImportBundle\RecordMapper\RecordMapperInterface
+     */
     protected function getMapper()
     {
         return $this->getMappers()->getMapper($this->mapper_class);
     }
-
 }
