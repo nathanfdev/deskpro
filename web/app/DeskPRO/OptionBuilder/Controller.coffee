@@ -232,7 +232,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
         # can show the proper title
         if not option_title and (not isRetry or isRetry < 20)
           @$timeout(->
-            run(tpl, data, if isRetry then 1 else isRetry+1)
+            run(tpl, data, if not isRetry then 1 else isRetry+1)
           , 140)
           return
 
@@ -317,6 +317,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
         element.data('scopeId', rowId)
         @els.loadingOptionMessage.hide().removeClass('loading-on')
+        console.info 'run5'
         @els.noOptionsMessage.hide()
         placeholder.replaceWith(element)
         @rows[rowId] = {
