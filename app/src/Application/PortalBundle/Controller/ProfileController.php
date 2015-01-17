@@ -43,6 +43,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class ProfileController extends AbstractController
 {
+    /**
+     * @Route("/register", name="portal_user_registration")
+     */
     public function registerAction(Request $request)
     {
         $person = $this->getPersonFactory()->createNewPerson();
@@ -71,6 +74,7 @@ class ProfileController extends AbstractController
     }
 
     /**
+     * @Route("/profile", name="portal_user_profile")
      * @Security("is_granted('EDIT_PROFILE', user)")
      */
     public function editAction(Request $request)

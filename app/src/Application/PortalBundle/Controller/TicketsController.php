@@ -40,10 +40,12 @@ use Application\PortalBundle\Controller\AbstractController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 
 class TicketsController extends AbstractController
 {
     /**
+     * @Route("/tickets", name="portal_tickets")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
     public function indexAction()
@@ -61,6 +63,7 @@ class TicketsController extends AbstractController
     }
 
     /**
+     * @Route("/tickets/{id}", name="portal_tickets_view")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS') and is_granted('TICKET_VIEW', ticket)")
      */
     public function viewAction(Ticket $ticket, Request $request)
@@ -105,6 +108,7 @@ class TicketsController extends AbstractController
     }
 
     /**
+     * @Route("/tickets/{id}/edit", name="portal_tickets_edit")
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS') and is_granted('TICKET_EDIT', ticket)")
      */
     public function editAction(Ticket $ticket, Request $request)

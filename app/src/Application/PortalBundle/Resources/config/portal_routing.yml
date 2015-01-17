@@ -28,34 +28,6 @@ portal_login_callback:
 portal_login_usersource_sso:
     path: /login/usersource-sso/{usersource_id}
 
-
-
-# Tickets
-portal_tickets:
-    path: /tickets
-    defaults:
-      _controller: PortalBundle:Tickets:index
-portal_tickets_view:
-    path: /tickets/view/{id}
-    defaults:
-      _controller: PortalBundle:Tickets:view
-portal_tickets_edit:
-    path: /tickets/{id}
-    defaults:
-      _controller: PortalBundle:Tickets:edit
-
-# User Account / Profile / Login / Registration
-portal_user_profile:
-    path: /profile
-    defaults:
-      _controller: PortalBundle:Profile:edit
-
-portal_user_registration:
-    path: /register
-    defaults:
-      _controller: PortalBundle:Profile:register
-
-
 # DEV
 portal_dev:
     path: /_dev
