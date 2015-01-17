@@ -43,9 +43,15 @@ class ImportExtension extends Extension
      */
     public function load(array $config, ContainerBuilder $container)
     {
+        // Csv reader
         $definition = new Definition('Application\ImportBundle\CsvReader\CsvReader');
         $container->setDefinition('deskpro.import.csv_reader', $definition);
 
+        // Json reader
+        $definition = new Definition('Application\ImportBundle\JsonReader\JsonReader');
+        $container->setDefinition('deskpro.import.json_reader', $definition);
+
+        // Os ticket reader
         $definition = new Definition('Application\ImportBundle\OsTicket\OsTicketReaderFactory');
         $container->setDefinition('deskpro.import.os_ticket_reader_factory', $definition);
 
@@ -54,6 +60,7 @@ class ImportExtension extends Extension
         $definition->setFactoryMethod('createReaderByDeskproConfig');
         $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
 
+        // Import generator
         $definition = new Definition('Application\ImportBundle\Generator\GeneratorFactory');
         $definition->addArgument(new Reference('service_container'));
         $container->setDefinition('deskpro.import.generator_factory', $definition);

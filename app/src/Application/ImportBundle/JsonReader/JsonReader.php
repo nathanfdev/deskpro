@@ -31,6 +31,8 @@ use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
 /**
+ * Json data parser
+ *
  * Class JsonReader
  * @package Application\ImportBundle\JsonReader
  */
@@ -39,23 +41,60 @@ class JsonReader implements JsonReaderInterface
     /**
      * {@inheritdoc}
      */
-    public function getDirectoryIterator($path, $exclude_done)
+    public function getDirectoryFilesCount(JsonConfig $config)
+    {
+        $count = 0;
+        $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
+        foreach ($iterator as $row) {
+            $row = @json_decode($row, true);
+            if (is_array($row)) {
+                $count++;
+            }
+        }
+
+        return $count;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getData(JsonConfig $config)
+    {
+        $data = array();
+        $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
+        foreach ($iterator as $row) {
+            $row = @json_decode($row, true);
+            if (is_array($row)) {
+                $data[] = $row;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns directory json files iterator
+     *
+     * @param string $path
+     * @param bool   $exclude_done
+     *
+     * @return RecursiveIteratorIterator
+     * @throws \Exception
+     */
+    public function getIterator($path, $exclude_done)
     {
         if (!is_dir($path)) {
             throw new \Exception(sprintf('Path `%s` not found', $path));
         }
 
-        $filter = new DirectoryIteratorFilter(new RecursiveDirectoryIterator(
-            $path,
-            RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
-        ));
-
-        if ($exclude_done) {
-            $filter->excludeDone();
-        }
-
         return new RecursiveIteratorIterator(
-            $filter,
+            new DirectoryIteratorFilter(
+                new RecursiveDirectoryIterator(
+                    $path,
+                    RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
+                ),
+                $exclude_done
+            ),
             RecursiveIteratorIterator::SELF_FIRST | RecursiveIteratorIterator::LEAVES_ONLY
         );
     }

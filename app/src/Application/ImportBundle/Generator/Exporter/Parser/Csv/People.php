@@ -54,7 +54,7 @@ class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->csv_reader->getRowsCount($this->getCsvReaderConfig(self::FILE_PEOPLE));
+        return $this->reader->getRowsCount($this->getConfig());
     }
 
     /**
@@ -63,7 +63,7 @@ class People extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $people = $this->csv_reader->getData($this->getCsvReaderConfig(self::FILE_PEOPLE));
+        $people = $this->reader->getData($this->getConfig());
         foreach ($people as $num => $person) {
             $this->advanceProgressBar();
 
@@ -104,5 +104,15 @@ class People extends AbstractParser
     private function hasRequiredPersonColumns(array $person)
     {
         return $this->hasRequiredColumns($person, array('name', 'email'));
+    }
+
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\CsvReader\CsvConfig
+     */
+    private function getConfig()
+    {
+        return $this->getReaderConfig(self::FILE_PEOPLE);
     }
 }

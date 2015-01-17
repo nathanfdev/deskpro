@@ -27,11 +27,41 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\JsonReader\JsonConfig;
+use Application\ImportBundle\JsonReader\JsonReaderInterface;
+
 /**
+ * Abstract json parser
+ *
  * Class AbstractParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
+    /**
+     * @var JsonReaderInterface
+     */
+    protected $reader;
 
+    /**
+     * Constructor
+     *
+     * @param JsonReaderInterface $reader
+     */
+    public function __construct(JsonReaderInterface $reader)
+    {
+        $this->reader = $reader;
+    }
+
+    /**
+     * Get json reader config
+     * todo add support to exclude done files
+     *
+     * @param string $record_type
+     * @return JsonConfig
+     */
+    protected function getReaderConfig($record_type)
+    {
+        return new JsonConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+    }
 }

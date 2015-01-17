@@ -55,7 +55,7 @@ class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->csv_reader->getRowsCount($this->getCsvReaderConfig(self::FILE_TICKETS));
+        return $this->reader->getRowsCount($this->getTicketsConfig());
     }
 
     /**
@@ -64,7 +64,7 @@ class Tickets extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $tickets    = $this->csv_reader->getData($this->getCsvReaderConfig(self::FILE_TICKETS));
+        $tickets    = $this->reader->getData($this->getTicketsConfig());
         $messages   = $this->exportMessages();
 
         foreach ($tickets as $num => $ticket) {
@@ -106,7 +106,7 @@ class Tickets extends AbstractParser
     private function exportMessages()
     {
         $collection = new Entity\Collection();
-        $messages   = $this->csv_reader->getData($this->getCsvReaderConfig(self::FILE_TICKET_MESSAGES));
+        $messages   = $this->reader->getData($this->getTiketMessagesConfig());
 
         foreach ($messages as $num => $message) {
             if ($this->hasRequiredTicketMessageColumns($message) === false) {
@@ -146,5 +146,25 @@ class Tickets extends AbstractParser
     private function hasRequiredTicketMessageColumns(array $message)
     {
         return $this->hasRequiredColumns($message, array('ticket_id', 'message_text', 'user'));
+    }
+
+    /**
+     * Returns reader of ticket records config
+     *
+     * @return \Application\ImportBundle\CsvReader\CsvConfig
+     */
+    private function getTicketsConfig()
+    {
+        return $this->getReaderConfig(self::FILE_TICKETS);
+    }
+
+    /**
+     * Returns reader of ticket message records config
+     *
+     * @return \Application\ImportBundle\CsvReader\CsvConfig
+     */
+    private function getTiketMessagesConfig()
+    {
+        return $this->getReaderConfig(self::FILE_TICKET_MESSAGES);
     }
 }

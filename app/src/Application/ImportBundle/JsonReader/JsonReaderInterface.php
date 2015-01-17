@@ -28,16 +28,28 @@
 namespace Application\ImportBundle\JsonReader;
 
 /**
+ * Json data parser interface
+ *
  * Interface JsonReaderInterface
  * @package Application\ImportBundle\JsonReader
  */
 interface JsonReaderInterface
 {
     /**
-     * @param  string $path
-     * @param  bool   $exclude_done
+     * Returns count of json files in the dir
+     * One record per file
      *
-     * @return \RecursiveIteratorIterator
+     * @param JsonConfig $config
+     * @return int
      */
-    public function getDirectoryIterator($path, $exclude_done);
+    public function getDirectoryFilesCount(JsonConfig $config);
+
+    /**
+     * Returns directory files data
+     * Reads all directory json files, decode and returns  array
+     *
+     * @param JsonConfig $config
+     * @return array
+     */
+    public function getData(JsonConfig $config);
 }

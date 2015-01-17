@@ -53,7 +53,7 @@ class Tickets extends AbstractParser
      */
     public function getCount()
     {
-        return $this->os_ticket_reader->getTicketsCount();
+        return $this->reader->getTicketsCount();
     }
 
     /**
@@ -68,7 +68,7 @@ class Tickets extends AbstractParser
         $offset     = 0;
         $collection = new Entity\Collection();
 
-        while ($batch = $this->os_ticket_reader->findTickets($this->config->getBatchSize(), $offset)) {
+        while ($batch = $this->reader->findTickets($this->config->getBatchSize(), $offset)) {
             $offset += count($batch);
 
             foreach ($batch as $num => $ticket) {
@@ -81,10 +81,10 @@ class Tickets extends AbstractParser
                     $entity
                         ->setDestination('ticket_' . ($num + $offset))
                         ->setRef($ticket['number'])
-                        ->setDepartment($this->os_ticket_reader->findDepartmentById($ticket['dept_id']))
-                        ->setPersonEmail($this->os_ticket_reader->findUserEmailById($ticket['user_id']))
-                        ->setAgentEmail($this->os_ticket_reader->findUserEmailById($ticket['staff_id']) ? : null)
-                        ->setAgentTeam($this->os_ticket_reader->findUserEmailById($ticket['team_id']) ? : null)
+                        ->setDepartment($this->reader->findDepartmentById($ticket['dept_id']))
+                        ->setPersonEmail($this->reader->findUserEmailById($ticket['user_id']))
+                        ->setAgentEmail($this->reader->findUserEmailById($ticket['staff_id']))
+                        ->setAgentTeam($this->reader->findUserEmailById($ticket['team_id']))
                         ->setStatus($this->getTicketStatus($ticket))
                         ->setDateCreated(new DateTime($ticket['created']))
                         ->setSubject($ticket['subject'])
@@ -96,8 +96,8 @@ class Tickets extends AbstractParser
                         $entity->addMessage($message);
                     }
 
-                    $this->logInfo(sprintf('%s parsed successfully!', $entity->getDestination()));
                     $collection->attach($entity);
+                    $this->logInfo(sprintf('%s parsed successfully!', $entity->getDestination()));
                 }
             }
         }
@@ -113,7 +113,7 @@ class Tickets extends AbstractParser
      */
     private function exportMessages($ticket_id)
     {
-        $messages   = $this->os_ticket_reader->findMessages($ticket_id);
+        $messages   = $this->reader->findMessages($ticket_id);
         $collection = new Entity\Collection();
 
         foreach ($messages as $num => $message) {
@@ -148,7 +148,7 @@ class Tickets extends AbstractParser
     private function exportAttachments($message_id)
     {
         $collection  = new Entity\Collection();
-        $attachments = $this->os_ticket_reader->findMessageAttachments($message_id);
+        $attachments = $this->reader->findMessageAttachments($message_id);
         foreach ($attachments as $num => $attachment) {
             if ($this->hasRequiredAttachmentColumns($attachment) === false) {
                 $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
@@ -156,7 +156,7 @@ class Tickets extends AbstractParser
                 $entity = new Entity\TicketAttachment();
                 $entity
                     ->setOid($num)
-                    ->setBlobData(base64_encode($this->os_ticket_reader->findAttachmentData($attachment['file_id'])))
+                    ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))
                     ->setFileName($attachment['name'])
                     ->setContentType($attachment['type']);
 
@@ -196,10 +196,10 @@ class Tickets extends AbstractParser
     {
         $email = null;
         if ($message['thread_type'] === 'R' && $message['staff_id']) {
-            $email = $this->os_ticket_reader->findStaffEmailById($message['staff_id']);
+            $email = $this->reader->findStaffEmailById($message['staff_id']);
 
         } elseif ($message['thread_type'] === 'M' && $message['user_id']) {
-            $email = $this->os_ticket_reader->findUserEmailById($message['user_id']);
+            $email = $this->reader->findUserEmailById($message['user_id']);
         }
 
         return $email;
@@ -254,6 +254,10 @@ class Tickets extends AbstractParser
      */
     private function hasRequiredAttachmentColumns(array $attachment)
     {
-        return $this->hasRequiredColumns($attachment, array('file_id', 'name', 'type'));
+        return $this->hasRequiredColumns($attachment, array(
+            'file_id',
+            'name',
+            'type',
+        ));
     }
 }

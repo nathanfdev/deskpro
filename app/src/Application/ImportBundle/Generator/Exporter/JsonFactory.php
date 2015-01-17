@@ -26,8 +26,11 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Generator\Exporter;
+use Application\ImportBundle\JsonReader\JsonReaderInterface;
 
 /**
+ * Json data generator factory
+ *
  * Class JsonFactory
  * @package Application\ImportBundle\Generator\Exporter
  */
@@ -38,10 +41,12 @@ class JsonFactory extends AbstractFactory
      */
     public function createExporter()
     {
+        /** @var JsonReaderInterface $reader */
+        $reader  = $this->container->get('deskpro.import.json_reader');
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\Json\People())
-            ->attach(new Parser\Json\Tickets());
+            ->attach(new Parser\Json\People($reader))
+            ->attach(new Parser\Json\Tickets($reader));
 
         return new Json($parsers);
     }

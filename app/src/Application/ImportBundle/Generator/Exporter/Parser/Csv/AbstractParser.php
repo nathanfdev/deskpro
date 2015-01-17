@@ -31,6 +31,8 @@ use Application\ImportBundle\CsvReader\CsvConfig;
 use Application\ImportBundle\CsvReader\CsvReaderInterface;
 
 /**
+ * Abstract csv parser
+ *
  * Class AbstractCsv
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
@@ -39,25 +41,25 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * @var CsvReaderInterface
      */
-    protected $csv_reader;
+    protected $reader;
 
     /**
      * Constructor
      *
-     * @param CsvReaderInterface $csv_reader
+     * @param CsvReaderInterface $reader
      */
-    public function __construct(CsvReaderInterface $csv_reader)
+    public function __construct(CsvReaderInterface $reader)
     {
-        $this->csv_reader = $csv_reader;
+        $this->reader = $reader;
     }
 
     /**
-     * Get absolute file path
+     * Get csv reader config
      *
      * @param string $record_type
      * @return CsvConfig
      */
-    protected function getCsvReaderConfig($record_type)
+    protected function getReaderConfig($record_type)
     {
         return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
     }

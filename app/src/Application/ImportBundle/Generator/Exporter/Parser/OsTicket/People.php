@@ -53,7 +53,7 @@ class People extends AbstractParser
      */
     public function getCount()
     {
-        return $this->os_ticket_reader->getPeopleCount();
+        return $this->reader->getPeopleCount();
     }
 
     /**
@@ -90,7 +90,7 @@ class People extends AbstractParser
         $offset     = 0;
         $collection = new Entity\Collection();
 
-        while ($batch = $this->os_ticket_reader->findStaff($this->config->getBatchSize(), $offset)) {
+        while ($batch = $this->reader->findStaff($this->config->getBatchSize(), $offset)) {
             $offset += count($batch);
 
             foreach ($batch as $num => $person) {
@@ -106,7 +106,7 @@ class People extends AbstractParser
                         ->setName($person['firstname'] . $person['lastname'])
                         ->setFirstName($person['firstname'])
                         ->setLastName($person['lastname'])
-                        ->setTimezone($this->os_ticket_reader->findTimezoneById($person['timezone_id']))
+                        ->setTimezone($this->reader->findTimezoneById($person['timezone_id']))
                         ->setDateCreated(new DateTime($person['created']))
                         ->addEmail($person['email']);
 
@@ -129,7 +129,7 @@ class People extends AbstractParser
         $offset     = 0;
         $collection = new Entity\Collection();
 
-        while ($batch = $this->os_ticket_reader->findUsers($this->config->getBatchSize(), $offset)) {
+        while ($batch = $this->reader->findUsers($this->config->getBatchSize(), $offset)) {
             $offset += count($batch);
 
             foreach ($batch as $num => $person) {

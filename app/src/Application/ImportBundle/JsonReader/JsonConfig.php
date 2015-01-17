@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,33 +25,69 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPro;
-
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\Writer\AbstractWriter;
+namespace Application\ImportBundle\JsonReader;
 
 /**
- * Generator deskpro writer
- * Imports entities into deskpro database
+ * Json data parser configuration
  *
- * Class DeskProWriter
- * @package Application\ImportBundle\Generator\Writer\DeskPro
+ * Class JsonConfig
+ * @package Application\ImportBundle\JsonReader
  */
-class DeskProWriter extends AbstractWriter
+class JsonConfig
 {
     /**
-     * Constructor
+     * @var string
      */
-    public function __construct()
-    {
+    private $path;
 
+    /**
+     * @var bool
+     */
+    private $exclude_done = false;
+
+    /**
+     * Constructor
+     *
+     * @param string $path
+     */
+    public function __construct($path)
+    {
+        $this->path = $path;
     }
 
     /**
-     * {@inheritdoc}
+     * @return string
      */
-    public function writeData(EntityInterface $entity)
+    public function getPath()
     {
+        return $this->path;
+    }
 
+    /**
+     * @param string $path
+     * @return $this
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExcludeDone()
+    {
+        return $this->exclude_done;
+    }
+
+    /**
+     * @param boolean $exclude_done
+     * @return $this
+     */
+    public function setExcludeDone($exclude_done)
+    {
+        $this->exclude_done = $exclude_done;
+        return $this;
     }
 }

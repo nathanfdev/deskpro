@@ -30,7 +30,7 @@ namespace Application\ImportBundle;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
-use Application\ImportBundle\Exception\MissingMappingExceptionException;
+use Application\ImportBundle\Exception\MissingMappingException;
 use Application\ImportBundle\Exception\MultipleMappingException;
 use Application\ImportBundle\JsonReader\JsonReader;
 use Application\ImportBundle\JsonReader\JsonReaderInterface;
@@ -169,7 +169,7 @@ class Importer
      */
     public function resetDoneMarkers()
     {
-        foreach ($this->json_reader->getDirectoryIterator($this->config->data_path, false) as $file) {
+        foreach ($this->json_reader->getIterator($this->config->data_path, false) as $file) {
             if (file_exists($file->getPath() . '.done')) {
                 unlink(@file_exists($file->getPath() . '.done'));
 
@@ -246,7 +246,7 @@ class Importer
         }
 
         $step_start = microtime(true);
-        $it = $this->json_reader->getDirectoryIterator($this->config->data_path . '/' . $dir, true);
+        $it = $this->json_reader->getIterator($this->config->data_path . '/' . $dir, true);
 
         $count = 0;
         foreach ($it as $file) {
@@ -321,7 +321,7 @@ class Importer
                     $file->getRealPath(), $ex->getMessage()
                 ));
 
-            } catch (MissingMappingExceptionException $ex) {
+            } catch (MissingMappingException $ex) {
                 $this->getLogger()->warning(sprintf(
                     "Invalid mapping detected (@%s) -- %s",
                     $file->getRealPath(), $ex->getMessage()

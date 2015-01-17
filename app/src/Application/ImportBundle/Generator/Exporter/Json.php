@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 /**
+ * Data generator from json files
+ *
  * Class Json
  * @package Application\ImportBundle\Generator\Exporter
  */

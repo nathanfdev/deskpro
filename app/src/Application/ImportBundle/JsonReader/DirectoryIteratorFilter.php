@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\JsonReader;
 
 /**
+ * Directory json files filter
+ *
  * Class DirectoryIteratorFilter
  * @package Application\ImportBundle\JsonReader
  */
@@ -38,16 +40,31 @@ class DirectoryIteratorFilter extends \RecursiveFilterIterator
      */
     private $exclude_done = false;
 
-    public function excludeDone()
+    /**
+     * Constructor
+     *
+     * @param \RecursiveIterator $iterator
+     * @param boolean            $exclude_done
+     */
+    public function __construct(\RecursiveIterator $iterator, $exclude_done)
     {
-        $this->exclude_done = true;
+        parent::__construct($iterator);
+        $this->setExcludeDone($exclude_done);
     }
 
-    public function includeDone()
+    /**
+     * @param boolean $exclude_done
+     * @return $this
+     */
+    public function setExcludeDone($exclude_done)
     {
-        $this->exclude_done = false;
+        $this->exclude_done = (bool)$exclude_done;
+        return $this;
     }
 
+    /**
+     * {@inheritdoc}
+     */
     public function accept()
     {
         /** @var \SplFileInfo $current */

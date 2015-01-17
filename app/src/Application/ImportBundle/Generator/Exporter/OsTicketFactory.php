@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 
 /**
+ * OsTicket data generator factory
+ *
  * Class OsTicketFactory
  * @package Application\ImportBundle\Generator\Exporter
  */

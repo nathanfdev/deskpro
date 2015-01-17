@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\CsvReader;
 
 /**
- * Import csv data parser interface
+ * Csv data parser interface
  *
  * Interface CsvReaderInterface
  * @package Application\ImportBundle\CsvReader

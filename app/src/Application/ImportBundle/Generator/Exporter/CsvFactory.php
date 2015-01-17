@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\ImportBundle\CsvReader\CsvReaderInterface;
 
 /**
+ * Csv data generator factory
+ *
  * Class CsvFactory
  * @package Application\ImportBundle\Generator\Exporter
  */

@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 
 /**
+ * Abstract os ticker parser
+ *
  * Class AbstractParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
@@ -38,15 +40,15 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     /**
      * @var OsTicketReaderInterface
      */
-    protected $os_ticket_reader;
+    protected $reader;
 
     /**
      * Constructor
      *
-     * @param OsTicketReaderInterface $os_ticket_reader
+     * @param OsTicketReaderInterface $reader
      */
-    public function __construct(OsTicketReaderInterface $os_ticket_reader)
+    public function __construct(OsTicketReaderInterface $reader)
     {
-        $this->os_ticket_reader = $os_ticket_reader;
+        $this->reader = $reader;
     }
 }
