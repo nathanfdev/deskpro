@@ -73,7 +73,7 @@ class ExportCommand extends AbstractExportCommand
             $generator->generate();
             $output->writeln('');
             $output->writeln(sprintf(
-                'Done. Look at the log file `%s` to see details.',
+                'Done. Exporting was successful. Look at the log file `%s` to see details.',
                 $config->getLogPath()
             ));
 

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,32 +25,16 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
-
-use Application\ImportBundle\Generator\AbstractGenerator;
+namespace Application\ImportBundle\ValueImporter;
 
 /**
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Interface ImporterInterface
+ * @package Application\ImportBundle\ValueImporter
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+interface ValueImporterInterface
 {
     /**
-     * Check if a record has all required columns
-     *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
+     * @param mixed $value
      */
-    protected function hasRequiredColumns(array $record, array $columns)
-    {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $record) === false) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    public function importValue($value);
 }

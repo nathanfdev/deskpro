@@ -25,32 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
+namespace Application\ImportBundle\JsonReader;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
+use RecursiveIteratorIterator;
+use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
 /**
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class JsonReader
+ * @package Application\ImportBundle\JsonReader
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+class JsonReader implements JsonReaderInterface
 {
     /**
-     * Check if a record has all required columns
-     *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    protected function hasRequiredColumns(array $record, array $columns)
+    public function getDirectoryIterator($path, $exclude_done)
     {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $record) === false) {
-                return false;
-            }
+        if (!is_dir($path)) {
+            throw new \Exception(sprintf('Path `%s` not found', $path));
         }
 
-        return true;
+        $filter = new DirectoryIteratorFilter(new RecursiveDirectoryIterator(
+            $path,
+            RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
+        ));
+
+        if ($exclude_done) {
+            $filter->excludeDone();
+        }
+
+        return new RecursiveIteratorIterator(
+            $filter,
+            RecursiveIteratorIterator::SELF_FIRST | RecursiveIteratorIterator::LEAVES_ONLY
+        );
     }
 }

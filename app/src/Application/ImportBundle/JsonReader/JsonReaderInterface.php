@@ -25,32 +25,19 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
-
-use Application\ImportBundle\Generator\AbstractGenerator;
+namespace Application\ImportBundle\JsonReader;
 
 /**
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Interface JsonReaderInterface
+ * @package Application\ImportBundle\JsonReader
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+interface JsonReaderInterface
 {
     /**
-     * Check if a record has all required columns
+     * @param  string $path
+     * @param  bool   $exclude_done
      *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
+     * @return \RecursiveIteratorIterator
      */
-    protected function hasRequiredColumns(array $record, array $columns)
-    {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $record) === false) {
-                return false;
-            }
-        }
-
-        return true;
-    }
+    public function getDirectoryIterator($path, $exclude_done);
 }

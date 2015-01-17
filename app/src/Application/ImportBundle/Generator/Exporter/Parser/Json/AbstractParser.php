@@ -25,32 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
-
-use Application\ImportBundle\Generator\AbstractGenerator;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 /**
  * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
-    /**
-     * Check if a record has all required columns
-     *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
-     */
-    protected function hasRequiredColumns(array $record, array $columns)
-    {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $record) === false) {
-                return false;
-            }
-        }
 
-        return true;
-    }
 }

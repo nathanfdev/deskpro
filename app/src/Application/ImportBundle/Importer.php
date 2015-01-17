@@ -32,6 +32,8 @@ use Application\ImportBundle\Exception\BadDataException;
 use Application\ImportBundle\Exception\DuplicateValueException;
 use Application\ImportBundle\Exception\MissingMappingExceptionException;
 use Application\ImportBundle\Exception\MultipleMappingException;
+use Application\ImportBundle\JsonReader\JsonReader;
+use Application\ImportBundle\JsonReader\JsonReaderInterface;
 use Application\ImportBundle\RecordMapper\CommonRecordMapper;
 use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
@@ -56,7 +58,6 @@ use Monolog\Handler\StreamHandler;
 use Monolog\Logger;
 use Orb\Util\Util;
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
 
 /**
  * Class Importer
@@ -102,6 +103,11 @@ class Importer
     private $container;
 
     /**
+     * @var JsonReaderInterface
+     */
+    private $json_reader;
+
+    /**
      * Constructor
      *
      * @param DeskproContainer $container
@@ -110,10 +116,11 @@ class Importer
      */
     public function __construct(DeskproContainer $container, ImporterConfig $config, LoggerInterface $logger = null)
     {
-        $this->container = $container;
-        $this->db        = $container->getDb();
-        $this->config    = $config;
-        $this->mappers   = new RecordMapperRegistry();
+        $this->container   = $container;
+        $this->db          = $container->getDb();
+        $this->json_reader = new JsonReader();
+        $this->config      = $config;
+        $this->mappers     = new RecordMapperRegistry();
         $this->mappers
             ->addMapper('person', new PersonRecordMapper($this->db))
             ->addMapper('ticket_department', new TicketDepartmentRecordMapper($this->db))
@@ -162,14 +169,20 @@ class Importer
      */
     public function resetDoneMarkers()
     {
-        foreach ($this->getDirectoryIterator('/', false) as $file) {
+        foreach ($this->json_reader->getDirectoryIterator($this->config->data_path, false) as $file) {
             if (file_exists($file->getPath() . '.done')) {
                 unlink(@file_exists($file->getPath() . '.done'));
-                if ($this->status_callback) $this->status_callback->postResetDoneMarker($this, $file);
+
+                if ($this->status_callback) {
+                    $this->status_callback->postResetDoneMarker($this, $file);
+                }
             }
         }
     }
 
+    /**
+     * @throws \Exception
+     */
     public function processImports()
     {
         $this->processDirectory('people', new PersonValueImporter(
@@ -183,10 +196,11 @@ class Importer
             $this->config->mode,
             $this->container,
             $this->logger,
-            $this->mappers,
-            function ($container) {
-                $container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
-            }
+            $this->mappers
+            // not used in the importer, remove?
+//            function ($container) {
+//                $container->getEm()->getRepository('DeskPRO:Ticket')->fillSearchTable();
+//            }
         ));
 
         $this->processDirectory('articles', new KbValueImporter(
@@ -232,7 +246,7 @@ class Importer
         }
 
         $step_start = microtime(true);
-        $it = $this->getDirectoryIterator($dir, true);
+        $it = $this->json_reader->getDirectoryIterator($this->config->data_path . '/' . $dir, true);
 
         $count = 0;
         foreach ($it as $file) {
@@ -257,54 +271,74 @@ class Importer
 
             try {
                 $start = microtime(true);
-
-                if ($this->status_callback) $this->status_callback->preImportValue($this, $value_importer, $file, $count, $data);
+                if ($this->status_callback) {
+                    $this->status_callback->preImportValue($this, $value_importer, $file, $count, $data);
+                }
 
                 //TODO clean this up
+                $value = null;
                 switch (Util::getBaseClassname($value_importer)) {
                     case 'PersonValueImporter':
                         $parser = new PersonArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'TicketValueImporter':
                         $parser = new TicketArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'KbValueImporter':
                         $parser = new KbArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'NewsValueImporter':
                         $parser = new NewsArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'FeedbackValueImporter':
                         $parser = new FeedbackArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                     case 'DownloadValueImporter':
                         $parser = new DownloadArrayParser();
-                        $value = $parser->parseArray($data);
+                        $value  = $parser->parseArray($data);
                         break;
                 }
 
                 $value_importer->importValue($value);
-                if ($this->status_callback) $this->status_callback->postImportValue($this, $value_importer, $file, $count, $data, microtime(true) - $start);
+                if ($this->status_callback) {
+                    $this->status_callback->postImportValue($this, $value_importer, $file, $count, $data, microtime(true) - $start);
+                }
+
             } catch (BadDataException $ex) {
-                $this->getLogger()
-                    ->warning(sprintf("Invalid or missing data in file (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
+                $this->getLogger()->warning(sprintf(
+                    "Invalid or missing data in file (@%s) -- %s",
+                    $file->getRealPath(), $ex->getMessage()
+                ));
+
             } catch (DuplicateValueException $ex) {
-                $this->getLogger()
-                    ->warning(sprintf("Duplicate value detected (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
+                $this->getLogger()->warning(sprintf(
+                    "Duplicate value detected (@%s) -- %s",
+                    $file->getRealPath(), $ex->getMessage()
+                ));
+
             } catch (MissingMappingExceptionException $ex) {
-                $this->getLogger()
-                    ->warning(sprintf("Invalid mapping detected (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
+                $this->getLogger()->warning(sprintf(
+                    "Invalid mapping detected (@%s) -- %s",
+                    $file->getRealPath(), $ex->getMessage()
+                ));
+
             } catch (MultipleMappingException $ex) {
-                $this->getLogger()
-                    ->warning(sprintf("Multiple candidate mappings detected (@%s) -- %s", $file->getRealPath(), $ex->getMessage()));
+                $this->getLogger()->warning(sprintf(
+                    "Multiple candidate mappings detected (@%s) -- %s",
+                    $file->getRealPath(), $ex->getMessage()
+                ));
+
             } catch (\Exception $ex) {
-                $this->getLogger()
-                    ->critical(sprintf("Unhandled exception while processing (@%s) -- %s\n%s", $file->getRealPath(), $ex->getMessage(), KernelErrorHandler::formatBacktrace($ex->getTrace())));
+                $this->getLogger()->critical(sprintf(
+                    "Unhandled exception while processing (@%s) -- %s\n%s",
+                    $file->getRealPath(), $ex->getMessage(), KernelErrorHandler::formatBacktrace($ex->getTrace())
+                ));
+
                 throw $ex;
             }
         }
@@ -317,31 +351,9 @@ class Importer
     }
 
     /**
-     * @param  string                     $dir
-     * @param  bool                       $exclude_done
-     * @return \RecursiveIteratorIterator
-     */
-    public function getDirectoryIterator($dir, $exclude_done)
-    {
-        if (!is_dir($this->config->data_path . '/' . $dir)) {
-            return array();
-        }
-        $iterator = new RecursiveDirectoryIterator($this->config->data_path . '/' . $dir, RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO);
-
-        $filter = new DirectoryIteratorFilter($iterator);
-        if ($exclude_done) {
-            $filter->excludeDone();
-        }
-
-        $it = new \RecursiveIteratorIterator($filter, \RecursiveIteratorIterator::SELF_FIRST | \RecursiveIteratorIterator::LEAVES_ONLY);
-
-        return $it;
-    }
-
-    /**
      * @return LoggerInterface
      */
-    public function getLogger()
+    private function getLogger()
     {
         return $this->logger;
     }

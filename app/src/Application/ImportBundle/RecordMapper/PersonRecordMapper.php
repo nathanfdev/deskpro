@@ -25,14 +25,14 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\RecordMapper;
 
 use Doctrine\DBAL\Connection;
 
+/**
+ * Class PersonRecordMapper
+ * @package Application\ImportBundle\RecordMapper
+ */
 class PersonRecordMapper implements RecordMapperInterface
 {
     /**
@@ -45,15 +45,15 @@ class PersonRecordMapper implements RecordMapperInterface
      */
     private $cache = array();
 
-
     /**
+     * Constructor
+     *
      * @param Connection $db
      */
     public function __construct(Connection $db)
     {
         $this->db = $db;
     }
-
 
     /**
      * Returns person ID given an email address.
@@ -64,7 +64,6 @@ class PersonRecordMapper implements RecordMapperInterface
     public function findIdFromValue($value)
     {
         $dataArray = $this->fetch($value);
-
         return isset($dataArray['id']) ? $dataArray['id'] : null;
     }
 
@@ -77,14 +76,16 @@ class PersonRecordMapper implements RecordMapperInterface
     public function checkIsAgent($email)
     {
         $dataArray = $this->fetch($email);
-
         return (bool) $dataArray['is_agent'];
     }
 
+    /**
+     * @param string $email
+     * @return null
+     */
     protected function fetch($email)
     {
         $query = 'SELECT people.id, people.is_agent, people_emails.email FROM people JOIN people_emails ON people.id = people_emails.person_id WHERE people_emails.email = ?';
-
         $email = strtolower($email);
 
         if (!isset($this->cache[$email])) {

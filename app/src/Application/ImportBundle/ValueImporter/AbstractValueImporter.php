@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\ValueImporter;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
@@ -36,7 +32,11 @@ use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\DeskPRO\DBAL\Connection;
 use Psr\Log\LoggerInterface;
 
-abstract class AbstractValueImporter
+/**
+ * Class AbstractValueImporter
+ * @package Application\ImportBundle\ValueImporter
+ */
+abstract class AbstractValueImporter implements ValueImporterInterface
 {
     const MODE_LIVE = 'live';
     const MODE_TEST = 'test';
@@ -86,7 +86,7 @@ abstract class AbstractValueImporter
     /**
      * @return DeskproContainer
      */
-    public function getContainer()
+    protected function getContainer()
     {
         return $this->container;
     }
@@ -94,16 +94,15 @@ abstract class AbstractValueImporter
     /**
      * @return bool
      */
-    public function isTestMode()
+    protected function isTestMode()
     {
         return $this->mode == self::MODE_TEST;
     }
 
     /**
-     *
      * @return string
      */
-    public function getMode()
+    protected function getMode()
     {
         return $this->mode;
     }
@@ -111,7 +110,7 @@ abstract class AbstractValueImporter
     /**
      * @return Connection
      */
-    public function getDb()
+    protected function getDb()
     {
         return $this->db;
     }
@@ -119,7 +118,7 @@ abstract class AbstractValueImporter
     /**
      * @return LoggerInterface
      */
-    public function getLogger()
+    protected function getLogger()
     {
         return $this->logger;
     }
@@ -127,13 +126,8 @@ abstract class AbstractValueImporter
     /**
      * @return RecordMapperRegistry
      */
-    public function getMappers()
+    protected function getMappers()
     {
         return $this->mappers;
     }
-
-    /**
-     * @param mixed $value
-     */
-    abstract public function importValue($value);
 }

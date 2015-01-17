@@ -50,11 +50,9 @@ class TicketValueImporter extends AbstractValueImporter
             throw new \InvalidArgumentException("This importer can only import TicketValue");
         }
 
-        $log_id = "Ticket :: " . $tval->oid . " ";
-
+        $log_id    = "Ticket :: " . $tval->oid . " ";
         $ticket_id = null;
-
-        $record = array();
+        $record    = array();
 
         #------------------------------
         # Grab the person
@@ -97,20 +95,17 @@ class TicketValueImporter extends AbstractValueImporter
         #------------------------------
         if ($tval->department) {
             $departmentId = $this->getMappers()->findIdFromMappedValue('department', $tval->department);
-
             if ($departmentId) {
                 $this->getLogger()->info(sprintf("[%s] Found existing department %s", $log_id, $tval->department));
                 $record['department_id'] = $departmentId;
             } else {
                 $this->getLogger()->warning(sprintf("[%s] New Department found %s (creating)", $log_id, $tval->department));
-
                 $this->getDb()->insert('departments', array(
-                        'title'			=> $tval->department,
-                        'is_tickets_enabled'	=> 1
-                    ));
+                    'title'              => $tval->department,
+                    'is_tickets_enabled' => 1
+                ));
 
                 $record['department_id'] = $this->getDb()->lastInsertId();
-
                 $this->getMappers()->learnMapping('department', array('id' => $record['department_id'], 'title' => $tval->department));
             }
         }
@@ -134,13 +129,11 @@ class TicketValueImporter extends AbstractValueImporter
                 $record['category_id'] = $categoryId;
             } else {
                 $this->getLogger()->notice(sprintf("[%s] Could not map ticket category value: %s (creating)", $log_id, $tval->category));
-
                 $this->getDb()->insert('ticket_categories', array(
                         'title'			=> $tval->category
                     ));
 
                 $record['category_id'] = $this->getDb()->lastInsertId();
-
                 $this->getMappers()->learnMapping('ticket_category', array('id' => $record['category_id'], 'title' => $tval->category));
             }
         }
@@ -153,13 +146,11 @@ class TicketValueImporter extends AbstractValueImporter
                 $record['priority_id'] = $priorityId;
             } else {
                 $this->getLogger()->notice(sprintf("[%s] Could not map ticket priority value: %s (creating)", $log_id, $tval->priority));
-
                 $this->getDb()->insert('ticket_priorities', array(
-                        'title'			=> $tval->priority
-                    ));
+                    'title' => $tval->priority,
+                ));
 
                 $record['priority_id'] = $this->getDb()->lastInsertId();
-
                 $this->getMappers()->learnMapping('ticket_priority', array('id' => $record['priority_id'], 'title' => $tval->priority));
             }
         }
@@ -169,7 +160,6 @@ class TicketValueImporter extends AbstractValueImporter
             $record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
         } else {
             $query = 'SELECT id FROM tickets WHERE ref = ?';
-
             $duplicateRef = $this->getDb()->fetchColumn($query, array($tval->ref));
 
             if ($duplicateRef) {
@@ -254,7 +244,6 @@ class TicketValueImporter extends AbstractValueImporter
         if ($ticket_id && $tval->messages) {
             foreach ($tval->messages as $message) {
                 $record = array();
-
                 $messagePersonId = $this->getMappers()->findIdFromMappedValue('person', $message->person);
 
                 if ($messagePersonId) {
@@ -264,9 +253,9 @@ class TicketValueImporter extends AbstractValueImporter
                     continue;
                 }
 
-                $record['ticket_id']		= $ticket_id;
-                $record['message']		= $message->message_text ?: '';
-                $record['date_created']		= $message->date_created ?  $message->date_created->format('Y-m-d H:i:s') : ($tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'));
+                $record['ticket_id']    = $ticket_id;
+                $record['message']      = $message->message_text ?: '';
+                $record['date_created'] = $message->date_created ?  $message->date_created->format('Y-m-d H:i:s') : ($tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'));
 
                 $this->getDb()->insert('tickets_messages', $record);
 
@@ -281,12 +270,11 @@ class TicketValueImporter extends AbstractValueImporter
                     );
 
                     $blob = $attachment_value_importer->importValue($attachment);
-
                     $ticket_attachment_record = array(
-                        'ticket_id'	=> $ticket_id,
-                        'person_id'	=> $messagePersonId,
-                        'blob_id'	=> $blob['id'],
-                        'message_id'	=> $message_id
+                        'ticket_id'  => $ticket_id,
+                        'person_id'  => $messagePersonId,
+                        'blob_id'    => $blob['id'],
+                        'message_id' => $message_id
                     );
 
                     $this->getDb()->insert('tickets_attachments', $ticket_attachment_record);

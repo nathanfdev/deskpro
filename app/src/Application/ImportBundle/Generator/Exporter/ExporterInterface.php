@@ -39,6 +39,7 @@ use Application\ImportBundle\Entity;
 interface ExporterInterface extends GeneratorConfigAwareInterface
 {
     const TYPE_CSV       = 'csv';
+    const TYPE_JSON      = 'json';
     const TYPE_OS_TICKET = 'osticket';
     const TYPE_ZENDESK   = 'zendesk';
 

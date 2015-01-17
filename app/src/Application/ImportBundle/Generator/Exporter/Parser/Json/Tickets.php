@@ -25,32 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\AbstractGenerator;
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class Tickets
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+class Tickets extends AbstractParser
 {
     /**
-     * Check if a record has all required columns
-     *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    protected function hasRequiredColumns(array $record, array $columns)
+    public function getRecordType()
     {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $record) === false) {
-                return false;
-            }
-        }
+        return GeneratorInterface::RECORD_TYPE_TICKETS;
+    }
 
-        return true;
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
     }
 }

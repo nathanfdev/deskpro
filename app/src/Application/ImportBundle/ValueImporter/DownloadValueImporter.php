@@ -51,15 +51,12 @@ class DownloadValueImporter extends AbstractValueImporter
         if (!($dval instanceof DownloadValue)) {
             throw new \InvalidArgumentException("This importer can only import Downloads");
         }
-
         if (empty($dval->title) || empty($dval->content)) {
             throw new BadDataException(sprintf("A Download must have a title and content (skipping)"));
         }
-
         if (empty($dval->attachment)) {
             throw new BadDataException(sprintf("A Download must have an attachment (skipping)"));
         }
-
         if ($this->checkIsDuplicate($dval->title)) {
             throw new DuplicateValueException(sprintf("A Download with the title \"%s\" already exists (skipping)", $dval->title));
         }
@@ -77,7 +74,6 @@ class DownloadValueImporter extends AbstractValueImporter
             $record['blob_id'] = -1;
         } else {
             $attachment = $dval->attachment;
-
             $attachment_value_importer = new AttachmentValueImporter(
                 $this->getMode(),
                 $this->getContainer(),
@@ -122,37 +118,35 @@ class DownloadValueImporter extends AbstractValueImporter
         # Category
         #------------------------------
         if ($dval->category) {
-            $category = $dval->category;
-
+            $category    = $dval->category;
             $category_id = $this->getMappers()->findIdFromMappedValue('download_category', $category);
 
             if ($category_id) {
                 $this->getLogger()->info(sprintf("[%s] Found existing download category %s", $log_id, $category));
-
                 $record['category_id'] = $category_id;
             } elseif(!$this->isTestMode()) {
                 $this->getLogger()->warning(sprintf("[%s] New download category %s (creating)", $log_id, $category));
-
                 $this->getDb()->insert('download_categories', array('title' => $category));
 
                 $record['category_id'] = $this->getDb()->lastInsertId();
-
                 $this->getMappers()->learnMapping('download_category', array('id' => $record['category_id'], 'title' => $category));
             } else {
                 $record['category_id'] = -1;
             }
         }
 
-        $record['title']		= $dval->title;
-        $record['content']		= $dval->content;
-        $record['slug']			= $dval->slug;
-        $record['date_created']		= isset($dval->date_created) ? $dval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['date_published']	= isset($dval->date_published) ? $dval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['total_rating']		= $dval->total_rating;
-        $record['num_comments']		= $dval->num_comments;
-        $record['num_ratings']		= $dval->num_ratings;
-        $record['view_count']		= $dval->view_count;
-        $record['num_downloads']	= $dval->num_downloads;
+        $record = array_merge($record, array(
+            'title'          => $dval->title,
+            'content'        => $dval->content,
+            'slug'           => $dval->slug,
+            'date_created'   => isset($dval->date_created) ? $dval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+            'date_published' => isset($dval->date_published) ? $dval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+            'total_rating'   => $dval->total_rating,
+            'num_comments'   => $dval->num_comments,
+            'num_ratings'    => $dval->num_ratings,
+            'view_count'     => $dval->view_count,
+            'num_downloads'  => $dval->num_downloads,
+        ));
 
         if ($dval->date_published) {
             $record['status'] = 'published';
@@ -164,7 +158,6 @@ class DownloadValueImporter extends AbstractValueImporter
 
         if (!$this->isTestMode()) {
             $this->getDb()->insert('downloads', $record);
-
             $download_id = $this->getDb()->lastInsertId();
 
             $this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $download_id));
@@ -188,7 +181,6 @@ class DownloadValueImporter extends AbstractValueImporter
     private function checkIsDuplicate($title)
     {
         $query = 'SELECT id FROM downloads WHERE title = ?';
-
         return $this->getDb()->fetchColumn($query, array($title));
     }
 }

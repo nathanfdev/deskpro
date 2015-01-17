@@ -25,15 +25,17 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\ImportBundle\JsonReader;
+
 /**
- * @package Importer
+ * Class DirectoryIteratorFilter
+ * @package Application\ImportBundle\JsonReader
  */
-
-namespace Application\ImportBundle;
-
 class DirectoryIteratorFilter extends \RecursiveFilterIterator
 {
-    /** @var bool  */
+    /**
+     * @var bool
+     */
     private $exclude_done = false;
 
     public function excludeDone()

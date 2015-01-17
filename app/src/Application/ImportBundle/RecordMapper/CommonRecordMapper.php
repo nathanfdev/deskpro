@@ -25,15 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\RecordMapper;
 
 use Doctrine\DBAL\Connection;
 use Orb\Util\Strings;
 
+/**
+ * Class CommonRecordMapper
+ * @package Application\ImportBundle\RecordMapper
+ */
 class CommonRecordMapper implements LearnableRecordMapperInterface
 {
     /**
@@ -61,8 +61,9 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
      */
     protected $record_ids;
 
-
     /**
+     * Constructor
+     *
      * @param Connection $db
      * @param string     $table
      * @param string     $match_field
@@ -74,6 +75,38 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
         $this->match_field = $match_field;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function findIdFromValue($value)
+    {
+        if ($this->records === null) {
+            $this->initRecords();
+        }
+        if (!$this->records) {
+            return null;
+        }
+        if ($value[0] == '@') {
+            $id = substr($value, 1);
+            return isset($this->record_ids[$id]) ? $this->record_ids[$id] : null;
+        }
+
+        $value = $this->normalizeMatchField($value);
+        return array_search($value, $this->records);
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function learnRecord($record)
+    {
+        if ($this->records === null) {
+            $this->initRecords();
+        }
+
+        $this->records[$record['id']] = $this->normalizeMatchField($record[$this->match_field]);
+        $this->record_ids[$record['id']] = $record['id'];
+    }
 
     /**
      * Fetches DB records from the databases
@@ -82,7 +115,6 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
     {
         return $this->db->fetchAll("SELECT * FROM {$this->table} ORDER BY id ASC");
     }
-
 
     /**
      * Inits the lookup records
@@ -99,7 +131,6 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
         }
 
         foreach ($raw_records as $rec) {
-
             $title = $rec[$this->match_field];
             if (isset($rec['parent_id']) && $rec['parent_id'] && isset($id_to_title[$rec['parent_id']])) {
                 $title = $id_to_title[$rec['parent_id']] . ' > ' . $title;
@@ -109,24 +140,6 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
             $this->record_ids[$rec['id']] = $rec['id'];
         }
     }
-
-
-    /**
-     * Have the mapper learn a new value. For examlpe, this might add a new value to an internal cache.
-     *
-     * @param  mixed $record
-     * @return void
-     */
-    public function learnRecord($record)
-    {
-        if ($this->records === null) {
-            $this->initRecords();
-        }
-
-        $this->records[$record['id']] = $this->normalizeMatchField($record[$this->match_field]);
-        $this->record_ids[$record['id']] = $record['id'];
-    }
-
 
     /**
      * @param  string $value
@@ -139,33 +152,5 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
         $value = Strings::utf8_strtolower($value);     // "Example_Cat" to "example_cat"
 
         return $value;
-    }
-
-
-    /**
-     * Returns person ID given an email address.
-     *
-     * @param  mixed    $value
-     * @return int|null
-     */
-    public function findIdFromValue($value)
-    {
-        if ($this->records === null) {
-            $this->initRecords();
-        }
-
-        if (!$this->records) {
-            return null;
-        }
-
-        if ($value[0] == '@') {
-            $id = substr($value, 1);
-
-            return isset($this->record_ids[$id]) ? $this->record_ids[$id] : null;
-        }
-
-        $value = $this->normalizeMatchField($value);
-
-        return array_search($value, $this->records);
     }
 }

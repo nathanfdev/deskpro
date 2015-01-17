@@ -85,12 +85,14 @@ class GeneratorFactory
     private function createExportersCollection()
     {
         $csvFactory      = new Exporter\CsvFactory($this->container);
+        $jsonFactory     = new Exporter\JsonFactory($this->container);
         $osTicketFactory = new Exporter\OsTicketFactory($this->container);
         $zenDeskFactory  = new Exporter\ZenDeskFactory($this->container);
 
         $exporters = new Exporter\Collection();
         $exporters
             ->attach($csvFactory->createExporter())
+            ->attach($jsonFactory->createExporter())
             ->attach($osTicketFactory->createExporter())
             ->attach($zenDeskFactory->createExporter());
 

@@ -25,32 +25,24 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
-
-use Application\ImportBundle\Generator\AbstractGenerator;
+namespace Application\ImportBundle\Generator\Exporter;
 
 /**
- * Class AbstractParser
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Class JsonFactory
+ * @package Application\ImportBundle\Generator\Exporter
  */
-abstract class AbstractParser extends AbstractGenerator implements ParserInterface
+class JsonFactory extends AbstractFactory
 {
     /**
-     * Check if a record has all required columns
-     *
-     * @param array $record
-     * @param array $columns
-     *
-     * @return bool
+     * {@inheritdoc}
      */
-    protected function hasRequiredColumns(array $record, array $columns)
+    public function createExporter()
     {
-        foreach ($columns as $column) {
-            if (array_key_exists($column, $record) === false) {
-                return false;
-            }
-        }
+        $parsers = new Parser\Collection();
+        $parsers
+            ->attach(new Parser\Json\People())
+            ->attach(new Parser\Json\Tickets());
 
-        return true;
+        return new Json($parsers);
     }
 }

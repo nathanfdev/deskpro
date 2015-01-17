@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\ValueImporter;
 
 use Application\ImportBundle\Exception\BadDataException;
@@ -37,17 +33,26 @@ use Orb\Util\Arrays;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 
+/**
+ * Class PersonValueImporter
+ * @package Application\ImportBundle\ValueImporter
+ */
 class PersonValueImporter extends AbstractValueImporter
 {
-    /** @var array */
+    /**
+     * @var array
+     */
     protected $custom_fields_array = array();
-    /** @var array */
+
+    /**
+     * @var array
+     */
     protected $supported_custom_field_types = array(
         'Application\DeskPRO\CustomFields\Handler\Text'
     );
 
     /**
-     * @param  mixed $pval
+     * @param mixed $pval
      * @throws \Application\ImportBundle\Exception\BadDataException
      */
     public function importValue($pval)
@@ -105,19 +110,18 @@ class PersonValueImporter extends AbstractValueImporter
         #------------------------------
 
         $add_labels = $pval->labels;
-
-        $record = array();
-        $record['name']               = $pval->name ?: '';
-        $record['first_name']         = $pval->first_name ?: '';
-        $record['last_name']          = $pval->last_name ?: '';
-        $record['date_created']       = $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-        $record['timezone']           = $pval->timezone ?: 'UTC';
-        $record['is_user']            = 1;
-        $record['is_contact']         = 1;
-        $record['is_confirmed']       = 1;
-        $record['is_agent_confirmed'] = 1;
-        $record['secret_string']      = Strings::random(40);
-        $record['secret_string']      = Strings::random(40);
+        $record = array(
+            'name'               => $pval->name ?: '',
+            'first_name'         => $pval->first_name ?: '',
+            'last_name'          => $pval->last_name ?: '',
+            'date_created'       => $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+            'timezone'           => $pval->timezone ?: 'UTC',
+            'is_user'            => 1,
+            'is_contact'         => 1,
+            'is_confirmed'       => 1,
+            'is_agent_confirmed' => 1,
+            'secret_string'      => Strings::random(40),
+        );
 
         // Admin/agent flag
         if ($pval->is_agent) {
@@ -278,7 +282,6 @@ class PersonValueImporter extends AbstractValueImporter
         }
     }
 
-
     /**
      * @param  array $emails
      * @return array
@@ -296,21 +299,21 @@ class PersonValueImporter extends AbstractValueImporter
         return $map;
     }
 
-    private function customFieldExists($title)
-    {
-        $query = 'SELECT id, handler_class FROM custom_def_people WHERE title = ? AND is_enabled = 1';
-
-        $result = $this->getDb()->fetchAll($query, array($title));
-
-        if (count($result)) {
-            return $result[0];
-        }
-
-        return $result;
-    }
-
-    private function isCustomFieldTypeSupported($field_type)
-    {
-        return in_array($field_type, $this->supported_custom_field_types);
-    }
+// Remove?
+//    private function customFieldExists($title)
+//    {
+//        $query = 'SELECT id, handler_class FROM custom_def_people WHERE title = ? AND is_enabled = 1';
+//        $result = $this->getDb()->fetchAll($query, array($title));
+//
+//        if (count($result)) {
+//            return $result[0];
+//        }
+//
+//        return $result;
+//    }
+//
+//    private function isCustomFieldTypeSupported($field_type)
+//    {
+//        return in_array($field_type, $this->supported_custom_field_types);
+//    }
 }
