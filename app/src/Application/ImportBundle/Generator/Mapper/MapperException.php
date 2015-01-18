@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,47 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\RecordMapper;
-
-use Application\ImportBundle\Entity\Ticket;
+namespace Application\ImportBundle\Generator\Mapper;
 
 /**
- * Class TicketStatusRecordMapper
- * @package Application\ImportBundle\RecordMapper
+ * Class MapperException
+ * @package Application\ImportBundle\Generator\Mapper
  */
-class TicketStatusRecordMapper implements RecordMapperInterface
+class MapperException extends \Exception
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return self::TYPE_TICKET_STATUS;
-    }
 
-    /**
-     * @param mixed $value
-     * @return bool
-     */
-    public function findIdFromValue($value)
-    {
-        return false;
-    }
-
-    /**
-     * @param $status
-     * @return bool
-     */
-    public function isValidStatus($status)
-    {
-        $statuses = array(
-            Ticket::STATUS_AWAITING_AGENT,
-            Ticket::STATUS_AWAITING_USER,
-            Ticket::STATUS_RESOLVED,
-            Ticket::STATUS_ARCHIVED,
-            Ticket::STATUS_HIDDEN,
-        );
-
-        return in_array($status, $statuses, true);
-    }
 }

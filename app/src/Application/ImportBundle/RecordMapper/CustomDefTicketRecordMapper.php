@@ -25,17 +25,26 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\RecordMapper;
 
-
+/**
+ * Class CustomDefTicketRecordMapper
+ * @package Application\ImportBundle\RecordMapper
+ */
 class CustomDefTicketRecordMapper extends CommonRecordMapper
 {
-    /** @var  array */
+    /**
+     * @var array
+     */
     protected $cache;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_CUSTOM_DEF_TICKET;
+    }
 
     /**
      * Returns person ID given a title.
@@ -46,7 +55,6 @@ class CustomDefTicketRecordMapper extends CommonRecordMapper
     public function findIdFromValue($title)
     {
         $dataArray = $this->fetch($title);
-
         return isset($dataArray['id']) ? $dataArray['id'] : null;
     }
 

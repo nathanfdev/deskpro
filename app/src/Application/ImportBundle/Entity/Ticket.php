@@ -43,6 +43,8 @@ final class Ticket extends AbstractEntity
     const STATUS_AWAITING_AGENT = 'awaiting_agent';
     const STATUS_AWAITING_USER  = 'awaiting_user';
     const STATUS_RESOLVED       = 'resolved';
+    const STATUS_ARCHIVED       = 'archived';
+    const STATUS_HIDDEN         = 'hidden';
 
     /**
      * @var int

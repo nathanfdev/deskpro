@@ -27,7 +27,9 @@
 
 namespace Application\ImportBundle\ValueImporter;
 
+use Application\ImportBundle\Entity\Person;
 use Application\ImportBundle\Exception\BadDataException;
+use Application\ImportBundle\RecordMapper\RecordMapperInterface;
 use Application\ImportBundle\Value\PersonValue;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
@@ -133,7 +135,7 @@ class PersonValueImporter extends AbstractValueImporter
 
         // Lang
         if ($pval->language) {
-            $v = $this->getMappers()->findIdFromMappedValue('language', $pval->language);
+            $v = $this->getMappers()->findIdFromMappedValue(RecordMapperInterface::TYPE_LANGUAGE, $pval->language);
             if ($v) {
                 $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $pval->language));
                 $record['language_id'] = $v;
@@ -146,7 +148,7 @@ class PersonValueImporter extends AbstractValueImporter
         $add_ugs = array();
         if ($pval->usergroups) {
             foreach ($pval->usergroups as $ug) {
-                $v = $this->getMappers()->findIdFromMappedValue('usergroup', $ug);
+                $v = $this->getMappers()->findIdFromMappedValue(RecordMapperInterface::TYPE_USER_GROUP, $ug);
                 if ($v) {
                     $this->getLogger()->info(sprintf("[%s] Found existing usergroup %s", $log_id, $ug));
                     $add_ugs[] = $v;
@@ -158,7 +160,7 @@ class PersonValueImporter extends AbstractValueImporter
 
         // Org
         if ($pval->organization) {
-            $v = $this->getMappers()->findIdFromMappedValue('organization', $pval->organization);
+            $v = $this->getMappers()->findIdFromMappedValue(RecordMapperInterface::TYPE_ORGANIZATION, $pval->organization);
             if ($v) {
                 $record['organization_id'] = $v;
             } else {
@@ -173,7 +175,7 @@ class PersonValueImporter extends AbstractValueImporter
                     $record['organization_id'] = $this->getDb()->lastInsertId();
                 }
 
-                $this->getMappers()->learnMapping('organization', $record['organization_id']);
+                $this->getMappers()->learnMapping(RecordMapperInterface::TYPE_ORGANIZATION, $record['organization_id']);
             }
 
             if ($pval->organization_position) {
@@ -182,8 +184,8 @@ class PersonValueImporter extends AbstractValueImporter
         }
 
         // Password
-        if ($pval->password && $pval->password_scheme == 'plain') {
-            $record['password_scheme'] = 'bcrypt';
+        if ($pval->password && $pval->password_scheme == Person::PASSWORD_SCHEME_PLAIN) {
+            $record['password_scheme'] = Person::PASSWORD_SCHEME_BCRYPT;
 
             $hasher = new \PasswordHash(11, false);
             $record['password'] = $hasher->HashPassword($pval->password);
@@ -199,11 +201,11 @@ class PersonValueImporter extends AbstractValueImporter
         # Save data
         #------------------------------
 
-        if (!$this->isTestMode()) {
+        if ($this->isTestMode() === false) {
             $update_rec = array();
 
             if (isset($existing_person_id)) {
-                $exist_id = $this->getMappers()->findIdFromMappedValue('person', $existing_person_id);
+                $exist_id = $this->getMappers()->findIdFromMappedValue(RecordMapperInterface::TYPE_PERSON, $existing_person_id);
                 $is_new = false;
                 $this->getDb()->update('people', $record, array('id' => $exist_id));
                 $this->getLogger()->info(sprintf("[%s] Updated %d", $log_id, $exist_id));

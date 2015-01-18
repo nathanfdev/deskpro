@@ -28,6 +28,7 @@
 namespace Application\ImportBundle\ValueImporter;
 
 use Application\ImportBundle\Exception\BadDataException;
+use Application\ImportBundle\RecordMapper\TicketStatusRecordMapper;
 use Application\ImportBundle\Value\TicketValue;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
@@ -170,8 +171,9 @@ class TicketValueImporter extends AbstractValueImporter
         }
 
         //Status
-        if ($tval->status &&
-            $this->getMappers()->getMapper ('ticket_status')->isValidStatus($tval->status)) {
+        /** @var TicketStatusRecordMapper $ticket_status_mapper */
+        $ticket_status_mapper = $this->getMappers()->getMapper('ticket_status');
+        if ($tval->status && $ticket_status_mapper->isValidStatus($tval->status)) {
             $this->getLogger()->notice(sprintf("[%s] Found existing ticket status %s", $log_id, $tval->status));
             $record['status'] = $tval->status;
         }

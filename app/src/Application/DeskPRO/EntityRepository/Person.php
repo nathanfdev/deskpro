@@ -304,7 +304,7 @@ class Person extends AbstractEntityRepository
      * Find a person by their email address.
      *
      * @param  string $email
-     * @return Person
+     * @return PersonEntity
      */
     public function findOneByEmail($email, $for_write = false)
     {

@@ -56,6 +56,14 @@ class PersonRecordMapper implements RecordMapperInterface
     }
 
     /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_PERSON;
+    }
+
+    /**
      * Returns person ID given an email address.
      *
      * @param  mixed    $value

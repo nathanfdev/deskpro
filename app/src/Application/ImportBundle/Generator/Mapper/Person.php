@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,47 +25,52 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\RecordMapper;
+namespace Application\ImportBundle\Generator\Mapper;
 
-use Application\ImportBundle\Entity\Ticket;
+use Application\DeskPRO\EntityRepository;
+use Application\ImportBundle\RecordMapper\RecordMapperInterface;
 
 /**
- * Class TicketStatusRecordMapper
- * @package Application\ImportBundle\RecordMapper
+ * Person record mapper
+ *
+ * Class Person
+ * @package Application\ImportBundle\Generator\Mapper
  */
-class TicketStatusRecordMapper implements RecordMapperInterface
+class Person implements MapperInterface
 {
+    /**
+     * @var EntityRepository\Person
+     */
+    private $person_repository;
+
+    /**
+     * Constructor
+     *
+     * @param EntityRepository\Person $person_repository
+     */
+    public function __construct(EntityRepository\Person $person_repository)
+    {
+        $this->person_repository = $person_repository;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return self::TYPE_TICKET_STATUS;
+        return RecordMapperInterface::TYPE_PERSON;
     }
 
     /**
-     * @param mixed $value
-     * @return bool
+     * {@inheritdoc}
      */
-    public function findIdFromValue($value)
+    public function findIdByValue($value)
     {
-        return false;
-    }
+        $person = $this->person_repository->findOneByEmail($value);
+        if (!$person) {
+            throw new MapperException(sprintf('Person `%s` not found', $value));
+        }
 
-    /**
-     * @param $status
-     * @return bool
-     */
-    public function isValidStatus($status)
-    {
-        $statuses = array(
-            Ticket::STATUS_AWAITING_AGENT,
-            Ticket::STATUS_AWAITING_USER,
-            Ticket::STATUS_RESOLVED,
-            Ticket::STATUS_ARCHIVED,
-            Ticket::STATUS_HIDDEN,
-        );
-
-        return in_array($status, $statuses, true);
+        return $person->getId();
     }
 }

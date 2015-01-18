@@ -25,19 +25,32 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\RecordMapper;
 
 use Doctrine\DBAL\Connection;
 
+/**
+ * Class TicketDepartmentRecordMapper
+ * @package Application\ImportBundle\RecordMapper
+ */
 class TicketDepartmentRecordMapper extends CommonRecordMapper
 {
+    /**
+     * Constructor
+     *
+     * @param Connection $db
+     */
     public function __construct(Connection $db)
     {
         parent::__construct($db, 'departments', 'title');
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_TICKET_DEPARTMENT;
     }
 
     protected function getDbRecords()

@@ -39,7 +39,8 @@ use DateTime;
  */
 final class Person extends AbstractEntity
 {
-    const PASSWORD_SCHEME_PLAIN = 'plain';
+    const PASSWORD_SCHEME_PLAIN  = 'plain';
+    const PASSWORD_SCHEME_BCRYPT = 'bcrypt';
 
     /**
      * @var int

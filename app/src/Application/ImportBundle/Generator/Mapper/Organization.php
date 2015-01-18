@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,47 +25,52 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\RecordMapper;
+namespace Application\ImportBundle\Generator\Mapper;
 
-use Application\ImportBundle\Entity\Ticket;
+use Application\DeskPRO\EntityRepository;
+use Application\ImportBundle\RecordMapper\RecordMapperInterface;
 
 /**
- * Class TicketStatusRecordMapper
- * @package Application\ImportBundle\RecordMapper
+ * Organization record mapper
+ *
+ * Class Organization
+ * @package Application\ImportBundle\Generator\Mapper
  */
-class TicketStatusRecordMapper implements RecordMapperInterface
+class Organization implements MapperInterface
 {
+    /**
+     * @var EntityRepository\Organization
+     */
+    private $organization_repository;
+
+    /**
+     * Constructor
+     *
+     * @param EntityRepository\Organization $organization_repository
+     */
+    public function __construct(EntityRepository\Organization $organization_repository)
+    {
+        $this->organization_repository = $organization_repository;
+    }
+
     /**
      * {@inheritdoc}
      */
     public function getType()
     {
-        return self::TYPE_TICKET_STATUS;
+        return RecordMapperInterface::TYPE_ORGANIZATION;
     }
 
     /**
-     * @param mixed $value
-     * @return bool
+     * {@inheritdoc}
      */
-    public function findIdFromValue($value)
+    public function findIdByValue($value)
     {
-        return false;
-    }
+        $organization = $this->organization_repository->findOneByName($value);
+        if (!$organization) {
+            throw new MapperException(sprintf('Organization `%s` not found', $value));
+        }
 
-    /**
-     * @param $status
-     * @return bool
-     */
-    public function isValidStatus($status)
-    {
-        $statuses = array(
-            Ticket::STATUS_AWAITING_AGENT,
-            Ticket::STATUS_AWAITING_USER,
-            Ticket::STATUS_RESOLVED,
-            Ticket::STATUS_ARCHIVED,
-            Ticket::STATUS_HIDDEN,
-        );
-
-        return in_array($status, $statuses, true);
+        return $organization->getId();
     }
 }

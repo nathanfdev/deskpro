@@ -76,6 +76,16 @@ class CommonRecordMapper implements LearnableRecordMapperInterface
     }
 
     /**
+     * todo remove when all mapper classes will be created
+     *
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return '';
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function findIdFromValue($value)
