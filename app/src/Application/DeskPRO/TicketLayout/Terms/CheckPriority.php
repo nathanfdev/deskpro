@@ -44,7 +44,7 @@ class CheckPriority extends AbstractTicketLayoutTerm
      */
     public function isTicketMatch(Ticket $ticket)
     {
-        $have_id = $ticket->category ? $ticket->category->getId() : 0;
+        $have_id = $ticket->priority ? $ticket->priority->getId() : 0;
         $is_match = in_array($have_id, $this->options['priority_ids']);
 
         if ($this->op == self::OP_NOT) {
