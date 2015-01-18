@@ -125,7 +125,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Route("/login/reset-password/{password_reset_code}", name="portal_reset_password_new")
+     * @Route("/login/reset-password/{password_reset_code}", name="portal_reset_password_process")
      */
     public function passwordResetAction(Request $request, $password_reset_code)
     {

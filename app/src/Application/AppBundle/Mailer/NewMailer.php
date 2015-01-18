@@ -55,7 +55,7 @@ class NewMailer
 
         $context = array(
             'person' => $person,
-            'reset_url' => $this->getRouter()->generate('portal_reset_password_new', array(
+            'reset_url' => $this->getRouter()->generate('portal_reset_password_process', array(
                 'password_reset_code' => $person->getPasswordResetCode()
             ))
     );
