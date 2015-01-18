@@ -7,7 +7,6 @@ define -> [
   'DashboardService',
   'ReportsOverviewService',
   'DashboardWidgetService',
-  'DashboardPermissionsService',
   ($scope,
    $document,
    $q,
@@ -16,7 +15,7 @@ define -> [
    DashboardService,
    ReportsOverviewService,
    DashboardWidgetService,
-   DashboardPermissionsService) ->
+   ) ->
 
     DashboardService.setWidgetService(DashboardWidgetService)
 
@@ -30,7 +29,6 @@ define -> [
     $scope.reports = DashboardService.storage.reports
     $scope.expandedDashboard = []
     $scope.dashboards = []
-    $scope.permissions = {}
     $scope.layoutEditing = false;
     $scope.newReport =
       title: ''
@@ -38,9 +36,6 @@ define -> [
       id: 0
       widgets: []
       columns: 10
-    $scope.addingReport = false
-    $scope.addingDashboard = false
-    $scope.selectingDashboard = false
 
     $scope.gridsterOptions =
       margins: [20, 20],
@@ -68,21 +63,19 @@ define -> [
     ###
     $scope.changeDashboard = (newDb) ->
       deferred = $q.defer()
-      DashboardPermissionsService.getPermissions(newDb).then (permissions) ->
-        $scope.permissions = permissions
-        if newDb.loaded is false
-          DashboardService
-          .getDashboard newDb
-          .then (db) =>
-            $scope.dashboard = db
-            $scope.changeReport $scope.dashboard.reports[0]
-            deferred.resolve $scope.dashboard
-            return deferred.promise
-        else
-          $scope.dashboard = newDb
+      if newDb.loaded is false
+        DashboardService
+        .getDashboard newDb
+        .then (db) =>
+          $scope.dashboard = db
           $scope.changeReport $scope.dashboard.reports[0]
           deferred.resolve $scope.dashboard
           return deferred.promise
+      else
+        $scope.dashboard = newDb
+        $scope.changeReport $scope.dashboard.reports[0]
+        deferred.resolve $scope.dashboard
+        return deferred.promise
 
     $scope.deleteDashboard = (dashboard) ->
       DashboardService.deleteDashboard dashboard
@@ -134,8 +127,6 @@ define -> [
             return null
           currentReport: () ->
             return $scope.currentReport
-          permissions: () ->
-            return []
           state: () ->
             return 'info'
       }
@@ -153,7 +144,7 @@ define -> [
     # Just as previous one, but the dashboard object resolves to current dashboard
     ###
     $scope.editDashboardModal = (state) ->
-      reportsLength = $scope.dashboard.reports.length + 1 - 1
+      reportsLength = $scope.dashboard.reports.length
       modalInstance = $modal.open {
         templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
         controller: "Reports.App.ModalDashboard"
@@ -162,8 +153,6 @@ define -> [
             return $scope.dashboard
           currentReport: () ->
             return $scope.currentReport
-          permissions: () ->
-            return $scope.permissions
           state: () ->
             if state? then state else 'info'
       }

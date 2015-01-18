@@ -89,7 +89,7 @@ class DashboardReportController extends AbstractController
     {
         $prototype = $this->service->getReport($id);
         $dashboard = $this->service->getDashboard($dashboard_id);
-        if(!$this->permissionsService->checkEditableDashboard($dashboard)) {
+        if(!$this->permissionsService->isEditableDashboard($dashboard)) {
             throw $this->createNotFoundException();
         }
         $report = new DashboardReport();
@@ -105,7 +105,7 @@ class DashboardReportController extends AbstractController
     public function saveAction($id)
     {
         $report = $this->service->getReport($id);
-        if(!$this->permissionsService->checkEditableDashboard($report->getDashboard())) {
+        if(!$this->permissionsService->isEditableDashboard($report->getDashboard())) {
             throw $this->createNotFoundException();
         }
 
@@ -122,7 +122,7 @@ class DashboardReportController extends AbstractController
     public function createAction($dashboard_id)
     {
         $dashboard = $this->service->getDashboard($dashboard_id);
-        if(!$this->permissionsService->checkEditableDashboard($dashboard)) {
+        if(!$this->permissionsService->isEditableDashboard($dashboard)) {
             throw $this->createNotFoundException();
         }
         $report = new DashboardReport();
@@ -141,7 +141,7 @@ class DashboardReportController extends AbstractController
     public function deleteAction($id)
     {
         $report = $this->service->getReport($id);
-        if(!$this->permissionsService->checkEditableDashboard($report->getDashboard())) {
+        if(!$this->permissionsService->isEditableDashboard($report->getDashboard())) {
             throw $this->createNotFoundException();
         }
         $this->em->remove($report);

@@ -357,7 +357,7 @@ class DashboardWidgetController extends AbstractController
     {
         /** @var Widget $widget */
         $widget = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find($id);
-        if($widget && $this->permissionsService->checkEditableDashboard($widget->getReport()->getDashboard())) {
+        if($widget && $this->permissionsService->isEditableDashboard($widget->getReport()->getDashboard())) {
             $this->em->remove($widget);
             $this->em->flush();
             return $this->createApiDeleteResponse();

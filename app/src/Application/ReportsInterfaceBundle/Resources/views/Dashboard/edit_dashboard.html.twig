@@ -1,26 +1,4 @@
-﻿{#
-<div class="modal-header">
-    <h3 class="modal-title">Edit dashboard</h3>
-</div>
-<div class="modal-body">
-    <form role="form">
-        <div class="form-group">
-            <label for="name">Name</label>
-            <input type="text" class="form-control" ng-model="ReportsModalInstanceCtrl.dbname" id="name" placeholder="Enter name">
-        </div>
-        <div class="form-group">
-            <label for="cols">Columns</label>
-            <input type="number" class="form-control" ng-model="ReportsModalInstanceCtrl.dbcolumns" id="cols" placeholder="Enter columns">
-        </div>
-
-    </form>
-</div>
-<div class="modal-footer">
-    <button class="btn btn-primary" ng-click="ReportsModalInstanceCtrl.updateDashboard()">Update</button>
-    <button class="btn btn-warning" ng-click="ReportsModalInstanceCtrl.cancel()">Cancel</button>
-</div>#}
-
-<section class="popup">
+﻿<section class="popup">
 
     <!-- Popup Header & Title -->
     <header>
@@ -200,7 +178,7 @@
                 <td>Edit</td>
                 </thead>
 
-                <tr ng-repeat="agent in permissions track by agent.id">
+                <tr ng-repeat="agent in dashboard.permissions track by agent.id">
                     <td class="agent-name">
                         <span class="avatar" style="background-image: url({{ ng_var('agent.avatar') }})"></span>
                         {{ ng_var('agent.name') }}

@@ -6,7 +6,6 @@ define -> [
   'DashboardWidgetService',
   'dashboard',
   'currentReport',
-  'permissions',
   'state',
   ($scope,
    $modalInstance,
@@ -15,15 +14,12 @@ define -> [
    DashboardWidgetService,
    dashboard,
    currentReport,
-   permissions,
    state) ->
 
     DashboardService.setWidgetService(DashboardWidgetService)
-    $scope.permissions = permissions
     $scope.state = state
     if dashboard?
       $scope.dashboard = dashboard
-      $scope.dashboard.permissions = permissions
     else
       $scope.dashboard =
         title: '',
@@ -57,12 +53,15 @@ define -> [
       report
 
     $scope.setPermissions = (agent, permission) ->
+      index = DashboardPermissionsService.getIndexById($scope.dashboard.permissions, agent.id)
 
-      if(permission == 1 && agent.permissions > 0)
-        agent.permissions = 0
+      if(permission == 1 && agent.permissions == 0)
+        $scope.dashboard.permissions[index].permissions = 1
+      else if(permission == 1 && agent.permissions > 0)
+        $scope.dashboard.permissions[index].permissions = 0
       else if(permission == 2 && agent.permissions < 2)
-        agent.permissions = 2
+        $scope.dashboard.permissions[index].permissions = 2
       else if(permission == 2 && agent.permissions == 2)
-        agent.permissions = 1
-      DashboardPermissionsService.savePermissions(agent, $scope.dashboard)
+        $scope.dashboard.permissions[index].permissions = 1
+#      DashboardPermissionsService.savePermissions(agent, $scope.dashboard)
 ]

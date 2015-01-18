@@ -22,6 +22,14 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           deferred.resolve permissions
       deferred.promise
 
+    getIndexById: (storage, id) ->
+      index = -1
+      index = Arrays.findIndex storage,
+        (v) ->
+          if v? and v.id is id
+            return true
+      return index
+
     getDashboardPermissions: (dashboard) ->
       @Api.sendGet("/dashboards/permissions/#{dashboard.id}")
 

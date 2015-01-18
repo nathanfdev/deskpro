@@ -212,7 +212,7 @@ class DashboardPermissions
         }
     }
 
-    public function checkEditableDashboard(DashboardEntity $dashboard)
+    public function isEditableDashboard(DashboardEntity $dashboard)
     {
         return !$dashboard->isDefault();
     }

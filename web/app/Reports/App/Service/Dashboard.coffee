@@ -42,12 +42,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       data =
         title: dashboard.title
         reports: dashboard.reports
-#      dashboard.reports.map (report) ->
-#        data.reports.push report.id
-#        if report.deleted
-#          data.reports_to_delete: report.id
-#        name = "report#{report.id}"
-#        data[name] = report
+        permissions: dashboard.permissions
 
       @Api
         .sendPostJson url, data
@@ -55,6 +50,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
             if(response)
               dashboard.id = response.data.id
               dashboard.reports = response.data.reports
+              dashboard.permissions = response.data.permissions
               if !oldOne
                 @storage.dbs.push(dashboard)
               deferred.resolve dashboard

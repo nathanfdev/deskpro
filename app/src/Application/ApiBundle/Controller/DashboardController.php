@@ -111,6 +111,7 @@ class DashboardController extends AbstractController
         $data = $this->service->getDashboardData($dashboard);
         $data['loaded'] = true;
         $data['reports'] = $this->service->getReportsData($dashboard);
+        $data['permissions'] = $this->permissionsService->getApiDashboardPermissions($dashboard);
         return $this->createApiResponse($data);
     }
 
@@ -183,39 +184,37 @@ class DashboardController extends AbstractController
         if($id) {
             $dashboard = $this->service->getDashboard($id);
 
-            if(
-                !$this->permissionsService->isAllowedToEdit($this->person, $dashboard)
-                ||
-                !$this->permissionsService->checkEditableDashboard($dashboard)
-            )
+            if( !$this->permissionsService->isAllowedToEdit($this->person, $dashboard))
             {
                 throw $this->createNotFoundException('Dashboard not found!');
             }
         } else {
             $dashboard = new Dashboard();
         }
+        // We have to save only permissions here if dashboard is not editable
         $postData = $this->in->getAll('post');
-        $dashboard
-            ->setTitle($postData['title']);
-
-        foreach($postData['reports'] as $report) {
-            if(isset($report['deleted']) && $report['deleted']) {
-                $reportEntity = $this->service->getReport($report['id']);
-                $dashboard->removeReport($reportEntity);
-                $this->service->deleteReport($reportEntity);
-            } else {
-                if(isset($report['id'])) {
+        if ($this->permissionsService->isEditableDashboard($dashboard)) {
+            $dashboard
+                ->setTitle($postData['title']);
+            foreach($postData['reports'] as $report) {
+                if(isset($report['deleted']) && $report['deleted']) {
                     $reportEntity = $this->service->getReport($report['id']);
-//                    $reportEntity->setSortOrder($report['sort_order']);
+                    $dashboard->removeReport($reportEntity);
+                    $this->service->deleteReport($reportEntity);
                 } else {
-                    $reportEntity = new Tab();
-                    $reportEntity->setColumns(10)
-                                 ->setDashboard($dashboard);
-                    $reportEntity->setSortOrder($this->service->getLastSortOrder($dashboard));
-                    $dashboard->addReport($reportEntity);
+                    if(isset($report['id'])) {
+                        $reportEntity = $this->service->getReport($report['id']);
+//                    $reportEntity->setSortOrder($report['sort_order']);
+                    } else {
+                        $reportEntity = new Tab();
+                        $reportEntity->setColumns(10)
+                            ->setDashboard($dashboard);
+                        $reportEntity->setSortOrder($this->service->getLastSortOrder($dashboard));
+                        $dashboard->addReport($reportEntity);
+                    }
+                    $reportEntity->setTitle($report['title']);
+                    $this->service->saveReport($reportEntity);
                 }
-                $reportEntity->setTitle($report['title']);
-                $this->service->saveReport($reportEntity);
             }
         }
         $returnData = $this->service->saveDashboard($dashboard);
@@ -223,11 +222,11 @@ class DashboardController extends AbstractController
         if(isset($postData['permissions'])) {
             foreach($postData['permissions'] as $permission) {
                 $agent = $this->permissionsService->getAgent($permission['id']);
-                $dashboard = $this->service->getDashboard($permission['dashboard_id']);
                 $this->permissionsService->setPermissions($agent, $dashboard, $permission['permissions']);
             }
         }
         $this->permissionsService->setPermissions($this->person, $dashboard, DashboardPermissionService::PERMISSION_FULL);
+        $returnData['permissions'] = $this->permissionsService->getApiDashboardPermissions($dashboard);
         return $this->createApiSuccessResponse($returnData);
     }
 
@@ -294,7 +293,7 @@ class DashboardController extends AbstractController
         if(
             !$this->permissionsService->isAllowedToEdit($this->person, $dashboard)
             ||
-            $this->permissionsService->checkEditableDashboard($dashboard)
+            $this->permissionsService->isEditableDashboard($dashboard)
         )
         {
             throw $this->createNotFoundException('Dashboard not found!');
