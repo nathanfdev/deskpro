@@ -40,15 +40,26 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Length;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class TicketMessageType extends AbstractType
 {
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
+        if (count($options['message_constraints'])) {
+            $constraints = $options['message_constraints'];
+        } else {
+            $constraints = array(
+                new NotNull(),
+                new Length(array('min' => 10, 'minMessage' => 'Your message must be at least 10 characters in length.'))
+            );
+        }
+
         $builder->add('message', 'textarea', array(
             'label' => $options['message_label'],
             'required' => $options['required'],
-            'constraints' => $options['message_constraints']
+            'constraints' => $constraints
         ));
 
         $builder->addEventListener(FormEvents::PRE_SET_DATA, array($this, 'onPreData'));

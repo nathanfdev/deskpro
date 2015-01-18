@@ -61,6 +61,7 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 use Symfony\Component\Validator\Constraints\Email;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
+use Symfony\Component\Validator\Constraints\NotNull;
 
 class TicketType extends AbstractType
 {
@@ -437,7 +438,7 @@ class TicketType extends AbstractType
             'required' => true,
             'constraints' => array(
                 new NotBlank(array('message' => 'This value is required')),
-                new Length(array('min' => 5, 'minMessage' => 'The subject must be at least 5 characters in length'))
+                new Length(array('min' => 5, 'minMessage' => 'The subject must be at least 5 characters in length.'))
             )
         );
 
