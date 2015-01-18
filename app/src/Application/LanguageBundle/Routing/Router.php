@@ -87,6 +87,11 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
             return $this->matchNonGetRequest($request, $code, $split);
         }
 
+        // always trust our proxy urls, never redirect them
+        if ('/_proxy' === rawurldecode($split['remaining_pathinfo'])) {
+            return $this->matchNonGetRequest($request, $code, $split);
+        }
+
         if (!$code) {
             $code = $request->get('lang_url_code', null);
         }
@@ -94,7 +99,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         if ($code) {
             $request->attributes->set('lang_url_code', $code);
 
-            return $this->processUrlLangCode($code, $split);
+            return $this->processUrlLangCode($code, $split, $request);
         }
 
         return $this->processNoLangCodeInUrl($request, $split);
@@ -146,15 +151,15 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      * @param $split
      * @return array
      */
-    protected function processUrlLangCode($code, $split)
+    protected function processUrlLangCode($code, $split, Request $request)
     {
         if (!$this->language_manager->isMultiLanguagePortal()) {
-            $this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
+            $this->throwRedirectExceptionTo(null, $this->makeRedirectUrl($request, $split));
         }
 
-        if (!$url_language = $this->language_manager->getLanguage($code)) {
+        if (!($url_language = $this->language_manager->getLanguage($code)) && 'GET' === $request->getMethod()) {
             // no language exists and enabled in this system
-            $this->throwRedirectExceptionTo(null, $split['remaining_pathinfo']);
+            $this->throwRedirectExceptionTo(null, $this->makeRedirectUrl($request, $split));
         }
 
         $this->language_manager->getLanguageStack()->push($url_language);
@@ -178,7 +183,12 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
 
         // now we know its a multi lang desk and there was no long code, so we need to decide about where to redirect:
         $this->pushDetectedLanguageToStack($request);
-        $this->throwRedirectExceptionTo($language_stack->getActive(), $split['remaining_pathinfo']);
+
+        if ('GET' === $request->getMethod()) {
+            $this->throwRedirectExceptionTo($language_stack->getActive(), $this->makeRedirectUrl($request, $split));
+        }
+
+        return $this->standardMatch($split);
     }
 
     /**
@@ -292,6 +302,21 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     public function getRouteCollection()
     {
         return $this->router->getRouteCollection();
+    }
+
+    /**
+     * @param Request $request
+     * @param $split
+     * @return string
+     */
+    protected function makeRedirectUrl(Request $request, $split)
+    {
+        $qs = $request->getQueryString();
+        $redirect_url = $split['remaining_pathinfo'];
+        if ($qs) {
+            $redirect_url .= '?' . $qs;
+        }
+        return $redirect_url;
     }
 
 }
