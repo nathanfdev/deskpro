@@ -82,7 +82,6 @@ class TicketsController extends AbstractController
 
         $form->handleRequest($request);
 
-
         if ($form->isValid()) {
             if ($form->getClickedButton()->getConfig()->getName() !== "more_attachments") {
                 // We don't continue here if they just clicked the "add more attachments" button
@@ -119,23 +118,33 @@ class TicketsController extends AbstractController
             'settings' => $this->getBrandContainer()->getSettings()
         ));
 
+        $rerendering = false;
+        if ($form->has('rerender_form')) {
+            $rerendering = true;
+        }
+
         $form->handleRequest($request);
 
         if ($form->isValid()) {
 
-            // TODO: fire an event (Ticket::EDIT)
-            $this->getRepo('DeskPRO:Ticket')->saveTicket($ticket);
+            // if the form set a hidden field "rerender_form" then we want to skip actual processing for now
+            if (!$form->has('rerender_form')) {
+                // TODO: fire an event (Ticket::EDIT)
+                $this->getRepo('DeskPRO:Ticket')->saveTicket($ticket);
 
-            $this->addFlash('success', 'updated.ticket.translated');
+                $this->addFlash('success', 'updated.ticket.translated');
 
-            return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+                return $this->redirectToRoute('portal_tickets_view', array('id' => $ticket->getId()));
+            }
+
         }
 
         return $this->renderThemeView(
             'Theme:Tickets:edit.html.twig',
             array(
                 'ticket' => $ticket,
-                'form' => $form->createView()
+                'form' => $form->createView(),
+                'rerendering' => $rerendering
             )
         );
     }

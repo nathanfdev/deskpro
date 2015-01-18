@@ -143,6 +143,10 @@ class CustomDefHierarchyNodeTransformer implements DataTransformerInterface
      */
     public function reverseTransform($value)
     {
+        if (!$value) {
+            return '';
+        }
+
         if (!is_array($value)) {
             return $value->getData()->getId();
         }

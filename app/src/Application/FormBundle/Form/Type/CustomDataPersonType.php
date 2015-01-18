@@ -82,14 +82,26 @@ class CustomDataPersonType extends AbstractType
         }
 
         list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));
+
+        if ($config->getOption('ignore_validation')) {
+            $options = array_merge($options, array(
+                'validation_groups' => array(),
+                'constraints' => array()
+            ));
+        }
+
         $form->add($value_name, $form_type, $options);
     }
 
     public function submitEvent(FormEvent $event)
     {
         $config = $event->getForm()->getConfig();
-        /** @var \Application\DeskPRO\Entity\CustomDataTicket $custom_data */
+        /** @var \Application\DeskPRO\Entity\CustomDataPerson $custom_data */
         $custom_data = $event->getData();
+        if (!$custom_data) {
+            $custom_data = new CustomDataPerson();
+            $event->setData($custom_data);
+        }
         $field = $config->getOption('custom_data_field');
         $person = $config->getOption('person');
         $custom_data->field = $field;
@@ -122,7 +134,8 @@ class CustomDataPersonType extends AbstractType
     public function setDefaultOptions(OptionsResolverInterface $resolver)
     {
         $resolver->setDefaults(array(
-            'data_class'   => 'Application\DeskPRO\Entity\CustomDataPerson'
+            'data_class'   => 'Application\DeskPRO\Entity\CustomDataPerson',
+            'ignore_validation' => false
         ));
         $resolver->setRequired(array(
             'custom_data_field',

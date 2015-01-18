@@ -5,6 +5,10 @@
     <div class="wrapper">
 
 
+        {% if rerendering %}
+            <strong>You have switched departments and the form fields have changed. Please review the form and submit again.</strong>
+        {% endif %}
+
         {% embed 'Theme:Form:ticket.html.twig' %}{% endembed %}
 
 

@@ -222,10 +222,12 @@ CUSTOM FIELD CHOICE (CustomDefAbstract type choices)
 {% block deskpro_custom_field_choice_widget_expanded -%}
     <div data-heirarcy="" {{ block('widget_container_attributes') }}>
         {%- for child in form %}
-            {% if form.vars.choices[loop.index0].data|length == 0 %}
-            {{- form_widget(child) -}}
-            {{- form_label(child) -}}
-                <br>
+            {% if form.vars.choices[loop.index0] is defined %}
+                {% if form.vars.choices[loop.index0].data|length == 0 %}
+                {{- form_widget(child) -}}
+                {{- form_label(child) -}}
+                    <br>
+                {% endif %}
             {% endif %}
         {% endfor -%}
     </div>

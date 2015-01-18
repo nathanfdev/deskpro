@@ -72,7 +72,7 @@ class TicketViewService
         $view->ticket = $ticket;
 
         $display_attributes = array();
-        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->id)->user_layout;
+        $layout = $this->ticket_layout_factory->getLayoutForTicketForm($ticket->department)->user_layout;
 
         /** @var \Application\DeskPro\TicketLayout\LayoutField $layout_field */
         foreach ($layout as $layout_field) {
