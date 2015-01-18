@@ -263,9 +263,7 @@ class KernelBooter
             try {
 
                 // debug code
-
-                $start = microtime(true);
-
+                $boot = microtime(true);
                 // end debug code
 
 
@@ -285,30 +283,44 @@ class KernelBooter
                 if ('dev' === $env) {
                     Debug::enable();
                 }
+                // debug code
+                $start = microtime(true);
+                // end debug code
                 $request = Request::createFromGlobals();
                 $response = $kernel->handle($request);
 
 
+                //
                 // debug code, erase comments to see (erase from $start variable above, as well)
-                // note: ignore the output that might appear at bottom of page due to web profiler
-
                 // below: a log from the kernel of cache hits/misses and a simple profile of page load
-                $log = explode(';', $kernel->getLog());
-                print implode("\n<br>", $log);
-                $starting = "booting: " . $start;
-                $starting .= "<br><br>\n\n";
-                print "<br><br>\n\n" . $starting;
-                $end = microtime(true);
-                print "done: " . $end;
-                print "<br><br>\n\n";
-                print "total: " . ($end - $start);
+                //
+                if (false !== strpos($response->getContent(), '</body>')) {
+                    $end = microtime(true);
+                    $log = explode(';', $kernel->getLog());
+                    $print_log = "<br><br><br><br><hr><br><h1>Http Cache Log</h1>";
+                    $print_log .= implode("\n<br>", $log);
+                    $print_log .= "<br><hr><br><h1>Simple Profile</h1>";
+                    $print_log .= "boot time: " . sprintf('%.2f', $start - $boot) . "s<br>\n";
+                    $print_log .= "http kernel time: " . sprintf('%.2f', $end - $start) . "s<br>\n";
+                    $print_log .= "total time: <strong>" . sprintf('%.2f', $end - $boot) . 's</strong>';
+                    $print_log .= "<br><br><br>";
+
+
+                    $content = $response->getContent();
+                    $pos = strripos($content, '</body>');
+                    $content = substr($content, 0, $pos) . $print_log . substr($content, $pos);
+                    $response->setContent($content);
+                    $content_length = $response->headers->get('Content-Length');
+                    $response->headers->set('Content-Length', $content_length + strlen($print_log));
+                }
+                //
+                // end debug code
                 //
 
-                // end debug code
-
-
-                $kernel->terminate($request, $response);
                 $response->send();
+                $kernel->terminate($request, $response);
+
+
 
 
             } catch (DBALException $e) {
