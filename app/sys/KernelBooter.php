@@ -294,7 +294,7 @@ class KernelBooter
                 // debug code, erase comments to see (erase from $start variable above, as well)
                 // below: a log from the kernel of cache hits/misses and a simple profile of page load
                 //
-                if (false !== strpos($response->getContent(), '</body>')) {
+                if (false !== strpos($response->getContent(), '</body>') && '/_' !== substr(rawurldecode($request->getPathInfo()), 0, 2)) {
                     $end = microtime(true);
                     $log = explode(';', $kernel->getLog());
                     $print_log = "<br><br><br><br><hr><br><h1>Http Cache Log</h1>";

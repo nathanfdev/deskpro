@@ -88,7 +88,8 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         }
 
         // always trust our proxy urls, never redirect them
-        if ('/_proxy' === rawurldecode($split['remaining_pathinfo'])) {
+        $path = rawurldecode($split['remaining_pathinfo']);
+        if ('/_' === substr($path, 0, 2)) {
             return $this->matchNonGetRequest($request, $code, $split);
         }
 
@@ -117,7 +118,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
             return $generated;
         }
 
-        if (in_array($name, static::$generating_ignored_routes)) {
+        if (in_array($name, static::$generating_ignored_routes) || '/_' === substr($generated, 0, 2)) {
             return $generated;
         }
 
