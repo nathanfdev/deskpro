@@ -93,6 +93,7 @@ define([
   'Admin/TicketStatuses/Ctrl/EditResolved',
   'Admin/TicketTriggers/Ctrl/EditDepartmentTrigger',
   'Admin/TicketTriggers/Ctrl/EditEmailAccountTrigger',
+  'Admin/TicketTriggers/Ctrl/EditSatisfactionTrigger',
   'Admin/TicketTriggers/Ctrl/Edit',
   'Admin/TicketTriggers/Ctrl/List',
   'Admin/TicketUrgencies/Ctrl/List',

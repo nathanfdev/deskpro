@@ -317,7 +317,7 @@ define ['DeskPRO/Util/Util'], (Util) ->
 
         element.data('scopeId', rowId)
         @els.loadingOptionMessage.hide().removeClass('loading-on')
-        console.info 'run5'
+
         @els.noOptionsMessage.hide()
         placeholder.replaceWith(element)
         @rows[rowId] = {

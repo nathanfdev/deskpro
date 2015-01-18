@@ -38,6 +38,7 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckEmailAccount;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckSatisfactionSubmitted;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 
@@ -45,6 +46,7 @@ class SpecialTriggerEdit
 {
     const TYPE_DEPARTMENT = 'Department';
     const TYPE_EMAIL_ACCOUNT = 'EmailAccount';
+    const TYPE_SATISFACTION = 'default_update_satisfaction';
 
     /**
      * @var string
@@ -52,7 +54,7 @@ class SpecialTriggerEdit
     private $type;
 
     /**
-     * @var \Application\DeskPRO\Entity\Department|\Application\DeskPRO\Entity\EmailAccount
+     * @var \Application\DeskPRO\Entity\Department|\Application\DeskPRO\Entity\EmailAccount|string
      */
     private $obj;
 
@@ -81,10 +83,15 @@ class SpecialTriggerEdit
         return new self(self::TYPE_EMAIL_ACCOUNT, $account, TicketTrigger::EVENT_TYPE_NEWTICKET);
     }
 
+    public static function createWithSatisfaction($type)
+    {
+        return new self(self::TYPE_SATISFACTION, $type, TicketTrigger::EVENT_TYPE_UPDATE);
+    }
+
 
     /**
      * @param string                  $type
-     * @param Department|EmailAccount $obj
+     * @param Department|EmailAccount|string $obj
      */
     private function __construct($type, $obj, $event)
     {
@@ -106,6 +113,10 @@ class SpecialTriggerEdit
 
             case self::TYPE_EMAIL_ACCOUNT:
                 $this->applyEmailAccountToTrigger($trigger);
+                break;
+
+            case self::TYPE_SATISFACTION:
+                $this->applySatisfactionToTrigger($trigger);
                 break;
         }
     }
@@ -161,5 +172,31 @@ class SpecialTriggerEdit
         $trigger->event_trigger = 'newticket';
         $trigger->by_agent_mode = array('email');
         $trigger->by_user_mode  = array('email');
+    }
+
+    private function applySatisfactionToTrigger(TicketTrigger $trigger)
+    {
+        $type = ucfirst($this->obj);
+        $trigger->title         = "Trigger for {$type} Feedback";
+        $trigger->email_account = null;
+        $trigger->department    = null;
+
+        $ratings = array(
+            'positive' => 1,
+            'neutral' => 0,
+            'negative' => -1,
+        );
+
+        $terms = new TriggerTerms();
+        $terms_set = new TriggerTermComposite();
+        $terms_set->add(new CheckSatisfactionSubmitted('is', array('rating' => $ratings[$this->obj])));
+        $terms->addTerm($terms_set);
+        $trigger->terms = $terms;
+
+        $trigger->event_trigger = 'update';
+        $trigger->by_agent_mode = array('api', 'email', 'web');
+        $trigger->by_user_mode  = array('api', 'email', 'form', 'portal', 'widget');
+
+        $trigger->sys_name = self::TYPE_SATISFACTION . '_' . $this->obj;
     }
 }

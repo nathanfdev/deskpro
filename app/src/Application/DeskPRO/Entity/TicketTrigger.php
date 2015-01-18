@@ -299,6 +299,7 @@ class TicketTrigger extends DomainObject
         $data['terms']         = $this->terms->exportToArray();
         $data['actions']       = $this->actions->exportToArray();
         $data['has_stop_triggers_action'] = $this->hasStopTriggersAction();
+        $data['sys_name']      = $this->sys_name;
 
         return $data;
     }

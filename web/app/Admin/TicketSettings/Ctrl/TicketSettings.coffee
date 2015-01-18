@@ -6,6 +6,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
 
     init: ->
       @settings = null
+      @$scope.escalation_days = 3
 
     initialLoad: ->
       data_promise = @Api.sendDataGet({
@@ -19,7 +20,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @settings = angular.copy(@$scope.settings)
       )
 
-      @headerSortList = {
+      @headerSortList =
         axis: 'y',
         handle: '.drag-handle',
         update: (ev, data) =>
@@ -31,9 +32,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
           )
 
           @$scope.settings.from_email_headers = newOrder
-      }
 
-      return @$q.all([data_promise])
+      @$q.all [data_promise]
 
     isDirtyState: ->
       if not @settings then return false
@@ -43,9 +43,8 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         return false
 
     save: ->
-      postData = {
+      postData =
         ticket_settings: @$scope.settings
-      }
 
       @startSpinner('saving')
       promise = @Api.sendPostJson('/ticket_settings', postData).success( =>
@@ -58,5 +57,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         @stopSpinner('saving', true)
         @applyErrorResponseToView(info)
       )
+
+      @$scope.$broadcast 'trigger.save'
 
   Admin_TicketSettings_Ctrl_TicketSettings.EXPORT_CTRL()

@@ -531,6 +531,14 @@ define(function() {
   });
 
   routes.push({
+    id: 'tickets.triggers.editsatisfaction',
+    url: '/{id:satisfaction\-[0-2]}',
+    templateName: 'TicketTriggers/edit-satisfaction.html',
+    controller: 'Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger',
+    data: { stateMarkId: "tickets.triggers" }
+  });
+
+  routes.push({
     id: 'tickets.triggers.edit',
     url: '/{id:[0-9]+}',
     templateName: 'TicketTriggers/edit.html',

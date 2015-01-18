@@ -7,9 +7,9 @@
 				<div class="panel panel-fill indent">
 					<div class="panel-body">
 						<div class="form-group">
-							<h3>"{{ ng_var('TicketTriggersEdit.account.address') }}" {{ phrase('adm.ticket_triggers.emailacc_trigger_title') }}</h3>
+							<h3>{{ phrase('adm.ticket_triggers.satisfaction_trigger_title') }}</h3>
 							<p style="margin-top: 15px;">
-								{{ phrase('adm.ticket_triggers.emailacc_trigger_description') }}
+								{{ phrase('adm.ticket_triggers.satisfaction_trigger_description') }}
 							</p>
 						</div>
 					</div>
@@ -43,7 +43,15 @@
 															<tr>
 																<td style="vertical-align: middle; padding: 0; margin: 0;" width="10"><div class="dp-ob-row-tag-wrap"><em class="dp-ob-row-tag if">if</em></div></td>
 																<td style="vertical-align: middle; padding: 0; margin: 0;" width="100%">
-																	Ticket is created by an email sent to "{{ ng_var('TicketTriggersEdit.account.address') }}"
+																	<span ng-if="TicketTriggersEdit.id == 0">
+																		User submits a negative feedback
+																	</span>
+																	<span ng-if="TicketTriggersEdit.id == 1">
+																		User submits a neutral feedback
+																	</span>
+																	<span ng-if="TicketTriggersEdit.id == 2">
+																		User submits a positive feedback
+																	</span>
 																</td>
 															</tr>
 														</tbody>
@@ -71,7 +79,7 @@
 									The following actions will run:
 								</header>
 								<article>
-									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixedExpanded: ['SetDepartment', 'SendUserEmail'], fixOn: ['SetDepartment'] }" option-types="actionOptionTypes">
+									<dp-option-builder types-def="TicketTriggersEdit.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then'}" option-types="actionOptionTypes">
 										<add-btn-label>Action</add-btn-label>
 									</dp-option-builder>
 								</article>

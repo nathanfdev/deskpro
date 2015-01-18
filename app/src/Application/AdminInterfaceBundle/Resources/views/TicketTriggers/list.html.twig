@@ -37,11 +37,10 @@
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
 							<div class="help-box" ng-if="List.eventType == 'newticket'">
-								Use these triggers if you want to perform actions based on the department a ticket is created in. Does not apply to tickets created by email.
+								{{ phrase('adm.ticket_triggers.help_department_newticket') }}
 							</div>
 							<div class="help-box" ng-if="List.eventType == 'update'">
-								Use these triggers if you want to perform actions based on when the department is changed
-								to a new department.
+								{{ phrase('adm.ticket_triggers.help_department_update') }}
 							</div>
 							<ul class="dp-item-list" ng-if="List.eventType == 'newticket'">
 								<li ng-repeat="dep in List.depList" dp-state-mark="id:tickets.triggers.editdep.department-{{ ng_var('dep.id') }}">
@@ -114,7 +113,7 @@
 						<div class="group-section-shadow"></div>
 						<div class="group-section-content">
 							<div class="help-box">
-								Tickets are created when an email is processed by DeskPRO. These triggers perform actions based on the email address used.
+								{{ phrase('adm.ticket_triggers.help_emailacc') }}
 							</div>
 
 							<ul class="dp-item-list">
@@ -123,6 +122,48 @@
 										<h4>
 											<span class="title-id" title="ID">#{{ ng_var('email_trigger_ids[acc.id]') }}</span>
 											<span class="title-text">{{ ng_var('acc.address') }}</span>
+										</h4>
+									</a>
+								</li>
+							</ul>
+						</div>
+					</div>
+				</li>
+
+				{#########################}
+				{# Satisfaction Triggers #}
+				{#########################}
+
+				<li class="with-drag-handle" data-id="satisfactionGroup" dp-li-group-section ng-if="List.satisfactions.length" data-move-to-pos="{{ ng_var('satisfaction_order') }}" data-trigger-id="satisfaction">
+					<a href="{{ ng_href('tickets.triggers', '{type: List.eventType}') }}" class="toggle">
+						<i class="fa fa-bars drag-handle"></i>
+						<h4>
+							<i class="fa fa-folder as-closed"></i>
+							<i class="fa fa-folder-open as-open"></i>
+							<span class="title-text">
+								<span ng-pluralize count="List.satisfactions.length" when="{{ ng_plural_phrase('adm.ticket_triggers.count_satisfaction_triggers') }}">
+								</span>
+							</span>
+							&nbsp;
+							<i class="fa fa-caret-down as-closed"></i>
+							<i class="fa fa-caret-up as-open"></i>
+						</h4>
+					</a>
+					<div class="group-section-wrapper">
+						<div class="group-section-shadow"></div>
+						<div class="group-section-content">
+							<div class="help-box">
+								{{ phrase('adm.ticket_triggers.help_satisfaction') }}
+							</div>
+
+							<ul class="dp-item-list">
+								<li ng-repeat="sat in List.satisfactions" dp-state-mark="id:tickets.triggers.editsatisfaction.satisfaction-{{ ng_var('sat.id') }}">
+									<a href="{{ ng_href('tickets.triggers.editsatisfaction', "{type: List.eventType, id: 'satisfaction-' + sat.id}") }}">
+										<div class="pull-right toggle-wrapper">
+											<button dp-toggle-switch ng-model="satisfaction_triggers[sat.title].is_enabled" ng-change="List.updateTriggerEnabledState(satisfaction_triggers[sat.title])"></button>
+										</div>
+										<h4>
+											<span class="title-text">{{ ng_var('sat.title.charAt(0).toUpperCase() + sat.title.substr(1)') }}</span>
 										</h4>
 									</a>
 								</li>

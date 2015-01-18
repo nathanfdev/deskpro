@@ -19,19 +19,65 @@
 								<input type="checkbox" ng-model="settings.satisfaction_enabled" />
 								<h4>Enable the ticket satisfaction survey</h4>
 							</label>
-										<span class="help-block">
-											When enabled, email notifications and the web portal will include links where users can quickly rate agent replies and leave comments.
-										</span>
+							<span class="help-block">
+								When enabled, email notifications and the web portal will include links where users can quickly rate agent replies and leave comments.
+							</span>
 						</div>
 						<div class="inner-group" ng-show="settings.satisfaction_enabled">
 							<label>
 								<input type="checkbox" ng-model="settings.satisfaction_agentread" />
 								<h4>Allow agents to view satisfaction ratings and comments left on tickets</h4>
 							</label>
-										<span class="help-block">
-											When enabled, agents will be able to view satisfaction results on tickets from within the agent interface.
-										</span>
+							<span class="help-block">
+								When enabled, agents will be able to view satisfaction results on tickets from within the agent interface.
+							</span>
 						</div>
+
+						<div class="inner-group" ng-show="settings.satisfaction_enabled">
+							<label>
+								<input type="checkbox" ng-model="escalation" />
+								<h4>
+									Send user an email (edit template) after being resolved for
+									<input type="number" value="3" class="form-control"
+										   style="width: 50px; vertical-align: middle;" min="0"
+										   ng-model="escalation_days"
+											/>
+									days
+								</h4>
+							</label>
+							<span class="help-block">
+
+							</span>
+						</div>
+
+						{% for id, feedback in {2: 'positive', 1: 'neutral', 0: 'negative'} %}
+
+							<div class="inner-group" ng-show="settings.satisfaction_enabled"
+								 ng-controller="Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger as ctrl"
+								 ng-init="setCtrlParams({{ id }})"
+									>
+								<div class="row">
+									<div class="col-lg-6">
+										<label>
+											<input type="checkbox" ng-model="ctrl.trigger.is_enabled" />
+											<h4>
+												{{ phrase('adm.satisfaction.trigger_' ~ feedback ~ '_title') }}
+											</h4>
+										</label>
+										<article>
+											<dp-option-builder types-def="ctrl.actionsTypeDef" save-target="form.actions" options="{tag_first: '', tag_after: 'then', fixOn: []}" option-types="actionOptionTypes">
+												<add-btn-label>Action</add-btn-label>
+											</dp-option-builder>
+										</article>
+										<span class="help-block">
+											{{ phrase('adm.satisfaction.trigger_' ~ feedback ~ '_help') }}
+										</span>
+									</div>
+								</div>
+							</div>
+
+						{% endfor %}
+
 					</div>
 				</div>
 			</div>
@@ -44,7 +90,6 @@
 				<div class="dp-btn-controls" ng-hide="form_props.$attempted && form_props.$invalid">
 					<div dp-hide-spinning="saving">
 						<button class="btn btn-primary" dp-submit-form>{{ phrase('agent.general.save') }}</button>
-						<button class="btn btn-default" ng-click="TicketDepsEdit.resetForm()">{{ phrase('agent.general.reset') }}</button>
 					</div>
 					<div dp-show-spinning="saving">
 						<i class="spinner-flat"></i>
