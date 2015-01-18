@@ -42,7 +42,7 @@ use Orb\Util\CheckedOptionsArray;
 /**
  * Checks if user submits feedback with specific rating
  */
-class CheckSatisfactionSubmitted extends AbstractTriggerTerm
+class CheckSatisfactionSubmittedRating extends AbstractTriggerTerm
 {
     /**
      * {@inheritDoc}

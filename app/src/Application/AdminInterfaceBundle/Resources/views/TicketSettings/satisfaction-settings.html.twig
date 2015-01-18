@@ -4,7 +4,7 @@
 	<section class="dp-paneblock dp-listpane">
 		<header>
 			<h3>
-				<span>Satisfaction</span>
+				<span>{{ phrase('adm.satisfaction.title') }}</span>
 			</h3>
 		</header>
 
@@ -17,19 +17,19 @@
 						<div class="inner-group">
 							<label>
 								<input type="checkbox" ng-model="settings.satisfaction_enabled" />
-								<h4>Enable the ticket satisfaction survey</h4>
+								<h4>{{ phrase('adm.satisfaction.enabled') }}</h4>
 							</label>
 							<span class="help-block">
-								When enabled, email notifications and the web portal will include links where users can quickly rate agent replies and leave comments.
+								{{ phrase('adm.satisfaction.enabled_help') }}
 							</span>
 						</div>
 						<div class="inner-group" ng-show="settings.satisfaction_enabled">
 							<label>
 								<input type="checkbox" ng-model="settings.satisfaction_agentread" />
-								<h4>Allow agents to view satisfaction ratings and comments left on tickets</h4>
+								<h4>{{ phrase('adm.satisfaction.agentread') }}</h4>
 							</label>
 							<span class="help-block">
-								When enabled, agents will be able to view satisfaction results on tickets from within the agent interface.
+								{{ phrase('adm.satisfaction.agentread_help') }}
 							</span>
 						</div>
 

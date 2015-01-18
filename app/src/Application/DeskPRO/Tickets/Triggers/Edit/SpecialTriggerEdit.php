@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\TicketTrigger;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckDepartment;
 use Application\DeskPRO\Tickets\Triggers\Terms\CheckEmailAccount;
-use Application\DeskPRO\Tickets\Triggers\Terms\CheckSatisfactionSubmitted;
+use Application\DeskPRO\Tickets\Triggers\Terms\CheckSatisfactionSubmittedRating;
 use Application\DeskPRO\Tickets\Triggers\Terms\TriggerTermComposite;
 use Application\DeskPRO\Tickets\Triggers\TriggerTerms;
 
@@ -189,7 +189,7 @@ class SpecialTriggerEdit
 
         $terms = new TriggerTerms();
         $terms_set = new TriggerTermComposite();
-        $terms_set->add(new CheckSatisfactionSubmitted('is', array('rating' => $ratings[$this->obj])));
+        $terms_set->add(new CheckSatisfactionSubmittedRating('is', array('rating' => $ratings[$this->obj])));
         $terms->addTerm($terms_set);
         $trigger->terms = $terms;
 
