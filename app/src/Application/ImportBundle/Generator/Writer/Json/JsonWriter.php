@@ -82,7 +82,7 @@ final class JsonWriter extends AbstractWriter
         foreach ($this->mapping as $destination) {
             /** @var Destination\DestinationInterface $destination */
             if ($entity->getType() === $destination->getEntityType()) {
-                return $this->getDestinationOutputPath($destination) . $entity->getDestination();
+                return $this->getDestinationOutputPath($destination) . $entity->getDestination() . '.json';
             }
         }
 

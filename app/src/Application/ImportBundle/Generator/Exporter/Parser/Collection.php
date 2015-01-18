@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser;
 use Application\ImportBundle\AbstractCollection;
 
 /**
+ * Collection of the generator exporter parsers
+ *
  * Class Collection
  * @package Application\ImportBundle\Generator\Exporter\Parser
  */

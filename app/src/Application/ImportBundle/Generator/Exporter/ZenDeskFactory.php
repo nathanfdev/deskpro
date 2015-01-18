@@ -26,6 +26,7 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Generator\Exporter;
+use Application\ImportBundle\ZenDesk\ZenDeskReaderInterface;
 
 /**
  * Class ZenDeskFactory
@@ -38,6 +39,13 @@ class ZenDeskFactory extends AbstractFactory
      */
     public function createExporter()
     {
-        return new ZenDesk(new Parser\Collection());
+        /** @var ZenDeskReaderInterface $reader */
+        $reader  = $this->container->get('deskpro.import.zen_desk_reader');
+        $parsers = new Parser\Collection();
+        $parsers
+            ->attach(new Parser\ZenDesk\People($reader))
+            ->attach(new Parser\ZenDesk\Tickets($reader));
+
+        return new ZenDesk($parsers);
     }
 }

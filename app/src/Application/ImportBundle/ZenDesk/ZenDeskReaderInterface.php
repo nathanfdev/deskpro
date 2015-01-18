@@ -25,37 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser;
-
-use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+namespace Application\ImportBundle\ZenDesk;
 
 /**
- * Generator exporter parser interface
- *
- * Interface EntityExporterInterface
- * @package Application\ImportBundle\Generator\Exporter\Parser
+ * Interface ZenDeskReaderInterface
+ * @package Application\ImportBundle\ZenDesk
  */
-interface ParserInterface extends GeneratorConfigAwareInterface
+interface ZenDeskReaderInterface
 {
-    /**
-     * Referred entity type
-     *
-     * @return string
-     */
-    public function getRecordType();
 
-    /**
-     * Returns count of records to be exported
-     *
-     * @return int
-     */
-    public function getCount();
-
-    /**
-     * Returns the collection of exporting entities
-     *
-     * @return Entity\Collection
-     */
-    public function export();
 }

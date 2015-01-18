@@ -70,7 +70,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * Creates a new generator config instance
      *
      * @param InputInterface $input
+     *
      * @return GeneratorConfig
+     * @throws Exception
      */
     protected function createGeneratorConfig(InputInterface $input)
     {
@@ -120,10 +122,15 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
         }
 
         if ($input->hasOption('input-path')) {
-            $config->setInputPath($input->getOption('input-path'));
-        } else {
-            if ($config->getExporterType() === ExporterInterface::TYPE_CSV) {
-                throw new Exception('You must supply an "input-path" argument while using CSV exporter');
+            if ($input->getOption('input-path')) {
+                $config->setInputPath($input->getOption('input-path'));
+            } else {
+                switch ($config->getExporterType()) {
+                    case ExporterInterface::TYPE_CSV:
+                        throw new Exception('You must supply an "input-path" argument while using CSV exporter');
+                    case ExporterInterface::TYPE_JSON:
+                        throw new Exception('You must supply an "input-path" argument while using JSON exporter');
+                }
             }
         }
 

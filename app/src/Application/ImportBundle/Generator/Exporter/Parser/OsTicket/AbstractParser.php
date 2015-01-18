@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
 
 /**
- * Abstract os ticker parser
+ * Abstract osTicket parser
  *
  * Class AbstractParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket

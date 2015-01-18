@@ -60,12 +60,12 @@ final class Ticket extends AbstractEntity
     private $department;
 
     /**
-     * @var string or object?
+     * @var string
      */
     private $person_email;
 
     /**
-     * @var int or object?
+     * @var string
      */
     private $agent_email;
 
@@ -238,7 +238,7 @@ final class Ticket extends AbstractEntity
      */
     public function setPersonEmail($person_email)
     {
-        $this->person_email = $person_email;
+        $this->person_email = (string)$person_email;
         return $this;
     }
 
@@ -251,12 +251,12 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @param int $agent_email
+     * @param string $agent_email
      * @return $this
      */
     public function setAgentEmail($agent_email)
     {
-        $this->agent_email = $agent_email;
+        $this->agent_email = (string)$agent_email;
         return $this;
     }
 

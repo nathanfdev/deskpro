@@ -31,6 +31,8 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\GeneratorInterface;
 
 /**
+ * ZenDesk people parser
+ *
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */

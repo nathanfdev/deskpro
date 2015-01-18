@@ -31,6 +31,8 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\GeneratorInterface;
 
 /**
+ * ZenDesk tickets parser
+ *
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */

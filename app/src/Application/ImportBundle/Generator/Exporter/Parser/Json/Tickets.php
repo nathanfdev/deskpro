@@ -71,6 +71,7 @@ class Tickets extends AbstractParser
             } else {
                 $entity = new Entity\Ticket();
                 $entity
+                    ->setDestination('ticket_' . $ticket['ref'])
                     ->setRef($ticket['ref'])
                     ->setDepartment($ticket['department'])
                     ->setPersonEmail($ticket['person'])
@@ -114,7 +115,7 @@ class Tickets extends AbstractParser
                     ->setMessageText($message['message_text'])
                     ->setDateCreated(new DateTime($message['date_created']));
 
-                $attachments = $this->exportAttachments($message['id']);
+                $attachments = $this->exportAttachments($message['attachments']);
                 foreach ($attachments as $attachment) {
                     /** @var Entity\TicketAttachment $attachment */
                     $entity->addAttachment($attachment);

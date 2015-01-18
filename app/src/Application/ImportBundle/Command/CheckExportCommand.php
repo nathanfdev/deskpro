@@ -69,7 +69,11 @@ class CheckExportCommand extends AbstractExportCommand
 
         $output->writeln('');
         if ($config->isVerbose()) {
-            $output->writeln('Done.');
+            if ($exceptions->count() > 0) {
+                $output->writeln(sprintf('Done. Errors found `%d`.', $exceptions->count()));
+            } else {
+                $output->writeln('Done. Checking was successful.');
+            }
         } else {
             if ($exceptions->count() > 0) {
                 $output->writeln(sprintf(

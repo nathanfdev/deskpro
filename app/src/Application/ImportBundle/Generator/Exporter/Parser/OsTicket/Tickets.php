@@ -33,7 +33,7 @@ use DateTime;
 use Exception;
 
 /**
- * Tickets os ticket parser
+ * OsTicket tickets parser
  *
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket

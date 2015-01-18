@@ -27,11 +27,28 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
+use Application\ImportBundle\ZenDesk\ZenDeskReaderInterface;
+
 /**
+ * Abstract zenDesk parser
+ *
  * Class AbstractParser
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
 abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
 {
+    /**
+     * @var ZenDeskReaderInterface
+     */
+    protected $reader;
 
+    /**
+     * Constructor
+     *
+     * @param ZenDeskReaderInterface $reader
+     */
+    public function __construct(ZenDeskReaderInterface $reader)
+    {
+        $this->reader = $reader;
+    }
 }

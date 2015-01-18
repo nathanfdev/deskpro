@@ -71,6 +71,7 @@ class People extends AbstractParser
             } else {
                 $entity = new Entity\Person();
                 $entity
+                    ->setDestination('ticket_' . $person['oid'])
                     ->setOid($person['oid'])
                     ->setAsAgent($person['is_agent'])
                     ->setAsUser($person['is_user'])

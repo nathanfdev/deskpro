@@ -51,7 +51,7 @@ class ImportExtension extends Extension
         $definition = new Definition('Application\ImportBundle\JsonReader\JsonReader');
         $container->setDefinition('deskpro.import.json_reader', $definition);
 
-        // Os ticket reader
+        // OsTicket reader
         $definition = new Definition('Application\ImportBundle\OsTicket\OsTicketReaderFactory');
         $container->setDefinition('deskpro.import.os_ticket_reader_factory', $definition);
 
@@ -59,6 +59,10 @@ class ImportExtension extends Extension
         $definition->setFactoryService('deskpro.import.os_ticket_reader_factory');
         $definition->setFactoryMethod('createReaderByDeskproConfig');
         $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
+
+        // ZenDesk reader
+        $definition = new Definition('Application\ImportBundle\ZenDesk\ZenDeskReader');
+        $container->setDefinition('deskpro.import.zen_desk_reader', $definition);
 
         // Import generator
         $definition = new Definition('Application\ImportBundle\Generator\GeneratorFactory');

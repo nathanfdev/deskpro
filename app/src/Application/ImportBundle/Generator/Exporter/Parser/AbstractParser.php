@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Exporter\Parser;
 use Application\ImportBundle\Generator\AbstractGenerator;
 
 /**
+ * Abstract generator exporter parser
+ *
  * Class AbstractParser
  * @package Application\ImportBundle\Generator\Exporter\Parser
  */

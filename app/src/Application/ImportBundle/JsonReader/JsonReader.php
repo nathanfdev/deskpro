@@ -29,6 +29,8 @@ namespace Application\ImportBundle\JsonReader;
 
 use RecursiveIteratorIterator;
 use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
+use Symfony\Component\Finder\SplFileInfo;
+use Exception;
 
 /**
  * Json data parser
@@ -45,9 +47,10 @@ class JsonReader implements JsonReaderInterface
     {
         $count = 0;
         $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
-        foreach ($iterator as $row) {
-            $row = @json_decode($row, true);
-            if (is_array($row)) {
+        foreach ($iterator as $file) {
+            /** @var SplFileInfo $file */
+            $content = @json_decode($file->getContents(), true);
+            if (is_array($content)) {
                 $count++;
             }
         }
@@ -62,10 +65,11 @@ class JsonReader implements JsonReaderInterface
     {
         $data = array();
         $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
-        foreach ($iterator as $row) {
-            $row = @json_decode($row, true);
-            if (is_array($row)) {
-                $data[] = $row;
+        foreach ($iterator as $file) {
+            /** @var SplFileInfo $file */
+            $content = @json_decode($file->getContents(), true);
+            if (is_array($content)) {
+                $data[] = $content;
             }
         }
 
@@ -79,12 +83,12 @@ class JsonReader implements JsonReaderInterface
      * @param bool   $exclude_done
      *
      * @return RecursiveIteratorIterator
-     * @throws \Exception
+     * @throws Exception
      */
     public function getIterator($path, $exclude_done)
     {
         if (!is_dir($path)) {
-            throw new \Exception(sprintf('Path `%s` not found', $path));
+            throw new Exception(sprintf('Path `%s` not found', $path));
         }
 
         return new RecursiveIteratorIterator(

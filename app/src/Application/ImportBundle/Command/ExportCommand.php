@@ -65,7 +65,11 @@ class ExportCommand extends AbstractExportCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        $config    = $this->createGeneratorConfig($input);
+        $config = $this->createGeneratorConfig($input);
+        if ($config->getInputPath() === $config->getOutputPath()) {
+            throw new \Exception('Output path must be different from input path');
+        }
+
         $logger    = $this->createLogger($config, new ConsoleHandler($output));
         $generator = $this->createGenerator($config, $output, $logger);
 
