@@ -34,6 +34,8 @@
 
 namespace Application\FormBundle\Form\Type;
 
+use Application\AppBundle\Hierarchy\HierarchyNode;
+use Application\DeskPRO\Domain\DomainObject;
 use Application\DeskPRO\Entity\TicketAttachment;
 use Application\DeskPRO\Entity\TicketLayout;
 use Application\DeskPRO\Entity\Ticket;
@@ -174,11 +176,8 @@ class TicketType extends AbstractType
             //
             /** @var \Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceList $choice_list */
             // choice types dont submit entity IDS, they submit choice list IDs. So we need to calc the real entity Id.
-            $choice_list = $form->get(FormFields::DEPARTMENT)->getConfig()->getOption('choice_list');
-            $submitted_department = $pre_submit_data[FormFields::DEPARTMENT];
-            $values = $choice_list->getChoicesForValues(array($submitted_department));
-            $submitted_department_node = array_pop($values);
-            $new_department_id = $submitted_department_node->getData()->getId();
+            $extracted_data = $this->getTicketDataIds($pre_submit_data, $context);
+            $new_department_id = $extracted_data['department'];
             //
             // end get new department id
             //
@@ -218,20 +217,22 @@ class TicketType extends AbstractType
             $context->setNewLayout($destination_layout);
         }
 
-        $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context, true, $potentially_rerender_form);
+        $this->manipulateForm($initial_layout, $context->getActiveLayout(), $context, $pre_submit_data, $potentially_rerender_form);
     }
 
     /**
      * @param Layout $initial_layout
      * @param Layout $new_layout
      * @param TicketFormContext $context
-     * @param bool $is_submit
+     * @param array $submitted_data
      * @param bool $potentially_rerender_form
      */
-    protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $is_submit = false, $potentially_rerender_form = false)
+    protected function manipulateForm(Layout $initial_layout, Layout $new_layout, TicketFormContext $context, $submitted_data = array(), $potentially_rerender_form = false)
     {
         $additional_fields = $this->layout_differ->findFieldsToAdd($initial_layout, $new_layout);
         $fields_to_remove = $this->layout_differ->findFieldsToRemove($initial_layout, $new_layout);
+
+        $extracted_data = $this->getTicketDataIds($submitted_data, $context);
 
         $added_something = false;
         foreach ($additional_fields as $field) {
@@ -239,8 +240,14 @@ class TicketType extends AbstractType
                 continue;
             }
 
-            if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
-                continue;
+            if (count($submitted_data)) {
+                if ($field->hasCriteria() && !$field->getCriteria()->isSubmittedDataMatch($extracted_data)) {
+                    continue;
+                }
+            } else {
+                if ($field->hasCriteria() && !$field->getCriteria()->isTicketMatch($context->getTicket())) {
+                    continue;
+                }
             }
 
             // if something is added, we need to ensure "submit" is removed (it's re-added at the end, below)
@@ -249,7 +256,7 @@ class TicketType extends AbstractType
             }
 
             // we signal to the controller that we want to rerender (and NOT submit or process) by adding a hidden field
-            if ($potentially_rerender_form && $is_submit && !$context->getForm()->has('rerender_form')) {
+            if ($potentially_rerender_form && count($submitted_data) > 0 && !$context->getForm()->has('rerender_form')) {
                 $context->getForm()->add('rerender_form', 'hidden', array('mapped' => false, 'label' => false));
             }
 
@@ -268,6 +275,41 @@ class TicketType extends AbstractType
         }
 
         $this->addSubmit($context);
+    }
+
+    /**
+     * Submitted choice values are not submitted with the entity Id. Instead we are given the choice list key.
+     *
+     * This inspects the submitted data on our form and gives us data we're interesed in.
+     *
+     * @param array $submitted_data
+     * @param TicketFormContext $context
+     * @return array the form key and its selected entity ID (or null if not submitted)
+     */
+    private function getTicketDataIds(array $submitted_data, TicketFormContext $context)
+    {
+        $form = $context->getForm();
+
+        $final_data = array();
+
+        $keys = array(FormFields::DEPARTMENT, FormFields::PRODUCT, FormFields::CATEGORY, FormFields::WORKFLOW, FormFields::PRIORITY);
+
+        foreach ($keys as $key) {
+            if (array_key_exists($key, $submitted_data)) {
+                $submitted_value = $submitted_data[$key];
+                $choice = current($form->get($key)->getConfig()->getOption('choice_list')->getChoicesForValues(array($submitted_value)));
+
+                if ($choice instanceof HierarchyNode) {
+                    $choice = $choice->getData();
+                }
+
+                $final_data[$key] = $choice->getId();
+            } else {
+                $final_data[$key] = null;
+            }
+        }
+
+        return $final_data;
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\TicketLayout\Terms;
 
 use Application\DeskPRO\Entity\Ticket;
+use Application\FormBundle\FormFields;
 
 class CheckPriority extends AbstractTicketLayoutTerm
 {
@@ -44,6 +45,22 @@ class CheckPriority extends AbstractTicketLayoutTerm
     public function isTicketMatch(Ticket $ticket)
     {
         $have_id = $ticket->category ? $ticket->category->getId() : 0;
+        $is_match = in_array($have_id, $this->options['priority_ids']);
+
+        if ($this->op == self::OP_NOT) {
+            $is_match = !$is_match;
+        }
+
+        return $is_match;
+    }
+
+    /**
+     * @param  array $data
+     * @return bool
+     */
+    public function isSubmittedDataMatch(array $data)
+    {
+        $have_id = isset($data[FormFields::PRIORITY]) ? $data[FormFields::PRIORITY] : 0;
         $is_match = in_array($have_id, $this->options['priority_ids']);
 
         if ($this->op == self::OP_NOT) {
