@@ -17,12 +17,13 @@ security:
                 failure_path: /login?retry=auth
                 login_path: /login
                 use_forward: false
+                require_previous_session: false
             anonymous:
                 key:    "irrelevant - compiler pass will override this"
             logout:
                 path: portal_logout
                 target: /
-                invalidate_session: false
+                invalidate_session: true
                 handlers:  [security.authentication.logout_handler]
             remember_me:
                 key:      "irrelevant - compiler pass will override this"

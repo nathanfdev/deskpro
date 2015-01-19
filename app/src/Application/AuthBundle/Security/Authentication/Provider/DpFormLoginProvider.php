@@ -60,6 +60,7 @@ class DpFormLoginProvider implements AuthenticationProviderInterface
      * @var \Application\AuthBundle\Security\DpPersonUserProvider
      */
     private $dp_person_provider;
+
     /**
      * @var Session
      */
