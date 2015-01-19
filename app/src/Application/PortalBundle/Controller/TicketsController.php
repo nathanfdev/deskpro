@@ -55,9 +55,9 @@ class TicketsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
-                'awaiting_user_tickets' => $this->getTicketsService()->getAwaitingUserPager($person, 100, 1),
-                'awaiting_agent_tickets' => $this->getTicketsService()->getAwaitingAgentPager($person, 100, 1),
-                'resolved_tickets' => $this->getTicketsService()->getResolvedPager($person, 100, 1),
+                'awaiting_user_tickets' => $this->getTicketsDataService()->getAwaitingUserPager($person, 100, 1),
+                'awaiting_agent_tickets' => $this->getTicketsDataService()->getAwaitingAgentPager($person, 100, 1),
+                'resolved_tickets' => $this->getTicketsDataService()->getResolvedPager($person, 100, 1),
             )
         );
     }
@@ -95,7 +95,7 @@ class TicketsController extends AbstractController
             }
         }
 
-        $ticket_view = $this->get('data.ticket_view')->getUserTicketView($ticket);
+        $ticket_view = $this->getTicketsViewService()->getUserTicketView($ticket);
 
         return $this->renderThemeView(
             'Theme:Tickets:view.html.twig',
@@ -147,13 +147,5 @@ class TicketsController extends AbstractController
                 'rerendering' => $rerendering
             )
         );
-    }
-
-    /**
-     * @return \Application\AppBundle\DataService\TicketService
-     */
-    protected function getTicketsService()
-    {
-        return $this->get('data.ticket');
     }
 }

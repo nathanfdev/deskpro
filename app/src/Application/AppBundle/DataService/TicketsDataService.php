@@ -42,7 +42,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
 
-class TicketService
+class TicketsDataService
 {
     /**
      * @var EntityManager

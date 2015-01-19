@@ -1,25 +1,29 @@
 services:
+
   data.person:
       class: Application\AppBundle\DataService\PersonDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.tickets:
+      class: Application\AppBundle\DataService\TicketsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
+
   data.departments:
       class: Application\AppBundle\DataService\DepartmentDataService
       arguments: [@doctrine.orm.default_entity_manager, @portal_permissions_manager]
+
   data.articles:
       class: Application\AppBundle\DataService\ArticlesDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
   data.news:
       class: Application\AppBundle\DataService\NewsDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
   data.downloads:
       class: Application\AppBundle\DataService\DownloadsDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
   data.feedback:
       class: Application\AppBundle\DataService\FeedbackDataService
       arguments: [@doctrine.orm.default_entity_manager]
-  data.ticket:
-      class: Application\AppBundle\DataService\TicketService
-      arguments: [@doctrine.orm.default_entity_manager]
-  data.ticket_view:
-      class: Application\AppBundle\DataService\TicketViewService
-      arguments: [@form_field_manager, @ticket_layout_factory, @deskpro.core.translate]

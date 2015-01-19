@@ -121,54 +121,6 @@ class AbstractController extends BaseController
     }
 
     /**
-     * @return \Application\PortalBundle\Helper\PortalRatingsHelper
-     */
-    public function getRatingsHelper()
-    {
-        return $this->get('ratings_helper');
-    }
-
-    /**
-     * @return \Application\PortalBundle\Helper\ContentSubscriptionsHelper
-     */
-    public function getSubscriptionsHelper()
-    {
-        return $this->get('subscriptions_helper');
-    }
-
-    /**
-     * @return \Application\AppBundle\DataService\PersonDataService
-     */
-    public function getPersonDataService()
-    {
-        return $this->get('data.person');
-    }
-
-    /**
-     * @return \Application\AppBundle\DataService\DownloadsDataService
-     */
-    public function getDownloadsDataService()
-    {
-        return $this->get('data.downloads');
-    }
-
-    /**
-     * @return \Application\AppBundle\DataService\NewsDataService
-     */
-    public function getNewsDataService()
-    {
-        return $this->get('data.news');
-    }
-
-    /**
-     * @return \Application\AppBundle\DataService\FeedbackDataService
-     */
-    public function getFeedbackDataService()
-    {
-        return $this->get('data.feedback');
-    }
-
-    /**
      * @param $setting
      * @param null $default
      * @return mixed
@@ -252,10 +204,74 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Application\PortalBundle\Helper\PortalRatingsHelper
+     */
+    public function getRatingsHelper()
+    {
+        return $this->get('ratings_helper');
+    }
+
+    /**
+     * @return \Application\PortalBundle\Helper\ContentSubscriptionsHelper
+     */
+    public function getSubscriptionsHelper()
+    {
+        return $this->get('subscriptions_helper');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\PersonDataService
+     */
+    public function getPersonDataService()
+    {
+        return $this->get('data.person');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\DownloadsDataService
+     */
+    public function getDownloadsDataService()
+    {
+        return $this->get('data.downloads');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\NewsDataService
+     */
+    public function getNewsDataService()
+    {
+        return $this->get('data.news');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\FeedbackDataService
+     */
+    public function getFeedbackDataService()
+    {
+        return $this->get('data.feedback');
+    }
+
+    /**
      * @return \Application\AppBundle\DataService\ArticlesDataService
      */
     protected function getArticlesDataService()
     {
         return $this->get('data.articles');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\TicketsDataService
+     */
+    protected function getTicketsDataService()
+    {
+        return $this->get('data.tickets');
+    }
+
+    /**
+     * @return \Application\AppBundle\DataService\TicketViewService
+     */
+    protected function getTicketsViewService()
+    {
+        return $this->get('view.tickets');
     }
 }
