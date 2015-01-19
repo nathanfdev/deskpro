@@ -30,24 +30,24 @@ namespace Application\ImportBundle\Generator\Mapper;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Organization record mapper
+ * Product record mapper
  *
- * Class Organization
+ * Class Product
  * @package Application\ImportBundle\Generator\Mapper
  */
-class Organization implements MapperInterface
+class Product implements MapperInterface
 {
     /**
-     * @var EntityRepository\Organization
+     * @var EntityRepository\Product
      */
     private $repository;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\Organization $repository
+     * @param EntityRepository\Product $repository
      */
-    public function __construct(EntityRepository\Organization $repository)
+    public function __construct(EntityRepository\Product $repository)
     {
         $this->repository = $repository;
     }
@@ -57,7 +57,7 @@ class Organization implements MapperInterface
      */
     public function getType()
     {
-        return self::TYPE_ORGANIZATION;
+        return self::TYPE_PRODUCT;
     }
 
     /**
@@ -65,11 +65,11 @@ class Organization implements MapperInterface
      */
     public function findIdByValue($value)
     {
-        $organization = $this->repository->findOneByName($value);
-        if (!$organization) {
-            throw new MapperException(sprintf('Organization `%s` not found', $value));
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('Product `%s` not found', $value));
         }
 
-        return $organization->getId();
+        return $record->getId();
     }
 }

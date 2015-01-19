@@ -26,6 +26,7 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\RecordMapper;
+use Application\ImportBundle\Generator\Mapper\MapperInterface;
 
 /**
  * Class CustomDefTicketRecordMapper
@@ -43,7 +44,7 @@ class CustomDefTicketRecordMapper extends CommonRecordMapper
      */
     public function getType()
     {
-        return self::TYPE_CUSTOM_DEF_TICKET;
+        return MapperInterface::TYPE_CUSTOM_DEF_TICKET;
     }
 
     /**

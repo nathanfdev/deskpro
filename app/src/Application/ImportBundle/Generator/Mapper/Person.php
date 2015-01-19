@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Mapper;
 
 use Application\DeskPRO\EntityRepository;
-use Application\ImportBundle\RecordMapper\RecordMapperInterface;
 
 /**
  * Person record mapper
@@ -41,16 +40,16 @@ class Person implements MapperInterface
     /**
      * @var EntityRepository\Person
      */
-    private $person_repository;
+    private $repository;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\Person $person_repository
+     * @param EntityRepository\Person $repository
      */
-    public function __construct(EntityRepository\Person $person_repository)
+    public function __construct(EntityRepository\Person $repository)
     {
-        $this->person_repository = $person_repository;
+        $this->repository = $repository;
     }
 
     /**
@@ -58,7 +57,7 @@ class Person implements MapperInterface
      */
     public function getType()
     {
-        return RecordMapperInterface::TYPE_PERSON;
+        return self::TYPE_PERSON;
     }
 
     /**
@@ -66,7 +65,7 @@ class Person implements MapperInterface
      */
     public function findIdByValue($value)
     {
-        $person = $this->person_repository->findOneByEmail($value);
+        $person = $this->repository->findOneByEmail($value);
         if (!$person) {
             throw new MapperException(sprintf('Person `%s` not found', $value));
         }

@@ -33,28 +33,6 @@ namespace Application\ImportBundle\RecordMapper;
  */
 interface RecordMapperInterface
 {
-    const TYPE_PERSON            = 'person';
-    const TYPE_TICKET_DEPARTMENT = 'ticket_department';
-    const TYPE_TICKET_CATEGORY   = 'ticket_category';
-    const TYPE_TICKET_WORKFLOW   = 'ticket_workflow';
-    const TYPE_TICKET_PRIORITY   = 'ticket_priority';
-    const TYPE_TICKET_STATUS     = 'ticket_status';
-    const TYPE_DEPARTMENT        = 'department';
-    const TYPE_PRODUCT           = 'product';
-    const TYPE_USER_GROUP        = 'usergroup';
-    const TYPE_ORGANIZATION      = 'organization';
-    const TYPE_LANGUAGE          = 'language';
-    const TYPE_ARTICLE_CATEGORY  = 'article_category';
-    const TYPE_ARTICLE           = 'article';
-    const TYPE_NEWS_CATEGORY     = 'news_category';
-    const TYPE_NEWS              = 'news';
-    const TYPE_FEEDBACK_CATEGORY = 'feedback_category';
-    const TYPE_FEEDBACK          = 'feedback';
-    const TYPE_DOWNLOAD_CATEGORY = 'download_category';
-    const TYPE_DOWNLOAD          = 'download';
-    const TYPE_CUSTOM_DEF_TICKET = 'custom_def_ticket';
-    const TYPE_CUSTOM_DEF_PEOPLE = 'custom_def_people';
-
     /**
      * Returns DeskPro record type
      *

@@ -45,7 +45,7 @@ class Tickets extends AbstractParser
      */
     public function getRecordType()
     {
-        return GeneratorInterface::RECORD_TYPE_TICKETS;
+        return GeneratorInterface::RECORD_TYPE_TICKET;
     }
 
     /**

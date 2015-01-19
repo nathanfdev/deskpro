@@ -46,7 +46,7 @@ class People extends AbstractParser
      */
     public function getRecordType()
     {
-        return GeneratorInterface::RECORD_TYPE_PEOPLE;
+        return GeneratorInterface::RECORD_TYPE_PERSON;
     }
 
     /**

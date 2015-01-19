@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Mapper;
 
 /**
+ * Mapper exception
+ *
  * Class MapperException
  * @package Application\ImportBundle\Generator\Mapper
  */

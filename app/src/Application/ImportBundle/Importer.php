@@ -35,7 +35,7 @@ use Application\ImportBundle\Exception\MultipleMappingException;
 use Application\ImportBundle\JsonReader\JsonReader;
 use Application\ImportBundle\JsonReader\JsonReaderInterface;
 use Application\ImportBundle\RecordMapper\CommonRecordMapper;
-use Application\ImportBundle\RecordMapper\RecordMapperInterface;
+use Application\ImportBundle\Generator\Mapper\MapperInterface;
 use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
 use Application\ImportBundle\RecordMapper\TicketStatusRecordMapper;
@@ -125,27 +125,27 @@ class Importer
         $this->config      = $config;
         $this->mappers     = new RecordMapperRegistry();
         $this->mappers
-            ->addMapper(RecordMapperInterface::TYPE_PERSON,            new PersonRecordMapper($this->db))
-            ->addMapper(RecordMapperInterface::TYPE_TICKET_DEPARTMENT, new TicketDepartmentRecordMapper($this->db))
-            ->addMapper(RecordMapperInterface::TYPE_TICKET_CATEGORY,   new CommonRecordMapper($this->db, 'ticket_categories', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_TICKET_WORKFLOW,   new CommonRecordMapper($this->db, 'ticket_workflows', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_TICKET_PRIORITY,   new CommonRecordMapper($this->db, 'ticket_priorities', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_TICKET_STATUS,     new TicketStatusRecordMapper())
-            ->addMapper(RecordMapperInterface::TYPE_DEPARTMENT,        new CommonRecordMapper($this->db, 'departments', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_PRODUCT,           new CommonRecordMapper($this->db, 'products', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_USER_GROUP,        new CommonRecordMapper($this->db, 'usergroups', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_ORGANIZATION,      new CommonRecordMapper($this->db, 'organizations', 'name'))
-            ->addMapper(RecordMapperInterface::TYPE_LANGUAGE,          new CommonRecordMapper($this->db, 'languages', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_ARTICLE_CATEGORY,  new CommonRecordMapper($this->db, 'article_categories', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_ARTICLE,           new CommonRecordMapper($this->db, 'articles', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_NEWS_CATEGORY,     new CommonRecordMapper($this->db, 'news_categories', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_NEWS,              new CommonRecordMapper($this->db, 'news', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_FEEDBACK_CATEGORY, new CommonRecordMapper($this->db, 'feedback_categories', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_FEEDBACK,          new CommonRecordMapper($this->db, 'feedback', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_DOWNLOAD_CATEGORY, new CommonRecordMapper($this->db, 'download_categories', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_DOWNLOAD,          new CommonRecordMapper($this->db, 'download', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_CUSTOM_DEF_TICKET, new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title'))
-            ->addMapper(RecordMapperInterface::TYPE_CUSTOM_DEF_PEOPLE, new CommonRecordMapper($this->db, 'custom_def_people', 'title'));
+            ->addMapper(MapperInterface::TYPE_PERSON,            new PersonRecordMapper($this->db))
+            ->addMapper(MapperInterface::TYPE_TICKET_DEPARTMENT, new TicketDepartmentRecordMapper($this->db))
+            ->addMapper(MapperInterface::TYPE_TICKET_CATEGORY,   new CommonRecordMapper($this->db, 'ticket_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_TICKET_WORKFLOW,   new CommonRecordMapper($this->db, 'ticket_workflows', 'title'))
+            ->addMapper(MapperInterface::TYPE_TICKET_PRIORITY,   new CommonRecordMapper($this->db, 'ticket_priorities', 'title'))
+            ->addMapper(MapperInterface::TYPE_TICKET_STATUS,     new TicketStatusRecordMapper())
+            ->addMapper(MapperInterface::TYPE_DEPARTMENT,        new CommonRecordMapper($this->db, 'departments', 'title'))
+            ->addMapper(MapperInterface::TYPE_PRODUCT,           new CommonRecordMapper($this->db, 'products', 'title'))
+            ->addMapper(MapperInterface::TYPE_USER_GROUP,        new CommonRecordMapper($this->db, 'usergroups', 'title'))
+            ->addMapper(MapperInterface::TYPE_ORGANIZATION,      new CommonRecordMapper($this->db, 'organizations', 'name'))
+            ->addMapper(MapperInterface::TYPE_LANGUAGE,          new CommonRecordMapper($this->db, 'languages', 'title'))
+            ->addMapper(MapperInterface::TYPE_ARTICLE_CATEGORY,  new CommonRecordMapper($this->db, 'article_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_ARTICLE,           new CommonRecordMapper($this->db, 'articles', 'title'))
+            ->addMapper(MapperInterface::TYPE_NEWS_CATEGORY,     new CommonRecordMapper($this->db, 'news_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_NEWS,              new CommonRecordMapper($this->db, 'news', 'title'))
+            ->addMapper(MapperInterface::TYPE_FEEDBACK_CATEGORY, new CommonRecordMapper($this->db, 'feedback_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_FEEDBACK,          new CommonRecordMapper($this->db, 'feedback', 'title'))
+            ->addMapper(MapperInterface::TYPE_DOWNLOAD_CATEGORY, new CommonRecordMapper($this->db, 'download_categories', 'title'))
+            ->addMapper(MapperInterface::TYPE_DOWNLOAD,          new CommonRecordMapper($this->db, 'download', 'title'))
+            ->addMapper(MapperInterface::TYPE_CUSTOM_DEF_TICKET, new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title'))
+            ->addMapper(MapperInterface::TYPE_CUSTOM_DEF_PEOPLE, new CommonRecordMapper($this->db, 'custom_def_people', 'title'));
 
         if (!$logger) {
             $logger = new Logger('importer');

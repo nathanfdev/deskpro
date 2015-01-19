@@ -299,6 +299,24 @@ final class Ticket extends AbstractEntity
     }
 
     /**
+     * Checks if status is valid
+     *
+     * @return bool
+     */
+    public function isStatusValid()
+    {
+        $statuses = array(
+            self::STATUS_AWAITING_AGENT,
+            self::STATUS_AWAITING_USER,
+            self::STATUS_RESOLVED,
+            self::STATUS_ARCHIVED,
+            self::STATUS_HIDDEN,
+        );
+
+        return in_array($this->status, $statuses, true);
+    }
+
+    /**
      * @return DateTime
      */
     public function getDateCreated()
@@ -606,6 +624,8 @@ final class Ticket extends AbstractEntity
 
             ->addPropertyConstraint('agent_email', new Constraints\Email())
             ->addPropertyConstraint('subject', new Constraints\NotBlank())
-            ->addPropertyConstraint('status', new Constraints\NotBlank());
+            ->addPropertyConstraint('status', new Constraints\NotBlank())
+
+            ->addGetterConstraint('isStatusValid', new Constraints\True());
     }
 }

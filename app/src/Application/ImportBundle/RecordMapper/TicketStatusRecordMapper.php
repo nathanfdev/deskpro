@@ -28,10 +28,13 @@
 namespace Application\ImportBundle\RecordMapper;
 
 use Application\ImportBundle\Entity\Ticket;
+use Application\ImportBundle\Generator\Mapper\MapperInterface;
 
 /**
  * Class TicketStatusRecordMapper
  * @package Application\ImportBundle\RecordMapper
+ *
+ * @deprecated used validator instead
  */
 class TicketStatusRecordMapper implements RecordMapperInterface
 {
@@ -40,7 +43,7 @@ class TicketStatusRecordMapper implements RecordMapperInterface
      */
     public function getType()
     {
-        return self::TYPE_TICKET_STATUS;
+        return MapperInterface::TYPE_TICKET_STATUS;
     }
 
     /**

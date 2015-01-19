@@ -36,8 +36,8 @@ namespace Application\ImportBundle\Generator;
  */
 interface GeneratorInterface extends GeneratorConfigAwareInterface
 {
-    const RECORD_TYPE_PEOPLE  = 'people';
-    const RECORD_TYPE_TICKETS = 'tickets';
+    const RECORD_TYPE_PERSON = 'people';
+    const RECORD_TYPE_TICKET = 'ticket';
 
     /**
      * Returns count of records of all types to be exported

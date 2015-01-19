@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\RecordMapper;
 
+use Application\ImportBundle\Generator\Mapper\MapperInterface;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -50,7 +51,7 @@ class TicketDepartmentRecordMapper extends CommonRecordMapper
      */
     public function getType()
     {
-        return self::TYPE_TICKET_DEPARTMENT;
+        return MapperInterface::TYPE_TICKET_DEPARTMENT;
     }
 
     protected function getDbRecords()

@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\RecordMapper;
 
+use Application\ImportBundle\Generator\Mapper\MapperInterface;
 use Doctrine\DBAL\Connection;
 
 /**
@@ -60,7 +61,7 @@ class PersonRecordMapper implements RecordMapperInterface
      */
     public function getType()
     {
-        return self::TYPE_PERSON;
+        return MapperInterface::TYPE_PERSON;
     }
 
     /**

@@ -30,24 +30,22 @@ namespace Application\ImportBundle\Generator\Mapper;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Organization record mapper
- *
- * Class Organization
+ * Class ArticleCategory
  * @package Application\ImportBundle\Generator\Mapper
  */
-class Organization implements MapperInterface
+class ArticleCategory implements MapperInterface
 {
     /**
-     * @var EntityRepository\Organization
+     * @var EntityRepository\ArticleCategory
      */
     private $repository;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\Organization $repository
+     * @param EntityRepository\ArticleCategory $repository
      */
-    public function __construct(EntityRepository\Organization $repository)
+    public function __construct(EntityRepository\ArticleCategory $repository)
     {
         $this->repository = $repository;
     }
@@ -57,7 +55,7 @@ class Organization implements MapperInterface
      */
     public function getType()
     {
-        return self::TYPE_ORGANIZATION;
+        return self::TYPE_ARTICLE_CATEGORY;
     }
 
     /**
@@ -65,11 +63,6 @@ class Organization implements MapperInterface
      */
     public function findIdByValue($value)
     {
-        $organization = $this->repository->findOneByName($value);
-        if (!$organization) {
-            throw new MapperException(sprintf('Organization `%s` not found', $value));
-        }
-
-        return $organization->getId();
+        return 0;
     }
 }

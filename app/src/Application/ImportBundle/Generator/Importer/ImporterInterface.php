@@ -25,51 +25,18 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Mapper;
-
-use Application\DeskPRO\EntityRepository;
+namespace Application\ImportBundle\Generator\Importer;
 
 /**
- * Organization record mapper
- *
- * Class Organization
- * @package Application\ImportBundle\Generator\Mapper
+ * Interface ImporterInterface
+ * @package Application\ImportBundle\Generator\Importer
  */
-class Organization implements MapperInterface
+interface ImporterInterface
 {
     /**
-     * @var EntityRepository\Organization
-     */
-    private $repository;
-
-    /**
-     * Constructor
+     * Returns supported importer type
      *
-     * @param EntityRepository\Organization $repository
+     * @return string
      */
-    public function __construct(EntityRepository\Organization $repository)
-    {
-        $this->repository = $repository;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getType()
-    {
-        return self::TYPE_ORGANIZATION;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findIdByValue($value)
-    {
-        $organization = $this->repository->findOneByName($value);
-        if (!$organization) {
-            throw new MapperException(sprintf('Organization `%s` not found', $value));
-        }
-
-        return $organization->getId();
-    }
+    public function getRecordType();
 }

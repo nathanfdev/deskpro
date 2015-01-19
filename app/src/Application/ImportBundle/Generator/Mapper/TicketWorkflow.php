@@ -30,24 +30,24 @@ namespace Application\ImportBundle\Generator\Mapper;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Organization record mapper
+ * Ticket workflow record mapper
  *
- * Class Organization
+ * Class TicketWorkflow
  * @package Application\ImportBundle\Generator\Mapper
  */
-class Organization implements MapperInterface
+class TicketWorkflow implements MapperInterface
 {
     /**
-     * @var EntityRepository\Organization
+     * @var EntityRepository\TicketWorkflow
      */
     private $repository;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\Organization $repository
+     * @param EntityRepository\TicketWorkflow $repository
      */
-    public function __construct(EntityRepository\Organization $repository)
+    public function __construct(EntityRepository\TicketWorkflow $repository)
     {
         $this->repository = $repository;
     }
@@ -57,7 +57,7 @@ class Organization implements MapperInterface
      */
     public function getType()
     {
-        return self::TYPE_ORGANIZATION;
+        return self::TYPE_TICKET_WORKFLOW;
     }
 
     /**
@@ -65,11 +65,11 @@ class Organization implements MapperInterface
      */
     public function findIdByValue($value)
     {
-        $organization = $this->repository->findOneByName($value);
-        if (!$organization) {
-            throw new MapperException(sprintf('Organization `%s` not found', $value));
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('Ticket workflow `%s` not found', $value));
         }
 
-        return $organization->getId();
+        return $record->getId();
     }
 }

@@ -78,8 +78,8 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     {
         $config = new GeneratorConfig();
         $config
-            ->addRecordType(GeneratorInterface::RECORD_TYPE_PEOPLE)
-            ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKETS);
+            ->addRecordType(GeneratorInterface::RECORD_TYPE_PERSON)
+            ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKET);
 
         $this->setParamsByDeskProConfig($config);
         $this->setParamsByInputInterface($config, $input);
