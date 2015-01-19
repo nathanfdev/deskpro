@@ -1,0 +1,28 @@
+services:
+
+    dp_security.form_login.provider:
+        class: Application\AuthBundle\Security\Authentication\Provider\DpFormLoginProvider
+        arguments:
+          - @dp_authentication_manager.user
+          - @dp_person_user_provider
+          - @session
+
+    dp_security.form_login.listener:
+        class: Application\AuthBundle\Security\Firewall\DpAuthListener
+        parent: security.authentication.listener.abstract
+        abstract: true
+        calls:
+            - [ setContainer, [@service_container] ]
+
+    dp_security.sso_listener:
+        class: Application\AuthBundle\EventListener\SsoListener
+        arguments:
+          - @security.authorization_checker
+          - @dp_authentication_manager.user
+          - @logger
+        tags:
+            - { name: kernel.event_subscriber }
+
+    dp_person_user_provider:
+        class: Application\AuthBundle\Security\DpPersonUserProvider
+        arguments: [@person_repository]

@@ -1,8 +1,6 @@
 imports:
     - { resource: config.shared.php }
     - { resource: @PortalBundle/Resources/config/portal_services.yml }
-    - { resource: @AuthBundle/Resources/config/services.yml }
-    - { resource: @AuthBundle/Resources/config/security.yml }
 
 parameters:
     doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
@@ -28,6 +26,36 @@ framework:
         handler_id:  session.handler.dbal
     fragments:       ~
     http_method_override: true
+
+# Security Configuration
+security:
+    providers:
+        dp_person_user_provider:
+            id: dp_person_user_provider
+
+    firewalls:
+        portal:
+            pattern: ^/
+            provider: dp_person_user_provider
+            deskpro_form_login:
+                failure_path: /login?retry=auth
+                login_path: /login
+                use_forward: false
+                require_previous_session: false
+            anonymous:
+                key:    "irrelevant - compiler pass will override this"
+            logout:
+                path: portal_logout
+                target: /
+                invalidate_session: true
+                handlers:  [security.authentication.logout_handler]
+            remember_me:
+                key:      "irrelevant - compiler pass will override this"
+                lifetime: 31536000 # 365 days in seconds
+                path:     /
+                domain:   ~ # the current domain from $_SERVER
+                remember_me_parameter: remember_me
+
 
 # Twig Configuration
 twig:

@@ -1,8 +1,8 @@
-dp_routes:
-    resource: "@DeskPRO/Resources/config/dp-routing.php"
 portal_routes:
     resource: "@PortalBundle/Resources/config/portal_routing.yml"
 auth_routes:
-    resource: "@AuthBundle/Resources/config/auth_routing.yml"
+    resource: "@AuthBundle/Resources/config/routing_auth.yml"
+dp_routes:
+    resource: "@DeskPRO/Resources/config/dp-routing.php"
 agent_routes:
     resource: "@AgentBundle/Resources/config/agent-routing.php"

@@ -1,0 +1,25 @@
+services:
+
+    security.authentication.success_handler:
+            class:  Application\AuthBundle\Handler\AuthenticationSuccessHandler
+            arguments:  [@security.http_utils, {}]
+            calls:
+                - [ setContainer, [ @service_container ] ]
+            tags:
+                - { name: 'monolog.logger', channel: 'security' }
+
+    security.authentication.logout_handler:
+            class:  Application\AuthBundle\Handler\LogoutHandler
+
+    security.authentication.failure_handler:
+        class: Application\AuthBundle\Handler\AuthenticationFailureHandler
+        arguments:
+          - @http_kernel
+          - @security.http_utils
+          - {}
+          - @logger
+          - @new_mailer
+          - @doctrine.dbal.default_connection
+          - @person_repository
+        tags:
+            - { name: 'monolog.logger', channel: 'security' }
