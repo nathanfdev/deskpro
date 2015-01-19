@@ -376,8 +376,9 @@ define -> [
         if result.widget.changeType? and result.widget.changeType == true
           result.widget.changeType = false
           $scope.typeWidgetModal result.report, result.widget
+        ###
         else
-          $scope.addWidget result.report, result.widget
+          $scope.addWidget result.report, result.widget###
 
     $scope.addWidget = (report, widget) ->
       DashboardWidgetService.addWidget report, widget

@@ -42,6 +42,11 @@ namespace Application\DeskPRO\DataSync;
 abstract class AbstractDataSync
 {
     /**
+     * Gets the priority. Lower numbers run first.
+     */
+    const PRIORITY = 500;
+
+    /**
      * Name of the table in the DB this refers to
      *
      * @var string
@@ -392,6 +397,17 @@ abstract class AbstractDataSync
                 $classes[$class] = '\\' . __NAMESPACE__ . '\\' . $class;
             }
         }
+
+        usort($classes, function ($a, $b) {
+            $pri_a = $a::PRIORITY;
+            $pri_b = $b::PRIORITY;
+
+            if ($pri_a == $pri_b) {
+                return 0;
+            }
+
+            return $pri_a < $pri_b ? -1 : 1;
+        });
 
         return $classes;
     }

@@ -51,7 +51,7 @@ class ReportWidget extends AbstractDataSync
 
     public function getSyncFields()
     {
-        return array('title', 'description', 'query', 'category', 'display_order');
+        return array('title', 'description', 'query', 'labels', 'display_order');
     }
 
     public function getDefaultInsertValues()

@@ -16,6 +16,8 @@ use Application\DeskPRO\Entity\Person as Person;
 
 class DashboardData extends AbstractDefaultData
 {
+    const PRIORITY = 20000;
+
     protected $dashboards = array(
         array(
             'title' => 'Ticket insights',
@@ -24,51 +26,64 @@ class DashboardData extends AbstractDefaultData
                     'title' => 'Overview',
                     'columns' => 10,
                     'sort_order' => 1,
-                    /*'widgets' => array(
-                        array(
-                            'title' => 'Tickets awaiting agent',
-                            'position' => "0:0",
-                            'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_awaiting_agent',
-                            'variables' => array('test'=>'test', 'test1'=>'test1'),
-                        ),
-                        array(
-                            'title' => 'Tickets Resolved',
-                            'position' => "0:5",
-                            'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_resolved',
-                        ),
-                        array(
-                            'title' => 'Tickets Response Time',
-                            'position' => "2:0",
-                            'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_response_time',
-                        ),
-                        array(
-                            'title' => 'Tickets User Waiting Time',
-                            'position' => "2:5",
-                            'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_user_waiting_time',
-                        ),
-                        array(
-                            'title' => 'Tickets Opened Hour',
-                            'position' => "4:0",
-                            'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_opened_hour',
-                        ),
-                        array(
-                            'title' => 'Tickets SLA Status',
-                            'position' => "4:5",
-                            'size'     => '5:2',
-                            'hc_data'  => 'overview:tickets_sla_status',
-                        ),
-                        array(
-                            'title' => 'Chats Created',
-                            'position' => "6:0",
-                            'size'     => '10:3',
-                            'hc_data'  => 'overview:chats_created',
-                        ),
-                    ),*/
+//                    'widgets' => array(
+//                        array(
+//                            'title' => 'Test widget 1',
+//                            'position' => "0:0",
+//                            'size'     => '5:2',
+//                            'type'     => 'simple_area',
+//                            'widget_id' => 8,
+//                        ),
+//                        array(
+//                            'title' => 'Test widget 2',
+//                            'position' => "0:5",
+//                            'size'     => '5:2',
+//                            'type'     => 'simple_bars',
+//                            'widget_id' => 8,
+//                        ),
+//                        array(
+//                            'title' => 'Test widget 3',
+//                            'position' => "2:0",
+//                            'size'     => '5:2',
+//                            'type'     => 'simple_lines',
+//                            'widget_id' => 31,
+//                            'variables' => array(
+//                                array('placeholder'=>'field group', 'value'=>'department'),
+//                            ),
+//                        ),
+//                        array(
+//                            'title' => 'Test widget 4',
+//                            'position' => "2:5",
+//                            'size'     => '5:2',
+//                            'type'     => 'simple_area',
+//                            'widget_id' => 31,
+//                            'variables' => array(array('placeholder'=>'field group', 'value'=>'department'),),
+//                        ),
+//                        array(
+//                            'title' => 'Test widget 5',
+//                            'position' => "4:0",
+//                            'size'     => '5:2',
+//                            'type'     => 'simple_bars',
+//                            'widget_id' => 31,
+//                            'variables' => array(array('placeholder'=>'field group', 'value'=>'department'),),
+//                        ),
+//                        array(
+//                            'title' => 'Test widget 6',
+//                            'position' => "4:5",
+//                            'size'     => '5:2',
+//                            'type'     => 'simple_area',
+//                            'widget_id' => 31,
+//                            'variables' => array(array('placeholder'=>'field group', 'value'=>'department'),),
+//                        ),
+//                        array(
+//                            'title' => 'Test widget 7',
+//                            'position' => "6:0",
+//                            'size'     => '10:3',
+//                            'type'     => 'simple_lines',
+//                            'widget_id' => 31,
+//                            'variables' => array(array('placeholder'=>'field group', 'value'=>'department'),),
+//                        ),
+//                    ),
                 ),
                 array(
                     'title' => 'Agent Performance',
@@ -141,8 +156,7 @@ class DashboardData extends AbstractDefaultData
     public function runInstall()
     {
 
-        /** @var WidgetPrototype $widgetPrototype */
-        $widgetPrototype = $this->getEm()->getRepository('DeskPRO:ReportWidget')->find(1);
+
         /** @var Person $admin */
         $admin = $this->getEm()->getRepository('DeskPRO:Person')->find(1);
         $agents = $this->getEm()->getRepository('DeskPRO:Person')->findBy(array('is_agent'=>1));
@@ -161,6 +175,7 @@ class DashboardData extends AbstractDefaultData
                 $this->getEm()->persist($tab);
                 if(isset($report['widgets'])) {
                     foreach($report['widgets'] as $widget) {
+
                         $widgetEntity = new Widget();
                         $widgetEntity
                             ->setTitle($widget['title'])
@@ -170,9 +185,11 @@ class DashboardData extends AbstractDefaultData
                         if(isset($widget['hc_data'])) {
                             $widgetEntity->setHcData($widget['hc_data']);
                             $widgetEntity->setType(Widget::WIDGET_TYPE_HARDCODED);
-                        } else {
+                        } elseif(isset($widget['widget_id'])) {
+                            /** @var WidgetPrototype $widgetPrototype */
+                            $widgetPrototype = $this->getEm()->getRepository('DeskPRO:ReportWidget')->find($widget['widget_id']);
                             $widgetEntity->setWidget($widgetPrototype);
-                            $widgetEntity->setType(Widget::WIDGET_TYPE_BAR);
+                            $widgetEntity->setType($widget['type']);
                         }
                         if(isset($widget['variables'])) {
                             $widgetEntity->setVariables($widget['variables']);

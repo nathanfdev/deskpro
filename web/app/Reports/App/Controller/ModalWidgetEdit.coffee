@@ -28,7 +28,8 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
       $scope.widget.widget_id = report.id
 
     $scope.insert = () ->
-      $modalInstance.close({widget: $scope.widget, report: $scope.report})
+      DashboardWidgetService.addWidget $scope.report, $scope.widget
+#      $modalInstance.close({widget: $scope.widget, report: $scope.report})
 
     $scope.changeType = () ->
       $scope.widget.changeType = true
