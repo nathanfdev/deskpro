@@ -34,6 +34,8 @@ define [
       else
         return @Api.sendPost("/ticket_escalations/#{escId}/disable")
 
+    saveEnabledState: (esc) ->
+      @saveEnabledStateById esc.id, esc.is_enabled
 
     ###
       # Save order of escalations
@@ -103,6 +105,21 @@ define [
         deferred.resolve(data)
 
       return deferred.promise
+
+    loadEditSatisfactionEscalation: ->
+      deferred = @$q.defer()
+
+      @Api.sendGet('/ticket_escalations/satisfaction/0').then(
+        (result) =>
+          data =
+            escalation: result.data.escalation
+            form: @getFormMapper().getFormFromModel result.data.escalation
+          deferred.resolve(data)
+        , ->
+          deferred.reject()
+      )
+
+      deferred.promise
 
 
     ###

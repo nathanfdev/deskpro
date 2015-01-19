@@ -70,6 +70,7 @@ define([
   'Admin/TicketDeps/Ctrl/Edit',
   'Admin/TicketEscalations/Ctrl/List',
   'Admin/TicketEscalations/Ctrl/Edit',
+  'Admin/TicketEscalations/Ctrl/EditSatisfaction',
   'Admin/TicketFields/Ctrl/EditCategories',
   'Admin/TicketFields/Ctrl/EditPriorities',
   'Admin/TicketFields/Ctrl/EditProducts',

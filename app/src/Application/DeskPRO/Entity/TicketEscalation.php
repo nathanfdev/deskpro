@@ -168,6 +168,7 @@ class TicketEscalation extends DomainObject
         $data['terms']     = $this->terms;
         $data['terms_any'] = $this->terms_any;
         $data['actions']   = $this->actions->exportToArray();
+        $data['sys_name']  = $this->sys_name;
 
         return $data;
     }

@@ -33,20 +33,17 @@
 							</span>
 						</div>
 
-						<div class="inner-group" ng-show="settings.satisfaction_enabled">
+						<div class="inner-group" ng-show="settings.satisfaction_enabled"
+							 ng-controller="Admin_TicketEscalations_Ctrl_EditSatisfaction as ctrl"
+								>
 							<label>
-								<input type="checkbox" ng-model="escalation" />
+								<input type="checkbox" ng-model="ctrl.esc.is_enabled" ng-change="ctrl.escData.saveEnabledState(ctrl.esc)" />
 								<h4>
-									Send user an email (edit template) after being resolved for
-									<input type="number" value="3" class="form-control"
-										   style="width: 50px; vertical-align: middle;" min="0"
-										   ng-model="escalation_days"
-											/>
-									days
+									Send user an email (edit template) after being resolved for  <dp-time-with-unit ng-model="ctrl.form.event_trigger_time"/>
 								</h4>
 							</label>
 							<span class="help-block">
-
+								{{ phrase('adm.satisfaction.escalation_help') }}
 							</span>
 						</div>
 

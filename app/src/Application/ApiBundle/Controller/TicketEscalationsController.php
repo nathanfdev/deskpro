@@ -38,6 +38,7 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\ApiBundle\PermissionStrategy\MultiPermissions;
 use Application\ApiBundle\PermissionStrategy\PassPermission;
 use Application\DeskPRO\Entity\TicketEscalation;
+use Application\DeskPRO\Tickets\Actions\SendUserEmail;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
@@ -64,19 +65,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     public function listAction()
     {
         $escalations = $this->em->getRepository('DeskPRO:TicketEscalation')->getEscalations();
-
-        $data = array();
-        foreach ($escalations as $esc) {
-            $row = array(
-                'id'                 => $esc->id,
-                'title'              => $esc->title,
-                'is_enabled'         => $esc->is_enabled,
-                'event_trigger'      => $esc->event_trigger,
-                'event_trigger_time' => $esc->event_trigger_time,
-            );
-
-            $data[] = $row;
-        }
+        $data = $this->getApiData($escalations, false);
 
         return $this->createApiResponse(array(
             'escalations' => $data
@@ -87,9 +76,36 @@ class TicketEscalationsController extends AbstractController implements Protecte
     # get
     ####################################################################################################################
 
-    public function getAction($id)
+    public function getAction($id, $special_type = null)
     {
-        $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
+        /** @var \Application\DeskPRO\EntityRepository\TicketEscalation $rep */
+        $rep = $this->em->getRepository('DeskPRO:TicketEscalation');
+        switch ($special_type) {
+            case 'satisfaction':
+
+                if (!$esc = $rep->findOneBy(array('sys_name' => 'satisfaction'))) {
+                    $esc = new TicketEscalation();
+                    $esc->title = 'Satisfaction request';
+                    $esc->sys_name = 'satisfaction';
+                    $esc->event_trigger = TicketEscalation::EVENT_TYPE_TIME_RESOLVED;
+                    $esc->event_trigger_time = 60 * 60 * 24 * 3; // 3 days by default
+                    $esc->is_enabled = true;
+                    $esc->actions->addAction(new SendUserEmail(array(
+                        'template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
+                        'do_cc_users' => false,
+                        'from_name' => 'helpdesk_name',
+                        'from_account' => 0,
+                        'headers' => array(),
+                    )));
+
+                    $this->em->persist($esc);
+                    $this->em->flush();
+                }
+
+                break;
+            default:
+                $esc = $rep->find($id);
+        }
 
         if (!$esc) {
             throw $this->createNotFoundException();
@@ -112,10 +128,39 @@ class TicketEscalationsController extends AbstractController implements Protecte
     # save
     ####################################################################################################################
 
-    public function saveAction($id)
+    public function saveAction($id, $special_type = null)
     {
+        /** @var \Application\DeskPRO\EntityRepository\TicketEscalation $rep */
+        $rep = $this->em->getRepository('DeskPRO:TicketEscalation');
+
         if ($id) {
-            $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
+
+            switch ($special_type) {
+                case 'satisfaction':
+
+                    if (!$esc = $rep->findOneBy(array('sys_name' => 'satisfaction'))) {
+                        $esc = new TicketEscalation();
+                        $esc->title = 'Satisfaction request';
+                        $esc->sys_name = 'satisfaction';
+                        $esc->event_trigger = TicketEscalation::EVENT_TYPE_TIME_RESOLVED;
+                        $esc->event_trigger_time = 60 * 60 * 24 * 3; // 3 days by default
+                        $esc->is_enabled = true;
+                        $esc->actions->addAction(new SendUserEmail(array(
+                            'template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
+                            'do_cc_users' => false,
+                            'from_name' => 'helpdesk_name',
+                            'from_account' => 0,
+                            'headers' => array(),
+                        )));
+
+                        $this->em->persist($esc);
+                        $this->em->flush();
+                    }
+
+                    break;
+                default:
+                    $esc = $rep->find($id);
+            }
 
             if (!$esc) {
                 throw $this->createNotFoundException();

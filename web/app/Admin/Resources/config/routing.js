@@ -660,6 +660,13 @@ define(function() {
     controller: 'Admin_TicketEscalations_Ctrl_Edit'
   });
 
+  routes.push({
+    id: 'tickets.ticket_escalations.editsatisfaction',
+    url: '/satisfaction',
+    templateName: 'TicketEscalations/edit-satisfaction.html',
+    controller: 'Admin_TicketEscalations_Ctrl_EditSatisfaction'
+  });
+
   //###
   //# SLAs
   //###
