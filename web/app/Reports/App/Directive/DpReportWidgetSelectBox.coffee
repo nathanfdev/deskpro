@@ -25,7 +25,7 @@ define ->
       reportId: "=reportId"
       valueToDecorate: "=valueToDecorate"
       possibleValues: "=possibleValues"
-
+    # TODO: have to change it with propper HTML/CSS design
     link: (scope, element, attrs) ->
       template = """
         <a ng-href="{{report_link}}">

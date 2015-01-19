@@ -4,7 +4,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @Api = Api
       @$q = $q
       @data = {}
-      @storage = {reports: [], labels: []}
+      @storage = {reports: [], labels: [], reportsByLabels: {}}
       @groupParams = []
       @widgets = {}
       @hostname = window.location.origin;

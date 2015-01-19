@@ -24,7 +24,7 @@ define ->
           DashboardWidgetService
             .getWidget(conf)
             .then (widget) =>
-              if widget? and widget.data
+              if widget? and widget
                 chart = new AmCharts.makeChart('ch' + i, widget);
                 chart.handleResize()
                 chart.invalidateSize()
