@@ -23,8 +23,8 @@ var gulp       = require('gulp'),
 //# Task Runners
 //######################################################################################################################
 
-gulp.task('default', ['clean', 'coffee', 'less', 'sass', 'cpjs', 'loader']);
-gulp.task('prod', ['clean', 'coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
+gulp.task('default', ['coffee', 'less', 'sass', 'cpjs', 'loader']);
+gulp.task('prod', ['coffee', 'less', 'sass', 'cpjs', 'loader', 'rjs', 'rjs-agent']);
 
 
 //######################################################################################################################
