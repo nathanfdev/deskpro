@@ -60,7 +60,7 @@ interface MapperInterface
     const TYPE_DOWNLOAD_CATEGORY = 'download_category';
     const TYPE_DOWNLOAD          = 'download';
     const TYPE_CUSTOM_DEF_TICKET = 'custom_def_ticket';
-    const TYPE_CUSTOM_DEF_PEOPLE = 'custom_def_people';
+    const TYPE_CUSTOM_DEF_PERSON = 'custom_def_people';
 
     /**
      * Returns DeskPro record type

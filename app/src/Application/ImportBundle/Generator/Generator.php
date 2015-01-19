@@ -60,20 +60,28 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     private $outputWriter;
 
     /**
+     * @var Mapper\Collection
+     */
+    private $mappers;
+
+    /**
      * Constructor
      *
      * @param Writer\WriterInterface $outputWriter
      * @param Exporter\Collection    $exporters
      * @param Validator\Collection   $validators
+     * @param Mapper\Collection      $mappers
      */
     public function __construct(
         Writer\WriterInterface $outputWriter,
         Exporter\Collection    $exporters,
-        Validator\Collection   $validators
+        Validator\Collection   $validators,
+        Mapper\Collection      $mappers
     ) {
         $this->outputWriter = $outputWriter;
         $this->exporters    = $exporters;
         $this->validators   = $validators;
+        $this->mappers      = $mappers;
     }
 
     /**

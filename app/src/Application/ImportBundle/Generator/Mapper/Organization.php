@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Mapper;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
@@ -65,6 +66,7 @@ class Organization implements MapperInterface
      */
     public function findIdByValue($value)
     {
+        /** @var Entity\Organization $organization */
         $organization = $this->repository->findOneByName($value);
         if (!$organization) {
             throw new MapperException(sprintf('Organization `%s` not found', $value));

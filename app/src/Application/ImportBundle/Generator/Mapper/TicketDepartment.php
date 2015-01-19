@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Mapper;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
@@ -34,17 +35,22 @@ use Application\DeskPRO\EntityRepository;
  *
  * Class TicketDepartment
  * @package Application\ImportBundle\Generator\Mapper
- *
- * todo implement repository
  */
 class TicketDepartment implements MapperInterface
 {
+    /**
+     * @var EntityRepository\Department
+     */
     private $repository;
 
-
-    public function __construct()
+    /**
+     * Constructor
+     *
+     * @param EntityRepository\Department $repository
+     */
+    public function __construct(EntityRepository\Department $repository)
     {
-
+        $this->repository = $repository;
     }
 
     /**
@@ -60,9 +66,13 @@ class TicketDepartment implements MapperInterface
      */
     public function findIdByValue($value)
     {
+        /** @var Entity\Department $record */
         $record = $this->repository->findOneBy(array('title' => $value));
         if (!$record) {
             throw new MapperException(sprintf('Ticket department `%s` not found', $value));
+        }
+        if ($record->isType('tickets') === false) {
+            throw new MapperException(sprintf('Department `%s` is not suite for tickets', $value));
         }
 
         return $record->getId();

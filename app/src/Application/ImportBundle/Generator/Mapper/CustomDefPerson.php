@@ -27,13 +27,16 @@
 
 namespace Application\ImportBundle\Generator\Mapper;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
+ * Custom def people record mapper
+ *
  * Class CustomDefPeople
  * @package Application\ImportBundle\Generator\Mapper
  */
-class CustomDefPeople implements MapperInterface
+class CustomDefPerson implements MapperInterface
 {
     /**
      * @var EntityRepository\CustomDefPerson
@@ -55,7 +58,7 @@ class CustomDefPeople implements MapperInterface
      */
     public function getType()
     {
-        return self::TYPE_CUSTOM_DEF_PEOPLE;
+        return self::TYPE_CUSTOM_DEF_PERSON;
     }
 
     /**
@@ -63,6 +66,12 @@ class CustomDefPeople implements MapperInterface
      */
     public function findIdByValue($value)
     {
-        return 0;
+        /** @var Entity\CustomDefPerson $record */
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('Custom def people `%s` not found', $value));
+        }
+
+        return $record->getId();
     }
 }

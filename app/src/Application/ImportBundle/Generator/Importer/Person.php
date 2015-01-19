@@ -26,6 +26,7 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Generator\Importer;
+
 use Application\ImportBundle\Generator\GeneratorInterface;
 
 /**

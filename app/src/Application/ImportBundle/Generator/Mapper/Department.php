@@ -27,9 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Mapper;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
+ * Department record mapper
+ *
  * Class Department
  * @package Application\ImportBundle\Generator\Mapper
  */
@@ -63,6 +66,12 @@ class Department implements MapperInterface
      */
     public function findIdByValue($value)
     {
-        return 0;
+        /** @var Entity\Department $record */
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('Department `%s` not found', $value));
+        }
+
+        return $record->getId();
     }
 }

@@ -27,16 +27,13 @@
 
 namespace Application\ImportBundle;
 
-use Iterator;
-use Countable;
-
 /**
  * Base collection
  *
  * Class AbstractCollection
  * @package Application\ImportBundle
  */
-abstract class AbstractCollection implements Iterator, Countable
+abstract class AbstractCollection implements \Iterator, \Countable
 {
     /**
      * @var array
@@ -44,9 +41,7 @@ abstract class AbstractCollection implements Iterator, Countable
     protected $collection = array();
 
     /**
-     * Return the current element
-     *
-     * @return mixed Can return any type.
+     * {@inheritdoc}
      */
     public function current()
     {
@@ -54,9 +49,7 @@ abstract class AbstractCollection implements Iterator, Countable
     }
 
     /**
-     * Move forward to next element
-     *
-     * @return void Any returned value is ignored.
+     * {@inheritdoc}
      */
     public function next()
     {
@@ -64,9 +57,7 @@ abstract class AbstractCollection implements Iterator, Countable
     }
 
     /**
-     * Return the key of the current element
-     *
-     * @return mixed scalar on success, or null on failure.
+     * {@inheritdoc}
      */
     public function key()
     {
@@ -74,10 +65,7 @@ abstract class AbstractCollection implements Iterator, Countable
     }
 
     /**
-     * Checks if current position is valid
-     *
-     * @return boolean The return value will be casted to boolean and then evaluated.
-     * Returns true on success or false on failure.
+     * {@inheritdoc}
      */
     public function valid()
     {
@@ -85,9 +73,7 @@ abstract class AbstractCollection implements Iterator, Countable
     }
 
     /**
-     * Rewind the Iterator to the first element
-     *
-     * @return void Any returned value is ignored.
+     * {@inheritdoc}
      */
     public function rewind()
     {
@@ -95,9 +81,7 @@ abstract class AbstractCollection implements Iterator, Countable
     }
 
     /**
-     * Count elements of an object
-     *
-     * @return int The custom count as an integer.
+     * {@inheritdoc}
      */
     public function count()
     {

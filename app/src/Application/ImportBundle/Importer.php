@@ -145,7 +145,7 @@ class Importer
             ->addMapper(MapperInterface::TYPE_DOWNLOAD_CATEGORY, new CommonRecordMapper($this->db, 'download_categories', 'title'))
             ->addMapper(MapperInterface::TYPE_DOWNLOAD,          new CommonRecordMapper($this->db, 'download', 'title'))
             ->addMapper(MapperInterface::TYPE_CUSTOM_DEF_TICKET, new CustomDefTicketRecordMapper($this->db, 'custom_def_ticket', 'title'))
-            ->addMapper(MapperInterface::TYPE_CUSTOM_DEF_PEOPLE, new CommonRecordMapper($this->db, 'custom_def_people', 'title'));
+            ->addMapper(MapperInterface::TYPE_CUSTOM_DEF_PERSON, new CommonRecordMapper($this->db, 'custom_def_people', 'title'));
 
         if (!$logger) {
             $logger = new Logger('importer');

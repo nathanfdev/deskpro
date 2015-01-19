@@ -27,11 +27,23 @@
 
 namespace Application\ImportBundle\Generator\Importer;
 
+use Application\ImportBundle\AbstractCollection;
+
 /**
  * Class Collection
  * @package Application\ImportBundle\Generator\Importer
  */
-class Collection
+class Collection extends AbstractCollection
 {
-
+    /**
+     * Add an importer
+     *
+     * @param ImporterInterface $importer
+     * @return $this
+     */
+    public function attach(ImporterInterface $importer)
+    {
+        $this->collection[] = $importer;
+        return $this;
+    }
 }

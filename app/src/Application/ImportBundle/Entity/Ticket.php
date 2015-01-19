@@ -626,6 +626,6 @@ final class Ticket extends AbstractEntity
             ->addPropertyConstraint('subject', new Constraints\NotBlank())
             ->addPropertyConstraint('status', new Constraints\NotBlank())
 
-            ->addGetterConstraint('isStatusValid', new Constraints\True());
+            ->addGetterConstraint('statusValid', new Constraints\True());
     }
 }

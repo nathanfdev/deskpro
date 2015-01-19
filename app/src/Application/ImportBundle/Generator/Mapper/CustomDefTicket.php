@@ -27,9 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Mapper;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
+ * Custom def ticket record mapper
+ *
  * Class CustomDefTicket
  * @package Application\ImportBundle\Generator\Mapper
  */
@@ -63,6 +66,12 @@ class CustomDefTicket implements MapperInterface
      */
     public function findIdByValue($value)
     {
-        return 0;
+        /** @var Entity\CustomDefTicket $record */
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('Custom def ticket `%s` not found', $value));
+        }
+
+        return $record->getId();
     }
 }

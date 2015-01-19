@@ -27,9 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Mapper;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
+ * Article category record mapper
+ *
  * Class ArticleCategory
  * @package Application\ImportBundle\Generator\Mapper
  */
@@ -63,6 +66,12 @@ class ArticleCategory implements MapperInterface
      */
     public function findIdByValue($value)
     {
-        return 0;
+        /** @var Entity\ArticleCategory $record */
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('Article category `%s` not found', $value));
+        }
+
+        return $record->getId();
     }
 }

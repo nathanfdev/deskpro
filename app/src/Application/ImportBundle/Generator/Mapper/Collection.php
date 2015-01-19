@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Mapper;
 use Application\ImportBundle\AbstractCollection;
 
 /**
+ * Generator collection of mappers
+ *
  * Class Collection
  * @package Application\ImportBundle\Generator\Mapper
  */

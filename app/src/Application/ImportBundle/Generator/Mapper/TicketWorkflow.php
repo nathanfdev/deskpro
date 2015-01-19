@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Mapper;
 
+use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
@@ -65,6 +66,7 @@ class TicketWorkflow implements MapperInterface
      */
     public function findIdByValue($value)
     {
+        /** @var Entity\TicketWorkflow $record */
         $record = $this->repository->findOneBy(array('title' => $value));
         if (!$record) {
             throw new MapperException(sprintf('Ticket workflow `%s` not found', $value));
