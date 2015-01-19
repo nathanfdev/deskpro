@@ -33,8 +33,7 @@ define [
   'Reports/App/Directive/TicketSatisfaction',
 
   # DP DIRECTIVES
-  'DeskPRO/Directive/DpShowSpinning',
-  'DeskPRO/Directive/DpHideSpinning',
+  'Reports/App/Directive/DpReportWidgetSelectBox',
   'DeskPRO/Directive/DpDropdown',
 
   #angular modules
@@ -74,8 +73,7 @@ define [
   Reports_App_Directive_AgentPerformance,
   Reports_App_Directive_TicketSatisfaction,
   # DP DIRECTIVES
-  Reports_App_Directive_DpShowSpinning,
-  Reports_App_Directive_DpHideSpinning,
+  Reports_App_Directive_DpReportWidgetSelectBox,
   Reports_App_Directive_DpDropdown,
 
 ) ->
@@ -134,9 +132,8 @@ define [
   ReportsApp.directive('reportsOverview', Reports_App_Directive_ReportsOverview)
   ReportsApp.directive('agentPerformance', Reports_App_Directive_AgentPerformance)
   ReportsApp.directive('ticketSatisfaction', Reports_App_Directive_TicketSatisfaction)
-  ReportsApp.directive('dpShowSpinning', Reports_App_Directive_DpShowSpinning)
-  ReportsApp.directive('dpHideSpinning', Reports_App_Directive_DpHideSpinning)
   ReportsApp.directive('dpDropdown', Reports_App_Directive_DpDropdown)
+  ReportsApp.directive('dpReportWidgetSelectBox', Reports_App_Directive_DpReportWidgetSelectBox)
 #  ReportsApp.directive('dashboardStat', Reports_App_Directive_DashboardStat)
 #  ReportsApp.directive('dashboardTable', Reports_App_Directive_DashboardTable)
 

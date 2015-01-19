@@ -5,6 +5,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @$q = $q
       @data = {}
       @storage = {reports: [], labels: []}
+      @groupParams = []
       @widgets = {}
       @hostname = window.location.origin;
       @selectedSource =
@@ -99,6 +100,9 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
             "format": 'png'
           }]
         }
+
+      @Api.sendGet('reports/builder/group-params').then (response) =>
+        @groupParams = response.data
 
     getIndexById: (storage, id) ->
       index = -1

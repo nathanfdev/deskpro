@@ -52,7 +52,7 @@
                 ng-repeat="report in prefilteredReports | filter:filterBySearchText track by $index">
                 <span ng-click="makeChoice(report)" class="mark"></span>
 
-                <h1>{{ ng_var('report.title') }}</h1>
+                <h1><dp-report-widget-select-box change-widget-params="changeWidgetParams(params)" report-id="report.id" value-to-decorate="report.title" possible-values="groupParams"></dp-report-widget-select-box></h1>
 
                 <p>
                     <a ng-repeat="label in report.labels" class="link-pointer stat-label"

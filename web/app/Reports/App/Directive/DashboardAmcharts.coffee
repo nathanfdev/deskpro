@@ -14,11 +14,8 @@ define ->
         linkFn = $compile(template)
         content = linkFn(scope)
         element.replaceWith(content)
-
-
         chart = false
         conf = scope.chartId || 0;
-        chartData = scope.chartData || {}
 
         initChart = () ->
           if chart
@@ -27,7 +24,7 @@ define ->
           DashboardWidgetService
             .getWidget(conf)
             .then (widget) =>
-              if widget?
+              if widget? and widget.data
                 chart = new AmCharts.makeChart('ch' + i, widget);
                 chart.handleResize()
                 chart.invalidateSize()

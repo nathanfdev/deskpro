@@ -293,7 +293,7 @@ class Json extends AbstractRenderer
                 if (!isset($columnTotals[$id])) {
                     $columnTotals[$id] = 0;
                 }
-                $columnTotals[$id] += $this->getColumnValue($row, $id);
+                $columnTotals[$id] .= $this->getColumnValue($row, $id);
             }
         }
 

@@ -9,7 +9,7 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
     $scope.reports = []
     $scope.labels = []
     $scope.selectedLabels = 0
-    $scope.selecting_labels = false
+    $scope.groupParams = DashboardWidgetService.groupParams
 
 
     DashboardWidgetService.getReports().then (result) ->
@@ -34,8 +34,10 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
       $scope.widget.changeType = true
       $modalInstance.close({report: $scope.report, widget: $scope.widget})
 
-    $scope.toggleDropdown = () ->
-      $scope.selecting_labels = !$scope.selecting_labels
+    $scope.changeWidgetParams = (params) ->
+      console.log params
+      $scope.widget.variables = params
+
 
     # Mmmm... super script to toggle labels by it's title or label itself
     $scope.toggleLabel = (label) ->

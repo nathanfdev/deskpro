@@ -155,32 +155,17 @@ class DashboardWidgetController extends AbstractController
         if(!$report_widget) {
             throw $this->createNotFoundException('ReportWidget not found!');
         }
-
         $widget = new Widget();
-        if($postData['widget_variables']) {
-            $widget->setVariables($postData['widget_variables']);
-        }
-
         $widget
             ->setTitle($postData['name'])
             ->setType($postData['type'])
-
-            ->setSize(
-                array
-                (
-                    $postData['sizeX'],
-                    $postData['sizeY']
-                )
-            )
-            ->setPosition(
-                array(
-                    $postData['row'],
-                    $postData['col']
-                )
-            )
+            ->setSize(array($postData['sizeX'], $postData['sizeY']))
+            ->setPosition(array($postData['row'],$postData['col']))
             ->setReport($tab)
             ->setWidget($report_widget);
-
+        if(isset($postData['variables'])) {
+            $widget->setVariables($postData['variables']);
+        }
         $this->em->persist($widget);
         $this->em->flush();
 
@@ -291,7 +276,13 @@ class DashboardWidgetController extends AbstractController
         $query = $report->query;
         $mapped = isset($this->widgetGraphTypesMapping[$widget['type']]) ? $this->widgetGraphTypesMapping[$widget['type']] : 'TABLE';
         $query = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
-        $widget_data = Display::renderQuery('json', $query);
+        $error = false;
+        $variables = $widget->getVariables();
+        $params = array();
+        foreach($variables as $variable) {
+            $params[]=$variable['value'];
+        }
+        $widget_data = Display::renderQuery('json', $query , $params, $error);
         $data = array(
             'id'    => $widget->getId(),
             'name'  => $widget->getTitle(),
