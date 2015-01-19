@@ -1,0 +1,10 @@
+services:
+
+  # the LanguageBundle replaces the router by decorating it (see "decorates:")
+  language_router:
+    public: false
+    class: Application\LanguageBundle\Routing\Router
+    decorates: router
+    arguments:
+      - @language_router.inner
+      - @language_manager

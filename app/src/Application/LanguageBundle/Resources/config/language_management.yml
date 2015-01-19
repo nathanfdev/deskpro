@@ -1,0 +1,17 @@
+services:
+
+  language_manager:
+    class: Application\LanguageBundle\Language\LanguageManager
+    arguments: [@deskpro.core.translate, @language_stack, @language_repository]
+
+
+  language_stack:
+    class: Application\LanguageBundle\Language\LanguageStack
+    arguments: [ @settings_resolver, @language_repository ]
+
+
+  language_repository:
+    class: Application\DeskPRO\EntityRepository\Language
+    factory_service: doctrine.orm.default_entity_manager
+    factory_method: getRepository
+    arguments: ['DeskPRO:Language']
