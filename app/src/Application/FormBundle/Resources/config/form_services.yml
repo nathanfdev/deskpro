@@ -28,7 +28,7 @@ services:
 
   form_hierarchy_generator:
     class: Application\FormBundle\Hierarchy\HierarchyGenerator
-    arguments: [@doctrine.orm.default_entity_manager, @data.departments]
+    arguments: [@doctrine.orm.default_entity_manager, @data.departments, @data.feedback]
 
 
   form_extension.twig:

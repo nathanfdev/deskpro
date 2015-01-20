@@ -421,10 +421,25 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @return FeedbackStatusCategory
+     */
+    public function getStatusCategory()
+    {
+        return $this->status_category;
+    }
+
+    /**
+     * @param FeedbackStatusCategory $status_category
+     */
+    public function setStatusCategory(FeedbackStatusCategory $status_category = null)
+    {
+        $this->setModelField('status_category', $status_category);
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
-
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);

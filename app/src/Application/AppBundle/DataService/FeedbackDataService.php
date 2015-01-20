@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\DownloadCategory;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackCategory;
+use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -102,11 +103,50 @@ class FeedbackDataService
     }
 
     /**
+     * @param Person $person
+     * @return FeedbackCategory[]
+     */
+    public function getFeedbackCategoriesForPerson(Person $person)
+    {
+        // TODO: permissions
+        return $this->getFeedbackCategoryRepo()->findAll();
+    }
+
+    /**
+     * @param $status_category
+     * @return FeedbackStatusCategory
+     */
+    public function getFeedbackStatusCategory($status_category)
+    {
+        if ($status_category instanceof FeedbackStatusCategory) {
+            return $status_category;
+        }
+
+        return $this->getFeedbackStatusCategoryRepo()->find($status_category);
+    }
+
+    /**
      * @return \Application\DeskPRO\EntityRepository\Feedback
      */
     public function getItemsRepo()
     {
         return $this->em->getRepository('DeskPRO:Feedback');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\FeedbackStatusCategory
+     */
+    public function getFeedbackStatusCategoryRepo()
+    {
+        return $this->em->getRepository('DeskPRO:FeedbackStatusCategory');
+    }
+
+    /**
+     * @return \Application\DeskPRO\EntityRepository\FeedbackCategory
+     */
+    public function getFeedbackCategoryRepo()
+    {
+        return $this->em->getRepository('DeskPRO:FeedbackCategory');
     }
 
     /**

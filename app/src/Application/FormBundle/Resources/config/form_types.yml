@@ -40,6 +40,18 @@ services:
       - { name: form.type, alias: comment }
 
 
+  form.new_feedback:
+    class: Application\FormBundle\Form\Type\NewFeedbackType
+    tags:
+      - { name: form.type, alias: new_feedback }
+
+
+  form.feedback_category:
+    class: Application\FormBundle\Form\Type\FeedbackCategoryType
+    tags:
+      - { name: form.type, alias: feedback_category }
+
+
   form.request_password_reset:
     class: Application\FormBundle\Form\Type\PasswordResetRequestType
     tags:

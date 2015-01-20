@@ -504,4 +504,20 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         return $this->slug;
     }
+
+    /**
+     * @return Person
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * @param Person $person
+     */
+    public function setPerson(Person $person = null)
+    {
+        $this->setModelField('person', $person);
+    }
 }

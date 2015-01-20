@@ -68,7 +68,6 @@ class FeedbackCategory extends CategoryAbstract implements HasValidationMetadata
     /**
      * @return FeedbackCategory
      */
-
     public static function createFeedbackCategory()
     {
         $category = new self();

@@ -36,6 +36,7 @@ namespace Application\FormBundle\Hierarchy;
 
 
 use Application\AppBundle\DataService\DepartmentDataService;
+use Application\AppBundle\DataService\FeedbackDataService;
 use Application\AppBundle\Hierarchy\Formatter\FlatListFormatter;
 use Application\AppBundle\Hierarchy\Formatter\ParentListFormatter;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
@@ -43,6 +44,7 @@ use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\Department;
+use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\Person;
 use Application\AppBundle\Hierarchy\Formatter\DashesFormatter;
 use Application\DeskPRO\Entity\Product;
@@ -66,10 +68,16 @@ class HierarchyGenerator
      */
     private $department_data_service;
 
-    public function __construct(EntityManager $em, DepartmentDataService $department_data_service)
+    /**
+     * @var FeedbackDataService
+     */
+    private $feedback_data_service;
+
+    public function __construct(EntityManager $em, DepartmentDataService $department_data_service, FeedbackDataService $feedback_data_service)
     {
         $this->em = $em;
         $this->department_data_service = $department_data_service;
+        $this->feedback_data_service = $feedback_data_service;
     }
 
     public function generateForCustomFormField(CustomDefAbstract $field)
@@ -173,8 +181,37 @@ class HierarchyGenerator
         $hierarchy->markOnlyLeafSelections();
 
         $recursive = function (TicketCategory $prod, HierarchyNode $parent, $depth) use (&$recursive) {
-            foreach ($prod->children as $child) {
+            foreach ($prod->getChildren() as $child) {
                 $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
+                $recursive($child, $child_node, $depth + 1);
+            }
+        };
+
+        foreach ($hierarchy as $root_node) {
+            $recursive($root_node->getData(), $root_node, 1);
+        }
+
+        return $hierarchy;
+    }
+
+    public function generateForFeedbackCategories(Person $person)
+    {
+        $categories = $this->feedback_data_service->getFeedbackCategoriesForPerson($person);
+
+        $root_nodes = array();
+        foreach ($categories as $category) {
+            if ($category->getParent()) {
+                continue;
+            }
+            $root_nodes[] = new HierarchyNode($category, 0, $category->display_order);
+        }
+
+        $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+        $hierarchy->markOnlyLeafSelections();
+
+        $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive) {
+            foreach ($cat->getChildren() as $child) {
+                $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->getDisplayOrder()));
                 $recursive($child, $child_node, $depth + 1);
             }
         };

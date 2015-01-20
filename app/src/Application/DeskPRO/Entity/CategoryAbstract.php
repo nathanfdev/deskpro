@@ -246,6 +246,9 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return $ids;
     }
 
+    /**
+     * @return CategoryAbstract[]
+     */
     public function getChildren()
     {
         if ($this->structure_helper) {
@@ -328,5 +331,13 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
     public function getSlug()
     {
         return $this->slug;
+    }
+
+    /**
+     * @return int
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
     }
 }
