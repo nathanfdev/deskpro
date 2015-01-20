@@ -1,15 +1,18 @@
-<div class="feedback main-feedback">
-    <header class="section-header">
-        <h1>{{ phrase('portal.feedback.section-title') }}</h1>
+<article class="feedback main-feedback">
 
-        <p>
-            {{ phrase('portal.feedback.section-desc') }}
-        </p>
+    <header class="section-header">
+        <h1>Feedback</h1>
+
+        <p>Could we look at creating a setting for agents to foward all tickets to another agent while they are on
+            vacation or ill? This would be best if it could be done by the actual agent and not the admin, lorel
+            ipsum for the extra line.</p>
     </header>
 
+
+   {% include 'Theme:Feedback:form.html.twig' %}
 
     {% include 'Theme:Feedback:controls.html.twig' %}
 
     {{ page.feedback_items({ count: count, page: pg })|raw }}
-</div>
+</article>
 {{ page.feedback_pager()|raw }}

@@ -2,37 +2,57 @@
 {% for item in pager %}
     <div class="feedback-item">
         <div class="feedback-item-controls">
-            <a href="#" class="i-agree">
-                <i class="fa fa-thumbs-up"></i><div>{{ phrase('portal.feedback.btn-vote') }}</div>
-                <span class="counter">123</span>
+            <a href="{{ path('portal_feedback_vote_up', { slug: item.slug }) }}" class="i-agree">
+                <i class="fa fa-thumbs-up"></i>
+
+                <div>I agree</div>
+                <span class="counter">{{ item.total_rating }}</span>
             </a>
 
             <a href="#" class="star">
-                <i class="fa fa-star-o"></i><div>2</div>
+                <i class="fa fa-star-o"></i>
+
+                <div>2</div>
             </a>
         </div>
 
         <div class="feedback-item-content">
-            <span class="feedback-status">Awaiting Feedback</span>
-            <h1>
-                <span class="text-tag">Feature Request</span>
-                <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">
-                    {{ item.title }}
-                </a>
-            </h1>
+            <span class="feedback-status">{{ item.status_category ?: item.status }}</span>
+
+
+                <h1>
+                    <span class="text-tag">{{ item.category }}</span>
+                    <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
+                </h1>
+
 
             <div class="comment">
                 <p>{{ item.content_html|raw }}</p>
             </div>
 
+            {#<div class="response">#}
+                {#<div class="response-meta">#}
+                    {#<div class="avatar" style="background-image: url({{ asset('/img/avatar.png') }});"></div>#}
+                    {#Response by: <span>Chris Padfield</span>#}
+                {#</div>#}
+                {#<div class="response-content">#}
+                    {#<p>These suggestions have been submitted by customers like you; we encourage you to discuss and#}
+                        {#vote lorel ipsum dolor. Lorel ipsum some more text to have a third line.</p>#}
+                {#</div>#}
+            {#</div>#}
+
             <div class="feedback-item-meta">
                 <ul>
-                    <li><a href="#"><i class="fa fa-user"></i> {{ item.person.display_name }}</a></li>
-                    <li><a href="#"><i class="fa fa-comment"></i> 3 comments</a></li>
-                    <li><a href="#"><i class="fa fa-inbox"></i> Mobile App</a></li>
-                    <li><a href="#"><i class="fa fa-tags"></i>Urgent, Important</a></li>
+                    <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
+                    <li><a href="{{ path('portal_feedback_view', { slug: item.slug }) }}"><i class="fa fa-comment"></i> {{ item.num_comments }} comments</a></li>
+                    {#<li><a href="#"><i class="fa fa-inbox"></i> what is this?</a></li>#}
+                    {% if item.labels|length %}
+                        <li><i class="fa fa-tags"></i>{{ item.labels|join }}</li>
+                    {% endif %}
                 </ul>
             </div>
         </div>
+        <!-- End feedback-item-content -->
     </div>
+    <!-- End feedback-item -->
 {% endfor %}
