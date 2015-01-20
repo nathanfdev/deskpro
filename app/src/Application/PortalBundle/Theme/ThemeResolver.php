@@ -257,7 +257,8 @@ class ThemeResolver
             if (in_array($arg, array(
                 '_cache',
                 '_security',
-                '_converters'
+                '_converters',
+                '_security_remember_me_cookie'
             ))) {
                 continue; // reserved attributes that we don't want to ship to the tag
             }

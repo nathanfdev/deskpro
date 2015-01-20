@@ -2912,7 +2912,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getRoles()
     {
-        return array();
+        return array('ROLE_USER');
     }
 
     /**

@@ -111,6 +111,6 @@ class DpPersonUserProvider implements UserProviderInterface
      */
     public function supportsClass($class)
     {
-        return $class instanceof Person;
+        return $class === 'Application\DeskPRO\Entity\Person';
     }
 }

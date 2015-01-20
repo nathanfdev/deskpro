@@ -39,16 +39,16 @@
                             <div class="form-meta form-meta-grey"><a href="{{ path('portal_reset_password') }}">Need a password reminder?</a></div>
                         {% endif %}
                         <label class="title{% if login_error %} error{% endif %}">Your password:</label>
-                        <input type="password" tabindex="2" placeholder="Your password" name="password">
+                        <input type="password" tabindex="1" placeholder="Your password" name="password">
                     </div>
                 </div>
 
                 {% if auth_manager.isRememberMeEnabled %}
                     <div class="column-full">
                         <div class="bucket">
-                            <button class="button" tabindex="4">Log In</button>
+                            <button class="button" tabindex="1">Log In</button>
                             <div class="remember-me"><label for="remember_me">
-                                    <input tabindex="3" type="checkbox" name="remember_me">
+                                    <input tabindex="1" type="checkbox" name="remember_me">
                                     Stay Logged In?
                                 </label>
                             </div>

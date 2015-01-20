@@ -8,21 +8,21 @@
                 <input type="hidden" name="_failure_path" value="{{ path('portal_login', {retry:'auth'}) }}"/>
                 <label>
                     <span>Your email:</span>
-                    <input type="text" placeholder="email@example.com" name="username">
+                    <input type="text" tabindex="2" placeholder="email@example.com" name="username">
+                </label>
+
+                <label>
+                    <span>Your password:</span>
+                    <input type="password" tabindex="2" placeholder="Your password" name="password">
                 </label>
 
                 {% if auth_manager.isRememberMeEnabled %}
                     <div class="permanent-login">
-                        <label>Stay Logged In? <input type="checkbox" name="remember_me"></label>
+                        <label>Stay Logged In? <input tabindex="2" type="checkbox" name="remember_me"></label>
                     </div>
                 {% endif %}
 
-                <label>
-                    <span>Your password:</span>
-                    <input type="password" placeholder="Your password" name="password">
-                </label>
-
-                <button>Log In</button>
+                <button type="submit" tabindex="2">Log In</button>
 
                 {% if auth_manager.isForgotPasswordVisible %}
                     <div class="secondary-action">
