@@ -71,7 +71,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     protected $validating = null;
 
     /**
-     * @var \Doctrine\Common\Collections\ArrayCollection
+     * @var \Application\DeskPRO\Entity\FeedbackCategory
      * @SWG\Property(name="category",type="array", items="$ref:FeedbackCategory")
      */
     protected $category;
