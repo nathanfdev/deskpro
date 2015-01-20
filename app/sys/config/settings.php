@@ -540,6 +540,11 @@
      */
     'portal.default_permissions_timestamp' => 0,
 
+    /**
+     * When creating a new feedback in portal, this status category is set automatically
+     */
+    'portal.default_feedback_status_category_id' => 2,
+
     ####################################################################################################################
     # core_misc
     ####################################################################################################################
