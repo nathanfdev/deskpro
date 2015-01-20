@@ -72,6 +72,27 @@ class FeedbackController extends AbstractController
         }
 
 
+
+        //
+        // NEW FEEDBACK FORM
+        //
+        $form = $this->createForm('new_feedback', $new_feedback = new Feedback(), array(
+            'person' => $this->getUser()
+        ));
+        $form->handleRequest($request);
+        if ($form->isValid()) {
+
+            $default_status_category_id = $this->getBrandSetting('portal.default_feedback_status_category_id');
+            $default_status_category = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
+            $new_feedback->setStatusCategory($default_status_category);
+            $new_feedback->setPerson($this->getUser());
+
+            $this->persistAndFlushEntity($new_feedback);
+
+            return $this->redirectToRoute('portal_feedback_view', array('slug' => $new_feedback->getSlug()));
+        }
+
+
         //
         // RENDER THEME
         //
@@ -80,7 +101,9 @@ class FeedbackController extends AbstractController
             array(
                 'page' => $page,
                 'count' => $per_page,
-                'show_pagination' => true
+                'show_pagination' => true,
+                'form' => $form->createView(),
+                'user' => $this->getUser()
             )
         );
     }

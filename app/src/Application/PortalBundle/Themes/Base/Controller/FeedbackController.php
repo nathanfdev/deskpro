@@ -49,31 +49,6 @@ use Symfony\Component\HttpFoundation\Request;
 class FeedbackController extends AbstractController
 {
     /**
-     * @Tag(name="feedback")
-     *
-     * @TagOptions(
-     *      defaults={
-     *          "count": 2,
-     *          "page": 1,
-     *          "show_pagination": true
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_FEEDBACK')")
-     */
-    public function feedbackAction(TagRequest $tag_request, array $options)
-    {
-        return $this->renderThemeView(
-            'Theme:Feedback:Tag/feedback.html.twig',
-            array(
-                'count' => $options['count'],
-                'page' => $options['page'],
-                'show_pagination' => $options['show_pagination']
-            )
-        );
-    }
-
-    /**
      * @Tag(name="feedback_items")
      * @Tag(name="feedback_items_list", default_options={"style":"list"})
      * @Tag(name="feedback_items_row", default_options={"style":"row"})

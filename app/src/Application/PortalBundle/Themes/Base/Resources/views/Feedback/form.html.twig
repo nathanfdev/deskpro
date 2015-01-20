@@ -1,28 +1,29 @@
+{{ form_start(form) }}
 <div class="feedback-form">
     <form class="main-input">
         <span>I have a:</span>
-        <a href="#" class="input">Pick your feedback type <i class="fa fa-caret-down"></i></a>
+        {{ form_widget(form.category) }}
         <a href="#" class="button">Start</a>
-    </form>
 </div>
 
-<div class="feedback-form-expanded">
-    <form class="form-ticket">
+<div class="feedback-form-expanded" style="margin-top: 50px;">
 
+        {% if is_granted('ROLE_USER') %}
         <div>
             <a class="user-logged-in" href="#">
-                <i class="fa fa-user"></i> Logged in as: <span>Dennis Schipper</span>, from email <span>dennis.schipper@deskpro.com</span>
+                <i class="fa fa-user"></i> Logged in as: <span>{{ user.name }}</span>, from email <span>{{ user.primary_email_address }}</span>
             </a>
         </div>
+        {% endif %}
 
         <div class="bucket">
             <label>Title:</label>
-            <input type="text" placeholder="dsf">
+            {{ form_widget(form.title, { placeholder: 'A one-sentance summary' }) }}
         </div>
 
         <div class="bucket">
             <label>Tell us about your Feature Request</label>
-            <textarea></textarea>
+            {{ form_widget(form.content, { placeholder: 'More details...' } ) }}
         </div>
 
         <div class="new-ticket-attachements">
@@ -47,5 +48,6 @@
         <div class="bucket">
             <input class="button" type="submit" value="Add your feedback">
         </div>
-    </form>
 </div>
+{{ form_rest(form) }}
+{{ form_end(form) }}

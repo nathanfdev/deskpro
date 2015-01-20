@@ -7,14 +7,12 @@
             <div class="feedback-item-controls">
                 <a href="{{ path('portal_feedback_vote_up', { slug: item.slug }) }}" class="i-agree">
                     <i class="fa fa-thumbs-up"></i>
-
                     <div>I agree</div>
                     <span class="counter">{{ item.total_rating }}</span>
                 </a>
 
                 <a href="#" class="star">
                     <i class="fa fa-star-o"></i>
-
                     <div>2</div>
                 </a>
             </div>
@@ -32,17 +30,6 @@
                 <div class="comment">
                     <p>{{ item.content_html|raw }}</p>
                 </div>
-
-                {#<div class="response">#}
-                {#<div class="response-meta">#}
-                {#<div class="avatar" style="background-image: url({{ asset('/img/avatar.png') }});"></div>#}
-                {#Response by: <span>Chris Padfield</span>#}
-                {#</div>#}
-                {#<div class="response-content">#}
-                {#<p>These suggestions have been submitted by customers like you; we encourage you to discuss and#}
-                {#vote lorel ipsum dolor. Lorel ipsum some more text to have a third line.</p>#}
-                {#</div>#}
-                {#</div>#}
 
                 <div class="feedback-item-meta">
                     <ul>
