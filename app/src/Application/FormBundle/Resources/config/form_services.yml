@@ -11,6 +11,9 @@ services:
     tags:
       - { name: form.type_extension, alias: checkbox }
 
+  captcha_decider:
+    class: Application\FormBundle\Captcha\CaptchaDecider
+    arguments: [@brand_stack, @security.authorization_checker]
 
   form_field_manager:
     class: Application\FormBundle\Form\FormFieldManager
