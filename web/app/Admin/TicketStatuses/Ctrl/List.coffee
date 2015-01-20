@@ -10,7 +10,6 @@ define ['Admin/Main/Ctrl/Base'], (Admin_Ctrl_Base) ->
 
     initialLoad: ->
       @Api.sendGet('/ticket_statuses/stats').then( (res) =>
-        console.log(res)
         @stats = res.data.status_stats
       )
 

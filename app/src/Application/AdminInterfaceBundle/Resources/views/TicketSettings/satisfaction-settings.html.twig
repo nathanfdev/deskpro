@@ -33,7 +33,7 @@
 							</span>
 						</div>
 
-						<div class="inner-group" ng-show="settings.satisfaction_enabled"
+						<div class="inner-group" ng-show="settings.satisfaction_enabled && ctrl.esc"
 							 ng-controller="Admin_TicketEscalations_Ctrl_EditSatisfaction as ctrl"
 								>
 							<label>
@@ -49,7 +49,7 @@
 
 						{% for id, feedback in {2: 'positive', 1: 'neutral', 0: 'negative'} %}
 
-							<div class="inner-group" ng-show="settings.satisfaction_enabled"
+							<div class="inner-group" ng-show="settings.satisfaction_enabled && ctrl.trigger"
 								 ng-controller="Admin_TicketTriggers_Ctrl_EditSatisfactionTrigger as ctrl"
 								 ng-init="setCtrlParams({{ id }})"
 									>

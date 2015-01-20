@@ -170,6 +170,21 @@ class TicketEscalation extends DomainObject
         $data['actions']   = $this->actions->exportToArray();
         $data['sys_name']  = $this->sys_name;
 
+        if ($data['sys_name']) {
+            foreach (\Application\DeskPRO\EntityRepository\TicketEscalation::$definitions as $k => $v) {
+                if (0 === strpos($data['sys_name'], $k)) {
+                    foreach ($v as $num => $def) {
+                        if ($data['sys_name'] === $def['sys_name']) {
+                            $data['sys_num'] = $num;
+                            break;
+                        }
+                    }
+                    $data['sys_type'] = $k;
+                    break;
+                }
+            }
+        }
+
         return $data;
     }
 

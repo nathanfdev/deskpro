@@ -42,6 +42,7 @@ use Application\DeskPRO\Tickets\Actions\SendUserEmail;
 use Application\DeskPRO\Tickets\Filters\FilterTerms;
 use Application\DeskPRO\Tickets\Filters\LegacyTermsTransformer;
 use Application\DeskPRO\Tickets\Triggers\TriggerActions;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class TicketEscalationsController extends AbstractController implements ProtectedControllerInterface
 {
@@ -80,35 +81,10 @@ class TicketEscalationsController extends AbstractController implements Protecte
     {
         /** @var \Application\DeskPRO\EntityRepository\TicketEscalation $rep */
         $rep = $this->em->getRepository('DeskPRO:TicketEscalation');
-        switch ($special_type) {
-            case 'satisfaction':
-
-                if (!$esc = $rep->findOneBy(array('sys_name' => 'satisfaction'))) {
-                    $esc = new TicketEscalation();
-                    $esc->title = 'Satisfaction request';
-                    $esc->sys_name = 'satisfaction';
-                    $esc->event_trigger = TicketEscalation::EVENT_TYPE_TIME_RESOLVED;
-                    $esc->event_trigger_time = 60 * 60 * 24 * 3; // 3 days by default
-                    $esc->is_enabled = true;
-                    $esc->actions->addAction(new SendUserEmail(array(
-                        'template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
-                        'do_cc_users' => false,
-                        'from_name' => 'helpdesk_name',
-                        'from_account' => 0,
-                        'headers' => array(),
-                    )));
-
-                    $this->em->persist($esc);
-                    $this->em->flush();
-                }
-
-                break;
-            default:
-                $esc = $rep->find($id);
-        }
+        $esc = $special_type ? $rep->getSpecialEscalation($special_type, $id) : $rep->find($id);
 
         if (!$esc) {
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException;
         }
 
         $trans = new LegacyTermsTransformer();
@@ -133,38 +109,10 @@ class TicketEscalationsController extends AbstractController implements Protecte
         /** @var \Application\DeskPRO\EntityRepository\TicketEscalation $rep */
         $rep = $this->em->getRepository('DeskPRO:TicketEscalation');
 
-        if ($id) {
-
-            switch ($special_type) {
-                case 'satisfaction':
-
-                    if (!$esc = $rep->findOneBy(array('sys_name' => 'satisfaction'))) {
-                        $esc = new TicketEscalation();
-                        $esc->title = 'Satisfaction request';
-                        $esc->sys_name = 'satisfaction';
-                        $esc->event_trigger = TicketEscalation::EVENT_TYPE_TIME_RESOLVED;
-                        $esc->event_trigger_time = 60 * 60 * 24 * 3; // 3 days by default
-                        $esc->is_enabled = true;
-                        $esc->actions->addAction(new SendUserEmail(array(
-                            'template' => 'DeskPRO:emails_user:ticket-rate.html.twig',
-                            'do_cc_users' => false,
-                            'from_name' => 'helpdesk_name',
-                            'from_account' => 0,
-                            'headers' => array(),
-                        )));
-
-                        $this->em->persist($esc);
-                        $this->em->flush();
-                    }
-
-                    break;
-                default:
-                    $esc = $rep->find($id);
-            }
-
-            if (!$esc) {
-                throw $this->createNotFoundException();
-            }
+        if ($special_type) {
+            $esc = $rep->getSpecialEscalation($special_type, $id);
+        } elseif ($id) {
+            $esc = $rep->find($id);
         } else {
             $esc = new TicketEscalation();
         }
@@ -214,7 +162,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
         $esc = $this->em->getRepository('DeskPRO:TicketEscalation')->find($id);
 
         if (!$esc) {
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException;
         }
 
         $this->em->remove($esc);
@@ -233,7 +181,7 @@ class TicketEscalationsController extends AbstractController implements Protecte
     {
         $trigger = $this->em->find('DeskPRO:TicketEscalation', $id);
         if (!$trigger) {
-            throw $this->createNotFoundException();
+            throw new NotFoundHttpException;
         }
 
         $trigger->is_enabled = $is_enabled;

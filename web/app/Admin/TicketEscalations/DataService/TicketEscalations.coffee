@@ -106,21 +106,20 @@ define [
 
       return deferred.promise
 
-    loadEditSatisfactionEscalation: ->
+    loadEditSpecialEscalation: (type, id) ->
       deferred = @$q.defer()
 
-      @Api.sendGet('/ticket_escalations/satisfaction/0').then(
+      @Api.sendGet("/ticket_escalations/#{type}/#{id}").then(
         (result) =>
           data =
             escalation: result.data.escalation
             form: @getFormMapper().getFormFromModel result.data.escalation
           deferred.resolve(data)
-        , ->
-          deferred.reject()
+      , ->
+        deferred.reject()
       )
 
       deferred.promise
-
 
     ###
       # Saves a form model and applies the form model to the macro model

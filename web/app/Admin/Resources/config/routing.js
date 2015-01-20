@@ -666,6 +666,12 @@ define(function() {
     templateName: 'TicketEscalations/edit-satisfaction.html',
     controller: 'Admin_TicketEscalations_Ctrl_EditSatisfaction'
   });
+  routes.push({
+    id: 'tickets.ticket_escalations.editstatuses',
+    url: '/statuses/{id:[0-9]+}',
+    templateName: 'TicketEscalations/edit-statuses.html',
+    controller: 'Admin_TicketEscalations_Ctrl_EditStatuses'
+  });
 
   //###
   //# SLAs

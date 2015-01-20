@@ -42,7 +42,7 @@ define [
 
     initialLoad: ->
       loadData = null
-      promise = @escData.loadEditSatisfactionEscalation().then (data) =>
+      promise = @escData.loadEditSpecialEscalation('satisfaction', 0).then (data) =>
         loadData = data
 
       promise2 = @criteriaTypeDef.loadDataOptions()

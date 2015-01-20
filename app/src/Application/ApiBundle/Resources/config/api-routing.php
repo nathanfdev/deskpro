@@ -3449,14 +3449,14 @@ $collection->create('api_ticket_escalations_update', array(
 $collection->create('api_ticket_escalations_getspecial', array(
     'path'         => '/ticket_escalations/{special_type}/{id}',
     'controller'   => 'ApiBundle:TicketEscalations:get',
-    'requirements' => array('special_type' => '(satisfaction)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(satisfaction|statuses)', 'id' => '\d+'),
     'methods'      => array('GET'),
 ));
 
-$collection->create('api_ticket_triggers_updatespecial', array(
+$collection->create('api_ticket_escalations_updatespecial', array(
     'path'         => '/ticket_escalations/{special_type}/{id}',
     'controller'   => 'ApiBundle:TicketEscalations:save',
-    'requirements' => array('special_type' => '(satisfaction)', 'id' => '\d+'),
+    'requirements' => array('special_type' => '(satisfaction|statuses)', 'id' => '\d+'),
     'methods'      => array('POST'),
 ));
 

@@ -71,6 +71,7 @@ define([
   'Admin/TicketEscalations/Ctrl/List',
   'Admin/TicketEscalations/Ctrl/Edit',
   'Admin/TicketEscalations/Ctrl/EditSatisfaction',
+  'Admin/TicketEscalations/Ctrl/EditStatuses',
   'Admin/TicketFields/Ctrl/EditCategories',
   'Admin/TicketFields/Ctrl/EditPriorities',
   'Admin/TicketFields/Ctrl/EditProducts',

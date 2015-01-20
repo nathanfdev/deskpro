@@ -1,6 +1,6 @@
 {% extends 'AdminInterfaceBundle:Layout:list-editpane.html.twig' %}
 {% block editpane_content %}
-	<section class="dp-paneblock dp-editpane">
+	<section class="dp-paneblock dp-editpane dp-form">
 		<article>
 			<div class="panel panel-fill indent">
 				<div class="panel-body">
@@ -11,5 +11,87 @@
 				</div>
 			</div>
 		</article>
+
+		{% for num in 1..3 %}
+			<article ng-show="ctrl.esc"
+					 ng-controller="Admin_TicketEscalations_Ctrl_EditStatuses as ctrl"
+					 ng-init="initWith({{ num }})"
+					>
+				<div class="panel panel-fill indent">
+					<div class="panel-body">
+
+						<div class="inner-group">
+							<label>
+								<input type="checkbox" ng-model="ctrl.esc.is_enabled" ng-change="ctrl.escData.saveEnabledState(ctrl.esc)" />
+								<h4>
+									After ticket has been awaiting user for
+									<dp-time-with-unit ng-model="ctrl.form.event_trigger_time"></dp-time-with-unit>
+
+									{% if 1 == num %}
+
+										<span ng-if="ctrl.esc.is_default_action">
+											send warning email: <a href="#" ng-click="$event.preventDefault(); $event.stopPropagation(); editTemplate(ctrl.esc)">edit</a>
+										</span>
+										<dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
+										   					options="{tag_first: '', tag_after: 'then', fixOn: []}" option-types="actionOptionTypes"
+															ng-if="false === ctrl.esc.is_default_action"
+												>
+											<add-btn-label>Action</add-btn-label>
+										</dp-option-builder>
+
+									{% elseif 2 == num %}
+
+										<span ng-if="ctrl.esc.is_default_action">
+											send final warning email: <a href="#" ng-click="$event.preventDefault(); $event.stopPropagation(); editTemplate(ctrl.esc)">edit</a>
+										</span>
+										<dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
+														   options="{tag_first: '', tag_after: 'then', fixOn: []}" option-types="actionOptionTypes"
+														   ng-if="false === ctrl.esc.is_default_action"
+												>
+											<add-btn-label>Action</add-btn-label>
+										</dp-option-builder>
+
+									{% elseif 3 == num %}
+
+										<span ng-if="ctrl.esc.is_default_action">
+											set the status to Resolved
+										</span>
+										<dp-option-builder types-def="ctrl.actionsTypeDef" save-target="ctrl.form.actions"
+														   options="{tag_first: '', tag_after: 'then', fixOn: []}" option-types="actionOptionTypes"
+														   ng-if="false === ctrl.esc.is_default_action"
+												>
+											<add-btn-label>Action</add-btn-label>
+										</dp-option-builder>
+
+									{% endif %}
+
+								</h4>
+							</label>
+						</div>
+
+						<span class="help-block">
+							{{ phrase('adm.satisfaction.escalation_help') }}
+						</span>
+					</div>
+				</div>
+			</article>
+
+		{% endfor %}
+
+		<footer>
+			<div class="dp-content">
+				<div class="dp-btn-controls">
+					<div dp-hide-spinning="saving">
+						<button class="btn btn-primary" ng-click="TicketStatusEdit.save()">{{ phrase('agent.general.save') }}</button>
+					</div>
+					<div dp-show-spinning="saving">
+						<i class="spinner-flat"></i>
+					</div>
+				</div>
+			</div>
+		</footer>
+
 	</section>
+
+	<div dp-register-message="saved_settings">Settings saved successfully.</div>
 {% endblock %}

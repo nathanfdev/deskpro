@@ -11,6 +11,7 @@ define [
     init: ->
       @list = []
       @list_satisfaction = []
+      @list_statuses = []
       @escData = @DataService.get('TicketEscalations')
 
 
@@ -20,8 +21,10 @@ define [
         return if !list
 
         list.map (item) =>
-          if 'satisfaction' == item.sys_name
+          if 'satisfaction' == item.sys_type
             @list_satisfaction.push item
+          else if 'statuses' == item.sys_type
+            @list_statuses.push item
           else
             @list.push item
 
@@ -45,6 +48,8 @@ define [
         if v.id == esc
           esc = v
           break
+
+      return if esc.sys_name?
 
       inst = @$modal.open({
         templateUrl: @getTemplatePath('TicketEscalations/delete-modal.html'),
