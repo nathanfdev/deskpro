@@ -2,11 +2,19 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
   class Admin_TicketSettings_Ctrl_TicketSettings extends Admin_Ctrl_Base
     @CTRL_ID   = 'Admin_TicketSettings_Ctrl_TicketSettings'
     @CTRL_AS   = 'TicketSettings'
-    @DEPS      = []
+    @DEPS      = ['$modal']
 
     init: ->
       @settings = null
       @$scope.escalation_days = 3
+
+      @$scope.editSatisfactionTemplate = =>
+        @$modal.open({
+          templateUrl: DP_BASE_ADMIN_URL+'/load-view/Templates/modal-email-editor.html',
+          controller: 'Admin_Templates_Ctrl_EmailTemplateEditor',
+          resolve:
+            templateName: -> 'DeskPRO:emails_user:ticket-rate.html.twig'
+        })
 
     initialLoad: ->
       data_promise = @Api.sendDataGet({

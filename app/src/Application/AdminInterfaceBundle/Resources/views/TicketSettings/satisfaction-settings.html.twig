@@ -39,7 +39,7 @@
 							<label>
 								<input type="checkbox" ng-model="ctrl.esc.is_enabled" ng-change="ctrl.escData.saveEnabledState(ctrl.esc)" />
 								<h4>
-									Send user an email (edit template) after being resolved for  <dp-time-with-unit ng-model="ctrl.form.event_trigger_time"/>
+									Send user an email (<a href="#" ng-click="$event.preventDefault(); $event.stopPropagation(); editSatisfactionTemplate()">edit template</a>) after being resolved for  <dp-time-with-unit ng-model="ctrl.form.event_trigger_time"/>
 								</h4>
 							</label>
 							<span class="help-block">
