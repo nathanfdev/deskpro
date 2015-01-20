@@ -300,8 +300,8 @@ class KernelBooter
                     $print_log = "<br><br><br><br><hr><br><h1>Http Cache Log</h1>";
                     $print_log .= implode("\n<br>", $log);
                     $print_log .= "<br><hr><br><h1>Simple Profile</h1>";
-                    $print_log .= "boot time: " . sprintf('%.2f', $start - $boot) . "s<br>\n";
-                    $print_log .= "http kernel time: " . sprintf('%.2f', $end - $start) . "s<br>\n";
+                    $print_log .= "kernel booter time: " . sprintf('%.2f', $start - $boot) . "s<br>\n";
+                    $print_log .= "portal kernel time: " . sprintf('%.2f', $end - $start) . "s<br>\n";
                     $print_log .= "total time: <strong>" . sprintf('%.2f', $end - $boot) . 's</strong>';
                     $print_log .= "<br><br><br>";
 

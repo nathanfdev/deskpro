@@ -1,0 +1,62 @@
+services:
+
+  visitor_identification.listener:
+    class: Application\PortalBundle\EventListener\VisitorIdentificationListener
+    arguments: [@visitor_identification_provider, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+  brand_detector.listener:
+    class: Application\PortalBundle\EventListener\BrandDetectionListener
+    arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+
+  redirect_exception.listener:
+    class: Application\PortalBundle\EventListener\RedirectExceptionListener
+    arguments: [@router, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+
+  controller_name_converter:
+      class: Application\PortalBundle\HttpKernel\ControllerNameParser
+      tags: [{name: monolog.logger, channel: request}]
+      arguments: [@kernel, @brand_stack]
+
+
+  tag_options.listener:
+      class: Application\PortalBundle\EventListener\TagOptionsListener
+      arguments: [@annotation_reader]
+      tags:
+        - { name: kernel.event_subscriber }
+
+
+  etag_seed.listener:
+      class: Application\PortalBundle\EventListener\EtagSeederListener
+      arguments: [@etag_manager, @logger]
+      tags:
+        - { name: kernel.event_subscriber }
+
+
+# Not kernel listeners, but tagged to be called by other listeners
+  param_converter.deskpro_slug:
+      class: Application\PortalBundle\Request\DeskproSlugConverter
+      arguments: [@doctrine.orm.default_entity_manager]
+      tags:
+        - { name: request.param_converter, priority: -1, converter: deskpro_slug }
+
+
+  param_converter.tag_request:
+    class: Application\PortalBundle\Request\TagRequestConverter
+    arguments: [@brand_stack]
+    tags:
+      - { name: request.param_converter, priority: 1, converter: tag_request }
+
+
+  data_collector.portal:
+    class: Application\PortalBundle\DataCollector\PortalCollector
+    arguments: [@brand_stack, @language_stack]
+    tags:
+      - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }

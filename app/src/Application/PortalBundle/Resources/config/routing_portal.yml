@@ -1,11 +1,11 @@
-# Links to known existing URLs (admin, agent, etc)
+# Links to known existing URLs (admin, agent, file.php, etc)
+# these are duplicates from DpKernel's config
 admin_interface:
     path: /admin
 agent_interface:
     path: /agent
-
-dp_routing:
-    resource: "@PortalBundle/Resources/config/portal_old_routing.yml"
+serve_blob:
+    path: '/file.php/{blob_auth_id}/{filename}'
 
 # Annotations
 portal:

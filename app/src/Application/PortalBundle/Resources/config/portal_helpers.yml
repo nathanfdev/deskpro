@@ -5,9 +5,11 @@ services:
       class: Application\PortalBundle\Helper\PortalTabsHelper
       arguments: [@brand_stack, @security.authorization_checker]
 
+
   ratings_helper:
       class: Application\PortalBundle\Helper\PortalRatingsHelper
       arguments: [@doctrine.orm.default_entity_manager, @request_stack]
+
 
   subscriptions_helper:
       class: Application\PortalBundle\Helper\ContentSubscriptionsHelper

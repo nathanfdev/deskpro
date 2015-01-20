@@ -1,5 +1,5 @@
 portal_routes:
-    resource: "@PortalBundle/Resources/config/portal_routing.yml"
+    resource: "@PortalBundle/Resources/config/routing_portal.yml"
 auth_routes:
     resource: "@AuthBundle/Resources/config/routing_auth.yml"
 dp_routes:

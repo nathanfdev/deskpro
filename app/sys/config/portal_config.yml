@@ -1,9 +1,11 @@
 imports:
     - { resource: config.shared.php }
-    - { resource: @PortalBundle/Resources/config/portal_services.yml }
 
+# Keeping all parameter changes here rather than in various bundles
 parameters:
-    doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
+  router.options.matcher.cache_class: null
+  portal.session.name: sess_data
+  doctrine.orm.proxy_dir: %kernel.cache_dir%/../../doctrine-proxies
 
 framework:
     esi:             { enabled: true }

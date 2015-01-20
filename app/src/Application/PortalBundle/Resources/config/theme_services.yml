@@ -1,0 +1,34 @@
+services:
+
+  theme_resolver:
+    class: Application\PortalBundle\Theme\ThemeResolver
+    arguments: [@service_container, @theme_repository, @logger]
+
+
+  theme_view_factory:
+    class: Application\PortalBundle\Theme\ThemeViewFactory
+    arguments: [@brand_stack]
+
+
+  theme_repository:
+    class: Application\PortalBundle\Theme\ThemeRepository
+    arguments: [@portal_cache.themes, @annotation_reader, @logger]
+
+
+  portal_cache.themes:
+    class: Symfony\Component\Config\ConfigCache
+    arguments:
+      - %kernel.cache_dir%/portalThemes.php
+      - %kernel.debug%
+
+  portal_cache.template_cache_warmer:
+    class: Application\PortalBundle\CacheWarmer\ThemeTemplateCacheWarmer
+    arguments: [@theme_resolver]
+    tags:
+      - { name: 'kernel.cache_warmer' }
+
+  portal_cache.theme_cache_warmer:
+    class: Application\PortalBundle\CacheWarmer\ThemeRepositoryCacheWarmer
+    arguments: [@theme_repository]
+    tags:
+      - { name: 'kernel.cache_warmer' }
