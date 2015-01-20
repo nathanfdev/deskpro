@@ -29,27 +29,63 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage EmailBundle
+ * @subpackage
  */
 
-namespace Application\EmailBundle\SwiftMailer\RawTransport;
+namespace Application\EmailBundle\Mail\RawMessage;
 
-/**
- * A raw transport takes params for a raw email message and sends it.
- *
- * Typically a raw transport wraps an SwiftMailer transport but is able to send
- * raw rfc288 messages.
- */
-interface RawTransportInterface
+class Rfc822Decoder
 {
-    /**
-     * @param string   $from          The account to send from (for use with SMTP 'MAIL FROM')
-     * @param array    $to            Array of email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param array    $cc            Array of CC'd email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param array    $bcc           Array of BCC'd email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param resource $raw_fp        A file pointer to the raw email source
-     * @param array    $failed        Array of failed recipients, if any
-     * @return int
-     */
-    public function sendRawMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp, array &$failed = null);
+    public function createRawMessage($raw_fp)
+    {
+        $message = new \Zend\Mail\Storage\Part(array(
+            'raw' => stream_get_contents($raw_fp),
+        ));
+
+        $headers = array();
+        $ignore_map = array(
+            'subject' => true,
+            'from' => true,
+            'cc' => true,
+        );
+        foreach ($message->getHeaders()->toArray() as $name => $value) {
+            if (isset($ignore_map[strtolower($name)])) {
+                continue;
+            }
+
+            if (!isset($headers[$name])) {
+                $headers[$name] = array();
+            }
+
+            if (is_array($value)) {
+                $headers[$name] = array_merge($headers[$name], $value);
+            } else {
+                $headers[$name][] = $value;
+            }
+        }
+
+        foreach ($message as $part) {
+            if ($part->hasChildren()) {
+                foreach ($part->getChildren() as $child) {
+                    $h = $child->getHeader('Content-Type');
+                    if ($h->getType() == 'text/plain' || $h->getType() == 'text/html') {
+
+                    }
+
+                    print_r($h->getType());
+                }
+            } else {
+                $h = $part->getHeader('Content-Type');
+                print_r($h->getType());
+            }
+
+
+            echo "\n";
+            echo "\n";
+            echo "\n";
+        }
+
+        //print_r($message->getPart(2));
+
+    }
 }

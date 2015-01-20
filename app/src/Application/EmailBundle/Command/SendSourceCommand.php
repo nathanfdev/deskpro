@@ -1,0 +1,130 @@
+<?php
+
+/**************************************************************************\
+| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| a British company located in London, England.                            |
+|                                                                          |
+| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+|                                                                          |
+| The license agreement under which this software is released              |
+| can be found at http://www.deskpro.com/license                           |
+|                                                                          |
+| By using this software, you acknowledge having read the license          |
+| and agree to be bound thereby.                                           |
+|                                                                          |
+| Please note that DeskPRO is not free software. We release the full       |
+| source code for our software because we trust our users to pay us for    |
+| the huge investment in time and energy that has gone into both creating  |
+| this software and supporting our customers. By providing the source code |
+| we preserve our customers' ability to modify, audit and learn from our   |
+| work. We have been developing DeskPRO since 2001, please help us make it |
+| another decade.                                                          |
+|                                                                          |
+| Like the work you see? Think you could make it better? We are always     |
+| looking for great developers to join us: http://www.deskpro.com/jobs/    |
+|                                                                          |
+| ~ Thanks, Everyone at Team DeskPRO                                       |
+\**************************************************************************/
+
+
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ */
+
+namespace Application\EmailBundle\Command;
+
+use Orb\Util\Strings;
+use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
+use Symfony\Component\Console\Input\InputArgument;
+use Symfony\Component\Console\Input\InputInterface;
+use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
+
+class SendSourceCommand extends ContainerAwareCommand
+{
+    /**
+     * {@inheritDoc}
+     */
+    protected function configure()
+    {
+        $this->setName('dp:email:sendsource');
+        $this->addOption('info', 'i', InputOption::VALUE_NONE, "Do not actually process the source, just output info");
+        $this->addOption('source', 'u', InputOption::VALUE_NONE, "Output raw source. When used with --info, it will output info and the source at once.");
+        $this->addArgument('id', InputArgument::REQUIRED, "The record ID to send.");
+        $this->setHelp("Attempts to send an stored email source");
+    }
+
+    /**
+     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
+     */
+    public function getContainer()
+    {
+        return parent::getContainer();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    protected function execute(InputInterface $input, OutputInterface $output)
+    {
+        /** @var \Application\EmailBundle\Entity\SendmailSource $source */
+        $source = $this->getContainer()->getEm()->find('EmailBundle:SendmailSource', $input->getArgument('id'));
+        if (!$source) {
+            $output->writeln("<error>Unknown SendmailSource ID</error>");
+            return 1;
+        }
+
+        ################################################################################################################
+        # Info
+        ################################################################################################################
+
+        if ($input->getOption('info') || $input->getOption('source')) {
+
+            if ($input->getOption('info')) {
+                echo Strings::asciiTable(array(
+                    array('ID', $source->getId()),
+                    array('Ref', $source->getRef()),
+                    array('Date', $source->getDateCreated()->format('Y-m-d H:i:s')),
+                    array('Status', $source->getStatus()),
+                    array('Is Sent?', $source->getDateSent() ? "Yes :: " . $source->getDateSent()->format('Y-m-d H:i:s') : ''),
+                    array('Next Attempt', $source->getDateNextAttempt() ? $source->getDateNextAttempt()->format('Y-m-d H:i:s') : 'never'),
+                    array('Send Attempts', $source->getExecCount())
+                ));
+
+                if ($input->getOption('source')) {
+                    echo "\n";
+                    echo "\n";
+                    echo "SOURCE\n";
+                    echo str_repeat('#', 72);
+                    echo "\n";
+                    echo "\n";
+                }
+            }
+
+            if ($input->getOption('source')) {
+                echo $this->getContainer()->getBlobStorage()->copyBlobRecordToString($source->getBlob());
+            }
+
+            if ($input->getOption('info') && $source->getLogBlob()) {
+                echo "\n";
+                echo "\n";
+                echo "LOG\n";
+                echo str_repeat('#', 72);
+                echo "\n";
+                echo "\n";
+                echo $this->getContainer()->getBlobStorage()->copyBlobRecordToString($source->getLogBlob());
+                echo "\n";
+            }
+
+            return 0;
+        }
+
+        ################################################################################################################
+        # Send
+        ################################################################################################################
+
+
+    }
+}

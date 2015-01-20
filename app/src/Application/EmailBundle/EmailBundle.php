@@ -40,14 +40,23 @@ use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class EmailBundle extends Bundle
 {
-    public function registerCommands(Application $application)
+    public function build(ContainerBuilder $container)
     {
 
     }
 
-    public function build(ContainerBuilder $container)
+    /**
+     * @param Application $application An Application instance
+     */
+    public function registerCommands(Application $application)
     {
+        $commands = array(
+            'Application\\EmailBundle\\Command\\SendSourceCommand',
+        );
 
+        foreach ($commands as $cmd) {
+            $application->add(new $cmd);
+        }
     }
 
     public function getNamespace()

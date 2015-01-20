@@ -34,6 +34,11 @@
 
 namespace Application\EmailBundle\SwiftMailer\RawTransport;
 
+/**
+ * The RawSmtpTransport is an efficient wrapper around the SmtpTransport.
+ * It is able to use the pre-computed raw message and send it directly over the
+ * network. Other raw transports need to decode and re-create the message from scratch first.
+ */
 class RawSmtpTransport implements RawTransportInterface
 {
     /**
@@ -56,10 +61,9 @@ class RawSmtpTransport implements RawTransportInterface
      * @param array $bcc Array of BCC'd email addresses to send to (for use with SMTP 'RCPT TO')
      * @param resource $raw_fp A file pointer to the raw email source
      * @param array $failed Array of failed recipients, if any
-     * @param array $log_messages Array of logs
      * @return int
      */
-    public function sendRawMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp, array &$failed = null, array &$log_messages = null)
+    public function sendRawMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp, array &$failed = null)
     {
         $sent = 0;
 
@@ -67,23 +71,11 @@ class RawSmtpTransport implements RawTransportInterface
             $failed = array();
         }
 
-        if ($log_messages === null) {
-            $log_messages = array();
-        }
-
-        if (isset($this->tr->__dp_logger)) {
-            $this->tr->__dp_logger->resetMessageLogs();
-        }
-
         $this->tr->start();
 
-        if (!empty($to))  $sent += $this->_doMail($from, $to, $raw_fp, $failed, $log_messages);
-        if (!empty($cc))  $sent += $this->_doMail($from, $cc, $raw_fp, $failed, $log_messages);
-        if (!empty($bcc)) $sent += $this->_doMail($from, $bcc, $raw_fp, $failed, $log_messages);
-
-        if (isset($this->tr->__dp_logger)) {
-            foreach ($this->tr->__dp_logger->getMessageLogsAsArray() as $m) $log_messages[] = $m;
-        }
+        if (!empty($to))  $sent += $this->_doMail($from, $to, $raw_fp, $failed);
+        if (!empty($cc))  $sent += $this->_doMail($from, $cc, $raw_fp, $failed);
+        if (!empty($bcc)) $sent += $this->_doMail($from, $bcc, $raw_fp, $failed);
 
         return $sent;
     }

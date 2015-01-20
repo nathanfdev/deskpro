@@ -35,21 +35,41 @@
 namespace Application\EmailBundle\SwiftMailer\RawTransport;
 
 /**
- * A raw transport takes params for a raw email message and sends it.
- *
- * Typically a raw transport wraps an SwiftMailer transport but is able to send
- * raw rfc288 messages.
+ * This is a generic wrapper for any swiftmailer transport.
+ * It works by decoding a raw message and re-creating a swiftmailer message
+ * that we can send via the usual way with swiftmailer.
  */
-interface RawTransportInterface
+class RawSwiftmailerTransport implements RawTransportInterface
 {
     /**
-     * @param string   $from          The account to send from (for use with SMTP 'MAIL FROM')
-     * @param array    $to            Array of email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param array    $cc            Array of CC'd email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param array    $bcc           Array of BCC'd email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param resource $raw_fp        A file pointer to the raw email source
-     * @param array    $failed        Array of failed recipients, if any
+     * @var \Swift_Transport
+     */
+    private $tr;
+
+    /**
+     * @param \Swift_Transport $tr
+     */
+    public function __construct(\Swift_Transport $tr)
+    {
+        $this->tr = $tr;
+    }
+
+    /**
+     * @param string $from The account to send from (for use with SMTP 'MAIL FROM')
+     * @param array $to Array of email addresses to send to (for use with SMTP 'RCPT TO')
+     * @param array $cc Array of CC'd email addresses to send to (for use with SMTP 'RCPT TO')
+     * @param array $bcc Array of BCC'd email addresses to send to (for use with SMTP 'RCPT TO')
+     * @param resource $raw_fp A file pointer to the raw email source
+     * @param array $failed Array of failed recipients, if any
      * @return int
      */
-    public function sendRawMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp, array &$failed = null);
+    public function sendRawMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp, array &$failed = null)
+    {
+
+    }
+
+    private function recreateSwiftMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp)
+    {
+        
+    }
 }

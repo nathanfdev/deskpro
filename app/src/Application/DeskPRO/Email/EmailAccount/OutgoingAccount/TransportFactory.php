@@ -61,9 +61,6 @@ class TransportFactory
                 throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
         }
 
-        $tr->__dp_logger = new \Application\EmailBundle\Mail\Plugins\Logger();
-        $tr->registerPlugin($tr->__dp_logger);
-
         return $tr;
     }
 

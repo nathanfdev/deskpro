@@ -29,27 +29,52 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage EmailBundle
+ * @subpackage
  */
 
-namespace Application\EmailBundle\SwiftMailer\RawTransport;
+namespace Application\EmailBundle\Mail;
 
-class RawSendmailTransport extends RawSmtpTransport
+use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\EmailBundle\SourceMapper\SourceMapperInterface;
+use Psr\Log\LoggerInterface;
+use Psr\Log\NullLogger;
+
+class RawMailer
 {
     /**
-     * @var \Swift_SendmailTransport
+     * @var \Psr\Log\LoggerInterface
      */
-    private $tr;
+    private $logger;
 
     /**
-     * @param \Swift_SendmailTransport $tr
+     * @var SourceMapperInterface
      */
-    public function __construct(\Swift_SendmailTransport $tr)
+    private $source_mapper;
+
+    /**
+     * @var EmailAccountManager
+     */
+    private $email_accounts;
+
+    /**
+     * @param SourceMapperInterface $source_mapper
+     * @param EmailAccountManager $email_accounts
+     * @param LoggerInterface $logger
+     */
+    public function __construct(SourceMapperInterface $source_mapper, EmailAccountManager $email_accounts, LoggerInterface $logger = null)
     {
-        $this->tr = $tr;
+        $this->source_mapper = $source_mapper;
+        $this->email_accounts = $email_accounts;
+        $this->logger = $logger ?: new NullLogger();
     }
 
-    // This extends RawSmtpTransport because the only difference is the transport
-    // being used. If we use the Sendmail transport, then the '-bs' flag makes
-    // it act like a normal SMTP server, so everything else stays the same.
+    /**
+     * Send a source record.
+     *
+     * @param array $source
+     */
+    public function send(array $source)
+    {
+
+    }
 }
