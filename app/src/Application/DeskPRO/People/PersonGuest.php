@@ -60,6 +60,12 @@ class PersonGuest extends Person
         return true;
     }
 
+    public function getRoles()
+    {
+        return array('ROLE_GUEST');
+    }
+
+
     public function noPersist()
     {
         throw new \BadMethodCallException('A PersonGuest cannot be persisted');
