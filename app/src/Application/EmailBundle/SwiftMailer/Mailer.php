@@ -32,7 +32,7 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\Mail;
+namespace Application\EmailBundle\SwiftMailer;
 
 use Application\EmailBundle\SwiftMailer\Message\MessageFactoryInterface;
 use Application\EmailBundle\SwiftMailer\Transport\StorageTransportInterface;
@@ -86,7 +86,10 @@ class Mailer extends \Swift_Mailer
         $this->message_factory = $message_factory;
 
         if (!empty($GLOBALS['DP_CONFIG']['debug']['mail']['force_to'])) {
-            $this->logger->debug(sprintf('[%s] Mailer: force_to = %s', date('Y-m-d H:i:s'), $GLOBALS['DP_CONFIG']['debug']['mail']['force_to']));
+            $this->logger->debug(
+                sprintf('[%s] Mailer: force_to = %s', date('Y-m-d H:i:s'), $GLOBALS['DP_CONFIG']['debug']['mail']['force_to']),
+                array('mailer' => $this, 'stage' => 'init')
+            );
             $this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress($GLOBALS['DP_CONFIG']['debug']['mail']['force_to']));
         }
     }

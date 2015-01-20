@@ -32,11 +32,12 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\SwiftMailer\SourceMapper;
+namespace Application\EmailBundle\SourceMapper;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\DBAL\Connection;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
+use Application\EmailBundle\Log\LogCollectorInterface;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
@@ -54,6 +55,11 @@ class DatabaseSourceMapper implements SourceMapperInterface
     private $bs;
 
     /**
+     * @var LogCollectorInterface|null
+     */
+    private $log_collector;
+
+    /**
      * @var EmailAccountManager
      */
     private $email_accounts;
@@ -62,11 +68,13 @@ class DatabaseSourceMapper implements SourceMapperInterface
      * @param Connection $db
      * @param DeskproBlobStorage $bs
      * @param EmailAccountManager $email_accounts
+     * @param LogCollectorInterface $log_collector
      */
-    public function __construct(Connection $db, DeskproBlobStorage $bs, EmailAccountManager $email_accounts)
+    public function __construct(Connection $db, DeskproBlobStorage $bs, EmailAccountManager $email_accounts, LogCollectorInterface $log_collector = null)
     {
         $this->db = $db;
         $this->bs = $bs;
+        $this->log_collector = $log_collector;
         $this->email_accounts = $email_accounts;
     }
 
@@ -343,18 +351,34 @@ class DatabaseSourceMapper implements SourceMapperInterface
     /**
      * @param array $source
      * @param string $log_text
+     * @return array
+     */
+    public function setLogText(array $source, $log_text = '')
+    {
+        $new_source = $source;
+
+        if ($this->appendLogText($new_source, $log_text)) {
+            $this->updateSourceRow($source, $new_source);
+        }
+
+        return $new_source;
+    }
+
+    /**
+     * @param array $source
+     * @param string $log_text
      * @return void
      */
     private function appendLogText(&$source, $log_text)
     {
-        if (!$log_text) {
-            return;
-        }
-
         $log_text = trim($log_text);
 
+        if ($this->log_collector && !empty($source['id']) && $source['id']) {
+            $log_text = trim($this->log_collector->getLogForMessage($source['id']) . "\n" . $log_text);
+        }
+
         if (!$log_text) {
-            return;
+            return false;
         }
 
         $exist_log = "";
@@ -382,6 +406,8 @@ class DatabaseSourceMapper implements SourceMapperInterface
         }
 
         $source['log_blob_id'] = $new_log_blob['id'];
+
+        return true;
     }
 
     /**

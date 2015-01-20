@@ -10,7 +10,7 @@ $container->loadFromExtension('monolog', array(
     'handlers' => array(
         'main' => array(
             'type' => 'stream',
-            'path' => "@=container.getLogDir() ~ '/deskpro.log'"
+            'path' => '%kernel.logs_dir%/deskpro.log'
         )
     )
 ));

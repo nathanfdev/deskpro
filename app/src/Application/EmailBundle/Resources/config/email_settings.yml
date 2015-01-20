@@ -3,16 +3,19 @@ services:
     class: Application\EmailBundle\SwiftMailer\Mailer
     arguments: [@swiftmailer.mailer.default.transport, @email.message_factory, @logger]
     tags:
-      - { name: monolog.logger, channel: dp.email.outgoing }
+      - { name: monolog.logger, channel: dp.email.out.mailer }
 
   swiftmailer.mailer.default.transport:
-    class: Application\EmailBundle\Mail\Transport\DeskproTransport
-    arguments: [@email.source_mapper, @email.email_account_manager, @swiftmailer.mailer.default.transport.real, @swiftmailer.mailer.default.transport.eventdispatcher, @logger]
+    class: Application\EmailBundle\SwiftMailer\Transport\DeskproTransport
+    arguments: [@email.source_mapper, @email.email_account_manager, @swiftmailer.mailer.default.transport.eventdispatcher, @logger]
     tags:
-      - { name: monolog.logger, channel: dp.email.outgoing }
+      - { name: monolog.logger, channel: dp.email.out.transport }
+
+  email.log_collector:
+    class: Application\EmailBundle\Log\LogCollector
 
   email.message_factory:
-    class: Application\EmailBundle\Mail\Message\MessageFactory
+    class: Application\EmailBundle\SwiftMailer\Message\MessageFactory
     arguments: [@templating]
 
   email.email_account_manager:
@@ -28,8 +31,8 @@ services:
     arguments: [@service_container]
 
   email.source_mapper:
-    class: Application\EmailBundle\Mail\SourceMapper\DatabaseSourceMapper
-    arguments: [@database_connection, @deskpro.blob_storage, @email.email_account_manager]
+    class: Application\EmailBundle\SourceMapper\DatabaseSourceMapper
+    arguments: [@database_connection, @deskpro.blob_storage, @email.email_account_manager, @email.log_collector]
 
   email.source_sender:
       class: Application\EmailBundle\Queue\SourceSender

@@ -273,6 +273,11 @@ $container->loadFromExtension('monolog', array(
     'handlers' => array(
         'main' => array(
             'type' => 'null'
+        ),
+        'email_log_collector' => array(
+            'type' => 'service',
+            'id' => 'email.log_collector',
+            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport')
         )
     )
 ));

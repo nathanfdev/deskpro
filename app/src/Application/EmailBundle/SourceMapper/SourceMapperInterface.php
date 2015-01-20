@@ -32,8 +32,7 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\SwiftMailer\SourceMapper;
-use Application\DeskPRO\Entity\EmailAccount;
+namespace Application\EmailBundle\SourceMapper;
 
 /**
  * Handles saving/fetching sources. NOTE: mappers work on ARRAYs, not entities.
@@ -104,4 +103,11 @@ interface SourceMapperInterface
      * @return mixed
      */
     public function setSourceProcessing(array $source);
+
+    /**
+     * @param array $source
+     * @param string $log_text
+     * @return array
+     */
+    public function setLogText(array $source, $log_text = '');
 }

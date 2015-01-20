@@ -73,8 +73,6 @@ class TestCommand extends ContainerAwareCommand
 
         $mailer->send($message);
 
-        echo $mailer->getLastLog();
-
         return 0;
     }
 }

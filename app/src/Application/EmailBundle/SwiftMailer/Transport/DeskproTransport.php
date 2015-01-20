@@ -36,7 +36,7 @@ namespace Application\EmailBundle\SwiftMailer\Transport;
 
 use Application\DeskPRO\BlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
-use Application\EmailBundle\SwiftMailer\SourceMapper\SourceMapperInterface;
+use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Orb\Util\Arrays;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
@@ -92,6 +92,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         }
 
         if ($from = Arrays::kvpairs($message->getFrom())) {
+            $from = $from[0];
             $this->logger->debug(sprintf("[Before processing] From: Name = %s, Email = <%s>", $from[1], $from[0]));
         } else {
             $this->logger->debug("[Before processing] From is empty");
@@ -106,6 +107,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
         }
 
         if ($from = Arrays::kvpairs($message->getFrom())) {
+            $from = $from[0];
             $this->logger->debug(sprintf("From: Name = %s, Email = <%s>", $from[1], $from[0]));
         } else {
             $this->logger->debug("From is empty");
@@ -122,7 +124,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
      */
     public function isStarted()
     {
-        return $this->transport->isStarted();
+
     }
 
 
@@ -131,7 +133,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
      */
     public function start()
     {
-        return $this->transport->start();
+
     }
 
 
@@ -140,7 +142,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
      */
     public function stop()
     {
-        return $this->transport->stop();
+
     }
 
 
@@ -154,9 +156,10 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     public function queueMessage(Swift_Mime_Message $message, \DateTime $send_date = null)
     {
         $this->preprocessMessage($message);
-        $r = $this->source_mapper->createSourceForMessage($message, 'pending', $send_date);
 
-        $this->logger->info(sprintf('[%s] Message %d queued as pending -- %s', $message->getId(), $r['id'], $r['ref']), array('mail_message' => $message));
+        $r = $this->source_mapper->createSourceForMessage($message, 'pending', $send_date);
+        $this->logger->info(sprintf('Message %d queued as pending', $r['id']), array('source_id' => $r['id'], 'message_done' => true));
+        $r = $this->source_mapper->setLogText($r);
 
         return $r['id'];
     }
@@ -171,9 +174,10 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     public function insertMessage(Swift_Mime_Message $message)
     {
         $this->preprocessMessage($message);
-        $r = $this->getOrCreateSource($message, 'inserted');
 
-        $this->logger->info(sprintf('[%s] Message %d queued as inserted -- %s', $message->getId(), $r['id'], $r['ref']), array('mail_message' => $message));
+        $r = $this->getOrCreateSource($message, 'inserted');
+        $this->logger->info(sprintf('Message %d queued as inserted', $r['id']), array('source_id' => $r['ref'], 'message_done' => true));
+        $r = $this->source_mapper->setLogText($r);
 
         return $r['id'];
     }
@@ -195,7 +199,8 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
             $this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
             if ($evt->bubbleCancelled()) {
                 $r = $this->source_mapper->createSourceForMessage($message, 'aborted');
-                $this->logger->info(sprintf('[%s] Message %d aborted -- %s', $message->getId(), $r['id'], $r['ref']), array('mail_message' => $message));
+                $this->logger->info(sprintf('Message %d aborted', $r['id']), array('source_id' => $r['ref'], 'message_done' => true));
+                $r = $this->source_mapper->setLogText($r);
                 return 0;
             }
         }
