@@ -36,6 +36,8 @@ namespace Application\FormBundle\Form\Type;
 
 
 use Application\DeskPRO\Entity\Feedback;
+use Application\FormBundle\Captcha\CaptchaDecider;
+use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
@@ -44,6 +46,16 @@ use Symfony\Component\OptionsResolver\OptionsResolverInterface;
 
 class NewFeedbackType extends AbstractType
 {
+    /**
+     * @var CaptchaDecider
+     */
+    private $captcha_decider;
+
+    public function __construct(CaptchaDecider $captcha_decider)
+    {
+        $this->captcha_decider = $captcha_decider;
+    }
+
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder->add('title', 'text');
@@ -51,6 +63,24 @@ class NewFeedbackType extends AbstractType
         $builder->add('category', 'feedback_category', array(
             'person' => $options['person']
         ));
+
+        $builder->add('attachments', 'feedback_attachment_collection', array(
+            'person' => $options['person']
+        ));
+        $builder->add('more_attachments', 'submit', array(
+            'validation_groups' => false,
+            'label' => 'Add Another Attachment'
+        ));
+
+        if ($this->captcha_decider->shouldRequireContentCaptchaForCurrentUser()) {
+            $builder->add('captcha', 'deskpro_captcha', array(
+                'mapped' => false,
+                'error_bubbling' => false,
+                'constraints' => array(
+                    new ValidCaptcha()
+                )
+            ));
+        }
     }
 
     public function setDefaultOptions(OptionsResolverInterface $resolver)

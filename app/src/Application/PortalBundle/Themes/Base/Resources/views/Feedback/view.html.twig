@@ -42,6 +42,21 @@
                         {% endif %}
                     </ul>
                 </div>
+
+                <div class="attached">
+                    {% if item.attachments|length > 0 %}
+                        <h3>Attachements:</h3>
+                        {% for attachment in item.attachments %}
+                            <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
+                                {% if attachment.blob.is_image %}
+                                    <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
+                                {% endif %}
+                                {{ attachment.blob.filename }}
+                                <span class="attachement-size">{{ attachment.blob.filesize }} bytes </span>
+                            </a><br>
+                        {% endfor %}
+                    {% endif %}
+                </div>
             </div>
             <!-- End feedback-item-content -->
         </div>

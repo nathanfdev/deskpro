@@ -2,6 +2,7 @@
 <div class="feedback-form">
     <form class="main-input">
         <span>I have a:</span>
+        {{ form_errors(form.category) }}
         {{ form_widget(form.category) }}
         <a href="#" class="button">Start</a>
 </div>
@@ -18,34 +19,43 @@
 
         <div class="bucket">
             <label>Title:</label>
+            {{ form_errors(form.title) }}
             {{ form_widget(form.title, { placeholder: 'A one-sentance summary' }) }}
         </div>
 
         <div class="bucket">
             <label>Tell us about your Feature Request</label>
+            {{ form_errors(form.content) }}
             {{ form_widget(form.content, { placeholder: 'More details...' } ) }}
         </div>
 
         <div class="new-ticket-attachements">
-            <a class="attach-file" href="#">Click to attach a file (or just drag &amp; drop a file here)</a>
+            {#<a class="attach-file" href="#">Click to attach a file (or just drag &amp; drop a file here)</a>#}
 
-            <div class="title">Attached files:</div>
-            <ul>
-                <li>
-                    <a href="#">Screen Shot 2014-09-30 at 6.14.15 PM.png</a><span
-                            class="file-size">(245kb)</span>
-                    <a class="remove-attachement" href="#"><i class="fa fa-times"></i>Remove</a>
-                </li>
+            <div class="title">Attach files:</div>
+            {{ form_errors(form.attachments) }}
+            {{ form_widget(form.attachments) }}
+            {{ form_widget(form.more_attachments) }}
+            {#<ul>#}
+                {#<li>#}
+                    {#<a href="#">Screen Shot 2014-09-30 at 6.14.15 PM.png</a><span#}
+                            {#class="file-size">(245kb)</span>#}
+                    {#<a class="remove-attachement" href="#"><i class="fa fa-times"></i>Remove</a>#}
+                {#</li>#}
 
-                <li>
-                    <a href="#">a_doc_file.doc</a><span class="file-size">(84kb)</span>
-                    <a class="remove-attachement" href="#"><i class="fa fa-times"></i>Remove</a>
-                </li>
-            </ul>
+                {#<li>#}
+                    {#<a href="#">a_doc_file.doc</a><span class="file-size">(84kb)</span>#}
+                    {#<a class="remove-attachement" href="#"><i class="fa fa-times"></i>Remove</a>#}
+                {#</li>#}
+            {#</ul>#}
         </div>
 
+        {% if form.captcha is defined %}
+            {{ form_errors(form.captcha) }}
+            {{ form_widget(form.captcha) }}
+        {% endif %}
 
-        <div class="bucket">
+        <div class="bucket" style="margin-top: 30px;">
             <input class="button" type="submit" value="Add your feedback">
         </div>
 </div>

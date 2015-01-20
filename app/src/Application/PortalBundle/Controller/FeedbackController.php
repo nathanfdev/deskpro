@@ -81,15 +81,23 @@ class FeedbackController extends AbstractController
         ));
         $form->handleRequest($request);
         if ($form->isValid()) {
+            if (
+                !$form->getClickedButton()
+                ||
+                (
+                    $form->getClickedButton()
+                    && $form->getClickedButton()->getConfig()->getName() !== "more_attachments"
+                )
+            ) {
+                $default_status_category_id = $this->getBrandSetting('portal.default_feedback_status_category_id');
+                $default_status_category = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
+                $new_feedback->setStatusCategory($default_status_category);
+                $new_feedback->setPerson($this->getUser());
 
-            $default_status_category_id = $this->getBrandSetting('portal.default_feedback_status_category_id');
-            $default_status_category = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
-            $new_feedback->setStatusCategory($default_status_category);
-            $new_feedback->setPerson($this->getUser());
+                $this->persistAndFlushEntity($new_feedback);
 
-            $this->persistAndFlushEntity($new_feedback);
-
-            return $this->redirectToRoute('portal_feedback_view', array('slug' => $new_feedback->getSlug()));
+                return $this->redirectToRoute('portal_feedback_view', array('slug' => $new_feedback->getSlug()));
+            }
         }
 
 

@@ -42,8 +42,22 @@ services:
 
   form.new_feedback:
     class: Application\FormBundle\Form\Type\NewFeedbackType
+    arguments: [@captcha_decider]
     tags:
       - { name: form.type, alias: new_feedback }
+
+
+  form.feedback_attachment:
+    class: Application\FormBundle\Form\Type\FeedbackAttachmentType
+    arguments: [@blob.storage]
+    tags:
+      - { name: form.type, alias: feedback_attachment }
+
+
+  form.feedback_attachment_collection:
+    class: Application\FormBundle\Form\Type\FeedbackAttachmentCollectionType
+    tags:
+      - { name: form.type, alias: feedback_attachment_collection }
 
 
   form.feedback_category:
