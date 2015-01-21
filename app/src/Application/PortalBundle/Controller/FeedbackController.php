@@ -39,6 +39,7 @@ use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\People\PersonGuest;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -61,9 +62,20 @@ class FeedbackController extends AbstractController
         // RSS
         //
         if ('rss' === $_format) {
+            $status = $request->query->get('status', 'all');
+            $status_categories = $request->query->get('status_categories', array());
+            $types = $request->query->get('types', array());
+            $sort = $request->query->get('sort', 'date');
+            $sort_direction = $request->query->get('sort_direction', 'desc');
+
             $pager = $this->getFeedbackDataService()->getItemsPager(
                 $page,
-                $per_page
+                $per_page,
+                $status,
+                $status_categories,
+                $types,
+                $sort,
+                $sort_direction
             );
 
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
@@ -94,6 +106,7 @@ class FeedbackController extends AbstractController
                 )
             ) {
                 $new_feedback->setStatusCategory($this->getDefaultStatusCategory());
+                $new_feedback->setStatus(Feedback::STATUS_ACTIVE);
 
                 // deal with guests via negotiating with PersonFactory
                 if ($person instanceof PersonGuest) {
@@ -113,6 +126,42 @@ class FeedbackController extends AbstractController
                 return $this->redirectToRoute('portal_feedback_view', array('slug' => $new_feedback->getSlug()));
             }
         }
+
+
+        //
+        // RENDER THEME
+        //
+        return $this->renderThemeView(
+            'Theme:Feedback:index.html.twig',
+            array(
+                'page' => $page,
+                'count' => $per_page,
+                'show_pagination' => true,
+                'form' => $form->createView(),
+                'user' => $this->getUser()
+            )
+        );
+    }
+
+    /**
+     * @Route("/feedback/browse/{query_path}", name="portal_feedback_browse", defaults={"query_path":""}, requirements={"query_path":".*"})
+     * @Method("GET")
+     * @Security("is_granted('USE_FEEDBACK')")
+     */
+    public function browseAction(Request $request, $query_path)
+    {
+        $page = $request->query->get('page', 1);
+        $per_page = $request->query->get('per_page', 5); // TODO: brand setting?
+
+
+        // setup and render an initial form that posts to /feedback
+        $person = $this->getUser() ?: new PersonGuest();
+        $new_feedback = new Feedback();
+        $new_feedback->setPerson($person);
+        $form = $this->createForm('new_feedback', $new_feedback, array(
+            'person' => $person,
+            'action' => $this->generateUrl('portal_feedback')
+        ));
 
 
         //

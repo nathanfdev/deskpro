@@ -57,10 +57,18 @@ class FeedbackController extends AbstractController
      *      defaults={
      *          "style": "row",
      *          "count": 2,
-     *          "page": 1
+     *          "page": 1,
+     *          "status": "all",
+     *          "status_categories": {},
+     *          "types": {},
+     *          "sort": "date",
+     *          "sort_direction": "desc"
      *      },
      *      allowed_values={
-     *          "style": {"list","row"}
+     *          "style": {"list", "row"},
+     *          "sort": {"date", "popular", "rating", "comments", "viewed"},
+     *          "sort_direction": {"desc", "asc"},
+     *          "status": {"all","active","closed"}
      *      }
      * )
      *
@@ -68,7 +76,15 @@ class FeedbackController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
-        $pager = $this->getFeedbackDataService()->getItemsPager($options['page'], $options['count']);
+        $pager = $this->getFeedbackDataService()->getItemsPager(
+            $options['page'],
+            $options['count'],
+            $options['status'],
+            $options['status_categories'],
+            $options['types'],
+            $options['sort'],
+            $options['sort_direction']
+        );
 
         return $this->renderThemeView(
             sprintf('Theme:Feedback:Tag/items_%s.html.twig', $options['style']),
@@ -85,8 +101,18 @@ class FeedbackController extends AbstractController
      *      defaults={
      *          "show_pagination": true,
      *          "count": 2,
-     *          "page": 1
+     *          "page": 1,
+     *          "status": "all",
+     *          "status_categories": {},
+     *          "types": {},
+     *          "sort": "date",
+     *          "sort_direction": "desc"
      *      },
+     *      allowed_values={
+     *          "sort": {"date", "popular", "rating", "comments", "viewed"},
+     *          "sort_direction": {"desc", "asc"},
+     *          "status": {"all","active","closed"}
+     *      }
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
@@ -97,7 +123,15 @@ class FeedbackController extends AbstractController
             return new Response('');
         }
 
-        $pager = $this->getFeedbackDataService()->getItemsPager($options['page'], $options['count']);
+        $pager = $this->getFeedbackDataService()->getItemsPager(
+            $options['page'],
+            $options['count'],
+            $options['status'],
+            $options['status_categories'],
+            $options['types'],
+            $options['sort'],
+            $options['sort_direction']
+        );
 
         return $this->renderThemeView(
             'Theme:Common:pager.html.twig',

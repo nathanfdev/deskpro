@@ -46,6 +46,7 @@ use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
 class FeedbackDataService
@@ -61,17 +62,74 @@ class FeedbackDataService
     }
 
     /**
-     * @param $page
-     * @param $max_per_page
+     * @param int $page
+     * @param int $max_per_page
+     * @param string $status
+     * @param array $status_categories
+     * @param array $types
+     * @param string $sort
+     * @param string$sort_direction
      * @return Pagerfanta
      */
-    public function getItemsPager($page, $max_per_page)
+    public function getItemsPager($page, $max_per_page, $status, $status_categories, $types, $sort, $sort_direction)
     {
-        // TODO: this needs to be a full blown search with filters
-        $items = new ArrayCollection($this->getItemsRepo()->findAll());
+        // TODO: two tags use this on the same request (list, and pager). So, need to hash the inputs and
+        // keep the computed $pager in memory for cases of asking for the exact same pager twice.
 
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($items));
+        $qb = $this->em->createQueryBuilder();
+        $qb->select('f')->from('DeskPRO:Feedback', 'f');
+
+        // status
+        // "all","active","closed"
+        switch ($status) {
+            case 'all':
+                $valid_status = array(Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED);
+                break;
+            case 'active':
+                $valid_status = array(Feedback::STATUS_ACTIVE);
+                break;
+            case 'closed':
+                $valid_status = array(Feedback::STATUS_CLOSED);
+                break;
+            default:
+                $valid_status = array();
+        }
+        $qb->where('f.status IN (:valid_status)')->setParameter('valid_status', $valid_status);
+
+        // status_categories (feedback->status_category)
+        // array(6,1,4)
+        if (count($status_categories)) {
+            $qb->andWhere('f.status_category IN (:status_categories)')->setParameter('status_categories', $status_categories);
+        }
+
+        // types
+        // array(1,3,5) $feedback->category
+        if (count($types)) {
+            $qb->andWhere('f.category IN (:types)')->setParameter('types', $types);
+        }
+
+        // sort
+        // "popular", "rating", "comments", "viewed", "date"
+        switch ($sort) {
+            case 'popular':
+            case 'rating':
+                $sort_string = 'f.total_rating';
+                break;
+            case 'comments':
+                $sort_string = 'f.num_comments';
+                break;
+            case 'viewed':
+                $sort_string = 'f.view_count';
+                break;
+            default:
+                $sort_string = 'f.date_created';
+        }
+
+        // sort direction
+        // "desc" or "asc"
+        $qb->orderBy($sort_string, $sort_direction);
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
         $pager->setMaxPerPage($max_per_page);
         $pager->setCurrentPage($page);
 

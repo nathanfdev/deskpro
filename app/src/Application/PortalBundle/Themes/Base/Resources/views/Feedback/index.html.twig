@@ -15,7 +15,7 @@
 
     {% include 'Theme:Feedback:form.html.twig' %}
     {% include 'Theme:Feedback:controls.html.twig' %}
-    {{ page.feedback_items({ count: count, page: pg })|raw }}
+    {{ page.feedback_items()|raw }}
 </article>
     {{ page.feedback_pager()|raw }}
 {% endblock inner_content %}
