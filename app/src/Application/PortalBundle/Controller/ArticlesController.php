@@ -163,7 +163,8 @@ class ArticlesController extends AbstractController
             $new_comment_form->handleRequest($request);
             if ($new_comment_form->isValid()) {
                 $article->addComment($comment);
-                $this->persistAndFlushEntity($comment);
+                $this->getEm()->persist($comment);
+                $this->getEm()->flush($comment, $article);
 
                 return $this->redirectToRoute('portal_kb_view', array('slug' => $article->getSlug()));
             }

@@ -173,6 +173,13 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $this->categories->contains($cat);
     }
 
+    public function addComment($comment)
+    {
+        parent::addComment($comment);
+        $this->setModelField('date_last_comment', new \DateTime());
+    }
+
+
     public function addToCategory(ArticleCategory $cat)
     {
         $this->categories->add($cat);

@@ -180,7 +180,8 @@ class NewsController extends AbstractController
             $new_comment_form->handleRequest($request);
             if ($new_comment_form->isValid()) {
                 $post->addComment($comment);
-                $this->persistAndFlushEntity($comment);
+                $this->getEm()->persist($comment);
+                $this->getEm()->flush($comment, $post);
 
                 return $this->redirectToRoute('portal_news_view', array('slug' => $post->getSlug()));
             }

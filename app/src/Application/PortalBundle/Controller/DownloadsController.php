@@ -181,7 +181,8 @@ class DownloadsController extends AbstractController
             $new_comment_form->handleRequest($request);
             if ($new_comment_form->isValid()) {
                 $file->addComment($comment);
-                $this->persistAndFlushEntity($comment);
+                $this->getEm()->persist($comment);
+                $this->getEm()->flush($comment, $file);
 
                 return $this->redirectToRoute('portal_downloads_view', array('slug' => $file->getSlug()));
             }

@@ -61,33 +61,33 @@ class PortalRatingsHelper
 
     public function rateContentUp(ContentAbstract $content, $visitor_id, Person $person = null)
     {
-        $content_rating = $this->getPersistedOrNewRating($content, $visitor_id, $person);
+        $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, false);
 
-        $content_rating->rateUp();
-
-        $this->em->flush($content_rating);
+        $this->em->persist($content_rating);
+        $this->em->flush(array($content_rating, $content));
 
         return $content_rating;
     }
 
     public function rateContentDown(ContentAbstract $content, $visitor_id, Person $person = null)
     {
-        $content_rating = $this->getPersistedOrNewRating($content, $visitor_id, $person);
+        $content_rating = $this->updatePersistedOrCreateNewRating($content, $visitor_id, $person, true);
 
-        $content_rating->rateDown();
-
-        $this->em->flush($content_rating);
+        $this->em->persist($content_rating);
+        $this->em->flush(array($content_rating, $content));
 
         return $content_rating;
     }
 
-    public function getPersistedOrNewRating(ContentAbstract $content, $visitor_id, $person)
+    public function updatePersistedOrCreateNewRating(ContentAbstract $content, $visitor_id, $person, $down = false)
     {
         if ($person && $content_rating = $this->findPersonRating($content, $person)) {
+            $this->changeExistingRating($content, $content_rating, $down);
             return $content_rating;
         }
 
         if (!$person && $content_rating = $this->findVisitorRating($content, $visitor_id)) {
+            $this->changeExistingRating($content, $content_rating, $down);
             return $content_rating;
         }
 
@@ -96,6 +96,11 @@ class PortalRatingsHelper
         $content_rating->setPerson($person);
         $content_rating->setVisitorId($visitor_id);
         $content_rating->setIpAddress($this->request_stack->getMasterRequest()->getClientIp());
+        if ($down) {
+            $content_rating->rateDown();
+        } else {
+            $content_rating->rateUp();
+        }
         $content->addRating($content_rating);
 
         $this->em->persist($content_rating);
@@ -103,6 +108,11 @@ class PortalRatingsHelper
         return $content_rating;
     }
 
+    /**
+     * @param ContentAbstract $content
+     * @param Person $person
+     * @return Rating|null
+     */
     public function findPersonRating(ContentAbstract $content, Person $person = null)
     {
         if (!$person) {
@@ -128,6 +138,11 @@ class PortalRatingsHelper
         return null;
     }
 
+    /**
+     * @param ContentAbstract $content
+     * @param $visitor_id
+     * @return Rating|null
+     */
     public function findVisitorRating(ContentAbstract $content, $visitor_id)
     {
         if (!$visitor_id) {
@@ -156,5 +171,25 @@ class PortalRatingsHelper
     public function getPersonRating(ContentAbstract $content, Person $person = null)
     {
         return $this->findPersonRating($content, $person);
+    }
+
+    /**
+     * @param ContentAbstract $content
+     * @param $content_rating
+     * @param $down
+     */
+    private function changeExistingRating(ContentAbstract $content, Rating $content_rating, $down)
+    {
+        if ($down) {
+            if ($content_rating->getRating() > 0) {
+                $content->markRatingChangedNegatively();
+            }
+            $content_rating->rateDown();
+        } else {
+            if ($content_rating->getRating() < 0) {
+                $content->markRatingChangedPositivly();
+            }
+            $content_rating->rateUp();
+        }
     }
 }

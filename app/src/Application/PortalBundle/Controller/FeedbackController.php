@@ -232,7 +232,8 @@ class FeedbackController extends AbstractController
             $new_comment_form->handleRequest($request);
             if ($new_comment_form->isValid()) {
                 $item->addComment($comment);
-                $this->persistAndFlushEntity($comment);
+                $this->getEm()->persist($comment);
+                $this->getEm()->flush($comment, $item);
 
                 return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
             }

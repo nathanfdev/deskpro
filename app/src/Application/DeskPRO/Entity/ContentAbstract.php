@@ -404,6 +404,17 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $stats['down'];
     }
 
+    public function markRatingChangedPositivly()
+    {
+        // 2 to override the -1 when the neg rating was added
+        $this['total_rating'] = $this->total_rating + 2;
+    }
+
+    public function markRatingChangedNegatively()
+    {// 2 to override the -1 when the positive rating was added
+        $this['total_rating'] = $this->total_rating - 2;
+    }
+
     public function getRatingPercent()
     {
         if (!$this->num_ratings) {
@@ -428,13 +439,13 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
     public function addComment($comment)
     {
-        $this->num_comments++;
+        $this->setModelField('num_comments', $this->num_comments + 1);
         $comment->setObject($this);
     }
 
     public function removeComment($comment)
     {
-        $this->num_comments--;
+        $this->setModelField('num_comments', $this->num_comments - 1);
     }
 
     /**

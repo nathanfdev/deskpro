@@ -202,4 +202,12 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     abstract public function setContentObject($obj);
+
+    /**
+     * @return string
+     */
+    public function getRating()
+    {
+        return $this->rating;
+    }
 }
