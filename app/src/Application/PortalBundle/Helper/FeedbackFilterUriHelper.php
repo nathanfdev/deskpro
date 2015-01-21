@@ -50,6 +50,10 @@ class FeedbackFilterUriHelper
         $segments = explode('/', $filter_uri);
 
         foreach ($segments as $segment) {
+            if (!strlen($segment)) {
+                continue;
+            }
+
             if ($this->isStatus($segment)) {
                 $parts = explode('-', $segment);
 
@@ -76,6 +80,8 @@ class FeedbackFilterUriHelper
                 if (isset($parts[1])) {
                     $filter->setSortDirection($parts[1]);
                 }
+            } else {
+                throw new \InvalidArgumentException('could not parse feedback uri segment "'.$segment.'"');
             }
         }
 

@@ -164,6 +164,15 @@ class FeedbackFilterUriHelperTest extends \DpUnitTestCase
         $this->assertEquals($expected, $filter->toArray());
     }
 
+    public function testExceptionOnInvalidSegment()
+    {
+        $helper = new FeedbackFilterUriHelper();
+
+        $this->setExpectedException('\InvalidArgumentException');
+
+        $filter = $helper->extractFeedbackFilter('/doesnt-make-sense');
+    }
+
 
 
     //
