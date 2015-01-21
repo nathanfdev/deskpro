@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\RecordMapper;
 
-use Application\ImportBundle\Generator\Mapper\MapperInterface;
+use Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper\MapperInterface;
 use Doctrine\DBAL\Connection;
 
 /**

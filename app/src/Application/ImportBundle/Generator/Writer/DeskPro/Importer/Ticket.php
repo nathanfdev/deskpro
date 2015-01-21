@@ -25,34 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Generator writer interface
+ * DeskPro ticket importer
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class Ticket
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+final class Ticket extends AbstractImporter
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_TICKET;
+    }
 
     /**
-     * Returns the writer type
-     *
-     * @return string
+     * @param Entity\Ticket $ticket
      */
-    public function getType();
+    public function importEntity(Entity\Ticket $ticket)
+    {
 
-    /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
-     */
-    public function writeData(EntityInterface $entity);
+    }
 }

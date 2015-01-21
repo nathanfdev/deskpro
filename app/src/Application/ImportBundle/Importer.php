@@ -35,7 +35,7 @@ use Application\ImportBundle\Exception\MultipleMappingException;
 use Application\ImportBundle\JsonReader\JsonReader;
 use Application\ImportBundle\JsonReader\JsonReaderInterface;
 use Application\ImportBundle\RecordMapper\CommonRecordMapper;
-use Application\ImportBundle\Generator\Mapper\MapperInterface;
+use Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper\MapperInterface;
 use Application\ImportBundle\RecordMapper\RecordMapperRegistry;
 use Application\ImportBundle\RecordMapper\TicketDepartmentRecordMapper;
 use Application\ImportBundle\RecordMapper\TicketStatusRecordMapper;

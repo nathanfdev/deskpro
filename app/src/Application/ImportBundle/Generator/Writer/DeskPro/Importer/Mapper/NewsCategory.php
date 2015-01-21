@@ -25,34 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 
 /**
- * Generator writer interface
+ * News category record mapper
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class NewsCategory
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class NewsCategory implements MapperInterface
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * @var EntityRepository\NewsCategory
+     */
+    private $repository;
 
     /**
-     * Returns the writer type
+     * Constructor
      *
-     * @return string
+     * @param EntityRepository\NewsCategory $repository
      */
-    public function getType();
+    public function __construct(EntityRepository\NewsCategory $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
+     * {@inheritdoc}
      */
-    public function writeData(EntityInterface $entity);
+    public function getType()
+    {
+        return self::TYPE_NEWS_CATEGORY;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findIdByValue($value)
+    {
+        /** @var Entity\NewsCategory $record */
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('News category `%s` not found', $value));
+        }
+
+        return $record->getId();
+    }
 }

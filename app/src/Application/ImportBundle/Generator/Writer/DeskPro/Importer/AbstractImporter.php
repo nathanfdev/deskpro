@@ -25,34 +25,28 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
-
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 /**
- * Generator writer interface
+ * Abstract DeskPro importer
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class AbstractImporter
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+abstract class AbstractImporter implements ImporterInterface
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * @var Mapper\Collection
+     */
+    protected $mappers;
 
     /**
-     * Returns the writer type
+     * Constructor
      *
-     * @return string
+     * @param Mapper\Collection $mappers
      */
-    public function getType();
-
-    /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
-     */
-    public function writeData(EntityInterface $entity);
+    public function __construct(Mapper\Collection $mappers)
+    {
+        $this->mappers = $mappers;
+    }
 }

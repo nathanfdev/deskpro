@@ -25,34 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 
 /**
- * Generator writer interface
+ * User group record mapper
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class UserGroup
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class UserGroup implements MapperInterface
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * @var EntityRepository\Usergroup
+     */
+    private $repository;
 
     /**
-     * Returns the writer type
+     * Constructor
      *
-     * @return string
+     * @param EntityRepository\Usergroup $repository
      */
-    public function getType();
+    public function __construct(EntityRepository\Usergroup $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
+     * {@inheritdoc}
      */
-    public function writeData(EntityInterface $entity);
+    public function getType()
+    {
+        return self::TYPE_USER_GROUP;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findIdByValue($value)
+    {
+        /** @var Entity\UserGroup $record */
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('User group `%s` not found', $value));
+        }
+
+        return $record->getId();
+    }
 }

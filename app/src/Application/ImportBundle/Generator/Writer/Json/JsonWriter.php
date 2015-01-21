@@ -57,6 +57,14 @@ final class JsonWriter extends AbstractWriter
     /**
      * {@inheritdoc}
      */
+    public function getType()
+    {
+        return self::TYPE_JSON;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function writeData(Entity\EntityInterface $entity)
     {
         if (!$this->config) {

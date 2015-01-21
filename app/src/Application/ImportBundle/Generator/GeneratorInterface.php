@@ -28,10 +28,9 @@
 namespace Application\ImportBundle\Generator;
 
 /**
- * Description of GeneratorInterface
+ * Generator interface
  *
- * Interface GeneratorPluginInterface
- * @author Abhinav Kumar <abhinav.kumar@deskpro.com>
+ * Interface GeneratorInterface
  * @package Application\ImportBundle\Generator
  */
 interface GeneratorInterface extends GeneratorConfigAwareInterface

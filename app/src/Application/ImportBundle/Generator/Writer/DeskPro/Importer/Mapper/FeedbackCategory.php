@@ -25,34 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 
 /**
- * Generator writer interface
+ * Feedback category record mapper
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class FeedbackCategory
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class FeedbackCategory implements MapperInterface
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * @var EntityRepository\FeedbackCategory
+     */
+    private $repository;
 
     /**
-     * Returns the writer type
+     * Constructor
      *
-     * @return string
+     * @param EntityRepository\FeedbackCategory $repository
      */
-    public function getType();
+    public function __construct(EntityRepository\FeedbackCategory $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
+     * {@inheritdoc}
      */
-    public function writeData(EntityInterface $entity);
+    public function getType()
+    {
+        return self::TYPE_FEEDBACK_CATEGORY;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findIdByValue($value)
+    {
+        /** @var Entity\FeedbackCategory $record */
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('Feedback category `%s` not found', $value));
+        }
+
+        return $record->getId();
+    }
 }

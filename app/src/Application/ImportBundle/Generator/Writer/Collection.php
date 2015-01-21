@@ -27,32 +27,23 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Generator writer interface
- *
- * Interface WriterInterface
+ * Class Collection
  * @package Application\ImportBundle\Generator\Writer
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class Collection extends AbstractCollection
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
-
     /**
-     * Returns the writer type
+     * Add a writer
      *
-     * @return string
+     * @param WriterInterface $writer
+     * @return $this
      */
-    public function getType();
-
-    /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
-     */
-    public function writeData(EntityInterface $entity);
+    public function attach(WriterInterface $writer)
+    {
+        $this->collection[] = $writer;
+        return $this;
+    }
 }

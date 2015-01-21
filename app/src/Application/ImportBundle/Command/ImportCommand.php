@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\ImporterCommandStatusCallback;
@@ -38,7 +34,11 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class ImportCommand extends ContainerAwareCommand
+/**
+ * Class ImportCommand
+ * @package Application\ImportBundle\Command
+ */
+class ImportCommand extends AbstractExportCommand
 {
     /**
      * {@inheritDoc}
@@ -49,14 +49,6 @@ class ImportCommand extends ContainerAwareCommand
         $this->setHelp("Executes the importer.");
         $this->addOption('data-path', null, InputOption::VALUE_REQUIRED, 'The path to the data directory containing your JSON files');
         $this->addOption('log-path', null, InputOption::VALUE_REQUIRED, 'A base path to write log data to. Defaults to a file in the default log directory.');
-    }
-
-    /**
-     * @return \Application\DeskPRO\DependencyInjection\DeskproContainer
-     */
-    protected function getContainer()
-    {
-        return parent::getContainer();
     }
 
     /**

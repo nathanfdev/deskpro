@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator;
 
-use Application\DeskPRO\EntityRepository;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
@@ -59,26 +58,28 @@ class GeneratorFactory
     public function createGenerator()
     {
         return new Generator(
-            $this->createJsonWriter(),
             $this->createExportersCollection(),
             $this->createValidatorsCollection(),
-            $this->createMappersCollection()
+            $this->createWritersCollection()
         );
     }
 
     /**
      * Create a json writer
      *
-     * @return Writer\Json\JsonWriter
+     * @return Writer\Collection
      */
-    public function createJsonWriter()
+    public function createWritersCollection()
     {
-        $mapping = new Writer\Json\Destination\Collection();
-        $mapping
-            ->attach(new Writer\Json\Destination\Person())
-            ->attach(new Writer\Json\Destination\Ticket());
+        $jsonFactory   =  new Writer\Json\JsonWriterFactory($this->container);
+        $deskProFactory = new Writer\DeskPro\DeskProWriterFactory($this->container);
 
-        return new Writer\Json\JsonWriter($mapping);
+        $writers = new Writer\Collection();
+        $writers
+            ->attach($jsonFactory->createWriter())
+            ->attach($deskProFactory->createWriter());
+
+        return $writers;
     }
 
     /**
@@ -118,77 +119,5 @@ class GeneratorFactory
             ->attach(new Validator\Ticket($validator));
 
         return $validators;
-    }
-
-    /**
-     * Returns a collection of record mappers
-     *
-     * @return Mapper\Collection
-     */
-    private function createMappersCollection()
-    {
-        /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
-        $doctrine = $this->container->get('doctrine');
-
-        /** @var EntityRepository\Article $articleRepository */
-        $articleRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Article');
-        /** @var EntityRepository\ArticleCategory $articleCategoryRepository */
-        $articleCategoryRepository = $doctrine->getRepository('Application\DeskPRO\Entity\ArticleCategory');
-        /** @var EntityRepository\CustomDefPerson $customDefPersonRepository */
-        $customDefPersonRepository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefPerson');
-        /** @var EntityRepository\CustomDefTicket $customDefTicketRepository */
-        $customDefTicketRepository = $doctrine->getRepository('Application\DeskPRO\Entity\CustomDefTicket');
-        /** @var EntityRepository\Department $departmentRepository */
-        $departmentRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Department');
-        /** @var EntityRepository\Download $downloadRepository */
-        $downloadRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Download');
-        /** @var EntityRepository\DownloadCategory $downloadCategoryRepository */
-        $downloadCategoryRepository = $doctrine->getRepository('Application\DeskPRO\Entity\DownloadCategory');
-        /** @var EntityRepository\Feedback $feedbackRepository */
-        $feedbackRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Feedback');
-        /** @var EntityRepository\FeedbackCategory $feedbackCategoryRepository */
-        $feedbackCategoryRepository = $doctrine->getRepository('Application\DeskPRO\Entity\FeedbackCategory');
-        /** @var EntityRepository\Language $languageRepository */
-        $languageRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Language');
-        /** @var EntityRepository\News $newsRepository */
-        $newsRepository = $doctrine->getRepository('Application\DeskPRO\Entity\News');
-        /** @var EntityRepository\NewsCategory $newsCategoryRepository */
-        $newsCategoryRepository = $doctrine->getRepository('Application\DeskPRO\Entity\NewsCategory');
-        /** @var EntityRepository\Organization $organizationRepository */
-        $organizationRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Organization');
-        /** @var EntityRepository\Person $personRepository */
-        $personRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Person');
-        /** @var EntityRepository\Product $productRepository */
-        $productRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Product');
-        /** @var EntityRepository\TicketCategory $ticketCategoryRepository */
-        $ticketCategoryRepository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketCategory');
-        /** @var EntityRepository\TicketWorkflow $ticketWorkflowRepository */
-        $ticketWorkflowRepository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketWorkflow');
-        /** @var EntityRepository\Usergroup $userGroupRepository */
-        $userGroupRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Usergroup');
-
-        $mappers = new Mapper\Collection();
-        $mappers
-            ->attach(new Mapper\Article($articleRepository))
-            ->attach(new Mapper\ArticleCategory($articleCategoryRepository))
-            ->attach(new Mapper\CustomDefPerson($customDefPersonRepository))
-            ->attach(new Mapper\CustomDefTicket($customDefTicketRepository))
-            ->attach(new Mapper\Department($departmentRepository))
-            ->attach(new Mapper\Download($downloadRepository))
-            ->attach(new Mapper\DownloadCategory($downloadCategoryRepository))
-            ->attach(new Mapper\Feedback($feedbackRepository))
-            ->attach(new Mapper\FeedbackCategory($feedbackCategoryRepository))
-            ->attach(new Mapper\Language($languageRepository))
-            ->attach(new Mapper\News($newsRepository))
-            ->attach(new Mapper\NewsCategory($newsCategoryRepository))
-            ->attach(new Mapper\Organization($organizationRepository))
-            ->attach(new Mapper\Person($personRepository))
-            ->attach(new Mapper\Product($productRepository))
-            ->attach(new Mapper\TicketCategory($ticketCategoryRepository))
-            ->attach(new Mapper\TicketDepartment($departmentRepository))
-            ->attach(new Mapper\TicketWorkflow($ticketWorkflowRepository))
-            ->attach(new Mapper\UserGroup($userGroupRepository));
-
-        return $mappers;
     }
 }

@@ -78,6 +78,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     {
         $config = new GeneratorConfig();
         $config
+            ->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON)
             ->addRecordType(GeneratorInterface::RECORD_TYPE_PERSON)
             ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKET);
 

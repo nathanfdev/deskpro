@@ -31,6 +31,12 @@
 
 namespace Application\ImportBundle\ArrayParser;
 
+/**
+ * Interface ArrayParserInterface
+ * @package Application\ImportBundle\ArrayParser
+ *
+ * @deprecated Use import generator instead
+ */
 interface ArrayParserInterface
 {
     /**

@@ -40,11 +40,26 @@ use Application\ImportBundle\Generator\Writer\AbstractWriter;
 class DeskProWriter extends AbstractWriter
 {
     /**
-     * Constructor
+     * @var Importer\Collection
      */
-    public function __construct()
-    {
+    private $importers;
 
+    /**
+     * Constructor
+     *
+     * @param Importer\Collection $importers
+     */
+    public function __construct(Importer\Collection $importers)
+    {
+        $this->importers = $importers;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_DESK_PRO;
     }
 
     /**
@@ -52,6 +67,11 @@ class DeskProWriter extends AbstractWriter
      */
     public function writeData(EntityInterface $entity)
     {
+        foreach ($this->importers as $importer) {
+            /** @var Importer\ImporterInterface $importer */
+            if ($entity->getType() === $importer->getEntityType()) {
 
+            }
+        }
     }
 }

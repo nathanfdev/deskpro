@@ -25,34 +25,56 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 
 /**
- * Generator writer interface
+ * Ticket department record mapper
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class TicketDepartment
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class TicketDepartment implements MapperInterface
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * @var EntityRepository\Department
+     */
+    private $repository;
 
     /**
-     * Returns the writer type
+     * Constructor
      *
-     * @return string
+     * @param EntityRepository\Department $repository
      */
-    public function getType();
+    public function __construct(EntityRepository\Department $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
+     * {@inheritdoc}
      */
-    public function writeData(EntityInterface $entity);
+    public function getType()
+    {
+        return self::TYPE_TICKET_DEPARTMENT;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findIdByValue($value)
+    {
+        /** @var Entity\Department $record */
+        $record = $this->repository->findOneBy(array('title' => $value));
+        if (!$record) {
+            throw new MapperException(sprintf('Ticket department `%s` not found', $value));
+        }
+        if ($record->isType('tickets') === false) {
+            throw new MapperException(sprintf('Department `%s` is not suite for tickets', $value));
+        }
+
+        return $record->getId();
+    }
 }

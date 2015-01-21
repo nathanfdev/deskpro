@@ -25,34 +25,47 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\AbstractCollection;
 
 /**
- * Generator writer interface
+ * Generator collection of mappers
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class Collection
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class Collection extends AbstractCollection
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * Add a record mapper
+     *
+     * @param MapperInterface $mapper
+     * @return $this
+     */
+    public function attach(MapperInterface $mapper)
+    {
+        $this->collection[] = $mapper;
+        return $this;
+    }
 
     /**
-     * Returns the writer type
+     * Returns mapper by type
      *
-     * @return string
+     * @param string $type
+     *
+     * @return MapperInterface
+     * @throws \Exception
      */
-    public function getType();
+    public function getMapperByType($type)
+    {
+        foreach ($this->collection as $mapper) {
+            /** @var MapperInterface $mapper */
+            if ($mapper->getType() === $type) {
+                return $mapper;
+            }
+        }
 
-    /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
-     */
-    public function writeData(EntityInterface $entity);
+        throw new \Exception(sprintf('Mapper `%s` not found', $type));
+    }
 }

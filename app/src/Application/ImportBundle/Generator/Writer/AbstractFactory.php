@@ -27,32 +27,26 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
- * Generator writer interface
- *
- * Interface WriterInterface
+ * Class AbstractFactory
  * @package Application\ImportBundle\Generator\Writer
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+abstract class AbstractFactory implements FactoryInterface
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * @var ContainerInterface
+     */
+    protected $container;
 
     /**
-     * Returns the writer type
+     * Constructor
      *
-     * @return string
+     * @param ContainerInterface $container
      */
-    public function getType();
-
-    /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
-     */
-    public function writeData(EntityInterface $entity);
+    public function __construct(ContainerInterface $container)
+    {
+        $this->container = $container;
+    }
 }

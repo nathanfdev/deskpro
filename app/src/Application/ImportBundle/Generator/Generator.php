@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Generator
- */
-
 namespace Application\ImportBundle\Generator;
 
 use Application\ImportBundle\Entity;
@@ -55,33 +51,25 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     private $validators;
 
     /**
-     * @var Writer\WriterInterface
+     * @var Writer\Collection
      */
-    private $outputWriter;
-
-    /**
-     * @var Mapper\Collection
-     */
-    private $mappers;
+    private $writers;
 
     /**
      * Constructor
      *
-     * @param Writer\WriterInterface $outputWriter
-     * @param Exporter\Collection    $exporters
-     * @param Validator\Collection   $validators
-     * @param Mapper\Collection      $mappers
+     * @param Exporter\Collection  $exporters
+     * @param Validator\Collection $validators
+     * @param Writer\Collection    $writers
      */
     public function __construct(
-        Writer\WriterInterface $outputWriter,
-        Exporter\Collection    $exporters,
-        Validator\Collection   $validators,
-        Mapper\Collection      $mappers
+        Exporter\Collection  $exporters,
+        Validator\Collection $validators,
+        Writer\Collection    $writers
     ) {
-        $this->outputWriter = $outputWriter;
-        $this->exporters    = $exporters;
-        $this->validators   = $validators;
-        $this->mappers      = $mappers;
+        $this->exporters  = $exporters;
+        $this->validators = $validators;
+        $this->writers    = $writers;
     }
 
     /**
@@ -104,6 +92,8 @@ class Generator extends AbstractGenerator implements GeneratorInterface
      */
     public function generate()
     {
+        $outputWriter = $this->getWriter();
+
         foreach ($this->config->getRecordTypes() as $type) {
             $collection = $this->getExportingCollectionByRecordType($type);
             $exceptions = $this->validateExportingCollection($type, $collection);
@@ -113,7 +103,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
 
             foreach ($collection as $entity) {
                 /** @var Entity\EntityInterface $entity */
-                $this->outputWriter
+                $outputWriter
                     ->setConfig($this->config)
                     ->writeData($entity);
             }
@@ -206,5 +196,27 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         }
 
         return $exceptions;
+    }
+
+    /**
+     * Returns a writer
+     *
+     * @return Writer\WriterInterface|mixed
+     * @throws Exception
+     */
+    private function getWriter()
+    {
+        if (!$this->config) {
+            throw new Exception('Generator configuration is not set up');
+        }
+
+        foreach ($this->writers as $writer) {
+            /** @var Writer\WriterInterface $writer */
+            if ($writer->getType() === $this->config->getWriterType()) {
+                return $writer;
+            }
+        }
+
+        throw new Exception(sprintf('Generator writer `%s` not found', $this->config->getExporterType()));
     }
 }

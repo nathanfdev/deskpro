@@ -27,32 +27,18 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
-
 /**
- * Generator writer interface
+ * Generator writer factory interface
  *
- * Interface WriterInterface
+ * Interface FactoryInterface
  * @package Application\ImportBundle\Generator\Writer
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+interface FactoryInterface
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
-
     /**
-     * Returns the writer type
+     * Returns a writer
      *
-     * @return string
+     * @return WriterInterface
      */
-    public function getType();
-
-    /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
-     */
-    public function writeData(EntityInterface $entity);
+    public function createWriter();
 }

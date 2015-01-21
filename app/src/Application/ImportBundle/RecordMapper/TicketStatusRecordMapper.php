@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\RecordMapper;
 
 use Application\ImportBundle\Entity\Ticket;
-use Application\ImportBundle\Generator\Mapper\MapperInterface;
+use Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper\MapperInterface;
 
 /**
  * Class TicketStatusRecordMapper

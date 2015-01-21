@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Generator;
 
 /**
@@ -43,6 +39,11 @@ class GeneratorConfig
      * @var string
      */
     private $exporter_type;
+
+    /**
+     * @var string
+     */
+    private $writer_type;
 
     /**
      * @var array
@@ -101,6 +102,24 @@ class GeneratorConfig
     public function setExporterType($exporter_type)
     {
         $this->exporter_type = $exporter_type;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getWriterType()
+    {
+        return $this->writer_type;
+    }
+
+    /**
+     * @param string $writer_type
+     * @return $this
+     */
+    public function setWriterType($writer_type)
+    {
+        $this->writer_type = $writer_type;
         return $this;
     }
 

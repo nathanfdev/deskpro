@@ -25,34 +25,53 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EntityRepository;
 
 /**
- * Generator writer interface
+ * Organization record mapper
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class Organization
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class Organization implements MapperInterface
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
+    /**
+     * @var EntityRepository\Organization
+     */
+    private $repository;
 
     /**
-     * Returns the writer type
+     * Constructor
      *
-     * @return string
+     * @param EntityRepository\Organization $repository
      */
-    public function getType();
+    public function __construct(EntityRepository\Organization $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
+     * {@inheritdoc}
      */
-    public function writeData(EntityInterface $entity);
+    public function getType()
+    {
+        return self::TYPE_ORGANIZATION;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findIdByValue($value)
+    {
+        /** @var Entity\Organization $organization */
+        $organization = $this->repository->findOneByName($value);
+        if (!$organization) {
+            throw new MapperException(sprintf('Organization `%s` not found', $value));
+        }
+
+        return $organization->getId();
+    }
 }

@@ -25,10 +25,6 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
-
 namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\ImporterFactory;
@@ -38,6 +34,10 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
+/**
+ * Class ResetCommand
+ * @package Application\ImportBundle\Command
+ */
 class ResetCommand extends ContainerAwareCommand
 {
     /**

@@ -25,34 +25,15 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer;
-
-use Application\ImportBundle\Entity\EntityInterface;
-use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
 /**
- * Generator writer interface
+ * Mapper exception
  *
- * Interface WriterInterface
- * @package Application\ImportBundle\Generator\Writer
+ * Class MapperException
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface WriterInterface extends GeneratorConfigAwareInterface
+class MapperException extends \Exception
 {
-    const TYPE_JSON     = 'json';
-    const TYPE_DESK_PRO = 'deskpro';
 
-    /**
-     * Returns the writer type
-     *
-     * @return string
-     */
-    public function getType();
-
-    /**
-     * Writes an entity to the storage
-     *
-     * @param EntityInterface $entity
-     * @return bool
-     */
-    public function writeData(EntityInterface $entity);
 }
