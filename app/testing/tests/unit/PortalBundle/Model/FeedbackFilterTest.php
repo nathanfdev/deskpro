@@ -32,42 +32,45 @@
  * @subpackage
  */
 
-namespace DpUnitTests\DeskPRO\PortalBundle\Visitor;
+namespace DpUnitTests\PortalBundle\Model;
 
-use Application\PortalBundle\Visitor\VisitorIdentificationProvider;
-use Psr\Log\NullLogger;
 
-class VisitorIdentificationProviderTest extends \DpUnitTestCase
+use Application\DeskPRO\Entity\Feedback;
+use Application\PortalBundle\Model\FeedbackFilter;
+
+class FeedbackFilterTest extends \DpUnitTestCase
 {
-    public function testGetIdentifierEvenIfNoCookie()
+    public function testDefaultFilter()
     {
-        $request_stack_mock = \Mockery::mock('Symfony\Component\HttpFoundation\RequestStack');
-        $request_mock = \Mockery::mock('Symfony\Component\HttpFoundation\Request');
-        $cookies_mock = \Mockery::mock('Symfony\Component\HttpFoundation\ParameterBag');
+        $filter = new FeedbackFilter();
 
-        $request_stack_mock->shouldReceive('getCurrentRequest')->andReturn($request_mock);
-        $request_mock->cookies = $cookies_mock;
-        $cookies_mock->shouldReceive('get')->with(VisitorIdentificationProvider::COOKIE_NAME)->andReturn(null);
-
-
-        $provider = new VisitorIdentificationProvider($request_stack_mock, new NullLogger());
-
-        $this->assertTrue(strlen($provider->getVisitorIdentifier())> 5, 'no cookie but has an identifier');
+        $this->assertEquals(FeedbackFilter::getDefaultValues(), $filter->toArray());
     }
 
-    public function testGetIdentifierWithSetCookie()
+    public function testInvalidStatus()
     {
-        $request_stack_mock = \Mockery::mock('Symfony\Component\HttpFoundation\RequestStack');
-        $request_mock = \Mockery::mock('Symfony\Component\HttpFoundation\Request');
-        $cookies_mock = \Mockery::mock('Symfony\Component\HttpFoundation\ParameterBag');
+        $filter = new FeedbackFilter();
 
-        $request_stack_mock->shouldReceive('getCurrentRequest')->andReturn($request_mock);
-        $request_mock->cookies = $cookies_mock;
-        $cookies_mock->shouldReceive('get')->with(VisitorIdentificationProvider::COOKIE_NAME)->andReturn('CNCPCT_CODE');
+        $this->setExpectedException('\InvalidArgumentException');
 
+        $filter->setStatus('invalid');
+    }
 
-        $provider = new VisitorIdentificationProvider($request_stack_mock, new NullLogger());
+    public function testInvalidSort()
+    {
+        $filter = new FeedbackFilter();
 
-        $this->assertEquals('CNCPCT_CODE', $provider->getVisitorIdentifier(), 'no cookie but has an identifier');
+        $this->setExpectedException('\InvalidArgumentException');
+
+        $filter->setSort('invalid');
+    }
+
+    public function testInvalidSortDirection()
+    {
+        $filter = new FeedbackFilter();
+
+        $this->setExpectedException('\InvalidArgumentException');
+
+        $filter->setSortDirection('invalid');
     }
 }
