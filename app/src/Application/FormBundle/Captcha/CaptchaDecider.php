@@ -75,6 +75,15 @@ class CaptchaDecider
         return $this->getBrandSetting('user.register_captcha');
     }
 
+    public function shouldRequireTicketCaptchaForCurrentUser()
+    {
+        if ($this->authorization_checker->isGranted('ROLE_USER')) {
+            return false;
+        }
+
+        return $this->getBrandSetting('user.register_captcha');
+    }
+
     public function getBrandSetting($setting, $default = null)
     {
         return $this->brand_stack->getActive()->getSetting($setting, $default);

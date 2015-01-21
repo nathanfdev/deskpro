@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\DeskPRO\TicketLayout\Layout;
 use Application\DeskPRO\TicketLayout\LayoutField;
+use Application\FormBundle\Captcha\CaptchaDecider;
 use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\Form\TicketFormContext;
 use Application\FormBundle\FormFields;
@@ -94,13 +95,19 @@ class TicketType extends AbstractType
      */
     private $language_manager;
 
+    /**
+     * @var CaptchaDecider
+     */
+    private $captcha_decider;
+
     public function __construct(
         FormFieldManager $field_manager,
         TicketLayoutFactory $ticket_layout_factory,
         TicketLayoutDiffer $layout_differ,
         HierarchyGenerator $hierarchy_generator,
         EntityManager $em,
-        LanguageManager $language_manager
+        LanguageManager $language_manager,
+        CaptchaDecider $captcha_decider
     )
     {
         $this->layout_differ = $layout_differ;
@@ -109,6 +116,7 @@ class TicketType extends AbstractType
         $this->hierarchy_generator = $hierarchy_generator;
         $this->em = $em;
         $this->language_manager = $language_manager;
+        $this->captcha_decider = $captcha_decider;
     }
 
     /**
@@ -614,6 +622,10 @@ class TicketType extends AbstractType
 
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)
     {
+        if (!$this->captcha_decider->shouldRequireTicketCaptchaForCurrentUser()) {
+            return;
+        }
+
         $options = array(
             'mapped' => false,
             'error_bubbling' => false,
