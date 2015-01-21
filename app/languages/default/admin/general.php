@@ -145,7 +145,7 @@
     'admin.general.time_x_year'                         => '1 year|{{count}} years',
     'admin.general.triggers'                            => 'Triggers',
     'admin.general.user_title_explain'                  => 'This is the title that will appear to users. You can leave this blank and users will see the same title as agents do.',
-    'admin.general.usergroup_perms'                     => 'User Group Permissions',
+    'admin.general.usergroup_perms'                     => 'Usergroup Permissions',
     'admin.general.username'                            => 'Username',
     'admin.general.variable_name'                       => 'Variable Name',
     'admin.general.view'                                => 'View',
