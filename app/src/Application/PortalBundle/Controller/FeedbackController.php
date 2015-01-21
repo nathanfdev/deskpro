@@ -144,11 +144,11 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Route("/feedback/browse/{query_path}", name="portal_feedback_browse", defaults={"query_path":""}, requirements={"query_path":".*"})
+     * @Route("/feedback/browse/{filter_uri}", name="portal_feedback_browse", defaults={"query_path":""}, requirements={"filter_uri":".*"})
      * @Method("GET")
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function browseAction(Request $request, $query_path)
+    public function browseAction(Request $request, $filter_uri)
     {
         $page = $request->query->get('page', 1);
         $per_page = $request->query->get('per_page', 5); // TODO: brand setting?
