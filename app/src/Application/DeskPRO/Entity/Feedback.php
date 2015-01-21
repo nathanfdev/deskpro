@@ -614,4 +614,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
             )
         );
     }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
 }

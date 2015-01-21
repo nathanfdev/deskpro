@@ -36,13 +36,17 @@ namespace Application\FormBundle\Form\Type;
 
 
 use Application\DeskPRO\Entity\Feedback;
+use Application\DeskPRO\People\PersonGuest;
 use Application\FormBundle\Captcha\CaptchaDecider;
 use Application\FormBundle\Validator\Constraints\ValidCaptcha;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Form;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormEvent;
+use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
+use Symfony\Component\Validator\Constraints\Length;
 
 class NewFeedbackType extends AbstractType
 {
@@ -71,6 +75,18 @@ class NewFeedbackType extends AbstractType
             'validation_groups' => false,
             'label' => 'Add Another Attachment'
         ));
+
+        if (!$options['person'] || $options['person'] instanceof PersonGuest) {
+            $builder->add('name', 'text', array(
+                'constraints' => new Length(array('min' => 2)),
+                'property_path' => 'person.name'
+            ));
+            $builder->add('email', 'deskpro_person_email', array(
+                'label' => false,
+                'property_path' => 'person.primary_email',
+                'email_label' => false
+            ));
+        }
 
         if ($this->captcha_decider->shouldRequireContentCaptchaForCurrentUser()) {
             $builder->add('captcha', 'deskpro_captcha', array(

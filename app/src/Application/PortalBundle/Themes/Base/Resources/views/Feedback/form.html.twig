@@ -1,10 +1,10 @@
+{{ form_errors(form) }}
 {{ form_start(form) }}
 <div class="feedback-form">
-    <form class="main-input">
-        <span>I have a:</span>
-        {{ form_errors(form.category) }}
-        {{ form_widget(form.category) }}
-        <a href="#" class="button">Start</a>
+    <span>I have a:</span>
+    {{ form_errors(form.category) }}
+    {{ form_widget(form.category) }}
+    <a href="#" class="button">Start</a>
 </div>
 
 <div class="feedback-form-expanded" style="margin-top: 50px;">
@@ -20,13 +20,13 @@
         <div class="bucket">
             <label>Title:</label>
             {{ form_errors(form.title) }}
-            {{ form_widget(form.title, { placeholder: 'A one-sentance summary' }) }}
+            {{ form_widget(form.title, { attr: { placeholder: 'A one-sentance summary', style: 'width: 100%' } }) }}
         </div>
 
         <div class="bucket">
-            <label>Tell us about your Feature Request</label>
+            <label>Tell us more</label>
             {{ form_errors(form.content) }}
-            {{ form_widget(form.content, { placeholder: 'More details...' } ) }}
+            {{ form_widget(form.content, { attr: { placeholder: 'More details...' } } ) }}
         </div>
 
         <div class="new-ticket-attachements">
@@ -49,6 +49,21 @@
                 {#</li>#}
             {#</ul>#}
         </div>
+
+        {% if form.name is defined %}
+            <br>
+            Your Name (will not be shown publicly):<br>
+            {{ form_errors(form.name) }}
+            {{ form_widget(form.name) }}
+        {% endif %}
+
+        {% if form.email is defined %}
+            <br>
+            Your Email (will not be shown publicly):<br>
+            {{ form_errors(form.email) }}
+            {{ form_widget(form.email) }}
+            <br>
+        {% endif %}
 
         {% if form.captcha is defined %}
             {{ form_errors(form.captcha) }}

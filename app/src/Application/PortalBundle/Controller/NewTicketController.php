@@ -135,22 +135,6 @@ class NewTicketController extends AbstractController
         return $this->getRepo('DeskPRO:Ticket');
     }
 
-    /**
-     * @return \Application\DeskPRO\Tickets\TicketManager
-     */
-    protected function getTicketManager()
-    {
-        return $this->get('ticket_manager');
-    }
-
-    /**
-     * @return \Application\PersonBundle\Person\PersonFactory
-     */
-    protected function getPersonFactory()
-    {
-        return $this->get('person_factory');
-    }
-
     private function saveNewTicket(Ticket $ticket, Person $person)
     {
         $em = $this->getEm();

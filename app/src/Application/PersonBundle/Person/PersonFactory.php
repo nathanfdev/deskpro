@@ -114,6 +114,21 @@ class PersonFactory
         return $person;
     }
 
+    /**
+     * We can treat a guest as a person (in form types and such) as if they are a person (to a limited extent),
+     * and then use this method to convert that PersonGuest into a Person. If the guest has the email of
+     * and existing user, we just use that person.
+     *
+     * For example:
+     *
+     * $guest = new PersonGuest();
+     * $guest->name = "Chris Tickner"
+     * $guest->primary_email = new EmailAddress('chris.tickner@gmail.com')
+     * $new_person = $person_factory->createPersonFromGuest($guest);
+     *
+     * @param PersonGuest $guest
+     * @return Person
+     */
     public function createPersonFromGuest(PersonGuest $guest)
     {
         $final_person = null;

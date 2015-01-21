@@ -38,6 +38,7 @@ namespace Application\PortalBundle\Controller;
 use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
+use Application\DeskPRO\People\PersonGuest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
@@ -76,8 +77,11 @@ class FeedbackController extends AbstractController
         //
         // NEW FEEDBACK FORM
         //
-        $form = $this->createForm('new_feedback', $new_feedback = new Feedback(), array(
-            'person' => $this->getUser()
+        $person = $this->getUser() ?: new PersonGuest();
+        $new_feedback = new Feedback();
+        $new_feedback->setPerson($person);
+        $form = $this->createForm('new_feedback', $new_feedback, array(
+            'person' => $person
         ));
         $form->handleRequest($request);
         if ($form->isValid()) {
@@ -89,10 +93,20 @@ class FeedbackController extends AbstractController
                     && $form->getClickedButton()->getConfig()->getName() !== "more_attachments"
                 )
             ) {
-                $default_status_category_id = $this->getBrandSetting('portal.default_feedback_status_category_id');
-                $default_status_category = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
-                $new_feedback->setStatusCategory($default_status_category);
-                $new_feedback->setPerson($this->getUser());
+                $new_feedback->setStatusCategory($this->getDefaultStatusCategory());
+
+                // deal with guests via negotiating with PersonFactory
+                if ($person instanceof PersonGuest) {
+                    $person = $this->getPersonFactory()->createPersonFromGuest($person);
+
+                    // since the guest is set on the form, we need to update all of the associations
+                    // TODO: we should be able to deal with this better by using a contact to beign with
+                    $new_feedback->setPerson($person);
+                    foreach ($new_feedback->getAttachments() as $attachment) {
+                        $attachment->setPerson($person);
+                    }
+
+                }
 
                 $this->persistAndFlushEntity($new_feedback);
 
@@ -179,5 +193,15 @@ class FeedbackController extends AbstractController
         }
 
         return $this->redirectToRoute('portal_feedback_view', array('slug' => $item->getSlug()));
+    }
+
+    /**
+     * @return \Application\DeskPRO\Entity\FeedbackStatusCategory
+     */
+    protected function getDefaultStatusCategory()
+    {
+        $default_status_category_id = $this->getBrandSetting('portal.default_feedback_status_category_id');
+        $default_status_category = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
+        return $default_status_category;
     }
 }

@@ -274,4 +274,20 @@ class AbstractController extends BaseController
     {
         return $this->get('view.tickets');
     }
+
+    /**
+     * @return \Application\DeskPRO\Tickets\TicketManager
+     */
+    protected function getTicketManager()
+    {
+        return $this->get('ticket_manager');
+    }
+
+    /**
+     * @return \Application\PersonBundle\Person\PersonFactory
+     */
+    protected function getPersonFactory()
+    {
+        return $this->get('person_factory');
+    }
 }
