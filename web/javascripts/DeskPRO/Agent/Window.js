@@ -587,6 +587,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	initPage: function() {
 
+		// All target=blanks need to null out window.opener
+		$(document).on('click', 'a[target="_blank"]', function(ev) {
+			ev.preventDefault();
+			var o = window.open($(this).attr('href'));
+			o.opener = null;
+		});
+
 		$('html').addClass('dp-window-focus');
 		(function() {
 			var hidden = "hidden";
