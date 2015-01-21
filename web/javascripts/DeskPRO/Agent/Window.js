@@ -3822,8 +3822,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 					qtipOptions.content.attr = null;
 					var el = $('#' + $(this).data('tipped'));
 					qtipOptions.content.text = function() {
-						return el.html();
+						return Orb.escapeHtml(el.text());
 					};
+				}
+
+				if (qtipOptions.content.attr && !$(this).data('as-html')) {
+					var me = $(this);
+					var attr = qtipOptions.content.attr;
+					qtipOptions.content.text = function() {
+						console.log(me.attr(attr));
+						return Orb.escapeHtml(me.attr(attr) || '');
+					};
+					qtipOptions.content.attr = null;
 				}
 
 				qtipOptions.style = {
@@ -3924,6 +3934,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 					qtipOptions.content.text = function() {
 						return el.html();
 					};
+				}
+
+				if (qtipOptions.content.attr && !$(this).data('as-html')) {
+					var me = $(this);
+					var attr = qtipOptions.content.attr;
+					qtipOptions.content.text = function() {
+						console.log(me.attr(attr));
+						return Orb.escapeHtml(me.attr(attr) || '');
+					};
+					qtipOptions.content.attr = null;
 				}
 
 				qtipOptions.style = {
