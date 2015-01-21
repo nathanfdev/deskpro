@@ -458,7 +458,10 @@ class FilterChangeDetector
             $old_changed_filters = $exist_set->getChangedFilters();
             $copied_ids = array();
             foreach ($checker->getAffectedFiltersWithNoChanges() as $f) {
-                if (isset($old_changed_filters[$f->id]) && !isset($changed_filters[$f->id])) {
+                if (isset($old_changed_filters[$f->id])) {
+                    if (isset($changed_filters[$f->id])) {
+                        $old_changed_filters[$f->id]->merge($changed_filters[$f->id]);
+                    }
                     $changed_filters[$f->id] = $old_changed_filters[$f->id];
                     $copied_ids[] = $f->id;
                 }

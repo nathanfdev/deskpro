@@ -1810,6 +1810,10 @@ class TicketSearch extends SearcherAbstract
                                     $choice = array_pop($choice);
                                 }
 
+                                if ($choice === null){
+                                    $choice = 'DP_NO_SELECTION';
+                                }
+
                                 $joins[] = array(
                                     'custom_data_ticket',
                                     "LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id = $term_id)"

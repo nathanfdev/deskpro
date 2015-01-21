@@ -635,6 +635,10 @@ class PersonSearch extends SearcherAbstract
                                 $choice = array_pop($choice);
                             }
 
+                            if ($choice === null){
+                                $choice = 'DP_NO_SELECTION';
+                            }
+
                             $field = 'custom_data_person_'.$join_id.'.'.$search_type;
                             switch ($op) {
                                 case self::OP_IS:

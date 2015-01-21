@@ -200,7 +200,7 @@ class SettingsProfile
             }
 
             // Delete old sessions for this user
-            $this->db->delete('sessions', array('person_id' => $this->person->getId()));
+            $this->em->getConnection()->delete('sessions', array('person_id' => $this->person->getId()));
         }
 
         if ($this->language_id) {

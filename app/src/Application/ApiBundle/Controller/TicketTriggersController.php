@@ -165,6 +165,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('department' => $dep, 'event_trigger' => $event));
                     if (!$trigger) {
                         $trigger = new TicketTrigger();
+                        $trigger->is_enabled = false;
                         $edit = SpecialTriggerEdit::createWithDepartment($dep, $event);
                         $edit->applyToTrigger($trigger);
                         $this->em->persist($trigger);
@@ -182,6 +183,7 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
                     $trigger = $this->em->getRepository('DeskPRO:TicketTrigger')->findOneBy(array('email_account' => $acc));
                     if (!$trigger) {
                         $trigger = new TicketTrigger();
+                        $trigger->is_enabled = false;
                         $edit = SpecialTriggerEdit::createWithEmailAccount($acc);
                         $edit->applyToTrigger($trigger);
                         $this->em->persist($trigger);
@@ -316,6 +318,12 @@ class TicketTriggersController extends AbstractController implements ProtectedCo
             }
 
             $trigger->run_order = $ro + 10;
+        }
+
+        if ($trigger->department) {
+            $trigger->is_enabled = (bool)$this->db->fetchColumn("SELECT id FROM ticket_triggers WHERE department_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
+        } elseif ($trigger->email_account) {
+            $trigger->is_enabled = (bool)$this->db->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
         }
 
         $this->em->persist($trigger);

@@ -178,4 +178,25 @@ class FilterChange
     {
         return $this->new_match_for_agents ? true : false;
     }
+
+    /**
+     * Merges another FilterChange $f with this one.
+     *
+     * @param FilterChange $f
+     */
+    public function merge(FilterChange $f)
+    {
+        foreach ($this->getAgentsAdded() as $a) {
+            $this->addForAgent($a);
+        }
+        foreach ($this->getAgentsRemoved() as $a) {
+            $this->removeForAgent($a);
+        }
+        foreach ($this->getAgentsWithNewMatch() as $a) {
+            $this->newMatchForAgent($a);
+        }
+        foreach ($this->getAgentsWithOriginalMatch() as $a) {
+            $this->originalMatchForAgent($a);
+        }
+    }
 }

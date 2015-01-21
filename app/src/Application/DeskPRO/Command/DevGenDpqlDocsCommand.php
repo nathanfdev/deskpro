@@ -78,7 +78,7 @@ class DevGenDpqlDocsCommand extends \Symfony\Bundle\FrameworkBundle\Command\Cont
             'tasks' => 'Tasks',
             'task_comments' => 'Comments on tasks',
             'tickets' => 'Tickets',
-            'tickets_log' => 'Ticket change log entries',
+            'tickets_logs' => 'Ticket change log entries',
             'tickets_messages' => 'Individual messages in tickets',
             'ticket_attachments' => 'Attachments to tickets',
             'ticket_charges' => 'Ticket billing charges',
