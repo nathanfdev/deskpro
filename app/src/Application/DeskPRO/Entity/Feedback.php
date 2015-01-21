@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\FormBundle\Collection\CustomDataCollection;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -125,6 +126,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
      * @var array
      */
     protected $_search_highlights;
+
+    /**
+     * @var CustomDataCollection
+     */
+    protected $cdc;
 
     public function __construct()
     {
@@ -239,6 +245,19 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     public function getCategoryName()
     {
         return $this->category->getFullTitle();
+    }
+
+    /**
+     * At the moment, there is only one custom_data set, this is just a quick way to access its value in twig
+     */
+    public function getCustomDataSelection()
+    {
+        /** @var \Application\DeskPRO\Entity\CustomDataFeedback $data */
+        if (!$data = $this->custom_data->last()) {
+            return null;
+        }
+
+        return $data->field->getChildById($data->getValue());
     }
 
     public function setStatus($status)
@@ -437,9 +456,23 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->setModelField('status_category', $status_category);
     }
 
+    public function getCustomDataCollection()
+    {
+        return $this->cdc = $this->cdc ?: new CustomDataCollection($this->custom_data, $this);
+    }
+
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getAttachments()
+    {
+        return $this->attachments;
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
+
     public static function loadMetadata(ClassMetadata $metadata)
     {
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
@@ -613,13 +646,5 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'dpApi'                => true, 'dpApiDeep'            => true, 'dpApiPrimary'            => true,
             )
         );
-    }
-
-    /**
-     * @return \Doctrine\Common\Collections\ArrayCollection
-     */
-    public function getAttachments()
-    {
-        return $this->attachments;
     }
 }

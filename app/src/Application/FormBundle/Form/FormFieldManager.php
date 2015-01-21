@@ -46,6 +46,7 @@ use Orb\Util\Strings;
 use Symfony\Component\Validator\Constraints\Length;
 use Symfony\Component\Validator\Constraints\NotBlank;
 use Symfony\Component\Validator\Constraints\Regex;
+use Application\DeskPRO\Entity\CustomDefFeedback;
 
 /**
  * A service responsible for making sense of "Fields". Usually, special strings (see FormFields class), need to be
@@ -64,6 +65,11 @@ class FormFieldManager
     }
 
     public function getCustomTicketField(CustomDefTicket $field, $agent_interface)
+    {
+        return $this->createCustomField($field, $agent_interface);
+    }
+
+    public function getCustomFeedbackField(CustomDefFeedback $field, $agent_interface)
     {
         return $this->createCustomField($field, $agent_interface);
     }
@@ -88,6 +94,30 @@ class FormFieldManager
         ');
 
         return $query->getResult();
+    }
+
+    /**
+     * @return CustomDefFeedback[]
+     */
+    public function getFeedbackFields()
+    {
+        $fields = array();
+
+        $all_fields = $this->em->getRepository('DeskPRO:CustomDefFeedback')->findAll();
+
+        foreach ($all_fields as $field) {
+            if (!$field->isEnabled()) {
+                continue;
+            }
+
+            if ($field->getParent()) {
+                continue;
+            }
+
+            $fields[] = $field;
+        }
+
+        return $fields;
     }
 
     public function getCustomTicketFieldById($id)

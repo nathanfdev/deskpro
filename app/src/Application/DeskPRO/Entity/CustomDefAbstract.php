@@ -221,6 +221,67 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject impleme
     }
 
     /**
+     * @return string
+     */
+    public function isEnabled()
+    {
+        return $this->is_enabled;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDefaultValue()
+    {
+        return $this->default_value;
+    }
+
+    /**
+     * @return string
+     */
+    public function isAgentField()
+    {
+        return $this->is_agent_field;
+    }
+
+    /**
+     * @return string
+     */
+    public function isUserEnabled()
+    {
+        return $this->is_user_enabled;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getOptions()
+    {
+        return $this->options;
+    }
+
+    /**
+     * @return CustomDefAbstract[]|null
+     */
+    public function getChildren()
+    {
+        return $this->children;
+    }
+
+    public function hasChildren()
+    {
+        return count($this->children) > 0;
+    }
+
+    /**
+     * @return CustomDefAbstract|null
+     */
+    public function getParent()
+    {
+        return $this->parent;
+    }
+
+    /**
      * Add a child to this field
      *
      * @param CustomDefAbstract $def

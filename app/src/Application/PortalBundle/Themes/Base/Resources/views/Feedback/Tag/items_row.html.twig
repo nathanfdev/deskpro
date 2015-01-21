@@ -30,22 +30,13 @@
                 <p>{{ item.content_html|raw }}</p>
             </div>
 
-            {#<div class="response">#}
-                {#<div class="response-meta">#}
-                    {#<div class="avatar" style="background-image: url({{ asset('/img/avatar.png') }});"></div>#}
-                    {#Response by: <span>Chris Padfield</span>#}
-                {#</div>#}
-                {#<div class="response-content">#}
-                    {#<p>These suggestions have been submitted by customers like you; we encourage you to discuss and#}
-                        {#vote lorel ipsum dolor. Lorel ipsum some more text to have a third line.</p>#}
-                {#</div>#}
-            {#</div>#}
-
             <div class="feedback-item-meta">
                 <ul>
                     <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
                     <li><a href="{{ path('portal_feedback_view', { slug: item.slug }) }}"><i class="fa fa-comment"></i> {{ item.num_comments }} comments</a></li>
-                    {#<li><a href="#"><i class="fa fa-inbox"></i> what is this?</a></li>#}
+                    {% if item.getCustomDataSelection() %}
+                        <li><a href="#"><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</a></li>
+                    {% endif %}
                     {% if item.labels|length %}
                         <li><i class="fa fa-tags"></i>{{ item.labels|join }}</li>
                     {% endif %}

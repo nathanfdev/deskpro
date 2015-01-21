@@ -36,7 +36,9 @@
                         <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
                         <li><a href="{{ path('portal_feedback_view', { slug: item.slug }) }}"><i
                                         class="fa fa-comment"></i> {{ item.num_comments }} comments</a></li>
-                        {#<li><a href="#"><i class="fa fa-inbox"></i> what is this?</a></li>#}
+                        {% if item.getCustomDataSelection() %}
+                        <li><a href="#"><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</a></li>
+                        {% endif %}
                         {% if item.labels|length %}
                             <li><i class="fa fa-tags"></i>{{ item.labels|join }}</li>
                         {% endif %}
