@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\PortalBundle\EventListener\OriginalUriListener;
 use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Controller\AbstractController;
@@ -112,10 +113,16 @@ class PortalController extends AbstractController
     public function userSidebarAction(TagRequest $tag_request)
     {
         if (!$user = $this->getUser()) {
+            $destination = $tag_request->attributes->get(
+                OriginalUriListener::ATTR_NAME,
+                $this->generateUrl('portal_tickets')
+            );
+
             //TODO: dont pass the auth manager into the template...
             return $this->renderThemeView(
                 'Theme:Portal:Tag/sidebar_login.html.twig',
                 array(
+                    'destination_url' => $destination,
                     'auth_manager' => $this->get('dp_authentication_manager.user')
                 )
             );

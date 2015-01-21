@@ -258,9 +258,11 @@ class ThemeResolver
                 '_cache',
                 '_security',
                 '_converters',
+                '_method',
                 '_security_remember_me_cookie'
             ))) {
                 continue; // reserved attributes that we don't want to ship to the tag
+                // TODO: instead of param names, we might consider just ignoring any object except entities
             }
 
             if ($val instanceof DomainObject) {

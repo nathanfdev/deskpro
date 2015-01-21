@@ -46,6 +46,7 @@ security:
                 require_previous_session: false
                 remember_me: true
                 default_target_path: /tickets
+                target_path_parameter: _destination
             anonymous:
                 key:    "irrelevant - compiler pass will override this"
             logout:

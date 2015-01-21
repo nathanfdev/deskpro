@@ -6,9 +6,16 @@ services:
     tags:
       - { name: kernel.event_subscriber }
 
+
   brand_detector.listener:
     class: Application\PortalBundle\EventListener\BrandDetectionListener
     arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
+
+
+  original_uri.listener:
+    class: Application\PortalBundle\EventListener\OriginalUriListener
     tags:
       - { name: kernel.event_subscriber }
 
