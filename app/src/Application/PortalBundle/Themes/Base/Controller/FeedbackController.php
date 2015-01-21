@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
+use Application\PortalBundle\Model\FeedbackFilter;
 use Application\PortalBundle\Request\TagRequest;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
@@ -76,14 +77,18 @@ class FeedbackController extends AbstractController
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
+        $filter = new FeedbackFilter(array(
+            'status' => $options['status'],
+            'status_categories' => $options['status_categories'],
+            'types' => $options['types'],
+            'sort' => $options['sort'],
+            'sort_direction' => $options['sort_direction']
+        ));
+
         $pager = $this->getFeedbackDataService()->getItemsPager(
             $options['page'],
             $options['count'],
-            $options['status'],
-            $options['status_categories'],
-            $options['types'],
-            $options['sort'],
-            $options['sort_direction']
+            $filter
         );
 
         return $this->renderThemeView(
@@ -123,14 +128,18 @@ class FeedbackController extends AbstractController
             return new Response('');
         }
 
+        $filter = new FeedbackFilter(array(
+            'status' => $options['status'],
+            'status_categories' => $options['status_categories'],
+            'types' => $options['types'],
+            'sort' => $options['sort'],
+            'sort_direction' => $options['sort_direction']
+        ));
+
         $pager = $this->getFeedbackDataService()->getItemsPager(
             $options['page'],
             $options['count'],
-            $options['status'],
-            $options['status_categories'],
-            $options['types'],
-            $options['sort'],
-            $options['sort_direction']
+            $filter
         );
 
         return $this->renderThemeView(

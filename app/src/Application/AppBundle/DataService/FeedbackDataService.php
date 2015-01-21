@@ -63,16 +63,12 @@ class FeedbackDataService
     }
 
     /**
-     * @param int $page
-     * @param int $max_per_page
-     * @param string $status
-     * @param array $status_categories
-     * @param array $types
-     * @param string $sort
-     * @param string$sort_direction
+     * @param $page
+     * @param $max_per_page
+     * @param FeedbackFilter $filter
      * @return Pagerfanta
      */
-    public function getItemsPager($page, $max_per_page, $status, $status_categories, $types, $sort, $sort_direction)
+    public function getItemsPager($page, $max_per_page, FeedbackFilter $filter)
     {
         // TODO: two tags use this on the same request (list, and pager). So, need to hash the inputs and
         // keep the computed $pager in memory for cases of asking for the exact same pager twice.
@@ -82,7 +78,7 @@ class FeedbackDataService
 
         // status
         // "all","active","closed"
-        switch ($status) {
+        switch ($filter->getStatus()) {
             case FeedbackFilter::STATUS_ALL:
                 $valid_status = array(Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED);
                 break;
@@ -99,19 +95,19 @@ class FeedbackDataService
 
         // status_categories (feedback->status_category)
         // array(6,1,4)
-        if (count($status_categories)) {
+        if (count($status_categories = $filter->getStatusCategories())) {
             $qb->andWhere('f.status_category IN (:status_categories)')->setParameter('status_categories', $status_categories);
         }
 
         // types
         // array(1,3,5) $feedback->category
-        if (count($types)) {
+        if (count($types = $filter->getTypes())) {
             $qb->andWhere('f.category IN (:types)')->setParameter('types', $types);
         }
 
         // sort
         // "date", "most-popular", "highest-rating", "most-discussed", "most-viewed"
-        switch ($sort) {
+        switch ($filter->getSort()) {
             case FeedbackFilter::SORT_POPULARITY:
             case FeedbackFilter::SORT_RATING:
                 $sort_string = 'f.total_rating';
@@ -128,7 +124,7 @@ class FeedbackDataService
 
         // sort direction
         // "desc" or "asc"
-        $qb->orderBy($sort_string, $sort_direction);
+        $qb->orderBy($sort_string, $filter->getSortDirection());
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
         $pager->setMaxPerPage($max_per_page);
