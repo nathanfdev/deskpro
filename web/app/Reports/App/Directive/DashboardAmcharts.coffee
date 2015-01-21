@@ -28,6 +28,30 @@ define ->
                 chart = new AmCharts.makeChart('ch' + i, widget);
                 chart.handleResize()
                 chart.invalidateSize()
+                if widget.multiplePies?
+                  defaultDataProvider = widget.dataProvider
+                  chart.addListener "clickSlice", (event) ->
+                    if (event.dataItem.dataContext.id != undefined)
+                      selected = event.dataItem.dataContext.id
+                    else
+                      selected = undefined
+                    if selected? and selected
+                      console.log selected
+                      console.log widget.pies[selected]
+                      dataProvider = widget.pies[selected]
+                      data = []
+                      angular.forEach defaultDataProvider, (element, index) ->
+                        if index == selected
+                          angular.forEach widget.pies[selected], (pie) ->
+                            data.push pie
+                        else
+                          data.push element
+                      chart.dataProvider = data
+                    else
+                      chart.dataProvider = defaultDataProvider
+                    chart.validateData()
+
+
                 c = document.getElementById("ch" + i).parentNode.parentNode
                 width = c.style.width;
                 height = c.style.height;

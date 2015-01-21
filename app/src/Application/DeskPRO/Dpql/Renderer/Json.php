@@ -849,7 +849,6 @@ class Json extends AbstractRenderer
         }
 
         if ($type == 'pie') {
-
             $pieData = array();
 
             if (count($graphs) > 1) {
@@ -872,14 +871,15 @@ class Json extends AbstractRenderer
 
                 // let's add a graph for the first level of grouping
                 $data = array();
-                foreach ($pieData AS $pie) {
+                foreach ($pieData AS $k => $pie) {
                     $sum = 0;
                     foreach ($pie['data'] AS $info) {
                         $sum += $info['value'];
                     }
                     $data[] = array(
                         'category' => $pie['title'],
-                        'value' => $sum
+                        'value' => $sum,
+                        'id' => $k,
                     );
                 }
 
@@ -895,25 +895,39 @@ class Json extends AbstractRenderer
                                      'data' => $chartData
                                  ));
             }
-            $graph = array_pop($graphs);
 
-            $pieData = array(array(
-                                 'title' => $graph['title'],
-                                 'data' => $chartData
-                             ));
-
-
-            foreach ($pieData AS $pie) {
-                $arrayOutput['dataProvider'] = $pie['data'];
-                $arrayOutput['type'] = 'pie';
-                $arrayOutput['startDuration'] = 0;
-                $arrayOutput['valueField'] = 'value1';
-                $arrayOutput['categoryField'] = 'category';
-                $arrayOutput['legend']['title'] = $pie['title'];
-                if(count($pie['data']) > 25) {
+            $arrayOutput['type'] = 'pie';
+            $arrayOutput['startDuration'] = 0;
+            $arrayOutput['titleField'] = 'category';
+            $arrayOutput['valueField'] = 'value';
+            if(count($pieData) > 1) {
+                $overAllPie = array_shift($pieData);
+                $arrayOutput['dataProvider'] = $overAllPie['data'];
+                $arrayOutput['legend']['title'] = $overAllPie['title'];
+                $arrayOutput['multiplePies'] = true;
+                if(count($overAllPie['data']) > 25) {
                     $arrayOutput['labelsEnabled'] = false;
                 }
+                $arrayOutput['pies'] = array();
+                foreach($pieData as $k => $pie) {
+                    $arrayOutput['pies'] = array(
+                        'dataProvider' => $pie['data'],
+                        'legend' => array('title'=> $pie['title']),
+                        'labelsEnabled' => count($pie['data']) > 25 ? false : true,
+                    );
+
+                }
+            } else {
+                foreach ($pieData AS $pie) {
+                    $arrayOutput['dataProvider'] = $pie['data'];
+                    $arrayOutput['legend']['title'] = $pie['title'];
+                    if(count($pie['data']) > 25) {
+                        $arrayOutput['labelsEnabled'] = false;
+                    }
+                }
             }
+
+
         } else {
             if ($hasCategory) {
                 $balloonText = '[[category]], [[title]]: [[value]]';
