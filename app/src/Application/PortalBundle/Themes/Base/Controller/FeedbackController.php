@@ -66,7 +66,7 @@ class FeedbackController extends AbstractController
      *      },
      *      allowed_values={
      *          "style": {"list", "row"},
-     *          "sort": {"date", "popular", "rating", "comments", "viewed"},
+     *          "sort": {"date", "most-popular", "highest-rating", "most-discussed", "most-views"},
      *          "sort_direction": {"desc", "asc"},
      *          "status": {"all","active","closed"}
      *      }
@@ -109,7 +109,7 @@ class FeedbackController extends AbstractController
      *          "sort_direction": "desc"
      *      },
      *      allowed_values={
-     *          "sort": {"date", "popular", "rating", "comments", "viewed"},
+     *          "sort": {"date", "most-popular", "highest-rating", "most-discussed", "most-views"},
      *          "sort_direction": {"desc", "asc"},
      *          "status": {"all","active","closed"}
      *      }

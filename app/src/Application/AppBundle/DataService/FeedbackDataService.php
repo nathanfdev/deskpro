@@ -43,6 +43,7 @@ use Application\DeskPRO\Entity\FeedbackCategory;
 use Application\DeskPRO\Entity\FeedbackStatusCategory;
 use Application\DeskPRO\Entity\NewsCategory;
 use Application\DeskPRO\Entity\Person;
+use Application\PortalBundle\Model\FeedbackFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
@@ -82,13 +83,13 @@ class FeedbackDataService
         // status
         // "all","active","closed"
         switch ($status) {
-            case 'all':
+            case FeedbackFilter::STATUS_ALL:
                 $valid_status = array(Feedback::STATUS_ACTIVE, Feedback::STATUS_CLOSED);
                 break;
-            case 'active':
+            case FeedbackFilter::STATUS_ACTIVE:
                 $valid_status = array(Feedback::STATUS_ACTIVE);
                 break;
-            case 'closed':
+            case FeedbackFilter::STATUS_CLOSED:
                 $valid_status = array(Feedback::STATUS_CLOSED);
                 break;
             default:
@@ -109,16 +110,16 @@ class FeedbackDataService
         }
 
         // sort
-        // "popular", "rating", "comments", "viewed", "date"
+        // "date", "most-popular", "highest-rating", "most-discussed", "most-viewed"
         switch ($sort) {
-            case 'popular':
-            case 'rating':
+            case FeedbackFilter::SORT_POPULARITY:
+            case FeedbackFilter::SORT_RATING:
                 $sort_string = 'f.total_rating';
                 break;
-            case 'comments':
+            case FeedbackFilter::SORT_COMMENTS:
                 $sort_string = 'f.num_comments';
                 break;
-            case 'viewed':
+            case FeedbackFilter::SORT_VIEWS:
                 $sort_string = 'f.view_count';
                 break;
             default:

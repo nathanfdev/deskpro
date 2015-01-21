@@ -39,11 +39,13 @@ use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
 use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\People\PersonGuest;
+use Application\PortalBundle\Helper\FeedbackFilterUriHelper;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Symfony\Component\HttpFoundation\Response;
 use Zend\Feed\Writer\Extension\ITunes\Renderer\Feed;
 
 class FeedbackController extends AbstractController
@@ -153,6 +155,17 @@ class FeedbackController extends AbstractController
         $page = $request->query->get('page', 1);
         $per_page = $request->query->get('per_page', 5); // TODO: brand setting?
 
+        try {
+            $uri_helper = new FeedbackFilterUriHelper();
+            $filter = $uri_helper->extractFeedbackFilter($filter_uri);
+        } catch (\InvalidArgumentException $e) {
+            throw $this->createNotFoundException('filter_uri could not be parsed');
+        }
+
+        // order was incorrect, redirect them
+        if ($filter_uri != $generated_uri = $uri_helper->generateUriSegment($filter)) {
+            return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri), Response::HTTP_MOVED_PERMANENTLY);
+        }
 
         // setup and render an initial form that posts to /feedback
         $person = $this->getUser() ?: new PersonGuest();
@@ -174,7 +187,12 @@ class FeedbackController extends AbstractController
                 'count' => $per_page,
                 'show_pagination' => true,
                 'form' => $form->createView(),
-                'user' => $this->getUser()
+                'user' => $this->getUser(),
+                'status' => $filter->getStatus(),
+                'status_categories' => $filter->getStatusCategories(),
+                'types' => $filter->getTypes(),
+                'sort' => $filter->getSort(),
+                'sort_direction' => $filter->getSortDirection()
             )
         );
     }
