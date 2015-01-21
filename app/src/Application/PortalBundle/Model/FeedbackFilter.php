@@ -160,8 +160,6 @@ class FeedbackFilter
      */
     public function setTypes($types)
     {
-
-
         $this->types = $types;
     }
 

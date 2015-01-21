@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\Feedback;
 use Application\DeskPRO\Entity\FeedbackComment;
 use Application\DeskPRO\People\PersonGuest;
 use Application\PortalBundle\Helper\FeedbackFilterUriHelper;
+use Application\PortalBundle\Model\FeedbackFilter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
@@ -57,27 +58,26 @@ class FeedbackController extends AbstractController
     public function indexAction(Request $request, $_format)
     {
         $page = $request->query->get('page', 1);
-        $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
+        $per_page = $request->query->get('per_page', 5); // TODO: brand setting?
 
 
         //
         // RSS
         //
         if ('rss' === $_format) {
-            $status = $request->query->get('status', 'all');
-            $status_categories = $request->query->get('status_categories', array());
-            $types = $request->query->get('types', array());
-            $sort = $request->query->get('sort', 'date');
-            $sort_direction = $request->query->get('sort_direction', 'desc');
+
+            $filter = new FeedbackFilter(array(
+                'status' => $request->query->get('status', 'all'),
+                'status_categories' => $request->query->get('status_categories', array()),
+                'types' => $request->query->get('types', array()),
+                'sort' => $request->query->get('sort', 'date'),
+                'sort_direction' => $request->query->get('sort_direction', 'desc')
+            ));
 
             $pager = $this->getFeedbackDataService()->getItemsPager(
                 $page,
                 $per_page,
-                $status,
-                $status_categories,
-                $types,
-                $sort,
-                $sort_direction
+                $filter
             );
 
             return $this->render('PortalBundle:Feedback:feed.rss.twig', array(
