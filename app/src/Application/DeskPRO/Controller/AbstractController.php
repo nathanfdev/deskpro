@@ -100,6 +100,10 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
             $in_token = '';
         }
 
+        if (!is_string($in_token)) {
+            return false;
+        }
+
         $in_token = trim($in_token);
 
         if (!$in_token) {
