@@ -75,9 +75,9 @@ class FeedbackFilter
     protected $sort;
     protected $sort_direction;
 
-    public function __construct()
+    public function __construct(array $set_these = array())
     {
-        $this->replaceArray(static::getDefaultValues());
+        $this->replaceArray(array_merge(static::getDefaultValues(), $set_these));
     }
 
     public function toArray()
