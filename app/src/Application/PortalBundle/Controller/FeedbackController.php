@@ -167,6 +167,24 @@ class FeedbackController extends AbstractController
             return $this->redirectToRoute('portal_feedback_browse', array('filter_uri' => $generated_uri), Response::HTTP_MOVED_PERMANENTLY);
         }
 
+        $page_options = array(
+            'page' => $page,
+            'count' => $per_page,
+            'show_pagination' => true,
+            'status' => $filter->getStatus(),
+            'status_categories' => $filter->getStatusCategories(),
+            'types' => $filter->getTypes(),
+            'sort' => $filter->getSort(),
+            'sort_direction' => $filter->getSortDirection()
+        );
+
+        if ($request->isXmlHttpRequest()) {
+            return $this->renderThemeView(
+                'Theme:Feedback:items_ajax_partial.html.twig',
+                $page_options
+            );
+        }
+
         // setup and render an initial form that posts to /feedback
         $person = $this->getUser() ?: new PersonGuest();
         $new_feedback = new Feedback();
@@ -176,24 +194,17 @@ class FeedbackController extends AbstractController
             'action' => $this->generateUrl('portal_feedback')
         ));
 
+        $page_options = array_merge($page_options, array(
+            'form' => $form->createView(),
+            'user' => $this->getUser()
+        ));
 
         //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:Feedback:index.html.twig',
-            array(
-                'page' => $page,
-                'count' => $per_page,
-                'show_pagination' => true,
-                'form' => $form->createView(),
-                'user' => $this->getUser(),
-                'status' => $filter->getStatus(),
-                'status_categories' => $filter->getStatusCategories(),
-                'types' => $filter->getTypes(),
-                'sort' => $filter->getSort(),
-                'sort_direction' => $filter->getSortDirection()
-            )
+            $page_options
         );
     }
 
