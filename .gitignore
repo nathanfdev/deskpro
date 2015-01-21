@@ -14,6 +14,7 @@
 
 # vendors and build files
 /app/vendor
+/app/node_modules
 /web/node_modules
 /web/bower_components
 /web/app/node_modules
@@ -22,6 +23,7 @@
 /web/loader-build
 
 # cache and log files
+npm-debug.log
 /app/sys/cache/*
 /app/sys/bootstrap.php
 /app/sys/compiled.php
