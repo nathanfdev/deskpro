@@ -76,6 +76,12 @@ class PersonFromEmailProcessor
      */
     public function findPerson(EmailAddress $from)
     {
+        // Find in local db first
+        $person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($from->getEmail());
+        if ($person) {
+            return $person;
+        }
+
         /** @var \Application\DeskPRO\Usersource\UsersourceManager $um */
         $um = App::getSystemService('usersource_manager');
 
