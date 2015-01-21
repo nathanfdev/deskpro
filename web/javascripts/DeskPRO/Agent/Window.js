@@ -3830,7 +3830,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 					var me = $(this);
 					var attr = qtipOptions.content.attr;
 					qtipOptions.content.text = function() {
-						console.log(me.attr(attr));
 						return Orb.escapeHtml(me.attr(attr) || '');
 					};
 					qtipOptions.content.attr = null;
@@ -3940,7 +3939,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 					var me = $(this);
 					var attr = qtipOptions.content.attr;
 					qtipOptions.content.text = function() {
-						console.log(me.attr(attr));
 						return Orb.escapeHtml(me.attr(attr) || '');
 					};
 					qtipOptions.content.attr = null;
