@@ -29,63 +29,42 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Tickets;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TicketMessage;
+use Application\DeskPRO\Net\Dns\Rdns\RdnsInterface;
 
-class Cache extends AbstractEntityRepository
+class MessageHostnameLookup
 {
-    public function load($id)
+    /**
+     * @var RdnsInterface
+     */
+    private $rdns;
+
+    /**
+     * @param RdnsInterface $rdns
+     */
+    public function __construct(RdnsInterface $rdns)
     {
-        $data = App::getDb()->fetchColumn("SELECT data FROM cache WHERE id = ?", array($id));
-
-        if (!$data) {
-            return false;
-        }
-
-        $data = @unserialize($data);
-
-        if (isset($data['VALUE'])) {
-            return $data['VALUE'];
-        }
-
-        return $data;
-    }
-
-    public function save($id, $data, $lifetime = null)
-    {
-        if (!is_array($data)) {
-            $data = array('VALUE' => $data);
-        }
-
-        $data = serialize($data);
-
-        $expire = null;
-        if ($lifetime) {
-            $expire = date('Y-m-d H:i:s', time()+$lifetime);
-        }
-
-        App::getDb()->executeUpdate(
-            "REPLACE INTO cache SET id = ?, data = ?, date_expire = ?", array(
-            $id, $data, $expire
-        ));
-
-        return true;
-    }
-
-    public function delete($id)
-    {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE id LIKE ?", array($id . '%'));
+        $this->rdns = $rdns;
     }
 
     /**
-     * Clean up all expired cache entries
+     * @param TicketMessage $message
+     * @return string|null
      */
-    public function cleanExpired()
+    public function lookupForMessage(TicketMessage $message)
     {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE date_expire < ?", array(date('Y-m-d H:i:s')));
+        if (!$message->ip_address) {
+            return null;
+        }
+
+        try {
+            return $this->rdns->lookup($message);
+        } catch (\Exception $e) {
+            return null;
+        }
     }
 }

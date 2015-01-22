@@ -32,60 +32,58 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace deskpro_ticket_hostnames;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\App\Native\InstallerHandler\InstallerContext;
+use Application\DeskPRO\App\Native\InstallerHandler\AbstractInstallerHandler;
 
-class Cache extends AbstractEntityRepository
+class InstallerHandler extends AbstractInstallerHandler
 {
-    public function load($id)
+    /**
+     * {@inheritDoc}
+     */
+    public function install(InstallerContext $context)
     {
-        $data = App::getDb()->fetchColumn("SELECT data FROM cache WHERE id = ?", array($id));
-
-        if (!$data) {
-            return false;
-        }
-
-        $data = @unserialize($data);
-
-        if (isset($data['VALUE'])) {
-            return $data['VALUE'];
-        }
-
-        return $data;
+        $this->_doInstall($context);
     }
 
-    public function save($id, $data, $lifetime = null)
-    {
-        if (!is_array($data)) {
-            $data = array('VALUE' => $data);
-        }
-
-        $data = serialize($data);
-
-        $expire = null;
-        if ($lifetime) {
-            $expire = date('Y-m-d H:i:s', time()+$lifetime);
-        }
-
-        App::getDb()->executeUpdate(
-            "REPLACE INTO cache SET id = ?, data = ?, date_expire = ?", array(
-            $id, $data, $expire
-        ));
-
-        return true;
-    }
-
-    public function delete($id)
-    {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE id LIKE ?", array($id . '%'));
-    }
 
     /**
-     * Clean up all expired cache entries
+     * {@inheritDoc}
      */
-    public function cleanExpired()
+    public function uninstall(InstallerContext $context)
     {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE date_expire < ?", array(date('Y-m-d H:i:s')));
+        $context->getContainer()->getSettingsHandler()->setSetting('rdns_ticket_showprops', null);
+        $context->getContainer()->getSettingsHandler()->setSetting('rdns_ticket_messages', null);
+        $context->getContainer()->getSettingsHandler()->setSetting('rdns_server', null);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function updateSettings(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public function updatePackage(InstallerContext $context)
+    {
+        $this->_doInstall($context);
+    }
+
+
+    /**
+     * @param InstallerContext $context
+     */
+    private function _doInstall(InstallerContext $context)
+    {
+        $context->getContainer()->getSettingsHandler()->setSetting('rdns_ticket_messages', 1);
+        $context->getContainer()->getSettingsHandler()->setSetting('rdns_ticket_showprops', $context->getApp()->getSetting('rdns_ticket_showprops') ?: 0);
+        $context->getContainer()->getSettingsHandler()->setSetting('rdns_server', $context->getApp()->getSetting('rdns_server') ?: '8.8.8.8');
     }
 }

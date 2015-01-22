@@ -29,63 +29,31 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category DependencyInjection
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\DependencyInjection\SystemServices;
 
-use Application\DeskPRO\App;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
+use Application\DeskPRO\Net\Dns\Rdns\CachedRdns;
+use Application\DeskPRO\Net\Dns\Rdns\RdnsNull;
+use Application\DeskPRO\Net\Dns\Rdns\RdnsSocket;
+use Application\DeskPRO\Tickets\MessageHostnameLookup;
+use Orb\Log\Logger;
 
-class Cache extends AbstractEntityRepository
+class TicketMessageHostnameLookupService
 {
-    public function load($id)
+    public static function create(DeskproContainer $container)
     {
-        $data = App::getDb()->fetchColumn("SELECT data FROM cache WHERE id = ?", array($id));
-
-        if (!$data) {
-            return false;
+        if (!$container->getSetting('rdns_ticket_messages') || !$container->getSetting('rdns_server')) {
+            $rdns = new RdnsNull();
+        } else {
+            $rdns = new CachedRdns(
+                $container->getEm(),
+                new RdnsSocket($container->getSetting('rdns_server'), 4)
+            );
         }
 
-        $data = @unserialize($data);
-
-        if (isset($data['VALUE'])) {
-            return $data['VALUE'];
-        }
-
-        return $data;
-    }
-
-    public function save($id, $data, $lifetime = null)
-    {
-        if (!is_array($data)) {
-            $data = array('VALUE' => $data);
-        }
-
-        $data = serialize($data);
-
-        $expire = null;
-        if ($lifetime) {
-            $expire = date('Y-m-d H:i:s', time()+$lifetime);
-        }
-
-        App::getDb()->executeUpdate(
-            "REPLACE INTO cache SET id = ?, data = ?, date_expire = ?", array(
-            $id, $data, $expire
-        ));
-
-        return true;
-    }
-
-    public function delete($id)
-    {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE id LIKE ?", array($id . '%'));
-    }
-
-    /**
-     * Clean up all expired cache entries
-     */
-    public function cleanExpired()
-    {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE date_expire < ?", array(date('Y-m-d H:i:s')));
+        return new MessageHostnameLookup($rdns);
     }
 }

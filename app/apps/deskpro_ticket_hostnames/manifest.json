@@ -1,0 +1,31 @@
+{
+	"package_name": "deskpro_ticket_hostnames",
+	"is_native": true,
+	"title": "Resolve User Hostnames",
+	"description": "On ticket messages submitted from the web interface (where an IP address is available), DeskPRO will attempt to resolve hostnames for users.",
+	"tags": ["tickets"],
+	"api_version": 1,
+	"version": 1,
+	"version_name": "1.0.0",
+	"is_single": true,
+	"author": {
+		"name": "DeskPRO",
+		"email": "support@deskpro.com",
+		"link": "https://www.deskpro.com/"
+	},
+	"settings_def": [
+		{
+			"name": "rdns_server",
+			"type": "text",
+			"label": "DNS Server",
+			"description": "Enter the IP address of a DNS server to perform IP address lookups against. You can use Google's DNS at 8.8.8.8 or OpenDNS at 208.67.222.222."
+		},
+		{
+			"name": "rdns_ticket_showprops",
+			"type": "checkbox",
+			"label": "Show in properties box",
+			"checkbox_label": "Show",
+			"description": "When enabled, a summary of IP addresses and hostnames will appear at the top of the ticket in the properties box. Otherwise, hostnames will only appear in the tooltip that appears when you hover your mouse over the time in each message."
+		}
+	]
+}

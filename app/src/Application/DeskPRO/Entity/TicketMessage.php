@@ -506,6 +506,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             $geo = $geoip->lookup($this->ip_address);
             $this['geo_country'] = !empty($geo['country']) ? $geo['country'] : '';
         }
+
+        if ($this->ip_address && !$this->hostname) {
+            $rdns = App::getSystemService('TicketMessageHostnameLookup');
+            $v = $rdns->lookupForMessage($this);
+            $this['hostname'] = $v ?: '';
+        }
     }
 
     /**

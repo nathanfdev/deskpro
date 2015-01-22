@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,63 +29,20 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\EntityRepository;
+namespace Application\DeskPRO\Net\Dns\Rdns;
 
-use Application\DeskPRO\App;
-
-class Cache extends AbstractEntityRepository
+class RdnsNull implements RdnsInterface
 {
-    public function load($id)
-    {
-        $data = App::getDb()->fetchColumn("SELECT data FROM cache WHERE id = ?", array($id));
-
-        if (!$data) {
-            return false;
-        }
-
-        $data = @unserialize($data);
-
-        if (isset($data['VALUE'])) {
-            return $data['VALUE'];
-        }
-
-        return $data;
-    }
-
-    public function save($id, $data, $lifetime = null)
-    {
-        if (!is_array($data)) {
-            $data = array('VALUE' => $data);
-        }
-
-        $data = serialize($data);
-
-        $expire = null;
-        if ($lifetime) {
-            $expire = date('Y-m-d H:i:s', time()+$lifetime);
-        }
-
-        App::getDb()->executeUpdate(
-            "REPLACE INTO cache SET id = ?, data = ?, date_expire = ?", array(
-            $id, $data, $expire
-        ));
-
-        return true;
-    }
-
-    public function delete($id)
-    {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE id LIKE ?", array($id . '%'));
-    }
-
     /**
-     * Clean up all expired cache entries
+     * @param string $ip
+     * @return string|null
+     * @throws \RuntimeException
      */
-    public function cleanExpired()
+    public function lookup($ip)
     {
-        return App::getDb()->executeUpdate("DELETE FROM cache WHERE date_expire < ?", array(date('Y-m-d H:i:s')));
+        return null;
     }
 }

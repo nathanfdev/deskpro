@@ -553,6 +553,27 @@
      */
     'core_misc.cleanup_task_logs' => 604800, // 7 days
 
+    /**
+     * Server to use for rDNS lookups
+     */
+    'rdns_server' => '8.8.8.8',
+
+    /**
+     * How long to cache rdns lookups
+     */
+    'rdns_timeout' => '18000',
+
+    /**
+     * True to enable rdns on ticket messages when an IP is available
+     */
+    'rdns_ticket_messages' => false,
+
+    /**
+     * True to have hostnames visible on the ticket in a list rather that just
+     * in the hover area
+     */
+    'rdns_ticket_showprops' => false,
+
     ####################################################################################################################
     # core_email
     ####################################################################################################################
