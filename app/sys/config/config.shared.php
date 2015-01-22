@@ -41,6 +41,58 @@ $definition->setArguments(
 $container->setDefinition('swiftmailer.mailer', $definition);
 
 ############################################################################
+# Form Type
+############################################################################
+
+$definition = new Definition();
+$definition->setClass('Application\DeskPRO\Form\Type\CleanerExtension');
+$definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
+$definition->addTag('form.type_extension', array('alias' => 'form'));
+$container->setDefinition('form.cleaner_extension', $definition);
+
+############################################################################
+# Input
+############################################################################
+
+// Init readers
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_REQUEST', array('accept_json_post' => true)));
+$container->setDefinition('deskpro.core.input_reader_req', $definition);
+
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_POST', array('accept_json_post' => true)));
+$container->setDefinition('deskpro.core.input_reader_post', $definition);
+
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_GET'));
+$container->setDefinition('deskpro.core.input_reader_get', $definition);
+
+$definition = new Definition('Orb\Input\Reader\Source\Superglobal', array('_COOKIE'));
+$container->setDefinition('deskpro.core.input_reader_cookie', $definition);
+
+// Cleaner plugin: XssCleaner
+$definition = new Definition('Orb\Input\Cleaner\CleanerPlugin\BasicXss');
+$container->setDefinition('deskpro.core.input_cleaner_plugin_xss', $definition);
+
+// Cleaner plugin: HTML Purifier
+$definition = new Definition('Orb\Input\Cleaner\CleanerPlugin\HtmlPurifier');
+$container->setDefinition('deskpro.core.input_cleaner_plugin_html_purifier', $definition);
+
+// Init cleaner
+$definition = new Definition('Orb\Input\Cleaner\Cleaner');
+$definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_xss')));
+$definition->addMethodCall('addCleaner', array(new Reference('deskpro.core.input_cleaner_plugin_html_purifier')));
+$container->setDefinition('deskpro.core.input_cleaner', $definition);
+
+// Init reader
+$definition = new Definition('Application\DeskPRO\Input\Reader', array(new Reference('deskpro.core.input_cleaner')));
+$definition->addMethodCall('addSource', array('req', new Reference('deskpro.core.input_reader_req')));
+$definition->addMethodCall('addSource', array('post', new Reference('deskpro.core.input_reader_post')));
+$definition->addMethodCall('addSource', array('get', new Reference('deskpro.core.input_reader_get')));
+$definition->addMethodCall('addSource', array('cookie', new Reference('deskpro.core.input_reader_cookie')));
+$definition->addMethodCall('setArrayStringSeparator', array('.'));
+$container->setDefinition('deskpro.core.input_reader', $definition);
+
+
+
+############################################################################
 # Doctrine services
 ############################################################################
 
