@@ -449,6 +449,7 @@ HTML;
         $this->em->persist($person);
         $this->em->flush();
 
+        $this->session->invalidate();
         $this->session->set('auth_person_id', $identity->getIdentity());
         $this->session->set('dp_interface', DP_INTERFACE);
         $this->session->save();

@@ -217,6 +217,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
             throw $this->createNotFoundException();
         }
 
+        $this->session->invalidate();
         $this->session->set('auth_person_id', $person->id);
         $this->session->set('dp_interface', DP_INTERFACE);
         $this->session->save();
