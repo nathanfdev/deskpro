@@ -31,10 +31,14 @@ use Psr\Log\LoggerInterface;
 use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
+ * Abstract generator methods
+ * Split into traits when min php version will be greater than 5.4
+ *
  * Class AbstractGenerator
  * @package Application\ImportBundle\Generator
  */
-abstract class AbstractGenerator implements GeneratorConfigAwareInterface, LoggerAwareInterface, ProgressBarAwareInterface
+abstract class AbstractGenerator
+    implements GeneratorConfigAwareInterface, LoggerAwareInterface, ProgressBarAwareInterface
 {
     /**
      * @var GeneratorConfig

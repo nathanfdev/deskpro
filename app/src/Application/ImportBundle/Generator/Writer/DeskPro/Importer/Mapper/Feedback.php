@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class Feedback
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class Feedback implements MapperInterface
+class Feedback implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Feedback
@@ -64,14 +64,22 @@ class Feedback implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
         /** @var Entity\Feedback $record */
-        $record = $this->repository->findOneBy(array('title' => $value));
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('Feedback `%s` not found', $value));
+            throw new MapperException('Feedback not found', $criteria);
         }
 
         return $record;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByTitle($title, $throw_exception = true)
+    {
+        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

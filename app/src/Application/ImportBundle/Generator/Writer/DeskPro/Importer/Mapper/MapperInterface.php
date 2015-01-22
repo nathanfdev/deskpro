@@ -37,15 +37,10 @@ interface MapperInterface
 {
     const TYPE_PERSON            = 'person';
     const TYPE_TICKET_DEPARTMENT = 'ticket_department';
+    const TYPE_TICKET            = 'ticket';
     const TYPE_TICKET_CATEGORY   = 'ticket_category';
     const TYPE_TICKET_WORKFLOW   = 'ticket_workflow';
     const TYPE_TICKET_PRIORITY   = 'ticket_priority';
-
-    /**
-     * @deprecated moved to validators
-     */
-    const TYPE_TICKET_STATUS     = 'ticket_status';
-
     const TYPE_DEPARTMENT        = 'department';
     const TYPE_PRODUCT           = 'product';
     const TYPE_USER_GROUP        = 'usergroup';
@@ -70,12 +65,12 @@ interface MapperInterface
     public function getType();
 
     /**
-     * Returns the DeskPro record by value
+     * Returns the DeskPro record by criteria
      *
-     * @param string $value
-     * @param bool   $throw_exception
+     * @param array $criteria
+     * @param bool  $throw_exception
      *
      * @return mixed
      */
-    public function findOneByValue($value, $throw_exception = false);
+    public function findOneBy(array $criteria, $throw_exception = true);
 }

@@ -59,9 +59,12 @@ final class Ticket extends AbstractImporter
             ));
         }
 
+        /** @var Mapper\Person $ticket_mapper */
+        $ticket_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_DEPARTMENT);
+
         $this->records = new ArrayCollection();
 
-        $ticket = new DeskPROEntity\Person();
+        $ticket = new DeskPROEntity\Ticket();
         $this->records->add($ticket);
 
         return $this->records;

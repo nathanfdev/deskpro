@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class Download
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class Download implements MapperInterface
+class Download implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Download
@@ -64,14 +64,22 @@ class Download implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
         /** @var Entity\Download $record */
-        $record = $this->repository->findOneBy(array('title' => $value));
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('Download `%s` not found', $value));
+            throw new MapperException('Download not found', $criteria);
         }
 
         return $record;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByTitle($title, $throw_exception = true)
+    {
+        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

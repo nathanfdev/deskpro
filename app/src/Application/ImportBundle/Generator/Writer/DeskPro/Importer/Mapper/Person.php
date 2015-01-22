@@ -63,11 +63,30 @@ class Person implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
-        $record = $this->repository->findOneByEmail($value);
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('Person `%s` not found', $value));
+            throw new MapperException('Person `%s` not found', $criteria);
+        }
+
+        return $record;
+    }
+
+    /**
+     * Returns the existing person by email
+     *
+     * @param string $email
+     * @param bool   $throw_exception
+     *
+     * @return \Application\DeskPRO\Entity\Person
+     * @throws MapperException
+     */
+    public function findOneByEmail($email, $throw_exception = true)
+    {
+        $record = $this->repository->findOneByEmail($email);
+        if (!$record && $throw_exception) {
+            throw new MapperException('Person not found', array('email' => $email));
         }
 
         return $record;

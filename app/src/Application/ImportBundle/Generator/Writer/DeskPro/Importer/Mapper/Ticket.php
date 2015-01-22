@@ -31,24 +31,24 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
 
 /**
- * Custom def ticket record mapper
+ * Ticket record mapper
  *
- * Class CustomDefTicket
+ * Class Ticket
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class CustomDefTicket implements MapperInterface, MapperByTitleInterface
+class Ticket implements MapperInterface
 {
     /**
-     * @var EntityRepository\CustomDefTicket
+     * @var EntityRepository\Ticket
      */
     private $repository;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\CustomDefTicket $repository
+     * @param EntityRepository\Ticket $repository
      */
-    public function __construct(EntityRepository\CustomDefTicket $repository)
+    public function __construct(EntityRepository\Ticket $repository)
     {
         $this->repository = $repository;
     }
@@ -58,7 +58,7 @@ class CustomDefTicket implements MapperInterface, MapperByTitleInterface
      */
     public function getType()
     {
-        return self::TYPE_CUSTOM_DEF_TICKET;
+        return self::TYPE_TICKET;
     }
 
     /**
@@ -66,20 +66,12 @@ class CustomDefTicket implements MapperInterface, MapperByTitleInterface
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
-        /** @var Entity\CustomDefTicket $record */
+        /** @var Entity\TicketCategory $record */
         $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException('Custom def ticket not found', $criteria);
+            throw new MapperException('Ticket not found', $criteria);
         }
 
         return $record;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneByTitle($title, $throw_exception = true)
-    {
-        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

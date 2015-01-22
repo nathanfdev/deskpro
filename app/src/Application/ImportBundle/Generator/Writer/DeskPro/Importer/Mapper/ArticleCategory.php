@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class ArticleCategory
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class ArticleCategory implements MapperInterface
+class ArticleCategory implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\ArticleCategory
@@ -64,14 +64,22 @@ class ArticleCategory implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
         /** @var Entity\ArticleCategory $record */
-        $record = $this->repository->findOneBy(array('title' => $value));
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('Article category `%s` not found', $value));
+            throw new MapperException('Article category not found', $criteria);
         }
 
         return $record;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByTitle($title, $throw_exception = true)
+    {
+        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

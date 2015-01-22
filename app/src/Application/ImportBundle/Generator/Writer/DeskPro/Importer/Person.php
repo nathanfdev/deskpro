@@ -52,7 +52,7 @@ final class Person extends AbstractImporter
      *
      * 'date_created' => $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
      * 'is_user'      => 1,
-     *  'is_contact'   => 1,
+     * 'is_contact'   => 1,
      */
     public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
@@ -65,77 +65,70 @@ final class Person extends AbstractImporter
 
         $this->records = new ArrayCollection();
 
-        try {
-            $person = $this->mappers
-                ->getMapperByType(Mapper\MapperInterface::TYPE_PERSON)
-                ->findOneByValue($entity->getEmails());
+        /** @var Mapper\Person $person_mapper */
+        $person_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
+        /** @var Mapper\Organization $organization_mapper */
+        $organization_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
+        /** @var Mapper\UserGroup $user_group_mapper */
+        $user_group_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
 
-        } catch (Mapper\MapperException $exception) {
-            $person = new DeskPROEntity\Person();
+        $person = $person_mapper->findOneByEmail($entity->getFirstEmail(), false) ? : new DeskPROEntity\Person();
+        if ($person->getId()) {
+            $this->logInfo(sprintf(
+                'Found existing user `%d` with email `%s`',
+                $person->getId(), $entity->getFirstEmail()
+            ));
+        } else {
+            $this->logInfo(sprintf(
+                'Creating new person with email `%s`',
+                $entity->getFirstEmail()
+            ));
         }
 
         $person
             ->setName($entity->getName())
             ->setFirstName($entity->getFirstName())
             ->setLastName($entity->getLastName())
-            ->setTimezone($entity->getTimezone() ? : 'UTC')
+            ->setTimezone($entity->getTimezone())
             ->setIsAgent($entity->isAgent())
             ->setCanAdmin($entity->isAdmin());
 
         if ($entity->getPassword() && $entity->getPasswordScheme() == Entity\Person::PASSWORD_SCHEME_PLAIN) {
             $person->setPassword($entity->getPassword());
         }
+        if ($entity->getLanguage()) {
+            /** @var Mapper\Language $language_mapper */
+            $language_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE);
+            $person->setLanguageId($language_mapper->findOneByTitle($entity->getLanguage())->getId());
+        }
+        if ($entity->getOrganization()) {
+            $organization = $organization_mapper->findOneByTitle($entity->getOrganization(), false);
+            if ($organization) {
+                $this->logInfo(sprintf(
+                    'Found existing organization `%d` with title `%s`',
+                    $organization->getId(), $entity->getOrganization()
+                ));
+            } else {
+                $organization = new DeskPROEntity\Organization();
+                $this->records->add($organization);
 
-        $this->setLanguage($entity, $person);
-        $this->setOrganization($entity, $person);
+                $this->logInfo(sprintf(
+                    'Creating new organization `%s`',
+                    $entity->getOrganization()
+                ));
+            }
+
+            $person->setOrganization($organization);
+        }
+        if ($entity->getUserGroups()) {
+            foreach ($entity->getUserGroups() as $user_group_name) {
+                $user_group = $user_group_mapper->findOneByTitle($user_group_name);
+                $person->addUsergroup($user_group);
+            }
+        }
 
         $this->records->add($person);
 
         return $this->records;
-    }
-
-    /**
-     * Set language
-     *
-     * @param Entity\Person        $entity
-     * @param DeskPROEntity\Person $person
-     */
-    private function setLanguage(Entity\Person $entity, DeskPROEntity\Person $person)
-    {
-        if (!$entity->getLanguage()) {
-            return;
-        }
-
-        /** @var DeskPROEntity\Language $language */
-        $language = $this->mappers
-            ->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE)
-            ->findOneByValue($entity->getLanguage());
-
-        $person->setLanguageId($language->getId());
-    }
-
-    /**
-     * Set organization
-     * If the organization not found create a new one by name
-     *
-     * @param Entity\Person        $entity
-     * @param DeskPROEntity\Person $person
-     */
-    private function setOrganization(Entity\Person $entity, DeskPROEntity\Person $person)
-    {
-        if (!$entity->getOrganization()) {
-            return;
-        }
-        try {
-            $organization = $this->mappers
-                ->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION)
-                ->findOneByValue($entity->getOrganization());
-
-        } catch (Mapper\MapperException $exception) {
-            $organization = new DeskPROEntity\Organization();
-            $this->records->add($person);
-        }
-
-        $person->setOrganization($organization);
     }
 }

@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class UserGroup
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class UserGroup implements MapperInterface
+class UserGroup implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Usergroup
@@ -64,14 +64,22 @@ class UserGroup implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
         /** @var Entity\UserGroup $record */
-        $record = $this->repository->findOneBy(array('title' => $value));
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('User group `%s` not found', $value));
+            throw new MapperException('User group not found', $criteria);
         }
 
-        return $record->getId();
+        return $record;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByTitle($title, $throw_exception = true)
+    {
+        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

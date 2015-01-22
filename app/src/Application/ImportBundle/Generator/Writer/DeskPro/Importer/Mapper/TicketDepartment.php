@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class TicketDepartment
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class TicketDepartment implements MapperInterface
+class TicketDepartment implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Department
@@ -64,17 +64,25 @@ class TicketDepartment implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
         /** @var Entity\Department $record */
-        $record = $this->repository->findOneBy(array('title' => $value));
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('Ticket department `%s` not found', $value));
+            throw new MapperException('Ticket department not found', $criteria);
         }
         if (!$record->isType('tickets')) {
-            throw new MapperException(sprintf('Department `%s` is not suite for tickets', $value));
+            throw new MapperException('Department is not suite for tickets', $criteria);
         }
 
         return $record;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByTitle($title, $throw_exception = true)
+    {
+        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

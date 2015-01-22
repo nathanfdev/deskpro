@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class TicketPriority
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class TicketPriority implements MapperInterface
+class TicketPriority implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\TicketPriority
@@ -64,14 +64,22 @@ class TicketPriority implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
         /** @var Entity\TicketPriority $record */
-        $record = $this->repository->findOneBy(array('title' => $value));
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('Ticket priority `%s` not found', $value));
+            throw new MapperException('Ticket priority not found', $criteria);
         }
 
         return $record;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByTitle($title, $throw_exception = true)
+    {
+        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

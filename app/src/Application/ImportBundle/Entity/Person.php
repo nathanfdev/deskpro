@@ -337,7 +337,7 @@ final class Person extends AbstractEntity
      */
     public function getTimezone()
     {
-        return $this->timezone;
+        return $this->timezone ? : 'UTC';
     }
 
     /**
@@ -431,6 +431,16 @@ final class Person extends AbstractEntity
     }
 
     /**
+     * Returns the first person email
+     *
+     * @return string|null
+     */
+    public function getFirstEmail()
+    {
+        return !empty($this->emails) ? $this->emails[0] : null;
+    }
+
+    /**
      * @param string $email
      * @return $this
      */
@@ -448,6 +458,16 @@ final class Person extends AbstractEntity
     {
         $this->labels[] = $label;
         return $this;
+    }
+
+    /**
+     * Returns user groups
+     *
+     * @return array
+     */
+    public function getUserGroups()
+    {
+        return $this->user_groups;
     }
 
     /**

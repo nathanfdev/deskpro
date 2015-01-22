@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class CustomDefPeople
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class CustomDefPerson implements MapperInterface
+class CustomDefPerson implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\CustomDefPerson
@@ -64,14 +64,22 @@ class CustomDefPerson implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
         /** @var Entity\CustomDefPerson $record */
-        $record = $this->repository->findOneBy(array('title' => $value));
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('Custom def people `%s` not found', $value));
+            throw new MapperException('Custom def people not found', $criteria);
         }
 
         return $record;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByTitle($title, $throw_exception = true)
+    {
+        return $this->findOneBy(array('title' => $title), $throw_exception);
     }
 }

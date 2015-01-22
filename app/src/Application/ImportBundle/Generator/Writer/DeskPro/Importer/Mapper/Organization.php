@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class Organization
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class Organization implements MapperInterface
+class Organization implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Organization
@@ -64,12 +64,25 @@ class Organization implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findOneByValue($value, $throw_exception = true)
+    public function findOneBy(array $criteria, $throw_exception = true)
     {
         /** @var Entity\Organization $record */
-        $record = $this->repository->findOneByName($value);
+        $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
-            throw new MapperException(sprintf('Organization `%s` not found', $value));
+            throw new MapperException('Organization not found', $criteria);
+        }
+
+        return $record;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneByTitle($title, $throw_exception = true)
+    {
+        $record = $this->repository->findOneByName($title);
+        if (!$record && $throw_exception) {
+            throw new MapperException('Organization not found', array('name' => $title));
         }
 
         return $record;

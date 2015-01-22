@@ -29,7 +29,7 @@ namespace Application\ImportBundle\ValueImporter;
 
 use Application\ImportBundle\Entity\Person;
 use Application\ImportBundle\Exception\BadDataException;
-use Application\ImportBundle\Generator\Mapper\MapperInterface;
+use Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper\MapperInterface;
 use Application\ImportBundle\Value\PersonValue;
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
