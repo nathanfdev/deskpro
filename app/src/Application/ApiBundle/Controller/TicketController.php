@@ -43,6 +43,7 @@ use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\Tickets\SnippetFormatter;
 use Application\DeskPRO\Tickets\TicketDisplay;
 use DeskPRO\Kernel\KernelErrorHandler;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 /**
  * @SWG\Resource(
@@ -1084,6 +1085,13 @@ class TicketController extends AbstractController implements ProtectedController
      *				paramType="query",
      *				required=false,
      *				type="boolean"
+     *			),
+     *			@SWG\Parameter(
+     *				name="person_id",
+     *				description="Message author",
+     *				paramType="query",
+     *				required=false,
+     *				type="integer"
      *			)
      *		),
      *		@SWG\ResponseMessage(code=404, message="Ticket not found")
@@ -1100,7 +1108,16 @@ class TicketController extends AbstractController implements ProtectedController
 
         $message = new \Application\DeskPRO\Entity\TicketMessage();
         $message['ticket'] = $ticket;
-        $message['person'] = ($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
+
+        if ($pid = $this->in->getUInt('person_id')) {
+            if (!$person = $this->em->getRepository('DeskPRO:Person')->find($pid)) {
+                throw new NotFoundHttpException;
+            }
+            $message['person'] = $person;
+        } else {
+            $message['person'] = ($this->in->getBool('message_as_agent') ? $this->person : $ticket->person);
+        }
+
         $message['ip_address'] = dp_get_user_ip_address();
         $message['creation_system'] = \Application\DeskPRO\Entity\TicketMessage::CREATED_WEB_API;
 
