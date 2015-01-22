@@ -35,8 +35,24 @@
 namespace Application\CsrfDoubleSubmitBundle;
 
 
+use Application\CsrfDoubleSubmitBundle\DependencyInjection\CsrfDoubleSubmitExtension;
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
 class CsrfDoubleSubmitBundle extends Bundle
 {
+    public function getContainerExtension()
+    {
+        return new CsrfDoubleSubmitExtension();
+    }
+
+
+    public function getNamespace()
+    {
+        return __NAMESPACE__;
+    }
+
+    public function getPath()
+    {
+        return __DIR__;
+    }
 }
