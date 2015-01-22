@@ -28,6 +28,9 @@
 namespace Application\ImportBundle\Generator\Writer\DeskPro;
 
 use Application\ImportBundle\Entity\EntityInterface;
+use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
+use Application\ImportBundle\Generator\LoggerAwareInterface;
+use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
 use Doctrine\Common\Persistence\ObjectManager;
 
@@ -75,10 +78,14 @@ class DeskProWriter extends AbstractWriter
      */
     public function writeData(EntityInterface $entity)
     {
-        $record = $this->getImporter($entity)->getDoctrineEntity($entity);
+        $records = $this->getImporter($entity)->getDoctrineEntities($entity);
+        foreach ($records as $record) {
+            $this->entity_manager->persist($record);
+        }
 
-//        $this->entity_manager->persist($record);
-//        $this->entity_manager->flush();
+        $this->entity_manager->flush();
+
+        return true;
     }
 
     /**
@@ -94,6 +101,19 @@ class DeskProWriter extends AbstractWriter
         foreach ($this->importers as $importer) {
             /** @var Importer\ImporterInterface $importer */
             if ($entity->getType() === $importer->getEntityType()) {
+                if ($this->config && $importer instanceof GeneratorConfigAwareInterface) {
+                    /** @var GeneratorConfigAwareInterface $importer */
+                    $importer->setConfig($this->config);
+                }
+                if ($this->logger && $importer instanceof LoggerAwareInterface) {
+                    /** @var LoggerAwareInterface $importer */
+                    $importer->setLogger($this->logger);
+                }
+                if ($this->progress_bar && $importer instanceof ProgressBarAwareInterface) {
+                    /** @var ProgressBarAwareInterface $importer */
+                    $importer->setProgressBarHelper($this->progress_bar);
+                }
+
                 return $importer;
             }
         }

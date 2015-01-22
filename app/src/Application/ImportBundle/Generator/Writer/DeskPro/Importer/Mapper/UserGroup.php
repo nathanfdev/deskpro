@@ -64,11 +64,11 @@ class UserGroup implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findIdByValue($value)
+    public function findOneByValue($value, $throw_exception = true)
     {
         /** @var Entity\UserGroup $record */
         $record = $this->repository->findOneBy(array('title' => $value));
-        if (!$record) {
+        if (!$record && $throw_exception) {
             throw new MapperException(sprintf('User group `%s` not found', $value));
         }
 

@@ -29,6 +29,8 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
+
 
 /**
  * DeskPro importer interface
@@ -50,8 +52,8 @@ interface ImporterInterface
      *
      * @param Entity\EntityInterface $entity
      *
-     * @return DeskPROEntity\Person
+     * @return ArrayCollection
      * @throws \Exception
      */
-    public function getDoctrineEntity(Entity\EntityInterface $entity);
+    public function getDoctrineEntities(Entity\EntityInterface $entity);
 }

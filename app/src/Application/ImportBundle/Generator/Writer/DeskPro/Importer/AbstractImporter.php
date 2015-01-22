@@ -27,18 +27,26 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
+use Application\ImportBundle\Generator\AbstractGenerator;
+use Doctrine\Common\Collections\ArrayCollection;
+
 /**
  * Abstract DeskPro importer
  *
  * Class AbstractImporter
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-abstract class AbstractImporter implements ImporterInterface
+abstract class AbstractImporter extends AbstractGenerator implements ImporterInterface
 {
     /**
      * @var Mapper\Collection
      */
     protected $mappers;
+
+    /**
+     * @var ArrayCollection
+     */
+    protected $records;
 
     /**
      * Constructor

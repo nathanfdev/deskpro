@@ -70,10 +70,12 @@ interface MapperInterface
     public function getType();
 
     /**
-     * Returns real DeskPro record id by value
+     * Returns the DeskPro record by value
      *
      * @param string $value
-     * @return int
+     * @param bool   $throw_exception
+     *
+     * @return mixed
      */
-    public function findIdByValue($value);
+    public function findOneByValue($value, $throw_exception = false);
 }

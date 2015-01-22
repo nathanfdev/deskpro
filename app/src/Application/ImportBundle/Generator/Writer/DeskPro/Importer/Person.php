@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPro person importer
@@ -48,8 +49,12 @@ final class Person extends AbstractImporter
 
     /**
      * {@inheritdoc}
+     *
+     * 'date_created' => $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+     * 'is_user'      => 1,
+     *  'is_contact'   => 1,
      */
-    public function getDoctrineEntity(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         if (!$entity instanceof Entity\Person) {
             throw new \Exception(sprintf(
@@ -58,15 +63,79 @@ final class Person extends AbstractImporter
             ));
         }
 
-        $record = new DeskPROEntity\Person();
-        if ($entity->getLanguage()) {
-            $record->setLanguageId(
-                $this->mappers
-                    ->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE)
-                    ->findIdByValue($entity->getLanguage())
-            );
+        $this->records = new ArrayCollection();
+
+        try {
+            $person = $this->mappers
+                ->getMapperByType(Mapper\MapperInterface::TYPE_PERSON)
+                ->findOneByValue($entity->getEmails());
+
+        } catch (Mapper\MapperException $exception) {
+            $person = new DeskPROEntity\Person();
         }
 
-        return $record;
+        $person
+            ->setName($entity->getName())
+            ->setFirstName($entity->getFirstName())
+            ->setLastName($entity->getLastName())
+            ->setTimezone($entity->getTimezone() ? : 'UTC')
+            ->setIsAgent($entity->isAgent())
+            ->setCanAdmin($entity->isAdmin());
+
+        if ($entity->getPassword() && $entity->getPasswordScheme() == Entity\Person::PASSWORD_SCHEME_PLAIN) {
+            $person->setPassword($entity->getPassword());
+        }
+
+        $this->setLanguage($entity, $person);
+        $this->setOrganization($entity, $person);
+
+        $this->records->add($person);
+
+        return $this->records;
+    }
+
+    /**
+     * Set language
+     *
+     * @param Entity\Person        $entity
+     * @param DeskPROEntity\Person $person
+     */
+    private function setLanguage(Entity\Person $entity, DeskPROEntity\Person $person)
+    {
+        if (!$entity->getLanguage()) {
+            return;
+        }
+
+        /** @var DeskPROEntity\Language $language */
+        $language = $this->mappers
+            ->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE)
+            ->findOneByValue($entity->getLanguage());
+
+        $person->setLanguageId($language->getId());
+    }
+
+    /**
+     * Set organization
+     * If the organization not found create a new one by name
+     *
+     * @param Entity\Person        $entity
+     * @param DeskPROEntity\Person $person
+     */
+    private function setOrganization(Entity\Person $entity, DeskPROEntity\Person $person)
+    {
+        if (!$entity->getOrganization()) {
+            return;
+        }
+        try {
+            $organization = $this->mappers
+                ->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION)
+                ->findOneByValue($entity->getOrganization());
+
+        } catch (Mapper\MapperException $exception) {
+            $organization = new DeskPROEntity\Organization();
+            $this->records->add($person);
+        }
+
+        $person->setOrganization($organization);
     }
 }

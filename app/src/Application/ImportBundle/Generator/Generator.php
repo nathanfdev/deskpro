@@ -103,9 +103,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
 
             foreach ($collection as $entity) {
                 /** @var Entity\EntityInterface $entity */
-                $outputWriter
-                    ->setConfig($this->config)
-                    ->writeData($entity);
+                $outputWriter->writeData($entity);
             }
         }
     }
@@ -159,6 +157,39 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     }
 
     /**
+     * Returns a writer
+     *
+     * @return Writer\WriterInterface|mixed
+     * @throws Exception
+     */
+    private function getWriter()
+    {
+        if (!$this->config) {
+            throw new Exception('Generator configuration is not set up');
+        }
+
+        foreach ($this->writers as $writer) {
+            /** @var Writer\WriterInterface $writer */
+            if ($writer->getType() === $this->config->getWriterType()) {
+                $writer->setConfig($this->config);
+
+                if ($this->logger && $writer instanceof LoggerAwareInterface) {
+                    /** @var LoggerAwareInterface $writer */
+                    $writer->setLogger($this->logger);
+                }
+                if ($this->progress_bar && $writer instanceof ProgressBarAwareInterface) {
+                    /** @var ProgressBarAwareInterface $writer */
+                    $writer->setProgressBarHelper($this->progress_bar);
+                }
+
+                return $writer;
+            }
+        }
+
+        throw new Exception(sprintf('Generator writer `%s` not found', $this->config->getExporterType()));
+    }
+
+    /**
      * Get exporting collection by type
      *
      * @param string $type
@@ -196,27 +227,5 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         }
 
         return $exceptions;
-    }
-
-    /**
-     * Returns a writer
-     *
-     * @return Writer\WriterInterface|mixed
-     * @throws Exception
-     */
-    private function getWriter()
-    {
-        if (!$this->config) {
-            throw new Exception('Generator configuration is not set up');
-        }
-
-        foreach ($this->writers as $writer) {
-            /** @var Writer\WriterInterface $writer */
-            if ($writer->getType() === $this->config->getWriterType()) {
-                return $writer;
-            }
-        }
-
-        throw new Exception(sprintf('Generator writer `%s` not found', $this->config->getExporterType()));
     }
 }

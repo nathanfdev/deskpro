@@ -64,14 +64,14 @@ class Product implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findIdByValue($value)
+    public function findOneByValue($value, $throw_exception = true)
     {
         /** @var Entity\Product $record */
         $record = $this->repository->findOneBy(array('title' => $value));
-        if (!$record) {
+        if (!$record && $throw_exception) {
             throw new MapperException(sprintf('Product `%s` not found', $value));
         }
 
-        return $record->getId();
+        return $record;
     }
 }

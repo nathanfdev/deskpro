@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * DeskPro ticket importer
@@ -49,7 +50,7 @@ final class Ticket extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntity(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $entity)
     {
         if (!$entity instanceof Entity\Ticket) {
             throw new \Exception(sprintf(
@@ -57,5 +58,12 @@ final class Ticket extends AbstractImporter
                 get_class($entity), get_class($this)
             ));
         }
+
+        $this->records = new ArrayCollection();
+
+        $ticket = new DeskPROEntity\Person();
+        $this->records->add($ticket);
+
+        return $this->records;
     }
 }

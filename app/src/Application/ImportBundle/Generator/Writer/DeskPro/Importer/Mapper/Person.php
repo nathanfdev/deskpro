@@ -63,13 +63,13 @@ class Person implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findIdByValue($value)
+    public function findOneByValue($value, $throw_exception = true)
     {
-        $person = $this->repository->findOneByEmail($value);
-        if (!$person) {
+        $record = $this->repository->findOneByEmail($value);
+        if (!$record && $throw_exception) {
             throw new MapperException(sprintf('Person `%s` not found', $value));
         }
 
-        return $person->getId();
+        return $record;
     }
 }

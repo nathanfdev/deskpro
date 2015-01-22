@@ -573,19 +573,19 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->setModelField('timezone', 'UTC');
         }
 
-        $this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->twitter_users          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels                 = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->phone_numbers          = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->department_permissions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->teams                  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->notes                  = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->emails                 = new ArrayCollection();
+        $this->usergroups             = new ArrayCollection();
+        $this->twitter_accounts       = new ArrayCollection();
+        $this->twitter_users          = new ArrayCollection();
+        $this->usersource_assoc       = new ArrayCollection();
+        $this->contact_data           = new ArrayCollection();
+        $this->custom_data            = new ArrayCollection();
+        $this->preferences            = new ArrayCollection();
+        $this->labels                 = new ArrayCollection();
+        $this->phone_numbers          = new ArrayCollection();
+        $this->department_permissions = new ArrayCollection();
+        $this->teams                  = new ArrayCollection();
+        $this->notes                  = new ArrayCollection();
 
         $this->_initPersonLogger();
         $this->_person_logger->recordExtra('person_created', true);
@@ -670,6 +670,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param bool $yesno
+     * @return $this
      */
     public function setIsAgent($yesno)
     {
@@ -679,11 +680,13 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('is_agent', $yesno);
+        return $this;
     }
 
 
     /**
      * @param bool $yesno
+     * @return $this
      */
     public function setCanAdmin($yesno)
     {
@@ -1777,6 +1780,7 @@ class Person extends DomainObject implements HighlightableModelInterface
      * Add an email address
      *
      * @param PersonEmail $email
+     * @return PersonEmail
      */
     public function addEmailAddress(PersonEmail $email)
     {
@@ -2192,18 +2196,24 @@ class Person extends DomainObject implements HighlightableModelInterface
         $parts = Strings::rexplode(' ', $name, 2);
         $this->setModelField('first_name', $parts[0]);
         $this->setModelField('last_name', isset($parts[1]) ? $parts[1] : '');
+
+        return $this;
     }
 
     public function setFirstName($name)
     {
         $this->setModelField('first_name', $name);
         $this->setModelField('name', $name . ' ' . $this->last_name);
+
+        return $this;
     }
 
     public function setLastName($name)
     {
         $this->setModelField('last_name', $name);
         $this->setModelField('name', $this->first_name . ' ' . $name);
+
+        return $this;
     }
 
     /**
@@ -2346,6 +2356,8 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('timezone', $tz);
+
+        return $this;
     }
 
     public function getTimezone()

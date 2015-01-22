@@ -64,14 +64,14 @@ class Organization implements MapperInterface
     /**
      * {@inheritdoc}
      */
-    public function findIdByValue($value)
+    public function findOneByValue($value, $throw_exception = true)
     {
-        /** @var Entity\Organization $organization */
-        $organization = $this->repository->findOneByName($value);
-        if (!$organization) {
+        /** @var Entity\Organization $record */
+        $record = $this->repository->findOneByName($value);
+        if (!$record && $throw_exception) {
             throw new MapperException(sprintf('Organization `%s` not found', $value));
         }
 
-        return $organization->getId();
+        return $record;
     }
 }

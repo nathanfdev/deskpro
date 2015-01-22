@@ -423,6 +423,14 @@ final class Person extends AbstractEntity
     }
 
     /**
+     * @return array
+     */
+    public function getEmails()
+    {
+        return $this->emails;
+    }
+
+    /**
      * @param string $email
      * @return $this
      */

@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer;
 
-use Application\ImportBundle\Generator\GeneratorConfig;
+use Application\ImportBundle\Generator\AbstractGenerator;
 
 /**
  * Base generator writer
@@ -35,19 +35,7 @@ use Application\ImportBundle\Generator\GeneratorConfig;
  * Class AbstractWriter
  * @package Application\ImportBundle\Generator\Writer
  */
-abstract class AbstractWriter implements WriterInterface
+abstract class AbstractWriter extends AbstractGenerator implements WriterInterface
 {
-    /**
-     * @var GeneratorConfig
-     */
-    protected $config;
 
-    /**
-     * {@inheritdoc}
-     */
-    public function setConfig(GeneratorConfig $config)
-    {
-        $this->config = $config;
-        return $this;
-    }
 }
