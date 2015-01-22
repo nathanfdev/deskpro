@@ -109,7 +109,7 @@ define([
      * @param {String}    action Optional sub-action to pass to the handler in the context
      * @return {String}
      */
-    getRequestHandlerUrl: function(type, action) {
+    getRequestHandlerUrl: function(type, action, params) {
       var url;
       if (type != 'agent') {
         throw "Invalid `type` (must be 'agent')";
@@ -119,6 +119,15 @@ define([
       if (action) {
         action = action.replace(/^\/+/, '');
         url += "/" + action;
+      }
+
+      if (params) {
+        url += '?';
+        for (var i in params) {
+          if (params.hasOwnProperty(i)) {
+            url += encodeURIComponent(i) + '=' + encodeURIComponent(params[i]) + '&';
+          }
+        }
       }
 
       return url;

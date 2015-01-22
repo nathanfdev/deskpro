@@ -79,11 +79,11 @@ class ZipArchiveAdapter implements ZipAdapterInterface
         $zip = new \ZipArchive();
 
         if (($code = $zip->open($path)) !== true) {
-            throw new ZipException(sprintf("[%s/%s] %s %s", $zip->status, $zip->statusSys, $code, $zip->getStatusString()), ZipException::ZIP_ERROR);
+            throw new ZipException(sprintf("[%s/%s] %s %s", $zip->status, $zip->statusSys, $code, @$zip->getStatusString() ?: 'Invalid or unitialized Zip object'), ZipException::ZIP_ERROR);
         }
 
         if ($zip->extractTo($to) !== true) {
-            throw new ZipException(sprintf("[%s/%s] %s %s", $zip->status, $zip->statusSys, $code, $zip->getStatusString()), ZipException::ZIP_ERROR);
+            throw new ZipException(sprintf("[%s/%s] %s %s", $zip->status, $zip->statusSys, $code, @$zip->getStatusString() ?: 'Invalid or unitialized Zip object'), ZipException::ZIP_ERROR);
         }
 
         $zip->close();

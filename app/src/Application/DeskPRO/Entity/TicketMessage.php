@@ -127,6 +127,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @var string
      */
+    protected $hostname = '';
+
+    /**
+     * @var string
+     */
     protected $geo_country = null;
 
     /**
@@ -501,6 +506,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
             $geo = $geoip->lookup($this->ip_address);
             $this['geo_country'] = !empty($geo['country']) ? $geo['country'] : '';
         }
+
+        if ($this->ip_address && !$this->hostname) {
+            $rdns = App::getSystemService('TicketMessageHostnameLookup');
+            $v = $rdns->lookupForMessage($this);
+            $this['hostname'] = $v ?: '';
+        }
     }
 
     /**
@@ -620,6 +631,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         $metadata->mapField(array( 'fieldName' => 'is_agent_note', 'type' => 'boolean', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'is_agent_note', ));
         $metadata->mapField(array( 'fieldName' => 'creation_system', 'type' => 'string', 'length' => 20, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'creation_system', ));
         $metadata->mapField(array( 'fieldName' => 'ip_address', 'type' => 'string', 'length' => 30, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'ip_address', ));
+        $metadata->mapField(array( 'fieldName' => 'hostname', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'hostname', ));
         $metadata->mapField(array( 'fieldName' => 'geo_country', 'type' => 'string', 'length' => 10, 'precision' => 0, 'scale' => 0, 'nullable' => true, 'columnName' => 'geo_country', ));
         $metadata->mapField(array( 'fieldName' => 'email', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'email', ));
         $metadata->mapField(array( 'fieldName' => 'message_hash', 'type' => 'string', 'length' => 40, 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'message_hash', ));
