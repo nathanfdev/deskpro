@@ -1,0 +1,11 @@
+services:
+
+    form.csrf_double_submit_type:
+      class: Application\CsrfDoubleSubmitBundle\Form\Type\CsrfDoubleSubmitType
+      tags:
+        - { name: form.type, alias: csrf_double_submit }
+
+    form.csrf_double_submit_extension:
+      class: Application\CsrfDoubleSubmitBundle\Form\Type\CsrfDoubleSubmitExtension
+      tags:
+        - { name: form.type_extension, alias: csrf_double_submit_extension }

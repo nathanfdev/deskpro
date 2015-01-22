@@ -34,7 +34,6 @@
 
 namespace DeskPRO\Kernel;
 
-use Application\AgentBundle\AgentBundle;
 use Application\DeskPRO\App;
 use Symfony\Component\Config\ConfigCache;
 use Symfony\Component\Config\Loader\LoaderInterface;
@@ -72,7 +71,8 @@ class PortalKernel extends Kernel
             new \Application\AppBundle\AppBundle(),
             new \Application\PersonBundle\PersonBundle(),
             new \Application\TicketBundle\TicketBundle(),
-            new AgentBundle(),
+            new \Application\AgentBundle\AgentBundle(),
+            new \Application\CsrfDoubleSubmitBundle\CsrfDoubleSubmitBundle(),
         );
 
         if ('dev' === $this->getEnvironment()
