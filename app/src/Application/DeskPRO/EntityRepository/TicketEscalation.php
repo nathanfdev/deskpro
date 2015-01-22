@@ -63,7 +63,7 @@ class TicketEscalation extends AbstractEntityRepository
                 'sys_name' => 'statuses_awaiting_user_final',
                 'event' => \Application\DeskPRO\Entity\TicketEscalation::EVENT_TYPE_TIME_USER_WAITING,
                 'default_time' => 1209600,// 60 * 60 * 24 * 14
-                'default_template' => 'DeskPRO:emails_user:ticket-awaiting-warn.html.twig',
+                'default_template' => 'DeskPRO:emails_user:ticket-awaiting-warn-final.html.twig',
             ),
             3 => array(
                 'title' => 'Set status to resolved when awaiting user',

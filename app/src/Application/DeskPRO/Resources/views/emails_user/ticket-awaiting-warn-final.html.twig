@@ -1,0 +1,7 @@
+<dp:subject>{{ phrase('user.emails.remind_unresolved_final_subject', {ticket: ticket}) }}</dp:subject>
+
+{{ phrase('user.emails.greeting') }}
+
+<br /><br />
+
+{{ phrase('user.emails.remind_unresolved_final', {resolve_time: '', resolve_url: url_full('user_tickets_resolve', {'ticket_ref': ticket.access_code})})|raw }}
