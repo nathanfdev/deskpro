@@ -13,7 +13,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Signature';
 					<div class="drop-file-zone drop-file-zone-rte"><h1>{{ phrase('agent.settings.drop_here_insert_signature') }}</h1></div>
 				</div>
 				<em class="desc" style="display: block; float: none; width: 80%;">{{ phrase('agent.settings.ticket_signature_desc') }}</em>
-				<em class="desc" style="display: block; float: none; width: 80%;">Note: Any reply drafts will be cleared when updating your signature.</em>
+				<em class="desc" style="display: block; float: none; width: 80%;">{{ phrase('agent.settings.ticket_signature_note') }}</em>
 				<input type="hidden" id="agent_settings_is_html_signature" name="is_html_signature" value="0" />
 				<input type="hidden" value="{{ signature }}" id="agent_settings_signature_text" />
 				<input type="hidden" value="{{ signature_html }}" id="agent_settings_signature_html" />
