@@ -111,7 +111,7 @@ use Orb\Util\WorkHoursSetAll;
  * @property int $count_user_replies
  * @property string|null $worst_sla_status
  * @property array $waiting_times
- * @property TicketParticipant[] $participants
+ * @property TicketParticipant[]|ArrayCollection $participants
  * @property TicketCharge[] $charges
  * @property TicketSla[] $ticket_slas
  */
@@ -1145,7 +1145,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
             }
 
             if (!isset($set_user_ids_info[$part->person['id']])) {
-                //$this->participants->remove($k);
+                $this->participants->removeElement($participants[$k]);
                 App::getOrm()->remove($participants[$k]);
             } else {
                 $got_user_ids[] = $part->person['id'];
