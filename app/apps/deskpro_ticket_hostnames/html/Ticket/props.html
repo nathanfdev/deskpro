@@ -1,0 +1,19 @@
+<div class="profile-box-container" style="margin-top: 10px;" ng-show="user_list.length">
+    <header>
+        <h4>Hostnames</h4>
+    </header>
+
+    <section class="widget-content" style="font-size: 11px;">
+        <div style="width: 45%; float:left;" ng-repeat="user in user_list">
+            <strong>{{user.name}} &lt;{{user.email}}&gt;</strong>
+            <ul>
+                <li ng-repeat="info in user.recs">
+                    &bull;
+                    <span class="dp_hostname_val">{{info.hostname || 'Unknown' }}</span>
+                    <span style="margin-left:5px; color: #aaa; cursor: pointer;" title="Click to refresh" class="dp_hostname_reload_row" data-ip="{{info.ip}}">({{info.ip}})</span>
+                </li>
+            </ul>
+        </div>
+        <br style="clear:both;height:1px;overflow:hidden;"/>
+    </section>
+</div>

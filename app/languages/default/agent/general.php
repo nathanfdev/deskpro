@@ -329,6 +329,7 @@
     'agent.general.hidden_validating'                       => 'Hidden: Validating',
     'agent.general.hide'                                    => 'Hide',
     'agent.general.host'                                    => 'Host',
+    'agent.general.hostname'                                => 'Hostname',
     'agent.general.hour'                                    => 'Hour',
     'agent.general.hours'                                   => 'hours',
     'agent.general.icq'                                     => 'ICQ',

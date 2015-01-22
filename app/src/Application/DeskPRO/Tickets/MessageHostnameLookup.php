@@ -62,9 +62,17 @@ class MessageHostnameLookup
         }
 
         try {
-            return $this->rdns->lookup($message);
+            return $this->rdns->lookup($message->ip_address);
         } catch (\Exception $e) {
             return null;
         }
+    }
+
+    /**
+     * @return RdnsInterface
+     */
+    public function getRdns()
+    {
+        return $this->rdns;
     }
 }

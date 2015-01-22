@@ -23,9 +23,16 @@
 		{
 			"name": "rdns_ticket_showprops",
 			"type": "checkbox",
-			"label": "Show in properties box",
-			"checkbox_label": "Show",
-			"description": "When enabled, a summary of IP addresses and hostnames will appear at the top of the ticket in the properties box. Otherwise, hostnames will only appear in the tooltip that appears when you hover your mouse over the time in each message."
+			"label": "Show Summary",
+			"checkbox_label": "Show summary under properties box",
+			"description": "When enabled, a summary of IP addresses and hostnames for all messages in a ticket will appear at the top of the ticket in the properties box. Otherwise, hostnames will only appear in the tooltip that appears when you hover your mouse over the time in each message."
+		},
+		{
+			"name": "rdns_ticket_showprops_agents",
+			"type": "checkbox",
+			"label": "Show Summary with Agents",
+			"checkbox_label": "Enable agents",
+			"description": "When enabled, hostnames for agent messages will also appear in the summary box (the above option). If disabled, only user hostnames will appear."
 		}
 	]
 }
