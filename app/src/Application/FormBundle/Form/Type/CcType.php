@@ -40,6 +40,7 @@ use Application\PersonBundle\Person\PersonFactory;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Component\Form\FormError;
 use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use Symfony\Component\OptionsResolver\OptionsResolverInterface;
@@ -89,6 +90,12 @@ class CcType extends AbstractType
         $participants = array();
         $cc_emails = $form->getData();
         foreach ($cc_emails as $email) {
+
+            if (!preg_match('/.+\@.+\..+/', $email)) {
+                $form->addError(new FormError(sprintf('Invalid email detected: "%s". Please review the email list.', $email)));
+                continue;
+            }
+
             if ($email = trim($email)) {
                 // TODO: rethink this "context" approach, because it makes no sense to make one unless creating a person...
                 $new_person_context = new CreatePersonContext('gateway.person'); // used only if email makes new person
@@ -100,7 +107,10 @@ class CcType extends AbstractType
             return $person->id;
         }, $participants);
 
-        $ticket->setParticipantUserIds($user_participant_ids);
+        // the method below actually persists, and we only want to do that if this field is valid
+        if (!count($form->getErrors())) {
+            $ticket->setParticipantUserIds($user_participant_ids);
+        }
     }
 
     public function getName()
