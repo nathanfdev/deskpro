@@ -4,4 +4,4 @@
 
 <br /><br />
 
-{{ phrase('user.emails.remind_unresolved_final', {resolve_time: '', resolve_url: url_full('user_tickets_resolve', {'ticket_ref': ticket.access_code})})|raw }}
+{{ phrase('user.emails.remind_unresolved_final', {resolve_url: url_full('user_tickets_resolve', {'ticket_ref': ticket.access_code})})|raw }}
