@@ -16,9 +16,8 @@
                                 <h4>Disable all email notifications</h4>
                             </label>
 							<span class="help-block">
-								This setting disables all email notifications based on subscriptions.
-								Note that you can still create triggers that send messages to specific agents,
-								this setting just disables emails based on subscriptions (e.g., like "new tickets assigned to me").
+								This setting disables all email notifications based on subscriptions (the ones set in the Ticket Notifications and Other Notifications tabs in <a href="/admin/#/agents/agents/" target="_blank">Agents</a>, or in the agent's Preferences).
+								Note that custom triggers that send messages to agents will not be disabled.
 							</span>
                         </div>
                     </div>
@@ -157,8 +156,8 @@
                                    required integer min="0" /> seconds
 							<span class="help-block">
 								Sessions that are not touched for this long will expire. This allows the system
-								to clean up old sessions after users have left the site or closed their browser window.
-								For security reasons, it is recommended you do not set this longer than an hour or two.
+								to clean up old sessions after agents have left the site or closed their browser window.
+								For security reasons, we recommend you do not set this longer than an hour or two.
 							</span>
                         </div>
                         <div class="inner-group">
@@ -167,11 +166,7 @@
                                 <h4>Require Activity</h4>
                             </label>
 							<span class="help-block">
-								Invisible web requests are always running in the background while DeskPRO is open in a browser window and
-								those background requests usually keep sessions alive. If you only want actual user activity
-								to keep sessions alive, activate this setting. This setting requires users to navigate to new
-								content (e.g., new pages or tabs) to keep their sessions alive. It prevents idle users from staying
-								logged in.
+								Enable this to log out agents who are idle. Otherwise, sessions will be kept alive if DeskPRO is open in a browser window, even if the agent is not doing anything.
 							</span>
                         </div>
 						<div class="inner-group">
@@ -180,9 +175,8 @@
 								<h4>Enable "Remember Me"</h4>
 							</label>
 							<span class="help-block">
-								When an agent clicks the "Remember Me" checkbox, a cookie is set which persists
-								their session if their browser is closed. Disabling this can increase security at the
-								cost of requiring the agent to login frequently.
+								Enable this to allow agents to check "Remember Me" so they don't have to log in again from the same browser. Disabling this can increase security, at the
+								cost of requiring the agent to log in more frequently.
 							</span>
 						</div>
                     </div>
@@ -209,9 +203,9 @@
 							<span class="help-block">
 								When IP whitelisting is enabled, agents can only log in from IP addresses
 								that have been marked as trusted. When someone attempts to log in from an
-								untrusted IP address, an email alert is sent. The email will contain
+								untrusted IP address, an email alert is sent . The email will contain
 								a link to whitelist the IP address. Without clicking the link,
-								any log in from the untrusted IP address will be rejected.
+								any login from the untrusted IP address will be rejected.
 							</span>
 							<div ng-show="settings.ip_security_enabled">
 								<select ng-model="settings.ip_security_mode">

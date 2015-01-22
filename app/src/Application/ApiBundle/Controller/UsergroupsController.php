@@ -126,7 +126,7 @@ class UsergroupsController extends AbstractController implements ProtectedContro
         }
 
         if ($usergroup->sys_name) {
-            return $this->createApiErrorResponse('no_delete_sys', 'You cannot delete built-in user groups');
+            return $this->createApiErrorResponse('no_delete_sys', 'You cannot delete built-in usergroups');
         }
 
         $this->em->remove($usergroup);

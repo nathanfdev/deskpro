@@ -702,7 +702,7 @@
     'agent.general.user_title'                              => 'User Title',
     'agent.general.user_waiting'                            => 'User Waiting',
     'agent.general.user_waiting_x'                          => 'User waiting {{time}}',
-    'agent.general.usergroup'                               => 'User Group',
+    'agent.general.usergroup'                               => 'Usergroup',
     'agent.general.usergroup_everyone'                      => 'Everyone',
     'agent.general.usergroups'                              => 'Usergroups',
     'agent.general.username'                                => 'Username',
