@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace Application\CsrfDoubleSubmitBundle\EventListener;
+namespace Application\FormBundle\EventListener;
 
 
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;

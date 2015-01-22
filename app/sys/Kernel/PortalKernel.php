@@ -71,8 +71,7 @@ class PortalKernel extends Kernel
             new \Application\AppBundle\AppBundle(),
             new \Application\PersonBundle\PersonBundle(),
             new \Application\TicketBundle\TicketBundle(),
-            new \Application\AgentBundle\AgentBundle(),
-            new \Application\CsrfDoubleSubmitBundle\CsrfDoubleSubmitBundle(),
+            new \Application\AgentBundle\AgentBundle()
         );
 
         if ('dev' === $this->getEnvironment()

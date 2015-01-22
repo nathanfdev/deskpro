@@ -1,0 +1,6 @@
+services:
+
+    listener.response.double_submit:
+      class: Application\FormBundle\EventListener\DoubleSubmitJavascriptListener
+      tags:
+        - { name: kernel.event_subscriber }

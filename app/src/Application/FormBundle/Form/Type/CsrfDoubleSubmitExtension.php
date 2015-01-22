@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace Application\CsrfDoubleSubmitBundle\Form\Type;
+namespace Application\FormBundle\Form\Type;
 
 use Symfony\Component\Form\AbstractTypeExtension;
 use Symfony\Component\Form\Exception;
