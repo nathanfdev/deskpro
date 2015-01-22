@@ -121,6 +121,6 @@ class CleanerExtension extends AbstractTypeExtension
 
     public function getExtendedType()
     {
-        return 'person_registration';
+        return 'form';
     }
 }
