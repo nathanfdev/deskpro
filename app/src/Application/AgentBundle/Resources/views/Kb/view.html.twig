@@ -227,7 +227,7 @@ pageMeta.baseId = '{{ baseId }}';
 								{% set phrase_part2 %}
 									<time>{{article.date_created|date('fulltime')}}</time>
 								{% endset %}
-								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}, true) }}
+								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name|escape,'date':phrase_part2}, true) }}
 							</dd>
 						{% else %}
 							<dt>{{ phrase('agent.general.date_created') }}:</dt>
@@ -238,7 +238,7 @@ pageMeta.baseId = '{{ baseId }}';
 								{% set phrase_part2 %}
 								<time>{{article.date_created|date('fulltime')}}</time>
 								{% endset %}
-								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name,'date':phrase_part2}, true) }}
+								{{ phrase('agent.publish.event_time_ago_by_who_at_when', {'ago':phrase_part1,'name':article.person.display_name|escape,'date':phrase_part2}, true) }}
 							</dd>
 
 							{# Makes sure its not a future date, which means auto-publish sometime in the future #}

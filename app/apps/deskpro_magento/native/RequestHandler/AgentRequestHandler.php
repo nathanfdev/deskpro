@@ -76,7 +76,7 @@ class AgentRequestHandler implements AgentRequestHandlerInterface
             try {
                 $error = error_reporting();
                 error_reporting($error & ~E_WARNING);
-                $client = new \SoapClient($url . '/api?wsdl');
+                $client = new \Application\DeskPRO\SoapClient\SafeSoapClient($url . '/api?wsdl');
                 error_reporting($error);
             } catch (\SoapFault $e) {
                 return $context->createJsonResponse(array('error' => 'Invalid Magento URL'));

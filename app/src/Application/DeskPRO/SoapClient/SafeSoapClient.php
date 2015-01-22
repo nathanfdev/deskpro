@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,48 +29,55 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage ApiBundle
+ * @subpackage
  */
 
-namespace Application\ApiBundle\Controller;
+namespace Application\DeskPRO\SoapClient;
 
-use Application\ApiBundle\PermissionStrategy\RequireSessionPermission;
-
-class MySessionController extends AbstractController implements ProtectedControllerInterface
-{
-    const TOKEN_LIFETIME = 420;
-
+if (!class_exists('\SoapClient', false)) {
+    class SafeSoapClient
+    {
+    }
+} else {
     /**
-     * {@inheritDoc}
+     * Disables libxml_disable_entity_loader so SoapClient will work,
+     * but tries detect external entities.
      */
-    public function getPermissionStrategy()
+    class SafeSoapClient extends \SoapClient
     {
-        return new RequireSessionPermission();
-    }
-
-    public function renewRequestTokenAction()
-    {
-        $session_id = $this->in->getString('session_id');
-
-        if (!$session_id) {
-            if ($this->api_user && $this->api_user->session) {
-                $session_id = $this->api_user->session->getSessionCode();
+        public function __construct($wsdl, array $options = null)
+        {
+            if ($wsdl) {
+                $this->_verifyWsdlFile($wsdl);
             }
+
+            $v = libxml_disable_entity_loader(false);
+
+            try {
+                parent::__construct($wsdl, $options ?: array());
+            } catch (\Exception $e) {
+                libxml_disable_entity_loader($v);
+                throw $e;
+            }
+
+            libxml_disable_entity_loader($v);
         }
 
-        // Ping the session
-        if ($session_id) {
-            $session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
-            if ($session) {
-                $session->date_last = new \DateTime();
-                $session->date_last_page = new \DateTime();
-                $this->em->persist($session);
-                $this->em->flush();
+        private function _verifyWsdlFile($wsdl)
+        {
+            $raw = @file_get_contents($wsdl, null, stream_context_create(array('http' => array('timeout'  => 10))));
+            if (!$raw) {
+                throw new SafeSoapClientException("Server", "dp_bad_response");
+            }
+
+            if (preg_match('#<!\s*ENTITY[^>]+SYSTEM\s+[^>]+>#i', $raw)) {
+                throw new SafeSoapClientException("Server", "dp_bad_entity");
             }
         }
-
-        return $this->createApiResponse(array(
-            'request_token' => $this->api_user->session->generateSecurityToken('request_token', self::TOKEN_LIFETIME)
-        ));
     }
+}
+
+class SafeSoapClientException extends \SoapFault
+{
+
 }
