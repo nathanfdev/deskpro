@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 
 /**
@@ -46,10 +47,15 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * @param Entity\Ticket $ticket
+     * {@inheritdoc}
      */
-    public function importEntity(Entity\Ticket $ticket)
+    public function getDoctrineEntity(Entity\EntityInterface $entity)
     {
-
+        if (!$entity instanceof Entity\Ticket) {
+            throw new \Exception(sprintf(
+                'Entity `%s` is not supported by importer `%s`',
+                get_class($entity), get_class($this)
+            ));
+        }
     }
 }

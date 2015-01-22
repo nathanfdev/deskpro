@@ -64,21 +64,9 @@ class ResetCommand extends ContainerAwareCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
-        echo "Scanning for '.done' files. This may take some time.\n";
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
 
-        $factory = new ImporterFactory($this->getContainer(), $input);
-
-        $config = $factory->createImporterConfig();
-        $importer = $factory->createImporter($config);
-
-        $importer->setStatusCallback(new ImporterStatusFnCallback(array('postResetDoneMarker' => function () {
-            echo ".";
-        })));
-        $importer->resetDoneMarkers();
-
-        echo "\n";
-        echo "Done";
-
-        return 0;
+        $output->writeln("Scanning for '.done' files. This may take some time.");
+//        $importer->resetDoneMarkers();
     }
 }

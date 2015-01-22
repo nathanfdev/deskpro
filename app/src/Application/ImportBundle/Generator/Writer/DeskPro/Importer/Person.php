@@ -47,19 +47,25 @@ final class Person extends AbstractImporter
     }
 
     /**
-     * Returns db entity by exported entity
-     *
-     * @param Entity\Person $person
-     * @return DeskPROEntity\Person
+     * {@inheritdoc}
      */
-    public function importEntity(Entity\Person $person)
+    public function getDoctrineEntity(Entity\EntityInterface $entity)
     {
+        if (!$entity instanceof Entity\Person) {
+            throw new \Exception(sprintf(
+                'Entity `%s` is not supported by importer `%s`',
+                get_class($entity), get_class($this)
+            ));
+        }
+
         $record = new DeskPROEntity\Person();
-        $record
-            ->setLanguageId($this->mappers
-                ->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE)
-                ->findIdByValue($person->getLanguage())
+        if ($entity->getLanguage()) {
+            $record->setLanguageId(
+                $this->mappers
+                    ->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE)
+                    ->findIdByValue($entity->getLanguage())
             );
+        }
 
         return $record;
     }

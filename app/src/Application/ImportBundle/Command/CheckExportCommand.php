@@ -29,7 +29,6 @@ namespace Application\ImportBundle\Command;
 
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Application\ImportBundle\Generator;
 
 /**
@@ -47,7 +46,7 @@ class CheckExportCommand extends AbstractExportCommand
     protected function configure()
     {
         $this->setName('dp:export:check');
-        $this->setHelp('Export validation process');
+        $this->setHelp('Check export validation process');
 
         parent::configure();
     }
@@ -57,14 +56,16 @@ class CheckExportCommand extends AbstractExportCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+
         $config     = $this->createGeneratorConfig($input);
-        $logger     = $this->createLogger($config, new ConsoleHandler($output));
+        $logger     = $this->createLogger($config, $output);
         $generator  = $this->createGenerator($config, $output, $logger);
 
         $exceptions = $generator->validate();
         foreach ($exceptions as $exception) {
             /** @var Generator\Validator\ValidatorException $exception */
-            $logger->alert($exception);
+            $logger->critical($exception);
         }
 
         $output->writeln('');

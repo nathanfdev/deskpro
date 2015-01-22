@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Generator;
 
-use Symfony\Component\Console\Helper\ProgressHelper;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Interface ProgressBarAwareInterface
@@ -38,8 +38,8 @@ interface ProgressBarAwareInterface
     /**
      * Set progress bar helper
      *
-     * @param ProgressHelper $progress_bar
+     * @param ProgressBar $progress_bar
      * @return $this
      */
-    public function setProgressBarHelper(ProgressHelper $progress_bar);
+    public function setProgressBarHelper(ProgressBar $progress_bar);
 }

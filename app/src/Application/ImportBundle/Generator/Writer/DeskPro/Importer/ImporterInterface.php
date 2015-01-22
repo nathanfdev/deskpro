@@ -27,6 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
+
 /**
  * DeskPro importer interface
  *
@@ -41,4 +44,14 @@ interface ImporterInterface
      * @return string
      */
     public function getEntityType();
+
+    /**
+     * Returns an importing DeskPro doctrine entity
+     *
+     * @param Entity\EntityInterface $entity
+     *
+     * @return DeskPROEntity\Person
+     * @throws \Exception
+     */
+    public function getDoctrineEntity(Entity\EntityInterface $entity);
 }

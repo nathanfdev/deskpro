@@ -28,7 +28,7 @@
 namespace Application\ImportBundle\Generator;
 
 use Psr\Log\LoggerInterface;
-use Symfony\Component\Console\Helper\ProgressHelper;
+use Symfony\Component\Console\Helper\ProgressBar;
 
 /**
  * Class AbstractGenerator
@@ -47,7 +47,7 @@ abstract class AbstractGenerator implements GeneratorConfigAwareInterface, Logge
     protected $logger;
 
     /**
-     * @var ProgressHelper
+     * @var ProgressBar
      */
     protected $progress_bar;
 
@@ -72,7 +72,7 @@ abstract class AbstractGenerator implements GeneratorConfigAwareInterface, Logge
     /**
      * {@inheritdoc}
      */
-    public function setProgressBarHelper(ProgressHelper $progress_bar)
+    public function setProgressBarHelper(ProgressBar $progress_bar)
     {
         $this->progress_bar = $progress_bar;
         return $this;

@@ -43,6 +43,8 @@ class DeskProWriterFactory extends AbstractFactory
     {
         /** @var \Doctrine\Bundle\DoctrineBundle\Registry $doctrine */
         $doctrine = $this->container->get('doctrine');
+        /** @var \Doctrine\Common\Persistence\ObjectManager $entity_manager */
+        $entity_manager = $this->container->get('doctrine.orm.entity_manager');
 
         /** @var EntityRepository\Article $articleRepository */
         $articleRepository = $doctrine->getRepository('Application\DeskPRO\Entity\Article');
@@ -108,6 +110,6 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Person($mappers))
             ->attach(new Importer\Ticket($mappers));
 
-        return new DeskProWriter($importers);
+        return new DeskProWriter($importers, $entity_manager);
     }
 }

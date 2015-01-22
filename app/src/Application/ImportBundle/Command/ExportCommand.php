@@ -27,12 +27,10 @@
 
 namespace Application\ImportBundle\Command;
 
-use Application\ImportBundle\Generator\GeneratorException;
-use Application\ImportBundle\Generator\Validator\ValidatorException;
+use Application\ImportBundle\Generator;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
-use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 
 /**
  * Export command
@@ -65,12 +63,15 @@ class ExportCommand extends AbstractExportCommand
      */
     protected function execute(InputInterface $input, OutputInterface $output)
     {
+        $output->setVerbosity(OutputInterface::VERBOSITY_VERY_VERBOSE);
+
         $config = $this->createGeneratorConfig($input);
+        $config->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON);
         if ($config->getInputPath() === $config->getOutputPath()) {
             throw new \Exception('Output path must be different from input path');
         }
 
-        $logger    = $this->createLogger($config, new ConsoleHandler($output));
+        $logger    = $this->createLogger($config, $output);
         $generator = $this->createGenerator($config, $output, $logger);
 
         try {
@@ -81,10 +82,10 @@ class ExportCommand extends AbstractExportCommand
                 $config->getLogPath()
             ));
 
-        } catch (GeneratorException $e) {
+        } catch (Generator\GeneratorException $e) {
             $output->writeln('');
             foreach ($e->getExceptions() as $exception) {
-                /** @var ValidatorException $exception */
+                /** @var Generator\Validator\ValidatorException $exception */
                 $logger->critical($exception);
             }
             if ($config->isVerbose() === false) {

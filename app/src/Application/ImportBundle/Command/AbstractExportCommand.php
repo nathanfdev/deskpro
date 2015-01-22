@@ -34,15 +34,15 @@ use Application\ImportBundle\Generator;
 use Monolog\Handler\StreamHandler;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
-use Symfony\Component\Console\Helper\ProgressHelper;
+use Symfony\Component\Console\Helper\ProgressBar;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
+use Symfony\Component\Console\Output\OutputInterface;
 use Orb\Util\OptionsArray;
 use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Exception;
-use Symfony\Component\Console\Output\OutputInterface;
 
 /**
  * Base export command
@@ -62,7 +62,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             'input-path',
             null,
             InputOption::VALUE_REQUIRED,
-            'The path to the directory where the CSV files are present'
+            'The path to the directory where the exporting files are present'
         );
     }
 
@@ -78,7 +78,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     {
         $config = new GeneratorConfig();
         $config
-            ->setWriterType(Generator\Writer\WriterInterface::TYPE_JSON)
             ->addRecordType(GeneratorInterface::RECORD_TYPE_PERSON)
             ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKET);
 
@@ -150,18 +149,19 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      * Create a logger
      *
      * @param GeneratorConfig $config
-     * @param ConsoleHandler  $consoleHandler
+     * @param OutputInterface $output
      *
      * @return LoggerInterface
      */
-    protected function createLogger(GeneratorConfig $config, ConsoleHandler $consoleHandler)
+    protected function createLogger(GeneratorConfig $config, OutputInterface $output)
     {
         $logger = new Logger('exporter');
         if ($config->getLogPath()) {
             $logger->pushHandler(new StreamHandler($config->getLogPath()));
         }
         if ($config->isVerbose()) {
-            $logger->pushHandler($consoleHandler);
+            $console_handler = new ConsoleHandler($output);
+            $logger->pushHandler($console_handler);
         }
 
         return $logger;
@@ -178,8 +178,6 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
      */
     protected function createGenerator(GeneratorConfig $config, OutputInterface $output, LoggerInterface $logger)
     {
-        /** @var ProgressHelper $progress_bar */
-        $progress_bar = $this->getHelperSet()->get('progress');
         /** @var Generator\Generator $generator */
         $generator = $this->getContainer()->get('deskpro.import.generator');
         $generator
@@ -187,7 +185,9 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             ->setLogger($logger);
 
         if (!$config->isVerbose()) {
-            $progress_bar->start($output, $generator->getTotalRecordsCount());
+            $progress_bar = new ProgressBar($output, $generator->getTotalRecordsCount());
+            $progress_bar->start();
+
             $generator->setProgressBarHelper($progress_bar);
         }
 

@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro;
 
 use Application\ImportBundle\Entity\EntityInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
+use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * Generator deskpro writer
@@ -45,13 +46,20 @@ class DeskProWriter extends AbstractWriter
     private $importers;
 
     /**
+     * @var ObjectManager
+     */
+    private $entity_manager;
+
+    /**
      * Constructor
      *
      * @param Importer\Collection $importers
+     * @param ObjectManager       $entity_manager
      */
-    public function __construct(Importer\Collection $importers)
+    public function __construct(Importer\Collection $importers, ObjectManager $entity_manager)
     {
-        $this->importers = $importers;
+        $this->importers      = $importers;
+        $this->entity_manager = $entity_manager;
     }
 
     /**
@@ -67,11 +75,29 @@ class DeskProWriter extends AbstractWriter
      */
     public function writeData(EntityInterface $entity)
     {
+        $record = $this->getImporter($entity)->getDoctrineEntity($entity);
+
+//        $this->entity_manager->persist($record);
+//        $this->entity_manager->flush();
+    }
+
+    /**
+     * Returns importer by exported entity
+     *
+     * @param EntityInterface $entity
+     *
+     * @return Importer\ImporterInterface
+     * @throws \Exception
+     */
+    private function getImporter(EntityInterface $entity)
+    {
         foreach ($this->importers as $importer) {
             /** @var Importer\ImporterInterface $importer */
             if ($entity->getType() === $importer->getEntityType()) {
-
+                return $importer;
             }
         }
+
+        throw new \Exception(sprintf('Entity `%s` not supported', get_class($entity)));
     }
 }
