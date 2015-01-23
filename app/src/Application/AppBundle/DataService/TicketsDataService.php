@@ -38,6 +38,7 @@ namespace Application\AppBundle\DataService;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Translate\Translate;
+use Application\PortalBundle\Model\TicketFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Pagerfanta;
@@ -54,36 +55,17 @@ class TicketsDataService
         $this->em = $em;
     }
 
-    public function getAwaitingAgentPager(Person $person, $max_per_page, $page)
+    /**
+     * @param Person $person
+     * @param TicketFilter $filter
+     * @param $page
+     * @param $max_per_page
+     * @return Pagerfanta
+     */
+    public function getPager(Person $person, TicketFilter $filter, $page, $max_per_page)
     {
         // TODO: this needs to be a full blown search with filters
         $tickets = new ArrayCollection($this->getTicketRepo()->findAwaitingAgentTicketsForPerson($person));
-
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($tickets));
-        $pager->setMaxPerPage($max_per_page);
-        $pager->setCurrentPage($page);
-
-        return $pager;
-    }
-
-    public function getAwaitingUserPager(Person $person, $max_per_page, $page)
-    {
-        // TODO: this needs to be a full blown search with filters
-        $tickets = new ArrayCollection($this->getTicketRepo()->findAwaitingUserTicketsForPerson($person));
-
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($tickets));
-        $pager->setMaxPerPage($max_per_page);
-        $pager->setCurrentPage($page);
-
-        return $pager;
-    }
-
-    public function getResolvedPager(Person $person, $max_per_page, $page)
-    {
-        // TODO: this needs to be a full blown search with filters
-        $tickets = new ArrayCollection($this->getTicketRepo()->findResolvedTicketsForPerson($person));
 
         // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
         $pager = new Pagerfanta(new DoctrineCollectionAdapter($tickets));

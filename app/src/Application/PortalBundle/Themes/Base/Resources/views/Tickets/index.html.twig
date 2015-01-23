@@ -3,7 +3,7 @@
 {% block inner_content %}
     <div class="column-full">
 
-     {% macro tickets_table(tickets_pager, title) %}
+     {% macro tickets_table(tickets_pager, title, pg_param) %}
          <div class="column-full">
              <div><!-- Table Header -->
                  <header class="titled-header">
@@ -57,13 +57,17 @@
 
                      </tbody>
                  </table>
+
+                 {% if tickets_pager.haveToPaginate() %}
+                    {{ pagerfanta(tickets_pager, null, { pageParameter: '['~pg_param~']' }) }}
+                 {% endif %}
              </div>
          </div>
      {% endmacro %}
 
-        {{ _self.tickets_table(awaiting_user_tickets, 'You need to respond') }}
-        {{ _self.tickets_table(awaiting_agent_tickets, 'We need to respond') }}
-        {{ _self.tickets_table(resolved_tickets, 'Resolved') }}
+        {{ _self.tickets_table(awaiting_user_tickets, 'You need to respond', awaiting_user_tickets_pg_param) }}
+        {{ _self.tickets_table(awaiting_agent_tickets, 'We need to respond', awaiting_agent_tickets_pg_param) }}
+        {{ _self.tickets_table(resolved_tickets, 'Resolved', resolved_tickets_pg_param) }}
 
 
 

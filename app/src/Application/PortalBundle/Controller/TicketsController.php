@@ -37,6 +37,7 @@ namespace Application\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\TicketMessage;
 use Application\PortalBundle\Controller\AbstractController;
+use Application\PortalBundle\Model\TicketFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
@@ -45,19 +46,59 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 class TicketsController extends AbstractController
 {
     /**
-     * @Route("/tickets", name="portal_tickets")
+     * @Route("/tickets/{type}", name="portal_tickets", defaults={"type":"own"}, requirements={"type":"organization"})
      * @Security("is_granted('ROLE_USER') and is_granted('USE_TICKETS')")
      */
-    public function indexAction()
+    public function indexAction(Request $request, $type)
     {
         $person = $this->getUser();
+        $per_page = 2; // TODO: brand setting?
+
+        // create data service filters
+        $awaiting_user_filter = new TicketFilter(
+            $type,
+            TicketFilter::CATEGORY_AWAITING_USER,
+            $request->query->get('user_sort', 'activity'),
+            $request->query->get('user_direction', 'desc')
+        );
+        $awaiting_agent_filter = new TicketFilter(
+            $type,
+            TicketFilter::CATEGORY_AWAITING_AGENT,
+            $request->query->get('agent_sort', 'activity'),
+            $request->query->get('agent_direction', 'desc')
+        );
+        $resolved_filter = new TicketFilter(
+            $type,
+            TicketFilter::CATEGORY_RESOLVED,
+            $request->query->get('resolved_sort', 'activity'),
+            $request->query->get('resolved_direction', 'desc')
+        );
+
+        // page
+        $awaiting_user_pg_param = 'user_page';
+        $awaiting_user_pg = $request->query->get($awaiting_user_pg_param, 1);
+        $awaiting_agent_pg_param = 'agent_page';
+        $awaiting_agent_pg = $request->query->get($awaiting_agent_pg_param, 1);
+        $resolved_pg_param = 'resolved_page';
+        $resolved_pg = $request->query->get($resolved_pg_param, 1);
+
+        // fetch data
+        $tds = $this->getTicketsDataService();
+        $awaiting_user_pager = $tds->getPager($person, $awaiting_user_filter, $awaiting_user_pg, $per_page);
+        $awaiting_agent_pager = $tds->getPager($person, $awaiting_agent_filter, $awaiting_agent_pg, $per_page, $awaiting_agent_pg_param);
+        $resolved_pager = $tds->getPager($person, $resolved_filter, $resolved_pg, $per_page, $resolved_pg_param);
 
         return $this->renderThemeView(
             'Theme:Tickets:index.html.twig',
             array(
-                'awaiting_user_tickets' => $this->getTicketsDataService()->getAwaitingUserPager($person, 100, 1),
-                'awaiting_agent_tickets' => $this->getTicketsDataService()->getAwaitingAgentPager($person, 100, 1),
-                'resolved_tickets' => $this->getTicketsDataService()->getResolvedPager($person, 100, 1),
+                'awaiting_user_tickets' => $awaiting_user_pager,
+                'awaiting_user_tickets_pg_param' => $awaiting_user_pg_param,
+
+                'awaiting_agent_tickets' => $awaiting_agent_pager,
+                'awaiting_agent_tickets_pg_param' => $awaiting_agent_pg_param,
+
+                'resolved_tickets' => $resolved_pager,
+                'resolved_tickets_pg_param' => $resolved_pg_param,
             )
         );
     }
