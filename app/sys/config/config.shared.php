@@ -41,6 +41,16 @@ $definition->setArguments(
 $container->setDefinition('swiftmailer.mailer', $definition);
 
 ############################################################################
+# Listeners
+############################################################################
+
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\EventListener\SecurityHeadersResponseListener');
+$definition->addTag('kernel.event_subscriber');
+$container->setDefinition('listener.security_headers', $definition);
+
+
+############################################################################
 # Form Type
 ############################################################################
 
