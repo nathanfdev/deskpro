@@ -38,7 +38,6 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\HttpFoundation\UserAgentRequirementCheck;
 use Symfony\Component\HttpFoundation\Cookie;
 use Symfony\Component\HttpFoundation\RedirectResponse;
-use Symfony\Component\HttpFoundation\Request;
 
 class LoginController extends \Application\UserBundle\Controller\LoginController
 {
@@ -53,10 +52,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
      */
     public function indexAction()
     {
-        $return = $this->in->getStringFromGet('return');
-        if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
-            $return = '';
-        }
+        $return = $this->request->getReturnParam();
 
         if ($this->loginViaToken()) {
             if ($return) return $this->redirect($return);

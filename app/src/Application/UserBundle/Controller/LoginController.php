@@ -162,12 +162,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
      */
     public function indexAction()
     {
-        $return = $this->in->getStringFromGet('return');
-        if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
-            // Always be a path on the current domain,
-            // or else it might be a trick to go to some other domain etc
-            $return = '';
-        }
+        $return = $this->request->getReturnParam();
 
         if ($this->loginViaToken() || $this->session->getPerson()->getId()) {
             if ($return) return $this->redirect($return);
@@ -366,10 +361,7 @@ HTML;
             return $this->redirectRoute($this->route_prefix . '_login');
         }
 
-        $return = $this->in->getString('return');
-        if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
-            $return = '';
-        }
+        $return = $this->request->getReturnParam();
 
         if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
             $this->session->setFlash('failed_login_rate', $lockTime);
@@ -624,7 +616,7 @@ HTML;
 
     public function authenticateAction($usersource_id)
     {
-        $return = $this->in->getString('return');
+        $return = $this->request->getReturnParam();
 
         if ($usersource_test = $this->in->getBool(self::USERSOURCE_TEST)) {
             $this->session->setFlash(self::USERSOURCE_TEST, 1);
@@ -695,7 +687,7 @@ HTML;
             // We expect a redirect to be rquired
             } elseif ($result->isRedirectRequired()) {
 
-                $return = $this->in->getString('return');
+                $return = $this->request->getReturnParam();
                 $this->session->set('auth_return', $return);
 
                 if ($this->in->getString('js_tell')) {
@@ -733,7 +725,7 @@ HTML;
 
                 $this->_setupUsersourceSession($usersource, $person, $result);
 
-                $return = $this->in->getString('return');
+                $return = $this->request->getReturnParam();
                 if ($return) {
                     return $this->redirect($return);
                 } else {
@@ -751,7 +743,7 @@ HTML;
 
     public function authenticateCallbackAction($usersource_id)
     {
-        $return = $this->in->getString('return');
+        $return = $this->request->getReturnParam();
         $usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
         if (!$usersource) {
@@ -1308,7 +1300,7 @@ HTML;
             }
         }
 
-        $return = $this->in->getString('return');
+        $return = $this->request->getReturnParam();
         if ($return) {
             return $this->redirect($return);
         } else {
