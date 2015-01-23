@@ -36,6 +36,8 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\EntityRepository\LoginLog;
+use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
 use Application\DeskPRO\Entity\Person;
@@ -367,6 +369,11 @@ HTML;
         $return = $this->in->getString('return');
         if ($return AND ($return[0] != '/' || strpos($return, '/validate-email/') !== false)) {
             $return = '';
+        }
+
+        if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
+            $this->session->setFlash('failed_login_rate', $lockTime);
+            return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
         }
 
         $this->ensureRequestToken('user_login');
@@ -1328,5 +1335,43 @@ HTML;
         } else {
             return null;
         }
+    }
+
+    /**
+     * get current login lockout time
+     * @param Person $person
+     * @return int
+     */
+    protected function getLoginLockoutTime($email = null)
+    {
+        $context = $this->getInterface();
+
+        if (!$email) {
+            return 0;
+        }
+
+        // 0 if not user/agent/admin
+        if ('admin' === $context) {
+            $context = 'agent';
+        } elseif ('user' !== $context && 'agent' !== $context) {
+            return 0;
+        }
+
+        // 0 if disabled
+        if (!$this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.enabled')) {
+            return 0;
+        }
+
+        if (!$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email)) {
+            return 0;
+        }
+
+        /** @var LoginLog $rep */
+        $rep = $this->em->getRepository('DeskPRO:LoginLog');
+        $maxAttempts = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts');
+        $checkTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts_time');
+        $lockTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'lock_time');
+
+        return $rep->getLoginLockoutTime($person, $context, $maxAttempts, $checkTime, $lockTime);
     }
 }

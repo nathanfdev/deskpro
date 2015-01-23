@@ -105,6 +105,14 @@
 					{{ phrase('user.profile.account_disabled_message') }}
 				</div>
 			{% endif %}
+			{% if app.session.hasFlash('failed_login_rate') %}
+				{% set timeago = app.session.getFlash('failed_login_rate').value %}
+				<div class="dp-alert dp-alert-error">
+					{{ phrase('user.profile.account_locked_message', {
+						timeago: '<time class="timeago" data-timeago-no-ago="1" datetime="' ~ ('- ' ~ timeago ~ ' seconds')|date('c', 'UTC') ~ '"></time>'
+					}, true) }}
+				</div>
+			{% endif %}
 			<form action="{{ path('user_login_authenticate_local') }}" class="dp-layout" method="post">
 				{{ form_token('user_login') }}
 
