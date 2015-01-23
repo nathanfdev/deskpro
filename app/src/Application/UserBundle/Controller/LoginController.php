@@ -881,6 +881,18 @@ HTML;
 
         $person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
 
+        /** @var \Application\DeskPRO\EntityRepository\TmpData $rep */
+        $rep = $this->em->getRepository('DeskPRO:TmpData');
+        // hardcoded rate-limit for reset password request
+        if (2 <= $rep->getCountByName('reset-password:' . DP_INTERFACE .':' . $person['id'], 30 * 60)) {
+            return $_format == 'json'
+                ? $this->createJsonResponse(array('success' => 1))
+                : $this->render($this->tpl_prefix . ':reset-password-sent.html.twig', array(
+                    'route_prefix' => $this->route_prefix,
+                    'did_send' => true
+                ));
+        }
+
         $is_invalid = false;
         if ($person && $person->is_deleted) {
             $is_invalid = true;
@@ -953,7 +965,7 @@ HTML;
 
         // Admins cant reset their password, but we dont want to reveal to this unknown user that we're an admin
         // Send an email instead
-        if (!defined('DPC_IS_CLOUD')) {
+        if (0 && !defined('DPC_IS_CLOUD')) {
             if ($person->can_admin && $person->is_agent && !$person->is_deleted) {
                 $vars = array(
                     'person' => $person,
