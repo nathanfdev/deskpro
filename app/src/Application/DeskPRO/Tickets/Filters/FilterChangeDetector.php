@@ -70,6 +70,11 @@ class FilterChangeDetector
     private $explicit_filter_scopes = array();
 
     /**
+     * @var bool
+     */
+    private $disable_cache = false;
+
+    /**
      * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
      * @param \Application\DeskPRO\Entity\Person[]       $agents
      */
@@ -90,6 +95,10 @@ class FilterChangeDetector
 
                 $this->team_to_agents[$t->id][] = $agent;
             }
+        }
+
+        if (isset($GLOBALS['DP_FILTERCHANGEDETECT_DISABLE_CACHE']) && $GLOBALS['DP_FILTERCHANGEDETECT_DISABLE_CACHE']) {
+            $this->disable_cache = true;
         }
     }
 
@@ -178,6 +187,10 @@ class FilterChangeDetector
             if ($exist_set->getTicket()->id != $ticket->id) {
                 $exist_set = null;
             }
+        }
+
+        if ($this->disable_cache) {
+            $exist_set = null;
         }
 
         // If the states are exactly the same, then we might be able to just return the same
@@ -311,7 +324,7 @@ class FilterChangeDetector
                 $new_match = $orig_match = false;
 
                 // RESULT_IS_CACHED
-                if (isset($generic_match_cache[$filter->id])) {
+                if (!$this->disable_cache && isset($generic_match_cache[$filter->id])) {
                     $orig_match = $generic_match_cache[$filter->id]['orig_match'];
                     $new_match  = $generic_match_cache[$filter->id]['new_match'];
 
