@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\TmpData as TmpDataEntity;
+use Doctrine\ORM\Query;
 
 class TmpData extends AbstractEntityRepository
 {
@@ -60,5 +61,17 @@ class TmpData extends AbstractEntityRepository
     public function getByName($name)
     {
         return $this->findOneBy(array('name' => $name));
+    }
+
+    public function removeDupes(TmpDataEntity $data)
+    {
+        if (!$data['name']) {
+            return;
+        }
+        $this->getEntityManager()->getConnection()->executeQuery(
+            sprintf('delete from %s where name = :name and id != :id', $this->getTableName()),
+            array('name' => $data['name'], 'id' => $data['id']),
+            array(\PDO::PARAM_STR, \PDO::PARAM_INT)
+        );
     }
 }

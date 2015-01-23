@@ -973,6 +973,7 @@ HTML;
         // If they're still here, then we just send them through the normal DeskPRO reset procedure
 
         $code_data = TmpData::create('reset-password', array('person_id' => $person['id'], 'interface' => DP_INTERFACE), '+3 days');
+        $code_data['name'] = 'reset-password:' . DP_INTERFACE .':' . $person['id'];
         $this->em->persist($code_data);
         $this->em->flush();
 
@@ -1040,6 +1041,7 @@ HTML;
                     $em->persist($code_data);
                     $em->flush();
                 });
+                $this->em->getRepository('DeskPRO:TmpData')->removeDupes($code_data);
 
                 if ($is_new_user) {
                     $user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
