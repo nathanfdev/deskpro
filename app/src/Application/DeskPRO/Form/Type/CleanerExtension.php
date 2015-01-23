@@ -83,6 +83,12 @@ class CleanerExtension extends AbstractTypeExtension
                 // "filter_clean" will disable cleaning for all of its children, so make sure
                 // the option is only set to false if it represents an isolated group of data.
                 if ($child_form->getConfig()->getOption('filter_clean', true)) {
+                    $form_type = $child_form->getConfig()->getType()->getName();
+                    if ('password' === $form_type) {
+                        $clean_data[$form_name] = $data;
+                        continue; // ignore password type fields
+                    }
+
                     if (is_array($data)) {
                         $cleaned = $this->cleanData($data, $child_form);
                     } else {
