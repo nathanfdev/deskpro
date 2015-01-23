@@ -134,7 +134,8 @@ $em->flush();
 
 // Statuses are done as part of FeedbackCatsStep so we can map id's
 if (!$IMPORT_INSTALL) {
-    foreach (array('planning', 'started', 'under-review') as $t) {
+    // ensure gathering-feedback is always first, such that it's ID = 1
+    foreach (array('gathering-feedback', 'planning', 'started', 'under-review') as $t) {
         $s = new \Application\DeskPRO\Entity\FeedbackStatusCategory();
         $s->status_type = 'active';
         $s->title = $translate->phrase('user.defaults.feedback_status_' . $t);

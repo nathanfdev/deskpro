@@ -14,6 +14,7 @@
     'user.defaults.feedback_status_planning'      => 'Planning',
     'user.defaults.feedback_status_started'       => 'Started',
     'user.defaults.feedback_status_under-review'  => 'Under Review',
+    'user.defaults.feedback_status_gathering-feedback'  => 'Gathering Feedback',
     'user.defaults.feedback_type_bug-report'      => 'Bug Report',
     'user.defaults.feedback_type_feature-request' => 'Feature Request',
     'user.defaults.feedback_type_suggestion'      => 'Suggestion',

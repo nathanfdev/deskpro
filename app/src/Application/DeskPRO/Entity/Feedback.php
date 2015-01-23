@@ -48,7 +48,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
 {
     const CONTENT_TYPE = 'feedback';
 
-    const STATUS_NEW      = 'new';
     const STATUS_ACTIVE   = 'active';
     const STATUS_CLOSED   = 'closed';
     const STATUS_HIDDEN   = 'hidden';
@@ -267,16 +266,7 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->_onPropertyChanged('status', $this->status, $status);
         $this->status = $status;
 
-        if ($status == 'approve') {
-            $status = self::STATUS_NEW;
-        }
-
         switch ($status) {
-            case self::STATUS_NEW:
-                $this['hidden_status']   = null;
-                $this['status_category'] = null;
-                break;
-
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
                 $this['hidden_status'] = null;
@@ -302,10 +292,6 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         }
 
         switch ($status) {
-            case self::STATUS_NEW:
-                $this['status'] = $status;
-                break;
-
             case self::STATUS_ACTIVE:
             case self::STATUS_CLOSED:
                 $this['status'] = $status;
