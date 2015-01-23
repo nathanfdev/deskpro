@@ -98,7 +98,12 @@ define([
      */
     getResourcePath: function(path) {
       var fullPath = this._packageName + '/res/' + path.replace(/^\//, '');
-      return this._assets[fullPath] || null;
+
+      if (this._assets[fullPath]) {
+        return this._assets[fullPath] + '?v=' + (window.DP_BUILD_TIME || '')
+      } else {
+        return null;
+      }
     },
 
 
