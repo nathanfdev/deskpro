@@ -2329,6 +2329,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.setListPage(page, routeData.isBackgroundLoad || false);
 
 			if (callback) callback(page);
+			$(document).trigger('textareaexpander_expanded');
 		}).bind(this));
 
 		if (routeData && !routeData.isBackgroundLoad) {

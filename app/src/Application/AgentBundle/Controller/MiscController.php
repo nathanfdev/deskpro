@@ -271,6 +271,13 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago)
 }
 JS;
 
+        $ls = $this->container->getLanguageData();
+        $locale = null;
+        if ($defaultLanguage = $ls->getDefault()) {
+            $locale = $defaultLanguage['locale'];
+        }
+        $js[] = sprintf('window.DESKPRO_DEFAULT_LANG = "%s";', $locale);
+
         $js = implode("\n", $js);
 
         $response = $this->response;

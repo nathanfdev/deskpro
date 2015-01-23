@@ -86,6 +86,7 @@
     'agent.settings.sla_filter_team'                  => 'Show only tickets assigned to my team',
     'agent.settings.ticket_signature'                 => 'Ticket Signature',
     'agent.settings.ticket_signature_desc'            => 'This signature will be appended automatically when you send ticket replies',
+    'agent.settings.ticket_signature_note'            => 'Note: Any reply drafts will be cleared when updating your signature.',
     'agent.settings.tickets_autoload_next'            => 'Automatically load the next ticket in the list after replying (only if closing the ticket tab)',
     'agent.settings.tickets_reverse_order'            => 'Show newest messages first (reverse chronological order) with the replybox at the top',
     'agent.settings.title_other_notifs'               => 'Notifications',

@@ -203,6 +203,7 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket_message = new TicketMessage();
         $ticket_message->person = $user;
         $ticket_message->creation_system = 'gateway.agent';
+        $ticket_message->withNewSubject = $ticket->subject;
 
         $body = $fwd_cutter->getForwardedMessage();
         $body = $this->cleanBodyText($body);
@@ -246,6 +247,35 @@ class ProcessAgentFwd extends ProcessAbstract
 
             $blob->is_temp = false;
             App::getOrm()->persist($blob);
+        }
+
+        $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: Checking for dupe message: ' . $ticket_message->getMessageHash());
+        if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
+            $this->setError('duplicate_message');
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) run :: duplicate message ' . $dupe_message->getId());
+
+            $message = App::getMailer()->createMessage();
+            $message->setSuppressAutoreplies(true);
+            $message->setTemplate('DeskPRO:emails_agent:error-dupe-forward.html.twig', array(
+                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                'error'   => $this->error,
+                'old_ticket_id' => $dupe_message->ticket->id,
+            ));
+            $message->setTo($this->reader->getFromAddress()->getEmail());
+            $message->attach(\Swift_Attachment::newInstance(
+                $this->reader->getRawSource(),
+                'message.eml',
+                'message/rfc822'
+            ));
+
+            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                $message->prepare();
+            });
+
+            App::getMailer()->send($message);
+
+            return null;
         }
 
         $tracker_extras = array(
@@ -443,6 +473,7 @@ class ProcessAgentFwd extends ProcessAbstract
         $ticket_message = new TicketMessage();
         $ticket_message->person = $user;
         $ticket_message->creation_system = 'gateway.agent';
+        $ticket_message->withNewSubject = $ticket->subject;
 
         if ($user_reader->getBodyHtml() && $user_reader->getBodyHtml()->body_utf8) {
             $this->logMessage('[TicketGatewayProcessor] (User) Reading html');
@@ -526,6 +557,35 @@ class ProcessAgentFwd extends ProcessAbstract
 
             $blob->is_temp = false;
             App::getOrm()->persist($blob);
+        }
+
+        $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) runNewForwardedEmailAsAttachTicket :: Checking for dupe message: ' . $ticket_message->getMessageHash());
+        if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
+            $this->setError('duplicate_message');
+            $this->logMessage('[TicketGatewayProcessor] (ProcessAgentFwd) runNewForwardedEmailAsAttachTicket :: duplicate message ' . $dupe_message->getId());
+
+            $message = App::getMailer()->createMessage();
+            $message->setSuppressAutoreplies(true);
+            $message->setTemplate('DeskPRO:emails_agent:error-dupe-forward.html.twig', array(
+                'subject' => $this->reader->getSubject()->getSubjectUtf8(),
+                'name'    => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                'error'   => $this->error,
+                'old_ticket_id' => $dupe_message->ticket->id,
+            ));
+            $message->setTo($this->reader->getFromAddress()->getEmail());
+            $message->attach(\Swift_Attachment::newInstance(
+                $this->reader->getRawSource(),
+                'message.eml',
+                'message/rfc822'
+            ));
+
+            App::$container->getTranslator()->setTemporaryLanguage($this->person->getLanguage(), function () use ($message) {
+                $message->prepare();
+            });
+
+            App::getMailer()->send($message);
+
+            return null;
         }
 
         #------------------------------
