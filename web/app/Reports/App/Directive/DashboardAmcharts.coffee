@@ -33,16 +33,15 @@ define ->
                   chart.addListener "clickSlice", (event) ->
                     if (event.dataItem.dataContext.id != undefined)
                       selected = event.dataItem.dataContext.id
+                      color = event.dataItem.color
                     else
                       selected = undefined
                     if selected? and selected
-                      console.log selected
-                      console.log widget.pies[selected]
-                      dataProvider = widget.pies[selected]
                       data = []
                       angular.forEach defaultDataProvider, (element, index) ->
                         if index == selected
-                          angular.forEach widget.pies[selected], (pie) ->
+                          angular.forEach widget.pies[selected].dataProvider, (pie) ->
+                            pie.color = color
                             data.push pie
                         else
                           data.push element
@@ -50,7 +49,6 @@ define ->
                     else
                       chart.dataProvider = defaultDataProvider
                     chart.validateData()
-
 
                 c = document.getElementById("ch" + i).parentNode.parentNode
                 width = c.style.width;

@@ -569,6 +569,11 @@ class Json extends AbstractRenderer
         return $output;
     }
 
+    protected function _randomColor()
+    {
+        return "#".str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT).str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT).str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
+    }
+
     /**
      * Renders a chart with the specified rows/data.
      *
@@ -858,7 +863,8 @@ class Json extends AbstractRenderer
                         if (isset($info[$graph['value']])) {
                             $data[] = array(
                                 'category' => $graph['title'],
-                                'value' => $info[$graph['value']]
+                                'value' => $info[$graph['value']],
+                                'pulled' => true,
                             );
                         }
                     }
@@ -880,6 +886,7 @@ class Json extends AbstractRenderer
                         'category' => $pie['title'],
                         'value' => $sum,
                         'id' => $k,
+                        'color' => $this->_randomColor()
                     );
                 }
 
@@ -900,19 +907,25 @@ class Json extends AbstractRenderer
             $arrayOutput['startDuration'] = 0;
             $arrayOutput['titleField'] = 'category';
             $arrayOutput['valueField'] = 'value';
+            $arrayOutput['legend'] = false;
+            $arrayOutput['outlineColor'] = '#ffffff';
+            $arrayOutput['outlineAlpha'] = '0.8';
+            $arrayOutput['outlineThickness'] = '2';
+            $arrayOutput['colorField'] = 'color';
+            $arrayOutput['pulledField'] = 'pulled';
             if(count($pieData) > 1) {
                 $overAllPie = array_shift($pieData);
                 $arrayOutput['dataProvider'] = $overAllPie['data'];
-                $arrayOutput['legend']['title'] = $overAllPie['title'];
+//                $arrayOutput['legend']['title'] = $overAllPie['title'];
                 $arrayOutput['multiplePies'] = true;
                 if(count($overAllPie['data']) > 25) {
                     $arrayOutput['labelsEnabled'] = false;
                 }
                 $arrayOutput['pies'] = array();
                 foreach($pieData as $k => $pie) {
-                    $arrayOutput['pies'] = array(
+                    $arrayOutput['pies'][] = array(
                         'dataProvider' => $pie['data'],
-                        'legend' => array('title'=> $pie['title']),
+//                        'legend' => array('title'=> $pie['title']),
                         'labelsEnabled' => count($pie['data']) > 25 ? false : true,
                     );
 
@@ -920,7 +933,7 @@ class Json extends AbstractRenderer
             } else {
                 foreach ($pieData AS $pie) {
                     $arrayOutput['dataProvider'] = $pie['data'];
-                    $arrayOutput['legend']['title'] = $pie['title'];
+//                    $arrayOutput['legend']['title'] = $pie['title'];
                     if(count($pie['data']) > 25) {
                         $arrayOutput['labelsEnabled'] = false;
                     }
