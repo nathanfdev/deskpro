@@ -3,6 +3,10 @@
 {% block inner_content %}
     <div class="column-full">
 
+        <a class="btn" href="{{ type == 'own' ? path('portal_tickets', { type: 'organization' }) : path('portal_tickets') }}">
+            {% if type == 'own' %}Switch to Organizations{% else %}Switch to My Tickets{% endif %}
+        </a>
+
      {% macro tickets_table(tickets_pager, title, pg_param) %}
          <div class="column-full">
              <div><!-- Table Header -->

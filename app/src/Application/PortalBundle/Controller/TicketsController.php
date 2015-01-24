@@ -99,6 +99,8 @@ class TicketsController extends AbstractController
 
                 'resolved_tickets' => $resolved_pager,
                 'resolved_tickets_pg_param' => $resolved_pg_param,
+
+                'type' => $type
             )
         );
     }
