@@ -3,7 +3,7 @@
 {% block inner_content %}
 <div class="column-full">
 
-        {% if type == 'own' and person.organization and person.organization.organization_manager %}
+        {% if type == 'own' and person.organization and person.organization_manager %}
             <a class="button" href="{{ path('portal_tickets', { type: 'organization' }) }}">
                 Switch to Organization
             </a>

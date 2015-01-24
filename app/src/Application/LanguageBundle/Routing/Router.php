@@ -52,6 +52,8 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         'serve_blob_sizefit',
         'serve_default_picture',
         'serve_blob',
+        'admin_interface',
+        'agent_interface',
         '_wdt',
         '_profiler'
     );
