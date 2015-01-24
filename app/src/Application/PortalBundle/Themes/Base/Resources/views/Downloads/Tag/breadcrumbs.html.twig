@@ -1,2 +1,30 @@
-{% import 'Theme:Downloads:_macros.html.twig' as macros %}
-{{ macros.downloads_cat_breadcrumbs(category|default(null), category.treeParents|default(null)) }}
+{% set cat = category|default(null) %}
+{% set parents = category.treeParents|default(null) %}
+<div class="breadcrumbs">
+    <ul>
+        <li>
+            <a href="{{ path('portal_index') }}">{{ brand_setting('core.deskpro_name') }}</a> <i
+                    class="fa fa-angle-right"></i>
+        </li>
+
+        <li>
+            <a href="{{ path('portal_downloads') }}">{{ phrase('portal.downloads.section-title') }}</a>{% if parents|length or (cat and file) %}
+            <i class="fa fa-angle-right">{% endif %}</i>
+        </li>
+
+
+        {% for parent in parents %}
+            <a href="{{ path('portal_downloads_browse', { slug:parent.slug }) }}">{{ parent.title }}</a>
+            {% if (not loop.last) or (cat and file) %}
+                <i class="fa fa-angle-right"></i>
+            {% endif %}
+        {% endfor %}
+
+        {% if cat and file %}
+            <li>
+                <a href="{{ path('portal_downloads_browse', { slug:cat.slug }) }}">{{ cat.title }}</a>
+            </li>
+        {% endif %}
+    </ul>
+    <hr>
+</div>

@@ -119,10 +119,10 @@ class DownloadsController extends AbstractController
      * @Tag(name="download_comments")
      * @TagOptions(
      *      defaults={
-     *          "download": null
+     *          "file": null
      *      },
      *      allowed_types={
-     *          "download":{"Application\DeskPRO\Entity\Download","int","string","null"}
+     *          "file":{"Application\DeskPRO\Entity\Download","int","string","null"}
      *      }
      * )
      *
@@ -130,11 +130,11 @@ class DownloadsController extends AbstractController
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
-        $download = $this->getDownloadsDataService()->getDownload($options['download']);
-        $comments = $this->getDownloadsDataService()->getDownloadComments($download, $this->getUser());
+        $file = $this->getDownloadsDataService()->getDownload($options['file']);
+        $comments = $this->getDownloadsDataService()->getDownloadComments($file, $this->getUser());
 
         return $this->renderThemeView('Theme:Downloads:Tag/comments.html.twig', array(
-            'download' => $download,
+            'file' => $file,
             'comments' => $comments
         ));
     }
@@ -177,8 +177,11 @@ class DownloadsController extends AbstractController
      * @Tag(name="downloads_breadcrumbs")
      *
      * @TagOptions(
-     *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"}}
+     *      defaults={"category": null, "file": null},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"},
+     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"}
+     *      }
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
@@ -186,11 +189,13 @@ class DownloadsController extends AbstractController
     public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {
         $category = $this->getDownloadsDataService()->getCategory($options['category']);
+        $file = $this->getDownloadsDataService()->getDownload($options['file']);
 
         return $this->renderThemeView(
             'Theme:Downloads:Tag/breadcrumbs.html.twig',
             array(
-                'category' => $category
+                'category' => $category,
+                'file' => $file
             )
         );
     }

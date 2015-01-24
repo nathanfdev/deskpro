@@ -1,7 +1,6 @@
 {% extends 'Theme::layout.html.twig' %}
-{% import 'Theme:Articles:_macros.html.twig' as macros %}
 
 {% block inner_content %}
-        {{ page.knowledgebase_breadcrumbs()|raw }}
+        <h1 style="padding-bottom: 10px;">Knowledge Base</h1>
         {{ page.knowledgebase( { articles_options: { count: 5 }} )|raw }}
 {% endblock inner_content %}

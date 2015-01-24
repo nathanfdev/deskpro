@@ -195,7 +195,7 @@ class DownloadsController extends AbstractController
         return $this->renderThemeView(
             'Theme:Downloads:view.html.twig',
             array(
-                'download' => $file,
+                'file' => $file,
                 'content_type' => Download::CONTENT_TYPE,
                 'content_id' => $file->getId(),
                 'is_subscribed' => $is_subscribed,

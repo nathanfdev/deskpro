@@ -1,2 +1,29 @@
-{% import 'Theme:Articles:_macros.html.twig' as macros %}
-{{ macros.kb_article_cat_breadcrumbs(category|default(null), category.treeParents|default(null)) }}
+{% set cat = category|default(null) %}
+{% set parents = category.treeParents|default(null) %}
+<div class="breadcrumbs">
+    <ul>
+        <li>
+            <a href="{{ path('portal_index') }}">{{ global_settings.get('core.deskpro_name') }}</a> <i
+                    class="fa fa-angle-right"></i>
+        </li>
+
+        <li>
+            <a href="{{ path('portal_kb') }}">{{ phrase('portal.articles.section-title') }}</a> {% if parents|length or (cat and article) %}
+            <i class="fa fa-angle-right">{% endif %}</i>
+        </li>
+
+        {% for parent in parents %}
+            <a href="{{ path('portal_kb_browse', { slug:parent.slug }) }}">{{ parent.title }}</a>
+            {% if (not loop.last) or (cat and article) %}
+                <i class="fa fa-angle-right"></i>
+            {% endif %}
+        {% endfor %}
+
+        {% if cat and article %}
+            <li>
+                <a href="{{ path('portal_kb_browse', { slug:cat.slug }) }}">{{ cat.title }}</a>
+            </li>
+        {% endif %}
+    </ul>
+    <hr>
+</div>

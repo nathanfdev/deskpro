@@ -3,29 +3,29 @@
 {# TODO #}
 
 {% block inner_content %}
-    {{ page.downloads_breadcrumbs({category: download.category})|raw }}
+    {{ page.downloads_breadcrumbs({category: file.category})|raw }}
 
     <article class="news kb-article">
         <header>
-            <h1>{{ download.title }}</h1>
+            <h1>{{ file.title }}</h1>
 
             <div class="article-meta">
-                <span class="agent-avatar agent-avatar-mini"><img src="{{ person_picture_url(download.person, 20) }}"></span>
-                {{ phrase('portal.articles.by-line', { name: download.person.name, date: download.date_published | date('Y-m-d') }) }}
-                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: download.num_comments}) }}</a></span>
+                <span class="agent-avatar agent-avatar-mini"><img src="{{ person_picture_url(file.person, 20) }}"></span>
+                {{ phrase('portal.articles.by-line', { name: file.person.name, date: file.date_published | date('Y-m-d') }) }}
+                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: file.num_comments}) }}</a></span>
             </div>
         </header>
 
         <div class="article-extras">
-            <a href="{{ path('portal_downloads_download', { slug: download.slug, authcode: download.blob.authcode }) }}">
+            <a href="{{ path('portal_downloads_download', { slug: file.slug, authcode: file.blob.authcode }) }}">
             
-                {% if download.blob and download.blob.is_image %}
-                    <img style="max-width: 100%;" src="{{ path('serve_blob', { blob_auth_id: download.blob.authcode, filename: download.blob.filenameSafe }) }}"
-                         alt="{{ download.title }}"/><br>
+                {% if file.blob and file.blob.is_image %}
+                    <img style="max-width: 100%;" src="{{ path('serve_blob', { blob_auth_id: file.blob.authcode, filename: file.blob.filenameSafe }) }}"
+                         alt="{{ file.title }}"/><br>
                 {% endif %}
 
-                [{{ download.blob.content_type }}]
-                {{ phrase('portal.downloads.btn-download', { size: download.readableFileSize }) }}
+                [{{ file.blob.content_type }}]
+                {{ phrase('portal.downloads.btn-download', { size: file.readableFileSize }) }}
 
             </a>
         </div>
@@ -34,7 +34,7 @@
             <div class="header-buttons">
 
                 {% if brand_setting('user.downloads_subscriptions') %}
-                    <a href="{{ path('portal_downloads_files_toggle_subscription', { slug: download.slug }) }}">
+                    <a href="{{ path('portal_downloads_files_toggle_subscription', { slug: file.slug }) }}">
                         {% if is_subscribed %}
                             {{ phrase('portal.general.btn-unsubscribe') }}
                         {% else %}
@@ -52,14 +52,14 @@
         </div>
 
         <div class="article-content padded">
-            {{ download.contentDesc }}
+            {{ file.contentDesc }}
         </div>
 
-        {% if download.labels|length %}
+        {% if file.labels|length %}
             <div class="tag-list">
                 <ul>
                     <li class="tag-list-header"><i class="fa fa-tags"></i> Tags</li>
-                    {% for l in download.labels %}
+                    {% for l in file.labels %}
                         <li class="tag-list-item"><a href="#">{{ l }}</a></li>
                     {% endfor %}
                 </ul>
@@ -79,10 +79,10 @@
             {% endif %}
 
             <div class="rate-article">
-                <a href="{{ path('portal_downloads_vote_up', { slug: download.slug }) }}" class="rate-up">
+                <a href="{{ path('portal_downloads_vote_up', { slug: file.slug }) }}" class="rate-up">
                     {{ phrase('portal.general.rate-page-positive') }} <span>:)</span>
                 </a>
-                <a href="{{ path('portal_downloads_vote_down', { slug: download.slug }) }}" class="rate-down">
+                <a href="{{ path('portal_downloads_vote_down', { slug: file.slug }) }}" class="rate-down">
                     <span>:(</span> {{ phrase('portal.general.rate-page-negative') }}
                 </a>
             </div>

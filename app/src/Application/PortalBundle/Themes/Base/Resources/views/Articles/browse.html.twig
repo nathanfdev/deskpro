@@ -3,6 +3,8 @@
 {% block inner_content %}
     {{ page.knowledgebase_breadcrumbs()|raw }}
 
+    <h1>{{ category.title }}</h1>
+
     {% if brand_setting('user.kb_subscriptions') %}
         <hr/>
         <hr/>

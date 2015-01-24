@@ -182,8 +182,11 @@ class NewsController extends AbstractController
      * @Tag(name="news_breadcrumbs")
      *
      * @TagOptions(
-     *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"}}
+     *      defaults={"category": null, "post": null},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"},
+     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
@@ -191,11 +194,13 @@ class NewsController extends AbstractController
     public function breadcrumbsAction(TagRequest $request, array $options)
     {
         $category = $this->getNewsDataService()->getCategory($options['category']);
+        $post = $this->getNewsDataService()->getPost($options['post']);
 
         return $this->renderThemeView(
             'Theme:News:Tag/breadcrumbs.html.twig',
             array(
-                'category' => $category
+                'category' => $category,
+                'post' => $post
             )
         );
     }

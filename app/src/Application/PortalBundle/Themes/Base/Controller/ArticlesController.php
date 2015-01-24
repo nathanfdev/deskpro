@@ -188,8 +188,11 @@ class ArticlesController extends AbstractController
      * @Tag(name="knowledgebase_breadcrumbs")
      *
      * @TagOptions(
-     *      defaults={"category": null},
-     *      allowed_types={"category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"}}
+     *      defaults={"category": null, "article": null},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"},
+     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"},
+     *      }
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
@@ -197,10 +200,12 @@ class ArticlesController extends AbstractController
     public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {
         $category = $this->getArticlesDataService()->getCategory($options['category']);
+        $article = $this->getArticlesDataService()->getArticle($options['article']);
 
         return $this->renderThemeView(
             'Theme:Articles:Tag/breadcrumbs.html.twig', array(
-                'category' => $category
+                'category' => $category,
+                'article' => $article
             )
         );
     }
