@@ -47,5 +47,6 @@ class AppExtension extends Extension
         $loader->load('services.yml');
         $loader->load('view_services.yml');
         $loader->load('data_services.yml');
+        $loader->load('event_listeners.yml');
     }
 }

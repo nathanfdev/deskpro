@@ -1,0 +1,9 @@
+services:
+
+  # Note: SecurityHeadersResponseListener's service is defined in config.shared.php as it is used globally
+
+  redirect_protection_listener:
+    class: Application\AppBundle\EventListener\RedirectProtectionListener
+    arguments: [@brand_stack, @logger]
+    tags:
+      - { name: kernel.event_subscriber }
