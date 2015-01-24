@@ -48,7 +48,7 @@
                                  <a href="{{ path('portal_tickets_view', { id: ticket.id }) }}">
                                      <img src="{{ person_picture_url(last_message.person) }}" class="avatar">
                                      <span class="person">{{ last_message.person.display_name_user }}</span>
-                                     <span class="date">{{ last_message.date_created|date }}</span>
+                                     <span class="date">{{ ticket.last_activity_date|date }}</span>
                                  </a>
                              </td>
                          </tr>

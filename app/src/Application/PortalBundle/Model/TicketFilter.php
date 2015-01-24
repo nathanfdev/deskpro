@@ -53,22 +53,22 @@ class TicketFilter
     /**
      * @var string type "own","organization"
      */
-    public $type;
+    protected $type;
 
     /**
      * @var string category "awaiting_agent", "awaiting_person", "resolved"
      */
-    public $category;
+    protected $category;
 
     /**
      * @var string sort "activity", "created"
      */
-    public $sort;
+    protected $sort;
 
     /**
      * @var string sort_direction "desc", "asc"
      */
-    public $sort_direction;
+    protected $sort_direction;
 
     public function __construct($type = null, $category = null, $sort = null, $sort_direction = null)
     {

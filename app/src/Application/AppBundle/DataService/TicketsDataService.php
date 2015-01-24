@@ -36,11 +36,13 @@ namespace Application\AppBundle\DataService;
 
 
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\Translate\Translate;
 use Application\PortalBundle\Model\TicketFilter;
 use Doctrine\Common\Collections\ArrayCollection;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
 class TicketsDataService
@@ -64,11 +66,59 @@ class TicketsDataService
      */
     public function getPager(Person $person, TicketFilter $filter, $page, $max_per_page)
     {
-        // TODO: this needs to be a full blown search with filters
-        $tickets = new ArrayCollection($this->getTicketRepo()->findAwaitingAgentTicketsForPerson($person));
+        $qb = $this->em->createQueryBuilder();
 
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($tickets));
+        $qb->select('t')
+            ->from('DeskPRO:Ticket', 't')
+            ->join('t.person', 'p')
+        ;
+
+        // TODO: fix this for both types
+        // type
+        if (TicketFilter::TYPE_OWN === $filter->getType()) {
+            // a person own ticket cannot be for an organization
+            $qb->andWhere('t.person = :person AND t.organization IS NULL')->setParameter('person', $person);
+        } else {
+            $qb->join('t.organization', 'o');
+            // where person is in organization
+        }
+
+        // category
+        switch ($filter->getCategory()) {
+
+            case TicketFilter::CATEGORY_AWAITING_AGENT:
+                $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_AWAITING_AGENT);
+                break;
+
+            case TicketFilter::CATEGORY_RESOLVED:
+                $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_RESOLVED);
+                break;
+
+            case TicketFilter::CATEGORY_AWAITING_USER:
+            default:
+                $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_AWAITING_USER);
+                break;
+
+        }
+
+        // sort
+        switch ($filter->getSort()) {
+
+            // TODO: last activity algorithm (same as Ticket::getLastActivityDate())
+            case TicketFilter::SORT_ACTIVITY:
+                $sort_string = 't.date_last_agent_reply';
+                break;
+
+            case TicketFilter::SORT_CREATED:
+            default:
+                $sort_string = 't.date_created';
+        }
+
+        $qb->orderBy($sort_string, $filter->getSortDirection());
+
+        //print($qb->getQuery()->getDQL());exit;
+
+        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
         $pager->setMaxPerPage($max_per_page);
         $pager->setCurrentPage($page);
 
