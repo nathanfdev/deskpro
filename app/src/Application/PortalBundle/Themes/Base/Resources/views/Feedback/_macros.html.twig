@@ -7,14 +7,8 @@
             </li>
 
             <li>
-                <a href="{{ path('portal_feedback') }}">{{ phrase('portal.feedback.section-title') }}</a>{% if item %}<i class="fa fa-angle-right">{% endif %}</i>
+                <a href="{{ path('portal_feedback') }}">{{ phrase('portal.feedback.section-title') }}</a></i>
             </li>
-
-            {% if item %}
-                <li>
-                    <a href="{{ path('portal_feedback_view', { slug:item.slug }) }}">{{ item.title }}</a>
-                </li>
-            {% endif %}
         </ul>
         <hr>
     </div>

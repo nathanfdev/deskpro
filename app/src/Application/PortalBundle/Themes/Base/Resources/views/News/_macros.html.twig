@@ -20,15 +20,6 @@
             {% if cat %}
                 <li>
                     <a href="{{ path('portal_news_browse', { slug:cat.slug }) }}">{{ cat.title }}</a>
-                    {% if article %}
-                        <i class="fa fa-angle-right"></i>
-                    {% endif %}
-                </li>
-            {% endif %}
-
-            {% if article %}
-                <li>
-                    <a href="{{ path('portal_news_view', { slug:article.slug }) }}">{{ article.realTitle }}</a>
                 </li>
             {% endif %}
         </ul>

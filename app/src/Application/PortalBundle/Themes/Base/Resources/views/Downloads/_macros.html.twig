@@ -20,15 +20,6 @@
             {% if cat %}
                 <li>
                     <a href="{{ path('portal_downloads_browse', { slug:cat.slug }) }}">{{ cat.title }}</a>
-                    {% if download %}
-                        <i class="fa fa-angle-right"></i>
-                    {% endif %}
-                </li>
-            {% endif %}
-
-            {% if download %}
-                <li>
-                    <a href="{{ path('portal_downloads_view', { slug:download.slug }) }}">{{ download.realTitle }}</a>
                 </li>
             {% endif %}
         </ul>
