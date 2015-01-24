@@ -54,6 +54,11 @@ class TicketsController extends AbstractController
         $person = $this->getUser();
         $per_page = 2; // TODO: brand setting?
 
+        // access to organization list?
+        if ($type === 'organization' && !($person->organization && $person->organization_manager)) {
+            return $this->redirectToRoute('portal_tickets');
+        }
+
         // create data service filters
         $awaiting_user_filter = new TicketFilter(
             $type,
@@ -100,7 +105,8 @@ class TicketsController extends AbstractController
                 'resolved_tickets' => $resolved_pager,
                 'resolved_tickets_pg_param' => $resolved_pg_param,
 
-                'type' => $type
+                'type' => $type,
+                'person' => $person
             )
         );
     }

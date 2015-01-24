@@ -1,11 +1,18 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    <div class="column-full">
+<div class="column-full">
 
-        <a class="btn" href="{{ type == 'own' ? path('portal_tickets', { type: 'organization' }) : path('portal_tickets') }}">
-            {% if type == 'own' %}Switch to Organizations{% else %}Switch to My Tickets{% endif %}
-        </a>
+        {% if type == 'own' and person.organization and person.organization.organization_manager %}
+            <a class="button" href="{{ path('portal_tickets', { type: 'organization' }) }}">
+                Switch to Organization
+            </a>
+        {% endif %}
+        {% if type == 'organization' %}
+            <a class="button" href="{{ path('portal_tickets') }}">
+                Switch to My Tickets
+            </a>
+        {% endif %}
 
      {% macro tickets_table(tickets_pager, title, pg_param) %}
          <div class="column-full">
@@ -590,3 +597,4 @@
         </div>
     </div>
 {% endblock inner_content %}
+
