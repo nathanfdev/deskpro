@@ -1862,6 +1862,17 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $the_email;
     }
 
+    /**
+     * Reset emails collection
+     *
+     * @return $this
+     */
+    public function resetEmails()
+    {
+        $this->emails = new ArrayCollection();
+        return $this;
+    }
+
 
     public function getEmailId($email_id)
     {
@@ -1873,7 +1884,6 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         return null;
     }
-
 
     /**
      * Get the email record for a specific address
@@ -1897,12 +1907,11 @@ class Person extends DomainObject implements HighlightableModelInterface
         return null;
     }
 
-
-
     /**
      * Add a new usergroup
      *
      * @param Usergroup $usergroup
+     * @return bool
      */
     public function addUsergroup(Usergroup $usergroup)
     {
@@ -1917,7 +1926,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     }
 
     /**
-     * remove usergroup
+     * Remove usergroup
+     *
      * @param  Usergroup $usergroup
      * @return bool
      */
@@ -1929,6 +1939,16 @@ class Person extends DomainObject implements HighlightableModelInterface
         return true;
     }
 
+    /**
+     * Remove all usergroups
+     *
+     * @return $this
+     */
+    public function resetUsergroups()
+    {
+        $this->usergroups = new ArrayCollection();
+        return $this;
+    }
 
     /**
      * Check if hte user belongs to a usergroup
@@ -1941,10 +1961,9 @@ class Person extends DomainObject implements HighlightableModelInterface
         return $this->usergroups->contains($usergroup);
     }
 
-
-
     /**
      * Add a label
+     *
      * @param \Application\DeskPRO\Entity\LabelPerson $label
      */
     public function addLabel(LabelPerson $label)
@@ -1963,6 +1982,17 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->_onPropertyChanged('labels', $this->labels, $this->labels);
             break;
         }
+    }
+
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        $this->labels = new ArrayCollection();
+        return $this;
     }
 
     public function addNote(PersonNote $note)

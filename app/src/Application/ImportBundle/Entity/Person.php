@@ -323,6 +323,16 @@ final class Person extends AbstractEntity
     }
 
     /**
+     * Returns true if the person password scheme is plain
+     *
+     * @return bool
+     */
+    public function isPlainPasswordScheme()
+    {
+        return $this->password_scheme === self::PASSWORD_SCHEME_PLAIN;
+    }
+
+    /**
      * @param string $password_scheme
      * @return $this
      */
@@ -448,6 +458,16 @@ final class Person extends AbstractEntity
     {
         $this->emails[] = $email;
         return $this;
+    }
+
+    /**
+     * Returns the person labels
+     *
+     * @return array
+     */
+    public function getLabels()
+    {
+        return $this->labels;
     }
 
     /**

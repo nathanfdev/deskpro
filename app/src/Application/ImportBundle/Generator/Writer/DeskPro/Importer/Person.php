@@ -50,6 +50,10 @@ final class Person extends AbstractImporter
     /**
      * {@inheritdoc}
      *
+     * todo can we get exist person by first email only? Maybe we should check all?
+     * todo should we skip not existing languages?
+     * todo reset deskpro entities property update?
+     *
      * 'date_created' => $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
      * 'is_user'      => 1,
      * 'is_contact'   => 1,
@@ -91,9 +95,32 @@ final class Person extends AbstractImporter
             ->setLastName($entity->getLastName())
             ->setTimezone($entity->getTimezone())
             ->setIsAgent($entity->isAgent())
-            ->setCanAdmin($entity->isAdmin());
+            ->setCanAdmin($entity->isAdmin())
+            ->resetEmails()
+            ->resetLabels()
+            ->resetUsergroups();
 
-        if ($entity->getPassword() && $entity->getPasswordScheme() == Entity\Person::PASSWORD_SCHEME_PLAIN) {
+        foreach ($entity->getEmails() as $num => $email_string) {
+            $email = $this->createPersonEmail($email_string);
+            $person->addEmailAddress($email);
+            $this->records->add($email);
+
+            $this->logInfo(sprintf(
+                $num ? 'Set email `%s`' : 'Set primary email `%s`',
+                $entity->getFirstEmail()
+            ));
+        }
+        foreach ($entity->getLabels() as $label_name) {
+            $label = $this->createPersonLabel($label_name);
+            $person->addLabel($label);
+            $this->records->add($label);
+        }
+        foreach ($entity->getUserGroups() as $user_group_name) {
+            $user_group = $user_group_mapper->findOneByTitle($user_group_name);
+            $person->addUsergroup($user_group);
+        }
+
+        if ($entity->getPassword() && $entity->isPlainPasswordScheme()) {
             $person->setPassword($entity->getPassword());
         }
         if ($entity->getLanguage()) {
@@ -109,7 +136,7 @@ final class Person extends AbstractImporter
                     $organization->getId(), $entity->getOrganization()
                 ));
             } else {
-                $organization = new DeskPROEntity\Organization();
+                $organization = $this->createOrganization($entity->getOrganization());
                 $this->records->add($organization);
 
                 $this->logInfo(sprintf(
@@ -117,18 +144,57 @@ final class Person extends AbstractImporter
                     $entity->getOrganization()
                 ));
             }
+            if ($entity->getOrganizationPosition()) {
+                $person->setOrganizationPosition($entity->getOrganizationPosition());
+            }
 
             $person->setOrganization($organization);
-        }
-        if ($entity->getUserGroups()) {
-            foreach ($entity->getUserGroups() as $user_group_name) {
-                $user_group = $user_group_mapper->findOneByTitle($user_group_name);
-                $person->addUsergroup($user_group);
-            }
         }
 
         $this->records->add($person);
 
         return $this->records;
+    }
+
+    /**
+     * Returns a person email entity
+     *
+     * @param string $email
+     * @return DeskPROEntity\PersonEmail
+     */
+    private function createPersonEmail($email)
+    {
+        $entity = new DeskPROEntity\PersonEmail();
+        $entity
+            ->setEmail($email)
+            ->setIsValidated(true);
+
+        return $entity;
+    }
+
+    /**
+     * Returns a new person label entity
+     *
+     * @param string $label
+     * @return DeskPROEntity\LabelPerson
+     */
+    private function createPersonLabel($label)
+    {
+        $entity = new DeskPROEntity\LabelPerson();
+        $entity->setLabel($label);
+
+        return $entity;
+    }
+
+    /**
+     * Returns a new organization
+     *
+     * @param string $organization
+     * @return DeskPROEntity\Organization
+     */
+    private function createOrganization($organization)
+    {
+        $entity = new DeskPROEntity\Organization();
+        return $entity;
     }
 }
