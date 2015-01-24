@@ -71,16 +71,39 @@ class TicketsDataService
         $qb->select('t')
             ->from('DeskPRO:Ticket', 't')
             ->join('t.person', 'p')
+            ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN)
         ;
 
         // TODO: fix this for both types
         // type
         if (TicketFilter::TYPE_OWN === $filter->getType()) {
-            // a person own ticket cannot be for an organization
-            $qb->andWhere('t.person = :person AND t.organization IS NULL')->setParameter('person', $person);
+
+            if ($person->is_agent) {
+
+                // agents only their own tickets
+                $qb->andWhere('t.person = :person')->setParameter('person', $person);
+
+            } else {
+
+                if (!$person->organization || !$person->organization_manager) {
+                    //  show non-agents the tickets they participate in
+                    $qb->leftJoin('t.participants', 'part');
+                    $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                } else {
+                    // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
+                    $qb->leftJoin('t.participants', 'part');
+                    $qb->andWhere('t.person = :person OR (part.person = :person AND t.organization != :organization)');
+                    $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+                }
+
+            }
+
         } else {
-            $qb->join('t.organization', 'o');
-            // where person is in organization
+
+            // its assumed that if you send in a person with an "organization" type filter that they have an organization and are a manger
+            // ensure the controller/calling-code has this secured
+            $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
+
         }
 
         // category
