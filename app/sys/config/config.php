@@ -26,6 +26,7 @@ $container->setParameter('router.options.generator_base_class', 'Application\\De
 $container->setParameter('form.type_extension.csrf.enabled', false);
 $container->setParameter('file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
 $container->setParameter('routing.file_locator.class', 'Application\\DeskPRO\\HttpKernel\\Config\\FileLocator');
+$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
 
 // standard-symfony changesn to templating
 $container->setParameter('templating.engine.delegating.class', 'Application\\DeskPRO\\Templating\\Engine');
