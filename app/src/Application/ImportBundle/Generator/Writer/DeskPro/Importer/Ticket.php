@@ -76,11 +76,10 @@ final class Ticket extends AbstractImporter
             ->setPriority($this->findOrCreateTicketPriority($importing_entity->getPriority()))
             ->setCategory($this->findOrCreateTicketCategory($importing_entity->getCategory()))
             ->setStatus($importing_entity->getStatus())
+            ->setDateCreated($importing_entity->getDateCreated())
+            ->setDateResolved($importing_entity->getDateResolved())
+            ->setDateArchived($importing_entity->getDateArchived())
         ;
-
-//        $record['date_created']  = $tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
-//        $record['date_archived'] = $tval->date_archived ? $tval->date_archived->format('Y-m-d H:i:s') : null;
-//        $record['date_resolved'] = $tval->date_resolved ? $tval->date_resolved->format('Y-m-d H:i:s') : null;
 
         if ($importing_entity->getAgentEmail()) {
             $agent = $person_mapper->findOneByEmail($importing_entity->getAgentEmail());

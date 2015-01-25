@@ -2388,6 +2388,42 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->date_created = $date_created;
+        return $this;
+    }
+
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_resolved
+     * @return $this
+     */
+    public function setDateResolved(\DateTime $date_resolved = null)
+    {
+        $this->date_resolved = $date_resolved;
+        return $this;
+    }
+
+    /**
+     * Set date archived
+     *
+     * @param \DateTime $date_archived
+     * @return $this
+     */
+    public function setDateArchived(\DateTime $date_archived = null)
+    {
+        $this->date_archived = $date_archived;
+        return $this;
+    }
+
     public function setHiddenStatus($hstatus)
     {
         if (!$hstatus) {
