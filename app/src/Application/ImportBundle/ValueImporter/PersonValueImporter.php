@@ -111,19 +111,19 @@ class PersonValueImporter extends AbstractValueImporter
         # Create data array
         #------------------------------
 
-        $add_labels = $pval->labels;
-        $record = array(
-            'name'               => $pval->name ?: '',
-            'first_name'         => $pval->first_name ?: '',
-            'last_name'          => $pval->last_name ?: '',
-            'date_created'       => $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
-            'timezone'           => $pval->timezone ?: 'UTC',
-            'is_user'            => 1,
-            'is_contact'         => 1,
-            'is_confirmed'       => 1,
-            'is_agent_confirmed' => 1,
-            'secret_string'      => Strings::random(40),
-        );
+//        $add_labels = $pval->labels;
+//        $record = array(
+//            'name'               => $pval->name ?: '',
+//            'first_name'         => $pval->first_name ?: '',
+//            'last_name'          => $pval->last_name ?: '',
+//            'date_created'       => $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+//            'timezone'           => $pval->timezone ?: 'UTC',
+//            'is_user'            => 1,
+//            'is_contact'         => 1,
+//            'is_confirmed'       => 1,
+//            'is_agent_confirmed' => 1,
+//            'secret_string'      => Strings::random(40),
+//        );
 
         // Admin/agent flag
 //        if ($pval->is_agent) {
@@ -288,18 +288,18 @@ class PersonValueImporter extends AbstractValueImporter
      * @param  array $emails
      * @return array
      */
-    private function getExistingUserMap(array $emails)
-    {
-        $qs = implode(',', array_fill(0, count($emails), '?'));
-        $ret = $this->getDb()->fetchAll("SELECT email, person_id FROM people_emails WHERE email IN ($qs)", $emails);
-
-        $map = array();
-        foreach ($ret as $r) {
-            $map[$r['email']] = $r['person_id'];
-        }
-
-        return $map;
-    }
+//    private function getExistingUserMap(array $emails)
+//    {
+//        $qs = implode(',', array_fill(0, count($emails), '?'));
+//        $ret = $this->getDb()->fetchAll("SELECT email, person_id FROM people_emails WHERE email IN ($qs)", $emails);
+//
+//        $map = array();
+//        foreach ($ret as $r) {
+//            $map[$r['email']] = $r['person_id'];
+//        }
+//
+//        return $map;
+//    }
 
 // Remove?
 //    private function customFieldExists($title)

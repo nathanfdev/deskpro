@@ -50,23 +50,70 @@ final class Ticket extends AbstractImporter
     /**
      * {@inheritdoc}
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
     {
-        if (!$entity instanceof Entity\Ticket) {
+        if (!$importing_entity instanceof Entity\Ticket) {
             throw new \Exception(sprintf(
                 'Entity `%s` is not supported by importer `%s`',
-                get_class($entity), get_class($this)
+                get_class($importing_entity), get_class($this)
             ));
         }
 
-        /** @var Mapper\Person $ticket_mapper */
-        $ticket_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_DEPARTMENT);
+        /** @var Mapper\Person $person_mapper */
+        $person_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
+        /** @var Mapper\Ticket $ticket_mapper */
+        $ticket_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET);
+        /** @var Mapper\TicketCategory $ticket_category_mapper */
+        $ticket_category_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_CATEGORY);
 
         $this->records = new ArrayCollection();
 
         $ticket = new DeskPROEntity\Ticket();
-        $this->records->add($ticket);
+        $ticket
+            ->setSubject($importing_entity->getSubject())
+            ->setPerson($person_mapper->findOneByEmail($importing_entity->getPersonEmail()))
+            ->setLanguageId($this->getLanguageId($importing_entity->getLanguage()))
+            ->setDepartment($this->findOrCreateDepartment($importing_entity->getDepartment()))
+            ->setPriority($this->findOrCreateTicketPriority($importing_entity->getPriority()))
+        ;
 
+        if ($importing_entity->getAgentEmail()) {
+            $agent = $person_mapper->findOneByEmail($importing_entity->getAgentEmail());
+            if (!$agent->isAgent()) {
+                throw new ImporterException(sprintf('Person `%s` is not agent', $agent->getEmailAddress()));
+            }
+        }
+
+        $this->records->add($ticket);
         return $this->records;
+    }
+
+    /**
+     * Returns a ticket priority by title
+     *
+     * @param string $title
+     * @return DeskPROEntity\TicketPriority|mixed|null
+     * @throws \Exception
+     */
+    private function findOrCreateTicketPriority($title)
+    {
+        /** @var Mapper\TicketPriority $mapper */
+        $mapper   = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_PRIORITY);
+        $priority = null;
+
+        if ($title) {
+            $priority = $mapper->findOneByTitle($title, false);
+            if ($priority) {
+                $this->logInfo(sprintf('Found existing ticket priority `%s`', $priority->getTitle()));
+            } else {
+                $priority = new DeskPROEntity\TicketPriority();
+                $priority->setRealTitle($title);
+
+                $this->logWarning(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
+                $this->records->add($priority);
+            }
+        }
+
+        return $priority;
     }
 }

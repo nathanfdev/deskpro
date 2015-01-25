@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\AbstractGenerator;
 use Doctrine\Common\Collections\ArrayCollection;
 
@@ -56,5 +57,56 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     public function __construct(Mapper\Collection $mappers)
     {
         $this->mappers = $mappers;
+    }
+
+    /**
+     * Returns a language id by title
+     *
+     * @param string $title
+     *
+     * @return int
+     * @throws \Exception
+     */
+    protected function getLanguageId($title)
+    {
+        /** @var Mapper\Language $mapper */
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE);
+
+        $id = 0;
+        if ($title) {
+            $id = $mapper->findOneByTitle($title)->getId();
+        }
+
+        return $id;
+    }
+
+    /**
+     * Returns a department by title
+     *
+     * @param string $title
+     *
+     * @return DeskPROEntity\Department
+     * @throws \Exception
+     */
+    protected function findOrCreateDepartment($title)
+    {
+        /** @var Mapper\Department $mapper */
+        $mapper     = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DEPARTMENT);
+        $department = null;
+
+        if ($title) {
+            $department = $mapper->findOneByTitle($title, false);
+            if ($department) {
+                $this->logInfo(sprintf('Found existing department `%s`', $department->getTitle()));
+            } else {
+                $department = DeskPROEntity\Department::createTicketDepartment();
+                $department->setRealTitle($title);
+
+                $this->logWarning(sprintf('New department creating `%s`', $department->getTitle()));
+                $this->records->add($department);
+            }
+        }
+
+        return $department;
     }
 }

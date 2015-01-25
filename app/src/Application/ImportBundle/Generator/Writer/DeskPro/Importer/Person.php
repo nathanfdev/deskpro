@@ -50,20 +50,15 @@ final class Person extends AbstractImporter
     /**
      * {@inheritdoc}
      *
-     * todo can we get exist person by first email only? Maybe we should check all?
-     * todo should we skip not existing languages?
-     * todo reset deskpro entities property update?
-     *
-     * 'date_created' => $pval->date_created ? $pval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
-     * 'is_user'      => 1,
-     * 'is_contact'   => 1,
+     * todo reset deskpro entities property update (reset methods - resetEmails, resetLabels, resetUsergroups)?
+     * todo is_user is false by default and it = true in the setPassword method, can we set it = true without a password
      */
-    public function getDoctrineEntities(Entity\EntityInterface $entity)
+    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
     {
-        if (!$entity instanceof Entity\Person) {
+        if (!$importing_entity instanceof Entity\Person) {
             throw new \Exception(sprintf(
                 'Entity `%s` is not supported by importer `%s`',
-                get_class($entity), get_class($this)
+                get_class($importing_entity), get_class($this)
             ));
         }
 
@@ -76,83 +71,75 @@ final class Person extends AbstractImporter
         /** @var Mapper\UserGroup $user_group_mapper */
         $user_group_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
 
-        $person = $person_mapper->findOneByEmail($entity->getFirstEmail(), false) ? : new DeskPROEntity\Person();
+        $person = $person_mapper->findOneByEmails($importing_entity->getEmails(), false) ? : new DeskPROEntity\Person();
         if ($person->getId()) {
             $this->logInfo(sprintf(
                 'Found existing user `%d` with email `%s`',
-                $person->getId(), $entity->getFirstEmail()
+                $person->getId(), $person->getEmailAddress()
             ));
         } else {
             $this->logInfo(sprintf(
                 'Creating new person with email `%s`',
-                $entity->getFirstEmail()
+                $importing_entity->getFirstEmail()
             ));
         }
 
         $person
-            ->setName($entity->getName())
-            ->setFirstName($entity->getFirstName())
-            ->setLastName($entity->getLastName())
-            ->setTimezone($entity->getTimezone())
-            ->setIsAgent($entity->isAgent())
-            ->setCanAdmin($entity->isAdmin())
+            ->setName($importing_entity->getName())
+            ->setFirstName($importing_entity->getFirstName())
+            ->setLastName($importing_entity->getLastName())
+            ->setTimezone($importing_entity->getTimezone())
+            ->setIsAgent($importing_entity->isAgent())
+            ->setCanAdmin($importing_entity->isAdmin())
+            ->setDateCreated($importing_entity->getDateCreated())
+            ->setLanguageId($this->getLanguageId($importing_entity->getLanguage()))
             ->resetEmails()
             ->resetLabels()
             ->resetUsergroups();
 
-        foreach ($entity->getEmails() as $num => $email_string) {
+        foreach ($importing_entity->getEmails() as $num => $email_string) {
             $email = $this->createPersonEmail($email_string);
             $person->addEmailAddress($email);
-            $this->records->add($email);
 
             $this->logInfo(sprintf(
                 $num ? 'Set email `%s`' : 'Set primary email `%s`',
-                $entity->getFirstEmail()
+                $importing_entity->getFirstEmail()
             ));
         }
-        foreach ($entity->getLabels() as $label_name) {
+        foreach ($importing_entity->getLabels() as $label_name) {
             $label = $this->createPersonLabel($label_name);
             $person->addLabel($label);
-            $this->records->add($label);
         }
-        foreach ($entity->getUserGroups() as $user_group_name) {
+        foreach ($importing_entity->getUserGroups() as $user_group_name) {
             $user_group = $user_group_mapper->findOneByTitle($user_group_name);
             $person->addUsergroup($user_group);
         }
 
-        if ($entity->getPassword() && $entity->isPlainPasswordScheme()) {
-            $person->setPassword($entity->getPassword());
+        if ($importing_entity->getPassword() && $importing_entity->isPlainPasswordScheme()) {
+            $person->setPassword($importing_entity->getPassword());
         }
-        if ($entity->getLanguage()) {
-            /** @var Mapper\Language $language_mapper */
-            $language_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE);
-            $person->setLanguageId($language_mapper->findOneByTitle($entity->getLanguage())->getId());
-        }
-        if ($entity->getOrganization()) {
-            $organization = $organization_mapper->findOneByTitle($entity->getOrganization(), false);
+        if ($importing_entity->getOrganization()) {
+            $organization = $organization_mapper->findOneByTitle($importing_entity->getOrganization(), false);
             if ($organization) {
                 $this->logInfo(sprintf(
                     'Found existing organization `%d` with title `%s`',
-                    $organization->getId(), $entity->getOrganization()
+                    $organization->getId(), $importing_entity->getOrganization()
                 ));
             } else {
-                $organization = $this->createOrganization($entity->getOrganization());
-                $this->records->add($organization);
-
+                $organization = $this->createOrganization($importing_entity->getOrganization());
                 $this->logInfo(sprintf(
                     'Creating new organization `%s`',
-                    $entity->getOrganization()
+                    $importing_entity->getOrganization()
                 ));
             }
-            if ($entity->getOrganizationPosition()) {
-                $person->setOrganizationPosition($entity->getOrganizationPosition());
+            if ($importing_entity->getOrganizationPosition()) {
+                $person->setOrganizationPosition($importing_entity->getOrganizationPosition());
             }
 
             $person->setOrganization($organization);
         }
 
         $this->records->add($person);
-
         return $this->records;
     }
 
@@ -169,6 +156,7 @@ final class Person extends AbstractImporter
             ->setEmail($email)
             ->setIsValidated(true);
 
+        $this->records->add($email);
         return $entity;
     }
 
@@ -183,6 +171,7 @@ final class Person extends AbstractImporter
         $entity = new DeskPROEntity\LabelPerson();
         $entity->setLabel($label);
 
+        $this->records->add($label);
         return $entity;
     }
 
@@ -195,6 +184,9 @@ final class Person extends AbstractImporter
     private function createOrganization($organization)
     {
         $entity = new DeskPROEntity\Organization();
+        $entity->setName($organization);
+
+        $this->records->add($organization);
         return $entity;
     }
 }

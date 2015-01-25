@@ -58,69 +58,69 @@ class TicketValueImporter extends AbstractValueImporter
         #------------------------------
         # Grab the person
         #------------------------------
-        if ($tval->person && StringEmail::isValueValid($tval->person)) {
-            $personId = $this->getMappers()->findIdFromMappedValue('person', $tval->person);
+//        if ($tval->person && StringEmail::isValueValid($tval->person)) {
+//            $personId = $this->getMappers()->findIdFromMappedValue('person', $tval->person);
+//
+//            if ($personId) {
+//                $this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $tval->person));
+//                $record['person_id'] = $personId;
+//            } else {
+//                $this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
+//
+//                return false;
+//            }
+//        } else {
+//            throw new BadDataException("TicketValue must have a person specified");
+//        }
 
-            if ($personId) {
-                $this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $tval->person));
-                $record['person_id'] = $personId;
-            } else {
-                $this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $tval->person));
-
-                return false;
-            }
-        } else {
-            throw new BadDataException("TicketValue must have a person specified");
-        }
-
-        if (!$tval->subject) {
-            throw new BadDataException("TicketValue must have a subject specified");
-        }
-
-        $record['subject'] = $tval->subject;
+//        if (!$tval->subject) {
+//            throw new BadDataException("TicketValue must have a subject specified");
+//        }
+//
+//        $record['subject'] = $tval->subject;
 
         #------------------------------
         # Agent
         #------------------------------
-        if ($tval->agent && $this->getMappers()->getMapper('person')->checkIsAgent($tval->agent)) {
-            $personId = $this->getMappers()->findIdFromMappedValue('person', $tval->agent);
-
-            if ($personId) {
-                $this->getLogger()->info(sprintf("[%s] Found existing agent %s", $log_id, $tval->person));
-                $record['agent_id'] = $personId;
-            }
-        }
+//        if ($tval->agent && $this->getMappers()->getMapper('person')->checkIsAgent($tval->agent)) {
+//            $personId = $this->getMappers()->findIdFromMappedValue('person', $tval->agent);
+//
+//            if ($personId) {
+//                $this->getLogger()->info(sprintf("[%s] Found existing agent %s", $log_id, $tval->person));
+//                $record['agent_id'] = $personId;
+//            }
+//        }
 
         #------------------------------
         # Departments
         #------------------------------
-        if ($tval->department) {
-            $departmentId = $this->getMappers()->findIdFromMappedValue('department', $tval->department);
-            if ($departmentId) {
-                $this->getLogger()->info(sprintf("[%s] Found existing department %s", $log_id, $tval->department));
-                $record['department_id'] = $departmentId;
-            } else {
-                $this->getLogger()->warning(sprintf("[%s] New Department found %s (creating)", $log_id, $tval->department));
-                $this->getDb()->insert('departments', array(
-                    'title'              => $tval->department,
-                    'is_tickets_enabled' => 1
-                ));
-
-                $record['department_id'] = $this->getDb()->lastInsertId();
-                $this->getMappers()->learnMapping('department', array('id' => $record['department_id'], 'title' => $tval->department));
-            }
-        }
+//        if ($tval->department) {
+//            $departmentId = $this->getMappers()->findIdFromMappedValue('department', $tval->department);
+//            if ($departmentId) {
+//                $this->getLogger()->info(sprintf("[%s] Found existing department %s", $log_id, $tval->department));
+//                $record['department_id'] = $departmentId;
+//            } else {
+//                $this->getLogger()->warning(sprintf("[%s] New Department found %s (creating)", $log_id, $tval->department));
+//                $this->getDb()->insert('departments', array(
+//                    'title'              => $tval->department,
+//                    'is_tickets_enabled' => 1
+//                ));
+//
+//                $record['department_id'] = $this->getDb()->lastInsertId();
+//                $this->getMappers()->learnMapping('department', array('id' => $record['department_id'], 'title' => $tval->department));
+//            }
+//        }
 
         // Lang
-        if ($tval->language) {
-            $languageId = $this->getMappers()->findIdFromMappedValue('language', $tval->language);
-            if ($languageId) {
-                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $tval->language));
-                $record['language_id'] = $languageId;
-            } else {
-                $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s (skipping)", $log_id, $tval->language));
-            }
-        }
+//        if ($tval->language) {
+//            $languageId = $this->getMappers()->findIdFromMappedValue('language', $tval->language);
+//            if ($languageId) {
+//                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $tval->language));
+//                $record['language_id'] = $languageId;
+//            } else {
+//                $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s (skipping)", $log_id, $tval->language));
+//            }
+//        }
 
         // Categories
         if ($tval->category) {

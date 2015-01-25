@@ -79,6 +79,17 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject implements
         return App::getTranslator()->getPhraseObject($this, 'title');
     }
 
+    /**
+     * Set real title
+     *
+     * @param string $title
+     * @return $this
+     */
+    public function setRealTitle($title)
+    {
+        $this->title = $title;
+        return $this;
+    }
 
     /**
      * @return string

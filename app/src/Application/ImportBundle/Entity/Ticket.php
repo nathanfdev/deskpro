@@ -57,7 +57,7 @@ final class Ticket extends AbstractEntity
     private $ref;
 
     /**
-     * @var int or object?
+     * @var string
      */
     private $department;
 
@@ -102,7 +102,7 @@ final class Ticket extends AbstractEntity
     private $subject;
 
     /**
-     * @var int ?
+     * @var string
      */
     private $priority;
 
@@ -209,7 +209,7 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getDepartment()
     {
@@ -217,7 +217,7 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @param int $department
+     * @param string $department
      * @return $this
      */
     public function setDepartment($department)
@@ -389,7 +389,7 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @return int
+     * @return string
      */
     public function getPriority()
     {
@@ -397,7 +397,7 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @param int $priority
+     * @param string $priority
      * @return $this
      */
     public function setPriority($priority)

@@ -331,7 +331,10 @@ class Person extends AbstractEntityRepository
 
     public function findByEmails(array $emails)
     {
-        if (!$emails) return array();
+        if (!$emails) {
+            return array();
+        }
+
         return $this->getEntityManager()->createQuery('
             SELECT p FROM DeskPRO:Person p
             JOIN p.emails e WITH e.email IN (:emails)

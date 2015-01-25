@@ -27,33 +27,11 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
-use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
-
-
 /**
- * DeskPro importer interface
- *
- * Interface ImporterInterface
+ * Class ImporterException
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-interface ImporterInterface
+class ImporterException extends \Exception
 {
-    /**
-     * Referred entity type
-     *
-     * @return string
-     */
-    public function getEntityType();
 
-    /**
-     * Returns an importing DeskPro doctrine entity
-     *
-     * @param Entity\EntityInterface $importing_entity
-     *
-     * @return ArrayCollection
-     * @throws \Exception
-     */
-    public function getDoctrineEntities(Entity\EntityInterface $importing_entity);
 }

@@ -667,6 +667,15 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
     }
 
+    /**
+     * Is agent
+     *
+     * @return bool
+     */
+    public function isAgent()
+    {
+        return $this->is_agent;
+    }
 
     /**
      * @param bool $yesno
@@ -695,6 +704,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this->setModelField('can_admin', $yesno);
+        return $this;
     }
 
 
@@ -1266,6 +1276,7 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param int $id
+     * @return $this
      */
     public function setLanguageId($id)
     {
@@ -1275,6 +1286,7 @@ class Person extends DomainObject implements HighlightableModelInterface
         }
 
         $this['language'] = $lang;
+        return $this;
     }
 
 
@@ -1870,6 +1882,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function resetEmails()
     {
         $this->emails = new ArrayCollection();
+        $this->_onPropertyChanged('emails', $this->emails, $this->emails);
+
         return $this;
     }
 
@@ -1947,6 +1961,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function resetUsergroups()
     {
         $this->usergroups = new ArrayCollection();
+        $this->_onPropertyChanged('usergroups', $this->usergroups, $this->usergroups);
+
         return $this;
     }
 
@@ -1992,6 +2008,8 @@ class Person extends DomainObject implements HighlightableModelInterface
     public function resetLabels()
     {
         $this->labels = new ArrayCollection();
+        $this->_onPropertyChanged('labels', $this->labels, $this->labels);
+
         return $this;
     }
 
@@ -2017,7 +2035,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         return Usergroup::generateUsergroupSetKey($this->usergroups);
     }
 
-
     /**
      * Set the picture blob
      *
@@ -2028,8 +2045,6 @@ class Person extends DomainObject implements HighlightableModelInterface
         $this->setModelField('picture_blob', $blob);
     }
 
-
-
     /**
      * Sets the gravatar URL
      *
@@ -2039,8 +2054,6 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         $this->setModelField('gravatar_url', $url);
     }
-
-
 
     /**
      * Gets the URL to a picture for the person. Note that this will always return
@@ -2159,8 +2172,6 @@ class Person extends DomainObject implements HighlightableModelInterface
     {
         return $this->_is_new_person;
     }
-
-
 
     /**
      * Set this persons organization and position.
@@ -2387,6 +2398,18 @@ class Person extends DomainObject implements HighlightableModelInterface
 
         $this->setModelField('timezone', $tz);
 
+        return $this;
+    }
+
+    /**
+     * Set date created
+     *
+     * @param \DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
         return $this;
     }
 

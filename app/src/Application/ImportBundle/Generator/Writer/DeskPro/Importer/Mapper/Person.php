@@ -91,4 +91,23 @@ class Person implements MapperInterface
 
         return $record;
     }
+
+    /**
+     * Returns the existing person by list of emails
+     *
+     * @param array $emails
+     * @param bool  $throw_exception
+     *
+     * @return mixed
+     * @throws MapperException
+     */
+    public function findOneByEmails(array $emails, $throw_exception = true)
+    {
+        $records = $this->repository->findByEmails($emails);
+        if (empty($records) && $throw_exception) {
+            throw new MapperException('Person not found', array('email' => $emails));
+        }
+
+        return array_shift($records);
+    }
 }

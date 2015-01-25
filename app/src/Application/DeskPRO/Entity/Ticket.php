@@ -691,6 +691,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param string $subject
+     * @return $this
      */
     public function setSubject($subject)
     {
@@ -711,6 +712,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if (!$this->original_subject) {
             $this->setProcessedOriginalSubject($subject);
         }
+
+        return $this;
     }
 
     /**
@@ -1672,6 +1675,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         $this['person'] = $person;
     }
 
+    /**
+     * @param Person $person
+     * @return $this
+     */
     public function setPerson(Person $person)
     {
         $this->setModelField('person', $person);
@@ -1687,6 +1694,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($this->person_email && $this->person_email->person->getId() != $person->getId()) {
             $this['person_email'] = null;
         }
+
+        return $this;
     }
 
 
@@ -1743,6 +1752,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->email_account->getId();
     }
 
+    /**
+     * Set the ticket department
+     *
+     * @param Department $department
+     * @return $this
+     */
+    public function setDepartment(Department $department = null)
+    {
+        $this->department = $department;
+        return $this;
+    }
+
     public function setDepartmentId($id)
     {
         if ($id) {
@@ -1751,6 +1772,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             $this['department'] = null;
         }
+
+        return $this;
     }
 
     public function isLangSet()
@@ -1789,6 +1812,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             $this['language'] = null;
         }
+
+        return $this;
     }
 
     public function getCategoryId()
@@ -1836,6 +1861,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         }
 
         return $this->priority['id'];
+    }
+
+    /**
+     * Set ticket priority
+     *
+     * @param TicketPriority $priority
+     * @return $this
+     */
+    public function setPriority(TicketPriority $priority)
+    {
+        $this->priority = $priority;
+        return $this;
     }
 
     public function setPriorityId($id)
