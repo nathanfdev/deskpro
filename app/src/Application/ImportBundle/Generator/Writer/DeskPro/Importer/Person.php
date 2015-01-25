@@ -64,26 +64,10 @@ final class Person extends AbstractImporter
 
         $this->records = new ArrayCollection();
 
-        /** @var Mapper\Person $person_mapper */
-        $person_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
-        /** @var Mapper\Organization $organization_mapper */
-        $organization_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
         /** @var Mapper\UserGroup $user_group_mapper */
         $user_group_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
 
-        $person = $person_mapper->findOneByEmails($importing_entity->getEmails(), false) ? : new DeskPROEntity\Person();
-        if ($person->getId()) {
-            $this->logInfo(sprintf(
-                'Found existing user `%d` with email `%s`',
-                $person->getId(), $person->getEmailAddress()
-            ));
-        } else {
-            $this->logInfo(sprintf(
-                'Creating new person with email `%s`',
-                $importing_entity->getFirstEmail()
-            ));
-        }
-
+        $person = $this->findOrCreatePerson($importing_entity->getEmails());
         $person
             ->setName($importing_entity->getName())
             ->setFirstName($importing_entity->getFirstName())
@@ -92,13 +76,15 @@ final class Person extends AbstractImporter
             ->setIsAgent($importing_entity->isAgent())
             ->setCanAdmin($importing_entity->isAdmin())
             ->setDateCreated($importing_entity->getDateCreated())
-            ->setLanguageId($this->getLanguageId($importing_entity->getLanguage()))
+            ->setLanguageId($this->findLanguageId($importing_entity->getLanguage()))
+            ->setOrganization($this->findOrCreateOrganization($importing_entity->getOrganization()))
+            ->setOrganizationPosition($importing_entity->getOrganizationPosition())
             ->resetEmails()
             ->resetLabels()
             ->resetUsergroups();
 
         foreach ($importing_entity->getEmails() as $num => $email_string) {
-            $email = $this->createPersonEmail($email_string);
+            $email = $this->findOrCreatePersonEmail($email_string);
             $person->addEmailAddress($email);
 
             $this->logInfo(sprintf(
@@ -114,29 +100,8 @@ final class Person extends AbstractImporter
             $user_group = $user_group_mapper->findOneByTitle($user_group_name);
             $person->addUsergroup($user_group);
         }
-
         if ($importing_entity->getPassword() && $importing_entity->isPlainPasswordScheme()) {
             $person->setPassword($importing_entity->getPassword());
-        }
-        if ($importing_entity->getOrganization()) {
-            $organization = $organization_mapper->findOneByTitle($importing_entity->getOrganization(), false);
-            if ($organization) {
-                $this->logInfo(sprintf(
-                    'Found existing organization `%d` with title `%s`',
-                    $organization->getId(), $importing_entity->getOrganization()
-                ));
-            } else {
-                $organization = $this->createOrganization($importing_entity->getOrganization());
-                $this->logInfo(sprintf(
-                    'Creating new organization `%s`',
-                    $importing_entity->getOrganization()
-                ));
-            }
-            if ($importing_entity->getOrganizationPosition()) {
-                $person->setOrganizationPosition($importing_entity->getOrganizationPosition());
-            }
-
-            $person->setOrganization($organization);
         }
 
         $this->records->add($person);
@@ -144,20 +109,64 @@ final class Person extends AbstractImporter
     }
 
     /**
+     * Returns a person entity
+     * Creates a new person if not found
+     *
+     * @param array $emails
+     *
+     * @return DeskPROEntity\Person
+     * @throws \Exception
+     */
+    private function findOrCreatePerson(array $emails)
+    {
+        $emails = array_values($emails);
+        if (empty($emails)) {
+            throw new ImporterException('Unable to find or create without primary email');
+        }
+
+        /** @var Mapper\Person $mapper */
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
+        $person = $mapper->findOneByEmails($emails, false);
+        if ($person) {
+            $this->logInfo(sprintf(
+                'Found existing user `%d` with email `%s`',
+                $person->getId(), $person->getEmailAddress()
+            ));
+        } else {
+            $person = new DeskPROEntity\Person();
+            $this->logInfo(sprintf('Creating new person with email `%s`', $emails[0]));
+        }
+
+        return $person;
+    }
+
+    /**
      * Returns a person email entity
      *
-     * @param string $email
+     * @param string $email_string
      * @return DeskPROEntity\PersonEmail
      */
-    private function createPersonEmail($email)
+    private function findOrCreatePersonEmail($email_string)
     {
-        $entity = new DeskPROEntity\PersonEmail();
-        $entity
-            ->setEmail($email)
-            ->setIsValidated(true);
+        /** @var Mapper\PersonEmail $mapper */
+        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_EMAIL);
+        $email  = $mapper->findOneByEmail($email_string, false);
+        if ($email) {
+            $this->logInfo(sprintf(
+                'Found existing person email `%d` with email `%s`',
+                $email->getId(), $email->getEmail()
+            ));
+        } else {
+            $email = new DeskPROEntity\PersonEmail();
+            $email
+                ->setEmail($email_string)
+                ->setIsValidated(true);
 
-        $this->records->add($email);
-        return $entity;
+            $this->records->add($email);
+            $this->logWarning(sprintf('Creating new person email `%s`', $email->getEmail()));
+        }
+
+        return $email;
     }
 
     /**
@@ -171,22 +180,7 @@ final class Person extends AbstractImporter
         $entity = new DeskPROEntity\LabelPerson();
         $entity->setLabel($label);
 
-        $this->records->add($label);
-        return $entity;
-    }
-
-    /**
-     * Returns a new organization
-     *
-     * @param string $organization
-     * @return DeskPROEntity\Organization
-     */
-    private function createOrganization($organization)
-    {
-        $entity = new DeskPROEntity\Organization();
-        $entity->setName($organization);
-
-        $this->records->add($organization);
+        $this->records->add($entity);
         return $entity;
     }
 }

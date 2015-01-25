@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
 use DateTime;
@@ -97,7 +98,7 @@ class Tickets extends AbstractParser
                     }
 
                     $collection->attach($entity);
-                    $this->logInfo(sprintf('%s parsed successfully!', $entity->getDestination()));
+                    $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
                 }
             }
         }
@@ -175,12 +176,12 @@ class Tickets extends AbstractParser
      */
     private function getTicketStatus(array $ticket)
     {
-        $status = Entity\Ticket::STATUS_AWAITING_AGENT;
+        $status = DeskPROEntity\Ticket::STATUS_AWAITING_AGENT;
         if ($ticket['isanswered']) {
-            $status = Entity\Ticket::STATUS_AWAITING_USER;
+            $status = DeskPROEntity\Ticket::STATUS_AWAITING_USER;
         }
         if ($ticket['closed']) {
-            $status = Entity\Ticket::STATUS_RESOLVED;
+            $status = DeskPROEntity\Ticket::STATUS_RESOLVED;
         }
 
         return $status;

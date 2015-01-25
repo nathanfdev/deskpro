@@ -130,7 +130,6 @@ class Importer
             ->addMapper(MapperInterface::TYPE_TICKET_CATEGORY,   new CommonRecordMapper($this->db, 'ticket_categories', 'title'))
             ->addMapper(MapperInterface::TYPE_TICKET_WORKFLOW,   new CommonRecordMapper($this->db, 'ticket_workflows', 'title'))
             ->addMapper(MapperInterface::TYPE_TICKET_PRIORITY,   new CommonRecordMapper($this->db, 'ticket_priorities', 'title'))
-            ->addMapper(MapperInterface::TYPE_TICKET_STATUS,     new TicketStatusRecordMapper())
             ->addMapper(MapperInterface::TYPE_DEPARTMENT,        new CommonRecordMapper($this->db, 'departments', 'title'))
             ->addMapper(MapperInterface::TYPE_PRODUCT,           new CommonRecordMapper($this->db, 'products', 'title'))
             ->addMapper(MapperInterface::TYPE_USER_GROUP,        new CommonRecordMapper($this->db, 'usergroups', 'title'))

@@ -2179,6 +2179,8 @@ class Person extends DomainObject implements HighlightableModelInterface
      * @param Organization $org
      * @param string       $position
      * @param bool         $manager
+     *
+     * @return $this
      */
     public function setOrganization(Organization $org = null, $position = '', $manager = false)
     {
@@ -2187,13 +2189,13 @@ class Person extends DomainObject implements HighlightableModelInterface
             $this->setModelField('organization', $org);
             $this->setModelField('organization_position', '');
             $this->setModelField('organization_manager', false);
-
-            return;
+        } else {
+            $this->setModelField('organization', $org);
+            $this->setModelField('organization_position', $position);
+            $this->setModelField('organization_manager', (bool)$manager);
         }
 
-        $this->setModelField('organization', $org);
-        $this->setModelField('organization_position', $position);
-        $this->setModelField('organization_manager', (bool)$manager);
+        return $this;
     }
 
     public function getTwitterAccountIds()
@@ -2492,13 +2494,16 @@ class Person extends DomainObject implements HighlightableModelInterface
 
     /**
      * @param string $organization_position
+     * @return $this
      */
     public function setOrganizationPosition($organization_position)
     {
         if (!$organization_position) {
             $organization_position = '';
         }
+
         $this->setModelField('organization_position', $organization_position);
+        return $this;
     }
 
     public function hasSla(Sla $sla)

@@ -98,7 +98,7 @@ class Person implements MapperInterface
      * @param array $emails
      * @param bool  $throw_exception
      *
-     * @return mixed
+     * @return \Application\DeskPRO\Entity\Person
      * @throws MapperException
      */
     public function findOneByEmails(array $emails, $throw_exception = true)

@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
 use DateTime;
@@ -80,7 +81,7 @@ class Tickets extends AbstractParser
                     ->setSubject($ticket['subject'])
                     ->setPersonEmail($ticket['user'])
                     ->setAgentEmail(isset($ticket['agent']) ? $ticket['agent'] : null)
-                    ->setStatus(isset($ticket['status']) ? $ticket['status'] : Entity\Ticket::STATUS_AWAITING_AGENT)
+                    ->setStatus(isset($ticket['status']) ? $ticket['status'] : DeskPROEntity\Ticket::STATUS_AWAITING_AGENT)
                     ->setDateCreated(isset($ticket['date_created']) ? new DateTime($ticket['date_created']) : new DateTime());
 
                 foreach ($messages as $message_entity) {
@@ -91,7 +92,7 @@ class Tickets extends AbstractParser
                 }
 
                 $collection->attach($entity);
-                $this->logInfo(sprintf('%s parsed successfully!', $entity->getDestination()));
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
             }
         }
 

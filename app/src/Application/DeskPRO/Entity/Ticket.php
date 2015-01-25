@@ -1698,6 +1698,17 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this;
     }
 
+    /**
+     * Set ticket organization
+     *
+     * @param Organization $organization
+     * @return $this
+     */
+    public function setOrganization(Organization $organization = null)
+    {
+        $this->organization = $organization;
+        return $this;
+    }
 
     /**
      * @deprecated
@@ -1825,6 +1836,18 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->category['id'];
     }
 
+    /**
+     * Set ticket category
+     *
+     * @param TicketCategory $category
+     * @return $this
+     */
+    public function setCategory(TicketCategory $category = null)
+    {
+        $this->category = $category;
+        return $this;
+    }
+
     public function setCategoryId($id)
     {
         if ($id) {
@@ -1833,6 +1856,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         } else {
             $this['category'] = null;
         }
+
+        return $this;
     }
 
     public function getProductId()
@@ -1869,7 +1894,7 @@ class Ticket extends DomainObject implements HighlightableModelInterface
      * @param TicketPriority $priority
      * @return $this
      */
-    public function setPriority(TicketPriority $priority)
+    public function setPriority(TicketPriority $priority = null)
     {
         $this->priority = $priority;
         return $this;
@@ -2269,7 +2294,10 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $use_date;
     }
 
-
+    /**
+     * @param string $status
+     * @return $this
+     */
     public function setStatus($status)
     {
         $this['date_status'] = new \DateTime();
@@ -2356,6 +2384,8 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         if ($this->is_hold && $status != self::STATUS_AWAITING_AGENT) {
             $this->setModelField('is_hold', false);
         }
+
+        return $this;
     }
 
     public function setHiddenStatus($hstatus)

@@ -123,38 +123,38 @@ class TicketValueImporter extends AbstractValueImporter
 //        }
 
         // Categories
-        if ($tval->category) {
-            $categoryId = $this->getMappers()->findIdFromMappedValue('ticket_category', $tval->category);
-            if ($categoryId) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing ticket category %s", $log_id, $tval->category));
-                $record['category_id'] = $categoryId;
-            } else {
-                $this->getLogger()->notice(sprintf("[%s] Could not map ticket category value: %s (creating)", $log_id, $tval->category));
-                $this->getDb()->insert('ticket_categories', array(
-                        'title'			=> $tval->category
-                    ));
-
-                $record['category_id'] = $this->getDb()->lastInsertId();
-                $this->getMappers()->learnMapping('ticket_category', array('id' => $record['category_id'], 'title' => $tval->category));
-            }
-        }
+//        if ($tval->category) {
+//            $categoryId = $this->getMappers()->findIdFromMappedValue('ticket_category', $tval->category);
+//            if ($categoryId) {
+//                $this->getLogger()->notice(sprintf("[%s] Found existing ticket category %s", $log_id, $tval->category));
+//                $record['category_id'] = $categoryId;
+//            } else {
+//                $this->getLogger()->notice(sprintf("[%s] Could not map ticket category value: %s (creating)", $log_id, $tval->category));
+//                $this->getDb()->insert('ticket_categories', array(
+//                        'title'			=> $tval->category
+//                    ));
+//
+//                $record['category_id'] = $this->getDb()->lastInsertId();
+//                $this->getMappers()->learnMapping('ticket_category', array('id' => $record['category_id'], 'title' => $tval->category));
+//            }
+//        }
 
         // Priority
-        if ($tval->priority) {
-            $priorityId = $this->getMappers()->findIdFromMappedValue('ticket_priority', $tval->priority);
-            if ($priorityId) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing ticket priority %s", $log_id, $tval->priority));
-                $record['priority_id'] = $priorityId;
-            } else {
-                $this->getLogger()->notice(sprintf("[%s] Could not map ticket priority value: %s (creating)", $log_id, $tval->priority));
-                $this->getDb()->insert('ticket_priorities', array(
-                    'title' => $tval->priority,
-                ));
-
-                $record['priority_id'] = $this->getDb()->lastInsertId();
-                $this->getMappers()->learnMapping('ticket_priority', array('id' => $record['priority_id'], 'title' => $tval->priority));
-            }
-        }
+//        if ($tval->priority) {
+//            $priorityId = $this->getMappers()->findIdFromMappedValue('ticket_priority', $tval->priority);
+//            if ($priorityId) {
+//                $this->getLogger()->notice(sprintf("[%s] Found existing ticket priority %s", $log_id, $tval->priority));
+//                $record['priority_id'] = $priorityId;
+//            } else {
+//                $this->getLogger()->notice(sprintf("[%s] Could not map ticket priority value: %s (creating)", $log_id, $tval->priority));
+//                $this->getDb()->insert('ticket_priorities', array(
+//                    'title' => $tval->priority,
+//                ));
+//
+//                $record['priority_id'] = $this->getDb()->lastInsertId();
+//                $this->getMappers()->learnMapping('ticket_priority', array('id' => $record['priority_id'], 'title' => $tval->priority));
+//            }
+//        }
 
         //Ref
         if (!$tval->ref) {
@@ -171,12 +171,12 @@ class TicketValueImporter extends AbstractValueImporter
         }
 
         //Status
-        /** @var TicketStatusRecordMapper $ticket_status_mapper */
-        $ticket_status_mapper = $this->getMappers()->getMapper('ticket_status');
-        if ($tval->status && $ticket_status_mapper->isValidStatus($tval->status)) {
-            $this->getLogger()->notice(sprintf("[%s] Found existing ticket status %s", $log_id, $tval->status));
-            $record['status'] = $tval->status;
-        }
+//        /** @var TicketStatusRecordMapper $ticket_status_mapper */
+//        $ticket_status_mapper = $this->getMappers()->getMapper('ticket_status');
+//        if ($tval->status && $ticket_status_mapper->isValidStatus($tval->status)) {
+//            $this->getLogger()->notice(sprintf("[%s] Found existing ticket status %s", $log_id, $tval->status));
+//            $record['status'] = $tval->status;
+//        }
 
         //Date fields
         $record['date_created']  = $tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
@@ -184,26 +184,26 @@ class TicketValueImporter extends AbstractValueImporter
         $record['date_resolved'] = $tval->date_resolved ? $tval->date_resolved->format('Y-m-d H:i:s') : null;
 
         // Org
-        if ($tval->organization) {
-            $organizationId = $this->getMappers()->findIdFromMappedValue('organization', $tval->organization);
-            if ($organizationId) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing organization \"%s\"", $log_id, $tval->organization));
-                $record['organization_id'] = $organizationId;
-            } else {
-                $this->getLogger()->notice(sprintf("[%s] New organization %s", $log_id, $tval->organization));
-                if ($this->isTestMode()) {
-                    $record['organization_id'] = -1;
-                } else {
-                    $this->getDb()->insert('organizations', array(
-                        'name'         => $tval->organization,
-                        'date_created' => date('Y-m-d H:i:s')
-                    ));
-                    $record['organization_id'] = $this->getDb()->lastInsertId();
-                }
-
-                $this->getMappers()->learnMapping('organization', array('id' => $record['organization_id'], 'name' => $tval->organization));
-            }
-        }
+//        if ($tval->organization) {
+//            $organizationId = $this->getMappers()->findIdFromMappedValue('organization', $tval->organization);
+//            if ($organizationId) {
+//                $this->getLogger()->notice(sprintf("[%s] Found existing organization \"%s\"", $log_id, $tval->organization));
+//                $record['organization_id'] = $organizationId;
+//            } else {
+//                $this->getLogger()->notice(sprintf("[%s] New organization %s", $log_id, $tval->organization));
+//                if ($this->isTestMode()) {
+//                    $record['organization_id'] = -1;
+//                } else {
+//                    $this->getDb()->insert('organizations', array(
+//                        'name'         => $tval->organization,
+//                        'date_created' => date('Y-m-d H:i:s')
+//                    ));
+//                    $record['organization_id'] = $this->getDb()->lastInsertId();
+//                }
+//
+//                $this->getMappers()->learnMapping('organization', array('id' => $record['organization_id'], 'name' => $tval->organization));
+//            }
+//        }
 
         #------------------------------
         # Save data

@@ -32,6 +32,7 @@ use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 use Application\ImportBundle\Generator\LoggerAwareInterface;
 use Application\ImportBundle\Generator\ProgressBarAwareInterface;
 use Application\ImportBundle\Generator\Writer\AbstractWriter;
+use Application\ImportBundle\Generator\Writer\WriterException;
 use Doctrine\Common\Persistence\ObjectManager;
 
 /**
@@ -78,12 +79,17 @@ class DeskProWriter extends AbstractWriter
      */
     public function writeData(EntityInterface $entity)
     {
-        $records = $this->getImporter($entity)->getDoctrineEntities($entity);
-        foreach ($records as $record) {
-            $this->entity_manager->persist($record);
-        }
+        try {
+            $records = $this->getImporter($entity)->getDoctrineEntities($entity);
+            foreach ($records as $record) {
+                $this->entity_manager->persist($record);
+            }
 
-        $this->entity_manager->flush();
+            $this->entity_manager->flush();
+
+        } catch (Importer\Mapper\MapperException $e) {
+            throw new WriterException(sprintf('Unable to write entity `%s`', $entity->getDestination()), 0, $e);
+        }
 
         return true;
     }

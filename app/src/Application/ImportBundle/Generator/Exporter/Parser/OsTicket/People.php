@@ -111,7 +111,7 @@ class People extends AbstractParser
                         ->addEmail($person['email']);
 
                     $collection->attach($entity);
-                    $this->logInfo(sprintf('Staff %s parsed successfully!', $entity->getDestination()));
+                    $this->logInfo(sprintf('Staff `%s` parsed successfully!', $entity->getDestination()));
                 }
             }
         }
@@ -147,7 +147,7 @@ class People extends AbstractParser
                         ->addEmail($person['address']);
 
                     $collection->attach($entity);
-                    $this->logInfo(sprintf('User %s parsed successfully!', $entity->getDestination()));
+                    $this->logInfo(sprintf('User `%s` parsed successfully!', $entity->getDestination()));
                 }
             }
         }

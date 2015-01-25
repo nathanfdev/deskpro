@@ -86,7 +86,7 @@ class People extends AbstractParser
                 }
 
                 $collection->attach($entity);
-                $this->logInfo(sprintf('%s parsed successfully!', $entity->getDestination()));
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
             }
         }
 

@@ -63,8 +63,6 @@ final class Ticket extends AbstractImporter
         $person_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
         /** @var Mapper\Ticket $ticket_mapper */
         $ticket_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET);
-        /** @var Mapper\TicketCategory $ticket_category_mapper */
-        $ticket_category_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_CATEGORY);
 
         $this->records = new ArrayCollection();
 
@@ -72,10 +70,17 @@ final class Ticket extends AbstractImporter
         $ticket
             ->setSubject($importing_entity->getSubject())
             ->setPerson($person_mapper->findOneByEmail($importing_entity->getPersonEmail()))
-            ->setLanguageId($this->getLanguageId($importing_entity->getLanguage()))
+            ->setOrganization($this->findOrCreateOrganization($importing_entity->getOrganization()))
+            ->setLanguageId($this->findLanguageId($importing_entity->getLanguage()))
             ->setDepartment($this->findOrCreateDepartment($importing_entity->getDepartment()))
             ->setPriority($this->findOrCreateTicketPriority($importing_entity->getPriority()))
+            ->setCategory($this->findOrCreateTicketCategory($importing_entity->getCategory()))
+            ->setStatus($importing_entity->getStatus())
         ;
+
+//        $record['date_created']  = $tval->date_created ? $tval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
+//        $record['date_archived'] = $tval->date_archived ? $tval->date_archived->format('Y-m-d H:i:s') : null;
+//        $record['date_resolved'] = $tval->date_resolved ? $tval->date_resolved->format('Y-m-d H:i:s') : null;
 
         if ($importing_entity->getAgentEmail()) {
             $agent = $person_mapper->findOneByEmail($importing_entity->getAgentEmail());
@@ -90,9 +95,11 @@ final class Ticket extends AbstractImporter
 
     /**
      * Returns a ticket priority by title
+     * Creates a new ticket priority if not found
      *
      * @param string $title
-     * @return DeskPROEntity\TicketPriority|mixed|null
+     *
+     * @return DeskPROEntity\TicketPriority|null
      * @throws \Exception
      */
     private function findOrCreateTicketPriority($title)
@@ -109,11 +116,42 @@ final class Ticket extends AbstractImporter
                 $priority = new DeskPROEntity\TicketPriority();
                 $priority->setRealTitle($title);
 
-                $this->logWarning(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
                 $this->records->add($priority);
+                $this->logWarning(sprintf('New ticket priority creating `%s`', $priority->getTitle()));
             }
         }
 
         return $priority;
+    }
+
+    /**
+     * Returns a ticket category by title
+     * Creates a new ticket category if not found
+     *
+     * @param string $title
+     *
+     * @return DeskPROEntity\TicketCategory|null
+     * @throws \Exception
+     */
+    private function findOrCreateTicketCategory($title)
+    {
+        /** @var Mapper\TicketCategory $mapper */
+        $mapper   = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_CATEGORY);
+        $category = null;
+
+        if ($title) {
+            $category = $mapper->findOneByTitle($title, false);
+            if ($category) {
+                $this->logInfo(sprintf('Found existing ticket category `%s`', $category->getTitle()));
+            } else {
+                $category = new DeskPROEntity\TicketCategory();
+                $category->setRealTitle($title);
+
+                $this->records->add($category);
+                $this->logWarning(sprintf('New ticket priority creating `%s`', $category->getTitle()));
+            }
+        }
+
+        return $category;
     }
 }

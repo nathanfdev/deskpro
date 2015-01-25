@@ -227,7 +227,15 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
         return $this;
     }
 
-
+    /**
+     * Returns email
+     *
+     * @return string
+     */
+    public function getEmail()
+    {
+        return $this->email;
+    }
 
     public function setIsValidated($yesno)
     {

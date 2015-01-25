@@ -33,6 +33,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 
 /**
  * Abstract DeskPro importer
+ * Finds or creates DeskPro entities
  *
  * Class AbstractImporter
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
@@ -67,7 +68,7 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      * @return int
      * @throws \Exception
      */
-    protected function getLanguageId($title)
+    protected function findLanguageId($title)
     {
         /** @var Mapper\Language $mapper */
         $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE);
@@ -82,10 +83,11 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
 
     /**
      * Returns a department by title
+     * Creates a new department if not found
      *
      * @param string $title
      *
-     * @return DeskPROEntity\Department
+     * @return DeskPROEntity\Department|null
      * @throws \Exception
      */
     protected function findOrCreateDepartment($title)
@@ -97,16 +99,53 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
         if ($title) {
             $department = $mapper->findOneByTitle($title, false);
             if ($department) {
-                $this->logInfo(sprintf('Found existing department `%s`', $department->getTitle()));
+                $this->logInfo(sprintf(
+                    'Found existing department `%d` with title `%s`',
+                    $department->getId(), $department->getTitle()
+                ));
             } else {
                 $department = DeskPROEntity\Department::createTicketDepartment();
                 $department->setRealTitle($title);
 
-                $this->logWarning(sprintf('New department creating `%s`', $department->getTitle()));
                 $this->records->add($department);
+                $this->logWarning(sprintf('New department creating `%s`', $department->getTitle()));
             }
         }
 
         return $department;
+    }
+
+    /**
+     * Returns an organization by title
+     * Creates a new organization if not found
+     *
+     * @param string $title
+     *
+     * @return DeskPROEntity\Organization|null
+     * @throws \Exception
+     */
+    protected function findOrCreateOrganization($title)
+    {
+        /** @var Mapper\Organization $mapper */
+        $mapper       = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_ORGANIZATION);
+        $organization = null;
+
+        if ($title) {
+            $organization = $mapper->findOneByTitle($title, false);
+            if ($organization) {
+                $this->logInfo(sprintf(
+                    'Found existing organization `%d` with title `%s`',
+                    $organization->getId(), $organization->getName()
+                ));
+            } else {
+                $entity = new DeskPROEntity\Organization();
+                $entity->setName($title);
+
+                $this->records->add($organization);
+                $this->logWarning(sprintf('Creating new organization `%s`', $entity->getName()));
+            }
+        }
+
+        return $organization;
     }
 }

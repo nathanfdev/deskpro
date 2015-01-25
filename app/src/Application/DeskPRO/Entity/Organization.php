@@ -173,27 +173,43 @@ class Organization extends DomainObject implements HighlightableModelInterface
     }
 
     /**
+     * Returns the organization name
+     *
+     * @return string
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
      * Set the organization name
      *
      * @param string $name
+     * @return $this
      */
     public function setName($name)
     {
         $old = $this->name;
         $this->name = (string)$name;
         $this->_onPropertyChanged('name', $old, $this->name);
+
+        return $this;
     }
 
     /**
      * Set the default importance of people in this org
      *
      * @param int $importance
+     * @return $this
      */
     public function setImportance($importance)
     {
         $old = $this->importance;
         $this->importance = Numbers::bound($importance, 0, 5);
         $this->_onPropertyChanged('importance', $old, $this->importance);
+
+        return $this;
     }
 
 

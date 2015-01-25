@@ -74,10 +74,14 @@ class DeskProWriterFactory extends AbstractFactory
         $organization_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Organization');
         /** @var EntityRepository\Person $person_repository */
         $person_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Person');
+        /** @var EntityRepository\PersonEmail $person_email_repository */
+        $person_email_repository = $doctrine->getRepository('Application\DeskPRO\Entity\PersonEmail');
         /** @var EntityRepository\Product $product_repository */
         $product_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Product');
         /** @var EntityRepository\Ticket $ticket_repository */
         $ticket_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Ticket');
+        /** @var EntityRepository\TicketPriority $ticket_priority_repository */
+        $ticket_priority_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketPriority');
         /** @var EntityRepository\TicketCategory $ticket_category_repository */
         $ticket_category_repository = $doctrine->getRepository('Application\DeskPRO\Entity\TicketCategory');
         /** @var EntityRepository\TicketWorkflow $ticket_workflow_repository */
@@ -101,8 +105,10 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\NewsCategory($news_category_repository))
             ->attach(new Importer\Mapper\Organization($organization_repository))
             ->attach(new Importer\Mapper\Person($person_repository))
+            ->attach(new Importer\Mapper\PersonEmail($person_email_repository))
             ->attach(new Importer\Mapper\Product($product_repository))
             ->attach(new Importer\Mapper\Ticket($ticket_repository))
+            ->attach(new Importer\Mapper\TicketPriority($ticket_priority_repository))
             ->attach(new Importer\Mapper\TicketCategory($ticket_category_repository))
             ->attach(new Importer\Mapper\TicketDepartment($departmentRepository))
             ->attach(new Importer\Mapper\TicketWorkflow($ticket_workflow_repository))

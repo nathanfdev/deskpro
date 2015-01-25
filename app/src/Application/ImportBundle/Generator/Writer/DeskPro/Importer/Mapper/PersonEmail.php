@@ -27,51 +27,63 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
+use Application\DeskPRO\EntityRepository;
+
 /**
- * Generator mapper interface
+ * Person email record mapper
  *
- * Interface MapperInterface
+ * Class PersonEmail
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface MapperInterface
+class PersonEmail implements MapperInterface
 {
-    const TYPE_PERSON            = 'person';
-    const TYPE_PERSON_EMAIL      = 'person_email';
-    const TYPE_TICKET_DEPARTMENT = 'ticket_department';
-    const TYPE_TICKET            = 'ticket';
-    const TYPE_TICKET_CATEGORY   = 'ticket_category';
-    const TYPE_TICKET_WORKFLOW   = 'ticket_workflow';
-    const TYPE_TICKET_PRIORITY   = 'ticket_priority';
-    const TYPE_DEPARTMENT        = 'department';
-    const TYPE_PRODUCT           = 'product';
-    const TYPE_USER_GROUP        = 'usergroup';
-    const TYPE_ORGANIZATION      = 'organization';
-    const TYPE_LANGUAGE          = 'language';
-    const TYPE_ARTICLE_CATEGORY  = 'article_category';
-    const TYPE_ARTICLE           = 'article';
-    const TYPE_NEWS_CATEGORY     = 'news_category';
-    const TYPE_NEWS              = 'news';
-    const TYPE_FEEDBACK_CATEGORY = 'feedback_category';
-    const TYPE_FEEDBACK          = 'feedback';
-    const TYPE_DOWNLOAD_CATEGORY = 'download_category';
-    const TYPE_DOWNLOAD          = 'download';
-    const TYPE_CUSTOM_DEF_TICKET = 'custom_def_ticket';
-    const TYPE_CUSTOM_DEF_PERSON = 'custom_def_people';
+    /**
+     * @var EntityRepository\Product
+     */
+    private $repository;
 
     /**
-     * Returns DeskPro record type
+     * Constructor
      *
-     * @return string
+     * @param EntityRepository\PersonEmail $repository
      */
-    public function getType();
+    public function __construct(EntityRepository\PersonEmail $repository)
+    {
+        $this->repository = $repository;
+    }
 
     /**
-     * Returns the DeskPro record by criteria
-     *
-     * @param array $criteria
-     * @param bool  $throw_exception
-     *
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function findOneBy(array $criteria, $throw_exception = true);
+    public function getType()
+    {
+        return self::TYPE_PERSON_EMAIL;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        $record = $this->repository->findOneBy($criteria);
+        if (!$record && $throw_exception) {
+            throw new MapperException('Person email `%s` not found', $criteria);
+        }
+
+        return $record;
+    }
+
+    /**
+     * Returns person email entities
+     *
+     * @param string $email
+     * @param bool   $throw_exception
+     *
+     * @return \Application\DeskPRO\Entity\PersonEmail
+     * @throws MapperException
+     */
+    public function findOneByEmail($email, $throw_exception = true)
+    {
+        return $this->findOneBy(array('email' => $email), $throw_exception);
+    }
 }

@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Entity;
 
-
+use Application\DeskPRO\Entity as DeskPROEntity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
@@ -40,12 +40,6 @@ use DateTime;
  */
 final class Ticket extends AbstractEntity
 {
-    const STATUS_AWAITING_AGENT = 'awaiting_agent';
-    const STATUS_AWAITING_USER  = 'awaiting_user';
-    const STATUS_RESOLVED       = 'resolved';
-    const STATUS_ARCHIVED       = 'archived';
-    const STATUS_HIDDEN         = 'hidden';
-
     /**
      * @var int
      */
@@ -306,11 +300,11 @@ final class Ticket extends AbstractEntity
     public function isStatusValid()
     {
         $statuses = array(
-            self::STATUS_AWAITING_AGENT,
-            self::STATUS_AWAITING_USER,
-            self::STATUS_RESOLVED,
-            self::STATUS_ARCHIVED,
-            self::STATUS_HIDDEN,
+            DeskPROEntity\Ticket::STATUS_AWAITING_AGENT,
+            DeskPROEntity\Ticket::STATUS_AWAITING_USER,
+            DeskPROEntity\Ticket::STATUS_RESOLVED,
+            DeskPROEntity\Ticket::STATUS_ARCHIVED,
+            DeskPROEntity\Ticket::STATUS_HIDDEN,
         );
 
         return in_array($this->status, $statuses, true);
