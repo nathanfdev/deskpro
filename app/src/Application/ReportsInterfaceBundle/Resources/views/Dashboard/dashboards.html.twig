@@ -190,15 +190,21 @@
                         <dashboard-amcharts
                                 my-index="{{ ng_var('$index') }}"
                                 title="{{ ng_var('widget.name') }}"
-                                chart-id = "{{ ng_var('widget.id') }}"
+                                widget-id = "{{ ng_var('widget.id') }}"
                                 chart-data = "{{ ng_var('widget.data') }}"
                                 chtype="{{ ng_var('widget.type') }}">
                         </dashboard-amcharts>
                     </div>
                     <div class="box" ng-if="widget.type=='table'">
-                        <dashboard-table my-index="{{ ng_var('$index') }}" title="{{ ng_var('widget.name') }}" table-data="{{ ng_var('widget.data') }}" wtype="{{ ng_var('widget.type') }}"> </dashboard-table>
+                        <dashboard-table
+                                my-index="{{ ng_var('$index') }}"
+                                title="{{ ng_var('widget.name') }}"
+                                table-data="{{ ng_var('widget.data') }}"
+                                widget-id = "{{ ng_var('widget.id') }}"
+                                wtype="{{ ng_var('widget.type') }}">
+                        </dashboard-table>
                     </div>
-                    <div class="box" ng-if="widget.type=='reports_overview'">
+                  {#  <div class="box" ng-if="widget.type=='reports_overview'">
                         <reports-overview
                                 my-index="{{ ng_var('$index') }}"
                                 title="{{ ng_var('widget.name') }}"
@@ -224,7 +230,7 @@
                                 outer-type="{{ ng_var('widget.outer_type') }}"
                                 wtype="{{ ng_var('widget.type') }}">
                         </ticket-satisfaction>
-                    </div>
+                    </div>#}
                 </li>
             </ul>
         </div>

@@ -64,7 +64,7 @@ class Json extends AbstractRenderer
      */
     protected function _getDefaultValueRenderer()
     {
-        return new \Application\DeskPRO\Dpql\Renderer\Values\Html();
+        return new \Application\DeskPRO\Dpql\Renderer\Values\Json();
     }
 
     /**
@@ -124,8 +124,7 @@ class Json extends AbstractRenderer
         if (!$rows) {
             return '';
         }
-        //just a stub!
-        return $this->_renderChart('bar', $rows);
+
         if ($this->_handler->getGroupXColumns()) {
             return $this->_renderMatrixTable($rows);
         }
@@ -140,7 +139,7 @@ class Json extends AbstractRenderer
     /**
      * Renders the outer table wrapper.
      *
-     * @param string $inner Content inside table
+     * @param string $inner      Content inside table
      * @param string $extraClass Any extra classes to add (space separated)
      *
      * @return string
@@ -179,9 +178,9 @@ class Json extends AbstractRenderer
      */
     protected function _renderBody(array $rows)
     {
-        $groupColumns = $this->_handler->getGroupYColumns();
+        $groupColumns  = $this->_handler->getGroupYColumns();
         $selectColumns = $this->_handler->getSelectColumns();
-        $rows = array_values($rows); // need continuous keys
+        $rows          = array_values($rows); // need continuous keys
 
         $rowsHtml = array();
         $rowCount = 0;
@@ -241,7 +240,7 @@ class Json extends AbstractRenderer
                         continue;
                     }
 
-                    $rowSpan = ($groupSkipCount[$groupId]
+                    $rowSpan  = ($groupSkipCount[$groupId]
                         ? ' rowspan="' . ($groupSkipCount[$groupId] + 1) . '"'
                         : ''
                     );
@@ -275,7 +274,7 @@ class Json extends AbstractRenderer
             return '';
         }
 
-        $cells = array();
+        $cells         = array();
         $groupYColumns = $this->_handler->getGroupYColumns();
         $selectColumns = $this->_handler->getSelectColumns();
 
@@ -298,7 +297,7 @@ class Json extends AbstractRenderer
         }
 
         $firstRow = reset($rows);
-        $fakeRow = array_fill_keys(array_keys($firstRow), null);
+        $fakeRow  = array_fill_keys(array_keys($firstRow), null);
         foreach ($columnTotals AS $id => $value) {
             $fakeRow[$id - 1] = $value;
         }
@@ -323,15 +322,71 @@ class Json extends AbstractRenderer
      */
     protected function _renderMatrixTable(array $rows)
     {
-        $prepared = $this->_prepareMatrixTable($rows);
 
+        // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
+        $prepared = $this->_prepareMatrixTable($rows);
+        $lookup   = $prepared['lookup'];
         $select = $this->_handler->getSelectColumns();
-        $first = reset($select);
+        $first  = reset($select);
         if (count($select) == 1 && in_array($first['renderer'], array('number', 'numberraw'), true)) {
             $totalType = $first['renderer'];
         } else {
             $totalType = false;
         }
+        $maxCategoryLength = 0;
+
+        $columnsHead = array('');
+        $rowsData = array();
+
+        $rowGroups = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
+        if (!$rowGroups) {
+            // need to fake it so we get a row with no Y grouping
+            $rowGroups = array('root' => array());
+        }
+        $headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
+        $totalRow = array('Total');
+
+        // getting through rows
+        foreach ($rowGroups as $yPath => $rowHead) {
+            $rowData = array(reset($rowHead));
+            $rowTotal = 0;
+            foreach($headerCols as $xPath => $printable) {
+                if (isset($lookup[$yPath][$xPath])) {
+                    $value = $this->_filterGraphValue($lookup[$yPath][$xPath]);
+                } else {
+                    $value = '';
+                }
+                $rowData[] = $value;
+                if($totalType) {
+                    $rowTotal += str_replace(',', '', $value);
+                    if (!isset($totalRow[$xPath])) {
+                        $totalRow[$xPath] = 0;
+                    }
+                    $totalRow[$xPath] += str_replace(',', '', $value);
+                }
+            }
+            if($totalType) {
+                $rowData[] = $rowTotal;
+            }
+            $rowsData[] = $rowData;
+        }
+
+        foreach($headerCols as $colName) {
+            $columnsHead[] = reset($colName);
+        }
+        if($totalType) {
+            $columnsHead[] = 'Total';
+            $totalRow[] = '';
+            $rowsData[] = array_values($totalRow);
+        }
+
+        return array(
+            'columns' => $columnsHead,
+            'data' => $rowsData,
+        );
+
+
+
 
         return $this->_renderTableWrapper(
             $this->_renderMatrixHeader($prepared, $totalType) . $this->_renderMatrixBody($prepared, $totalType),
@@ -342,7 +397,7 @@ class Json extends AbstractRenderer
     /**
      * Renders the header rows of a matrix table.
      *
-     * @param array $prepared Prepared matrix data (see _prepareMatrixTable).
+     * @param array          $prepared  Prepared matrix data (see _prepareMatrixTable).
      * @param boolean|string $totalType If non empty, shows a total for each row/column
      *
      * @return string
@@ -353,7 +408,7 @@ class Json extends AbstractRenderer
         $colSkipCount = count($this->_handler->getGroupYColumns());
 
         $header = $this->_renderMatrixHeaderRecur(array('root'), $prepared['xDistinct']);
-        $rows = $header['depth'];
+        $rows   = $header['depth'];
         ksort($rows);
 
         $output = array();
@@ -408,7 +463,7 @@ class Json extends AbstractRenderer
      *
      * @param array $path Grouping path
      * @param array $distinctValues
-     * @param int $depth
+     * @param int   $depth
      *
      * @return array
      */
@@ -419,14 +474,14 @@ class Json extends AbstractRenderer
             return array('colSpan' => 0, 'depth' => array());
         }
 
-        $colSpan = 0;
+        $colSpan  = 0;
         $siblings = array();
 
         $nextDepth = $depth + 1;
         $depthHtml = array();
 
         foreach ($distinctValues[$pathLookup] AS $groupValue => $printValue) {
-            $localPath = $path;
+            $localPath   = $path;
             $localPath[] = $groupValue;
 
             $child = $this->_renderMatrixHeaderRecur($localPath, $distinctValues, $nextDepth);
@@ -441,7 +496,7 @@ class Json extends AbstractRenderer
             $colSpan += max(1, $child['colSpan']);
 
             $colSpanHtml = ($child['colSpan'] > 1 ? ' colspan="' . $child['colSpan'] . '"' : '');
-            $valueHtml = "<th$colSpanHtml>$printValue</th>";
+            $valueHtml   = "<th$colSpanHtml>$printValue</th>";
 
             $siblings[] = $valueHtml;
         }
@@ -450,14 +505,14 @@ class Json extends AbstractRenderer
 
         return array(
             'colSpan' => $colSpan,
-            'depth' => $depthHtml
+            'depth'   => $depthHtml
         );
     }
 
     /**
      * Renders the body of a matrix table.
      *
-     * @param array $prepared Prepared matrix data
+     * @param array          $prepared  Prepared matrix data
      * @param boolean|string $totalType If non empty, shows a total for each row/column
      *
      * @return string
@@ -472,14 +527,14 @@ class Json extends AbstractRenderer
         }
 
         $matrixPaths = $this->_getFinalMatrixPaths(array('root'), $prepared['xDistinct']);
-        $lookup = $prepared['lookup'];
+        $lookup      = $prepared['lookup'];
 
-        $rows = array();
+        $rows         = array();
         $columnTotals = array();
-        $rowCount = 0;
+        $rowCount     = 0;
 
         foreach ($rowKeys AS $yPath => $html) {
-            $cells = array();
+            $cells    = array();
             $rowTotal = 0;
             foreach ($matrixPaths AS $xPath) {
                 if (isset($lookup[$yPath][$xPath])) {
@@ -487,7 +542,7 @@ class Json extends AbstractRenderer
                 } else {
                     $value = '';
                 }
-                $cells[] = "<td>$value</td>";
+                $cells[] = $value;
 
                 if ($totalType) {
                     $rowTotal += str_replace(',', '', $value);
@@ -499,17 +554,16 @@ class Json extends AbstractRenderer
             }
 
             if ($totalType) {
-                $cells[] = '<td class="column-total">' . $this->_valueRenderer->renderValue($rowTotal, $totalType) . '</td>';
+                $cells[] = $this->_valueRenderer->renderValue($rowTotal, $totalType);
             }
 
             $rowCount++;
-            $class = ($rowCount % 2 ? 'odd' : 'even');
 
-            $rows[] = '<tr class="row-body ' . $class . '">' . $html . implode('', $cells) . '</tr>';
+            $rows[] = $html . implode('', $cells);
         }
 
         if ($totalType && $this->_handler->getGroupYColumns()) {
-            $cells = array();
+            $cells   = array();
             $cells[] = '<th colspan="' . count($this->_handler->getGroupYColumns()) . '">Total</th>';
             foreach ($columnTotals AS $value) {
                 $cells[] = '<td>' . $this->_valueRenderer->renderValue($value, $totalType) . '</td>';
@@ -533,7 +587,7 @@ class Json extends AbstractRenderer
      * Gets the groupings that will represent rows in a matrix tables, including
      * ultimate Y paths.
      *
-     * @param array $path Grouping path to this point
+     * @param array $path      Grouping path to this point
      * @param array $yDistinct Distinct values in the Y direction
      *
      * @return array HTML for each unique row of Y grouping columns
@@ -547,21 +601,21 @@ class Json extends AbstractRenderer
 
         $output = array();
         foreach ($yDistinct[$pathString] AS $groupValue => $printValue) {
-            $localPath = $path;
+            $localPath   = $path;
             $localPath[] = $groupValue;
 
             $children = $this->_getMatrixRowGroups($localPath, $yDistinct);
             if (!$children) {
-                $output[$this->_getGroupPathKey($localPath)] = '<th>' . $printValue . '</th>';
+                $output[$this->_getGroupPathKey($localPath)] = $printValue;
             } else {
-                $rowSpan = count($children);
+                $rowSpan     = count($children);
                 $rowSpanHtml = ($rowSpan > 1 ? " rowspan=\"$rowSpan\"" : '');
 
                 $first = '<th' . $rowSpanHtml . '>' . $printValue . '</th>';
 
                 foreach ($children AS $key => $child) {
                     $output[$key] = $first . $child;
-                    $first = '';
+                    $first        = '';
                 }
             }
         }
@@ -571,38 +625,38 @@ class Json extends AbstractRenderer
 
     protected function _randomColor()
     {
-        return "#".str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT).str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT).str_pad( dechex( mt_rand( 0, 255 ) ), 2, '0', STR_PAD_LEFT);
+        return "#" . str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT) . str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT) . str_pad(dechex(mt_rand(0, 255)), 2, '0', STR_PAD_LEFT);
     }
 
     /**
      * Renders a chart with the specified rows/data.
      *
      * @param string $type Type of chart (bar, line, pie)
-     * @param array $rows
+     * @param array  $rows
      *
      * @return string|bool
      */
     protected function _renderChart($type, array $rows)
     {
         $optionMapArray = array(
-            'bar' => array(
-                'type' => 'column',
+            'bar'  => array(
+                'type'       => 'column',
                 'fillAlphas' => 1,
             ),
             'line' => array(
                 'lineThickness' => 2,
-                'bullet' => "round",
-                'bulletSize' => 6
+                'bullet'        => "round",
+                'bulletSize'    => 6
 
             ),
             'area' => array(
-                'type' => "line",
+                'type'          => "line",
                 'lineThickness' => 1,
-                'bullet' => "round",
-                'bulletSize' => 4,
-                'fillAlphas' => 0.6,
+                'bullet'        => "round",
+                'bulletSize'    => 4,
+                'fillAlphas'    => 0.6,
             ),
-            'pie' => array(),
+            'pie'  => array(),
         );
         if (!$rows) {
             return '';
@@ -612,19 +666,18 @@ class Json extends AbstractRenderer
         }
         //initial output array
         $arrayOutput = array(
-            'dataProvider' => array(),
-            'categoryAxis' => array(
+            'dataProvider'  => array(),
+            'categoryAxis'  => array(
                 "gridPosition" => "start",
                 "axisAlpha"    => 0,
                 "gridAlpha"    => 0,
                 "position"     => "left"
             ),
-            'valueAxes' => array(
-                array(
-                ),
+            'valueAxes'     => array(
+                array(),
             ),
-            'graphs' => array(),
-            'type'   => 'serial',
+            'graphs'        => array(),
+            'type'          => 'serial',
             "theme"         => "none",
             "height"        => "100%",
             "reflow"        => true,
@@ -651,24 +704,24 @@ class Json extends AbstractRenderer
         );
 
         $originalValueRenderer = $this->_valueRenderer;
-        $this->_valueRenderer = new \Application\DeskPRO\Dpql\Renderer\Values\Text();
+        $this->_valueRenderer  = new \Application\DeskPRO\Dpql\Renderer\Values\Text();
 
         $selectColumns = $this->_handler->getSelectColumns();
         $groupYColumns = $this->_handler->getGroupYColumns();
         $groupXColumns = $this->_handler->getGroupXColumns();
 
-        $chartData = array();
-        $graphs = array();
-        $isStacked = false;
+        $chartData         = array();
+        $graphs            = array();
+        $isStacked         = false;
         $maxCategoryLength = 0;
 
-        $firstSel = reset($selectColumns);
+        $firstSel       = reset($selectColumns);
         $valueAxisTitle = $firstSel['title'];
 
         if ($groupXColumns) {
             // matrix table - X() values translate to bottom axis, each row (from Y()) is a new line/stack.
             $prepared = $this->_prepareMatrixTable($rows);
-            $lookup = $prepared['lookup'];
+            $lookup   = $prepared['lookup'];
 
             $rowGroups = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['yDistinct']);
             if (!$rowGroups) {
@@ -678,7 +731,7 @@ class Json extends AbstractRenderer
             $headerCols = $this->_getFinalMatrixPathsWithPrintable(array('root'), $prepared['xDistinct']);
 
             foreach ($headerCols AS $xPath => $printable) {
-                $category = implode(' / ', $printable);
+                $category          = implode(' / ', $printable);
                 $maxCategoryLength = max($maxCategoryLength, strlen($category));
 
                 $rowData = array('category' => $category);
@@ -706,7 +759,7 @@ class Json extends AbstractRenderer
             }
 
             $hasCategory = true;
-            $isStacked = ($type == 'bar' || $type == 'area');
+            $isStacked   = ($type == 'bar' || $type == 'area');
 
             $parts = array();
             foreach ($groupXColumns AS $column) {
@@ -719,8 +772,8 @@ class Json extends AbstractRenderer
                 $rowGroups = array();
                 foreach ($rows AS $row) {
                     $categories = array();
-                    $grouper = '';
-                    $i = 0;
+                    $grouper    = '';
+                    $i          = 0;
                     foreach ($groupYColumns AS $column) {
                         $i++;
                         if ($i == 1) {
@@ -743,8 +796,7 @@ class Json extends AbstractRenderer
 
                 $uniqueGraphs = array();
 
-                foreach ($rowGroups AS $grouper => $values)
-                {
+                foreach ($rowGroups AS $grouper => $values) {
                     $maxCategoryLength = max($maxCategoryLength, strlen($grouper));
 
                     $data = array('category' => $grouper);
@@ -767,7 +819,7 @@ class Json extends AbstractRenderer
 
                 $isStacked = ($type == 'bar' || $type == 'area');
 
-                $firstY = reset($groupYColumns);
+                $firstY            = reset($groupYColumns);
                 $categoryAxisTitle = $firstY['title'];
             } else if ($this->_handler->getGroupStackColumns() && $type == 'bar') {
                 $stackColumns = $this->_handler->getGroupStackColumns();
@@ -775,8 +827,8 @@ class Json extends AbstractRenderer
                 $rowGroups = array();
                 foreach ($rows AS $row) {
                     $categories = array();
-                    $grouper = $this->_valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string');
-                    $i = 0;
+                    $grouper    = $this->_valueRenderer->renderValue($this->getColumnValue($row, $stackColumns[0]['printId']), 'string');
+                    $i          = 0;
                     foreach ($groupYColumns AS $column) {
                         $categories[] = $this->_renderCellValue($row, $column);
                     }
@@ -793,8 +845,7 @@ class Json extends AbstractRenderer
 
                 $uniqueGraphs = array();
 
-                foreach ($rowGroups AS $grouper => $values)
-                {
+                foreach ($rowGroups AS $grouper => $values) {
                     $maxCategoryLength = max($maxCategoryLength, strlen($grouper));
 
                     $data = array('category' => $grouper);
@@ -817,7 +868,7 @@ class Json extends AbstractRenderer
 
                 $isStacked = ($type == 'bar' || $type == 'area');
 
-                $firstY = reset($groupYColumns);
+                $firstY            = reset($groupYColumns);
                 $categoryAxisTitle = $firstY['title'];
             } else {
                 $sel = reset($selectColumns);
@@ -863,15 +914,15 @@ class Json extends AbstractRenderer
                         if (isset($info[$graph['value']])) {
                             $data[] = array(
                                 'category' => $graph['title'],
-                                'value' => $info[$graph['value']],
-                                'pulled' => true,
+                                'value'    => $info[$graph['value']],
+                                'pulled'   => true,
                             );
                         }
                     }
 
                     $pieData[] = array(
                         'title' => $info['category'],
-                        'data' => $data
+                        'data'  => $data
                     );
                 }
 
@@ -884,48 +935,50 @@ class Json extends AbstractRenderer
                     }
                     $data[] = array(
                         'category' => $pie['title'],
-                        'value' => $sum,
-                        'id' => $k,
-                        'color' => $this->_randomColor()
+                        'value'    => $sum,
+                        'id'       => $k,
+                        'color'    => $this->_randomColor()
                     );
                 }
 
                 array_unshift($pieData, array(
                     'title' => 'Overall',
-                    'data' => $data
+                    'data'  => $data
                 ));
             } else {
                 $graph = reset($graphs);
 
-                $pieData = array(array(
-                                     'title' => $graph['title'],
-                                     'data' => $chartData
-                                 ));
+                $pieData = array(
+                    array(
+                        'title' => $graph['title'],
+                        'data'  => $chartData
+                    )
+                );
             }
 
-            $arrayOutput['type'] = 'pie';
-            $arrayOutput['startDuration'] = 0;
-            $arrayOutput['titleField'] = 'category';
-            $arrayOutput['valueField'] = 'value';
-            $arrayOutput['legend'] = false;
-            $arrayOutput['outlineColor'] = '#ffffff';
-            $arrayOutput['outlineAlpha'] = '0.8';
+            $arrayOutput['type']             = 'pie';
+            $arrayOutput['startDuration']    = 0;
+            $arrayOutput['titleField']       = 'category';
+            $arrayOutput['valueField']       = 'value';
+            $arrayOutput['legend']           = false;
+            $arrayOutput['outlineColor']     = '#ffffff';
+            $arrayOutput['outlineAlpha']     = '0.8';
             $arrayOutput['outlineThickness'] = '2';
-            $arrayOutput['colorField'] = 'color';
-            $arrayOutput['pulledField'] = 'pulled';
-            if(count($pieData) > 1) {
-                $overAllPie = array_shift($pieData);
+            $arrayOutput['colorField']       = 'color';
+            $arrayOutput['pulledField']      = 'pulled';
+            if (count($pieData) > 1) {
+                $overAllPie                  = array_shift($pieData);
                 $arrayOutput['dataProvider'] = $overAllPie['data'];
 //                $arrayOutput['legend']['title'] = $overAllPie['title'];
                 $arrayOutput['multiplePies'] = true;
-                if(count($overAllPie['data']) > 25) {
+                if (count($overAllPie['data']) > 25) {
                     $arrayOutput['labelsEnabled'] = false;
                 }
                 $arrayOutput['pies'] = array();
-                foreach($pieData as $k => $pie) {
+                foreach ($pieData as $k => $pie) {
                     $arrayOutput['pies'][] = array(
-                        'dataProvider' => $pie['data'],
-//                        'legend' => array('title'=> $pie['title']),
+                        'dataProvider'  => $pie['data'],
+                        //                        'legend' => array('title'=> $pie['title']),
                         'labelsEnabled' => count($pie['data']) > 25 ? false : true,
                     );
 
@@ -934,7 +987,7 @@ class Json extends AbstractRenderer
                 foreach ($pieData AS $pie) {
                     $arrayOutput['dataProvider'] = $pie['data'];
 //                    $arrayOutput['legend']['title'] = $pie['title'];
-                    if(count($pie['data']) > 25) {
+                    if (count($pie['data']) > 25) {
                         $arrayOutput['labelsEnabled'] = false;
                     }
                 }
@@ -950,8 +1003,8 @@ class Json extends AbstractRenderer
             $graphArray = array();
             foreach ($graphs AS $graph) {
                 $graphArray[] = array_merge($optionMapArray[$type], array(
-                    'valueField' => $graph['value'],
-                    'title' => $graph['title'],
+                    'valueField'  => $graph['value'],
+                    'title'       => $graph['title'],
                     'balloonText' => $balloonText,
                 ));
             }
@@ -960,7 +1013,7 @@ class Json extends AbstractRenderer
                 $arrayOutput['valueAxes'][0]['stackType'] = 'regular';
             }
             if ($maxCategoryLength > 10) {
-                $labelHeight = $maxCategoryLength * 4;
+                $labelHeight                 = $maxCategoryLength * 4;
                 $arrayOutput['categoryAxis'] = array_merge($arrayOutput['categoryAxis'], array(
                     'labelRotation' => 45,
                     'gridCount'     => min(15, count($rows)),
@@ -977,10 +1030,10 @@ class Json extends AbstractRenderer
                     'minimum' => 0,
                 );
             }
-            $arrayOutput['dataProvider'] = $chartData;
+            $arrayOutput['dataProvider']          = $chartData;
             $arrayOutput['categoryAxis']['title'] = $categoryAxisTitle;
             $arrayOutput['valueAxes'][0]['title'] = $valueAxisTitle;
-            $arrayOutput['graphs'] = $graphArray;
+            $arrayOutput['graphs']                = $graphArray;
         }
 
         $this->_valueRenderer = $originalValueRenderer;
@@ -1011,9 +1064,9 @@ class Json extends AbstractRenderer
     protected function _jsEscapeValue($value)
     {
         return strtr($value, array(
-            '"' => '\\"',
-            "'" => "\\'",
-            '\\' => '\\\\',
+            '"'         => '\\"',
+            "'"         => "\\'",
+            '\\'        => '\\\\',
             '</script>' => '<\\/script>'
         ));
     }
@@ -1040,7 +1093,7 @@ class Json extends AbstractRenderer
             return $this->_render('table', $rows);
         } else {
             foreach ($formats as $format) {
-                if($format == 'table') continue;
+                if ($format == 'table') continue;
                 $result = $this->_render($format, $rows);
                 if ($result !== false) {
                     return $result;
@@ -1069,6 +1122,4 @@ class Json extends AbstractRenderer
             );
         }
     }
-
-
 }

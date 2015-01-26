@@ -82,5 +82,7 @@
   "ngTable":                         "bower_components/ng-table/ng-table",
   "amcharts":                        "bower_components/amcharts/dist/amcharts/amcharts",
   "amcharts.pie":                    "bower_components/amcharts/dist/amcharts/pie",
-  "amcharts.serial":                 "bower_components/amcharts/dist/amcharts/serial"
+  "amcharts.serial":                 "bower_components/amcharts/dist/amcharts/serial",
+  "datatables":                      "bower_components/datatables/media/js/jquery.dataTables",
+  "datatables.scroller":             "bower_components/datatables-scroller/js/dataTables.scroller"
 }

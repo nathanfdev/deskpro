@@ -4,18 +4,18 @@ define ->
       restrict: 'E'
       replace: true
       scope:
-        chartId: '@'
+        widgetId: '@'
         myIndex: '@'
         chartData: '@'
 
       link: (scope, element, attrs) ->
-        i = attrs.chartId
+        i = attrs.widgetId
         template = "<div style='height: 90%;' id=\"ch#{i}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
         element.replaceWith(content)
         chart = false
-        conf = scope.chartId || 0;
+        conf = scope.widgetId || 0;
 
         initChart = () ->
           if chart

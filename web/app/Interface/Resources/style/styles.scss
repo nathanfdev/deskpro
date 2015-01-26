@@ -44,6 +44,7 @@ a { color: $link-color; }
 @import 'tooltips';
 @import 'stats';
 @import 'editor';
+@import '../../../../bower_components/datatables/media/css/jquery.dataTables.css';
 
 // Just for presentation
 .content, .sidebar, .app-bar { min-height: 3000px; }

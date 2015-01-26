@@ -34,4 +34,5 @@
   "ngTable":                         ["angular"],
   "angularGridster":                 ["angular"],
 
+  "datatables":                      {"exports": "DataTable"}
 }

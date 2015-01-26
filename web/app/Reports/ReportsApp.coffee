@@ -135,7 +135,7 @@ define [
   ReportsApp.directive('dpDropdown', Reports_App_Directive_DpDropdown)
   ReportsApp.directive('dpReportWidgetSelectBox', Reports_App_Directive_DpReportWidgetSelectBox)
 #  ReportsApp.directive('dashboardStat', Reports_App_Directive_DashboardStat)
-#  ReportsApp.directive('dashboardTable', Reports_App_Directive_DashboardTable)
+  ReportsApp.directive('dashboardTable', Reports_App_Directive_DashboardTable)
 
 
   return ReportsApp

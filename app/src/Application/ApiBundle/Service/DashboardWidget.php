@@ -10,6 +10,7 @@ namespace Application\ApiBundle\Service;
 
 use \Doctrine\ORM\EntityManager;
 
+use Application\DeskPRO\Dpql\Statement\Display;
 use Application\DeskPRO\DataSync\ReportWidget;
 use Application\DeskPRO\Entity\ReportDashboardWidget as DashboardWidgetEntity;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReportEntity;
@@ -26,9 +27,48 @@ class DashboardWidget
     const WIDGET_TYPE_HARDCODED_TICKET_SATISFACTION = 'ticket_satisfaction';
     const WIDGET_TYPE_HARDCODED_UNDEFINED           = 'hardcoded';
 
+    const WIDGET_RENDER_TYPE_BAR  = "BAR";
+    const WIDGET_RENDER_TYPE_LINE = "LINE";
+    const WIDGET_RENDER_TYPE_AREA = "AREA";
+    const WIDGET_RENDER_TYPE_PIE  = "PIE";
+    const WIDGET_RENDER_TYPE_TABLE  = "TABLE";
+
     const WIDGET_TYPE_GRAPH = 'graph';
     const WIDGET_TYPE_TABLE = 'table';
     const WIDGET_TYPE_STAT  = 'stat';
+
+    protected $widgetGraphTypesMapping = array(
+        'simple_bars'  => self::WIDGET_RENDER_TYPE_BAR,
+        'bars'         => self::WIDGET_RENDER_TYPE_BAR,
+        'simple_lines' => self::WIDGET_RENDER_TYPE_LINE,
+        'lines'        => self::WIDGET_RENDER_TYPE_LINE,
+        'area'         => self::WIDGET_RENDER_TYPE_AREA,
+        'simple_area'  => self::WIDGET_RENDER_TYPE_AREA,
+        'pie'          => self::WIDGET_RENDER_TYPE_PIE,
+        'table'        => self::WIDGET_RENDER_TYPE_TABLE,
+    );
+
+
+    protected $widgetTypesMapping = array(
+        'simple_bars'  => self::WIDGET_TYPE_GRAPH,
+        'bars'         => self::WIDGET_TYPE_GRAPH,
+        'simple_lines' => self::WIDGET_TYPE_GRAPH,
+        'lines'        => self::WIDGET_TYPE_GRAPH,
+        'area'         => self::WIDGET_TYPE_GRAPH,
+        'simple_area'  => self::WIDGET_TYPE_GRAPH,
+        'pie'          => self::WIDGET_TYPE_GRAPH,
+        'table'        => self::WIDGET_TYPE_TABLE,
+        'simple_stat'  => self::WIDGET_TYPE_STAT,
+    );
+
+
+    public function getWidgetType($widgetType) {
+        return isset($this->widgetTypesMapping[$widgetType])?$this->widgetTypesMapping[$widgetType]:self::WIDGET_TYPE_TABLE;
+    }
+
+    public function getWidgetGraphType($widgetType) {
+        return isset($this->widgetGraphTypesMapping[$widgetType]) ? $this->widgetGraphTypesMapping[$widgetType] : self::WIDGET_RENDER_TYPE_TABLE;
+    }
 
 
     public function __construct(EntityManager $em)
@@ -57,7 +97,7 @@ class DashboardWidget
             "sizeY" => $size[1],
             "widget_id" => $widget->getReport() ? $widget->getReport()->getId() : 0,
             "widget_variables" => $widget->getVariables(),
-            "type"  => "graph",
+            "type"  => $this->getWidgetType($widget->getType()),
             "data"  => array(),
         );
         if($hc_data = $widget->getHcData()) {
@@ -78,6 +118,20 @@ class DashboardWidget
             $data['outer_type'] = $hc_data['outer_type'];
         }
         return $data;
+    }
+
+    public function renderWidgetQuery(DashboardWidgetEntity $widget) {
+        $report = $widget->getWidget();
+        $query = $report->query;
+        $mapped = $this->getWidgetGraphType($widget->getType());
+        $query = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
+        $error = false;
+        $variables = $widget->getVariables();
+        $params = array();
+        foreach($variables as $variable) {
+            $params[]=$variable['value'];
+        }
+        return Display::renderQuery('json', $query , $params, $error);
     }
 
     public function copyWidgetLinks(DashboardReportEntity $report, DashboardReportEntity $reportPrototype)

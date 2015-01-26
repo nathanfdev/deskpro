@@ -65,17 +65,6 @@ class DashboardWidgetController extends AbstractController
     /** @var DashboardWidgetService */
     protected $widgetService;
 
-    /** @var  array */
-    protected $widgetGraphTypesMapping = array(
-        'simple_bars'  => 'BAR',
-        'bars'         => 'BAR',
-        'simple_lines' => 'LINE',
-        'lines'        => 'LINE',
-        'area'         => 'AREA',
-        'simple_area'  => 'AREA',
-        'pie'          => 'PIE',
-    );
-
     /**
      * {@inherited}
      */
@@ -272,17 +261,19 @@ class DashboardWidgetController extends AbstractController
         }
         $pos  = $widget->getPosition();
         $size = $widget->getSize();
-        $report = $widget->getWidget();
-        $query = $report->query;
-        $mapped = isset($this->widgetGraphTypesMapping[$widget['type']]) ? $this->widgetGraphTypesMapping[$widget['type']] : 'TABLE';
-        $query = preg_replace("#^DISPLAY.*?\n#", "DISPLAY {$mapped}\n", $query);
-        $error = false;
-        $variables = $widget->getVariables();
-        $params = array();
-        foreach($variables as $variable) {
-            $params[]=$variable['value'];
+
+        $realData = $this->widgetService->renderWidgetQuery($widget);
+        if($widget->getType() == DashboardWidgetService::WIDGET_TYPE_TABLE) {
+            $aoColumns = array();
+            $columns = array();
+            foreach($realData['columns'] as $column) {
+                $aoColumns[] = null;
+                $columns[] = array('title'=>$column);
+            }
+            $realData['aoColumns'] = $aoColumns;
+            $realData['columns'] = $columns;
         }
-        $widget_data = Display::renderQuery('json', $query , $params, $error);
+
         $data = array(
             'id'    => $widget->getId(),
             'name'  => $widget->getTitle(),
@@ -290,8 +281,8 @@ class DashboardWidgetController extends AbstractController
             "col"   => $pos[1],
             "sizeX" => $size[0],
             "sizeY" => $size[1],
-            "type"  => "graph",
-            "data"  => $widget_data,
+            "type"  => $this->widgetService->getWidgetType($widget->getType()),
+            "data"  => $realData
         );
         return $data;
     }
