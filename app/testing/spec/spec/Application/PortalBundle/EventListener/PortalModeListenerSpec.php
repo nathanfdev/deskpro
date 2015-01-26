@@ -2,9 +2,11 @@
 
 namespace spec\Application\PortalBundle\EventListener;
 
-use Application\DeskPRO\HttpFoundation\Request;
+use League\Url\Components\Port;
+use Symfony\Component\HttpFoundation\Request;
 use Application\PortalBundle\Mode\PortalMode;
 use Application\PortalBundle\Mode\PortalModeFactory;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 use Symfony\Component\HttpFoundation\ParameterBag;
@@ -20,10 +22,9 @@ class PortalModeListenerSpec extends ObjectBehavior
         $this->shouldImplement('Symfony\Component\EventDispatcher\EventSubscriberInterface');
     }
 
-    function let(PortalModeFactory $factory, Request $request, ParameterBag $bag)
+    function let(PortalModeFactory $factory, PortalModeStorage $store)
     {
-        $this->beConstructedWith($factory);
-        $request->attributes = $bag;
+        $this->beConstructedWith($factory, $store);
     }
 
     public function it_subscribes_to_kernel_request_with_high_priority()
@@ -35,23 +36,23 @@ class PortalModeListenerSpec extends ObjectBehavior
         );
     }
 
-    public function it_passes_the_requested_path_to_the_factory(Request $request, GetResponseEvent $event, PortalModeFactory $factory)
+    public function it_passes_the_requested_path_to_the_factory(Request $request, GetResponseEvent $event, PortalModeFactory $factory, PortalMode $mode)
     {
         $request->getPathInfo()->willReturn($path = '/admin-mode/en/tickets');
         $event->getRequest()->willReturn($request);
 
-        $factory->createMode($path)->shouldBeCalled();
+        $factory->createMode($path)->willReturn($mode);
 
         $this->onKernelRequest($event);
     }
 
-    public function it_sets_the_mode_as_a_request_attribute(PortalMode $mode, GetResponseEvent $event, PortalModeFactory $factory, Request $request, ParameterBag $bag)
+    public function it_saves_the_mode_to_mode_storage(PortalMode $mode, GetResponseEvent $event, PortalModeFactory $factory, Request $request, PortalModeStorage $store)
     {
         $event->getRequest()->willReturn($request);
 
         $factory->createMode(Argument::any())->willReturn($mode);
 
-        $bag->set(PortalMode::ATTR_NAME, $mode)->shouldBeCalled();
+        $store->setMode($mode)->shouldBeCalled();
 
         $this->onKernelRequest($event);
     }

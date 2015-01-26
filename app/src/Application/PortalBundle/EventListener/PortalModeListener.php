@@ -4,6 +4,7 @@ namespace Application\PortalBundle\EventListener;
 
 use Application\PortalBundle\Mode\PortalMode;
 use Application\PortalBundle\Mode\PortalModeFactory;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
 use Symfony\Component\HttpKernel\KernelEvents;
@@ -15,9 +16,15 @@ class PortalModeListener implements EventSubscriberInterface
      */
     private $factory;
 
-    public function __construct(PortalModeFactory $factory)
+    /**
+     * @var PortalModeStorage
+     */
+    private $store;
+
+    public function __construct(PortalModeFactory $factory, PortalModeStorage $store)
     {
         $this->factory = $factory;
+        $this->store = $store;
     }
 
     public function onKernelRequest(GetResponseEvent $event)
@@ -26,7 +33,7 @@ class PortalModeListener implements EventSubscriberInterface
 
         $mode = $this->factory->createMode($request->getPathInfo());
 
-        $request->attributes->set(PortalMode::ATTR_NAME, $mode);
+        $this->store->setMode($mode);
     }
 
     public static function getSubscribedEvents()

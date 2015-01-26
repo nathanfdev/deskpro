@@ -19,3 +19,7 @@ services:
 
   portal_mode_factory:
       class: Application\PortalBundle\Mode\PortalModeFactory
+
+
+  portal_mode:
+      class: Application\PortalBundle\Mode\PortalModeStorage
