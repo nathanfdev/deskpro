@@ -1,0 +1,43 @@
+<?php
+
+namespace spec\Application\PortalBundle\Mode;
+
+use PhpSpec\ObjectBehavior;
+use Prophecy\Argument;
+
+class PortalModeFactorySpec extends ObjectBehavior
+{
+    function it_is_initializable()
+    {
+        $this->shouldHaveType('Application\PortalBundle\Mode\PortalModeFactory');
+    }
+
+    function it_remains_normal_if_does_not_match_a_mode()
+    {
+        $mode = $this->createMode($path = '/admin-mode-invalid/en/tickets');
+
+        $mode->isNormal()->shouldReturn(true);
+        $mode->getOriginalPath()->shouldReturn($path);
+        $mode->getInternalPath()->shouldReturn($path);
+    }
+
+    function it_creates_admin_mode()
+    {
+        $mode = $this->createMode($path = '/admin-mode/en/tickets');
+
+        $mode->isAdmin()->shouldReturn(true);
+        $mode->getData()->shouldReturn(null);
+        $mode->getOriginalPath()->shouldReturn($path);
+        $mode->getInternalPath()->shouldReturn('/en/tickets');
+    }
+
+    function it_creates_brand_mode()
+    {
+        $mode = $this->createMode($path = '/brand-4/en/ticket/67');
+
+        $mode->isBrand()->shouldReturn(true);
+        $mode->getData()->shouldReturn(4);
+        $mode->getOriginalPath()->shouldReturn($path);
+        $mode->getInternalPath()->shouldReturn('/en/ticket/67');
+    }
+}
