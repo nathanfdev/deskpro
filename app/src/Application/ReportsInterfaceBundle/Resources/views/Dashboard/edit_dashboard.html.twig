@@ -40,7 +40,7 @@
 
             <h2>Create reports for this dashboard</h2>
 
-            <div class="bucket" ng-if="!report.deleted" ng-repeat="report in dashboard.reports">
+            <div class="bucket" ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index">
                 <label class="label"><i class="fa fa-bars"></i></label>
                 <div class="bucket-column-last">
                     <span class="meta"><a ng-click="removeReport(report)">Remove</a></span>
@@ -49,17 +49,17 @@
                     <input type="text" ng-model="report.title" placeholder="Report title">
                     <ul ng-if="report.cloning" class="clone-list">
                         <li ng-repeat="db in dashboards track by $index"
-                            ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded(db)}">
+                            ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded($parent.$index,db)}">
 
-                            <a ng-show='!isExpanded(db)' ng-click="expandDashboard(db)" class="control"><i class="fa fa-plus-square-o"></i></a>
-                            <a ng-show='isExpanded(db)' ng-click="collide(db)" class="control">
+                            <a ng-show='!isExpanded($parent.$index,db)' ng-click="expandDashboard($parent.$index,db)" class="control"><i class="fa fa-plus-square-o"></i></a>
+                            <a ng-show='isExpanded($parent.$index,db)' ng-click="collide($parent.$index,db)" class="control">
                                 <i class="fa fa-minus-square-o"></i>
                             </a>
 
                             <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
-                            <ul ng-show='isExpanded(db) && db.reports.length > 0'>
-                                <li ng-repeat="rp in db.reports track by $index">
-                                    <a ng-click="cloneReport(rp)">{{ ng_var('rp.title') }}</a>
+                            <ul ng-show='isExpanded($parent.$index,db) && db.reports.length > 0'>
+                                <li ng-repeat="rp in db.reports track by $index" ng-if="rp.id">
+                                    <a ng-click="cloneReport(report,rp)">{{ ng_var('rp.title') }}</a>
                                 </li>
                             </ul>
                         </li>
@@ -159,7 +159,7 @@
                 <label class="label">Reports:</label>
                 <div class="bucket-column">
                     <a ng-click="addNewReport()" class="button button-secondary half-width">Add new report</a>
-                    <a ng-click="cloneExisting()" class="button button-secondary half-width">Clone existing report</a>
+                    <a ng-click="addClonedReport()" class="button button-secondary half-width">Clone existing report</a>
                 </div>
             </div>
 

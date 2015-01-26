@@ -125,6 +125,8 @@ define -> [
         resolve:
           dashboard: () ->
             return null
+          dashboards: () ->
+            return $scope.dashboards
           currentReport: () ->
             return $scope.currentReport
           state: () ->
@@ -151,6 +153,8 @@ define -> [
         resolve:
           dashboard: () ->
             return $scope.dashboard
+          dashboards: () ->
+            return $scope.dashboards
           currentReport: () ->
             return $scope.currentReport
           state: () ->

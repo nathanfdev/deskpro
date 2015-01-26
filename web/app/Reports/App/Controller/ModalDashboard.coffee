@@ -5,6 +5,7 @@ define -> [
   'DashboardPermissionsService',
   'DashboardWidgetService',
   'dashboard',
+  'dashboards',
   'currentReport',
   'state',
   ($scope,
@@ -13,11 +14,14 @@ define -> [
    DashboardPermissionsService,
    DashboardWidgetService,
    dashboard,
+   dashboards,
    currentReport,
    state) ->
 
     DashboardService.setWidgetService(DashboardWidgetService)
     $scope.state = state
+    $scope.expandedDashboard = {}
+    $scope.dashboards = dashboards
     if dashboard?
       $scope.dashboard = dashboard
     else
@@ -42,15 +46,34 @@ define -> [
     $scope.addNewReport = () ->
       $scope.dashboard.reports.push {widgets:[], title: '', columns: 10, loaded: false, deleted: false}
 
-    $scope.cloneNewReport = () ->
+    $scope.addClonedReport = () ->
       report =
         widgets:[]
         title: ''
         columns: 10
         loaded: false
         deleted: false
+        cloning: true
       $scope.dashboard.reports.push report
       report
+
+    $scope.cloneReport = (report, prototype) ->
+      report.prototype_id = prototype.id
+      report.title = prototype.title
+
+    $scope.expandDashboard = (reportIndex, dashboard) ->
+      if dashboard.loaded is false
+        DashboardService.getDashboard(dashboard)
+      if !$scope.expandedDashboard[reportIndex]
+        $scope.expandedDashboard[reportIndex] = []
+      $scope.expandedDashboard[reportIndex][dashboard.id] = true
+      console.log $scope.expandedDashboard, reportIndex
+
+    $scope.collide = (reportIndex, dashboard) ->
+      $scope.expandedDashboard[reportIndex][dashboard.id] = false
+
+    $scope.isExpanded = (reportIndex, dashboard) ->
+      $scope.expandedDashboard[reportIndex]? and $scope.expandedDashboard[reportIndex][dashboard.id]? and $scope.expandedDashboard[reportIndex][dashboard.id] is true
 
     $scope.setPermissions = (agent, permission) ->
       index = DashboardPermissionsService.getIndexById($scope.dashboard.permissions, agent.id)

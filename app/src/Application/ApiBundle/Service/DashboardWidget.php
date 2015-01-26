@@ -142,6 +142,8 @@ class DashboardWidget
                 ->setTitle($widget_prototype->getTitle())
                 ->setPosition($widget_prototype->getPosition())
                 ->setSize($widget_prototype->getSize())
+                ->setType($widget_prototype->getType())
+                ->setVariables($widget_prototype->getVariables())
                 ->setReport($report)
                 ->setWidget($widget_prototype->getWidget());
             $this->em->persist($widget);

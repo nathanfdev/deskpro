@@ -40,6 +40,7 @@ use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 
 use Application\ApiBundle\Service\Dashboard as DashboardService;
 use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionService;
+use Application\ApiBundle\Service\DashboardWidget as DashboardWidgetService;
 
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
@@ -60,6 +61,9 @@ class DashboardController extends AbstractController
     /** @var DashboardPermissionService */
     protected $permissionsService;
 
+    /** @var DashboardWidgetService */
+    protected $widgetService;
+
     /**
      * {@inherited}
      */
@@ -67,7 +71,9 @@ class DashboardController extends AbstractController
     {
         parent::init();
         $this->service = $this->get('dashboard.service');
+        $this->widgetService = $this->get('dashboard.service');
         $this->permissionsService = $this->get('dashboard.permissions.service');
+        $this->widgetService = $this->get('dashboard.widget.service');
     }
 
 
@@ -212,6 +218,10 @@ class DashboardController extends AbstractController
                         $reportEntity->setSortOrder($this->service->getLastSortOrder($dashboard));
                         $dashboard->addReport($reportEntity);
                     }
+                    if(isset($report['prototype_id'])) {
+                        $report_prototype = $this->service->getReport($report['prototype_id']);
+                        $this->widgetService->copyWidgetLinks($reportEntity,$report_prototype);
+                    }
                     $reportEntity->setTitle($report['title']);
                     $this->service->saveReport($reportEntity);
                 }
@@ -252,7 +262,7 @@ class DashboardController extends AbstractController
                 ->setColumns($report_prototype->getColumns())
                 ->setSortOrder($report_prototype->getSortOrder());
             $dashboard->addReport($report);
-            $this->service->copyWidgetLinks($report, $report_prototype);
+            $this->widgetService->copyWidgetLinks($report, $report_prototype);
 
         }
         $data = $this->service->saveDashboard($dashboard);

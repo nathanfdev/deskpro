@@ -37,7 +37,6 @@ namespace Application\ApiBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport as Tab;
 use Application\DeskPRO\Entity\ReportDashboardWidget as Widget;
-use Application\DeskPRO\Dpql\Statement\Display;
 
 use Application\ApiBundle\Service\Dashboard as DashboardService;
 use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionService;
