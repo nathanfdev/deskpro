@@ -17,6 +17,7 @@ class PortalModeListenerSpec extends ObjectBehavior
     function it_is_initializable()
     {
         $this->shouldHaveType('Application\PortalBundle\EventListener\PortalModeListener');
+        $this->shouldImplement('Symfony\Component\EventDispatcher\EventSubscriberInterface');
     }
 
     function let(PortalModeFactory $factory, Request $request, ParameterBag $bag)

@@ -9,8 +9,13 @@ services:
     class: Application\PortalBundle\Visitor\VisitorIdentificationProvider
     arguments: [@request_stack, @logger]
 
+
   pagerfanta.view.deskpro:
       class: Application\PortalBundle\View\Pagerfanta\DeskproView
       public: false
       tags:
         - { name: pagerfanta.view, alias: deskpro }
+
+
+  portal_mode_factory:
+      class: Application\PortalBundle\Mode\PortalModeFactory
