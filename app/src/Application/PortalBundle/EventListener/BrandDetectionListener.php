@@ -38,6 +38,7 @@ use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\EntityRepository\Brand;
 use Application\DeskPRO\Entity\Brand as BrandEntity;
 use Application\DeskPRO\NewSettings\SettingsResolver;
+use Application\PortalBundle\Mode\PortalMode;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -90,9 +91,20 @@ class BrandDetectionListener implements EventSubscriberInterface
      */
     public function detectBrandInRequest(Request $request)
     {
+        // query param method
         if ($brand_id = $request->query->get('brand', null)) {
             try {
                 return $this->brand_repository->find($brand_id);
+            } catch (\Exception $e) {
+                return null;
+            }
+        }
+
+        // mode method
+        if ($request->attributes->has(PortalMode::ATTR_NAME)) {
+            $mode = $request->attributes->get(PortalMode::ATTR_NAME);
+            try {
+                return $this->brand_repository->find($mode->getData());
             } catch (\Exception $e) {
                 return null;
             }
