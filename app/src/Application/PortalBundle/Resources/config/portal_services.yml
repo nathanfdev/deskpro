@@ -21,5 +21,5 @@ services:
       class: Application\PortalBundle\Mode\PortalModeFactory
 
 
-  portal_mode:
+  portal_mode_storage:
       class: Application\PortalBundle\Mode\PortalModeStorage

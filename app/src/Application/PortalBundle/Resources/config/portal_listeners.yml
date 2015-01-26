@@ -16,7 +16,7 @@ services:
 
   portal_mode.listener:
     class: Application\PortalBundle\EventListener\PortalModeListener
-    arguments: [@portal_mode_factory]
+    arguments: [@portal_mode_factory, @portal_mode_storage]
     tags:
       - { name: kernel.event_subscriber }
 

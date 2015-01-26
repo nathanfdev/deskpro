@@ -29,6 +29,10 @@ class PortalModeListener implements EventSubscriberInterface
 
     public function onKernelRequest(GetResponseEvent $event)
     {
+        if (!$event->isMasterRequest()) {
+            return;
+        }
+
         $request = $event->getRequest();
 
         $mode = $this->factory->createMode($request->getPathInfo());

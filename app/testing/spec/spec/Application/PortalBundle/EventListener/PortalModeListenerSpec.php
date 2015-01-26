@@ -36,23 +36,36 @@ class PortalModeListenerSpec extends ObjectBehavior
         );
     }
 
-    public function it_passes_the_requested_path_to_the_factory(Request $request, GetResponseEvent $event, PortalModeFactory $factory, PortalMode $mode)
+    public function it_creates_and_saves_the_mode_to_mode_storage_on_master_request(
+        PortalMode $mode,
+        GetResponseEvent $event,
+        PortalModeFactory $factory,
+        Request $request,
+        PortalModeStorage $store
+    )
     {
         $request->getPathInfo()->willReturn($path = '/admin-mode/en/tickets');
+
+        $event->isMasterRequest()->willReturn(true);
         $event->getRequest()->willReturn($request);
 
         $factory->createMode($path)->willReturn($mode);
 
+        $store->setMode($mode)->shouldBeCalled();
+
         $this->onKernelRequest($event);
     }
 
-    public function it_saves_the_mode_to_mode_storage(PortalMode $mode, GetResponseEvent $event, PortalModeFactory $factory, Request $request, PortalModeStorage $store)
+    public function it_ignores_sub_requests(
+        GetResponseEvent $event,
+        PortalModeFactory $factory,
+        PortalModeStorage $store
+    )
     {
-        $event->getRequest()->willReturn($request);
+        $event->isMasterRequest()->willReturn(false);
 
-        $factory->createMode(Argument::any())->willReturn($mode);
-
-        $store->setMode($mode)->shouldBeCalled();
+        $factory->createMode(Argument::any())->shouldNotBeCalled();
+        $store->setMode(Argument::any())->shouldNotBeCalled();
 
         $this->onKernelRequest($event);
     }
