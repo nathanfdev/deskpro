@@ -14,12 +14,14 @@ class PortalModeFactory
         if (preg_match(self::REGEX_ADMIN, $path, $matches)) {
             $mode->setAdmin();
             $mode->setInternalPath($matches[1]);
+            $mode->setModePath('/admin-mode');
         }
 
         if (preg_match(self::REGEX_BRAND, $path, $matches)) {
             $brand_id = (int)$matches[1];
             $mode->setBrand($brand_id);
             $mode->setInternalPath($matches[2]);
+            $mode->setModePath(sprintf('/brand-%s', $brand_id));
         }
 
         return $mode;

@@ -47,6 +47,8 @@ class PortalModeSpec extends ObjectBehavior
         $this->getOriginalPath()->shouldReturn($orig);
         $this->setInternalPath($internal = '/path');
         $this->getInternalPath()->shouldReturn($internal);
+        $this->setModePath($mpath = '/mode');
+        $this->getModePath()->shouldReturn($mpath);
     }
 
     function it_requires_a_path_in_the_constrcutor_and_initiates_original_and_internal_paths()
@@ -54,5 +56,6 @@ class PortalModeSpec extends ObjectBehavior
         $this->beConstructedWith($path = '/some/path');
         $this->getOriginalPath()->shouldReturn($path);
         $this->getInternalPath()->shouldReturn($path);
+        $this->getModePath()->shouldReturn(null);
     }
 }

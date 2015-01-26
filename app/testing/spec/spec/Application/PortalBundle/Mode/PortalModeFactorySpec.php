@@ -29,6 +29,7 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getData()->shouldReturn(null);
         $mode->getOriginalPath()->shouldReturn($path);
         $mode->getInternalPath()->shouldReturn('/en/tickets');
+        $mode->getModePath()->shouldReturn('/admin-mode');
     }
 
     function it_creates_brand_mode()
@@ -39,5 +40,6 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getData()->shouldReturn(4);
         $mode->getOriginalPath()->shouldReturn($path);
         $mode->getInternalPath()->shouldReturn('/en/ticket/67');
+        $mode->getModePath()->shouldReturn('/brand-4');
     }
 }

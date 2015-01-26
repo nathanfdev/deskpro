@@ -13,6 +13,7 @@ class PortalMode
     protected $mode;
     protected $original_path;
     protected $internal_path;
+    protected $mode_path;
     protected $data;
 
     public function __construct($path)
@@ -70,5 +71,15 @@ class PortalMode
     public function getData()
     {
         return $this->data;
+    }
+
+    public function setModePath($mode_path)
+    {
+        $this->mode_path = $mode_path;
+    }
+
+    public function getModePath()
+    {
+        return $this->mode_path;
     }
 }
