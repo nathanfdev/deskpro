@@ -1,0 +1,8 @@
+extensions:
+    - PhpSpec\NyanFormattersExtension\Extension
+formatter.name: nyan.cat
+
+suites:
+    default:
+        src_path: ../src
+        spec_path: spec
