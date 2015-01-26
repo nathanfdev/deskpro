@@ -8,3 +8,4 @@ services:
     arguments:
       - @language_router.inner
       - @language_manager
+      - @portal_mode_storage

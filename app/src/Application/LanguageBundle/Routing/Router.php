@@ -36,8 +36,10 @@ namespace Application\LanguageBundle\Routing;
 
 
 use Application\DeskPRO\Entity\Language;
-use Application\LanguageBundle\Language\LanguageManager;
 use Application\LanguageBundle\EventListener\LastLanguageListener;
+use Application\LanguageBundle\Language\LanguageManager;
+use Application\PortalBundle\Mode\PortalMode;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
@@ -68,11 +70,17 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      */
     private $language_manager;
 
+    /**
+     * @var PortalModeStorage
+     */
+    private $mode_store;
 
-    public function __construct(BaseRouter $router, LanguageManager $language_manager)
+
+    public function __construct(BaseRouter $router, LanguageManager $language_manager, PortalModeStorage $mode_store)
     {
         $this->router = $router;
         $this->language_manager = $language_manager;
+        $this->mode_store = $mode_store;
     }
 
 
@@ -81,8 +89,14 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      */
     public function matchRequest(Request $request)
     {
+        if ($mode = $this->mode_store->getMode()) {
+            $path_info = $mode->getInternalPath();
+        } else {
+            $path_info = $request->getPathInfo();
+        }
+
         $extractor = new UrlMatcher();
-        $split = $extractor->extractLanguageCode($request->getPathInfo());
+        $split = $extractor->extractLanguageCode($path_info);
         $code = $split['lang_url_code'];
 
         if ('GET' !== $request->getMethod()) {
@@ -114,6 +128,23 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      */
     public function generate($name, $parameters = array(), $referenceType = self::ABSOLUTE_PATH)
     {
+        $pre_mode_generate = $this->languageAwareGenerate($name, $parameters, $referenceType);
+
+        if (($mode = $this->mode_store->getMode()) && in_array($referenceType, array(false, self::ABSOLUTE_PATH))) {
+            return $mode->getModePath() . $pre_mode_generate;
+        }
+
+        return $pre_mode_generate;
+    }
+
+    /**
+     * @param $name
+     * @param $parameters
+     * @param $referenceType
+     * @return string
+     */
+    protected function languageAwareGenerate($name, $parameters, $referenceType)
+    {
         $generated = $this->router->generate($name, $parameters, $referenceType);
 
         if (!$this->language_manager->isMultiLanguagePortal()) {
@@ -141,7 +172,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
                 $url = Url::createFromUrl($generated);
                 $url->getPath()->prepend($urlCode);
 
-                return (string) $url;
+                return (string)$url;
             default:
                 throw new \InvalidArgumentException(
                     'we only support generating ABSOLUTE_PATH or ABSOLUTE_URL urls at this time, see LanguageBundle\'s Router'
@@ -321,5 +352,4 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         }
         return $redirect_url;
     }
-
 }
