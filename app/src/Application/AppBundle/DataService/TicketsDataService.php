@@ -74,7 +74,6 @@ class TicketsDataService
             ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN)
         ;
 
-        // TODO: fix this for both types
         // type
         if (TicketFilter::TYPE_OWN === $filter->getType()) {
 
@@ -100,8 +99,8 @@ class TicketsDataService
 
         } else {
 
-            // its assumed that if you send in a person with an "organization" type filter that they have an organization and are a manger
-            // ensure the controller/calling-code has this secured
+            // its assumed that if you send in a person with an "organization" type filter that they have an
+            // organization and are a manger. ensure the controller/calling-code has this secured
             $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
 
         }
@@ -129,17 +128,20 @@ class TicketsDataService
 
             // TODO: last activity algorithm (same as Ticket::getLastActivityDate())
             case TicketFilter::SORT_ACTIVITY:
-                $sort_string = 't.date_last_agent_reply';
+                $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
+                $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
+                $qb->addOrderBy('t.date_created', $filter->getSortDirection());
+                break;
+
+            case TicketFilter::SORT_DEPARTMENT:
+                $qb->join('t.department', 'd');
+                $qb->orderBy('d.title', $filter->getSortDirection());
                 break;
 
             case TicketFilter::SORT_CREATED:
             default:
-                $sort_string = 't.date_created';
+                $qb->orderBy('t.date_created', $filter->getSortDirection());
         }
-
-        $qb->orderBy($sort_string, $filter->getSortDirection());
-
-        //print($qb->getQuery()->getDQL());exit;
 
         $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
         $pager->setMaxPerPage($max_per_page);

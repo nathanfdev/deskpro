@@ -46,6 +46,7 @@ class TicketFilter
 
     const SORT_CREATED = 'created';
     const SORT_ACTIVITY = 'activity';
+    const SORT_DEPARTMENT = 'department';
 
     const SORT_DIRECTION_DESC = 'desc';
     const SORT_DIRECTION_ASC = 'asc';

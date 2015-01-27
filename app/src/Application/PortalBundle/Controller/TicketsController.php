@@ -52,7 +52,7 @@ class TicketsController extends AbstractController
     public function indexAction(Request $request, $type)
     {
         $person = $this->getUser();
-        $per_page = 2; // TODO: brand setting?
+        $per_page = 5; // TODO: brand setting?
 
         // access to organization list?
         if ($type === 'organization' && !($person->organization && $person->organization_manager)) {
