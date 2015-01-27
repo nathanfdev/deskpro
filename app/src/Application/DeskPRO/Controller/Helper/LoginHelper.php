@@ -75,7 +75,7 @@ class LoginHelper
             WHERE us.is_enabled = ?1
         ')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-        $return = $this->controller->in->getStringFromGet('return');
+        $return = $this->controller->request->getReturnParam();
         if ($return AND $return[0] != '/') {
             // Always be a path on the current domain,
             // or else it might be a trick to go to some other domain etc
@@ -242,7 +242,7 @@ class LoginHelper
 
     protected function _redirectLoginSuccess()
     {
-        $return = $this->controller->in->getString('return');
+        $return = $this->controller->request->getReturnParam();
         if ($return) {
             return $this->controller->redirect($return);
         } else {
@@ -252,7 +252,7 @@ class LoginHelper
 
     protected function _redirectLoginFailed()
     {
-        $return = $this->controller->in->getString('return');
+        $return = $this->controller->request->getReturnParam();
 
         return $this->controller->redirectRoute($this->route_prefix . '_login', array('return' => $return));
     }

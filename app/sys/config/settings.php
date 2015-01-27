@@ -839,6 +839,19 @@
     'agent.ip_security.whitelist_lifetime' => 1814400,
 
     ####################################################################################################################
+    # login rate limit
+    ####################################################################################################################
+
+    'user.login_rate_limit.enabled'         => true,
+    'user.login_rate_limit.attempts'        => 20,
+    'user.login_rate_limit.attempts_time'   => 900,
+    'user.login_rate_limit.lock_time'       => 900,
+    'agent.login_rate_limit.enabled'        => true,
+    'agent.login_rate_limit.attempts'       => 20,
+    'agent.login_rate_limit.attempts_time'  => 900,
+    'agent.login_rate_limit.lock_time'      => 900,
+
+    ####################################################################################################################
     # user_style
     ####################################################################################################################
 

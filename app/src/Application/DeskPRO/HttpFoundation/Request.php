@@ -101,7 +101,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
         $check_for_locale = true;
         foreach ($nocheck_sections as $s) {
-            if (strpos($pathinfo, $s) === 0) {
+            if (strpos($this->getPathInfo(), $s) === 0) {
                 $check_for_locale = false;
             }
         }
@@ -193,5 +193,26 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         }
 
         return rtrim($baseUrl, '/');
+    }
+
+    public function getReturnParam()
+    {
+        if ('application/json' === $this->getContentType()) {
+            if ($data = json_decode((string) $this->getContent(), 1)) {
+                if (!$return = @$data['return']) {
+                    return null;
+                }
+            }
+        }
+
+        if (!$return = (string) $this->get('return')) {
+            return null;
+        }
+
+        if ('/' !== $return[0] || '/' === $return[1] || false !== strpos($return, '/validate-email/')) {
+            return null;
+        }
+
+        return $return;
     }
 }

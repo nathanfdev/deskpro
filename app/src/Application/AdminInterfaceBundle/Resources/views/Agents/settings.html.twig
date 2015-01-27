@@ -244,6 +244,40 @@
     {##################################################################################################}
 
     <section class="dp-paneblock dp-listpane">
+        <header>
+            <h3>{{ phrase('adm.settings.rate_limit_title') }}</h3>
+        </header>
+        <article class="form-horizontal dp-form">
+            <div class="panel panel-innertable">
+                <div class="form-group">
+                    <div class="col-lg-12">
+                        <div class="inner-group">
+                            <label>
+                                <input type="checkbox" ng-model="rate_limit_settings.enabled" />
+                                <h4>{{ phrase('adm.settings.rate_limit_enabled_title') }}</h4>
+                            </label>
+                            <span class="help-block">
+                                {{ phrase('adm.settings.rate_limit_help') }}
+                            </span>
+                            <div ng-show="rate_limit_settings.enabled">
+                                After
+                                <input type="number" min="1" ng-model="rate_limit_settings.attempts" class="form-control" style="width: 50px;" />
+                                failed login attempts within
+                                <dp-time-with-unit ng-model="rate_limit_settings.attempts_time"></dp-time-with-unit>
+                                , lock the account for
+                                <dp-time-with-unit ng-model="rate_limit_settings.lock_time"></dp-time-with-unit>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </article>
+    </section>
+
+    {##################################################################################################}
+
+    <section class="dp-paneblock dp-listpane">
         <footer>
             <div class="dp-content">
 

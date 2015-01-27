@@ -62,6 +62,8 @@
 			{% if app.getRequest().query.has('lost') %}
 				$('.show-lost-password-trigger').trigger('click');
 			{% endif %}
+
+			$('.timeago').timeago();
 		});
 	</script>
 {% endblock %}
@@ -109,6 +111,14 @@
 					{% if return %}<input type="hidden" name="return" value="{{return}}" />{% endif %}
 					{% if timeout %}<div class="error" style="display: block">{{ phrase('agent.login.session_timeout') }}</div>{% endif %}
 					{% if failed_login_name %}<div class="error">{{ phrase('agent.login.login_failed') }}</div>{% endif %}
+					{% if app.session.hasFlash('failed_login_rate') %}
+						{% set timeago = app.session.getFlash('failed_login_rate').value %}
+						<div class="error">
+							{{ phrase('agent.login.account_locked_message', {
+								timeago: '<time class="timeago" data-timeago-no-ago="1" datetime="' ~ ('- ' ~ timeago ~ ' seconds')|date('c', 'UTC') ~ '"></time>'
+							}, true) }}
+						</div>
+					{% endif %}
 					{% if has_done_reset %}<div class="successa>{{ phrase('agent.login.password_was_reset') }}</div>{% endif %}
 					{% if has_logged_out %}<div class="success">{{ phrase('agent.login.has_logged_out') }}</div>{% endif %}
 
