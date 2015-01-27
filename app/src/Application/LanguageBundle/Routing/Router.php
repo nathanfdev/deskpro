@@ -130,7 +130,13 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
     {
         $pre_mode_generate = $this->languageAwareGenerate($name, $parameters, $referenceType);
 
-        if (($mode = $this->mode_store->getMode()) && in_array($referenceType, array(false, self::ABSOLUTE_PATH))) {
+        // if its a special route, dont consider the mode
+        if ('_' === substr($name, 0, 1)) {
+            return $pre_mode_generate;
+        }
+
+        $portalMode = $mode = $this->mode_store->getMode();
+        if (($portalMode) && in_array($referenceType, array(false, self::ABSOLUTE_PATH))) {
             return $mode->getModePath() . $pre_mode_generate;
         }
 
@@ -254,8 +260,9 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      */
     protected function throwRedirectExceptionTo(Language $language = null, $url)
     {
+        $mode = $this->mode_store->getMode() ? $this->mode_store->getMode()->getModePath() : '';
         $pre = $language ? '/'.$language->getTwoLetterLanguageCode() : '';
-        $url = $pre.$url;
+        $url = $mode.$pre.$url;
         throw new RedirectToUrlException($url);
     }
 
