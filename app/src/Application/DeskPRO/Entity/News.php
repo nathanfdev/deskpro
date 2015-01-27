@@ -35,7 +35,6 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\EntityRepository\NewsSlugHistory;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
@@ -225,6 +224,8 @@ class News extends ContentAbstract implements HighlightableModelInterface
     {
         $history = new NewsSlugHistory($this, $old_slug);
         $this->slug_history->add($history);
+
+        return $history;
     }
 
     ############################################################################

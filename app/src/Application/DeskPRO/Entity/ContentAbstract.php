@@ -186,13 +186,15 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $old_title = $this->title;
         $this->setModelField('title', $title);
+        // note: removed the setSlug call, we do that in the DoctrineContentSlugListener now (prepersist/preupdate)
+    }
 
-        if (!$this->slug || $this->slug == Strings::slugifyTitle($old_title)) {
-            $this['slug']  = Strings::slugifyTitle($title);
-            if (!$this['slug']) {
-                $this['slug'] = 'view';
-            }
-        }
+    /**
+     * @return string
+     */
+    public function getTitle()
+    {
+        return $this->title;
     }
 
     public function getLanguage()
@@ -337,12 +339,27 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $this->slug_history;
     }
 
+    /**
+     * @param $new_slug
+     * @return null or the new slug history object
+     */
     public function setSlug($new_slug)
     {
-        if ($new_slug !== $this->slug) {
-            $this->addSlugHistory($this->slug);
+        $history = null;
+        if ($new_slug !== $this->slug && $this->slug) {
+
+            // if the slug exists in history already, we don't want to add it again
+            $object_slug = $this->slug;
+            if (!$this->slug_history->exists(function($key, $history) use ($object_slug) {
+                return $object_slug === $history->getSlug();
+            })) {
+                $history = $this->addSlugHistory($this->slug);
+            }
+
         }
         $this->setModelField('slug', $new_slug);
+
+        return $history;
     }
 
     abstract public function getLink();

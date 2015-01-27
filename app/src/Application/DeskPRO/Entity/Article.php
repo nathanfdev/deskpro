@@ -314,6 +314,8 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         $history = new ArticleSlugHistory($this, $old_slug);
         $this->slug_history->add($history);
+
+        return $history;
     }
 
 

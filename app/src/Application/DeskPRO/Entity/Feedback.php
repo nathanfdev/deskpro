@@ -469,6 +469,8 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
     {
         $history = new FeedbackSlugHistory($this, $old_slug);
         $this->slug_history->add($history);
+
+        return $history;
     }
 
     ############################################################################

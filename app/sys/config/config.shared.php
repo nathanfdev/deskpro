@@ -40,6 +40,12 @@ $definition->setArguments(
 );
 $container->setDefinition('swiftmailer.mailer', $definition);
 
+// a service to set the correct slug on a content object
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\Service\ContentSlugManager');
+$definition->setArguments(array(new Reference('service_container')));
+$container->setDefinition('content_slug_manager', $definition);
+
 ############################################################################
 # Listeners
 ############################################################################
@@ -125,6 +131,13 @@ $definition->setArguments(
     )
 );
 $container->setDefinition('dp.doctrine.entity_listener_resolver', $definition);
+
+// slug listener (sets slugs on content)
+$definition = new Definition();
+$definition->setClass('Application\AppBundle\EventListener\DoctrineContentSlugListener');
+$definition->setArguments(array(new Reference('content_slug_manager')));
+$definition->addTag('doctrine.event_subscriber');
+$container->setDefinition('doctrine_listener.content_slug', $definition);
 
 // doctrine.orm.default_query_cache
 $definition = new Definition();
