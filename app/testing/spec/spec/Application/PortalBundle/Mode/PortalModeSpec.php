@@ -2,6 +2,7 @@
 
 namespace spec\Application\PortalBundle\Mode;
 
+use Application\PortalBundle\Mode\PortalMode;
 use PhpSpec\ObjectBehavior;
 use Prophecy\Argument;
 
@@ -57,5 +58,22 @@ class PortalModeSpec extends ObjectBehavior
         $this->getOriginalPath()->shouldReturn($path);
         $this->getInternalPath()->shouldReturn($path);
         $this->getModePath()->shouldReturn(null);
+    }
+
+    function it_can_make_a_sensible_string_when_normal_mode()
+    {
+        $this->__toString()->shouldReturn(PortalMode::MODE_NORMAL);
+    }
+
+    function it_can_make_a_sensible_string_when_admin_mode()
+    {
+        $this->setAdmin();
+        $this->__toString()->shouldReturn(PortalMode::MODE_ADMIN);
+    }
+
+    function it_can_make_a_sensible_string_when_brand_mode()
+    {
+        $this->setBrand(5);
+        $this->__toString()->shouldReturn(sprintf('%s [ID=%s]', PortalMode::MODE_BRAND, 5));
     }
 }

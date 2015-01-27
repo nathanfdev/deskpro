@@ -7,6 +7,7 @@
 	<span class="sf-toolbar-info-piece-additional-detail">
 	<span class="sf-toolbar-info-with-delimiter">{{ collector.themeName }} Theme</span>
 	<span class="sf-toolbar-info-with-delimiter">{{ collector.brandName }}</span>
+	<span class="sf-toolbar-info-with-delimiter">mode: {{ collector.mode }}</span>
 	<span>
 		<img
 			src="{{ asset('web/images/flags/'~collector.languageImage) }}"
@@ -32,6 +33,10 @@
 				alt="{{ collector.languageCode }}" />
 			{{ collector.languageCode }} -
 			{{ collector.languageId }}
+		</div>
+		<div class="sf-toolbar-info-piece">
+			<b>Mode</b>
+			{{ collector.mode }}
 		</div>
 	{% endspaceless %}
 	{% endset %}
@@ -72,6 +77,11 @@
 					alt="{{ collector.languageCode }}" />
 				{{ collector.languageCode }}</td>
 			<td>{{ collector.languageId }}</td>
+		</tr>
+		<tr>
+			<th>Mode</th>
+			<td>{{ collector.mode }}</td>
+			<td>&nbsp;</td>
 		</tr>
 	</table>
 

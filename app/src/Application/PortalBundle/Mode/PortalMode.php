@@ -4,7 +4,7 @@ namespace Application\PortalBundle\Mode;
 
 class PortalMode
 {
-    const ATTR_NAME = 'portal_mode';
+    const ATTR_NAME = '_portal_mode';
 
     const MODE_ADMIN = 'admin';
     const MODE_NORMAL = 'normal';
@@ -20,6 +20,30 @@ class PortalMode
     {
         $this->mode = self::MODE_NORMAL;
         $this->original_path = $this->internal_path = $path;
+    }
+
+    public function __toString()
+    {
+        if ($this->isAdmin()) {
+            return self::MODE_ADMIN;
+        }
+
+        if ($this->isBrand()) {
+            return sprintf('%s [ID=%s]', self::MODE_BRAND, $this->getData());
+        }
+
+        return self::MODE_NORMAL;
+    }
+
+    public function __sleep()
+    {
+        return array(
+            'mode',
+            'original_path',
+            'internal_path',
+            'mode_path',
+            'data'
+        );
     }
 
     public function isAdmin()
