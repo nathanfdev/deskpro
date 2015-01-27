@@ -358,8 +358,8 @@ $container->loadFromExtension(
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
                             ),
-                            'edge_ngram_3'  => array(
-                                'type'        => 'nedgeNGram',
+                            'edge_ngram_filter_3'  => array(
+                                'type'        => 'edgeNGram',
                                 'min_gram'    => 3,
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
