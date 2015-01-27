@@ -88,7 +88,10 @@ class DeskProWriter extends AbstractWriter
             $this->entity_manager->flush();
 
         } catch (Importer\Mapper\MapperException $e) {
-            throw new WriterException(sprintf('Unable to write entity `%s`', $entity->getDestination()), 0, $e);
+            throw new WriterException(sprintf(
+                'Unable to write entity `%s`. %s',
+                $entity->getDestination(), $e
+            ));
         }
 
         return true;

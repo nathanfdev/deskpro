@@ -231,6 +231,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function setPersonId($id)
     {
         $this->setModelField('person', App::getEntityRepository('DeskPRO:Person')->find($id));
+        return $this;
     }
 
     public function getPersonId()
@@ -462,6 +463,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function setMessageText($message)
     {
         $this->setMessage(Strings::convert4ByteCharsToHtmlEntities(nl2br(htmlspecialchars($message))));
+        return $this;
     }
 
     public function setMessage($message)
@@ -509,6 +511,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
     public function setGeoCountry($geo_country)
     {
         $this->setModelField('geo_country', $geo_country ?: null);
+    }
+
+    /**
+     * Set date created
+     *
+     * @param \DateTime $dat_created
+     * @return $this
+     */
+    public function setDateCreated(\DateTime $dat_created)
+    {
+        $this->setModelField('date_created', $dat_created);
+        return $this;
     }
 
     /**

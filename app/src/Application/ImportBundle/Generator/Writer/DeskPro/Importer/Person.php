@@ -63,9 +63,9 @@ final class Person extends AbstractImporter
         }
 
         $this->records = new ArrayCollection();
-
-        /** @var Mapper\UserGroup $user_group_mapper */
-        $user_group_mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
+        if ($importing_entity->isAgent()) {
+            $this->logWarning(sprintf('Importing agent `%s`', $importing_entity->getFirstEmail()));
+        }
 
         $person = $this->findOrCreatePerson($importing_entity->getEmails());
         $person
@@ -96,8 +96,9 @@ final class Person extends AbstractImporter
             $label = $this->createPersonLabel($label_name);
             $person->addLabel($label);
         }
+
         foreach ($importing_entity->getUserGroups() as $user_group_name) {
-            $user_group = $user_group_mapper->findOneByTitle($user_group_name);
+            $user_group = $this->getUserGroupMapper()->findOneByTitle($user_group_name);
             $person->addUsergroup($user_group);
         }
         if ($importing_entity->getPassword() && $importing_entity->isPlainPasswordScheme()) {
@@ -124,17 +125,15 @@ final class Person extends AbstractImporter
             throw new ImporterException('Unable to find or create without primary email');
         }
 
-        /** @var Mapper\Person $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
-        $person = $mapper->findOneByEmails($emails, false);
+        $person = $this->getPersonMapper()->findOneByEmails($emails, false);
         if ($person) {
-            $this->logInfo(sprintf(
-                'Found existing user `%d` with email `%s`',
+            $this->logNotice(sprintf(
+                'Found existing user, id=`%d` with email `%s`',
                 $person->getId(), $person->getEmailAddress()
             ));
         } else {
             $person = new DeskPROEntity\Person();
-            $this->logInfo(sprintf('Creating new person with email `%s`', $emails[0]));
+            $this->logWarning(sprintf('Creating new person with email `%s`', $emails[0]));
         }
 
         return $person;
@@ -148,12 +147,10 @@ final class Person extends AbstractImporter
      */
     private function findOrCreatePersonEmail($email_string)
     {
-        /** @var Mapper\PersonEmail $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_EMAIL);
-        $email  = $mapper->findOneByEmail($email_string, false);
+        $email = $this->getPersonEmailMapper()->findOneByEmail($email_string, false);
         if ($email) {
             $this->logInfo(sprintf(
-                'Found existing person email `%d` with email `%s`',
+                'Found existing person email, id=`%d` with email `%s`',
                 $email->getId(), $email->getEmail()
             ));
         } else {
@@ -182,5 +179,27 @@ final class Person extends AbstractImporter
 
         $this->records->add($entity);
         return $entity;
+    }
+
+    /**
+     * Returns the person email mapper
+     *
+     * @return Mapper\PersonEmail
+     * @throws \Exception
+     */
+    private function getPersonEmailMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON_EMAIL);
+    }
+
+    /**
+     * Returns the user group mapper
+     *
+     * @return Mapper\UserGroup
+     * @throws \Exception
+     */
+    private function getUserGroupMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
     }
 }

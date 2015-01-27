@@ -27,7 +27,9 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro;
 
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\EntityRepository;
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 
 /**
@@ -45,6 +47,13 @@ class DeskProWriterFactory extends AbstractFactory
         $doctrine = $this->container->get('doctrine');
         /** @var \Doctrine\Common\Persistence\ObjectManager $entity_manager */
         $entity_manager = $this->container->get('doctrine.orm.entity_manager');
+
+        /** @var DeskproBlobStorage $blob_storage */
+        if ($this->container instanceof DeskproContainer) {
+            $blob_storage = $this->container->getBlobStorage();
+        } else {
+            throw new \Exception('Unable to get a blob storage');
+        }
 
         /** @var EntityRepository\Article $article_repository */
         $article_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Article');
@@ -117,7 +126,7 @@ class DeskProWriterFactory extends AbstractFactory
         $importers = new Importer\Collection();
         $importers
             ->attach(new Importer\Person($mappers))
-            ->attach(new Importer\Ticket($mappers));
+            ->attach(new Importer\Ticket($mappers, $blob_storage));
 
         return new DeskProWriter($importers, $entity_manager);
     }

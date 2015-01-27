@@ -541,6 +541,11 @@ final class Person extends AbstractEntity
                     new Constraints\NotBlank(),
                     new Constraints\Email(),
                 ),
-            )));
+            )))
+
+            ->addGetterConstraint('firstEmail', new Constraints\NotBlank())
+            ->addGetterConstraint('firstEmail', new Constraints\Email())
+
+        ;
     }
 }

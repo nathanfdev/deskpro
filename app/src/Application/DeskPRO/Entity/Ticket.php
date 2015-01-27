@@ -897,6 +897,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         else return 'neutral';
     }
 
+    /**
+     * Reset the participants collection
+     *
+     * @return $this
+     */
+    public function resetParticipants()
+    {
+        $this->participants = new ArrayCollection();
+        return $this;
+    }
 
     /**
      * Get a simple array of person ID's of participants.
@@ -1301,6 +1311,16 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $ids;
     }
 
+    /**
+     * Reset the message collection
+     *
+     * @return $this
+     */
+    public function resetMessages()
+    {
+        $this->messages = new ArrayCollection();
+        return $this;
+    }
 
     /**
      * Add a message to this ticket.

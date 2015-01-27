@@ -48,7 +48,7 @@ interface ImporterInterface
     public function getEntityType();
 
     /**
-     * Returns an importing DeskPro doctrine entity
+     * Returns a collection of the importing DeskPro doctrine entities
      *
      * @param Entity\EntityInterface $importing_entity
      *

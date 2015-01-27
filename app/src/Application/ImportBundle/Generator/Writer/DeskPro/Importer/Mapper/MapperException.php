@@ -27,8 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
-use Doctrine\Common\Collections\Criteria;
-
 /**
  * Mapper exception
  *
@@ -38,28 +36,39 @@ use Doctrine\Common\Collections\Criteria;
 class MapperException extends \Exception
 {
     /**
-     * @var array|Criteria
+     * @var array
      */
     private $criteria;
 
     /**
      * Constructor
      *
-     * @param string         $message
-     * @param array|Criteria $criteria
+     * @param string $message
+     * @param array  $criteria
      */
-    public function __construct($message, $criteria)
+    public function __construct($message, array $criteria)
     {
         parent::__construct($message);
+        $this->criteria = $criteria;
     }
 
     /**
      * Returns the criteria
      *
-     * @return array|Criteria
+     * @return array
      */
     public function getCriteria()
     {
         return $this->criteria;
+    }
+
+    /**
+     * Parse to string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf('%s. Criteria: %s', $this->message, json_encode($this->criteria));
     }
 }

@@ -107,6 +107,18 @@ abstract class AbstractGenerator
     }
 
     /**
+     * Log notice message if logger is defined
+     *
+     * @param string $message
+     */
+    protected function logNotice($message)
+    {
+        if ($this->logger) {
+            $this->logger->notice($message);
+        }
+    }
+
+    /**
      * Log warning message if logger is defined
      *
      * @param string $message

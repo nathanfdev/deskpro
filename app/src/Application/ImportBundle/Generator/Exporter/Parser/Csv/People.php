@@ -80,7 +80,7 @@ class People extends AbstractParser
                 $entity
                     ->setDestination('person_' . $num)
                     ->setOid($num)
-                    ->setAsAgent(isset($person['is_agent']) ? (bool)$person['is_agent'] : false)
+                    ->setAsAgent($this->isAgent($person))
                     ->setName($person['name'])
                     ->setFirstName($names[0])
                     ->setLastName(isset($names[1]) ? $names[1] : '')
@@ -114,5 +114,22 @@ class People extends AbstractParser
     private function getConfig()
     {
         return $this->getReaderConfig(self::FILE_PEOPLE);
+    }
+
+    /**
+     * Check if person is agent
+     *
+     * @param array $person
+     * @return bool
+     */
+    private function isAgent(array $person)
+    {
+        if (isset($person['is_agent'])) {
+            if ($person['is_agent'] === 'true' || (int)$person['is_agent'] === 1) {
+                return true;
+            }
+        }
+
+        return false;
     }
 }

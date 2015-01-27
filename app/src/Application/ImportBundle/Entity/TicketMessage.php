@@ -182,6 +182,16 @@ final class TicketMessage extends AbstractEntity
     }
 
     /**
+     * If ticket message has content
+     *
+     * @return bool
+     */
+    public function hasMessageContent()
+    {
+        return $this->message_text || $this->message_html;
+    }
+
+    /**
      * @return boolean
      */
     public function isNote()
@@ -258,6 +268,6 @@ final class TicketMessage extends AbstractEntity
             ->addPropertyConstraint('date_created', new Constraints\NotBlank())
             ->addPropertyConstraint('date_created', new Constraints\DateTime())
 
-            ->addPropertyConstraint('message_text', new Constraints\NotBlank());
+            ->addGetterConstraint('messageContent', new Constraints\True());
     }
 }

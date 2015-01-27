@@ -46,6 +46,11 @@ final class TicketAttachment extends AbstractEntity
     /**
      * @var string
      */
+    private $person_email;
+
+    /**
+     * @var string
+     */
     private $blob_data;
 
     /**
@@ -96,6 +101,24 @@ final class TicketAttachment extends AbstractEntity
     public function setOid($oid)
     {
         $this->oid = $oid;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPersonEmail()
+    {
+        return $this->person_email;
+    }
+
+    /**
+     * @param string $person_email
+     * @return $this
+     */
+    public function setPersonEmail($person_email)
+    {
+        $this->person_email = $person_email;
         return $this;
     }
 
@@ -229,6 +252,7 @@ final class TicketAttachment extends AbstractEntity
     {
         $metadata
             ->addPropertyConstraint('oid', new Constraints\NotBlank())
+            ->addPropertyConstraint('person_email', new Constraints\Email())
             ->addPropertyConstraint('file_name', new Constraints\NotBlank())
             ->addPropertyConstraint('content_type', new Constraints\NotBlank());
     }

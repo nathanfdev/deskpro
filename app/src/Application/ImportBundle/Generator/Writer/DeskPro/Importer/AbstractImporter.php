@@ -61,6 +61,17 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
+     * Returns the person mapper
+     *
+     * @return Mapper\Person
+     * @throws \Exception
+     */
+    protected function getPersonMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
+    }
+
+    /**
      * Returns a language id by title
      *
      * @param string $title
@@ -79,40 +90,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
         }
 
         return $id;
-    }
-
-    /**
-     * Returns a department by title
-     * Creates a new department if not found
-     *
-     * @param string $title
-     *
-     * @return DeskPROEntity\Department|null
-     * @throws \Exception
-     */
-    protected function findOrCreateDepartment($title)
-    {
-        /** @var Mapper\Department $mapper */
-        $mapper     = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DEPARTMENT);
-        $department = null;
-
-        if ($title) {
-            $department = $mapper->findOneByTitle($title, false);
-            if ($department) {
-                $this->logInfo(sprintf(
-                    'Found existing department `%d` with title `%s`',
-                    $department->getId(), $department->getTitle()
-                ));
-            } else {
-                $department = DeskPROEntity\Department::createTicketDepartment();
-                $department->setRealTitle($title);
-
-                $this->records->add($department);
-                $this->logWarning(sprintf('New department creating `%s`', $department->getTitle()));
-            }
-        }
-
-        return $department;
     }
 
     /**
