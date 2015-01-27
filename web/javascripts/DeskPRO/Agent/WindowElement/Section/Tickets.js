@@ -19,6 +19,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.collectedFilterUpdates = [];
 		this.collectedFilterUpdateOps = {};
 		this.queueRefreshFilterGrouping = [];
+		this.queueRefreshFilterOps = {};
 		this.changedFilterGrouping = [];
 		this.hasInitialGroupingLoaded = false;
 
@@ -37,21 +38,23 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 
 			var filterIds = self.collectedFilterUpdates;
-			if (self.queueRefreshFilterGrouping.length) {
-				filterIds.append(self.queueRefreshFilterGrouping);
-			}
-
-			var filterOps = self.collectedFilterUpdateOps;
 
 			self.collectedFilterUpdates = [];
 			self.collectedFilterUpdateOps = {};
-			self.queueRefreshFilterGrouping = [];
 
 			if (filterIds.length) {
-				self.refreshFilterGrouping(filterIds, false, filterOps);
+				self.refreshFilterGrouping(filterIds);
 				self._recountHold();
 			}
 		});
+
+		this.limited_refreshFilterGrouping = _.throttle(function() {
+			self.doRefreshFilterGrouping()
+		}, 5250);
+
+		this.limited_getUpdatedSlaCounts = _.throttle(function() {
+			self.getUpdatedSlaCounts();
+		}, 11000);
 	},
 
 	_initSection: function(data) {
@@ -133,7 +136,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			var header = $('#ticket_slas_header');
 
 			DeskPRO_Window.getMessageBroker().addMessageListener('agent.ticket-sla-updated', function(info) {
-				self.getUpdatedSlaCounts();
+				self.limited_getUpdatedSlaCounts();
 				if (self.listPage && self.listPage.updateSlaListForTicket) {
 					self.listPage.updateSlaListForTicket(info);
 				} else {
@@ -168,7 +171,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				}
 
 				if (refresh) {
-					self.getUpdatedSlaCounts();
+					self.limited_getUpdatedSlaCounts();
 					if (self.listPage && self.listPage.refreshSlaTicketList && self.listPage.meta.sla_id && $.inArray(self.listPage.meta.sla_id, info.sla_ids) != -1) {
 						self.listPage.refreshSlaTicketList();
 					}
@@ -233,14 +236,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					if (!sel.hasClass('with-select2')) {
 						DP.select(sel);
 						sel.on('change', function(ev) {
-							self.refreshFilterGrouping([sel.data('filter-id')], true);
+							self.doRefreshFilterGrouping([sel.data('filter-id')], true);
 						});
 					}
 				} else {
 					// Remove grouping
 					sel.select2('val', '');
 					sel.trigger('change');
-					self.refreshFilterGrouping([sel.data('filter-id')], true);
+					self.doRefreshFilterGrouping([sel.data('filter-id')], true);
 
 					$me.addClass('icon-caret-right');
 					$me.removeClass('icon-caret-down');
@@ -280,14 +283,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 							}
 						}
 
-						self.refreshFilterGrouping([sel.data('filter-id')], true);
+						self.doRefreshFilterGrouping([sel.data('filter-id')], true);
 					});
 				}
 			}
 		});
 
 		if (groupingFilterIds.length) {
-			this.refreshFilterGrouping(groupingFilterIds, false);
+			this.doRefreshFilterGrouping(groupingFilterIds, false);
 		} else {
 			this.hasInitialGroupingLoaded = true;
 		}
@@ -416,7 +419,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			});
 
 			if (refreshFilterIds.length) {
-				self.queueRefreshFilterGrouping.append(refreshFilterIds);
+				self.refreshFilterGrouping(refreshFilterIds);
 			}
 		});
 
@@ -675,12 +678,33 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.collectedFilterUpdateOps[filterId] = filterOps;
 	},
 
-	refreshFilterGrouping: function(filterIds, doSave, filterOps) {
+	refreshFilterGrouping: function(filterIds) {
+		if (filterIds && filterIds.length) {
+			Array.each(filterIds, function(i) {
+				this.queueRefreshFilterGrouping.push(parseInt(i));
+			}, this);
+
+			this.queueRefreshFilterGrouping = _.uniq(this.queueRefreshFilterGrouping);
+
+			this.limited_refreshFilterGrouping();
+		}
+	},
+
+	/**
+	 * @param filterIds         Array of filter ids to proc now. Will be merged with the queue
+	 * @param doSave            Save grouping option
+	 */
+	doRefreshFilterGrouping: function(filterIds, doSave) {
+
+		filterIds = filterIds || [];
 
 		if (this.queueRefreshFilterGrouping.length) {
-			filterIds.append(this.queueRefreshFilterGrouping);
-			this.queueRefreshFilterGrouping = [];
+			Array.each(this.queueRefreshFilterGrouping, function(i) {
+				filterIds.push(i);
+			});
 		}
+
+		this.queueRefreshFilterGrouping = [];
 
 		var postData = [];
 
@@ -794,23 +818,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 								// See DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js
 								// Used to signify that the counts were updated, so the list might need refreshing
 								li.addClass('is-stale');
-
-								// Try to find the list
-								var listPage = DeskPRO_Window.getListPage();
-								if (
-										listPage.meta.filter_id
-										&& (
-											(listPage.meta.filter_id == parseInt(filterId) && listPage.reloadIfStale)
-											|| (listPage.meta.filter_id == '5')
-											|| (listPage.meta.topGroupingOption) // We are dumb to any grouping, so only way to know if view should be updated is by refreshing
-										)
-								) {
-									if (filterOps && filterOps[filterId] && filterOps[filterId].ticketId && filterOps[filterId].op == 'del') {
-										listPage.removeTicketResults([filterOps[filterId].ticketId]);
-									} else {
-										listPage.addTicketResults([filterOps[filterId].ticketId]);
-									}
-								}
 							}
 							li.addClass('nav-selected');
 						}
@@ -1105,16 +1112,13 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		$('#ticket_sla_filter_' + filter).show();
 	},
 
-	getUpdatedSlaCounts: function(callback) {
+	getUpdatedSlaCounts: function() {
 		$.ajax({
 			url: BASE_URL + 'agent/ticket-search/get-sla-counts.json',
 			dataType: 'json',
 			context: this,
 			success: function(data) {
 				this.updateSlaCounts(data);
-				if ($.isFunction(callback)) {
-					callback(data);
-				}
 			}
 		});
 	},
