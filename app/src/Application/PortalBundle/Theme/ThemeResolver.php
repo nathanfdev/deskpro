@@ -35,6 +35,8 @@
 namespace Application\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\PortalBundle\Mode\PortalMode;
+use Application\PortalBundle\Mode\PortalModeStorage;
 use Application\PortalBundle\Request\TagRequest;
 use Psr\Log\LoggerInterface;
 use Symfony\Component\DependencyInjection\ContainerInterface;
@@ -60,16 +62,22 @@ class ThemeResolver
     private $themeTemplateMap;
 
     /**
+     * @var PortalModeStorage
+     */
+    private $mode_storage;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
 
-    public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, LoggerInterface $logger)
+    public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, PortalModeStorage $mode_storage, LoggerInterface $logger)
     {
         $this->container  = $container;
         $this->theme_repo = $theme_repo;
         $this->themeTemplateMap = null;
+        $this->mode_storage = $mode_storage;
         $this->logger = $logger;
     }
 
@@ -210,7 +218,12 @@ class ThemeResolver
         $current_request = $this->container->get('request_stack')->getCurrentRequest();
         $tag_options = array_merge($tag->getDefaultOptions(), array_merge($arguments, array('_tag_name' => $tag_name)));
         $query = array('tag_options' => $tag_options);
-        $attrs = array_merge($current_request->attributes->all(), array('_tag_name' => $tag_name));
+        $extra_attrs = array('_tag_name' => $tag_name);
+        if ($mode = $this->mode_storage->getMode()) {
+            $serialize = urlencode(serialize($mode));
+            $query[PortalMode::ATTR_NAME] = $serialize;
+        }
+        $attrs = array_merge($current_request->attributes->all(), $extra_attrs);
         unset($attrs['tag_request']);
         unset($attrs['_security']);
         $tag_request = new TagRequest($query, array(), $attrs);
@@ -223,7 +236,7 @@ class ThemeResolver
             $attrs = $this->filterArguments($attrs);
 
             $esi = $this->container->get('fragment.renderer.esi')->render(
-                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => true)
+                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => false)
             );
 
             $esi_content = $esi->getContent();
