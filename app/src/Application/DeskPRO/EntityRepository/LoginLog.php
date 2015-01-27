@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Settings\Settings;
 
 class LoginLog extends AbstractEntityRepository
 {
@@ -53,8 +54,40 @@ class LoginLog extends AbstractEntityRepository
             FROM DeskPRO:LoginLog l
             WHERE l.person = ?0 AND l.is_success = true
             ORDER BY l.id DESC
-        ")->setMaxResults(1)->setFirstResult(1)->setParameter(0, $person)->getOneOrNullResult();
+        ")->setMaxResults(1)->setParameter(0, $person)->getOneOrNullResult();
 
         return $last_login;
+    }
+
+    /**
+     * @param PersonEntity $person
+     * @param $area
+     * @param $maxAttempts
+     * @param $time
+     * @param $maxLockTime
+     * @return int|mixed
+     * @throws \Doctrine\DBAL\DBALException
+     */
+    public function getLoginLockoutTime(PersonEntity $person, $area, $maxAttempts, $time, $maxLockTime)
+    {
+        $time = time() - (int) $time;
+        $q = sprintf('
+            select count(*) as `count`, max(date_created) as `last` from %1$s where
+            person_id = :pid and date_created > :date and area = :area and id >
+            (select ifnull(max(id), 0) from %1$s where person_id = :pid and date_created > :date and is_success = 1 and area = :area limit 1)
+        ', $this->getTableName());
+
+        $res = $this->getEntityManager()->getConnection()->executeQuery($q, array(
+            'pid' => $person['id'],
+            'date' => date('Y-m-d H:i:s', $time),
+            'area' => $area,
+        ))->fetchAll();
+
+        $res = reset($res);
+        if (!$res || (int) $maxAttempts > (int) $res['count'] || !$res['last']) {
+            return 0;
+        }
+
+        return max(0, strtotime($res['last']) + (int) $maxLockTime - time());
     }
 }

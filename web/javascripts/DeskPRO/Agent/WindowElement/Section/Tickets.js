@@ -50,11 +50,11 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.limited_refreshFilterGrouping = _.throttle(function() {
 			self.doRefreshFilterGrouping()
-		}, 5250);
+		}, 11000);
 
 		this.limited_getUpdatedSlaCounts = _.throttle(function() {
 			self.getUpdatedSlaCounts();
-		}, 11000);
+		}, 20000);
 	},
 
 	_initSection: function(data) {

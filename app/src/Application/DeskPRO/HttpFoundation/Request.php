@@ -41,6 +41,10 @@ class Request extends \Symfony\Component\HttpFoundation\Request
     /** @var null */
     protected $url_locale = null;
 
+    protected $index_included;
+
+    protected $info;
+
     /**
      * When a client sends _partial in POST/GET data, they're requesting a partial result
      *
@@ -65,6 +69,15 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         }
 
         return $val;
+    }
+
+    /**
+     * returns bool only
+     * @return bool
+     */
+    public function isPartial()
+    {
+        return !empty($_REQUEST[self::PARTIAL_REQUEST_KEY]);
     }
 
     public function isPost()
@@ -101,7 +114,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 
         $check_for_locale = true;
         foreach ($nocheck_sections as $s) {
-            if (strpos($pathinfo, $s) === 0) {
+            if (strpos($this->getPathInfo(), $s) === 0) {
                 $check_for_locale = false;
             }
         }
@@ -193,5 +206,87 @@ class Request extends \Symfony\Component\HttpFoundation\Request
         }
 
         return rtrim($baseUrl, '/');
+    }
+
+    public function isIndexIncluded()
+    {
+        return null === $this->index_included
+            ? $this->index_included = false !== strpos($this->getRequestUri(), '/index.php')
+            : $this->index_included;
+    }
+
+    /**
+     * @param null $correctHost
+     * @return bool|null
+     */
+    public function isCorrectHost($correctHost = null)
+    {
+        if (!$info = $this->getCorrectInfo($correctHost)) {
+            return null;
+        }
+
+        $host = $info['port']
+            ? $info['host'] . ':' . $info['port']
+            : $info['host'];
+
+        return $this->getHttpHost() === $host;
+    }
+
+    /**
+     * @param null $correctHost
+     * @return bool|null
+     */
+    public function isCorrectScheme($correctHost = null)
+    {
+        if (!$info = $this->getCorrectInfo($correctHost)) {
+            return null;
+        }
+
+        return 'https' === $this->getScheme() || 'http' === $info['scheme'];
+    }
+
+    /**
+     * @param null $correctHost
+     * @return bool|mixed
+     */
+    public function getCorrectInfo($correctHost = null)
+    {
+        if ($this->info) {
+            return $this->info;
+        }
+
+        if ($correctHost && !$this->info) {
+            $this->info = parse_url($correctHost);
+            if (!$this->info || empty($this->info['host']) || empty($this->info['scheme'])) {
+                return false;
+            }
+
+            $this->info['scheme'] = strtolower($this->info['scheme']);
+            $this->info['host'] = strtolower($this->info['host']);
+            $this->info['port'] = @$this->info['port'] ?: null;
+        }
+
+        return $this->info;
+    }
+
+    public function getReturnParam()
+    {
+        if ('application/json' === $this->getContentType()) {
+            if ($data = json_decode((string) $this->getContent(), 1)) {
+                if (!$return = @$data['return']) {
+                    return null;
+                }
+            }
+        }
+
+        if (!$return = (string) $this->get('return')) {
+            return null;
+        }
+
+        if ('/' !== $return[0] || '/' === $return[1] || false !== strpos($return, '/validate-email/')) {
+            return null;
+        }
+
+        return $return;
     }
 }
