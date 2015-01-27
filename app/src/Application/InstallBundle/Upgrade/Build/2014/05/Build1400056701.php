@@ -34,6 +34,7 @@
 
 namespace Application\InstallBundle\Upgrade\Build;
 
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 class Build1400056701 extends AbstractBuild
@@ -138,7 +139,7 @@ class Build1400056701 extends AbstractBuild
         } else {
             $this->container->getDb()->insert('datastore', array(
                 'name' => 'sys.install.default_data',
-                'auth' => Strings::random(15),
+                'auth' => DpStrings::random(15),
                 'data' => serialize($data)
             ));
         }

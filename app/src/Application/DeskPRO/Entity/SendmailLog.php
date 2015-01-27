@@ -201,7 +201,7 @@ class SendmailLog extends \Application\DeskPRO\Domain\DomainObject
     {
         $time = \Orb\Util\Util::baseEncode(time(), 'letters');
 
-        return $time . \Orb\Util\Strings::random(30 - strlen($time), Strings::CHARS_ALPHANUM_IU);
+        return $time . \Orb\Util\DpStrings::random(30 - strlen($time), Strings::CHARS_ALPHANUM_IU);
     }
 
 

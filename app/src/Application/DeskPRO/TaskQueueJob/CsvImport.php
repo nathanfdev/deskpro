@@ -492,7 +492,7 @@ class CsvImport extends AbstractJob
         }
 
         if ($password === false) {
-            $password = \Orb\Util\Strings::random(10);
+            $password = \Orb\Util\DpStrings::random(10);
         }
         $person->setPassword($password);
 

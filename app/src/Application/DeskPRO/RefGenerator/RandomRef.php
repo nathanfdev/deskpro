@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\RefGenerator;
 
 use Application\DeskPRO\App;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 class RandomRef implements RefGeneratorInterface
@@ -63,7 +64,7 @@ class RandomRef implements RefGeneratorInterface
         $stmt = $this->db->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");
 
         do {
-            $ref = Strings::random(4, Strings::CHARS_ALPHA_IU) . '-' . Strings::random(4, Strings::CHARS_NUM) . '-' . Strings::random(4, Strings::CHARS_ALPHA_IU);
+            $ref = DpStrings::random(4, Strings::CHARS_ALPHA_IU) . '-' . DpStrings::random(4, Strings::CHARS_NUM) . '-' . DpStrings::random(4, Strings::CHARS_ALPHA_IU);
 
             $stmt->execute(array($ref));
             $count = $stmt->fetchColumn();

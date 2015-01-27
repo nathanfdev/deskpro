@@ -42,6 +42,7 @@ use Application\DeskPRO\Entity\Ticket as TicketEntity;
 use Application\DeskPRO\Entity\TicketDeleted as TicketDeletedEntity;
 use Application\DeskPRO\JobQueue\Processor\IncomingSmsProcessor;
 use Orb\Util\Arrays;
+use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -951,7 +952,7 @@ class Ticket extends AbstractEntityRepository
             foreach ($ticket_ids as $id) {
                 $batch[] = array(
                     'channel'      => 'agent-notification.tickets.locked-status',
-                    'auth'         => Strings::random(15, Strings::CHARS_KEY),
+                    'auth'         => DpStrings::random(15, Strings::CHARS_KEY),
                     'date_created' => $d,
                     'data' => serialize(array(
                         'ticket_id'       => $id,

@@ -64,6 +64,7 @@ use Application\DeskPRO\Tickets\TicketSplit;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Doctrine\Common\Collections\ArrayCollection;
 use Orb\Util\Dates;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Validator\StringEmail;
 use Symfony\Component\Filesystem\Filesystem;
@@ -3904,7 +3905,7 @@ class TicketController extends AbstractController
 
         $ticket = $this->getTicketOr404($ticket_id);
 
-        $tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . "ticket-debug-" . $ticket->id . "_" . date('YmdHis') . "_" . Strings::random(4, Strings::CHARS_ALPHANUM_IU);
+        $tmpdir = dp_get_tmp_dir() . DIRECTORY_SEPARATOR . "ticket-debug-" . $ticket->id . "_" . date('YmdHis') . "_" . DpStrings::random(4, Strings::CHARS_ALPHANUM_IU);
         if (!mkdir($tmpdir, 0777, true)) {
             echo "Could not create temp dir: " . $tmpdir;
             exit;

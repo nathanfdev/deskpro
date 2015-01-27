@@ -40,6 +40,7 @@ use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
 use Application\InstallBundle\Data\DefaultDataProcessor;
 use Doctrine\DBAL\DBALException;
 use Monolog\Logger;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -849,7 +850,7 @@ class InstallController extends \Symfony\Bundle\FrameworkBundle\Controller\Contr
             ));
             $db->replace('settings', array(
                 'name' => 'core.install_key',
-                'value' => Strings::random(20, Strings::CHARS_KEY),
+                'value' => DpStrings::random(20, Strings::CHARS_KEY),
             ));
             $db->replace('settings', array(
                 'name' => 'core.install_token',

@@ -35,6 +35,7 @@
 namespace Application\DeskPRO\RefGenerator;
 
 use Application\DeskPRO\App;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 class CustomRef implements RefGeneratorInterface
@@ -238,15 +239,15 @@ class CustomRef implements RefGeneratorInterface
 
             switch ($type) {
                 case 'A':
-                    $ref[] = Strings::random($length, Strings::CHARS_ALPHA_IU);
+                    $ref[] = DpStrings::random($length, Strings::CHARS_ALPHA_IU);
                     break;
 
                 case '#':
-                    $ref[] = Strings::random($length, Strings::CHARS_NUM);
+                    $ref[] = DpStrings::random($length, Strings::CHARS_NUM);
                     break;
 
                 case '?':
-                    $ref[] = Strings::random($length, Strings::CHARS_ALPHANUM_IU);
+                    $ref[] = DpStrings::random($length, Strings::CHARS_ALPHANUM_IU);
                     break;
 
                 case 'YEAR':
@@ -302,15 +303,15 @@ class CustomRef implements RefGeneratorInterface
 
             switch ($type) {
                 case 'A':
-                    $regex[] = "([A-Z]{{$length}})";
+                    $regex[] = "([A-Z]{$length})";
                     break;
 
                 case '#':
-                    $regex[] = "([0-9]{{$length}})";
+                    $regex[] = "([0-9]{$length})";
                     break;
 
                 case '?':
-                    $regex[] = "([0-9A-Z]{{$length}})";
+                    $regex[] = "([0-9A-Z]{$length})";
                     break;
 
                 case 'YEAR':

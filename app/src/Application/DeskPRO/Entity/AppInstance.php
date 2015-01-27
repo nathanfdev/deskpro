@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\Domain\DomainObject;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 /**
@@ -97,8 +98,8 @@ class AppInstance extends DomainObject
 	public function __construct()
 	{
 		$this['date_created'] = new \DateTime();
-		$this['secret_key']   = Strings::random(40, Strings::CHARS_ALPHANUM_IU);
-		$this['auth_key']     = Strings::random(40, Strings::CHARS_ALPHANUM_IU);
+		$this['secret_key']   = DpStrings::random(40, Strings::CHARS_ALPHANUM_IU);
+		$this['auth_key']     = DpStrings::random(40, Strings::CHARS_ALPHANUM_IU);
 	}
 
 	/**

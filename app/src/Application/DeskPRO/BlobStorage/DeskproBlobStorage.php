@@ -41,6 +41,7 @@ use Orb\Data\ContentTypes;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
 use Orb\Util\Arrays;
+use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -348,9 +349,9 @@ class DeskproBlobStorage implements Loggable
             /** @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
             try {
                 if ($adapter_id == 'fs') {
-                    $authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity_tmp->getId() . $blob_entity_tmp->getNameHash();
+                    $authcode = $batch  . DpStrings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity_tmp->getId() . $blob_entity_tmp->getNameHash();
                 } else {
-                    $authcode = $blob_entity_tmp->getId() . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+                    $authcode = $blob_entity_tmp->getId() . DpStrings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
                 }
 
                 $blob->setMeta('authcode', $authcode);
@@ -495,9 +496,9 @@ class DeskproBlobStorage implements Loggable
             /** @var $adapter \Application\DeskPRO\BlobStorage\StorageAdapter\AbstractStorageAdapter */
             try {
                 if ($adapter_id == 'fs') {
-                    $authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity_tmp->getId() . $blob_entity_tmp->getNameHash();
+                    $authcode = $batch  . DpStrings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity_tmp->getId() . $blob_entity_tmp->getNameHash();
                 } else {
-                    $authcode = $blob_entity_tmp->getId() . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+                    $authcode = $blob_entity_tmp->getId() . DpStrings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
                 }
 
                 $blob->setMeta('authcode', $authcode);
@@ -850,9 +851,9 @@ class DeskproBlobStorage implements Loggable
 
         $batch = (int)(($blob_entity->id-1) / 1000) + 1;
         if ($adapter_id == 'fs') {
-            $authcode = $batch  . Strings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity->getId() . $blob_entity->getNameHash();
+            $authcode = $batch  . DpStrings::random(10, Strings::CHARS_KEY_ALPHA) . $blob_entity->getId() . $blob_entity->getNameHash();
         } else {
-            $authcode = $blob_entity->getId() . Strings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
+            $authcode = $blob_entity->getId() . DpStrings::random(15, Strings::CHARS_KEY_ALPHA) . '0';
         }
 
         $blob->setMeta('authcode', $authcode);

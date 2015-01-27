@@ -36,6 +36,7 @@ namespace Application\InstallBundle\Data;
 
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
+use Orb\Util\DpStrings;
 use Psr\Log\LoggerInterface;
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -121,7 +122,7 @@ class DefaultDataProcessor
         $this->container->getDb()->delete('datastore', array('name' => 'sys.install.default_data'));
         $this->container->getDb()->insert('datastore', array(
             'name' => 'sys.install.default_data',
-            'auth' => Strings::random(15),
+            'auth' => DpStrings::random(15),
             'data' => serialize($this->data_info)
         ));
     }

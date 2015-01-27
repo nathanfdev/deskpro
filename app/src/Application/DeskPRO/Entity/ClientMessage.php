@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\MessageHandler\BasicArray;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 /**
@@ -127,7 +128,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('auth', Strings::random(15, Strings::CHARS_KEY));
+        $this->setModelField('auth', DpStrings::random(15, Strings::CHARS_KEY));
 
         if (App::has('event_dispatcher')) {
             $this->event_dispatcher = App::get('event_dispatcher');

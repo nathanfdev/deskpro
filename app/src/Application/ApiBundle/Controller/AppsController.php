@@ -41,6 +41,7 @@ use Application\DeskPRO\Service\JIRA;
 use DeskPRO\Kernel\KernelErrorHandler;
 use Imagine\Image\Box as ImageBox;
 use Orb\Util\Arrays;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 use Orb\Zip\ZipException;
 use Symfony\Component\HttpFoundation\Request;
@@ -408,7 +409,7 @@ class AppsController extends AbstractController
     public function createCustomAppAction()
     {
         $package = new AppPackage();
-        $package->name         = "com.deskpro.custom." . Strings::random(15, Strings::CHARS_ALPHA_I);
+        $package->name         = "com.deskpro.custom." . DpStrings::random(15, Strings::CHARS_ALPHA_I);
         $package->title        = $this->in->getString('options.title') ?: "Untitled";
         $package->description  = $package->title;
         $package->tags         = array('custom');

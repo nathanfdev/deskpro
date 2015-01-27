@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Strings;
 
 /**
@@ -107,7 +108,7 @@ class PersonEmailValidating extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->_is_new = true;
         $this->setModelField('date_created', new \DateTime());
-        $this->setModelField('auth', Strings::random(8, Strings::CHARS_KEY));
+        $this->setModelField('auth', DpStrings::random(8, Strings::CHARS_KEY));
     }
 
     public function isNewEntity()

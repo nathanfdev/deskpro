@@ -37,6 +37,7 @@ namespace Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Orb\Util\DpStrings;
 use Orb\Util\Numbers;
 use Orb\Util\Strings;
 
@@ -222,7 +223,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this->date_created = new \DateTime();
-        $this->authcode = Strings::random(20, Strings::CHARS_KEY_ALPHA);
+        $this->authcode = DpStrings::random(20, Strings::CHARS_KEY_ALPHA);
         $this->labels = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
