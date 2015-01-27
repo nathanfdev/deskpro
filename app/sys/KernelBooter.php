@@ -361,7 +361,14 @@ class KernelBooter
 
         $GLOBALS['DP_MAIN_REQUEST'] = $request;
 
-        define('DP_REQUEST_URL', $request->getUri());
+        try {
+            define('DP_REQUEST_URL', $request->getUri());
+        } catch (\UnexpectedValueException $e) {
+            // thrown when there is a bad hostname provided
+            header('HTTP/1.1 400 Bad request', true, 401);
+            echo $e->getMessage();
+            exit;
+        }
 
         try {
             if (!$kernel) {
