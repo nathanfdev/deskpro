@@ -11,11 +11,13 @@
         <span class="ticket-reference">
             Ticket reference: {{ ticket_view.ticket.public_id }}
         </span>
+        {% if is_granted('TICKET_EDIT', ticket_view.ticket) %}
         <span class="ticket-reference">
             <a href="{{ path('portal_tickets_edit', { id: ticket_view.ticket.id }) }}">
                 EDIT TICKET
             </a>
         </span>
+        {% endif %}
     </header>
 
     <div class="container">

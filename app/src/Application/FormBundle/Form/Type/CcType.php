@@ -91,6 +91,12 @@ class CcType extends AbstractType
         $cc_emails = $form->getData();
         foreach ($cc_emails as $email) {
 
+            $email = trim($email);
+
+            if (strlen($email) === 0) {
+                continue;
+            }
+
             if (!preg_match('/.+\@.+\..+/', $email)) {
                 $form->addError(new FormError(sprintf('Invalid email detected: "%s". Please review the email list.', $email)));
                 continue;
