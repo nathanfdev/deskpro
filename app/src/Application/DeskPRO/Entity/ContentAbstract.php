@@ -63,7 +63,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $id = null;
 
-        /**
+    /**
      * @var \Application\DeskPRO\Entity\Person
      */
     protected $person = null;
@@ -159,11 +159,16 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $_label_manager = null;
 
+    /**
+     */
+    protected $slug_history;
+
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
         $this->revisions      = new \Doctrine\Common\Collections\ArrayCollection();
         $this->labels         = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->slug_history = new \Doctrine\Common\Collections\ArrayCollection();
 
         $this['status']        = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -315,12 +320,34 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         return $content;
     }
 
+    /**
+     * @return string
+     * @deprecated use getSlug() instead (we no longer do the id-slug format in portal)
+     */
     public function getUrlSlug()
     {
         return $this->id.'-'.$this->slug;
     }
 
+    /**
+     * @return \Doctrine\Common\Collections\ArrayCollection
+     */
+    public function getSlugHistory()
+    {
+        return $this->slug_history;
+    }
+
+    public function setSlug($new_slug)
+    {
+        if ($new_slug !== $this->slug) {
+            $this->addSlugHistory($this->slug);
+        }
+        $this->setModelField('slug', $new_slug);
+    }
+
     abstract public function getLink();
+
+    abstract protected function addSlugHistory($old_slug);
 
     abstract public function getPermalink();
 

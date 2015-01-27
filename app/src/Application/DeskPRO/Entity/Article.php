@@ -124,6 +124,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $this->id;
     }
 
+    /**
+     * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
+     */
     public function getLink()
     {
         $url = App::getRouter()->generate('user_articles_article', array('slug' => $this->getUrlSlug()), true);
@@ -131,6 +135,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $url;
     }
 
+    /**
+     * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
+     */
     public function getPermalink()
     {
         $url = App::getRouter()->generate('user_articles_article', array('slug' => $this->id), true);
@@ -301,6 +309,13 @@ class Article extends ContentAbstract implements HighlightableModelInterface
             }
         }
     }
+
+    protected function addSlugHistory($old_slug)
+    {
+        $history = new ArticleSlugHistory($this, $old_slug);
+        $this->slug_history->add($history);
+    }
+
 
     ############################################################################
     # Doctrine Metadata
@@ -518,6 +533,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
             ), 'dpApi'      => true,
             )
         );
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\ArticleSlugHistory',
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'article'
+        ));
 
         ObjectTranslatable::loadEntityMetadata($metadata);
     }

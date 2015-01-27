@@ -248,6 +248,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getLink()
     {
@@ -258,6 +259,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
      */
     public function getPermalink()
     {
@@ -366,6 +368,12 @@ class Download extends ContentAbstract implements HighlightableModelInterface
                 return null;
             }
         }
+    }
+
+    protected function addSlugHistory($old_slug)
+    {
+        $history = new DownloadSlugHistory($this, $old_slug);
+        $this->slug_history->add($history);
     }
 
     ############################################################################
@@ -544,6 +552,10 @@ class Download extends ContentAbstract implements HighlightableModelInterface
             ), 'dpApi'      => true,
             )
         );
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\DownloadSlugHistory',
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'download'
+        ));
 
         $metadata->addLifecycleCallback('_preUpdate', 'preUpdate');
     }

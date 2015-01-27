@@ -227,6 +227,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         $this->setModelField('category', App::getEntityRepository('DeskPRO:FeedbackCategory')->find($id));
     }
 
+    /**
+     * @param bool $absolute
+     * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
+     */
     public function getLink($absolute = true)
     {
         $url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->getUrlSlug()), $absolute);
@@ -234,6 +239,11 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $url;
     }
 
+    /**
+     * @param bool $absolute
+     * @return string
+     * @deprecated generate the route properly, check route name is right and use getSlug()
+     */
     public function getPermalink($absolute = true)
     {
         $url = App::getRouter()->generate('user_feedback_view', array('slug' => $this->id), $absolute);
@@ -455,6 +465,12 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
         return $this->attachments;
     }
 
+    protected function addSlugHistory($old_slug)
+    {
+        $history = new FeedbackSlugHistory($this, $old_slug);
+        $this->slug_history->add($history);
+    }
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -632,5 +648,9 @@ class Feedback extends ContentAbstract implements HighlightableModelInterface
                 'dpApi'                => true, 'dpApiDeep'            => true, 'dpApiPrimary'            => true,
             )
         );
+        $metadata->mapOneToMany(array(
+            'fieldName' => 'slug_history', 'targetEntity' => 'Application\DeskPRO\Entity\FeedbackSlugHistory',
+            'cascade' => array(0 => 'remove', 1 => 'persist', 3 => 'merge'), 'mappedBy' => 'feedback'
+        ));
     }
 }
