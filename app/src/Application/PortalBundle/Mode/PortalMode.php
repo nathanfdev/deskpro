@@ -9,6 +9,7 @@ class PortalMode
     const MODE_ADMIN = 'admin';
     const MODE_NORMAL = 'normal';
     const MODE_BRAND = 'brand';
+    const MODE_EMBED = 'embed';
 
     protected $mode;
     protected $original_path;
@@ -30,6 +31,10 @@ class PortalMode
 
         if ($this->isBrand()) {
             return sprintf('%s [ID=%s]', self::MODE_BRAND, $this->getData());
+        }
+
+        if ($this->isEmbed()) {
+            return sprintf('%s [ID=%s]', self::MODE_EMBED, $this->getData());
         }
 
         return self::MODE_NORMAL;
@@ -64,6 +69,17 @@ class PortalMode
     public function setAdmin()
     {
         $this->mode = self::MODE_ADMIN;
+    }
+
+    public function isEmbed()
+    {
+        return self::MODE_EMBED === $this->mode;
+    }
+
+    public function setEmbed($embed_code)
+    {
+        $this->mode = self::MODE_EMBED;
+        $this->data = $embed_code;
     }
 
     public function setBrand($data)

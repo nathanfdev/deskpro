@@ -21,6 +21,8 @@ class PortalModeSpec extends ObjectBehavior
     function it_has_normal_mode_by_default()
     {
         $this->isAdmin()->shouldReturn(false);
+        $this->isEmbed()->shouldReturn(false);
+        $this->isBrand()->shouldReturn(false);
         $this->isNormal()->shouldReturn(true);
     }
 
@@ -38,6 +40,17 @@ class PortalModeSpec extends ObjectBehavior
 
         $this->isBrand()->shouldReturn(true);
         $this->getData()->shouldReturn($data);
+        $this->isAdmin()->shouldReturn(false);
+        $this->isNormal()->shouldReturn(false);
+    }
+
+    function it_can_be_in_embe_mode()
+    {
+        $this->setEmbed($data = 9);
+
+        $this->isEmbed()->shouldReturn(true);
+        $this->getData()->shouldReturn($data);
+        $this->isBrand()->shouldReturn(false);
         $this->isAdmin()->shouldReturn(false);
         $this->isNormal()->shouldReturn(false);
     }
@@ -75,5 +88,11 @@ class PortalModeSpec extends ObjectBehavior
     {
         $this->setBrand(5);
         $this->__toString()->shouldReturn(sprintf('%s [ID=%s]', PortalMode::MODE_BRAND, 5));
+    }
+
+    function it_can_make_a_sensible_string_when_embed_mode()
+    {
+        $this->setEmbed(115);
+        $this->__toString()->shouldReturn(sprintf('%s [ID=%s]', PortalMode::MODE_EMBED, 115));
     }
 }

@@ -6,6 +6,7 @@ class PortalModeFactory
 {
     const REGEX_ADMIN = '#^/admin\-mode(/{1}.*|$)$#';
     const REGEX_BRAND = '#^/brand-([0-9]+?)(/{1}.*|$)$#';
+    const REGEX_EMBED = '#^/embed-([0-9]+?)(/{1}.*|$)$#';
 
     public function createMode($path)
     {
@@ -22,6 +23,13 @@ class PortalModeFactory
             $mode->setBrand($brand_id);
             $mode->setInternalPath($matches[2]);
             $mode->setModePath(sprintf('/brand-%s', $brand_id));
+        }
+
+        if (preg_match(self::REGEX_EMBED, $path, $matches)) {
+            $code = (int)$matches[1];
+            $mode->setEmbed($code);
+            $mode->setInternalPath($matches[2]);
+            $mode->setModePath(sprintf('/embed-%s', $code));
         }
 
         return $mode;

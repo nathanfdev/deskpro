@@ -42,4 +42,15 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getInternalPath()->shouldReturn('/en/ticket/67');
         $mode->getModePath()->shouldReturn('/brand-4');
     }
+
+    function it_creates_embed_mode()
+    {
+        $mode = $this->createMode($path = '/embed-142/en/ticket/67');
+
+        $mode->isEmbed()->shouldReturn(true);
+        $mode->getData()->shouldReturn(142);
+        $mode->getOriginalPath()->shouldReturn($path);
+        $mode->getInternalPath()->shouldReturn('/en/ticket/67');
+        $mode->getModePath()->shouldReturn('/embed-142');
+    }
 }
