@@ -49,6 +49,12 @@ class TicketsVoter extends AbstractVoter
         return array(self::TICKET_LIST, self::TICKET_VIEW, self::TICKET_EDIT);
     }
 
+    /**
+     * @param string $attribute
+     * @param object $object
+     * @param \Application\DeskPRO\Entity\Person|\Application\DeskPRO\People\PersonGuest|null $user
+     * @return bool
+     */
     protected function isGranted($attribute, $object, $user = null)
     {
         if (!$object instanceof Ticket) {
@@ -59,13 +65,21 @@ class TicketsVoter extends AbstractVoter
             return false;
         }
 
+        $user_organization = $user->getOrganization();
+        $ticket_organization = $object->getOrganization();
+        $is_owner = $object->getPersonId() === $user->getId();
+        $is_participant = $object->hasParticipantPerson($user);
+        $is_organization_manager = $user->isOrganizationManager() && $user_organization;
+        $ticket_in_organization = ($user_organization && $ticket_organization) && ($ticket_organization->getId() == $user_organization->getId());
+
         switch($attribute) {
             case static::TICKET_LIST:
                 return $this->isLoggedIn($user);
-
             case static::TICKET_VIEW:
+                return $is_owner || $is_participant || ($is_organization_manager && $ticket_in_organization);
             case static::TICKET_EDIT:
-            return $object->person->getId() === $user->getId();
+                return $is_owner || ($is_organization_manager && $ticket_in_organization);
+                break;
         }
 
         return false;

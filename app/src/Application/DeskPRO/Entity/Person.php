@@ -811,6 +811,22 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $this->setModelField('password_reset_code', $password_reset_code);
     }
 
+    /**
+     * @return boolean
+     */
+    public function isOrganizationManager()
+    {
+        return $this->organization_manager;
+    }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
+
     protected function _onNotCallable($name, $arguments)
     {
         if ($this->_helper_manager) {

@@ -3749,4 +3749,12 @@ class Ticket extends DomainObject implements HighlightableModelInterface
 			'dpApiDeep'            => false
 		));
     }
+
+    /**
+     * @return Organization
+     */
+    public function getOrganization()
+    {
+        return $this->organization;
+    }
 }
