@@ -2,7 +2,7 @@ services:
 
   theme_resolver:
     class: Application\PortalBundle\Theme\ThemeResolver
-    arguments: [@service_container, @theme_repository, @logger]
+    arguments: [@service_container, @theme_repository, @portal_mode_storage, @logger]
 
 
   theme_view_factory:

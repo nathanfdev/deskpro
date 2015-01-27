@@ -9,7 +9,7 @@ services:
 
   brand_detector.listener:
     class: Application\PortalBundle\EventListener\BrandDetectionListener
-    arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand, @logger]
+    arguments: [@brand_stack, @settings_resolver, @brand_repository, @default_brand, @portal_mode_storage, @logger]
     tags:
       - { name: kernel.event_subscriber }
 
@@ -71,6 +71,6 @@ services:
 
   data_collector.portal:
     class: Application\PortalBundle\DataCollector\PortalCollector
-    arguments: [@brand_stack, @language_stack]
+    arguments: [@brand_stack, @language_stack, @portal_mode_storage]
     tags:
       - { name: data_collector, template: "PortalBundle:Collector:portal.html.twig", id: "portal" }
