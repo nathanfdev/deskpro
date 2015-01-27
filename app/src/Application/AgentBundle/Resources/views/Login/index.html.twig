@@ -67,7 +67,9 @@
 {% endblock %}
 
 {% block pre_content %}
-	{% if switch_to_https %}
+
+	{% if app.request.get('admin.wrong_scheme') %}
+
 		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
 			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure Login Form</h2>
 			<p>
@@ -85,8 +87,63 @@
 			<div style="text-align: center; margin: 20px 0 10px 0;">
 				<a href="{{ url_full('agent_login', {'return': path('admin') }) }}" style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">Go to secure login form &rarr;</a>
 			</div>
+			<br />
+			<p>If you need to change the URL or disable HTTPS, log in and go to Settings > Setup.</p>
 		</div>
+
+	{% elseif app.request.get('admin.wrong_host') %}
+
+		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
+			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
+			<p>
+				You are using the helpdesk through an invalid URL. The helpdesk is configured with this URL: {{ url_full('admin') }}.
+			</p>
+			<br />
+			<p>
+				If you want to change the URL, log in below and proceed to Settings > Setup.
+			</p>
+		</div>
+
 	{% endif %}
+
+	{% if app.request.get('agent.wrong_scheme') %}
+
+		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
+			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: Insecure URL</h2>
+			<p>
+				You are using the helpdesk through an insecure URL. Your administrator has defined the agent interface at {{ url_full('agent') }}.
+			</p>
+			<div style="text-align: center; margin: 20px 0 10px 0;">
+				<a href="{{ url_full('agent_login', {'return': path('agent') }) }}" style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">
+					Click here to go to the correct URL &rarr;
+				</a>
+			</div>
+			<br />
+			<small>
+				If you are an administrator, log in to the <a href="{{ url_full('agent_login', {'return': path('admin') }) }}">Admin Interface</a> to change the URL of the helpdesk.
+			</small>
+		</div>
+
+	{% elseif app.request.get('agent.wrong_host') %}
+
+		<div class="non-secure-warning" style="background:#FFF; border: 2px solid #f00; padding: 15px; margin: 15px auto 0 auto; width: 600px; border-radius: 3px;">
+			<h2 style="margin: 0px 0 8px 0; font-size: 16px;">Warning: You are using the helpdesk through an invalid URL</h2>
+			<p>
+				You are using the helpdesk through an invalid URL. Your administrator has defined the agent interface at {{ url_full('agent') }}.
+			</p>
+			<div style="text-align: center; margin: 20px 0 10px 0;">
+				<a href="{{ url_full('agent_login', {'return': path('agent') }) }}" style="background: #1b72b3; padding: 5px 18px; border-radius: 2px; color: #FFF;">
+					Click here to go to the correct URL &rarr;
+				</a>
+			</div>
+			<br />
+			<small>
+				If you are an administrator, log in to the <a href="{{ url_full('agent_login', {'return': path('admin') }) }}">Admin Interface</a> to change the URL of the helpdesk.
+			</small>
+		</div>
+
+	{% endif %}
+
 {% endblock %}
 
 {% block content %}
@@ -245,7 +302,7 @@
 
 
 	<script type="text/javascript">
-		document.getElementById('email').focus();
+		$(function(){ $('#email').focus(); });
 	</script>
 {% endif %}
 

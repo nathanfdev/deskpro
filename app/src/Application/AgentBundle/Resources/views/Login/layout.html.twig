@@ -758,6 +758,22 @@
 	}
 </style>
 <script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
+
+{% if app.request.get('agent.wrong_scheme') %}
+{# when we have wrong scheme, ping https and redirect if its available #}
+<script>
+	var pingResponseHandler = function(data) {
+		if ('object' === typeof data && 'pong' === data.response) {
+			window.location.href = '{{ url_full('agent_login', {'return': path('admin') }) }}';
+		}
+	};
+	$(function(){
+		var scriptSrc = '{{ url_full('user', {_sys: 'ping', type: 'jsonp', callback: 'pingResponseHandler'}) }}';
+		$('head').append('<script type="text/javascript" src="' + scriptSrc + '"/>');
+	});
+</script>
+{% endif %}
+
 {% block head %}{% endblock %}
 </head>
 <body>
@@ -775,9 +791,11 @@
 			</div>
 		{% endif %}
 
+		{% if not app.request.get('agent.wrong_scheme') and not app.request.get('agent.wrong_host') %}
 		<div class="dialog-box">
 			{% block content %}{% endblock %}
 		</div>
+		{% endif %}
 		<div class="deskpro-logo">
 	</div>
 </div>
