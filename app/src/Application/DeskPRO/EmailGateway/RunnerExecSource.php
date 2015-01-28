@@ -143,6 +143,12 @@ class RunnerExecSource
             $this->source->header_from = implode(', ', $h->getAllParts());
         }
 
+        if ($reader->getRealFromAddress()) {
+            $this->source->from_email = $reader->getRealFromAddress()->getEmail() ?: '';
+        } else {
+            $this->source->from_email = '';
+        }
+
         #------------------------------
         # Output debug TO
         #------------------------------

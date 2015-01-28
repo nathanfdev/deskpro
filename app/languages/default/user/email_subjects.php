@@ -23,4 +23,5 @@
     'user.email_subjects.ticket_new-participant'   => 'A new person has been added to your ticket',
     'user.email_subjects.tickets_re'               => 'RE: {{ticket.subject}}',
     'user.email_subjects.validate-email'           => 'Validate your email address',
+    'user.email_subjects.too-many-emails'          => 'NOTICE: You have sent too many emails',
 );
