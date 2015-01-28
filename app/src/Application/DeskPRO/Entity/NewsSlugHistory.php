@@ -75,7 +75,7 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
      */
     public function __construct(News $news, $old_slug)
     {
-        $this->setNews($news);
+        $this->setContent($news);
         $this->setSlug($old_slug);
         $this->setModelField('date_created', new \DateTime());
     }
@@ -91,7 +91,7 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @return string
      */
-    public function getNews()
+    public function getContent()
     {
         return $this->news;
     }
@@ -99,7 +99,7 @@ class NewsSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @param News $news
      */
-    public function setNews(News $news)
+    public function setContent(News $news)
     {
         $this->setModelField('news', $news);
     }

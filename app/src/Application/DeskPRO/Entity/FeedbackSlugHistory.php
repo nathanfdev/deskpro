@@ -75,7 +75,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
      */
     public function __construct(Feedback $feedback, $old_slug)
     {
-        $this->setFeedback($feedback);
+        $this->setContent($feedback);
         $this->setSlug($old_slug);
         $this->setModelField('date_created', new \DateTime());
     }
@@ -91,7 +91,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @return string
      */
-    public function getFeedback()
+    public function getContent()
     {
         return $this->feedback;
     }
@@ -99,7 +99,7 @@ class FeedbackSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @param Feedback $feedback
      */
-    public function setFeedback(Feedback $feedback)
+    public function setContent(Feedback $feedback)
     {
         $this->setModelField('feedback', $feedback);
     }

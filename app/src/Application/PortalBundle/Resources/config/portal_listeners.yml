@@ -57,7 +57,7 @@ services:
 # Not kernel listeners, but tagged to be called by other listeners
   param_converter.deskpro_slug:
       class: Application\PortalBundle\Request\DeskproSlugConverter
-      arguments: [@doctrine.orm.default_entity_manager]
+      arguments: [@doctrine.orm.default_entity_manager, @content_slug_manager]
       tags:
         - { name: request.param_converter, priority: -1, converter: deskpro_slug }
 

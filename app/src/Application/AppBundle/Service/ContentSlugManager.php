@@ -96,6 +96,31 @@ class ContentSlugManager
         return $new_history;
     }
 
+    /**
+     * Given a slug string and a class name of the entity, return the content object if it can be found.
+     *
+     * This method is aware of slug history.
+     *
+     * @param $slug
+     * @param $content_class_name
+     * @return null|object
+     */
+    public function findContentObjectBySlug($slug, $content_class_name)
+    {
+        $content_repo = $this->getEm()->getRepository($content_class_name);
+        $history_repo = $this->getEm()->getRepository(sprintf('%sSlugHistory', $content_class_name));
+
+        if ($content = $content_repo->findOneBy(array('slug' => $slug))) {
+            return $content;
+        }
+
+        if ($content_history = $history_repo->findOneBy(array('slug' => $slug))) {
+            return $content_history->getContent();
+        }
+
+        return null;
+    }
+
     protected function isValidSlug($new_slug, ContentAbstract $content)
     {
         if ($content_object = $this->getContentBySlug($new_slug, $content)) {

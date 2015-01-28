@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Request;
 
 
+use Application\AppBundle\Service\ContentSlugManager;
 use Application\DeskPRO\ORM\EntityManager;
 use Application\PortalBundle\HttpKernel\Exception\PermanentRedirectException;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
@@ -52,10 +53,16 @@ class DeskproSlugConverter implements ParamConverterInterface
      */
     private $em;
 
+    /**
+     * @var ContentSlugManager
+     */
+    private $slug_manager;
 
-    public function __construct(EntityManager $em)
+
+    public function __construct(EntityManager $em, ContentSlugManager $slug_manager)
     {
         $this->em = $em;
+        $this->slug_manager = $slug_manager;
     }
 
     public function apply(Request $request, ParamConverter $configuration)
@@ -64,20 +71,42 @@ class DeskproSlugConverter implements ParamConverterInterface
         $param_class      = $configuration->getClass();
         $param_options    = $this->getOptions($configuration);
         $slug_attribute_name = $param_options['slug_route_param'];
-        $slug_route_param = $request->attributes->get($slug_attribute_name);
-        $slug_col         = $param_options['slug_col'];
+        $slug_input = $request->attributes->get($slug_attribute_name);
+        $slug_col         = $param_options['slug_col']; // this will always be "slug" (for now)
 
         if ($param_name === 'tag_request') return;
 
+        if ($this->isContentClass($param_class)) {
+            if ($obj = $this->slug_manager->findContentObjectBySlug($slug_input, $param_class)) {
+
+                // this must have come from history, we should redirect to the new url
+                if ($obj->getSlug() !== $slug_input) {
+                    throw new PermanentRedirectException(
+                        $request->attributes->get('_route'),
+                        array_merge(
+                            $request->attributes->get('_route_params'),
+                            array(
+                                $slug_attribute_name => $obj->getSlug(7)
+                            )
+                        )
+                    );
+                }
+
+                $request->attributes->set($param_name, $obj);
+
+                return;
+            }
+        }
+
+        // is it in the repo?
         $repo = $this->em->getRepository($param_class);
-        if ($obj = $repo->findOneBy(array($slug_col => $slug_route_param))) {
+        if ($obj = $repo->findOneBy(array($slug_col => $slug_input))) {
             $request->attributes->set($param_name, $obj);
 
             return;
         }
 
-
-        $id = substr($slug_route_param, 0, strpos($slug_route_param, '-'));
+        $id = substr($slug_input, 0, strpos($slug_input, '-'));
         if ($obj = $repo->find($id)) {
             // it exists and we are on the old url at the moment, lets flag a 301 response
             $new_slug_attribute = array(
@@ -93,7 +122,7 @@ class DeskproSlugConverter implements ParamConverterInterface
             );
         }
 
-        $id = $slug_route_param;
+        $id = $slug_input;
         if ($obj = $repo->find($id)) {
             // it exists and we are on the old url at the moment, lets flag a 301 response
             $new_slug_attribute = array(
@@ -109,12 +138,12 @@ class DeskproSlugConverter implements ParamConverterInterface
             );
         }
 
-        throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $param_class, $slug_attribute_name, $slug_route_param));
+        throw new NotFoundHttpException(sprintf('could not find a "%s" for the slug value found in the route variable "%s" (value: %s)', $param_class, $slug_attribute_name, $slug_input));
     }
 
     public function supports(ParamConverter $configuration)
     {
-        return true;
+        return $configuration->getConverter() === 'deskpro_slug';
     }
 
     protected function getOptions(ParamConverter $configuration)
@@ -125,5 +154,21 @@ class DeskproSlugConverter implements ParamConverterInterface
                 'slug_route_param' => 'slug',
             ), $configuration->getOptions()
         );
+    }
+
+    private function isContentClass($param_class)
+    {
+        switch ($param_class) {
+            case 'Application\DeskPRO\Entity\Article':
+                return true;
+            case 'Application\DeskPRO\Entity\Feedback':
+                return true;
+            case 'Application\DeskPRO\Entity\News':
+                return true;
+            case 'Application\DeskPRO\Entity\Download':
+                return true;
+            default:
+                return false;
+        }
     }
 }

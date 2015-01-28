@@ -75,7 +75,7 @@ class ArticleSlugHistory extends \Application\DeskPRO\Domain\DomainObject
      */
     public function __construct(Article $article, $old_slug)
     {
-        $this->setArticle($article);
+        $this->setContent($article);
         $this->setSlug($old_slug);
         $this->setModelField('date_created', new \DateTime());
     }
@@ -91,7 +91,7 @@ class ArticleSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @return string
      */
-    public function getArticle()
+    public function getContent()
     {
         return $this->article;
     }
@@ -99,7 +99,7 @@ class ArticleSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @param Article $article
      */
-    public function setArticle(Article $article)
+    public function setContent(Article $article)
     {
         $this->setModelField('article', $article);
     }

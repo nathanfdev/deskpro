@@ -75,7 +75,7 @@ class DownloadSlugHistory extends \Application\DeskPRO\Domain\DomainObject
      */
     public function __construct(Download $download, $old_slug)
     {
-        $this->setDownload($download);
+        $this->setContent($download);
         $this->setSlug($old_slug);
         $this->setModelField('date_created', new \DateTime());
     }
@@ -91,7 +91,7 @@ class DownloadSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @return string
      */
-    public function getDownload()
+    public function getContent()
     {
         return $this->download;
     }
@@ -99,7 +99,7 @@ class DownloadSlugHistory extends \Application\DeskPRO\Domain\DomainObject
     /**
      * @param Download $download
      */
-    public function setDownload(Download $download)
+    public function setContent(Download $download)
     {
         $this->setModelField('download', $download);
     }
