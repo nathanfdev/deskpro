@@ -486,7 +486,11 @@ class KbController extends AbstractController
 
             case 'content':
 
-                $content_info = Strings::parseImageDataUrls($this->in->getCleanValue('content', 'string', null, array('noclean' => true)));
+                $content = $this->person->hasPerm('agent_publish.can_insert_html')
+                    ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
+                    : $this->in->getCleanValue('content', 'string');
+
+                $content_info = Strings::parseImageDataUrls($content);
 
                 if (!empty($content_info['files'])) {
                     foreach ($content_info['files'] as $file_info) {
