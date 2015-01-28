@@ -298,6 +298,22 @@
     'core.emails.attach_user_not_exts' => null,
 
     /**
+     * Number of emails that trigger the rate limit
+     */
+    'core.emails.rate_count'     => 15,
+
+    /**
+     * The time in which the above number of emails are submitted
+     * before we lock.
+     */
+    'core.emails.rate_time'      => 600,
+
+    /**
+     * How long to lock for once the limit is passed.
+     */
+    'core.emails.rate_locktime'  => 900,
+
+    /**
      * True to have the DeskPRO local user source enabled
      */
     'core.deskpro_source_enabled' => true,

@@ -145,6 +145,41 @@
                             <label>
                                 <h4>
                                     <label>
+                                        Abuse prevention
+                                    </label>
+                                </h4>
+                            </label>
+                            <div>
+                                <span class="help-block">
+                                    Prevent abuse by limiting the maximum number of emails a person can send before they are rejected.
+                                    The user will be warned when they reach the limit.
+                                </span>
+                                <span class="help-block">
+                                    All emails caught in this rate-limiting filter will be saved in a rejected state
+                                    to the <a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">Incoming Email Log</a> where you can review and optionally re-process them.
+                                </span>
+                                <span class="help-block">
+                                    Note that email replies from agents are exempt from this limit.
+                                </span>
+                                After
+                                <input type="number" min="1" ng-model="settings.rate_count" class="form-control" style="width: 50px;" />
+                                emails within
+                                <dp-time-with-unit ng-model="settings.rate_time"></dp-time-with-unit>
+                                , reject messages for
+                                <dp-time-with-unit ng-model="settings.rate_locktime"></dp-time-with-unit>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <label>
                                         <input type="checkbox" ng-model="settings.core_tickets_enable_dupe_checking">
                                         Enable duplicate detection
                                     </label>
