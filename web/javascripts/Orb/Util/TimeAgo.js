@@ -7,7 +7,7 @@ Orb.Util.TimeAgo = {
 	/**
 	 * How often to update the elements
 	 */
-	refreshPeriod: 10,//1min
+	refreshPeriod: 60000,//1min
 
 	phrases: {
 		'sec_less': '1 second',
