@@ -127,8 +127,14 @@ class PortalPermissionsManager
             return $this->generatePermissionsMapForPerson($person);
         }
 
+        $that = $this;
         return new PermissionsBag(
-            $this->cache->get($this->getCacheKeyForPerson($person), $this->generatePermissionsMapForPerson($person))
+            $this->cache->get(
+                $this->getCacheKeyForPerson($person),
+                function () use ($that, $person) {
+                    return $that->generatePermissionsMapForPerson($person);
+                }
+            )
         );
     }
 
@@ -145,8 +151,14 @@ class PortalPermissionsManager
 
         $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
 
+        $that = $this;
         return new PermissionsBag(
-            $this->cache->get($this->getCacheKeyForUsergroupIds($usergoupIds), $this->generatePermissionsMapForGuest())
+            $this->cache->get(
+                $this->getCacheKeyForUsergroupIds($usergoupIds),
+                function() use ($that) {
+                    return $that->generatePermissionsMapForGuest();
+                }
+            )
         );
     }
 
