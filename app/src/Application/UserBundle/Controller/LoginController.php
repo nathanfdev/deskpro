@@ -37,6 +37,7 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\EntityRepository\LoginLog;
+use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
@@ -1017,6 +1018,11 @@ HTML;
 
     public function resetPasswordNewPassAction($code)
     {
+        if (!$this->session->getPerson() instanceof PersonGuest) {
+            $this->session->invalidate();
+            return $this->redirectRoute('user_login_resetpass_newpass', array('code' => $code));
+        }
+
         $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
         $person = null;
         if ($code_data) {
@@ -1064,6 +1070,7 @@ HTML;
 
                 $this->session->setFlash('password_reset', 1);
 
+                $this->session->invalidate();
                 $this->session->set('auth_person_id', $person->getId());
                 $this->session->set('dp_interface', DP_INTERFACE);
                 $this->session->save();
