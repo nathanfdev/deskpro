@@ -136,9 +136,9 @@ final class Ticket extends AbstractEntity
     private $urgency = 1;
 
     /**
-     * @var string
+     * @var string[]
      */
-    private $participants;
+    private $participants = array();
 
     /**
      * @var string[]
@@ -527,7 +527,7 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @return string
+     * @return array
      */
     public function getParticipants()
     {
@@ -535,21 +535,21 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @param string $participants
+     * @param string $participant
      * @return $this
      */
-    public function setParticipants($participants)
+    public function addParticipant($participant)
     {
-        $this->participants = $participants;
+        $this->participants[] = $participant;
         return $this;
     }
 
     /**
-     * @return Collection
+     * @return string[]
      */
-    public function getMessages()
+    public function getLabels()
     {
-        return $this->messages;
+        return $this->labels;
     }
 
     /**
@@ -560,6 +560,14 @@ final class Ticket extends AbstractEntity
     {
         $this->labels[] = $label;
         return $this;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getMessages()
+    {
+        return $this->messages;
     }
 
     /**

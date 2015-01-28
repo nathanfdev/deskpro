@@ -27,42 +27,100 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Mapping\ClassMetadata;
+
 /**
- * Exporting entity interface
- *
- * Interface EntityInterface
+ * Class CustomDefValue
  * @package Application\ImportBundle\Entity
  */
-interface EntityInterface
+final class CustomDefValue extends AbstractEntity
 {
-    const TYPE_PERSON                    = 'person';
-    const TYPE_TICKET                    = 'ticket';
-    const TYPE_TICKET_MESSAGE            = 'ticket_message';
-    const TYPE_TICKET_MESSAGE_ATTACHMENT = 'ticket_message_attachment';
-    const TYPE_CUSTOM_DEF_VALUE          = 'custom_def_value';
-    const TYPE_DOWNLOAD                  = 'download';
-    const TYPE_NEWS                      = 'news';
-    const TYPE_KB                        = 'kb';
-    const TYPE_FEEDBACK                  = 'feedback';
+    /**
+     * @var int
+     */
+    private $oid;
 
     /**
-     * Get entity type
-     *
+     * @var string
+     */
+    private $key;
+
+    /**
+     * @var mixed
+     */
+    private $value;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_CUSTOM_DEF_VALUE;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOid()
+    {
+        return $this->oid;
+    }
+
+    /**
+     * @param int $oid
+     */
+    public function setOid($oid)
+    {
+        $this->oid = $oid;
+    }
+
+    /**
      * @return string
      */
-    public function getType();
+    public function getKey()
+    {
+        return $this->key;
+    }
 
     /**
-     * Get entity destination
-     *
-     * @return string
+     * @param string $key
      */
-    public function getDestination();
+    public function setKey($key)
+    {
+        $this->key = $key;
+    }
 
     /**
-     * Convert to array
-     *
-     * @return array
+     * @return mixed
      */
-    public function toArray();
+    public function getValue()
+    {
+        return $this->value;
+    }
+
+    /**
+     * @param mixed $value
+     */
+    public function setValue($value)
+    {
+        $this->value = $value;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function toArray()
+    {
+        return array();
+    }
+
+    /**
+     * Validator class metadata
+     *
+     * @param ClassMetadata $metadata
+     */
+    public static function loadValidatorMetadata(ClassMetadata $metadata)
+    {
+
+    }
 }

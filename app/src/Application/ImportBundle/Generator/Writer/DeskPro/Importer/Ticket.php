@@ -31,6 +31,7 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
+use Orb\Util\Strings;
 
 /**
  * DeskPro ticket importer
@@ -80,6 +81,7 @@ final class Ticket extends AbstractImporter
         $this->records = new ArrayCollection();
         $ticket = new DeskPROEntity\Ticket();
         $ticket
+            ->setRef($this->getOrCreateTicketRef($importing_entity->getRef()))
             ->setSubject($importing_entity->getSubject())
             ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
             ->setOrganization($this->findOrCreateOrganization($importing_entity->getOrganization()))
@@ -93,7 +95,7 @@ final class Ticket extends AbstractImporter
             ->setDateArchived($importing_entity->getDateArchived())
             ->resetMessages()
             ->resetParticipants()
-        ;
+            ->resetLabels();
 
         if ($importing_entity->getAgentEmail()) {
             $this->logInfo(sprintf('Applying ticket agent `%s`', $importing_entity->getAgentEmail()));
@@ -102,8 +104,14 @@ final class Ticket extends AbstractImporter
                 throw new ImporterException(sprintf('Person `%s` is not an agent', $agent->getEmailAddress()));
             }
         }
-        foreach ($importing_entity->getMessages() as $importing_message) {
-            $ticket->addMessage($this->getDoctrineMessageEntity($importing_message));
+        foreach ($importing_entity->getMessages() as $message) {
+            $ticket->addMessage($this->createTicketMessage($message));
+        }
+        foreach ($importing_entity->getParticipants() as $participant) {
+            $ticket->addParticipant($this->createParticipant($participant));
+        }
+        foreach ($importing_entity->getLabels() as $label) {
+            $ticket->addLabel($this->createTicketLabel($label));
         }
 
         $this->records->add($ticket);
@@ -116,7 +124,7 @@ final class Ticket extends AbstractImporter
      * @param Entity\TicketMessage $importing_entity
      * @return DeskPROEntity\TicketMessage
      */
-    private function getDoctrineMessageEntity(Entity\TicketMessage $importing_entity)
+    private function createTicketMessage(Entity\TicketMessage $importing_entity)
     {
         $message = new DeskPROEntity\TicketMessage();
         $message
@@ -131,7 +139,7 @@ final class Ticket extends AbstractImporter
         }
         foreach ($importing_entity->getAttachments() as $importing_attachment) {
             $message->addAttachment(
-                $this->getDoctrineAttachmentEntity(
+                $this->createAttachment(
                     $importing_attachment,
                     $importing_entity->getPersonEmail()
                 )
@@ -149,15 +157,45 @@ final class Ticket extends AbstractImporter
      *
      * @return DeskPROEntity\TicketAttachment
      */
-    private function getDoctrineAttachmentEntity(Entity\TicketAttachment $importing_entity, $message_person_email)
+    private function createAttachment(Entity\TicketAttachment $importing_entity, $message_person_email)
     {
-        $person_email = $importing_entity->getPersonEmail() ? : $message_person_email;
-        $attachment   = new DeskPROEntity\TicketAttachment();
+        $email = $importing_entity->getPersonEmail() ? : $message_person_email;
+        $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
-            ->setPerson($this->getPersonMapper()->findOneByEmail($person_email))
+            ->setPerson($this->getPersonMapper()->findOneByEmail($email))
             ->setBlob($this->getBlobData($importing_entity));
 
         return $attachment;
+    }
+
+    /**
+     * Returns the importing DeskPro doctrine ticket participant entity
+     *
+     * @param string $email
+     *
+     * @return DeskPROEntity\TicketParticipant
+     * @throws Mapper\MapperException
+     */
+    private function createParticipant($email)
+    {
+        $participant = new DeskPROEntity\TicketParticipant();
+        $participant->setPerson($this->getPersonMapper()->findOneByEmail($email));
+
+        return $participant;
+    }
+
+    /**
+     * Returns the importing DeskPro doctrine ticket label entity
+     *
+     * @param string $label
+     * @return DeskPROEntity\LabelTicket
+     */
+    private function createTicketLabel($label)
+    {
+        $ticket_label = new DeskPROEntity\LabelTicket();
+        $ticket_label->setLabel($label);
+
+        return $ticket_label;
     }
 
     /**
@@ -169,7 +207,7 @@ final class Ticket extends AbstractImporter
      * @return DeskPROEntity\Department|null
      * @throws \Exception
      */
-    protected function findOrCreateTicketDepartment($title)
+    private function findOrCreateTicketDepartment($title)
     {
         $department = null;
         if ($title) {
@@ -248,6 +286,23 @@ final class Ticket extends AbstractImporter
     }
 
     /**
+     * Validates if current ref is already exist
+     *
+     * todo Is it ref to original source? Can it be not unique?
+     * todo Should we check if random is unique?
+     *
+     * @param $ref
+     * @return string
+     */
+    private function getOrCreateTicketRef($ref)
+    {
+        $existing_ticket = $this->getTicketMapper()->findOneByRef($ref, false);
+        return $existing_ticket ? Strings::random(10, Strings::CHARS_ALPHANUM_IU) : $ref;
+    }
+
+    /**
+     * Returns blob data
+     *
      * @param Entity\TicketAttachment $importing_entity
      *
      * @return DeskPROEntity\Blob
@@ -255,30 +310,15 @@ final class Ticket extends AbstractImporter
      */
     private function getBlobData(Entity\TicketAttachment $importing_entity)
     {
-        if (!$importing_entity->getBlobData() &&  !$importing_entity->getBlobPath() && !$importing_entity->getBlobUrl()) {
-            throw new \Exception(sprintf("Invalid Attachment: The attachement must have one of 'blob_data', 'blob_path' or 'blob_url'"));
-        }
-
-        $blob_data = null;
-        if ($importing_entity->getBlobData()) {
-            $blob_data = base64_decode($importing_entity->getBlobData());
-
-        } elseif ($importing_entity->getBlobPath()) {
-            if (!is_readable($importing_entity->getBlobPath())) {
-                throw new \Exception(sprintf('Invalid blob path %s', $importing_entity->getBlobPath()));
-            }
-
-            $blob_data = file_get_contents($importing_entity->getBlobPath());
-
-        } elseif ($importing_entity->getBlobUrl()) {
-            if (!is_readable($importing_entity->getBlobUrl())) {
-                throw new \Exception(sprintf('Invalid blob url %s', $importing_entity->getBlobUrl()));
-            }
-
-            $blob_data = file_get_contents($importing_entity->getBlobUrl());
-        }
-
-        return $this->blob_storage->createBlobRecordFromString($blob_data, $importing_entity->getFileName(), $importing_entity->getContentType());
+        return $this->blob_storage->createBlobRecordFromString(
+            $this->getBlobDataMapper()->findOneBy(
+                $importing_entity->getBlobData(),
+                $importing_entity->getBlobPath(),
+                $importing_entity->getBlobUrl()
+            ),
+            $importing_entity->getFileName(),
+            $importing_entity->getContentType()
+        );
     }
 
     /**

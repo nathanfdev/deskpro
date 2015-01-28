@@ -66,12 +66,25 @@ class Ticket implements MapperInterface
      */
     public function findOneBy(array $criteria, $throw_exception = true)
     {
-        /** @var Entity\TicketCategory $record */
+        /** @var Entity\Ticket $record */
         $record = $this->repository->findOneBy($criteria);
         if (!$record && $throw_exception) {
             throw new MapperException('Ticket not found', $criteria);
         }
 
         return $record;
+    }
+
+    /**
+     * Returns the existing DeskPro ticket by ref
+     *
+     * @param string $ref
+     * @param bool   $throw_exception
+     *
+     * @return Entity\Ticket
+     */
+    public function findOneByRef($ref, $throw_exception = true)
+    {
+        return $this->findOneBy(array('ref' => $ref), $throw_exception);
     }
 }

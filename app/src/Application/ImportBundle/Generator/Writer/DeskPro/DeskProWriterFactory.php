@@ -33,6 +33,8 @@ use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
 
 /**
+ * Generator deskpro writer factory
+ *
  * Class DeskProWriterFactory
  * @package Application\ImportBundle\Generator\Writer\DeskPro
  */
@@ -121,7 +123,8 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\TicketCategory($ticket_category_repository))
             ->attach(new Importer\Mapper\TicketDepartment($departmentRepository))
             ->attach(new Importer\Mapper\TicketWorkflow($ticket_workflow_repository))
-            ->attach(new Importer\Mapper\UserGroup($user_group_repository));
+            ->attach(new Importer\Mapper\UserGroup($user_group_repository))
+            ->attach(new Importer\Mapper\BlobData());
 
         $importers = new Importer\Collection();
         $importers

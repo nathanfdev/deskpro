@@ -625,6 +625,15 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $this->_original_id;
     }
 
+    /**
+     * @param string $ref
+     * @return $this
+     */
+    public function setRef($ref)
+    {
+        $this->ref = $ref;
+        return $this;
+    }
 
     /**
      * @return string
@@ -1605,10 +1614,22 @@ class Ticket extends DomainObject implements HighlightableModelInterface
         return $rendered;
     }
 
+    /**
+     * Reset labels
+     *
+     * @return $this
+     */
+    public function resetLabels()
+    {
+        $this->labels = new ArrayCollection();
+        return $this;
+    }
 
     /**
      * Add a label
-     * @param \Application\DeskPRO\Entity\LabelTicket $label
+     *
+     * @param LabelTicket $label
+     * @return LabelTicket
      */
     public function addLabel(LabelTicket $label)
     {

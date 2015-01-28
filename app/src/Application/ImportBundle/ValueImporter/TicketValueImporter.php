@@ -157,18 +157,18 @@ class TicketValueImporter extends AbstractValueImporter
 //        }
 
         //Ref
-        if (!$tval->ref) {
-            $record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
-        } else {
-            $query = 'SELECT id FROM tickets WHERE ref = ?';
-            $duplicateRef = $this->getDb()->fetchColumn($query, array($tval->ref));
-
-            if ($duplicateRef) {
-                $record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
-            } else {
-                $record['ref'] = $tval->ref;
-            }
-        }
+//        if (!$tval->ref) {
+//            $record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
+//        } else {
+//            $query = 'SELECT id FROM tickets WHERE ref = ?';
+//            $duplicateRef = $this->getDb()->fetchColumn($query, array($tval->ref));
+//
+//            if ($duplicateRef) {
+//                $record['ref'] = Strings::random(10, Strings::CHARS_ALPHANUM_IU);
+//            } else {
+//                $record['ref'] = $tval->ref;
+//            }
+//        }
 
         //Status
 //        /** @var TicketStatusRecordMapper $ticket_status_mapper */
@@ -221,23 +221,23 @@ class TicketValueImporter extends AbstractValueImporter
         #------------------------------
         # Participants
         #------------------------------
-        if ($ticket_id && $tval->participants) {
-            $tval->participants = array_filter($tval->participants, function ($email) {
-                return StringEmail::isValueValid($email);
-            });
-
-            if ($tval->participants) {
-                foreach ($tval->participants as $participant) {
-                    $participantId = $this->getMappers()->findIdFromMappedValue('person', $participant);
-
-                    if ($participantId) {
-                        $batch = array('ticket_id' => $ticket_id, 'person_id' => $participantId);
-                        $this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $participant));
-                        $this->getDb()->insert('tickets_participants', $batch);
-                    }
-                }
-            }
-        }
+//        if ($ticket_id && $tval->participants) {
+//            $tval->participants = array_filter($tval->participants, function ($email) {
+//                return StringEmail::isValueValid($email);
+//            });
+//
+//            if ($tval->participants) {
+//                foreach ($tval->participants as $participant) {
+//                    $participantId = $this->getMappers()->findIdFromMappedValue('person', $participant);
+//
+//                    if ($participantId) {
+//                        $batch = array('ticket_id' => $ticket_id, 'person_id' => $participantId);
+//                        $this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $participant));
+//                        $this->getDb()->insert('tickets_participants', $batch);
+//                    }
+//                }
+//            }
+//        }
 
         #------------------------------
         # Ticket Messages
@@ -288,14 +288,14 @@ class TicketValueImporter extends AbstractValueImporter
         # Labels
         #------------------------------
         if ($ticket_id && $tval->labels) {
-            $batch = array_map(function ($l) use ($ticket_id) {
-                return array(
-                    'ticket_id' => $ticket_id,
-                    'label'     => $l
-                );
-            }, $tval->labels);
-
-            $this->getDb()->batchInsert('labels_tickets', $batch, true);
+//            $batch = array_map(function ($l) use ($ticket_id) {
+//                return array(
+//                    'ticket_id' => $ticket_id,
+//                    'label'     => $l
+//                );
+//            }, $tval->labels);
+//
+//            $this->getDb()->batchInsert('labels_tickets', $batch, true);
         }
 
         #------------------------------

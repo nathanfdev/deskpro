@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,44 +25,70 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
 /**
- * Exporting entity interface
+ * Blob data mapper
  *
- * Interface EntityInterface
- * @package Application\ImportBundle\Entity
+ * Class BlobData
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-interface EntityInterface
+class BlobData implements MapperInterface
 {
-    const TYPE_PERSON                    = 'person';
-    const TYPE_TICKET                    = 'ticket';
-    const TYPE_TICKET_MESSAGE            = 'ticket_message';
-    const TYPE_TICKET_MESSAGE_ATTACHMENT = 'ticket_message_attachment';
-    const TYPE_CUSTOM_DEF_VALUE          = 'custom_def_value';
-    const TYPE_DOWNLOAD                  = 'download';
-    const TYPE_NEWS                      = 'news';
-    const TYPE_KB                        = 'kb';
-    const TYPE_FEEDBACK                  = 'feedback';
+    /**
+     * {@inheritdoc}
+     */
+    public function getType()
+    {
+        return self::TYPE_BLOB_DATA;
+    }
 
     /**
-     * Get entity type
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getType();
+    public function findOneBy(array $criteria, $throw_exception = true)
+    {
+        $data = null;
+        if (!empty($criteria['data'])) {
+            $data = base64_decode($criteria['data']);
+        }
+        if (!empty($criteria['path'])) {
+            if (!is_readable($criteria['path'])) {
+                throw new MapperException(sprintf('Invalid blob path %s', $criteria['path']), $criteria);
+            }
+
+            $data = @file_get_contents($criteria['path']);
+        }
+        if (!empty($criteria['url'])) {
+            $data = @file_get_contents($criteria['url']);
+        }
+        if (!$data) {
+            throw new MapperException('Blob data not found', $criteria);
+        }
+
+        return $data;
+    }
 
     /**
-     * Get entity destination
+     * Returns blob data by params
      *
-     * @return string
-     */
-    public function getDestination();
-
-    /**
-     * Convert to array
+     * @param string $data
+     * @param string $path
+     * @param string $url
+     * @param bool   $throw_exception
      *
-     * @return array
+     * @return mixed|null|string
+     * @throws MapperException
      */
-    public function toArray();
+    public function findOneByParams($data, $path, $url, $throw_exception = true)
+    {
+        return $this->findOneBy(
+            array(
+                'data' => $data,
+                'path' => $path,
+                'url'  => $url,
+            ),
+            $throw_exception
+        );
+    }
 }

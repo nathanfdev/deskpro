@@ -61,17 +61,6 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     }
 
     /**
-     * Returns the person mapper
-     *
-     * @return Mapper\Person
-     * @throws \Exception
-     */
-    protected function getPersonMapper()
-    {
-        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
-    }
-
-    /**
      * Returns a language id by title
      *
      * @param string $title
@@ -124,5 +113,27 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
         }
 
         return $organization;
+    }
+
+    /**
+     * Returns the person mapper
+     *
+     * @return Mapper\Person
+     * @throws \Exception
+     */
+    protected function getPersonMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_PERSON);
+    }
+
+    /**
+     * Returns the blob data mapper
+     *
+     * @return Mapper\BlobData
+     * @throws \Exception
+     */
+    protected function getBlobDataMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_BLOB_DATA);
     }
 }
