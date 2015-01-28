@@ -227,7 +227,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
             ", array($person['id'], 'agent.ui.state'));
         }
 
-        $this->session->replace(array());
+        $this->session->invalidate();
         $this->session->save();
 
         foreach (array('dpsid-agent', 'dpsid-admin', 'dpreme') as $cookie_name) {
