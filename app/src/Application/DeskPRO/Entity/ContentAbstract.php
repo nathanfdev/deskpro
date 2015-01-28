@@ -340,8 +340,11 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     }
 
     /**
+     * NOTE: don't use this directly. Instead, use the "content_slug_manager" service to set the slug for you.
+     *
      * @param $new_slug
      * @return null or the new slug history object
+     * @internal this shouldn't be called except by the content_slug_manager
      */
     public function setSlug($new_slug)
     {
