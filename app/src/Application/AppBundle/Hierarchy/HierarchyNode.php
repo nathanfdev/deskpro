@@ -92,6 +92,10 @@ class HierarchyNode implements \IteratorAggregate, \Countable
         $node->setParent($this);
         $node->setHierarchy($this->hierarchy);
         $this->children[] = $node;
+
+        usort($this->children, function ($node1, $node2) {
+            return $node2->getOrder() - $node1->getOrder();
+        });
     }
 
     /**

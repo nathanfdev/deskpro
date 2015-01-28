@@ -86,7 +86,7 @@ class HierarchyGenerator
         foreach ($field->children as $field_child) {
             // fields with a parent_id are dealt with below
             if (!$field_child->getOption('parent_id')) {
-                $root_nodes[] = new HierarchyNode($field_child, 0);
+                $root_nodes[] = new HierarchyNode($field_child, 0, $field_child->display_order);
             }
         }
 
@@ -102,7 +102,7 @@ class HierarchyGenerator
         foreach ($field->children as $field_child) {
             if ($parent_id = $field_child->getOption('parent_id')) {
                 if ($parent = $parent_node = $hierarchy->findNodeById($parent_id)) {
-                    $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1));
+                    $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1, $field_child->display_order));
                 }
             }
         }
