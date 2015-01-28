@@ -45,25 +45,35 @@ class AppManagerService
     {
         $em = $container->getEm();
 
-        $packages = $em->createQuery("
-            SELECT package, asset
-            FROM DeskPRO:AppPackage package
-            LEFT JOIN package.assets asset
-            ORDER BY package.title
-        ")->execute();
+        if (!defined('DP_BUILDING')) {
+            $packages = $em->createQuery("
+                SELECT package, asset
+                FROM DeskPRO:AppPackage package
+                LEFT JOIN package.assets asset
+                ORDER BY package.title
+            ")->execute();
 
-        $apps = $em->createQuery("
-            SELECT app, package, asset
-            FROM DeskPRO:AppInstance app
-            LEFT JOIN app.package package
-            LEFT JOIN package.assets asset
-        ")->execute();
+                $apps = $em->createQuery("
+                SELECT app, package, asset
+                FROM DeskPRO:AppInstance app
+                LEFT JOIN app.package package
+                LEFT JOIN package.assets asset
+            ")->execute();
 
-        $usersources = $em->createQuery("
-            SELECT usersource
-            FROM DeskPRO:Usersource usersource
-            LEFT JOIN usersource.app app
-        ")->execute();
+                $usersources = $em->createQuery("
+                SELECT usersource
+                FROM DeskPRO:Usersource usersource
+                LEFT JOIN usersource.app app
+            ")->execute();
+        } else {
+
+            // this is constructed in the portal system (for app usersources) during portal cache warm up
+            // cannot make db queries while building - nor is this necessary for building
+            $packages = array();
+            $apps = array();
+            $usersources = array();
+
+        }
 
         if ($apps instanceof ArrayCollection) {
             $apps = $apps->toArray();
