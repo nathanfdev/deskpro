@@ -283,7 +283,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
             return null;
         }
 
-        if ('/' !== $return[0] || '/' === $return[1] || false !== strpos($return, '/validate-email/')) {
+        if ('/' !== $return[0] || '//' === substr($return, 0, 2) || false !== strpos($return, '/validate-email/')) {
             return null;
         }
 
