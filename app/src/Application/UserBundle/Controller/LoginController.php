@@ -1343,30 +1343,23 @@ HTML;
 
     /**
      * get current login lockout time
-     * @param Person $person
-     * @return int
+     * @param null $email
+     * @return int|mixed
      */
     protected function getLoginLockoutTime($email = null)
     {
-        $context = $this->getInterface();
-
         if (!$email) {
             return 0;
         }
 
-        // 0 if not user/agent/admin
-        if ('admin' === $context) {
-            $context = 'agent';
-        } elseif ('user' !== $context && 'agent' !== $context) {
+        if (!$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email)) {
             return 0;
         }
+
+        $context = $person['is_agent'] ? 'agent' : 'user';
 
         // 0 if disabled
         if (!$this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.enabled')) {
-            return 0;
-        }
-
-        if (!$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email)) {
             return 0;
         }
 
@@ -1376,6 +1369,6 @@ HTML;
         $checkTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts_time');
         $lockTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'lock_time');
 
-        return $rep->getLoginLockoutTime($person, $context, $maxAttempts, $checkTime, $lockTime);
+        return $rep->getLoginLockoutTime($person, $maxAttempts, $checkTime, $lockTime);
     }
 }

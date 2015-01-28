@@ -68,19 +68,18 @@ class LoginLog extends AbstractEntityRepository
      * @return int|mixed
      * @throws \Doctrine\DBAL\DBALException
      */
-    public function getLoginLockoutTime(PersonEntity $person, $area, $maxAttempts, $time, $maxLockTime)
+    public function getLoginLockoutTime(PersonEntity $person, $maxAttempts, $time, $maxLockTime)
     {
         $time = time() - (int) $time;
         $q = sprintf('
             select count(*) as `count`, max(date_created) as `last` from %1$s where
-            person_id = :pid and date_created > :date and area = :area and id >
-            (select ifnull(max(id), 0) from %1$s where person_id = :pid and date_created > :date and is_success = 1 and area = :area limit 1)
+            person_id = :pid and date_created > :date and id >
+            (select ifnull(max(id), 0) from %1$s where person_id = :pid and date_created > :date and is_success = 1)
         ', $this->getTableName());
 
         $res = $this->getEntityManager()->getConnection()->executeQuery($q, array(
             'pid' => $person['id'],
             'date' => date('Y-m-d H:i:s', $time),
-            'area' => $area,
         ))->fetchAll();
 
         $res = reset($res);
@@ -88,6 +87,9 @@ class LoginLog extends AbstractEntityRepository
             return 0;
         }
 
-        return max(0, strtotime($res['last']) + (int) $maxLockTime - time());
+        $last = strtotime($res['last']);
+        $maxLockTime = (int) $maxLockTime;
+        $total = $last + $maxLockTime - time();
+        return max(0,  $total);
     }
 }

@@ -7,7 +7,7 @@ Orb.Util.TimeAgo = {
 	/**
 	 * How often to update the elements
 	 */
-	refreshPeriod: 60000,//1min
+	refreshPeriod: 10,//1min
 
 	phrases: {
 		'sec_less': '1 second',
@@ -50,8 +50,8 @@ Orb.Util.TimeAgo = {
 
 		els.each(function(el) {
 			$(el).addClass('timeago-auto-update');
-			self.refreshElements([el]);
 		});
+		self.refreshElements();
 
 		if (this._watchTimer === null) {
 			this._watchTimer = window.setInterval(this.refreshElements.bind(this), this.refreshPeriod);
@@ -115,8 +115,12 @@ Orb.Util.TimeAgo = {
 						ago = false;
 					}
 				}
-                var text = self.get(data.datetime, ago, data.relativeCutoff, data.title);
+        var text = self.get(data.datetime, ago, data.relativeCutoff, data.title);
 				el.text(text);
+			}
+
+			if (el.data('no-update')) {
+				el.removeClass('timeago-auto-update');
 			}
 		});
 	},
