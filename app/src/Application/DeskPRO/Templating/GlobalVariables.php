@@ -350,7 +350,7 @@ class GlobalVariables extends BaseGlobalVariables
 
         // Cant recreate a post, so back to home
         if ($request->getMethod() == 'POST') {
-            return App::getSetting('core.deskpro_url');
+            return $request->getReturnParam();
         }
 
         return $request->getRequestUri();
