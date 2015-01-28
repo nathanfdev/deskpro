@@ -210,7 +210,10 @@ class NewsController extends AbstractController
 
                 $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editnews', $this->person->id);
 
-                $news['content'] = $this->in->getCleanValue('content', 'string', null, array('noclean' => true));
+                $news['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
+                    ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
+                    : $this->in->getCleanValue('content', 'string');
+
                 $data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
                     'news' => $news
                 ));

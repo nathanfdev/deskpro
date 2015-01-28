@@ -508,21 +508,26 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
         }
 
         $ret = session_regenerate_id($destroy);
-        session_write_close();
-        $session = new \Application\DeskPRO\Entity\Session();
 
-        // hardcoded copy of old session params
-        $copyProps = array('interface', 'person', 'visitor', 'user_agent', 'ip_address', 'data', 'is_person', 'is_bot',
-            'is_helpdesk', 'active_status', 'is_chat_available');
-        foreach ($copyProps as $prop) {
-            $session[$prop] = $this->session[$prop];
+        if ($this->isStarted() && $this->getEntity()) {
+
+            session_write_close();
+            $session = new \Application\DeskPRO\Entity\Session();
+
+            // hardcoded copy of old session params
+            $copyProps = array('interface', 'person', 'visitor', 'user_agent', 'ip_address', 'data', 'is_person', 'is_bot',
+                'is_helpdesk', 'active_status', 'is_chat_available');
+            foreach ($copyProps as $prop) {
+                $session[$prop] = $this->session[$prop];
+            }
+
+            $this->session = $session;
+            $this->em->persist($session);
+            $this->em->flush();
+
+            session_id($session->getSessionCode());
+            session_start();
         }
-
-        $this->em->persist($session);
-        $this->em->flush();
-        $this->session = $session;
-        session_id($session->getSessionCode());
-        session_start();
 
         $this->loadSession();
 
