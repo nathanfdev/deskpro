@@ -70,7 +70,7 @@
 			{% if authManager.isLoginFormVisible %}
 			<div id="dp_login_box" class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.LoginBox">
 				<form action="{{ path('user_login_authenticate_local') }}" method="post">
-					<input type="hidden" name="return" value="{{ app.getRequest().getRequestUri() }}" />
+					<input type="hidden" name="return" value="{{ app.getReturnUrl() }}" />
 					{{ form_token('user_login') }}
 					<div class="dp-login-box-inner">
 						<dl>
