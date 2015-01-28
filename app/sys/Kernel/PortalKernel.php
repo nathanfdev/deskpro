@@ -139,25 +139,23 @@ class PortalKernel extends Kernel
      */
     protected function initializeContainer()
     {
-        if ($this->environment == 'dev') {
-            $routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
-            if (!$routing_cache_cleaner->isFresh()) {
-                $routing_cache_cleaner->clearCache();
-            }
-        }
-//
-//      TODO: SKIPPING THIS - might need to come back to this before we ship?
-//
-//		if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
-//			// If the container doesnt exist and we're in prod, then means we're installing an update.
-//			// Halt now. This prevents the system from trying to generate the cache itself,
-//			// even though the new files will be installed in a second.
-//			$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
-//			if (!is_file($cache_file)) {
-//				echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
-//				exit;
-//			}
-//		}
+        //if ($this->environment == 'dev') {
+        //    $routing_cache_cleaner = new \Application\DeskPRO\Routing\CacheCleaner();
+        //    if (!$routing_cache_cleaner->isFresh()) {
+        //        $routing_cache_cleaner->clearCache();
+        //    }
+        //}
+
+		//if ($this->environment == 'prod' && !defined('DP_BUILDING') && !defined('DPC_IS_CLOUD')) {
+		//	// If the container doesnt exist and we're in prod, then means we're installing an update.
+		//	// Halt now. This prevents the system from trying to generate the cache itself,
+		//	// even though the new files will be installed in a second.
+		//	$cache_file = $this->getCacheDir() . '/' . $this->getContainerClass() . '.php';
+		//	if (!is_file($cache_file)) {
+		//		echo HelpdeskOfflineMessage::getOfflinePage('Currently installing updates' . $cache_file);
+		//		exit;
+		//	}
+		//}
 
         // entity loader required to construct symfony container
         // so enable it temporarily while the container builds
@@ -178,7 +176,8 @@ class PortalKernel extends Kernel
     protected function dumpContainer(ConfigCache $cache, ContainerBuilder $container, $class, $baseClass)
     {
         // Make sure the cache dirs exist
-        $env_dir = realpath($this->getCacheDir() . '/../../');
+        $env_dir = realpath($this->getCacheDir() . '/../..');
+
         if (!is_dir($this->getCacheDir())) {
             mkdir($this->getCacheDir(), 0777, true);
         }

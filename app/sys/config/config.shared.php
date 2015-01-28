@@ -3,7 +3,7 @@ use Symfony\Component\DependencyInjection\Definition;
 use Symfony\Component\DependencyInjection\Reference;
 /** @var \Symfony\Component\DependencyInjection\ContainerBuilder $container */
 
-$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%../doctrine-proxies');
+$container->setParameter('doctrine.orm.proxy_dir', '%kernel.cache_dir%/../doctrine-proxies');
 $container->setParameter('doctrine.orm.entity_manager.class', 'Application\\DeskPRO\\ORM\\EntityManager');
 $container->setParameter('secret', "irrelevant - compiler pass will override this");
 $container->setParameter('locale', 'en');
@@ -12,7 +12,7 @@ $container->setParameter('locale', 'en');
 # This config is shared between kernels (DpKernel and PortalKernel)
 ####################################################################
 
-// app secret
+// app secret (NOTE; see intall/config.php, as this is copy/pasted to that file)
 $definition = new Definition();
 $definition->setClass('Application\AppBundle\AppSecret\AppSecret');
 $container->setDefinition('app_secret', $definition);
