@@ -4,71 +4,9 @@
 
 {% block inner_content %}
     {{ page.downloads_breadcrumbs({category: file.category})|raw }}
-
-    <article class="news kb-article">
-        <header>
-            <h1>{{ file.title }}</h1>
-
-            <div class="article-meta">
-                <span class="agent-avatar agent-avatar-mini"><img src="{{ person_picture_url(file.person, 20) }}"></span>
-                {{ phrase('portal.articles.by-line', { name: file.person.name, date: file.date_published | date('Y-m-d') }) }}
-                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: file.num_comments}) }}</a></span>
-            </div>
-        </header>
-
-        <div class="article-extras">
-            <a href="{{ path('portal_downloads_download', { slug: file.slug, authcode: file.blob.authcode }) }}">
-            
-                {% if file.blob and file.blob.is_image %}
-                    <img style="max-width: 100%;" src="{{ path('serve_blob', { blob_auth_id: file.blob.authcode, filename: file.blob.filenameSafe }) }}"
-                         alt="{{ file.title }}"/><br>
-                {% endif %}
-
-                [{{ file.blob.content_type }}]
-                {{ phrase('portal.downloads.btn-download', { size: file.readableFileSize }) }}
-
-            </a>
-        </div>
-
-        <div class="header-button-container">
-            <div class="header-buttons">
-
-                {% if brand_setting('user.downloads_subscriptions') %}
-                    <a href="{{ path('portal_downloads_files_toggle_subscription', { slug: file.slug }) }}">
-                        {% if is_subscribed %}
-                            {{ phrase('portal.general.btn-unsubscribe') }}
-                        {% else %}
-                            {{ phrase('portal.general.btn-subscribe') }}
-                        {% endif %}
-                        <i class="fa fa-rss"></i>
-                    </a>
-                {% endif %}
-
-
-                <a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>
-                <a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>
-                <a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
-            </div>
-        </div>
-
-        <div class="article-content padded">
-            {{ file.contentDesc }}
-        </div>
-
-        {% if file.labels|length %}
-            <div class="tag-list">
-                <ul>
-                    <li class="tag-list-header"><i class="fa fa-tags"></i> Tags</li>
-                    {% for l in file.labels %}
-                        <li class="tag-list-item"><a href="#">{{ l }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-
-        {{ page.downloads_ratings()|raw }}
-        {{ page.downloads_comments()|raw }}
-        {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
-        {{ page.related_content()|raw }}
-    </article>
+    {{ page.download()|raw }}
+    {{ page.downloads_ratings()|raw }}
+    {{ page.downloads_comments()|raw }}
+    {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
+    {{ page.related_content()|raw }}
 {% endblock inner_content %}

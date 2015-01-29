@@ -116,6 +116,32 @@ class DownloadsController extends AbstractController
     }
 
     /**
+     * @Tag(name="download")
+     *
+     * @TagOptions(
+     *      defaults={"is_subscribed":false},
+     *      required={"file"},
+     *      allowed_types={
+     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"},
+     *          "is_subscribed": {"int","string","bool"}
+     *      }
+     * )
+     */
+    public function itemAction(TagRequest $tag_request, array $options)
+    {
+        $file = $this->getDownloadsDataService()->getDownload($options['file']);
+        $is_subscribed = $options['is_subscribed'];
+
+        return $this->renderThemeView(
+            'Theme:Downloads:Tag/download.html.twig',
+            array(
+                'file' => $file,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
+
+    /**
      * @Tag(name="downloads_comments")
      * @TagOptions(
      *      defaults={
