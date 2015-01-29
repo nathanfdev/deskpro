@@ -1,21 +1,23 @@
-<div class="rate-article">
-    <div class="titled-header">
-        <h1>{{ phrase('portal.general.rate-page') }}</h1>
-    </div>
-
-    {% if rating %}
-        <div class="rate-article"
-             style="background-color: {% if rating.positive %}#93d06e{% else %}#dc7575{% endif %}; color: white;">
-            You marked this page as {% if rating.positive %}helpful{% else %}not helpful{% endif %}
-        </div>
-    {% endif %}
-
+<article class="news kb-article">
     <div class="rate-article">
-        <a href="{{ path('portal_downloads_vote_up', { slug: file.slug }) }}" class="rate-up">
-            {{ phrase('portal.general.rate-page-positive') }} <span>:)</span>
-        </a>
-        <a href="{{ path('portal_downloads_vote_down', { slug: file.slug }) }}" class="rate-down">
-            <span>:(</span> {{ phrase('portal.general.rate-page-negative') }}
-        </a>
+        <div class="titled-header">
+            <h1>{{ phrase('portal.general.rate-page') }}</h1>
+        </div>
+
+        {% if rating %}
+            <div class="rate-article"
+                 style="background-color: {% if rating.positive %}#93d06e{% else %}#dc7575{% endif %}; color: white;">
+                You marked this page as {% if rating.positive %}helpful{% else %}not helpful{% endif %}
+            </div>
+        {% endif %}
+
+        <div class="rate-article">
+            <a href="{{ path('portal_downloads_vote_up', { slug: file.slug }) }}" class="rate-up">
+                {{ phrase('portal.general.rate-page-positive') }} <span>:)</span>
+            </a>
+            <a href="{{ path('portal_downloads_vote_down', { slug: file.slug }) }}" class="rate-down">
+                <span>:(</span> {{ phrase('portal.general.rate-page-negative') }}
+            </a>
+        </div>
     </div>
-</div>
+</article>

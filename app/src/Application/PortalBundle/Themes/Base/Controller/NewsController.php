@@ -121,6 +121,32 @@ class NewsController extends AbstractController
     }
 
     /**
+     * @Tag(name="post")
+     *
+     * @TagOptions(
+     *      defaults={"is_subscribed":false},
+     *      required={"post"},
+     *      allowed_types={
+     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"},
+     *          "is_subscribed": {"int","string","bool"}
+     *      }
+     * )
+     */
+    public function postAction(TagRequest $tag_request, array $options)
+    {
+        $post = $this->getNewsDataService()->getPost($options['post']);
+        $is_subscribed = $options['is_subscribed'];
+
+        return $this->renderThemeView(
+            'Theme:News:Tag/post.html.twig',
+            array(
+                'post' => $post,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
+
+    /**
      * @Tag(name="news_comments")
      * @TagOptions(
      *      defaults={

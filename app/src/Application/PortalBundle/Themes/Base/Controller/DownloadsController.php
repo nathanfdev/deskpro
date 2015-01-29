@@ -127,7 +127,7 @@ class DownloadsController extends AbstractController
      *      }
      * )
      */
-    public function itemAction(TagRequest $tag_request, array $options)
+    public function fileAction(TagRequest $tag_request, array $options)
     {
         $file = $this->getDownloadsDataService()->getDownload($options['file']);
         $is_subscribed = $options['is_subscribed'];

@@ -1,7 +1,5 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{# TODO #}
-
 {% block inner_content %}
     {{ page.downloads_breadcrumbs({category: file.category})|raw }}
     {{ page.download()|raw }}

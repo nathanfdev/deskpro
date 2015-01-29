@@ -1,59 +1,10 @@
 {% extends 'Theme::layout.html.twig' %}
 
-{# TODO #}
-
 {% block inner_content %}
     {{ page.news_breadcrumbs()|raw }}
-
-    <article class="news kb-article">
-        <header>
-            <h1>{{ post.realTitle }}</h1>
-
-            <div class="article-meta">
-                <span class="agent-avatar agent-avatar-mini"><img src="{{ person_picture_url(post.person, 20) }}"></span>
-                {{ phrase('portal.articles.by-line', { name: post.person.name, date: post.date_published | date('Y-m-d') }) }}
-                <span class="comments"><i class="fa fa-comments"></i> <a href="#">{{ phrase('portal.general.comments-count', {count: post.num_comments}) }}</a></span>
-            </div>
-        </header>
-
-        <div class="header-button-container">
-            <div class="header-buttons">
-
-                {% if brand_setting('user.news_subscriptions') %}
-                    <a href="{{ path('portal_news_post_toggle_subscription', { slug: post.slug }) }}">
-                        {% if is_subscribed %}
-                            {{ phrase('portal.general.btn-unsubscribe') }}
-                        {% else %}
-                            {{ phrase('portal.general.btn-subscribe') }}
-                        {% endif %}
-                        <i class="fa fa-rss"></i>
-                    </a>
-                {% endif %}
-
-                <a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>
-                <a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>
-                <a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
-            </div>
-        </div>
-
-        <div class="article-content padded">
-            {{ post.realContent|raw }}
-        </div>
-
-        {% if post.labels|length %}
-            <div class="tag-list">
-                <ul>
-                    <li class="tag-list-header"><i class="fa fa-tags"></i> Tags</li>
-                    {% for l in post.labels %}
-                        <li class="tag-list-item"><a href="#">{{ l }}</a></li>
-                    {% endfor %}
-                </ul>
-            </div>
-        {% endif %}
-
-        {{ page.news_ratings()|raw }}
-        {{ page.news_comments()|raw }}
-        {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
-        {{ page.related_content()|raw }}
-    </article>
+    {{ page.post()|raw }}
+    {{ page.news_ratings()|raw }}
+    {{ page.news_comments()|raw }}
+    {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
+    {{ page.related_content()|raw }}
 {% endblock inner_content %}
