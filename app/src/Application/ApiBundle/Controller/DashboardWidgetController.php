@@ -145,7 +145,7 @@ class DashboardWidgetController extends AbstractController
         }
         $widget = new Widget();
         $widget
-            ->setTitle($postData['name'])
+            ->setTitle($postData['title'])
             ->setType($postData['type'])
             ->setSize(array($postData['sizeX'], $postData['sizeY']))
             ->setPosition(array($postData['row'],$postData['col']))
@@ -235,7 +235,8 @@ class DashboardWidgetController extends AbstractController
             $this->in->getCleanValue('row', 'int'),
             $this->in->getCleanValue('col', 'int')
         );
-        $widget->setSize(array($sizeX, $sizeY))->setPosition(array($row, $col));
+        $title = $this->in->getCleanValue('title', 'string');
+        $widget->setSize(array($sizeX, $sizeY))->setPosition(array($row, $col))->setTitle($title);
         $this->em->persist($widget);
         $this->em->flush();
         return $this->createApiSuccessResponse();
@@ -275,7 +276,7 @@ class DashboardWidgetController extends AbstractController
 
         $data = array(
             'id'    => $widget->getId(),
-            'name'  => $widget->getTitle(),
+            'title'  => $widget->getTitle(),
             "row"   => $pos[0],
             "col"   => $pos[1],
             "sizeX" => $size[0],

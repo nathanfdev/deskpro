@@ -4908,11 +4908,11 @@ $collection->create('dashboard_reports_create', array(
 ));
 
 $collection->create('dashboard_reports_update', array(
-    'path'         => '/dashboards/reports/{id}',
+    'path'         => '/dashboards/reports/{id}/save',
     'controller'   => 'ApiBundle:DashboardReport:save',
     'requirements' => array('id' => '\\d+'),
     'defaults'     => array('action' => 'save'),
-    'methods'      => array('PUT',),
+    'methods'      => array('POST',),
 ));
 
 

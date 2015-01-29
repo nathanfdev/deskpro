@@ -1,0 +1,50 @@
+<section class="popup">
+
+    <!-- Popup Header & Title -->
+    <header>
+        <h1>Edit report</h1>
+        <div class="controls"><a ng-click="cancel()"><i class="fa fa-times"></i></a></div>
+    </header>
+
+    <!-- Popup Content -->
+    <div class="popup-content">
+        <!-- Content Form -->
+        <form class="popup-form-default">
+
+            <!-- Form Row (left label, input & possible side content) -->
+            <div class="bucket">
+                <label class="label">Report Title:</label>
+                <div class="bucket-column"><input type="text" ng-model="report.title" placeholder="Name of your report"></div>
+            </div>
+            <!-- End Form Row -->
+            <hr>
+            <h2>Widgets on this report (note this is not saving info right now!)</h2>
+            <div class="bucket" ng-if="!widget.deleted" ng-repeat="widget in report.widgets">
+                <label class="label"><i class="fa fa-bars"></i></label>
+                <div class="bucket-column-last">
+                    <span class="meta"><a ng-click="removeWidget(widget)">Remove</a></span>
+                </div>
+                <div class="bucket-column">
+                    <input type="text" ng-model="widget.title" placeholder="Widget title">
+                </div>
+            </div>
+            <hr>
+
+            <div class="bucket">
+                <label class="label">Widgets:</label>
+                <div class="bucket-column">
+                    <a ng-click="addNewWidget()" class="button button-secondary half-width">Add new widget</a>
+                </div>
+            </div>
+
+        </form>
+    </div>
+
+    <footer>
+        <a ng-click="saveReport()" class="button">Save Changes</a>
+    </footer>
+    <!-- End Popup Content -->
+
+</section>
+
+<div class="cover"></div><!-- Transparent background to the popup -->

@@ -190,6 +190,17 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
         console.error 'something goes wrong!'
       deferred.promise
 
+    saveReport: (report) ->
+      url = "/dashboards/reports/#{report.id}/save"
+
+      @Api
+      .sendPost url, report
+      .then (response) =>
+        if(response)
+          response
+      , () =>
+        console.error 'something goes wrong!'
+
     cloneReport: (report, dashboard_id) ->
       deferred = @$q.defer()
       url = "/dashboards/reports/clone/#{report.id}/#{dashboard_id}"

@@ -55,6 +55,7 @@
                             </div>
                         </div>
                     </li>
+                    <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="deleteDashboard()"><i class="fa fa-times"></i> Delete Dashboard</a></li>
                 </ul>
             </nav>
             <hr>
@@ -133,6 +134,13 @@
                     <a ng-click='typeWidgetModal(currentReport)'
                        class="link-pointer"
                        ng-class="{'control-inactive':dashboard.default}">
+                        <i class="fa fa-plus"></i> Add widget
+                    </a>
+                </li>
+                <li>
+                    <a ng-click='editReportModal(currentReport)'
+                       class="link-pointer"
+                       ng-class="{'control-inactive':dashboard.default}">
                         <i class="fa fa-cog"></i> Edit Report
                     </a>
                 </li>
@@ -176,29 +184,33 @@
     <div class="list-group">
         <div gridster="gridsterOptions" class="dashboard">
             <ul>
-                <li gridster-item="widget" ng-repeat="widget in currentReport.widgets">
+                <li ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in currentReport.widgets">
                     <div class="box-header">
-                        <h3 class="ng-binding">{{ ng_var('widget.name') }}</h3>
+                        <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                         <div ng-show='layoutEditing' class="box-header-btns pull-right">
-                            <a title="Remove widget" ng-click="removeWidget(widget)"><i class="glyphicon glyphicon-trash">XXX</i></a>
+                            <a title="Edit widget" ng-click="editWidgetModal(widget)"><i class="fa fa-cog"></i></a>
+                            <a title="Remove widget" ng-click="removeWidget(widget)"><i class="fa fa-times"></i></a>
                         </div>
                     </div>
                     <div class="box" ng-if="widget.type=='stat'">
-                        <dashboard-stat title="{{ ng_var('widget.name') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
+                        {#<h2 class="no-results" ng-if="isEmptyData(widget.data)">No results found</h2>#}
+                        <dashboard-stat title="{{ ng_var('widget.title') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
                     </div>
                     <div class="box" ng-if="widget.type=='graph'">
+                        {#<h2 class="no-results" ng-if="isEmptyData(widget.data)">No results found</h2>#}
                         <dashboard-amcharts
                                 my-index="{{ ng_var('$index') }}"
-                                title="{{ ng_var('widget.name') }}"
+                                title="{{ ng_var('widget.title') }}"
                                 widget-id = "{{ ng_var('widget.id') }}"
                                 chart-data = "{{ ng_var('widget.data') }}"
                                 chtype="{{ ng_var('widget.type') }}">
                         </dashboard-amcharts>
                     </div>
                     <div class="box" ng-if="widget.type=='table'">
+                        {#<h2 class="no-results" ng-if="isEmptyData(widget.data)">No results found</h2>#}
                         <dashboard-table
                                 my-index="{{ ng_var('$index') }}"
-                                title="{{ ng_var('widget.name') }}"
+                                title="{{ ng_var('widget.title') }}"
                                 table-data="{{ ng_var('widget.data') }}"
                                 widget-id = "{{ ng_var('widget.id') }}"
                                 wtype="{{ ng_var('widget.type') }}">
@@ -207,7 +219,7 @@
                   {#  <div class="box" ng-if="widget.type=='reports_overview'">
                         <reports-overview
                                 my-index="{{ ng_var('$index') }}"
-                                title="{{ ng_var('widget.name') }}"
+                                title="{{ ng_var('widget.title') }}"
                                 inner-type="{{ ng_var('widget.inner_type') }}"
                                 outer-type="{{ ng_var('widget.outer_type') }}"
                                 wtype="{{ ng_var('widget.type') }}">
@@ -216,7 +228,7 @@
                     <div class="box" ng-if="widget.type=='agent_performance'">
                         <agent-performance
                                 my-index="{{ ng_var('$index') }}"
-                                title="{{ ng_var('widget.name') }}"
+                                title="{{ ng_var('widget.title') }}"
                                 inner-type="{{ ng_var('widget.inner_type') }}"
                                 outer-type="{{ ng_var('widget.outer_type') }}"
                                 wtype="{{ ng_var('widget.type') }}">
@@ -225,7 +237,7 @@
                     <div class="box" ng-if="widget.type=='ticket_satisfaction'">
                         <ticket-satisfaction
                                 my-index="{{ ng_var('$index') }}"
-                                title="{{ ng_var('widget.name') }}"
+                                title="{{ ng_var('widget.title') }}"
                                 inner-type="{{ ng_var('widget.inner_type') }}"
                                 outer-type="{{ ng_var('widget.outer_type') }}"
                                 wtype="{{ ng_var('widget.type') }}">
