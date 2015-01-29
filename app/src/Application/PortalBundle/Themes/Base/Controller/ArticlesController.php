@@ -128,6 +128,32 @@ class ArticlesController extends AbstractController
     }
 
     /**
+     * @Tag(name="article")
+     *
+     * @TagOptions(
+     *      defaults={"is_subscribed":false},
+     *      required={"article"},
+     *      allowed_types={
+     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"},
+     *          "is_subscribed": {"int","string","bool"}
+     *      }
+     * )
+     */
+    public function postAction(TagRequest $tag_request, array $options)
+    {
+        $article = $this->getArticlesDataService()->getArticle($options['article']);
+        $is_subscribed = $options['is_subscribed'];
+
+        return $this->renderThemeView(
+            'Theme:Articles:Tag/article.html.twig',
+            array(
+                'article' => $article,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
+
+    /**
      * @Tag(name="article_comments")
      * @TagOptions(
      *      defaults={
