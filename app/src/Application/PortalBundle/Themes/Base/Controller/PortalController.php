@@ -67,8 +67,20 @@ class PortalController extends AbstractController
             array(
                 'enabled_languages' => $language_manager->getEnabledLanguages(),
                 'current_language' => $language_manager->getLanguageStack()->getActive(),
-                'is_multi_language' => $language_manager->isMultiLanguagePortal(),
-                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible(),
+                'is_multi_language' => $language_manager->isMultiLanguagePortal()
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="small_user_info", esi=true)
+     */
+    public function smallUserInfoAction(TagRequest $tag_request)
+    {
+        return $this->renderThemeView(
+            'Theme:Portal:Tag/small_user_info.html.twig',
+            array(
+                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible()
             )
         );
     }
