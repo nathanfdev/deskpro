@@ -136,7 +136,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         }
 
         $portalMode = $mode = $this->mode_store->getMode();
-        if (($portalMode) && in_array($referenceType, array(false, self::ABSOLUTE_PATH))) {
+        if (($portalMode) && in_array($referenceType, array(false, self::ABSOLUTE_PATH)) && !in_array($name, self::$generating_ignored_routes)) {
             return $mode->getModePath() . $pre_mode_generate;
         }
 
