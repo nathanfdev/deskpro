@@ -32,6 +32,17 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getModePath()->shouldReturn('/admin-mode');
     }
 
+    function it_creates_admin_mode_on_homepage()
+    {
+        $mode = $this->createMode($path = '/admin-mode');
+
+        $mode->isAdmin()->shouldReturn(true);
+        $mode->getData()->shouldReturn(null);
+        $mode->getOriginalPath()->shouldReturn($path);
+        $mode->getInternalPath()->shouldReturn('/');
+        $mode->getModePath()->shouldReturn('/admin-mode');
+    }
+
     function it_creates_brand_mode()
     {
         $mode = $this->createMode($path = '/brand-4/en/ticket/67');
@@ -43,6 +54,17 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getModePath()->shouldReturn('/brand-4');
     }
 
+    function it_creates_brand_mode_on_homepage()
+    {
+        $mode = $this->createMode($path = '/brand-4');
+
+        $mode->isBrand()->shouldReturn(true);
+        $mode->getData()->shouldReturn(4);
+        $mode->getOriginalPath()->shouldReturn($path);
+        $mode->getInternalPath()->shouldReturn('/');
+        $mode->getModePath()->shouldReturn('/brand-4');
+    }
+
     function it_creates_embed_mode()
     {
         $mode = $this->createMode($path = '/embed-142/en/ticket/67');
@@ -51,6 +73,17 @@ class PortalModeFactorySpec extends ObjectBehavior
         $mode->getData()->shouldReturn(142);
         $mode->getOriginalPath()->shouldReturn($path);
         $mode->getInternalPath()->shouldReturn('/en/ticket/67');
+        $mode->getModePath()->shouldReturn('/embed-142');
+    }
+
+    function it_creates_embed_mode_on_homepage()
+    {
+        $mode = $this->createMode($path = '/embed-142');
+
+        $mode->isEmbed()->shouldReturn(true);
+        $mode->getData()->shouldReturn(142);
+        $mode->getOriginalPath()->shouldReturn($path);
+        $mode->getInternalPath()->shouldReturn('/');
         $mode->getModePath()->shouldReturn('/embed-142');
     }
 }
