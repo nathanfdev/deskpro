@@ -274,7 +274,7 @@ class KernelBooter
             try {
 
                 // debug code
-                $boot = microtime(true);
+                $boot = $GLOBALS['index_start_time'];
                 // end debug code
 
 

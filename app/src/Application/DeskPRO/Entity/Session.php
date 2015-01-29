@@ -149,6 +149,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
         $this->_is_new = true;
     }
 
+    public function getVisitor()
+    {
+        return null;
+    }
+
     /**
      * @return bool
      */

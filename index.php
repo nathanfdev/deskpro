@@ -13,6 +13,13 @@ if (!defined('DP_ROOT')) define('DP_ROOT', dirname(__FILE__) . '/app');
  */
 if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', dirname(__FILE__) . '/config.php');
 
+//
+// DEBUG CODE
+// delete this before merging into "develop"
+$GLOBALS['index_start_time'] = microtime(true);
+// END DEBUG CODE
+//
+
 
 #########################################################################################################
 # You should not change anything below this line
