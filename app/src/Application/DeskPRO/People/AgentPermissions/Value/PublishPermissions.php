@@ -62,6 +62,6 @@ class PublishPermissions implements PermissionValueInterface
 
     public function getDestructiveNames()
     {
-        return array('delete');
+        return array('delete', 'can_insert_html');
     }
 }
