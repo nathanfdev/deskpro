@@ -55,7 +55,7 @@
                             </div>
                         </div>
                     </li>
-                    <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="deleteDashboard()"><i class="fa fa-times"></i> Delete Dashboard</a></li>
+                    <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="deleteDashboard(dashboard)"><i class="fa fa-times"></i> Delete Dashboard</a></li>
                 </ul>
             </nav>
             <hr>
@@ -128,7 +128,7 @@
 
         <h1><span>Report:</span> {{ ng_var('currentReport.title') }}</h1>
 
-        <nav class="reports-control">
+        <nav class="reports-control" ng-show="currentReport.id">
             <ul>
                 <li>
                     <a ng-click='typeWidgetModal(currentReport)'
@@ -144,7 +144,13 @@
                         <i class="fa fa-cog"></i> Edit Report
                     </a>
                 </li>
-                <li><a ng-click="cloneReport(currentReport)" ng-class="{'control-inactive':dashboard.default}"><i class="fa fa-copy"></i> Clone Report</a></li>
+                <li>
+                    <a class="link-pointer"
+                       ng-click="cloneReport(currentReport)"
+                       ng-class="{'control-inactive':dashboard.default}">
+                        <i class="fa fa-copy"></i> Clone Report
+                    </a>
+                </li>
             </ul>
         </nav>
 

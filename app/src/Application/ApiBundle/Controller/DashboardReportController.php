@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReport;
 use Application\ApiBundle\Service\Dashboard as DashboardService;
 use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionService;
+use Application\ApiBundle\Service\DashboardWidget as DashboardWidgetService;
 
 /**
  * @SWG\Resource(
@@ -55,11 +56,15 @@ class DashboardReportController extends AbstractController
     /** @var DashboardPermissionService */
     protected $permissionsService;
 
+    /** @var DashboardWidgetService */
+    protected $widgetService;
+
     public function init()
     {
         parent::init();
         $this->service = $this->get('dashboard.service');
         $this->permissionsService = $this->get('dashboard.permissions.service');
+        $this->widgetService = $this->get('dashboard.widget.service');
     }
 
     /**
@@ -104,17 +109,24 @@ class DashboardReportController extends AbstractController
 
     public function saveAction($id)
     {
+        $postData = $this->in->getAll('post');
+
         $report = $this->service->getReport($id);
         if(!$this->permissionsService->isEditableDashboard($report->getDashboard())) {
             throw $this->createNotFoundException();
         }
 
-        $title = $this->in->getCleanValue('title', 'string');
-        $columns = $this->in->getCleanValue('columns', 'string');
+        $title = $postData['title'];
+        $columns = $postData['options']['columns'];
 
         $report
             ->setTitle($title)
             ->setColumns($columns);
+        foreach($postData['widgets'] as $widget) {
+            $widgetEntity = $this->em->getRepository('DeskPRO:ReportDashboardWidget')->find((int) $widget['id']);
+            $widgetEntity->setTitle($widget['title']);
+            $this->em->persist($widgetEntity);
+        }
 
         return $this->createApiSuccessResponse($this->service->saveReport($report, true));
     }

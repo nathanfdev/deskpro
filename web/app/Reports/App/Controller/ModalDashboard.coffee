@@ -1,4 +1,4 @@
-define -> [
+define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$scope',
   '$modalInstance',
   'DashboardService',
@@ -41,7 +41,11 @@ define -> [
     $scope.removeReport = (report) ->
       index = DashboardService.findReportIndex report, $scope.dashboard.reports
       if index >= 0
-        $scope.dashboard.reports[index].deleted = true
+        if report.id
+          $scope.dashboard.reports[index].deleted = true
+        else
+          Arrays.removeValue $scope.dashboard.reports, report, 1
+
 
     $scope.addNewReport = () ->
       $scope.dashboard.reports.push {widgets:[], title: '', columns: 10, loaded: false, deleted: false}

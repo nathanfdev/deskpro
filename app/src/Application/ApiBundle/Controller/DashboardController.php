@@ -303,7 +303,7 @@ class DashboardController extends AbstractController
         if(
             !$this->permissionsService->isAllowedToEdit($this->person, $dashboard)
             ||
-            $this->permissionsService->isEditableDashboard($dashboard)
+            !$this->permissionsService->isEditableDashboard($dashboard)
         )
         {
             throw $this->createNotFoundException('Dashboard not found!');

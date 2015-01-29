@@ -1,4 +1,4 @@
-define -> [
+define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$scope',
   '$document',
   '$q',
@@ -80,7 +80,8 @@ define -> [
     $scope.deleteDashboard = (dashboard) ->
       DashboardService.deleteDashboard dashboard
       .then () =>
-        $scope.changeDashboard Arrays.last $scope.dashboards
+        Arrays.removeValue $scope.dashboards, dashboard, 1
+        $scope.changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
 
     ###
     # ui staff
@@ -231,11 +232,12 @@ define -> [
         $scope.changeReport report
 
     $scope.cloneReport = (report) ->
-      DashboardService
-        .cloneReport report, $scope.dashboard.id
-        .then (clonedReport) ->
-          $scope.dashboard.reports.push clonedReport
-          $scope.changeReport clonedReport
+      if report? and report.id?
+        DashboardService
+          .cloneReport report, $scope.dashboard.id
+          .then (clonedReport) ->
+            $scope.dashboard.reports.push clonedReport
+            $scope.changeReport clonedReport
 
     $scope.removeReport = (report) ->
       DashboardService

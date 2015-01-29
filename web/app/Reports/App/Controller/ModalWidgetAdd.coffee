@@ -10,7 +10,19 @@ define ['DeskPRO/Util/Arrays',], (Arrays) -> [
     $scope.labels = []
     $scope.selectedLabels = 0
     $scope.groupParams = DashboardWidgetService.groupParams
-
+    $scope.statTypeMapping =
+      simple_bars: "BAR"
+      bars: "BAR"
+      lines: "LINE"
+      simple_lines: "LINE"
+      area: "AREA"
+      simple_area: "AREA"
+      pie: "PIE"
+      table: "table"
+      simple_stat: "STATS"
+      group_stats_table: "STATS TABLE"
+      group_stats_list: "STATS LIST"
+    $scope.typeName = $scope.statTypeMapping[widget.type]
 
     DashboardWidgetService.getReports().then (result) ->
       $scope.reports = result.reports.filter (report)->

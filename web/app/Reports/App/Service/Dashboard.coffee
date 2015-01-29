@@ -116,7 +116,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       promise = @Api.sendDelete("/dashboards/#{dashboard.id}")
       promise.then () =>
         Arrays.removeValue @storage.dbs, dashboard, 1
-      return promise
+        return promise
 
     ###
     # Operations about reports
@@ -192,9 +192,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     saveReport: (report) ->
       url = "/dashboards/reports/#{report.id}/save"
-
       @Api
-      .sendPost url, report
+      .sendPostJson url, report
       .then (response) =>
         if(response)
           response
