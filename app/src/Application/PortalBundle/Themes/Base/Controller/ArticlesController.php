@@ -211,6 +211,33 @@ class ArticlesController extends AbstractController
     }
 
     /**
+     * @Tag(name="article_ratings")
+     *
+     * @TagOptions(
+     *      defaults={"rating": null, "article": null},
+     *      allowed_types={
+     *          "rating": {"Application\DeskPRO\Entity\Rating", "int", "string", "null"},
+     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_ARTICLES')")
+     */
+    public function ratingsAction(TagRequest $tag_request, array $options)
+    {
+        $rating = $this->getRatingDataService()->getRating($options['rating']);
+        $article = $this->getArticlesDataService()->getArticle($options['article']);
+
+        return $this->renderThemeView(
+            'Theme:Articles:Tag/ratings.html.twig',
+            array(
+                'rating' => $rating,
+                'article' => $article
+            )
+        );
+    }
+
+    /**
      * @Tag(name="knowledgebase_subscriptions_category")
      *
      * @TagOptions(

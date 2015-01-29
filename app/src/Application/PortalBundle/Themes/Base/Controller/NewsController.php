@@ -206,6 +206,33 @@ class NewsController extends AbstractController
     }
 
     /**
+     * @Tag(name="news_ratings")
+     *
+     * @TagOptions(
+     *      defaults={"rating": null, "post": null},
+     *      allowed_types={
+     *          "rating": {"Application\DeskPRO\Entity\Rating", "int", "string", "null"},
+     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_NEWS')")
+     */
+    public function ratingsAction(TagRequest $tag_request, array $options)
+    {
+        $rating = $this->getRatingDataService()->getRating($options['rating']);
+        $post = $this->getNewsDataService()->getPost($options['post']);
+
+        return $this->renderThemeView(
+            'Theme:News:Tag/ratings.html.twig',
+            array(
+                'rating' => $rating,
+                'post' => $post
+            )
+        );
+    }
+
+    /**
      * @Tag(name="news_subscriptions_category")
      *
      * @TagOptions(

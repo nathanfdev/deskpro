@@ -236,7 +236,7 @@ class ThemeResolver
             $attrs = $this->filterArguments($attrs);
 
             $esi = $this->container->get('fragment.renderer.esi')->render(
-                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => false)
+                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => true)
             );
 
             $esi_content = $esi->getContent();

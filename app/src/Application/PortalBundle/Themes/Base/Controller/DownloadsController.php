@@ -116,7 +116,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="download_comments")
+     * @Tag(name="downloads_comments")
      * @TagOptions(
      *      defaults={
      *          "file": null
@@ -195,6 +195,33 @@ class DownloadsController extends AbstractController
             'Theme:Downloads:Tag/breadcrumbs.html.twig',
             array(
                 'category' => $category,
+                'file' => $file
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="downloads_ratings")
+     *
+     * @TagOptions(
+     *      defaults={"rating": null, "file": null},
+     *      allowed_types={
+     *          "rating": {"Application\DeskPRO\Entity\Rating", "int", "string", "null"},
+     *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_DOWNLOADS')")
+     */
+    public function ratingsAction(TagRequest $tag_request, array $options)
+    {
+        $rating = $this->getRatingDataService()->getRating($options['rating']);
+        $file = $this->getDownloadsDataService()->getDownload($options['file']);
+
+        return $this->renderThemeView(
+            'Theme:Downloads:Tag/ratings.html.twig',
+            array(
+                'rating' => $rating,
                 'file' => $file
             )
         );

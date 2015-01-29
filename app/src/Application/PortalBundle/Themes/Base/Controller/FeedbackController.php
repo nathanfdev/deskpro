@@ -195,4 +195,31 @@ class FeedbackController extends AbstractController
             'comments' => $comments
         ));
     }
+
+    /**
+     * @Tag(name="feedback_ratings")
+     *
+     * @TagOptions(
+     *      defaults={"rating": null, "item": null},
+     *      allowed_types={
+     *          "rating": {"Application\DeskPRO\Entity\Rating", "int", "string", "null"},
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_FEEDBACK')")
+     */
+    public function ratingsAction(TagRequest $tag_request, array $options)
+    {
+        $rating = $this->getRatingDataService()->getRating($options['rating']);
+        $item = $this->getFeedbackDataService()->getItem($options['item']);
+
+        return $this->renderThemeView(
+            'Theme:Feedback:Tag/ratings.html.twig',
+            array(
+                'rating' => $rating,
+                'item' => $item
+            )
+        );
+    }
 }

@@ -51,32 +51,9 @@
             </div>
         {% endif %}
 
-        <div class="rate-article">
-            <div class="titled-header">
-                <h1>{{ phrase('portal.general.rate-page') }}</h1>
-            </div>
-
-            {% if rating %}
-                <div class="rate-article"
-                     style="background-color: {% if rating.positive %}#93d06e{% else %}#dc7575{% endif %}; color: white;">
-                    You marked this page as {% if rating.positive %}helpful{% else %}not helpful{% endif %}
-                </div>
-            {% endif %}
-
-            <div class="rate-article">
-                <a href="{{ path('portal_news_post_vote_up', { slug: post.slug }) }}" class="rate-up">
-                    {{ phrase('portal.general.rate-page-positive') }} <span>:)</span>
-                </a>
-                <a href="{{ path('portal_news_post_vote_down', { slug: post.slug }) }}" class="rate-down">
-                    <span>:(</span> {{ phrase('portal.general.rate-page-negative') }}
-                </a>
-            </div>
-        </div>
-
+        {{ page.news_ratings()|raw }}
         {{ page.news_comments()|raw }}
-
         {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
-
         {{ page.related_content()|raw }}
     </article>
 {% endblock inner_content %}
