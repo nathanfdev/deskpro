@@ -228,6 +228,14 @@ class AbstractController extends BaseController
     }
 
     /**
+     * @return \Application\AppBundle\DataService\RatingsDataService
+     */
+    public function getRatingDataService()
+    {
+        return $this->get('data.rating');
+    }
+
+    /**
      * @return \Application\AppBundle\DataService\DownloadsDataService
      */
     public function getDownloadsDataService()

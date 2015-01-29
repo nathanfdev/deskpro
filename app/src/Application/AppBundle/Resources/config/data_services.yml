@@ -27,3 +27,7 @@ services:
   data.feedback:
       class: Application\AppBundle\DataService\FeedbackDataService
       arguments: [@doctrine.orm.default_entity_manager]
+
+  data.rating:
+      class: Application\AppBundle\DataService\RatingsDataService
+      arguments: [@doctrine.orm.default_entity_manager]
