@@ -84,6 +84,9 @@ class ArticlesController extends AbstractController
             }
 
             if (!$category) {
+                if ($this->db->count('article_categories', array('id' => $category_id))) {
+                    return $this->renderLoginOrPermissionError();
+                }
                 return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
             }
 
