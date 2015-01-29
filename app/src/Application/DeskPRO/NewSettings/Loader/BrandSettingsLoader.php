@@ -87,7 +87,7 @@ class BrandSettingsLoader implements SettingsLoaderInterface
                     return $conn->fetchAllKeyValue(
                         "
                             SELECT name, value
-                            FROM settings
+                            FROM settings_brand
                             WHERE brand_id = :brand_id
                         ",
                         array('brand_id' => $brand_id)
@@ -97,13 +97,5 @@ class BrandSettingsLoader implements SettingsLoaderInterface
                 }
             }
         );
-    }
-
-    /**
-     * @return string
-     */
-    public function getCacheKey()
-    {
-        return $this->cacheKey;
     }
 }

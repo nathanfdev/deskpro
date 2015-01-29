@@ -29,69 +29,22 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\InstallBundle\Upgrade\Build;
 
-use Doctrine\ORM\Mapping\ClassMetadata;
-use Doctrine\ORM\Mapping\ClassMetadataInfo;
-use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
-
-/**
- * Settings used by the system.
- *
- * @property int $id
- * @property string $name
- * @property string $value
- * @property \Application\DeskPRO\Entity\Brand $brand
- */
-class Setting extends \Application\DeskPRO\Domain\DomainObject
+class Build1422548532 extends AbstractBuild
 {
-    /**
-     * @var int
-     */
-    protected $id;
-
-    /**
-     * The name of the setting
-     *
-     * @var string
-     */
-    protected $name;
-
-    /**
-     * The value of a setting
-     *
-     * @var string
-     */
-    protected $value;
-
-    ############################################################################
-    # Doctrine Metadata
-    ############################################################################
-
-    public static function loadMetadata(ClassMetadata $metadata)
+    public function run()
     {
-        $builder = new ClassMetadataBuilder($metadata);
-        $builder->mapId();
-        $builder->setTable('settings');
-        $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Setting');
-        $builder->addUniqueConstraint(array('name'), 'unique_setting_name');
-
-        $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
-        $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
-        $metadata->mapField(
-            array(
-                'fieldName' => 'name', 'type' => 'string', 'length' => 255, 'precision' => 0, 'scale' => 0,
-                'nullable'  => false, 'columnName' => 'name',
-            )
-        );
-        $metadata->mapField(
-            array(
-                'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0,
-                'nullable'  => true, 'columnName' => 'value',
-            )
-        );
+        $this->out("new brand settings table");
+		$this->execMutateSql("CREATE TABLE settings_brand (id INT AUTO_INCREMENT NOT NULL, brand_id INT NOT NULL, name VARCHAR(255) NOT NULL, value BLOB DEFAULT NULL, INDEX IDX_A48BBF1144F5D008 (brand_id), UNIQUE INDEX unique_settings_per_brand (name, brand_id), PRIMARY KEY(id)) DEFAULT CHARACTER SET utf8 COLLATE utf8_unicode_ci ENGINE = InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci");
+		$this->execMutateSql("ALTER TABLE settings_brand ADD CONSTRAINT FK_A48BBF1144F5D008 FOREIGN KEY (brand_id) REFERENCES brands (id) ON DELETE CASCADE");
+		$this->execMutateSql("ALTER TABLE settings DROP FOREIGN KEY FK_E545A0C544F5D008");
+		$this->execMutateSql("DROP INDEX unique_settings_per_brand ON settings");
+		$this->execMutateSql("DROP INDEX IDX_E545A0C544F5D008 ON settings");
+		$this->execMutateSql("ALTER TABLE settings DROP brand_id");
+		$this->execMutateSql("CREATE UNIQUE INDEX unique_setting_name ON settings (name)");
     }
 }

@@ -46,7 +46,7 @@ use Orb\Doctrine\ORM\Mapping\Builder\ClassMetadataBuilder;
  * @property string $value
  * @property \Application\DeskPRO\Entity\Brand $brand
  */
-class Setting extends \Application\DeskPRO\Domain\DomainObject
+class BrandSetting extends \Application\DeskPRO\Domain\DomainObject
 {
     /**
      * @var int
@@ -67,6 +67,13 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
      */
     protected $value;
 
+    /**
+     * The scope this settings is scoped to
+     *
+     * @var \Application\DeskPRO\Entity\Brand
+     */
+    protected $brand;
+
     ############################################################################
     # Doctrine Metadata
     ############################################################################
@@ -75,9 +82,9 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
     {
         $builder = new ClassMetadataBuilder($metadata);
         $builder->mapId();
-        $builder->setTable('settings');
-        $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\Setting');
-        $builder->addUniqueConstraint(array('name'), 'unique_setting_name');
+        $builder->setTable('settings_brand');
+        $builder->setCustomRepositoryClass('Application\DeskPRO\EntityRepository\SettingBrand');
+        $builder->addUniqueConstraint(array('name', 'brand_id'), 'unique_settings_per_brand');
 
         $metadata->setInheritanceType(ClassMetadataInfo::INHERITANCE_TYPE_NONE);
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -91,6 +98,17 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
             array(
                 'fieldName' => 'value', 'type' => 'dpblob', 'length' => -3, 'precision' => 0, 'scale' => 0,
                 'nullable'  => true, 'columnName' => 'value',
+            )
+        );
+        $metadata->mapManyToOne(
+            array(
+                'fieldName'  => 'brand', 'targetEntity' => 'Application\\DeskPRO\\Entity\\Brand', 'mappedBy' => null,
+                'inversedBy' => null, 'joinColumns' => array(
+                0 => array(
+                    'name'     => 'brand_id', 'referencedColumnName' => 'id', 'nullable' => false,
+                    'onDelete' => 'cascade', 'columnDefinition' => null,
+                ),
+            ),
             )
         );
     }
