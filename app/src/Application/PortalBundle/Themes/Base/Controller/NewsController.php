@@ -204,4 +204,30 @@ class NewsController extends AbstractController
             )
         );
     }
+
+    /**
+     * @Tag(name="news_subscriptions_category")
+     *
+     * @TagOptions(
+     *      defaults={"category": null, "is_subscribed": false},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"},
+     *          "is_subscribed": {"int", "string", "bool"},
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_NEWS')")
+     */
+    public function subscriptionsCategoryAction(TagRequest $tag_request, array $options)
+    {
+        $category = $this->getNewsDataService()->getCategory($options['category']);
+        $is_subscribed = (bool)$options['is_subscribed'];
+
+        return $this->renderThemeView(
+            'Theme:News:Tag/subscriptions_category.html.twig', array(
+                'category' => $category,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
 }

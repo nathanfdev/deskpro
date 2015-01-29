@@ -199,4 +199,30 @@ class DownloadsController extends AbstractController
             )
         );
     }
+
+    /**
+     * @Tag(name="downloads_subscriptions_category")
+     *
+     * @TagOptions(
+     *      defaults={"category": null, "is_subscribed": false},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"},
+     *          "is_subscribed": {"int", "string", "bool"},
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_DOWNLOADS')")
+     */
+    public function subscriptionsCategoryAction(TagRequest $tag_request, array $options)
+    {
+        $category = $this->getDownloadsDataService()->getCategory($options['category']);
+        $is_subscribed = (bool)$options['is_subscribed'];
+
+        return $this->renderThemeView(
+            'Theme:Downloads:Tag/subscriptions_category.html.twig', array(
+                'category' => $category,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
 }
