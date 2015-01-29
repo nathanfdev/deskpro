@@ -65,6 +65,17 @@ class KernelBooter
         global $DP_CONFIG;
         dp_load_config();
 
+        // Enable/disable display_errors based on enable_display_errors config (default is to hide)
+        if (
+            (isset($DP_CONFIG['enable_display_errors']) && $DP_CONFIG['enable_display_errors'])
+            || (isset($GLOBALS['DP_enable_display_errors']) && $GLOBALS['DP_enable_display_errors'])
+            || (isset($DP_CONFIG['debug']['dev']) && $DP_CONFIG['debug']['dev'])
+        ) {
+            @ini_set('display_errors', "1");
+        } else {
+            @ini_set('display_errors', "0");
+        }
+
         if (isset($DP_CONFIG['debug']['enable_debug_trace']) && $DP_CONFIG['debug']['enable_debug_trace']) {
             if (!function_exists('xdebug_start_trace')) {
                 exit('To use the `debug.enable_debug_trace` setting, the xdebug extension must be installed');
