@@ -44,6 +44,7 @@ use League\Url\Url;
 use Symfony\Bundle\FrameworkBundle\Routing\Router as BaseRouter;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpKernel\CacheWarmer\WarmableInterface;
+use Symfony\Component\Routing\Exception\ResourceNotFoundException;
 use Symfony\Component\Routing\Matcher\RequestMatcherInterface;
 use Symfony\Component\Routing\RequestContext;
 use Symfony\Component\Routing\RouterInterface;
@@ -263,6 +264,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         $mode = $this->mode_store->getMode() ? $this->mode_store->getMode()->getModePath() : '';
         $pre = $language ? '/'.$language->getTwoLetterLanguageCode() : '';
         $url = $mode.$pre.$url;
+
         throw new RedirectToUrlException($url);
     }
 
@@ -272,7 +274,19 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
      */
     protected function standardMatch($split)
     {
-        return $this->router->match($split['remaining_pathinfo']);
+        try {
+            $pathinfo = $split['remaining_pathinfo'];
+
+            return $this->router->match($pathinfo);
+        } catch (ResourceNotFoundException $e) {
+            if (preg_match('#^.*/$#', $pathinfo)) {
+                $try_pathinfo = substr($pathinfo, 0, strlen($pathinfo) - 1);
+                $mode = $this->mode_store->getMode() ? $this->mode_store->getMode()->getModePath() : '';
+
+
+                throw new RedirectToUrlException($mode.$try_pathinfo);
+            }
+        }
     }
 
     /**
