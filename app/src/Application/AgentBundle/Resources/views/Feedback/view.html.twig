@@ -56,7 +56,6 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="meta-line flat">
 		<div style="float:left;position: relative;top:1px;">
 			<select name="status" id="{{baseId}}_status">
-				<option value="new" {% if feedback.status_code == 'new' %}selected="selected"{% endif %}>{{ phrase('agent.feedback.status_new') }}</option>
 				<optgroup label="{{ phrase('agent.feedback.status_active') }}">
 					{% for cat in active_status_cats %}
 						<option value="active.{{cat.id}}" {% if feedback.status_code == 'active.' ~ cat.id %}selected="selected"{% endif %}>{{ cat.title }}</option>

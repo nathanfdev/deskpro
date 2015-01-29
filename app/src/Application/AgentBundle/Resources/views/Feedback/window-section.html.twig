@@ -41,12 +41,6 @@
 				<section id="feedback_outline_status" class="deskpro-tab-item">
 					<ul class="nav-list nav-list-small">
 						<li class="is-nav-item">
-							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'new'}) }}">
-								<h3>{{ phrase('agent.feedback.status_new') }}</h3>
-								<em class="counter list-counter" id="feedback_status_new_count">{{ status_counts.new|default(0) }}</em>
-							</div>
-						</li>
-						<li class="is-nav-item">
 							<div class="item" data-route="listpane:{{ path('agent_feedback_status', {'status': 'active'}) }}">
 								<h3>{{ phrase('agent.feedback.status_active') }}</h3>
 								<em class="counter list-counter" id="feedback_status_active_0_count">{{ status_counts.active[0]|default(0) }}</em>

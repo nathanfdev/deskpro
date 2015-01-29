@@ -62,7 +62,6 @@ class FeedbackController extends AbstractController
         $counts['comments_awaiting_validation'] = $this->em->getRepository('DeskPRO:FeedbackComment')->countAwaitingValidation();
 
         $status_counts           = array();
-        $status_counts['new']    = $this->em->getRepository('DeskPRO:Feedback')->countNew();
         $status_counts['active'] = $this->em->getRepository('DeskPRO:Feedback')->countActiveGrouped();
         $status_counts['closed'] = $this->em->getRepository('DeskPRO:Feedback')->countClosedGrouped();
         $status_counts['hidden'] = $this->em->getRepository('DeskPRO:Feedback')->countHiddenGrouped();
