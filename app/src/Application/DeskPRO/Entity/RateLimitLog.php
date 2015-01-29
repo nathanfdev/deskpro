@@ -47,12 +47,24 @@ class RateLimitLog extends DomainObject
      */
     protected $id;
 
+    /**
+     * @var string
+     */
     protected $action;
 
+    /**
+     * @var int
+     */
     protected $ip;
 
+    /**
+     * @var int
+     */
     protected $person_id;
 
+    /**
+     * @var \DateTime
+     */
     protected $date_created;
 
     public function __construct()
