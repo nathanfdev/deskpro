@@ -93,6 +93,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
         $this->auth_manager = $this->container->getSystemService('authentication_manager');
         $this->usersource_manager = $this->container->getSystemService('usersource_manager');
+
+        $GLOBALS['DP_SET_SKIP_CACHE'] = true;
     }
 
     protected function loginViaToken()
@@ -205,6 +207,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         $captcha = null;
         if ($this->container->getSetting('user.register_captcha')) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
+        }
+
+        if (!$failed_login_name && !$account_disabled && $this->container->getRequest()->getMethod() == 'GET') {
+            // we want to cache the page if we're just viewing the form
+            unset($GLOBALS['DP_SET_SKIP_CACHE']);
         }
 
         return $this->render($this->tpl_prefix . ':index.html.twig', array(
