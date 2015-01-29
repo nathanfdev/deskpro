@@ -1,7 +1,4 @@
-define ->
-	###
-  #
-  ###
+define ['angular'], (angular) ->
 	DeskPRO_Directive_DpTicketQuickActions = ($timeout, PersonService, AgentTeamService) ->
 
 		options =
@@ -83,25 +80,25 @@ define ->
 						return -1 != ticket.actions_allowed.indexOf(action)
 
 					if isAllowed('assign_self') && (!t.agent || t.agent.id != $scope.$root.app_person_id)
-						$scope.actions.push {title: 'Assign Me', params: {agent_id: me} }
+						$scope.actions.push {title: $scope.phrases.assign_me || 'Assign Me', params: {agent_id: me} }
 
 					if isAllowed('assign_agent') && t.agent
-						$scope.actions.push {title: 'Unassign', params: {agent_id: 0} }
+						$scope.actions.push {title: $scope.phrases.unassign || 'Unassign', params: {agent_id: 0} }
 
 					if isAllowed('assign_agent')
-						$scope.actions.push {title: 'Assign Agent', prop: 'agent_id', params: {}, select2: agentsSelectOptions }
+						$scope.actions.push {title: $scope.phrases.assign_agent || 'Assign Agent', prop: 'agent_id', params: {}, select2: agentsSelectOptions }
 
 					if isAllowed('assign_team')
-						$scope.actions.push {title: 'Assign Team', prop: 'agent_team_id', params: {}, select2: teamsSelectOptions}
+						$scope.actions.push {title: $scope.phrases.assign_team || 'Assign Team', prop: 'agent_team_id', params: {}, select2: teamsSelectOptions}
 
 					if isAllowed('set_awaiting_user') && 'awaiting_user' != t.status
-						$scope.actions.push {title: 'Set Awaiting User', params: {status: 'awaiting_user', hidden_status: false}}
+						$scope.actions.push {title: $scope.phrases.set_awaiting_user || 'Set Awaiting User', params: {status: 'awaiting_user', hidden_status: false}}
 
 					if isAllowed('set_awaiting_agent') && 'awaiting_agent' != t.status
-						$scope.actions.push {title: 'Set Awaiting Agent', params: {status: 'awaiting_agent', hidden_status: false}}
+						$scope.actions.push {title: $scope.phrases.set_awaiting_agent || 'Set Awaiting Agent', params: {status: 'awaiting_agent', hidden_status: false}}
 
 					if isAllowed('set_resolved') && 'resolved' != t.status
-						$scope.actions.push {title: 'Set Resolved', params: {status: 'resolved', hidden_status: false}}
+						$scope.actions.push {title: $scope.phrases.set_resolved || 'Set Resolved', params: {status: 'resolved', hidden_status: false}}
 
 					$scope.updateWidth()
 
@@ -109,13 +106,19 @@ define ->
 					return if action.select2 && !action.model
 					if action.model then action.params[action.prop] = action.model.id
 
-					$http.post(BASE_PATH + "agent/tickets/#{$scope.ticket_id}/ajax-save-actions", {actions: action.params}).success () ->
+					$http.post(BASE_URL + "agent/tickets/#{$scope.ticket_id}/ajax-save-actions", {actions: action.params}).success () ->
 						window.DeskPRO_Window.getMessageChanneler().poller.send();
 					$scope.$root.$emit 'tickets.quick_actions.hide'
 
 
 
 			link: ($scope, $el) ->
+
+				try
+					$scope.phrases = angular.fromJson($el.data('phrases'))
+				catch
+					$scope.phrases = {}
+
 				# init
 				$el.hide()
 				promise = null

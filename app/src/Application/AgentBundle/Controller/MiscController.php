@@ -271,6 +271,13 @@ function Orb_Util_TimeAgo_getPhraseFor(type, num, ago)
 }
 JS;
 
+        $ls = $this->container->getLanguageData();
+        $locale = null;
+        if ($defaultLanguage = $ls->getDefault()) {
+            $locale = $defaultLanguage['locale'];
+        }
+        $js[] = sprintf('window.DESKPRO_DEFAULT_LANG = "%s";', $locale);
+
         $js = implode("\n", $js);
 
         $response = $this->response;
@@ -975,7 +982,8 @@ JS;
 
     public function getRequirejsLoaderAction()
     {
-        $manager = $this->container->getAppManager()->getScopeFilter('agent');
+        $app_perms = App\AgentAppPermissions::newFromDb($this->container->getDb(), $this->container->getAppManager()->getAllApps());
+        $manager = $this->container->getAppManager()->getScopeFilter('agent', null, $app_perms->getAgentAppFilterCallable($this->person));
 
         $rjs = new RequireJsConfigGenerator();
         $rjs->setBaseUrlExpr('ASSETS_BASE_URL');
@@ -1008,7 +1016,8 @@ JS;
     {
         $js = array();
 
-        $manager = $this->container->getAppManager()->getScopeFilter('agent');
+        $app_perms = App\AgentAppPermissions::newFromDb($this->container->getDb(), $this->container->getAppManager()->getAllApps());
+        $manager = $this->container->getAppManager()->getScopeFilter('agent', null, $app_perms->getAgentAppFilterCallable($this->person));
 
         foreach ($manager->getAllApps() as $app) {
             $package = $app->package;

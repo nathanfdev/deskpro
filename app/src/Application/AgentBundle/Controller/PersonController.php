@@ -42,7 +42,10 @@ use Application\DeskPRO\Entity\PersonContactData;
 use Application\DeskPRO\Entity\PersonFile;
 use Application\DeskPRO\Entity\PersonNote;
 use Application\DeskPRO\Log\Event\UserMerged;
+use Application\DeskPRO\Mail\Mailer;
 use Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Symfony\Component\EventDispatcher\Event;
 use Symfony\Component\HttpFoundation\Request;
 
 /**
@@ -596,12 +599,14 @@ class PersonController extends AbstractController
                     : array();
 
                 foreach ($person->usergroups as $personGroup) {
+                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
                     if (false === in_array($personGroup, $usergroups, true)) {
                         $person->removeUsergroup($personGroup);
                     }
                 }
 
                 foreach ($usergroups as $personGroup) {
+                    if ($personGroup->is_agent_group) continue; // dont touch agent groups
                     $person->addUsergroup($personGroup);
                 }
 
@@ -1364,6 +1369,13 @@ class PersonController extends AbstractController
 
         $isVCard = $this->in->getBoolean('isVCard');
 
+        if ($this->in->getString('newperson.set_password')) {
+            $password = 'generate' === $this->in->getString('newperson.set_password_radio') || !$this->in->getString('newperson.new_password')
+                ? Strings::random(8)
+                : $this->in->getString('newperson.new_password');
+            $newperson->password = $password;
+        }
+
         if ($isVCard) {
             $blobId = $this->in->getBoolean('blobId');
             if (!$blobId) {
@@ -1427,9 +1439,20 @@ class PersonController extends AbstractController
                     }
             $this->em->flush();
 
-            return $this->createJsonResponse(array(
-                            'success'   => true,
-                            'person_id' => $person['id'],
+                    if ($this->in->getString('newperson.send_welcome_email')) {
+                        /** @var Mailer $mailer */
+                        $mailer = $this->get('mailer');
+                        $message = $mailer->createMessage();
+                        $message->setToPerson($person);
+                        $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
+                            'person' => $person
+                        ));
+                        $mailer->sendNow($message);
+                    }
+
+                    return $this->createJsonResponse(array(
+                            'success' => true,
+                            'person_id' => $person['id']
                     ));
         }
 
@@ -1462,6 +1485,18 @@ class PersonController extends AbstractController
                 $this->em->persist($cm);
             }
             $this->em->flush();
+
+            if ($this->in->getString('newperson.send_welcome_email')) {
+                /** @var Mailer $mailer */
+                $mailer = $this->get('mailer');
+                $message = $mailer->createMessage();
+                $message->setToPerson($person);
+                $message->setTemplate('DeskPRO:emails_user:register-welcome-byagent.html.twig', array(
+                    'person' => $person
+                ));
+
+                $mailer->sendNow($message);
+            }
 
             return $this->createJsonResponse(array(
                 'success'   => true,

@@ -58,10 +58,12 @@ class PeoplePermissions implements PermissionValueInterface
     public $login_as       = false;
     /** @var bool  */
     public $merge          = false;
+    /** @var bool  */
+    public $create_labels  = false;
 
     public function getNames()
     {
-        return array('use', 'create', 'edit', 'validate', 'manage_emails', 'reset_password', 'notes', 'delete', 'disable', 'login_as', 'merge');
+        return array('use', 'create', 'edit', 'validate', 'manage_emails', 'reset_password', 'notes', 'delete', 'disable', 'login_as', 'merge', 'create_labels');
     }
 
     public function getDestructiveNames()

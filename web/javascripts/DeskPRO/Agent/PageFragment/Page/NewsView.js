@@ -234,7 +234,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
-			html.push('The permalink to this post on the website is:<br />');
+			html.push($(this).data('prompt') + '<br />');
 			html.push('<input type="text" style="width:80%;" />');
 			html.push('</div>');
 
@@ -309,7 +309,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	removeAutoUnPubOptions: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			data: {action: 'remove-auto-unpub'},
 			context: this,
@@ -342,7 +342,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -394,7 +394,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 	removeAutoPubOptions: function() {
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			data: {action: 'remove-auto-pub'},
 			context: this,
@@ -422,7 +422,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			data: data,
 			context: this,
@@ -515,7 +515,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -707,7 +707,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Orb.Class({
 
 		this.getEl('editslug').on('click', function(ev) {
 			Orb.cancelEvent(ev);
-			DeskPRO_Window.showPrompt("Enter new URL slug (only letters, numbers, dashes and underscores)", function(newSlug) {
+			DeskPRO_Window.showPrompt($(this).data('prompt'), function(newSlug) {
 				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
 				slugEl.text(newSlug);
 				$.ajax({

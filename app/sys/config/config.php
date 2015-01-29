@@ -258,31 +258,25 @@ $container->loadFromExtension(
                 'settings' => array(
                     'analysis' => array(
                         'filter'   => array(
-                            'ngram_filter'              => array(
-                                'type'        => 'nGram',
-                                'min_gram'    => 2,
-                                'max_gram'    => 20,
-                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
-                            ),
-                            'ngram_filter_3'            => array(
+                            'ngram_filter_3'  => array(
                                 'type'        => 'nGram',
                                 'min_gram'    => 3,
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
                             ),
-                            'ngram_filter_4'            => array(
-                                'type'        => 'nGram',
-                                'min_gram'    => 4,
+                            'edge_ngram_filter_3'  => array(
+                                'type'        => 'edgeNGram',
+                                'min_gram'    => 3,
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
                             ),
-                            'ngram_filter_5'            => array(
+                            'ngram_filter_5'  => array(
                                 'type'        => 'nGram',
                                 'min_gram'    => 5,
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
                             ),
-                            'email_filter'              => array(
+                            'email_filter'    => array(
                                 'type'              => 'pattern_capture',
                                 'preserve_original' => 1,
                                 'patterns'          => array(
@@ -308,30 +302,25 @@ $container->loadFromExtension(
                             ),
                         ),
                         'analyzer' => array(
-                            'ngram_analyzer'      => array(
+                            'text_content_analyzer' => array(
+                                'type'      => 'custom',
+                                'tokenizer' => 'standard',
+                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding')
+                            ),
+                            'name_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'whitespace',
-                                'filter'    => array('lowercase', 'asciifolding', 'ngram_filter')
+                                'filter'    => array('lowercase', 'asciifolding', 'edge_ngram_filter_3')
                             ),
-                            'ngram_analyzer_3'    => array(
-                                'type'      => 'custom',
-                                'tokenizer' => 'whitespace',
-                                'filter'    => array('lowercase', 'asciifolding', 'ngram_filter_3')
-                            ),
-                            'whitespace_analyzer' => array(
-                                'type'      => 'custom',
-                                'tokenizer' => 'whitespace',
-                                'filter'    => array('lowercase', 'asciifolding')
-                            ),
-                            'email_analyzer'      => array(
+                            'email_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
-                                'filter'    => array("email_filter", "lowercase", "unique")
+                                'filter'    => array('lowercase', 'email_filter', 'unique')
                             ),
                             'phone_analyzer'      => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'keyword',
-                                'filter'    => array("phone_filter_leading_zero", "phone_filter", 'ngram_filter_5')
+                                'filter'    => array('phone_filter_leading_zero', 'phone_filter', 'ngram_filter_5')
                             )
                         )
                     )
@@ -340,8 +329,8 @@ $container->loadFromExtension(
                 'types'    => array(
                     'article'           => array(
                         'mappings'    => array(
-                            'title'        => array(),
-                            'content'      => array(),
+                            'title'        => array('analyzer' => 'text_content_analyzer'),
+                            'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_ids' => array('type' => 'integer'),
                             'labels'       => array(),
@@ -361,10 +350,10 @@ $container->loadFromExtension(
                     ),
                     'news'              => array(
                         'mappings'    => array(
-                            'title'        => array(),
+                            'title'        => array('analyzer' => 'text_content_analyzer'),
                             'labels'       => array(),
                             'sticky_words' => array(),
-                            'content'      => array(),
+                            'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_id'  => array('type' => 'integer'),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -382,10 +371,10 @@ $container->loadFromExtension(
                     ),
                     'download'          => array(
                         'mappings'    => array(
-                            'title'        => array(),
+                            'title'        => array('analyzer' => 'text_content_analyzer'),
                             'labels'       => array(),
                             'sticky_words' => array(),
-                            'content'      => array(),
+                            'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_id'  => array('type' => 'integer'),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -403,10 +392,10 @@ $container->loadFromExtension(
                     ),
                     'feedback'          => array(
                         'mappings'    => array(
-                            'title'        => array(),
+                            'title'        => array('analyzer' => 'text_content_analyzer'),
                             'labels'       => array(),
                             'sticky_words' => array(),
-                            'content'      => array(),
+                            'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_id'  => array('type' => 'integer'),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -424,7 +413,7 @@ $container->loadFromExtension(
                     ),
                     'organization'      => array(
                         'mappings'    => array(
-                            'name'          => array('type' => 'string'),
+                            'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'email_domains' => array('type' => 'string', 'analyzer' => 'email_analyzer'),
                             'labels'        => array('type' => 'string'),
                             'date_created'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
@@ -463,9 +452,9 @@ $container->loadFromExtension(
                     ),
                     'person'            => array(
                         'mappings'    => array(
-                            'name'          => array(),
-                            'first_name'    => array(),
-                            'last_name'     => array(),
+                            'name'          => array('type' => 'string', 'analyzer' => 'name_analyzer'),
+                            'first_name'    => array('type' => 'string', 'analyzer' => 'name_analyzer'),
+                            'last_name'     => array('type' => 'string', 'analyzer' => 'name_analyzer'),
                             'labels'        => array('type' => 'string'),
                             'emails'        => array('type' => 'string', 'analyzer' => 'email_analyzer'),
                             'phone_numbers' => array('type' => 'string', 'analyzer' => 'phone_analyzer'),

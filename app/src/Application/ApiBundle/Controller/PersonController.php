@@ -208,24 +208,24 @@ class PersonController extends AbstractController
     public function searchAction()
     {
         $search_map = array(
-            'address'            => PersonSearch::TERM_CONTACT_ADDRESS,
-            'agent_team_id'      => PersonSearch::TERM_AGENT_TEAM,
-            'alpha'              => PersonSearch::TERM_ALPHA,
-            'email'              => PersonSearch::TERM_EMAIL,
-            'email_domain'       => PersonSearch::TERM_EMAIL_DOMAIN,
-            'im'                 => PersonSearch::TERM_CONTACT_IM,
+            'address' => PersonSearch::TERM_CONTACT_ADDRESS,
+            'agent_team_id' => PersonSearch::TERM_AGENT_TEAM,
+            'alpha' => PersonSearch::TERM_ALPHA,
+            'email' => PersonSearch::TERM_EMAIL,
+            'email_domain' => PersonSearch::TERM_EMAIL_DOMAIN,
+            'im' => PersonSearch::TERM_CONTACT_IM,
             'is_agent_confirmed' => PersonSearch::TERM_IS_AGENT_CONFIRMED,
-            'label'              => PersonSearch::TERM_LABEL,
-            'name'               => PersonSearch::TERM_NAME,
-            'language_id'        => PersonSearch::TERM_LANGUAGE,
-            'organization_id'    => PersonSearch::TERM_ORGANIZATION,
-            'phone'              => PersonSearch::TERM_CONTACT_PHONE,
-            'usergroup_id'       => PersonSearch::TERM_USERGROUP,
+            'label' => PersonSearch::TERM_LABEL,
+            'name' => PersonSearch::TERM_NAME,
+            'language_id' => PersonSearch::TERM_LANGUAGE,
+            'organization_id' => PersonSearch::TERM_ORGANIZATION,
+            'phone' => PersonSearch::TERM_CONTACT_PHONE,
+            'usergroup_id' => PersonSearch::TERM_USERGROUP,
         );
 
         $terms = array();
 
-        foreach ($search_map as $input => $search_key) {
+        foreach ($search_map AS $input => $search_key) {
             $value = $this->in->getCleanValueArray($input, 'raw', 'discard');
             if ($value) {
                 $terms[] = array('type' => $search_key, 'op' => 'contains', 'options' => $value);
@@ -241,23 +241,23 @@ class PersonController extends AbstractController
         }
 
         $date_created_start = $this->in->getUint('date_created_start');
-        $date_created_end   = $this->in->getUint('date_created_end');
+        $date_created_end = $this->in->getUint('date_created_end');
         if ($date_created_end) {
             $terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
                 'date1' => $date_created_start,
-                'date2' => $date_created_end,
+                'date2' => $date_created_end
             ));
         } elseif ($date_created_start) {
             $terms[] = array('type' => PersonSearch::TERM_DATE_CREATED, 'op' => 'between', 'options' => array(
-                'date1' => $date_created_start,
+                'date1' => $date_created_start
             ));
         }
 
         foreach ($this->container->getSystemService('person_fields_manager')->getFields() as $field) {
-            if ($this->in->checkIsset("field.".$field->getId())) {
+            if ($this->in->checkIsset("field." . $field->getId())) {
                 $in_val = $this->in->getString('field.'.$field->getId());
                 if ($in_val) {
-                    $terms[] = array('type' => 'person_field['.$field->getId().']', 'op' => 'is', 'options' => array('value' => $in_val));
+                    $terms[] = array('type' => 'person_field[' . $field->getId() . ']', 'op' => 'is', 'options' => array('value' => $in_val));
                 }
             }
         }
@@ -279,23 +279,21 @@ class PersonController extends AbstractController
         $result_cache = $this->getApiSearchResult('person', $terms, $extra, $this->in->getUint('cache_id'), new PersonSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $person_ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
-        $people   = App::getEntityRepository('DeskPRO:Person')->getByIds($page_ids, true);
+        $people = App::getEntityRepository('DeskPRO:Person')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page'     => $page,
+            'page' => $page,
             'per_page' => $per_page,
-            'total'    => count($person_ids),
+            'total' => count($person_ids),
             'cache_id' => $result_cache->id,
-            'people'   => $this->getApiData($people),
+            'people' => $this->getApiData($people)
         ));
     }
 
@@ -433,9 +431,9 @@ class PersonController extends AbstractController
 
         $updates = $this->_setBasicPersonDetailsFromInput($person);
 
-        foreach ($this->in->getArrayValue('contact_data') as $contact) {
+        foreach ($this->in->getArrayValue('contact_data') AS $contact) {
             $contact_type = isset($contact['type']) ? $contact['type'] : false;
-            $data         = (isset($contact['data']) && is_array($contact['data'])) ? $contact['data'] : false;
+            $data = (isset($contact['data']) && is_array($contact['data'])) ? $contact['data'] : false;
 
             if (!$contact_type || !$data) {
                 continue;
@@ -443,7 +441,7 @@ class PersonController extends AbstractController
 
             $data['comment'] = isset($contact['comment']) ? $contact['comment'] : '';
 
-            $contact_data               = new \Application\DeskPRO\Entity\PersonContactData();
+            $contact_data = new \Application\DeskPRO\Entity\PersonContactData();
             $contact_data->contact_type = $contact_type;
             try {
                 $contact_data->applyFormData($data);
@@ -454,7 +452,7 @@ class PersonController extends AbstractController
 
             $all_empty = true;
             for ($i = 1; $i <= 10; $i++) {
-                if ($contact_data->{'field_'.$i}) {
+                if ($contact_data->{'field_' . $i}) {
                     $all_empty = false;
                     break;
                 }
@@ -484,7 +482,7 @@ class PersonController extends AbstractController
             }
         }
 
-        foreach ($this->in->getCleanValueArray('secondary_email', 'string') as $secondary_email) {
+        foreach ($this->in->getCleanValueArray('secondary_email', 'string') AS $secondary_email) {
             if (!$secondary_email || !\Orb\Validator\StringEmail::isValueValid($secondary_email) || App::$container->getEmailAccountManager()->findAccountForEmailAddress($secondary_email)) {
                 $errors['secondary_email'] = array('invalid_argument.secondary_email', 'secondary_email is empty or invalid');
             } else {
@@ -511,7 +509,7 @@ class PersonController extends AbstractController
             $this->em->persist($person);
             $this->em->flush();
 
-            $field_manager      = $this->container->getSystemService('person_fields_manager');
+            $field_manager = $this->container->getSystemService('person_fields_manager');
             $post_custom_fields = $this->getCustomFieldInput();
             if (!empty($post_custom_fields)) {
                 $field_manager->saveFormToObject($post_custom_fields, $person, true);
@@ -534,7 +532,7 @@ class PersonController extends AbstractController
             $message = App::getMailer()->createMessage();
             $message->setToPerson($person);
             $message->setTemplate('DeskPRO:emails_user:register-welcome.html.twig', array(
-                'person' => $person,
+                'person' => $person
             ));
             App::getMailer()->send($message);
         }
@@ -693,7 +691,7 @@ class PersonController extends AbstractController
             }
             $this->em->persist($person);
 
-            $field_manager      = $this->container->getSystemService('person_fields_manager');
+            $field_manager = $this->container->getSystemService('person_fields_manager');
             $post_custom_fields = $this->getCustomFieldInput();
             if (!empty($post_custom_fields)) {
                 $field_manager->saveFormToObject($post_custom_fields, $person, true);
@@ -719,13 +717,13 @@ class PersonController extends AbstractController
                 $org = $this->em->getRepository('DeskPRO:Organization')->getByName($organization);
 
                 if (!$org) {
-                    $org       = new Organization();
+                    $org = new Organization();
                     $org->name = $organization;
                 }
 
                 $person->organization = $org;
             } else {
-                $person->organization          = null;
+                $person->organization = null;
                 $person->organization_position = '';
             }
         } elseif ($this->in->checkIsset('organization_id')) {
@@ -737,7 +735,7 @@ class PersonController extends AbstractController
             if ($org) {
                 $person->organization = $org;
             } else {
-                $person->organization          = null;
+                $person->organization = null;
                 $person->organization_position = '';
             }
         }
@@ -755,18 +753,18 @@ class PersonController extends AbstractController
         }
 
         $bulk_set = array(
-            'summary'               => 'String',
+            'summary' => 'String',
             'disable_autoresponses' => 'Bool',
-            'is_disabled'           => 'Bool',
+            'is_disabled' => 'Bool'
         );
-        foreach ($bulk_set as $input => $type) {
+        foreach ($bulk_set AS $input => $type) {
             if ($this->in->checkIsset($input)) {
-                $person->$input = $this->in->{'get'.$type}($input);
+                $person->$input = $this->in->{'get' . $type}($input);
             }
         }
 
         return array(
-            'new_org' => $org,
+            'new_org' => $org
         );
     }
 
@@ -809,7 +807,7 @@ class PersonController extends AbstractController
 
     public function mergePersonAction($person_id, $other_person_id)
     {
-        $person       = $this->_getPersonOr404($person_id);
+        $person = $this->_getPersonOr404($person_id);
         $other_person = $this->_getPersonOr404($other_person_id);
 
         if (!$person || !$other_person) {
@@ -868,7 +866,7 @@ class PersonController extends AbstractController
         return $this->createApiResponse(array(
             'has_picture' => $person->hasPicture(),
             'picture_url' => $person->getPictureUrl($size),
-            'size'        => $size,
+            'size' => $size
         ));
     }
 
@@ -909,7 +907,7 @@ class PersonController extends AbstractController
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
 
-        $file   = $this->request->files->get('file');
+        $file = $this->request->files->get('file');
         $accept = $this->container->getAttachmentAccepter();
 
         if ($file) {
@@ -921,7 +919,7 @@ class PersonController extends AbstractController
                 $error = $accept->getError($file, 'only_images');
             }
             if ($error) {
-                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_'.$error['error_code'], $error);
+                $message = $this->container->getTranslator()->phrase('agent.general.attach_error_' . $error['error_code'], $error);
 
                 return $this->createApiErrorResponse($error['error_code'], $message);
             }
@@ -929,7 +927,7 @@ class PersonController extends AbstractController
             $blob = $accept->accept($file);
         } else {
             $blob_id = $this->in->getUint('blob_id');
-            $blob    = $this->em->find('DeskPRO:Blob', $blob_id);
+            $blob = $this->em->find('DeskPRO:Blob', $blob_id);
             if (!$blob) {
                 return $this->createApiErrorResponse('invalid_argument.blob_id', 'blob_id not found');
             }
@@ -1067,7 +1065,7 @@ class PersonController extends AbstractController
 
         $comment = $this->in->getString('comment');
 
-        $email_rec          = $person->addEmailAddressString($email);
+        $email_rec = $person->addEmailAddressString($email);
         $email_rec->comment = $comment;
         $this->em->persist($email_rec);
 
@@ -1113,9 +1111,9 @@ class PersonController extends AbstractController
     public function getPersonEmailAction($person_id, $email_id)
     {
         $person = $this->_getPersonOr404($person_id);
-        $email  = false;
+        $email = false;
 
-        foreach ($person->emails as $test_email) {
+        foreach ($person->emails AS $test_email) {
             if ($test_email->id == $email_id) {
                 $email = $test_email;
                 break;
@@ -1172,9 +1170,9 @@ class PersonController extends AbstractController
     public function postPersonEmailAction($person_id, $email_id)
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
-        $email  = false;
+        $email = false;
 
-        foreach ($person->emails as $test_email) {
+        foreach ($person->emails AS $test_email) {
             if ($test_email->id == $email_id) {
                 $email = $test_email;
                 break;
@@ -1233,9 +1231,9 @@ class PersonController extends AbstractController
     public function deletePersonEmailAction($person_id, $email_id)
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
-        $email  = false;
+        $email = false;
 
-        foreach ($person->emails as $test_email) {
+        foreach ($person->emails AS $test_email) {
             if ($test_email->id == $email_id) {
                 $email = $test_email;
                 break;
@@ -1261,7 +1259,7 @@ class PersonController extends AbstractController
         $this->em->remove($email);
 
         if ($is_primary) {
-            foreach ($person->emails as $new_primary) {
+            foreach ($person->emails AS $new_primary) {
                 $person->primary_email = $new_primary;
                 $this->em->persist($person);
                 break;
@@ -1306,13 +1304,13 @@ class PersonController extends AbstractController
         }
 
         $filename = str_replace(' ', '_', $filename);
-        $filename = preg_replace('[^a-zA-Z0-9_.@-]', '', $filename);
+        $filename = preg_replace('[^a-zA-Z0-9_.@-]' , '', $filename);
 
-        if (strlen($filename) == 0) {
+        if(strlen($filename) == 0) {
             $filename = 'Unknown_'.$person->id;
         }
 
-        if (strlen($filename) > 128) {
+        if(strlen($filename) > 128) {
             $filename = substr($filename, 0, 128);
         }
 
@@ -1336,17 +1334,16 @@ class PersonController extends AbstractController
 
         foreach ($person->contact_data as $c_data) {
             $data = $c_data->getTemplateVars();
-            switch ($c_data['contact_type']) {
+            switch($c_data['contact_type']) {
                 case 'phone':
-                    if (empty($data['number'])) {
+                    if(empty($data['number']))
                         break;
-                    }
 
                     $tel = '';
 
-                    if (!empty($data['country_calling_code'])) {
+                    if(!empty($data['country_calling_code']))
                         $tel .= '+'.$data['country_calling_code'].'-';
-                    }
+
 
                     $tel .= $data['number'];
 
@@ -1407,21 +1404,19 @@ class PersonController extends AbstractController
         $person = $this->_getPersonOr404($person_id);
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = 25;
-        $offset   = $per_page * ($page - 1);
+        $offset = $per_page * ($page - 1);
 
         $activity = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person, $per_page, $offset);
-        $total    = $this->em->getRepository('DeskPRO:PersonActivity')->countForPerson($person);
+        $total = $this->em->getRepository('DeskPRO:PersonActivity')->countForPerson($person);
 
         return $this->createApiResponse(array(
-            'page'     => $page,
+            'page' => $page,
             'per_page' => $per_page,
-            'total'    => $total,
-            'activity' => $this->getApiData($activity),
+            'total' => $total,
+            'activity' => $this->getApiData($activity)
         ));
     }
 
@@ -1471,10 +1466,10 @@ class PersonController extends AbstractController
 
         $terms = array(
             array(
-                'type'    => \Application\DeskPRO\Searcher\TicketSearch::TERM_PERSON,
-                'op'      => 'contains',
-                'options' => array($person->id),
-            ),
+                'type' => \Application\DeskPRO\Searcher\TicketSearch::TERM_PERSON,
+                'op' => 'contains',
+                'options' => array($person->id)
+            )
         );
 
         if ($this->in->checkIsset('order')) {
@@ -1491,23 +1486,21 @@ class PersonController extends AbstractController
         $result_cache = $this->getApiSearchResult('ticket', $terms, $extra, $this->in->getUint('cache_id'), new \Application\DeskPRO\Searcher\TicketSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $person_ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($person_ids, $page, $per_page);
-        $tickets  = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_ids, true);
+        $tickets = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page'     => $page,
+            'page' => $page,
             'per_page' => $per_page,
-            'total'    => count($person_ids),
+            'total' => count($person_ids),
             'cache_id' => $result_cache->id,
-            'tickets'  => $this->getApiData($tickets),
+            'tickets' => $this->getApiData($tickets)
         ));
     }
 
@@ -1550,10 +1543,10 @@ class PersonController extends AbstractController
 
         $terms = array(
             array(
-                'type'    => \Application\DeskPRO\Searcher\ChatConversationSearch::TERM_PERSON,
-                'op'      => 'contains',
-                'options' => array($person->id),
-            ),
+                'type' => \Application\DeskPRO\Searcher\ChatConversationSearch::TERM_PERSON,
+                'op' => 'contains',
+                'options' => array($person->id)
+            )
         );
 
         $order_by = 'chat_conversations.id:desc';
@@ -1566,23 +1559,21 @@ class PersonController extends AbstractController
         $result_cache = $this->getApiSearchResult('chat', $terms, $extra, $this->in->getUint('cache_id'), new \Application\DeskPRO\Searcher\ChatConversationSearch());
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $per_page = Numbers::bound($this->in->getUint('per_page') ?: 25, 1, 250);
 
         $ids = $result_cache->results;
 
         $page_ids = \Orb\Util\Arrays::getPageChunk($ids, $page, $per_page);
-        $chats    = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
+        $chats = App::getEntityRepository('DeskPRO:ChatConversation')->getByIds($page_ids, true);
 
         return $this->createApiResponse(array(
-            'page'     => $page,
+            'page' => $page,
             'per_page' => $per_page,
-            'total'    => count($ids),
+            'total' => count($ids),
             'cache_id' => $result_cache->id,
-            'chats'    => $this->getApiData($chats),
+            'chats' => $this->getApiData($chats)
         ));
     }
 
@@ -1642,7 +1633,7 @@ class PersonController extends AbstractController
             $message = $this->container->getMailer()->createMessage();
             $message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
             $message->setTemplate('DeskPRO:emails_user:agent-changed-password.html.twig', array(
-                'person' => $person,
+                'person' => $person
             ));
             $message->enableQueueHint();
             $this->container->getMailer()->send($message);
@@ -1703,7 +1694,7 @@ class PersonController extends AbstractController
         $person = $this->_getPersonOr404($person_id);
 
         return $this->createApiResponse(array(
-            'slas' => $this->getApiData($person->slas),
+            'slas' => $this->getApiData($person->slas)
         ));
     }
 
@@ -1738,7 +1729,7 @@ class PersonController extends AbstractController
         $person = $this->_getPersonOr404($person_id, 'edit');
 
         $sla_id = $this->in->getUint('sla_id');
-        $sla    = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
+        $sla = $this->em->getRepository('DeskPRO:Sla')->find($sla_id);
         if (!$sla) {
             return $this->createApiErrorResponse('invalid_argument.sla_id', 'SLA not found');
         }
@@ -1790,7 +1781,7 @@ class PersonController extends AbstractController
 
         $exists = false;
 
-        foreach ($person->slas as $sla) {
+        foreach ($person->slas AS $sla) {
             if ($sla->id == $sla_id) {
                 $exists = true;
                 break;
@@ -1864,7 +1855,7 @@ class PersonController extends AbstractController
     public function getPersonNotesAction($person_id)
     {
         $person = $this->_getPersonOr404($person_id);
-        $notes  = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
+        $notes = $this->em->getRepository('DeskPRO:PersonNote')->getNotesForPerson($person);
 
         return $this->createApiResponse(array('notes' => $this->getApiData($notes)));
     }
@@ -1904,10 +1895,10 @@ class PersonController extends AbstractController
             return $this->createApiErrorResponse('required_field', 'note field is empty or missing');
         }
 
-        $note           = new \Application\DeskPRO\Entity\PersonNote();
-        $note['agent']  = $this->person;
+        $note = new \Application\DeskPRO\Entity\PersonNote();
+        $note['agent'] = $this->person;
         $note['person'] = $person;
-        $note['note']   = $note_text;
+        $note['note'] = $note_text;
         $person->addNote($note);
 
         $this->em->persist($note);
@@ -1945,22 +1936,20 @@ class PersonController extends AbstractController
         $per_page = 25;
 
         $page = $this->in->getUint('page');
-        if (!$page) {
-            $page = 1;
-        }
+        if (!$page) $page = 1;
 
         $offset = ($page - 1) * $per_page;
 
-        $person_charges       = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForPerson($person, $per_page, $offset);
+        $person_charges = $this->em->getRepository('DeskPRO:TicketCharge')->getChargesForPerson($person, $per_page, $offset);
         $person_charge_totals = $this->em->getRepository('DeskPRO:TicketCharge')->getTotalChargesForPerson($person);
 
         return $this->createApiResponse(array(
-            'total_charge_time'   => $person_charge_totals['charge_time'],
+            'total_charge_time' => $person_charge_totals['charge_time'],
             'total_charge_amount' => $person_charge_totals['charge'],
-            'total'               => $person_charge_totals['count'],
-            'per_page'            => $per_page,
-            'page'                => $page,
-            'charges'             => $this->getApiData($person_charges),
+            'total' => $person_charge_totals['count'],
+            'per_page' => $per_page,
+            'page' => $page,
+            'charges' => $this->getApiData($person_charges)
         ));
     }
 
@@ -2034,8 +2023,8 @@ class PersonController extends AbstractController
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
 
-        $type    = $this->in->getString('type');
-        $data    = $this->in->getArrayValue('data');
+        $type = $this->in->getString('type');
+        $data = $this->in->getArrayValue('data');
         $comment = $this->in->getString('comment');
 
         if (!$type) {
@@ -2047,7 +2036,7 @@ class PersonController extends AbstractController
 
         $data['comment'] = $comment;
 
-        $contact_data               = new \Application\DeskPRO\Entity\PersonContactData();
+        $contact_data = new \Application\DeskPRO\Entity\PersonContactData();
         $contact_data->contact_type = $type;
         try {
             $contact_data->applyFormData($data);
@@ -2057,7 +2046,7 @@ class PersonController extends AbstractController
 
         $all_empty = true;
         for ($i = 1; $i <= 10; $i++) {
-            if ($contact_data->{'field_'.$i}) {
+            if ($contact_data->{'field_' . $i}) {
                 $all_empty = false;
                 break;
             }
@@ -2108,7 +2097,7 @@ class PersonController extends AbstractController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        foreach ($person->contact_data as $contact) {
+        foreach ($person->contact_data AS $contact) {
             if ($contact->id == $contact_id) {
                 return $this->createApiResponse(array('exists' => true));
             }
@@ -2147,7 +2136,7 @@ class PersonController extends AbstractController
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
 
-        foreach ($person->contact_data as $contact) {
+        foreach ($person->contact_data AS $contact) {
             if ($contact->id == $contact_id) {
                 $this->em->remove($contact);
                 $this->em->flush();
@@ -2229,7 +2218,7 @@ class PersonController extends AbstractController
         }
 
         $exists = false;
-        foreach ($person->usergroups as $group) {
+        foreach ($person->usergroups AS $group) {
             if ($group->id == $group_id) {
                 $exists = true;
             }
@@ -2237,8 +2226,8 @@ class PersonController extends AbstractController
 
         if (!$exists) {
             $this->db->insert('person2usergroups', array(
-                'person_id'    => $person->id,
-                'usergroup_id' => $group_id,
+                'person_id' => $person->id,
+                'usergroup_id' => $group_id
             ));
         }
 
@@ -2278,7 +2267,7 @@ class PersonController extends AbstractController
     {
         $person = $this->_getPersonOr404($person_id);
 
-        foreach ($person->usergroups as $group) {
+        foreach ($person->usergroups AS $group) {
             if ($group->id == $usergroup_id) {
                 return $this->createApiResponse(array('exists' => true));
             }
@@ -2317,7 +2306,7 @@ class PersonController extends AbstractController
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
 
-        foreach ($person->usergroups as $key => $group) {
+        foreach ($person->usergroups AS $key => $group) {
             if ($group->id == $usergroup_id) {
                 if ($group->is_agent_group) {
                     return $this->createApiErrorResponse('invalid_group', 'Group is an agent group');
@@ -2387,7 +2376,7 @@ class PersonController extends AbstractController
     public function postPersonLabelsAction($person_id)
     {
         $person = $this->_getPersonOr404($person_id, 'edit');
-        $label  = $this->in->getString('label');
+        $label = $this->in->getString('label');
 
         if ($label === '') {
             return $this->createApiErrorResponse('required_field', "Field 'label' missing or empty");
@@ -2489,7 +2478,7 @@ class PersonController extends AbstractController
     public function getFieldsAction()
     {
         $field_manager = $this->container->getSystemService('person_fields_manager');
-        $fields        = $field_manager->getFields();
+        $fields = $field_manager->getFields();
 
         return $this->createApiResponse(array('fields' => $this->getApiData($fields)));
     }
@@ -2541,12 +2530,12 @@ class PersonController extends AbstractController
         }
 
         $person = $this->_getPersonOr404($person_id);
-        $secret = sha1($person->secret_string.$person->salt);
-        $token  = Util::generateStaticSecurityToken($secret, 300);
+        $secret = sha1($person->secret_string . $person->salt);
+        $token = Util::generateStaticSecurityToken($secret, 300);
 
         return $this->createApiResponse(array(
             'login_token'      => $token,
-            'direct_login_url' => $this->generateUrl('user_login', array('tok' => $token), UrlGeneratorInterface::ABSOLUTE_URL),
+            'direct_login_url' => $this->generateUrl('user_login', array('tok' => $token), UrlGeneratorInterface::ABSOLUTE_URL)
         ));
     }
 
@@ -2583,8 +2572,11 @@ class PersonController extends AbstractController
                 case 'reset_password':
                 case 'manage_emails':
                 case 'notes':
-                    if (!$this->person->hasPerm('agent_people.'.$check_perm) || !$this->isPersonEditable($person)) {
-                        throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+                    if (!$this->isPersonEditable($person)) {
+                        throw $this->createAccessDeniedException("Only admins may edit other agents.");
+                    }
+                    if (!$this->person->hasPerm('agent_people.' . $check_perm)) {
+                        throw $this->createAccessDeniedException("Insufficient permission. Required: agent_people." . $check_perm);
                     }
                     break;
 

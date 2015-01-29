@@ -68,7 +68,10 @@
 							<ul class="dp-item-list" ng-if="List.eventType == 'update'">
 								<li ng-repeat="dep in List.depList" dp-state-mark="id:tickets.triggers.editdepchanged.department-changed-{{ ng_var('dep.id') }}">
 									<a href="{{ ng_href('tickets.triggers.editdep', "{type: List.eventType, id: 'department-changed-' + dep.id}") }}">
-										<h4><span class="title-text">{{ ng_var('dep.title') }}</span></h4>
+										<h4>
+											<span class="title-id" title="ID">#{{ ng_var('department_trigger_ids[dep.id]') }}</span>
+											<span class="title-text">{{ ng_var('dep.title') }}</span>
+										</h4>
 									</a>
 									<ul class="dp-item-list sublist" ng-show="dep.children.length">
 										<li ng-repeat="subdep in dep.children" dp-state-mark="id:tickets.triggers.editdepchanged.department-changed-{{ ng_var('subdep.id') }}">
@@ -157,15 +160,16 @@
 {% block listpane_help %}
 	<header>
 
-		<h1>Triggers are automatic processes that perform actions in response to ticket events.</h1>
-		<p ng-if="List.eventType == 'newreply'">Triggers in this section can run when a <strong>new reply</strong> is made by a user or agent.</p>
-		<p ng-if="List.eventType == 'newticket'">Triggers in this section can run when a <strong>new ticket</strong> is created.</p>
-		<p ng-if="List.eventType == 'update'">Triggers in this section can run when a ticket is <strong>updated</strong>.</p>
+		<h1>Triggers are automatic processes that can perform actions in response to ticket events.</h1>
+		<p ng-if="List.eventType == 'newreply'">Triggers in this section are checked every time a <strong>new reply</strong> is made by a user or agent.</p>
+		<p ng-if="List.eventType == 'newticket'">Triggers in this section are checked every time a <strong>new ticket</strong> is created.</p>
+		<p ng-if="List.eventType == 'update'">Triggers in this section are checked when a ticket is <strong>updated</strong>.</p>
 
 	</header>
 
 	<article>
 		<section>
+
 
 				<p>Triggers have <strong>criteria</strong> they check before they run their defined <strong>actions</strong>.</p>
 

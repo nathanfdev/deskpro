@@ -495,7 +495,7 @@ class Connection extends \Doctrine\DBAL\Connection
                 if ($is_retry <= 2 && (stripos($e->getMessage(), 'deadlock') !== false || stripos($e->getMessage(), 'wait timeout exceeded') !== false)) {
                     usleep(500000);
 
-                    return $this->executeQuery($query, $params, $types, $is_retry + 1);
+                    return $this->executeQuery($query, $params, $types, $qcp, $is_retry + 1);
                 }
 
                 $e->_dp_query        = $query;

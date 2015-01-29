@@ -108,7 +108,10 @@ class PackageRequestHandler implements ApiPackageRequestHandlerInterface
                 return null;
             }
 
-            return new \SoapClient($url.'/api?wsdl');
+            $v = libxml_disable_entity_loader(false);
+            $c = new \Application\DeskPRO\SoapClient\SafeSoapClient($url);
+            libxml_disable_entity_loader($v);
+            return $c;
         };
 
         $tests[] = function () use (&$log, &$client, $url, $get_client) {

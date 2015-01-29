@@ -84,7 +84,6 @@ class CheckImportCommand extends ContainerAwareCommand
 
         $config->log_path = null;
 
-        $output->setVerbosity(3);
         $logger = new Logger('importer', array(new ConsoleHandler($output)));
 
         $importer = $factory->createImporter($config, $logger);

@@ -587,6 +587,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	initPage: function() {
 
+		// All target=blanks need to null out window.opener
+		$(document).on('click', 'a[target="_blank"]', function(ev) {
+			ev.preventDefault();
+			var o = window.open($(this).attr('href'));
+			o.opener = null;
+		});
+
 		$('html').addClass('dp-window-focus');
 		(function() {
 			var hidden = "hidden";
@@ -1024,6 +1031,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var btnMenu = $('#create-menu');
 			var isActive = false;
 			var isClosingTimeout = false;
+
+			if (!btnMenu.find('li').length) {
+				wrap.hide();
+				return;
+			}
 
 			// Bug in IE10 means the li's dont render properly
 			// until you force a repaint somehow while they are displayed
@@ -2317,6 +2329,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.setListPage(page, routeData.isBackgroundLoad || false);
 
 			if (callback) callback(page);
+			$(document).trigger('textareaexpander_expanded');
 		}).bind(this));
 
 		if (routeData && !routeData.isBackgroundLoad) {
@@ -3732,7 +3745,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				cancelRouteSelection(ev);
 			});
 			$(context).on('click', '[data-route]', function(ev) {
-				if ($(this).is('.as-popover')) {
+				if ($(this).is('.as-popover') || $(this).is('.cancel-route')) {
 					return;
 				}
 
@@ -3817,8 +3830,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 					qtipOptions.content.attr = null;
 					var el = $('#' + $(this).data('tipped'));
 					qtipOptions.content.text = function() {
-						return el.html();
+						return Orb.escapeHtml(el.text());
 					};
+				}
+
+				if (qtipOptions.content.attr && !$(this).data('as-html')) {
+					var me = $(this);
+					var attr = qtipOptions.content.attr;
+					qtipOptions.content.text = function() {
+						return Orb.escapeHtml(me.attr(attr) || '');
+					};
+					qtipOptions.content.attr = null;
 				}
 
 				qtipOptions.style = {
@@ -3919,6 +3941,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 					qtipOptions.content.text = function() {
 						return el.html();
 					};
+				}
+
+				if (qtipOptions.content.attr && !$(this).data('as-html')) {
+					var me = $(this);
+					var attr = qtipOptions.content.attr;
+					qtipOptions.content.text = function() {
+						return Orb.escapeHtml(me.attr(attr) || '');
+					};
+					qtipOptions.content.attr = null;
 				}
 
 				qtipOptions.style = {

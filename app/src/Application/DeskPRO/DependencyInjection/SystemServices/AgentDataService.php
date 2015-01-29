@@ -146,12 +146,15 @@ class AgentDataService
         }
         $this->has_init_teammap = true;
 
+        // needed to preload $this->ids
+        $this->preload();
+
         $this->team_to_agents = $this->db->fetchAllGrouped("
             SELECT team_id, person_id
             FROM agent_team_members
         ", array(), 'team_id', null, 'person_id');
 
-        $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true);
+        $this->agent_to_teams = Arrays::reverseLookupArray($this->team_to_agents, true, true);
 
         if ($this->ids) {
             $this->agent_to_groups = $this->db->fetchAllGrouped("
@@ -159,6 +162,8 @@ class AgentDataService
                 FROM person2usergroups
                 WHERE person_id IN (?)
             ", array($this->ids), 'person_id', null, 'usergroup_id', array(Connection::PARAM_INT_ARRAY));
+        } else {
+            $this->agent_to_groups = array();
         }
     }
 
@@ -458,23 +463,28 @@ class AgentDataService
      */
     public function isAgentMemberOfTeam($agent, $team)
     {
-        if (!is_object($agent)) {
+        if (is_object($agent)) {
+            $agent_id = $agent->id;
+        } else {
             try {
-                $agent = $this->get($agent);
+                $agent_id = $this->get($agent)->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
         }
 
-        if (!is_object($team)) {
+        if (is_object($team)) {
+            $team_id = $team->id;
+        } else {
             try {
-                $team = $this->getTeam($team);
+                $team_id = $this->getTeam($team)->id;
             } catch (\InvalidArgumentException $e) {
                 return false;
             }
         }
 
-        return in_array($agent, $this->getAgentsForTeam($team), true);
+        $this->preloadTeamMap();
+        return isset($this->agent_to_teams[$agent_id][$team_id]);
     }
 
     /**

@@ -39,6 +39,11 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1339765736'
 	),
 
+	1340053454 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2012/06/Build1340053454.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1340053454'
+	),
+
 	1340223910 => array(
 		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2012/06/Build1340223910.php',
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1340223910'
@@ -1679,44 +1684,54 @@
 		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418032449'
 	),
 
-	1418183522 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418183522.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418183522'
+	1418321332 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418321332.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418321332'
 	),
 
-	1420930318 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1420930318.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1420930318'
+	1418900478 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418900478.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418900478'
 	),
 
-	1421086353 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1421086353.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421086353'
+	1418912765 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418912765.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418912765'
 	),
 
-	1421095053 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1421095053.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421095053'
+	1418985574 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1418985574.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1418985574'
 	),
 
-	1421343501 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1421343501.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421343501'
+	1419329370 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1419329370.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1419329370'
 	),
 
-	1421977484 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1421977484.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421977484'
+	1419340526 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2014/12/Build1419340526.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1419340526'
 	),
 
-	1422381313 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1422381313.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1422381313'
+	1420541683 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1420541683.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1420541683'
 	),
 
-	1422548532 => array(
-		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1422548532.php',
-		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1422548532'
+	1420543837 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1420543837.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1420543837'
+	),
+
+	1421925247 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1421925247.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1421925247'
+	),
+
+	1422460026 => array(
+		'file'      => '/src/Application/InstallBundle/Upgrade/Build/2015/01/Build1422460026.php',
+		'classname' => 'Application\InstallBundle\Upgrade\Build\Build1422460026'
 	),
 
 );

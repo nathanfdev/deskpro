@@ -37,6 +37,6 @@
     'adm.departments.title_explain'                    => 'This is the title as it will appear throughout the agent and user interfaces.',
     'adm.departments.user_title'                       => 'Show a different title to end-users',
     'adm.departments.usergroup_perm_toggle'            => 'When enabled, users are able to select this department when submitting tickets or editing tickets. Note that agents can always assign a department the user would not normally have access to.',
-    'adm.departments.usergroup_perms_explain'          => 'User Group permissions control which of your end-users can select a department when submitting or editing their tickets from the web portal.',
-    'adm.departments.usergroup_perms_explain2'         => 'Note that it is still possible for agents to change the department to one that a user would not normally have access to. Triggers can also be used to assign any department regardless of user permissions. User group permissions are therefore very much about what the user can select themselves.',
+    'adm.departments.usergroup_perms_explain'          => 'Usergroup permissions control which of your users can select a department when submitting or editing their tickets from the web portal.',
+    'adm.departments.usergroup_perms_explain2'         => 'Note that it is still possible for agents to change the department to one that a user would not normally have access to. Triggers can also be used to assign any department regardless of user permissions. Usergroup permissions are therefore very much about what the user can select themselves.',
 );

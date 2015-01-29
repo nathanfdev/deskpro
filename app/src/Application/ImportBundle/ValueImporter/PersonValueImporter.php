@@ -97,7 +97,7 @@ class PersonValueImporter extends AbstractValueImporter
 
         if ($exist_emails) {
             $existing_person_id = Arrays::getFirstItem($exist_emails);
-            $this->getLogger()->notice(sprintf("[%s] Found existing user %d", $log_id, $existing_person_id));
+            $this->getLogger()->info(sprintf("[%s] Found existing user %d", $log_id, $existing_person_id));
         }
 
         #------------------------------
@@ -131,7 +131,7 @@ class PersonValueImporter extends AbstractValueImporter
         if ($pval->language) {
             $v = $this->getMappers()->findIdFromMappedValue('language', $pval->language);
             if ($v) {
-                $this->getLogger()->notice(sprintf("[%s] Found existing language %s", $log_id, $pval->language));
+                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $pval->language));
                 $record['language_id'] = $v;
             } else {
                 $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s (skipping)", $log_id, $pval->language));
@@ -144,7 +144,7 @@ class PersonValueImporter extends AbstractValueImporter
             foreach ($pval->usergroups as $ug) {
                 $v = $this->getMappers()->findIdFromMappedValue('usergroup', $ug);
                 if ($v) {
-                    $this->getLogger()->notice(sprintf("[%s] Found existing usergroup %s", $log_id, $ug));
+                    $this->getLogger()->info(sprintf("[%s] Found existing usergroup %s", $log_id, $ug));
                     $add_ugs[] = $v;
                 } else {
                     $this->getLogger()->notice(sprintf("[%s] Could not map usergroup value: %s (skipping)", $log_id, $ug));
@@ -158,7 +158,7 @@ class PersonValueImporter extends AbstractValueImporter
             if ($v) {
                 $record['organization_id'] = $v;
             } else {
-                $this->getLogger()->notice(sprintf("[%s] New organization %s", $log_id, $pval->organization));
+                $this->getLogger()->info(sprintf("[%s] New organization %s", $log_id, $pval->organization));
                 if ($this->isTestMode()) {
                     $record['organization_id'] = -1;
                 } else {
@@ -253,6 +253,10 @@ class PersonValueImporter extends AbstractValueImporter
                 }, $add_labels);
 
                 $this->getDb()->batchInsert('labels_people', $batch, true);
+            }
+
+            if ($update_rec) {
+                $this->getDb()->update('people', $update_rec, array('id' => $exist_id));
             }
 
             #------------------------------

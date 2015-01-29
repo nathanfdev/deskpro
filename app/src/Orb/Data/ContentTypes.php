@@ -367,6 +367,7 @@ class ContentTypes
             'image/gif',
             'image/jpg',
             'image/jpeg',
+            'image/bmp',
         );
     }
 
@@ -423,7 +424,7 @@ class ContentTypes
      */
     public static function showFileInline($filename)
     {
-        static $inline_ext = array('png', 'gif', 'jpeg', 'jpg', 'ico', 'txt');
+        static $inline_ext = array('png', 'gif', 'jpeg', 'jpg', 'bmp', 'ico', 'txt');
 
         $dot_pos = strrpos($filename, '.');
         if (!$dot_pos) {

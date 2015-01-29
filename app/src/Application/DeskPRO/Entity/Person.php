@@ -116,6 +116,7 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
     const CREATED_WEB_AGENT      = 'web.agent';
     const CREATED_WEB_USERSOURCE = 'web.usersource';
     const CREATED_GATEWAT_PERSON = 'gateway.person';
+    const CREATED_WEB_API           = 'web.api';
 
     const EVENT_PRE_CREATE = 'person.pre_create';
     const EVENT_POST_CREATE = 'person.post_create';
@@ -876,8 +877,8 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
      */
     public function getDisplayName($id_fallback = true)
     {
-        if ($this['first_name'] and $this['last_name']) {
-            return $this['first_name'].' '.$this['last_name'];
+        if ($this['first_name'] AND $this['last_name']) {
+            return $this['first_name'] . ' ' . $this['last_name'];
         } elseif ($this['name']) {
             return $this['name'];
         } elseif ($this['last_name']) {
@@ -2797,9 +2798,10 @@ class Person extends DomainObject implements HighlightableModelInterface, UserIn
         $metadata->setPrimaryTable(array(
             'name' => 'people',
             'indexes' => array(
-                'is_agent_idx' => array('columns' => array(0 => 'is_agent')),
-                'is_confirmed_idx' => array('columns' => array(0 => 'is_confirmed')),
-            ),
+                'is_agent_idx' => array( 'columns' => array( 0 => 'is_agent', ), ),
+                'was_agent_idx' => array( 'columns' => array( 0 => 'was_agent', ), ),
+                'is_confirmed_idx' => array( 'columns' => array( 0 => 'is_confirmed', ), ),
+            )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
 

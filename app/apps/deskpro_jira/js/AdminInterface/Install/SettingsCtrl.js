@@ -14,16 +14,6 @@ define(function () {
       }
     }
 
-    $scope.$watch('meta_defaults.default_project', function (val) {
-      if (!val) return;
-      for (var i = 0; i < $scope.meta.projects.length; i++) {
-        var project = $scope.meta.projects[i];
-        if ($scope.meta_defaults.default_project === project.id) {
-          $scope.meta.issuetypes = project.issuetypes;
-        }
-      }
-    });
-
     var updateMeta = function () {
       var data = $scope.meta_defaults || {};
       $scope.loading_meta = true;

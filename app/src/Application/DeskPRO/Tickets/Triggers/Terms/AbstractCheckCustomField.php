@@ -86,7 +86,7 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
 
         foreach ($custom_data_array as $custom_data) {
             if ($custom_data->field->id == $field_id) {
-                $field_data = $custom_data->input;
+                $field_data = $custom_data->getData();
                 $field = $custom_data->field;
                 break;
             } elseif ($custom_data->field->parent && $custom_data->field->parent->id == $field_id) {
@@ -115,8 +115,15 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
 		}
 
 		if (!$field_data) {
-			$field_data = '';
-			return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
+            $test_value = $options->get('value');
+
+            if (ctype_digit($test_value)) {
+                $field_data = 0;
+                return $this->isIntMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
+            } else {
+                $field_data = '';
+                return $this->isStringMatch($ticket, $context, TermValue::createWithValue($field_data), $options->get('value'));
+            }
         }
 
         #------------------------------
@@ -152,6 +159,13 @@ abstract class AbstractCheckCustomField extends AbstractTriggerTerm
             }
 
             return false;
+
+        #------------------------------
+        # Handle toggle
+        #------------------------------
+
+        } elseif ($field->getTypeName() == 'toggle') {
+            return $this->isIntMatch($ticket, $context, TermValue::createWithValue($field_data), (int)$options->get('value'));
 
         #------------------------------
         # Handle text check

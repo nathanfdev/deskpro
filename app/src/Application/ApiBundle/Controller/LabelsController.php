@@ -47,39 +47,6 @@ class LabelsController extends AbstractController implements ProtectedController
         return new UserTypePermission(UserTypePermission::AGENT);
     }
 
-    /**
-     * get settings
-     */
-    public function getSettingsAction($type)
-    {
-        $rep = $this->rep();
-        if (!$rep::valid($type)) {
-            throw new NotFoundHttpException();
-        }
-
-        return $this->createApiResponse(array(
-            'agent_can_create' => (bool) $this->settings->get(sprintf('labels.%s.agent_can_create', $type), false),
-        ));
-    }
-
-    /**
-     * get settings
-     */
-    public function setSettingsAction($type)
-    {
-        $rep = $this->rep();
-        if (!$rep::valid($type)) {
-            throw new NotFoundHttpException();
-        }
-
-        $this->settings->setSetting(
-            sprintf('labels.%s.agent_can_create', $type),
-            $this->in->getBool('agent_can_create')
-        );
-
-        return $this->getSettingsAction($type);
-    }
-
     public function listDefinitionsAction()
     {
         return $this->createApiResponse($this->rep()->getAllDefinitions());
@@ -92,20 +59,20 @@ class LabelsController extends AbstractController implements ProtectedController
     public function updateDefinitionAction()
     {
         if (!$old = $this->in->getArrayValue('old')) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         if (!$new = $this->in->getArrayValue('new')) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         if (!isset($new['label_type']) || !isset($new['label']) || !isset($new['color'])) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $label = trim($new['label']);
-        $type  = trim($new['label_type']);
-        $rep   = $this->rep();
+        $type = trim($new['label_type']);
+        $rep = $this->rep();
         $rep->renameLabelDef($old['label'], $label, $new['color'], $type);
         $rep->updateColorForLabel($type, $label, $new['color']);
 
@@ -120,11 +87,11 @@ class LabelsController extends AbstractController implements ProtectedController
     {
         $rep = $this->rep();
         if (!$label = $this->in->getString('label')) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         if ((!$type = $this->in->getString('label_type')) || !$rep::valid($type)) {
-            throw new NotFoundHttpException();
+            throw new NotFoundHttpException;
         }
 
         $color = $this->in->getString('color');
@@ -133,8 +100,9 @@ class LabelsController extends AbstractController implements ProtectedController
             $definition = new \Application\DeskPRO\Entity\LabelDef();
             // primary key
             $definition['label_type'] = $type;
-            $definition['label']      = trim($label);
+            $definition['label'] = trim($label);
             $this->em->persist($definition);
+
         } else {
             $rep->renameLabelDef($definition['label'], trim($label), $color, $type);
         }
@@ -148,6 +116,7 @@ class LabelsController extends AbstractController implements ProtectedController
         return $this->createApiResponse($definition->toApiData());
     }
 
+
     ####################################################################################################################
     # remove
     ####################################################################################################################
@@ -155,7 +124,7 @@ class LabelsController extends AbstractController implements ProtectedController
     public function deleteDefinitionAction()
     {
         $label = $this->in->getString('label');
-        $type  = $this->in->getString('label_type');
+        $type = $this->in->getString('label_type');
         try {
             if (!$definition = $this->rep()->getDefinition($type, $label)) {
                 throw $this->createNotFoundException();

@@ -315,6 +315,12 @@ class Generic implements ForwardDef, QuoteDef
                         $pos = $matches[0][1];
                         break;
                     }
+
+                    // Detect encoded ='s if text was mangled
+                    if (preg_match('#=3D=3D=3D(\s|&nbsp;)*'.$re.'(\s|&nbsp;)*=3D=3D=3D#', $body, $matches, \PREG_OFFSET_CAPTURE)) {
+                        $pos = $matches[0][1];
+                        break;
+                    }
                 }
 
                 if ($pos === false) {

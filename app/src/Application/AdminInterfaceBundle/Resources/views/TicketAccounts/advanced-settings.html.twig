@@ -138,6 +138,103 @@
 
             </div>
 
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <label>
+                                        Abuse prevention
+                                    </label>
+                                </h4>
+                            </label>
+                            <div>
+                                <span class="help-block">
+                                    Prevent abuse by limiting the maximum number of emails a person can send before they are rejected.
+                                    The user will be warned when they reach the limit.
+                                </span>
+                                <span class="help-block">
+                                    All emails caught in this rate-limiting filter will be saved in a rejected state
+                                    to the <a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">Incoming Email Log</a> where you can review and optionally re-process them.
+                                </span>
+                                <span class="help-block">
+                                    Note that email replies from agents are exempt from this limit.
+                                </span>
+                                After
+                                <input type="number" min="1" ng-model="settings.rate_count" class="form-control" style="width: 50px;" />
+                                emails within
+                                <dp-time-with-unit ng-model="settings.rate_time"></dp-time-with-unit>
+                                , reject messages for
+                                <dp-time-with-unit ng-model="settings.rate_locktime"></dp-time-with-unit>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.core_tickets_enable_dupe_checking">
+                                        Enable duplicate detection
+                                    </label>
+                                </h4>
+                            </label>
+                            <div>
+								<span class="help-block">
+									When enabled, DeskPRO will reject exact duplicate email messages from the same user that were submitted in a short period of time.
+                                    <i class="fa fa-question-circle qmark-icon" tooltip="Example: If a user sends an email with two of your accounts in the To or CC lines (e.g., To: sales@example.com and support@example.com), then two separate email messages will arrive into DeskPRO. Without duplicate detection, this would cause two separate tickets to be created."></i>
+								</span>
+                                <span class="help-block">
+                                    Rejected email is always logged in full to the <a href="{{ ng_href('tickets.ticket_accounts.emailsources') }}">Incoming Email Log</a>.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-lg-10">
+                    <div class="panel panel-innertable">
+                        <div class="inner-group">
+                            <label>
+                                <h4>
+                                    <label>
+                                        <input type="checkbox" ng-model="settings.core_tickets_enable_exact_subject_matching">
+                                        Enable subject matching on ALL email messages
+                                    </label>
+                                </h4>
+                            </label>
+                            <div>
+								<span class="help-block">
+									DeskPRO sometimes uses the subject to connect incoming email replies to their appropriate tickets.
+                                    Usually, this subject-matching algorithm is only run on subjects that contain a reply prefix (like "RE:").
+                                    This means that replies (emails with "RE:") are added to existing tickets,
+                                    but new email conversations (emails without "RE:") are treated as new tickets.
+                                </span>
+                                <span class="help-block">
+                                    Enable this option if you want subject matching to run on ALL email messages, even those that do not
+                                    have the "RE:" prefix.
+                                    <i class="fa fa-question-circle qmark-icon" tooltip="Example: If the user sends in a new email, and then a day later sends in another new email with the same subject, then it would be added as a ticket reply. The only way for a new ticket to be created is if it has a different subject, or the existing ticket in DeskPRO is marked as resolved."></i>
+                                </span>
+                                <span class="help-block">
+                                    DeskPRO has an advanced email processing algorithm and subject matching is just one part.
+                                    Many other techniques are used to make sure email replies are routed to the correct ticket.
+                                    Enabling this option is usually only neccessary if you often interact with automated systems and you specifically
+                                    want same-subject emails to be one ticket.
+                                </span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
         </article>
 
         <footer>

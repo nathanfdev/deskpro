@@ -509,6 +509,7 @@ class FilestorageLoader extends LoaderAbstract
         header('Cache-Control: max-age=31556926,public');
         header('Content-Disposition: inline; filename=' . $desc);
         header("Content-type: image/png");
+        header('X-Content-Type-Options: nosniff');
         imagepng($im);
         exit;
     }

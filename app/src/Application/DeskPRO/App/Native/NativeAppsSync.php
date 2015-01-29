@@ -66,6 +66,12 @@ class NativeAppsSync
     private $package_installer;
 
     /**
+     * @var callable
+     */
+    private $exception_handler = false;
+
+
+    /**
      * @param DeskproContainer $container
      * @param AppManager       $manager
      * @param PackageInstaller $package_installer
@@ -84,6 +90,16 @@ class NativeAppsSync
         $this->logger = $logger;
     }
 
+
+    /**
+     * Sets an exception handler to run on problems during sync or upgrades.
+     */
+    public function setExceptionHandler($exception_handler)
+    {
+        $this->exception_handler = $exception_handler;
+    }
+
+
     /**
      * Updates apps already installed
      */
@@ -95,6 +111,7 @@ class NativeAppsSync
             }
         }
     }
+
 
     /**
      * @param  AppPackage                                $package
@@ -110,22 +127,42 @@ class NativeAppsSync
 
         // Updates the resources
         $app_package = new Package($this->manager->getAppPath($package->name, true));
-        $this->package_installer->installPackage($app_package, $package);
+        try {
+            $this->package_installer->installPackage($app_package, $package);
+        } catch (\Exception $e) {
+            $this->logger->error("EXCEPTION: {$e->getMessage()}");
+            if ($this->exception_handler) {
+                call_user_func($this->exception_handler, $e, array('mode' => 'install', 'package' => $app_package, 'manager' => $this->manager));
+            } else {
+                throw $e;
+            }
+        }
         $this->logger->debug("... done install");
 
         // Updates any apps
         foreach ($this->manager->getPackageApps($package) as $app) {
             $native_app = $this->manager->getNativeApp($app);
-            $class      = $native_app->getConfig()->getInstallerHandlerClass();
+            $class = $native_app->getConfig()->getInstallerHandlerClass();
             if ($class) {
                 $this->logger->debug("... running update for app #{$app->id}");
                 $context = new InstallerContext($this->container, $native_app);
-                $obj     = new $class($package['settings_def']);
-                $obj->updatePackage($context);
+                $obj = new $class($package['settings_def']);
+
+                try {
+                    $obj->updatePackage($context);
+                } catch (\Exception $e) {
+                    $this->logger->error("EXCEPTION: {$e->getMessage()}");
+                    if ($this->exception_handler) {
+                        call_user_func($this->exception_handler, $e, array('mode' => 'update', 'package' => $app_package, 'app' => $app, 'manager' => $this->manager));
+                    } else {
+                        throw $e;
+                    }
+                }
                 $this->logger->debug("... done");
             }
         }
     }
+
 
     /**
      * Syncs new apps from the filesystem
@@ -136,6 +173,7 @@ class NativeAppsSync
             $this->_syncAppsDir($path);
         }
     }
+
 
     /**
      * @param string $path
@@ -163,7 +201,16 @@ class NativeAppsSync
             }
 
             $this->logger->debug("installing new native app {$f}");
-            $this->package_installer->installPackage($app_package);
+            try {
+                $this->package_installer->installPackage($app_package);
+            } catch (\Exception $e) {
+                $this->logger->error("EXCEPTION: {$e->getMessage()}");
+                if ($this->exception_handler) {
+                    call_user_func($this->exception_handler, $e, array('mode' => 'install', 'package' => $app_package, 'manager' => $this->manager));
+                } else {
+                    throw $e;
+                }
+            }
             $this->logger->debug("... done");
         }
     }

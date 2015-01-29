@@ -37,6 +37,8 @@
     'user.emails.register-agent-validation'   => 'Note: Before your account is fully active, our agents must manually validate your account. Tickets and other content you submit will be held in a validation queue until an agent validates your accounts.',
     'user.emails.register-confirm'            => 'Thank you for registering an account.<br /><br />Before you will be able to use your account, you must click on the following link to validate your email address',
     'user.emails.register-welcome'            => 'Thank you for registering. You can now log in using your email address {{to_email}} on our helpdesk:',
+    'user.emails.register-welcome-byagent'    => 'A new account has been created for you. You can now log in using your email address {{to_email}} on our helpdesk:',
+    'user.emails.register-password'           => 'Your initial password is: {{password}}',
     'user.emails.registration_closed'         => 'Dear {{name}},<br /><br />New tickets are only accepted from existing helpdesk members. If you already have an account, please email us again from your registered email address.',
     'user.emails.reject_resolved'             => 'Your reply was not accepted because your ticket has already been marked as resolved. Our agents will not read or reply to this message.',
     'user.emails.reject_resolved-new'         => 'If you would like to create a brand new ticket you can send a new email to <a href="mailto:{{email_to}}">{{email_to}}</a> or you can submit our online form at:<br /><a href="{{link}}">{{link}}</a>',
@@ -55,4 +57,6 @@
     'user.emails.ticket_validate'             => 'Thank you for contacting us.<br /><br />Before our agents will read and reply to your message, you must validate your email address.',
     'user.emails.tickets_ommitted'            => '1 message has been omitted|{{count}} messages have been omitted',
     'user.emails.view_full_history_online'    => 'View full ticket online',
+    'user.emails.ratelimit_explain'           => 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be automatically deactivated and you will be able to send emails again.',
+    'user.emails.ratelimit_submit-online'     => 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:'
 );

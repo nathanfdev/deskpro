@@ -106,6 +106,7 @@ class AgentsController extends AbstractController implements ProtectedController
             if ($this->in->getBool('with_perms')) {
                 $perm_loader         = new AgentPermsPersonDbLoader($agent, $this->em);
                 $agent_data['perms'] = $perm_loader->getEffectivePermissions()->toArray();
+                $agent_data['perm_overrides'] = $perm_loader->getOverridePermissions()->toArray();
             }
 
             $data['agents'][] = $agent_data;
@@ -162,6 +163,7 @@ class AgentsController extends AbstractController implements ProtectedController
         $data = array(
             'agent' => $agent_data,
             'perms' => $perm_loader->getEffectivePermissions()->toArray(),
+            'perm_overrides' => $perm_loader->getOverridePermissions()->toArray()
         );
 
         if ($this->in->getBool('extended')) {

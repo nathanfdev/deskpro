@@ -223,7 +223,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 		$('.permalink', actions).on('click', function() {
 			var html = [];
 			html.push('<div>');
-			html.push('The permalink to this article on the website is:<br />');
+			html.push($(this).data('prompt') + '<br />');
 			html.push('<input type="text" style="width:95%;" />');
 			html.push('</div>');
 
@@ -723,66 +723,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 	//#################################################################
 
 	_initArticleArea: function() {
-		var loader = this.wrapper.find('.article-loading');
 
-		loader.show();
-
-		var iframe = this.wrapper.find('.article-iframe');
-		var iframeLoad = function() {
-			if (this.contentWindow && this.contentWindow.document) {
-				loader.hide();
-				$(this).css({
-					overflow: 'hidden',
-					border: 'none',
-					padding: 0,
-					margin: 0
-				});
-				$(this).height($(this.contentWindow.document).height());
-
-				var doc = this.contentWindow.document, iframeWindow = this.contentWindow;
-
-				var wheel = function(e) {
-					e = e || iframeWindow.event;
-					var scroller = iframe.closest('.with-scrollbar').get(0), proxyE;
-					if (scroller && scroller.dispatchEvent) {
-						try {
-							proxyE = document.createEvent('MouseWheelEvent');
-							proxyE.initMouseWheelEvent(
-								e.type, e.bubbles, e.cancelable, window, e.detail,
-								e.screenX, e.screenY, e.clientX, e.clientY,
-								e.button, null, '', e.wheelDelta
-							);
-						} catch (e) {
-							proxyE = null;
-						}
-
-						if (!proxyE) {
-							proxyE = document.createEvent('MouseEvent');
-							proxyE.initMouseEvent(
-								e.type, e.bubbles, e.cancelable, window, e.detail,
-								e.screenX, e.screenY, e.clientX, e.clientY,
-								e.ctrlKey, e.altKey, e.shiftKey, e.metaKey, e.button,
-								null
-							);
-						}
-						iframe.closest('.with-scrollbar').get(0).dispatchEvent(proxyE);
-					} else {
-						proxyE = document.createEventObject(e);
-						proxyE.view = window;
-						iframe.closest('.with-scrollbar').get(0).fireEvent("onmousewheel", proxyE);
-					}
-				};
-				if (doc.addEventListener){
-					doc.addEventListener('DOMMouseScroll', wheel, false);
-					doc.addEventListener('mousewheel', wheel, false);
-				} else {
-					doc.onmousewheel = wheel;
-				}
-			}
-		};
-
-		iframe.on('load', iframeLoad);
-		iframeLoad.call(iframe);
 	},
 
 	//#################################################################
@@ -1110,7 +1051,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Orb.Class({
 
 		this.getEl('editslug').on('click', function(ev) {
 			Orb.cancelEvent(ev);
-			DeskPRO_Window.showPrompt("Enter new URL slug (only letters, numbers, dashes and underscores)", function(newSlug) {
+			DeskPRO_Window.showPrompt($(this).data('prompt'), function(newSlug) {
 				newSlug = newSlug.toLowerCase().replace(/[^0-9a-zA-Z_\-]/g, '-').replace(/\-{2,}/g, '-').replace(/^\-/, '').replace(/\-$/, '');
 				slugEl.text(newSlug);
 				$.ajax({

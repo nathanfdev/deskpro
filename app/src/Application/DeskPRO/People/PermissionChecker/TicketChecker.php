@@ -95,7 +95,7 @@ class TicketChecker extends AbstractChecker
             return true;
         }
 
-        if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person, $ticket->agent_team)) {
+        if ($ticket->agent_team && $this->agents->isAgentMemberOfTeam($this->person->id, $ticket->agent_team->id)) {
             return true;
         }
 

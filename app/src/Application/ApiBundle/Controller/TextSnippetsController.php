@@ -180,7 +180,7 @@ class TextSnippetsController extends AbstractController
 
         return $this->createApiCreateResponse(
             array('snippet_id' => $snippet->id),
-            $this->generateUrl('api_ticketsnippets_get', array('id' => $snippet->id), true)
+            $this->generateUrl('api_textsnippets_get', array('id' => $snippet->id, 'typename' => $typename), true)
         );
     }
 
@@ -281,7 +281,7 @@ class TextSnippetsController extends AbstractController
 
         return $this->createApiCreateResponse(
             array('category_id' => $cat->id),
-            $this->generateUrl('api_textsnippets_cats_get', array('id' => $cat->id), true)
+            $this->generateUrl('api_textsnippets_cats_get', array('id' => $cat->id, 'typename' => $typename), true)
         );
     }
 

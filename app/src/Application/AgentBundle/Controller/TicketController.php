@@ -253,13 +253,6 @@ class TicketController extends AbstractController
         $active_drafts = $this->em->getRepository('DeskPRO:Draft')->getActiveDrafts('ticket', $ticket->id);
         unset($active_drafts[$this->person->id]);
 
-        if (App::getSetting('core_tickets.lock_on_view') && !$ticket->hasLock()) {
-            $ticket->setLockedByAgent($this->person);
-
-            $this->em->persist($ticket);
-            $this->em->flush();
-        }
-
         $edit_person = $this->person->hasPerm('agent_people.edit');
         if ($edit_person) {
             if (!$this->person->can_admin && $ticket->person->is_agent && $ticket->person->getId() != $this->person->getId()) {
@@ -439,6 +432,12 @@ class TicketController extends AbstractController
             $vars['print'] = true;
 
             return $this->render('DeskPRO:pdf_agent:view_ticket.html.twig', $vars);
+        }
+
+        if (App::getSetting('core_tickets.lock_on_view') && !$ticket->hasLock()) {
+            $ticket->setLockedByAgent($this->person);
+            $this->em->persist($ticket);
+            $this->em->flush();
         }
 
         return $this->render($tpl, $vars);
@@ -1099,6 +1098,8 @@ class TicketController extends AbstractController
         $message['ip_address']      = dp_get_user_ip_address();
         $message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
 
+        $message->setVisitorFromRequest();
+
         if ($this->in->getBool('is_html_reply')) {
             $message_text = $request_message_orig;
 
@@ -1286,10 +1287,6 @@ class TicketController extends AbstractController
             }
         }
 
-        if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
-            $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
-        }
-
         #------------------------------
         # Save
         #------------------------------
@@ -1299,6 +1296,11 @@ class TicketController extends AbstractController
         $changed_agent = false;
         $changed_team  = false;
         try {
+
+            if ((!$message['is_agent_note'] || $macro) && $collection->countActions()) {
+                $collection->apply($ticket->getTicketLogger(), $ticket, $this->person);
+            }
+
             if ($add_parts) {
                 foreach ($add_parts as $p) {
                     $ticket->addParticipantPerson($p);
@@ -1481,6 +1483,8 @@ class TicketController extends AbstractController
             'notified_agents'                  => $notify_agent_ids,
             'can_view'                         => $can_view,
             'api_data'                         => $ticket->toApiData(),
+
+            'message'                          => $message['message'],
         ));
 
         return $this->createJsonResponse($data);
@@ -1565,9 +1569,9 @@ class TicketController extends AbstractController
         }
 
         return $this->createJsonResponse(array(
-            'message_id'   => $message->getId(),
-            'message_text' => $message->getMessageText(),
-            'message_html' => $message->getMessageHtml(),
+            'message_id' => $message->getId(),
+            'message_text' => $message->getMessageFullText() ?: $message->getMessageText(),
+            'message_html' => $message->getMessageFull() ?: $message->getMessageHtml(),
         ));
     }
 
@@ -1595,6 +1599,7 @@ class TicketController extends AbstractController
         $new_message = Strings::trimHtml($new_message);
         $new_message = Strings::prepareWysiwygHtml($new_message);
         $message->setMessageHtml($new_message);
+        $message->message_full = null;
 
         $ticket_log              = new TicketLog();
         $ticket_log->ticket      = $ticket;
@@ -2207,11 +2212,13 @@ class TicketController extends AbstractController
             ));
         }
 
+        $can_view = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+
         return $this->createJsonResponse(array(
             'ticket_id' => $ticket->getId(),
-            'macro_id'  => $macro->getId(),
-            'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']),
-            'success'   => true,
+            'macro_id' => $macro->getId(),
+            'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']) || !$can_view,
+            'success' => true,
         ));
     }
 
@@ -3825,18 +3832,8 @@ class TicketController extends AbstractController
             return $this->createJsonResponse(array('success' => true));
         }
 
-        $lock_cm = new ClientMessage();
-        $lock_cm->fromArray(array(
-            'channel' => 'agent-notification.tickets.unlocked',
-            'data'    => array(
-                'ticket_id' => $ticket['id'],
-                'agent_id'  => $ticket['id'],
-            ),
-            'created_by_client' => 0,
-        ));
-        $this->em->persist($lock_cm);
-
         $ticket->setLockedByAgent(null);
+        $this->em->persist($ticket);
         $this->em->flush();
 
         return $this->createJsonResponse(array('success' => true));
@@ -3847,17 +3844,6 @@ class TicketController extends AbstractController
         $ticket = $this->getTicketOr404($ticket_id);
 
         if ($ticket->hasLock() && $ticket->locked_by_agent->id == $this->person->id) {
-            $lock_cm = new ClientMessage();
-            $lock_cm->fromArray(array(
-                'channel' => 'agent-notification.tickets.unlocked',
-                'data'    => array(
-                    'ticket_id' => $ticket['id'],
-                    'agent_id'  => $ticket['id'],
-                ),
-                'created_by_client' => 0,
-            ));
-            $this->em->persist($lock_cm);
-
             $ticket->setLockedByAgent(null);
             $this->em->persist($ticket);
             $this->em->flush();

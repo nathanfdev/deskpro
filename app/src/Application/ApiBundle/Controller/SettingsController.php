@@ -37,6 +37,7 @@ use Application\ApiBundle\PermissionStrategy\AdminManagePermission;
 use Application\DeskPRO\CacheInvalidator\UserPageCache;
 use Application\DeskPRO\ResourceScanner\AdvancedSettings;
 use Application\DeskPRO\Settings\GeneralSettings;
+use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Settings\PasswordSettings;
 use Application\DeskPRO\Settings\PortalSettings;
 use Application\DeskPRO\Settings\RegistrationSettings;
@@ -386,9 +387,11 @@ class SettingsController extends AbstractController implements ProtectedControll
     public function registrationSettingsAction()
     {
         $reg_settings = new RegistrationSettings($this->settings, $this->em);
+        $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
         return $this->createApiResponse(array(
             'registration_settings' => $reg_settings->toArray(),
+            'rate_limit_settings' => $rate_limit_settings->toArray(),
         ));
     }
 
@@ -402,6 +405,10 @@ class SettingsController extends AbstractController implements ProtectedControll
         $reg_settings->setArray($this->in->getArrayValue('registration_settings'));
         $reg_settings->saveSettings();
 
+        $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
+        $rate_limit_settings->setArray($this->in->getArrayValue('rate_limit_settings'));
+        $rate_limit_settings->saveSettings();
+
         return $this->createSuccessResponse();
     }
 
@@ -412,9 +419,11 @@ class SettingsController extends AbstractController implements ProtectedControll
     public function passwordSettingsAction()
     {
         $password_settings = new PasswordSettings($this->settings);
+        $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
 
         return $this->createApiResponse(array(
             'settings' => $password_settings->toArray(),
+            'rate_limit_settings' => $rate_limit_settings->toArray(),
         ));
     }
 
@@ -427,6 +436,10 @@ class SettingsController extends AbstractController implements ProtectedControll
         $password_settings = new PasswordSettings($this->settings);
         $password_settings->setArray($this->in->getArrayValue('settings'));
         $password_settings->saveSettings();
+
+        $rate_limit_settings = new LoginRateLimitSettings($this->settings, $this->in->getString('rate_limit_context'));
+        $rate_limit_settings->setArray($this->in->getArrayValue('rate_limit_settings'));
+        $rate_limit_settings->saveSettings();
 
         return $this->createSuccessResponse();
     }

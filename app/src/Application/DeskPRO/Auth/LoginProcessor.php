@@ -152,11 +152,7 @@ class LoginProcessor
                 $this->person->creation_system = 'web.usersource';
             }
 
-            foreach (array('first_name', 'last_name', 'name') as $k) {
-                if (!$this->person[$k] && $mapped_fields->has($k)) {
-                    $this->person[$k] = $mapped_fields->get($k);
-                }
-            }
+            $this->updatePersonName($mapped_fields);
 
             if ($mapped_fields->has('picture_data') && !$this->person->picture_blob) {
                 $filename = tempnam(dp_get_tmp_dir(), 'picture');
@@ -262,6 +258,10 @@ class LoginProcessor
         } else {
             $this->person = $this->assoc['person'];
 
+            if (App::getSetting('core.usersource_login_always_update_name')) {
+                $this->updatePersonName($mapped_fields);
+            }
+
             // Need to make sure the email address on the local account matches that of the
             // identity (it could have been updated).
             if ($mapped_fields->has('email') && $mapped_fields->get('email_confirmed')) {
@@ -357,6 +357,18 @@ class LoginProcessor
                 $attach->setFilename('Getting Started with DeskPRO.pdf');
                 $message->attach($attach);
                 App::$container->getMailer()->send($message);
+            }
+        }
+    }
+
+    /**
+     * @param $mapped_fields
+     */
+    protected function updatePersonName($mapped_fields)
+    {
+        foreach (array('first_name', 'last_name', 'name') as $k) {
+            if ($mapped_fields->has($k)) {
+                $this->person[$k] = $mapped_fields->get($k);
             }
         }
     }

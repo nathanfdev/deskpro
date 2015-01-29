@@ -197,6 +197,9 @@ class SettingsProfile
                 $history->password        = $this->person->password;
                 $this->em->persist($history);
             }
+
+            // Delete old sessions for this user
+            $this->em->getConnection()->delete('sessions', array('person_id' => $this->person->getId()));
         }
 
         if ($this->language_id) {

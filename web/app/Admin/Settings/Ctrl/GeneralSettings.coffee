@@ -14,6 +14,7 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
         attach_user_not_exts: []
       }
       @$scope.settings = @settings
+      @skip_url_check = false
 
     initialLoad: ->
       data_promise = @Api.sendDataGet({
@@ -65,20 +66,44 @@ define ['Admin/Main/Ctrl/Base', 'angular'], (Admin_Ctrl_Base, angular) ->
       @startSpinner('saving')
 
       # verify URL
-      if @orig_url and @orig_url != @$scope.settings.deskpro_url
-        @$scope.settings.deskpro_url = @$scope.settings.deskpro_url.replace(/\/?index\.php$/, '').replace(/\/+$/, '')
-        @$scope.settings.deskpro_url += '/'
+      if @orig_url and @orig_url != @$scope.settings.deskpro_url and !@skip_url_check
+        new_is_https = @$scope.settings.deskpro_url.toLowerCase().indexOf('https://') != -1
+        this_is_https = window.location.href.indexOf('https://') != -1
 
-        pingUrl = @$scope.settings.deskpro_url + 'index.php?_sys=ping&type=jsonp&callback=JSON_CALLBACK'
-        @$http.jsonp(pingUrl).success(=>
-          @orig_url = @$scope.settings.deskpro_url
-          @save()
-        ).error(=>
-          @$scope.url_error = true
-          @stopSpinner('saving', true)
-          @showAlert("We detected that the Helpdesk URL that you entered is invalid. Please double-check the URL and try again.")
-        )
-        return
+        # we can only run js check on the url if the scheme permits
+        # if we are on https and we try changing to non-https, we
+        # cant do a check because browser wont allow loading the request and it
+        # will just always fail
+        if !this_is_https or (this_is_https && new_is_https)
+          @$scope.settings.deskpro_url = @$scope.settings.deskpro_url.replace(/\/?index\.php$/, '').replace(/\/+$/, '')
+          @$scope.settings.deskpro_url += '/'
+          me = @
+
+          pingUrl = @$scope.settings.deskpro_url + 'index.php?_sys=ping&type=jsonp&callback=JSON_CALLBACK'
+          @$http.jsonp(pingUrl).success(=>
+            @orig_url = @$scope.settings.deskpro_url
+            @save()
+          ).error(=>
+            @$scope.url_error = true
+            @stopSpinner('saving', true)
+
+            @$modal.open({
+              templateUrl: @getTemplatePath('Settings/modal-url-check-fail.html'),
+              controller: ['$scope', '$modalInstance', ($scope, $modalInstance) ->
+
+                $scope.url = me.$scope.settings.deskpro_url
+
+                $scope.dismiss = ->
+                  $modalInstance.dismiss();
+
+                $scope.continue = ->
+                  me.skip_url_check = true
+                  me.save()
+                  $modalInstance.close()
+              ]
+            })
+          )
+          return
 
       if @$scope.attach_user_exts_limitmode == 'allow'
         @$scope.settings.attach_user_not_exts = []

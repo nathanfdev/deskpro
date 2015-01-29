@@ -6,7 +6,6 @@
 
 .list-control-bar{
 	.gradient(#F0F1F3, #DADBDE);
-	height: 27px;
 	position: relative;
 	border-bottom: 1px solid #B6BABF;
 	overflow: hidden;
@@ -21,12 +20,11 @@
 
 .list-control-bar ul li{
 	font-family: @toolbar-font;
-	display: inline;
-	float: left;
+	display: inline-block;
 	color: #828e99;
 	padding: 0 2px;
 	text-shadow: 0 1px 0 #fff;
-	line-height: 30px;
+	line-height: 28px;
 }
 
 .list-control-bar ul li a.button, a.performActTrigger{
@@ -35,14 +33,11 @@
 	border: 1px solid #b6babf;
 	.border-radius(3px, 3px, 3px, 3px);
 	padding: 2px 8px 2px 6px;
-	float: left;
 	color: #626a73;
 	text-shadow: 0 1px 0 #fff;
 	cursor: pointer;
 	font-family: @toolbar-font;
 	line-height: 100%;
-	position: relative;
-	top: 5px;
 }
 
 .list-control-bar ul a.button.menu-open {
@@ -128,7 +123,7 @@
 
 .list-control-bar ul.btn-controls li a {
 	position: relative;
-	top: 5px;
+	top: 4px;
 }
 
 
@@ -267,6 +262,7 @@
 	width: 100%;
 	position: relative;
 	overflow: hidden;
+	overflow-y: scroll;
 }
 
 .list-listing i.flag {
@@ -558,6 +554,35 @@
 
 .list-listing .row-item.no-check .top-row {
 	left: 5px;
+}
+.list-listing .row-item .sub-items-link {
+  font-size: 11px;
+  background: #eee;
+  border-radius: 2px;
+  border: 1px solid #ccc;
+  padding: 1px 3px;
+  line-height: 100%;
+  cursor: pointer;
+  float: right;
+  position: relative;
+  top: 7px;
+  right: 5px;
+
+  &:hover {
+	color: #000;
+  }
+}
+.list-listing .row-item.single-row.sub-item {
+  padding:0;
+  background: #eee;
+
+  .top-row { padding: 3px 21px 3px 21px; }
+  .top-row .top-row-left .obj-id { font-size: 11px; padding: 0 1px 0 1px; }
+  .top-row .top-row-left h3 a { font-size: 11px; font-weight: normal; }
+  .top-row .top-row-right {
+	background: transparent;
+	padding-right: 21px;
+  }
 }
 .list-listing .row-item.single-row .top-row {
 	position: relative;

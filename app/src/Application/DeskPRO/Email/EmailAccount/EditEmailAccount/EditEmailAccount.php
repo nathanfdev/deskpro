@@ -171,7 +171,8 @@ class EditEmailAccount
         }
 
         if (!$trigger) {
-            $trigger                = new TicketTrigger();
+            $trigger = new TicketTrigger();
+            $trigger->is_enabled = (bool)$em->getConnection()->fetchColumn("SELECT id FROM ticket_triggers WHERE email_account_id IS NOT NULL AND is_enabled = 1 AND event_trigger = ?", array($trigger->event_trigger));
             $trigger->email_account = $this->account;
             $trigger->event_trigger = 'newticket';
             $trigger->by_agent_mode = array('email');

@@ -166,6 +166,11 @@ $collection->create('agent_quicksearch', array(
     'controller'  => 'AgentBundle:Main:quickSearch',
 ));
 
+$collection->create('agent_quicksearch_getpersontickets', array(
+    'path'        => '/quick-search/get-person-tickets.json',
+    'controller'  => 'AgentBundle:Main:getPersonTickets',
+));
+
 $collection->create('agent_recyclebin', array(
     'path'        => '/recycle-bin',
     'controller'  => 'AgentBundle:RecycleBin:list',
@@ -2205,6 +2210,12 @@ $collection->create('agent_jira_meta', array(
 	'methods'       => array('GET'),
 ));
 
+$collection->create('agent_jira_createmeta', array(
+    'path'          => '/jira/createmeta',
+    'controller'    => 'AgentBundle:Jira:getCreateMeta',
+    'methods'       => array('GET'),
+));
+
 $collection->create('agent_jira_search', array(
 	'path'          => '/jira/search',
 	'controller'    => 'AgentBundle:Jira:search',
@@ -2216,6 +2227,13 @@ $collection->create('agent_jira_ticket_issues_create', array(
 	'controller'    => 'AgentBundle:Jira:createIssue',
 	'methods'       => array('POST'),
 	'requirements'  => array('ticketId' => '\\d+'),
+));
+
+$collection->create('agent_jira_ticket_issue_update', array(
+    'path'          => '/jira/ticket/{ticketId}/issue/{issueId}',
+    'controller'    => 'AgentBundle:Jira:updateIssue',
+    'methods'       => array('PUT'),
+    'requirements'  => array('ticketId' => '\\d+', 'issueId' => '\\d+'),
 ));
 
 $collection->create('agent_jira_ticket_issues_list', array(

@@ -838,7 +838,7 @@ class Translate implements PersonContextInterface
                 if (isset($vars[$name])) {
                     return $vars[$name];
                 } elseif (isset($vars['_context'][$name])) {
-                    return $vars['_context'][$name];
+                    return @htmlspecialchars($vars['_context'][$name], \ENT_QUOTES, 'UTF-8');
                 }
 
                 return '';
@@ -856,9 +856,9 @@ class Translate implements PersonContextInterface
                     }
                 } elseif (isset($vars['_context'][$name])) {
                     if (isset($vars['_context'][$name][$prop])) {
-                        return $vars['_context'][$name][$prop];
+                        return @htmlspecialchars($vars['_context'][$name][$prop], \ENT_QUOTES, 'UTF-8');
                     } elseif (isset($vars['_context'][$name]->$prop)) {
-                        return $vars['_context'][$name]->$prop;
+                        return @htmlspecialchars($vars['_context'][$name]->$prop, \ENT_QUOTES, 'UTF-8');
                     }
                 } elseif ($prop) {
                     // If the top var exists, then its just an unset var

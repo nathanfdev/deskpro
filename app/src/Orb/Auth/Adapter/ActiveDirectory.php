@@ -39,6 +39,7 @@ use Orb\Auth\Identity;
 use Orb\Auth\Result;
 use Orb\Log\Loggable;
 use Orb\Log\Logger;
+use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
 class ActiveDirectory implements FormLoginInterface, Loggable
@@ -232,6 +233,19 @@ class ActiveDirectory implements FormLoginInterface, Loggable
                     }
                 }
 
+                if (!empty($raw_info['samaccountname'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['samaccountname']);
+                } elseif (!empty($raw_info['uid'])) {
+                    $raw_info['friendly_identity'] = Arrays::getFirstItem($raw_info['uid']);
+                }
+                if (!empty($raw_info['distinguishedname'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['distinguishedname']);
+                } elseif (!empty($raw_info['dn'])) {
+                    $raw_info['identity'] = Arrays::getFirstItem($raw_info['dn']);
+                } else {
+                    $raw_info['identity'] = $result->getIdentity();
+                }
+
                 $raw_info['domain'] = $this->options['accountDomainName'];
 
                 if ($rec->getAttribute('givenName')) {
@@ -280,7 +294,7 @@ class ActiveDirectory implements FormLoginInterface, Loggable
             $raw_info['exception_trace']   = KernelErrorHandler::formatBacktrace($e->getTrace());
         }
 
-        $identity = new Identity($result->getIdentity(), $raw_info);
+        $identity = new Identity($raw_info['identity'], $raw_info);
 
         return new Result(Result::SUCCESS, $identity);
     }

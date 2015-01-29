@@ -64,7 +64,7 @@ class LayoutField implements \Serializable
     /**
      * @var string
      */
-    private $on_viewticket_mode = self::VIEW_VALUE;
+    private $on_viewticket_mode = self::VIEW_ALWAYS;
 
     /**
      * @var bool

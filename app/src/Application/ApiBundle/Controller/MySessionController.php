@@ -52,6 +52,12 @@ class MySessionController extends AbstractController implements ProtectedControl
     {
         $session_id = $this->in->getString('session_id');
 
+        if (!$session_id) {
+            if ($this->api_user && $this->api_user->session) {
+                $session_id = $this->api_user->session->getSessionCode();
+            }
+        }
+
         // Ping the session
         if ($session_id) {
             $session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
