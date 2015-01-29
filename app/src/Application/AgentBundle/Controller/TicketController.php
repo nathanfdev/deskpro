@@ -2209,10 +2209,12 @@ class TicketController extends AbstractController
             ));
         }
 
+        $can_view = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+
         return $this->createJsonResponse(array(
             'ticket_id' => $ticket->getId(),
             'macro_id' => $macro->getId(),
-            'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']),
+            'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']) || !$can_view,
             'success' => true,
         ));
     }
