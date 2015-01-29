@@ -25,13 +25,50 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
+
 /**
- * @package Importer
+ * Kb csv file parser
+ *
+ * Class Kb
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-
-namespace Application\ImportBundle\Exception;
-
-class DuplicateValueException extends \Exception
+class Kb extends AbstractParser
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecordType()
+    {
+        return GeneratorInterface::RECORD_TYPE_KB;
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return $this->reader->getRowsCount($this->getConfig());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
+    }
+
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getConfig()
+    {
+        return $this->getReaderConfig(self::FILE_KB);
+    }
 }

@@ -25,7 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\OsTicket;
+namespace Application\ImportBundle\Reader\OsTicket;
 
 use Pdo;
 
@@ -56,7 +56,7 @@ use Pdo;
  * GROUP BY entry.object_id;
  *
  * Class OsTicketReader
- * @package Application\ImportBundle\OsTicket
+ * @package Application\ImportBundle\Reader\OsTicket
  */
 class OsTicketReader implements OsTicketReaderInterface
 {

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,13 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+
+use Application\ImportBundle\Entity;
+
 /**
- * @package Importer
+ * Class Kb
+ * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
-
-namespace Application\ImportBundle\Exception;
-
-class MultipleMappingException extends \Exception
+final class Kb implements DestinationInterface
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_KB;
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getEntityOutputPath()
+    {
+        return self::ENTITY_KB_PATH;
+    }
 }

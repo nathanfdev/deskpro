@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at http://www.deskpro.com/license                           |
+| can be found at https://www.deskpro.com/eula/                            |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,13 +25,49 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
+
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Entity;
+
 /**
- * @package Importer
+ * Class News
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-
-namespace Application\ImportBundle\Exception;
-
-class BadDataException extends \Exception
+class News extends AbstractParser
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecordType()
+    {
+        return GeneratorInterface::RECORD_TYPE_NEWS;
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return $this->reader->getDirectoryFilesCount($this->getConfig());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
+    }
+
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Json\JsonConfig
+     */
+    private function getConfig()
+    {
+        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_NEWS_PATH);
+    }
 }

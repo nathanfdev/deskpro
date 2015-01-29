@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,51 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Abstract csv parser
- *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class Article
+ * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+final class Article implements DestinationInterface
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_KB              = 'kb.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
-
     /**
-     * @var CsvReaderInterface
+     * {@inheritdoc}
      */
-    protected $reader;
-
-    /**
-     * Constructor
-     *
-     * @param CsvReaderInterface $reader
-     */
-    public function __construct(CsvReaderInterface $reader)
+    public function getEntityType()
     {
-        $this->reader = $reader;
+        return '';
     }
 
     /**
-     * Get csv reader config
-     *
-     * @param string $record_type
-     * @return CsvConfig
+     * {@inheritdoc}
      */
-    protected function getReaderConfig($record_type)
+    public function getEntityOutputPath()
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        return '';
     }
 }

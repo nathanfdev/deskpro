@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,29 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\CsvReader;
+namespace Application\ImportBundle\Generator\Writer\Json\Destination;
+
+use Application\ImportBundle\Entity;
 
 /**
- * Csv data parser interface
- *
- * Interface CsvReaderInterface
- * @package Application\ImportBundle\CsvReader
+ * Class Download
+ * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
-interface CsvReaderInterface
+final class Download implements DestinationInterface
 {
     /**
-     * Returns rows count of csv file
-     *
-     * @param CsvConfig $config
-     * @return int
+     * {@inheritdoc}
      */
-    public function getRowsCount(CsvConfig $config);
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_DOWNLOAD;
+    }
 
     /**
-     * Parse csv file into raw array
-     *
-     * @param CsvConfig $config
-     * @return array
+     * {@inheritdoc}
      */
-    public function getData(CsvConfig $config);
+    public function getEntityOutputPath()
+    {
+        return self::ENTITY_DOWNLOAD_PATH;
+    }
 }

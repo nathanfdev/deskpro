@@ -134,10 +134,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param int $oid
+     * @return $this
      */
     public function setOid($oid)
     {
         $this->oid = $oid;
+        return $this;
     }
 
     /**
@@ -150,10 +152,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param string $person_email
+     * @return $this
      */
     public function setPersonEmail($person_email)
     {
         $this->person_email = $person_email;
+        return $this;
     }
 
     /**
@@ -166,10 +170,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param string $language
+     * @return $this
      */
     public function setLanguage($language)
     {
         $this->language = $language;
+        return $this;
     }
 
     /**
@@ -182,10 +188,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param DateTime $date_end
+     * @return $this
      */
     public function setDateEnd($date_end)
     {
         $this->date_end = $date_end;
+        return $this;
     }
 
     /**
@@ -198,10 +206,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param string $end_action
+     * @return $this
      */
     public function setEndAction($end_action)
     {
         $this->end_action = $end_action;
+        return $this;
     }
 
     /**
@@ -214,10 +224,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param string $slug
+     * @return $this
      */
     public function setSlug($slug)
     {
         $this->slug = $slug;
+        return $this;
     }
 
     /**
@@ -230,10 +242,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param string $title
+     * @return $this
      */
     public function setTitle($title)
     {
         $this->title = $title;
+        return $this;
     }
 
     /**
@@ -246,10 +260,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param string $content
+     * @return $this
      */
     public function setContent($content)
     {
         $this->content = $content;
+        return $this;
     }
 
     /**
@@ -262,10 +278,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param int $total_rating
+     * @return $this
      */
     public function setTotalRating($total_rating)
     {
         $this->total_rating = $total_rating;
+        return $this;
     }
 
     /**
@@ -278,10 +296,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param int $num_comments
+     * @return $this
      */
     public function setNumComments($num_comments)
     {
         $this->num_comments = $num_comments;
+        return $this;
     }
 
     /**
@@ -294,10 +314,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param int $num_ratings
+     * @return $this
      */
     public function setNumRatings($num_ratings)
     {
         $this->num_ratings = $num_ratings;
+        return $this;
     }
 
     /**
@@ -310,10 +332,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param string $status
+     * @return $this
      */
     public function setStatus($status)
     {
         $this->status = $status;
+        return $this;
     }
 
     /**
@@ -326,10 +350,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param DateTime $date_created
+     * @return $this
      */
     public function setDateCreated(DateTime $date_created)
     {
         $this->date_created = $date_created;
+        return $this;
     }
 
     /**
@@ -342,10 +368,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param DateTime $date_published
+     * @return $this
      */
     public function setDatePublished(DateTime $date_published)
     {
         $this->date_published = $date_published;
+        return $this;
     }
 
     /**
@@ -358,10 +386,12 @@ final class Kb extends AbstractEntity
 
     /**
      * @param array $categories
+     * @return $this
      */
     public function setCategories($categories)
     {
         $this->categories = $categories;
+        return $this;
     }
 
     /**
@@ -373,11 +403,13 @@ final class Kb extends AbstractEntity
     }
 
     /**
-     * @param array $labels
+     * @param string $label
+     * @return $this
      */
-    public function setLabels($labels)
+    public function addLabel($label)
     {
-        $this->labels = $labels;
+        $this->labels[] = $label;
+        return $this;
     }
 
     /**

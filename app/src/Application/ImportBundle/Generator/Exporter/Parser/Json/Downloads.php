@@ -25,51 +25,49 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Entity;
 
 /**
- * Abstract csv parser
- *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class Downloads
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+class Downloads extends AbstractParser
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_KB              = 'kb.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
-
     /**
-     * @var CsvReaderInterface
+     * {@inheritdoc}
      */
-    protected $reader;
-
-    /**
-     * Constructor
-     *
-     * @param CsvReaderInterface $reader
-     */
-    public function __construct(CsvReaderInterface $reader)
+    public function getRecordType()
     {
-        $this->reader = $reader;
+        return GeneratorInterface::RECORD_TYPE_DOWNLOAD;
     }
 
     /**
-     * Get csv reader config
-     *
-     * @param string $record_type
-     * @return CsvConfig
+     * {@inheritdoc}
      */
-    protected function getReaderConfig($record_type)
+    public function getCount()
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        return $this->reader->getDirectoryFilesCount($this->getConfig());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
+    }
+
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Json\JsonConfig
+     */
+    private function getConfig()
+    {
+        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_DOWNLOAD_PATH);
     }
 }

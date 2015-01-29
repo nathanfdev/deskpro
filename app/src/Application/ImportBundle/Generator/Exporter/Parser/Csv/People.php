@@ -39,8 +39,6 @@ use DateTime;
  */
 class People extends AbstractParser
 {
-    const FILE_PEOPLE = 'people.csv';
-
     /**
      * {@inheritdoc}
      */
@@ -109,7 +107,7 @@ class People extends AbstractParser
     /**
      * Returns record type reader config
      *
-     * @return \Application\ImportBundle\CsvReader\CsvConfig
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
     private function getConfig()
     {

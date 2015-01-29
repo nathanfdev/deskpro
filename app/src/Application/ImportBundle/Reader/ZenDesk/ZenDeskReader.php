@@ -25,69 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\JsonReader;
+namespace Application\ImportBundle\Reader\ZenDesk;
 
 /**
- * Json data parser configuration
- *
- * Class JsonConfig
- * @package Application\ImportBundle\JsonReader
+ * Class ZenDeskReader
+ * @package Application\ImportBundle\Reader\ZenDesk
  */
-class JsonConfig
+class ZenDeskReader implements ZenDeskReaderInterface
 {
-    /**
-     * @var string
-     */
-    private $path;
 
-    /**
-     * @var bool
-     */
-    private $exclude_done = false;
-
-    /**
-     * Constructor
-     *
-     * @param string $path
-     */
-    public function __construct($path)
-    {
-        $this->path = $path;
-    }
-
-    /**
-     * @return string
-     */
-    public function getPath()
-    {
-        return $this->path;
-    }
-
-    /**
-     * @param string $path
-     * @return $this
-     */
-    public function setPath($path)
-    {
-        $this->path = $path;
-        return $this;
-    }
-
-    /**
-     * @return boolean
-     */
-    public function isExcludeDone()
-    {
-        return $this->exclude_done;
-    }
-
-    /**
-     * @param boolean $exclude_done
-     * @return $this
-     */
-    public function setExcludeDone($exclude_done)
-    {
-        $this->exclude_done = $exclude_done;
-        return $this;
-    }
 }

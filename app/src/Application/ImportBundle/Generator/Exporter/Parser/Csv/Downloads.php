@@ -25,81 +25,50 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\JsonReader;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
-use RecursiveIteratorIterator;
-use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
-use Symfony\Component\Finder\SplFileInfo;
-use Exception;
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Json data parser
+ * Downloads csv file parser
  *
- * Class JsonReader
- * @package Application\ImportBundle\JsonReader
+ * Class Downloads
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-class JsonReader implements JsonReaderInterface
+class Downloads extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
-    public function getDirectoryFilesCount(JsonConfig $config)
+    public function getRecordType()
     {
-        $count = 0;
-        $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
-        foreach ($iterator as $file) {
-            /** @var SplFileInfo $file */
-            $content = @json_decode($file->getContents(), true);
-            if (is_array($content)) {
-                $count++;
-            }
-        }
-
-        return $count;
+        return GeneratorInterface::RECORD_TYPE_DOWNLOAD;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getData(JsonConfig $config)
+    public function getCount()
     {
-        $data = array();
-        $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
-        foreach ($iterator as $file) {
-            /** @var SplFileInfo $file */
-            $content = @json_decode($file->getContents(), true);
-            if (is_array($content)) {
-                $data[] = $content;
-            }
-        }
-
-        return $data;
+        return $this->reader->getRowsCount($this->getConfig());
     }
 
     /**
-     * Returns directory json files iterator
-     *
-     * @param string $path
-     * @param bool   $exclude_done
-     *
-     * @return RecursiveIteratorIterator
-     * @throws Exception
+     * {@inheritdoc}
      */
-    public function getIterator($path, $exclude_done)
+    public function export()
     {
-        if (!is_dir($path)) {
-            throw new Exception(sprintf('Path `%s` not found', $path));
-        }
+        return new Entity\Collection();
+    }
 
-        return new RecursiveIteratorIterator(
-            new DirectoryIteratorFilter(
-                new RecursiveDirectoryIterator(
-                    $path,
-                    RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
-                ),
-                $exclude_done
-            ),
-            RecursiveIteratorIterator::SELF_FIRST | RecursiveIteratorIterator::LEAVES_ONLY
-        );
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getConfig()
+    {
+        return $this->getReaderConfig(self::FILE_DOWNLOADS);
     }
 }

@@ -25,7 +25,7 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\CsvReader;
+namespace Application\ImportBundle\Reader\Csv;
 
 use Symfony\Component\Translation\Exception\InvalidResourceException;
 use Symfony\Component\Translation\Exception\NotFoundResourceException;
@@ -37,7 +37,7 @@ use LimitIterator;
  * Csv data parser
  *
  * Class CsvReader
- * @package Application\ImportBundle\CsvReader
+ * @package Application\ImportBundle\Reader\Csv
  */
 class CsvReader implements CsvReaderInterface
 {

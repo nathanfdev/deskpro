@@ -25,51 +25,58 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
-
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+namespace Application\ImportBundle\Reader\OsTicket;
 
 /**
- * Abstract csv parser
+ * Os ticket exception (pdo exceptions)
  *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class OsTicketReaderException
+ * @package Application\ImportBundle\Reader\OsTicket
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+class OsTicketReaderException extends \Exception
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_KB              = 'kb.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
+    /**
+     * @var string
+     */
+    private $error_code;
 
     /**
-     * @var CsvReaderInterface
+     * @var array
      */
-    protected $reader;
+    private $error_info;
 
     /**
      * Constructor
      *
-     * @param CsvReaderInterface $reader
+     * @param string $message
+     * @param string $error_code
+     * @param array  $error_info
      */
-    public function __construct(CsvReaderInterface $reader)
+    public function __construct($message, $error_code, array $error_info = null)
     {
-        $this->reader = $reader;
+        parent::__construct($message);
+
+        $this->error_code = $error_code;
+        $this->error_info = $error_info;
     }
 
     /**
-     * Get csv reader config
+     * Returns error code
      *
-     * @param string $record_type
-     * @return CsvConfig
+     * @return string
      */
-    protected function getReaderConfig($record_type)
+    public function getErrorCode()
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        return $this->error_code;
+    }
+
+    /**
+     * Returns error info
+     *
+     * @return array
+     */
+    public function getErrorInfo()
+    {
+        return $this->error_info;
     }
 }

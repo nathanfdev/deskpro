@@ -40,9 +40,6 @@ use DateTime;
  */
 class Tickets extends AbstractParser
 {
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
-
     /**
      * {@inheritdoc}
      */
@@ -152,7 +149,7 @@ class Tickets extends AbstractParser
     /**
      * Returns reader of ticket records config
      *
-     * @return \Application\ImportBundle\CsvReader\CsvConfig
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
     private function getTicketsConfig()
     {
@@ -162,7 +159,7 @@ class Tickets extends AbstractParser
     /**
      * Returns reader of ticket message records config
      *
-     * @return \Application\ImportBundle\CsvReader\CsvConfig
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
      */
     private function getTiketMessagesConfig()
     {

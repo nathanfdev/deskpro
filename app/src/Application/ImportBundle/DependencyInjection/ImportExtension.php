@@ -44,24 +44,24 @@ class ImportExtension extends Extension
     public function load(array $config, ContainerBuilder $container)
     {
         // Csv reader
-        $definition = new Definition('Application\ImportBundle\CsvReader\CsvReader');
+        $definition = new Definition('Application\ImportBundle\Reader\Csv\CsvReader');
         $container->setDefinition('deskpro.import.csv_reader', $definition);
 
         // Json reader
-        $definition = new Definition('Application\ImportBundle\JsonReader\JsonReader');
+        $definition = new Definition('Application\ImportBundle\Reader\Json\JsonReader');
         $container->setDefinition('deskpro.import.json_reader', $definition);
 
         // OsTicket reader
-        $definition = new Definition('Application\ImportBundle\OsTicket\OsTicketReaderFactory');
+        $definition = new Definition('Application\ImportBundle\Reader\OsTicket\OsTicketReaderFactory');
         $container->setDefinition('deskpro.import.os_ticket_reader_factory', $definition);
 
-        $definition = new Definition('Application\ImportBundle\OsTicket\OsTicketReader');
+        $definition = new Definition('Application\ImportBundle\Reader\OsTicket\OsTicketReader');
         $definition->setFactoryService('deskpro.import.os_ticket_reader_factory');
         $definition->setFactoryMethod('createReaderByDeskproConfig');
         $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
 
         // ZenDesk reader
-        $definition = new Definition('Application\ImportBundle\ZenDesk\ZenDeskReader');
+        $definition = new Definition('Application\ImportBundle\Reader\ZenDesk\ZenDeskReader');
         $container->setDefinition('deskpro.import.zen_desk_reader', $definition);
 
         // Import generator

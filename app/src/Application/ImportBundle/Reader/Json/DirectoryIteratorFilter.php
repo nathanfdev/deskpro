@@ -25,51 +25,61 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
-
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+namespace Application\ImportBundle\Reader\Json;
 
 /**
- * Abstract csv parser
+ * Directory json files filter
  *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class DirectoryIteratorFilter
+ * @package Application\ImportBundle\Reader\Json
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+class DirectoryIteratorFilter extends \RecursiveFilterIterator
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_KB              = 'kb.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
-
     /**
-     * @var CsvReaderInterface
+     * @var bool
      */
-    protected $reader;
+    private $exclude_done = false;
 
     /**
      * Constructor
      *
-     * @param CsvReaderInterface $reader
+     * @param \RecursiveIterator $iterator
+     * @param boolean            $exclude_done
      */
-    public function __construct(CsvReaderInterface $reader)
+    public function __construct(\RecursiveIterator $iterator, $exclude_done)
     {
-        $this->reader = $reader;
+        parent::__construct($iterator);
+        $this->setExcludeDone($exclude_done);
     }
 
     /**
-     * Get csv reader config
-     *
-     * @param string $record_type
-     * @return CsvConfig
+     * @param boolean $exclude_done
+     * @return $this
      */
-    protected function getReaderConfig($record_type)
+    public function setExcludeDone($exclude_done)
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        $this->exclude_done = (bool)$exclude_done;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function accept()
+    {
+        /** @var \SplFileInfo $current */
+        $current = $this->current();
+
+        // Invalid type
+        if (!$current->isDir() && $current->getExtension() != 'json') {
+            return false;
+        }
+
+        // Already done
+        if ($this->exclude_done && file_exists($current->getPath() . '.done')) {
+            return false;
+        }
+
+        return true;
     }
 }

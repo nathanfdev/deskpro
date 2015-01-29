@@ -25,13 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
+
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Class ZenDeskReader
- * @package Application\ImportBundle\ZenDesk
+ * Class Downloads
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class ZenDeskReader implements ZenDeskReaderInterface
+class Downloads extends AbstractParser
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecordType()
+    {
+        return GeneratorInterface::RECORD_TYPE_DOWNLOAD;
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return 0;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
+    }
 }

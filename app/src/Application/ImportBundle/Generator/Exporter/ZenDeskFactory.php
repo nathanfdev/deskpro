@@ -26,7 +26,7 @@
 \**************************************************************************/
 
 namespace Application\ImportBundle\Generator\Exporter;
-use Application\ImportBundle\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
  * Class ZenDeskFactory

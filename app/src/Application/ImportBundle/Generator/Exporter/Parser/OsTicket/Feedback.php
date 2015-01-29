@@ -25,58 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\OsTicket;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
+
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Os ticket exception (pdo exceptions)
- *
- * Class OsTicketReaderException
- * @package Application\ImportBundle\OsTicket
+ * Class Feedback
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class OsTicketReaderException extends \Exception
+class Feedback extends AbstractParser
 {
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    private $error_code;
-
-    /**
-     * @var array
-     */
-    private $error_info;
-
-    /**
-     * Constructor
-     *
-     * @param string $message
-     * @param string $error_code
-     * @param array  $error_info
-     */
-    public function __construct($message, $error_code, array $error_info = null)
+    public function getRecordType()
     {
-        parent::__construct($message);
-
-        $this->error_code = $error_code;
-        $this->error_info = $error_info;
+        return GeneratorInterface::RECORD_TYPE_DOWNLOAD;
     }
 
     /**
-     * Returns error code
-     *
-     * @return string
+     * {@inheritdoc}
      */
-    public function getErrorCode()
+    public function getCount()
     {
-        return $this->error_code;
+        return 0;
     }
 
     /**
-     * Returns error info
-     *
-     * @return array
+     * {@inheritdoc}
      */
-    public function getErrorInfo()
+    public function export()
     {
-        return $this->error_info;
+        return new Entity\Collection();
     }
 }

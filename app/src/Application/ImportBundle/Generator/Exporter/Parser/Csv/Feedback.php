@@ -25,13 +25,50 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ZenDesk;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Interface ZenDeskReaderInterface
- * @package Application\ImportBundle\ZenDesk
+ * Feedback csv file parser
+ *
+ * Class Feedback
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-interface ZenDeskReaderInterface
+class Feedback extends AbstractParser
 {
+    /**
+     * {@inheritdoc}
+     */
+    public function getRecordType()
+    {
+        return GeneratorInterface::RECORD_TYPE_FEEDBACK;
+    }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function getCount()
+    {
+        return $this->reader->getRowsCount($this->getConfig());
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
+    }
+
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     */
+    private function getConfig()
+    {
+        return $this->getReaderConfig(self::FILE_FEEDBACK);
+    }
 }

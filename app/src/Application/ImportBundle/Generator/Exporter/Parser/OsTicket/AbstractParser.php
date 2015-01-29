@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
-use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
 
 /**
  * Abstract osTicket parser

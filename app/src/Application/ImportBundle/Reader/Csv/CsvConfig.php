@@ -25,51 +25,115 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
-
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+namespace Application\ImportBundle\Reader\Csv;
 
 /**
- * Abstract csv parser
+ * Csv data parser configuration
  *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class CsvConfig
+ * @package Application\ImportBundle\Reader\Csv
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+class CsvConfig
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_KB              = 'kb.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
+    /**
+     * @var string
+     */
+    private $resource;
 
     /**
-     * @var CsvReaderInterface
+     * @var string
      */
-    protected $reader;
+    private $delimiter = ';';
+
+    /**
+     * @var string
+     */
+    private $enclosure = '"';
+
+    /**
+     * @var string
+     */
+    private $escape = '\\';
 
     /**
      * Constructor
      *
-     * @param CsvReaderInterface $reader
+     * @param string $resource
      */
-    public function __construct(CsvReaderInterface $reader)
+    public function __construct($resource)
     {
-        $this->reader = $reader;
+        $this->resource = $resource;
     }
 
     /**
-     * Get csv reader config
-     *
-     * @param string $record_type
-     * @return CsvConfig
+     * @return string
      */
-    protected function getReaderConfig($record_type)
+    public function getResource()
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        return $this->resource;
+    }
+
+    /**
+     * @param string $resource
+     * @return $this
+     */
+    public function setResource($resource)
+    {
+        $this->resource = $resource;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getDelimiter()
+    {
+        return $this->delimiter;
+    }
+
+    /**
+     * @param string $delimiter
+     * @return $this
+     */
+    public function setDelimiter($delimiter)
+    {
+        $this->delimiter = $delimiter;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEnclosure()
+    {
+        return $this->enclosure;
+    }
+
+    /**
+     * @param string $enclosure
+     * @return $this
+     */
+    public function setEnclosure($enclosure)
+    {
+        $this->enclosure = $enclosure;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEscape()
+    {
+        return $this->escape;
+    }
+
+    /**
+     * @param string $escape
+     * @return $this
+     */
+    public function setEscape($escape)
+    {
+        $this->escape = $escape;
+        return $this;
     }
 }

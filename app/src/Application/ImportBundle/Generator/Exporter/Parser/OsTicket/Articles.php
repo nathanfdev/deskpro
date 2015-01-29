@@ -25,115 +25,38 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\CsvReader;
+namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
+
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Entity;
 
 /**
- * Csv data parser configuration
- *
- * Class CsvConfig
- * @package Application\ImportBundle\CsvReader
+ * Class Articles
+ * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class CsvConfig
+class Articles extends AbstractParser
 {
     /**
-     * @var string
+     * {@inheritdoc}
      */
-    private $resource;
-
-    /**
-     * @var string
-     */
-    private $delimiter = ';';
-
-    /**
-     * @var string
-     */
-    private $enclosure = '"';
-
-    /**
-     * @var string
-     */
-    private $escape = '\\';
-
-    /**
-     * Constructor
-     *
-     * @param string $resource
-     */
-    public function __construct($resource)
+    public function getRecordType()
     {
-        $this->resource = $resource;
+        return GeneratorInterface::RECORD_TYPE_ARTICLE;
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
-    public function getResource()
+    public function getCount()
     {
-        return $this->resource;
+        return 0;
     }
 
     /**
-     * @param string $resource
-     * @return $this
+     * {@inheritdoc}
      */
-    public function setResource($resource)
+    public function export()
     {
-        $this->resource = $resource;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getDelimiter()
-    {
-        return $this->delimiter;
-    }
-
-    /**
-     * @param string $delimiter
-     * @return $this
-     */
-    public function setDelimiter($delimiter)
-    {
-        $this->delimiter = $delimiter;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEnclosure()
-    {
-        return $this->enclosure;
-    }
-
-    /**
-     * @param string $enclosure
-     * @return $this
-     */
-    public function setEnclosure($enclosure)
-    {
-        $this->enclosure = $enclosure;
-        return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getEscape()
-    {
-        return $this->escape;
-    }
-
-    /**
-     * @param string $escape
-     * @return $this
-     */
-    public function setEscape($escape)
-    {
-        $this->escape = $escape;
-        return $this;
+        return new Entity\Collection();
     }
 }

@@ -25,13 +25,29 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\ImportBundle\Reader\Csv;
+
 /**
- * @package Importer
+ * Csv data parser interface
+ *
+ * Interface CsvReaderInterface
+ * @package Application\ImportBundle\Reader\Csv
  */
-
-namespace Application\ImportBundle\Exception;
-
-class MissingMappingException extends \Exception
+interface CsvReaderInterface
 {
+    /**
+     * Returns rows count of csv file
+     *
+     * @param CsvConfig $config
+     * @return int
+     */
+    public function getRowsCount(CsvConfig $config);
 
+    /**
+     * Parse csv file into raw array
+     *
+     * @param CsvConfig $config
+     * @return array
+     */
+    public function getData(CsvConfig $config);
 }

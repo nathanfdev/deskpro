@@ -25,51 +25,74 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+namespace Application\ImportBundle\Reader\OsTicket;
 
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+use PDO;
 
 /**
- * Abstract csv parser
+ * Prevent exceptions if pdo configuration is not valid
  *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class PdoConnection
+ * @package Application\ImportBundle\Reader\OsTicket
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+class LazyConnectionWrapper implements ConnectionWrapperInterface
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_KB              = 'kb.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
+    /**
+     * @var string
+     */
+    private $dsn;
 
     /**
-     * @var CsvReaderInterface
+     * @var string
      */
-    protected $reader;
+    private $user;
+
+    /**
+     * @var string
+     */
+    private $password;
+
+    /**
+     * @var array
+     */
+    private $options;
+
+    /**
+     * @var PDO
+     */
+    private $adapter;
 
     /**
      * Constructor
      *
-     * @param CsvReaderInterface $reader
+     * @param string $dsn
+     * @param string $user
+     * @param string $password
+     * @param array  $options
      */
-    public function __construct(CsvReaderInterface $reader)
+    public function __construct($dsn, $user = null, $password = null, array $options = null)
     {
-        $this->reader = $reader;
+        $this->dsn      = $dsn;
+        $this->user     = $user;
+        $this->password = $password;
+        $this->options  = $options;
     }
 
     /**
-     * Get csv reader config
+     * Returns pdo connection
      *
-     * @param string $record_type
-     * @return CsvConfig
+     * @return PDO
      */
-    protected function getReaderConfig($record_type)
+    public function getConnection()
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        if (!$this->adapter) {
+            $this->adapter = new PDO(
+                $this->dsn,
+                $this->user,
+                $this->password
+            );
+        }
+
+        return $this->adapter;
     }
 }

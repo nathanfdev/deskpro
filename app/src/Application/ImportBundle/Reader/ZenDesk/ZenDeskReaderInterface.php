@@ -25,20 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\OsTicket;
+namespace Application\ImportBundle\Reader\ZenDesk;
 
 /**
- * Pdo connection wrapper interface
- *
- * Interface GetConnectionInterface
- * @package Application\ImportBundle\OsTicket
+ * Interface ZenDeskReaderInterface
+ * @package Application\ImportBundle\Reader\ZenDesk
  */
-interface ConnectionWrapperInterface
+interface ZenDeskReaderInterface
 {
-    /**
-     * Returns pdo connection
-     *
-     * @return \PDO
-     */
-    public function getConnection();
+
 }

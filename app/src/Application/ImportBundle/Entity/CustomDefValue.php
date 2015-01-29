@@ -68,10 +68,12 @@ final class CustomDefValue extends AbstractEntity
 
     /**
      * @param int $oid
+     * @return $this
      */
     public function setOid($oid)
     {
         $this->oid = $oid;
+        return $this;
     }
 
     /**
@@ -84,10 +86,12 @@ final class CustomDefValue extends AbstractEntity
 
     /**
      * @param string $key
+     * @return $this
      */
     public function setKey($key)
     {
         $this->key = $key;
+        return $this;
     }
 
     /**
@@ -100,10 +104,12 @@ final class CustomDefValue extends AbstractEntity
 
     /**
      * @param mixed $value
+     * @return $this
      */
     public function setValue($value)
     {
         $this->value = $value;
+        return $this;
     }
 
     /**

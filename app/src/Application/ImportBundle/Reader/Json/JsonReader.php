@@ -25,51 +25,81 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+namespace Application\ImportBundle\Reader\Json;
 
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+use RecursiveIteratorIterator;
+use Symfony\Component\Finder\Iterator\RecursiveDirectoryIterator;
+use Symfony\Component\Finder\SplFileInfo;
+use Exception;
 
 /**
- * Abstract csv parser
+ * Json data parser
  *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class JsonReader
+ * @package Application\ImportBundle\Reader\Json
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+class JsonReader implements JsonReaderInterface
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_KB              = 'kb.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
-
     /**
-     * @var CsvReaderInterface
+     * {@inheritdoc}
      */
-    protected $reader;
-
-    /**
-     * Constructor
-     *
-     * @param CsvReaderInterface $reader
-     */
-    public function __construct(CsvReaderInterface $reader)
+    public function getDirectoryFilesCount(JsonConfig $config)
     {
-        $this->reader = $reader;
+        $count = 0;
+        $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
+        foreach ($iterator as $file) {
+            /** @var SplFileInfo $file */
+            $content = @json_decode($file->getContents(), true);
+            if (is_array($content)) {
+                $count++;
+            }
+        }
+
+        return $count;
     }
 
     /**
-     * Get csv reader config
-     *
-     * @param string $record_type
-     * @return CsvConfig
+     * {@inheritdoc}
      */
-    protected function getReaderConfig($record_type)
+    public function getData(JsonConfig $config)
     {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+        $data = array();
+        $iterator = $this->getIterator($config->getPath(), $config->isExcludeDone());
+        foreach ($iterator as $file) {
+            /** @var SplFileInfo $file */
+            $content = @json_decode($file->getContents(), true);
+            if (is_array($content)) {
+                $data[] = $content;
+            }
+        }
+
+        return $data;
+    }
+
+    /**
+     * Returns directory json files iterator
+     *
+     * @param string $path
+     * @param bool   $exclude_done
+     *
+     * @return RecursiveIteratorIterator
+     * @throws Exception
+     */
+    public function getIterator($path, $exclude_done)
+    {
+        if (!is_dir($path)) {
+            throw new Exception(sprintf('Path `%s` not found', $path));
+        }
+
+        return new RecursiveIteratorIterator(
+            new DirectoryIteratorFilter(
+                new RecursiveDirectoryIterator(
+                    $path,
+                    RecursiveDirectoryIterator::SKIP_DOTS | RecursiveDirectoryIterator::CURRENT_AS_FILEINFO
+                ),
+                $exclude_done
+            ),
+            RecursiveIteratorIterator::SELF_FIRST | RecursiveIteratorIterator::LEAVES_ONLY
+        );
     }
 }

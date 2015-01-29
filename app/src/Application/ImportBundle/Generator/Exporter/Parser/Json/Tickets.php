@@ -158,7 +158,7 @@ class Tickets extends AbstractParser
     /**
      * Returns record type reader config
      *
-     * @return \Application\ImportBundle\JsonReader\JsonConfig
+     * @return \Application\ImportBundle\Reader\Json\JsonConfig
      */
     private function getConfig()
     {

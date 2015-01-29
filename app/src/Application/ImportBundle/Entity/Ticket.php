@@ -598,16 +598,28 @@ final class Ticket extends AbstractEntity
         }
 
         return array(
-            'ref'          => $this->ref,
-            'department'   => $this->department,
-            'person'       => $this->person_email,
-            'agent'        => $this->agent_email,
-            'agent_team'   => $this->agent_team,
-            'status'       => $this->status,
-            'date_created' => $this->date_created->format('Y-m-d H:i:s'),
-            'subject'      => $this->subject,
-            'priority'     => $this->priority,
-            'messages'     => $messages,
+            'oid'           => $this->oid,
+            'ref'           => $this->ref,
+            'department'    => $this->department,
+            'person'        => $this->person_email,
+            'agent'         => $this->agent_email,
+            'agent_team'    => $this->agent_team,
+            'status'        => $this->status,
+            'date_created'  => $this->date_created->format('Y-m-d H:i:s'),
+            'date_resolved' => $this->date_resolved ? $this->date_resolved->format('Y-m-d H:i:s') : null,
+            'date_archived' => $this->date_archived ? $this->date_archived->format('Y-m-d H:i:s') : null,
+            'subject'       => $this->subject,
+            'priority'      => $this->priority,
+            'language'      => $this->language,
+            'category'      => $this->category,
+            'workflow'      => $this->workflow,
+            'product'       => $this->product,
+            'organization'  => $this->organization,
+            'is_hold'       => $this->is_hold,
+            'urgency'       => $this->urgency,
+            'participants'  => $this->participants,
+            'labels'        => $this->labels,
+            'messages'      => $messages,
         );
     }
 

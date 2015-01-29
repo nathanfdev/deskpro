@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\ZenDesk\ZenDeskReaderInterface;
+use Application\ImportBundle\Reader\ZenDesk\ZenDeskReaderInterface;
 
 /**
  * Abstract zenDesk parser

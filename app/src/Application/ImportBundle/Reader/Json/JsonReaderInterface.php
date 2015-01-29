@@ -25,74 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\OsTicket;
-
-use PDO;
+namespace Application\ImportBundle\Reader\Json;
 
 /**
- * Prevent exceptions if pdo configuration is not valid
+ * Json data parser interface
  *
- * Class PdoConnection
- * @package Application\ImportBundle\OsTicket
+ * Interface JsonReaderInterface
+ * @package Application\ImportBundle\Reader\Json
  */
-class LazyConnectionWrapper implements ConnectionWrapperInterface
+interface JsonReaderInterface
 {
     /**
-     * @var string
-     */
-    private $dsn;
-
-    /**
-     * @var string
-     */
-    private $user;
-
-    /**
-     * @var string
-     */
-    private $password;
-
-    /**
-     * @var array
-     */
-    private $options;
-
-    /**
-     * @var PDO
-     */
-    private $adapter;
-
-    /**
-     * Constructor
+     * Returns count of json files in the dir
+     * One record per file
      *
-     * @param string $dsn
-     * @param string $user
-     * @param string $password
-     * @param array  $options
+     * @param JsonConfig $config
+     * @return int
      */
-    public function __construct($dsn, $user = null, $password = null, array $options = null)
-    {
-        $this->dsn      = $dsn;
-        $this->user     = $user;
-        $this->password = $password;
-        $this->options  = $options;
-    }
+    public function getDirectoryFilesCount(JsonConfig $config);
 
     /**
-     * Returns pdo connection
+     * Returns directory files data
+     * Reads all directory json files, decode and returns  array
      *
-     * @return PDO
+     * @param JsonConfig $config
+     * @return array
      */
-    public function getConnection()
-    {
-        if (!$this->adapter) {
-            $this->adapter = new PDO(
-                $this->dsn,
-                $this->user,
-                $this->password
-            );
-        }
-
-        return $this->adapter;
-    }
+    public function getData(JsonConfig $config);
 }

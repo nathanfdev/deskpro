@@ -510,15 +510,24 @@ final class Person extends AbstractEntity
         }
 
         return array(
-            'oid'          => $this->oid,
-            'is_agent'     => $this->is_agent,
-            'is_user'      => $this->is_user,
-            'first_name'   => $this->first_name,
-            'last_name'    => $this->last_name,
-            'name'         => $this->name,
-            'timezone'     => $this->timezone,
-            'date_created' => $this->date_created->format('Y-m-d H:i:s'),
-            'emails'       => $this->emails,
+            'oid'                   => $this->oid,
+            'is_agent'              => $this->is_agent,
+            'is_user'               => $this->is_user,
+            'is_admin'              => $this->is_admin,
+            'first_name'            => $this->first_name,
+            'last_name'             => $this->last_name,
+            'name'                  => $this->name,
+            'override_display_name' => $this->override_display_name,
+            'password'              => $this->password,
+            'password_scheme'       => $this->password_scheme,
+            'timezone'              => $this->timezone,
+            'date_created'          => $this->date_created->format('Y-m-d H:i:s'),
+            'language'              => $this->language,
+            'organization'          => $this->organization,
+            'organization_position' => $this->organization_position,
+            'emails'                => $this->emails,
+            'labels'                => $this->labels,
+            'user_groups'           => $this->user_groups,
         );
     }
 

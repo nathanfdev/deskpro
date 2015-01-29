@@ -25,51 +25,20 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
-
-use Application\ImportBundle\Reader\Csv\CsvConfig;
-use Application\ImportBundle\Reader\Csv\CsvReaderInterface;
+namespace Application\ImportBundle\Reader\OsTicket;
 
 /**
- * Abstract csv parser
+ * Pdo connection wrapper interface
  *
- * Class AbstractCsv
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Interface GetConnectionInterface
+ * @package Application\ImportBundle\Reader\OsTicket
  */
-abstract class AbstractParser extends \Application\ImportBundle\Generator\Exporter\Parser\AbstractParser
+interface ConnectionWrapperInterface
 {
-    const FILE_ARTICLES        = 'articles.csv';
-    const FILE_DOWNLOADS       = 'downloads.csv';
-    const FILE_KB              = 'kb.csv';
-    const FILE_FEEDBACK        = 'feedback.csv';
-    const FILE_NEWS            = 'news.csv';
-    const FILE_PEOPLE          = 'people.csv';
-    const FILE_TICKETS         = 'tickets.csv';
-    const FILE_TICKET_MESSAGES = 'messages.csv';
-
     /**
-     * @var CsvReaderInterface
-     */
-    protected $reader;
-
-    /**
-     * Constructor
+     * Returns pdo connection
      *
-     * @param CsvReaderInterface $reader
+     * @return \PDO
      */
-    public function __construct(CsvReaderInterface $reader)
-    {
-        $this->reader = $reader;
-    }
-
-    /**
-     * Get csv reader config
-     *
-     * @param string $record_type
-     * @return CsvConfig
-     */
-    protected function getReaderConfig($record_type)
-    {
-        return new CsvConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
-    }
+    public function getConnection();
 }

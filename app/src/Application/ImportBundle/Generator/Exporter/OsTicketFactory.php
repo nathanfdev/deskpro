@@ -27,7 +27,7 @@
 
 namespace Application\ImportBundle\Generator\Exporter;
 
-use Application\ImportBundle\OsTicket\OsTicketReaderInterface;
+use Application\ImportBundle\Reader\OsTicket\OsTicketReaderInterface;
 
 /**
  * OsTicket data generator factory

@@ -25,31 +25,69 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\JsonReader;
+namespace Application\ImportBundle\Reader\Json;
 
 /**
- * Json data parser interface
+ * Json data parser configuration
  *
- * Interface JsonReaderInterface
- * @package Application\ImportBundle\JsonReader
+ * Class JsonConfig
+ * @package Application\ImportBundle\Reader\Json
  */
-interface JsonReaderInterface
+class JsonConfig
 {
     /**
-     * Returns count of json files in the dir
-     * One record per file
-     *
-     * @param JsonConfig $config
-     * @return int
+     * @var string
      */
-    public function getDirectoryFilesCount(JsonConfig $config);
+    private $path;
 
     /**
-     * Returns directory files data
-     * Reads all directory json files, decode and returns  array
-     *
-     * @param JsonConfig $config
-     * @return array
+     * @var bool
      */
-    public function getData(JsonConfig $config);
+    private $exclude_done = false;
+
+    /**
+     * Constructor
+     *
+     * @param string $path
+     */
+    public function __construct($path)
+    {
+        $this->path = $path;
+    }
+
+    /**
+     * @return string
+     */
+    public function getPath()
+    {
+        return $this->path;
+    }
+
+    /**
+     * @param string $path
+     * @return $this
+     */
+    public function setPath($path)
+    {
+        $this->path = $path;
+        return $this;
+    }
+
+    /**
+     * @return boolean
+     */
+    public function isExcludeDone()
+    {
+        return $this->exclude_done;
+    }
+
+    /**
+     * @param boolean $exclude_done
+     * @return $this
+     */
+    public function setExcludeDone($exclude_done)
+    {
+        $this->exclude_done = $exclude_done;
+        return $this;
+    }
 }

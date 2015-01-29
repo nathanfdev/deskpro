@@ -25,61 +25,49 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\JsonReader;
+namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
+
+use Application\ImportBundle\Generator\GeneratorInterface;
+use Application\ImportBundle\Generator\Writer\Json\Destination;
+use Application\ImportBundle\Entity;
 
 /**
- * Directory json files filter
- *
- * Class DirectoryIteratorFilter
- * @package Application\ImportBundle\JsonReader
+ * Class Articles
+ * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-class DirectoryIteratorFilter extends \RecursiveFilterIterator
+class Articles extends AbstractParser
 {
     /**
-     * @var bool
+     * {@inheritdoc}
      */
-    private $exclude_done = false;
-
-    /**
-     * Constructor
-     *
-     * @param \RecursiveIterator $iterator
-     * @param boolean            $exclude_done
-     */
-    public function __construct(\RecursiveIterator $iterator, $exclude_done)
+    public function getRecordType()
     {
-        parent::__construct($iterator);
-        $this->setExcludeDone($exclude_done);
-    }
-
-    /**
-     * @param boolean $exclude_done
-     * @return $this
-     */
-    public function setExcludeDone($exclude_done)
-    {
-        $this->exclude_done = (bool)$exclude_done;
-        return $this;
+        return GeneratorInterface::RECORD_TYPE_ARTICLE;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function accept()
+    public function getCount()
     {
-        /** @var \SplFileInfo $current */
-        $current = $this->current();
+        return $this->reader->getDirectoryFilesCount($this->getConfig());
+    }
 
-        // Invalid type
-        if (!$current->isDir() && $current->getExtension() != 'json') {
-            return false;
-        }
+    /**
+     * {@inheritdoc}
+     */
+    public function export()
+    {
+        return new Entity\Collection();
+    }
 
-        // Already done
-        if ($this->exclude_done && file_exists($current->getPath() . '.done')) {
-            return false;
-        }
-
-        return true;
+    /**
+     * Returns record type reader config
+     *
+     * @return \Application\ImportBundle\Reader\Json\JsonConfig
+     */
+    private function getConfig()
+    {
+        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ARTICLE_PATH);
     }
 }

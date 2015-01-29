@@ -27,8 +27,8 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\JsonReader\JsonConfig;
-use Application\ImportBundle\JsonReader\JsonReaderInterface;
+use Application\ImportBundle\Reader\Json\JsonConfig;
+use Application\ImportBundle\Reader\Json\JsonReaderInterface;
 
 /**
  * Abstract json parser

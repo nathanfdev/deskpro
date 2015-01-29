@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\ImportBundle\OsTicket;
+namespace Application\ImportBundle\Reader\OsTicket;
 
 use Exception;
 
@@ -8,7 +8,7 @@ use Exception;
  * Os ticket reader factory
  *
  * Class OsTicketReaderFactory
- * @package Application\ImportBundle\OsTicket
+ * @package Application\ImportBundle\Reader\OsTicket
  */
 class OsTicketReaderFactory
 {

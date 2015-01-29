@@ -25,13 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\OsTicket;
+namespace Application\ImportBundle\Reader\OsTicket;
 
 /**
  * Os ticket reader interface
  *
  * Interface OsTicketReaderInterface
- * @package Application\ImportBundle\OsTicket
+ * @package Application\ImportBundle\Reader\OsTicket
  */
 interface OsTicketReaderInterface
 {
