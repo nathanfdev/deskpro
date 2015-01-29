@@ -100,6 +100,28 @@ class FeedbackController extends AbstractController
     }
 
     /**
+     * @Tag(name="item")
+     *
+     * @TagOptions(
+     *      required={"item"},
+     *      allowed_types={
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      }
+     * )
+     */
+    public function itemAction(TagRequest $tag_request, array $options)
+    {
+        $item = $this->getFeedbackDataService()->getItem($options['item']);
+
+        return $this->renderThemeView(
+            'Theme:Feedback:Tag/item.html.twig',
+            array(
+                'item' => $item
+            )
+        );
+    }
+
+    /**
      * @Tag(name="feedback_pager")
      *
      * @TagOptions(
@@ -155,7 +177,9 @@ class FeedbackController extends AbstractController
      *
      * @TagOptions(
      *      defaults={"item": null},
-     *      allowed_types={"item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}}
+     *      allowed_types={
+     *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      }
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")

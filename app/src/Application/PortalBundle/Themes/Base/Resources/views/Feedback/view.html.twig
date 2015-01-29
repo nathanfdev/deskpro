@@ -2,73 +2,11 @@
 
 {% block inner_content %}
     {{ page.feedback_breadcrumbs()|raw }}
-    <article class="feedback main-feedback">
-        <div class="feedback-item">
-            <div class="feedback-item-controls">
-                <a href="{{ path('portal_feedback_vote_up', { slug: item.slug }) }}" class="i-agree">
-                    <i class="fa fa-thumbs-up"></i>
-                    <div>I agree</div>
-                    <span class="counter">{{ item.total_rating }}</span>
-                </a>
-
-                <a href="#" class="star">
-                    <i class="fa fa-star-o"></i>
-                    <div>2</div>
-                </a>
-            </div>
-
-            <div class="feedback-item-content">
-                <span class="feedback-status">{{ item.status_category ?: item.status }}</span>
-
-
-                <h1>
-                    <span class="text-tag">{{ item.category }}</span>
-                    <a href="{{ path('portal_feedback_view', { slug: item.slug }) }}">{{ item.title }}</a>
-                </h1>
-
-
-                <div class="comment">
-                    <p>{{ item.content_html|raw }}</p>
-                </div>
-
-                <div class="feedback-item-meta">
-                    <ul>
-                        <li><i class="fa fa-user"></i> {{ item.person.display_name }}</li>
-                        <li><a href="{{ path('portal_feedback_view', { slug: item.slug }) }}"><i
-                                        class="fa fa-comment"></i> {{ item.num_comments }} comments</a></li>
-                        {% if item.getCustomDataSelection() %}
-                        <li><a href="#"><i class="fa fa-inbox"></i> {{ item.getCustomDataSelection().title }}</a></li>
-                        {% endif %}
-                        {% if item.labels|length %}
-                            <li><i class="fa fa-tags"></i>{{ item.labels|join }}</li>
-                        {% endif %}
-                    </ul>
-                </div>
-
-                <div class="attached">
-                    {% if item.attachments|length > 0 %}
-                        <h3>Attachements:</h3>
-                        {% for attachment in item.attachments %}
-                            <a href="{{ attachment.blob.downloadUrl }}" class="attachement">
-                                {% if attachment.blob.is_image %}
-                                    <img src="{{ attachment.blob.thumbnailUrl }}" alt="{{ attachment.blob.filename }}">
-                                {% endif %}
-                                {{ attachment.blob.filename }}
-                                <span class="attachement-size">{{ attachment.blob.filesize }} bytes </span>
-                            </a><br>
-                        {% endfor %}
-                    {% endif %}
-                </div>
-            </div>
-            <!-- End feedback-item-content -->
-        </div>
-        <!-- End feedback-item -->
-    </article>
-
+    {{ page.item()|raw }}
     <article class="kb-article">
-            {{ page.feedback_ratings()|raw }}
-            {{ page.feedback_comments()|raw }}
-            {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
-            {{ page.related_content()|raw }}
+        {{ page.feedback_ratings()|raw }}
+        {{ page.feedback_comments()|raw }}
+        {% include 'Theme:Common:comments_new_form.html.twig' with { new_comment_form: new_comment_form } %}
+        {{ page.related_content()|raw }}
     </article>
 {% endblock inner_content %}
