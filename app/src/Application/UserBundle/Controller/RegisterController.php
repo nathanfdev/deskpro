@@ -62,13 +62,8 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
         $captcha = null;
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
-        $limitHit = $rateLimit->getResponse(
-            RateLimit::ACT_REGISTRATION,
-            $this->session->getPerson(),
-            $this->request->getClientIp()
-        );
 
-        if ($this->container->getSetting('user.register_captcha') || $limitHit) {
+        if ($this->container->getSetting('user.register_captcha') || $rateLimit->isActionLimited(RateLimit::ACT_REGISTRATION)) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
         }
 

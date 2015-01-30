@@ -104,8 +104,7 @@ class CoreExtension extends Extension
         $container->setDefinition('form.cleaner_extension', $definition);
 
         $container->register(RateLimit::KEY, 'Application\DeskPRO\Service\RateLimit')
-            ->addArgument(new Reference('deskpro.core.settings'))
-            ->addArgument(new Reference('doctrine.orm.entity_manager'));
+            ->addArgument(new Reference('service_container'));
 
         $this->loadPeople($container);
         $this->loadInputReader($container);

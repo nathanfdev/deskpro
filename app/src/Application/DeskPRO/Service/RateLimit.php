@@ -30,11 +30,10 @@
 namespace Application\DeskPRO\Service;
 
 
+use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\RateLimitLog;
-use Application\DeskPRO\ORM\EntityManager;
 use Application\DeskPRO\People\PersonGuest;
-use Application\DeskPRO\Settings\Settings;
 
 class RateLimit
 {
@@ -49,18 +48,14 @@ class RateLimit
 	const ACT_SUBMIT_TICKET = 'submit_ticket';
 
 
-	/** @var Settings  */
-	protected $settings;
-
-	/** @var RateLimitLog  */
-	protected $rep;
+	/** @var DeskproContainer  */
+	protected $container;
 
 	protected $params_cache = array();
 
-	public function __construct(Settings $settings, EntityManager $em)
+	public function __construct(DeskproContainer $continer)
 	{
-		$this->settings = $settings;
-		$this->rep = $em->getRepository('DeskPRO:RateLimitLog');
+		$this->container = $continer;
 	}
 
 	/**
@@ -76,7 +71,9 @@ class RateLimit
 			throw new \Exception('Invalid rate limit action');
 		}
 
-		$this->rep->save($action, $person, $ip);
+		/** @var RateLimitLog $rep */
+		$rep = $this->container->getEm()->getRepository('DeskPRO:RateLimitLog');
+		$rep->save($action, $person, $ip);
 	}
 
 	/**
@@ -93,7 +90,9 @@ class RateLimit
 			throw new \Exception('Invalid rate limit action');
 		}
 
-		$res = $this->rep->count($action, $params['time'], $person, $ip);
+		/** @var RateLimitLog $rep */
+		$rep = $this->container->getEm()->getRepository('DeskPRO:RateLimitLog');
+		$res = $rep->count($action, $params['time'], $person, $ip);
 
 		// all rate limit actions have a captcha as response, so we return bool for now
 		return $res >= (int)$params['limit']
@@ -115,23 +114,43 @@ class RateLimit
 			return $this->params_cache[$_k];
 		}
 
+		$settings = $this->container->getSettingsHandler();
+
 		$res = array();
 		foreach (array('limit', 'time', 'response') as $key) {
 
 			// try guest first
 			if ($person instanceof PersonGuest) {
-				if (null !== $value = $this->settings->get(self::KEY . '.' . $action . '.guest.' . $key)) {
+				if (null !== $value = $settings->get(self::KEY . '.' . $action . '.guest.' . $key)) {
 					$res[$key] = $value;
 					continue;
 				}
 			}
 
-			if (null === $value = $this->settings->get(self::KEY . '.' . $action . '.' . $key)) {
+			if (null === $value = $settings->get(self::KEY . '.' . $action . '.' . $key)) {
 				return array();
 			}
 			$res[$key] = $value;
 		}
 
 		return $this->params_cache[$_k] = $res;
+	}
+
+	/**
+	 * @param $action
+	 * @return bool
+	 * @throws \Exception
+	 */
+	public function isActionLimited($action)
+	{
+		if (!$this->container->isScopeActive('request')) {
+			return false;
+		}
+
+		return (bool) $this->getResponse(
+			$action,
+			$this->container->getSession()->getPerson(),
+			$this->container->get('request')
+		);
 	}
 }

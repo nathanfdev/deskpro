@@ -36,6 +36,7 @@ namespace Application\DeskPRO\Twig\Extension;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Tickets\ExecutorContextInterface;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Usersource;
@@ -162,6 +163,8 @@ class TemplatingExtension extends \Twig_Extension
             'ng_tpl'                           => new \Twig_Function_Method($this, 'ngIncTpl', array('is_safe' => array('html'), 'needs_context' => true)),
 
             'js_error_tracking'                => new \Twig_Function_Method($this, 'js_error_tracking', array('is_safe' => array('html'))),
+
+            'is_action_limited'                => new \Twig_Function_Method($this, 'isActionLimited'),
 
             // override so we can suppress errors where templates are out of date
             'url'  => new \Twig_Function_Method($this, 'getUrl'),
@@ -1877,6 +1880,11 @@ HTML;
         }
 
         return $rendered;
+    }
+
+    public function isActionLimited($action)
+    {
+        return $this->container->get(RateLimit::KEY)->isActionLimited($action);
     }
 }
 

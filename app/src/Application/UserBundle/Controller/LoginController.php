@@ -206,13 +206,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         $captcha = null;
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
-        $limitHit = $rateLimit->getResponse(
-            RateLimit::ACT_LOGIN,
-            $this->session->getPerson(),
-            $this->request->getClientIp()
-        );
-
-        if ($limitHit) {
+        if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
         }
 
@@ -381,14 +375,7 @@ HTML;
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
         $captcha = null;
-        $limitHit = $rateLimit->getResponse(
-            RateLimit::ACT_LOGIN,
-            $this->session->getPerson(),
-            $this->request->getClientIp()
-        );
-
-        if ($limitHit) {
-            /** @var Recaptcha $captcha */
+        if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
             if (!$captcha->validate()) {
                 $this->session->setFlash('captcha_login_error', true);
@@ -868,13 +855,7 @@ HTML;
         $captcha = null;
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
-        $limitHit = $rateLimit->getResponse(
-            RateLimit::ACT_RESET_PWD,
-            $this->session->getPerson(),
-            $this->request->getClientIp()
-        );
-
-        if ($limitHit) {
+        if ($rateLimit->isActionLimited(RateLimit::ACT_RESET_PWD)) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reset_password'));
         }
 
@@ -911,13 +892,7 @@ HTML;
 
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
-        $limitHit = $rateLimit->getResponse(
-            RateLimit::ACT_RESET_PWD,
-            $this->session->getPerson(),
-            $this->request->getClientIp()
-        );
-
-        if ($limitHit) {
+        if ($rateLimit->isActionLimited(RateLimit::ACT_RESET_PWD)) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reset_password'));
             if (!$captcha->validate()) {
                 if ($_format == 'json') {

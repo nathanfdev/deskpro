@@ -136,13 +136,7 @@ class LoginController extends \Application\UserBundle\Controller\LoginController
         $captcha = null;
         /** @var RateLimit $rateLimit */
         $rateLimit = $this->get(RateLimit::KEY);
-        $limitHit = $rateLimit->getResponse(
-            RateLimit::ACT_LOGIN,
-            $this->session->getPerson(),
-            $this->request->getClientIp()
-        );
-
-        if ($limitHit) {
+        if ($rateLimit->isActionLimited(RateLimit::ACT_LOGIN)) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
         }
 
