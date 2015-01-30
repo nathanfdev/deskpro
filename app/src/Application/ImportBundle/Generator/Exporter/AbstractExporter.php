@@ -87,7 +87,7 @@ abstract class AbstractExporter extends AbstractGenerator implements ExporterInt
 
         foreach ($this->parsers as $parser) {
             /** @var Parser\ParserInterface $parser */
-            if ($parser->getRecordType() === $type) {
+            if ($parser->getEntityType() === $type) {
                 $parser->setConfig($this->config);
 
                 if ($this->logger && $parser instanceof LoggerAwareInterface) {

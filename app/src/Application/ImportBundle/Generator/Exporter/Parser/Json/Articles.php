@@ -27,11 +27,12 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
 /**
+ * Articles json file parser
+ *
  * Class Articles
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
@@ -40,9 +41,9 @@ class Articles extends AbstractParser
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
-        return GeneratorInterface::RECORD_TYPE_ARTICLE;
+        return Entity\EntityInterface::TYPE_ARTICLE;
     }
 
     /**
@@ -58,7 +59,40 @@ class Articles extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = new Entity\Collection();
+        $articles   = $this->reader->getData($this->getConfig());
+
+        foreach ($articles as $num => $article) {
+            $this->advanceProgressBar();
+
+            if ($this->hasRequiredArticleColumns($article) === false) {
+                $this->logWarning(sprintf('Invalid article record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\Article();
+                $entity
+                    ->setDestination('article_' . $article['oid'])
+                    ->setOid($article['oid'])
+                    ->setPersonEmail($article['person'])
+                    ->setLanguage($article['language'])
+                    ->setTitle($article['title'])
+                    ->setContent($article['content'])
+                    ->setTotalRating($article['total_rating'])
+                    ->setNumComments($article['num_comments'])
+                    ->setNumRatings($article['num_ratings']);
+
+                foreach ($article['categories'] as $category) {
+                    $entity->addCategory($category);
+                }
+                foreach ($article['labels'] as $label) {
+                    $entity->addLabel($label);
+                }
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            }
+        }
+
+        return $collection;
     }
 
     /**
@@ -69,5 +103,27 @@ class Articles extends AbstractParser
     private function getConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ARTICLE_PATH);
+    }
+
+    /**
+     * Check if article has all required columns
+     *
+     * @param array $article
+     * @return bool
+     */
+    private function hasRequiredArticleColumns(array $article)
+    {
+        return $this->hasRequiredColumns($article, array(
+            'oid',
+            'person',
+            'language',
+            'title',
+            'content',
+            'total_rating',
+            'num_comments',
+            'num_ratings',
+            'categories',
+            'labels',
+        ));
     }
 }

@@ -43,7 +43,7 @@ interface ParserInterface extends GeneratorConfigAwareInterface
      *
      * @return string
      */
-    public function getRecordType();
+    public function getEntityType();
 
     /**
      * Returns count of records to be exported

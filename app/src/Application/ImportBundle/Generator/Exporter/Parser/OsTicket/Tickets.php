@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
 use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
 use DateTime;
 use Exception;
@@ -44,9 +43,9 @@ class Tickets extends AbstractParser
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
-        return GeneratorInterface::RECORD_TYPE_TICKET;
+        return Entity\EntityInterface::TYPE_TICKET;
     }
 
     /**

@@ -46,6 +46,11 @@ class OsTicketFactory extends AbstractFactory
         $reader  = $this->container->get('deskpro.import.os_ticket_reader');
         $parsers = new Parser\Collection();
         $parsers
+            ->attach(new Parser\OsTicket\Articles($reader))
+            ->attach(new Parser\OsTicket\Downloads($reader))
+            ->attach(new Parser\OsTicket\Feedback($reader))
+            ->attach(new Parser\OsTicket\Kb($reader))
+            ->attach(new Parser\OsTicket\News($reader))
             ->attach(new Parser\OsTicket\People($reader))
             ->attach(new Parser\OsTicket\Tickets($reader));
 

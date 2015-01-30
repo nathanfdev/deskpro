@@ -27,21 +27,20 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
 
 /**
  * Class Kb
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class Kb
+class Kb extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
-        return GeneratorInterface::RECORD_TYPE_KB;
+        return Entity\EntityInterface::TYPE_KB;
     }
 
     /**

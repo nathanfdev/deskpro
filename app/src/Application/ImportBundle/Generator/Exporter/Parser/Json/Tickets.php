@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 use DateTime;
@@ -43,9 +42,9 @@ class Tickets extends AbstractParser
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
-        return GeneratorInterface::RECORD_TYPE_TICKET;
+        return Entity\EntityInterface::TYPE_TICKET;
     }
 
     /**
@@ -62,7 +61,8 @@ class Tickets extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $tickets = $this->reader->getData($this->getConfig());
+        $tickets    = $this->reader->getData($this->getConfig());
+
         foreach ($tickets as $num => $ticket) {
             $this->advanceProgressBar();
 

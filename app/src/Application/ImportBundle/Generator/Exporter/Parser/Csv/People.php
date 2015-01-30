@@ -42,9 +42,9 @@ class People extends AbstractParser
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
-        return GeneratorInterface::RECORD_TYPE_PERSON;
+        return Entity\EntityInterface::TYPE_PERSON;
     }
 
     /**

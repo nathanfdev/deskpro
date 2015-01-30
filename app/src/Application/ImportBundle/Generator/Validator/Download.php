@@ -25,48 +25,31 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
+namespace Application\ImportBundle\Generator\Validator;
 
-use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
 /**
- * Class Kb
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json
+ * Class Download
+ * @package Application\ImportBundle\Generator\Validator
  */
-class Kb extends AbstractParser
+final class Download extends AbstractConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    public function getRecordType()
     {
-        return Entity\EntityInterface::TYPE_KB;
+        return Entity\EntityInterface::TYPE_DOWNLOAD;
     }
 
     /**
      * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        return new Entity\Collection();
-    }
-
-    /**
-     * Returns record type reader config
      *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
+     * @var Entity\News $entity
      */
-    private function getConfig()
+    public function validate(Entity\EntityInterface $entity)
     {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_KB_PATH);
+
     }
 }

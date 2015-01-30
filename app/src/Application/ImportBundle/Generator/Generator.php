@@ -80,7 +80,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
         $count    = 0;
         $exporter = $this->getExporter();
 
-        foreach ($this->config->getRecordTypes() as $record_type) {
+        foreach ($this->config->getEntityTypes() as $record_type) {
             $count += $exporter->getCountByType($record_type);
         }
 
@@ -94,7 +94,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     {
         $outputWriter = $this->getWriter();
 
-        foreach ($this->config->getRecordTypes() as $type) {
+        foreach ($this->config->getEntityTypes() as $type) {
             $collection = $this->getExportingCollectionByRecordType($type);
             $exceptions = $this->validateExportingCollection($type, $collection);
             if (count($exceptions) > 0) {
@@ -115,7 +115,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
     {
         $exceptions = new Validator\ExceptionCollection();
 
-        foreach ($this->config->getRecordTypes() as $type) {
+        foreach ($this->config->getEntityTypes() as $type) {
             $collection = $this->getExportingCollectionByRecordType($type);
             $exceptions->merge($this->validateExportingCollection($type, $collection));
         }

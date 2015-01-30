@@ -25,23 +25,22 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
+namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
-use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
 /**
- * Class Kb
- * @package Application\ImportBundle\Generator\Exporter\Parser\Json
+ * Class News
+ * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class Kb extends AbstractParser
+class News extends AbstractParser
 {
     /**
      * {@inheritdoc}
      */
     public function getEntityType()
     {
-        return Entity\EntityInterface::TYPE_KB;
+        return Entity\EntityInterface::TYPE_NEWS;
     }
 
     /**
@@ -49,7 +48,7 @@ class Kb extends AbstractParser
      */
     public function getCount()
     {
-        return $this->reader->getDirectoryFilesCount($this->getConfig());
+        return 0;
     }
 
     /**
@@ -58,15 +57,5 @@ class Kb extends AbstractParser
     public function export()
     {
         return new Entity\Collection();
-    }
-
-    /**
-     * Returns record type reader config
-     *
-     * @return \Application\ImportBundle\Reader\Json\JsonConfig
-     */
-    private function getConfig()
-    {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_KB_PATH);
     }
 }

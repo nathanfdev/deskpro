@@ -50,18 +50,13 @@ final class Person extends AbstractImporter
     /**
      * {@inheritdoc}
      *
+     * @var Entity\Person $importing_entity
+     *
      * todo reset deskpro entities property update (reset methods - resetEmails, resetLabels, resetUsergroups)?
      * todo is_user is false by default and it = true in the setPassword method, can we set it = true without a password
      */
     public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
     {
-        if (!$importing_entity instanceof Entity\Person) {
-            throw new \Exception(sprintf(
-                'Entity `%s` is not supported by importer `%s`',
-                get_class($importing_entity), get_class($this)
-            ));
-        }
-
         $this->records = new ArrayCollection();
         if ($importing_entity->isAgent()) {
             $this->logWarning(sprintf('Importing agent `%s`', $importing_entity->getFirstEmail()));

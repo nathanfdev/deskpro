@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
@@ -40,9 +39,9 @@ class Downloads extends AbstractParser
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
-        return GeneratorInterface::RECORD_TYPE_DOWNLOAD;
+        return Entity\EntityInterface::TYPE_DOWNLOAD;
     }
 
     /**

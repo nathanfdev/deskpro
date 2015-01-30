@@ -28,8 +28,6 @@
 namespace Application\ImportBundle\Generator\Validator;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorInterface;
-use Exception;
 
 /**
  * People entities validator
@@ -44,21 +42,16 @@ final class Person extends AbstractConstraintValidator
      */
     public function getRecordType()
     {
-        return GeneratorInterface::RECORD_TYPE_PERSON;
+        return Entity\EntityInterface::TYPE_PERSON;
     }
 
     /**
      * {@inheritdoc}
+     *
+     * @var Entity\Person $entity
      */
     public function validate(Entity\EntityInterface $entity)
     {
-        if (!$entity instanceof Entity\Person) {
-            throw new Exception(sprintf(
-                'Entity `%s` is not supported by validator `%s`',
-                get_class($entity), get_class($this)
-            ));
-        }
-
         $errors = $this->validator->validate($entity);
         if (count($errors) > 0) {
             throw new ValidatorException($entity, $errors);

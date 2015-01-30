@@ -43,6 +43,11 @@ class ZenDeskFactory extends AbstractFactory
         $reader  = $this->container->get('deskpro.import.zen_desk_reader');
         $parsers = new Parser\Collection();
         $parsers
+            ->attach(new Parser\ZenDesk\Articles($reader))
+            ->attach(new Parser\ZenDesk\Downloads($reader))
+            ->attach(new Parser\ZenDesk\Feedback($reader))
+            ->attach(new Parser\ZenDesk\Kb($reader))
+            ->attach(new Parser\ZenDesk\News($reader))
             ->attach(new Parser\ZenDesk\People($reader))
             ->attach(new Parser\ZenDesk\Tickets($reader));
 

@@ -35,6 +35,7 @@ namespace Application\ImportBundle\Entity;
  */
 interface EntityInterface
 {
+    const TYPE_ARTICLE                   = 'article';
     const TYPE_PERSON                    = 'person';
     const TYPE_TICKET                    = 'ticket';
     const TYPE_TICKET_MESSAGE            = 'ticket_message';

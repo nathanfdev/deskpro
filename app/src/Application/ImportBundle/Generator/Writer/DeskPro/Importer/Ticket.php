@@ -68,16 +68,11 @@ final class Ticket extends AbstractImporter
 
     /**
      * {@inheritdoc}
+     *
+     * @var Entity\Ticket $importing_entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
     {
-        if (!$importing_entity instanceof Entity\Ticket) {
-            throw new \Exception(sprintf(
-                'Entity `%s` is not supported by importer `%s`',
-                get_class($importing_entity), get_class($this)
-            ));
-        }
-
         $this->records = new ArrayCollection();
         $ticket = new DeskPROEntity\Ticket();
         $ticket
@@ -138,12 +133,10 @@ final class Ticket extends AbstractImporter
             $message->setMessageText($importing_entity->getMessageHtml());
         }
         foreach ($importing_entity->getAttachments() as $importing_attachment) {
-            $message->addAttachment(
-                $this->createAttachment(
-                    $importing_attachment,
-                    $importing_entity->getPersonEmail()
-                )
-            );
+            $message->addAttachment($this->createAttachment(
+                $importing_attachment,
+                $importing_entity->getPersonEmail()
+            ));
         }
 
         return $message;

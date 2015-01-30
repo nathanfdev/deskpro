@@ -28,7 +28,6 @@
 namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
 
 use Application\ImportBundle\Entity;
-use Application\ImportBundle\Generator\GeneratorInterface;
 
 /**
  * ZenDesk tickets parser
@@ -41,9 +40,9 @@ class Tickets extends AbstractParser
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
-        return GeneratorInterface::RECORD_TYPE_TICKET;
+        return Entity\EntityInterface::TYPE_TICKET;
     }
 
     /**

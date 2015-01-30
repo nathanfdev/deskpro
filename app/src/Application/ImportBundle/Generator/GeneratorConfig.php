@@ -48,7 +48,7 @@ class GeneratorConfig
     /**
      * @var array
      */
-    private $record_types = array();
+    private $entity_types = array();
 
     /**
      * @var string
@@ -126,18 +126,18 @@ class GeneratorConfig
     /**
      * @return array
      */
-    public function getRecordTypes()
+    public function getEntityTypes()
     {
-        return $this->record_types;
+        return $this->entity_types;
     }
 
     /**
      * @param string $record_type
      * @return $this
      */
-    public function addRecordType($record_type)
+    public function addEntityType($record_type)
     {
-        $this->record_types[] = $record_type;
+        $this->entity_types[] = $record_type;
         return $this;
     }
 

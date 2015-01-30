@@ -29,9 +29,10 @@ namespace Application\ImportBundle\Command;
 
 use Application\ImportBundle\Generator\GeneratorConfig;
 use Application\ImportBundle\Generator\Exporter\ExporterInterface;
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Generator;
+use Application\ImportBundle\Entity;
 use Monolog\Handler\StreamHandler;
+use Monolog\Logger;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Helper\ProgressBar;
@@ -40,7 +41,6 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 use Orb\Util\OptionsArray;
-use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Exception;
 
@@ -78,8 +78,13 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
     {
         $config = new GeneratorConfig();
         $config
-            ->addRecordType(GeneratorInterface::RECORD_TYPE_PERSON)
-            ->addRecordType(GeneratorInterface::RECORD_TYPE_TICKET);
+            ->addEntityType(Entity\EntityInterface::TYPE_PERSON)
+            ->addEntityType(Entity\EntityInterface::TYPE_ARTICLE)
+            ->addEntityType(Entity\EntityInterface::TYPE_DOWNLOAD)
+            ->addEntityType(Entity\EntityInterface::TYPE_FEEDBACK)
+            ->addEntityType(Entity\EntityInterface::TYPE_KB)
+            ->addEntityType(Entity\EntityInterface::TYPE_NEWS)
+            ->addEntityType(Entity\EntityInterface::TYPE_TICKET);
 
         $this->setParamsByDeskProConfig($config);
         $this->setParamsByInputInterface($config, $input);

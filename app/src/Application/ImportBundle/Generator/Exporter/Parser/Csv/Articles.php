@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
 
-use Application\ImportBundle\Generator\GeneratorInterface;
 use Application\ImportBundle\Entity;
 
 /**
@@ -41,9 +40,9 @@ class Articles extends AbstractParser
     /**
      * {@inheritdoc}
      */
-    public function getRecordType()
+    public function getEntityType()
     {
-        return GeneratorInterface::RECORD_TYPE_ARTICLE;
+        return Entity\EntityInterface::TYPE_ARTICLE;
     }
 
     /**
