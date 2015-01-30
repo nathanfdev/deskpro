@@ -29,7 +29,8 @@ define ['datatables'], () ->
           scope.columns = widget.columns
           dt = el.DataTable {
             data: widget.data,
-            aoColumns: widget.aoColumns,
+            columns: widget.columns,
+#            aoColumns: widget.aoColumns,
             deferRender: true,
             dom: "rtS",
             scrollY: 300,

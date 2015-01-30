@@ -183,10 +183,10 @@
                             <a title="Remove widget" ng-click="removeWidget(widget)"><i class="glyphicon glyphicon-trash">XXX</i></a>
                         </div>
                     </div>
-                    <div class="box" ng-if="widget.type=='stat'">
+                    <div class="widget-box" ng-if="widget.type=='stat'">
                         <dashboard-stat title="{{ ng_var('widget.name') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
                     </div>
-                    <div class="box" ng-if="widget.type=='graph'">
+                    <div class="widget-box" ng-if="widget.type=='graph'">
                         <dashboard-amcharts
                                 my-index="{{ ng_var('$index') }}"
                                 title="{{ ng_var('widget.name') }}"
@@ -195,7 +195,7 @@
                                 chtype="{{ ng_var('widget.type') }}">
                         </dashboard-amcharts>
                     </div>
-                    <div class="box" ng-if="widget.type=='table'">
+                    <div class="widget-box" ng-if="widget.type=='table'">
                         <dashboard-table
                                 my-index="{{ ng_var('$index') }}"
                                 title="{{ ng_var('widget.name') }}"

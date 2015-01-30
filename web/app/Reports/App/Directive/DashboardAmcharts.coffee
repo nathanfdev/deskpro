@@ -10,7 +10,7 @@ define ->
 
       link: (scope, element, attrs) ->
         i = attrs.widgetId
-        template = "<div style='height: 90%;' id=\"ch#{i}\"></div>"
+        template = "<div id=\"ch#{i}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
         element.replaceWith(content)

@@ -3,6 +3,8 @@
 @import "../../../../bower_components/neat/app/assets/stylesheets/neat";
 // Font awesome: http://fortawesome.github.io/Font-Awesome/cheatsheet/
 @import "../../../../bower_components/font-awesome/css/font-awesome.min.css";
+@import '../../../../bower_components/datatables/media/css/jquery.dataTables.css';
+@import '../../../../bower_components/datatables/media/css/jquery.dataTables_themeroller.css';
 
 @import 'variables';
 $tablet: new-breakpoint(max-width 960px 6);

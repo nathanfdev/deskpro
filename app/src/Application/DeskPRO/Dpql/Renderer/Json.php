@@ -348,8 +348,8 @@ class Json extends AbstractRenderer
 
         // getting through rows
         foreach ($rowGroups as $yPath => $rowHead) {
-            $rowData = array(reset($rowHead));
-            $rowTotal = 0;
+            $rowData = array(reset($rowHead) ? : 'None');
+            $rowTotal = '';
             foreach($headerCols as $xPath => $printable) {
                 if (isset($lookup[$yPath][$xPath])) {
                     $value = $this->_filterGraphValue($lookup[$yPath][$xPath]);
@@ -360,7 +360,7 @@ class Json extends AbstractRenderer
                 if($totalType) {
                     $rowTotal += str_replace(',', '', $value);
                     if (!isset($totalRow[$xPath])) {
-                        $totalRow[$xPath] = 0;
+                        $totalRow[$xPath] = '';
                     }
                     $totalRow[$xPath] += str_replace(',', '', $value);
                 }
@@ -370,9 +370,10 @@ class Json extends AbstractRenderer
             }
             $rowsData[] = $rowData;
         }
-
+        // URGH, need to be refactored ASAP
         foreach($headerCols as $colName) {
-            $columnsHead[] = reset($colName);
+            $h = reset($colName);
+            $columnsHead[] = $h ? : 'None';
         }
         if($totalType) {
             $columnsHead[] = 'Total';
@@ -380,17 +381,37 @@ class Json extends AbstractRenderer
             $rowsData[] = array_values($totalRow);
         }
 
+        $rows = array();
+        foreach($rowsData as $index => $rowData) {
+            if (array_sum($rowData) > 1) {
+                $rows[] = $rowData;
+            }
+        }
+        $cols = array();
+
+        foreach($rows as $row) {
+            foreach ($row as $index => $value) {
+                if(!isset($cols[$index])) $cols[$index] = 0;
+                $cols[$index] += $value;
+            }
+        }
+        $stopHere=true;
+        foreach($cols as $index => $total) {
+            if($total < 1 && $index > 0) {
+                foreach($rows as &$rowData) {
+                    unset($rowData[$index]);
+                }
+                unset($columnsHead[$index]);
+            }
+        }
+        $finalRows = array();
+        foreach($rows as $row) {
+            $finalRows[] = array_values($row);
+        }
+
         return array(
             'columns' => $columnsHead,
-            'data' => $rowsData,
-        );
-
-
-
-
-        return $this->_renderTableWrapper(
-            $this->_renderMatrixHeader($prepared, $totalType) . $this->_renderMatrixBody($prepared, $totalType),
-            'matrix'
+            'data' => $finalRows,
         );
     }
 
