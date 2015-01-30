@@ -1,3 +1,5 @@
+user_context_hash:
+    path: /_portal_user_hash
 portal_routes:
     resource: "@PortalBundle/Resources/config/routing_portal.yml"
 auth_routes:
