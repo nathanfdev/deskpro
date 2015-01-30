@@ -22,7 +22,7 @@
 
             <ul id="dp-select-dashboard-dropdown">
                 <li ng-repeat="db in dashboards track by $index">
-                    <a class='link-pointer' ng-class='{"current": db.id === dashboard.id}' dp-dropdown-item ng-click="changeDashboard(db)">
+                    <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="app.reports.dashboards.view({ dashboard_id: db.id })">
                         <span class='logo-deskpro' ng-show="db.default"></span>
                         {{ ng_var('db.title') }}
                     </a>
@@ -42,7 +42,7 @@
                         </header>
                         <hr>
 
-                        <div class="dropdown-content"  >
+                        <div class="dropdown-content">
                             <ul class="big-actions">
                                 <li>
                                     <a dp-dropdown-item ng-click="newDashboardModal()"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
@@ -106,8 +106,8 @@
             </div>
         </li>
 
-        <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ng-class="{'active-tab':currentReport.id===report.id}">
-            <a class='link-pointer' ng-click="changeReport(report)">{{ ng_var('report.title') }}</a>
+        <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ui-sref-active="active-tab">
+            <a class='link-pointer' ui-sref="app.reports.dashboards.view.report({ report_id: report.id })">{{ ng_var('report.title') }}</a>
         </li>
     </ul>
 </div>

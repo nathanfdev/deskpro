@@ -211,17 +211,15 @@
 
 
 
-
-
 // Edit/create/clone links to the right of dashboard and report headers
 .reports-control {
   text-transform: uppercase;
   font-weight: 600;
   font-size: 0.85em;
-  vertical-align: middle;
+  vertical-align: top;
   display: inline-block;
   margin-left: 10px;
-  margin-top: 1px;
+  margin-top: 12px;
 
   ul { @extend %flat-list; }
 
@@ -337,7 +335,7 @@
   }
 
   .reports-control {
-    position: relative;
+    //position: relative;
     top: 2px;
 
     i {
