@@ -6,6 +6,13 @@ define [
   'Interface/App/Service/TemplateLoader',
   'Interface/App/Service/TemplateManager',
 
+  # Helpers
+  'Interface/App/Routing/StateCollection',
+  'Interface/App/Routing/StateConfig',
+
+  # App routing
+  'Reports/App/ReportsRouting',
+
   # angular modules
   'angularAnimate',
   'angularSanitize',
@@ -23,7 +30,10 @@ define [
   angular,
   AppConfig,
   TemplateLoader,
-  TemplateManager
+  TemplateManager,
+  StateCollection,
+  StateConfig,
+  ReportsRouting
 ) ->
   InterfaceApp = angular.module('DeskPRO.InterfaceApp', [
     'ngAnimate',
@@ -70,24 +80,25 @@ define [
 
   InterfaceApp.factory('dpHttpInterceptor', ['$q', ($q) ->
     return {
-    request: (config) ->
-      if window.DP_SESSION_ID
-        config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
-      if window.DP_REQUEST_TOKEN
-        config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN
+      request: (config) ->
+        if window.DP_SESSION_ID
+          config.headers['X-DeskPRO-Session-ID'] = window.DP_SESSION_ID
+        if window.DP_REQUEST_TOKEN
+          config.headers['X-DeskPRO-Request-Token'] = window.DP_REQUEST_TOKEN
 
-      return config
+        return config
 
-    response: (response) ->
-      return response
+      response: (response) ->
+        return response
 
-    requestError: (rejection) ->
-      return $q.reject(rejection)
+      requestError: (rejection) ->
+        return $q.reject(rejection)
 
-    responseError: (rejection) ->
-      return $q.reject(rejection)
+      responseError: (rejection) ->
+        return $q.reject(rejection)
     }
   ])
+
   ###
   # Config section
   ###
@@ -124,29 +135,10 @@ define [
       ]
     })
 
-    addState = (module, id, url, ctrl, tpl, resolve, options) ->
-      resolve = resolve || {}
-      options = options || {}
-
-      resolve.loadModule = ['$ocLazyLoad', ($ocLazyLoad) ->
-        return $ocLazyLoad.load(module)
-      ]
-
-      options.url         = url
-      options.templateUrl = tpl
-      options.resolve     = resolve
-      options.controller  = ctrl
-
-      return $stateProvider.state(id, options)
-
-    # TODO: make these dynamic somehow based on loaded apps
-    addState('DeskPRO.ReportsApp', 'app.reports', 'reports', 'Reports.App.Main', 'ReportsInterfaceBundle:Interface:main.html')
-    addState(
-      'DeskPRO.ReportsApp',
-      'app.reports.dashboards',
-      '/dashboards',
-      'Reports.App.Dashboard',
-      'ReportsInterfaceBundle:Dashboard:dashboards.html')
+    reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.ReportsApp'))
+    ReportsRouting(reportStates)
+    for r in reportStates.routes
+      r.applyToStateProvider($stateProvider)
   ])
 
   return InterfaceApp

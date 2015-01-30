@@ -2,10 +2,11 @@ define [
   'angular',
   'DeskPRO/Main/Service/DpApi',
 
-  'Reports/App/Controller/Main',
+  # Controllers
   'Reports/App/Controller/Dashboard',
-
-  # Modal controllers
+  'Reports/App/Controller/DashboardReport',
+  'Reports/App/Controller/Dashboards',
+  'Reports/App/Controller/DashboardView',
   'Reports/App/Controller/ModalDashboard',
   'Reports/App/Controller/ModalReport',
   'Reports/App/Controller/ModalWidgetType',
@@ -22,7 +23,6 @@ define [
   'Reports/App/Service/AgentActivity'
   'Reports/App/Service/AgentHours'
   'Reports/App/Service/TicketSatisfaction'
-
 
   #STANDARD DIRECTIVES
   'Reports/App/Directive/DashboardAmcharts',
@@ -44,14 +44,15 @@ define [
   'amcharts',
   'amcharts.pie',
   'amcharts.serial',
-
 ], (
   angular,
   DeskPRO_Main_Service_DpApi,
-  Reports_App_Controller_Main,
-  Reports_App_Controller_Dashboard,
 
-  # Modal controllers
+  # Controllers
+  Reports_App_Controller_Dashboard,
+  Reports_App_Controller_DashboardReport,
+  Reports_App_Controller_Dashboards,
+  Reports_App_Controller_DashboardView,
   Reports_App_Controller_ModalDashboard,
   Reports_App_Controller_ModalReport,
   Reports_App_Controller_ModalWidgetType,
@@ -83,19 +84,19 @@ define [
 ) ->
   ReportsApp = angular.module('DeskPRO.ReportsApp', ['DeskPRO.InterfaceApp', 'gridster'])
 
-
   ###
   # Controllers section
   ###
-  ReportsApp.controller('Reports.App.Main', Reports_App_Controller_Main)
-  ReportsApp.controller('Reports.App.Dashboard', Reports_App_Controller_Dashboard)
+  ReportsApp.controller('Reports.App.Dashboard',            Reports_App_Controller_Dashboard)
+  ReportsApp.controller('Reports.App.DashboardReport',      Reports_App_Controller_DashboardReport)
+  ReportsApp.controller('Reports.App.Dashboards',           Reports_App_Controller_Dashboards)
+  ReportsApp.controller('Reports.App.DashboardView',        Reports_App_Controller_DashboardView)
 
-  # Modal controllers
-  ReportsApp.controller('Reports.App.ModalDashboard', Reports_App_Controller_ModalDashboard)
-  ReportsApp.controller('Reports.App.ModalReport', Reports_App_Controller_ModalReport)
-  ReportsApp.controller('Reports.App.ModalWidgetType', Reports_App_Controller_ModalWidgetType)
-  ReportsApp.controller('Reports.App.ModalWidgetAdd', Reports_App_Controller_ModalWidgetAdd)
-  ReportsApp.controller('Reports.App.ModalWidgetEdit', Reports_App_Controller_ModalWidgetEdit)
+  ReportsApp.controller('Reports.App.ModalDashboard',       Reports_App_Controller_ModalDashboard)
+  ReportsApp.controller('Reports.App.ModalReport',          Reports_App_Controller_ModalReport)
+  ReportsApp.controller('Reports.App.ModalWidgetType',      Reports_App_Controller_ModalWidgetType)
+  ReportsApp.controller('Reports.App.ModalWidgetAdd',       Reports_App_Controller_ModalWidgetAdd)
+  ReportsApp.controller('Reports.App.ModalWidgetEdit',      Reports_App_Controller_ModalWidgetEdit)
 
   ###
   # Service section
@@ -130,18 +131,15 @@ define [
     return new Reports_App_Service_TicketSatisfaction(Api, $sce, $q, $timeout)
   ])
 
-
   ###
   # Directives section
   ###
-  ReportsApp.directive('dashboardAmcharts', Reports_App_Directive_DashboardAmcharts)
-  ReportsApp.directive('reportsOverview', Reports_App_Directive_ReportsOverview)
-  ReportsApp.directive('agentPerformance', Reports_App_Directive_AgentPerformance)
-  ReportsApp.directive('ticketSatisfaction', Reports_App_Directive_TicketSatisfaction)
-  ReportsApp.directive('dpDropdown', Reports_App_Directive_DpDropdown)
-  ReportsApp.directive('dpReportWidgetSelectBox', Reports_App_Directive_DpReportWidgetSelectBox)
-#  ReportsApp.directive('dashboardStat', Reports_App_Directive_DashboardStat)
-  ReportsApp.directive('dashboardTable', Reports_App_Directive_DashboardTable)
-
+  ReportsApp.directive('dashboardAmcharts',         Reports_App_Directive_DashboardAmcharts)
+  ReportsApp.directive('reportsOverview',           Reports_App_Directive_ReportsOverview)
+  ReportsApp.directive('agentPerformance',          Reports_App_Directive_AgentPerformance)
+  ReportsApp.directive('ticketSatisfaction',        Reports_App_Directive_TicketSatisfaction)
+  ReportsApp.directive('dpDropdown',                Reports_App_Directive_DpDropdown)
+  ReportsApp.directive('dpReportWidgetSelectBox',   Reports_App_Directive_DpReportWidgetSelectBox)
+  ReportsApp.directive('dashboardTable',            Reports_App_Directive_DashboardTable)
 
   return ReportsApp

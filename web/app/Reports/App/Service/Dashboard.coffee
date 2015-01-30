@@ -5,6 +5,8 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @$q = $q
       @data = {}
       @storage = { dbs: [], reports: [] }
+      @lastDashboard = null
+      @lastReport = null
 
     setWidgetService: (service) ->
       @widgetService = service
@@ -95,6 +97,28 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
       return deferred.promise
 
+    getDashboardById: (id) ->
+      deferred = @$q.defer()
+
+      id = parseInt(id)
+
+      if @lastDashboard and @lastDashboard.id == id
+        deferred.resolve(@lastDashboard)
+        return deferred.promise
+
+      @getDashboards().then((dbs) =>
+        db = dbs.find((x) -> x.id == id)
+        if not db
+          deferred.reject()
+        else
+          @getDashboard(db).then((real_db) ->
+            @lastDashboard = real_db
+            deferred.resolve(real_db)
+          )
+      , -> deferred.reject())
+
+      return deferred.promise
+
     getDashboard: (dashboard) ->
       deferred = @$q.defer()
       dashboardIndex = Arrays.findIndex @storage.dbs
@@ -121,6 +145,22 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
     ###
     # Operations about reports
     ###
+
+    getReportById: (id) ->
+      deferred = @$q.defer()
+
+      id = parseInt(id)
+
+      if @lastReport and @lastReport.id == id
+        deferred.resolve(@lastReport)
+        return deferred.promise
+
+      @getReport({id: id}).then((r) =>
+        @lastReport = r
+        deferred.resolve(r)
+      , -> deferred.reject())
+
+      return deferred.promise
 
     getReport: (report) ->
       deferred = @$q.defer()
