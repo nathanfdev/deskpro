@@ -308,7 +308,12 @@ class KernelBooter
                 if (false !== strpos($response->getContent(), '</body>') && '/_' !== substr(rawurldecode($request->getPathInfo()), 0, 2)) {
                     $end = microtime(true);
                     $log = explode(';', $kernel->getLog());
-                    $print_log = "<br><br><br><br><hr><br><h1>Http Cache Log</h1>";
+                    $print_log = "<br><br><br><br><hr><br><h1>Master Response Headers</h1><table>";
+                    foreach ($response->headers as $name => $header) {
+                        $print_log .= "<tr><td style=\"min-width: 200px\"><strong>$name</strong></td><td>" . implode(',',$header) . "</td></tr>";
+                    }
+
+                    $print_log .= "</table><br><hr><br><h1>Http Cache Log</h1>";
                     $print_log .= implode("\n<br>", $log);
                     $print_log .= "<br><hr><br><h1>Simple Profile</h1>";
                     $print_log .= "kernel booter time: " . sprintf('%.2f', $start - $boot) . "s<br>\n";
@@ -321,8 +326,10 @@ class KernelBooter
                     $pos = strripos($content, '</body>');
                     $content = substr($content, 0, $pos) . $print_log . substr($content, $pos);
                     $response->setContent($content);
-                    $content_length = $response->headers->get('Content-Length');
-                    $response->headers->set('Content-Length', $content_length + strlen($print_log));
+                    if ($response->headers->has('Content-Length')) {
+                        $content_length = $response->headers->get('Content-Length');
+                        $response->headers->set('Content-Length', $content_length + strlen($print_log));
+                    }
                 }
                 //
                 // end debug code
