@@ -32,13 +32,12 @@
 				<div class="realtime-indicator" ng-class="{'realtime-on': realtime}" ng-hide="halfrealtime || massActionsOpen">
 					<span class="status" ng-click="toggleRealtimeUpdates();">
 						<div ng-show="realtime">
-							<em>Real-time updates are enabled</em>
+							<em>{{ phrase('agent.tickets.real_time_updates') }}</em>
 							<i class="icon-retweet"></i>
 							<div dp-sticky-tip offset-top="25" right-align>
 								<article>
 									<div class="content-text">
-										With real-time updates enabled, this list will update with new information as
-										tickets are updated in the helpdesk.
+										{{ phrase('agent.tickets.real_time_updates_description') }}
 									</div>
 								</article>
 							</div>

@@ -80,6 +80,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
     const ERR_AGENT_BOUNCE      = 'agent_bounce';
     const ERR_DATE_LIMIT        = 'date_limit';
     const ERR_INVALID_ADDRESS   = 'invalid_address';
+    const ERR_RATE_LIMIT        = 'rate_limit';
 
     /**
      * @var int
@@ -126,6 +127,11 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
      * @var array|null
      */
     protected $object_info = null;
+
+    /**
+     * @var string
+     */
+    protected $from_email = '';
 
     /**
      * Just the headers portion of the email
@@ -299,6 +305,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             case self::ERR_INVALID_FWD:         return 'Invalid Forward: Could not parse';
             case self::ERR_INVALID_FWD_EMAIL:   return 'Invalid Forward: Invalid user email address';
             case self::ERR_MISSING_MARKER:      return 'Missing Marker';
+            case self::ERR_RATE_LIMIT:          return 'Rate Limited';
         }
 
         return $this->error_code;
@@ -364,6 +371,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
                 'date_created' => array('columns' => array('date_created')),
                 'object_idx'   => array('columns' => array('object_type', 'object_id')),
                 'status_idx'   => array('columns' => array('status')),
+                'from_idx'     => array('columns' => array('from_email')),
             )
         ));
         $metadata->setChangeTrackingPolicy(ClassMetadataInfo::CHANGETRACKING_NOTIFY);
@@ -377,6 +385,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
             'type'       => 'json_array',
             'nullable'   => true,
         ));
+        $metadata->mapField(array( 'fieldName' => 'from_email', 'type' => 'string', 'length' => 500, 'columnName' => 'from_email', ));
         $metadata->mapField(array( 'fieldName' => 'headers', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'headers', ));
         $metadata->mapField(array( 'fieldName' => 'header_to', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_to', ));
         $metadata->mapField(array( 'fieldName' => 'header_from', 'type' => 'text', 'precision' => 0, 'scale' => 0, 'nullable' => false, 'columnName' => 'header_from', ));

@@ -96,6 +96,12 @@ class CoreExtension extends Extension
 
         $container->register(JIRA::NAME, 'Application\DeskPRO\Service\JIRA')->addArgument(new Reference('service_container'));
 
+        $definition = new Definition();
+        $definition->setClass('Application\DeskPRO\Form\Type\CleanerExtension');
+        $definition->setArguments(array(new Reference('deskpro.core.input_cleaner')));
+        $definition->addTag('form.type_extension', array('alias' => 'form'));
+        $container->setDefinition('form.cleaner_extension', $definition);
+
         $this->loadPeople($container);
         $this->loadInputReader($container);
         $this->loadTranslation($container);

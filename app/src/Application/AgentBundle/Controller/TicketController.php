@@ -1099,6 +1099,8 @@ class TicketController extends AbstractController
         $message['ip_address'] = dp_get_user_ip_address();
         $message['creation_system'] = Entity\TicketMessage::CREATED_WEB_AGENT_PORTAL;
 
+        $message->setVisitorFromRequest();
+
         if ($this->in->getBool('is_html_reply')) {
             $message_text = $request_message_orig;
 
@@ -1570,8 +1572,8 @@ class TicketController extends AbstractController
 
         return $this->createJsonResponse(array(
             'message_id' => $message->getId(),
-            'message_text' => $message->getMessageText(),
-            'message_html' => $message->getMessageHtml(),
+            'message_text' => $message->getMessageFullText() ?: $message->getMessageText(),
+            'message_html' => $message->getMessageFull() ?: $message->getMessageHtml(),
         ));
     }
 
@@ -1599,6 +1601,7 @@ class TicketController extends AbstractController
         $new_message = Strings::trimHtml($new_message);
         $new_message = Strings::prepareWysiwygHtml($new_message);
         $message->setMessageHtml($new_message);
+        $message->message_full = null;
 
         $ticket_log = new TicketLog();
         $ticket_log->ticket      = $ticket;
@@ -2207,10 +2210,12 @@ class TicketController extends AbstractController
             ));
         }
 
+        $can_view = $this->person->PermissionsManager->TicketChecker->canView($ticket);
+
         return $this->createJsonResponse(array(
             'ticket_id' => $ticket->getId(),
             'macro_id' => $macro->getId(),
-            'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']),
+            'close_tab' => (isset($GLOBALS['DP_TICKET_CLOSE_TAB']) && $GLOBALS['DP_TICKET_CLOSE_TAB']) || !$can_view,
             'success' => true,
         ));
     }

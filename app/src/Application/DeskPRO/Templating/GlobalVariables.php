@@ -347,13 +347,7 @@ class GlobalVariables extends BaseGlobalVariables
     public function getReturnUrl()
     {
         $request = App::getRequest();
-
-        // Cant recreate a post, so back to home
-        if ($request->getMethod() == 'POST') {
-            return App::getSetting('core.deskpro_url');
-        }
-
-        return $request->getRequestUri();
+        return $request->getReturnParam() ?: $request->getRequestUri();
     }
 
     public function isCloud()

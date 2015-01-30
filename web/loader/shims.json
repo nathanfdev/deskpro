@@ -21,6 +21,7 @@
   "ngContextMenu":                   ["angular"],
   "jquery":                          { "exports": "jquery" },
   "jqueryUi":                        ["jquery"],
+  "jquery.ui.i18n":                  ["jqueryUi"],
   "bootstrapModal":                  ["jquery"],
   "bootstrapTooltip":                ["jquery", "jqueryUi"],
   "select2":                         ["jquery"],

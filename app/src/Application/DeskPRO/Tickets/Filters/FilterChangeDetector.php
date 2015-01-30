@@ -70,6 +70,11 @@ class FilterChangeDetector
     private $explicit_filter_scopes = array();
 
     /**
+     * @var bool
+     */
+    private $disable_cache = false;
+
+    /**
      * @param \Application\DeskPRO\Entity\TicketFilter[] $filters
      * @param \Application\DeskPRO\Entity\Person[]       $agents
      */
@@ -90,6 +95,10 @@ class FilterChangeDetector
 
                 $this->team_to_agents[$t->id][] = $agent;
             }
+        }
+
+        if (isset($GLOBALS['DP_FILTERCHANGEDETECT_DISABLE_CACHE']) && $GLOBALS['DP_FILTERCHANGEDETECT_DISABLE_CACHE']) {
+            $this->disable_cache = true;
         }
     }
 
@@ -178,6 +187,10 @@ class FilterChangeDetector
             if ($exist_set->getTicket()->id != $ticket->id) {
                 $exist_set = null;
             }
+        }
+
+        if ($this->disable_cache) {
+            $exist_set = null;
         }
 
         // If the states are exactly the same, then we might be able to just return the same
@@ -308,12 +321,15 @@ class FilterChangeDetector
                 }
 
                 $orig_match_real = $new_match_real = null;
+                $pre_orig_match = $pre_new_match = null;
                 $new_match = $orig_match = false;
 
                 // RESULT_IS_CACHED
-                if (isset($generic_match_cache[$filter->id])) {
-                    $orig_match = $generic_match_cache[$filter->id]['orig_match'];
-                    $new_match  = $generic_match_cache[$filter->id]['new_match'];
+                if (!$this->disable_cache && isset($generic_match_cache[$filter->id])) {
+                    $pre_orig_match = $generic_match_cache[$filter->id]['pre_orig_match'];
+                    $pre_new_match  = $generic_match_cache[$filter->id]['pre_new_match'];
+                    $orig_match     = $generic_match_cache[$filter->id]['orig_match'];
+                    $new_match      = $generic_match_cache[$filter->id]['new_match'];
 
                     if (!$agent_perm_old) {
                         $orig_match = false;
@@ -322,10 +338,10 @@ class FilterChangeDetector
                         $new_match = false;
                     }
 
-                    if ($orig_match) {
+                    if ($pre_orig_match && $agent_perm_old) {
                         $filter_change->originalMatchForAgent($agent);
                     }
-                    if ($new_match) {
+                    if ($pre_new_match && $agent_perm_new) {
                         $filter_change->newMatchForAgent($agent);
                     }
 
@@ -389,6 +405,9 @@ class FilterChangeDetector
                         $filter_change->newMatchForAgent($agent);
                     }
 
+                    $pre_orig_match = $orig_match;
+                    $pre_new_match  = $new_match;
+
                     if ($reset_status) {
                         $searcher = $filter->getSearcher();
                         $searcher->setPersonContext($agent);
@@ -414,9 +433,28 @@ class FilterChangeDetector
 
                     if ($new_match_real !== null && $orig_match_real !== null && !isset($generic_match_cache[$filter->id]) && !isset($not_cachable_filters[$filter->id])) {
                         if (!$searcher->needsPersonContext()) {
+
+                            // Two types of matches:
+
+                            // Pre-matches are matches with any special logic
+                            // applied to ignore status.
+                            // This is required when NEW tickets are created
+                            // so we know if a ticket sholud fire events
+                            // for a particular filter.
+                            // Ex: A new ticket created as RESOLVED wont technically
+                            // ever be in 'All tickets' because that fitler has a criteria
+                            // for status=awaiting_agent.
+                            // But we still want notifications to send for new tickets,
+                            // so we have to ignore that status criteria.
+
+                            // Non-pre matches are "real" matches. This is how we determine
+                            // where the ticket is *right now*.
+
                             $generic_match_cache[$filter->id] = array(
+                                'pre_orig_match' => $pre_orig_match,
+                                'pre_new_match'  => $pre_new_match,
                                 'orig_match' => $orig_match,
-                                'new_match' => $new_match,
+                                'new_match'  => $new_match,
                             );
                         } else {
                             $not_cachable_filters[$filter->id] = $filter->id;

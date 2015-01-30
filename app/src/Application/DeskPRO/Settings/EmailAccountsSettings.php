@@ -46,6 +46,10 @@ class EmailAccountsSettings
         'attach_user_must_exts'  => array(),
         'attach_user_not_exts'   => array(),
         'sendemail_attach_maxsize' => 7340032,
+
+        'rate_count'    => 15,
+        'rate_time'     => 600,
+        'rate_locktime' => 900,
     );
 
     protected $other_values = array(

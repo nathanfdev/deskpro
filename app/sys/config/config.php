@@ -374,6 +374,12 @@ $container->loadFromExtension(
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
                             ),
+                            'edge_ngram_filter_3'  => array(
+                                'type'        => 'edgeNGram',
+                                'min_gram'    => 3,
+                                'max_gram'    => 20,
+                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+                            ),
                             'ngram_filter_5'  => array(
                                 'type'        => 'nGram',
                                 'min_gram'    => 5,
@@ -414,7 +420,7 @@ $container->loadFromExtension(
                             'name_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'whitespace',
-                                'filter'    => array('lowercase', 'asciifolding', 'ngram_filter_3')
+                                'filter'    => array('lowercase', 'asciifolding', 'edge_ngram_filter_3')
                             ),
                             'email_analyzer' => array(
                                 'type'      => 'custom',

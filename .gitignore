@@ -1,6 +1,6 @@
 # IDE project files
 /.idea/*
-/.idea/codeStyleSettings.xml
+!/.idea/codeStyleSettings.xml
 /web/app/.idea/
 /nbproject/
 /catalog.xml
@@ -85,3 +85,4 @@ app/sys/Resources/agent-perm-names.php
 /app/testing/logs/*
 !/app/testing/logs/.gitkeep
 /app/testing/data/dbset-cache
+demodata/

@@ -125,9 +125,9 @@ abstract class AbstractKernel extends BaseKernel
 
         if (defined('DP_INTERFACE') && DP_INTERFACE == 'user') {
             $website_url = '';
-            if (!empty($_REQUEST['dp_website_url'])) {
+            if (!empty($_REQUEST['dp_website_url']) && is_string($_REQUEST['dp_website_url'])) {
                 $website_url = $_REQUEST['dp_website_url'];
-            } elseif (!empty($_COOKIE['dp_o_uri'])) {
+            } elseif (!empty($_COOKIE['dp_o_uri']) && is_string($_COOKIE['dp_o_uri'])) {
                 $website_url = @base64_decode($_COOKIE['dp_o_uri'], false);
             }
 
