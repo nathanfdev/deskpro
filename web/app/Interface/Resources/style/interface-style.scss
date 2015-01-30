@@ -83,16 +83,19 @@ $header-height: 44px;
 
 // Tenmporary for presentation]
 .app-bar {
-  padding-top: 20px;
   text-align: center;
   a {
     display: block;
     font-size: 1.5em;
     color: #cecece;
-    margin-bottom: 30px;
+    padding: 15px 0;
 
     &:hover {
       color: #fff;
+    }
+
+    &.active {
+      background: #0B0E10;
     }
   }
 

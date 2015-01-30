@@ -16,16 +16,10 @@
     <nav class="reports-control" ng-show="currentReport.id">
         <ul>
             <li>
-                <a ng-click='typeWidgetModal(currentReport)'
-                   class="link-pointer"
-                   ng-class="{'control-inactive':dashboard.default}">
-                    <i class="fa fa-plus"></i> Add widget
-                </a>
-            </li>
-            <li>
-                <a ng-click='editReportModal(currentReport)'
-                   class="link-pointer"
-                   ng-class="{'control-inactive':dashboard.default}">
+                <a
+                    ng-click='editReportModal(currentReport)'
+                    class="control-inactive"
+                >
                     <i class="fa fa-cog"></i> Edit Report
                 </a>
             </li>
@@ -47,28 +41,31 @@
 
 <div class="graph-container">
     <div class="graph-container-controls">
-        <!-- default or control-active(when selected) or control-inactive(when disabled for default dashboards) -->
         <a
             ng-click="toggleLayoutEdit()"
             class="control"
-            ng-class = "{'control-active': layoutEditing, 'control-inactive': dashboard.default}">
+            ng-class="{'control-active': layoutEditing, 'control-inactive': !layoutEditing}">
             Dashboard Layout <i class="fa fa-columns"></i>
         </a>
-
-        <span class="generated-graph-info">Report generated at 6.32PM, Aug 24, 2014 <a href="#"><i class="fa fa-refresh"></i></a></span>
+        <a
+            ng-click='typeWidgetModal(currentReport)'
+            class="control"
+        >
+            Add Widget <i class="fa fa-plus"></i>
+        </a>
     </div>
 </div>
 
 <div class="list-group">
     <div gridster="gridsterOptions" class="dashboard">
-        <ul>
-            <li ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in currentReport.widgets">
+        <div class="dp-gridster-wrap">
+            <div ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in currentReport.widgets" class="dp-gridster-item">
                 <div class="box-header">
-                    <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                     <div ng-show='layoutEditing' class="box-header-btns pull-right">
                         <a title="Edit widget" ng-click="editWidgetModal(widget)"><i class="fa fa-cog"></i></a>
                         <a title="Remove widget" ng-click="removeWidget(widget)"><i class="fa fa-times"></i></a>
                     </div>
+                    <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                 </div>
                 <div class="box" ng-if="widget.type=='stat'">
                     <dashboard-stat title="{{ ng_var('widget.title') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
@@ -91,7 +88,7 @@
                         wtype="{{ ng_var('widget.type') }}">
                     </dashboard-table>
                 </div>
-            </li>
-        </ul>
+            </div>
+        </div>
     </div>
 </div>

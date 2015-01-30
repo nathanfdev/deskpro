@@ -1,12 +1,13 @@
 <div class="site-header-container">
     <header class="site-header" id="dp_win_header">
-        HEADER
+        &nbsp;
     </header>
 </div>
 <div class="app-bar-wrapper" id="dp_app_nav">
     <aside class="app-bar">
-        <a href="#" ui-sref="app.reports.dashboards"><i class="fa fa-columns"></i></a>
-        <a href="./reports-list.html"><i class="fa fa-bar-chart"></i></a>
+        <a title="Dashboards" ui-sref-active="active" ui-sref="app.reports.dashboards"><i class="fa fa-bar-chart-o"></i></a>
+        <a title="Agent Activity" ui-sref="app.reports.dashboards"><i class="fa fa-list-alt"></i></a>
+        <a title="Agent Hours" ui-sref="app.reports.dashboards"><i class="fa fa-clock-o"></i></a>
     </aside>
 </div>
 <div class="app-container report-wrapper" id="dp_app_container" ui-view></div>
