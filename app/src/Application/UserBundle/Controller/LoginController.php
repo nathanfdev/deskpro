@@ -412,7 +412,7 @@ HTML;
                 }
             }
 
-            $rateLimit->saveAction(RateLimit::ACT_LOGIN, $this->session->getPerson(), $request->getClientIp());
+            $rateLimit->saveAction(RateLimit::ACT_LOGIN);
 
             // Send alert
             $attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
@@ -904,7 +904,7 @@ HTML;
             }
         }
 
-        $rateLimit->saveAction(RateLimit::ACT_RESET_PWD, $this->session->getPerson(), $request->getClientIp());
+        $rateLimit->saveAction(RateLimit::ACT_RESET_PWD);
 
         $email = $this->in->getString('email');
 

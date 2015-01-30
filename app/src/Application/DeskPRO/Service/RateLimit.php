@@ -33,6 +33,7 @@ namespace Application\DeskPRO\Service;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\RateLimitLog;
+use Application\DeskPRO\HttpFoundation\Request;
 use Application\DeskPRO\People\PersonGuest;
 
 class RateLimit
@@ -61,19 +62,27 @@ class RateLimit
 	/**
 	 * save action
 	 * @param $action
-	 * @param Person $person
-	 * @param null $ip
+	 * @return bool
 	 * @throws \Exception
 	 */
-	public function saveAction($action, Person $person, $ip = null)
+	public function saveAction($action)
 	{
+		if (!$this->container->isScopeActive('request')) {
+			return false;
+		}
+
+		/** @var Request $request */
+		$request = $this->container->get('request');
+		$person = $request->getSession()->getPerson();
+		$ip = $request->getClientIp();
+
 		if (!$params = $this->getParams($action, $person, $ip)) {
 			throw new \Exception('Invalid rate limit action');
 		}
 
 		/** @var RateLimitLog $rep */
 		$rep = $this->container->getEm()->getRepository('DeskPRO:RateLimitLog');
-		$rep->save($action, $person, $ip);
+		$rep->save($action, $params, $ip);
 	}
 
 	/**
@@ -147,10 +156,11 @@ class RateLimit
 			return false;
 		}
 
-		return (bool) $this->getResponse(
-			$action,
-			$this->container->getSession()->getPerson(),
-			$this->container->get('request')
-		);
+		/** @var Request $request */
+		$request = $this->container->get('request');
+		$person = $request->getSession()->getPerson();
+		$ip = $request->getClientIp();
+
+		return (bool) $this->getResponse($action, $person, $ip);
 	}
 }

@@ -147,7 +147,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
             }
 
             if ($is_valid) {
-                $rateLimit->saveAction(RateLimit::ACT_REGISTRATION, $this->session->getPerson(), $request->getClientIp());
+                $rateLimit->saveAction(RateLimit::ACT_REGISTRATION);
                 $person = $register->save();
 
                 $GLOBALS['DP_SET_SKIP_CACHE'] = true;
@@ -190,7 +190,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
                 }
             } else {
                 if ($validator->hasError('email.in_use')) {
-                    $rateLimit->saveAction(RateLimit::ACT_REGISTRATION, $this->session->getPerson(), $request->getClientIp());
+                    $rateLimit->saveAction(RateLimit::ACT_REGISTRATION);
                 }
                 $errors = $validator->getErrors(true);
                 $error_fields = $validator->getErrorGroups(true);

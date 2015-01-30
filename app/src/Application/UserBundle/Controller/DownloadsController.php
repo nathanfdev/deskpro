@@ -323,11 +323,7 @@ class DownloadsController extends AbstractController
 
             if ($form->isValid()) {
                 $comment = $new_comment->save();
-                $rateLimit->saveAction(
-                    RateLimit::ACT_SUBMIT_COMMENT,
-                    $this->person,
-                    $request->getClientIp()
-                );
+                $rateLimit->saveAction(RateLimit::ACT_SUBMIT_COMMENT);
 
                 $GLOBALS['DP_SET_SKIP_CACHE'] = true;
 
