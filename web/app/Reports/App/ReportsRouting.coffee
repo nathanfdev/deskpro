@@ -18,12 +18,16 @@ define -> (States) ->
     .setAbstract()
 
   States.add('app.reports.dashboards.index')
-      .setCtrl(['$state', 'DashboardService', ($state, DashboardService) ->
-        console.log(DashboardService)
-        DashboardService.getDashboards().then((dbs) ->
-          $state.go('app.reports.dashboards.view.index', { dashboard_id: dbs[0].id })
-        )
-      ])
+    .setCtrl(['$state', 'DashboardsInfo', ($state, DashboardsInfo) ->
+      DashboardsInfo.getDashboardList().then((dbs) ->
+        db = dbs[0]
+
+        if db.reports?.length
+          $state.go('app.reports.dashboards.view.report', { dashboard_id: db.id, report_id: db.reports[0].id })
+        else
+          $state.go('app.reports.dashboards.view.index', { dashboard_id: db[0].id })
+      )
+    ])
 
   States.add('app.reports.dashboards.view')
     .setUrl('/{dashboard_id:[0-9]+}')
@@ -32,12 +36,12 @@ define -> (States) ->
     .setAbstract()
 
   States.add('app.reports.dashboards.view.index')
-    .setCtrl(['$state', '$stateParams', 'DashboardService', ($state, $stateParams, DashboardService) ->
-      DashboardService.getDashboardById($stateParams.dashboard_id).then((db) ->
-        if not db?.reports?.length
+    .setCtrl(['$state', '$stateParams', 'DashboardsInfo', ($state, $stateParams, DashboardsInfo) ->
+      DashboardsInfo.getReportsList($stateParams.dashboard_id).then((reports) ->
+        if not reports.length
           $state.go('app.reports.dashboards.view.empty')
         else
-          $state.go('app.reports.dashboards.view.report', { dashboard_id: $stateParams.dashboard_id, report_id: db.reports[0].id })
+          $state.go('app.reports.dashboards.view.report', { dashboard_id: $stateParams.dashboard_id, report_id: reports[0].id })
       , ->
         $state.go('app.reports')
       )

@@ -1,20 +1,13 @@
 define -> [
-  '$scope',
-  '$stateParams',
-  '$q',
-  '$modal',
-  'DashboardService'
-  ($scope,
-   $stateParams
-   $q,
-   $modal,
-   DashboardService
-  ) ->
+  '$scope', '$stateParams', '$q', '$modal', 'DashboardsInfo', 'DashboardService'
+  ($scope, $stateParams, $q, $modal, DashboardsInfo, DashboardService) ->
 
-    DashboardService.getDashboards().then((dbs) ->
+    dashboard_id = parseInt($stateParams.dashboard_id)
+
+    DashboardsInfo.getDashboardList().then((dbs) ->
       $scope.dashboards = dbs
     )
-    DashboardService.getDashboardById($stateParams.dashboard_id).then((db) ->
+    DashboardService.getDashboardById(dashboard_id).then((db) ->
       $scope.dashboard = db
     )
 

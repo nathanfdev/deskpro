@@ -23,7 +23,7 @@
             <ul id="dp-select-dashboard-dropdown">
                 <li ng-repeat="db in dashboards track by $index">
                     <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="app.reports.dashboards.view.index({ dashboard_id: db.id })">
-                        <span class='logo-deskpro' ng-show="db.default"></span>
+                        <span class='logo-deskpro' ng-show="db.is_default"></span>
                         {{ ng_var('db.title') }}
                     </a>
                 </li>

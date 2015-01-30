@@ -62,12 +62,19 @@ class Dashboard
         }
 
         $data = array(
-            'title'   => $dashboard->getTitle(),
-            'id'      => $dashboard->getId(),
-            'default' => $dashboard->isDefault(),
-            'loaded'  => false,
-            'reports' => array(),
+            'id'         => $dashboard->getId(),
+            'title'      => $dashboard->getTitle(),
+            'is_default' => $dashboard->isDefault(),
+            'reports'    => array(),
         );
+
+        foreach ($dashboard->getReports() as $r) {
+            $data['reports'][] = array(
+                'id' => $r->id,
+                'title' => $r->title
+            );
+        }
+
         return $data;
     }
 

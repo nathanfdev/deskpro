@@ -3,9 +3,7 @@ define [
   'DeskPRO/Main/Service/DpApi',
 
   # Controllers
-  'Reports/App/Controller/Dashboard',
   'Reports/App/Controller/DashboardReport',
-  'Reports/App/Controller/Dashboards',
   'Reports/App/Controller/DashboardView',
   'Reports/App/Controller/ModalDashboard',
   'Reports/App/Controller/ModalReport',
@@ -14,15 +12,16 @@ define [
   'Reports/App/Controller/ModalWidgetEdit',
 
   # STANDARD SERVICES
-  'Reports/App/Service/Dashboard'
-  'Reports/App/Service/DashboardWidget'
-  'Reports/App/Service/DashboardPermissions'
+  'Reports/App/Service/Dashboard',
+  'Reports/App/Service/DashboardWidget',
+  'Reports/App/Service/DashboardPermissions',
+  'Reports/App/Service/DashboardsInfo',
 
   # SERVICES FOR HARDCODED DATA
-  'Reports/App/Service/ReportsOverview'
-  'Reports/App/Service/AgentActivity'
-  'Reports/App/Service/AgentHours'
-  'Reports/App/Service/TicketSatisfaction'
+  'Reports/App/Service/ReportsOverview',
+  'Reports/App/Service/AgentActivity',
+  'Reports/App/Service/AgentHours',
+  'Reports/App/Service/TicketSatisfaction',
 
   #STANDARD DIRECTIVES
   'Reports/App/Directive/DashboardAmcharts',
@@ -49,9 +48,7 @@ define [
   DeskPRO_Main_Service_DpApi,
 
   # Controllers
-  Reports_App_Controller_Dashboard,
   Reports_App_Controller_DashboardReport,
-  Reports_App_Controller_Dashboards,
   Reports_App_Controller_DashboardView,
   Reports_App_Controller_ModalDashboard,
   Reports_App_Controller_ModalReport,
@@ -62,6 +59,7 @@ define [
   Reports_App_Service_Dashboard,
   Reports_App_Service_DashboardWidget,
   Reports_App_Service_DashboardPermissions,
+  Reports_App_Service_DashboardsInfo,
 
   Reports_App_Service_ReportsOverview,
   Reports_App_Service_AgentActivity,
@@ -87,9 +85,7 @@ define [
   ###
   # Controllers section
   ###
-  ReportsApp.controller('Reports.App.Dashboard',            Reports_App_Controller_Dashboard)
   ReportsApp.controller('Reports.App.DashboardReport',      Reports_App_Controller_DashboardReport)
-  ReportsApp.controller('Reports.App.Dashboards',           Reports_App_Controller_Dashboards)
   ReportsApp.controller('Reports.App.DashboardView',        Reports_App_Controller_DashboardView)
 
   ReportsApp.controller('Reports.App.ModalDashboard',       Reports_App_Controller_ModalDashboard)
@@ -117,6 +113,9 @@ define [
   ])
   ReportsApp.service('DashboardPermissionsService', ['Api', '$q', (Api, $q) ->
     return new Reports_App_Service_DashboardPermissions(Api, $q)
+  ])
+  ReportsApp.service('DashboardsInfo', ['Api', '$q', (Api, $q) ->
+    return new Reports_App_Service_DashboardsInfo(Api, $q)
   ])
   ReportsApp.service('ReportsOverviewService', ['Api', '$q', (Api, $q) ->
     return new Reports_App_Service_ReportsOverview(Api, $q)

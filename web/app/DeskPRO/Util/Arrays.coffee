@@ -93,6 +93,21 @@ define ->
 
 
     ###
+    # Replaces one array with another in-place (so same array ref is returned.
+    #
+    # @param {Array} array
+    # @param {Array} newArray
+    # @return {Array}
+    ###
+    replaceArray: (array, newArray) ->
+      array.length = 0
+      for v in newArray
+        array.push(v)
+
+      return array
+
+
+    ###
     # Insert a value into an array a specific location.
       # Modifies the array in place.
       #

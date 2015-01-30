@@ -45,9 +45,6 @@ a {
 @import 'ticket_satisfaction';
 @import 'agent_performance';
 
-// Just for presentation
-.content, .sidebar, .app-bar { min-height: 3000px; }
-
 // To keep a set width sidebar with a full width content columns: float left and give the content container
 // padding-left equal to the full width of the sidebars.
 //   |   |         |              |
@@ -64,11 +61,24 @@ $app-width: 55px;
 $sidebar-width: 220px;
 $report-list-width: 555px;
 $content-width: $app-width + $sidebar-width;
+$header-height: 44px;
 
 .app-bar-wrapper {
-  float: left;
+  position: absolute;
+  top: $header-height;
+  bottom: 0;
+  left: 0;
   width: $app-width;
   background: #2b2f34;
+}
+
+.app-container {
+  position: absolute;
+  top: $header-height;
+  left: $app-width;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
 }
 
 // Tenmporary for presentation]
@@ -101,10 +111,6 @@ $content-width: $app-width + $sidebar-width;
 .content-wrapper {
   padding-left: $content-width;
   position: relative;
-}
-
-.report-wrapper {
-  padding-left: $app-width;
 }
 
 .report-list-wrapper {
