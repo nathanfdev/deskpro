@@ -1,10 +1,155 @@
 define -> [
-  '$scope', '$state', '$stateParams', 'DashboardService',
-  ($scope,   $state,   $stateParams,   DashboardService) ->
+  '$scope',
+  '$stateParams',
+  '$q',
+  '$modal',
+  'DashboardService'
+  ($scope,
+   $stateParams
+   $q,
+   $modal,
+   DashboardService
+  ) ->
+
     DashboardService.getDashboards().then((dbs) ->
       $scope.dashboards = dbs
     )
     DashboardService.getDashboardById($stateParams.dashboard_id).then((db) ->
       $scope.dashboard = db
     )
+
+    ###
+    # Creates modal instance and resolves dashboard as null, so ModalInstance controller will have to create new object
+    ###
+    $scope.newDashboardModal = () ->
+      modalInstance = $modal.open {
+        templateUrl: 'ReportsInterfaceBundle:Dashboard:new_dashboard.html',
+        controller: "Reports.App.ModalDashboard"
+        resolve:
+          dashboard: () ->
+            return null
+          dashboards: () ->
+            return $scope.dashboards
+          currentReport: () ->
+            return $scope.currentReport
+          state: () ->
+            return 'info'
+      }
+
+      modalInstance.result.then (dashboard) ->
+        DashboardService.saveDashboard(dashboard).then () ->
+          $scope
+          .changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
+          .then ->
+            $scope.editDashboardModal()
+
+
+
+    ###
+    # Just as previous one, but the dashboard object resolves to current dashboard
+    ###
+    $scope.editDashboardModal = (state) ->
+      reportsLength = $scope.dashboard.reports.length
+      modalInstance = $modal.open {
+        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
+        controller: "Reports.App.ModalDashboard"
+        resolve:
+          dashboard: () ->
+            return $scope.dashboard
+          dashboards: () ->
+            return $scope.dashboards
+          currentReport: () ->
+            return $scope.currentReport
+          state: () ->
+            if state? then state else 'info'
+      }
+
+      modalInstance.result.then (dashboard) ->
+        DashboardService
+        .saveDashboard dashboard
+        .then (saved) ->
+          $scope.dashboard = saved
+          if $scope.currentReport.deleted
+            $scope.changeReport $scope.dashboard.reports[0]
+          else if reportsLength < $scope.dashboard.reports.length
+            $scope.changeReport $scope.dashboard.reports[$scope.dashboard.reports.length - 1]
+
+
+
+    ###
+    # Compilation from previous tow methods - get current dashboard and crate new with it parameters, then
+    # open editDashboardModal with newly created dashboard.
+    ###
+    $scope.cloneDashboardModal = () ->
+      DashboardService
+      .cloneDashboard $scope.dashboard
+      .then ->
+        clonedOne = $scope.dashboards[$scope.dashboards.length - 1]
+        $scope.changeDashboard(clonedOne).then (dashboard)->
+          modalInstance = $modal.open {
+            templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
+            controller: "Reports.App.ModalDashboard"
+            resolve:
+              dashboard: () ->
+                db = JSON.parse(JSON.stringify(dashboard))
+                return db
+          }
+          modalInstance.result.then (dashboard) =>
+            DashboardService.saveDashboard(dashboard).then () =>
+              $scope.dashboards.push dashboard
+              $scope
+              .changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
+              .then ->
+                $scope.editDashboardModal()
+
+    $scope.changeReport = (report) ->
+      if report?
+        DashboardService
+        .getReport report
+        .then (loadedReport) ->
+          $scope.currentReport = loadedReport
+      else
+        $scope.currentReport = {widgets:[]}
+
+    $scope.addReport = () ->
+      if $scope.reports.length < 1
+        DashboardService
+        .getReports
+
+    $scope.createReport = () ->
+      $scope.newReport.dashboard_id = $scope.dashboard.id
+      DashboardService
+      .createReport $scope.newReport
+      .then (report) ->
+        $scope.dashboard.reports.push report
+        $scope.changeReport report
+
+    $scope.cloneReport = (report) ->
+      if report? and report.id?
+        DashboardService
+        .cloneReport report, $scope.dashboard.id
+        .then (clonedReport) ->
+          $scope.dashboard.reports.push clonedReport
+          $scope.changeReport clonedReport
+
+    $scope.removeReport = (report) ->
+      DashboardService
+      .removeReport(report)
+      .then (reports) ->
+        $scope.dashboard.reports = reports
+
+    $scope.editReportModal = () ->
+      modalInstance = $modal.open {
+        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_report.html',
+        controller: "Reports.App.ModalReport"
+        resolve:
+          dashboard: () ->
+            return $scope.dashboard
+          report: () ->
+            return $scope.currentReport
+      }
+
+      modalInstance.result.then (report) ->
+        DashboardService
+        .saveReport report
 ]

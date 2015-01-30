@@ -19,7 +19,10 @@ p {
   color: $text-color;
 }
 
-a { color: $link-color; }
+a {
+  color: $link-color;
+  cursor: pointer;
+}
 
 // So we don't have to repeat it every time we want to reposition an icon
 .fa { position: relative; }

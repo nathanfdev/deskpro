@@ -22,7 +22,7 @@
 
             <ul id="dp-select-dashboard-dropdown">
                 <li ng-repeat="db in dashboards track by $index">
-                    <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="app.reports.dashboards.view({ dashboard_id: db.id })">
+                    <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="app.reports.dashboards.view.index({ dashboard_id: db.id })">
                         <span class='logo-deskpro' ng-show="db.default"></span>
                         {{ ng_var('db.title') }}
                     </a>
@@ -63,8 +63,7 @@
 
 <div class="report-tabs">
     <ul>
-        <li dp-dropdown="dp-add-report-dropdown" dp-dropdown-opener="dp-add-report-opener"
-            dp-dropdown-closer="dp-add-report-closer" ng-if='!dashboard.default' class="add-report-link">
+        <li dp-dropdown="dp-add-report-dropdown" dp-dropdown-opener="dp-add-report-opener" dp-dropdown-closer="dp-add-report-closer" ng-if='!dashboard.default' class="add-report-link">
             <a id="dp-add-report-dropdown-opener" class='link-pointer'><i class="fa fa-plus"></i></a>
             <div id="dp-add-report-dropdown" style="position: absolute; z-index: 3333" class="reports-dropdown">
                 <header>
@@ -97,7 +96,7 @@
                             <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
                             <ul ng-show='isExpanded(db) && db.reports.length > 0'>
                                 <li ng-repeat="report in db.reports track by $index">
-                                    <a dp-dropdown-item ui-sref="" ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
+                                    <a dp-dropdown-item ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
                                 </li>
                             </ul>
                         </li>

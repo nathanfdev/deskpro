@@ -88,7 +88,6 @@ class DashboardController extends AbstractController
 	 * 	)
 	 * )
 	 */
-
     public function listAction()
     {
         $data = array();
