@@ -78,7 +78,7 @@ class CustomDataPersonType extends AbstractType
         }
 
         if (!$custom_data->getData()) {
-            $custom_data->setData($custom_data_field->default_value);
+            $custom_data->setData($custom_data_field->getDefaultValue());
         }
 
         list($value_name, $form_type, $options) = $this->field_manager->getCustomPersonField($custom_data_field, $config->getOption('agent_interface'));

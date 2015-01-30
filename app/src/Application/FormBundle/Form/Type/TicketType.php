@@ -575,6 +575,12 @@ class TicketType extends AbstractType
             return;
         }
 
+        if ($default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_cat', null)) {
+            if (!$form_context->getTicket()->getCategoryId()) {
+                $form_context->getTicket()->setCategoryId($default);
+            }
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_category', array());
     }
 
@@ -587,6 +593,12 @@ class TicketType extends AbstractType
 
         if (!$this->em->getRepository('DeskPRO:TicketPriority')->countAll() > 0) {
             return;
+        }
+
+        if ($default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_pri', null)) {
+            if (!$form_context->getTicket()->getPriorityId()) {
+                $form_context->getTicket()->setPriorityId($default);
+            }
         }
 
         $form_context->getForm()->add($field->getId(), 'deskpro_priority', array());
@@ -603,6 +615,12 @@ class TicketType extends AbstractType
             return;
         }
 
+        if ($default = $this->getSettingsBag($form_context->getForm())->get('core.default_ticket_work', null)) {
+            if (!$form_context->getTicket()->getWorkflowId()) {
+                $form_context->getTicket()->setWorkflowId($default);
+            }
+        }
+
         $form_context->getForm()->add($field->getId(), 'deskpro_workflow', array());
     }
 
@@ -617,7 +635,13 @@ class TicketType extends AbstractType
             return;
         }
 
-        $form_context->getForm()->add($field->getId(), 'deskpro_product', array());
+        if ($default = $this->getSettingsBag($form_context->getForm())->get('core.default_prod_id', null)) {
+            if (!$form_context->getTicket()->getProductId()) {
+                $form_context->getTicket()->setProductId($default);
+            }
+        }
+
+        $form_context->getForm()->add($field->getId(), 'deskpro_product');
     }
 
     private function addCaptcha(TicketFormContext $form_context, LayoutField $field, $ignore_validation = false)

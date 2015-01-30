@@ -72,6 +72,15 @@ class CustomDataTicketType extends AbstractType
         /** @var \Application\DeskPRO\Entity\CustomDefTicket $custom_data_field */
         $custom_data_field = $custom_data ? $custom_data->field : $config->getOption('custom_data_field');
 
+        if (!$custom_data) {
+            $custom_data = new CustomDataTicket();
+            $event->setData($custom_data);
+        }
+
+        if (!$custom_data->getData()) {
+            $custom_data->setData($custom_data_field->getDefaultValue());
+        }
+
         list($value_name, $form_type, $options) = $this->field_manager->getCustomTicketField($custom_data_field, $config->getOption('agent_interface'));
 
         if ($config->getOption('ignore_validation')) {
