@@ -7,99 +7,6 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @storage = {reports: [], labels: [], reportsByLabels: {}}
       @groupParams = []
       @widgets = {}
-      @hostname = window.location.origin;
-      @selectedSource =
-        id: 0
-      @wdata =
-        "type": "serial",
-        "theme": "none",
-        "dataProvider": [
-          {
-            "country": "USA",
-            "visits": 2025
-          },
-          {
-            "country": "China",
-            "visits": 1882
-          },
-          {
-            "country": "Japan",
-            "visits": 1809
-          },
-          {
-            "country": "Germany",
-            "visits": 1322
-          },
-          {
-            "country": "UK",
-            "visits": 1122
-          },
-          {
-            "country": "France",
-            "visits": 1114
-          },
-          {
-            "country": "India",
-            "visits": 984
-          },
-          {
-            "country": "Spain",
-            "visits": 711
-          },
-          {
-            "country": "Netherlands",
-            "visits": 665
-          },
-          {
-            "country": "Russia",
-            "visits": 580
-          },
-          {
-            "country": "South Korea",
-            "visits": 443
-          },
-          {
-            "country": "Canada",
-            "visits": 441
-          },
-          {
-            "country": "Brazil",
-            "visits": 395
-          }
-        ],
-        "valueAxes": [{
-          "gridColor":"#FFFFFF",
-          "gridAlpha": 0.2,
-          "dashLength": 0
-        }],
-        "gridAboveGraphs": true,
-        "startDuration": 1,
-        "graphs": [{
-          "balloonText": "[[category]]: <b>[[value]]</b>",
-          "fillAlphas": 0.8,
-          "lineAlpha": 0.2,
-          "type": "column",
-          "valueField": "visits"
-        }],
-        "chartCursor": {
-          "categoryBalloonEnabled": false,
-          "cursorAlpha": 0,
-          "zoomable": false
-        },
-        "categoryField": "country",
-        "categoryAxis": {
-          "gridPosition": "start",
-          "gridAlpha": 0,
-          "tickPosition":"start",
-          "tickLength":20
-        },
-        "exportConfig":{
-          "menuTop": 0,
-          "menuItems": [{
-            "icon": '/lib/3/images/export.png',
-            "format": 'png'
-          }]
-        }
 
       @Api.sendGet('reports/builder/group-params').then (response) =>
         @groupParams = response.data
@@ -145,10 +52,11 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       @Api.sendPost \
         "/dashboards/widgets/#{widget.id}",
         {
-          "size_x": widget.newSizeX,
-          "size_y": widget.newSizeY
-          "col":   widget.newCol
-          "row":   widget.newRow
+          "size_x": if widget.newSizeX? then widget.newSizeX else widget.sizeX
+          "size_y": if widget.newSizeY? then widget.newSizeY else widget.sizeY
+          "col":   if widget.newCol? then widget.newCol else widget.col
+          "row":   if widget.newRow? then widget.newRow else widget.row
+          "title":   widget.title
         }
 
     setDashboardService: (service) ->
@@ -161,7 +69,6 @@ define ['DeskPRO/Util/Arrays',], (Arrays) ->
       .sendPostJson url, data
       .then (response) =>
         newWidget = response.data
-        newWidget.data = @wdata
         report.widgets.push newWidget
 
 

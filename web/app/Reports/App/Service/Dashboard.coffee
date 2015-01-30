@@ -116,7 +116,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       promise = @Api.sendDelete("/dashboards/#{dashboard.id}")
       promise.then () =>
         Arrays.removeValue @storage.dbs, dashboard, 1
-      return promise
+        return promise
 
     ###
     # Operations about reports
@@ -189,6 +189,16 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       , () =>
         console.error 'something goes wrong!'
       deferred.promise
+
+    saveReport: (report) ->
+      url = "/dashboards/reports/#{report.id}/save"
+      @Api
+      .sendPostJson url, report
+      .then (response) =>
+        if(response)
+          response
+      , () =>
+        console.error 'something goes wrong!'
 
     cloneReport: (report, dashboard_id) ->
       deferred = @$q.defer()

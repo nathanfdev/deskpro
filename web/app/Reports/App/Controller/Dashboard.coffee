@@ -1,4 +1,4 @@
-define -> [
+define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$scope',
   '$document',
   '$q',
@@ -80,11 +80,18 @@ define -> [
     $scope.deleteDashboard = (dashboard) ->
       DashboardService.deleteDashboard dashboard
       .then () =>
-        $scope.changeDashboard Arrays.last $scope.dashboards
+        Arrays.removeValue $scope.dashboards, dashboard, 1
+        $scope.changeDashboard $scope.dashboards[$scope.dashboards.length - 1]
 
     ###
     # ui staff
     ###
+
+    $scope.isEmptyData = (data) ->
+      if !data or data.length < 1
+        return true
+      else
+        return false
 
     $scope.toggleLayoutEdit = () ->
       if !$scope.dashboard.default
@@ -204,100 +211,9 @@ define -> [
     ###
     $scope.changeReport = (report) ->
       if report?
-        wdata =
-          "type": "serial",
-          "theme": "none",
-          "dataProvider": [
-            {
-              "country": "USA",
-              "visits": 2025
-            },
-            {
-              "country": "China",
-              "visits": 1882
-            },
-            {
-              "country": "Japan",
-              "visits": 1809
-            },
-            {
-              "country": "Germany",
-              "visits": 1322
-            },
-            {
-              "country": "UK",
-              "visits": 1122
-            },
-            {
-              "country": "France",
-              "visits": 1114
-            },
-            {
-              "country": "India",
-              "visits": 984
-            },
-            {
-              "country": "Spain",
-              "visits": 711
-            },
-            {
-              "country": "Netherlands",
-              "visits": 665
-            },
-            {
-              "country": "Russia",
-              "visits": 580
-            },
-            {
-              "country": "South Korea",
-              "visits": 443
-            },
-            {
-              "country": "Canada",
-              "visits": 441
-            },
-            {
-              "country": "Brazil",
-              "visits": 395
-            }
-          ],
-          "valueAxes": [{
-            "gridColor":"#FFFFFF",
-            "gridAlpha": 0.2,
-            "dashLength": 0
-          }],
-          "gridAboveGraphs": true,
-          "startDuration": 1,
-          "graphs": [{
-            "balloonText": "[[category]]: <b>[[value]]</b>",
-            "fillAlphas": 0.8,
-            "lineAlpha": 0.2,
-            "type": "column",
-            "valueField": "visits"
-          }],
-          "chartCursor": {
-            "categoryBalloonEnabled": false,
-            "cursorAlpha": 0,
-            "zoomable": false
-          },
-          "categoryField": "country",
-          "categoryAxis": {
-            "gridPosition": "start",
-            "gridAlpha": 0,
-            "tickPosition":"start",
-            "tickLength":20
-          },
-          "exportConfig":{
-            "menuTop": 0,
-            "menuItems": [{
-              "icon": '/lib/3/images/export.png',
-              "format": 'png'
-            }]
-          }
         DashboardService
           .getReport report
           .then (loadedReport) ->
-            widget.data = wdata for widget in loadedReport.widgets
             $scope.currentReport = loadedReport
       else
         $scope.currentReport = {widgets:[]}
@@ -316,11 +232,12 @@ define -> [
         $scope.changeReport report
 
     $scope.cloneReport = (report) ->
-      DashboardService
-        .cloneReport report, $scope.dashboard.id
-        .then (clonedReport) ->
-          $scope.dashboard.reports.push clonedReport
-          $scope.changeReport clonedReport
+      if report? and report.id?
+        DashboardService
+          .cloneReport report, $scope.dashboard.id
+          .then (clonedReport) ->
+            $scope.dashboard.reports.push clonedReport
+            $scope.changeReport clonedReport
 
     $scope.removeReport = (report) ->
       DashboardService
@@ -328,6 +245,20 @@ define -> [
       .then (reports) ->
         $scope.dashboard.reports = reports
 
+    $scope.editReportModal = () ->
+      modalInstance = $modal.open {
+        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_report.html',
+        controller: "Reports.App.ModalReport"
+        resolve:
+          dashboard: () ->
+            return $scope.dashboard
+          report: () ->
+            return $scope.currentReport
+      }
+
+      modalInstance.result.then (report) ->
+        DashboardService
+        .saveReport report
 
     ###
     # Operations about widgets
@@ -354,7 +285,7 @@ define -> [
               row: "0"
               data: []
               id: 0
-              name: "new widget"
+              title: "new widget"
               sizeX: "5"
               sizeY: "2"
               type: null
@@ -364,12 +295,12 @@ define -> [
             }
       }
       modalInstance.result.then (result) ->
-        $scope.editWidgetModal result.report, result.widget,
+        $scope.addWidgetModal result.report, result.widget,
 
-    $scope.editWidgetModal = (report, widget) ->
+    $scope.addWidgetModal = (report, widget) ->
       modalInstance = $modal.open {
-        templateUrl: "ReportsInterfaceBundle:Dashboard:widget_edit.html",
-        controller: "Reports.App.ModalWidgetEdit"
+        templateUrl: "ReportsInterfaceBundle:Dashboard:add_widget.html",
+        controller: "Reports.App.ModalWidgetAdd"
         resolve:
           report: () ->
             report
@@ -386,4 +317,15 @@ define -> [
 
     $scope.addWidget = (report, widget) ->
       DashboardWidgetService.addWidget report, widget
+
+    $scope.editWidgetModal = (widget) ->
+      modalInstance = $modal.open {
+        templateUrl: "ReportsInterfaceBundle:Dashboard:edit_widget.html",
+        controller: "Reports.App.ModalWidgetEdit"
+        resolve:
+          widget: () ->
+            widget
+      }
+      modalInstance.result.then (result) ->
+        DashboardWidgetService.saveWidget result
 ]

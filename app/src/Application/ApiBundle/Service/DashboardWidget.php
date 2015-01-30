@@ -90,7 +90,7 @@ class DashboardWidget
         $size = $widget->getSize();
         $data = array(
             'id'    => $widget->getId(),
-            'name'  => $widget->getTitle(),
+            'title'  => $widget->getTitle(),
             "row"   => $pos[0],
             "col"   => $pos[1],
             "sizeX" => $size[0],

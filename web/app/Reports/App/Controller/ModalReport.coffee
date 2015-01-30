@@ -3,19 +3,27 @@ define -> [
   '$modalInstance',
   'DashboardService',
   'DashboardWidgetService',
-  'widget',
+  'dashboard',
+  'report',
   ($scope,
    $modalInstance,
    DashboardService,
    DashboardWidgetService,
-   widget) ->
+   dashboard,
+   report) ->
 
     DashboardService.setWidgetService(DashboardWidgetService)
-    $scope.widget = widget
+    $scope.dashboard = dashboard
+    $scope.report = report
 
     $scope.cancel = ->
       $modalInstance.dismiss('cancel')
 
-    $scope.saveWidget = ->
-      $modalInstance.close($scope.widget)
+    $scope.saveReport = ->
+      $modalInstance.close($scope.report)
+
+    $scope.addNewWidget = ->
+
+    $scope.removeWidget = (widget) ->
+      widget.deleted = true
 ]
