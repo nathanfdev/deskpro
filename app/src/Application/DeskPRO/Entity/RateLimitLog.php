@@ -91,6 +91,7 @@ class RateLimitLog extends DomainObject
         $metadata->inheritanceType           = ClassMetadataInfo::INHERITANCE_TYPE_NONE;
         $metadata->changeTrackingPolicy      = ClassMetadataInfo::CHANGETRACKING_NOTIFY;
         $metadata->generatorType             = ClassMetadataInfo::GENERATOR_TYPE_IDENTITY;
+        $metadata->customRepositoryClassName = 'Application\\DeskPRO\\EntityRepository\\RateLimitLog';
 
         $metadata->setPrimaryTable(array(
             'name' => 'rate_limit_log',
@@ -125,7 +126,7 @@ class RateLimitLog extends DomainObject
             'columnName' => 'person_id',
             'fieldName'  => 'person_id',
             'type'       => 'integer',
-            'nullable'   => true,
+            'nullable'   => false,
         ));
         $metadata->mapField(array(
             'columnName' => 'date_created',

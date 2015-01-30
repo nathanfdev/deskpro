@@ -36,11 +36,13 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\HttpFoundation\Request;
+use Application\DeskPRO\Service\RateLimit;
 use Application\UserBundle\Form\RegisterType;
 
 class RegisterController extends \Application\DeskPRO\Controller\AbstractController
 {
-    public function registerAction()
+    public function registerAction(Request $request)
     {
         if ($this->session->getPerson()->getId()) {
             return $this->redirectRoute('user');
@@ -58,7 +60,15 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
         }
 
         $captcha = null;
-        if ($this->container->getSetting('user.register_captcha')) {
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        $limitHit = $rateLimit->getResponse(
+            RateLimit::ACT_REGISTRATION,
+            $this->session->getPerson(),
+            $this->request->getClientIp()
+        );
+
+        if ($this->container->getSetting('user.register_captcha') || $limitHit) {
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
         }
 
@@ -107,6 +117,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
 
         $error_fields = null;
         $errors = null;
+
         if ($this->get('request')->getMethod() == 'POST' && !$this->in->getBool('no_submit') && !$trap_fail) {
             $this->ensureRequestToken('user_register');
             $form->handleRequest($this->get('request'));
@@ -141,6 +152,7 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
             }
 
             if ($is_valid) {
+                $rateLimit->saveAction(RateLimit::ACT_REGISTRATION, $this->session->getPerson(), $request->getClientIp());
                 $person = $register->save();
 
                 $GLOBALS['DP_SET_SKIP_CACHE'] = true;
@@ -182,6 +194,9 @@ class RegisterController extends \Application\DeskPRO\Controller\AbstractControl
                     return $this->redirectRoute('user');
                 }
             } else {
+                if ($validator->hasError('email.in_use')) {
+                    $rateLimit->saveAction(RateLimit::ACT_REGISTRATION, $this->session->getPerson(), $request->getClientIp());
+                }
                 $errors = $validator->getErrors(true);
                 $error_fields = $validator->getErrorGroups(true);
             }

@@ -852,6 +852,48 @@
     'agent.login_rate_limit.lock_time'      => 900,
 
     ####################################################################################################################
+    # rate limit
+    ####################################################################################################################
+
+    'rate_limit.login.limit'                            => 3,
+    'rate_limit.login.time'                             => 15 * 60, // 15 min
+    'rate_limit.login.response'                         => 'captcha',
+
+    'rate_limit.registration.limit'                     => 3,
+    'rate_limit.registration.time'                      => 15 * 60, // 15 min
+    'rate_limit.registration.response'                  => 'captcha',
+
+    'rate_limit.reset_password.limit'                   => 3,
+    'rate_limit.reset_password.time'                    => 15 * 60, // 15 min
+    'rate_limit.reset_password.response'                => 'captcha',
+
+
+    'rate_limit.submit_comment.limit'                   => 3,
+    'rate_limit.submit_comment.time'                    => 15 * 60, // 15 min
+    'rate_limit.submit_comment.response'                => 'captcha',
+
+    'rate_limit.submit_feedback.limit'                  => 3,
+    'rate_limit.submit_feedback.time'                   => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.response'               => 'captcha',
+
+    'rate_limit.submit_ticket.limit'                    => 3,
+    'rate_limit.submit_ticket.time'                     => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.response'                 => 'captcha',
+
+    'rate_limit.submit_comment.guest.limit'             => 3,
+    'rate_limit.submit_comment.guest.time'              => 15 * 60, // 15 min
+    'rate_limit.submit_comment.guest.response'          => 'captcha',
+
+    'rate_limit.submit_feedback.guest.limit'            => 3,
+    'rate_limit.submit_feedback.guest.time'             => 15 * 60, // 15 min
+    'rate_limit.submit_feedback.guest.response'         => 'captcha',
+
+    'rate_limit.submit_ticket.guest.limit'              => 3,
+    'rate_limit.submit_ticket.guest.time'               => 15 * 60, // 15 min
+    'rate_limit.submit_ticket.guest.response'           => 'captcha',
+
+
+    ####################################################################################################################
     # user_style
     ####################################################################################################################
 

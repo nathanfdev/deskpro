@@ -37,6 +37,8 @@ namespace Application\UserBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\EntityRepository\LoginLog;
+use Application\DeskPRO\Form\Captcha\Recaptcha;
+use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
@@ -53,7 +55,7 @@ use Orb\Log\Writer\ArrayWriter;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 use Orb\Validator\StringEmail;
-use Symfony\Component\HttpFoundation\Request;
+use Application\DeskPRO\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
@@ -202,8 +204,16 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
         }
 
         $captcha = null;
-        if ($this->container->getSetting('user.register_captcha')) {
-            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reg'));
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        $limitHit = $rateLimit->getResponse(
+            RateLimit::ACT_LOGIN,
+            $this->session->getPerson(),
+            $this->request->getClientIp()
+        );
+
+        if ($limitHit) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
         }
 
         return $this->render($this->tpl_prefix . ':index.html.twig', array(
@@ -368,6 +378,24 @@ HTML;
             return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
         }
 
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        $captcha = null;
+        $limitHit = $rateLimit->getResponse(
+            RateLimit::ACT_LOGIN,
+            $this->session->getPerson(),
+            $this->request->getClientIp()
+        );
+
+        if ($limitHit) {
+            /** @var Recaptcha $captcha */
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
+            if (!$captcha->validate()) {
+                $this->session->setFlash('captcha_login_error', true);
+                return $this->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+            }
+        }
+
         $this->ensureRequestToken('user_login');
         $result = $this->authLocalInput();
 
@@ -396,6 +424,8 @@ HTML;
                     }
                 }
             }
+
+            $rateLimit->saveAction(RateLimit::ACT_LOGIN, $this->session->getPerson(), $request->getClientIp());
 
             // Send alert
             $attempt_person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($this->in->getString('email'));
@@ -835,12 +865,26 @@ HTML;
         $reg_formtype = new \Application\UserBundle\Form\RegisterType();
         $form = $this->get('form.factory')->create($reg_formtype, $register);
 
+        $captcha = null;
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        $limitHit = $rateLimit->getResponse(
+            RateLimit::ACT_RESET_PWD,
+            $this->session->getPerson(),
+            $this->request->getClientIp()
+        );
+
+        if ($limitHit) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reset_password'));
+        }
+
         return $this->render($this->tpl_prefix . ':reset-password.html.twig', array(
             'route_prefix' => $this->route_prefix,
             'invalid_email' => $invalid_email,
             'invalid_code' => $invalid_code,
             'form' => $form->createView(),
             'invalid' => $this->in->getBool('inv'),
+            'captcha' => $captcha,
         ));
     }
 
@@ -861,9 +905,31 @@ HTML;
     # Resetting passwords
     ############################################################################
 
-    public function sendResetPasswordAction($_format = 'html')
+    public function sendResetPasswordAction($_format = 'html', Request $request)
     {
         $this->ensureRequestToken('user_login');
+
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        $limitHit = $rateLimit->getResponse(
+            RateLimit::ACT_RESET_PWD,
+            $this->session->getPerson(),
+            $this->request->getClientIp()
+        );
+
+        if ($limitHit) {
+            $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_reset_password'));
+            if (!$captcha->validate()) {
+                if ($_format == 'json') {
+                    return $this->createJsonResponse(array('success' =>1 ));
+                } else {
+                    $this->session->setFlash('captcha_reset_error', true);
+                    return $this->redirectRoute($this->route_prefix . '_login_resetpass', array('return' => $request->getReturnParam()));
+                }
+            }
+        }
+
+        $rateLimit->saveAction(RateLimit::ACT_RESET_PWD, $this->session->getPerson(), $request->getClientIp());
 
         $email = $this->in->getString('email');
 
