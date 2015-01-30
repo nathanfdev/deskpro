@@ -39,7 +39,7 @@ use Application\DeskPRO\Entity\Person as PersonEntity;
 
 class RateLimitLog extends AbstractEntityRepository
 {
-	public function save($action, $person, $ip = null)
+	public function save($action, PersonEntity $person, $ip = null)
 	{
 		$ip = $ip ? ip2long($ip) : 0;
 		$this->getEntityManager()->getConnection()->executeQuery(sprintf(

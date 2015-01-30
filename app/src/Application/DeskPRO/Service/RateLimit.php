@@ -82,7 +82,7 @@ class RateLimit
 
 		/** @var RateLimitLog $rep */
 		$rep = $this->container->getEm()->getRepository('DeskPRO:RateLimitLog');
-		$rep->save($action, $params, $ip);
+		$rep->save($action, $person, $ip);
 	}
 
 	/**
