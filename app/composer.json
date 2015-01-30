@@ -44,7 +44,8 @@
 		"white-october/pagerfanta-bundle": "~1.0",
 		"leafo/scssphp": "0.0.12",
 		"phpspec/phpspec": "~2.1",
-		"phpspec/nyan-formatters": "~1.0"
+		"phpspec/nyan-formatters": "~1.0",
+		"friendsofsymfony/http-cache-bundle": "~1.2"
 	},
 	"preferred-install": "dist"
 }

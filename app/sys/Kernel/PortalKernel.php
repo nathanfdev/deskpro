@@ -62,6 +62,7 @@ class PortalKernel extends Kernel
             new \Sensio\Bundle\FrameworkExtraBundle\SensioFrameworkExtraBundle(),
 
             new \WhiteOctober\PagerfantaBundle\WhiteOctoberPagerfantaBundle(),
+            new \FOS\HttpCacheBundle\FOSHttpCacheBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
             new \Application\PortalBundle\PortalBundle(),
