@@ -435,8 +435,24 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $message;
     }
 
+    public function getMessageFullText()
+    {
+        if (!$this->message_full) {
+            return '';
+        }
+
+        $message = $this->message_full;
+        $message = strip_tags($message);
+        $message = \Orb\Util\Strings::htmlEntityDecodeUtf8($message);
+
+        return $message;
+    }
+
     public function getMessageFull()
     {
+        if (!$this->message_full) {
+            return '';
+        }
         return $this->procInlineAttach($this->message_full);
     }
 

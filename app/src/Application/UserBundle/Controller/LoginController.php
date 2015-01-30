@@ -39,6 +39,7 @@ use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\Form\Captcha\Recaptcha;
 use Application\DeskPRO\Service\RateLimit;
+use Application\DeskPRO\People\PersonGuest;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Application\DeskPRO\Usersource\UsersourceAuthAdapterFactory;
 use Application\DeskPRO\Controller\Helper\LoginHelper;
@@ -94,6 +95,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
         $this->auth_manager = $this->container->getSystemService('authentication_manager');
         $this->usersource_manager = $this->container->getSystemService('usersource_manager');
+
+        $GLOBALS['DP_SET_SKIP_CACHE'] = true;
     }
 
     protected function loginViaToken()
@@ -210,6 +213,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
             $captcha = $this->container->getSystemObject('form_captcha', array('type' => 'user_login'));
         }
 
+        if (!$failed_login_name && !$account_disabled && $this->container->getRequest()->getMethod() == 'GET') {
+            // we want to cache the page if we're just viewing the form
+            unset($GLOBALS['DP_SET_SKIP_CACHE']);
+        }
+
         return $this->render($this->tpl_prefix . ':index.html.twig', array(
             'return' => $return,
             'route_prefix' => $this->route_prefix,
@@ -231,7 +239,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
             ", array($person['id'], 'agent.ui.state'));
         }
 
-        $this->session->replace(array());
+        $this->session->invalidate();
         $this->session->save();
 
         foreach (array('dpsid-agent', 'dpsid-admin', 'dpreme') as $cookie_name) {
@@ -1058,6 +1066,11 @@ HTML;
 
     public function resetPasswordNewPassAction($code)
     {
+        if (!$this->session->getPerson() instanceof PersonGuest) {
+            $this->session->invalidate();
+            return $this->redirectRoute('user_login_resetpass_newpass', array('code' => $code));
+        }
+
         $code_data = $this->em->getRepository('DeskPRO:TmpData')->getByCode($code, 'reset-password');
         $person = null;
         if ($code_data) {
@@ -1105,6 +1118,7 @@ HTML;
 
                 $this->session->setFlash('password_reset', 1);
 
+                $this->session->invalidate();
                 $this->session->set('auth_person_id', $person->getId());
                 $this->session->set('dp_interface', DP_INTERFACE);
                 $this->session->save();

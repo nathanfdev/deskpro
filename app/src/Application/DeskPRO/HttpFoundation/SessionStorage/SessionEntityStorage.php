@@ -515,10 +515,14 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $session = new \Application\DeskPRO\Entity\Session();
 
             // hardcoded copy of old session params
-            $copyProps = array('interface', 'person', 'visitor', 'user_agent', 'ip_address', 'data', 'is_person', 'is_bot',
+            $copyProps = array('interface', 'person', 'visitor', 'user_agent', 'ip_address', 'is_person', 'is_bot',
                 'is_helpdesk', 'active_status', 'is_chat_available');
             foreach ($copyProps as $prop) {
                 $session[$prop] = $this->session[$prop];
+            }
+
+            if (!$destroy) {
+                $session['data'] = $this->session['data'];
             }
 
             $this->session = $session;

@@ -72,6 +72,9 @@ class DownloadsController extends AbstractController
             }
 
             if (!$category) {
+                if ($this->db->count('download_categories', array('id' => $category_id))) {
+                    return $this->renderLoginOrPermissionError();
+                }
                 return $this->renderStandardError('@user.error.not-found-title', '@user.error.not-found', 404);
             }
 
