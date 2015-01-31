@@ -57,8 +57,6 @@ class UseSectionVoter extends AbstractVoter
 
     protected function isGranted($attribute, $object, $user = null)
     {
-        // TODO: we do need the permission bag here, but it is not currently used.... this is purely based on settings atm
-        // if use section does not depend on user permissions®, we can remove the section about perm bags below
         if ($this->isLoggedIn($user)) {
             $permissionBag = $this->getPortalPermissionsManager()->getPermissionsBagForPerson($user);
         } else {
@@ -69,17 +67,17 @@ class UseSectionVoter extends AbstractVoter
 
         switch($attribute) {
             case static::USE_ARTICLES:
-                return $brand_settings->get('core.apps_kb');
+                return $brand_settings->get('core.apps_kb') && $permissionBag->get('articles.use');
             case static::USE_FEEDBACK:
-                return $brand_settings->get('core.apps_feedback');
+                return $brand_settings->get('core.apps_feedback') && $permissionBag->get('feedback.use');
             case static::USE_CHAT:
-                return $brand_settings->get('core.apps_chat');
+                return $brand_settings->get('core.apps_chat') && $permissionBag->get('chat.use');
             case static::USE_DOWNLOADS:
-                return $brand_settings->get('core.apps_downloads');
+                return $brand_settings->get('core.apps_downloads') && $permissionBag->get('downloads.use');
             case static::USE_NEWS:
-                return $brand_settings->get('core.apps_news');
+                return $brand_settings->get('core.apps_news') && $permissionBag->get('news.use');
             case static::USE_TICKETS:
-                return true; // not sure this should ever be false?
+                return $permissionBag->get('tickets.use');
         }
 
         return false;
