@@ -2,7 +2,7 @@ services:
 
   theme_resolver:
     class: Application\PortalBundle\Theme\ThemeResolver
-    arguments: [@service_container, @theme_repository, @portal_mode_storage, @logger]
+    arguments: [@service_container, @theme_repository, @portal_mode_storage, @portal_cache_helper, @logger]
 
 
   theme_view_factory:
@@ -21,11 +21,13 @@ services:
       - %kernel.cache_dir%/portalThemes.php
       - %kernel.debug%
 
+
   portal_cache.template_cache_warmer:
     class: Application\PortalBundle\CacheWarmer\ThemeTemplateCacheWarmer
     arguments: [@theme_resolver]
     tags:
       - { name: 'kernel.cache_warmer' }
+
 
   portal_cache.theme_cache_warmer:
     class: Application\PortalBundle\CacheWarmer\ThemeRepositoryCacheWarmer

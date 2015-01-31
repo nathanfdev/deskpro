@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
+use Application\PortalBundle\HttpKernel\PortalCacheHelper;
 use Application\PortalBundle\Mode\PortalMode;
 use Application\PortalBundle\Mode\PortalModeStorage;
 use Application\PortalBundle\Request\TagRequest;
@@ -67,18 +68,24 @@ class ThemeResolver
     private $mode_storage;
 
     /**
+     * @var PortalCacheHelper
+     */
+    private $cache_helper;
+
+    /**
      * @var \Psr\Log\LoggerInterface
      */
     private $logger;
 
 
-    public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, PortalModeStorage $mode_storage, LoggerInterface $logger)
+    public function __construct(ContainerInterface $container, ThemeRepository $theme_repo, PortalModeStorage $mode_storage, PortalCacheHelper $cache_helper, LoggerInterface $logger)
     {
         $this->container  = $container;
         $this->theme_repo = $theme_repo;
         $this->themeTemplateMap = null;
         $this->mode_storage = $mode_storage;
         $this->logger = $logger;
+        $this->cache_helper = $cache_helper;
     }
 
     /**
@@ -231,8 +238,10 @@ class ThemeResolver
         $tag_request->setSession($current_request->getSession());
         $tag_request->headers->replace($current_request->headers->all());
 
-        // construct and return the proper ESI tag content
-        if ($tag->isEsi()) {
+        // never embed an <esi:...> tag in a guest request (inline it instead)
+        if ($tag->isEsi() && !$this->cache_helper->isGuestRequest()) {
+
+            // construct and return the proper ESI tag content
             $attrs = $this->filterArguments($attrs);
 
             $esi = $this->container->get('fragment.renderer.esi')->render(
@@ -244,6 +253,7 @@ class ThemeResolver
             $this->logger->info(sprintf('theme resolver: created ESI for "%s" (%s)', $tag->getName(), $esi_content));
 
             return $esi_content;
+
         }
 
         // construct and return the actual tag response content
