@@ -72,19 +72,31 @@ class PortalCacheHelper
     }
 
     /**
+     * @return null|string
+     */
+    public function getUserContextHash()
+    {
+        $current_request = $this->request_stack->getMasterRequest();
+
+        if (!$current_request->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
+            return null;
+        }
+
+        return $current_request->headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER);
+    }
+
+    /**
      * Is the master request a guest request, or not?
      *
      * @return bool true if guest
      */
     private function determineIfGuestRequest()
     {
-        $current_request = $this->request_stack->getMasterRequest();
-        if ($current_request->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
-            $user_hash = $current_request->headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER);
-
-            return in_array($user_hash, array(PortalHttpCache::ANON_HASH, PortalHttpCache::GUEST_HASH));
+        if (!$user_hash = $this->getUserContextHash()) {
+            return true; // if no user context hash header: default to a guest!
         }
 
-        return true; // if no user context header (should not be possible), mark as a guest
+        return in_array($user_hash, array(PortalHttpCache::ANON_HASH, PortalHttpCache::GUEST_HASH));
     }
+
 }

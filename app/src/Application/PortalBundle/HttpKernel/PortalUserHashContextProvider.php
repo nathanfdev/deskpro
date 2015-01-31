@@ -78,13 +78,15 @@ class PortalUserHashContextProvider implements ContextProviderInterface
         if ($token = $this->token_storage->getToken()) {
             $person = $token->getUser();
             if ($person instanceof Person && $this->auth_checker->isGranted('ROLE_USER')) {
+                // only if there is a valid, and authenticated, user in the security token
                 $cache_key = $this->permissions_manager->getCacheKeyForPerson($person);
             }
         }
 
         if (!$cache_key) {
             // not a ROLE_USER, or no Person is token
-            // NOTE: this will get hashed to the x-user-context-hash of self::GUEST_HASH
+            // NOTE: this will get HASHED to the x-user-context-hash (to a value of PortalHttpCache::GUEST_HASH)
+            // see PortalHttpCache. Never check for this in a header. Use portal_cache_helper->isGuest() instead.
             $cache_key = 'guest';
         }
 
