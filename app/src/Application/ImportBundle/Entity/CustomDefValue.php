@@ -27,6 +27,7 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
@@ -94,7 +95,11 @@ final class CustomDefValue extends AbstractEntity
      */
     public function toArray()
     {
-        return array();
+        return array(
+            'oid'   => $this->oid,
+            'key'   => $this->key,
+            'value' => $this->value,
+        );
     }
 
     /**
@@ -104,6 +109,9 @@ final class CustomDefValue extends AbstractEntity
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-
+        $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
+            ->addPropertyConstraint('key', new Constraints\NotBlank())
+            ->addPropertyConstraint('value', new Constraints\NotBlank());
     }
 }

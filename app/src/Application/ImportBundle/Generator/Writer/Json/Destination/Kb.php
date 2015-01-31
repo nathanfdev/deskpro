@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 
 /**
+ * Kb entity destination
+ *
  * Class Kb
  * @package Application\ImportBundle\Generator\Writer\Json\Destination
  */
