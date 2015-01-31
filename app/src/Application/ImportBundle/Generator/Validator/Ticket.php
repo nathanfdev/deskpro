@@ -65,7 +65,7 @@ final class Ticket extends AbstractConstraintValidator
             }
 
             foreach ($message->getAttachments() as $attachment) {
-                /** @var Entity\TicketAttachment $attachment */
+                /** @var Entity\Attachment $attachment */
                 $errors = $this->validator->validate($attachment);
                 if (count($errors) > 0) {
                     throw new ValidatorException($entity, $errors);

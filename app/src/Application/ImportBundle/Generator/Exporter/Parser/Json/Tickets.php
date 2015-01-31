@@ -117,7 +117,7 @@ class Tickets extends AbstractParser
 
                 $attachments = $this->exportAttachments($message['attachments']);
                 foreach ($attachments as $attachment) {
-                    /** @var Entity\TicketAttachment $attachment */
+                    /** @var Entity\Attachment $attachment */
                     $entity->addAttachment($attachment);
                 }
 
@@ -141,12 +141,16 @@ class Tickets extends AbstractParser
             if ($this->hasRequiredAttachmentColumns($attachment) === false) {
                 $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
             } else {
-                $entity = new Entity\TicketAttachment();
+                $entity = new Entity\Attachment();
                 $entity
                     ->setOid($attachment['oid'])
+                    ->setPersonEmail($attachment['person'])
                     ->setBlobData($attachment['blob_data'])
+                    ->setBlobData($attachment['blob_url'])
+                    ->setBlobData($attachment['blob_path'])
                     ->setFileName($attachment['file_name'])
-                    ->setContentType($attachment['content_type']);
+                    ->setContentType($attachment['content_type'])
+                    ->setAsInline($attachment['is_inline']);
 
                 $collection->attach($entity);
             }
@@ -205,21 +209,5 @@ class Tickets extends AbstractParser
         );
 
         return $this->hasRequiredColumns($message, $columns) && is_array($message['attachments']);
-    }
-
-    /**
-     * Check if ticket message attachment has all required columns
-     *
-     * @param array $attachment
-     * @return bool
-     */
-    private function hasRequiredAttachmentColumns(array $attachment)
-    {
-        return $this->hasRequiredColumns($attachment, array(
-            'oid',
-            'blob_data',
-            'file_name',
-            'content_type',
-        ));
     }
 }

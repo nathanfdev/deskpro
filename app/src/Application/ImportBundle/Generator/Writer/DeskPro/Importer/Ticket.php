@@ -145,12 +145,12 @@ final class Ticket extends AbstractImporter
     /**
      * Returns the importing DeskPro doctrine ticket message attachment entity
      *
-     * @param Entity\TicketAttachment $importing_entity
+     * @param Entity\Attachment $importing_entity
      * @param string                  $message_person_email
      *
      * @return DeskPROEntity\TicketAttachment
      */
-    private function createAttachment(Entity\TicketAttachment $importing_entity, $message_person_email)
+    private function createAttachment(Entity\Attachment $importing_entity, $message_person_email)
     {
         $email = $importing_entity->getPersonEmail() ? : $message_person_email;
         $attachment = new DeskPROEntity\TicketAttachment();
@@ -296,12 +296,12 @@ final class Ticket extends AbstractImporter
     /**
      * Returns blob data
      *
-     * @param Entity\TicketAttachment $importing_entity
+     * @param Entity\Attachment $importing_entity
      *
      * @return DeskPROEntity\Blob
      * @throws \Exception
      */
-    private function getBlobData(Entity\TicketAttachment $importing_entity)
+    private function getBlobData(Entity\Attachment $importing_entity)
     {
         return $this->blob_storage->createBlobRecordFromString(
             $this->getBlobDataMapper()->findOneBy(

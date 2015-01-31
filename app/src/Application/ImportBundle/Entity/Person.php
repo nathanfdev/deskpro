@@ -43,11 +43,6 @@ final class Person extends AbstractEntity
     const PASSWORD_SCHEME_BCRYPT = 'bcrypt';
 
     /**
-     * @var int
-     */
-    private $oid;
-
-    /**
      * @var bool
      */
     private $is_agent = false;
@@ -150,24 +145,6 @@ final class Person extends AbstractEntity
     public function getType()
     {
         return self::TYPE_PERSON;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = (int)$oid;
-        return $this;
     }
 
     /**
@@ -528,6 +505,7 @@ final class Person extends AbstractEntity
             'emails'                => $this->emails,
             'labels'                => $this->labels,
             'user_groups'           => $this->user_groups,
+            'custom_fields'         => array(), // todo not implemented yet
         );
     }
 

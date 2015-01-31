@@ -43,11 +43,6 @@ final class Ticket extends AbstractEntity
     /**
      * @var int
      */
-    private $oid;
-
-    /**
-     * @var int
-     */
     private $ref;
 
     /**
@@ -156,24 +151,6 @@ final class Ticket extends AbstractEntity
     public function __construct()
     {
         $this->messages = new Collection();
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = (int)$oid;
-        return $this;
     }
 
     /**
@@ -620,6 +597,7 @@ final class Ticket extends AbstractEntity
             'participants'  => $this->participants,
             'labels'        => $this->labels,
             'messages'      => $messages,
+            'custom_fields' => array(), // todo not implemented yet
         );
     }
 

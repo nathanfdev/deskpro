@@ -27,20 +27,18 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
 
 /**
+ * Exporting kb entity
+ *
  * Class Kb
  * @package Application\ImportBundle\Entity
  */
 final class Kb extends AbstractEntity
 {
-    /**
-     * @var int
-     */
-    private $oid;
-
     /**
      * @var string
      */
@@ -50,11 +48,6 @@ final class Kb extends AbstractEntity
      * @var string
      */
     private $language;
-
-    /**
-     * @var \DateTime
-     */
-    private $date_end;
 
     /**
      * @var string
@@ -107,6 +100,11 @@ final class Kb extends AbstractEntity
     private $date_published;
 
     /**
+     * @var DateTime
+     */
+    private $date_end;
+
+    /**
      * @var array
      */
     private $categories = array();
@@ -122,24 +120,6 @@ final class Kb extends AbstractEntity
     public function getType()
     {
         return self::TYPE_KB;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-        return $this;
     }
 
     /**
@@ -175,24 +155,6 @@ final class Kb extends AbstractEntity
     public function setLanguage($language)
     {
         $this->language = $language;
-        return $this;
-    }
-
-    /**
-     * @return DateTime
-     */
-    public function getDateEnd()
-    {
-        return $this->date_end;
-    }
-
-    /**
-     * @param DateTime $date_end
-     * @return $this
-     */
-    public function setDateEnd($date_end)
-    {
-        $this->date_end = $date_end;
         return $this;
     }
 
@@ -377,6 +339,24 @@ final class Kb extends AbstractEntity
     }
 
     /**
+     * @return DateTime
+     */
+    public function getDateEnd()
+    {
+        return $this->date_end;
+    }
+
+    /**
+     * @param DateTime $date_end
+     * @return $this
+     */
+    public function setDateEnd(DateTime $date_end)
+    {
+        $this->date_end = $date_end;
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getCategories()
@@ -385,12 +365,12 @@ final class Kb extends AbstractEntity
     }
 
     /**
-     * @param array $categories
+     * @param string $category
      * @return $this
      */
-    public function setCategories($categories)
+    public function addCategory($category)
     {
-        $this->categories = $categories;
+        $this->categories[] = (string)$category;
         return $this;
     }
 
@@ -408,7 +388,7 @@ final class Kb extends AbstractEntity
      */
     public function addLabel($label)
     {
-        $this->labels[] = $label;
+        $this->labels[] = (string)$label;
         return $this;
     }
 
@@ -417,7 +397,28 @@ final class Kb extends AbstractEntity
      */
     public function toArray()
     {
-        return array();
+        if (!$this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
+        return array(
+            'oid'            => $this->oid,
+            'person'         => $this->person_email,
+            'title'          => $this->title,
+            'content'        => $this->content,
+            'language'       => $this->language,
+            'end_action'     => $this->end_action,
+            'slug'           => $this->slug,
+            'total_rating'   => $this->total_rating,
+            'num_comments'   => $this->num_comments,
+            'num_ratings'    => $this->num_ratings,
+            'status'         => $this->status,
+            'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
+            'date_end'       => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
+            'categories'     => $this->categories,
+            'labels'         => $this->labels,
+        );
     }
 
     /**
@@ -427,6 +428,10 @@ final class Kb extends AbstractEntity
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-
+        $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
+            ->addPropertyConstraint('title', new Constraints\NotBlank())
+            ->addPropertyConstraint('content', new Constraints\NotBlank())
+        ;
     }
 }

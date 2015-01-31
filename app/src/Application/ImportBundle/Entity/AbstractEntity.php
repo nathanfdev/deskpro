@@ -36,9 +36,40 @@ namespace Application\ImportBundle\Entity;
 abstract class AbstractEntity implements EntityInterface
 {
     /**
+     * @var int
+     */
+    protected $oid;
+
+    /**
      * @var string
      */
     protected $destination;
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getOid()
+    {
+        return $this->oid;
+    }
+
+    /**
+     * @param int $oid
+     * @return $this
+     */
+    public function setOid($oid)
+    {
+        $this->oid = (int)$oid;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function getDestination()
+    {
+        return $this->destination;
+    }
 
     /**
      * Set entity destination
@@ -51,13 +82,5 @@ abstract class AbstractEntity implements EntityInterface
     {
         $this->destination = $destination;
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function getDestination()
-    {
-        return $this->destination;
     }
 }

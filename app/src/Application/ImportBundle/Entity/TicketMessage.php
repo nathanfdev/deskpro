@@ -41,11 +41,6 @@ use Exception;
 final class TicketMessage extends AbstractEntity
 {
     /**
-     * @var int
-     */
-    private $oid;
-
-    /**
      * @var string
      */
     private $person_email;
@@ -81,24 +76,6 @@ final class TicketMessage extends AbstractEntity
     public function __construct()
     {
         $this->attachments = new Collection();
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = (int)$oid;
-        return $this;
     }
 
     /**
@@ -222,10 +199,10 @@ final class TicketMessage extends AbstractEntity
     /**
      * Add a message attachment
      *
-     * @param TicketAttachment $attachment
+     * @param Attachment $attachment
      * @return $this
      */
-    public function addAttachment(TicketAttachment $attachment)
+    public function addAttachment(Attachment $attachment)
     {
         $this->attachments->attach($attachment);
         return $this;
@@ -242,14 +219,17 @@ final class TicketMessage extends AbstractEntity
 
         $attachments = array();
         foreach ($this->attachments as $attachment) {
-            /** @var TicketAttachment $attachment */
+            /** @var Attachment $attachment */
             $attachments[] = $attachment->toArray();
         }
 
         return array(
+            'oid'          => $this->oid,
             'person'       => $this->person_email,
             'date_created' => $this->date_created->format('Y-m-d H:i:s'),
             'message_text' => $this->message_text,
+            'message_html' => $this->message_html,
+            'is_note'      => $this->is_note,
             'attachments'  => $attachments,
         );
     }

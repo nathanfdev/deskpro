@@ -31,16 +31,13 @@ use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 
 /**
+ * Exporting article entity
+ *
  * Class Article
  * @package Application\ImportBundle\Entity
  */
-class Article extends AbstractEntity
+final class Article extends AbstractEntity
 {
-    /**
-     * @var int
-     */
-    private $oid;
-
     /**
      * @var string
      */
@@ -92,24 +89,6 @@ class Article extends AbstractEntity
     public function getType()
     {
         return self::TYPE_ARTICLE;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-        return $this;
     }
 
     /**
@@ -305,6 +284,7 @@ class Article extends AbstractEntity
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
             ->addPropertyConstraint('title', new Constraints\NotBlank())
             ->addPropertyConstraint('content', new Constraints\NotBlank())
         ;

@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Reader\Json\JsonConfig;
 use Application\ImportBundle\Reader\Json\JsonReaderInterface;
+use Application\ImportBundle\Entity;
 
 /**
  * Abstract json parser
@@ -63,5 +64,25 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     protected function getReaderConfig($record_type)
     {
         return new JsonConfig(sprintf('%s/%s', $this->config->getInputPath(), $record_type));
+    }
+
+    /**
+     * Check if ticket message attachment has all required columns
+     *
+     * @param array $attachment
+     * @return bool
+     */
+    protected function hasRequiredAttachmentColumns(array $attachment)
+    {
+        return $this->hasRequiredColumns($attachment, array(
+            'oid',
+            'person',
+            'blob_data',
+            'blob_url',
+            'blob_path',
+            'file_name',
+            'content_type',
+            'is_inline',
+        ));
     }
 }

@@ -27,20 +27,18 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
 
 /**
+ * Exporting news entity
+ *
  * Class News
  * @package Application\ImportBundle\Entity
  */
 final class News extends AbstractEntity
 {
-    /**
-     * @var int
-     */
-    private $oid;
-
     /**
      * @var string
      */
@@ -117,24 +115,6 @@ final class News extends AbstractEntity
     public function getType()
     {
         return self::TYPE_NEWS;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-        return $this;
     }
 
     /**
@@ -241,7 +221,7 @@ final class News extends AbstractEntity
      */
     public function setViewCount($view_count)
     {
-        $this->view_count = $view_count;
+        $this->view_count = (int)$view_count;
         return $this;
     }
 
@@ -259,7 +239,7 @@ final class News extends AbstractEntity
      */
     public function setTotalRating($total_rating)
     {
-        $this->total_rating = $total_rating;
+        $this->total_rating = (int)$total_rating;
         return $this;
     }
 
@@ -277,7 +257,7 @@ final class News extends AbstractEntity
      */
     public function setNumComments($num_comments)
     {
-        $this->num_comments = $num_comments;
+        $this->num_comments = (int)$num_comments;
         return $this;
     }
 
@@ -295,7 +275,7 @@ final class News extends AbstractEntity
      */
     public function setNumRatings($num_ratings)
     {
-        $this->num_ratings = $num_ratings;
+        $this->num_ratings = (int)$num_ratings;
         return $this;
     }
 
@@ -367,7 +347,7 @@ final class News extends AbstractEntity
      */
     public function setCategory($category)
     {
-        $this->category = $category;
+        $this->category = (string)$category;
         return $this;
     }
 
@@ -385,7 +365,7 @@ final class News extends AbstractEntity
      */
     public function addLabel($label)
     {
-        $this->labels[] = $label;
+        $this->labels[] = (string)$label;
         return $this;
     }
 
@@ -394,7 +374,27 @@ final class News extends AbstractEntity
      */
     public function toArray()
     {
-        return array();
+        if (!$this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
+        return array(
+            'oid'            => $this->oid,
+            'person'         => $this->person_email,
+            'language'       => $this->language,
+            'slug'           => $this->slug,
+            'title'          => $this->title,
+            'content'        => $this->content,
+            'view_count'     => $this->view_count,
+            'total_rating'   => $this->total_rating,
+            'num_comments'   => $this->num_comments,
+            'num_ratings'    => $this->num_ratings,
+            'status'         => $this->status,
+            'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
+            'category'       => $this->category,
+            'labels'         => $this->labels,
+        );
     }
 
     /**
@@ -404,6 +404,10 @@ final class News extends AbstractEntity
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-
+        $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
+            ->addPropertyConstraint('title', new Constraints\NotBlank())
+            ->addPropertyConstraint('content', new Constraints\NotBlank())
+        ;
     }
 }

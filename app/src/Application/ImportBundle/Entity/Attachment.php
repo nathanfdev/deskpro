@@ -31,18 +31,13 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use Symfony\Component\Validator\Constraints;
 
 /**
- * Exporting ticket message attachment entity
+ * Exporting attachment entity
  *
  * Class TicketMessageAttachment
  * @package Application\ImportBundle\Entity
  */
-final class TicketAttachment extends AbstractEntity
+final class Attachment extends AbstractEntity
 {
-    /**
-     * @var int
-     */
-    private $oid;
-
     /**
      * @var string
      */
@@ -83,25 +78,7 @@ final class TicketAttachment extends AbstractEntity
      */
     public function getType()
     {
-        return self::TYPE_TICKET_MESSAGE_ATTACHMENT;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-        return $this;
+        return self::TYPE_ATTACHMENT;
     }
 
     /**
@@ -237,9 +214,13 @@ final class TicketAttachment extends AbstractEntity
     {
         return array(
             'oid'          => $this->oid,
+            'person'       => $this->person_email,
             'blob_data'    => $this->blob_data,
+            'blob_url'     => $this->blob_url,
+            'blob_path'    => $this->blob_path,
             'file_name'    => $this->file_name,
             'content_type' => $this->content_type,
+            'is_inline'    => $this->is_inline,
         );
     }
 

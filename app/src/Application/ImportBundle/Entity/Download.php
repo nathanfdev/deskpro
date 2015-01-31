@@ -32,100 +32,92 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
 
 /**
+ * Exporting download entity
+ *
  * Class Download
  * @package Application\ImportBundle\Entity
  */
 final class Download extends AbstractEntity
 {
     /**
-     * @var int
+     * @var string
      */
-    public $oid;
+    private $category;
+
+    /**
+     * @var Attachment
+     */
+    private $attachment;
 
     /**
      * @var string
      */
-    public $category;
-
-    /**
-     * @var int
-     */
-    public $blob;
-
-    /**
-     * @var AttachmentValue
-     */
-    public $attachment;
+    private $person_email;
 
     /**
      * @var string
      */
-    public $person;
+    private $language;
 
     /**
      * @var string
      */
-    public $language;
-
-    /**
-     * @var int
-     */
-    public $num_downloads = 0;
+    private $slug;
 
     /**
      * @var string
      */
-    public $slug;
+    private $title;
 
     /**
      * @var string
      */
-    public $title;
+    private $content;
+
+    /**
+     * @var int
+     */
+    private $view_count = 0;
+
+    /**
+     * @var int
+     */
+    private $total_rating = 0;
+
+    /**
+     * @var int
+     */
+    private $num_comments = 0;
+
+    /**
+     * @var int
+     */
+    private $num_ratings = 0;
+
+    /**
+     * @var int
+     */
+    private $num_downloads = 0;
 
     /**
      * @var string
      */
-    public $content;
-
-    /**
-     * @var int
-     */
-    public $view_count = 0;
-
-    /**
-     * @var int
-     */
-    public $total_rating = 0;
-
-    /**
-     * @var int
-     */
-    public $num_comments = 0;
-
-    /**
-     * @var int
-     */
-    public $num_ratings = 0;
-
-    /**
-     * @var string
-     */
-    public $status;
+    private $status;
 
     /**
      * @var DateTime
      */
-    public $date_created;
+    private $date_created;
 
     /**
      * @var DateTime
      */
-    public $date_published;
+    private $date_published;
 
     /**
      * @var array
      */
-    public $labels = array();
+    private $labels = array();
 
     /**
      * {@inheritdoc}
@@ -133,24 +125,6 @@ final class Download extends AbstractEntity
     public function getType()
     {
         return self::TYPE_DOWNLOAD;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-        return $this;
     }
 
     /**
@@ -172,25 +146,7 @@ final class Download extends AbstractEntity
     }
 
     /**
-     * @return int
-     */
-    public function getBlob()
-    {
-        return $this->blob;
-    }
-
-    /**
-     * @param int $blob
-     * @return $this
-     */
-    public function setBlob($blob)
-    {
-        $this->blob = $blob;
-        return $this;
-    }
-
-    /**
-     * @return AttachmentValue
+     * @return Attachment
      */
     public function getAttachment()
     {
@@ -198,10 +154,10 @@ final class Download extends AbstractEntity
     }
 
     /**
-     * @param AttachmentValue $attachment
+     * @param Attachment $attachment
      * @return $this
      */
-    public function setAttachment($attachment)
+    public function setAttachment(Attachment $attachment = null)
     {
         $this->attachment = $attachment;
         return $this;
@@ -212,7 +168,7 @@ final class Download extends AbstractEntity
      */
     public function getPersonEmail()
     {
-        return $this->person;
+        return $this->person_email;
     }
 
     /**
@@ -221,7 +177,7 @@ final class Download extends AbstractEntity
      */
     public function setPersonEmail($person_email)
     {
-        $this->person = $person_email;
+        $this->person_email = $person_email;
         return $this;
     }
 
@@ -240,24 +196,6 @@ final class Download extends AbstractEntity
     public function setLanguage($language)
     {
         $this->language = $language;
-        return $this;
-    }
-
-    /**
-     * @return int
-     */
-    public function getNumDownloads()
-    {
-        return $this->num_downloads;
-    }
-
-    /**
-     * @param int $num_downloads
-     * @return $this
-     */
-    public function setNumDownloads($num_downloads)
-    {
-        $this->num_downloads = $num_downloads;
         return $this;
     }
 
@@ -347,7 +285,7 @@ final class Download extends AbstractEntity
      */
     public function setTotalRating($total_rating)
     {
-        $this->total_rating = $total_rating;
+        $this->total_rating = (int)$total_rating;
         return $this;
     }
 
@@ -365,7 +303,7 @@ final class Download extends AbstractEntity
      */
     public function setNumComments($num_comments)
     {
-        $this->num_comments = $num_comments;
+        $this->num_comments = (int)$num_comments;
         return $this;
     }
 
@@ -383,7 +321,25 @@ final class Download extends AbstractEntity
      */
     public function setNumRatings($num_ratings)
     {
-        $this->num_ratings = $num_ratings;
+        $this->num_ratings = (int)$num_ratings;
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getNumDownloads()
+    {
+        return $this->num_downloads;
+    }
+
+    /**
+     * @param int $num_downloads
+     * @return $this
+     */
+    public function setNumDownloads($num_downloads)
+    {
+        $this->num_downloads = $num_downloads;
         return $this;
     }
 
@@ -464,9 +420,28 @@ final class Download extends AbstractEntity
      */
     public function toArray()
     {
+        if (!$this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
         return array(
-            'title'   => $this->title,
-            'content' => $this->content,
+            'oid'            => $this->oid,
+            'person'         => $this->person_email,
+            'title'          => $this->title,
+            'content'        => $this->content,
+            'language'       => $this->language,
+            'slug'           => $this->slug,
+            'total_rating'   => $this->total_rating,
+            'num_comments'   => $this->num_comments,
+            'num_ratings'    => $this->num_ratings,
+            'num_downloads'  => $this->num_downloads,
+            'view_count'     => $this->view_count,
+            'category'       => $this->category,
+            'status'         => $this->status,
+            'attachment'     => $this->attachment ? $this->attachment->toArray() : null,
+            'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
+            'labels'         => $this->labels,
         );
     }
 
@@ -478,6 +453,7 @@ final class Download extends AbstractEntity
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
         $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
             ->addPropertyConstraint('title', new Constraints\NotBlank())
             ->addPropertyConstraint('content', new Constraints\NotBlank())
         ;

@@ -35,16 +35,16 @@ namespace Application\ImportBundle\Entity;
  */
 interface EntityInterface
 {
-    const TYPE_ARTICLE                   = 'article';
-    const TYPE_PERSON                    = 'person';
-    const TYPE_TICKET                    = 'ticket';
-    const TYPE_TICKET_MESSAGE            = 'ticket_message';
-    const TYPE_TICKET_MESSAGE_ATTACHMENT = 'ticket_message_attachment';
-    const TYPE_CUSTOM_DEF_VALUE          = 'custom_def_value';
-    const TYPE_DOWNLOAD                  = 'download';
-    const TYPE_NEWS                      = 'news';
-    const TYPE_KB                        = 'kb';
-    const TYPE_FEEDBACK                  = 'feedback';
+    const TYPE_ARTICLE          = 'article';
+    const TYPE_PERSON           = 'person';
+    const TYPE_TICKET           = 'ticket';
+    const TYPE_TICKET_MESSAGE   = 'ticket_message';
+    const TYPE_ATTACHMENT       = 'attachment';
+    const TYPE_CUSTOM_DEF_VALUE = 'custom_def_value';
+    const TYPE_DOWNLOAD         = 'download';
+    const TYPE_NEWS             = 'news';
+    const TYPE_KB               = 'kb';
+    const TYPE_FEEDBACK         = 'feedback';
 
     /**
      * Get entity type
@@ -52,6 +52,13 @@ interface EntityInterface
      * @return string
      */
     public function getType();
+
+    /**
+     * Get entity oid
+     *
+     * @return int
+     */
+    public function getOid();
 
     /**
      * Get entity destination

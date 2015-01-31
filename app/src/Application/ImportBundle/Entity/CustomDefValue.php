@@ -36,11 +36,6 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
 final class CustomDefValue extends AbstractEntity
 {
     /**
-     * @var int
-     */
-    private $oid;
-
-    /**
      * @var string
      */
     private $key;
@@ -59,24 +54,6 @@ final class CustomDefValue extends AbstractEntity
     }
 
     /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-        return $this;
-    }
-
-    /**
      * @return string
      */
     public function getKey()
@@ -90,7 +67,7 @@ final class CustomDefValue extends AbstractEntity
      */
     public function setKey($key)
     {
-        $this->key = $key;
+        $this->key = (string)$key;
         return $this;
     }
 

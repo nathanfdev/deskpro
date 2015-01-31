@@ -128,7 +128,7 @@ class Tickets extends AbstractParser
 
                 $attachments = $this->exportAttachments($message['id']);
                 foreach ($attachments as $attachment) {
-                    /** @var Entity\TicketAttachment $attachment */
+                    /** @var Entity\Attachment $attachment */
                     $entity->addAttachment($attachment);
                 }
 
@@ -153,7 +153,7 @@ class Tickets extends AbstractParser
             if ($this->hasRequiredAttachmentColumns($attachment) === false) {
                 $this->logWarning(sprintf('Invalid ticket message attachment record found (Skipping): %d', $num));
             } else {
-                $entity = new Entity\TicketAttachment();
+                $entity = new Entity\Attachment();
                 $entity
                     ->setOid($num)
                     ->setBlobData(base64_encode($this->reader->findAttachmentData($attachment['file_id'])))

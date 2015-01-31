@@ -27,20 +27,18 @@
 
 namespace Application\ImportBundle\Entity;
 
+use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
 
 /**
+ * Exporting feedback entity
+ *
  * Class Feedback
  * @package Application\ImportBundle\Entity
  */
 final class Feedback extends AbstractEntity
 {
-    /**
-     * @var int
-     */
-    private $oid;
-
     /**
      * @var string
      */
@@ -123,24 +121,6 @@ final class Feedback extends AbstractEntity
     public function getType()
     {
         return self::TYPE_FEEDBACK;
-    }
-
-    /**
-     * @return int
-     */
-    public function getOid()
-    {
-        return $this->oid;
-    }
-
-    /**
-     * @param int $oid
-     * @return $this
-     */
-    public function setOid($oid)
-    {
-        $this->oid = $oid;
-        return $this;
     }
 
     /**
@@ -283,7 +263,7 @@ final class Feedback extends AbstractEntity
      */
     public function setViewCount($view_count)
     {
-        $this->view_count = $view_count;
+        $this->view_count = (int)$view_count;
         return $this;
     }
 
@@ -301,7 +281,7 @@ final class Feedback extends AbstractEntity
      */
     public function setTotalRating($total_rating)
     {
-        $this->total_rating = $total_rating;
+        $this->total_rating = (int)$total_rating;
         return $this;
     }
 
@@ -319,7 +299,7 @@ final class Feedback extends AbstractEntity
      */
     public function setNumComments($num_comments)
     {
-        $this->num_comments = $num_comments;
+        $this->num_comments = (int)$num_comments;
         return $this;
     }
 
@@ -337,7 +317,7 @@ final class Feedback extends AbstractEntity
      */
     public function setNumRatings($num_ratings)
     {
-        $this->num_ratings = $num_ratings;
+        $this->num_ratings = (int)$num_ratings;
         return $this;
     }
 
@@ -418,7 +398,28 @@ final class Feedback extends AbstractEntity
      */
     public function toArray()
     {
-        return array();
+        if (!$this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
+        return array(
+            'oid'            => $this->oid,
+            'person'         => $this->person_email,
+            'language'       => $this->language,
+            'title'          => $this->title,
+            'content'        => $this->content,
+            'slug'           => $this->slug,
+            'popularity'     => $this->popularity,
+            'status'         => $this->status,
+            'total_rating'   => $this->total_rating,
+            'num_comments'   => $this->num_comments,
+            'num_ratings'    => $this->num_ratings,
+            'view_count'     => $this->view_count,
+            'category'       => $this->category,
+            'labels'         => $this->labels,
+            'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
+        );
     }
 
     /**
@@ -428,6 +429,10 @@ final class Feedback extends AbstractEntity
      */
     public static function loadValidatorMetadata(ClassMetadata $metadata)
     {
-
+        $metadata
+            ->addPropertyConstraint('oid', new Constraints\NotBlank())
+            ->addPropertyConstraint('title', new Constraints\NotBlank())
+            ->addPropertyConstraint('content', new Constraints\NotBlank())
+        ;
     }
 }

@@ -36,7 +36,7 @@ use Application\ImportBundle\Entity;
  * Class Articles
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-class Articles extends AbstractParser
+final class Articles extends AbstractParser
 {
     /**
      * {@inheritdoc}
