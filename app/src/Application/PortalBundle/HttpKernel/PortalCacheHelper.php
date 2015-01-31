@@ -45,19 +45,40 @@ class PortalCacheHelper
      */
     private $request_stack;
 
+    /**
+     * @var null|bool used to only make guest decision once per master request
+     */
+    private $is_guest;
+
     public function __construct(RequestStack $request_stack)
     {
         $this->request_stack = $request_stack;
+        $this->is_guest = null;
     }
 
     /**
-     * Is the current request in the request stack a guest request?
+     * Is the master request a guest request?
      *
      * @return bool true if in a guest request
      */
     public function isGuestRequest()
     {
-        $current_request = $this->request_stack->getCurrentRequest();
+        // only make the decision once per php run
+        if (null !== $this->is_guest) {
+            return $this->is_guest;
+        }
+
+        return $this->is_guest = $this->determineIfGuestRequest();
+    }
+
+    /**
+     * Is the master request a guest request, or not?
+     *
+     * @return bool true if guest
+     */
+    private function determineIfGuestRequest()
+    {
+        $current_request = $this->request_stack->getMasterRequest();
         if ($current_request->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
             $user_hash = $current_request->headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER);
 
