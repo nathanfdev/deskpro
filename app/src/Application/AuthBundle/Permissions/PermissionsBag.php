@@ -78,9 +78,9 @@ class PermissionsBag implements \ArrayAccess, \IteratorAggregate, \Countable, \S
         return array_key_exists($key, $this->permissions);
     }
 
-    public function get($key, $default = null)
+    public function get($key, $default = false)
     {
-        return $this->has($key) ? $this->permissions[$key] : $default;
+        return (bool) ($this->has($key) ? $this->permissions[$key] : $default);
     }
 
     /**
