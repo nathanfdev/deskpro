@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\DeskPRO\PortalBundle\HttpKernel\PortalHttpCache;
 use Application\PortalBundle\EventListener\OriginalUriListener;
 use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Request;
@@ -129,7 +130,10 @@ class PortalController extends AbstractController
             return $this->renderThemeView(
                 'Theme:Portal:Tag/sidebar_login.html.twig',
                 array(
-                    'auth_manager' => $this->get('dp_authentication_manager.user')
+                    'auth_manager' => $this->get('dp_authentication_manager.user'),
+                    'ugs' => $this->get('portal_usergroup_decider')->getUsergroupIdsForGuest(),
+                    'user_hash' => $this->get('portal_cache_helper')->getUserContextHash(),
+                    'perms' => $this->get('portal_permissions_manager')->getPermissionsBagForGuest()->toArray()
                 )
             );
         }
@@ -139,7 +143,11 @@ class PortalController extends AbstractController
         return $this->renderThemeView(
             'Theme:Portal:Tag/sidebar_user.html.twig',
             array(
-                'has_tickets' => $ticket_count > 0
+                'has_tickets' => $ticket_count > 0,
+                'ugs' => $this->get('portal_usergroup_decider')->getUsergroupIdsForPerson($user),
+                'ug_key' => $this->get('portal_permissions_manager')->getCacheKeyForPerson($user),
+                'user_hash' => $this->get('portal_cache_helper')->getUserContextHash(),
+                'perms' => $this->get('portal_permissions_manager')->getPermissionsBagForPerson($user)->toArray()
             )
         );
     }
