@@ -1,5 +1,11 @@
 services:
 
+  cache_response.listener:
+      class: Application\PortalBundle\EventListener\CacheResponseListener
+      arguments: [@portal_cache_helper]
+      tags:
+        - { name: kernel.event_subscriber }
+
   visitor_identification.listener:
     class: Application\PortalBundle\EventListener\VisitorIdentificationListener
     arguments: [@visitor_identification_provider, @logger]
