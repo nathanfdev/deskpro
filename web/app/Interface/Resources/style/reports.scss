@@ -1117,5 +1117,8 @@ $gridster-box-header-height: 32px;
       height: auto;
       overflow: auto;
     }
+    .box > div {
+      height: 100%;
+    }
   }
 }

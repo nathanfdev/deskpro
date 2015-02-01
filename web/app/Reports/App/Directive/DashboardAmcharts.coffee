@@ -13,10 +13,13 @@ define ->
         template = "<div id=\"ch#{i}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
-        console.log element
         element.replaceWith(content)
         chart = false
         conf = scope.widgetId || 0;
+
+        chartDiv = angular.element(document.getElementById("ch" + i))
+        chartParent = chartDiv.parent().parent()
+        chartHeader = chartDiv.parent().siblings('.box-header')
 
         initChart = () ->
           if chart
@@ -26,6 +29,8 @@ define ->
             .getWidget(conf)
             .then (widget) =>
               if widget? and widget
+                # ugly, but works right now
+                chartDiv.height(chartParent.height() - chartHeader.outerHeight())
                 chart = new AmCharts.makeChart('ch' + i, widget);
                 chart.handleResize()
                 chart.invalidateSize()
@@ -51,28 +56,26 @@ define ->
                       chart.dataProvider = defaultDataProvider
                     chart.validateData()
 
-                c = document.getElementById("ch" + i).parentNode
-                width = c.style.width;
-                height = c.style.height;
+
+                width = chartParent.height();
+                height = chartParent.width();
 
                 setInterval \
                   () ->
-                    w = c.style.width
-                    h = c.style.height
+                    w = chartParent.width()
+                    h = chartParent.height()
 
                     if h != height or width != w
+                      # ugly, but works right now
+                      chartDiv.height(chartParent.height() - chartHeader.outerHeight())
                       chart.handleResize();
 
                       width = w
                       height = h
-                  , 200
+                  , 500
 
         if attrs.chtype == 'graph'
           initChart()
-          c = document.getElementById("ch" + i).parentNode
-          el = $(c)
-          box = el.find('div:first-child')
-          listItem = el
     }
   ]
 
