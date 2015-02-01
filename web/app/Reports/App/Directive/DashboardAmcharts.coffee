@@ -13,6 +13,7 @@ define ->
         template = "<div id=\"ch#{i}\"></div>"
         linkFn = $compile(template)
         content = linkFn(scope)
+        console.log element
         element.replaceWith(content)
         chart = false
         conf = scope.widgetId || 0;

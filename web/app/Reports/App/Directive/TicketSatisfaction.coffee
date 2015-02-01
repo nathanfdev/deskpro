@@ -11,7 +11,6 @@ define ['DeskPRO/Util/Strings'], (Strings) ->
     link: (scope, element) ->
       scope.service = TicketSatisfactionService
       scope.dp_spin_els = scope.service.dp_spin_els
-      console.log(scope)
       switch scope.innerType
         when 'feed'
           TicketSatisfactionService.loadFeedResults()

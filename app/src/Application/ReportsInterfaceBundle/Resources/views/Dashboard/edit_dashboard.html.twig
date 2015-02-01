@@ -10,7 +10,7 @@
     <div class="popup-sidebar" style="height: 579px;"><!-- Need to calculate the height of popup with js and update the sidebar -->
         <div class="popup-sidebar-content">
             <ul>
-                <li ng-if="!dashboard.default" ng-class="{'active': state == 'info'}">
+                <li ng-if="!dashboard.is_default" ng-class="{'active': state == 'info'}">
                     <a ng-click="state = 'info'">Dashboard Info</a>
                 </li>
                 <li ng-class="{'active': state == 'permissions'}">
@@ -27,7 +27,7 @@
     <div class="popup-content">
         <!-- Content Form -->
         {# FFFFFFFFFUUUUUUUU #}
-        <form ng-show="state == 'info'" ng-if="!dashboard.default" class="popup-form-default">
+        <form ng-show="state == 'info'" ng-if="!dashboard.is_default" class="popup-form-default">
 
             <!-- Form Row (left label, input & possible side content) -->
             <div class="bucket">

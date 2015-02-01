@@ -148,7 +148,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
     getReportById: (id) ->
       deferred = @$q.defer()
-
       id = parseInt(id)
 
       if @lastReport and @lastReport.id == id
@@ -259,7 +258,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
           clonedOne.dashboard_id = dashboard_id
           clonedOne.cloned = true
           @storage.reports.push clonedOne
-          console.log clonedOne
           deferred.resolve clonedOne
       , () =>
         console.error 'something goes wrong!'

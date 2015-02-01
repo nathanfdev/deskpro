@@ -18,8 +18,7 @@
             <li>
                 <a
                     ng-click='editReportModal(currentReport)'
-                    class="control-inactive"
-                >
+                    ng-class="{'control-inactive': dashboard.is_default}">
                     <i class="fa fa-cog"></i> Edit Report
                 </a>
             </li>

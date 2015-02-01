@@ -1,4 +1,4 @@
-define -> [
+define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$scope', '$state', '$stateParams', '$q', '$modal', 'DashboardsInfo', 'DashboardService'
   ($scope, $state, $stateParams, $q, $modal, DashboardsInfo, DashboardService) ->
 
@@ -64,11 +64,18 @@ define -> [
         DashboardService
         .saveDashboard dashboard
         .then (saved) ->
+          reportIndex = -1
+          reportIndex = Arrays.findIndex dashboard.reports
+          , (v, i) ->
+            if v.id is $scope.currentReport.id then true else false
           $scope.dashboard = saved
-          if $scope.currentReport and $scope.currentReport.deleted
+
+          if reportIndex < 0
             $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
           else if reportsLength < $scope.dashboard.reports.length
             $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[$scope.dashboard.reports.length - 1].id})
+
+
 
     ###
     # Compilation from previous tow methods - get current dashboard and crate new with it parameters, then

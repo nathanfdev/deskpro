@@ -48,7 +48,6 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
       dashboard_id = parseInt(dashboard_id)
 
       @getDashboardList().then((dbs) ->
-        console.log(dbs)
         db = Arrays.find(dbs, (x) -> x.id == dashboard_id)
 
         if not db
