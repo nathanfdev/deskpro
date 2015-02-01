@@ -1,10 +1,10 @@
 define -> [
   '$scope', '$modalInstance', 'report', 'widget',
   ($scope, $modalInstance, report, widget) ->
-
     $scope.widget = widget
     $scope.report = report
-    if !widget.type?
+
+    if $scope.widget? and !$scope.widget.type?
       $scope.state = 'stats'
     else
       $scope.state = switch widget.type

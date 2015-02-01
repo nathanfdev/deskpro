@@ -50,7 +50,7 @@ define ->
                       chart.dataProvider = defaultDataProvider
                     chart.validateData()
 
-                c = document.getElementById("ch" + i).parentNode.parentNode
+                c = document.getElementById("ch" + i).parentNode
                 width = c.style.width;
                 height = c.style.height;
 
@@ -68,9 +68,7 @@ define ->
 
         if attrs.chtype == 'graph'
           initChart()
-          c = document.getElementById("ch" + i).parentNode.parentNode
-
-
+          c = document.getElementById("ch" + i).parentNode
           el = $(c)
           box = el.find('div:first-child')
           listItem = el
