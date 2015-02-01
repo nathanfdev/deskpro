@@ -157,7 +157,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
 
       @getReport({id: id}).then((r) =>
         @lastReport = r
-        deferred.resolve(r)
+        deferred.resolve(@lastReport)
       , -> deferred.reject())
 
       return deferred.promise

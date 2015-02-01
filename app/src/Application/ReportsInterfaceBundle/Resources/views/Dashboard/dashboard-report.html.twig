@@ -44,11 +44,12 @@
         <a
             ng-click="toggleLayoutEdit()"
             class="control"
-            ng-class="{'control-active': layoutEditing, 'control-inactive': !layoutEditing}">
+            ng-class="{'control-active': layoutEditing, 'control-inactive': dashboard.is_default}">
             Dashboard Layout <i class="fa fa-columns"></i>
         </a>
         <a
             ng-click='typeWidgetModal(currentReport)'
+            ng-class="{'control-inactive': dashboard.is_default}"
             class="control"
         >
             Add Widget <i class="fa fa-plus"></i>

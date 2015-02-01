@@ -33,10 +33,11 @@ define -> [
 
     DashboardService.getReportById(report_id).then((loadedReport) ->
       $scope.currentReport = loadedReport
+      $scope.$parent.currentReport = $scope.currentReport
     )
 
     $scope.toggleLayoutEdit = () ->
-      if !$scope.dashboard.default
+      if !$scope.dashboard.is_default
         $scope.gridsterOptions.draggable.enabled = !$scope.gridsterOptions.draggable.enabled
         $scope.gridsterOptions.resizable.enabled = !$scope.gridsterOptions.resizable.enabled
         $scope.layoutEditing = !$scope.layoutEditing
@@ -54,44 +55,45 @@ define -> [
           $scope.currentReport.widgets.splice(index, 1)
 
     $scope.typeWidgetModal = (report, widget) ->
-      modalInstance = $modal.open {
-        templateUrl: "ReportsInterfaceBundle:Dashboard:widget_type_choice.html",
-        controller: "Reports.App.ModalWidgetType"
-        resolve:
-          report: () ->
-            return report
-          widget: () ->
-            return if widget? then widget else {
-            col: "0"
-            row: "0"
-            data: []
-            id: 0
-            title: "new widget"
-            sizeX: "5"
-            sizeY: "2"
-            type: null
-            widget_id: 0
-            widget_variables: null
-            changeType: false
-            }
-      }
-      modalInstance.result.then (result) ->
-        $scope.addWidgetModal result.report, result.widget,
+      if ! $scope.$parent.dashboard.is_default
+        modalInstance = $modal.open {
+          templateUrl: "ReportsInterfaceBundle:Dashboard:widget_type_choice.html",
+          controller: "Reports.App.ModalWidgetType"
+          resolve:
+            report: () ->
+              return report
+            widget: () ->
+              return if widget? then widget else {
+              col: "0"
+              row: "0"
+              data: []
+              id: 0
+              title: "new widget"
+              sizeX: "5"
+              sizeY: "2"
+              type: null
+              widget_id: 0
+              widget_variables: null
+              changeType: false
+              }
+        }
+        modalInstance.result.then (result) ->
+          $scope.addWidgetModal result.report, result.widget,
 
-          $scope.addWidgetModal = (report, widget) ->
-      modalInstance = $modal.open {
-        templateUrl: "ReportsInterfaceBundle:Dashboard:add_widget.html",
-        controller: "Reports.App.ModalWidgetAdd"
-        resolve:
-          report: () ->
-            report
-          widget: () ->
-            widget
-      }
-      modalInstance.result.then (result) ->
-        if result.widget.changeType? and result.widget.changeType == true
-          result.widget.changeType = false
-          $scope.typeWidgetModal result.report, result.widget
+            $scope.addWidgetModal = (report, widget) ->
+        modalInstance = $modal.open {
+          templateUrl: "ReportsInterfaceBundle:Dashboard:add_widget.html",
+          controller: "Reports.App.ModalWidgetAdd"
+          resolve:
+            report: () ->
+              report
+            widget: () ->
+              widget
+        }
+        modalInstance.result.then (result) ->
+          if result.widget.changeType? and result.widget.changeType == true
+            result.widget.changeType = false
+            $scope.typeWidgetModal result.report, result.widget
     ###
     else
       $scope.addWidget result.report, result.widget###

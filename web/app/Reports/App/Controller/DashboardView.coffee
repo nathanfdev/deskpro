@@ -1,6 +1,6 @@
 define -> [
-  '$scope', '$stateParams', '$q', '$modal', 'DashboardsInfo', 'DashboardService'
-  ($scope, $stateParams, $q, $modal, DashboardsInfo, DashboardService) ->
+  '$scope', '$state', '$stateParams', '$q', '$modal', 'DashboardsInfo', 'DashboardService'
+  ($scope, $state, $stateParams, $q, $modal, DashboardsInfo, DashboardService) ->
 
     dashboard_id = parseInt($stateParams.dashboard_id)
 
@@ -9,7 +9,10 @@ define -> [
     )
     DashboardService.getDashboardById(dashboard_id).then((db) ->
       $scope.dashboard = db
+      $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
     )
+
+
 
     ###
     # Creates modal instance and resolves dashboard as null, so ModalInstance controller will have to create new object
@@ -62,12 +65,10 @@ define -> [
         .saveDashboard dashboard
         .then (saved) ->
           $scope.dashboard = saved
-          if $scope.currentReport.deleted
-            $scope.changeReport $scope.dashboard.reports[0]
+          if $scope.currentReport and $scope.currentReport.deleted
+            $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
           else if reportsLength < $scope.dashboard.reports.length
-            $scope.changeReport $scope.dashboard.reports[$scope.dashboard.reports.length - 1]
-
-
+            $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[$scope.dashboard.reports.length - 1].id})
 
     ###
     # Compilation from previous tow methods - get current dashboard and crate new with it parameters, then

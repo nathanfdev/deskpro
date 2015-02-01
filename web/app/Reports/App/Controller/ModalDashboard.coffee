@@ -29,7 +29,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         title: '',
         reports: [],
         loaded: false,
-        default: false,
+        is_default: false,
         permissions: []
 
     $scope.cancel = ->
@@ -71,7 +71,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       if !$scope.expandedDashboard[reportIndex]
         $scope.expandedDashboard[reportIndex] = []
       $scope.expandedDashboard[reportIndex][dashboard.id] = true
-      console.log $scope.expandedDashboard, reportIndex
 
     $scope.collide = (reportIndex, dashboard) ->
       $scope.expandedDashboard[reportIndex][dashboard.id] = false
@@ -90,5 +89,4 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         $scope.dashboard.permissions[index].permissions = 2
       else if(permission == 2 && agent.permissions == 2)
         $scope.dashboard.permissions[index].permissions = 1
-#      DashboardPermissionsService.savePermissions(agent, $scope.dashboard)
 ]

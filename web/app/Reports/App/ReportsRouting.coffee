@@ -40,8 +40,8 @@ define -> (States) ->
       DashboardsInfo.getReportsList($stateParams.dashboard_id).then((reports) ->
         if not reports.length
           $state.go('app.reports.dashboards.view.empty')
-        else
-          $state.go('app.reports.dashboards.view.report', { dashboard_id: $stateParams.dashboard_id, report_id: reports[0].id })
+#        else
+#          $state.go('app.reports.dashboards.view.report', { dashboard_id: $stateParams.dashboard_id, report_id: reports[0].id })
       , ->
         $state.go('app.reports')
       )

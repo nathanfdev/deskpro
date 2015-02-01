@@ -32,7 +32,7 @@
 
         <nav class="reports-control">
             <ul>
-                <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
+                <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
                 <li dp-dropdown="dp-add-dashboard-dropdown" dp-dropdown-opener="dp-add-dashboard-opener" dp-dropdown-closer="dp-add-dashboard-closer">
                     <a class='link-pointer' id="dp-add-dashboard-opener"><i class="fa fa-plus"></i>Create Dashboard</a>
                     <div class="reports-dropdown" id="dp-add-dashboard-dropdown">
@@ -54,7 +54,7 @@
                         </div>
                     </div>
                 </li>
-                <li ng-show="!dashboard.default"><a class='link-pointer' ng-click="deleteDashboard(dashboard)"><i class="fa fa-times"></i> Delete Dashboard</a></li>
+                <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="deleteDashboard(dashboard)"><i class="fa fa-times"></i> Delete Dashboard</a></li>
             </ul>
         </nav>
         <hr>

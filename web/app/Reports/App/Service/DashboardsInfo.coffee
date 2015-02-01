@@ -10,7 +10,7 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
     ###
     # Gets a list of dashboards. This is basic information like id and title.
-    # For more information you sholud use getDashboard().
+    # For more information you should use getDashboard().
     #
     # @return {promise}
     ###
