@@ -10,7 +10,7 @@ define ['datatables'], () ->
         row: '@',
         col: '@'
 
-      templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard:table_dt.html")
+      templateUrl: $sce.trustAsResourceUrl("ReportsInterfaceBundle:Dashboard/Widget:table_dt.html")
 
       link: (scope, element, attrs) ->
         el = $(element)

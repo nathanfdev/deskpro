@@ -19,7 +19,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     ###
     $scope.newDashboardModal = () ->
       modalInstance = $modal.open {
-        templateUrl: 'ReportsInterfaceBundle:Dashboard:new_dashboard.html',
+        templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:new_dashboard.html',
         controller: "Reports.App.ModalDashboard"
         resolve:
           dashboard: () ->
@@ -47,7 +47,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.editDashboardModal = (state) ->
       reportsLength = $scope.dashboard.reports.length
       modalInstance = $modal.open {
-        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
+        templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:edit_dashboard.html',
         controller: "Reports.App.ModalDashboard"
         resolve:
           dashboard: () ->
@@ -88,7 +88,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         clonedOne = $scope.dashboards[$scope.dashboards.length - 1]
         $scope.changeDashboard(clonedOne).then (dashboard)->
           modalInstance = $modal.open {
-            templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_dashboard.html',
+            templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:edit_dashboard.html',
             controller: "Reports.App.ModalDashboard"
             resolve:
               dashboard: () ->
@@ -141,7 +141,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     $scope.editReportModal = () ->
       modalInstance = $modal.open {
-        templateUrl: 'ReportsInterfaceBundle:Dashboard:edit_report.html',
+        templateUrl: 'ReportsInterfaceBundle:Dashboard/Modal:edit_report.html',
         controller: "Reports.App.ModalReport"
         resolve:
           dashboard: () ->

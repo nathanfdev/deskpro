@@ -73,6 +73,8 @@ define ->
                       width = w
                       height = h
                   , 500
+              else
+
 
         if attrs.chtype == 'graph'
           initChart()

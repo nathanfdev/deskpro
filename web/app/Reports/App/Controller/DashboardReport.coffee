@@ -57,7 +57,7 @@ define -> [
     $scope.typeWidgetModal = (report, widget) ->
       if !$scope.$parent.dashboard.is_default
         modalInstance = $modal.open {
-          templateUrl: "ReportsInterfaceBundle:Dashboard:widget_type_choice.html",
+          templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:widget_type_choice.html",
           controller: "Reports.App.ModalWidgetType"
           resolve:
             report: () ->
@@ -82,7 +82,7 @@ define -> [
 
     $scope.addWidgetModal = (report, widget) ->
       modalInstance = $modal.open {
-        templateUrl: "ReportsInterfaceBundle:Dashboard:add_widget.html",
+        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:add_widget.html",
         controller: "Reports.App.ModalWidgetAdd"
         resolve:
           report: () ->
@@ -103,7 +103,7 @@ define -> [
 
     $scope.editWidgetModal = (widget) ->
       modalInstance = $modal.open {
-        templateUrl: "ReportsInterfaceBundle:Dashboard:edit_widget.html",
+        templateUrl: "ReportsInterfaceBundle:Dashboard/Modal:edit_widget.html",
         controller: "Reports.App.ModalWidgetEdit"
         resolve:
           widget: () ->
