@@ -140,6 +140,19 @@ final class Person extends AbstractEntity
     private $user_groups = array();
 
     /**
+     * @var Collection
+     */
+    private $custom_fields;
+
+    /**
+     * Constructor
+     */
+    public function __construct()
+    {
+        $this->custom_fields = new Collection();
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getType()
@@ -478,12 +491,36 @@ final class Person extends AbstractEntity
     }
 
     /**
+     * @return Collection
+     */
+    public function getCustomFields()
+    {
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param CustomField $custom_field
+     * @return $this
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields->attach($custom_field);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
     {
         if (!$this->date_created) {
             throw new \Exception('Date created is not set up');
+        }
+
+        $custom_fields = array();
+        foreach ($this->custom_fields as $custom_field) {
+            /** @var CustomField $custom_field */
+            $custom_fields[] = $custom_field->toArray();
         }
 
         return array(
@@ -505,7 +542,7 @@ final class Person extends AbstractEntity
             'emails'                => $this->emails,
             'labels'                => $this->labels,
             'user_groups'           => $this->user_groups,
-            'custom_fields'         => array(), // todo not implemented yet
+            'custom_fields'         => $custom_fields, // todo not implemented yet
         );
     }
 

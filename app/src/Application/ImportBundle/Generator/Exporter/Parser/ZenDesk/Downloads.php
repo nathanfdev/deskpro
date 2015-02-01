@@ -33,7 +33,7 @@ use Application\ImportBundle\Entity;
  * Class Downloads
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class Downloads extends AbstractParser
+final class Downloads extends AbstractParser
 {
     /**
      * {@inheritdoc}

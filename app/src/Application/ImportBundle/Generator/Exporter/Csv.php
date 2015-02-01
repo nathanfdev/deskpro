@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\ImportBundle\Entity;
 
 /**
- * Data generator from csv files
+ * Exporter from csv files
  *
  * Class Csv
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>

@@ -37,7 +37,7 @@ use DateTime;
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-class People extends AbstractParser
+final class People extends AbstractParser
 {
     /**
      * {@inheritdoc}

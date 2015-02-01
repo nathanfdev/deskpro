@@ -29,12 +29,15 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
+use DateTime;
 
 /**
+ * News json file parser
+ *
  * Class News
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-class News extends AbstractParser
+final class News extends AbstractParser
 {
     /**
      * {@inheritdoc}
@@ -57,7 +60,44 @@ class News extends AbstractParser
      */
     public function export()
     {
-        return new Entity\Collection();
+        $collection = new Entity\Collection();
+        $news_list  = $this->reader->getData($this->getConfig());
+
+        foreach ($news_list as $num => $news) {
+            $this->advanceProgressBar();
+
+            if ($this->hasRequiredNewsColumns($news) === false) {
+                $this->logWarning(sprintf('Invalid news record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\News();
+                $entity
+                    ->setOid($news['oid'])
+                    ->setPersonEmail($news['person'])
+                    ->setLanguage($news['language'])
+                    ->setSlug($news['slug'])
+                    ->setTitle($news['title'])
+                    ->setContent($news['content'])
+                    ->setViewCount($news['view_count'])
+                    ->setTotalRating($news['total_rating'])
+                    ->setNumComments($news['num_comments'])
+                    ->setNumRatings($news['num_ratings'])
+                    ->setStatus($news['status'])
+                    ->setDateCreated($news['date_created'])
+                    ->setCategory($news['category']);
+
+                if ($news['date_published']) {
+                    $entity->setDatePublished(new DateTime($news['date_published']));
+                }
+                foreach ($news['labels'] as $label) {
+                    $entity->addLabel($label);
+                }
+
+                $collection->attach($entity);
+                $this->logInfo(sprintf('Entity `%s` parsed successfully!', $entity->getDestination()));
+            }
+        }
+
+        return $collection;
     }
 
     /**
@@ -68,5 +108,34 @@ class News extends AbstractParser
     private function getConfig()
     {
         return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_NEWS_PATH);
+    }
+
+    /**
+     * Check if news has all required columns
+     *
+     * @param array $news
+     * @return bool
+     */
+    private function hasRequiredNewsColumns(array $news)
+    {
+        $columns = array(
+            'oid',
+            'person',
+            'language',
+            'slug',
+            'title',
+            'content',
+            'view_count',
+            'total_rating',
+            'num_comments',
+            'num_ratings',
+            'status',
+            'date_created',
+            'date_published',
+            'category',
+            'labels',
+        );
+
+        return $this->hasRequiredColumns($news, $columns) && is_array($news['labels']);
     }
 }

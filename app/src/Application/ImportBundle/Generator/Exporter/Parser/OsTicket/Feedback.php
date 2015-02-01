@@ -33,7 +33,7 @@ use Application\ImportBundle\Entity;
  * Class Feedback
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class Feedback extends AbstractParser
+final class Feedback extends AbstractParser
 {
     /**
      * {@inheritdoc}

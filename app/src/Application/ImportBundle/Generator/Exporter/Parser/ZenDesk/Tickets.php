@@ -35,7 +35,7 @@ use Application\ImportBundle\Entity;
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class Tickets extends AbstractParser
+final class Tickets extends AbstractParser
 {
     /**
      * {@inheritdoc}

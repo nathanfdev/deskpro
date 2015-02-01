@@ -37,7 +37,7 @@ use Exception;
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class People extends AbstractParser
+final class People extends AbstractParser
 {
     /**
      * {@inheritdoc}

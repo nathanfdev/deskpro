@@ -67,6 +67,32 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
     }
 
     /**
+     * Exports custom fields
+     *
+     * @param array $custom_fields
+     * @return Entity\Collection
+     */
+    protected function exportCustomFields(array $custom_fields)
+    {
+        $collection = new Entity\Collection();
+        foreach ($custom_fields as $num => $custom_field) {
+            if ($this->hasRequiredCustomFieldColumns($custom_field) === false) {
+                $this->logWarning(sprintf('Invalid custom field record found (Skipping): %d', $num));
+            } else {
+                $entity = new Entity\CustomField();
+                $entity
+                    ->setOid($custom_field['oid'])
+                    ->setKey($custom_field['key'])
+                    ->setValue($custom_field['value']);
+
+                $collection->attach($entity);
+            }
+        }
+
+        return $collection;
+    }
+
+    /**
      * Check if ticket message attachment has all required columns
      *
      * @param array $attachment
@@ -83,6 +109,21 @@ abstract class AbstractParser extends \Application\ImportBundle\Generator\Export
             'file_name',
             'content_type',
             'is_inline',
+        ));
+    }
+
+    /**
+     * Check if person has all required columns
+     *
+     * @param array $custom_field
+     * @return bool
+     */
+    protected function hasRequiredCustomFieldColumns(array $custom_field)
+    {
+        return $this->hasRequiredColumns($custom_field, array(
+            'oid',
+            'key',
+            'value',
         ));
     }
 }

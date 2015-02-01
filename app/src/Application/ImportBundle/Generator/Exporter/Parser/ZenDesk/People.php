@@ -35,7 +35,7 @@ use Application\ImportBundle\Entity;
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
  */
-class People extends AbstractParser
+final class People extends AbstractParser
 {
     /**
      * {@inheritdoc}

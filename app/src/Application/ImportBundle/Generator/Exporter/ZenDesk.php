@@ -28,6 +28,8 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 /**
+ * Exporter from ZenDesk service
+ *
  * Class ZenDesk
  * @package Application\ImportBundle\Generator\Exporter
  */

@@ -34,7 +34,7 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  * Class CustomDefValue
  * @package Application\ImportBundle\Entity
  */
-final class CustomDefValue extends AbstractEntity
+final class CustomField extends AbstractEntity
 {
     /**
      * @var string
@@ -51,7 +51,7 @@ final class CustomDefValue extends AbstractEntity
      */
     public function getType()
     {
-        return self::TYPE_CUSTOM_DEF_VALUE;
+        return self::TYPE_CUSTOM_FIELD;
     }
 
     /**

@@ -28,12 +28,12 @@
 namespace Application\ImportBundle\Generator\Exporter;
 
 /**
- * Data generator from json files
+ * Exporter from json files
  *
  * Class Json
  * @package Application\ImportBundle\Generator\Exporter
  */
-class Json extends AbstractExporter
+final class Json extends AbstractExporter
 {
     /**
      * {@inheritdoc}

@@ -31,7 +31,7 @@ use Application\ImportBundle\Entity;
 use Application\ImportBundle\Generator\GeneratorConfigAwareInterface;
 
 /**
- * Generator exporter parser interface
+ * Exporter parser interface
  *
  * Interface EntityExporterInterface
  * @package Application\ImportBundle\Generator\Exporter\Parser

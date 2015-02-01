@@ -35,7 +35,7 @@ use Application\ImportBundle\Entity;
  * Class Articles
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
-class Articles extends AbstractParser
+final class Articles extends AbstractParser
 {
     /**
      * {@inheritdoc}

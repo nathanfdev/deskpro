@@ -38,7 +38,7 @@ use Exception;
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
-class Tickets extends AbstractParser
+final class Tickets extends AbstractParser
 {
     /**
      * {@inheritdoc}

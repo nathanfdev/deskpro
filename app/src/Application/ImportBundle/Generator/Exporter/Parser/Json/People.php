@@ -37,7 +37,7 @@ use DateTime;
  * Class People
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-class People extends AbstractParser
+final class People extends AbstractParser
 {
     /**
      * {@inheritdoc}
@@ -75,14 +75,33 @@ class People extends AbstractParser
                     ->setOid($person['oid'])
                     ->setAsAgent($person['is_agent'])
                     ->setAsUser($person['is_user'])
+                    ->setAsAdmin($person['is_admin'])
                     ->setFirstName($person['first_name'])
                     ->setLastName($person['last_name'])
                     ->setName($person['name'])
+                    ->setOverrideDisplayName($person['override_display_name'])
+                    ->setPassword($person['password'])
+                    ->setPasswordScheme($person['password_scheme'])
                     ->setTimezone($person['timezone'])
-                    ->setDateCreated(new DateTime($person['date_created']));
+                    ->setDateCreated(new DateTime($person['date_created']))
+                    ->setLanguage($person['language'])
+                    ->setOrganization($person['organization'])
+                    ->setOrganizationPosition($person['organization_position']);
 
                 foreach ($person['emails'] as $email) {
                     $entity->addEmail($email);
+                }
+                foreach ($person['labels'] as $label) {
+                    $entity->addLabel($label);
+                }
+                foreach ($person['user_groups'] as $user_group) {
+                    $entity->addUserGroup($user_group);
+                }
+
+                $custom_fields = $this->exportCustomFields($person['custom_fields']);
+                foreach ($custom_fields as $custom_field) {
+                    /** @var Entity\CustomField $custom_field */
+                    $entity->addCustomField($custom_field);
                 }
 
                 $collection->attach($entity);
@@ -115,14 +134,27 @@ class People extends AbstractParser
             'oid',
             'is_agent',
             'is_user',
+            'is_admin',
             'first_name',
             'last_name',
             'name',
+            'override_display_name',
+            'password',
+            'password_scheme',
             'timezone',
             'date_created',
+            'language',
+            'organization',
+            'organization_position',
             'emails',
+            'labels',
+            'user_groups',
+            'custom_fields',
         );
 
-        return $this->hasRequiredColumns($person, $columns) && is_array($person['emails']);
+        return $this->hasRequiredColumns($person, $columns)
+            && is_array($person['emails'])
+            && is_array($person['labels'])
+            && is_array($person['custom_fields']);
     }
 }

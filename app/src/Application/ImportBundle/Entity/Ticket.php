@@ -146,11 +146,17 @@ final class Ticket extends AbstractEntity
     private $messages;
 
     /**
+     * @var Collection
+     */
+    private $custom_fields;
+
+    /**
      * Constructor
      */
     public function __construct()
     {
-        $this->messages = new Collection();
+        $this->messages      = new Collection();
+        $this->custom_fields = new Collection();
     }
 
     /**
@@ -560,6 +566,24 @@ final class Ticket extends AbstractEntity
     }
 
     /**
+     * @return Collection
+     */
+    public function getCustomFields()
+    {
+        return $this->custom_fields;
+    }
+
+    /**
+     * @param CustomField $custom_field
+     * @return $this
+     */
+    public function addCustomField(CustomField $custom_field)
+    {
+        $this->custom_fields->attach($custom_field);
+        return $this;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function toArray()
@@ -572,6 +596,11 @@ final class Ticket extends AbstractEntity
         foreach ($this->messages as $message) {
             /** @var TicketMessage $message */
             $messages[] = $message->toArray();
+        }
+        $custom_fields = array();
+        foreach ($this->custom_fields as $custom_field) {
+            /** @var CustomField $custom_field */
+            $custom_fields[] = $custom_field->toArray();
         }
 
         return array(
@@ -597,7 +626,7 @@ final class Ticket extends AbstractEntity
             'participants'  => $this->participants,
             'labels'        => $this->labels,
             'messages'      => $messages,
-            'custom_fields' => array(), // todo not implemented yet
+            'custom_fields' => $custom_fields, // todo not implemented yet
         );
     }
 

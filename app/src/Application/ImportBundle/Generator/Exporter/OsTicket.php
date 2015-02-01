@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter;
 use Application\ImportBundle\Entity;
 
 /**
- * Data generator from OsTicket
+ * Exporter from OsTicket service
  *
  * Class OsTicket
  * @author Abhinav Kumar <abhinav.kumar@deskpro.com>

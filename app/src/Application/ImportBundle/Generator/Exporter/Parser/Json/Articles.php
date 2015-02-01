@@ -113,7 +113,7 @@ final class Articles extends AbstractParser
      */
     private function hasRequiredArticleColumns(array $article)
     {
-        return $this->hasRequiredColumns($article, array(
+        $columns = array(
             'oid',
             'person',
             'language',
@@ -124,6 +124,10 @@ final class Articles extends AbstractParser
             'num_ratings',
             'categories',
             'labels',
-        ));
+        );
+
+        return $this->hasRequiredColumns($article, $columns)
+            && is_array($article['categories'])
+            && is_array($article['labels']);
     }
 }

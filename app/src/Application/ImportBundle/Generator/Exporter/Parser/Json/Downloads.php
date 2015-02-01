@@ -147,12 +147,12 @@ final class Downloads extends AbstractParser
     /**
      * Check if download has all required columns
      *
-     * @param array $article
+     * @param array $download
      * @return bool
      */
-    private function hasRequiredDownloadColumns(array $article)
+    private function hasRequiredDownloadColumns(array $download)
     {
-        return $this->hasRequiredColumns($article, array(
+        $columns = array(
             'oid',
             'person',
             'title',
@@ -170,6 +170,8 @@ final class Downloads extends AbstractParser
             'date_created',
             'date_published',
             'labels',
-        ));
+        );
+
+        return $this->hasRequiredColumns($download, $columns) && is_array($download['labels']);
     }
 }

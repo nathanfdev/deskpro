@@ -37,7 +37,7 @@ use DateTime;
  * Class Tickets
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
-class Tickets extends AbstractParser
+final class Tickets extends AbstractParser
 {
     /**
      * {@inheritdoc}
@@ -71,7 +71,8 @@ class Tickets extends AbstractParser
             } else {
                 $entity = new Entity\Ticket();
                 $entity
-                    ->setDestination('ticket_' . $ticket['ref'])
+                    ->setDestination('ticket_' . $ticket['oid'])
+                    ->setOid($ticket['oid'])
                     ->setRef($ticket['ref'])
                     ->setDepartment($ticket['department'])
                     ->setPersonEmail($ticket['person'])
@@ -80,12 +81,38 @@ class Tickets extends AbstractParser
                     ->setStatus($ticket['status'])
                     ->setDateCreated(new DateTime($ticket['date_created']))
                     ->setSubject($ticket['subject'])
-                    ->setPriority($ticket['priority']);
+                    ->setPriority($ticket['priority'])
+                    ->setLanguage($ticket['language'])
+                    ->setCategory($ticket['category'])
+                    ->setWorkflow($ticket['workflow'])
+                    ->setProduct($ticket['product'])
+                    ->setOrganization($ticket['organization'])
+                    ->setAsHold($ticket['is_hold'])
+                    ->setUrgency($ticket['urgency']);
+
+                if ($ticket['date_published']) {
+                    $entity->setDateResolved(new DateTime($ticket['date_resolved']));
+                }
+                if ($ticket['date_archived']) {
+                    $entity->setDateArchived(new DateTime($ticket['date_archived']));
+                }
+
+                foreach ($ticket['labels'] as $label) {
+                    $entity->addLabel($label);
+                }
+                foreach ($ticket['participants'] as $participant) {
+                    $entity->addParticipant($participant);
+                }
 
                 $messages = $this->exportMessages($ticket['messages']);
                 foreach ($messages as $message) {
                     /** @var Entity\TicketMessage $message */
                     $entity->addMessage($message);
+                }
+                $custom_fields = $this->exportCustomFields($ticket['custom_fields']);
+                foreach ($custom_fields as $custom_field) {
+                    /** @var Entity\CustomField $custom_field */
+                    $entity->addCustomField($custom_field);
                 }
 
                 $collection->attach($entity);
@@ -113,6 +140,8 @@ class Tickets extends AbstractParser
                 $entity
                     ->setPersonEmail($message['person'])
                     ->setMessageText($message['message_text'])
+                    ->setMessageHtml($message['message_html'])
+                    ->setAsNote($message['is_note'])
                     ->setDateCreated(new DateTime($message['date_created']));
 
                 $attachments = $this->exportAttachments($message['attachments']);
@@ -178,6 +207,7 @@ class Tickets extends AbstractParser
     private function hasRequiredTicketColumns(array $ticket)
     {
         $columns = array(
+            'oid',
             'ref',
             'department',
             'person',
@@ -185,12 +215,28 @@ class Tickets extends AbstractParser
             'agent_team',
             'status',
             'date_created',
+            'date_resolved',
+            'date_archived',
             'subject',
             'priority',
+            'language',
+            'category',
+            'workflow',
+            'product',
+            'organization',
+            'is_hold',
+            'urgency',
             'messages',
+            'participants',
+            'labels',
+            'custom_fields',
         );
 
-        return $this->hasRequiredColumns($ticket, $columns) && is_array($ticket['messages']);
+        return $this->hasRequiredColumns($ticket, $columns)
+            && is_array($ticket['messages'])
+            && is_array($ticket['participants'])
+            && is_array($ticket['labels'])
+            && is_array($ticket['custom_fields']);
     }
 
     /**
@@ -202,9 +248,12 @@ class Tickets extends AbstractParser
     private function hasRequiredMessageColumns(array $message)
     {
         $columns = array(
+            'oid',
             'person',
             'date_created',
             'message_text',
+            'message_html',
+            'is_note',
             'attachments',
         );
 
