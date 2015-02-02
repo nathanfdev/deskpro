@@ -626,7 +626,7 @@ final class Ticket extends AbstractEntity
             'participants'  => $this->participants,
             'labels'        => $this->labels,
             'messages'      => $messages,
-            'custom_fields' => $custom_fields, // todo not implemented yet
+            'custom_fields' => $custom_fields,
         );
     }
 

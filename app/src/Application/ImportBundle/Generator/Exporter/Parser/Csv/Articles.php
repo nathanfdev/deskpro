@@ -32,7 +32,7 @@ use Application\ImportBundle\Entity;
 /**
  * Articles csv file parser
  *
- * Class Articles
+ * Class Kb
  * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
  */
 final class Articles extends AbstractParser
@@ -68,6 +68,6 @@ final class Articles extends AbstractParser
      */
     private function getConfig()
     {
-        return $this->getReaderConfig(self::FILE_ARTICLES);
+        return $this->getReaderConfig(self::FILE_KB);
     }
 }

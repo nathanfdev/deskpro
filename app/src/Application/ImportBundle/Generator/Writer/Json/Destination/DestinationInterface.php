@@ -40,7 +40,6 @@ interface DestinationInterface
     const ENTITY_ARTICLE_PATH  = 'articles/';
     const ENTITY_DOWNLOAD_PATH = 'downloads';
     const ENTITY_FEEDBACK_PATH = 'feedback/';
-    const ENTITY_KB_PATH       = 'kb/';
     const ENTITY_NEWS_PATH     = 'news/';
 
     /**

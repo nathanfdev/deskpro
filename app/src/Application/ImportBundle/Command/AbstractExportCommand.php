@@ -82,7 +82,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             ->addEntityType(Entity\EntityInterface::TYPE_ARTICLE)
             ->addEntityType(Entity\EntityInterface::TYPE_DOWNLOAD)
             ->addEntityType(Entity\EntityInterface::TYPE_FEEDBACK)
-            ->addEntityType(Entity\EntityInterface::TYPE_KB)
+            ->addEntityType(Entity\EntityInterface::TYPE_ARTICLE)
             ->addEntityType(Entity\EntityInterface::TYPE_NEWS)
             ->addEntityType(Entity\EntityInterface::TYPE_TICKET);
 

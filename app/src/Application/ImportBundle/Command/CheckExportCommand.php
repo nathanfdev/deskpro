@@ -64,7 +64,7 @@ class CheckExportCommand extends AbstractExportCommand
 
         $exceptions = $generator->validate();
         foreach ($exceptions as $exception) {
-            /** @var Generator\Validator\ValidatorException $exception */
+            /** @var Generator\Validator\ValidatorConstraintException $exception */
             $logger->critical($exception);
         }
 

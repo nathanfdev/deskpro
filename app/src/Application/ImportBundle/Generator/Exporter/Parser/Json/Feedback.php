@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
+use Orb\Util\Strings;
 use DateTime;
 
 /**
@@ -77,7 +78,6 @@ final class Feedback extends AbstractParser
                     ->setLanguage($feedback['language'])
                     ->setTitle($feedback['title'])
                     ->setContent($feedback['content'])
-                    ->setSlug($feedback['slug'])
                     ->setPopularity($feedback['popularity'])
                     ->setStatus($feedback['status'])
                     ->setTotalRating($feedback['total_rating'])
@@ -87,6 +87,11 @@ final class Feedback extends AbstractParser
                     ->setCategory($feedback['category'])
                     ->setDateCreated(new DateTime($feedback['date_created']));
 
+                if ($feedback['slug']) {
+                    $entity->setSlug($feedback['slug']);
+                } else {
+                    $entity->setSlug(Strings::slugifyTitle($feedback['title']));
+                }
                 if ($feedback['date_published']) {
                     $entity->setDatePublished(new DateTime($feedback['date_published']));
                 }
@@ -126,7 +131,6 @@ final class Feedback extends AbstractParser
             'language',
             'title',
             'content',
-            'slug',
             'popularity',
             'status',
             'total_rating',

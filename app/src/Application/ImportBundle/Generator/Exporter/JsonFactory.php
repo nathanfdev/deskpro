@@ -46,10 +46,9 @@ class JsonFactory extends AbstractFactory
         $reader  = $this->container->get('deskpro.import.json_reader');
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\Json\Articles($reader))
             ->attach(new Parser\Json\Downloads($reader))
             ->attach(new Parser\Json\Feedback($reader))
-            ->attach(new Parser\Json\Kb($reader))
+            ->attach(new Parser\Json\Articles($reader))
             ->attach(new Parser\Json\News($reader))
             ->attach(new Parser\Json\People($reader))
             ->attach(new Parser\Json\Tickets($reader));

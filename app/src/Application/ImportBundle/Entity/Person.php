@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Entity;
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
 use DateTime;
+use DateTimeZone;
 
 /**
  * Exporting person entity
@@ -98,9 +99,7 @@ final class Person extends AbstractEntity
     private $password_scheme = self::PASSWORD_SCHEME_PLAIN;
 
     /**
-     * Can we merge it to date created?
-     *
-     * @var string or int?
+     * @var DateTimeZone
      */
     private $timezone;
 
@@ -337,14 +336,14 @@ final class Person extends AbstractEntity
      */
     public function getTimezone()
     {
-        return $this->timezone ? : 'UTC';
+        return $this->timezone ? $this->timezone->getName() : 'UTC';
     }
 
     /**
-     * @param string $timezone
+     * @param DateTimeZone $timezone
      * @return $this
      */
-    public function setTimezone($timezone)
+    public function setTimezone(DateTimeZone $timezone)
     {
         $this->timezone = $timezone;
         return $this;
@@ -542,7 +541,7 @@ final class Person extends AbstractEntity
             'emails'                => $this->emails,
             'labels'                => $this->labels,
             'user_groups'           => $this->user_groups,
-            'custom_fields'         => $custom_fields, // todo not implemented yet
+            'custom_fields'         => $custom_fields,
         );
     }
 

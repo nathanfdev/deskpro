@@ -40,10 +40,10 @@ class ExceptionCollection extends AbstractCollection
     /**
      * Add an exception
      *
-     * @param ValidatorException $exception
+     * @param ValidatorExceptionInterface $exception
      * @return $this
      */
-    public function attach(ValidatorException $exception)
+    public function attach(ValidatorExceptionInterface $exception)
     {
         $this->collection[] = $exception;
         return $this;
@@ -58,7 +58,7 @@ class ExceptionCollection extends AbstractCollection
     public function merge(ExceptionCollection $collection)
     {
         foreach ($collection as $exception) {
-            /** @var ValidatorException $exception */
+            /** @var ValidatorExceptionInterface $exception */
             $this->attach($exception);
         }
 

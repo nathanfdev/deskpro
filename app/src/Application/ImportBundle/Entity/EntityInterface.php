@@ -35,7 +35,6 @@ namespace Application\ImportBundle\Entity;
  */
 interface EntityInterface
 {
-    const TYPE_ARTICLE        = 'article';
     const TYPE_PERSON         = 'person';
     const TYPE_TICKET         = 'ticket';
     const TYPE_TICKET_MESSAGE = 'ticket_message';
@@ -43,7 +42,7 @@ interface EntityInterface
     const TYPE_CUSTOM_FIELD   = 'custom_field';
     const TYPE_DOWNLOAD       = 'download';
     const TYPE_NEWS           = 'news';
-    const TYPE_KB             = 'kb';
+    const TYPE_ARTICLE        = 'article';
     const TYPE_FEEDBACK       = 'feedback';
 
     /**

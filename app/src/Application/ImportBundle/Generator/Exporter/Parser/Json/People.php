@@ -30,6 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
 use DateTime;
+use DateTimeZone;
 
 /**
  * People json file parser
@@ -82,7 +83,7 @@ final class People extends AbstractParser
                     ->setOverrideDisplayName($person['override_display_name'])
                     ->setPassword($person['password'])
                     ->setPasswordScheme($person['password_scheme'])
-                    ->setTimezone($person['timezone'])
+                    ->setTimezone(new DateTimeZone($person['timezone']))
                     ->setDateCreated(new DateTime($person['date_created']))
                     ->setLanguage($person['language'])
                     ->setOrganization($person['organization'])

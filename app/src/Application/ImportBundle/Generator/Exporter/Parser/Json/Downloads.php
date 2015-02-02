@@ -27,8 +27,10 @@
 
 namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
+use Application\ImportBundle\Generator\Exporter\Parser\ParserException;
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
+use Orb\Util\Strings;
 use DateTime;
 
 /**
@@ -77,7 +79,6 @@ final class Downloads extends AbstractParser
                     ->setTitle($download['title'])
                     ->setContent($download['content'])
                     ->setLanguage($download['language'])
-                    ->setSlug($download['slug'])
                     ->setTotalRating($download['total_rating'])
                     ->setNumComments($download['num_comments'])
                     ->setNumRatings($download['num_ratings'])
@@ -87,11 +88,20 @@ final class Downloads extends AbstractParser
                     ->setStatus($download['status'])
                     ->setDateCreated(new DateTime($download['date_created']));
 
+                if ($download['slug']) {
+                    $entity->setSlug($download['slug']);
+                } else {
+                    $entity->setSlug(Strings::slugifyTitle($download['title']));
+                }
                 if ($download['date_published']) {
                     $entity->setDatePublished(new DateTime($download['date_published']));
                 }
                 if ($download['attachment']) {
-                    $entity->setAttachment($this->exportAttachment($download['attachment']));
+                    if (is_array($download['attachment'])) {
+                        $entity->setAttachment($this->exportAttachment($download['attachment']));
+                    } else {
+                        $this->logWarning(sprintf('Invalid download attachment record found (Skipping): %d', $num));
+                    }
                 }
 
                 foreach ($download['labels'] as $label) {
@@ -158,7 +168,6 @@ final class Downloads extends AbstractParser
             'title',
             'content',
             'language',
-            'slug',
             'total_rating',
             'num_comments',
             'num_ratings',
@@ -168,7 +177,6 @@ final class Downloads extends AbstractParser
             'status',
             'attachment',
             'date_created',
-            'date_published',
             'labels',
         );
 

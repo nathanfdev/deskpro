@@ -37,7 +37,7 @@ use DateTime;
  * Class Download
  * @package Application\ImportBundle\Entity
  */
-final class Download extends AbstractEntity
+final class Download extends AbstractEntity implements SlugAwareInterface
 {
     /**
      * @var string

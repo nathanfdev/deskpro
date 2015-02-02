@@ -220,7 +220,7 @@ class Generator extends AbstractGenerator implements GeneratorInterface
                 try {
                     /** @var Validator\ValidatorInterface $validator */
                     $validator->validate($entity);
-                } catch (Validator\ValidatorException $e) {
+                } catch (Validator\ValidatorExceptionInterface $e) {
                     $exceptions->attach($e);
                 }
             }

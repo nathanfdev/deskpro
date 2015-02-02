@@ -30,6 +30,8 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
+ * Download entities validator
+ *
  * Class Download
  * @package Application\ImportBundle\Generator\Validator
  */
@@ -46,10 +48,13 @@ final class Download extends AbstractConstraintValidator
     /**
      * {@inheritdoc}
      *
-     * @var Entity\News $entity
+     * @var Entity\Download $entity
      */
     public function validate(Entity\EntityInterface $entity)
     {
-
+        $errors = $this->validator->validate($entity);
+        if (count($errors) > 0) {
+            throw new ValidatorConstraintException($entity, $errors);
+        }
     }
 }

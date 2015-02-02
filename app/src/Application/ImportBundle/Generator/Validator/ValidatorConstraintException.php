@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -28,28 +28,65 @@
 namespace Application\ImportBundle\Generator\Validator;
 
 use Application\ImportBundle\Entity;
+use Symfony\Component\Validator\ConstraintViolationList;
 
 /**
- * Class Kb
+ * Exporter validator exception
+ *
+ * Class ValidatorException
  * @package Application\ImportBundle\Generator\Validator
  */
-final class Kb extends AbstractConstraintValidator
+class ValidatorConstraintException extends \Exception implements ValidatorExceptionInterface
 {
     /**
-     * {@inheritdoc}
+     * @var Entity\EntityInterface
      */
-    public function getRecordType()
+    private $entity;
+
+    /**
+     * @var ConstraintViolationList
+     */
+    private $errors;
+
+    /**
+     * Constructor
+     *
+     * @param Entity\EntityInterface  $entity
+     * @param ConstraintViolationList $errors
+     */
+    public function __construct(Entity\EntityInterface $entity, ConstraintViolationList $errors)
     {
-        return Entity\EntityInterface::TYPE_KB;
+        $this->entity = $entity;
+        $this->errors = $errors;
     }
 
     /**
-     * {@inheritdoc}
+     * Returns the fail entity
      *
-     * @var Entity\News $entity
+     * @return Entity\EntityInterface
      */
-    public function validate(Entity\EntityInterface $entity)
+    public function getEntity()
     {
+        return $this->entity;
+    }
 
+    /**
+     * Returns a collection of the errors
+     *
+     * @return ConstraintViolationList
+     */
+    public function getErrors()
+    {
+        return $this->errors;
+    }
+
+    /**
+     * Parse to string
+     *
+     * @return string
+     */
+    public function __toString()
+    {
+        return sprintf("%s: %s", $this->entity->getDestination(), $this->errors);
     }
 }

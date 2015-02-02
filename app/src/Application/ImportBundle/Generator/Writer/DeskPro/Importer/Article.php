@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -25,25 +25,36 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-/**
- * @package Importer
- */
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
-namespace Application\ImportBundle\ArrayParser;
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
+use Doctrine\Common\Collections\ArrayCollection;
 
 /**
- * Interface ArrayParserInterface
- * @package Application\ImportBundle\ArrayParser
+ * DeskPro article importer
  *
- * @deprecated Use import generator instead
+ * Class Article
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-interface ArrayParserInterface
+final class Article extends AbstractImporter
 {
     /**
-     * Parses an array of data into a value object.
-     *
-     * @param  array $data
-     * @return mixed
+     * {@inheritdoc}
      */
-    public function parseArray(array $data);
+    public function getEntityType()
+    {
+        return Entity\EntityInterface::TYPE_ARTICLE;
+    }
+
+    /**
+     * {@inheritdoc}
+     *
+     * @var Entity\Article $importing_entity
+     */
+    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
+    {
+        $this->records = new ArrayCollection();
+        return $this->records;
+    }
 }

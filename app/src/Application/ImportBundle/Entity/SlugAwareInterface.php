@@ -25,37 +25,28 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\ZenDesk;
-
-use Application\ImportBundle\Entity;
+namespace Application\ImportBundle\Entity;
 
 /**
- * Class Kb
- * @package Application\ImportBundle\Generator\Exporter\Parser\ZenDesk
+ * Entity slug interface
+ *
+ * Interface SlugAwareInterface
+ * @package Application\ImportBundle\Entity
  */
-final class Kb extends AbstractParser
+interface SlugAwareInterface
 {
     /**
-     * {@inheritdoc}
+     * Sets an acceptable URL slug
+     *
+     * @return string
      */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_KB;
-    }
+    public function getSlug();
 
     /**
-     * {@inheritdoc}
+     * GEt an acceptable URL slug
+     *
+     * @param string $slug
+     * @return $this
      */
-    public function getCount()
-    {
-        return 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        return new Entity\Collection();
-    }
+    public function setSlug($slug);
 }

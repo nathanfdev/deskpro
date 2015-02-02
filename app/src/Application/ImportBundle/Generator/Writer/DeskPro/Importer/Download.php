@@ -32,6 +32,8 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
+ * DeskPro download importer
+ *
  * Class Download
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */

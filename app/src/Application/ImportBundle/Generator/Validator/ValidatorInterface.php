@@ -49,7 +49,7 @@ interface ValidatorInterface
      * Returns true on success or false if data is not valid
      *
      * @param Entity\EntityInterface $entity
-     * @throws ValidatorException
+     * @throws ValidatorExceptionInterface
      */
     public function validate(Entity\EntityInterface $entity);
 }

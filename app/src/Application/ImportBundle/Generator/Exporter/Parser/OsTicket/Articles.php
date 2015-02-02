@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\OsTicket;
 use Application\ImportBundle\Entity;
 
 /**
- * Class Articles
+ * Class Kb
  * @package Application\ImportBundle\Generator\Exporter\Parser\OsTicket
  */
 final class Articles extends AbstractParser

@@ -29,14 +29,15 @@ namespace Application\ImportBundle\Entity;
 
 use Symfony\Component\Validator\Constraints;
 use Symfony\Component\Validator\Mapping\ClassMetadata;
+use DateTime;
 
 /**
- * Exporting article entity
+ * Exporting kb entity
  *
  * Class Article
  * @package Application\ImportBundle\Entity
  */
-final class Article extends AbstractEntity
+final class Article extends AbstractEntity implements SlugAwareInterface
 {
     /**
      * @var string
@@ -47,6 +48,16 @@ final class Article extends AbstractEntity
      * @var string
      */
     private $language;
+
+    /**
+     * @var string
+     */
+    private $end_action;
+
+    /**
+     * @var string
+     */
+    private $slug;
 
     /**
      * @var string
@@ -74,12 +85,32 @@ final class Article extends AbstractEntity
     private $num_ratings = 0;
 
     /**
-     * @var string[]
+     * @var string
+     */
+    private $status;
+
+    /**
+     * @var DateTime
+     */
+    private $date_created;
+
+    /**
+     * @var DateTime
+     */
+    private $date_published;
+
+    /**
+     * @var DateTime
+     */
+    private $date_end;
+
+    /**
+     * @var array
      */
     private $categories = array();
 
     /**
-     * @var string[]
+     * @var array
      */
     private $labels = array();
 
@@ -124,6 +155,42 @@ final class Article extends AbstractEntity
     public function setLanguage($language)
     {
         $this->language = $language;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getEndAction()
+    {
+        return $this->end_action;
+    }
+
+    /**
+     * @param string $end_action
+     * @return $this
+     */
+    public function setEndAction($end_action)
+    {
+        $this->end_action = $end_action;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * @param string $slug
+     * @return $this
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
         return $this;
     }
 
@@ -218,28 +285,78 @@ final class Article extends AbstractEntity
     }
 
     /**
-     * Returns the labels
-     *
-     * @return array
+     * @return string
      */
-    public function getLabels()
+    public function getStatus()
     {
-        return $this->labels;
+        return $this->status;
     }
 
     /**
-     * @param string $label
+     * @param string $status
      * @return $this
      */
-    public function addLabel($label)
+    public function setStatus($status)
     {
-        $this->labels[] = $label;
+        $this->status = $status;
         return $this;
     }
 
     /**
-     * Returns the labels
-     *
+     * @return DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * @param DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created)
+    {
+        $this->date_created = $date_created;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDatePublished()
+    {
+        return $this->date_published;
+    }
+
+    /**
+     * @param DateTime $date_published
+     * @return $this
+     */
+    public function setDatePublished(DateTime $date_published)
+    {
+        $this->date_published = $date_published;
+        return $this;
+    }
+
+    /**
+     * @return DateTime
+     */
+    public function getDateEnd()
+    {
+        return $this->date_end;
+    }
+
+    /**
+     * @param DateTime $date_end
+     * @return $this
+     */
+    public function setDateEnd(DateTime $date_end)
+    {
+        $this->date_end = $date_end;
+        return $this;
+    }
+
+    /**
      * @return array
      */
     public function getCategories()
@@ -253,7 +370,25 @@ final class Article extends AbstractEntity
      */
     public function addCategory($category)
     {
-        $this->categories[] = $category;
+        $this->categories[] = (string)$category;
+        return $this;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
+
+    /**
+     * @param string $label
+     * @return $this
+     */
+    public function addLabel($label)
+    {
+        $this->labels[] = (string)$label;
         return $this;
     }
 
@@ -262,17 +397,27 @@ final class Article extends AbstractEntity
      */
     public function toArray()
     {
+        if (!$this->date_created) {
+            throw new \Exception('Date created is not set up');
+        }
+
         return array(
-            'oid'          => $this->oid,
-            'person'       => $this->person_email,
-            'language'     => $this->language,
-            'title'        => $this->title,
-            'content'      => $this->content,
-            'categories'   => $this->categories,
-            'labels'       => $this->labels,
-            'total_rating' => $this->total_rating,
-            'num_comments' => $this->num_comments,
-            'num_ratings'  => $this->num_ratings,
+            'oid'            => $this->oid,
+            'person'         => $this->person_email,
+            'title'          => $this->title,
+            'content'        => $this->content,
+            'language'       => $this->language,
+            'end_action'     => $this->end_action,
+            'slug'           => $this->slug,
+            'total_rating'   => $this->total_rating,
+            'num_comments'   => $this->num_comments,
+            'num_ratings'    => $this->num_ratings,
+            'status'         => $this->status,
+            'date_created'   => $this->date_created->format('Y-m-d H:i:s'),
+            'date_published' => $this->date_published ? $this->date_published->format('Y-m-d H:i:s') : null,
+            'date_end'       => $this->date_end ? $this->date_end->format('Y-m-d H:i:s') : null,
+            'categories'     => $this->categories,
+            'labels'         => $this->labels,
         );
     }
 

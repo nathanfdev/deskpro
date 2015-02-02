@@ -25,36 +25,13 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
-
-use Application\DeskPRO\Entity as DeskPROEntity;
-use Application\ImportBundle\Entity;
-use Doctrine\Common\Collections\ArrayCollection;
+namespace Application\ImportBundle\Generator\Validator;
 
 /**
- * DeskPro kb importer
- *
- * Class Kb
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
+ * Interface ValidatorExceptionInterface
+ * @package Application\ImportBundle\Generator\Validator
  */
-final class Kb extends AbstractImporter
+interface ValidatorExceptionInterface
 {
-    /**
-     * {@inheritdoc}
-     */
-    public function getEntityType()
-    {
-        return Entity\EntityInterface::TYPE_KB;
-    }
 
-    /**
-     * {@inheritdoc}
-     *
-     * @var Entity\Kb $importing_entity
-     */
-    public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
-    {
-        $this->records = new ArrayCollection();
-        return $this->records;
-    }
 }

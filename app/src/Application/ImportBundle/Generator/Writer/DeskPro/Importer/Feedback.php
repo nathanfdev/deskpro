@@ -32,6 +32,8 @@ use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
 
 /**
+ * DeskPro feedback importer
+ *
  * Class Feedback
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */

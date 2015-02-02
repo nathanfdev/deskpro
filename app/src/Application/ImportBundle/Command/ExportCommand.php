@@ -85,7 +85,7 @@ class ExportCommand extends AbstractExportCommand
         } catch (Generator\GeneratorException $e) {
             $output->writeln('');
             foreach ($e->getExceptions() as $exception) {
-                /** @var Generator\Validator\ValidatorException $exception */
+                /** @var Generator\Validator\ValidatorConstraintException $exception */
                 $logger->critical($exception);
             }
             if ($config->isVerbose() === false) {

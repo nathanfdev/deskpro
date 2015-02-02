@@ -46,10 +46,9 @@ class CsvFactory extends AbstractFactory
         $reader  = $this->container->get('deskpro.import.csv_reader');
         $parsers = new Parser\Collection();
         $parsers
-            ->attach(new Parser\Csv\Articles($reader))
             ->attach(new Parser\Csv\Downloads($reader))
             ->attach(new Parser\Csv\Feedback($reader))
-            ->attach(new Parser\Csv\Kb($reader))
+            ->attach(new Parser\Csv\Articles($reader))
             ->attach(new Parser\Csv\News($reader))
             ->attach(new Parser\Csv\People($reader))
             ->attach(new Parser\Csv\Tickets($reader));

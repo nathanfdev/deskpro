@@ -29,11 +29,13 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
+use Orb\Util\Strings;
+use DateTime;
 
 /**
  * Articles json file parser
  *
- * Class Articles
+ * Class Kb
  * @package Application\ImportBundle\Generator\Exporter\Parser\Json
  */
 final class Articles extends AbstractParser
@@ -60,30 +62,43 @@ final class Articles extends AbstractParser
     public function export()
     {
         $collection = new Entity\Collection();
-        $articles   = $this->reader->getData($this->getConfig());
+        $kbs = $this->reader->getData($this->getConfig());
 
-        foreach ($articles as $num => $article) {
+        foreach ($kbs as $num => $kb) {
             $this->advanceProgressBar();
 
-            if ($this->hasRequiredArticleColumns($article) === false) {
-                $this->logWarning(sprintf('Invalid article record found (Skipping): %d', $num));
+            if ($this->hasRequiredKbColumns($kb) === false) {
+                $this->logWarning(sprintf('Invalid kb record found (Skipping): %d', $num));
             } else {
                 $entity = new Entity\Article();
                 $entity
-                    ->setDestination('article_' . $article['oid'])
-                    ->setOid($article['oid'])
-                    ->setPersonEmail($article['person'])
-                    ->setLanguage($article['language'])
-                    ->setTitle($article['title'])
-                    ->setContent($article['content'])
-                    ->setTotalRating($article['total_rating'])
-                    ->setNumComments($article['num_comments'])
-                    ->setNumRatings($article['num_ratings']);
+                    ->setOid($kb['oid'])
+                    ->setPersonEmail($kb['person'])
+                    ->setTitle($kb['title'])
+                    ->setContent($kb['content'])
+                    ->setLanguage($kb['language'])
+                    ->setEndAction($kb['end_action'])
+                    ->setTotalRating($kb['total_rating'])
+                    ->setNumComments($kb['num_comments'])
+                    ->setNumRatings($kb['num_ratings'])
+                    ->setStatus($kb['status'])
+                    ->setDateCreated(new DateTime($kb['date_created']));
 
-                foreach ($article['categories'] as $category) {
+                if ($kb['slug']) {
+                    $entity->setSlug($kb['slug']);
+                } else {
+                    $entity->setSlug(Strings::slugifyTitle($kb['title']));
+                }
+                if ($kb['date_published']) {
+                    $entity->setDatePublished(new DateTime($kb['date_published']));
+                }
+                if ($kb['date_end']) {
+                    $entity->setDateEnd(new DateTime($kb['date_end']));
+                }
+                foreach ($kb['categories'] as $category) {
                     $entity->addCategory($category);
                 }
-                foreach ($article['labels'] as $label) {
+                foreach ($kb['labels'] as $label) {
                     $entity->addLabel($label);
                 }
 
@@ -102,32 +117,37 @@ final class Articles extends AbstractParser
      */
     private function getConfig()
     {
-        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_ARTICLE_PATH);
+        return $this->getReaderConfig(Destination\DestinationInterface::ENTITY_KB_PATH);
     }
 
     /**
-     * Check if article has all required columns
+     * Check if kb has all required columns
      *
-     * @param array $article
+     * @param array $kb
      * @return bool
      */
-    private function hasRequiredArticleColumns(array $article)
+    private function hasRequiredKbColumns(array $kb)
     {
         $columns = array(
             'oid',
             'person',
-            'language',
             'title',
             'content',
+            'language',
+            'end_action',
             'total_rating',
             'num_comments',
             'num_ratings',
+            'status',
+            'date_created',
+            'date_published',
+            'date_end',
             'categories',
             'labels',
         );
 
-        return $this->hasRequiredColumns($article, $columns)
-            && is_array($article['categories'])
-            && is_array($article['labels']);
+        return $this->hasRequiredColumns($kb, $columns)
+            && is_array($kb['categories'])
+            && is_array($kb['labels']);
     }
 }

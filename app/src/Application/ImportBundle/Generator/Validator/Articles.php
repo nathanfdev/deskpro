@@ -25,49 +25,36 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Exporter\Parser\Csv;
+namespace Application\ImportBundle\Generator\Validator;
 
 use Application\ImportBundle\Entity;
 
 /**
- * Kb csv file parser
+ * Kb entities validator
  *
- * Class Kb
- * @package Application\ImportBundle\Generator\Exporter\Parser\Csv
+ * Class Article
+ * @package Application\ImportBundle\Generator\Validator
  */
-final class Kb extends AbstractParser
+final class Articles extends AbstractConstraintValidator
 {
     /**
      * {@inheritdoc}
      */
-    public function getEntityType()
+    public function getRecordType()
     {
-        return Entity\EntityInterface::TYPE_KB;
+        return Entity\EntityInterface::TYPE_ARTICLE;
     }
 
     /**
      * {@inheritdoc}
-     */
-    public function getCount()
-    {
-        return $this->reader->getRowsCount($this->getConfig());
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function export()
-    {
-        return new Entity\Collection();
-    }
-
-    /**
-     * Returns record type reader config
      *
-     * @return \Application\ImportBundle\Reader\Csv\CsvConfig
+     * @var Entity\Article $entity
      */
-    private function getConfig()
+    public function validate(Entity\EntityInterface $entity)
     {
-        return $this->getReaderConfig(self::FILE_KB);
+        $errors = $this->validator->validate($entity);
+        if (count($errors) > 0) {
+            throw new ValidatorConstraintException($entity, $errors);
+        }
     }
 }

@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Exporter\Parser\Json;
 
 use Application\ImportBundle\Generator\Writer\Json\Destination;
 use Application\ImportBundle\Entity;
+use Orb\Util\Strings;
 use DateTime;
 
 /**
@@ -85,6 +86,11 @@ final class News extends AbstractParser
                     ->setDateCreated($news['date_created'])
                     ->setCategory($news['category']);
 
+                if ($news['slug']) {
+                    $entity->setSlug($news['slug']);
+                } else {
+                    $entity->setSlug(Strings::slugifyTitle($news['title']));
+                }
                 if ($news['date_published']) {
                     $entity->setDatePublished(new DateTime($news['date_published']));
                 }
@@ -122,7 +128,6 @@ final class News extends AbstractParser
             'oid',
             'person',
             'language',
-            'slug',
             'title',
             'content',
             'view_count',

@@ -30,7 +30,7 @@ namespace Application\ImportBundle\Generator\Validator;
 use Application\ImportBundle\Entity;
 
 /**
- * Tickets entities validator
+ * Ticket entities validator
  *
  * Class Ticket
  * @package Application\ImportBundle\Generator\Validator
@@ -54,22 +54,29 @@ final class Ticket extends AbstractConstraintValidator
     {
         $errors = $this->validator->validate($entity);
         if (count($errors) > 0) {
-            throw new ValidatorException($entity, $errors);
+            throw new ValidatorConstraintException($entity, $errors);
         }
 
         foreach ($entity->getMessages() as $message) {
             /** @var Entity\TicketMessage $message */
             $errors = $this->validator->validate($message);
             if (count($errors) > 0) {
-                throw new ValidatorException($entity, $errors);
+                throw new ValidatorConstraintException($entity, $errors);
             }
 
             foreach ($message->getAttachments() as $attachment) {
                 /** @var Entity\Attachment $attachment */
                 $errors = $this->validator->validate($attachment);
                 if (count($errors) > 0) {
-                    throw new ValidatorException($entity, $errors);
+                    throw new ValidatorConstraintException($entity, $errors);
                 }
+            }
+        }
+        foreach ($entity->getCustomFields() as $custom_field) {
+            /** @var Entity\CustomField $custom_field */
+            $errors = $this->validator->validate($custom_field);
+            if (count($errors) > 0) {
+                throw new ValidatorConstraintException($entity, $errors);
             }
         }
     }
