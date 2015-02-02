@@ -248,8 +248,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\Session\
             $session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($id);
         }
 
-        $this->em->remove($session);
-        $this->em->flush();
+        if ($session && $session->getId()) {
+            try {
+                $this->db->delete('sessions', array('id' => $session->getId()));
+                $this->em->detach($session);
+            } catch (\Exception $e) {}
+        }
 
         return true;
     }

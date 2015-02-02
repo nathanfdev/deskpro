@@ -274,6 +274,7 @@ class __DP_CI_Security {
 
                 $replace = array();
                 $matches = array_unique(array_map('strtolower', $matches[0]));
+                $c = count($matches);
                 for ($i = 0; $i < $c; $i++)
                 {
                     if (($char = array_search($matches[$i].';', $_entities, TRUE)) !== FALSE)

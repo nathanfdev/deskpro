@@ -55,6 +55,10 @@ class StringEmail extends AbstractValidator implements StaticValidator
      */
     protected function checkIsValid($value)
     {
+        if (!is_string($value)) {
+            return false;
+        }
+
         if (strpos($value, '@') === false) {
             $this->addError('bad_email_format');
 
