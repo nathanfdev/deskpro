@@ -1,11 +1,5 @@
 services:
 
-  cache_response.listener:
-      class: Application\PortalBundle\EventListener\CacheResponseListener
-      arguments: [@portal_cache_helper]
-      tags:
-        - { name: kernel.event_subscriber }
-
   visitor_identification.listener:
     class: Application\PortalBundle\EventListener\VisitorIdentificationListener
     arguments: [@visitor_identification_provider, @logger]
@@ -49,13 +43,6 @@ services:
   tag_options.listener:
       class: Application\PortalBundle\EventListener\TagOptionsListener
       arguments: [@annotation_reader]
-      tags:
-        - { name: kernel.event_subscriber }
-
-
-  etag_seed.listener:
-      class: Application\PortalBundle\EventListener\EtagSeederListener
-      arguments: [@etag_manager, @logger]
       tags:
         - { name: kernel.event_subscriber }
 
