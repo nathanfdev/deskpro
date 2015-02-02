@@ -59,6 +59,7 @@ class ArticlesController extends AbstractController
      * @Tag(name="knowledgebase_expander", default_options={"style":"expander"}, esi=true)
      * @Tag(name="knowledgebase_list", default_options={"style":"list"}, esi=true)
      * @Tag(name="knowledgebase_comma_list", default_options={"style":"comma_list"}, esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={
@@ -72,7 +73,6 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
-     * @Cache(smaxage="10 minutes")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -90,11 +90,11 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_articles", esi=true)
-     * @Tag(name="knowledgebase_articles_forcat", default_options={"style":"forcat"}, esi=true)
-     * @Tag(name="knowledgebase_articles_list", default_options={"style":"list"}, esi=true)
-     * @Tag(name="knowledgebase_articles_small", default_options={"style":"small"}, esi=true)
-     * @Tag(name="knowledgebase_articles_simple", default_options={"style":"simple"}, esi=true)
+     * @Tag(name="knowledgebase_articles")
+     * @Tag(name="knowledgebase_articles_forcat", default_options={"style":"forcat"})
+     * @Tag(name="knowledgebase_articles_list", default_options={"style":"list"})
+     * @Tag(name="knowledgebase_articles_small", default_options={"style":"small"})
+     * @Tag(name="knowledgebase_articles_simple", default_options={"style":"simple"})
      *
      * @TagOptions(
      *      defaults={
@@ -113,7 +113,6 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
-     * @Cache(smaxage="10 minutes")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -132,6 +131,7 @@ class ArticlesController extends AbstractController
 
     /**
      * @Tag(name="article", esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      required={"article"},
@@ -139,7 +139,6 @@ class ArticlesController extends AbstractController
      *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
      *      }
      * )
-     * @Cache(smaxage="10 minutes")
      */
     public function articleAction(TagRequest $tag_request, array $options)
     {
@@ -220,6 +219,7 @@ class ArticlesController extends AbstractController
 
     /**
      * @Tag(name="article_comments", esi=true)
+     *
      * @TagOptions(
      *      defaults={
      *          "article": null
@@ -230,7 +230,6 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
-     * @Cache(smaxage="10 minutes")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -244,7 +243,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_pager", esi=true)
+     * @Tag(name="knowledgebase_pager")
      *
      * @TagOptions(
      *      defaults={
@@ -259,7 +258,6 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
-     * @Cache(smaxage="10 minutes")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {

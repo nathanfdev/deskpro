@@ -226,10 +226,10 @@ class ThemeResolver
         $tag_options = array_merge($tag->getDefaultOptions(), array_merge($arguments, array('_tag_name' => $tag_name)));
         $query = array('tag_options' => $tag_options);
         $extra_attrs = array('_tag_name' => $tag_name);
-        if ($mode = $this->mode_storage->getMode()) {
-            $serialize = urlencode(serialize($mode));
-            $query[PortalMode::ATTR_NAME] = $serialize;
-        }
+        //if ($mode = $this->mode_storage->getMode()) {
+        //    $serialize = urlencode(serialize($mode));
+        //    $query[PortalMode::ATTR_NAME] = $serialize;
+        //}
         $attrs = array_merge($current_request->attributes->all(), $extra_attrs);
         unset($attrs['tag_request']);
         unset($attrs['_security']);
@@ -238,10 +238,10 @@ class ThemeResolver
         $tag_request->setSession($current_request->getSession());
         $tag_request->headers->replace($current_request->headers->all());
 
-        if ($tag->isEsi()) {
+        if ($tag->isEsi($this->cache_helper->isGuestRequest())) {
 
             // construct and return the proper ESI tag content
-            $attrs = $this->filterArguments($attrs);
+            $attrs = $this->filterArguments($attrs, $tag->allowRouteParams());
 
             $esi = $this->container->get('fragment.renderer.esi')->render(
                 $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => false)
@@ -271,20 +271,29 @@ class ThemeResolver
         return $response->getContent();
     }
 
-    private function filterArguments(array $arguments)
+    private function filterArguments(array $arguments, $allow_route_info = false)
     {
         $new_args = array();
 
+        // some are objects, and some are page specific data (which isn't good to put in URL because we want to share the http cache)
+        $remove = array(
+            '_cache',
+            '_security',
+            '_converters',
+            '_method',
+            'visitor_id',
+            '_dp_orig_url',
+            '_security_remember_me_cookie'
+        );
+
+        if (!$allow_route_info) {
+            $remove = array_merge($remove, array('_route_params', '_route'));
+        }
+
         foreach ($arguments as $arg => $val) {
-            if (in_array($arg, array(
-                '_cache',
-                '_security',
-                '_converters',
-                '_method',
-                '_security_remember_me_cookie'
-            ))) {
+
+            if (in_array($arg, $remove)) {
                 continue; // reserved attributes that we don't want to ship to the tag
-                // TODO: instead of param names, we might consider just ignoring any object except entities
             }
 
             if ($val instanceof DomainObject) {

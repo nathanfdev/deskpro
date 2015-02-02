@@ -77,19 +77,6 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="small_user_info", esi=true)
-     */
-    public function smallUserInfoAction(TagRequest $tag_request)
-    {
-        return $this->renderThemeView(
-            'Theme:Portal:Tag/small_user_info.html.twig',
-            array(
-                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible()
-            )
-        );
-    }
-
-    /**
      * @Tag(name="page_search_box", esi=true)
      * @Cache(smaxage="10 minutes")
      */
@@ -127,7 +114,7 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="user_sidebar", esi=true)
+     * @Tag(name="user_sidebar", esi=true, always_guest_inline=true)
      */
     public function userSidebarAction(TagRequest $tag_request)
     {
@@ -154,6 +141,19 @@ class PortalController extends AbstractController
                 'ug_key' => $this->get('portal_permissions_manager')->getCacheKeyForPerson($user),
                 'user_hash' => $this->get('portal_cache_helper')->getUserContextHash(),
                 'perms' => $this->get('portal_permissions_manager')->getPermissionsBagForPerson($user)->toArray()
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="small_user_info", esi=true, always_guest_inline=true)
+     */
+    public function smallUserInfoAction(TagRequest $tag_request)
+    {
+        return $this->renderThemeView(
+            'Theme:Portal:Tag/small_user_info.html.twig',
+            array(
+                'display_registration_link' => $this->get('dp_authentication_manager.user')->isRegistrationFormVisible()
             )
         );
     }

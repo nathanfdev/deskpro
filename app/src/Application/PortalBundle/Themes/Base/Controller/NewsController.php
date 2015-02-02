@@ -53,6 +53,7 @@ class NewsController extends AbstractController
      * @Tag(name="news", esi=true)
      * @Tag(name="news_list", default_options={"style":"list"}, esi=true)
      * @Tag(name="news_dropdown", default_options={"style":"dropdown"}, esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={
@@ -68,7 +69,6 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -85,9 +85,9 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_posts", esi=true)
-     * @Tag(name="news_posts_list", default_options={"style":"list"}, esi=true)
-     * @Tag(name="news_posts_pretty", default_options={"style":"pretty"}, esi=true)
+     * @Tag(name="news_posts")
+     * @Tag(name="news_posts_list", default_options={"style":"list"})
+     * @Tag(name="news_posts_pretty", default_options={"style":"pretty"})
      *
      * @TagOptions(
      *      defaults={
@@ -106,7 +106,6 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -125,6 +124,7 @@ class NewsController extends AbstractController
 
     /**
      * @Tag(name="post", esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={"is_subscribed":false},
@@ -134,7 +134,6 @@ class NewsController extends AbstractController
      *      }
      * )
      * @Security("is_granted('USE_NEWS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function postAction(TagRequest $tag_request, array $options)
     {
@@ -216,7 +215,8 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_comments", esi=true)
+     * @Tag(name="news_comments")
+     *
      * @TagOptions(
      *      defaults={
      *          "post": null
@@ -227,7 +227,6 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -241,7 +240,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_pager", esi=true)
+     * @Tag(name="news_pager")
      *
      * @TagOptions(
      *      defaults={
@@ -256,7 +255,6 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -277,6 +275,7 @@ class NewsController extends AbstractController
 
     /**
      * @Tag(name="news_breadcrumbs", esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={"category": null, "post": null},
@@ -287,7 +286,6 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {

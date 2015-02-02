@@ -49,6 +49,7 @@ class DownloadsController extends AbstractController
     /**
      * @Tag(name="downloads", esi=true)
      * @Tag(name="downloads_list", default_options={"style":"list"}, esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={
@@ -64,7 +65,6 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -82,10 +82,10 @@ class DownloadsController extends AbstractController
 
 
     /**
-     * @Tag(name="downloads_files", esi=true)
-     * @Tag(name="downloads_files_simple", default_options={"style":"simple"}, esi=true)
-     * @Tag(name="downloads_files_items", default_options={"style":"items"}, esi=true)
-     * @Tag(name="downloads_files_list", default_options={"style":"small"}, esi=true)
+     * @Tag(name="downloads_files")
+     * @Tag(name="downloads_files_simple", default_options={"style":"simple"})
+     * @Tag(name="downloads_files_items", default_options={"style":"items"})
+     * @Tag(name="downloads_files_list", default_options={"style":"small"})
      *
      * @TagOptions(
      *      defaults={
@@ -103,7 +103,6 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -121,6 +120,7 @@ class DownloadsController extends AbstractController
 
     /**
      * @Tag(name="download", esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={"is_subscribed":false},
@@ -130,7 +130,6 @@ class DownloadsController extends AbstractController
      *          "is_subscribed": {"int","string","bool"}
      *      }
      * )
-     * @Cache(smaxage="10 minutes")
      */
     public function fileAction(TagRequest $tag_request, array $options)
     {
@@ -212,7 +211,8 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_comments", esi=true)
+     * @Tag(name="downloads_comments")
+     *
      * @TagOptions(
      *      defaults={
      *          "file": null
@@ -223,7 +223,6 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -237,7 +236,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_pager", esi=true)
+     * @Tag(name="downloads_pager")
      *
      * @TagOptions(
      *      defaults={
@@ -252,7 +251,6 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -273,6 +271,7 @@ class DownloadsController extends AbstractController
 
     /**
      * @Tag(name="download_breadcrumbs", esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={"category": null, "file": null},
@@ -283,7 +282,6 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
-     * @Cache(smaxage="10 minutes")
      */
     public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {

@@ -61,7 +61,7 @@ class DevController extends AbstractController
      *      required={"tpl"}
      * )
      */
-    public function renderAction(TagRequest $request, array $options)
+    public function renderAction(TagRequest $tag_request, array $options)
     {
         return $this->renderThemeView($options['tpl']);
     }

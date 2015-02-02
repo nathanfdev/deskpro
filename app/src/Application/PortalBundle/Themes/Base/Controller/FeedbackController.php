@@ -51,9 +51,9 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 class FeedbackController extends AbstractController
 {
     /**
-     * @Tag(name="feedback_items", esi=true)
-     * @Tag(name="feedback_items_list", default_options={"style":"list"}, esi=true)
-     * @Tag(name="feedback_items_row", default_options={"style":"row"}, esi=true)
+     * @Tag(name="feedback_items")
+     * @Tag(name="feedback_items_list", default_options={"style":"list"})
+     * @Tag(name="feedback_items_row", default_options={"style":"row"})
      *
      * @TagOptions(
      *      defaults={
@@ -75,7 +75,6 @@ class FeedbackController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
-     * @Cache(smaxage="10 minutes")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -103,6 +102,7 @@ class FeedbackController extends AbstractController
 
     /**
      * @Tag(name="item", esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      required={"item"},
@@ -110,7 +110,6 @@ class FeedbackController extends AbstractController
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
      *      }
      * )
-     * @Cache(smaxage="10 minutes")
      */
     public function itemAction(TagRequest $tag_request, array $options)
     {
@@ -125,7 +124,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_pager", esi=true)
+     * @Tag(name="feedback_pager")
      *
      * @TagOptions(
      *      defaults={
@@ -146,7 +145,6 @@ class FeedbackController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
-     * @Cache(smaxage="10 minutes")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -178,6 +176,7 @@ class FeedbackController extends AbstractController
 
     /**
      * @Tag(name="feedback_breadcrumbs", esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={"item": null},
@@ -187,9 +186,8 @@ class FeedbackController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
-     * @Cache(smaxage="10 minutes")
      */
-    public function breadcrumbsAction(TagRequest $request, array $options)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {
         $item = $this->getFeedbackDataService()->getItem($options['item']);
 
@@ -202,7 +200,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_comments", esi=true)
+     * @Tag(name="feedback_comments")
      *
      * @TagOptions(
      *      defaults={
@@ -214,7 +212,6 @@ class FeedbackController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
-     * @Cache(smaxage="10 minutes")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
