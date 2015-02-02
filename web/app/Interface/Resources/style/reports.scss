@@ -579,8 +579,59 @@
 }
 
 
+.report-tabs {
+  ul {
+    .add-report-link {
+      ul.clone-list {
+        a.control {
+          margin-right: 5px;
+          color: $grey;
+          font-size: 1.1em;
+          position: relative;
+          top: 1px;
+          display: inline;
+          background: none;
+          border: none;
+        }
+        a {
+          color: $text-color;
+          font-size: 1.1em;
+          position: relative;
+          top: 1px;
+          display: inline;
+          background: none;
+          border: none;
+          padding: 0px;
+        }
+        a {
+          color: $text-color;
+          font-size: 1.1em;
+          position: relative;
+          top: 1px;
+          display: inline;
+          background: none;
+          border: none;
+          padding: 0px;
+        }
+
+        .current {
+          a {
+            color: $blue;
+            span { color: $grey; }
+          }
+        }
+      }
+    }
+  }
+}
+
 // List of clone-able stuff
 .clone-list {
+  list-style-type: none;
+  ul {
+    list-style-type: none;
+    padding: 0;
+  }
   a {
     font-size: 1em;
     color: $text-color;
@@ -594,6 +645,10 @@
     font-size: 1.1em;
     position: relative;
     top: 1px;
+    display: inline;
+    background: none;
+    border: none;
+
 
     &:hover { color: $text-color; }
     i.fa-minus-square-o { color: $text-grey;  }
@@ -636,6 +691,7 @@
     }
   }
 }
+
 
 
 // I'm adding this here instead of below because if we absolute position all the

@@ -12,6 +12,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
     )
 
+    $scope.expandedDashboard = []
 
 
     ###
@@ -153,4 +154,15 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       modalInstance.result.then (report) ->
         DashboardService
         .saveReport report
+
+    $scope.expandDashboard = (dashboard) ->
+      if dashboard.loaded is false
+        DashboardService.getDashboard(dashboard)
+      $scope.expandedDashboard[dashboard.id] = true
+
+    $scope.collide = (dashboard) ->
+      $scope.expandedDashboard[dashboard.id] = false
+
+    $scope.isExpanded = (dashboard) ->
+      $scope.expandedDashboard[dashboard.id]? and $scope.expandedDashboard[dashboard.id] is true
 ]
