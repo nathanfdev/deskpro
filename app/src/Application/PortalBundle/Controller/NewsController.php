@@ -47,12 +47,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Method;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\RequestStack;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class NewsController extends AbstractController
 {
     /**
      * @Route("/news.{_format}", name="portal_news", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Security("is_granted('USE_NEWS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function indexAction(Request $request, $_format)
     {
@@ -93,6 +95,7 @@ class NewsController extends AbstractController
      * @Route("/news/{slug}.{_format}", name="portal_news_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS_CATEGORY', category)")
+     * @Cache(smaxage="10 minutes")
      */
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
@@ -135,6 +138,7 @@ class NewsController extends AbstractController
      * @Route("/news/posts/{slug}", name="portal_news_view")
      * @ParamConverter(name="post", converter="deskpro_slug")
      * @Security("is_granted('USE_NEWS') and is_granted('VIEW_NEWS', post)")
+     * @Cache(smaxage="10 minutes")
      */
     public function viewAction(Request $request, News $post)
     {
@@ -178,6 +182,7 @@ class NewsController extends AbstractController
      * Need to force a redirect here to support old permalinks!
      *
      * @Route("/news/view/{slug}", name="portal_news_view_LEGACY")
+     * @Cache(smaxage="10 minutes")
      */
     public function viewLEGACYAction(Request $request, $slug)
     {

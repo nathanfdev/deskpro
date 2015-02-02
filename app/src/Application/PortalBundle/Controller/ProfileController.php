@@ -40,11 +40,13 @@ use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class ProfileController extends AbstractController
 {
     /**
      * @Route("/register", name="portal_user_registration")
+     * @Cache(smaxage="10 minutes")
      */
     public function registerAction(Request $request)
     {
@@ -146,13 +148,5 @@ class ProfileController extends AbstractController
                 'emails_form' => $emails_form->createView()
             )
         );
-    }
-
-    /**
-     * @return \Application\PersonBundle\Person\PersonFactory
-     */
-    public function getPersonFactory()
-    {
-        return $this->get('person_factory');
     }
 }

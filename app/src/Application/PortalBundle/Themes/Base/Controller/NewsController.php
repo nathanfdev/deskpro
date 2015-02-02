@@ -45,6 +45,7 @@ use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class NewsController extends AbstractController
 {
@@ -67,6 +68,7 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -104,6 +106,7 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -130,6 +133,8 @@ class NewsController extends AbstractController
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
      *      }
      * )
+     * @Security("is_granted('USE_NEWS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function postAction(TagRequest $tag_request, array $options)
     {
@@ -154,6 +159,8 @@ class NewsController extends AbstractController
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
      *      }
      * )
+     *
+     * @Security("is_granted('USE_NEWS')")
      */
     public function postSubscriptionAction(TagRequest $tag_request, array $options)
     {
@@ -220,6 +227,7 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -248,6 +256,7 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -278,6 +287,7 @@ class NewsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_NEWS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {

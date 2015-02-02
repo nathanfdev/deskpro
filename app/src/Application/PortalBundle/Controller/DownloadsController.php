@@ -46,12 +46,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class DownloadsController extends AbstractController
 {
     /**
      * @Route("/downloads.{_format}", name="portal_downloads", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Security("is_granted('USE_DOWNLOADS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function indexAction(Request $request, $_format)
     {
@@ -86,6 +88,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/{slug}.{_format}", name="portal_downloads_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD_CATEGORY', category)")
+     * @Cache(smaxage="10 minutes")
      */
     public function browseAction(Request $request, DownloadCategory $category, $_format)
     {
@@ -129,6 +132,7 @@ class DownloadsController extends AbstractController
      * @Route("/downloads/files/{slug}", name="portal_downloads_view")
      * @ParamConverter(name="file", converter="deskpro_slug")
      * @Security("is_granted('USE_DOWNLOADS') and is_granted('VIEW_DOWNLOAD', file)")
+     * @Cache(smaxage="10 minutes")
      */
     public function viewAction(Request $request, Download $file)
     {

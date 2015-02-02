@@ -42,6 +42,7 @@ use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class DownloadsController extends AbstractController
 {
@@ -63,6 +64,7 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -101,6 +103,7 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -127,6 +130,7 @@ class DownloadsController extends AbstractController
      *          "is_subscribed": {"int","string","bool"}
      *      }
      * )
+     * @Cache(smaxage="10 minutes")
      */
     public function fileAction(TagRequest $tag_request, array $options)
     {
@@ -219,6 +223,7 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -247,6 +252,7 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -277,6 +283,7 @@ class DownloadsController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_DOWNLOADS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {

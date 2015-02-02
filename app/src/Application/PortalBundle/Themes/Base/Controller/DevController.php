@@ -40,9 +40,13 @@ use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\OptionsResolver\OptionsResolver;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class DevController extends AbstractController
 {
+    /**
+     * @Cache(smaxage="10 minutes")
+     */
     public function devAction()
     {
         return $this->renderThemeView('Theme:Dev:dev.html.twig');

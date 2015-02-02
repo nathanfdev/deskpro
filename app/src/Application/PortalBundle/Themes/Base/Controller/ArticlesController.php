@@ -72,6 +72,7 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     * @Cache(smaxage="10 minutes")
      */
     public function categoriesAction(TagRequest $tag_request, array $options)
     {
@@ -112,6 +113,7 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     * @Cache(smaxage="10 minutes")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -137,6 +139,7 @@ class ArticlesController extends AbstractController
      *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
      *      }
      * )
+     * @Cache(smaxage="10 minutes")
      */
     public function articleAction(TagRequest $tag_request, array $options)
     {
@@ -227,6 +230,7 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     * @Cache(smaxage="10 minutes")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -255,6 +259,7 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     * @Cache(smaxage="10 minutes")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -284,6 +289,7 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
+     * @Cache(smaxage="10 minutes")
      */
     public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {

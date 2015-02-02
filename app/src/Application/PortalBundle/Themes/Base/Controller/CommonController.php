@@ -51,11 +51,13 @@ use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
 use Doctrine\Common\Proxy\Exception\InvalidArgumentException;
 use Symfony\Component\HttpFoundation\Response;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class CommonController extends AbstractController
 {
     /**
      * @Tag(name="get_in_touch")
+     * @Cache(smaxage="10 minutes")
      */
     public function getInTouchAction(TagRequest $tag_request)
     {
@@ -96,6 +98,7 @@ class CommonController extends AbstractController
      *      allowed_types={"content_type":"string", "content_id":{"string","int"}},
      *      allowed_values={"content_type":{"article","news","download","feedback"}}
      * )
+     * @Cache(smaxage="10 minutes")
      */
     public function relatedContentAction(TagRequest $tag_request, array $options)
     {

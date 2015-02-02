@@ -44,11 +44,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class PortalController extends AbstractController
 {
     /**
-     * @Tag(name="home")
+     * @Tag(name="home", esi=true)
+     * @Cache(smaxage="10 minutes")
      */
     public function homeAction(TagRequest $tag_request)
     {
@@ -56,7 +58,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_top")
+     * @Tag(name="page_top", esi=true)
+     * @Cache(smaxage="10 minutes")
      */
     public function topBarAction(TagRequest $tag_request)
     {
@@ -87,7 +90,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_search_box")
+     * @Tag(name="page_search_box", esi=true)
+     * @Cache(smaxage="10 minutes")
      */
     public function topSearchAction(TagRequest $tag_request)
     {
@@ -95,7 +99,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="page_tabs")
+     * @Tag(name="page_tabs", esi=true)
+     * @Cache(smaxage="10 minutes")
      */
     public function topTabsAction(TagRequest $tag_request)
     {
@@ -113,7 +118,8 @@ class PortalController extends AbstractController
     }
 
     /**
-     * @Tag(name="sidebar")
+     * @Tag(name="sidebar", esi=true)
+     * @Cache(smaxage="10 minutes")
      */
     public function sidebarAction(TagRequest $tag_request)
     {
@@ -138,7 +144,7 @@ class PortalController extends AbstractController
             );
         }
 
-        $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($user);
+        $ticket_count = $this->getDoctrine()->getRepository('DeskPRO:Ticket')->getTicketCountForPerson($user); //TODO: data service
 
         return $this->renderThemeView(
             'Theme:Portal:Tag/sidebar_user.html.twig',

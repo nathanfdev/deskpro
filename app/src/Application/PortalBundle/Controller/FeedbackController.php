@@ -216,9 +216,6 @@ class FeedbackController extends AbstractController
      */
     public function viewAction(Request $request, Feedback $item)
     {
-        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
-
-
         //
         // COMMENT FORM
         //
@@ -249,7 +246,6 @@ class FeedbackController extends AbstractController
                 'item' => $item,
                 'content_id' => $item->getId(),
                 'content_type' => Feedback::CONTENT_TYPE,
-                'rating' => $rating,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );
@@ -281,6 +277,7 @@ class FeedbackController extends AbstractController
     {
         $default_status_category_id = $this->getBrandSetting('portal.default_feedback_status_category_id');
         $default_status_category = $this->getFeedbackDataService()->getFeedbackStatusCategory($default_status_category_id);
+
         return $default_status_category;
     }
 }

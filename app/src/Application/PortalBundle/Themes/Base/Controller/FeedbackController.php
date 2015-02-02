@@ -46,13 +46,14 @@ use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class FeedbackController extends AbstractController
 {
     /**
-     * @Tag(name="feedback_items")
-     * @Tag(name="feedback_items_list", default_options={"style":"list"})
-     * @Tag(name="feedback_items_row", default_options={"style":"row"})
+     * @Tag(name="feedback_items", esi=true)
+     * @Tag(name="feedback_items_list", default_options={"style":"list"}, esi=true)
+     * @Tag(name="feedback_items_row", default_options={"style":"row"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -74,6 +75,7 @@ class FeedbackController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
+     * @Cache(smaxage="10 minutes")
      */
     public function listAction(TagRequest $tag_request, array $options)
     {
@@ -100,7 +102,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="item")
+     * @Tag(name="item", esi=true)
      *
      * @TagOptions(
      *      required={"item"},
@@ -108,6 +110,7 @@ class FeedbackController extends AbstractController
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
      *      }
      * )
+     * @Cache(smaxage="10 minutes")
      */
     public function itemAction(TagRequest $tag_request, array $options)
     {
@@ -122,7 +125,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_pager")
+     * @Tag(name="feedback_pager", esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -143,6 +146,7 @@ class FeedbackController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
+     * @Cache(smaxage="10 minutes")
      */
     public function pagerAction(TagRequest $tag_request, array $options)
     {
@@ -173,7 +177,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_breadcrumbs")
+     * @Tag(name="feedback_breadcrumbs", esi=true)
      *
      * @TagOptions(
      *      defaults={"item": null},
@@ -183,6 +187,7 @@ class FeedbackController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
+     * @Cache(smaxage="10 minutes")
      */
     public function breadcrumbsAction(TagRequest $request, array $options)
     {
@@ -197,7 +202,8 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_comments")
+     * @Tag(name="feedback_comments", esi=true)
+     *
      * @TagOptions(
      *      defaults={
      *          "item": null
@@ -208,6 +214,7 @@ class FeedbackController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
+     * @Cache(smaxage="10 minutes")
      */
     public function commentsAction(TagRequest $tag_request, array $options)
     {
@@ -221,12 +228,11 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_ratings")
+     * @Tag(name="feedback_ratings", esi=true)
      *
      * @TagOptions(
-     *      defaults={"rating": null, "item": null},
+     *      defaults={"item": null},
      *      allowed_types={
-     *          "rating": {"Application\DeskPRO\Entity\Rating", "int", "string", "null"},
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
      *      }
      * )
@@ -235,8 +241,8 @@ class FeedbackController extends AbstractController
      */
     public function ratingsAction(TagRequest $tag_request, array $options)
     {
-        $rating = $this->getRatingDataService()->getRating($options['rating']);
         $item = $this->getFeedbackDataService()->getItem($options['item']);
+        $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());
 
         return $this->renderThemeView(
             'Theme:Feedback:Tag/ratings.html.twig',

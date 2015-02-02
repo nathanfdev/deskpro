@@ -44,12 +44,14 @@ use Application\PortalBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 
 class NewTicketController extends AbstractController
 {
     /**
      * @Route("/new-ticket", name="portal_new_ticket")
      * @Security("is_granted('USE_TICKETS')")
+     * @Cache(smaxage="10 minutes")
      */
     public function newTicketAction(Request $request)
     {
