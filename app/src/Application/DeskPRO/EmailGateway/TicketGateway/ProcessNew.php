@@ -315,6 +315,8 @@ class ProcessNew extends ProcessAbstract
         # Check for dupe first
         #------------------------------
 
+        $ticket_message->resetHashCode();
+
         if ($this->person && !$this->person->isNewPerson()) {
             if ($dupe_message = App::getOrm()->getRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, null, 10800, $this->getLogger())) {
                 $this->setError(EmailSource::ERR_DUPE);
