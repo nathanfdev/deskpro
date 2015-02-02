@@ -36,7 +36,6 @@ namespace Application\PortalBundle\Controller;
 
 
 use Application\AuthBundle\Voter\Portal\ContentCommentVoter;
-use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\DeskPRO\Entity\ArticleComment;
@@ -56,7 +55,6 @@ class ArticlesController extends AbstractController
         //
         // RSS
         //
-
         if ('rss' === $_format) {
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 null,
@@ -71,7 +69,6 @@ class ArticlesController extends AbstractController
         //
         // RENDER THEME
         //
-
         return $this->renderThemeView(
             'Theme:Articles:index.html.twig'
         );
@@ -99,18 +96,6 @@ class ArticlesController extends AbstractController
 
 
         //
-        // SUBSCRIPTIONS
-        //
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
-        }
-
-
-        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -119,8 +104,7 @@ class ArticlesController extends AbstractController
                 'category' => $category,
                 'page' => $request->get('page', 1),
                 'count' => 2,
-                'show_pagination' => true,
-                'is_subscribed' => $is_subscribed
+                'show_pagination' => true
             )
         );
     }
@@ -132,24 +116,6 @@ class ArticlesController extends AbstractController
      */
     public function viewAction(Request $request, Article $article)
     {
-        //
-        // RATINGS
-        //
-        $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
-
-
-        //
-        // SUBSCRIPTIONS
-        //
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.kb_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
-        }
-
-
         //
         // COMMENT FORM
         //
@@ -181,8 +147,6 @@ class ArticlesController extends AbstractController
                 'category' => $article->getPrimaryCategory(),
                 'content_id' => $article->getId(),
                 'content_type' => Article::CONTENT_TYPE,
-                'rating'  => $rating,
-                'is_subscribed' => $is_subscribed,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );

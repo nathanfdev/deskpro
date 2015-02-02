@@ -49,9 +49,9 @@ use Symfony\Component\HttpFoundation\Request;
 class NewsController extends AbstractController
 {
     /**
-     * @Tag(name="news")
-     * @Tag(name="news_list", default_options={"style":"list"})
-     * @Tag(name="news_dropdown", default_options={"style":"dropdown"})
+     * @Tag(name="news", esi=true)
+     * @Tag(name="news_list", default_options={"style":"list"}, esi=true)
+     * @Tag(name="news_dropdown", default_options={"style":"dropdown"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -83,9 +83,9 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_posts")
-     * @Tag(name="news_posts_list", default_options={"style":"list"})
-     * @Tag(name="news_posts_pretty", default_options={"style":"pretty"})
+     * @Tag(name="news_posts", esi=true)
+     * @Tag(name="news_posts_list", default_options={"style":"list"}, esi=true)
+     * @Tag(name="news_posts_pretty", default_options={"style":"pretty"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -147,7 +147,6 @@ class NewsController extends AbstractController
      * @Tag(name="post_subscription", esi=true)
      *
      * @TagOptions(
-     *      defaults={"is_subscribed":false},
      *      required={"post"},
      *      allowed_types={
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
@@ -158,9 +157,6 @@ class NewsController extends AbstractController
     {
         $post = $this->getNewsDataService()->getPost($options['post']);
 
-        //
-        // SUBSCRIPTIONS
-        //
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
@@ -181,7 +177,7 @@ class NewsController extends AbstractController
      * @Tag(name="news_category_subscription", esi=true)
      *
      * @TagOptions(
-     *      defaults={"category": null, "is_subscribed": false},
+     *      defaults={"category": null},
      *      allowed_types={
      *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"}
      *      }

@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticleCategory;
 use Application\PortalBundle\Controller\AbstractController;
@@ -53,11 +54,11 @@ use Application\PortalBundle\Annotation\Tag;
 class ArticlesController extends AbstractController
 {
     /**
-     * @Tag(name="knowledgebase")
-     * @Tag(name="knowledgebase_compact", default_options={"style":"compact"})
-     * @Tag(name="knowledgebase_expander", default_options={"style":"expander"})
-     * @Tag(name="knowledgebase_list", default_options={"style":"list"})
-     * @Tag(name="knowledgebase_comma_list", default_options={"style":"comma_list"})
+     * @Tag(name="knowledgebase", esi=true)
+     * @Tag(name="knowledgebase_compact", default_options={"style":"compact"}, esi=true)
+     * @Tag(name="knowledgebase_expander", default_options={"style":"expander"}, esi=true)
+     * @Tag(name="knowledgebase_list", default_options={"style":"list"}, esi=true)
+     * @Tag(name="knowledgebase_comma_list", default_options={"style":"comma_list"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -88,11 +89,11 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_articles")
-     * @Tag(name="knowledgebase_articles_forcat", default_options={"style":"forcat"})
-     * @Tag(name="knowledgebase_articles_list", default_options={"style":"list"})
-     * @Tag(name="knowledgebase_articles_small", default_options={"style":"small"})
-     * @Tag(name="knowledgebase_articles_simple", default_options={"style":"simple"})
+     * @Tag(name="knowledgebase_articles", esi=true)
+     * @Tag(name="knowledgebase_articles_forcat", default_options={"style":"forcat"}, esi=true)
+     * @Tag(name="knowledgebase_articles_list", default_options={"style":"list"}, esi=true)
+     * @Tag(name="knowledgebase_articles_small", default_options={"style":"small"}, esi=true)
+     * @Tag(name="knowledgebase_articles_simple", default_options={"style":"simple"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -128,24 +129,53 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article")
+     * @Tag(name="article", esi=true)
      *
      * @TagOptions(
-     *      defaults={"is_subscribed":false},
      *      required={"article"},
      *      allowed_types={
-     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"},
-     *          "is_subscribed": {"int","string","bool"}
+     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
      *      }
      * )
      */
-    public function postAction(TagRequest $tag_request, array $options)
+    public function articleAction(TagRequest $tag_request, array $options)
     {
         $article = $this->getArticlesDataService()->getArticle($options['article']);
-        $is_subscribed = $options['is_subscribed'];
 
         return $this->renderThemeView(
             'Theme:Articles:Tag/article.html.twig',
+            array(
+                'article' => $article
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="article_subscription", esi=true)
+     * @Tag(name="article_subscription_info", default_options={"style":"info"}, esi=true)
+     *
+     * @TagOptions(
+     *      required={"article"},
+     *      defaults={"style":"link"},
+     *      allowed_types={
+     *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
+     *      }
+     * )
+     */
+    public function articleSubscriptionAction(TagRequest $tag_request, array $options)
+    {
+        $article = $this->getArticlesDataService()->getArticle($options['article']);
+
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
+        }
+
+        return $this->renderThemeView(
+            sprintf('Theme:Articles:Tag/article_subscription_%s.html.twig', $options['style']),
             array(
                 'article' => $article,
                 'is_subscribed' => $is_subscribed
@@ -154,7 +184,39 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article_comments")
+     * @Tag(name="knowledgebase_category_subscription", esi=true)
+     *
+     * @TagOptions(
+     *      defaults={"category": null},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_ARTICLES')")
+     */
+    public function categorySubscriptionAction(TagRequest $tag_request, array $options)
+    {
+        $category = $this->getArticlesDataService()->getCategory($options['category']);
+
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.kb_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLE_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        return $this->renderThemeView(
+            'Theme:Articles:Tag/subscription_category.html.twig', array(
+                'category' => $category,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="article_comments", esi=true)
      * @TagOptions(
      *      defaults={
      *          "article": null
@@ -178,7 +240,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_pager")
+     * @Tag(name="knowledgebase_pager", esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -211,7 +273,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_breadcrumbs")
+     * @Tag(name="knowledgebase_breadcrumbs", esi=true)
      *
      * @TagOptions(
      *      defaults={"category": null, "article": null},
@@ -237,7 +299,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article_ratings")
+     * @Tag(name="article_ratings", esi=true)
      *
      * @TagOptions(
      *      defaults={"rating": null, "article": null},
@@ -251,40 +313,14 @@ class ArticlesController extends AbstractController
      */
     public function ratingsAction(TagRequest $tag_request, array $options)
     {
-        $rating = $this->getRatingDataService()->getRating($options['rating']);
         $article = $this->getArticlesDataService()->getArticle($options['article']);
+        $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
 
         return $this->renderThemeView(
             'Theme:Articles:Tag/ratings.html.twig',
             array(
                 'rating' => $rating,
                 'article' => $article
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="knowledgebase_subscriptions_category")
-     *
-     * @TagOptions(
-     *      defaults={"category": null, "is_subscribed": false},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"},
-     *          "is_subscribed": {"int", "string", "bool"},
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_ARTICLES')")
-     */
-    public function subscriptionsCategoryAction(TagRequest $tag_request, array $options)
-    {
-        $category = $this->getArticlesDataService()->getCategory($options['category']);
-        $is_subscribed = (bool) $options['is_subscribed'];
-
-        return $this->renderThemeView(
-            'Theme:Articles:Tag/subscriptions_category.html.twig', array(
-                'category' => $category,
-                'is_subscribed' => $is_subscribed
             )
         );
     }
