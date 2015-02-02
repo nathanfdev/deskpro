@@ -238,14 +238,13 @@ class ThemeResolver
         $tag_request->setSession($current_request->getSession());
         $tag_request->headers->replace($current_request->headers->all());
 
-        // never embed an <esi:...> tag in a guest request (inline it instead)
-        if ($tag->isEsi() && !$this->cache_helper->isGuestRequest()) {
+        if ($tag->isEsi()) {
 
             // construct and return the proper ESI tag content
             $attrs = $this->filterArguments($attrs);
 
             $esi = $this->container->get('fragment.renderer.esi')->render(
-                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => true)
+                $controller = new ControllerReference($tag->getControllerName(), $attrs, $query), $tag_request, array('ignore_errors' => false)
             );
 
             $esi_content = $esi->getContent();
