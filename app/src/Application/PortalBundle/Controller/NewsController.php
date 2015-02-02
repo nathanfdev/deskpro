@@ -118,18 +118,6 @@ class NewsController extends AbstractController
 
 
         //
-        // SUBSCRIPTIONS
-        //
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
-        }
-
-
-        //
         // RENDER THEME
         //
         return $this->renderThemeView(
@@ -137,7 +125,6 @@ class NewsController extends AbstractController
             array(
                 'category' => $category,
                 'page' => $page,
-                'is_subscribed' => $is_subscribed,
                 'count' => $per_page,
                 'show_pagination' => true
             )
@@ -151,22 +138,6 @@ class NewsController extends AbstractController
      */
     public function viewAction(Request $request, News $post)
     {
-        $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
-
-
-        //
-        // SUBSCRIPTIONS
-        //
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.news_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
-        }
-
-
-
         //
         // COMMENT FORM
         //
@@ -198,8 +169,6 @@ class NewsController extends AbstractController
                 'category' => $post->category,
                 'content_id' => $post->getId(),
                 'content_type' => News::CONTENT_TYPE,
-                'rating' => $rating,
-                'is_subscribed' => $is_subscribed,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );

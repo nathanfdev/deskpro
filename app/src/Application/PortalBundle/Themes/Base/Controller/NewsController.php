@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
@@ -81,7 +82,6 @@ class NewsController extends AbstractController
         );
     }
 
-
     /**
      * @Tag(name="news_posts")
      * @Tag(name="news_posts_list", default_options={"style":"list"})
@@ -121,24 +121,55 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="post")
+     * @Tag(name="post", esi=true)
      *
      * @TagOptions(
      *      defaults={"is_subscribed":false},
      *      required={"post"},
      *      allowed_types={
-     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"},
-     *          "is_subscribed": {"int","string","bool"}
+     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
      *      }
      * )
      */
     public function postAction(TagRequest $tag_request, array $options)
     {
         $post = $this->getNewsDataService()->getPost($options['post']);
-        $is_subscribed = $options['is_subscribed'];
 
         return $this->renderThemeView(
             'Theme:News:Tag/post.html.twig',
+            array(
+                'post' => $post
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="post_subscription", esi=true)
+     *
+     * @TagOptions(
+     *      defaults={"is_subscribed":false},
+     *      required={"post"},
+     *      allowed_types={
+     *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *      }
+     * )
+     */
+    public function postSubscriptionAction(TagRequest $tag_request, array $options)
+    {
+        $post = $this->getNewsDataService()->getPost($options['post']);
+
+        //
+        // SUBSCRIPTIONS
+        //
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
+        }
+
+        return $this->renderThemeView('Theme:News:Tag/post_subscription.html.twig',
             array(
                 'post' => $post,
                 'is_subscribed' => $is_subscribed
@@ -147,7 +178,39 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_comments")
+     * @Tag(name="news_category_subscription", esi=true)
+     *
+     * @TagOptions(
+     *      defaults={"category": null, "is_subscribed": false},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_NEWS')")
+     */
+    public function categorySubscriptionAction(TagRequest $tag_request, array $options)
+    {
+        $category = $this->getNewsDataService()->getCategory($options['category']);
+
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.news_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_NEWS_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        return $this->renderThemeView(
+            'Theme:News:Tag/subscription_category.html.twig', array(
+                'category' => $category,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="news_comments", esi=true)
      * @TagOptions(
      *      defaults={
      *          "post": null
@@ -171,7 +234,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_pager")
+     * @Tag(name="news_pager", esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -205,7 +268,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_breadcrumbs")
+     * @Tag(name="news_breadcrumbs", esi=true)
      *
      * @TagOptions(
      *      defaults={"category": null, "post": null},
@@ -217,7 +280,7 @@ class NewsController extends AbstractController
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function breadcrumbsAction(TagRequest $request, array $options)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {
         $category = $this->getNewsDataService()->getCategory($options['category']);
         $post = $this->getNewsDataService()->getPost($options['post']);
@@ -232,12 +295,11 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_ratings")
+     * @Tag(name="news_ratings", esi=true)
      *
      * @TagOptions(
      *      defaults={"rating": null, "post": null},
      *      allowed_types={
-     *          "rating": {"Application\DeskPRO\Entity\Rating", "int", "string", "null"},
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
      *      }
      * )
@@ -246,40 +308,14 @@ class NewsController extends AbstractController
      */
     public function ratingsAction(TagRequest $tag_request, array $options)
     {
-        $rating = $this->getRatingDataService()->getRating($options['rating']);
         $post = $this->getNewsDataService()->getPost($options['post']);
+        $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
 
         return $this->renderThemeView(
             'Theme:News:Tag/ratings.html.twig',
             array(
-                'rating' => $rating,
-                'post' => $post
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="news_subscriptions_category")
-     *
-     * @TagOptions(
-     *      defaults={"category": null, "is_subscribed": false},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"},
-     *          "is_subscribed": {"int", "string", "bool"},
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_NEWS')")
-     */
-    public function subscriptionsCategoryAction(TagRequest $tag_request, array $options)
-    {
-        $category = $this->getNewsDataService()->getCategory($options['category']);
-        $is_subscribed = (bool)$options['is_subscribed'];
-
-        return $this->renderThemeView(
-            'Theme:News:Tag/subscriptions_category.html.twig', array(
-                'category' => $category,
-                'is_subscribed' => $is_subscribed
+                'post' => $post,
+                'rating' => $rating
             )
         );
     }
