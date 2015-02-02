@@ -168,7 +168,7 @@ class ArticlesController extends AbstractController
 
         $is_subscribed = false;
         if (
-            $this->getBrandSetting('user.news_subscriptions', false)
+            $this->getBrandSetting('user.kb_subscriptions', false)
             && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_ARTICLES)
         ) {
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($article, $this->getUser());
@@ -302,9 +302,8 @@ class ArticlesController extends AbstractController
      * @Tag(name="article_ratings", esi=true)
      *
      * @TagOptions(
-     *      defaults={"rating": null, "article": null},
+     *      defaults={"article": null},
      *      allowed_types={
-     *          "rating": {"Application\DeskPRO\Entity\Rating", "int", "string", "null"},
      *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
      *      }
      * )

@@ -1,7 +1,7 @@
 {% extends 'Theme::layout.html.twig' %}
 
 {% block inner_content %}
-    {{ page.downloads_breadcrumbs({category: file.category})|raw }}
+    {{ page.download_breadcrumbs({category: file.category})|raw }}
     {{ page.download()|raw }}
     {{ page.downloads_ratings()|raw }}
     {{ page.downloads_comments()|raw }}

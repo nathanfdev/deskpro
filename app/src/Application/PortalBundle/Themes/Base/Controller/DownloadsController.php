@@ -35,6 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
+use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Controller\AbstractController;
@@ -45,8 +46,8 @@ use Symfony\Component\HttpFoundation\Response;
 class DownloadsController extends AbstractController
 {
     /**
-     * @Tag(name="downloads")
-     * @Tag(name="downloads_list", default_options={"style":"list"})
+     * @Tag(name="downloads", esi=true)
+     * @Tag(name="downloads_list", default_options={"style":"list"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -79,10 +80,10 @@ class DownloadsController extends AbstractController
 
 
     /**
-     * @Tag(name="downloads_files")
-     * @Tag(name="downloads_files_simple", default_options={"style":"simple"})
-     * @Tag(name="downloads_files_items", default_options={"style":"items"})
-     * @Tag(name="downloads_files_list", default_options={"style":"small"})
+     * @Tag(name="downloads_files", esi=true)
+     * @Tag(name="downloads_files_simple", default_options={"style":"simple"}, esi=true)
+     * @Tag(name="downloads_files_items", default_options={"style":"items"}, esi=true)
+     * @Tag(name="downloads_files_list", default_options={"style":"small"}, esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -116,7 +117,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="download")
+     * @Tag(name="download", esi=true)
      *
      * @TagOptions(
      *      defaults={"is_subscribed":false},
@@ -142,7 +143,72 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_comments")
+     * @Tag(name="download_subscription", esi=true)
+     * @Tag(name="download_subscription_info", default_options={"style":"info"}, esi=true)
+     *
+     * @TagOptions(
+     *      required={"file"},
+     *      defaults={"style":"link"},
+     *      allowed_types={
+     *          "file": {"Application\DeskPRO\Entity\File", "int", "string", "null"}
+     *      }
+     * )
+     */
+    public function fileSubscriptionAction(TagRequest $tag_request, array $options)
+    {
+        $file = $this->getDownloadsDataService()->getDownload($options['file']);
+
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
+        }
+
+        return $this->renderThemeView(
+            sprintf('Theme:Downloads:Tag/download_subscription_%s.html.twig', $options['style']),
+            array(
+                'file' => $file,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="download_category_subscription", esi=true)
+     *
+     * @TagOptions(
+     *      defaults={"category": null},
+     *      allowed_types={
+     *          "category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"}
+     *      }
+     * )
+     *
+     * @Security("is_granted('USE_DOWNLOADS')")
+     */
+    public function subscriptionsCategoryAction(TagRequest $tag_request, array $options)
+    {
+        $category = $this->getDownloadsDataService()->getCategory($options['category']);
+
+        $is_subscribed = false;
+        if (
+            $this->getBrandSetting('user.downloads_subscriptions', false)
+            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES)
+        ) {
+            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
+        }
+
+        return $this->renderThemeView(
+            'Theme:Downloads:Tag/subscription_category.html.twig', array(
+                'category' => $category,
+                'is_subscribed' => $is_subscribed
+            )
+        );
+    }
+
+    /**
+     * @Tag(name="downloads_comments", esi=true)
      * @TagOptions(
      *      defaults={
      *          "file": null
@@ -166,7 +232,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_pager")
+     * @Tag(name="downloads_pager", esi=true)
      *
      * @TagOptions(
      *      defaults={
@@ -200,7 +266,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_breadcrumbs")
+     * @Tag(name="download_breadcrumbs", esi=true)
      *
      * @TagOptions(
      *      defaults={"category": null, "file": null},
@@ -227,12 +293,11 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_ratings")
+     * @Tag(name="downloads_ratings", esi=true)
      *
      * @TagOptions(
-     *      defaults={"rating": null, "file": null},
+     *      defaults={"file": null},
      *      allowed_types={
-     *          "rating": {"Application\DeskPRO\Entity\Rating", "int", "string", "null"},
      *          "file": {"Application\DeskPRO\Entity\Download", "int", "string", "null"}
      *      }
      * )
@@ -241,40 +306,14 @@ class DownloadsController extends AbstractController
      */
     public function ratingsAction(TagRequest $tag_request, array $options)
     {
-        $rating = $this->getRatingDataService()->getRating($options['rating']);
         $file = $this->getDownloadsDataService()->getDownload($options['file']);
+        $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
 
         return $this->renderThemeView(
             'Theme:Downloads:Tag/ratings.html.twig',
             array(
                 'rating' => $rating,
                 'file' => $file
-            )
-        );
-    }
-
-    /**
-     * @Tag(name="downloads_subscriptions_category")
-     *
-     * @TagOptions(
-     *      defaults={"category": null, "is_subscribed": false},
-     *      allowed_types={
-     *          "category": {"Application\DeskPRO\Entity\DownloadCategory", "int", "string", "null"},
-     *          "is_subscribed": {"int", "string", "bool"},
-     *      }
-     * )
-     *
-     * @Security("is_granted('USE_DOWNLOADS')")
-     */
-    public function subscriptionsCategoryAction(TagRequest $tag_request, array $options)
-    {
-        $category = $this->getDownloadsDataService()->getCategory($options['category']);
-        $is_subscribed = (bool)$options['is_subscribed'];
-
-        return $this->renderThemeView(
-            'Theme:Downloads:Tag/subscriptions_category.html.twig', array(
-                'category' => $category,
-                'is_subscribed' => $is_subscribed
             )
         );
     }

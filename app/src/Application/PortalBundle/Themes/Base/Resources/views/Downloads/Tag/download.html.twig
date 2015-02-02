@@ -27,27 +27,17 @@
 
     <div class="header-button-container">
         <div class="header-buttons">
-
-            {% if brand_setting('user.downloads_subscriptions') %}
-                <a href="{{ path('portal_downloads_files_toggle_subscription', { slug: file.slug }) }}">
-                    {% if is_subscribed %}
-                        {{ phrase('portal.general.btn-unsubscribe') }}
-                    {% else %}
-                        {{ phrase('portal.general.btn-subscribe') }}
-                    {% endif %}
-                    <i class="fa fa-rss"></i>
-                </a>
-            {% endif %}
-
-
+            {{ page.download_subscription()|raw }}
             <a href="#">{{ phrase('portal.general.btn-email') }} <i class="fa fa-envelope"></i></a>
             <a href="#">{{ phrase('portal.general.btn-print') }} <i class="fa fa-print"></i></a>
             <a href="#">{{ phrase('portal.general.btn-download-pdf') }} <i class="fa fa-file-pdf-o"></i></a>
         </div>
     </div>
 
+    {{ page.download_subscription_info()|raw }}
+
     <div class="article-content padded">
-        {{ file.contentDesc }}
+        {{ file.contentDesc|raw }}
     </div>
 
     {% if file.labels|length %}

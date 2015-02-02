@@ -111,25 +111,12 @@ class DownloadsController extends AbstractController
 
 
         //
-        // SUBSCRIPTIONS
-        //
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.downloads_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS_CATEGORIES)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedCategory($category, $this->getUser());
-        }
-
-
-        //
         // RENDER THEME
         //
         return $this->renderThemeView(
             'Theme:Downloads:browse.html.twig',
             array(
                 'category' => $category,
-                'is_subscribed' => $is_subscribed,
                 'page' => $page,
                 'count' => $per_page,
                 'show_pagination' => true
@@ -149,24 +136,6 @@ class DownloadsController extends AbstractController
         if (!$file->getBlob()) {
             throw $this->createNotFoundException('could not find downloadable content for download id='.$file->getId());
         }
-
-        //
-        // RATING
-        //
-        $rating = $this->getRatingsHelper()->getPersonRating($file, $this->getUser());
-
-
-        //
-        // SUBSCRIPTIONS
-        //
-        $is_subscribed = false;
-        if (
-            $this->getBrandSetting('user.downloads_subscriptions', false)
-            && $this->isGranted(ContentSubscriptionsVoter::SUBSCRIBE_DOWNLOADS)
-        ) {
-            $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($file, $this->getUser());
-        }
-
 
         //
         // COMMENT FORM
@@ -198,8 +167,6 @@ class DownloadsController extends AbstractController
                 'file' => $file,
                 'content_type' => Download::CONTENT_TYPE,
                 'content_id' => $file->getId(),
-                'is_subscribed' => $is_subscribed,
-                'rating' => $rating,
                 'new_comment_form' => $new_comment_form ? $new_comment_form->createView() : null
             )
         );

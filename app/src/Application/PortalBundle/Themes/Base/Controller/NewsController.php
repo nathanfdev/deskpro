@@ -145,9 +145,11 @@ class NewsController extends AbstractController
 
     /**
      * @Tag(name="post_subscription", esi=true)
+     * @Tag(name="post_subscription_info", default_options={"style":"info"}, esi=true)
      *
      * @TagOptions(
      *      required={"post"},
+     *      defaults={"style":"link"},
      *      allowed_types={
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
      *      }
@@ -165,7 +167,8 @@ class NewsController extends AbstractController
             $is_subscribed = $this->getSubscriptionsHelper()->isSubscribedContent($post, $this->getUser());
         }
 
-        return $this->renderThemeView('Theme:News:Tag/post_subscription.html.twig',
+        return $this->renderThemeView(
+            sprintf('Theme:News:Tag/post_subscription_%s.html.twig', $options['style']),
             array(
                 'post' => $post,
                 'is_subscribed' => $is_subscribed
@@ -294,7 +297,7 @@ class NewsController extends AbstractController
      * @Tag(name="news_ratings", esi=true)
      *
      * @TagOptions(
-     *      defaults={"rating": null, "post": null},
+     *      defaults={"post": null},
      *      allowed_types={
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
      *      }
