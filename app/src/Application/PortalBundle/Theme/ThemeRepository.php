@@ -190,6 +190,8 @@ class ThemeRepository
                     foreach ($annotations as $annotation) {
                         if ($annotation instanceof TagAnnotation) {
                             $name = $annotation->name;
+                            $always_inline_guest = $annotation->always_guest_inline;
+                            $allow_route_params = $annotation->allow_route_params;
                             $default_options = $annotation->default_options;
                             $esi = $annotation->esi;
                             $class_name = str_replace($refl->getNamespaceName().'\\', '', $refl->getName());
@@ -199,7 +201,7 @@ class ThemeRepository
 
                             $defined_options = $this->findTagOptions($refl->getName(), $method->getName());
 
-                            $tag = new Tag($name, $callable, $defined_options, $default_options, $esi);
+                            $tag = new Tag($name, $callable, $defined_options, $default_options, $esi, $always_inline_guest, $allow_route_params);
                             $tags[$tag->getName()] = $tag;
                         }
                     }
