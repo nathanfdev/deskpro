@@ -36,6 +36,8 @@ namespace Orb\Validator;
 
 class StringEmail extends AbstractValidator implements StaticValidator
 {
+    const MAX_LEN = 255;
+
     /**
      * @param $value
      * @return bool
@@ -59,7 +61,7 @@ class StringEmail extends AbstractValidator implements StaticValidator
             return false;
         }
 
-        if (strpos($value, '@') === false) {
+        if (strpos($value, '@') === false || strlen($value) > self::MAX_LEN) {
             $this->addError('bad_email_format');
 
             return false;
