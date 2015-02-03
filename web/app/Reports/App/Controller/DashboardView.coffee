@@ -4,12 +4,20 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
 
     dashboard_id = parseInt($stateParams.dashboard_id)
 
+    $scope.dashboard = null
+
     DashboardsInfo.getDashboardList().then((dbs) ->
       $scope.dashboards = dbs
+      if not $scope.dashboard
+        $scope.dashboard = Arrays.find(dbs, (x) -> x.id == dashboard_id)
     )
     DashboardService.getDashboardById(dashboard_id).then((db) ->
       $scope.dashboard = db
-      $state.go('reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
+
+      if $scope.dashboard.reports[0]?
+        $state.go('reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id})
+      else
+        $state.go('reports.dashboards.view.empty')
     )
 
     $scope.expandedDashboard = []

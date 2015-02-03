@@ -1,92 +1,101 @@
-<div class="report-info">
-    <div class="report-extras">
-        <a href="#">
-            <div><i class="fa fa-print"></i></div>
-            <span>Print Report</span>
-        </a>
-
-        <a href="#">
-            <div><i class="fa fa-file-pdf-o"></i></div>
-            <span>Download PDF</span>
-        </a>
-    </div>
-
-    <h1><span>Report:</span> {{ ng_var('currentReport.title') }}</h1>
-
-    <nav class="reports-control" ng-show="currentReport.id">
-        <ul>
-            <li>
-                <a
-                    ng-click='editReportModal(currentReport)'
-                    ng-class="{'control-inactive': dashboard.is_default}">
-                    <i class="fa fa-cog"></i> Edit Report
-                </a>
-            </li>
-        </ul>
-    </nav>
-
-    <div class="report-date-range-picker">
-        <a href="#" class="date-range-button">Date range <i class="fa fa-calendar-o"></i></a>
-
-        <span class="selected-date"><span>Selected:</span> January 2014</span>
-
-                  <span class="date-jumper">
-                    <a href="#"><i class="fa fa-caret-left"></i></a>
-                    <a href="#"><i class="fa fa-caret-right"></i></a>
-                  </span>
+<div ng-if="is_loading">
+    <div class="report-info">
+        <div style="margin: 40px; text-align: center;">
+            <i class="spinner-big-circle"></i>
+        </div>
     </div>
 </div>
+<div ng-if="!is_loading">
+    <div class="report-info">
+        <div class="report-extras">
+            <a href="#">
+                <div><i class="fa fa-print"></i></div>
+                <span>Print Report</span>
+            </a>
 
+            <a href="#">
+                <div><i class="fa fa-file-pdf-o"></i></div>
+                <span>Download PDF</span>
+            </a>
+        </div>
 
-<div class="graph-container">
-    <div class="graph-container-controls">
-        <a
-            ng-click="toggleLayoutEdit()"
-            class="control"
-            ng-class="{'control-active': layoutEditing, 'control-inactive': dashboard.is_default}">
-            Dashboard Layout <i class="fa fa-columns"></i>
-        </a>
-        <a
-            ng-click='typeWidgetModal(currentReport)'
-            ng-class="{'control-inactive': dashboard.is_default}"
-            class="control"
-        >
-            Add Widget <i class="fa fa-plus"></i>
-        </a>
+        <h1><span>Report:</span> {{ ng_var('currentReport.title') }}</h1>
+
+        <nav class="reports-control" ng-show="currentReport.id">
+            <ul>
+                <li>
+                    <a
+                        ng-click='editReportModal(currentReport)'
+                        ng-class="{'control-inactive': dashboard.is_default}">
+                        <i class="fa fa-cog"></i> Edit Report
+                    </a>
+                </li>
+            </ul>
+        </nav>
+
+        <div class="report-date-range-picker">
+            <a href="#" class="date-range-button">Date range <i class="fa fa-calendar-o"></i></a>
+
+            <span class="selected-date"><span>Selected:</span> January 2014</span>
+
+                      <span class="date-jumper">
+                        <a href="#"><i class="fa fa-caret-left"></i></a>
+                        <a href="#"><i class="fa fa-caret-right"></i></a>
+                      </span>
+        </div>
     </div>
-</div>
 
-<div class="list-group">
-    <div gridster="gridsterOptions" class="dashboard">
-        <div class="dp-gridster-wrap">
-            <div ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in currentReport.widgets" class="dp-gridster-item">
-                <div class="box-header">
-                    <div ng-show='layoutEditing' class="box-header-btns pull-right">
-                        <a title="Edit widget" ng-click="editWidgetModal(widget)"><i class="fa fa-cog"></i></a>
-                        <a title="Remove widget" ng-click="removeWidget(widget)"><i class="fa fa-times"></i></a>
+
+    <div class="graph-container">
+        <div class="graph-container-controls">
+            <a
+                ng-click="toggleLayoutEdit()"
+                class="control"
+                ng-class="{'control-active': layoutEditing, 'control-inactive': dashboard.is_default}">
+                Dashboard Layout <i class="fa fa-columns"></i>
+            </a>
+            <a
+                ng-click='typeWidgetModal(currentReport)'
+                ng-class="{'control-inactive': dashboard.is_default}"
+                class="control"
+            >
+                Add Widget <i class="fa fa-plus"></i>
+            </a>
+        </div>
+    </div>
+
+    <div class="list-group">
+        <div gridster="gridsterOptions" class="dashboard">
+            <div class="dp-gridster-wrap">
+                <div ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in currentReport.widgets" class="dp-gridster-item">
+                    <div class="box-header">
+                        <div ng-show='layoutEditing' class="box-header-btns pull-right">
+                            <a title="Edit widget" ng-click="editWidgetModal(widget)"><i class="fa fa-cog"></i></a>
+                            <a title="Remove widget" ng-click="removeWidget(widget)"><i class="fa fa-times"></i></a>
+                        </div>
+                        <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
                     </div>
-                    <h3 class="ng-binding">{{ ng_var('widget.title') }}</h3>
-                </div>
-                <div class="box" ng-if="widget.type=='stat'">
-                    <dashboard-stat title="{{ ng_var('widget.title') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
-                </div>
-                <div class="box" ng-if="widget.type=='graph'">
-                    <dashboard-amcharts
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widget.title') }}"
-                        widget-id = "{{ ng_var('widget.id') }}"
-                        chart-data = "{{ ng_var('widget.data') }}"
-                        chtype="{{ ng_var('widget.type') }}">
-                    </dashboard-amcharts>
-                </div>
-                <div class="box" ng-if="widget.type=='table'">
-                    <dashboard-table
-                        my-index="{{ ng_var('$index') }}"
-                        title="{{ ng_var('widget.title') }}"
-                        table-data="{{ ng_var('widget.data') }}"
-                        widget-id = "{{ ng_var('widget.id') }}"
-                        wtype="{{ ng_var('widget.type') }}">
-                    </dashboard-table>
+                    <div class="box" ng-if="widget.type=='stat'">
+                        <dashboard-stat title="{{ ng_var('widget.title') }}" value="{{ ng_var('widget.data.value') }}" wtype="{{ ng_var('widget.type') }}"></dashboard-stat>
+                    </div>
+                    <div class="box" ng-if="widget.type=='graph'">
+                        <dashboard-amcharts
+                            my-index="{{ ng_var('$index') }}"
+                            title="{{ ng_var('widget.title') }}"
+                            widget-id = "{{ ng_var('widget.id') }}"
+                            chart-data = "{{ ng_var('widget.data') }}"
+                            chtype="{{ ng_var('widget.type') }}">
+                        </dashboard-amcharts>
+                    </div>
+                    <div class="box" ng-if="widget.type=='table'">
+                        <dashboard-table
+                            my-index="{{ ng_var('$index') }}"
+                            title="{{ ng_var('widget.title') }}"
+                            table-data="{{ ng_var('widget.data') }}"
+                            widget-id = "{{ ng_var('widget.id') }}"
+                            wtype="{{ ng_var('widget.type') }}">
+                        </dashboard-table>
+                    </div>
                 </div>
             </div>
         </div>

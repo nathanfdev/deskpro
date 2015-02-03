@@ -14,6 +14,7 @@ define -> [
    ReportsOverviewService,
    DashboardWidgetService,
   ) ->
+    $scope.is_loading = true
     DashboardService.setWidgetService(DashboardWidgetService)
     report_id = parseInt($stateParams.report_id)
 
@@ -32,6 +33,7 @@ define -> [
           DashboardWidgetService.saveWidget($widget)
 
     DashboardService.getReportById(report_id).then((loadedReport) ->
+      $scope.is_loading = false
       $scope.currentReport = loadedReport
       $scope.$parent.currentReport = $scope.currentReport
     )
