@@ -3845,7 +3845,14 @@ class TicketController extends AbstractController
 
     public function releaseLockAction($ticket_id)
     {
-        $ticket = $this->getTicketOr404($ticket_id);
+        // not using $this->getTicketOr404
+        // because we may need to unlock the ticket from
+        // an agent who no longer has permission to see it
+        $ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+
+        if (!$ticket) {
+            throw $this->createNotFoundException();
+        }
 
         if ($ticket->hasLock() && $ticket->locked_by_agent->id == $this->person->id) {
             $ticket->setLockedByAgent(null);

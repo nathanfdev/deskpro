@@ -380,6 +380,12 @@ $container->loadFromExtension(
                                 'max_gram'    => 20,
                                 'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
                             ),
+                            'edge_ngram_filter_4'  => array(
+                                'type'        => 'edgeNGram',
+                                'min_gram'    => 4,
+                                'max_gram'    => 20,
+                                'token_chars' => array('letters', 'digit', 'punctuation', 'symbol')
+                            ),
                             'ngram_filter_5'  => array(
                                 'type'        => 'nGram',
                                 'min_gram'    => 5,
@@ -412,6 +418,11 @@ $container->loadFromExtension(
                             ),
                         ),
                         'analyzer' => array(
+                            'title_content_analyzer' => array(
+                                'type'      => 'custom',
+                                'tokenizer' => 'standard',
+                                'filter'    => array('standard', 'stop', 'lowercase', 'asciifolding', 'edge_ngram_filter_4')
+                            ),
                             'text_content_analyzer' => array(
                                 'type'      => 'custom',
                                 'tokenizer' => 'standard',
@@ -439,11 +450,11 @@ $container->loadFromExtension(
                 'types'    => array(
                     'article'           => array(
                         'mappings'    => array(
-                            'title'        => array('analyzer' => 'text_content_analyzer'),
+                            'title'        => array('analyzer' => 'title_content_analyzer'),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
                             'category_ids' => array('type' => 'integer'),
-                            'labels'       => array(),
+                            'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'date_created' => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss'),
                             'date_active'  => array('type' => 'date', 'format' => 'yyyy-MM-dd HH:mm:ss')
@@ -460,8 +471,8 @@ $container->loadFromExtension(
                     ),
                     'news'              => array(
                         'mappings'    => array(
-                            'title'        => array('analyzer' => 'text_content_analyzer'),
-                            'labels'       => array(),
+                            'title'        => array('analyzer' => 'title_content_analyzer'),
+                            'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
@@ -481,8 +492,8 @@ $container->loadFromExtension(
                     ),
                     'download'          => array(
                         'mappings'    => array(
-                            'title'        => array('analyzer' => 'text_content_analyzer'),
-                            'labels'       => array(),
+                            'title'        => array('analyzer' => 'title_content_analyzer'),
+                            'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),
@@ -502,8 +513,8 @@ $container->loadFromExtension(
                     ),
                     'feedback'          => array(
                         'mappings'    => array(
-                            'title'        => array('analyzer' => 'text_content_analyzer'),
-                            'labels'       => array(),
+                            'title'        => array('analyzer' => 'title_content_analyzer'),
+                            'labels'       => array('analyzer' => 'title_content_analyzer'),
                             'sticky_words' => array(),
                             'content'      => array('analyzer' => 'text_content_analyzer'),
                             'status'       => array(),

@@ -35,64 +35,67 @@
 	<div class="page-task-list">
 		{% include 'AgentBundle:Task:task-list-bar.html.twig' %}
 		{% set has_any = false %}
-		<div id="{{ tplvars.baseId }}_task_list">
-			{% for group in tasks_grouped %}
-				{% if group.tasks|length %}
-					{% set has_any = true %}
-					<div class="task-group">
-						<header>
-							<span class="expand-collapse"></span>
-							<h4>{{ group.title }}</h4>
-						</header>
-						<section>
-							{% for task in group.tasks %}
-								{% include 'AgentBundle:Task:task-list-row.html.twig' with {'task': task } %}
-							{% endfor %}
-						</section>
-					</div>
-				{% endif %}
-			{% endfor %}
 
-			{% if has_prev or has_next %}
-				<div style="margin: 10px 0 20px; padding-top: 10px; text-align: center; border-top: 3px solid #b6bbc4;">
-					{% if has_prev %}<a data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_category': search_category, page: page-1, completed_page: completed_page}) }}">&lt; Prev</a>{% endif %}
-					{% if has_prev and has_next %} &nbsp;|&nbsp;{% endif %}
-					{% if has_next %}<a data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_category': search_category, page: page+1, completed_page: completed_page}) }}">Next &gt;</a>{% endif %}
-				</div>
-			{% endif %}
-		</div>
+        <div style="position: absolute; top: 30px; right: 0; bottom: 0; left: 0; overflow: auto;">
+            <div id="{{ tplvars.baseId }}_task_list">
+                {% for group in tasks_grouped %}
+                    {% if group.tasks|length %}
+                        {% set has_any = true %}
+                        <div class="task-group">
+                            <header>
+                                <span class="expand-collapse"></span>
+                                <h4>{{ group.title }}</h4>
+                            </header>
+                            <section>
+                                {% for task in group.tasks %}
+                                    {% include 'AgentBundle:Task:task-list-row.html.twig' with {'task': task } %}
+                                {% endfor %}
+                            </section>
+                        </div>
+                    {% endif %}
+                {% endfor %}
 
-		{% if completed_tasks|length %}
-		<div id="{{ tplvars.baseId }}_task_list">
-			<div class="task-group collapsed">
-				<header>
-					<span class="expand-collapse"></span>
-					<h4><span id="{{ tplvars.baseId }}_complete_count">{{ completed_tasks|length }}</span> {{ phrase('agent.tasks.completed_tasks') }}</h4>
-				</header>
-				<section>
-					{% for task in completed_tasks %}
-						{% include 'AgentBundle:Task:task-list-row.html.twig' with {'task': task } %}
-					{% endfor %}
-				</section>
-			</div>
+                {% if has_prev or has_next %}
+                    <div style="margin: 10px 0 20px; padding-top: 10px; text-align: center; border-top: 3px solid #b6bbc4;">
+                        {% if has_prev %}<a data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_category': search_category, page: page-1, completed_page: completed_page}) }}">&lt; Prev</a>{% endif %}
+                        {% if has_prev and has_next %} &nbsp;|&nbsp;{% endif %}
+                        {% if has_next %}<a data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_category': search_category, page: page+1, completed_page: completed_page}) }}">Next &gt;</a>{% endif %}
+                    </div>
+                {% endif %}
+            </div>
 
-			{% if has_prev_completed or has_next_completed %}
-				<div style="margin: 10px 0 20px; padding-top: 10px; text-align: center; border-top: 3px solid #b6bbc4;">
-					{% if has_prev_completed %}<a data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_category': search_category, page: page, completed_page: completed_page-1}) }}">&lt; Prev</a>{% endif %}
-					{% if has_prev_completed and has_next_completed %} &nbsp;|&nbsp;{% endif %}
-					{% if has_next_completed %}<a data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_category': search_category, page: page, completed_page: completed_page+1}) }}">Next &gt;</a>{% endif %}
-				</div>
-			{% endif %}
-		</div>
-		{% endif %}
+            {% if completed_tasks|length %}
+            <div id="{{ tplvars.baseId }}_task_list">
+                <div class="task-group collapsed">
+                    <header>
+                        <span class="expand-collapse"></span>
+                        <h4><span id="{{ tplvars.baseId }}_complete_count">{{ completed_tasks|length }}</span> {{ phrase('agent.tasks.completed_tasks') }}</h4>
+                    </header>
+                    <section>
+                        {% for task in completed_tasks %}
+                            {% include 'AgentBundle:Task:task-list-row.html.twig' with {'task': task } %}
+                        {% endfor %}
+                    </section>
+                </div>
 
-		{% if not has_any and not completed_tasks|length %}
-		<section class="list-listing no-results" id="{{ tplvars.baseId }}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
-			<article class="row-item no-results">
-				<p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
-			</article>
-		</section>
-		{% endif %}
+                {% if has_prev_completed or has_next_completed %}
+                    <div style="margin: 10px 0 20px; padding-top: 10px; text-align: center; border-top: 3px solid #b6bbc4;">
+                        {% if has_prev_completed %}<a data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_category': search_category, page: page, completed_page: completed_page-1}) }}">&lt; Prev</a>{% endif %}
+                        {% if has_prev_completed and has_next_completed %} &nbsp;|&nbsp;{% endif %}
+                        {% if has_next_completed %}<a data-route="listpane:{{ path('agent_task_list',{'search_type': search_type, 'search_category': search_category, page: page, completed_page: completed_page+1}) }}">Next &gt;</a>{% endif %}
+                    </div>
+                {% endif %}
+            </div>
+            {% endif %}
+
+            {% if not has_any and not completed_tasks|length %}
+            <section class="list-listing no-results" id="{{ tplvars.baseId }}_no_results" {% if ticket_ids|length %}style="display:none"{% endif %}>
+                <article class="row-item no-results">
+                    <p style="padding: 15px;">{{ phrase('agent.general.there_are_no_results') }}</p>
+                </article>
+            </section>
+            {% endif %}
+        </div>
 
 		<ul id="{{ tplvars.baseId }}_menu_vis" style="display: none">
 			<li data-vis="0">{{ phrase('agent.general.private') }}</li>
