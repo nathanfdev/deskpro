@@ -257,7 +257,7 @@ abstract class AbstractBuild
             $m = null;
             if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
                 $dbhost = $m[1];
-                $port   = ";port={$m[2]};";
+                $port   = $m[2];
             }
 
             $params = array(
