@@ -303,7 +303,8 @@ abstract class AbstractBuild
             $logger->info("Exit status: " . $proc->getExitCode());
 
             if (!$proc->isSuccessful()) {
-                throw new \RuntimeException("Dry run failed with status: " . $proc->getExitCode());
+                $logger->critical("!!!!!!!!!!!!!!!");
+                throw new \RuntimeException("LIVE run failed with status: " . $proc->getExitCode());
             }
         } else {
             $sql = "ALTER TABLE `$table` $alter";
