@@ -65,7 +65,7 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="alerts")
+     * @Tag(name="alerts", esi=true, always_guest_inline=true)
      */
     public function alertsAction(TagRequest $tag_request)
     {
@@ -73,7 +73,7 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="flashes")
+     * @Tag(name="flashes", esi=true, always_guest_inline=true)
      */
     public function flashesAction(TagRequest $tag_request)
     {
@@ -92,13 +92,14 @@ class CommonController extends AbstractController
     }
 
     /**
-     * @Tag(name="related_content")
+     * @Tag(name="related_content", esi=true)
+     * @Cache(smaxage="10 minutes")
+     *
      * @TagOptions(
      *      required={"content_type", "content_id"},
      *      allowed_types={"content_type":"string", "content_id":{"string","int"}},
      *      allowed_values={"content_type":{"article","news","download","feedback"}}
      * )
-     * @Cache(smaxage="10 minutes")
      */
     public function relatedContentAction(TagRequest $tag_request, array $options)
     {

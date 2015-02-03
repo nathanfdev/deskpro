@@ -146,8 +146,8 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="download_subscription", esi=true)
-     * @Tag(name="download_subscription_info", default_options={"style":"info"}, esi=true)
+     * @Tag(name="download_subscription", esi=true, always_guest_inline=true)
+     * @Tag(name="download_subscription_info", default_options={"style":"info"}, esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      required={"file"},
@@ -179,7 +179,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="download_category_subscription", esi=true)
+     * @Tag(name="download_category_subscription", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"category": null},
@@ -298,7 +298,7 @@ class DownloadsController extends AbstractController
     }
 
     /**
-     * @Tag(name="downloads_ratings", esi=true)
+     * @Tag(name="downloads_ratings", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"file": null},

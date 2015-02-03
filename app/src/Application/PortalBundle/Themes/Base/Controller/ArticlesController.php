@@ -153,8 +153,8 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article_subscription", esi=true)
-     * @Tag(name="article_subscription_info", default_options={"style":"info"}, esi=true)
+     * @Tag(name="article_subscription", esi=true, always_guest_inline=true)
+     * @Tag(name="article_subscription_info", default_options={"style":"info"}, esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      required={"article"},
@@ -186,7 +186,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_category_subscription", esi=true)
+     * @Tag(name="knowledgebase_category_subscription", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"category": null},
@@ -218,7 +218,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article_comments", esi=true)
+     * @Tag(name="article_comments")
      *
      * @TagOptions(
      *      defaults={
@@ -277,6 +277,7 @@ class ArticlesController extends AbstractController
 
     /**
      * @Tag(name="knowledgebase_breadcrumbs", esi=true)
+     * @Cache(smaxage="10 minutes")
      *
      * @TagOptions(
      *      defaults={"category": null, "article": null},
@@ -287,7 +288,6 @@ class ArticlesController extends AbstractController
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
-     * @Cache(smaxage="10 minutes")
      */
     public function breadcrumbsAction(TagRequest $tag_request, array $options)
     {
@@ -303,7 +303,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="article_ratings", esi=true)
+     * @Tag(name="article_ratings", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"article": null},

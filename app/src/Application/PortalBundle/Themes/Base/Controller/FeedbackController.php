@@ -225,7 +225,7 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_ratings", esi=true)
+     * @Tag(name="feedback_ratings", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"item": null},

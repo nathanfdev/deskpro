@@ -3,10 +3,10 @@
     <br>
     <img src="{{ person_picture_url(app.user) }}" alt="{{ app.user }}"/>
 
-    {{ dump(ugs) }}
-    {{ dump(ug_key) }}
-    {{ dump(user_hash) }}
-    {{ dump(perms) }}
+    {#{{ dump(ugs|join(',')) }}#}
+    {#{{ dump(ug_key) }}#}
+    {#{{ dump(user_hash) }}#}
+    {#{{ dump(perms) }}#}
 
     <ul class="user-info" style="margin-bottom: 40px;">
         {% if has_tickets %}

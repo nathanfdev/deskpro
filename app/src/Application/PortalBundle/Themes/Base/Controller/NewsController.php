@@ -148,8 +148,8 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="post_subscription", esi=true)
-     * @Tag(name="post_subscription_info", default_options={"style":"info"}, esi=true)
+     * @Tag(name="post_subscription", esi=true, always_guest_inline=true)
+     * @Tag(name="post_subscription_info", default_options={"style":"info"}, esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      required={"post"},
@@ -183,7 +183,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_category_subscription", esi=true)
+     * @Tag(name="news_category_subscription", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"category": null},
@@ -302,7 +302,7 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_ratings", esi=true)
+     * @Tag(name="news_ratings", esi=true, always_guest_inline=true)
      *
      * @TagOptions(
      *      defaults={"post": null},
