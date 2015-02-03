@@ -35,6 +35,10 @@ define [
   'Reports/App/Directive/DashboardStat',
   'Reports/App/Directive/DashboardTable',
 
+  'Reports/Legacy/Directive/DpReportBuilderSelectBox',
+  'Reports/Legacy/Directive/DpReportBillingSelectBox',
+  'Reports/Legacy/Directive/DpReportBuilderTitle',
+
   # DP DIRECTIVES
   'Reports/App/Directive/DpReportWidgetSelectBox',
   'DeskPRO/Directive/DpDropdown',
@@ -80,6 +84,10 @@ define [
   Reports_App_Directive_DashboardAmcharts,
   Reports_App_Directive_DashboardStat,
   Reports_App_Directive_DashboardTable,
+
+  Reports_Directive_DpReportBuilderSelectBox,
+  Reports_Directive_DpReportBillingSelectBox,
+  Reports_Directive_DpReportBuilderTitle,
 
   # DP DIRECTIVES
   Reports_App_Directive_DpReportWidgetSelectBox,
@@ -208,5 +216,9 @@ define [
   ReportsApp.directive('dpDropdown',                Reports_App_Directive_DpDropdown)
   ReportsApp.directive('dpReportWidgetSelectBox',   Reports_App_Directive_DpReportWidgetSelectBox)
   ReportsApp.directive('dashboardTable',            Reports_App_Directive_DashboardTable)
+
+  ReportsApp.directive('dpReportBuilderSelectBox',       Reports_Directive_DpReportBuilderSelectBox)
+  ReportsApp.directive('dpReportBillingSelectBox',       Reports_Directive_DpReportBillingSelectBox)
+  ReportsApp.directive('dpReportBuilderTitle',           Reports_Directive_DpReportBuilderTitle)
 
   return ReportsApp

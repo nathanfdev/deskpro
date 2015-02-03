@@ -96,6 +96,7 @@ define ['angular'], (angular) ->
       )
 
       @$scope.isStateActive = (stateId, stateParams = null) =>
+        return false if not @$state.isStateActive?
         return @$state.isStateActive(stateId, stateParams)
 
       @$scope.state_path = (route, params = {}) =>

@@ -180,9 +180,12 @@ class ReportWidget extends AbstractEntityRepository
         $categories = $this->getBuiltInCategories();
 
         foreach ($reports AS $report) {
-            if (!$report->is_custom) { {
-                    if (isset($categories[$report->category])) {
-                        $categoryId = $report->category;
+            if (!$report->is_custom) {
+                $labels = $report->getLabels();
+
+                foreach ($labels as $l) {
+                    if (isset($categories[$l])) {
+                        $categoryId = $l;
                     } else {
                         $categoryId = '';
                     }
@@ -210,7 +213,7 @@ class ReportWidget extends AbstractEntityRepository
     public function getBuiltInCategories()
     {
         return array(
-            'ticket' => 'Tickets',
+            'tickets' => 'Tickets',
             'chat' => 'Chats',
             'idea' => 'Ideas',
             'person' => 'People & Organizations',
