@@ -89,6 +89,7 @@ class PortalPermissionsManager
      * @var array
      */
     protected $ug_perms;
+
     /**
      * @var PortalUsergroupDecider
      */
@@ -256,21 +257,21 @@ class PortalPermissionsManager
      * @param Person $person
      * @return array
      */
-    protected function generatePermissionsMapForPerson(Person $person)
+    public function generatePermissionsMapForPerson(Person $person)
     {
         $usergoupIds = $this->usergroupDecider->getUsergroupIdsForPerson($person);
 
         return $this->permissionsLoader->loadPermissionsForGroupSet($usergoupIds);
     }
 
-    protected function generatePermissionsMapForGuest()
+    public function generatePermissionsMapForGuest()
     {
         $usergoupIds = $this->usergroupDecider->getUsergroupIdsForGuest();
 
         return $this->permissionsLoader->loadPermissionsForGroupSet($usergoupIds);
     }
 
-    protected function isCacheDisabled()
+    public function isCacheDisabled()
     {
         return $this->settingsResolver->getGlobalSettings()->get('disable_permissions_cache', false);
     }
