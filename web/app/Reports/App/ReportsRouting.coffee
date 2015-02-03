@@ -54,3 +54,49 @@ define -> (States) ->
     .setUrl('/{report_id:[0-9]+}')
     .setCtrl('Reports.App.DashboardReport')
     .setTpl('ReportsInterfaceBundle:Dashboard:dashboard-report.html')
+
+  #----------------------------------------
+  # Stats
+  #----------------------------------------
+
+  States.add('reports.stats')
+    .setUrl('stats')
+    .setCtrl('Reports.Builder.List')
+    .setTpl('ReportsInterfaceBundle:Builder:list.html')
+
+  States.add('reports.stats.create')
+    .setUrl('/create/{type:(?:custom)}')
+    .setCtrl('Reports.Builder.Edit')
+    .setTpl('ReportsInterfaceBundle:Builder:create.html')
+
+  States.add('reports.stats.edit')
+    .setUrl('/{id:[0-9]+}/{type:(?:custom|builtIn)}/{params:.*}')
+    .setCtrl('Reports.Builder.Edit')
+    .setTpl('ReportsInterfaceBundle:Builder:edit.html')
+
+  #----------------------------------------
+  # Agent Activity
+  #----------------------------------------
+
+  States.add('reports.agent_activity')
+    .setUrl('agent_activity')
+    .setCtrl('Reports.AgentActivity.AgentActivity')
+    .setTpl('ReportsInterfaceBundle:AgentActivity:index.html')
+
+  #----------------------------------------
+  # Agent Hours
+  #----------------------------------------
+
+  States.add('reports.agent_hours')
+    .setUrl('agent_hours')
+    .setCtrl('Reports.AgentHours.AgentHours')
+    .setTpl('ReportsInterfaceBundle:AgentHours:index.html')
+
+  #----------------------------------------
+  # Ticket Satisfaction
+  #----------------------------------------
+
+  States.add('reports.ticket_satisfaction')
+    .setUrl('ticket_satisfaction')
+    .setCtrl('Reports.AgentHours.AgentHours')
+    .setTpl('ReportsInterfaceBundle:TicketSatisfaction:index.html')

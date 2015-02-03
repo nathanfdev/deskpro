@@ -1,0 +1,84 @@
+<section class="content">
+
+	<nav class="dp-blocktabs">
+		<ul>
+			<li class="active" dp-tab-btn="ticket.satisfaction.feed" ng-click="Ctrl.switchToFeed()">
+				<a href="#">
+					<i class="fa fa-pencil"></i> Feed
+				</a>
+			</li>
+			<li class="pipe">|</li>
+			<li dp-tab-btn="ticket.satisfaction.summary" ng-click="Ctrl.switchToSummary()">
+				<a href="#">
+					<i class="fa fa-users"></i> Summary
+				</a>
+			</li>
+		</ul>
+	</nav>
+
+	<div dp-tab-body="ticket.satisfaction.feed">
+		<div class="panel panel-fill indent">
+			<section class="padd clearfix">
+				<div class="dp-btn-pagination pull-left" ng-show="Ctrl.num_pages > 1">
+					<span dp-show-spinning="loading_feed_results" class="padd">
+						<i class="spinner-flat"></i>
+					</span>
+					<button class="btn" ng-show="Ctrl.page != 1" ng-click="Ctrl.goPrevPage()">
+						&lt; Prev
+					</button>
+					<select
+							ng-model="Ctrl.page"
+							ui-select2
+							style="width: 130px;"
+							ng-change="Ctrl.changePage()"
+							>
+						<option ng-repeat="page in Ctrl.page_nums" value="{{ ng_var('page') }}">
+							Page {{ ng_var('page') }}
+						</option>
+					</select>
+					<button class="btn" ng-show="Ctrl.page < Ctrl.num_pages"
+							ng-click="Ctrl.goNextPage()">
+						Next &gt;
+					</button>
+				</div>
+			</section>
+			<section class="padd" ng-bind-html="Ctrl.feed_html" dp-hide-spinning="loading_feed_results">
+
+			</section>
+		</div>
+	</div>
+
+	<div ng-show="mode == 'summary'" style="padding: 8px 0 8px 15px; border-bottom: 1px solid #ccc;">
+		Jump to month:
+		{% set start_year = ("@" ~ app.getSetting('core.install_timestamp'))|date('Y') %}
+		{% set end_year   = (("now"|date('Y')) - 1) %}
+		<select ui-select2 ng-model="view_date" ng-change="Ctrl.loadSummaryResults()">
+			{% if start_year <= end_year %}
+				{% for year in start_year .. end_year %}
+					{% for month in 1..12 %}
+						{% set month_year %}{{ year }}-{% if month < 10 %}0{% endif %}{{ month }}{% endset %}
+						<option value="{{ month_year }}">{{ month_year }}</option>
+					{% endfor %}
+				{% endfor %}
+			{% endif %}
+			{% for month in 1 .. ("now"|date('m')) %}
+				{% set month_year %}{{ "now"|date('Y') }}-{% if month < 10 %}0{% endif %}{{ month }}{% endset %}
+				<option value="{{ month_year }}">{{ month_year }}</option>
+			{% endfor %}
+		</select>
+	</div>
+
+	<div dp-tab-body="ticket.satisfaction.summary">
+		<div class="panel panel-fill indent">
+			<span dp-show-spinning="loading_summary_results" class="padd">
+				<i class="spinner-flat"></i>
+			</span>
+
+			<section class="padd clearfix" ng-bind-html="Ctrl.summary_html" dp-hide-spinning="loading_summary_results">
+
+			</section>
+		</div>
+	</div>
+
+
+</section>

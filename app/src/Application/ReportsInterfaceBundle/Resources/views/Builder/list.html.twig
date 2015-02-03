@@ -1,0 +1,30 @@
+<div class="dp-layout-app with-layout-appnav as-appnav-extrawide">
+	<div class="dp-layout-appnav" ng-show="state_loading || $parent.state_loading"><div class="dp-layout-loading"><i></i></div></div>
+	<div class="dp-layout-appnav as-altstyle" ng-hide="state_loading || $parent.state_loading">
+		<nav class="dp-appnav">
+			<header>
+				<a class="btn btn-default btn-xs" ng-class="{'active': isStateActive('.create') }" ui-sref="builder.create({type: 'custom'})" style="float: right;">
+					<i class="fa fa-plus"></i> Create Custom Report
+				</a>
+				<h3>Custom Reports</h3>
+			</header>
+			<ul>
+				<li ng-repeat="report in ListCtrl.custom_data_list" dp-state-mark="builder.edit.{{ ng_var('report.id') }}" data-id="{{ ng_var('report.id') }}">
+					<dp-report-builder-select-box report-id="report.id" value-to-decorate="report.title" possible-values="ListCtrl.group_params" type="custom"></dp-report-builder-select-box>
+				</li>
+			</ul>
+		</nav>
+
+		<nav class="dp-appnav" ng-repeat="category in ['Tickets', 'Chats', 'People & Organizations', 'Knowledgebase', 'News', 'Downloads', 'Feedback', 'Tasks', 'Twitter']"ng-show="ListCtrl.built_in_data_list[category]">
+			<header><h3>{{ ng_var('category') }}</h3></header>
+			<ul>
+				<li ng-repeat="report in ListCtrl.built_in_data_list[category]" dp-state-mark="builder.edit.{{ ng_var('report.id') }}" data-id="{{ ng_var('report.id') }}">
+					<dp-report-builder-select-box report-id="report.id" value-to-decorate="report.title" possible-values="ListCtrl.group_params"></dp-report-builder-select-box>
+				</li>
+			</ul>
+		</nav>
+	</div>
+	<div class="dp-layout-appbody">
+		<div class="ng-hide" ng-hide="state_loading || $parent.state_loading" ui-view="rightpane"></div>
+	</div>
+</div>

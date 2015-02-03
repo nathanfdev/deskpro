@@ -4,14 +4,12 @@ define -> [
   '$q',
   '$modal',
   'DashboardService',
-  'ReportsOverviewService',
   'DashboardWidgetService',
   ($scope,
    $stateParams
    $q,
    $modal,
    DashboardService,
-   ReportsOverviewService,
    DashboardWidgetService,
   ) ->
     $scope.is_loading = true

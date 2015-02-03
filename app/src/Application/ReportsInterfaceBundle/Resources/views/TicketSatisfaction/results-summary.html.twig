@@ -12,22 +12,22 @@
 
                 {% for agent in agents %}
                     <td class="{% if not summary[i][agent.id][1] %}no-feedback{% endif %}">
-                        <div>
-                            <i class="rating positive">☺</i>
-                            {{ summary[i][agent.id][1]|default(0) }}
-                        </div>
+						<div>
+							<i class="rating positive">☺</i>
+							{{ summary[i][agent.id][1]|default(0) }}
+						</div>
                     </td>
-                    <td class="{% if not summary[i][agent.id][0] %}no-feedback{% endif %}">
-                        <div>
-                            <i class="rating neutral">&mdash;</i>
-                            {{ summary[i][agent.id][0]|default(0) }}
-                        </div>
+					<td class="{% if not summary[i][agent.id][0] %}no-feedback{% endif %}">
+						<div>
+							<i class="rating neutral">&mdash;</i>
+							{{ summary[i][agent.id][0]|default(0) }}
+						</div>
                     </td>
                     <td class="{% if not loop.last %}border-right{% endif %} {% if not summary[i][agent.id][-1] %}no-feedback{% endif %}">
-                        <div>
-                            <i class="rating negative">☹</i>
-                            {{ summary[i][agent.id][-1]|default(0) }}
-                        </div>
+						<div>
+							<i class="rating negative">☹</i>
+							{{ summary[i][agent.id][-1]|default(0) }}
+						</div>
                     </td>
                 {% endfor %}
             </tr>
@@ -36,22 +36,22 @@
             <td class="border-right left-column">Total</td>
             {% for agent in agents %}
                 <td class="{% if not totals[agent.id][1] %}no-feedback{% endif %}">
-                    <div>
-                        <i class="rating positive">☺</i>
-                        {{ totals[agent.id][1]|default(0) }}
-                    </div>
+					<div>
+						<i class="rating positive">☺</i>
+						{{ totals[agent.id][1]|default(0) }}
+					</div>
                 </td>
-                <td class="{% if not totals[agent.id][0] %}no-feedback{% endif %}">
-                    <div>
-                        <i class="rating neutral">&mdash;</i>
-                        {{ totals[agent.id][0]|default(0) }}
-                    </div>
+				<td class="{% if not totals[agent.id][0] %}no-feedback{% endif %}">
+					<div>
+						<i class="rating neutral">&mdash;</i>
+						{{ totals[agent.id][0]|default(0) }}
+					</div>
                 </td>
                 <td class="{% if not loop.last %}border-right{% endif %} {% if not totals[agent.id][-1] %}no-feedback{% endif %}">
-                    <div>
-                        <i class="rating negative">☹</i>
-                        {{ totals[agent.id][-1]|default(0) }}
-                    </div>
+					<div>
+						<i class="rating negative">☹</i>
+						{{ totals[agent.id][-1]|default(0) }}
+					</div>
                 </td>
             {% endfor %}
         </tr>
