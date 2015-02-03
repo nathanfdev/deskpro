@@ -4444,6 +4444,13 @@ $collection->create('api_export_csv_status', array(
     'controller'  => 'ApiBundle:CsvExport:status',
     'methods'     => array('GET'),
 ));
+
+$collection->create('api_export_list_files', array(
+    'path'        => '/export/list',
+    'controller'  => 'ApiBundle:CsvExport:list',
+    'methods'     => array('GET'),
+));
+
 ########################################################################################################################
 # CRM User Rules
 ########################################################################################################################

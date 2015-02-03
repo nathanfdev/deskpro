@@ -79,31 +79,4 @@ class JiraController extends AbstractController
 
 		return $this->redirect($oauth->getAuthUrl());
 	}
-
-	public function testAction()
-	{
-		/** @var JIRA $js */
-		$js = $this->get(JIRA::NAME);
-		$api = $js->getApi();
-
-		$ret = $api->call('rest/auth/1/session');
-//		$ret = $api->get('/user', array('username' => 'n3b'));
-
-
-//		$meta = $js->getMeta()->toArray();
-//
-//		$ret = $api->post('/search', array(
-//			'jql' => sprintf('id IN (%s)', implode(',', array(10525, 10526))),
-//			'fields' => $meta['default_fields_summary'],
-//			'expand' => array('renderedFields'),
-//		));
-
-		echo '<script type="text/javascript">
-			var a = ' . json_encode($ret) . ';
-			console.log(a);
-		</script>';
-//		var_export($ret);
-
-		die();
-	}
 }
