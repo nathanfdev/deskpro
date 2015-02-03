@@ -7,13 +7,13 @@ use Application\DeskPRO\Routing\RouteCollection;
 
 $collection = new RouteCollection();
 
-$collection->create('iface', array(
-    'path'        => '/',
+$collection->create('reports', array(
+    'path'        => '/reports',
     'controller'  => 'InterfaceBundle:Interface:interface',
 ));
 
 $collection->create('iface_load_views', array(
-    'path'        => '/load-views',
+    'path'        => '/viewer/load-views',
     'controller'  => 'InterfaceBundle:Interface:loadViews',
 ));
 

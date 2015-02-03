@@ -22,7 +22,7 @@
 
             <ul id="dp-select-dashboard-dropdown">
                 <li ng-repeat="db in dashboards track by $index">
-                    <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="app.reports.dashboards.view.index({ dashboard_id: db.id })">
+                    <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">
                         <span class='logo-deskpro' ng-show="db.is_default"></span>
                         {{ ng_var('db.title') }}
                     </a>
@@ -106,7 +106,7 @@
         </li>
 
         <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ui-sref-active="active-tab">
-            <a class='link-pointer' ui-sref="app.reports.dashboards.view.report({ report_id: report.id })">{{ ng_var('report.title') }}</a>
+            <a class='link-pointer' ui-sref="reports.dashboards.view.report({ report_id: report.id })">{{ ng_var('report.title') }}</a>
         </li>
     </ul>
 </div>

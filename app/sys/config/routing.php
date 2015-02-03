@@ -22,7 +22,6 @@ $col->addPrefix('/api');
 $collection->addCollection($col);
 
 $col = $loader->import(DP_ROOT.'/src/Application/InterfaceBundle/Resources/config/interface-routing.php');
-$col->addPrefix('/viewer');
 $collection->addCollection($col);
 
 if (defined('DPC_IS_CLOUD')) {

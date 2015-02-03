@@ -53,6 +53,6 @@ class MiscController extends AbstractController
 
     public function goToReportsAction()
     {
-        return $this->redirect($this->generateUrl('iface') . '#/reports/');
+        return $this->redirect($this->generateUrl('iface') . '#/');
     }
 }

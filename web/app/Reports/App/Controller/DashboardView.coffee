@@ -9,7 +9,7 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     )
     DashboardService.getDashboardById(dashboard_id).then((db) ->
       $scope.dashboard = db
-      $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
+      $state.go('reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
     )
 
     $scope.expandedDashboard = []
@@ -72,9 +72,9 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
           $scope.dashboard = saved
 
           if reportIndex < 0
-            $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
+            $state.go('reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id});
           else if reportsLength < $scope.dashboard.reports.length
-            $state.go('app.reports.dashboards.view.report', { report_id: $scope.dashboard.reports[$scope.dashboard.reports.length - 1].id})
+            $state.go('reports.dashboards.view.report', { report_id: $scope.dashboard.reports[$scope.dashboard.reports.length - 1].id})
 
 
 

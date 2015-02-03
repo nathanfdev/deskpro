@@ -127,13 +127,6 @@ define [
     isDone = true
 
     $urlRouterProvider.otherwise("/")
-    $stateProvider.state('app', {
-      url: "/",
-      templateUrl: "InterfaceBundle:Interface:main-frame.html",
-      controller: [ '$state', ($state) ->
-        $state.go('app.reports')
-      ]
-    })
 
     reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.ReportsApp'))
     ReportsRouting(reportStates)

@@ -1,6 +1,6 @@
 define ->
   class StateConfig
-    @createFactory: (module, id_prefix) ->
+    @createFactory: (module) ->
       return (id = null) ->
         c = new StateConfig(module, id)
         return c
