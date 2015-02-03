@@ -4,10 +4,44 @@
     </header>
 </div>
 <div class="app-bar-wrapper" id="dp_app_nav">
-    <aside class="app-bar">
-        <a title="Dashboards" ui-sref-active="active" ui-sref="app.reports.dashboards"><i class="fa fa-bar-chart-o"></i></a>
-        <a title="Agent Activity" ui-sref="app.reports.dashboards"><i class="fa fa-list-alt"></i></a>
-        <a title="Agent Hours" ui-sref="app.reports.dashboards"><i class="fa fa-clock-o"></i></a>
-    </aside>
+    <nav class="dp-appstrip">
+        <ul>
+            <li title="Dashboards" ui-sref-active="state-on">
+                <a ui-sref="reports.dashboards"><i class="app-icon app-icon-home"></i></a>
+            </li>
+            <li title="Stats">
+                <a><i class="app-icon app-icon-reports-builder"></i></a>
+            </li>
+            <li title="Agent Activity">
+                <a href="#/agent_activity"><i class="app-icon app-icon-reports-agentactivity"></i></a>
+            </li>
+            <li title="Agent Hours">
+                <a href="#/agent_hours"><i class="app-icon app-icon-reports-agenthours"></i></a>
+            </li>
+            <li title="Ticket Satisfaction">
+                <a href="#/ticket_satisfaction"><i class="app-icon app-icon-reports-satisfaction"></i></a>
+            </li>
+        </ul>
+
+        <ul class="btm">
+            <li title="Go to Agent Interface">
+                <a href="/{{ path('user')|ltrim('/') }}agent/"><i class="app-icon app-icon-agent-ifce"></i></a>
+            </li>
+            <li class="section-on" title="You are currently using the Reports Interface">
+                <a href="#/"><i class="app-icon app-icon-reports-ifce"></i></a>
+            </li>
+            <li title="Go to Billing Interface">
+                <a href="/{{ path('user')|ltrim('/') }}admin/#/license"><i class="app-icon app-icon-billing-ifce"></i></a>
+            </li>
+            {% if app.user.can_admin %}
+                <li title="Go to Admin Interface">
+                    <a href="/{{ path('user')|ltrim('/') }}admin/"><i class="app-icon app-icon-admin-ifce"></i></a>
+                </li>
+            {% endif %}
+            <li title="Go to User Interface">
+                <a href="{{ path('user') }}"><i class="app-icon app-icon-user-ifce"></i></a>
+            </li>
+        </ul>
+    </nav>
 </div>
 <div class="app-container report-wrapper" id="dp_app_container" ui-view></div>

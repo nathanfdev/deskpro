@@ -8,9 +8,8 @@
                 title="{{ ng_var('agent.name') }}"
                 style="background-image: url({{ ng_var('agent.avatar') }});">
             </a>
-            {#Uuuuuh, Magic numbers!#}
             <a ng-if="filteredPermissions.length > 6" class="avatar avatar-blank"><span>+{{ ng_var('filteredPermissions.length - 6') }}</span></a>
-            <a ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit user access <i class="fa fa-user"></i></span></a>
+            <a ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit Agent Access <i class="fa fa-user"></i></span></a>
         </div>
     </div>
 
