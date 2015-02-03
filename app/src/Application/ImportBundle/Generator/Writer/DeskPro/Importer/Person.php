@@ -78,23 +78,18 @@ final class Person extends AbstractImporter
             ->resetLabels()
             ->resetUsergroups();
 
-        foreach ($importing_entity->getEmails() as $num => $email_string) {
-            $email = $this->findOrCreatePersonEmail($email_string);
-            $person->addEmailAddress($email);
-
+        foreach ($importing_entity->getEmails() as $num => $email) {
+            $person->addEmailAddress($this->findOrCreatePersonEmail($email));
             $this->logInfo(sprintf(
                 $num ? 'Set email `%s`' : 'Set primary email `%s`',
                 $importing_entity->getFirstEmail()
             ));
         }
-        foreach ($importing_entity->getLabels() as $label_name) {
-            $label = $this->createPersonLabel($label_name);
-            $person->addLabel($label);
+        foreach ($importing_entity->getLabels() as $label) {
+            $person->addLabel($this->createPersonLabel($label));
         }
-
-        foreach ($importing_entity->getUserGroups() as $user_group_name) {
-            $user_group = $this->getUserGroupMapper()->findOneByTitle($user_group_name);
-            $person->addUsergroup($user_group);
+        foreach ($importing_entity->getUserGroups() as $user_group) {
+            $person->addUsergroup($this->getUserGroupMapper()->findOneByTitle($user_group));
         }
         if ($importing_entity->getPassword() && $importing_entity->isPlainPasswordScheme()) {
             $person->setPassword($importing_entity->getPassword());

@@ -47,7 +47,7 @@ use Orb\Util\Strings;
 class Download extends ContentAbstract implements HighlightableModelInterface
 {
     /**
-     * @var \Application\DeskPRO\Entity\TicketCategory
+     * @var \Application\DeskPRO\Entity\DownloadCategory
      */
     protected $category;
 
@@ -283,6 +283,20 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         return $path;
     }
 
+    /**
+     * @param DownloadCategory $category
+     * @return $this
+     */
+    public function setCategory(DownloadCategory $category = null)
+    {
+        if ($category) {
+            $this->setModelField('category', $category);
+        } else {
+            $this->setModelField('category', -1);
+        }
+
+        return $this;
+    }
 
     /**
      * Add a label

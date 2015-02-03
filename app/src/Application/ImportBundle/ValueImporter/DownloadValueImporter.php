@@ -48,20 +48,20 @@ class DownloadValueImporter extends AbstractValueImporter
      */
     public function importValue($dval)
     {
-        if (!($dval instanceof DownloadValue)) {
-            throw new \InvalidArgumentException("This importer can only import Downloads");
-        }
-        if (empty($dval->title) || empty($dval->content)) {
-            throw new BadDataException(sprintf("A Download must have a title and content (skipping)"));
-        }
-        if (empty($dval->attachment)) {
-            throw new BadDataException(sprintf("A Download must have an attachment (skipping)"));
-        }
-        if ($this->checkIsDuplicate($dval->title)) {
-            throw new DuplicateValueException(sprintf("A Download with the title \"%s\" already exists (skipping)", $dval->title));
-        }
-
-        $log_id = "Download :: " . $dval->oid . " ";
+//        if (!($dval instanceof DownloadValue)) {
+//            throw new \InvalidArgumentException("This importer can only import Downloads");
+//        }
+//        if (empty($dval->title) || empty($dval->content)) {
+//            throw new BadDataException(sprintf("A Download must have a title and content (skipping)"));
+//        }
+//        if (empty($dval->attachment)) {
+//            throw new BadDataException(sprintf("A Download must have an attachment (skipping)"));
+//        }
+//        if ($this->checkIsDuplicate($dval->title)) {
+//            throw new DuplicateValueException(sprintf("A Download with the title \"%s\" already exists (skipping)", $dval->title));
+//        }
+//
+//        $log_id = "Download :: " . $dval->oid . " ";
 
         $record = array();
 
@@ -88,59 +88,59 @@ class DownloadValueImporter extends AbstractValueImporter
         #------------------------------
         # Grab the person
         #------------------------------
-        if ($dval->person && StringEmail::isValueValid($dval->person)) {
-            $personId = $this->getMappers()->findIdFromMappedValue('person', $dval->person);
-
-            if ($personId) {
-                $this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $dval->person));
-                $record['person_id'] = $personId;
-            } else {
-                $this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $dval->person));
-
-                return false;
-            }
-        } else {
-            throw new BadDataException("Download must have a person specified");
-        }
+//        if ($dval->person && StringEmail::isValueValid($dval->person)) {
+//            $personId = $this->getMappers()->findIdFromMappedValue('person', $dval->person);
+//
+//            if ($personId) {
+//                $this->getLogger()->info(sprintf("[%s] Found existing person %s", $log_id, $dval->person));
+//                $record['person_id'] = $personId;
+//            } else {
+//                $this->getLogger()->warning(sprintf("[%s] Unknown person with email %s (skipping)", $log_id, $dval->person));
+//
+//                return false;
+//            }
+//        } else {
+//            throw new BadDataException("Download must have a person specified");
+//        }
 
         // Lang
-        if ($dval->language) {
-            $languageId = $this->getMappers()->findIdFromMappedValue('language', $dval->language);
-            if ($languageId) {
-                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $dval->language));
-                $record['language_id'] = $languageId;
-            } else {
-                $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s", $log_id, $dval->language));
-            }
-        }
+//        if ($dval->language) {
+//            $languageId = $this->getMappers()->findIdFromMappedValue('language', $dval->language);
+//            if ($languageId) {
+//                $this->getLogger()->info(sprintf("[%s] Found existing language %s", $log_id, $dval->language));
+//                $record['language_id'] = $languageId;
+//            } else {
+//                $this->getLogger()->notice(sprintf("[%s] Could not map language value: %s", $log_id, $dval->language));
+//            }
+//        }
 
         #------------------------------
         # Category
         #------------------------------
-        if ($dval->category) {
-            $category    = $dval->category;
-            $category_id = $this->getMappers()->findIdFromMappedValue('download_category', $category);
-
-            if ($category_id) {
-                $this->getLogger()->info(sprintf("[%s] Found existing download category %s", $log_id, $category));
-                $record['category_id'] = $category_id;
-            } elseif(!$this->isTestMode()) {
-                $this->getLogger()->warning(sprintf("[%s] New download category %s (creating)", $log_id, $category));
-                $this->getDb()->insert('download_categories', array('title' => $category));
-
-                $record['category_id'] = $this->getDb()->lastInsertId();
-                $this->getMappers()->learnMapping('download_category', array('id' => $record['category_id'], 'title' => $category));
-            } else {
-                $record['category_id'] = -1;
-            }
-        }
+//        if ($dval->category) {
+//            $category    = $dval->category;
+//            $category_id = $this->getMappers()->findIdFromMappedValue('download_category', $category);
+//
+//            if ($category_id) {
+//                $this->getLogger()->info(sprintf("[%s] Found existing download category %s", $log_id, $category));
+//                $record['category_id'] = $category_id;
+//            } elseif(!$this->isTestMode()) {
+//                $this->getLogger()->warning(sprintf("[%s] New download category %s (creating)", $log_id, $category));
+//                $this->getDb()->insert('download_categories', array('title' => $category));
+//
+//                $record['category_id'] = $this->getDb()->lastInsertId();
+//                $this->getMappers()->learnMapping('download_category', array('id' => $record['category_id'], 'title' => $category));
+//            } else {
+//                $record['category_id'] = -1;
+//            }
+//        }
 
         $record = array_merge($record, array(
-            'title'          => $dval->title,
-            'content'        => $dval->content,
-            'slug'           => $dval->slug,
-            'date_created'   => isset($dval->date_created) ? $dval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
-            'date_published' => isset($dval->date_published) ? $dval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+//            'title'          => $dval->title,
+//            'content'        => $dval->content,
+//            'slug'           => $dval->slug,
+//            'date_created'   => isset($dval->date_created) ? $dval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
+//            'date_published' => isset($dval->date_published) ? $dval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
             'total_rating'   => $dval->total_rating,
             'num_comments'   => $dval->num_comments,
             'num_ratings'    => $dval->num_ratings,
@@ -148,39 +148,39 @@ class DownloadValueImporter extends AbstractValueImporter
             'num_downloads'  => $dval->num_downloads,
         ));
 
-        if ($dval->date_published) {
-            $record['status'] = 'published';
-        }
+//        if ($dval->date_published) {
+//            $record['status'] = 'published';
+//        }
 
         #------------------------------
         # Save data
         #------------------------------
 
-        if (!$this->isTestMode()) {
-            $this->getDb()->insert('downloads', $record);
-            $download_id = $this->getDb()->lastInsertId();
-
-            $this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $download_id));
-        }
+//        if (!$this->isTestMode()) {
+//            $this->getDb()->insert('downloads', $record);
+//            $download_id = $this->getDb()->lastInsertId();
+//
+//            $this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $download_id));
+//        }
 
         #------------------------------
         # Labels
         #------------------------------
-        if ($download_id && $dval->labels) {
-            $batch = array_map(function ($l) use ($download_id) {
-                return array(
-                    'download_id'	=> $download_id,
-                    'label'		=> $l
-                );
-            }, $dval->labels);
-
-            $this->getDb()->batchInsert('labels_downloads', $batch, true);
-        }
+//        if ($download_id && $dval->labels) {
+//            $batch = array_map(function ($l) use ($download_id) {
+//                return array(
+//                    'download_id'	=> $download_id,
+//                    'label'		=> $l
+//                );
+//            }, $dval->labels);
+//
+//            $this->getDb()->batchInsert('labels_downloads', $batch, true);
+//        }
     }
 
-    private function checkIsDuplicate($title)
-    {
-        $query = 'SELECT id FROM downloads WHERE title = ?';
-        return $this->getDb()->fetchColumn($query, array($title));
-    }
+//    private function checkIsDuplicate($title)
+//    {
+//        $query = 'SELECT id FROM downloads WHERE title = ?';
+//        return $this->getDb()->fetchColumn($query, array($title));
+//    }
 }

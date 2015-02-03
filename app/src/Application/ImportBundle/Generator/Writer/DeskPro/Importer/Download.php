@@ -51,10 +51,109 @@ final class Download extends AbstractImporter
      * {@inheritdoc}
      *
      * @var Entity\Download $importing_entity
+     *
+     * todo add referred objects
+     * 'total_rating'   => $dval->total_rating,
+     * 'num_comments'   => $dval->num_comments,
+     * 'num_ratings'    => $dval->num_ratings,
+     * 'view_count'     => $dval->view_count,
+     * 'num_downloads'  => $dval->num_downloads,
      */
     public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
     {
         $this->records = new ArrayCollection();
+        $exist_download = $this->getDownloadMapper()->findOneByTitle($importing_entity->getTitle(), false);
+        if ($exist_download) {
+            $this->logWarning(sprintf(
+                'An Download with the title `%s` already exists (skipping)',
+                $importing_entity->getTitle()
+            ));
+        } else {
+            $download = new DeskPROEntity\Download();
+            $download
+                ->setTitle($importing_entity->getTitle())
+                ->setContent($importing_entity->getContent())
+                ->setSlug($importing_entity->getSlug())
+                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
+                ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
+                ->setDateCreated($importing_entity->getDateCreated())
+                ->setDatePublished($importing_entity->getDatePublished());
+
+            if ($importing_entity->getCategory()) {
+                $download->setCategory($this->findOrCreateDownloadCategory($importing_entity->getCategory()));
+            }
+            foreach ($importing_entity->getLabels() as $label) {
+                $download->addLabel($this->createDownloadLabel($label));
+            }
+
+            $this->records->add($download);
+        }
+
         return $this->records;
+    }
+
+    /**
+     * Returns an download category by title
+     * Creates a new article category if not found
+     *
+     * @param string $title
+     *
+     * @return DeskPROEntity\DownloadCategory|null
+     * @throws \Exception
+     */
+    private function findOrCreateDownloadCategory($title)
+    {
+        $category = null;
+        if ($title) {
+            $category = $this->getDownloadCategoryMapper()->findOneByTitle($title, false);
+            if ($category) {
+                $this->logInfo(sprintf('Found download article category `%s`', $category->getTitle()));
+            } else {
+                $category = new DeskPROEntity\DownloadCategory();
+                $category->setRealTitle($title);
+
+                $this->records->add($category);
+                $this->logWarning(sprintf('New download category creating `%s`', $category->getTitle()));
+            }
+        }
+
+        return $category;
+    }
+
+    /**
+     * Returns a new download label entity
+     *
+     * @param string $label
+     * @return DeskPROEntity\LabelDownload
+     */
+    private function createDownloadLabel($label)
+    {
+        $entity = new DeskPROEntity\LabelDownload();
+        $entity->setLabel($label);
+
+        $this->records->add($entity);
+        return $entity;
+    }
+
+    /**
+     * Returns the download mapper
+     *
+     * @return Mapper\Download
+     * @throws \Exception
+     */
+    private function getDownloadMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DOWNLOAD);
+    }
+
+    /**
+     * Returns the download category mapper
+     *
+     * @return Mapper\DownloadCategory
+     * @throws \Exception
+     */
+    private function getDownloadCategoryMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_DOWNLOAD_CATEGORY);
     }
 }

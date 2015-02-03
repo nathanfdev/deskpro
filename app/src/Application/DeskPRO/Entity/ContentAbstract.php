@@ -34,9 +34,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Util;
+use DateTime;
 
 /**
  * Basic properties on content
@@ -127,12 +129,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     protected $hidden_status = null;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_created;
 
     /**
-     * @var \DateTime
+     * @var DateTime
      */
     protected $date_published;
 
@@ -160,8 +162,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function __construct()
     {
         $this['date_created'] = new \DateTime();
-        $this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->revisions = new ArrayCollection();
+        $this->labels    = new ArrayCollection();
 
         $this['status'] = self::STATUS_HIDDEN;
         $this['hidden_status'] = self::HIDDEN_STATUS_DRAFT;
@@ -186,6 +188,41 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
                 $this['slug'] = 'view';
             }
         }
+
+        return $this;
+    }
+
+    /**
+     * @param string $slug
+     * @return $this
+     */
+    public function setSlug($slug)
+    {
+        if ($slug) {
+            $this->setModelField('title', $slug);
+        }
+
+        return $this;
+    }
+
+    /**
+     * @param Person $person
+     * @return $this
+     */
+    public function setPerson(Person $person)
+    {
+        $this->setModelField('person', $person);
+        return $this;
+    }
+
+    /**
+     * @param Language $language
+     * @return $this
+     */
+    public function setLanguage(Language $language = null)
+    {
+        $this->setModelField('language', $language);
+        return $this;
     }
 
     public function getLanguage()
@@ -252,6 +289,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $this->setModelField('content', $content);
+        return $this;
     }
 
     public function getContentHtml()
@@ -497,5 +535,25 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     public function setRealContent($content)
     {
         $this->setModelField('content', $content);
+    }
+
+    /**
+     * @param DateTime $date_created
+     * @return $this
+     */
+    public function setDateCreated(DateTime $date_created)
+    {
+        $this->setModelField('date_created', $date_created);
+        return $this;
+    }
+
+    /**
+     * @param DateTime $date_published
+     * @return $this
+     */
+    public function setDatePublished(DateTime $date_published = null)
+    {
+        $this->setModelField('date_published', $date_published);
+        return $this;
     }
 }

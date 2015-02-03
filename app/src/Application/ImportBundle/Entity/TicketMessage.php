@@ -38,7 +38,7 @@ use Exception;
  * Class TicketMessage
  * @package Application\ImportBundle\Entity
  */
-final class TicketMessage extends AbstractEntity
+final class TicketMessage extends AbstractEntity implements PersonAwareInterface
 {
     /**
      * @var string
@@ -87,7 +87,7 @@ final class TicketMessage extends AbstractEntity
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPersonEmail()
     {
@@ -95,8 +95,7 @@ final class TicketMessage extends AbstractEntity
     }
 
     /**
-     * @param string $person_email
-     * @return $this
+     * {@inheritdoc}
      */
     public function setPersonEmail($person_email)
     {

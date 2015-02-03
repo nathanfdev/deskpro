@@ -28,25 +28,19 @@
 namespace Application\ImportBundle\Entity;
 
 /**
- * Entity slug interface
- *
- * Interface SlugAwareInterface
+ * Interface PersonAwareInterface
  * @package Application\ImportBundle\Entity
  */
-interface SlugAwareInterface
+interface PersonAwareInterface
 {
     /**
-     * Sets an acceptable URL slug
-     *
      * @return string
      */
-    public function getSlug();
+    public function getPersonEmail();
 
     /**
-     * Get an acceptable URL slug
-     *
-     * @param string $slug
+     * @param string $person_email
      * @return $this
      */
-    public function setSlug($slug);
+    public function setPersonEmail($person_email);
 }

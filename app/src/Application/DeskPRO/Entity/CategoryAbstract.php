@@ -130,6 +130,16 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
         return 0;
     }
 
+    /**
+     * @param string $title
+     * @return $this
+     */
+    public function setRealTitle($title)
+    {
+        $this->setModelField('title', $title);
+        return $this;
+    }
+
     public function getTitle()
     {
         return $this->title;

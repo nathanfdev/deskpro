@@ -271,7 +271,7 @@ final class Ticket extends AbstractImporter
                 $category->setRealTitle($title);
 
                 $this->records->add($category);
-                $this->logWarning(sprintf('New ticket priority creating `%s`', $category->getTitle()));
+                $this->logWarning(sprintf('New ticket category creating `%s`', $category->getTitle()));
             }
         }
 

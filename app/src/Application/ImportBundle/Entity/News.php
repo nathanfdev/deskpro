@@ -37,7 +37,7 @@ use DateTime;
  * Class News
  * @package Application\ImportBundle\Entity
  */
-final class News extends AbstractEntity implements SlugAwareInterface
+final class News extends AbstractEntity implements SlugAwareInterface, PersonAwareInterface
 {
     /**
      * @var string
@@ -118,7 +118,7 @@ final class News extends AbstractEntity implements SlugAwareInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPersonEmail()
     {
@@ -126,8 +126,7 @@ final class News extends AbstractEntity implements SlugAwareInterface
     }
 
     /**
-     * @param string $person_email
-     * @return $this
+     * {@inheritdoc}
      */
     public function setPersonEmail($person_email)
     {
@@ -154,7 +153,7 @@ final class News extends AbstractEntity implements SlugAwareInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getSlug()
     {
@@ -162,8 +161,7 @@ final class News extends AbstractEntity implements SlugAwareInterface
     }
 
     /**
-     * @param string $slug
-     * @return $this
+     * {@inheritdoc}
      */
     public function setSlug($slug)
     {

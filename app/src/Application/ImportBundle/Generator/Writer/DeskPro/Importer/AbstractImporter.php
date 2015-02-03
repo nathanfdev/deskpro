@@ -71,15 +71,33 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
      */
     protected function findLanguageId($title)
     {
-        /** @var Mapper\Language $mapper */
-        $mapper = $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE);
-
         $id = 0;
         if ($title) {
-            $id = $mapper->findOneByTitle($title)->getId();
+            $id = $this->getLanguageMapper()->findOneByTitle($title)->getId();
         }
 
         return $id;
+    }
+
+    /**
+     * Returns a language by title
+     *
+     * @param string $title
+     * @return DeskPROEntity\Language|null
+     */
+    protected function findLanguage($title)
+    {
+        $language = null;
+        if ($title) {
+            $language = $this->getLanguageMapper()->findOneByTitle($title);
+            if ($language) {
+                $this->logInfo(sprintf('Found existing language %s', $title));
+            } else {
+                $this->logNotice(sprintf('Could not map language value `%s`', $title));
+            }
+        }
+
+        return $language;
     }
 
     /**
@@ -136,5 +154,16 @@ abstract class AbstractImporter extends AbstractGenerator implements ImporterInt
     protected function getBlobDataMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_BLOB_DATA);
+    }
+
+    /**
+     * Returns the language mapper
+     *
+     * @return Mapper\Language
+     * @throws \Exception
+     */
+    protected function getLanguageMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_LANGUAGE);
     }
 }

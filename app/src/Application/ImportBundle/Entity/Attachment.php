@@ -36,7 +36,7 @@ use Symfony\Component\Validator\Constraints;
  * Class TicketMessageAttachment
  * @package Application\ImportBundle\Entity
  */
-final class Attachment extends AbstractEntity
+final class Attachment extends AbstractEntity implements PersonAwareInterface
 {
     /**
      * @var string
@@ -82,7 +82,7 @@ final class Attachment extends AbstractEntity
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPersonEmail()
     {
@@ -90,8 +90,7 @@ final class Attachment extends AbstractEntity
     }
 
     /**
-     * @param string $person_email
-     * @return $this
+     * {@inheritdoc}
      */
     public function setPersonEmail($person_email)
     {

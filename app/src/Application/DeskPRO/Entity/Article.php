@@ -39,7 +39,9 @@ use Application\DeskPRO\Domain\ObjectTranslatable;
 use Application\DeskPRO\Entity;
 use Doctrine\ORM\Mapping\ClassMetadata;
 use Doctrine\ORM\Mapping\ClassMetadataInfo;
+use Doctrine\Common\Collections\ArrayCollection;
 use FOS\ElasticaBundle\Transformer\HighlightableModelInterface;
+use DateTime;
 
 /**
  * Article
@@ -108,10 +110,10 @@ class Article extends ContentAbstract implements HighlightableModelInterface
     {
         parent::__construct();
 
-        $this->products    = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->categories  = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
-        $this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->products    = new ArrayCollection();
+        $this->categories  = new ArrayCollection();
+        $this->attachments = new ArrayCollection();
+        $this->custom_data = new ArrayCollection();
     }
 
     /**
@@ -136,6 +138,16 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         return $url;
     }
 
+    /**
+     * @param DateTime $date_end
+     * @return $this
+     */
+    public function setDateEnd(DateTime $date_end = null)
+    {
+        $this->setModelField('date_end', $date_end);
+        return $this;
+    }
+
     public function setStatus($status)
     {
         if ($status == 'approve') {
@@ -148,11 +160,13 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         } else {
             $this->setModelField('status', $status);
         }
+
+        return $this;
     }
 
     /**
      * Add a label
-     * @param \Application\DeskPRO\Entity\LabelTicket $label
+     * @param LabelArticle $label
      */
     public function addLabel(LabelArticle $label)
     {

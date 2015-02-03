@@ -38,7 +38,7 @@ use DateTime;
  * Class Ticket
  * @package Application\ImportBundle\Entity
  */
-final class Ticket extends AbstractEntity
+final class Ticket extends AbstractEntity implements PersonAwareInterface
 {
     /**
      * @var int
@@ -204,7 +204,7 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPersonEmail()
     {
@@ -212,8 +212,7 @@ final class Ticket extends AbstractEntity
     }
 
     /**
-     * @param string $person_email
-     * @return $this
+     * {@inheritdoc}
      */
     public function setPersonEmail($person_email)
     {

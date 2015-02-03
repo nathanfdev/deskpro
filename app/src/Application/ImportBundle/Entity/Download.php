@@ -37,7 +37,7 @@ use DateTime;
  * Class Download
  * @package Application\ImportBundle\Entity
  */
-final class Download extends AbstractEntity implements SlugAwareInterface
+final class Download extends AbstractEntity implements SlugAwareInterface, PersonAwareInterface
 {
     /**
      * @var string
@@ -164,7 +164,7 @@ final class Download extends AbstractEntity implements SlugAwareInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getPersonEmail()
     {
@@ -172,8 +172,7 @@ final class Download extends AbstractEntity implements SlugAwareInterface
     }
 
     /**
-     * @param string $person_email
-     * @return $this
+     * {@inheritdoc}
      */
     public function setPersonEmail($person_email)
     {
@@ -200,7 +199,7 @@ final class Download extends AbstractEntity implements SlugAwareInterface
     }
 
     /**
-     * @return string
+     * {@inheritdoc}
      */
     public function getSlug()
     {
@@ -208,8 +207,7 @@ final class Download extends AbstractEntity implements SlugAwareInterface
     }
 
     /**
-     * @param string $slug
-     * @return $this
+     * {@inheritdoc}
      */
     public function setSlug($slug)
     {
@@ -348,6 +346,10 @@ final class Download extends AbstractEntity implements SlugAwareInterface
      */
     public function getStatus()
     {
+        if ($this->date_published) {
+            return 'published';
+        }
+
         return $this->status;
     }
 
@@ -456,6 +458,7 @@ final class Download extends AbstractEntity implements SlugAwareInterface
             ->addPropertyConstraint('oid', new Constraints\NotBlank())
             ->addPropertyConstraint('title', new Constraints\NotBlank())
             ->addPropertyConstraint('content', new Constraints\NotBlank())
+            ->addPropertyConstraint('attachment', new Constraints\NotNull())
         ;
     }
 }
