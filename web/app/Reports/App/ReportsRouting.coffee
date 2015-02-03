@@ -5,7 +5,7 @@ define -> (States) ->
 
   States.add('reports')
     .setUrl('/')
-    .setTpl('ReportsInterfaceBundle:Interface:main.html')
+    .setTpl('InterfaceBundle:Interface:main-frame.html')
     .setCtrl(['$state', ($state) -> $state.go('reports.dashboards.index') ])
 
   #----------------------------------------
