@@ -37,6 +37,7 @@ namespace Application\InstallBundle\Upgrade\Build;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\DeskPRO\Monolog\NullLogger;
 use Psr\Log\LoggerInterface;
+use Symfony\Component\Process\Process;
 
 abstract class AbstractBuild
 {
@@ -202,6 +203,111 @@ abstract class AbstractBuild
             if (!$ignore_err) {
                 throw $e;
             }
+        }
+    }
+
+    /**
+     * Executes an ALTER command that can potentially be slow.
+     *
+     * If 'online_schema_upgrade' is true on config.php,
+     * then this will use the 'pt-online-schema-change' command.
+     *
+     * If the alter is not likely to be slow, it's often better to use the normal
+     * execMutateSql method.
+     *
+     * Note the following VERY IMPORTANT limitations:
+     * - The table must have a PK or unique index
+     * - You cannot rename a column by dropping + re-adding the same column; the tool
+     * wont copy old data if you do this.
+     * - If you add a new column as not null, you MUST supply a default value.
+     * - To drop a FK, prefix the name with an underscore: fk_foobar becomes _fk_foobar
+     * - Note that these should be considered separate from the wrapper script. E.g., you cant set fk checks=0
+     *   before running an alter, because the alter might run via the online schema change.
+     *
+     * @see http://www.percona.com/doc/percona-toolkit/2.2/pt-online-schema-change.html
+     *
+     * To enable pt-online-schema-change, add this line to /config.php:
+     *  $DP_CONFIG['online_schema_upgrade'] = '/usr/bin/pt-online-schema-change';
+     * Change the path accordingly.
+     *
+     * @param string $table The table to alter
+     * @param string $alter The alter query, without the 'ALTER TABLE' part.
+     */
+    public function execSlowAlterTable($table, $alter)
+    {
+        if (dp_get_config('online_schema_upgrade')) {
+
+            $logger = $this->logger;
+            $logger->info("Using online_schema_update");
+
+            if (dp_get_config('online_schema_upgrade') === true) {
+                $tool = 'pt-online-schema-change';
+            } elseif (is_string(dp_get_config('online_schema_upgrade')) && is_executable(dp_get_config('online_schema_upgrade'))) {
+                $tool = dp_get_config('online_schema_upgrade');
+            } else {
+                throw new \RuntimeException("Unknown path to pt-online-schema-change");
+            }
+
+            $logger->info("Tool path: $tool");
+
+            $cmd_base = '{tool} --alter {query} --alter-foreign-keys-method auto --no-version-check --host {db_host} --database {db_name} --user {db_user} --password {db_pass} --port {db_port} {mode_param} {dsn}';
+
+            $port = '';
+            $dbhost = DP_DATABASE_HOST;
+            $m = null;
+            if (preg_match('#^(.*?):([0-9]+)$#', $dbhost, $m)) {
+                $dbhost = $m[1];
+                $port   = ";port={$m[2]};";
+            }
+
+            $params = array(
+                '{tool}'    => $tool,
+                '{query}'   => escapeshellarg($alter),
+                '{db_host}' => escapeshellarg($dbhost),
+                '{db_port}' => escapeshellarg($port ?: 3306),
+                '{db_name}' => escapeshellarg(DP_DATABASE_NAME),
+                '{db_user}' => escapeshellarg(DP_DATABASE_USER),
+                '{db_pass}' => escapeshellarg(DP_DATABASE_PASSWORD),
+                '{dsn}'     => "t=$table"
+            );
+
+            $params_test = $params;
+            $params_test['{mode_param}'] = '--dry-run --print';
+
+            $params_exec = $params;
+            $params_exec['{mode_param}'] = '--execute';
+
+            $cmd_test = str_replace(array_keys($params_test), array_values($params_test), $cmd_base);
+            $cmd_exec = str_replace(array_keys($params_exec), array_values($params_exec), $cmd_base);
+
+            $logger->info("BEGIN: Dry-run test");
+            $proc = new Process($cmd_test, DP_ROOT);
+            $proc->setTimeout(600);
+            $proc->run(function($type, $data) use ($logger) {
+                $logger->info(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))));
+            });
+            $logger->info("DONE: Dry-run test");
+            $logger->info("Exit status: " . $proc->getExitCode());
+
+            if (!$proc->isSuccessful()) {
+                throw new \RuntimeException("Dry run failed with status: " . $proc->getExitCode());
+            }
+
+            $logger->info("BEGIN: LIVE");
+            $proc = new Process($cmd_exec, DP_ROOT);
+            $proc->setTimeout(600);
+            $proc->run(function($type, $data) use ($logger) {
+                $logger->info(sprintf("\t%s\n", str_replace("\n", "\n\t", trim($data))));
+            });
+            $logger->info("DONE: LIVE");
+            $logger->info("Exit status: " . $proc->getExitCode());
+
+            if (!$proc->isSuccessful()) {
+                throw new \RuntimeException("Dry run failed with status: " . $proc->getExitCode());
+            }
+        } else {
+            $sql = "ALTER TABLE `$table` $alter";
+            $this->execMutateSql($sql);
         }
     }
 

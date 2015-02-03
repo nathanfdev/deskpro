@@ -39,6 +39,6 @@ class Build1421925247 extends AbstractBuild
     public function run()
     {
         $this->out("Add tickets_messages.hostname");
-		$this->execMutateSql("ALTER TABLE tickets_messages ADD hostname VARCHAR(255) NOT NULL");
+		$this->execSlowAlterTable("tickets_messages", "ADD hostname VARCHAR(255) NOT NULL DEFAULT ''");
     }
 }
