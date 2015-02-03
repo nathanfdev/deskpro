@@ -273,7 +273,7 @@ class __DP_CI_Security {
                 }
 
                 $replace = array();
-                $matches = array_unique(array_map('strtolower', $matches[0]));
+                $matches = array_values(array_unique(array_map('strtolower', $matches[0])));
                 $c = count($matches);
                 for ($i = 0; $i < $c; $i++)
                 {
