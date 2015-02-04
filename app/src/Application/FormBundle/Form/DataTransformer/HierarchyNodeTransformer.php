@@ -36,6 +36,7 @@ namespace Application\FormBundle\Form\DataTransformer;
 
 
 use Application\AppBundle\Hierarchy\HierarchyNode;
+use Application\DeskPRO\Domain\DomainObject;
 use Symfony\Component\Form\DataTransformerInterface;
 use Symfony\Component\Form\Exception\TransformationFailedException;
 use Symfony\Component\Form\Extension\Core\ChoiceList\ChoiceListInterface;
@@ -99,14 +100,27 @@ class HierarchyNodeTransformer implements DataTransformerInterface
 
         /** @var \Application\FormBundle\Hierarchy\HierarchyNode $choice */
         foreach ($choices as $choice) {
+
             if (!$choice instanceof HierarchyNode) {
                 continue;
             }
 
-            if ($value === $choice->getData()) {
+            $data = $choice->getData();
+            if ($data instanceof DomainObject) {
+                $data = $data->getId();
+            }
+
+            if ($value instanceof DomainObject) {
+                $value = $value->getId();
+            }
+
+            if ($value === $data) {
                 return $choice;
             }
+
         }
+
+        return '';
     }
 
     /**
