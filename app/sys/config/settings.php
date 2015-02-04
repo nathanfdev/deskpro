@@ -319,10 +319,10 @@
     'core.deskpro_source_enabled' => true,
 
     /**
-     * True if we always replace local name (fname, lname, name) with usersource name on every login if usersource provides one.
+     * True if we always replace local name (fname, lname, name) and other data with usersource data on every login.
      * False means we only do this on first login with that usersource.
      */
-    'core.usersource_login_always_update_name' => true,
+    'core.usersource_always_update_data' => true,
 
     /**
      * True to have links from chat intercepted and sent through the security page

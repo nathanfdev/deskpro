@@ -259,7 +259,7 @@ class LoginProcessor
         } else {
             $this->person = $this->assoc['person'];
 
-            if (App::getSetting('core.usersource_login_always_update_name')) {
+            if (App::getSetting('core.usersource_always_update_data')) {
                 $this->updatePersonName($mapped_fields);
             }
 
