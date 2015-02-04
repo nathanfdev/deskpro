@@ -297,8 +297,10 @@ class TicketSettings
 
         $wh = $this->working_hours;
         $wh['work_days'] = array();
-        foreach ($this->working_hours['work_days'] as $k => $v) {
-            if ($v) $wh['work_days'][] = $k;
+        if (!empty($this->working_hours['work_days']) && is_array($this->working_hours['work_days'])) {
+            foreach ($this->working_hours['work_days'] as $k => $v) {
+                if ($v) $wh['work_days'][] = $k;
+            }
         }
         if ($wh) {
             $this->settings->setSetting('core_tickets.work_hours', serialize($wh));

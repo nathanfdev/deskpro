@@ -156,22 +156,22 @@
 	<div class="dp-content-block dp-profile-block">
 
 		<div class="dp-content-wrapper">
-			{% if app.session.hasFlash('resent_validation_email') %}
+			{% if app.session.getFlash('resent_validation_email') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.validation_resent_to', {'email': app.session.getFlash('resent_validation_email').value }) }}
 				</div>
 			{% endif %}
-			{% if app.session.hasFlash('removed_email') %}
+			{% if app.session.getFlash('removed_email') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.email_was_removed', {'email': app.session.getFlash('removed_email').value }) }}
 				</div>
 			{% endif %}
-			{% if app.session.hasFlash('new_email') %}
+			{% if app.session.getFlash('new_email') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.email_was_added', {'email': app.session.getFlash('removed_email').value }) }}
 				</div>
 			{% endif %}
-			{% if app.session.hasFlash('new_email_validating') %}
+			{% if app.session.getFlash('new_email_validating') %}
 				<div class="dp-alert">
 					{{ phrase('user.profile.email_was_added_validate_it', {'email': app.session.getFlash('removed_email').value }) }}
 				</div>

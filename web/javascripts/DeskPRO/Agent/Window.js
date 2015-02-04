@@ -589,6 +589,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// All target=blanks need to null out window.opener
 		$(document).on('click', 'a[target="_blank"]', function(ev) {
+      // colorbox image previews from tickets
+      // open an inline overlay
+      if ($(this).hasClass('cboxElement')) {
+        return;
+      }
+
 			ev.preventDefault();
 			var o = window.open($(this).attr('href'));
 			o.opener = null;

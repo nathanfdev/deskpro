@@ -51,4 +51,6 @@
     'user.emails.ticket_validate'             => 'Thank you for contacting us.<br /><br />Before our agents will read and reply to your message, you must validate your email address.',
     'user.emails.tickets_ommitted'            => '1 message has been omitted|{{count}} messages have been omitted',
     'user.emails.view_full_history_online'    => 'View full ticket online',
+    'user.emails.ratelimit_explain'           => 'You have sent {{num_messagess}} messages within {{time_limit}}. To prevent abuse, we have temporarily banned your email address for {{time_lock}}. After {{date_lock_end}}, this temporary ban will be automatically deactivated and you will be able to send emails again.',
+    'user.emails.ratelimit_submit-online'     => 'If this is a mistake and you need to contact us immediately, you can bypass this email filter and submit a ticket online:'
 );

@@ -6,7 +6,7 @@
 | All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,39 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category People
+ * @subpackage
  */
 
-namespace Application\DeskPRO\People\AgentPermissions\Value;
+namespace Application\InstallBundle\Upgrade\Build;
 
-class PublishPermissions implements PermissionValueInterface
+class Build1422460026 extends AbstractBuild
 {
-    /** @var bool  */
-    public $create        = false;
-    /** @var bool  */
-    public $delete        = false;
-    /** @var bool  */
-    public $edit          = false;
-    /** @var bool  */
-    public $validate      = false;
-    /** @var bool  */
-    public $articles_create_labels  = false;
-    /** @var bool  */
-    public $downloads_create_labels = false;
-    /** @var bool  */
-    public $news_create_labels      = false;
-    /** @var bool  */
-    public $feedback_create_labels  = false;
-    /** @var bool */
-    public $can_insert_html         = false;
-
-    public function getNames()
+    public function run()
     {
-        return array('create', 'delete', 'edit', 'validate', 'articles_create_labels', 'downloads_create_labels', 'news_create_labels', 'feedback_create_labels', 'can_insert_html');
-    }
-
-    public function getDestructiveNames()
-    {
-        return array('delete', 'can_insert_html');
+		$this->execSlowAlterTable("email_sources", "ADD from_email VARCHAR(500) NOT NULL DEFAULT '', ADD INDEX from_idx (from_email)");
+        $this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('core.emails.rate_count', 100)");
     }
 }

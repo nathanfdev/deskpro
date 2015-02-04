@@ -14,3 +14,17 @@ Disallow: /index.php/api/
 Disallow: /index.php/billing/
 Disallow: /index.php/reports/
 Disallow: /index.php/install/
+Disallow: /cmd.php
+Disallow: /config.php
+Disallow: /cron.php
+Disallow: /dp.php
+Disallow: /file.php/
+Disallow: /get_messages.php
+Disallow: /import.php
+Disallow: /INSTALL.pdf
+Disallow: /README.txt
+Disallow: /schedule.bat
+Disallow: /UPDATE.pdf
+Disallow: /upgrade.php
+Disallow: /web.config
+Disallow: /.htaccess

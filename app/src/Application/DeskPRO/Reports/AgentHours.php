@@ -63,6 +63,10 @@ class AgentHours
      */
     public function getVarsForHtmlView($date1, $date2 = '')
     {
+        if (substr_count($date1, '-') != 2) {
+            $date1 = date('Y-m-d');
+        }
+
         list($year, $month, $day) = explode('-', $date1);
 
         $dt = new \DateTime();
@@ -71,7 +75,7 @@ class AgentHours
         $dt->setTime(0, 0, 0);
 
         $dt2 = null;
-        if ($date2) {
+        if ($date2 && substr_count($date2, '-') == 2) {
             list($year, $month, $day) = explode('-', $date2);
             $dt2 = new \DateTime();
             $dt2->setTimezone($this->person->getDateTimezone());

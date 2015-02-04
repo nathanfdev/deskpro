@@ -109,7 +109,7 @@
 				{% set timeago = app.session.getFlash('failed_login_rate').value %}
 				<div class="dp-alert dp-alert-error">
 					{{ phrase('user.profile.account_locked_message', {
-						timeago: '<time class="timeago" data-timeago-no-ago="1" datetime="' ~ ('- ' ~ timeago ~ ' seconds')|date('c', 'UTC') ~ '"></time>'
+						timeago: '<time class="timeago" data-timeago-no-ago="1" data-no-update="1" datetime="' ~ ('- ' ~ timeago ~ ' seconds')|date('c', 'UTC') ~ '"></time>'
 					}, true) }}
 				</div>
 			{% endif %}

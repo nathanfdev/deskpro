@@ -64,6 +64,7 @@
     'adm.agents.perm_publish_downloads_create_labels'             => 'Can create new download labels',
     'adm.agents.perm_publish_news_create_labels'                  => 'Can create new news labels',
     'adm.agents.perm_publish_feedback_create_labels'              => 'Can create new feedback labels',
+    'adm.agents.perm_publish_can_insert_html'                     => 'Can insert any HTML (including potentially dangerous HTML)',
     'adm.agents.perm_general_picture'                             => 'Can set their own picture',
     'adm.agents.perm_general_signature'                           => 'Can set their own signature',
     'adm.agents.perm_tasks_use'                                   => 'Can use tasks',
