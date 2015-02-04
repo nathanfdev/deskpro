@@ -274,7 +274,7 @@ class KernelBooter
             try {
 
                 // debug code
-                $boot = $GLOBALS['index_start_time'];
+                $boot = $GLOBALS['index_start_time']; // delete this set from index.php!
                 // end debug code
 
 
@@ -295,7 +295,7 @@ class KernelBooter
                     Debug::enable();
                 }
                 // debug code
-                $start = microtime(true);
+                $start = round(microtime(true) * 1000);
                 // end debug code
                 $request = Request::createFromGlobals();
                 $response = $kernel->handle($request);
@@ -306,7 +306,7 @@ class KernelBooter
                 // below: a log from the kernel of cache hits/misses and a simple profile of page load
                 //
                 if (false !== strpos($response->getContent(), '</body>') && '/_' !== substr(rawurldecode($request->getPathInfo()), 0, 2)) {
-                    $end = microtime(true);
+                    $end = round(microtime(true) * 1000);
                     $log = explode(';', $kernel->getLog());
                     $print_log = "<br><br><br><br><hr><br><h1>Master Response Headers</h1><table>";
                     foreach ($response->headers as $name => $header) {
@@ -315,11 +315,11 @@ class KernelBooter
 
                     $print_log .= "</table><br><hr><br><h1>Http Cache Log</h1>";
                     $print_log .= implode("\n<br>", $log);
-                    $print_log .= "<br><hr><br><h1>Simple Profile</h1>";
-                    $print_log .= "kernel booter time: " . sprintf('%.2f', $start - $boot) . "s<br>\n";
-                    $print_log .= "portal kernel time: " . sprintf('%.2f', $end - $start) . "s<br>\n";
-                    $print_log .= "total time: <strong>" . sprintf('%.2f', $end - $boot) . 's</strong>';
-                    $print_log .= "<br><br><br>";
+                    $print_log .= "<br><hr><br><h1>Simple Profile</h1><pre>";
+                    $print_log .= "kernel booter time: " . ((int)$start - (int)$boot) . " ms<br>\n";
+                    $print_log .= "portal kernel time: " . ((int)$end - (int)$start) . " ms<br>\n";
+                    $print_log .= "total time:         <strong>" . ((int)$end - (int)$boot) . ' ms</strong>';
+                    $print_log .= "</pre><br><br><br>";
 
 
                     $content = $response->getContent();

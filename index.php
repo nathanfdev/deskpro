@@ -16,7 +16,7 @@ if (!defined('DP_CONFIG_FILE')) define('DP_CONFIG_FILE', dirname(__FILE__) . '/c
 //
 // DEBUG CODE
 // delete this before merging into "develop"
-$GLOBALS['index_start_time'] = microtime(true);
+$GLOBALS['index_start_time'] = round(microtime(true) * 1000);
 // END DEBUG CODE
 //
 
