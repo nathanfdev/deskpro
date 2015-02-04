@@ -9,7 +9,7 @@
                 style="background-image: url({{ ng_var('agent.avatar') }});">
             </a>
             <a ng-if="filteredPermissions.length > 6" class="avatar avatar-blank"><span>+{{ ng_var('filteredPermissions.length - 6') }}</span></a>
-            <a ng-click="editDashboardModal('permissions')" class="avatar edit-access-link"><span>Edit Agent Access <i class="fa fa-user"></i></span></a>
+            <a ng-click="openEdit('permissions')" class="avatar edit-access-link"><span>Edit Agent Access <i class="fa fa-user"></i></span></a>
         </div>
     </div>
 
@@ -32,26 +32,8 @@
         <nav class="reports-control">
             <ul>
                 <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="editDashboardModal()"><i class="fa fa-cog"></i> Edit Dashboard</a></li>
-                <li dp-dropdown="dp-add-dashboard-dropdown" dp-dropdown-opener="dp-add-dashboard-opener" dp-dropdown-closer="dp-add-dashboard-closer">
-                    <a class='link-pointer' id="dp-add-dashboard-opener"><i class="fa fa-plus"></i>Create Dashboard</a>
-                    <div class="reports-dropdown" id="dp-add-dashboard-dropdown">
-                        <header>
-                            <a class="link-pointer hide-dropdown" id="dp-add-dashboard-closer"><i class="fa fa-times"></i></a>
-                            <i class="fa fa-plus"></i> Create Dashboard
-                        </header>
-                        <hr>
-
-                        <div class="dropdown-content">
-                            <ul class="big-actions">
-                                <li>
-                                    <a dp-dropdown-item ng-click="newDashboardModal()"><i class="fa fa-bar-chart"></i> Create a new dashboard</a>
-                                </li>
-                                <li>
-                                    <a dp-dropdown-item ng-click="cloneDashboardModal()"><i class="fa fa-copy"></i> Clone the <span>{{ ng_var('dashboard.title') }}</span> dashboard</a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
+                <li>
+                    <a ng-click="openCreate()" class='link-pointer' id="dp-add-dashboard-opener"><i class="fa fa-plus"></i>Create Dashboard</a>
                 </li>
                 <li ng-show="!dashboard.is_default"><a class='link-pointer' ng-click="deleteDashboard(dashboard)"><i class="fa fa-times"></i> Delete Dashboard</a></li>
             </ul>
@@ -64,44 +46,6 @@
     <ul>
         <li dp-dropdown="dp-add-report-dropdown" dp-dropdown-opener="dp-add-report-opener" dp-dropdown-closer="dp-add-report-closer" ng-if='!dashboard.default' class="add-report-link">
             <a id="dp-add-report-dropdown-opener" class='link-pointer'><i class="fa fa-plus"></i></a>
-            <div id="dp-add-report-dropdown" style="position: absolute; z-index: 3333" class="reports-dropdown">
-                <header>
-                    <a id="dp-add-report-closer" class="link-pointer hide-dropdown"><i class="fa fa-times"></i></a>
-                    <i class="fa fa-plus"></i> Create new report
-                </header>
-                <div class="reports-dropdown-content">
-                    <p>Bit of text about adding a report into your current dashboard lorel ipsum.</p>
-                </div>
-                <hr>
-                <div class="reports-dropdown-content">
-                    <h2>Create new report</h2>
-                    <form>
-                        <button dp-dropdown-item ng-click="createReport()">Create report</button>
-                        <div class="input-bucket"><input type="text" ng-model='newReport.title' placeholder="Name your report"></div>
-                    </form>
-                </div>
-                <hr>
-                <div class="reports-dropdown-content">
-                    <h2>Or clone an existing report</h2>
-                    <ul class="clone-list">
-                        <li ng-repeat="db in dashboards track by $index"
-                            ng-class="{'current': db.id === dashboard.id, 'expanded': isExpanded(db)}">
-
-                            <a ng-show='!isExpanded(db)' ng-click="expandDashboard(db)" class="control"><i class="fa fa-plus-square-o"></i></a>
-                            <a ng-show='isExpanded(db)' ng-click="collide(db)" class="control">
-                                <i class="fa fa-minus-square-o"></i>
-                            </a>
-
-                            <a>{{ ng_var('db.title') }} <span ng-show="db.id === dashboard.id">(Your current dashboard)</span></a>
-                            <ul ng-show='isExpanded(db) && db.reports.length > 0'>
-                                <li ng-repeat="report in db.reports track by $index">
-                                    <a dp-dropdown-item ng-click="cloneReport(report)">{{ ng_var('report.title') }}</a>
-                                </li>
-                            </ul>
-                        </li>
-                    </ul>
-                </div>
-            </div>
         </li>
 
         <li ng-if="!report.deleted" ng-repeat="report in dashboard.reports track by $index" ui-sref-active="active-tab">

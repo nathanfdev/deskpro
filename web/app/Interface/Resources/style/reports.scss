@@ -627,6 +627,8 @@
 
 // List of clone-able stuff
 .clone-list {
+  background: #fff;
+  border: 1px solid #ccc;
   list-style-type: none;
   ul {
     list-style-type: none;
@@ -1175,6 +1177,29 @@ $gridster-box-header-height: 32px;
     }
     .box > div {
       height: 100%;
+    }
+  }
+}
+
+.reports-list-form {
+  .report-row {
+    margin-top: 10px;
+    label {
+      float: left;
+      i {
+        font-size: 16px;
+        color: #ccc;
+        cursor: move;
+      }
+    }
+    .meta { float: right; }
+    .row-input {
+      input[type="text"] { width: 80%; }
+    }
+    .new-report-info {
+      font-size: 11px;
+      color: #bbb;
+      padding: 2px 0 0 19px;
     }
   }
 }

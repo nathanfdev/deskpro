@@ -1,7 +1,11 @@
 define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
   class DashboardsInfo
     constructor: (@Api, @$q) ->
+      # this is just a cheap way that controllers
+      # can listen on to refresh their state if we change
+      # something
       @version_id = 0
+
       @dashboardList        = []
       @dashboardListPromise = null
       @lastDashboardDetail  = null
@@ -9,6 +13,16 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
     resetData: ->
       @version_id += 1
+
+      if @dashboardList
+        for db in @dashboardList
+          db.version_id = @version_id
+          db.reports_version_id = @version_id
+
+      if @lastDashboardDetail
+        @lastDashboardDetail.version_id = @version_id
+        @lastDashboardDetail.reports_version_id = @version_id
+
       @dashboardList        = []
       @dashboardListPromise = null
       @lastDashboardDetail  = null
@@ -35,6 +49,9 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
       @Api.sendGet('/dashboards').then((res) =>
         @dashboardList = Arrays.replaceArray(@dashboardList, res.data)
+        for db in @dashboardList
+          db.version_id = @version_id
+          db.reports_version_id = @version_id
         d.resolve(@dashboardList)
       , =>
         d.reject()
@@ -54,12 +71,14 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
 
       d = @$q.defer()
 
-      if @lastDashboardDetail and @lastDashboardDetail.id == report_id
+      if @lastDashboardDetail and @lastDashboardDetail.id == dashboard_id
         d.resolve(@lastDashboardDetail)
         return d.promise
 
       @Api.sendGet("/dashboards/#{dashboard_id}").then( (resp) =>
         @lastDashboardDetail = resp.data
+        @lastDashboardDetail.version_id = @version_id
+        @lastDashboardDetail.reports_version_id = @version_id
         d.resolve(resp.data)
       )
 

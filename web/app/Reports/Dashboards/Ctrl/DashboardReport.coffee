@@ -1,11 +1,13 @@
 define ['DeskPRO/Util/Arrays'], (Arrays) -> [
   '$scope',
+  '$state',
   '$stateParams',
   '$q',
   '$modal',
   'DashboardsInfo',
   'DashboardWidgetService',
   ($scope,
+   $state,
    $stateParams
    $q,
    $modal,
@@ -36,6 +38,30 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
       DashboardsInfo.getDashboardList().then((dbs) ->
         $scope.dashboard = Arrays.find(dbs, (x) -> x.id == loadedReport.dashboard_id)
         $scope.loaded = true
+      )
+    )
+
+    # just reload info when its been changed
+    $scope.$watch('dashboard.reports_version_id', (n, o) ->
+      return if not o
+
+      p1 = DashboardsInfo.getDashboardList().then((dbs) ->
+        $scope.dashboard = Arrays.find(dbs, (x) -> x.id == loadedReport.dashboard_id)
+      )
+
+      p2 = DashboardsInfo.getReportDetail(report_id).then((loadedReport) ->
+        $scope.report = loadedReport
+      )
+
+      $q.all([p1, p2]).then(->
+        # all ok
+        return
+      , ->
+        #invalid, maybe removed the dashboard?
+        if $scope.dashboard.reports[0]?
+          $state.go('reports.dashboards.view.report', { report_id: $scope.dashboard.reports[0].id})
+        else
+          $state.go('reports.dashboards.view.empty')
       )
     )
 

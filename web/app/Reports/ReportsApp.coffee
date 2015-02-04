@@ -5,6 +5,7 @@ define [
   # Controllers
   'Reports/Dashboards/Ctrl/DashboardReport',
   'Reports/Dashboards/Ctrl/DashboardView',
+  'Reports/Dashboards/ModalCtrl/EditDashboard',
 
   'Reports/Legacy/AgentActivity/Ctrl/AgentActivity',
   'Reports/Legacy/AgentHours/Ctrl/AgentHours',
@@ -38,9 +39,14 @@ define [
   'Reports/App/Directive/DpReportWidgetSelectBox',
   'DeskPRO/Directive/DpDropdown',
 
+  #jquery
+  'jquery',
+  'jqueryUi',
+
   #angular modules
   'ngTable',
   'angularGridster',
+  'angularUiSortable',
   'amcharts',
   'amcharts.pie',
   'amcharts.serial',
@@ -52,6 +58,7 @@ define [
   # Controllers
   Reports_Dashboards_Ctrl_DashboardReport,
   Reports_Dashboards_Ctrl_DashboardView,
+  Reports_Dashboards_ModalCtrl_EditDashboard,
 
   Reports_AgentActivity_Ctrl_AgentActivity,
   Reports_AgentHours_Ctrl_AgentHours,
@@ -84,13 +91,14 @@ define [
   Reports_App_Directive_DpDropdown,
 
 ) ->
-  ReportsApp = angular.module('DeskPRO.ReportsApp', ['DeskPRO.InterfaceApp', 'gridster'])
+  ReportsApp = angular.module('DeskPRO.ReportsApp', ['DeskPRO.InterfaceApp', 'gridster', 'ui.sortable'])
 
   ###
   # Controllers section
   ###
-  ReportsApp.controller('Reports.App.DashboardReport',      Reports_Dashboards_Ctrl_DashboardReport)
-  ReportsApp.controller('Reports.App.DashboardView',        Reports_Dashboards_Ctrl_DashboardView)
+  ReportsApp.controller('Reports.App.DashboardReport',             Reports_Dashboards_Ctrl_DashboardReport)
+  ReportsApp.controller('Reports.App.DashboardView',               Reports_Dashboards_Ctrl_DashboardView)
+  ReportsApp.controller('Reports.Dashboards.Modals.EditDashboard', Reports_Dashboards_ModalCtrl_EditDashboard)
 
   for x in window.DP_CTRL_REG
     deps = x[1]

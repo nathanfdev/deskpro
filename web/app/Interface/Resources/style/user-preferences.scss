@@ -142,10 +142,11 @@ $right-bucket: 200px;
 
 .popup-content {
   @include clearfix;
-  padding-left: $popup-sidebar + 10px;
+  padding-left: 10px;
   padding-right: 10px;
   padding-top: 10px;
   padding-bottom: 5px;
+  overflow-x: auto;
 }
 
 .popup-content.blank {
