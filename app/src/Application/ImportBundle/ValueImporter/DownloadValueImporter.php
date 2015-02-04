@@ -62,28 +62,28 @@ class DownloadValueImporter extends AbstractValueImporter
 //        }
 //
 //        $log_id = "Download :: " . $dval->oid . " ";
-
-        $record = array();
-
-        $download_id = null;
+//
+//        $record = array();
+//
+//        $download_id = null;
 
         #------------------------------
         # Process the file
         #------------------------------
-        if ($this->isTestMode()) {
-            $record['blob_id'] = -1;
-        } else {
-            $attachment = $dval->attachment;
-            $attachment_value_importer = new AttachmentValueImporter(
-                $this->getMode(),
-                $this->getContainer(),
-                $this->getLogger(),
-                $this->getMappers()
-            );
-
-            $blob = $attachment_value_importer->importValue($attachment);
-            $record['blob_id'] = $blob['id'];
-        }
+//        if ($this->isTestMode()) {
+//            $record['blob_id'] = -1;
+//        } else {
+//            $attachment = $dval->attachment;
+//            $attachment_value_importer = new AttachmentValueImporter(
+//                $this->getMode(),
+//                $this->getContainer(),
+//                $this->getLogger(),
+//                $this->getMappers()
+//            );
+//
+//            $blob = $attachment_value_importer->importValue($attachment);
+//            $record['blob_id'] = $blob['id'];
+//        }
 
         #------------------------------
         # Grab the person
@@ -135,18 +135,18 @@ class DownloadValueImporter extends AbstractValueImporter
 //            }
 //        }
 
-        $record = array_merge($record, array(
+//        $record = array_merge($record, array(
 //            'title'          => $dval->title,
 //            'content'        => $dval->content,
 //            'slug'           => $dval->slug,
 //            'date_created'   => isset($dval->date_created) ? $dval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
 //            'date_published' => isset($dval->date_published) ? $dval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s'),
-            'total_rating'   => $dval->total_rating,
-            'num_comments'   => $dval->num_comments,
-            'num_ratings'    => $dval->num_ratings,
-            'view_count'     => $dval->view_count,
-            'num_downloads'  => $dval->num_downloads,
-        ));
+//            'total_rating'   => $dval->total_rating,
+//            'num_comments'   => $dval->num_comments,
+//            'num_ratings'    => $dval->num_ratings,
+//            'view_count'     => $dval->view_count,
+//            'num_downloads'  => $dval->num_downloads,
+//        ));
 
 //        if ($dval->date_published) {
 //            $record['status'] = 'published';

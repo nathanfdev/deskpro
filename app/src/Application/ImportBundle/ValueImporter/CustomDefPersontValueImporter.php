@@ -56,17 +56,17 @@ class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
      */
     public function importValue($custom_value)
     {
-        if (!($custom_value instanceof CustomDefValue)) {
-            throw new \InvalidArgumentException("This importer can only import Person Custom Fields");
-        }
-
-        $log_id = "Person CustomField :: " . $custom_value->oid . " ";
-
-        if (!$custom_value->key) {
-            throw new BadDataException(sprintf('[%s] Custom field data must have a key', $log_id));
-        }
-
-        return $this->processCustomField($custom_value);
+//        if (!($custom_value instanceof CustomDefValue)) {
+//            throw new \InvalidArgumentException("This importer can only import Person Custom Fields");
+//        }
+//
+//        $log_id = "Person CustomField :: " . $custom_value->oid . " ";
+//
+//        if (!$custom_value->key) {
+//            throw new BadDataException(sprintf('[%s] Custom field data must have a key', $log_id));
+//        }
+//
+//        return $this->processCustomField($custom_value);
     }
 
 }

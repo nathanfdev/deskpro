@@ -25,16 +25,35 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\ValueImporter;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
+
+use Application\DeskPRO\Entity as DeskPROEntity;
+use Application\ImportBundle\Entity;
 
 /**
- * Interface ImporterInterface
- * @package Application\ImportBundle\ValueImporter
+ * Blob storage adapter interface
+ *
+ * Interface BlobAdapterInterface
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-interface ValueImporterInterface
+interface BlobAdapterInterface
 {
     /**
-     * @param mixed $value
+     * Creates a blob object
+     *
+     * @param string $source_data
+     * @param string $filename
+     * @param string $content_type
+     *
+     * @return DeskPROEntity\Blob
      */
-    public function importValue($value);
+    public function createBySourceData($source_data, $filename, $content_type);
+
+    /**
+     * Creates a blob object by an importer attachment entity
+     *
+     * @param Entity\Attachment $attachment
+     * @return DeskPROEntity\Blob
+     */
+    public function createByAttachment(Entity\Attachment $attachment);
 }

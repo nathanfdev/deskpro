@@ -47,13 +47,13 @@ class TicketValueImporter extends AbstractValueImporter
      */
     public function importValue($tval)
     {
-        if (!($tval instanceof TicketValue)) {
-            throw new \InvalidArgumentException("This importer can only import TicketValue");
-        }
-
-        $log_id    = "Ticket :: " . $tval->oid . " ";
-        $ticket_id = null;
-        $record    = array();
+//        if (!($tval instanceof TicketValue)) {
+//            throw new \InvalidArgumentException("This importer can only import TicketValue");
+//        }
+//
+//        $log_id    = "Ticket :: " . $tval->oid . " ";
+//        $ticket_id = null;
+//        $record    = array();
 
         #------------------------------
         # Grab the person
@@ -209,13 +209,13 @@ class TicketValueImporter extends AbstractValueImporter
         # Save data
         #------------------------------
 
-        if (!$this->isTestMode()) {
-            $this->getDb()->insert('tickets', $record);
-
-            $ticket_id = $this->getDb()->lastInsertId();
-
-            $this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $ticket_id));
-        }
+//        if (!$this->isTestMode()) {
+//            $this->getDb()->insert('tickets', $record);
+//
+//            $ticket_id = $this->getDb()->lastInsertId();
+//
+//            $this->getLogger()->info(sprintf("[%s] Created %d", $log_id, $ticket_id));
+//        }
 
 
         #------------------------------
@@ -243,9 +243,9 @@ class TicketValueImporter extends AbstractValueImporter
         # Ticket Messages
         #------------------------------
 
-        if ($ticket_id && $tval->messages) {
-            foreach ($tval->messages as $message) {
-                $record = array();
+//        if ($ticket_id && $tval->messages) {
+//            foreach ($tval->messages as $message) {
+//                $record = array();
 //                $messagePersonId = $this->getMappers()->findIdFromMappedValue('person', $message->person);
 //
 //                if ($messagePersonId) {
@@ -263,7 +263,7 @@ class TicketValueImporter extends AbstractValueImporter
 //
 //                $message_id = $this->getDb()->lastInsertId();
 
-                foreach($message->attachments as $attachment) {
+//                foreach($message->attachments as $attachment) {
 //                    $attachment_value_importer = new AttachmentValueImporter(
 //                        $this->getMode(),
 //                        $this->getContainer(),
@@ -280,14 +280,14 @@ class TicketValueImporter extends AbstractValueImporter
 //                    );
 
 //                    $this->getDb()->insert('tickets_attachments', $ticket_attachment_record);
-                }
-            }
-        }
+//                }
+//            }
+//        }
 
         #------------------------------
         # Labels
         #------------------------------
-        if ($ticket_id && $tval->labels) {
+//        if ($ticket_id && $tval->labels) {
 //            $batch = array_map(function ($l) use ($ticket_id) {
 //                return array(
 //                    'ticket_id' => $ticket_id,
@@ -296,7 +296,7 @@ class TicketValueImporter extends AbstractValueImporter
 //            }, $tval->labels);
 //
 //            $this->getDb()->batchInsert('labels_tickets', $batch, true);
-        }
+//        }
 
         #------------------------------
         # Custom Fields

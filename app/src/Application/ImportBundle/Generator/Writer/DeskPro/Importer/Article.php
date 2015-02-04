@@ -73,11 +73,11 @@ final class Article extends AbstractImporter
                 ->setContent($importing_entity->getContent())
                 ->setSlug($importing_entity->getSlug())
                 ->setStatus($importing_entity->getStatus())
+                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
                 ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
                 ->setDateCreated($importing_entity->getDateCreated())
                 ->setDatePublished($importing_entity->getDatePublished())
-                ->setDateEnd($importing_entity->getDateEnd())
-                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()));
+                ->setDateEnd($importing_entity->getDateEnd());
 
             foreach ($importing_entity->getCategories() as $category) {
                 $article->addToCategory($this->findOrCreateArticleCategory($category));

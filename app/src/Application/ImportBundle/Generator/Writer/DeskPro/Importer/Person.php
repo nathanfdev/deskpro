@@ -78,6 +78,9 @@ final class Person extends AbstractImporter
             ->resetLabels()
             ->resetUsergroups();
 
+        if ($importing_entity->getPassword() && $importing_entity->isPlainPasswordScheme()) {
+            $person->setPassword($importing_entity->getPassword());
+        }
         foreach ($importing_entity->getEmails() as $num => $email) {
             $person->addEmailAddress($this->findOrCreatePersonEmail($email));
             $this->logInfo(sprintf(
@@ -91,8 +94,8 @@ final class Person extends AbstractImporter
         foreach ($importing_entity->getUserGroups() as $user_group) {
             $person->addUsergroup($this->getUserGroupMapper()->findOneByTitle($user_group));
         }
-        if ($importing_entity->getPassword() && $importing_entity->isPlainPasswordScheme()) {
-            $person->setPassword($importing_entity->getPassword());
+        foreach ($importing_entity->getCustomFields() as $custom_field) {
+            $person->addCustomData($this->createCustomData($custom_field));
         }
 
         $this->records->add($person);
@@ -172,6 +175,25 @@ final class Person extends AbstractImporter
     }
 
     /**
+     * Returns custom def person entity
+     *
+     * @param Entity\CustomField $importing_entity
+     *
+     * @return DeskPROEntity\CustomDataPerson
+     * @throws ImporterException
+     */
+    private function createCustomData(Entity\CustomField $importing_entity)
+    {
+        $custom_def = $this->getCustomDefPersonMapper()->findOneByTitle($importing_entity->getKey());
+        $entity     = new DeskPROEntity\CustomDataPerson();
+        $entity
+            ->setField($custom_def)
+            ->setValue($importing_entity->getValue());
+
+        return $entity;
+    }
+
+    /**
      * Returns the person email mapper
      *
      * @return Mapper\PersonEmail
@@ -191,5 +213,16 @@ final class Person extends AbstractImporter
     private function getUserGroupMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_USER_GROUP);
+    }
+
+    /**
+     * Returns the custom def person mapper
+     *
+     * @return Mapper\CustomDefPerson
+     * @throws \Exception
+     */
+    private function getCustomDefPersonMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_PERSON);
     }
 }

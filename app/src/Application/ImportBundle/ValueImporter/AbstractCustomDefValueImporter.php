@@ -64,7 +64,7 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
      * @param DeskproContainer     $container
      * @param LoggerInterface      $logger
      * @param RecordMapperRegistry $mappers
-     * @param mixed                $mapped_value
+     * @param mixed                $mapped_value   Mapped entity id (person, ticket)
      */
     public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers, $mapped_value)
     {

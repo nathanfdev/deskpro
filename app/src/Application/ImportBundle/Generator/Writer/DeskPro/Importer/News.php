@@ -50,11 +50,107 @@ final class News extends AbstractImporter
     /**
      * {@inheritdoc}
      *
+     * todo add referred objects
+     * 'total_rating'   => $nval->total_rating,
+     * 'num_comments'   => $nval->num_comments,
+     * 'num_ratings'    => $nval->num_ratings,
+     * 'view_count'     => $nval->view_count
+     *
      * @var Entity\News $importing_entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
     {
         $this->records = new ArrayCollection();
+        $exist_news    = $this->getNewsMapper()->findOneByTitle($importing_entity->getTitle(), false);
+        if ($exist_news) {
+            $this->logWarning(sprintf(
+                'A News item with the title `%s` already exists (skipping)',
+                $importing_entity->getTitle()
+            ));
+        } else {
+            $news = new DeskPROEntity\News();
+            $news
+                ->setTitle($importing_entity->getTitle())
+                ->setContent($importing_entity->getContent())
+                ->setSlug($importing_entity->getSlug())
+                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
+                ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
+                ->setCategory($this->findOrCreateNewsCategory($importing_entity->getCategory()))
+                ->setDateCreated($importing_entity->getDateCreated())
+                ->setDatePublished($importing_entity->getDatePublished());
+
+            foreach ($importing_entity->getLabels() as $label) {
+                $news->addLabel($this->createNewsLabel($label));
+            }
+
+            $this->records->add($news);
+        }
+
         return $this->records;
+    }
+
+    /**
+     * Returns an feedback category by title
+     * Creates a new feedback category if not found
+     *
+     * @param string $title
+     *
+     * @return DeskPROEntity\NewsCategory|null
+     * @throws \Exception
+     */
+    private function findOrCreateNewsCategory($title)
+    {
+        $category = null;
+        if ($title) {
+            $category = $this->getNewsCategoryMapper()->findOneByTitle($title, false);
+            if ($category) {
+                $this->logInfo(sprintf('Found existing news category `%s`', $category->getTitle()));
+            } else {
+                $category = new DeskPROEntity\NewsCategory();
+                $category->setRealTitle($title);
+
+                $this->records->add($category);
+                $this->logWarning(sprintf('New news category creating `%s`', $category->getTitle()));
+            }
+        }
+
+        return $category;
+    }
+
+    /**
+     * Returns a new news label entity
+     *
+     * @param string $label
+     * @return DeskPROEntity\LabelNews
+     */
+    private function createNewsLabel($label)
+    {
+        $entity = new DeskPROEntity\LabelNews();
+        $entity->setLabel($label);
+
+        $this->records->add($entity);
+        return $entity;
+    }
+
+    /**
+     * Returns the news mapper
+     *
+     * @return Mapper\News
+     * @throws \Exception
+     */
+    private function getNewsMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_NEWS);
+    }
+
+    /**
+     * Returns the news category mapper
+     *
+     * @return Mapper\NewsCategory
+     * @throws \Exception
+     */
+    private function getNewsCategoryMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_NEWS_CATEGORY);
     }
 }

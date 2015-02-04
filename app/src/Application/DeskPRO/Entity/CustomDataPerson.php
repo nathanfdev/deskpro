@@ -63,6 +63,18 @@ class CustomDataPerson extends CustomDataAbstract
         return $this->person['id'];
     }
 
+    /**
+     * Set a field
+     *
+     * @param CustomDefPerson $field
+     * @return $this
+     */
+    public function setField(CustomDefPerson $field)
+    {
+        $this->setModelField('field', $field);
+        return $this;
+    }
+
 
 
     ############################################################################

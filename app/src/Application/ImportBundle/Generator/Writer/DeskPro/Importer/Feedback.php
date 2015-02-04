@@ -50,11 +50,108 @@ final class Feedback extends AbstractImporter
     /**
      * {@inheritdoc}
      *
+     * todo add referred objects
+     * $record['total_rating']		= $fval->total_rating;
+     * $record['num_comments']		= $fval->num_comments;
+     * $record['num_ratings']		= $fval->num_ratings;
+     * $record['view_count']		= $fval->view_count;
+     * $record['popularity']		= $fval->popularity;
+     *
      * @var Entity\Feedback $importing_entity
      */
     public function getDoctrineEntities(Entity\EntityInterface $importing_entity)
     {
-        $this->records = new ArrayCollection();
+        $this->records  = new ArrayCollection();
+        $exist_feedback = $this->getFeedbackMapper()->findOneByTitle($importing_entity->getTitle(), false);
+        if ($exist_feedback) {
+            $this->logWarning(sprintf(
+                'A Feedback item with the title `%s` already exists (skipping)',
+                $importing_entity->getTitle()
+            ));
+        } else {
+            $feedback = new DeskPROEntity\Feedback();
+            $feedback
+                ->setTitle($importing_entity->getTitle())
+                ->setContent($importing_entity->getContent())
+                ->setSlug($importing_entity->getSlug())
+                ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
+                ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
+                ->setCategory($this->findOrCreateFeedbackCategory($importing_entity->getCategory()))
+                ->setDateCreated($importing_entity->getDateCreated())
+                ->setDatePublished($importing_entity->getDatePublished());
+
+            foreach ($importing_entity->getLabels() as $label) {
+                $feedback->addLabel($this->createFeedbackLabel($label));
+            }
+
+            $this->records->add($feedback);
+        }
+
         return $this->records;
+    }
+
+    /**
+     * Returns an feedback category by title
+     * Creates a new feedback category if not found
+     *
+     * @param string $title
+     *
+     * @return DeskPROEntity\FeedbackCategory|null
+     * @throws \Exception
+     */
+    private function findOrCreateFeedbackCategory($title)
+    {
+        $category = null;
+        if ($title) {
+            $category = $this->getFeedbackCategoryMapper()->findOneByTitle($title, false);
+            if ($category) {
+                $this->logInfo(sprintf('Found existing feedback category `%s`', $category->getTitle()));
+            } else {
+                $category = new DeskPROEntity\FeedbackCategory();
+                $category->setRealTitle($title);
+
+                $this->records->add($category);
+                $this->logWarning(sprintf('New feedback category creating `%s`', $category->getTitle()));
+            }
+        }
+
+        return $category;
+    }
+
+    /**
+     * Returns a new feedback label entity
+     *
+     * @param string $label
+     * @return DeskPROEntity\LabelFeedback
+     */
+    private function createFeedbackLabel($label)
+    {
+        $entity = new DeskPROEntity\LabelFeedback();
+        $entity->setLabel($label);
+
+        $this->records->add($entity);
+        return $entity;
+    }
+
+    /**
+     * Returns the feedback mapper
+     *
+     * @return Mapper\Feedback
+     * @throws \Exception
+     */
+    private function getFeedbackMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK);
+    }
+
+    /**
+     * Returns the feedback category mapper
+     *
+     * @return Mapper\FeedbackCategory
+     * @throws \Exception
+     */
+    private function getFeedbackCategoryMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_FEEDBACK_CATEGORY);
     }
 }

@@ -63,7 +63,7 @@ class KbValueImporter extends AbstractValueImporter
 //
 //        $record = array();
 
-        $articleId = null;
+//        $articleId = null;
 
         #------------------------------
         # Grab the person
@@ -100,9 +100,9 @@ class KbValueImporter extends AbstractValueImporter
 //        $record['date_created']		= isset($kbval->date_created) ? $kbval->date_created->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
 //        $record['date_published']	= isset($kbval->date_published) ? $kbval->date_published->format('Y-m-d H:i:s') : date('Y-m-d H:i:s');
 //        $record['date_end']		= isset($kbval->date_end) ? $kbval->date_end->format('Y-m-d H:i:s') : null;
-        $record['total_rating']		= $kbval->total_rating;
-        $record['num_comments']		= $kbval->num_comments;
-        $record['num_ratings']		= $kbval->num_ratings;
+//        $record['total_rating']		= $kbval->total_rating;
+//        $record['num_comments']		= $kbval->num_comments;
+//        $record['num_ratings']		= $kbval->num_ratings;
 
 //        if ($kbval->date_end) {
 //            $record['status'] = 'archived';

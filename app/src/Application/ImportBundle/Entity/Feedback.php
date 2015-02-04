@@ -324,6 +324,10 @@ final class Feedback extends AbstractEntity implements SlugAwareInterface, Perso
      */
     public function getStatus()
     {
+        if ($this->date_published) {
+            return 'published';
+        }
+
         return $this->status;
     }
 

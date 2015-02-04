@@ -27,7 +27,6 @@
 
 namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Entity as DeskPROEntity;
 use Application\ImportBundle\Entity;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -42,20 +41,20 @@ use Orb\Util\Strings;
 final class Ticket extends AbstractImporter
 {
     /**
-     * @var DeskproBlobStorage
+     * @var BlobAdapterInterface
      */
-    private $blob_storage;
+    private $blob_adapter;
 
     /**
      * Constructor
      *
-     * @param Mapper\Collection  $mappers
-     * @param DeskproBlobStorage $blob_storage
+     * @param Mapper\Collection    $mappers
+     * @param BlobAdapterInterface $blob_adapter
      */
-    public function __construct(Mapper\Collection $mappers, DeskproBlobStorage $blob_storage)
+    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
     {
         parent::__construct($mappers);
-        $this->blob_storage = $blob_storage;
+        $this->blob_adapter = $blob_adapter;
     }
 
     /**
@@ -108,6 +107,10 @@ final class Ticket extends AbstractImporter
         foreach ($importing_entity->getLabels() as $label) {
             $ticket->addLabel($this->createTicketLabel($label));
         }
+        foreach ($importing_entity->getCustomFields() as $custom_field) {
+            // todo implement
+            $ticket->setCustomData(null, null, null);
+        }
 
         $this->records->add($ticket);
         return $this->records;
@@ -156,7 +159,7 @@ final class Ticket extends AbstractImporter
         $attachment = new DeskPROEntity\TicketAttachment();
         $attachment
             ->setPerson($this->getPersonMapper()->findOneByEmail($email))
-            ->setBlob($this->getBlobData($importing_entity));
+            ->setBlob($this->blob_adapter->createByAttachment($importing_entity));
 
         return $attachment;
     }
@@ -294,27 +297,6 @@ final class Ticket extends AbstractImporter
     }
 
     /**
-     * Returns blob data
-     *
-     * @param Entity\Attachment $importing_entity
-     *
-     * @return DeskPROEntity\Blob
-     * @throws \Exception
-     */
-    private function getBlobData(Entity\Attachment $importing_entity)
-    {
-        return $this->blob_storage->createBlobRecordFromString(
-            $this->getBlobDataMapper()->findOneBy(
-                $importing_entity->getBlobData(),
-                $importing_entity->getBlobPath(),
-                $importing_entity->getBlobUrl()
-            ),
-            $importing_entity->getFileName(),
-            $importing_entity->getContentType()
-        );
-    }
-
-    /**
      * Returns the ticket mapper
      *
      * @return Mapper\Ticket
@@ -356,5 +338,16 @@ final class Ticket extends AbstractImporter
     private function getTicketCategoryMapper()
     {
         return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_TICKET_CATEGORY);
+    }
+
+    /**
+     * Returns the custom def person mapper
+     *
+     * @return Mapper\CustomDefTicket
+     * @throws \Exception
+     */
+    private function getCustomDefTicketMapper()
+    {
+        return $this->mappers->getMapperByType(Mapper\MapperInterface::TYPE_CUSTOM_DEF_TICKET);
     }
 }

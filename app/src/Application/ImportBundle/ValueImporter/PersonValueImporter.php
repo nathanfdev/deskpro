@@ -59,9 +59,9 @@ class PersonValueImporter extends AbstractValueImporter
      */
     public function importValue($pval)
     {
-        if (!($pval instanceof PersonValue)) {
-            throw new \InvalidArgumentException("This importer can only import PersonValue");
-        }
+//        if (!($pval instanceof PersonValue)) {
+//            throw new \InvalidArgumentException("This importer can only import PersonValue");
+//        }
 
         #------------------------------
         # Validate emails

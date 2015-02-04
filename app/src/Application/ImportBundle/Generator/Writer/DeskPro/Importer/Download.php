@@ -40,6 +40,23 @@ use Doctrine\Common\Collections\ArrayCollection;
 final class Download extends AbstractImporter
 {
     /**
+     * @var BlobAdapterInterface
+     */
+    private $blob_adapter;
+
+    /**
+     * Constructor
+     *
+     * @param Mapper\Collection    $mappers
+     * @param BlobAdapterInterface $blob_adapter
+     */
+    public function __construct(Mapper\Collection $mappers, BlobAdapterInterface $blob_adapter)
+    {
+        parent::__construct($mappers);
+        $this->blob_adapter = $blob_adapter;
+    }
+
+    /**
      * {@inheritdoc}
      */
     public function getEntityType()
@@ -76,12 +93,11 @@ final class Download extends AbstractImporter
                 ->setSlug($importing_entity->getSlug())
                 ->setPerson($this->getPersonMapper()->findOneByEmail($importing_entity->getPersonEmail()))
                 ->setLanguage($this->findLanguage($importing_entity->getLanguage()))
+                ->setBlob($this->blob_adapter->createByAttachment($importing_entity->getAttachment()))
+                ->setCategory($this->findOrCreateDownloadCategory($importing_entity->getCategory()))
                 ->setDateCreated($importing_entity->getDateCreated())
                 ->setDatePublished($importing_entity->getDatePublished());
 
-            if ($importing_entity->getCategory()) {
-                $download->setCategory($this->findOrCreateDownloadCategory($importing_entity->getCategory()));
-            }
             foreach ($importing_entity->getLabels() as $label) {
                 $download->addLabel($this->createDownloadLabel($label));
             }
@@ -107,7 +123,7 @@ final class Download extends AbstractImporter
         if ($title) {
             $category = $this->getDownloadCategoryMapper()->findOneByTitle($title, false);
             if ($category) {
-                $this->logInfo(sprintf('Found download article category `%s`', $category->getTitle()));
+                $this->logInfo(sprintf('Found existing download category `%s`', $category->getTitle()));
             } else {
                 $category = new DeskPROEntity\DownloadCategory();
                 $category->setRealTitle($title);

@@ -31,6 +31,7 @@ use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\EntityRepository;
 use Application\DeskPRO\DependencyInjection\DeskproContainer;
 use Application\ImportBundle\Generator\Writer\AbstractFactory;
+use Application\ImportBundle\Generator\Writer\DeskPro\Importer\BlobAdapter;
 
 /**
  * Generator deskpro writer factory
@@ -53,6 +54,7 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var DeskproBlobStorage $blob_storage */
         if ($this->container instanceof DeskproContainer) {
             $blob_storage = $this->container->getBlobStorage();
+            $blob_adapter = new BlobAdapter($blob_storage);
         } else {
             throw new \Exception('Unable to get a blob storage');
         }
@@ -128,12 +130,12 @@ class DeskProWriterFactory extends AbstractFactory
 
         $importers = new Importer\Collection();
         $importers
-            ->attach(new Importer\Download($mappers))
+            ->attach(new Importer\Download($mappers, $blob_adapter))
             ->attach(new Importer\Feedback($mappers))
             ->attach(new Importer\Article($mappers))
             ->attach(new Importer\News($mappers))
             ->attach(new Importer\Person($mappers))
-            ->attach(new Importer\Ticket($mappers, $blob_storage));
+            ->attach(new Importer\Ticket($mappers, $blob_adapter));
 
         return new DeskProWriter($importers, $entity_manager);
     }

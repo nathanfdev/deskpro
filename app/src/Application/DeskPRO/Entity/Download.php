@@ -117,6 +117,7 @@ class Download extends ContentAbstract implements HighlightableModelInterface
 
     /**
      * @param Blob $blob
+     * @return $this
      */
     public function setBlob(Blob $blob = null)
     {
@@ -128,6 +129,8 @@ class Download extends ContentAbstract implements HighlightableModelInterface
         } else {
             $this->setModelField('blob', null);
         }
+
+        return $this;
     }
 
 

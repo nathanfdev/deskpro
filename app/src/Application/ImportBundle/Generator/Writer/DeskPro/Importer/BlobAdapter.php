@@ -25,92 +25,60 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
-namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
+namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer;
 
-use Application\DeskPRO\Entity;
-use Application\DeskPRO\EntityRepository;
+use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
+use Application\ImportBundle\Entity;
 
 /**
- * Custom def people record mapper
+ * Blob storage adapter
  *
- * Class CustomDefPeople
- * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
+ * Class BlobAdapter
+ * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-class CustomDefPerson implements MapperInterface, MapperByTitleInterface
+class BlobAdapter implements BlobAdapterInterface
 {
     /**
-     * @var EntityRepository\CustomDefPerson
+     * @var Mapper\BlobData
      */
-    private $repository;
+    private $mapper;
+
+    /**
+     * @var DeskproBlobStorage
+     */
+    private $blob_storage;
 
     /**
      * Constructor
      *
-     * @param EntityRepository\CustomDefPerson $repository
+     * @param DeskproBlobStorage $blob_storage
+     * @param Mapper\BlobData    $mapper
      */
-    public function __construct(EntityRepository\CustomDefPerson $repository)
+    public function __construct(DeskproBlobStorage $blob_storage, Mapper\BlobData $mapper)
     {
-        $this->repository = $repository;
+        $this->blob_storage = $blob_storage;
+        $this->mapper       = $mapper;
     }
 
     /**
      * {@inheritdoc}
      */
-    public function getType()
+    public function createBySourceData($source_data, $filename, $content_type)
     {
-        return self::TYPE_CUSTOM_DEF_PERSON;
+        return $this->blob_storage->createBlobRecordFromString($source_data, $filename, $content_type);
     }
 
     /**
      * {@inheritdoc}
      */
-    public function findOneBy(array $criteria, $throw_exception = true)
+    public function createByAttachment(Entity\Attachment $attachment)
     {
-        /** @var Entity\CustomDefPerson $record */
-        $record = $this->repository->findOneBy($criteria);
-        if ( ! $record && $throw_exception) {
-            throw new MapperException('Custom def people not found', $criteria);
-        }
-        if ( ! $this->isSupportType($record->getTypeName())) {
-            throw new MapperException(
-                sprintf('Custom field  does not support type `%s`', $record->getTypeName()),
-                $criteria
-            );
-        }
-
-        return $record;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function findOneByTitle($title, $throw_exception = true)
-    {
-        return $this->findOneBy(array('title' => $title), $throw_exception);
-    }
-
-    /**
-     * Returns true if a type is supported by the custom field entity
-     *
-     * @param string $type
-     * @return bool
-     */
-    public function isSupportType($type)
-    {
-        return in_array($type, self::getSupportedTypes(), true);
-    }
-
-    /**
-     * @return array
-     */
-    public static function getSupportedTypes()
-    {
-        return array(
-            'text',
-            'choice',
-            'textarea',
-            'toggle',
-            'date',
+        $blob_data = $this->mapper->findOneBy(
+            $attachment->getBlobData(),
+            $attachment->getBlobPath(),
+            $attachment->getBlobUrl()
         );
+
+        return $this->createBySourceData($blob_data, $attachment->getFileName(), $attachment->getContentType());
     }
 }
