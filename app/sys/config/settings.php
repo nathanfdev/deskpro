@@ -839,7 +839,7 @@
     'agent.ip_security.whitelist_lifetime' => 1814400,
 
     ####################################################################################################################
-    # login rate limit
+    # login account lockout
     ####################################################################################################################
 
     'user.login_rate_limit.enabled'         => true,
@@ -867,6 +867,9 @@
     'rate_limit.reset_password.time'                    => 15 * 60, // 15 min
     'rate_limit.reset_password.response'                => 'captcha',
 
+    'rate_limit.token_exchange.limit'                   => 50,
+    'rate_limit.token_exchange.time'                    => 15 * 60, // 15 min
+    'rate_limit.token_exchange.response'                => 'captcha',
 
     'rate_limit.submit_comment.limit'                   => 3,
     'rate_limit.submit_comment.time'                    => 15 * 60, // 15 min
