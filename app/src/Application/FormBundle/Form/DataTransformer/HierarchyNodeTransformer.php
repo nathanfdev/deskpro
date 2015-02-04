@@ -91,9 +91,19 @@ class HierarchyNodeTransformer implements DataTransformerInterface
             return '';
         }
 
+        $choices = $this->choice_list->getChoices();
+
+        if (count($choices) < 1) {
+            return '';
+        }
+
         /** @var \Application\FormBundle\Hierarchy\HierarchyNode $choice */
-        foreach ($this->choice_list->getChoices() as $choice) {
-            if ($value == $choice->getData()) {
+        foreach ($choices as $choice) {
+            if (!$choice instanceof HierarchyNode) {
+                continue;
+            }
+
+            if ($value === $choice->getData()) {
                 return $choice;
             }
         }
