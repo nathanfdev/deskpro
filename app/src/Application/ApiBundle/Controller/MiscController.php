@@ -36,7 +36,9 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\LoginLogs\LoginLogs;
+use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\File\File;
 
@@ -162,6 +164,10 @@ class MiscController extends AbstractController
 
     public function tokenExchangeAction()
     {
+        if ($lockTime = $this->getLoginLockoutTime($this->in->getString('email'))) {
+            return $this->createApiErrorResponse('account_locked', sprintf('Account locked for %d seconds', $lockTime), 403);
+        }
+
         $result = $this->_authLocalInput($this->in->getString('email'), $this->in->getString('password'));
 
         if (!$result->isValid()) {
@@ -396,5 +402,36 @@ class MiscController extends AbstractController
         $log = array_shift($records); // will be the last login
 
         return $this->createJsonResponse(array("last_login" => $log));
+    }
+
+    /**
+     * get current login lockout time
+     * @param null $email
+     * @return int|mixed
+     */
+    protected function getLoginLockoutTime($email = null)
+    {
+        if (!$email) {
+            return 0;
+        }
+
+        if (!$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email)) {
+            return 0;
+        }
+
+        $context = $person['is_agent'] ? 'agent' : 'user';
+
+        // 0 if disabled
+        if (!$this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.enabled')) {
+            return 0;
+        }
+
+        /** @var LoginLog $rep */
+        $rep = $this->em->getRepository('DeskPRO:LoginLog');
+        $maxAttempts = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts');
+        $checkTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'attempts_time');
+        $lockTime = $this->settings->get($context . '.' . LoginRateLimitSettings::KEY . '.' . 'lock_time');
+
+        return $rep->getLoginLockoutTime($person, $maxAttempts, $checkTime, $lockTime);
     }
 }
