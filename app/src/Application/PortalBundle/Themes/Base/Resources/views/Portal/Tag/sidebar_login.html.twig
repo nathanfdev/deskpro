@@ -4,7 +4,7 @@
         <h1>Log in</h1>
 
         {#{{ dump(ugs|join(',')) }}#}
-        {#{{ dump(user_hash) }}#}
+        {{ user_hash }}
         {#{{ dump(perms) }}#}
 
         {% if auth_manager.isLoginFormVisible %}
