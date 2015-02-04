@@ -16,13 +16,27 @@
     <div class="left">
         <div class="dashboard-main-list" dp-dropdown="dp-select-dashboard-dropdown" dp-dropdown-opener="dp-select-dashboard-opener">
             <a class="link-pointer" id="dp-select-dashboard-opener">
-                <span>Dashboard:</span> {{ ng_var('dashboard.title') }} <i class="fa fa-sort"></i>
+                <span>Dashboard:</span>
+                <span class='logo-deskpro' ng-if="dashboard.is_default"></span>
+                {{ ng_var('dashboard.title') }} <i class="fa fa-sort"></i>
             </a>
 
             <ul id="dp-select-dashboard-dropdown">
-                <li ng-repeat="db in dashboards track by $index">
+                <li class="type-heading">
+                    <span>Built-in Dashboards</span>
+                </li>
+                <li ng-repeat="db in (dashboards|filter:defaultDashboardsFilter) track by $index">
                     <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">
-                        <span class='logo-deskpro' ng-show="db.is_default"></span>
+                        <span class='logo-deskpro'></span>
+                        {{ ng_var('db.title') }}
+                    </a>
+                </li>
+                <li class="type-heading">
+                    <a ng-click="openCreate()"><i class="fa fa-plus"></i> Create</a>
+                    <span>Custom Dashboards</span>
+                </li>
+                <li ng-repeat="db in (dashboards|filter:defaultDashboardsFilter) track by $index">
+                    <a class='link-pointer' ui-sref-active="current" dp-dropdown-item ui-sref="reports.dashboards.view.index({ dashboard_id: db.id })">
                         {{ ng_var('db.title') }}
                     </a>
                 </li>

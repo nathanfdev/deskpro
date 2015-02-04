@@ -7,6 +7,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
     $scope.loaded = false
     $scope.dashboard = null
 
+    ####################################################################################################################
+    # LOADING
+    ####################################################################################################################
+
     DashboardsInfo.getDashboardList().then((dbs) ->
       $scope.dashboards = dbs
       dashboard = Arrays.find(dbs, (x) -> x.id == dashboard_id)
@@ -38,6 +42,23 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
         $scope.dashboard = db
       )
     )
+
+    ####################################################################################################################
+    # FILTERS
+    ####################################################################################################################
+
+    $scope.permissionsFilter = (value) ->
+      if value.permissions > 0
+        return true
+      else
+        return false
+
+    $scope.defaultDashboardsFilter = (value) -> value.is_default
+    $scope.customDashboardsFilter  = (value) -> value.is_default
+
+    ####################################################################################################################
+    # MODAL HANDLERS
+    ####################################################################################################################
 
     $scope.openEdit = (activeTab) ->
       $modal.open({
