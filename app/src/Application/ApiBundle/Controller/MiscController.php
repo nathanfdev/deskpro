@@ -36,6 +36,7 @@ namespace Application\ApiBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
+use Application\DeskPRO\Entity\ApiToken;
 use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\LoginLogs\LoginLogs;
 use Application\DeskPRO\Service\RateLimit;
@@ -243,6 +244,7 @@ class MiscController extends AbstractController
             'date_created' => date('Y-m-d H:i:s')
         ));
 
+        /** @var ApiToken $token */
         $token = $this->em->getRepository('DeskPRO:ApiToken')->getTokenForPerson($person);
         if (!$token) {
             $token = new \Application\DeskPRO\Entity\ApiToken();

@@ -228,6 +228,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
             // Reset user session
             $this->db->delete('sessions', array('person_id' => $this->person->id));
+            $this->db->delete('api_token', array('person_id' => $this->person->id));
 
             return $this->redirectRoute('user_login');
         }

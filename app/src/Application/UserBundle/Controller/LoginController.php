@@ -1115,6 +1115,7 @@ HTML;
 
                 // Delete old sessions for this user
                 $this->db->delete('sessions', array('person_id' => $person->getId()));
+                $this->db->delete('api_token', array('person_id' => $this->person->id));
 
                 $this->session->setFlash('password_reset', 1);
 
