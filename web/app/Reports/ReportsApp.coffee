@@ -3,8 +3,9 @@ define [
   'DeskPRO/Main/Service/DpApi',
 
   # Controllers
-  'Reports/App/Controller/DashboardReport',
-  'Reports/App/Controller/DashboardView',
+  'Reports/Dashboards/Ctrl/DashboardReport',
+  'Reports/Dashboards/Ctrl/DashboardView',
+
   'Reports/App/Controller/ModalDashboard',
   'Reports/App/Controller/ModalReport',
   'Reports/App/Controller/ModalWidgetType',
@@ -55,8 +56,9 @@ define [
   DeskPRO_Main_Service_DpApi,
 
   # Controllers
-  Reports_App_Controller_DashboardReport,
-  Reports_App_Controller_DashboardView,
+  Reports_Dashboards_Ctrl_DashboardReport,
+  Reports_Dashboards_Ctrl_DashboardView,
+
   Reports_App_Controller_ModalDashboard,
   Reports_App_Controller_ModalReport,
   Reports_App_Controller_ModalWidgetType,
@@ -99,8 +101,8 @@ define [
   ###
   # Controllers section
   ###
-  ReportsApp.controller('Reports.App.DashboardReport',      Reports_App_Controller_DashboardReport)
-  ReportsApp.controller('Reports.App.DashboardView',        Reports_App_Controller_DashboardView)
+  ReportsApp.controller('Reports.App.DashboardReport',      Reports_Dashboards_Ctrl_DashboardReport)
+  ReportsApp.controller('Reports.App.DashboardView',        Reports_Dashboards_Ctrl_DashboardView)
 
   for x in window.DP_CTRL_REG
     deps = x[1]
