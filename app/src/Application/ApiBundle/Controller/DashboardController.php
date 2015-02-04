@@ -201,29 +201,70 @@ class DashboardController extends AbstractController
         if ($this->permissionsService->isEditableDashboard($dashboard)) {
             $dashboard
                 ->setTitle($postData['title']);
+            $dbReports = $dashboard->getReports();
+            $apiReports = array();
+            $apiReportsIds = array();
             foreach($postData['reports'] as $report) {
-                if(isset($report['deleted']) && $report['deleted']) {
+                $reportEntity = false;
+                if(
+                 isset($report['isAdded']) &&
+                 $report['isAdded'] === true
+                ) {
+                    $reportEntity = new Tab();
+                    $reportEntity->setColumns(10)
+                                 ->setDashboard($dashboard);
+                    $dashboard->addReport($reportEntity);
+                  if (isset($report['cloneId']) && (int) $report['cloneId'] > 0) {
+                      $report_prototype = $this->service->getReport($report['cloneId']);
+                      $this->widgetService->copyWidgetLinks($reportEntity,$report_prototype);
+                  }
+                } elseif((int)$report['id'] > 0) {
                     $reportEntity = $this->service->getReport($report['id']);
-                    $dashboard->removeReport($reportEntity);
-                    $this->service->deleteReport($reportEntity);
-                } else {
-                    if(isset($report['id'])) {
-                        $reportEntity = $this->service->getReport($report['id']);
-//                    $reportEntity->setSortOrder($report['sort_order']);
-                    } else {
-                        $reportEntity = new Tab();
-                        $reportEntity->setColumns(10)
-                            ->setDashboard($dashboard);
-                        $reportEntity->setSortOrder($this->service->getLastSortOrder($dashboard));
-                        $dashboard->addReport($reportEntity);
-                    }
-                    if(isset($report['prototype_id'])) {
-                        $report_prototype = $this->service->getReport($report['prototype_id']);
-                        $this->widgetService->copyWidgetLinks($reportEntity,$report_prototype);
-                    }
-                    $reportEntity->setTitle($report['title']);
-                    $this->service->saveReport($reportEntity);
+                    $apiReportsIds[] = (int) $report['id'];
                 }
+                if($reportEntity) {
+                    $reportEntity->setTitle($report['title']);
+                    $apiReports[] = $reportEntity;
+                }
+
+
+
+//                if(isset($report['deleted']) && $report['deleted']) {
+//                    $reportEntity = $this->service->getReport($report['id']);
+//                    $dashboard->removeReport($reportEntity);
+//                    $this->service->deleteReport($reportEntity);
+//                } else {
+//                    if(isset($report['id'])) {
+//                        $reportEntity = $this->service->getReport($report['id']);
+////                    $reportEntity->setSortOrder($report['sort_order']);
+//                    } else {
+//                        $reportEntity = new Tab();
+//                        $reportEntity->setColumns(10)
+//                            ->setDashboard($dashboard);
+//                        $reportEntity->setSortOrder($this->service->getLastSortOrder($dashboard));
+//                        $dashboard->addReport($reportEntity);
+//                    }
+//                    if(isset($report['prototype_id'])) {
+//                        $report_prototype = $this->service->getReport($report['prototype_id']);
+//                        $this->widgetService->copyWidgetLinks($reportEntity,$report_prototype);
+//                    }
+//                    $reportEntity->setTitle($report['title']);
+//                    $this->service->saveReport($reportEntity);
+//                }
+            }
+            foreach($dbReports as $dbReport) {
+                if (!in_array($dbReport->getId(), $apiReportsIds)) {
+                    $dashboard->removeReport($dbReport);
+                    $this->service->deleteReport($dbReport);
+                }
+            }
+            /**
+             * @var  $index
+             * @var Tab $apiReport
+             */
+            foreach($apiReports as $index => $apiReport) {
+                $apiReport->setSortOrder($index+1);
+                $this->service->saveReport($apiReport);
             }
         }
         $returnData = $this->service->saveDashboard($dashboard);

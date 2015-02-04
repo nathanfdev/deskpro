@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
-  '$scope', '$q', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo'
-  ($scope, $q, $modalInstance, dashboard_id, modal_options, DashboardsInfo) ->
+  '$scope', '$q', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo', 'DashboardService'
+  ($scope, $q, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService) ->
     $scope.loaded = false
     $scope.dashboard = null
     $scope.reports = []
@@ -137,14 +137,17 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
     doSaveDashboard = ->
       d = $q.defer()
 
-      console.log("TODO")
-
       dashboard = $scope.dashboard
-      reports   = $scope.reports
+      data = dashboard;
+      data.reports = $scope.reports
+      DashboardService
+      .saveDashboard dashboard
+      .then (saved) ->
+        d.resolve saved
 
-      window.setTimeout(->
-        d.resolve()
-      , 1800)
+#      window.setTimeout(->
+#        d.resolve()
+#      , 1800)
 
       d.promise
   ]
