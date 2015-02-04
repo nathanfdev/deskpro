@@ -10,7 +10,6 @@ define -> [
    DashboardWidgetService,
    widget) ->
 
-    DashboardService.setWidgetService(DashboardWidgetService)
     $scope.widget = widget
 
     $scope.cancel = ->

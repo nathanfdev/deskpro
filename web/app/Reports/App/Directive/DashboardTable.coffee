@@ -15,7 +15,6 @@ define ['datatables'], () ->
       link: (scope, element, attrs) ->
         el = $(element)
         dt = null
-        DashboardService.setWidgetService(DashboardWidgetService)
 
         box = el.parent()
         listItem = box.parent()

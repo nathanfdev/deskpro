@@ -12,7 +12,6 @@ define -> [
    dashboard,
    report) ->
 
-    DashboardService.setWidgetService(DashboardWidgetService)
     $scope.dashboard = dashboard
     $scope.report = report
 

@@ -1,11 +1,11 @@
-<div ng-if="is_loading">
+<div ng-if="!loaded">
     <div class="report-info">
         <div style="margin: 40px; text-align: center;">
             <i class="spinner-big-circle"></i>
         </div>
     </div>
 </div>
-<div ng-if="!is_loading">
+<div ng-if="loaded">
     <div class="report-info">
         <div class="report-extras">
             <a href="#">
@@ -19,13 +19,13 @@
             </a>
         </div>
 
-        <h1><span>Report:</span> {{ ng_var('currentReport.title') }}</h1>
+        <h1><span>Report:</span> {{ ng_var('report.title') }}</h1>
 
-        <nav class="reports-control" ng-show="currentReport.id">
+        <nav class="reports-control" ng-show="report.id">
             <ul>
                 <li>
                     <a
-                        ng-click='editReportModal(currentReport)'
+                        ng-click='editReportModal(report)'
                         ng-class="{'control-inactive': dashboard.is_default}">
                         <i class="fa fa-cog"></i> Edit Report
                     </a>
@@ -55,7 +55,7 @@
                 Dashboard Layout <i class="fa fa-columns"></i>
             </a>
             <a
-                ng-click='typeWidgetModal(currentReport)'
+                ng-click='typeWidgetModal()'
                 ng-class="{'control-inactive': dashboard.is_default}"
                 class="control"
             >
@@ -67,7 +67,7 @@
     <div class="list-group">
         <div gridster="gridsterOptions" class="dashboard">
             <div class="dp-gridster-wrap">
-                <div ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in currentReport.widgets" class="dp-gridster-item">
+                <div ng-if="!widget.deleted" gridster-item="widget" ng-repeat="widget in report.widgets" class="dp-gridster-item">
                     <div class="box-header">
                         <div ng-show='layoutEditing' class="box-header-btns pull-right">
                             <a title="Edit widget" ng-click="editWidgetModal(widget)"><i class="fa fa-cog"></i></a>

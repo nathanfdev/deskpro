@@ -8,11 +8,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       @lastDashboard = null
       @lastReport = null
 
-    setWidgetService: (service) ->
-      @widgetService = service
-      @widgetService.setDashboardService(@)
-
-
     getDbIndexById: (dbs, id) ->
       index = -1
       index = Arrays.findIndex dbs,

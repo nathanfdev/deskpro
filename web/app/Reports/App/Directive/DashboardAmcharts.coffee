@@ -24,7 +24,6 @@ define ->
         initChart = () ->
           if chart
             chart.destroy()
-          DashboardService.setWidgetService(DashboardWidgetService)
           DashboardWidgetService
             .getWidget(conf)
             .then (widget) =>

@@ -18,7 +18,6 @@ define ['DeskPRO/Util/Arrays'], (Arrays) -> [
    currentReport,
    state) ->
 
-    DashboardService.setWidgetService(DashboardWidgetService)
     $scope.state = state
     $scope.expandedDashboard = {}
     $scope.dashboards = dashboards

@@ -1,12 +1,18 @@
 define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
   class DashboardsInfo
     constructor: (@Api, @$q) ->
-      @dashboardList = []
+      @version_id = 0
+      @dashboardList        = []
       @dashboardListPromise = null
+      @lastDashboardDetail  = null
+      @lastReportDetail     = null
 
     resetData: ->
-      @dashboardList = []
+      @version_id += 1
+      @dashboardList        = []
       @dashboardListPromise = null
+      @lastDashboardDetail  = null
+      @lastReportDetail     = null
 
     ###
     # Gets a list of dashboards. This is basic information like id and title.
@@ -36,6 +42,51 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) ->
       )
 
       return @dashboardListPromise
+
+    ###
+    # Gets full details about a dashboard (suitable for edit)
+    #
+    # @param {Integer} dashboard_id
+    # @return {promise}
+    ###
+    getDashboardDetail: (dashboard_id) ->
+      dashboard_id = parseInt(dashboard_id)
+
+      d = @$q.defer()
+
+      if @lastDashboardDetail and @lastDashboardDetail.id == report_id
+        d.resolve(@lastDashboardDetail)
+        return d.promise
+
+      @Api.sendGet("/dashboards/#{dashboard_id}").then( (resp) =>
+        @lastDashboardDetail = resp.data
+        d.resolve(resp.data)
+      )
+
+      return d.promise
+
+    ###
+    # Gets full details about a dashboard (suitable for view/edit)
+    #
+    # @param {Integer} dashboard_id
+    # @return {promise}
+    ###
+    getReportDetail: (report_id) ->
+      report_id = parseInt(report_id)
+
+      d = @$q.defer()
+
+      if @lastReportDetail and @lastReportDetail.id == report_id
+        d.resolve(@lastReportDetail)
+        return d.promise
+
+      @Api.sendGet("/dashboards/reports/#{report_id}").then( (resp) =>
+        @lastReportDetail = resp.data
+        d.resolve(resp.data)
+        return d.promise
+      )
+
+      return d.promise
 
     ###
     # Gets a list of report id/title that exist on a dashboard.

@@ -6,12 +6,6 @@ define [
   'Reports/Dashboards/Ctrl/DashboardReport',
   'Reports/Dashboards/Ctrl/DashboardView',
 
-  'Reports/App/Controller/ModalDashboard',
-  'Reports/App/Controller/ModalReport',
-  'Reports/App/Controller/ModalWidgetType',
-  'Reports/App/Controller/ModalWidgetAdd',
-  'Reports/App/Controller/ModalWidgetEdit',
-
   'Reports/Legacy/AgentActivity/Ctrl/AgentActivity',
   'Reports/Legacy/AgentHours/Ctrl/AgentHours',
   'Reports/Legacy/Builder/Ctrl/Edit',
@@ -58,12 +52,6 @@ define [
   # Controllers
   Reports_Dashboards_Ctrl_DashboardReport,
   Reports_Dashboards_Ctrl_DashboardView,
-
-  Reports_App_Controller_ModalDashboard,
-  Reports_App_Controller_ModalReport,
-  Reports_App_Controller_ModalWidgetType,
-  Reports_App_Controller_ModalWidgetAdd,
-  Reports_App_Controller_ModalWidgetEdit,
 
   Reports_AgentActivity_Ctrl_AgentActivity,
   Reports_AgentHours_Ctrl_AgentHours,
@@ -114,12 +102,6 @@ define [
   ReportsApp.controller('Reports.Builder.Edit',                          Reports_Builder_Ctrl_Edit);
   ReportsApp.controller('Reports.Builder.List',                          Reports_Builder_Ctrl_List);
   ReportsApp.controller('Reports.TicketSatisfaction.TicketSatisfaction', Reports_TicketSatisfaction_Ctrl_TicketSatisfaction);
-
-  ReportsApp.controller('Reports.App.ModalDashboard',       Reports_App_Controller_ModalDashboard)
-  ReportsApp.controller('Reports.App.ModalReport',          Reports_App_Controller_ModalReport)
-  ReportsApp.controller('Reports.App.ModalWidgetType',      Reports_App_Controller_ModalWidgetType)
-  ReportsApp.controller('Reports.App.ModalWidgetAdd',       Reports_App_Controller_ModalWidgetAdd)
-  ReportsApp.controller('Reports.App.ModalWidgetEdit',      Reports_App_Controller_ModalWidgetEdit)
 
   ###
   # Service section
