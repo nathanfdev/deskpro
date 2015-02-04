@@ -348,7 +348,7 @@ class LoginProcessor
      */
     protected function updatePictureData($mapped_fields, $em)
     {
-        if ($mapped_fields->has('picture_data') && !$this->person->picture_blob) {
+        if ($mapped_fields->has('picture_data')) {
             $filename = tempnam(dp_get_tmp_dir(), 'picture');
             $fp = @fopen($filename, 'w');
             if ($fp) {
