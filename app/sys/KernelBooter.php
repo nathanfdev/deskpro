@@ -308,18 +308,21 @@ class KernelBooter
                 if (false !== strpos($response->getContent(), '</body>') && '/_' !== substr(rawurldecode($request->getPathInfo()), 0, 2)) {
                     $end = round(microtime(true) * 1000);
                     $log = explode(';', $kernel->getLog());
-                    $print_log = "<br><br><br><br><hr><br><h1>Master Response Headers</h1><table>";
+                    $print_log = "<br><br><br><br><hr><br><h1>Simple Profile</h1><pre>";
+                    $print_log .= "xdebug:             " . (function_exists('xdebug_enable') ? 'enabled' : 'disabled') . "<br>\n";
+                    $print_log .= "kernel env:         " . $env . "<br>\n";
+                    $print_log .= "kernel booter time: " . ((int)$start - (int)$boot) . " ms<br>\n";
+                    $print_log .= "portal kernel time: " . ((int)$end - (int)$start) . " ms<br>\n";
+                    $print_log .= "total time:         <strong>" . ((int)$end - (int)$boot) . ' ms</strong>';
+                    $print_log .= "</pre>";
+                    $print_log .= "<br><hr><br><h1>Master Response Headers</h1><table>";
                     foreach ($response->headers as $name => $header) {
                         $print_log .= "<tr><td style=\"min-width: 200px\"><strong>$name</strong></td><td>" . implode(',',$header) . "</td></tr>";
                     }
 
                     $print_log .= "</table><br><hr><br><h1>Http Cache Log</h1>";
                     $print_log .= implode("\n<br>", $log);
-                    $print_log .= "<br><hr><br><h1>Simple Profile</h1><pre>";
-                    $print_log .= "kernel booter time: " . ((int)$start - (int)$boot) . " ms<br>\n";
-                    $print_log .= "portal kernel time: " . ((int)$end - (int)$start) . " ms<br>\n";
-                    $print_log .= "total time:         <strong>" . ((int)$end - (int)$boot) . ' ms</strong>';
-                    $print_log .= "</pre><br><br><br>";
+                    $print_log .= "<br><br><br>";
 
 
                     $content = $response->getContent();
