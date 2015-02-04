@@ -35,8 +35,7 @@ fos_http_cache:
     user_context:
         enabled: true
         user_identifier_headers: ['Cookie']
-        # TODO: make sure this ttl gets invalidated on login and logout
-        hash_cache_ttl: 0 # re-check the has for perm changes ever 10 min. we invalidate this on logout.
+        hash_cache_ttl: 60 # only make the user-context-hash request once per minute
 
 
 # Security Configuration
