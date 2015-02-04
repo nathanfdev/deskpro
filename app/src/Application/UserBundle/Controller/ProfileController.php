@@ -439,6 +439,11 @@ class ProfileController extends AbstractController implements RequireUserInterfa
             return $this->redirectRoute('user_profile');
         }
 
+        if (!$this->person->checkPassword($this->in->getString('current_password'))) {
+            $this->session->setFlash('new_email_invalid_password', 1);
+            return $this->redirectRoute('user_profile');
+        }
+
         if (!$this->container->getSystemService('email_address_validator')->isValidUserEmail($email_address)) {
             $this->session->setFlash('invalid_email', 1);
             $this->session->save();
