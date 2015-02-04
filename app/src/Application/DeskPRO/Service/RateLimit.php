@@ -43,6 +43,7 @@ class RateLimit
 	const ACT_LOGIN = 'login';
 	const ACT_REGISTRATION = 'registration';
 	const ACT_RESET_PWD = 'reset_password';
+	const ACT_TOKEN_EXCHANGE = 'token_exchange';
 
 	const ACT_SUBMIT_COMMENT = 'submit_comment';
 	const ACT_SUBMIT_FEEDBACK = 'submit_feedback';

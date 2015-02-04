@@ -38,6 +38,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Auth\LoginProcessor;
 use Application\DeskPRO\EntityRepository\LoginLog;
 use Application\DeskPRO\LoginLogs\LoginLogs;
+use Application\DeskPRO\Service\RateLimit;
 use Application\DeskPRO\Settings\LoginRateLimitSettings;
 use Orb\Util\Strings;
 use Symfony\Component\HttpFoundation\File\File;
@@ -168,6 +169,13 @@ class MiscController extends AbstractController
             return $this->createApiErrorResponse('account_locked', sprintf('Account locked for %d seconds', $lockTime), 403);
         }
 
+        /** @var RateLimit $rateLimit */
+        $rateLimit = $this->get(RateLimit::KEY);
+        if ($rateLimit->isActionLimited(RateLimit::ACT_TOKEN_EXCHANGE)) {
+            return $this->createApiErrorResponse('rate_limit_exceeded', 'Rate Limit Exceeded', 403);
+        }
+
+        $rateLimit->saveAction(RateLimit::ACT_TOKEN_EXCHANGE);
         $result = $this->_authLocalInput($this->in->getString('email'), $this->in->getString('password'));
 
         if (!$result->isValid()) {
