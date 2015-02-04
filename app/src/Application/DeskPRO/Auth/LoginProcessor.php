@@ -183,6 +183,7 @@ class LoginProcessor
         } else {
             $this->person = $this->assoc['person'];
 
+            // if this setting is true, then always update $this->person via these methods
             if (App::getSetting('core.usersource_always_update_data')) {
                 $this->updatePersonName($mapped_fields);
                 $this->updatePictureData($mapped_fields, $em);
