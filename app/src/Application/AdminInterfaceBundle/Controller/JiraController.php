@@ -67,11 +67,9 @@ class JiraController extends AbstractController
 
 			if ($back = $request->getSession()->get('jira_back_url')) {
 				$request->getSession()->remove('jira_back_url');
-			} else {
-				$back = $this->generateUrl('jira_test');
 			}
 
-			return $this->redirect($back);
+			return $this->redirect($back ?: $this->generateUrl('admin'));
 		}
 
 		$credentials = $oauth->requestTempCredentials();
