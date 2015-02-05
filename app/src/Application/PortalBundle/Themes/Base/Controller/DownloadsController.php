@@ -243,7 +243,7 @@ class DownloadsController extends AbstractController
      *          "category": null,
      *          "show_pagination": true,
      *          "page": 1,
-     *          "count": 2
+     *          "count": 10
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\DownloadCategory","int","string","null"}

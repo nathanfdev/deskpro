@@ -560,6 +560,21 @@
      */
     'portal.default_feedback_status_category_id' => 2,
 
+    /**
+     * The default "per page" number of results in content lists
+     */
+    'portal.per_page_content' => 10,
+
+    /**
+     * The default "per page" number of results in RSS feeds
+     */
+    'portal.per_page_rss' => 10,
+
+    /**
+     * The default "per page" number of results in each of the user's ticket lists
+     */
+    'portal.per_page_tickets' => 10,
+
     ####################################################################################################################
     # core_misc
     ####################################################################################################################

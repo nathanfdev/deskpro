@@ -58,7 +58,7 @@ class FeedbackController extends AbstractController
      * @TagOptions(
      *      defaults={
      *          "style": "row",
-     *          "count": 2,
+     *          "count": 10,
      *          "page": 1,
      *          "status": "all",
      *          "status_categories": {},
@@ -129,7 +129,7 @@ class FeedbackController extends AbstractController
      * @TagOptions(
      *      defaults={
      *          "show_pagination": true,
-     *          "count": 2,
+     *          "count": 10,
      *          "page": 1,
      *          "status": "all",
      *          "status_categories": {},

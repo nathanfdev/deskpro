@@ -60,8 +60,6 @@ class FeedbackController extends AbstractController
     public function indexAction(Request $request, $_format)
     {
         $page = $request->query->get('page', 1);
-        $per_page = $request->query->get('per_page', 5); // TODO: brand setting?
-
 
         //
         // RSS
@@ -78,7 +76,7 @@ class FeedbackController extends AbstractController
 
             $pager = $this->getFeedbackDataService()->getItemsPager(
                 $page,
-                $per_page,
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss')),
                 $filter
             );
 
@@ -139,7 +137,7 @@ class FeedbackController extends AbstractController
             'Theme:Feedback:index.html.twig',
             array(
                 'page' => $page,
-                'count' => $per_page,
+                'count' => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true,
                 'form' => $form->createView(),
                 'user' => $this->getUser()
@@ -156,7 +154,6 @@ class FeedbackController extends AbstractController
     public function browseAction(Request $request, $filter_uri)
     {
         $page = $request->query->get('page', 1);
-        $per_page = $request->query->get('per_page', 5); // TODO: brand setting?
 
         try {
             $uri_helper = new FeedbackFilterUriHelper();
@@ -172,7 +169,7 @@ class FeedbackController extends AbstractController
 
         $page_options = array(
             'page' => $page,
-            'count' => $per_page,
+            'count' => $this->getBrandSetting('portal.per_page_content'),
             'show_pagination' => true,
             'status' => $filter->getStatus(),
             'status_categories' => $filter->getStatusCategories(),

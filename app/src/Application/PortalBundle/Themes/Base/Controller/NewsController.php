@@ -94,7 +94,7 @@ class NewsController extends AbstractController
      *          "category": null,
      *          "style": "pretty",
      *          "page": 1,
-     *          "count": 2,
+     *          "count": 10,
      *          "show_category_link": true
      *      },
      *      allowed_values={
@@ -247,7 +247,7 @@ class NewsController extends AbstractController
      *          "category": null,
      *          "show_pagination": true,
      *          "page": 1,
-     *          "count": 5
+     *          "count": 10
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}

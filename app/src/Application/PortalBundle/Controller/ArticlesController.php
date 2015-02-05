@@ -54,14 +54,16 @@ class ArticlesController extends AbstractController
      */
     public function indexAction(Request $request, $_format)
     {
+        $page = $request->get('page', 1);
+
         //
         // RSS
         //
         if ('rss' === $_format) {
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 null,
-                $request->get('page', 1),
-                $request->get('per_page', 20)
+                $page,
+                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
             );
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => null));
@@ -72,7 +74,11 @@ class ArticlesController extends AbstractController
         // RENDER THEME
         //
         return $this->renderThemeView(
-            'Theme:Articles:index.html.twig'
+            'Theme:Articles:index.html.twig',
+            array(
+                'page' => $page,
+                'count' => $this->getBrandSetting('portal.per_page_content'),
+            )
         );
     }
 
@@ -84,14 +90,16 @@ class ArticlesController extends AbstractController
      */
     public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
+        $page = $request->get('page', 1);
+
         //
         // RSS
         //
         if ('rss' === $_format) {
             $pager = $this->getArticlesDataService()->getArticlesPager(
                 $category,
-                $request->get('page', 1),
-                $request->get('per_page', 20)
+                $page,
+                $request->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
             );
 
             return $this->render('PortalBundle:Articles:feed.rss.twig', array('pager' => $pager, 'category' => $category));
@@ -105,8 +113,8 @@ class ArticlesController extends AbstractController
             'Theme:Articles:browse.html.twig',
             array(
                 'category' => $category,
-                'page' => $request->get('page', 1),
-                'count' => 2,
+                'page' => $page,
+                'count' => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true
             )
         );

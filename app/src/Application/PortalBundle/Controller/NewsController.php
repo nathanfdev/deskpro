@@ -59,7 +59,6 @@ class NewsController extends AbstractController
     public function indexAction(Request $request, $_format)
     {
         $page = $request->query->get('page', 1);
-        $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
 
 
         //
@@ -69,7 +68,7 @@ class NewsController extends AbstractController
             $pager = $this->getNewsDataService()->getNewsPager(
                 null,
                 $page,
-                $per_page
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
@@ -86,7 +85,7 @@ class NewsController extends AbstractController
             'Theme:News:index.html.twig',
             array(
                 'page' => $page,
-                'count' => $per_page
+                'count' => $this->getBrandSetting('portal.per_page_content')
             )
         );
     }
@@ -100,8 +99,6 @@ class NewsController extends AbstractController
     public function browseAction(Request $request, NewsCategory $category, $_format)
     {
         $page = $request->query->get('page', 1);
-        $per_page = $request->query->get('per_page', 10); // TODO: brand setting?
-
 
         //
         // RSS
@@ -110,7 +107,7 @@ class NewsController extends AbstractController
             $pager = $this->getNewsDataService()->getNewsPager(
                 $category,
                 $page,
-                $per_page
+                $request->query->get('per_page', $this->getBrandSetting('portal.per_page_rss'))
             );
 
             return $this->render('PortalBundle:News:feed.rss.twig', array(
@@ -128,7 +125,7 @@ class NewsController extends AbstractController
             array(
                 'category' => $category,
                 'page' => $page,
-                'count' => $per_page,
+                'count' => $this->getBrandSetting('portal.per_page_content'),
                 'show_pagination' => true
             )
         );

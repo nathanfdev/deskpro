@@ -101,7 +101,7 @@ class ArticlesController extends AbstractController
      *          "category":null,
      *          "style": "small",
      *          "page": 1,
-     *          "count": 2,
+     *          "count": 10,
      *          "show_category_link": true
      *      },
      *      allowed_values={
@@ -250,7 +250,7 @@ class ArticlesController extends AbstractController
      *          "category": null,
      *          "show_pagination": true,
      *          "page": 1,
-     *          "count": 2
+     *          "count": 10
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
