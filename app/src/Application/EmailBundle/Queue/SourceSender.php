@@ -36,8 +36,9 @@ namespace Application\EmailBundle\Queue;
 
 use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
-use Application\EmailBundle\Mail\RawTransport\RawSendmailTransport;
+use Application\EmailBundle\Mail\RawMessage\Rfc2822Decoder;
 use Application\EmailBundle\Mail\RawTransport\RawSmtpTransport;
+use Application\EmailBundle\Mail\RawTransport\RawSwiftmailerTransport;
 use Monolog;
 use Orb\Util\Arrays;
 
@@ -103,8 +104,8 @@ class SourceSender
 
         if ($tr instanceof \Swift_SmtpTransport) {
             $raw_tr = new RawSmtpTransport($tr);
-        } else if ($tr instanceof \Swift_SendmailTransport) {
-            $raw_tr = new RawSendmailTransport($tr);
+        } else if ($tr instanceof \Swift_Transport) {
+            $raw_tr = new RawSwiftmailerTransport($tr, new Rfc2822Decoder());
         } else {
             $this->addLogMessage(sprintf("Transport type does not support retries: %s", get_class($tr)));
             return 0;
@@ -122,11 +123,14 @@ class SourceSender
 
         try {
             $log_messages = array();
+            $failed = array();
             $sent = $raw_tr->sendRawMessage(
                 $sendmail['from_email'],
-                Arrays::removeFalsey(explode(',', $sendmail['to_emails'])) ?: null,
-                Arrays::removeFalsey(explode(',', $sendmail['cc_emails'])) ?: null,
-                Arrays::removeFalsey(explode(',', $sendmail['bcc_emails'])) ?: null,
+                Arrays::removeFalsey(array_merge(
+                    explode(',', $sendmail['to_emails'] ?: ''),
+                    explode(',', $sendmail['cc_emails'] ?: ''),
+                    explode(',', $sendmail['bcc_emails'] ?: '')
+                )),
                 $fp,
                 $failed,
                 $log_messages

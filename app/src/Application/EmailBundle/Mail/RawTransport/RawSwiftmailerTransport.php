@@ -32,7 +32,7 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\SwiftMailer\RawTransport;
+namespace Application\EmailBundle\Mail\RawTransport;
 use Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface;
 
 /**

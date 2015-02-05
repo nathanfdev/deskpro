@@ -34,7 +34,7 @@
 
 namespace Application\EmailBundle\Queue;
 
-use Application\EmailBundle\Mail\SourceMapper\SourceMapperInterface;
+use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Psr\Log\LoggerInterface;
 
 class QueueProc

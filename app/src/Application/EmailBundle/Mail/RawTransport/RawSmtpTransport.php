@@ -32,7 +32,7 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\SwiftMailer\RawTransport;
+namespace Application\EmailBundle\Mail\RawTransport;
 
 /**
  * The RawSmtpTransport is an efficient wrapper around the SmtpTransport.

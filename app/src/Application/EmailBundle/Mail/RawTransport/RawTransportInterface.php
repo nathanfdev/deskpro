@@ -32,7 +32,7 @@
  * @subpackage EmailBundle
  */
 
-namespace Application\EmailBundle\SwiftMailer\RawTransport;
+namespace Application\EmailBundle\Mail\RawTransport;
 
 /**
  * A raw transport takes params for a raw email message and sends it.

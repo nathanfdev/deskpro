@@ -34,10 +34,9 @@
 
 namespace Application\EmailBundle\Queue;
 
-use Application\DeskPRO\BlobStorage\DeskproBlobStorage;
 use Application\DeskPRO\DBAL\Connection;
-use Application\EmailBundle\Mail\Mailer;
-use Application\EmailBundle\Mail\SourceMapper\SourceMapperInterface;
+use Application\EmailBundle\SwiftMailer\Mailer;
+use Application\EmailBundle\SourceMapper\SourceMapperInterface;
 use Psr\Log\LoggerInterface;
 use Monolog;
 
