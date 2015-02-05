@@ -105,26 +105,6 @@ $content-width: $app-width + $sidebar-width;
   position: relative;
 }
 
-.report-wrapper {
-  padding-left: $app-width;
-}
-
-.report-list-wrapper {
-  float: left;
-  width: $report-list-width;
-}
-
-.stat-large-preview-wrapper {
-  padding-left: $app-width + $report-list-width;
-
-  div {
-    background: #fff;
-    border-left: 1px solid $global-border;
-    height: 2400px;
-  }
-}
-
-
 .wrapper {
   @include clearfix;
 }

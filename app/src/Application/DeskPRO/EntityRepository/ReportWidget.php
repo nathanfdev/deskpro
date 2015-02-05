@@ -177,32 +177,14 @@ class ReportWidget extends AbstractEntityRepository
     {
         $reports    = $this->getAllReports();
         $builtIn    = array();
-        $categories = $this->getBuiltInCategories();
 
         foreach ($reports AS $report) {
             if (!$report->is_custom) {
-                $labels = $report->getLabels();
-
-                foreach ($labels as $l) {
-                    if (isset($categories[$l])) {
-                        $categoryId = $l;
-                    } else {
-                        $categoryId = '';
-                    }
-                    $builtIn[$categoryId][] = $report->toApiData();
-                }
+                $builtIn[] = $report->toApiData();
             }
         }
 
-        $builtInOrdered = array();
-
-        foreach ($categories AS $categoryId => $categoryName) {
-            if (isset($builtIn[$categoryId])) {
-                $builtInOrdered[$categoryName] = $builtIn[$categoryId];
-            }
-        }
-
-        return $builtInOrdered;
+        return $builtIn;
     }
 
     /**

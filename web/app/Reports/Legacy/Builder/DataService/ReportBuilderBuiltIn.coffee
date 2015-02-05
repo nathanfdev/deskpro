@@ -8,15 +8,6 @@ define [
   class ReportBuilderCustom extends BaseListEdit
     @$inject = ['Api', '$q']
 
-
-    ###
-    #
-    ###
-    init: ->
-      @setSubLists ['Tickets', 'Chats', 'Ideas', 'People & Organizations', 'Knowledgebase', 'News', 'Downloads',
-                                  'Feedback', 'Tasks', 'Twitter']
-
-
     ###
     #
     ###

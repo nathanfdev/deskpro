@@ -118,19 +118,25 @@ $header-height: 44px;
 }
 
 .report-list-wrapper {
-  float: left;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
   width: $report-list-width;
+  overflow: auto;
 }
 
 .stat-large-preview-wrapper {
-  padding-left: $app-width + $report-list-width;
-
-  div {
-    background: #fff;
-    border-left: 1px solid $global-border;
-    height: 2400px;
-  }
+  position: absolute;
+  top: 0;
+  left: $report-list-width;
+  right: 0;
+  bottom: 0;
+  overflow: auto;
+  background: #fff;
+  border-left: 1px solid $global-border;
 }
+
 
 
 .wrapper {

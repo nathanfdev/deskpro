@@ -103,12 +103,40 @@
             {##########################################################################################################}
 
             <div class="big-list-of-stats">
-                <ul class="stat-list">
-                    XXXX
-                </ul>
+                <div ng-show="!loaded" style="text-align: center; padding: 45px;">
+                    <i class="spinner-big-circle"></i>
+                </div>
+                <div ng-show="loaded">
+                    <ul class="stat-list">
+                        <li ng-repeat="report in custom_data_list" ui-sref-active="active">
+                            <span class="mark"></span>
+                            <h1>
+                                <a ui-sref="reports.stats.view({ widget_id: report.id })">
+                                    <dp-report-builder-title report-id="report.id" value-to-decorate="report.title" possible-values="group_params"></dp-report-builder-title>
+                                </a>
+                            </h1>
+                            <p ng-if="report.description.length">{{ ng_var('report.description.length') }}</p>
+                            <p ng-if="report.labels.length">
+                                <a href="#" class="stat-label" ng-repeat="label in report.labels"><i class="fa fa-tag"></i> {{ ng_var('label') }}</a>
+                            </p>
+                        </li>
+                        <li ng-repeat="report in built_in_data_list" ui-sref-active="active">
+                            <span class="mark"></span>
+                            <h1>
+                                <a ui-sref="reports.stats.view({ widget_id: report.id })">
+                                    <dp-report-builder-title report-id="report.id" value-to-decorate="report.title" possible-values="group_params"></dp-report-builder-title>
+                                </a>
+                            </h1>
+                            <p ng-if="report.description.length">{{ ng_var('report.description.length') }}</p>
+                            <p ng-if="report.labels.length">
+                                <a href="#" class="stat-label" ng-repeat="label in report.labels"><i class="fa fa-tag"></i> {{ ng_var('label') }}</a>
+                            </p>
+                        </li>
+                    </ul>
+                </div>
             </div>
         </div>
     </div>
-
-    <div class="stat-large-preview-wrapper" ui-view></div>
 </div>
+
+<div class="stat-large-preview-wrapper" ui-view></div>
