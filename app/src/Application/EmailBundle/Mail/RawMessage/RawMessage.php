@@ -83,7 +83,7 @@ class RawMessage
     private $html_part = null;
 
     /**
-     * array('filename' => filename, 'tmp_path' => 'path on disk', 'bin_data' => 'or binary data', 'type' => 'mimetype')
+     * array('filename' => filename, 'cid' => 'abc', 'tmp_path' => 'path on disk', 'bin_data' => 'or binary data', 'type' => 'mimetype')
      * @var array
      */
     private $attachments = array();

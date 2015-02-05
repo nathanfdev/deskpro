@@ -125,6 +125,7 @@ class MailDecodeTest extends \DpUnitTestCase
         $this->assertEquals(
             array(array(
                 'filename' => 'text-file.txt',
+                'cid'      => null,
                 'type'     => 'application/octet-stream',
                 'crc32'    => '1f28f50a'
             )),
@@ -175,6 +176,7 @@ class MailDecodeTest extends \DpUnitTestCase
         $this->assertEquals(
             array(array(
                 'filename' => 'super_man.gif',
+                'cid'      => '<51340020-E84B-44BF-A4DA-AEC6D2BA14F6@xxxxxxxxxxx.com>',
                 'type'     => 'image/gif',
                 'crc32'    => 'd29df63c'
             )),

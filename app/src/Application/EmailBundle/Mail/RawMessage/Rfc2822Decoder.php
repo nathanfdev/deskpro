@@ -46,7 +46,7 @@ use Zend\Mime\Decode;
  * @see https://tools.ietf.org/html/rfc2046
  * @see https://tools.ietf.org/html/rfc2183
  */
-class Rfc2822Decoder
+class Rfc2822Decoder implements RawMessageDecoderInterface
 {
     /**
      * Decodes a raw RFC2822 message into parts:
@@ -311,11 +311,10 @@ class Rfc2822Decoder
                 }
 
                 $enc = $this->_getHeaderOrNull($message, 'Content-Transfer-Encoding');
-                $enc_type = $enc ? Decode::splitHeaderField($enc->getFieldValue(), 'Content-Transfer-Encoding') : 'binary';
+                $enc_type = $enc ? Decode::splitHeaderField($enc->getFieldValue(), 0) : 'binary';
 
-                if (!$enc_type) {
-                    $enc_type = 'base64';
-                }
+                $content_id_header = $this->_getHeaderOrNull($message, 'Content-ID');
+                $content_id = $content_id_header ? Decode::splitHeaderField($content_id_header->getFieldValue(), 0) : null;
 
                 $data = $message->getContent();
                 switch (strtolower($enc_type)) {
@@ -327,6 +326,7 @@ class Rfc2822Decoder
 
                 $a = array(
                     'filename' => $filename,
+                    'cid'      => $content_id,
                     'bin_data' => $data,
                     'type'     => $content_type,
                     'crc32'    => sprintf("%x", crc32($data))
