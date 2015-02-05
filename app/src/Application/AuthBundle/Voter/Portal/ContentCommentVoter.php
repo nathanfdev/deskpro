@@ -63,6 +63,10 @@ class ContentCommentVoter extends AbstractVoter
             $permission_bag = $this->getPortalPermissionsManager()->getPermissionsBagForGuest();
         }
 
+        if (!$this->getActiveBrandSetting('user.publish_comments', false)) {
+            return false; // if this setting is off, never allow comments
+        }
+
         switch($attribute) {
             case static::COMMENT_ARTICLES:
                 return $permission_bag->get('articles.comment');
