@@ -52,5 +52,6 @@ class PortalExtension extends Extension
         $loader->load('portal_entity_repositories.yml');
         $loader->load('brand_services.yml');
         $loader->load('theme_services.yml');
+        $loader->load('portal_cache_services.yml');
     }
 }

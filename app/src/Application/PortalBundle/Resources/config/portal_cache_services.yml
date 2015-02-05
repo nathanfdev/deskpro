@@ -1,0 +1,20 @@
+services:
+
+  portal_http_cache_user_context:
+      class: Application\PortalBundle\HttpKernel\PortalUserHashContextProvider
+      arguments: [@security.token_storage, @security.authorization_checker, @portal_permissions_manager]
+      tags:
+        - { name: fos_http_cache.user_context_provider }
+
+
+  portal_cache_helper:
+      class: Application\PortalBundle\HttpKernel\PortalCacheHelper
+      arguments: [@request_stack]
+
+
+  # the fos UserContextSubscriber still runs, this just runs after with our logic
+  portal_user_context_subscriber:
+      class: Application\PortalBundle\HttpKernel\PortalUserContextSubscriber
+      arguments: [@fos_http_cache.user_context.request_matcher, @portal_cache_helper]
+      tags:
+        - { name: kernel.event_subscriber }

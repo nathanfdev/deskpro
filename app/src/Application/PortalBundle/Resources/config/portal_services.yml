@@ -5,18 +5,6 @@ services:
     arguments: [@doctrine.dbal.default_connection, %portal.session.name%]
 
 
-  portal_http_cache_user_context:
-      class: Application\PortalBundle\HttpKernel\PortalUserHashContextProvider
-      arguments: [@security.token_storage, @security.authorization_checker, @portal_permissions_manager]
-      tags:
-        - { name: fos_http_cache.user_context_provider }
-
-
-  portal_cache_helper:
-      class: Application\PortalBundle\HttpKernel\PortalCacheHelper
-      arguments: [@request_stack]
-
-
   visitor_identification_provider:
     class: Application\PortalBundle\Visitor\VisitorIdentificationProvider
     arguments: [@request_stack, @logger]

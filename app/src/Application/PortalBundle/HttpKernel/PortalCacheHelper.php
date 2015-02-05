@@ -96,7 +96,12 @@ class PortalCacheHelper
             return true; // if no user context hash header: default to a guest!
         }
 
-        return in_array($user_hash, array(PortalHttpCache::ANON_HASH, PortalHttpCache::GUEST_HASH));
+        return $this->isGuestHash($user_hash);
+    }
+
+    public function isGuestHash($hash)
+    {
+        return in_array($hash, array(PortalHttpCache::ANON_HASH, PortalHttpCache::GUEST_HASH));
     }
 
 }
