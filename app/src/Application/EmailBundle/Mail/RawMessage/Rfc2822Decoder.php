@@ -70,7 +70,7 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
         ));
 
         $data = array(
-            'from'        => $this->_readAddresses($message, 'from'),
+            'from'        => $this->_readAddresses($message, 'from', true),
             'tos'         => $this->_readAddresses($message, 'to'),
             'ccs'         => $this->_readAddresses($message, 'cc'),
             'subject'     => $this->_readSubject($message),
@@ -90,9 +90,10 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
      *
      * @param Part   $message
      * @param string $header_name The header to read from. E.g., 'to' or 'cc'
+     * @param bool   $single      True when only one address should be returned
      * @return array
      */
-    private function _readAddresses(Part $message, $header_name)
+    private function _readAddresses(Part $message, $header_name, $single = false)
     {
         try {
             $header = $message->getHeader($header_name);
@@ -110,6 +111,10 @@ class Rfc2822Decoder implements RawMessageDecoderInterface
                 'email' => $v->getEmail()
             );
         }, $header->getAddressList()));
+
+        if ($single) {
+            $list = array_shift($list);
+        }
 
         return $list;
     }

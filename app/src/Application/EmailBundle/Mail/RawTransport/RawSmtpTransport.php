@@ -55,15 +55,9 @@ class RawSmtpTransport implements RawTransportInterface
     }
 
     /**
-     * @param string $from The account to send from (for use with SMTP 'MAIL FROM')
-     * @param array $to Array of email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param array $cc Array of CC'd email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param array $bcc Array of BCC'd email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param resource $raw_fp A file pointer to the raw email source
-     * @param array $failed Array of failed recipients, if any
-     * @return int
+     * {@inheritDoc}
      */
-    public function sendRawMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp, array &$failed = null)
+    public function sendRawMessage($from, array $tos, $raw_fp, array &$failed = null)
     {
         $sent = 0;
 
@@ -73,9 +67,7 @@ class RawSmtpTransport implements RawTransportInterface
 
         $this->tr->start();
 
-        if (!empty($to))  $sent += $this->_doMail($from, $to, $raw_fp, $failed);
-        if (!empty($cc))  $sent += $this->_doMail($from, $cc, $raw_fp, $failed);
-        if (!empty($bcc)) $sent += $this->_doMail($from, $bcc, $raw_fp, $failed);
+        if (!empty($tos)) $sent += $this->_doMail($from, $tos, $raw_fp, $failed);
 
         return $sent;
     }

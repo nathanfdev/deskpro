@@ -34,6 +34,12 @@
 
 namespace Application\EmailBundle\Mail\RawMessage;
 
+/**
+ * Describes a raw RFC2822 message as an object.
+ *
+ * Note: Why no BCC? Because BCC's are by definition not part of the email.
+ * You need to track your BBC's elsewhere.
+ */
 class RawMessage
 {
     /**
@@ -49,12 +55,6 @@ class RawMessage
     private $tos = array();
 
     /**
-     * Array of just email addresses
-     * @var array
-     */
-    private $bccs = array();
-
-    /**
      * array(array('email' => email, 'name' => 'name'))
      * @var array
      */
@@ -66,6 +66,9 @@ class RawMessage
     private $subject = '';
 
     /**
+     * Note: All headers are always arrays, even if there is only 1 value.
+     *
+     * array('Header-Name' => array('Value1', 'Value2'));
      * @var array
      */
     private $headers = array();
@@ -98,7 +101,6 @@ class RawMessage
             !empty($info['from']) ? $info['from'] : array(),
             !empty($info['tos']) ? $info['tos'] : array(),
             !empty($info['ccs']) ? $info['ccs'] : array(),
-            !empty($info['bccs']) ? $info['bccs'] : array(),
             !empty($info['subject']) ? $info['subject'] : '',
             !empty($info['headers']) ? $info['headers'] : array(),
             !empty($info['text_part']) ? $info['text_part'] : null,
@@ -111,18 +113,16 @@ class RawMessage
      * @param array  $from
      * @param array  $tos
      * @param array  $ccs
-     * @param array  $bccs
      * @param string $subject
      * @param array  $headers
      * @param string $text_part
      * @param string $html_part
      * @param array  $attachments
      */
-    public function __construct(array $from, array $tos, array $ccs, array $bccs, $subject, array $headers, $text_part, $html_part, array $attachments)
+    public function __construct(array $from, array $tos, array $ccs, $subject, array $headers, $text_part, $html_part, array $attachments)
     {
         $this->from        = $from;
         $this->tos         = $tos;
-        $this->bccs        = $bccs;
         $this->ccs         = $ccs;
         $this->subject     = $subject;
         $this->headers     = $headers;
@@ -145,14 +145,6 @@ class RawMessage
     public function getTos()
     {
         return $this->tos;
-    }
-
-    /**
-     * @return array
-     */
-    public function getBccs()
-    {
-        return $this->bccs;
     }
 
     /**
@@ -212,7 +204,6 @@ class RawMessage
             'from'        => $this->from,
             'tos'         => $this->tos,
             'ccs'         => $this->ccs,
-            'bccs'        => $this->bccs,
             'subject'     => $this->subject,
             'headers'     => $this->headers,
             'text_part'   => $this->text_part,

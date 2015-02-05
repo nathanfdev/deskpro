@@ -33,6 +33,7 @@
  */
 
 namespace Application\EmailBundle\SwiftMailer\RawTransport;
+use Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface;
 
 /**
  * This is a generic wrapper for any swiftmailer transport.
@@ -47,29 +48,124 @@ class RawSwiftmailerTransport implements RawTransportInterface
     private $tr;
 
     /**
-     * @param \Swift_Transport $tr
+     * @var \Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface
      */
-    public function __construct(\Swift_Transport $tr)
+    private $decoder;
+
+    /**
+     * @param \Swift_Transport $tr
+     * @param \Application\EmailBundle\Mail\RawMessage\RawMessageDecoderInterface $decoder
+     */
+    public function __construct(\Swift_Transport $tr, RawMessageDecoderInterface $decoder)
     {
         $this->tr = $tr;
+        $this->decoder = $decoder;
     }
 
     /**
-     * @param string $from The account to send from (for use with SMTP 'MAIL FROM')
-     * @param array $to Array of email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param array $cc Array of CC'd email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param array $bcc Array of BCC'd email addresses to send to (for use with SMTP 'RCPT TO')
-     * @param resource $raw_fp A file pointer to the raw email source
-     * @param array $failed Array of failed recipients, if any
-     * @return int
+     * {@inheritDoc}
      */
-    public function sendRawMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp, array &$failed = null)
+    public function sendRawMessage($from, array $tos, $raw_fp, array &$failed = null)
     {
-
+        $message = $this->recreateSwiftMessage($from, $tos, $raw_fp);
+        return $this->tr->send($message, $failed);
     }
 
-    private function recreateSwiftMessage($from, array $to = null, array $cc = null, array $bcc = null, $raw_fp)
+    /**
+     * @param string $from
+     * @param array $send_tos
+     * @param resource $raw_fp
+     * @return \Swift_Message
+     */
+    private function recreateSwiftMessage($from, array $send_tos = null, $raw_fp)
     {
-        
+        $raw_message = $this->decoder->createRawMessage($raw_fp);
+
+        $message = \Swift_Message::newInstance();
+
+        #------------------------------
+        # From
+        #------------------------------
+
+        $from = $raw_message->getFrom();
+        if ($from) {
+            $message->setFrom($from['email'], $from['name']);
+        }
+
+        #------------------------------
+        # Recipients
+        #------------------------------
+
+        $included_tos = array();
+
+        foreach ($raw_message->getTos() as $to) {
+            $message->addTo($to['email'], $to['name']);
+            $included_tos[] = strtolower($to['email']);
+        }
+        foreach ($raw_message->getCcs() as $to) {
+            $message->addCc($to['email'], $to['name']);
+            $included_tos[] = strtolower($to['email']);
+        }
+
+        $bccs = array_diff($send_tos, $included_tos);
+        if ($bccs) {
+            foreach ($bccs as $bcc) {
+                $message->addBcc($bcc);
+            }
+        }
+
+        #------------------------------
+        # Message
+        #------------------------------
+
+        $text_body = $raw_message->getTextPart();
+        $html_body = $raw_message->getHtmlPart();
+
+        // Empty body, default to just empty string so it'll send
+        if ($text_body === null && $html_body === null) {
+            $text_body = '';
+        }
+
+        if ($text_body !== null && $html_body !== null) {
+            $message->setBody($text_body, 'text/plain');
+            $message->addPart($html_body, 'text/html');
+        } else {
+            if ($text_body !== null) {
+                $message->setBody($text_body, 'text/plain');
+            } else {
+                $message->setBody($html_body, 'text/html');
+            }
+        }
+
+        #------------------------------
+        # Attachments
+        #------------------------------
+
+        foreach ($raw_message->getAttachments() as $attach) {
+            $message->attach(\Swift_Attachment::newInstance()
+                ->setId($attach['cid'])
+                ->setFilename($attach['filename'])
+                ->setContentType($attach['type'])
+                ->setBody($attach['bin_data'])
+            );
+        }
+
+        #------------------------------
+        # Headers
+        #------------------------------
+
+        $headers = $message->getHeaders();
+        foreach ($raw_message->getHeaders() as $header_name => $header_values) {
+            $headers->removeAll($header_name);
+            foreach ($header_values as $v) {
+                $headers->addTextHeader($header_name, $v);
+            }
+        }
+
+        #------------------------------
+        # Done
+        #------------------------------
+
+        return $message;
     }
 }
