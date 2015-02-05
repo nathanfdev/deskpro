@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\HttpKernel;
+namespace Application\PortalBundle\HttpCache;
 
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\Person;

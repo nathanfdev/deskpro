@@ -35,7 +35,7 @@
 namespace Application\PortalBundle\Theme;
 
 use Application\DeskPRO\Domain\DomainObject;
-use Application\PortalBundle\HttpKernel\PortalCacheHelper;
+use Application\PortalBundle\HttpCache\PortalCacheHelper;
 use Application\PortalBundle\Mode\PortalMode;
 use Application\PortalBundle\Mode\PortalModeStorage;
 use Application\PortalBundle\Request\TagRequest;
@@ -68,7 +68,7 @@ class ThemeResolver
     private $mode_storage;
 
     /**
-     * @var PortalCacheHelper
+     * @var \Application\PortalBundle\HttpCache\PortalCacheHelper
      */
     private $cache_helper;
 

@@ -38,7 +38,7 @@ require_once DP_ROOT.'/sys/Kernel/HelpdeskOfflineMessage.php';
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Console\CronApplication;
-use Application\DeskPRO\PortalBundle\HttpKernel\PortalHttpCache;
+use Application\PortalBundle\HttpCache\PortalHttpCache;
 use Doctrine\DBAL\DBALException;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 use Symfony\Component\Console\Input\ArgvInput;
@@ -287,13 +287,14 @@ class KernelBooter
                 $kernel = new PortalKernel($env, $debug);
 
                 // add our reverse proxy
-                require_once DP_ROOT . "/src/Application/PortalBundle/HttpKernel/PortalHttpCache.php";
+                require_once DP_ROOT . "/src/Application/PortalBundle/HttpCache/PortalHttpCache.php";
                 $kernel = new PortalHttpCache($kernel);
                 //
 
                 if ('dev' === $env) {
                     Debug::enable();
                 }
+
                 // debug code
                 $start = round(microtime(true) * 1000);
                 // end debug code

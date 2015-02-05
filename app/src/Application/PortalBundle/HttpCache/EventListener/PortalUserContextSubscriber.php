@@ -32,8 +32,9 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\HttpKernel;
+namespace Application\PortalBundle\HttpCache\EventListener;
 
+use Application\PortalBundle\HttpCache\PortalCacheHelper;
 use FOS\HttpCache\UserContext\HashGenerator;
 use Symfony\Component\EventDispatcher\EventSubscriberInterface;
 use Symfony\Component\HttpFoundation\RequestMatcherInterface;

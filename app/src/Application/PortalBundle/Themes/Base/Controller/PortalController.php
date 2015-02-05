@@ -35,7 +35,7 @@
 namespace Application\PortalBundle\Themes\Base\Controller;
 
 
-use Application\DeskPRO\PortalBundle\HttpKernel\PortalHttpCache;
+use Application\PortalBundle\HttpCache\PortalHttpCache;
 use Application\PortalBundle\EventListener\OriginalUriListener;
 use Application\PortalBundle\Request\TagRequest;
 use Symfony\Component\HttpFoundation\Request;

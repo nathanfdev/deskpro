@@ -32,10 +32,10 @@
  * @subpackage
  */
 
-namespace Application\PortalBundle\HttpKernel;
+namespace Application\PortalBundle\HttpCache;
 
 
-use Application\DeskPRO\PortalBundle\HttpKernel\PortalHttpCache;
+use Application\PortalBundle\HttpCache\PortalHttpCache;
 use Symfony\Component\HttpFoundation\RequestStack;
 
 class PortalCacheHelper
@@ -78,11 +78,11 @@ class PortalCacheHelper
     {
         $current_request = $this->request_stack->getMasterRequest();
 
-        if (!$current_request->headers->has(PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
+        if (!$current_request->headers->has(\Application\PortalBundle\HttpCache\PortalHttpCache::USER_CONTEXT_HASH_HEADER)) {
             return null;
         }
 
-        return $current_request->headers->get(PortalHttpCache::USER_CONTEXT_HASH_HEADER);
+        return $current_request->headers->get(\Application\PortalBundle\HttpCache\PortalHttpCache::USER_CONTEXT_HASH_HEADER);
     }
 
     /**

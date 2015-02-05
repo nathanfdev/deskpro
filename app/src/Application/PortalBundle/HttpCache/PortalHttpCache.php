@@ -32,7 +32,7 @@
  * @subpackage
  */
 
-namespace Application\DeskPRO\PortalBundle\HttpKernel;
+namespace Application\PortalBundle\HttpCache;
 
 use FOS\HttpCache\SymfonyCache\UserContextSubscriber;
 use FOS\HttpCacheBundle\SymfonyCache\EventDispatchingHttpCache;
@@ -52,10 +52,10 @@ class PortalHttpCache extends EventDispatchingHttpCache
     /**
      * If the guest gets through the anon filter (has a session) the following hash is always used, instead of ANON_HASH
      *
-     * NEVER change this value.
-     *
      * This is generated in PortalUserHashContextProvider, and then hashed by FOSHttpCacheBundle's service.
      * We can alter the generator if we need to, but just use "portal_cache_helper" service to determine if its a guest request.
+     *
+     * NEVER change this value.
      */
     const GUEST_HASH = '2c297f02c63a1203f83d00f05103617658b9f15f87d578c2d558a7fd2ba6531b';
 
