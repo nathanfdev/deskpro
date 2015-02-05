@@ -83,6 +83,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
         getResourcePath = (tag, name) =>
           asset = @pack.assets.filter((x) -> x.tag == tag && x.name == name)[0]
           if asset
+            return asset if window.DP_IS_DEBUG
             cachebust = window.DP_BUILD_TIME
             asset.blob.relative_url + '?' + cachebust
           else
