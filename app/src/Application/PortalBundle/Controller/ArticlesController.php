@@ -43,14 +43,14 @@ use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Application\PortalBundle\HttpCache\Configuration\PageHttpCache;
 
 class ArticlesController extends AbstractController
 {
     /**
      * @Route("/kb.{_format}", name="portal_kb", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Security("is_granted('USE_ARTICLES')")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache
      */
     public function indexAction(Request $request, $_format)
     {
@@ -86,7 +86,7 @@ class ArticlesController extends AbstractController
      * @Route("/kb/{slug}.{_format}", name="portal_kb_browse", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @ParamConverter(name="category", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE_CATEGORY', category)")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache
      */
     public function browseAction(Request $request, ArticleCategory $category, $_format)
     {
@@ -124,7 +124,7 @@ class ArticlesController extends AbstractController
      * @Route("/kb/articles/{slug}", name="portal_kb_view")
      * @ParamConverter(name="article", converter="deskpro_slug")
      * @Security("is_granted('USE_ARTICLES') and is_granted('VIEW_ARTICLE', article)")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache(content="article")
      */
     public function viewAction(Request $request, Article $article)
     {

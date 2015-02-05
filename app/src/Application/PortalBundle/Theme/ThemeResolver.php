@@ -277,6 +277,8 @@ class ThemeResolver
 
         // some are objects, and some are page specific data (which isn't good to put in URL because we want to share the http cache)
         $remove = array(
+            '_portal_tag_cache',
+            '_portal_page_cache',
             '_cache',
             '_security',
             '_converters',
