@@ -130,6 +130,8 @@ define [
 
     reportStates = new StateCollection(StateConfig.createFactory('DeskPRO.ReportsApp'))
     ReportsRouting(reportStates)
+    for w in reportStates.whens
+      $urlRouterProvider.when(w[0], w[1])
     for r in reportStates.routes
       r.applyToStateProvider($stateProvider)
   ])

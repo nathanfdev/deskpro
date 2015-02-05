@@ -4,20 +4,26 @@ define -> (States) ->
   #----------------------------------------
 
   States.add('reports')
-    .setUrl('/')
+    .setUrl('')
     .setTpl('InterfaceBundle:Interface:main-frame.html')
-    .setCtrl(['$state', ($state) -> $state.go('reports.dashboards.index') ])
+    .setAbstract();
+
+  States.when('', '/dashboards/')
+  States.when('/', '/dashboards/')
+  States.when('/dashboards', '/dashboards/')
+  States.when(/^\/dashboards\/[0-9]+\/?$/, ['$stateParams', ($stateParams) -> "/dashboards/#{$stateParams.dashboard_id}/" ])
 
   #----------------------------------------
   # DASHBOARDS
   #----------------------------------------
 
   States.add('reports.dashboards')
-    .setUrl('dashboards')
+    .setUrl('/dashboards')
     .setTpl('ReportsInterfaceBundle:Dashboard:dashboards.html')
     .setAbstract()
 
   States.add('reports.dashboards.index')
+    .setUrl('/')
     .setCtrl(['$state', 'DashboardsInfo', ($state, DashboardsInfo) ->
       DashboardsInfo.getDashboardList().then((dbs) ->
         db = dbs[0]
@@ -36,6 +42,7 @@ define -> (States) ->
     .setAbstract()
 
   States.add('reports.dashboards.view.index')
+    .setUrl('/')
     .setCtrl(['$state', '$stateParams', 'DashboardsInfo', ($state, $stateParams, DashboardsInfo) ->
       DashboardsInfo.getReportsList($stateParams.dashboard_id).then((reports) ->
         if not reports.length
@@ -59,22 +66,30 @@ define -> (States) ->
   # STATS
   #----------------------------------------
 
+  States.when('/stats', '/stats/')
+
   States.add('reports.stats')
-    .setUrl('stats')
+    .setUrl('/stats')
     .setCtrl('Reports.Stats.StatsMain')
     .setTpl('ReportsInterfaceBundle:Stats:main.html')
+    .setAbstract()
+
+  States.add('reports.stats.home')
+    .setUrl('/')
+    .setCtrl('Reports.Stats.StatsHome')
+    .setTpl('ReportsInterfaceBundle:Stats:home.html')
 
   States.add('reports.stats.view')
-    .setUrl('stats')
-    .setCtrl('Reports.Stats.StatsMain')
-    .setTpl('ReportsInterfaceBundle:Stats:main.html')
+    .setUrl('/{widget_id:[0-9]+}')
+    .setCtrl('Reports.Stats.WidgetView')
+    .setTpl('ReportsInterfaceBundle:Stats:widget.html')
 
   #----------------------------------------
   # Agent Activity
   #----------------------------------------
 
   States.add('reports.agent_activity')
-    .setUrl('agent_activity')
+    .setUrl('/agent_activity')
     .setCtrl('Reports.AgentActivity.AgentActivity')
     .setTpl('ReportsInterfaceBundle:AgentActivity:index.html')
 
@@ -83,7 +98,7 @@ define -> (States) ->
   #----------------------------------------
 
   States.add('reports.agent_hours')
-    .setUrl('agent_hours')
+    .setUrl('/agent_hours')
     .setCtrl('Reports.AgentHours.AgentHours')
     .setTpl('ReportsInterfaceBundle:AgentHours:index.html')
 
@@ -92,6 +107,6 @@ define -> (States) ->
   #----------------------------------------
 
   States.add('reports.ticket_satisfaction')
-    .setUrl('ticket_satisfaction')
+    .setUrl('/ticket_satisfaction')
     .setCtrl('Reports.AgentHours.AgentHours')
     .setTpl('ReportsInterfaceBundle:TicketSatisfaction:index.html')

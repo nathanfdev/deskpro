@@ -68,7 +68,7 @@
   padding: 10px;
   background: #f5f6f7;
   max-height: 460px;
-  overflow-y: scroll;
+  overflow-y: auto;
 
   ul.stat-list {
     @extend %flat-list;
@@ -237,7 +237,7 @@
 .report-list-wrapper {
   .big-list-of-stats {
     height: auto;
-    overflow-y: default;
+    overflow-y: auto;
     max-height: none;
 
     .stat-list {

@@ -7,6 +7,10 @@ define [
   'Reports/Dashboards/Ctrl/DashboardView',
   'Reports/Dashboards/ModalCtrl/EditDashboard',
 
+  'Reports/Stats/Ctrl/StatsMain',
+  'Reports/Stats/Ctrl/StatsHome',
+  'Reports/Stats/Ctrl/WidgetView',
+
   'Reports/Legacy/AgentActivity/Ctrl/AgentActivity',
   'Reports/Legacy/AgentHours/Ctrl/AgentHours',
   'Reports/Legacy/Builder/Ctrl/Edit',
@@ -60,6 +64,10 @@ define [
   Reports_Dashboards_Ctrl_DashboardView,
   Reports_Dashboards_ModalCtrl_EditDashboard,
 
+  Reports_Stats_Ctrl_StatsMain,
+  Reports_Stats_Ctrl_StatsHome,
+  Reports_Stats_Ctrl_WidgetView,
+
   Reports_AgentActivity_Ctrl_AgentActivity,
   Reports_AgentHours_Ctrl_AgentHours,
   Reports_Builder_Ctrl_Edit,
@@ -100,6 +108,11 @@ define [
   ReportsApp.controller('Reports.App.DashboardView',               Reports_Dashboards_Ctrl_DashboardView)
   ReportsApp.controller('Reports.Dashboards.Modals.EditDashboard', Reports_Dashboards_ModalCtrl_EditDashboard)
 
+  ReportsApp.controller('Reports.Stats.StatsMain',                 Reports_Stats_Ctrl_StatsMain)
+  ReportsApp.controller('Reports.Stats.StatsHome',                 Reports_Stats_Ctrl_StatsHome)
+  ReportsApp.controller('Reports.Stats.WidgetView',                Reports_Stats_Ctrl_WidgetView)
+
+  # legacy controllers
   for x in window.DP_CTRL_REG
     deps = x[1]
     ctrl = deps.pop()
