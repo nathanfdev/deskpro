@@ -41,9 +41,18 @@ class PortalHttpCache extends EventDispatchingHttpCache
 {
     const USER_CONTEXT_HASH_HEADER = 'X-User-Context-Hash';
     const USER_CONTEXT_HASH_ACCEPT_HEADER = 'application/vnd.fos.user-context-hash';
-    const ANON_HASH = 'guest';
+
+    /**
+     * This used to be "guest", but I made it the same as the generated response from a guest with session (below). This is
+     * because "Vary" will be different if these are different, and there's no need for that. If we need to distingush
+     * between an "anonymous" and "guest with session" in the app, we can change this value. (NEVER change the GUEST_HASH tho)
+     */
+    const ANON_HASH = '2c297f02c63a1203f83d00f05103617658b9f15f87d578c2d558a7fd2ba6531b';
+
     /**
      * If the guest gets through the anon filter (has a session) the following hash is always used, instead of ANON_HASH
+     *
+     * NEVER change this value.
      *
      * This is generated in PortalUserHashContextProvider, and then hashed by FOSHttpCacheBundle's service.
      * We can alter the generator if we need to, but just use "portal_cache_helper" service to determine if its a guest request.
