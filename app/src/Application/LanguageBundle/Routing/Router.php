@@ -82,6 +82,7 @@ class Router implements WarmableInterface, RouterInterface, RequestMatcherInterf
         $this->router = $router;
         $this->language_manager = $language_manager;
         $this->mode_store = $mode_store;
+        $this->router->setOption('matcher_cache_class', 'ProjectUrlMatcher');
     }
 
 

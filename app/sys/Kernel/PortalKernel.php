@@ -65,14 +65,14 @@ class PortalKernel extends Kernel
             new \FOS\HttpCacheBundle\FOSHttpCacheBundle(),
 
             new \Application\DeskPRO\DeskPROBundle(),
+            new \Application\AgentBundle\AgentBundle(),
             new \Application\PortalBundle\PortalBundle(),
             new \Application\LanguageBundle\LanguageBundle(),
             new \Application\AuthBundle\AuthBundle(),
             new \Application\FormBundle\FormBundle(),
             new \Application\AppBundle\AppBundle(),
             new \Application\PersonBundle\PersonBundle(),
-            new \Application\TicketBundle\TicketBundle(),
-            new \Application\AgentBundle\AgentBundle()
+            new \Application\TicketBundle\TicketBundle()
         );
 
         if ('dev' === $this->getEnvironment()
