@@ -84,7 +84,7 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
           asset = @pack.assets.filter((x) -> x.tag == tag && x.name == name)[0]
           if asset
             cachebust = window.DP_BUILD_TIME
-            if window.DP_IS_DEBUG then asset.blob.relative_url else asset.blob.relative_url + '?' + cachebust
+            asset.blob.relative_url + '?' + cachebust
           else
             null
 
