@@ -35,7 +35,7 @@ fos_http_cache:
     user_context:
         enabled: true
         user_identifier_headers: ['Cookie']
-        hash_cache_ttl: 60 # only make the user-context-hash request once per minute
+        hash_cache_ttl: 600 # only make the user-context-hash request once per 10 minute per user w/ session
 
 
 # Security Configuration
