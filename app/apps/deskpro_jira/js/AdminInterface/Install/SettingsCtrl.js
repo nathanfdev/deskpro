@@ -17,7 +17,7 @@ define(function () {
     var updateMeta = function () {
       var data = $scope.meta_defaults || {};
       $scope.loading_meta = true;
-      $scope.meta_errors = null;
+      $scope.error = null;
       $scope.meta_defaults = {};
       $scope.Ctrl.startSpinner('saving_settings');
 
@@ -26,8 +26,8 @@ define(function () {
           $scope.loading_meta = false;
           $scope.Ctrl.stopSpinner('saving_settings');
 
-          if (res.data.errors) {
-            $scope.meta_errors = res.data.errors;
+          if (res.data.error) {
+            $scope.error = res.data.error;
           } else {
             $scope.meta = res.data;
 
@@ -65,7 +65,7 @@ define(function () {
     });
 
     $scope.saveSettings = function () {
-      $scope.meta_errors = null;
+      $scope.error = null;
       $scope.Ctrl.saveSettings().then(
         function () {
           updateMeta();

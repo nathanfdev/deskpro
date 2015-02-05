@@ -33,17 +33,26 @@
                     <div ng-show="loading_meta">
                         <i class="fa fa-refresh fa-spin"></i> API check in progress...
                     </div>
-                    <div class="text-danger" ng-show="meta_errors.url">
-                        Host is unreachable
-                    </div>
-                    <div class="text-danger" ng-show="meta_errors.api">
-                        Error while connecting to your Application Link, please check your JIRA configuration.
-                    </div>
-                    <div class="text-danger" ng-show="meta_errors.message">
-                        {{ meta_errors.message }}
+
+                    <div ng-if="error.type">
+                        <div class="text-danger" ng-show="'jira' == error.type">
+                            JIRA responded with error:
+                        </div>
+                        <div class="text-danger" ng-show="'curl' == error.type">
+                            cURL exception:
+                        </div>
+                        <div class="text-danger" ng-show="'app' == error.type">
+                            DeskPRO Application error:
+                        </div>
+
+                        <div class="text-danger">
+                            {{ error.code }}: {{ error.message }}
+                            <div ng-if="error.additional" ng-bind-html="error.additional"></div>
+                        </div>
                     </div>
 
-                    <div ng-show="meta_errors.token">
+
+                    <div ng-show="error.token">
                         <p>
                             You need to connect JIRA to DeskPRO. Click the button below. You will be asked to log-in.
                         </p>
