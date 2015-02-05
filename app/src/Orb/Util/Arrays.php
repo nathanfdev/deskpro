@@ -2307,7 +2307,7 @@ class Arrays
      * Like array_map except works with iterators.
      *
      * @param        $fn
-     * @param  array $array
+     * @param  array|\Traversable $array
      * @return array
      */
     public static function map($fn, $array)

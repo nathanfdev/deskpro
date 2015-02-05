@@ -83,103 +83,52 @@ class RawMessage
     private $html_part = null;
 
     /**
-     * array('filename' => filename, 'path' => 'path on disk', 'data' => 'or binary data', 'type' => 'mimetype', 'disposition' => 'inline/attachment')
+     * array('filename' => filename, 'tmp_path' => 'path on disk', 'bin_data' => 'or binary data', 'type' => 'mimetype')
      * @var array
      */
     private $attachments = array();
 
     /**
+     * @param array $info
      * @return RawMessage
      */
-    public static function create()
+    public static function newFromArray(array $info)
     {
-        return new self();
+        return new self(
+            !empty($info['from']) ? $info['from'] : array(),
+            !empty($info['tos']) ? $info['tos'] : array(),
+            !empty($info['ccs']) ? $info['ccs'] : array(),
+            !empty($info['bccs']) ? $info['bccs'] : array(),
+            !empty($info['subject']) ? $info['subject'] : '',
+            !empty($info['headers']) ? $info['headers'] : array(),
+            !empty($info['text_part']) ? $info['text_part'] : null,
+            !empty($info['html_part']) ? $info['html_part'] : null,
+            !empty($info['attachments']) ? $info['attachments'] : array()
+        );
     }
 
     /**
-     * @param string $email
-     * @param string $name
-     * @return $this
+     * @param array  $from
+     * @param array  $tos
+     * @param array  $ccs
+     * @param array  $bccs
+     * @param string $subject
+     * @param array  $headers
+     * @param string $text_part
+     * @param string $html_part
+     * @param array  $attachments
      */
-    public function setFrom($email, $name)
+    public function __construct(array $from, array $tos, array $ccs, array $bccs, $subject, array $headers, $text_part, $html_part, array $attachments)
     {
-        $this->from = array('email' => $email, 'name' => $name);
-        return $this;
-    }
-
-    /**
-     * @param string $email
-     * @param string $name
-     * @return $this
-     */
-    public function addTo($email, $name)
-    {
-        $this->tos[] = array('email' => $email, 'name' => $name);
-        return $this;
-    }
-
-    /**
-     * @param string $email
-     * @param string $name
-     * @return $this
-     */
-    public function addCc($email, $name)
-    {
-        $this->ccs[] = array('email' => $email, 'name' => $name);
-        return $this;
-    }
-
-    /**
-     * @param string $email
-     * @return $this
-     */
-    public function addBcc($email)
-    {
-        $this->bccs[] = $email;
-        return $this;
-    }
-
-    /**
-     * @param string $subj
-     * @return $this
-     */
-    public function setSubject($subj)
-    {
-        $this->subject = $subj;
-        return $this;
-    }
-
-    /**
-     * @param string $header
-     * @param string $value
-     * @return $this
-     */
-    public function addHeader($header, $value)
-    {
-        $this->headers[] = array('name' => $header, 'value' => $value);
-        return $this;
-    }
-
-    /**
-     * @param string $text
-     * @param string $charset
-     * @return $this
-     */
-    public function setTextBody($text, $charset)
-    {
-        $this->text_part = array('body' => $text, 'charset' => $charset);
-        return $this;
-    }
-
-    /**
-     * @param string $html
-     * @param string $charset
-     * @return $this
-     */
-    public function setHtmlBody($html, $charset)
-    {
-        $this->html_part = array('body' => $html, 'charset' => $charset);
-        return $this;
+        $this->from        = $from;
+        $this->tos         = $tos;
+        $this->bccs        = $bccs;
+        $this->ccs         = $ccs;
+        $this->subject     = $subject;
+        $this->headers     = $headers;
+        $this->text_part   = $text_part;
+        $this->html_part   = $html_part;
+        $this->attachments = $attachments;
     }
 
     /**
@@ -201,10 +150,17 @@ class RawMessage
     /**
      * @return array
      */
+    public function getBccs()
+    {
+        return $this->bccs;
+    }
+
+    /**
+     * @return array
+     */
     public function getCcs()
     {
         return $this->ccs;
-
     }
 
     /**
@@ -224,35 +180,19 @@ class RawMessage
     }
 
     /**
-     * @return bool
-     */
-    public function hasTextPart()
-    {
-        return $this->text_part !== null;
-    }
-
-    /**
-     * @return array|null
+     * @return array
      */
     public function getTextPart()
     {
-        return $this->body;
+        return $this->text_part;
     }
 
     /**
-     * @return bool
-     */
-    public function hasHtmlPart()
-    {
-        return $this->html_part !== null;
-    }
-
-    /**
-     * @return array|null
+     * @return array
      */
     public function getHtmlPart()
     {
-        return $this->html_body;
+        return $this->html_part;
     }
 
     /**
@@ -261,5 +201,23 @@ class RawMessage
     public function getAttachments()
     {
         return $this->attachments;
+    }
+
+    /**
+     * @return array
+     */
+    public function toArray()
+    {
+        return array(
+            'from'        => $this->from,
+            'tos'         => $this->tos,
+            'ccs'         => $this->ccs,
+            'bccs'        => $this->bccs,
+            'subject'     => $this->subject,
+            'headers'     => $this->headers,
+            'text_part'   => $this->text_part,
+            'html_part'   => $this->html_part,
+            'attachments' => $this->attachments
+        );
     }
 }
