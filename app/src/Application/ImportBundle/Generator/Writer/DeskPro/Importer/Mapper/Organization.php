@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class Organization
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class Organization implements MapperInterface, MapperByTitleInterface
+final class Organization implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Organization

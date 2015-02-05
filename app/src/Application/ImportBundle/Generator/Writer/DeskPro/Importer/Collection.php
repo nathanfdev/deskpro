@@ -35,7 +35,7 @@ use Application\ImportBundle\AbstractCollection;
  * Class Collection
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer
  */
-class Collection extends AbstractCollection
+final class Collection extends AbstractCollection
 {
     /**
      * Add an importer

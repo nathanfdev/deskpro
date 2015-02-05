@@ -36,6 +36,12 @@ use Symfony\Component\Validator\Mapping\ClassMetadata;
  */
 final class CustomField extends AbstractEntity
 {
+    const FIELD_TYPE_TEXT     = 'text';
+    const FIELD_TYPE_TEXTAREA = 'textarea';
+    const FIELD_TYPE_CHOICE   = 'choice';
+    const FIELD_TYPE_TOGGLE   = 'toggle';
+    const FIELD_TYPE_DATE     = 'date';
+
     /**
      * @var string
      */

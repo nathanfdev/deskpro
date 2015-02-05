@@ -38,24 +38,24 @@ use Application\ImportBundle\Exception\DuplicateValueException;
 
 class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
 {
-    /** @var string */
-    protected $mapped_column = 'person_id';
-    /** @var string */
-    protected $mapper_class = 'custom_def_person';
-    /** @var string */
-    protected $data_table = 'custom_data_person';
-
-    /**
-     * Imports the Custom Field value
-     *
-     * @param  \Application\ImportBundle\Value\CustomDefValue $custom_value
-     * @return boolean
-     * @throws \InvalidArgumentException
-     * @throws BadDataException
-     * @throws DuplicateValueException
-     */
-    public function importValue($custom_value)
-    {
+//    /** @var string */
+//    protected $mapped_column = 'person_id';
+//    /** @var string */
+//    protected $mapper_class = 'custom_def_person';
+//    /** @var string */
+//    protected $data_table = 'custom_data_person';
+//
+//    /**
+//     * Imports the Custom Field value
+//     *
+//     * @param  \Application\ImportBundle\Value\CustomDefValue $custom_value
+//     * @return boolean
+//     * @throws \InvalidArgumentException
+//     * @throws BadDataException
+//     * @throws DuplicateValueException
+//     */
+//    public function importValue($custom_value)
+//    {
 //        if (!($custom_value instanceof CustomDefValue)) {
 //            throw new \InvalidArgumentException("This importer can only import Person Custom Fields");
 //        }
@@ -67,6 +67,6 @@ class CustomDefPersonValueImporter extends AbstractCustomDefValueImporter
 //        }
 //
 //        return $this->processCustomField($custom_value);
-    }
+//    }
 
 }

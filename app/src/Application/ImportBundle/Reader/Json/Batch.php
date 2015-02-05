@@ -25,92 +25,78 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\ImportBundle\Reader\Json;
+
+use DateTime;
+
 /**
- * @package Importer
+ * Class Batch
+ * @package Application\ImportBundle\Reader\Json
  */
-
-namespace Application\ImportBundle\Value;
-
-class KbValue
+class Batch
 {
     /**
      * @var int
      */
-    public $oid;
+    private $id;
 
     /**
-     *
-     * @var string
+     * @var DateTime
      */
-    public $person;
+    private $date_created;
 
     /**
-     * @var string
+     * @var DateTime
      */
-    public $language;
+    private $date_modified;
 
     /**
-     * @var \DateTime
+     * @return int
      */
-    public $date_end;
+    public function getId()
+    {
+        return $this->id;
+    }
 
     /**
-     * @var string
+     * @param int $id
      */
-    public $end_action;
+    public function setId($id)
+    {
+        $this->id = $id;
+    }
 
     /**
-     * @var string
+     * @return DateTime
      */
-    public $slug;
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
 
     /**
-     * @var string
+     * @param DateTime $date_created
      */
-    public $title;
+    public function setDateCreated(DateTime $date_created)
+    {
+        $this->date_created = $date_created;
+    }
 
     /**
-     * @var string
+     * @return DateTime
      */
-    public $content;
+    public function getDateModified()
+    {
+        return $this->date_modified;
+    }
 
     /**
-     * @var int
+     * @param DateTime $date_modified
      */
-    public $total_rating = 0;
+    public function setDateModified(DateTime $date_modified)
+    {
+        $this->date_modified = $date_modified;
+    }
 
-    /**
-     * @var int
-     */
-    public $num_comments = 0;
 
-    /**
-     * @var int
-     */
-    public $num_ratings = 0;
-
-    /**
-     * @var string
-     */
-    public $status;
-
-    /**
-     * @var \DateTime
-     */
-    public $date_created;
-
-    /**
-     * @var \DateTime
-     */
-    public $date_published;
-
-    /**
-     * @var array
-     */
-    public $categories = array();
-
-    /**
-     * @var array
-     */
-    public $labels = array();
 }

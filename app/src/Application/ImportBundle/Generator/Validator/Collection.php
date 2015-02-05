@@ -36,7 +36,7 @@ use Application\ImportBundle\AbstractCollection;
  * Class Collection
  * @package Application\ImportBundle\Generator\Validator
  */
-class Collection extends AbstractCollection
+final class Collection extends AbstractCollection
 {
     /**
      * Add a validator

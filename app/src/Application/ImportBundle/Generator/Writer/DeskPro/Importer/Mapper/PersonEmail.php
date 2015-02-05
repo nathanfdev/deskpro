@@ -35,7 +35,7 @@ use Application\DeskPRO\EntityRepository;
  * Class PersonEmail
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class PersonEmail implements MapperInterface
+final class PersonEmail implements MapperInterface
 {
     /**
      * @var EntityRepository\Product

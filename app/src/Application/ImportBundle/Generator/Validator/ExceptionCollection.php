@@ -35,7 +35,7 @@ use Application\ImportBundle\AbstractCollection;
  * Class ExceptionCollection
  * @package Application\ImportBundle\Generator\Validator
  */
-class ExceptionCollection extends AbstractCollection
+final class ExceptionCollection extends AbstractCollection
 {
     /**
      * Add an exception

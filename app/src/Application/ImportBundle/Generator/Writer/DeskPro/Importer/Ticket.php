@@ -108,8 +108,7 @@ final class Ticket extends AbstractImporter
             $ticket->addLabel($this->createTicketLabel($label));
         }
         foreach ($importing_entity->getCustomFields() as $custom_field) {
-            // todo implement
-            $ticket->setCustomData(null, null, null);
+            $ticket->addCustomData($this->createCustomData($custom_field));
         }
 
         $this->records->add($ticket);
@@ -279,6 +278,62 @@ final class Ticket extends AbstractImporter
         }
 
         return $category;
+    }
+
+    /**
+     * Returns custom def person entity
+     *
+     * @param Entity\CustomField $importing_entity
+     *
+     * @return DeskPROEntity\CustomDataTicket
+     * @throws ImporterException
+     */
+    private function createCustomData(Entity\CustomField $importing_entity)
+    {
+        $person_def = $this->getCustomDefTicketMapper()->findOneByTitle($importing_entity->getKey());
+        $entity     = new DeskPROEntity\CustomDataTicket();
+
+        switch ($person_def->getTypeName()) {
+            case Entity\CustomField::FIELD_TYPE_TEXT:
+            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
+                $entity
+                    ->setField($person_def)
+                    ->setRootField($person_def)
+                    ->setValue($importing_entity->getValue());
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_TOGGLE:
+                $entity
+                    ->setField($person_def)
+                    ->setRootField($person_def)
+                    ->setValue($importing_entity->getValue() ? 1 : 0);
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DATE:
+                $entity
+                    ->setField($person_def)
+                    ->setRootField($person_def)
+                    ->setValue($importing_entity->getValue() ? strtotime($importing_entity->getValue()) : 0);
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_CHOICE:
+                // todo choice def from persons or tickets
+                $choice_def = $this->getCustomDefTicketMapper()->findOneByTitle($importing_entity->getValue());
+                $entity
+                    ->setField($choice_def)
+                    ->setRootField($person_def)
+                    ->setValue(1);
+
+                break;
+
+            default:
+                throw new ImporterException('Unknown custom field type `%s`', $person_def->getTypeName());
+        }
+
+        return $entity;
     }
 
     /**

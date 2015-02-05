@@ -38,24 +38,24 @@ use Psr\Log\LoggerInterface;
  */
 abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
 {
-    /** @var string */
-    protected $data_table;
-    /** @var string */
-    protected $mapped_column;
-    /** @var mixed */
-    protected $mapped_value;
-    /** @var string */
-    protected $mapper_class;
-    /** @var array */
-    protected $custom_fields_array = array();
-    /** @var array */
-    protected $supported_custom_field_types = array(
-        'Application\DeskPRO\CustomFields\Handler\Text',
-        'Application\DeskPRO\CustomFields\Handler\Choice',
-        'Application\DeskPRO\CustomFields\Handler\Textarea',
-        'Application\DeskPRO\CustomFields\Handler\Toggle',
-        'Application\DeskPRO\CustomFields\Handler\Date'
-    );
+//    /** @var string */
+//    protected $data_table;
+//    /** @var string */
+//    protected $mapped_column;
+//    /** @var mixed */
+//    protected $mapped_value;
+//    /** @var string */
+//    protected $mapper_class;
+//    /** @var array */
+//    protected $custom_fields_array = array();
+//    /** @var array */
+//    protected $supported_custom_field_types = array(
+//        'Application\DeskPRO\CustomFields\Handler\Text',
+//        'Application\DeskPRO\CustomFields\Handler\Choice',
+//        'Application\DeskPRO\CustomFields\Handler\Textarea',
+//        'Application\DeskPRO\CustomFields\Handler\Toggle',
+//        'Application\DeskPRO\CustomFields\Handler\Date'
+//    );
 
     /**
      * Constructor
@@ -66,91 +66,91 @@ abstract class AbstractCustomDefValueImporter extends AbstractValueImporter
      * @param RecordMapperRegistry $mappers
      * @param mixed                $mapped_value   Mapped entity id (person, ticket)
      */
-    public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers, $mapped_value)
-    {
-        parent::__construct($mode, $container, $logger, $mappers);
-        $this->mapped_value = $mapped_value;
-    }
+//    public function __construct($mode, DeskproContainer $container, LoggerInterface $logger, RecordMapperRegistry $mappers, $mapped_value)
+//    {
+//        parent::__construct($mode, $container, $logger, $mappers);
+//        $this->mapped_value = $mapped_value;
+//    }
 
     /**
      * @param $field_type
      * @return bool
      */
-    protected function isCustomFieldTypeSupported($field_type)
-    {
-        return in_array($field_type, $this->supported_custom_field_types);
-    }
+//    protected function isCustomFieldTypeSupported($field_type)
+//    {
+//        return in_array($field_type, $this->supported_custom_field_types);
+//    }
 
     /**
      * @param CustomDefValue $custom_def_value
      */
-    protected function processCustomField(CustomDefValue $custom_def_value)
-    {
-        $record = array(
-            $this->mapped_column => $this->mapped_value,
-        );
+//    protected function processCustomField(CustomDefValue $custom_def_value)
+//    {
+//        $record = array(
+//            $this->mapped_column => $this->mapped_value,
+//        );
+//
+//        $field_key       = $custom_def_value->key;
+//        $mapped_field_id = $this->getMapper()->findIdFromValue($field_key);
+//
+//        if ($mapped_field_id && $this->isCustomFieldTypeSupported($this->getMapper()->fetchHandlerClass($field_key))) {
+//            $handler_class = $this->getMapper()->fetchHandlerClass($field_key);
+//
+//            $custom_field_value = $custom_def_value->value;
+//
+//            switch ($handler_class) {
+//                case 'Application\DeskPRO\CustomFields\Handler\Text':
+//                case 'Application\DeskPRO\CustomFields\Handler\Textarea':
+//
+//                    $record['field_id'] = $mapped_field_id;
+//                    $record['root_field_id'] = $mapped_field_id;
+//                    $record['input'] = $custom_def_value->value;
+//
+//                    break;
+//                case 'Application\DeskPRO\CustomFields\Handler\Toggle':
+//
+//                    $record['field_id'] = $mapped_field_id;
+//                    $record['root_field_id'] = $mapped_field_id;
+//                    $record['value'] = $custom_field_value ? 1 : 0;
+//
+//                    break;
+//                case 'Application\DeskPRO\CustomFields\Handler\Date':
+//
+//                    $record['field_id'] = $mapped_field_id;
+//                    $record['root_field_id'] = $mapped_field_id;
+//                    $record['value'] = $custom_field_value ? strtotime($custom_field_value) : 0;
+//
+//                    break;
+//
+//                case 'Application\DeskPRO\CustomFields\Handler\Choice':
+//
+//                    // This is the choice value, now lets grab the choice id
+//                    $custom_field_value_id = $this->getMappers()->findIdFromMappedValue('custom_def_ticket', $custom_field_value);
+//
+//                    if (!$custom_field_value_id) {
+//                        $this->getLogger()->warning(sprintf("[%s] Unknown option %s for custom field %s (skipping)", $log_id, $custom_field_value, $field_key));
+//                        break;
+//                    } else {
+//                        // TODO - Add the choice to the db
+//                    }
+//
+//                    $record['field_id'] = $custom_field_value_id;
+//                    $record['root_field_id'] = $mapped_field_id;
+//                    $record['value'] = 1;
+//
+//                    break;
+//            }
+//            if (!empty($record)) {
+//                $this->getDb()->insert($this->data_table, $record);
+//            }
+//        }
+//    }
 
-        $field_key       = $custom_def_value->key;
-        $mapped_field_id = $this->getMapper()->findIdFromValue($field_key);
-
-        if ($mapped_field_id && $this->isCustomFieldTypeSupported($this->getMapper()->fetchHandlerClass($field_key))) {
-            $handler_class = $this->getMapper()->fetchHandlerClass($field_key);
-
-            $custom_field_value = $custom_def_value->value;
-
-            switch ($handler_class) {
-                case 'Application\DeskPRO\CustomFields\Handler\Text':
-                case 'Application\DeskPRO\CustomFields\Handler\Textarea':
-
-                    $record['field_id'] = $mapped_field_id;
-                    $record['root_field_id'] = $mapped_field_id;
-                    $record['input'] = $custom_def_value->value;
-
-                    break;
-                case 'Application\DeskPRO\CustomFields\Handler\Toggle':
-
-                    $record['field_id'] = $mapped_field_id;
-                    $record['root_field_id'] = $mapped_field_id;
-                    $record['value'] = $custom_field_value ? 1 : 0;
-
-                    break;
-                case 'Application\DeskPRO\CustomFields\Handler\Date':
-
-                    $record['field_id'] = $mapped_field_id;
-                    $record['root_field_id'] = $mapped_field_id;
-                    $record['value'] = $custom_field_value ? strtotime($custom_field_value) : 0;
-
-                    break;
-
-                case 'Application\DeskPRO\CustomFields\Handler\Choice':
-
-                    // This is the choice value, now lets grab the choice id
-                    $custom_field_value_id = $this->getMappers()->findIdFromMappedValue('custom_def_ticket', $custom_field_value);
-
-                    if (!$custom_field_value_id) {
-                        $this->getLogger()->warning(sprintf("[%s] Unknown option %s for custom field %s (skipping)", $log_id, $custom_field_value, $field_key));
-                        break;
-                    } else {
-                        // TODO - Add the choice to the db
-                    }
-
-                    $record['field_id'] = $custom_field_value_id;
-                    $record['root_field_id'] = $mapped_field_id;
-                    $record['value'] = 1;
-
-                    break;
-            }
-            if (!empty($record)) {
-                $this->getDb()->insert($this->data_table, $record);
-            }
-        }
-    }
-
-    /**
-     * @return \Application\ImportBundle\RecordMapper\RecordMapperInterface
-     */
-    protected function getMapper()
-    {
-        return $this->getMappers()->getMapper($this->mapper_class);
-    }
+//    /**
+//     * @return \Application\ImportBundle\RecordMapper\RecordMapperInterface
+//     */
+//    protected function getMapper()
+//    {
+//        return $this->getMappers()->getMapper($this->mapper_class);
+//    }
 }

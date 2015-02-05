@@ -33,7 +33,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
  * Class BlobData
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class BlobData implements MapperInterface
+final class BlobData implements MapperInterface
 {
     /**
      * {@inheritdoc}

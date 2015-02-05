@@ -184,11 +184,48 @@ final class Person extends AbstractImporter
      */
     private function createCustomData(Entity\CustomField $importing_entity)
     {
-        $custom_def = $this->getCustomDefPersonMapper()->findOneByTitle($importing_entity->getKey());
+        $person_def = $this->getCustomDefPersonMapper()->findOneByTitle($importing_entity->getKey());
         $entity     = new DeskPROEntity\CustomDataPerson();
-        $entity
-            ->setField($custom_def)
-            ->setValue($importing_entity->getValue());
+
+        switch ($person_def->getTypeName()) {
+            case Entity\CustomField::FIELD_TYPE_TEXT:
+            case Entity\CustomField::FIELD_TYPE_TEXTAREA:
+                $entity
+                    ->setField($person_def)
+                    ->setRootField($person_def)
+                    ->setValue($importing_entity->getValue());
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_TOGGLE:
+                $entity
+                    ->setField($person_def)
+                    ->setRootField($person_def)
+                    ->setValue($importing_entity->getValue() ? 1 : 0);
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_DATE:
+                $entity
+                    ->setField($person_def)
+                    ->setRootField($person_def)
+                    ->setValue($importing_entity->getValue() ? strtotime($importing_entity->getValue()) : 0);
+
+                break;
+
+            case Entity\CustomField::FIELD_TYPE_CHOICE:
+                // todo choice def from persons or tickets
+                $choice_def = $this->getCustomDefPersonMapper()->findOneByTitle($importing_entity->getValue());
+                $entity
+                    ->setField($choice_def)
+                    ->setRootField($person_def)
+                    ->setValue(1);
+
+                break;
+
+            default:
+                throw new ImporterException('Unknown custom field type `%s`', $person_def->getTypeName());
+        }
 
         return $entity;
     }

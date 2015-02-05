@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class Language
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class Language implements MapperInterface, MapperByTitleInterface
+final class Language implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Language

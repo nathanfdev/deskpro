@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class TicketPriority
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class TicketPriority implements MapperInterface, MapperByTitleInterface
+final class TicketPriority implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\TicketPriority

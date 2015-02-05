@@ -104,6 +104,16 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
     }
 
     /**
+     * @param string $input
+     * @return $this
+     */
+    public function setInput($input)
+    {
+        $this->setModelField('input', $input);
+        return $this;
+    }
+
+    /**
      * Get the value or input.
      *
      * @return mixed

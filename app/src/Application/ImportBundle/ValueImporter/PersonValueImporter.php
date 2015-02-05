@@ -268,19 +268,19 @@ class PersonValueImporter extends AbstractValueImporter
             #------------------------------
             # Custom Fields
             #------------------------------
-            if ($exist_id && !empty($pval->custom_def)) {
-                $custom_field_importer = new CustomDefPersonValueImporter(
-                    $this->getMode(),
-                    $this->getContainer(),
-                    $this->getLogger(),
-                    $this->getMappers(),
-                    $exist_id
-                );
-
-                foreach ($pval->custom_def as $custom_value) {
-                    $custom_field_importer->importValue($custom_value);
-                }
-            }
+//            if ($exist_id && !empty($pval->custom_def)) {
+//                $custom_field_importer = new CustomDefPersonValueImporter(
+//                    $this->getMode(),
+//                    $this->getContainer(),
+//                    $this->getLogger(),
+//                    $this->getMappers(),
+//                    $exist_id
+//                );
+//
+//                foreach ($pval->custom_def as $custom_value) {
+//                    $custom_field_importer->importValue($custom_value);
+//                }
+//            }
         }
     }
 

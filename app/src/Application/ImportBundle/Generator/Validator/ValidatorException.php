@@ -31,7 +31,7 @@ namespace Application\ImportBundle\Generator\Validator;
  * Class ValidatorException
  * @package Application\ImportBundle\Generator\Validator
  */
-class ValidatorException extends \Exception implements ValidatorExceptionInterface
+final class ValidatorException extends \Exception implements ValidatorExceptionInterface
 {
 
 }

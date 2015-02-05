@@ -25,26 +25,96 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+namespace Application\ImportBundle\Reader\ZenDesk;
+
 /**
- * @package Importer
+ * Class ZendDeskConfig
+ * @package Application\ImportBundle\Reader\ZenDesk
  */
-
-namespace Application\ImportBundle\Value;
-
-class CustomDefValue
+class ZendDeskConfig
 {
     /**
-     * @var int
+     * @var string
      */
-    public $oid;
+    private $host;
 
     /**
      * @var string
      */
-    public $key;
+    private $user_id;
 
     /**
-     * @var mixed
+     * @var string
      */
-    public $value;
+    private $api_token;
+
+    /**
+     * How many times to try an API call before re-throwing an error?
+     *
+     * @var int
+     */
+    private $try_count = 6;
+
+    /**
+     * The number of seconds between try attempts
+     * when the attempts are errors;
+     *
+     * @var int
+     */
+    private $try_time_error  = 6;
+
+    /**
+     * The number of seconds between try attempts
+     * when the attempts are rate limit errors.
+     *
+     * @var int
+     */
+    private $try_time_ratelimit  = 15;
+
+    /**
+     * The number of seconds between try attempts increases
+     * by this number every time. So try #2 is $try_time_ratelimit,
+     * try #3 is $try_time_ratelimit+$try_time_inc, etc.
+     *
+     * @var int
+     */
+    private $try_time_inc = 15;
+
+    /**
+     * Constructor
+     *
+     * @param string $host
+     * @param string $user_id
+     * @param string $api_token
+     */
+    public function __construct($host, $user_id, $api_token)
+    {
+        $this->host      = $host;
+        $this->user_id   = $user_id;
+        $this->api_token = $api_token;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHost()
+    {
+        return $this->host;
+    }
+
+    /**
+     * @return int
+     */
+    public function getUserId()
+    {
+        return $this->user_id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getApiToken()
+    {
+        return $this->api_token;
+    }
 }

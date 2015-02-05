@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class TicketDepartment
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class TicketDepartment implements MapperInterface, MapperByTitleInterface
+final class TicketDepartment implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Department

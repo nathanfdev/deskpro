@@ -33,7 +33,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
  * Class MapperException
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class MapperException extends \Exception
+final class MapperException extends \Exception
 {
     /**
      * @var array

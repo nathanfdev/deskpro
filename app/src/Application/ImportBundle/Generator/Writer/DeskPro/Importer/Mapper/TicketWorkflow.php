@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class TicketWorkflow
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class TicketWorkflow implements MapperInterface, MapperByTitleInterface
+final class TicketWorkflow implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\TicketWorkflow

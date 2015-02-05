@@ -36,7 +36,7 @@ use Symfony\Component\Validator\ConstraintViolationList;
  * Class ValidatorException
  * @package Application\ImportBundle\Generator\Validator
  */
-class ValidatorConstraintException extends \Exception implements ValidatorExceptionInterface
+final class ValidatorConstraintException extends \Exception implements ValidatorExceptionInterface
 {
     /**
      * @var Entity\EntityInterface

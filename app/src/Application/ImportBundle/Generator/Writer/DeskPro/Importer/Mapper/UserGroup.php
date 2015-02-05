@@ -36,7 +36,7 @@ use Application\DeskPRO\EntityRepository;
  * Class UserGroup
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class UserGroup implements MapperInterface, MapperByTitleInterface
+final class UserGroup implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\Usergroup

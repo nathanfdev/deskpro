@@ -51,14 +51,6 @@ class DeskProWriterFactory extends AbstractFactory
         /** @var \Doctrine\Common\Persistence\ObjectManager $entity_manager */
         $entity_manager = $this->container->get('doctrine.orm.entity_manager');
 
-        /** @var DeskproBlobStorage $blob_storage */
-        if ($this->container instanceof DeskproContainer) {
-            $blob_storage = $this->container->getBlobStorage();
-            $blob_adapter = new BlobAdapter($blob_storage);
-        } else {
-            throw new \Exception('Unable to get a blob storage');
-        }
-
         /** @var EntityRepository\Article $article_repository */
         $article_repository = $doctrine->getRepository('Application\DeskPRO\Entity\Article');
         /** @var EntityRepository\ArticleCategory $article_category_repository */
@@ -127,6 +119,14 @@ class DeskProWriterFactory extends AbstractFactory
             ->attach(new Importer\Mapper\TicketWorkflow($ticket_workflow_repository))
             ->attach(new Importer\Mapper\UserGroup($user_group_repository))
             ->attach(new Importer\Mapper\BlobData());
+
+        /** @var DeskproBlobStorage $blob_storage */
+        if ($this->container instanceof DeskproContainer) {
+            $blob_storage = $this->container->getBlobStorage();
+            $blob_adapter = new BlobAdapter($blob_storage, new Importer\Mapper\BlobData());
+        } else {
+            throw new \Exception('Unable to get a blob storage');
+        }
 
         $importers = new Importer\Collection();
         $importers

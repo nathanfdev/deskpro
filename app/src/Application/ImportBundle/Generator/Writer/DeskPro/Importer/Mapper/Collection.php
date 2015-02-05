@@ -35,7 +35,7 @@ use Application\ImportBundle\AbstractCollection;
  * Class Collection
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class Collection extends AbstractCollection
+final class Collection extends AbstractCollection
 {
     /**
      * Add a record mapper
@@ -45,7 +45,7 @@ class Collection extends AbstractCollection
      */
     public function attach(MapperInterface $mapper)
     {
-        $this->collection[] = $mapper;
+        $this->collection[$mapper->getType()] = $mapper;
         return $this;
     }
 
@@ -59,11 +59,8 @@ class Collection extends AbstractCollection
      */
     public function getMapperByType($type)
     {
-        foreach ($this->collection as $mapper) {
-            /** @var MapperInterface $mapper */
-            if ($mapper->getType() === $type) {
-                return $mapper;
-            }
+        if ($this->collection[$type]) {
+            return $this->collection[$type];
         }
 
         throw new \Exception(sprintf('Mapper `%s` not found', $type));

@@ -29,6 +29,7 @@ namespace Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper;
 
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\EntityRepository;
+use Application\ImportBundle\Entity\CustomField;
 
 /**
  * Custom def people record mapper
@@ -36,7 +37,7 @@ use Application\DeskPRO\EntityRepository;
  * Class CustomDefPeople
  * @package Application\ImportBundle\Generator\Writer\DeskPro\Importer\Mapper
  */
-class CustomDefPerson implements MapperInterface, MapperByTitleInterface
+final class CustomDefPerson implements MapperInterface, MapperByTitleInterface
 {
     /**
      * @var EntityRepository\CustomDefPerson
@@ -106,11 +107,11 @@ class CustomDefPerson implements MapperInterface, MapperByTitleInterface
     public static function getSupportedTypes()
     {
         return array(
-            'text',
-            'choice',
-            'textarea',
-            'toggle',
-            'date',
+            CustomField::FIELD_TYPE_TEXT,
+            CustomField::FIELD_TYPE_TEXTAREA,
+            CustomField::FIELD_TYPE_CHOICE,
+            CustomField::FIELD_TYPE_TOGGLE,
+            CustomField::FIELD_TYPE_DATE,
         );
     }
 }

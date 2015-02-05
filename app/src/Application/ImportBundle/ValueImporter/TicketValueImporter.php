@@ -301,18 +301,18 @@ class TicketValueImporter extends AbstractValueImporter
         #------------------------------
         # Custom Fields
         #------------------------------
-        if ($ticket_id && !empty($tval->custom_def)) {
-            $custom_field_importer = new CustomDefTicketValueImporter(
-                $this->getMode(),
-                $this->getContainer(),
-                $this->getLogger(),
-                $this->getMappers(),
-                $ticket_id
-            );
-
-            foreach ($tval->custom_def as $custom_value) {
-                $custom_field_importer->importValue($custom_value);
-            }
-        }
+//        if ($ticket_id && !empty($tval->custom_def)) {
+//            $custom_field_importer = new CustomDefTicketValueImporter(
+//                $this->getMode(),
+//                $this->getContainer(),
+//                $this->getLogger(),
+//                $this->getMappers(),
+//                $ticket_id
+//            );
+//
+//            foreach ($tval->custom_def as $custom_value) {
+//                $custom_field_importer->importValue($custom_value);
+//            }
+//        }
     }
 }
