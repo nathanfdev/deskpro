@@ -228,6 +228,9 @@ class PersonFromEmailProcessor
             $this->is_running = false;
         }
 
+        $user_rule_proc = new \Application\DeskPRO\People\UserRuleProcessor(App::getOrm());
+        $user_rule_proc->newRegister($person);
+
         return $person;
     }
 }

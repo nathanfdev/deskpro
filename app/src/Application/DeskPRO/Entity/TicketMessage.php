@@ -435,8 +435,24 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         return $message;
     }
 
+    public function getMessageFullText()
+    {
+        if (!$this->message_full) {
+            return '';
+        }
+
+        $message = $this->message_full;
+        $message = strip_tags($message);
+        $message = \Orb\Util\Strings::htmlEntityDecodeUtf8($message);
+
+        return $message;
+    }
+
     public function getMessageFull()
     {
+        if (!$this->message_full) {
+            return '';
+        }
         return $this->procInlineAttach($this->message_full);
     }
 
@@ -572,7 +588,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
         }
 
         $hashes = array();
-        $hashes[] = sha1($this->message . ($this->person ? $this->person->id : 'noperson'));
+
+        $hashable_msg = $this->message;
+        $hashable_msg = preg_replace('#\[attach:([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\.]+):([a-zA-Z0-9\-_\. ]+)\]#', '$3', $hashable_msg);
+
+        $hashes[] = sha1($hashable_msg . ($this->person ? $this->person->id : 'noperson'));
 
         foreach ($this->attachments as $a) {
             $hashes[] = $a->blob['blob_hash'];
@@ -583,6 +603,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
         $this->message_hash = sha1(implode('', $hashes));
         $this->_onPropertyChanged('message_hash', '', $this->message_hash);
+    }
+
+    public function resetHashCode()
+    {
+        $this->message_hash = null;
+        $this->initHashCode();
     }
 
     /**

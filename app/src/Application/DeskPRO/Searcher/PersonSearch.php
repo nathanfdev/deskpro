@@ -363,6 +363,7 @@ class PersonSearch extends SearcherAbstract
                     break;
                 case self::TERM_USERGROUP:
                     $choice = array_map('intval', (array)$choice);
+                    if (!$choice) $choice = array(0);
                     $person_ids = App::getDbRead('search.filter.people')->fetchAllCol("
                         SELECT person_id
                         FROM person2usergroups

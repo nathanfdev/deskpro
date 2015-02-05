@@ -425,4 +425,21 @@ class Message extends \Orb\Mail\Message
     {
         return new static($subject, $body, $contentType, $charset);
     }
+
+
+    /**
+     * @return string
+     * @throws \Exception
+     */
+    public function __toString()
+    {
+        try {
+            return parent::__toString();
+        } catch (\Exception $e) {
+            KernelErrorHandler::logException($e);
+
+            // It's a fatal error either way :(
+            throw $e;
+        }
+    }
 }

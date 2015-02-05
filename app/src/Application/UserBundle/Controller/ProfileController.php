@@ -332,6 +332,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
      */
     public function setDefaultEmailAction($email_id)
     {
+        $this->ensureStandardRequestToken();
+
         $email = $this->person->getEmailId($email_id);
 
         if (!$email) {
@@ -362,6 +364,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
      */
     public function removeEmailAction($email_id)
     {
+        $this->ensureStandardRequestToken();
+
         $email = $this->person->getEmailId($email_id);
 
         if (!$email) {
@@ -402,6 +406,8 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
     public function removeEmailValidatingAction($email_id)
     {
+        $this->ensureStandardRequestToken();
+
         $validating_email = $this->em->find('DeskPRO:PersonEmailValidating', $email_id);
 
         if (!$validating_email || $validating_email->person['id'] != $this->person['id']) {

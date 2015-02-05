@@ -481,6 +481,7 @@ class TicketEmail
         }
 
         $message->getHeaders()->addIdHeader('References', $this->ticket->getEmailReferencesHeader());
+        $message->getHeaders()->addIdHeader('In-Reply-To', $this->ticket->getEmailReferencesHeader());
 
         if (isset($vars['is_auto']) && $vars['is_auto']) {
             $message->getHeaders()->addTextHeader('X-DeskPRO-Auto', 'Yes');

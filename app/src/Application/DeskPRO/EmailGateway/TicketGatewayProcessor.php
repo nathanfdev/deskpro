@@ -50,6 +50,7 @@ use Application\DeskPRO\EmailGateway\TicketGateway\TicketIncomingEmail;
 use Application\DeskPRO\Entity\EmailSource;
 use Application\DeskPRO\Entity\Person;
 use Orb\Types\NoValue;
+use Orb\Util\Dates;
 
 class TicketGatewayProcessor extends AbstractGatewayProcessor
 {
@@ -170,6 +171,58 @@ class TicketGatewayProcessor extends AbstractGatewayProcessor
                     App::getMailer()->send($message);
                 }
 
+                return null;
+            }
+        }
+
+        #-------------------------
+        # Rate limit
+        #-------------------------
+
+        $rate_limit    = $this->container->getSetting('core.emails.rate_count');
+        $rate_time     = $this->container->getSetting('core.emails.rate_time');
+        $rate_locktime = $this->container->getSetting('core.emails.rate_locktime');
+        $real_from     = $this->reader->getRealFromAddress()->getEmail();
+        $source_repos  = $this->container->getEm()->getRepository('DeskPRO:EmailSource');
+
+        if ($rate_limit && !($tac_person && $tac_person->is_agent)) {
+            $is_rate_reject = false;
+
+            if ($source_repos->isEmailAddressRateLimited($real_from, $rate_locktime)) {
+                $is_rate_reject = true;
+                $this->logMessage('Rate limited -- currently locked out');
+            } elseif ($source_repos->countEmailsWithinTime($real_from, $rate_time) >= $rate_limit) {
+                $is_rate_reject = true;
+                $this->logMessage('Rate limited -- this is the first message over the threshold');
+
+                $message = App::getMailer()->createMessage();
+                $message->setTemplate('DeskPRO:emails_user:rate-limit-notice.html.twig', array(
+                    'ticket'        => $ticket,
+                    'subject'       => $this->reader->getSubject()->getSubjectUtf8(),
+                    'name'          => $this->reader->getFromAddress()->getName() ?: $this->reader->getFromAddress()->getEmail(),
+                    'num_messagess' => $rate_limit,
+                    'time_limit'    => Dates::secsToReadable($rate_time),
+                    'time_lock'     => Dates::secsToReadable($rate_locktime),
+                    'date_lock_end' => date($this->container->getSetting('core.date_time'), time() + $rate_locktime)
+                ));
+                $message->setTo($this->reader->getFromAddress()->getEmail());
+
+                $lang = $person ? $person->getLanguage() : null;
+                if ($lang) {
+                    App::$container->getTranslator()->setTemporaryLanguage($lang, function () use ($message) {
+                        $message->prepare();
+                    });
+                } else {
+                    $message->prepare();
+                }
+
+                App::getMailer()->send($message);
+            }
+
+            if ($is_rate_reject) {
+                $this->logMessage('Rate limited, message is rejected');
+                $this->error      = 'rate_limit';
+                $this->error_type = 'rejected';
                 return null;
             }
         }

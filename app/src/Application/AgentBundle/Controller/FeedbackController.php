@@ -432,7 +432,9 @@ class FeedbackController extends AbstractController
 
                 $this->em->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editfeedback', $this->person->id);
 
-                $feedback['content'] = $this->in->getCleanValue('content', 'string', null, array('noclean' => true));
+                $feedback['content'] = $this->person->hasPerm('agent_publish.can_insert_html')
+                    ? $this->in->getCleanValue('content', 'string', null, array('noclean' => true))
+                    : $this->in->getCleanValue('content', 'string');
 
                 $data['content_html'] = $this->renderView('AgentBundle:Feedback:view-content-tab.html.twig', array(
                     'feedback' => $feedback

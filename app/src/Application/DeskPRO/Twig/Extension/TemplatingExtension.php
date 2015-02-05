@@ -531,6 +531,11 @@ class TemplatingExtension extends \Twig_Extension
         }
 
         $qs_append = ($disable_client_cache ? time() : DP_BUILD_TIME);
+
+        if (App::getConfig('asset_version_id')) {
+            $qs_append = App::getConfig('asset_version_id');
+        }
+
         $html = array();
 
         foreach ($urls as $url) {

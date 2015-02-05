@@ -1,6 +1,7 @@
 <?php return array(
     'user.prifle.ticket_validated-message'             => 'Our agents will now read and reply to all of your messages.',
     'user.profile.account_disabled_message'            => 'Your account is currently disabled. You may not login or interact with tickets or chat.',
+    'user.profile.account_locked_message'              => 'Due to multiple failed login attempts, your account has been locked for security. You will not be able to log in for {{ timeago }}',
     'user.profile.add_email_address'                   => 'Add an email address to your account',
     'user.profile.automatically_join_xs_tickets'       => 'Automatically join {{organization}}\'s tickets when they\'re created',
     'user.profile.awaiting_validation'                 => '(awaiting validation)',

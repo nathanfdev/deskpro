@@ -1,4 +1,5 @@
 <?php return array(
+    'agent.login.account_locked_message'     => 'Due to multiple failed login attempts, your account has been locked for security. You will not be able to log in for {{ timeago }}',
     'agent.login.alert_fields_must_match'    => 'The two password fields do not match.',
     'agent.login.alert_too_short'            => 'Please enter a password of at least 4 characters.',
     'agent.login.apple_safari'               => 'Apple Safari',

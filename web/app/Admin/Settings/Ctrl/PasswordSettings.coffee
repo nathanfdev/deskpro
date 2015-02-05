@@ -7,22 +7,22 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       @$scope.password_settings = {}
 
     initialLoad: ->
-      data_promise = @Api.sendDataGet({
-        'settings': '/password_settings'
-      }).then( (res) =>
+      data_promise = @Api.sendGet('/password_settings', {rate_limit_context: 'agent'}).then( (res) =>
         @$scope.settings = {
-          sessions_lifetime:              res.data.settings.settings.sessions_lifetime,
-          session_keepalive_require_page: res.data.settings.settings.session_keepalive_require_page,
-          ip_security_enabled:            res.data.settings.settings.ip_security_enabled,
-          ip_security_mode:               res.data.settings.settings.ip_security_mode || 'admins',
-          ip_security_whitelist_lifetime: res.data.settings.settings.ip_security_whitelist_lifetime + "",
-          disable_notifications:          res.data.settings.settings.disable_notifications,
-          enable_agent_rememberme:        res.data.settings.settings.enable_agent_rememberme,
-          enable_user_rememberme:         res.data.settings.settings.enable_user_rememberme,
+          sessions_lifetime:              res.data.settings.sessions_lifetime,
+          session_keepalive_require_page: res.data.settings.session_keepalive_require_page,
+          ip_security_enabled:            res.data.settings.ip_security_enabled,
+          ip_security_mode:               res.data.settings.ip_security_mode || 'admins',
+          ip_security_whitelist_lifetime: res.data.settings.ip_security_whitelist_lifetime + "",
+          disable_notifications:          res.data.settings.disable_notifications,
+          enable_agent_rememberme:        res.data.settings.enable_agent_rememberme,
+          enable_user_rememberme:         res.data.settings.enable_user_rememberme,
         }
 
-        @$scope.agent = res.data.settings.settings.agent
-        @$scope.user  = res.data.settings.settings.user
+        @$scope.rate_limit_settings = res.data.rate_limit_settings
+
+        @$scope.agent = res.data.settings.agent
+        @$scope.user  = res.data.settings.user
 
         @$scope.agent.standard_policy = @$scope.agent.min_length == 5 and
           !@$scope.agent.max_age and
@@ -71,7 +71,12 @@ define ['Admin/Main/Ctrl/Base', 'DeskPRO/Util/Util'], (Admin_Ctrl_Base, Util) ->
       delete settings.agent.standard_policy
       delete settings.user.standard_policy
 
-      @Api.sendPostJson('/password_settings', {settings: settings}).success( =>
+      post =
+        settings: settings
+        rate_limit_settings: @$scope.rate_limit_settings
+        rate_limit_context: 'agent'
+
+      @Api.sendPostJson('/password_settings', post).success( =>
         @stopSpinner('saving').then(=>
           message = @getRegisteredMessage('saved_settings')
           @Growl.success(message) if message && message.length

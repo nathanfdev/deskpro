@@ -145,6 +145,7 @@ class UserSearch implements UserSearchInterface
         $bool_query = new Query\Bool();
         $qs = $this->getQueryString($query);
         $qs->setDefaultField('_all');
+        $qs->setFields(array('title', 'labels', 'content'));
         $qs->setDefaultOperator('AND');
         $bool_query->addMust($qs);
 
