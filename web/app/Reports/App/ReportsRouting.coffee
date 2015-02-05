@@ -56,23 +56,18 @@ define -> (States) ->
     .setTpl('ReportsInterfaceBundle:Dashboard:dashboard-report.html')
 
   #----------------------------------------
-  # Stats
+  # STATS
   #----------------------------------------
 
   States.add('reports.stats')
     .setUrl('stats')
-    .setCtrl('Reports.Builder.List')
-    .setTpl('ReportsInterfaceBundle:Builder:list.html')
+    .setCtrl('Reports.Stats.StatsMain')
+    .setTpl('ReportsInterfaceBundle:Stats:main.html')
 
-  States.add('reports.stats.create')
-    .setUrl('/create/{type:(?:custom)}')
-    .setCtrl('Reports.Builder.Edit')
-    .setTpl('ReportsInterfaceBundle:Builder:create.html')
-
-  States.add('reports.stats.edit')
-    .setUrl('/{id:[0-9]+}/{type:(?:custom|builtIn)}/{params:.*}')
-    .setCtrl('Reports.Builder.Edit')
-    .setTpl('ReportsInterfaceBundle:Builder:edit.html')
+  States.add('reports.stats.view')
+    .setUrl('stats')
+    .setCtrl('Reports.Stats.StatsMain')
+    .setTpl('ReportsInterfaceBundle:Stats:main.html')
 
   #----------------------------------------
   # Agent Activity

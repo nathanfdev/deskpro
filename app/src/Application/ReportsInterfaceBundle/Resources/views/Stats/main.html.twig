@@ -1,0 +1,113 @@
+<div class="report-list-wrapper">
+    <div class="report-list-content">
+
+        {##############################################################################################################}
+        {# TYPES #}
+        {##############################################################################################################}
+
+        <div class="report-list-big-buttons">
+            <a href="#" class="graph-type-filter">
+                <span class="icon"><i class="fa fa-crosshairs"></i></span>
+                <span class="title">Simple Stats</span>
+            </a>
+            <a href="#" class="graph-type-filter">
+                <span class="icon"><i class="fa fa-table"></i></span>
+                <span class="title">Table Data</span>
+            </a>
+
+
+            <span class="graph-type-filter extendable">
+
+              <span class="icon">
+                <i class="fa fa-bar-chart"></i>
+                <span class="extender"><i class="fa fa-caret-down"></i></span>
+                <div class="extended-content">
+
+                    <a class="stat-preview-bucket selected" href="#">
+                        <span class="title">Pie Chart</span>
+                        <div class="stat-preview stat-preview-pie">
+                            <span class="check check-selected"><i class="fa fa-check"></i></span>
+                        </div>
+                    </a>
+
+                    <a class="stat-preview-bucket" href="#">
+                        <span class="title">Bars</span>
+                        <div class="stat-preview stat-preview-bars">
+                            <span class="check"><i class="fa fa-check"></i></span>
+                        </div>
+                    </a>
+
+                    <a class="stat-preview-bucket" href="#">
+                        <span class="title">Simple Bars</span>
+                        <div class="stat-preview stat-preview-simple-bars">
+                            <span class="check"><i class="fa fa-check"></i></span></div>
+                    </a>
+
+                    <a class="stat-preview-bucket" href="#">
+                        <span class="title">Lines</span>
+                        <div class="stat-preview stat-preview-line">
+                            <span class="check"><i class="fa fa-check"></i></span>
+                        </div>
+                    </a>
+
+                    <a class="stat-preview-bucket" href="#">
+                        <span class="title">Simple Lines</span>
+                        <div class="stat-preview stat-preview-simple-line">
+                            <span class="check"><i class="fa fa-check"></i></span>
+                        </div>
+                    </a>
+
+                    <a class="stat-preview-bucket" href="#">
+                        <span class="title">Area</span>
+                        <div class="stat-preview stat-preview-area">
+                            <span class="check"><i class="fa fa-check"></i></span>
+                        </div>
+                    </a>
+
+                    <a class="stat-preview-bucket" href="#">
+                        <span class="title">Simple Area</span>
+                        <div class="stat-preview stat-preview-simple-area">
+                            <span class="check"><i class="fa fa-check"></i></span>
+                        </div>
+                    </a>
+
+                </div>
+              </span>
+              <span class="title">Charts</span>
+            </span>
+        </div>
+
+        <div class="reports-list">
+            {##########################################################################################################}
+            {# FILTERS #}
+            {##########################################################################################################}
+
+            <div class="big-list-of-stats-filters">
+                <div class="bucket">
+                    <form>
+                        <label>Filter:</label>
+                        <div class="box">
+                            <input type="text" placeholder="Filter stats by name">
+                        </div>
+                    </form>
+                </div>
+
+                <div class="bucket">
+                    <a href="#" class="select">Select labels: <i class="fa fa-caret-down"></i></a>
+                </div>
+            </div>
+
+            {##########################################################################################################}
+            {# LIST #}
+            {##########################################################################################################}
+
+            <div class="big-list-of-stats">
+                <ul class="stat-list">
+                    XXXX
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <div class="stat-large-preview-wrapper" ui-view></div>
+</div>
