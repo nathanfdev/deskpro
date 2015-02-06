@@ -8,7 +8,7 @@ use Application\DeskPRO\Domain\DomainObject;
  *
  * Order of the input array is not relevenat.
  */
-class ArbitratyHasher
+class ArbitraryHasher
 {
     /**
      * Will always return a unique string hash of the $input, where $input can be a scalar, an object, or any \Traversable

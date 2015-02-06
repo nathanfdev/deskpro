@@ -35,7 +35,7 @@
 namespace Application\AppBundle\DataService;
 
 
-use Application\AppBundle\Helper\ArbitratyHasher;
+use Application\AppBundle\Helper\ArbitraryHasher;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Person;

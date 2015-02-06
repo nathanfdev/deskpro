@@ -37,7 +37,7 @@ namespace Application\FormBundle\Hierarchy;
 
 use Application\AppBundle\DataService\DepartmentDataService;
 use Application\AppBundle\DataService\FeedbackDataService;
-use Application\AppBundle\Helper\ArbitratyHasher;
+use Application\AppBundle\Helper\ArbitraryHasher;
 use Application\AppBundle\Hierarchy\Formatter\FlatListFormatter;
 use Application\AppBundle\Hierarchy\Formatter\ParentListFormatter;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
@@ -62,7 +62,7 @@ use Doctrine\ORM\EntityRepository;
 class HierarchyGenerator
 {
     /**
-     * @var ArbitratyHasher
+     * @var ArbitraryHasher
      */
     protected $hash_generator;
 
@@ -312,7 +312,7 @@ class HierarchyGenerator
     protected function generateHash($input)
     {
         if (null === $this->hash_generator) {
-            $this->hash_generator = new ArbitratyHasher();
+            $this->hash_generator = new ArbitraryHasher();
         }
 
         return $this->hash_generator->generateHash($input);

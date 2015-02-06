@@ -34,7 +34,7 @@
 
 namespace Application\AppBundle\DataService;
 
-use Application\AppBundle\Helper\ArbitratyHasher;
+use Application\AppBundle\Helper\ArbitraryHasher;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 
@@ -47,7 +47,7 @@ use Application\DeskPRO\Cache\ConvenientCache;
 class AbstractDataService 
 {
     /**
-     * @var ArbitratyHasher|null
+     * @var ArbitraryHasher|null
      */
     protected $hash_generator;
 
@@ -85,7 +85,7 @@ class AbstractDataService
     protected function generateHash($input)
     {
         if (null === $this->hash_generator) {
-            $this->hash_generator = new ArbitratyHasher();
+            $this->hash_generator = new ArbitraryHasher();
         }
 
         return $this->hash_generator->generateHash($input);

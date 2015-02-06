@@ -34,7 +34,7 @@
 
 namespace Application\AuthBundle\Permissions\Portal;
 
-use Application\AppBundle\Helper\ArbitratyHasher;
+use Application\AppBundle\Helper\ArbitraryHasher;
 use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\DBAL\Connection;
@@ -44,7 +44,7 @@ use Application\DeskPRO\ORM\EntityManager;
 class PortalUsergroupDecider
 {
     /**
-     * @var ArbitratyHasher
+     * @var ArbitraryHasher
      */
     protected $hash_generator;
 
@@ -210,7 +210,7 @@ class PortalUsergroupDecider
     protected function generateHash($input)
     {
         if (null === $this->hash_generator) {
-            $this->hash_generator = new ArbitratyHasher();
+            $this->hash_generator = new ArbitraryHasher();
         }
 
         return $this->hash_generator->generateHash($input);
