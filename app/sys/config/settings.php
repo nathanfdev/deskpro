@@ -588,22 +588,22 @@
     /**
      * http s-maxage for a guest "page"
      */
-    'portal.smaxage_guest_page' => 45,
+    'portal.smaxage_guest_page' => 600,
 
     /**
      * http cache s-maxage for a guest "tag"
      */
-    'portal.smaxage_guest_tag' => 45,
+    'portal.smaxage_guest_tag' => 600,
 
     /**
      * http cache s-maxage for a user "page"
      */
-    'portal.smaxage_user_page' => 45,
+    'portal.smaxage_user_page' => 600,
 
     /**
      * http cache s-maxage for a user "tag"
      */
-    'portal.smaxage_user_tag' => 45,
+    'portal.smaxage_user_tag' => 600,
 
 
     ####################################################################################################################
