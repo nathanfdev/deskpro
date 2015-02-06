@@ -49,8 +49,14 @@ class DpPersonUserProvider implements UserProviderInterface
      */
     private $person_repo;
 
+    /**
+     * @var array
+     */
+    private $people_refs;
+
     public function __construct(PersonRepo $person_repo)
     {
+        $this->people_refs = array();
         $this->person_repo = $person_repo;
     }
 
@@ -71,11 +77,12 @@ class DpPersonUserProvider implements UserProviderInterface
      */
     public function loadUserByUsername($username)
     {
-        // we use the person ID as the username in this context (unique)
-        if ($person = $this->person_repo->find($username)) {
+        // username is actually the person id here
+        if ($person = $this->fetchPerson($username)) {
             return $person;
         }
 
+        // the off chance the email slips by (never expected)
         return $this->person_repo->findOneByEmail($username);
     }
 
@@ -99,7 +106,32 @@ class DpPersonUserProvider implements UserProviderInterface
             throw new \InvalidArgumentException('the DpPersonUserProvider requires a Person instance for the UserInterface');
         }
 
-        return $this->person_repo->find($user->id);
+        $person = $this->fetchPerson($user->getId());
+
+        return $person;
+    }
+
+    protected function fetchPerson($id)
+    {
+        // subrequests or esi calls may reload the user from this provider multiple times. we'll use the same ref.
+        if (array_key_exists($id, $this->people_refs)) {
+            return $this->people_refs[$id];
+        }
+
+        // load the user with usergroups in one query. the usergroups are always going to be needed in permissions layer.
+        $qb = $this->person_repo->createQueryBuilder('p')
+            ->addSelect('ug')
+            ->leftJoin('p.usergroups', 'ug')
+            ->where('p.id = :id')
+            ->setParameter('id', $id);
+
+        $person = $qb->getQuery()->getOneOrNullResult();
+
+        if ($person) {
+            $this->people_refs[$id] = $person;
+        }
+
+        return $person;
     }
 
     /**
