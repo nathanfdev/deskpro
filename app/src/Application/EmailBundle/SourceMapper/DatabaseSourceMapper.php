@@ -238,6 +238,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
     {
         $new_source = $source;
         $new_source['status']            = 'complete';
+        $new_source['error_code']        = '';
         $new_source['date_next_attempt'] = null;
         $new_source['date_sent']         = date('Y-m-d H:i:s');
         $new_source['date_status']       = date('Y-m-d H:i:s');
@@ -418,8 +419,47 @@ class DatabaseSourceMapper implements SourceMapperInterface
     {
         $diff = array();
 
+        static $valid_keys = array(
+            'id' => true,
+            'blob_id' => true,
+            'email_account_id' => true,
+            'log_blob_id' => true,
+            'ref' => true,
+            'context_type' => true,
+            'context_id' => true,
+            'context_info' => true,
+            'headers' => true,
+            'header_to' => true,
+            'header_from' => true,
+            'header_subject' => true,
+            'from_email' => true,
+            'to_emails' => true,
+            'cc_emails' => true,
+            'bcc_emails' => true,
+            'status' => true,
+            'date_status' => true,
+            'date_sent' => true,
+            'date_next_attempt' => true,
+            'error_code' => true,
+            'date_created' => true,
+            'exec_count' => true,
+        );
+
+        static $always_save = array(
+            'log_blob_id' => true,
+            'status' => true,
+            'date_status' => true,
+            'date_sent' => true,
+            'date_next_attempt' => true,
+            'error_code' => true,
+            'exec_count' => true,
+        );
+
         foreach ($new as $k => $v) {
-            if (!isset($orig[$k]) || $orig[$k] != $v) {
+            if (!isset($valid_keys[$k])) continue;
+            if (isset($always_save[$k])) {
+                $diff[$k] = $v;
+            } else if (!isset($orig[$k]) || $orig[$k] != $v) {
                 $diff[$k] = $v;
             }
         }

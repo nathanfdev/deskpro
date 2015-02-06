@@ -83,7 +83,7 @@ class SourceSender
     {
         $this->last_log = array();
 
-        if (!$sendmail['email_account_id']) {
+        if (empty($sendmail['email_account_id']) || !$sendmail['email_account_id']) {
             $this->addLogMessage(sprintf("The email account that this email was sent with no longer exists"));
             return 0;
         }

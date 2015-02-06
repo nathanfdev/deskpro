@@ -611,6 +611,78 @@ class SendmailSource implements NotifyPropertyChanged
         return $data;
     }
 
+    /**
+     * Exports to an array that would match the database row.
+     *
+     * @return array
+     */
+    public function toRecordArray()
+    {
+        static $scalar_fields = array(
+            'id',
+            'ref',
+            'context_type',
+            'context_id',
+            'context_info',
+            'headers',
+            'header_to',
+            'header_from',
+            'header_subject',
+            'from_email',
+            'status',
+            'error_code',
+            'exec_count',
+        );
+
+        static $simple_array_fields = array(
+            'to_emails',
+            'cc_emails',
+            'bcc_emails',
+        );
+
+        static $date_fields = array(
+            'date_status',
+            'date_sent',
+            'date_next_attempt',
+            'date_created',
+        );
+
+        static $obj_fields = array(
+            'blob',
+            'email_account',
+            'log_blob',
+        );
+
+        $data = array();
+
+        foreach ($scalar_fields as $f) {
+            $data[$f] = $this->$f;
+        }
+        foreach ($simple_array_fields as $f) {
+            if ($this->$f) {
+                $data[$f] = implode(',', $this->$f);
+            } else {
+                $data[$f] = '';
+            }
+        }
+        foreach ($date_fields as $f) {
+            if ($this->$f) {
+                $data[$f] = $this->$f->format('Y-m-d H:i:s');
+            } else {
+                $data[$f] = null;
+            }
+        }
+        foreach ($obj_fields as $f) {
+            if ($this->$f) {
+                $data[$f.'_id'] = $this->$f->getId();
+            } else {
+                $data[$f.'_id'] = null;
+            }
+        }
+
+        return $data;
+    }
+
     ############################################################################
     # Doctrine
     ############################################################################

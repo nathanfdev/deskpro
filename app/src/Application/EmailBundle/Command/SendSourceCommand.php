@@ -35,12 +35,16 @@
 
 namespace Application\EmailBundle\Command;
 
+use Application\EmailBundle\Entity\SendmailSource;
+use Application\EmailBundle\Queue\QueueProc;
 use Orb\Util\Strings;
+use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
+use Monolog;
 
 class SendSourceCommand extends ContainerAwareCommand
 {
@@ -125,6 +129,23 @@ class SendSourceCommand extends ContainerAwareCommand
         # Send
         ################################################################################################################
 
+        $logger = new Monolog\Logger('sendmail_queue');;
+        $logger->pushHandler(new ConsoleHandler($output));
 
+        $proc = new QueueProc(
+            $this->getContainer()->get('email.source_mapper'),
+            $this->getContainer()->get('email.source_sender'),
+            $logger
+        );
+
+        $proc->process($source->toRecordArray());
+
+        $this->getContainer()->getEm()->refresh($source);
+
+        if ($source->getStatus() == SendmailSource::STATUS_COMPLETE) {
+            return 1;
+        } else {
+            return 0;
+        }
     }
 }
