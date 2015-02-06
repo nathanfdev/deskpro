@@ -556,6 +556,11 @@
     'portal.default_permissions_timestamp' => 0,
 
     /**
+     * disable_permissions_cache
+     */
+    'portal.disable_permissions_cache' => false,
+
+    /**
      * When creating a new feedback in portal, this status category is set automatically
      */
     'portal.default_feedback_status_category_id' => 2,

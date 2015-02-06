@@ -51,7 +51,7 @@ use Application\DeskPRO\ORM\EntityManager;
  *
  * Using this, you can do both low-level and high-ish-level optations on the portal permissions.
  *
- * Loww level: To signify a change in permissions, you can fetch this service from the container and call
+ * Low level: To signal a change in permissions, you can fetch this service from the container and call
  * invalidatePortalPermissionsCaches(). After this call, all permission maps will be regenerated upon next time they
  * are needed. Invalidate frequently as data changes in admin/agent areas.
  *
@@ -225,13 +225,12 @@ class PortalPermissionsManager
      */
     public function getCacheKeyForPerson(Person $person)
     {
-        $usergroupIds = array();
+        // cache THIS for a request. It won't change during a single request!
 
-        foreach ($person->getUsergroups() as $usergroup) {
-            $usergroupIds[] = $usergroup['id'];
-        }
+        // cache this below as well..... it does lots of querying etc
+        $usergroup_ids = $this->usergroupDecider->getUsergroupIdsForPerson($person);
 
-        return $this->getCacheKeyForUsergroupIds($usergroupIds);
+        return $this->getCacheKeyForUsergroupIds($usergroup_ids);
     }
 
     /**
@@ -273,6 +272,6 @@ class PortalPermissionsManager
 
     public function isCacheDisabled()
     {
-        return $this->settingsResolver->getGlobalSettings()->get('disable_permissions_cache', false);
+        return $this->settingsResolver->getGlobalSettings()->get('portal.disable_permissions_cache', false);
     }
 }

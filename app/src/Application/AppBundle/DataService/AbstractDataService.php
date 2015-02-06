@@ -71,7 +71,7 @@ class AbstractDataService
      */
     protected function getCache()
     {
-        if (null === $this->hash_generator) {
+        if (null === $this->cache) {
             $this->cache = new ConvenientCache(new SimpleArrayCache());
         }
 
