@@ -39,7 +39,7 @@ use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
 use Application\DeskPRO\Entity\Person;
 use Doctrine\ORM\EntityManager;
 
-class DepartmentDataService
+class DepartmentDataService extends AbstractDataService
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -59,20 +59,28 @@ class DepartmentDataService
 
     public function getAuthorizedDepartmentsForPersonInPortal(Person $person)
     {
-        $allowed_department_ids = $this->portal_permissions_manager->getAllowedDepartmentIds($person);
+        $portal_permissions_manager = $this->portal_permissions_manager;
+        $em = $this->em;
 
-        // TODO: make sure allowed_department_ids is correct
-        $departments = $this->em
-            ->getRepository('DeskPRO:Department')
-            ->createQueryBuilder('d')
-            ->select('d')
-            ->where('d.id IN (:allowed_department_ids) AND d.parent IS NULL AND d.is_tickets_enabled = true')
-            ->orderBy('d.display_order', 'ASC')
-            ->setParameter('allowed_department_ids', $allowed_department_ids)
-            ->getQuery()
-            ->getResult();
+        return $this->generateAndCache(
+            $person,
+            function() use ($person, $portal_permissions_manager, $em) {
+                $allowed_department_ids = $portal_permissions_manager->getAllowedDepartmentIds($person);
 
-        return $departments;
+                // TODO: make sure allowed_department_ids is correct
+                $departments = $em
+                    ->getRepository('DeskPRO:Department')
+                    ->createQueryBuilder('d')
+                    ->select('d')
+                    ->where('d.id IN (:allowed_department_ids) AND d.parent IS NULL AND d.is_tickets_enabled = true')
+                    ->orderBy('d.display_order', 'ASC')
+                    ->setParameter('allowed_department_ids', $allowed_department_ids)
+                    ->getQuery()
+                    ->getResult();
+
+                return $departments;
+            }
+        );
     }
 }
  

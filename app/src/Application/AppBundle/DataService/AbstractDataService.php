@@ -35,6 +35,7 @@
 namespace Application\AppBundle\DataService;
 
 use Application\AppBundle\Helper\ArbitratyHasher;
+use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
 use Application\DeskPRO\Cache\ConvenientCache;
 
 /**
@@ -45,21 +46,42 @@ use Application\DeskPRO\Cache\ConvenientCache;
  */
 class AbstractDataService 
 {
-
     /**
      * @var ArbitratyHasher|null
      */
     protected $hash_generator;
+
     /**
      * @var ConvenientCache
      */
     protected $cache;
 
+    /**
+     * @param mixed $params the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @return mixed|null
+     */
     protected function generateAndCache($params, $callable)
     {
-        return $this->cache->get($this->generateHash($params), $callable);
+        return $this->getCache()->get($this->generateHash($params), $callable);
     }
 
+    /**
+     * @return ConvenientCache
+     */
+    protected function getCache()
+    {
+        if (null === $this->hash_generator) {
+            $this->cache = new ConvenientCache(new SimpleArrayCache());
+        }
+
+        return $this->cache;
+    }
+
+    /**
+     * @param mixed $input
+     * @return string
+     */
     protected function generateHash($input)
     {
         if (null === $this->hash_generator) {

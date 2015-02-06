@@ -89,7 +89,7 @@ class PortalController extends AbstractController
             $data = $form->getData();
             $email = $data['email'];
 
-            if ($person = $this->getPersonDataService()->getUserForEmail($email)) {
+            if ($person = $this->getPersonDataService()->getPersonForEmail($email)) {
 
                 if (!$person->password) {
                     // TODO: this is copied from old portal, and we need to verify it works, moving on for now
@@ -132,7 +132,7 @@ class PortalController extends AbstractController
     public function passwordResetAction(Request $request, $password_reset_code)
     {
         /** @var \Application\DeskPRO\Entity\Person $person */
-        $person = $this->getPersonDataService()->getUserForPasswordResetCode($password_reset_code);
+        $person = $this->getPersonDataService()->getPersonForPasswordResetCode($password_reset_code);
 
         $valid = false;
         if ($person && $reset_requested_date = $person->getDatePasswordResetRequested()) {

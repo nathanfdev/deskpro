@@ -42,7 +42,7 @@ use Application\FormBundle\Form\FormFieldManager;
 use Application\FormBundle\FormFields;
 use Application\FormBundle\TicketLayout\TicketLayoutFactory;
 
-class TicketViewService
+class TicketViewService extends AbstractDataService
 {
     /**
      * @var FormFieldManager
@@ -68,6 +68,9 @@ class TicketViewService
 
     public function getUserTicketView(Ticket $ticket)
     {
+        // no cache here
+        // unlikely to be called more than once per request. if it is, it's probably better to make sure it's an up to date view.
+
         $view = new TicketView();
         $view->ticket = $ticket;
 

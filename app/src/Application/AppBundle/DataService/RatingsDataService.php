@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\Rating;
 use Application\DeskPRO\EntityRepository\Rating as RatingRepo;
 use Doctrine\ORM\EntityManager;
 
-class RatingsDataService
+class RatingsDataService extends AbstractDataService
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -56,15 +56,19 @@ class RatingsDataService
      */
     public function getRating($rating)
     {
-        if (!$rating) { // we need some input
-            return null;
-        }
+        $ratings_repo = $this->getRatingRepo();
 
-        if ($rating instanceof Rating) { // already have what you seek
-            return $rating;
-        }
+        return $this->generateAndCache($rating, function() use ($ratings_repo, $rating) {
+            if (!$rating) { // we need some input
+                return null;
+            }
 
-        return $this->getRatingRepo()->find($rating);
+            if ($rating instanceof Rating) { // already have what you seek
+                return $rating;
+            }
+
+            return $ratings_repo->find($rating);
+        });
     }
 
     /**

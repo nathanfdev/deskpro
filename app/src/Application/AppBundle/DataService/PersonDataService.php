@@ -38,7 +38,7 @@ use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\EntityRepository\Person as PersonRepo;
 use Doctrine\ORM\EntityManager;
 
-class PersonDataService 
+class PersonDataService extends AbstractDataService
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -54,13 +54,15 @@ class PersonDataService
      * @param $email
      * @return Person|null
      */
-    public function getUserForEmail($email)
+    public function getPersonForEmail($email)
     {
+        // using caution and not caching most PersonDataService methods
         return $this->getPersonRepo()->findOneByEmail($email);
     }
 
-    public function getUserForPasswordResetCode($code)
+    public function getPersonForPasswordResetCode($code)
     {
+        // using caution and not caching most PersonDataService methods
         if (strlen($code) > 0) {
             return $this->getPersonRepo()->findOneBy(array(
                 'password_reset_code' => $code

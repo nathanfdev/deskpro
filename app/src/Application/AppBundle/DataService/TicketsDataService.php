@@ -58,7 +58,6 @@ class TicketsDataService extends AbstractDataService
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
-        $this->cache = new ConvenientCache(new SimpleArrayCache());
     }
 
     /**
