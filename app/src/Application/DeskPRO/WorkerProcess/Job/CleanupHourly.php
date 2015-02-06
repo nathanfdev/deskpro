@@ -173,7 +173,7 @@ class CleanupHourly extends AbstractJob
         $blob_ids = App::getDb()->fetchAllCol("
             SELECT id
             FROM blobs
-            WHERE (is_temp = 1 AND date_created < ?) OR date_cleanup < ?
+            WHERE is_temp = 1 AND date_created < ?
             LIMIT 1000
         ", array($datetime, $now));
 

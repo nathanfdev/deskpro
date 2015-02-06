@@ -248,9 +248,6 @@ class DeskproBlobStorage implements Loggable
             if (isset($props['is_temp']) && $props['is_temp']) {
                 $blob_entity->is_temp = true;
             }
-            if (isset($props['date_cleanup']) && $props['date_cleanup']) {
-                $blob_entity->date_cleanup = $props['date_cleanup'];
-            }
             if (isset($props['sys_name']) && $props['sys_name']) {
                 $blob_entity->sys_name = $props['sys_name'];
             }
