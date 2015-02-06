@@ -696,7 +696,8 @@ class SendmailSource implements NotifyPropertyChanged
         $metadata->setPrimaryTable(array(
             'name' => 'sendmail_sources',
             'indexes' => array(
-                'status_idx'   => array('columns' => array('status')),
+                'status_idx'       => array('columns' => array('status')),
+                'date_created_idx' => array('columns' => array('date_created')),
             ),
             'uniqueConstraints' => array(
                 'ref_idx' => array('columns' => array('ref'))
