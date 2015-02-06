@@ -18,3 +18,11 @@ services:
       arguments: [@fos_http_cache.user_context.request_matcher, @portal_cache_helper]
       tags:
         - { name: kernel.event_subscriber }
+
+
+  # the fos UserContextSubscriber still runs, this just runs after with our logic
+  portal_http_cache_listener:
+      class: Application\PortalBundle\HttpCache\EventListener\PortalHttpCacheListener
+      arguments: [@brand_stack, @portal_cache_helper]
+      tags:
+        - { name: kernel.event_subscriber }
