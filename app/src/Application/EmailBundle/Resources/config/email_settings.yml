@@ -30,10 +30,24 @@ services:
     factory_method: create
     arguments: [@service_container]
 
+  email.raw_transport_factory:
+    class: Application\EmailBundle\Mail\RawTransport\RawTransportFactory
+    arguments: [@logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.out.raw_transport }
+
+  email.queue_processor:
+    class: Application\EmailBundle\Queue\QueueProc
+    arguments: [@email.source_mapper, @email.source_sender, @logger]
+    tags:
+      - { name: monolog.logger, channel: dp.email.out.queue }
+
   email.source_mapper:
     class: Application\EmailBundle\SourceMapper\DatabaseSourceMapper
     arguments: [@database_connection, @deskpro.blob_storage, @email.email_account_manager, @email.log_collector]
 
   email.source_sender:
       class: Application\EmailBundle\Queue\SourceSender
-      arguments: [@email.email_account_manager, @deskpro.blob_storage]
+      arguments: [@email.email_account_manager, @deskpro.blob_storage, @logger]
+      tags:
+        - { name: monolog.logger, channel: dp.email.out.transport }

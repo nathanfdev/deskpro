@@ -1,12 +1,12 @@
 <?php
 /**************************************************************************\
-| DeskPRO (r) has been developed by DeskPRO Ltd. https://www.deskpro.com/  |
+| DeskPRO (r) has been developed by DeskPRO Ltd. http://www.deskpro.com/   |
 | a British company located in London, England.                            |
 |                                                                          |
-| All source code and content Copyright (c) 2014, DeskPRO Ltd.             |
+| All source code and content Copyright (c) 2012, DeskPRO Ltd.             |
 |                                                                          |
 | The license agreement under which this software is released              |
-| can be found at https://www.deskpro.com/eula/                            |
+| can be found at http://www.deskpro.com/license                           |
 |                                                                          |
 | By using this software, you acknowledge having read the license          |
 | and agree to be bound thereby.                                           |
@@ -29,33 +29,16 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category DependencyInjection
+ * @subpackage EmailBundle
  */
 
-namespace Application\DeskPRO\DependencyInjection\SystemServices;
+namespace Application\EmailBundle\Mail\RawTransport;
 
-use Application\DeskPRO\DependencyInjection\DeskproContainer;
-use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
-use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
-use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
-
-class EmailAccountManagerService
+/**
+ * Exception used to represent a transport failure that cannot be fixed
+ * by a retry (i.e., dont schedule the email source for a retry).
+ */
+class UnrecoverableRawTransportException extends \RuntimeException
 {
-    public static function create(DeskproContainer $container)
-    {
-        $repos           = new EmailAccountRepository($container->getEm());
-        $tr_factory      = $container->get('email.raw_transport_factory');
-        $fetcher_factory = new FetcherStorageFactory();
 
-        $manager = new EmailAccountManager($repos, $tr_factory, $fetcher_factory);
-
-        $default_addr = $container->getSetting('core.default_from_email');
-        $account = $manager->findAccountForEmailAddress($default_addr, 'is_enabled | with_transport');
-        if ($account) {
-            $manager->setDefaultOutAccount($account);
-        }
-
-        return $manager;
-    }
 }

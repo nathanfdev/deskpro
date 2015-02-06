@@ -34,9 +34,10 @@
 
 namespace Application\EmailBundle\SwiftMailer\Plugins;
 
+use Psr\Log\LoggerInterface;
 use Swift_Events_SendEvent;
 
-class Logger implements \Swift_Events_CommandListener, \Swift_Events_ResponseListener, \Swift_Events_TransportChangeListener, \Swift_Events_TransportExceptionListener, \Swift_Events_SendListener
+class TransportLogger implements \Swift_Events_CommandListener, \Swift_Events_ResponseListener, \Swift_Events_TransportChangeListener, \Swift_Events_TransportExceptionListener, \Swift_Events_SendListener
 {
     /**
      * @var array
@@ -54,10 +55,29 @@ class Logger implements \Swift_Events_CommandListener, \Swift_Events_ResponseLis
     private $is_connected = false;
 
     /**
+     * @var int
+     */
+    private $message_count = 0;
+
+    /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * @param string $message
      */
     public function addConnectionLog($message)
     {
+        $this->logger->debug($message);
         $this->connection_log[] = '[' . date('Y-m-d H:i:s') . '] ' . trim($message);
     }
 
@@ -66,6 +86,7 @@ class Logger implements \Swift_Events_CommandListener, \Swift_Events_ResponseLis
      */
     public function addMessageLog($message)
     {
+        $this->logger->debug($message);
         $this->message_logs[] = '[' . date('Y-m-d H:i:s') . '] ' . trim($message);
     }
 
@@ -194,6 +215,15 @@ class Logger implements \Swift_Events_CommandListener, \Swift_Events_ResponseLis
     {
         // Reset message logger
         $this->message_logs = array();
+        $this->message_count++;
+
+        // Prepend connection log so the log for a single message is 'complete'
+        if ($this->connection_log) {
+            $this->addMessageLog(sprintf("%d messages were sent before this. Here is the connection log from the initial connection:", $this->message_count-1));
+            foreach ($this->connection_log as $l) {
+                $this->addMessageLog('<Connect History> ' . $l);
+            }
+        }
     }
 
     /**

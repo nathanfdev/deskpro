@@ -92,7 +92,7 @@ class GenTestEmailCommand extends ContainerAwareCommand
         $message = $mailer->createMessage();
         $message->setTo($to);
         $message->setFrom($from);
-        $message->getSubject("Test Email - $date");
+        $message->setSubject("Test Email - $date");
         $message->setBody("This is a test message sent at $date");
         $message->addPart("This is a test message sent at <strong>$date</strong>", 'text/html');
 

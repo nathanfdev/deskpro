@@ -36,8 +36,8 @@
 namespace Application\EmailBundle\Command;
 
 use Application\EmailBundle\Entity\SendmailSource;
-use Application\EmailBundle\Queue\QueueProc;
 use Orb\Util\Strings;
+use Symfony\Bridge\Monolog\Formatter\ConsoleFormatter;
 use Symfony\Bridge\Monolog\Handler\ConsoleHandler;
 use Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand;
 use Symfony\Component\Console\Input\InputArgument;
@@ -129,15 +129,22 @@ class SendSourceCommand extends ContainerAwareCommand
         # Send
         ################################################################################################################
 
-        $logger = new Monolog\Logger('sendmail_queue');;
-        $logger->pushHandler(new ConsoleHandler($output));
+        $output->setVerbosity(OutputInterface::VERBOSITY_DEBUG);
 
-        $proc = new QueueProc(
-            $this->getContainer()->get('email.source_mapper'),
-            $this->getContainer()->get('email.source_sender'),
-            $logger
-        );
+        // Force console output on emails
+        foreach (array(
+            'dp.email.out.queue',
+            'dp.email.out.transport',
+            'dp.email.out.mailer',
+            'dp.email.out.raw_transport'
+        ) as $n) {
+            $console_handler = new ConsoleHandler($output);
+            $console_handler->setFormatter(new ConsoleFormatter("%start_tag%[%datetime%] %channel%.%level_name%: %message%%end_tag%\n"));
+            $this->getContainer()->get('monolog.logger.'.$n)->pushHandler($console_handler);
+        }
 
+        /** @var \Application\EmailBundle\Queue\QueueProc $proc */
+        $proc = $this->getContainer()->get('email.queue_processor');
         $proc->process($source->toRecordArray());
 
         $this->getContainer()->getEm()->refresh($source);

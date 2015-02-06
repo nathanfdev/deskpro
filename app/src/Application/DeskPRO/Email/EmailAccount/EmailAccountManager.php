@@ -36,13 +36,13 @@ namespace Application\DeskPRO\Email\EmailAccount;
 
 use Application\DeskPRO\Email\EmailAccount\IncomingAccount\FetcherStorageFactory;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\PhpMailConfig;
-use Application\DeskPRO\Email\EmailAccount\OutgoingAccount\TransportFactory;
 use Application\DeskPRO\Email\EmailAccount\Repository\EmailAccountRepository;
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use Application\DeskPRO\EmailGateway\TicketGatewayProcessor;
 use Application\DeskPRO\Entity\EmailAccount;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Exception\MissingConfigurationException;
+use Application\EmailBundle\Mail\RawTransport\RawTransportFactory;
 use Orb\Util\Arrays;
 
 class EmailAccountManager
@@ -57,7 +57,7 @@ class EmailAccountManager
     private $repos;
 
     /**
-     * @var OutgoingAccount\TransportFactory
+     * @var RawTransportFactory
      */
     private $transport_factory;
 
@@ -92,10 +92,10 @@ class EmailAccountManager
 
     /**
      * @param EmailAccountRepository $repos
-     * @param TransportFactory       $transport_factory
+     * @param RawTransportFactory    $transport_factory
      * @param FetcherStorageFactory  $fetcher_storage_factory
      */
-    public function __construct(EmailAccountRepository $repos, TransportFactory $transport_factory, FetcherStorageFactory $fetcher_storage_factory)
+    public function __construct(EmailAccountRepository $repos, RawTransportFactory $transport_factory, FetcherStorageFactory $fetcher_storage_factory)
     {
         $this->repos                   = $repos;
         $this->transport_factory       = $transport_factory;
@@ -447,7 +447,7 @@ class EmailAccountManager
 
 
     /**
-     * @return TransportFactory
+     * @return RawTransportFactory
      */
     public function getTransportFactory()
     {

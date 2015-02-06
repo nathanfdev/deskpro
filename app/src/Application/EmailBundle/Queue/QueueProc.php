@@ -34,7 +34,9 @@
 
 namespace Application\EmailBundle\Queue;
 
+use Application\EmailBundle\Mail\RawTransport\RawTransportException;
 use Application\EmailBundle\SourceMapper\SourceMapperInterface;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Psr\Log\LoggerInterface;
 
 class QueueProc
@@ -55,6 +57,13 @@ class QueueProc
     private $source_sender;
 
     /**
+     * Used by the logger context to mark which log lines are for which messages.
+     * @var array
+     * @internal
+     */
+    public static $__dp_current_sendmail = null;
+
+    /**
      * @param SourceMapperInterface $source_mapper
      * @param SourceSender $source_sender
      * @param LoggerInterface $logger
@@ -71,7 +80,26 @@ class QueueProc
      */
     public function process(array $r)
     {
+        self::$__dp_current_sendmail = $r;
+        try {
+            $this->doProcess($r);
+            self::$__dp_current_sendmail = null;
+        } catch (\Exception $e) {
+            self::$__dp_current_sendmail = null;
+            throw $e;
+        }
+    }
+
+    /**
+     * @param array $r
+     */
+    private function doProcess(array $r)
+    {
         $this->logger->info(sprintf("Processing %d -- %s", $r['id'], substr($r['header_subject'], 0, 85)));
+        $this->logger->debug(sprintf("From: %s", $r['from_email'] ?: '<none>'));
+        $this->logger->debug(sprintf("To: %s", $r['to_emails'] ?: '<none>'));
+        if ($r['cc_emails']) $this->logger->debug(sprintf("CC: %s", $r['cc_emails']));
+        if ($r['bcc_emails']) $this->logger->debug(sprintf("BCC: %s", $r['bcc_emails']));
 
         // Inc exec count
         $r['exec_count']++;
@@ -80,30 +108,29 @@ class QueueProc
         try {
             $sent = $this->source_sender->send($r);
 
-            foreach ($this->source_sender->getLastLogAsArray() as $l) $this->logger->debug('<Sender> ' . $l);
-
             if ($sent) {
                 $this->logger->info("Completed successfully");
-                $this->source_mapper->markSourceComplete($r, $this->source_sender->getLastLog());
+                $this->source_mapper->markSourceComplete($r);
             } else {
                 $this->logger->notice("Did not send any messages");
-                $this->source_mapper->markSourceError($r, 'no_send', $this->source_sender->getLastLog());
+                $this->source_mapper->markSourceError($r, 'no_send');
             }
-        } catch (\Exception $e) {
+        } catch (RawTransportException $e) {
+            $this->logger->notice("Send failed");
             $next = $this->getNextRetry($r);
 
-            foreach ($this->source_sender->getLastLogAsArray() as $l) $this->logger->debug('<Sender> ' . $l);
-
-            $this->logger->warn("Failed: " . $e->getMessage());
-
-            $log = $this->source_sender->getLastLog();
-            $log = trim($log . "\n" . sprintf('[%s] Exception: %s %s', date('Y-m-d'), $e->getCode(), $e->getMessage()));
-
             if ($next) {
-                $this->source_mapper->markSourceRetry($r, $log, $next);
+                $this->logger->info(sprintf("Scheduling retry for %s", $next->format('Y-m-d H:i:s')));
+                $this->source_mapper->markSourceRetry($r, null, $next);
             } else {
-                $this->source_mapper->markSourceError($r, 'failed', $log);
+                $this->logger->notice("Marking as failed (retry count exceeded)");
+                $this->source_mapper->markSourceError($r, 'failed');
             }
+        } catch (\Exception $e) {
+            $this->logger->error(sprintf("Unexpected exception raised: %s [%s]: %s", get_class($e), $e->getCode(), $e->getMessage()));
+            KernelErrorHandler::logException($e);
+
+            $this->source_mapper->markSourceError($r, 'failed');
         }
     }
 

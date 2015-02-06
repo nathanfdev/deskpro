@@ -34,20 +34,23 @@
 
 namespace Application\EmailBundle\Log;
 
+use Application\EmailBundle\Queue\QueueProc;
 use Monolog\Formatter\FormatterInterface;
 use Monolog\Formatter\LineFormatter;
 use Monolog\Handler\HandlerInterface;
 
 /**
- * We have loggers for the main mailer, the transport used to save sources,
- * and then on each individual transport.
- *
- * This log collector handles messages from all of these loggers so we
- * can easily fetch messages for a given message (e.g., debug text).
+ * The log collector intercepts log messages and sorts them into an array keyed
+ * by a sendmail_source id. The ID should be in the 'sendmail_source_id'
+ * key of the extra array.
  */
 class LogCollector implements HandlerInterface, LogCollectorInterface
 {
-    static private $line_id = 0;
+    /**
+     * How many messages to keep in memory at once. Usually you only need
+     * one (because it is saved right after).
+     */
+    private $max_msg_keep = 5;
 
     /**
      * @var FormatterInterface
@@ -60,26 +63,6 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
     private $processors = array();
 
     /**
-     * If a message is currently being sent, this is the message ID key
-     * @var string|null
-     */
-    private $active_message_id = null;
-
-    /**
-     * Keeps the ID of the last mailer. We prepend mailer init messages
-     * when formulating the full log for a message.
-     *
-     * @var null|int
-     */
-    private $active_mailer_id = null;
-
-    /**
-     * Log lines from the mailer during init.
-     * @var array
-     */
-    private $mailer_init_lines = array();
-
-    /**
      * Log lines that happen while sending a message.
      * This is an array of messageId=>array(lines)
      * @var array
@@ -87,23 +70,14 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
     private $msg_lines = array();
 
     /**
-     * Array of message lines that happen outside of the above scopes.
-     * These lines are prepended to msg_lines when a new message starts
-     *
-     * @var array
-     */
-    private $noscope_lines = array();
-
-    public function __construct()
-    {
-
-    }
-
-    /**
      * {@inheritdoc}
      */
     public function handle(array $record)
     {
+        if (QueueProc::$__dp_current_sendmail) {
+            $record['extra']['sendmail_source_id'] = QueueProc::$__dp_current_sendmail['id'];
+        }
+
         if (!$this->isHandling($record)) {
             return false;
         }
@@ -125,72 +99,16 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
      */
     protected function write(array $record)
     {
-        $record['extra']['dp_line_id'] = ++self::$line_id;
+        $id = $record['extra']['sendmail_source_id'];
 
-        $oid = null;
-        if ((isset($record['context']['mailer']) || isset($record['context']['transport'])) && isset($record['context']['stage']) && $record['context']['stage'] == 'init') {
-            if (isset($record['context']['mailer'])) {
-                $oid = 'MAILER';
-            } else {
-                $oid = spl_object_hash($record['context']['transport']);
+        if (!isset($this->msg_lines[$id])) {
+            $this->msg_lines[$id] = array();
+            while (count($this->msg_lines) > $this->max_msg_keep) {
+                array_shift($this->msg_lines[$id]);
             }
         }
 
-        if (isset($record['context']['transport'])) {
-            $this->active_mailer_id = $oid;
-        }
-
-        if (isset($record['context']['source_id'])) {
-            $this->initMessageId($record['context']['source_id']);
-        }
-
-        if ($oid) {
-            if (!isset($this->mailer_init_lines[$oid])) {
-                $this->mailer_init_lines[$oid] = array();
-            }
-            $this->mailer_init_lines[$oid][] = $record;
-
-            if ($this->active_message_id) {
-                $this->addMessageLine($record);
-            }
-        } else {
-            $this->addMessageLine($record);
-        }
-
-        if (isset($record['context']['message_done'])) {
-            $this->active_message_id = null;
-            $this->active_mailer_id  = null;
-        }
-    }
-
-    private function addMessageLine(array $record)
-    {
-        if ($this->active_message_id) {
-            $this->msg_lines[$this->active_message_id][] = $record;
-        } else {
-            // some actions take place before we have saved a record (e.g., the source hasnt been inserted yet)
-            // so these keep track of those lines so they can be prepended to the log correctly once we have an id
-            $this->noscope_lines[] = $record;
-        }
-    }
-
-    private function initMessageId($message_id)
-    {
-        $this->active_message_id = $message_id;
-
-        if (!isset($this->msg_lines[$message_id])) {
-            $this->msg_lines[$message_id] = array_merge(
-                !empty($this->mailer_init_lines['MAILER']) ? $this->mailer_init_lines['MAILER'] : array(),
-                $this->active_mailer_id && !empty($this->mailer_init_lines[$this->active_mailer_id]) ? $this->mailer_init_lines[$this->active_mailer_id] : array(),
-                $this->noscope_lines
-            );
-
-            usort($this->msg_lines[$message_id], function($a, $b) {
-                return $a['extra']['dp_line_id'] < $b['extra']['dp_line_id'] ? -1 : 1;
-            });
-
-            $this->noscope_lines = array();
-        }
+        $this->msg_lines[$id][] = $record;
     }
 
     /**
@@ -215,6 +133,10 @@ class LogCollector implements HandlerInterface, LogCollectorInterface
      */
     public function isHandling(array $record)
     {
+        if (empty($record['extra']['sendmail_source_id'])) {
+            return false;
+        }
+
         return true;
     }
 

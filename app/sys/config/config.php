@@ -277,7 +277,7 @@ $container->loadFromExtension('monolog', array(
         'email_log_collector' => array(
             'type' => 'service',
             'id' => 'email.log_collector',
-            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport')
+            'channels' => array('dp.email.out.mailer', 'dp.email.out.transport', 'dp.email.out.queue', 'dp.email.out.raw_transport')
         )
     )
 ));

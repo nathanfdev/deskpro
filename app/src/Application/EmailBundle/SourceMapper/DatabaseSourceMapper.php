@@ -141,11 +141,7 @@ class DatabaseSourceMapper implements SourceMapperInterface
             }
         }
 
-        $header_subject_raw = $message->getHeaders()->get('Subject');
-        $header_subject = '';
-        if ($header_subject_raw) {
-            $header_subject = $header_subject_raw->getFieldBody();
-        }
+        $header_subject = $message->getSubject() ?: '';
 
         $header_from_raw = $message->getFrom();
         $header_from = array();

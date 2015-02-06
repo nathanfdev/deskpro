@@ -32,32 +32,41 @@
  * @category Entities
  */
 
-namespace Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
+use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Application\EmailBundle\SwiftMailer\Plugins\TransportLogger;
+use Psr\Log\LoggerInterface;
 
-class TransportFactory
+class RawTransportFactory
 {
     /**
+     * @var LoggerInterface
+     */
+    private $logger;
+
+    /**
+     * @param LoggerInterface $logger
+     */
+    public function __construct(LoggerInterface $logger)
+    {
+        $this->logger = $logger;
+    }
+
+    /**
      * @param  AccountConfigInterface    $config
-     * @return \Swift_Transport
+     * @return RawTransportInterface
      * @throws \InvalidArgumentException
      */
     public function createTransport(AccountConfigInterface $config)
     {
-        if (defined('DP_EMAIL_TRANSPORT_FACTORY') && DP_EMAIL_TRANSPORT_FACTORY) {
-            $tr = call_user_func(DP_EMAIL_TRANSPORT_FACTORY, 'default', $config, $config->getType(), $config);
-            if ($tr) {
-                return $tr;
-            }
-        }
-
         switch ($config->getType()) {
             case 'smtp':     $tr = $this->createSmtpTransport($config); break;
             case 'gmail':    $tr = $this->createGmailTransport($config); break;
             case 'php_mail': $tr = $this->createPhpMailTransport($config); break;
-            case 'sendmail': $tr = $this->createSendmailTransport($config); break;
             default:
+                $this->logger->error("Unknown account type: %s", $config->getType());
                 throw new \InvalidArgumentException("Unknown account type: {$config->getType()}");
         }
 
@@ -66,10 +75,10 @@ class TransportFactory
 
 
     /**
-     * @param  SmtpConfig           $config
-     * @return \Swift_SmtpTransport
+     * @param  OutgoingAccount\SmtpConfig           $config
+     * @return RawSmtpTransport
      */
-    public function createSmtpTransport(SmtpConfig $config)
+    public function createSmtpTransport(OutgoingAccount\SmtpConfig $config)
     {
         $tr = \Swift_SmtpTransport::newInstance(
             $config->host ?: 'localhost',
@@ -85,43 +94,38 @@ class TransportFactory
         }
 
         $tr->setTimeout(120);
+        $tr->registerPlugin(new TransportLogger($this->logger));
 
-        return $tr;
+        $raw_tr = new RawSmtpTransport($tr);
+
+        return $raw_tr;
     }
 
 
     /**
-     * @param  GmailConfig          $config
-     * @return \Swift_SmtpTransport
+     * @param  OutgoingAccount\GmailConfig          $config
+     * @return RawSmtpTransport
      */
-    public function createGmailTransport(GmailConfig $config)
+    public function createGmailTransport(OutgoingAccount\GmailConfig $config)
     {
         $tr = \Swift_SmtpTransport::newInstance('smtp.gmail.com', 465, 'ssl');
         $tr->setUsername($config->user);
         $tr->setPassword($config->password);
         $tr->setTimeout(120);
+        $tr->registerPlugin(new TransportLogger($this->logger));
 
         return $tr;
     }
 
     /**
-     * @param  PhpMailConfig        $conifg
-     * @return \Swift_MailTransport
+     * @param  OutgoingAccount\PhpMailConfig        $conifg
+     * @return RawSwiftmailerTransport
      */
-    public function createPhpMailTransport(PhpMailConfig $conifg)
+    public function createPhpMailTransport(OutgoingAccount\PhpMailConfig $conifg)
     {
         $tr = \Swift_MailTransport::newInstance();
 
-        return $tr;
-    }
-
-    /**
-     * @param  SendmailConfig           $config
-     * @return \Swift_SendmailTransport
-     */
-    public function createSendmailTransport(SendmailConfig $config)
-    {
-        $tr = \Swift_SendmailTransport::newInstance("{$config->sendmail_path} -bs");
+        $tr->registerPlugin(new TransportLogger($this->logger));
 
         return $tr;
     }

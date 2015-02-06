@@ -39,8 +39,13 @@ use Application\DeskPRO\Email\EmailAccount\EmailAccountManager;
 use Application\EmailBundle\Mail\RawMessage\Rfc2822Decoder;
 use Application\EmailBundle\Mail\RawTransport\RawSmtpTransport;
 use Application\EmailBundle\Mail\RawTransport\RawSwiftmailerTransport;
+use Application\EmailBundle\Mail\RawTransport\RawTransportException;
+use DeskPRO\Kernel\KernelErrorHandler;
 use Monolog;
+use Orb\Logger\ContextDecorator;
 use Orb\Util\Arrays;
+use Orb\Util\Util;
+use Psr\Log\LoggerInterface;
 
 class SourceSender
 {
@@ -55,18 +60,27 @@ class SourceSender
     private $bs;
 
     /**
-     * @var string[]
+     * @var LoggerInterface
      */
-    private $last_log = array();
+    private $logger;
+
+    /**
+     * Used by the logger context
+     * @var array
+     * @internal
+     */
+    public $__dp_current_sendmail = null;
 
     /**
      * @param EmailAccountManager $email_accounts
      * @param DeskproBlobStorage $bs
+     * @param LoggerInterface $logger
      */
-    public function __construct(EmailAccountManager $email_accounts, DeskproBlobStorage $bs)
+    public function __construct(EmailAccountManager $email_accounts, DeskproBlobStorage $bs, LoggerInterface $logger)
     {
         $this->email_accounts = $email_accounts;
         $this->bs = $bs;
+        $this->logger = $logger;
     }
 
     /**
@@ -81,48 +95,40 @@ class SourceSender
      */
     public function send(array $sendmail)
     {
-        $this->last_log = array();
+        $this->__dp_current_sendmail = $sendmail;
 
         if (empty($sendmail['email_account_id']) || !$sendmail['email_account_id']) {
-            $this->addLogMessage(sprintf("The email account that this email was sent with no longer exists"));
+            $this->logger->error(sprintf("The email account that this email was sent with no longer exists"));
             return 0;
         }
 
         try {
             $account = $this->email_accounts->getActiveAccount($sendmail['email_account_id']);
+            $this->logger->info(sprintf("Using account #%d %s", $account->getId(), $account->getUseEmailAddress()));
         } catch (\Exception $e) {
-            $this->addLogMessage(sprintf("Email account %d does not exist or has been disabled", $sendmail['email_account_id']));
+            $this->logger->error(sprintf("Email account %d does not exist or has been disabled", $sendmail['email_account_id']));
             return 0;
         }
 
         try {
-            $tr = $this->email_accounts->getTransportForAccount($account);
+            $raw_tr = $this->email_accounts->getTransportForAccount($account);
+            $this->logger->debug(sprintf("Using transport type: %s", Util::getBaseClassname($raw_tr)));
         } catch (\Exception $e) {
-            $this->addLogMessage(sprintf("Email account has no transport: %s", $e->getMessage()));
-            return 0;
-        }
-
-        if ($tr instanceof \Swift_SmtpTransport) {
-            $raw_tr = new RawSmtpTransport($tr);
-        } else if ($tr instanceof \Swift_Transport) {
-            $raw_tr = new RawSwiftmailerTransport($tr, new Rfc2822Decoder());
-        } else {
-            $this->addLogMessage(sprintf("Transport type does not support retries: %s", get_class($tr)));
+            $this->logger->error(sprintf("Email account has no transport: %s", $e->getMessage()));
             return 0;
         }
 
         $fp = fopen('php://temp/maxmemory:10000000', 'rw');
         try {
             if (!fwrite($fp, $this->bs->copyBlobRowIdToString($sendmail['blob_id']))) {
-                $this->addLogMessage(sprintf("Failed writing source blob"));
+                $this->logger->error(sprintf("Failed writing source blob"));
                 throw new \RuntimeException(sprintf("Failed writing source blob"));
             }
         } catch (\InvalidArgumentException $e) {
-            $this->addLogMessage(sprintf("Email source blob does not exist"));
+            $this->logger->error(sprintf("Email source blob does not exist"));
         }
 
         try {
-            $log_messages = array();
             $failed = array();
             $sent = $raw_tr->sendRawMessage(
                 $sendmail['from_email'],
@@ -132,53 +138,26 @@ class SourceSender
                     explode(',', $sendmail['bcc_emails'] ?: '')
                 )),
                 $fp,
-                $failed,
-                $log_messages
+                $failed
             );
-            if ($log_messages) $this->addTrLogMessages($log_messages);
 
             if ($failed) {
-                $this->addLogMessage(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));
+                $this->logger->notice(sprintf('NOTICE: Failed recipients: %s', implode(', ', $failed)));
             }
 
+            $this->logger->info(sprintf('Sent %d messages', $sendmail));
+
+        } catch (RawTransportException $e) {
+            $this->logger->error(sprintf("Exception raised: %s [%s]: %s", get_class($e), $e->getCode(), $e->getMessage()));
+            $this->logger->debug(KernelErrorHandler::formatBacktrace($e->getTrace(), true));
+            @fclose($fp);
+
+            throw $e;
         } catch (\Exception $e) {
-            if ($log_messages) $this->addTrLogMessages($log_messages);
             @fclose($fp);
             throw $e;
         }
 
         return $sent;
-    }
-
-    /**
-     * @param string $message
-     */
-    private function addLogMessage($message)
-    {
-        $this->last_log[] = sprintf('[%s] %s', date('Y-m-d H:i:s'), $message);
-    }
-
-    /**
-     * @param array $lines
-     */
-    private function addTrLogMessages(array $lines)
-    {
-        foreach ($lines as $l) $this->last_log[] = $l;
-    }
-
-    /**
-     * @return string
-     */
-    public function getLastLog()
-    {
-        return implode("\n", $this->last_log);
-    }
-
-    /**
-     * @return \string[]
-     */
-    public function getLastLogAsArray()
-    {
-        return $this->last_log;
     }
 }
