@@ -52,6 +52,7 @@ class EmailBundle extends Bundle
     {
         $commands = array(
             'Application\\EmailBundle\\Command\\SendSourceCommand',
+            'Application\\EmailBundle\\Command\\GenTestEmailCommand',
         );
 
         foreach ($commands as $cmd) {

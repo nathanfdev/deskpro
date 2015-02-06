@@ -415,7 +415,7 @@ class DeskproContainer extends Container
     /**
      * Get the mailer
      *
-     * @return \Application\EmailBundle\Mail\Mailer
+     * @return \Application\EmailBundle\SwiftMailer\Mailer
      */
     public function getMailer()
     {

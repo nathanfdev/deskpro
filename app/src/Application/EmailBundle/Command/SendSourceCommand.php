@@ -88,13 +88,13 @@ class SendSourceCommand extends ContainerAwareCommand
                     array('Ref', $source->getRef()),
                     array('Date', $source->getDateCreated()->format('Y-m-d H:i:s')),
                     array('Status', $source->getStatus()),
-                    array('Is Sent?', $source->getDateSent() ? "Yes :: " . $source->getDateSent()->format('Y-m-d H:i:s') : ''),
+                    array('Is Sent?', $source->getDateSent() ? "Yes :: " . $source->getDateSent()->format('Y-m-d H:i:s') : 'No'),
                     array('Next Attempt', $source->getDateNextAttempt() ? $source->getDateNextAttempt()->format('Y-m-d H:i:s') : 'never'),
                     array('Send Attempts', $source->getExecCount())
                 ));
+                echo "\n";
 
                 if ($input->getOption('source')) {
-                    echo "\n";
                     echo "\n";
                     echo "SOURCE\n";
                     echo str_repeat('#', 72);

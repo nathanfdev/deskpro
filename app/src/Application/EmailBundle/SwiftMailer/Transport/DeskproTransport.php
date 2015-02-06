@@ -175,7 +175,7 @@ class DeskproTransport implements Swift_Transport, StorageTransportInterface
     {
         $this->preprocessMessage($message);
 
-        $r = $this->getOrCreateSource($message, 'inserted');
+        $r = $this->source_mapper->createSourceForMessage($message, 'inserted');
         $this->logger->info(sprintf('Message %d queued as inserted', $r['id']), array('source_id' => $r['ref'], 'message_done' => true));
         $r = $this->source_mapper->setLogText($r);
 
