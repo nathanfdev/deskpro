@@ -33,6 +33,8 @@
 
 namespace Application\AdminInterfaceBundle\Controller;
 
+use Application\ApiBundle\ApiUser;
+use Application\ApiBundle\Request\RequestAuth;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Chat\UserChat\ChatAvailableCheck;
 use Application\DeskPRO\Entity\Template;
@@ -45,6 +47,35 @@ class PortalEditorController extends AbstractController
     {
         return false;
     }
+
+    public function preAction($action, $arguments = null)
+    {
+        if ($r = parent::preAction($action, $arguments)) {
+            return $r;
+        }
+
+        // This is copying the api token logic that is in the ApiBundle
+        // This is a legacy controller that otherwise doesn't use the same logic.
+
+        $request_auth = new RequestAuth($this->em, $this->getRequest());
+        $api_user = $request_auth->getApiUser();
+        $api_token = $api_user->api_token;
+        
+        if (!$api_token || $api_token->scope != 'session') {
+            return $this->createApiErrorResponse('invalid_api_token', 'API requests via token must be with a valid session', 403);
+        }
+
+        $session = $api_user->session;
+
+        if (!$session || !$session->person || $session->person != $api_token->person) {
+            return $this->createApiErrorResponse('invalid_api_token', 'API requests via token must be with a valid session', 403);
+        }
+
+        // Validate the request token
+        if (!$api_user->request_token || !$api_user->session->checkSecurityToken('request_token', $api_user->request_token)) {
+            return $this->createApiErrorResponse('invalid_request_token', 'You must provide a valid request token', 403);
+        }
+   }
 
     public function uploadFaviconAction()
     {

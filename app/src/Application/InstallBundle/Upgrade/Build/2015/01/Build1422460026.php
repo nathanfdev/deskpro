@@ -38,8 +38,7 @@ class Build1422460026 extends AbstractBuild
 {
     public function run()
     {
-		$this->execMutateSql("ALTER TABLE email_sources ADD from_email VARCHAR(500) NOT NULL");
-        $this->execMutateSql("CREATE INDEX from_idx ON email_sources (from_email)");
+		$this->execSlowAlterTable("email_sources", "ADD from_email VARCHAR(500) NOT NULL DEFAULT '', ADD INDEX from_idx (from_email)");
         $this->execMutateSql("REPLACE INTO `settings` (`name`, `value`) VALUES ('core.emails.rate_count', 100)");
     }
 }
