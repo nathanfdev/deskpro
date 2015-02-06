@@ -158,11 +158,34 @@ class DashboardPermissions
         return $agents;
     }
 
+    /**
+     * @param $agent_id
+     *
+     * @return PersonEntity
+     */
     public function getAgent($agent_id)
     {
         /** @var PersonRepository $personRepository */
         $personRepository = $this->em->getRepository("DeskPRO:Person");
         return $personRepository->getAgent($agent_id);
+    }
+
+    public function getNewDashboardPermissions()
+    {
+        $agents = $this->getAllAgents();
+        $data = array();
+        foreach($agents as $agent)
+        {
+            /** @var PersonEntity $agent */
+            $data[$agent->getId()] = array(
+                'permissions' => self::PERMISSION_NONE,
+                'id' => $agent->getId(),
+            );
+            $data[$agent->getId()]['name'] = $agent->getDisplayName();
+            $data[$agent->getId()]['avatar'] = $agent->getPictureUrl();
+        }
+        $data = array_values($data);
+        return $data;
     }
 
     public function getApiDashboardPermissions(DashboardEntity $dashboard)

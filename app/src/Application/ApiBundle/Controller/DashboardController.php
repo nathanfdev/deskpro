@@ -226,36 +226,11 @@ class DashboardController extends AbstractController
                     $reportEntity->setTitle($report['title']);
                     $apiReports[] = $reportEntity;
                 }
-
-
-
-//                if(isset($report['deleted']) && $report['deleted']) {
-//                    $reportEntity = $this->service->getReport($report['id']);
-//                    $dashboard->removeReport($reportEntity);
-//                    $this->service->deleteReport($reportEntity);
-//                } else {
-//                    if(isset($report['id'])) {
-//                        $reportEntity = $this->service->getReport($report['id']);
-////                    $reportEntity->setSortOrder($report['sort_order']);
-//                    } else {
-//                        $reportEntity = new Tab();
-//                        $reportEntity->setColumns(10)
-//                            ->setDashboard($dashboard);
-//                        $reportEntity->setSortOrder($this->service->getLastSortOrder($dashboard));
-//                        $dashboard->addReport($reportEntity);
-//                    }
-//                    if(isset($report['prototype_id'])) {
-//                        $report_prototype = $this->service->getReport($report['prototype_id']);
-//                        $this->widgetService->copyWidgetLinks($reportEntity,$report_prototype);
-//                    }
-//                    $reportEntity->setTitle($report['title']);
-//                    $this->service->saveReport($reportEntity);
-//                }
             }
             foreach($dbReports as $dbReport) {
-                if (!in_array($dbReport->getId(), $apiReportsIds)) {
+                if ($dbReport->getId() && !in_array($dbReport->getId(), $apiReportsIds)) {
                     $dashboard->removeReport($dbReport);
-                    $this->service->deleteReport($dbReport);
+                    $this->service->deleteReport($dbReport, false);
                 }
             }
             /**
@@ -272,10 +247,14 @@ class DashboardController extends AbstractController
         if(isset($postData['permissions'])) {
             foreach($postData['permissions'] as $permission) {
                 $agent = $this->permissionsService->getAgent($permission['id']);
-                $this->permissionsService->setPermissions($agent, $dashboard, $permission['permissions']);
+                if($agent->getId() == $this->person->getId()) {
+                    $this->permissionsService->setPermissions($agent, $dashboard, DashboardPermissionService::PERMISSION_FULL);
+                } else {
+                    $this->permissionsService->setPermissions($agent, $dashboard, $permission['permissions']);
+                }
             }
         }
-        $this->permissionsService->setPermissions($this->person, $dashboard, DashboardPermissionService::PERMISSION_FULL);
+
         $returnData['permissions'] = $this->permissionsService->getApiDashboardPermissions($dashboard);
         return $this->createApiSuccessResponse($returnData);
     }

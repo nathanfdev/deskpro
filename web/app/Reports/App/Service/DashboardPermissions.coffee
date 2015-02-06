@@ -31,7 +31,10 @@ define ['DeskPRO/Util/Arrays'], (Arrays) ->
       return index
 
     getDashboardPermissions: (dashboard) ->
-      @Api.sendGet("/dashboards/permissions/#{dashboard.id}")
+      if dashboard?
+        @Api.sendGet("/dashboards/permissions/#{dashboard.id}")
+      else
+        @Api.sendGet("/dashboards/permissions")
 
     savePermissions: (agent, dashboard) ->
       @Api.sendPost("/dashboards/permissions/#{dashboard.id}", {agent_id: agent.id, permissions: agent.permissions})

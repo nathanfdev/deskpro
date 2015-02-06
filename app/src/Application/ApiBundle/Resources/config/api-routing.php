@@ -4944,6 +4944,13 @@ $collection->create('dashboards_permissions_list', array(
     'methods'      => array('GET',),
 ));
 
+$collection->create('dashboards_permissions_list_new_dashboard', array(
+    'path'         => '/dashboards/permissions',
+    'controller'   => 'ApiBundle:DashboardPermissions:list',
+    'defaults'     => array('action' => 'list'),
+    'methods'      => array('GET',),
+));
+
 $collection->create('dashboards_permissions_save', array(
     'path'         => '/dashboards/permissions/{id}',
     'controller'   => 'ApiBundle:DashboardPermissions:save',

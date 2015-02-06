@@ -39,6 +39,7 @@ use Application\DeskPRO\Entity\ReportDashboardReport as DashboardReport;
 use Application\DeskPRO\Entity\Person;
 use Application\ApiBundle\Service\Dashboard as DashboardService;
 use Application\ApiBundle\Service\DashboardPermissions as DashboardPermissionsService;
+use Symfony\Component\HttpFoundation\Response;
 
 /**
  * @SWG\Resource(
@@ -65,31 +66,45 @@ class DashboardPermissionsController extends AbstractController
 
     /**
      * @SWG\Api(
-     * 	path="/dashboards/permissions/{$id}",
+     *    path="/dashboards/permissions/{$id}",
      * 	@SWG\Operation(
-     * 		method="GET",
-     * 		summary="Get all dashboard permissions",
-     *		type="array",
- *          @SWG\Parameters (
+     *        method="GET",
+     *        summary="Get all dashboard permissions",
+     *        type="array",
+     *          @SWG\Parameters (
      *			@SWG\Parameter(
-     *				name="id",
-     *				description="Dashboard id",
-     *				paramType="path",
-     *				required=true,
-     *				type="integer"
+     *                name="id",
+     *                description="Dashboard id",
+     *                paramType="path",
+     *                required=true,
+     *                type="integer"
      *            ),
      *      )
-     * 	)
+     *    )
      * )
+     *
+     * @param integer $id
+     *
+     * @return Response
      */
 
-    public function listAction($id)
+    public function listAction($id = 0)
     {
-        $dashboard = $this->service->getDashboard($id);
-        if(!$this->permissionsService->isAllowedToView($this->person, $dashboard)) {
-            throw $this->createNotFoundException('Dashboard not found!');
+        if($id > 0) {
+            $dashboard = $this->service->getDashboard($id);
+            if(!$this->permissionsService->isAllowedToView($this->person, $dashboard)) {
+                throw $this->createNotFoundException('Dashboard not found!');
+            }
+            $permissions = $this->permissionsService->getApiDashboardPermissions($dashboard);
+        } else {
+            $permissions = $this->permissionsService->getNewDashboardPermissions();
+            foreach($permissions as &$permission) {
+                if($permission['id'] == $this->person->getId()) {
+                    $permission['permissions'] = DashboardPermissionsService::PERMISSION_FULL;
+                }
+            }
         }
-        return $this->createApiResponse($permissions = $this->permissionsService->getApiDashboardPermissions($dashboard));
+        return $this->createApiResponse($permissions);
     }
 
     public function saveAction($id)

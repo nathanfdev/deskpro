@@ -1,6 +1,6 @@
 define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
-  '$scope', '$q', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo', 'DashboardService'
-  ($scope, $q, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService) ->
+  '$scope', '$q', '$modalInstance', 'dashboard_id', 'modal_options', 'DashboardsInfo', 'DashboardService', 'DashboardPermissionsService'
+  ($scope, $q, $modalInstance, dashboard_id, modal_options, DashboardsInfo, DashboardService, DashboardPermissionsService) ->
     $scope.loaded = false
     $scope.dashboard = null
     $scope.reports = []
@@ -42,6 +42,8 @@ define ['DeskPRO/Util/Arrays', 'DeskPRO/Util/Util'], (Arrays, Util) -> [
         }],
         is_default: false,
         permissions: []
+      DashboardPermissionsService.getDashboardPermissions().then (response) ->
+          $scope.dashboard.permissions = response.data
 
     $q.all(load_promises).then(-> $scope.loaded = true)
 
