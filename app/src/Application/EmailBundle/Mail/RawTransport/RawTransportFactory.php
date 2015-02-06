@@ -36,6 +36,7 @@ namespace Application\EmailBundle\Mail\RawTransport;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
 use Application\DeskPRO\Email\EmailAccount\OutgoingAccount;
+use Application\EmailBundle\Mail\RawMessage\Rfc2822Decoder;
 use Application\EmailBundle\SwiftMailer\Plugins\TransportLogger;
 use Psr\Log\LoggerInterface;
 
@@ -114,7 +115,9 @@ class RawTransportFactory
         $tr->setTimeout(120);
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        return $tr;
+        $raw_tr = new RawSmtpTransport($tr);
+
+        return $raw_tr;
     }
 
     /**
@@ -127,6 +130,8 @@ class RawTransportFactory
 
         $tr->registerPlugin(new TransportLogger($this->logger));
 
-        return $tr;
+        $raw_tr = new RawSwiftmailerTransport($tr, new Rfc2822Decoder());
+
+        return $raw_tr;
     }
 }
