@@ -578,4 +578,20 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
     {
         $this->setModelField('person', $person);
     }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDatePublished()
+    {
+        return $this->date_published;
+    }
+
+    /**
+     * @return \DateTime
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
 }

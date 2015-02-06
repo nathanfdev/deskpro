@@ -310,6 +310,14 @@ class Article extends ContentAbstract implements HighlightableModelInterface
         }
     }
 
+    /**
+     * @return \DateTime
+     */
+    public function getDateUpdated()
+    {
+        return $this->date_updated;
+    }
+
     protected function addSlugHistory($old_slug)
     {
         $history = new ArticleSlugHistory($this, $old_slug);
