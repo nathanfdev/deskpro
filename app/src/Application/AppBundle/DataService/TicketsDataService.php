@@ -35,6 +35,9 @@
 namespace Application\AppBundle\DataService;
 
 
+use Application\AppBundle\Helper\ArbitratyHasher;
+use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
+use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\ORM\EntityManager;
@@ -45,7 +48,7 @@ use Pagerfanta\Adapter\DoctrineCollectionAdapter;
 use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class TicketsDataService
+class TicketsDataService extends AbstractDataService
 {
     /**
      * @var EntityManager
@@ -55,6 +58,7 @@ class TicketsDataService
     public function __construct(EntityManager $em)
     {
         $this->em = $em;
+        $this->cache = new ConvenientCache(new SimpleArrayCache());
     }
 
     /**
@@ -66,88 +70,98 @@ class TicketsDataService
      */
     public function getPager(Person $person, TicketFilter $filter, $page, $max_per_page)
     {
-        $qb = $this->em->createQueryBuilder();
+        $em = $this->em;
 
-        $qb->select('t')
-            ->from('DeskPRO:Ticket', 't')
-            ->join('t.person', 'p')
-            ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN)
-        ;
+        return $this->generateAndCache(
+            array(
+                $person,
+                $filter,
+                $page,
+                $max_per_page
+            ),
+            function() use($em, $person, $filter, $page, $max_per_page) {
+                $qb = $em->createQueryBuilder();
 
-        // type
-        if (TicketFilter::TYPE_OWN === $filter->getType()) {
+                $qb->select('t')
+                    ->from('DeskPRO:Ticket', 't')
+                    ->join('t.person', 'p')
+                    ->where('t.status != :hidden')->setParameter('hidden', Ticket::STATUS_HIDDEN);
 
-            if ($person->is_agent) {
+                // type
+                if (TicketFilter::TYPE_OWN === $filter->getType()) {
 
-                // agents only their own tickets
-                $qb->andWhere('t.person = :person')->setParameter('person', $person);
+                    if ($person->is_agent) {
 
-            } else {
+                        // agents only their own tickets
+                        $qb->andWhere('t.person = :person')->setParameter('person', $person);
 
-                if (!$person->organization || !$person->organization_manager) {
-                    //  show non-agents the tickets they participate in
-                    $qb->leftJoin('t.participants', 'part');
-                    $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                    } else {
+
+                        if (!$person->organization || !$person->organization_manager) {
+                            //  show non-agents the tickets they participate in
+                            $qb->leftJoin('t.participants', 'part');
+                            $qb->andWhere('t.person = :person OR part.person = :person')->setParameter('person', $person);
+                        } else {
+                            // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
+                            $qb->leftJoin('t.participants', 'part');
+                            $qb->andWhere('t.person = :person OR (part.person = :person AND t.organization != :organization)');
+                            $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+                        }
+
+                    }
+
                 } else {
-                    // but if they are an org manager, ignore the org tickets unless created directly by them (they show in org page, filtered below)
-                    $qb->leftJoin('t.participants', 'part');
-                    $qb->andWhere('t.person = :person OR (part.person = :person AND t.organization != :organization)');
-                    $qb->setParameter('person', $person)->setParameter('organization', $person->organization);
+
+                    // its assumed that if you send in a person with an "organization" type filter that they have an
+                    // organization and are a manger. ensure the controller/calling-code has this secured
+                    $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
+
                 }
 
-            }
+                // category
+                switch ($filter->getCategory()) {
 
-        } else {
+                    case TicketFilter::CATEGORY_AWAITING_AGENT:
+                        $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_AWAITING_AGENT);
+                        break;
 
-            // its assumed that if you send in a person with an "organization" type filter that they have an
-            // organization and are a manger. ensure the controller/calling-code has this secured
-            $qb->andWhere('t.organization = :organization')->setParameter('organization', $person->organization);
+                    case TicketFilter::CATEGORY_RESOLVED:
+                        $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_RESOLVED);
+                        break;
 
-        }
+                    case TicketFilter::CATEGORY_AWAITING_USER:
+                    default:
+                        $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_AWAITING_USER);
+                        break;
 
-        // category
-        switch ($filter->getCategory()) {
+                }
 
-            case TicketFilter::CATEGORY_AWAITING_AGENT:
-                $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_AWAITING_AGENT);
-                break;
+                // sort
+                switch ($filter->getSort()) {
 
-            case TicketFilter::CATEGORY_RESOLVED:
-                $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_RESOLVED);
-                break;
+                    // TODO: last activity algorithm (same as Ticket::getLastActivityDate())
+                    case TicketFilter::SORT_ACTIVITY:
+                        $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
+                        $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
+                        $qb->addOrderBy('t.date_created', $filter->getSortDirection());
+                        break;
 
-            case TicketFilter::CATEGORY_AWAITING_USER:
-            default:
-                $qb->andWhere('t.status = :status')->setParameter('status', Ticket::STATUS_AWAITING_USER);
-                break;
+                    case TicketFilter::SORT_DEPARTMENT:
+                        $qb->join('t.department', 'd');
+                        $qb->orderBy('d.title', $filter->getSortDirection());
+                        break;
 
-        }
+                    case TicketFilter::SORT_CREATED:
+                    default:
+                        $qb->orderBy('t.date_created', $filter->getSortDirection());
+                }
 
-        // sort
-        switch ($filter->getSort()) {
+                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                $pager->setMaxPerPage($max_per_page);
+                $pager->setCurrentPage($page);
 
-            // TODO: last activity algorithm (same as Ticket::getLastActivityDate())
-            case TicketFilter::SORT_ACTIVITY:
-                $qb->addOrderBy('t.date_last_user_reply', $filter->getSortDirection());
-                $qb->addOrderBy('t.date_last_agent_reply', $filter->getSortDirection());
-                $qb->addOrderBy('t.date_created', $filter->getSortDirection());
-                break;
-
-            case TicketFilter::SORT_DEPARTMENT:
-                $qb->join('t.department', 'd');
-                $qb->orderBy('d.title', $filter->getSortDirection());
-                break;
-
-            case TicketFilter::SORT_CREATED:
-            default:
-                $qb->orderBy('t.date_created', $filter->getSortDirection());
-        }
-
-        $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
-        $pager->setMaxPerPage($max_per_page);
-        $pager->setCurrentPage($page);
-
-        return $pager;
+                return $pager;
+            });
     }
 
     /**
@@ -157,4 +171,5 @@ class TicketsDataService
     {
         return $this->em->getRepository('DeskPRO:Ticket');
     }
+
 }
