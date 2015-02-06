@@ -28,20 +28,20 @@
 namespace Application\ImportBundle\Reader\ZenDesk;
 
 /**
- * Class ZendDeskConfig
+ * Class ZenDeskConfig
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-class ZendDeskConfig
+class ZenDeskConfig
 {
     /**
      * @var string
      */
-    private $host;
+    private $subdomain;
 
     /**
      * @var string
      */
-    private $user_id;
+    private $username;
 
     /**
      * @var string
@@ -83,31 +83,31 @@ class ZendDeskConfig
     /**
      * Constructor
      *
-     * @param string $host
-     * @param string $user_id
+     * @param string $subdomain
+     * @param string $username
      * @param string $api_token
      */
-    public function __construct($host, $user_id, $api_token)
+    public function __construct($subdomain, $username, $api_token)
     {
-        $this->host      = $host;
-        $this->user_id   = $user_id;
+        $this->subdomain = $subdomain;
+        $this->username  = $username;
         $this->api_token = $api_token;
     }
 
     /**
      * @return string
      */
-    public function getHost()
+    public function getSubdomain()
     {
-        return $this->host;
+        return $this->subdomain;
     }
 
     /**
      * @return int
      */
-    public function getUserId()
+    public function getUsername()
     {
-        return $this->user_id;
+        return $this->username;
     }
 
     /**

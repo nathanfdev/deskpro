@@ -25,15 +25,30 @@
 | ~ Thanks, Everyone at Team DeskPRO                                       |
 \**************************************************************************/
 
+
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Zendesk\API\Client;
+
 /**
- * ZenDesk reader interface
- *
- * Interface ZenDeskReaderInterface
+ * Class ZenDeskReaderFactory
  * @package Application\ImportBundle\Reader\ZenDesk
  */
-interface ZenDeskReaderInterface
+class ZenDeskReaderFactory
 {
+    /**
+     * Create a zenDesk reader
+     *
+     * @return ZenDeskReader
+     */
+    public function createReader()
+    {
+        $config = new ZenDeskConfig(
+            'syastrebov',
+            'syastrebov',
+            'QxT7xUIUZCJUkOAm2iqLpg2wiGBfpOpr9RgN3O6l'
+        );
 
+        return new ZenDeskReader(new Client($config->getSubdomain(), $config->getUsername()));
+    }
 }

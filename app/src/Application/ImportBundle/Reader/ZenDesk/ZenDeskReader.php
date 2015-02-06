@@ -27,11 +27,28 @@
 
 namespace Application\ImportBundle\Reader\ZenDesk;
 
+use Zendesk\API\Client;
+
 /**
+ * ZenDesk reader
+ *
  * Class ZenDeskReader
  * @package Application\ImportBundle\Reader\ZenDesk
  */
 class ZenDeskReader implements ZenDeskReaderInterface
 {
+    /**
+     * @var Client
+     */
+    private $client;
 
+    /**
+     * Constructor
+     *
+     * @param Client $client
+     */
+    public function __construct(Client $client)
+    {
+        $this->client = $client;
+    }
 }

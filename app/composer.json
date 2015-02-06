@@ -38,7 +38,8 @@
 		"firebase/php-jwt": "dev-master",
 		"league/url": "3.0.*@dev",
 		"onelogin/php-saml": "~2.1.0",
-		"google/apiclient": "1.0.*@dev"
+		"google/apiclient": "1.0.*@dev",
+		"zendesk/zendesk_api_client_php": "dev-master"
 	},
 	"preferred-install": "dist"
 }

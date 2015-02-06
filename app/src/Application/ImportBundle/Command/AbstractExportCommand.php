@@ -189,7 +189,7 @@ abstract class AbstractExportCommand extends ContainerAwareCommand
             ->setConfig($config)
             ->setLogger($logger);
 
-        if (!$config->isVerbose()) {
+        if ( ! $config->isVerbose()) {
             $progress_bar = new ProgressBar($output, $generator->getTotalRecordsCount());
             $progress_bar->start();
 
