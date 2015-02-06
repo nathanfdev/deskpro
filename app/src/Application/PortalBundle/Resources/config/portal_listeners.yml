@@ -42,7 +42,7 @@ services:
 
   tag_options.listener:
       class: Application\PortalBundle\EventListener\TagOptionsListener
-      arguments: [@annotation_reader]
+      arguments: [@annotation_reader, @service_container]
       tags:
         - { name: kernel.event_subscriber }
 

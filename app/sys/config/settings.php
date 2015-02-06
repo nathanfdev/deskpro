@@ -575,6 +575,37 @@
      */
     'portal.per_page_tickets' => 10,
 
+    /**
+     * If the portal should validate based on etags in the http cache layer
+     */
+    'portal.http_cache_etags' => true,
+
+    /**
+     * If the portal should validate based on last modified dates in the http cache layer
+     */
+    'portal.http_cache_last_modified' => true,
+
+    /**
+     * http s-maxage for a guest "page"
+     */
+    'portal.smaxage_guest_page' => 45,
+
+    /**
+     * http cache s-maxage for a guest "tag"
+     */
+    'portal.smaxage_guest_tag' => 45,
+
+    /**
+     * http cache s-maxage for a user "page"
+     */
+    'portal.smaxage_user_page' => 45,
+
+    /**
+     * http cache s-maxage for a user "tag"
+     */
+    'portal.smaxage_user_tag' => 45,
+
+
     ####################################################################################################################
     # core_misc
     ####################################################################################################################
