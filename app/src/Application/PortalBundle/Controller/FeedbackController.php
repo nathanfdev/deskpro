@@ -48,14 +48,14 @@ use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Response;
 use Zend\Feed\Writer\Extension\ITunes\Renderer\Feed;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Application\PortalBundle\HttpCache\Configuration\PageHttpCache;
 
 class FeedbackController extends AbstractController
 {
     /**
      * @Route("/feedback.{_format}", name="portal_feedback", defaults={"_format":"html"}, requirements={"_format":"html|rss"})
      * @Security("is_granted('USE_FEEDBACK')")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache()
      */
     public function indexAction(Request $request, $_format)
     {
@@ -149,7 +149,7 @@ class FeedbackController extends AbstractController
      * @Route("/feedback/browse/{filter_uri}", name="portal_feedback_browse", defaults={"query_path":""}, requirements={"filter_uri":".*"})
      * @Method("GET")
      * @Security("is_granted('USE_FEEDBACK')")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache()
      */
     public function browseAction(Request $request, $filter_uri)
     {
@@ -213,7 +213,7 @@ class FeedbackController extends AbstractController
      * @Route("/feedback/view/{slug}", name="portal_feedback_view")
      * @ParamConverter(name="item", converter="deskpro_slug")
      * @Security("is_granted('USE_FEEDBACK') and is_granted('VIEW_FEEDBACK', item)")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache(content="item")
      */
     public function viewAction(Request $request, Feedback $item)
     {
