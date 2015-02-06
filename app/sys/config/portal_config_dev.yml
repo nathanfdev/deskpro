@@ -7,9 +7,9 @@ framework:
         resource: "%kernel.root_dir%/config/portal_routing_dev.yml"
         strict_requirements: true
 
-#web_profiler:
-#    toolbar: true
-#    intercept_redirects: false
+web_profiler:
+    toolbar: true
+    intercept_redirects: false
 
 debug:
     max_items: 400
