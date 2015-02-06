@@ -65,7 +65,8 @@ class FeedbackController extends AbstractController
      *          "status_categories": {},
      *          "types": {},
      *          "sort": "date",
-     *          "sort_direction": "desc"
+     *          "sort_direction": "desc",
+     *          "show_category_link": true
      *      },
      *      allowed_values={
      *          "style": {"list", "row"},

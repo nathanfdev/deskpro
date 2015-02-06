@@ -5,6 +5,6 @@
     <h1>{{ category.realTitle }}</h1>
     {{ page.download_category_subscription()|raw }}
     {{ page.downloads_list()|raw }}
-    {{ page.downloads_files_items()|raw }}
+    {{ page.downloads_files_items({ show_category_link: false })|raw }}
     {{ page.downloads_pager()|raw }}
 {% endblock inner_content %}

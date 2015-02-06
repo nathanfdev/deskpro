@@ -5,6 +5,6 @@
     {{ page.news_list()|raw }}
     <h1>{{ category.realTitle }}</h1>
     {{ page.news_category_subscription()|raw }}
-    {{ page.news_posts_pretty()|raw }}
+    {{ page.news_posts_pretty({ show_category_link: false })|raw }}
     {{ page.news_pager()|raw }}
 {% endblock inner_content %}

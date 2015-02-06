@@ -96,7 +96,8 @@ class DownloadsController extends AbstractController
      *          "category": null,
      *          "style": "small",
      *          "page": 1,
-     *          "count": 10
+     *          "count": 10,
+     *          "show_category_link": true
      *      },
      *      allowed_values={
      *          "style": {"small","simple","items"}
