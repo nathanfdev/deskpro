@@ -10,7 +10,26 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 			<li class="phone_number_invalid">{{ phrase('agent.general.error_invalid_phone_number') }}</li>
 			<li class="email_invalid">{{ phrase('agent.general.error_email_address') }}</li>
 			<li class="email_in_use">{{ phrase('agent.general.error_email_dupe_agent') }}</li>
-			<li class="password_invalid">{{ phrase('agent.general.error_password_invalid') }}</li>
+			<li class="password_invalid_require_num_uppercase">
+				{{ phrase('agent.general.error_password_invalid') }}:
+				{{ phrase('user.profile.register_password_require_num_uppercase', {count: app.getSetting('agent.password_policy.require_num_uppercase')}) }}
+			</li>
+			<li class="password_invalid_require_num_lowercase">
+				{{ phrase('agent.general.error_password_invalid') }}:
+				{{ phrase('user.profile.register_password_require_num_lowercase', {count: app.getSetting('agent.password_policy.require_num_lowercase')}) }}
+			</li>
+			<li class="password_invalid_require_num_number">
+				{{ phrase('agent.general.error_password_invalid') }}:
+				{{ phrase('user.profile.register_password_require_num_number', {count: app.getSetting('agent.password_policy.require_num_number')}) }}
+			</li>
+			<li class="password_invalid_require_num_symbol">
+				{{ phrase('agent.general.error_password_invalid') }}:
+				{{ phrase('user.profile.register_password_require_num_symbol', {count: app.getSetting('agent.password_policy.require_num_symbol')}) }}
+			</li>
+			<li class="password_invalid_min_length">
+				{{ phrase('agent.general.error_password_invalid') }}:
+				{{ phrase('user.profile.register_password_min_length', {count: app.getSetting('agent.password_policy.min_length')}) }}
+			</li>
 			<li class="password_mismatch">{{ phrase('agent.general.error_password_mismatch') }}</li>
 		</ul>
 	</div>
@@ -68,10 +87,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.SettingsPage.Profile';
 				<div class="dp-form-input double-password" style="height: 55px;">
 					<div style="font-size: 11px; line-height: 100%;">
 						{% if app.getSetting('agent.password_policy.forbid_reuse') %}{{ phrase('user.profile.register_password_unused') }}, {% endif %}
-						{% if app.getSetting('agent.password_policy.require_num_uppercase') %}{{ phrase('user.profile.register_password_min_uc', {count: app.getSetting('agent.password_policy.require_num_uppercase')}) }}, {% endif %}
-						{% if app.getSetting('agent.password_policy.require_num_lowercase') %}{{ phrase('user.profile.register_password_min_lc', {count: app.getSetting('agent.password_policy.require_num_lowercase')}) }}, {% endif %}
-						{% if app.getSetting('agent.password_policy.require_num_number') %}{{ phrase('user.profile.register_password_min_num', {count: app.getSetting('agent.password_policy.require_num_number')}) }}, {% endif %}
-						{% if app.getSetting('agent.password_policy.require_num_symbol') %}{{ phrase('user.profile.register_password_min_sym', {count: app.getSetting('agent.password_policy.require_num_symbol')}) }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.require_num_uppercase') %}{{ phrase('user.profile.register_password_require_num_uppercase', {count: app.getSetting('agent.password_policy.require_num_uppercase')}) }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.require_num_lowercase') %}{{ phrase('user.profile.register_password_require_num_lowercase', {count: app.getSetting('agent.password_policy.require_num_lowercase')}) }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.require_num_number') %}{{ phrase('user.profile.register_password_require_num_number', {count: app.getSetting('agent.password_policy.require_num_number')}) }}, {% endif %}
+						{% if app.getSetting('agent.password_policy.require_num_symbol') %}{{ phrase('user.profile.register_password_require_num_symbol', {count: app.getSetting('agent.password_policy.require_num_symbol')}) }}, {% endif %}
 						{% if app.getSetting('agent.password_policy.min_length') %}{{ phrase('user.profile.register_password_min_length', {count: app.getSetting('agent.password_policy.min_length')}) }}{% endif %}
 					</div>
 					{{ form_widget(form.password, {'attr': { 'placeholder': phrase('agent.general.new_password'), 'class': 'password1' }}) }}

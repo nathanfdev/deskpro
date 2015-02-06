@@ -310,10 +310,10 @@
 						<div style="font-size: 11px;">
 							{% set prefix = (app.user.is_agent ? 'agent' : 'user') ~ '.password_policy.' %}
 							{% if app.getSetting(prefix ~ 'forbid_reuse') %}{{ phrase('user.profile.register_password_unused') }}, {% endif %}
-							{% if app.getSetting(prefix ~ 'require_num_uppercase') %}{{ phrase('user.profile.register_password_min_uc', {count: app.getSetting(prefix ~ 'require_num_uppercase')}) }}, {% endif %}
-							{% if app.getSetting(prefix ~ 'require_num_lowercase') %}{{ phrase('user.profile.register_password_min_lc', {count: app.getSetting(prefix ~ 'require_num_lowercase')}) }}, {% endif %}
-							{% if app.getSetting(prefix ~ 'require_num_number') %}{{ phrase('user.profile.register_password_min_num', {count: app.getSetting(prefix ~ 'require_num_number')}) }}, {% endif %}
-							{% if app.getSetting(prefix ~ 'require_num_symbol') %}{{ phrase('user.profile.register_password_min_sym', {count: app.getSetting(prefix ~ 'require_num_symbol')}) }}, {% endif %}
+							{% if app.getSetting(prefix ~ 'require_num_uppercase') %}{{ phrase('user.profile.register_password_require_num_uppercase', {count: app.getSetting(prefix ~ 'require_num_uppercase')}) }}, {% endif %}
+							{% if app.getSetting(prefix ~ 'require_num_lowercase') %}{{ phrase('user.profile.register_password_require_num_lowercase', {count: app.getSetting(prefix ~ 'require_num_lowercase')}) }}, {% endif %}
+							{% if app.getSetting(prefix ~ 'require_num_number') %}{{ phrase('user.profile.register_password_require_num_number', {count: app.getSetting(prefix ~ 'require_num_number')}) }}, {% endif %}
+							{% if app.getSetting(prefix ~ 'require_num_symbol') %}{{ phrase('user.profile.register_password_require_num_symbol', {count: app.getSetting(prefix ~ 'require_num_symbol')}) }}, {% endif %}
 							{% if app.getSetting(prefix ~ 'min_length') %}{{ phrase('user.profile.register_password_min_length', {count: app.getSetting(prefix ~ 'min_length')}) }}{% endif %}
 						</div>
 						<input type="password" autocomplete="off" name="password" value="" />
