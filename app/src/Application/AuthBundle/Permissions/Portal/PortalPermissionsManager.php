@@ -63,7 +63,7 @@ use Application\DeskPRO\ORM\EntityManager;
  */
 class PortalPermissionsManager
 {
-    const CACHE_TIMESTAMP_SETTING_NAME = 'portal.default_permissions_timestamp';
+    const CACHE_TIMESTAMP_SETTING_NAME = 'portal.global_cache_timestamp';
 
     /**
      * @var \Application\DeskPRO\NewSettings\SettingsResolver
@@ -170,7 +170,7 @@ class PortalPermissionsManager
      */
     public function invalidatePortalPermissionsCaches()
     {
-        // execute a SQL statement to update the portal.default_permissions_timestamp setting
+        // execute a SQL statement to update the portal.global_cache_timestamp setting
         $this->conn->executeQuery('REPLACE INTO settings SET name = "'.static::CACHE_TIMESTAMP_SETTING_NAME.'", value = '.time());
 
         // force a reload of global settings

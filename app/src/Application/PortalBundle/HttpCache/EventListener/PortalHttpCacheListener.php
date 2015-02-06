@@ -224,7 +224,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
      */
     protected function generateEtag(ContentAbstract $content)
     {
-        $global_timestamp = $this->getBrandSetting('portal.default_permissions_timestamp');
+        $global_timestamp = $this->getBrandSetting('portal.global_cache_timestamp');
         $type = $content->getContentType();
         $id = $content->getId();
         $last_modified = $this->generateLastModified($content);

@@ -551,9 +551,9 @@
     'portal.default_brand' => 1,
 
     /**
-     * A timestamp used in generating cache keys (updates automatically in the db)
+     * A timestamp used in generating cache keys for permissions, etags, etc (updates automatically in the db)
      */
-    'portal.default_permissions_timestamp' => 0,
+    'portal.global_cache_timestamp' => 0,
 
     /**
      * disable_permissions_cache
