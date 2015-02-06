@@ -47,9 +47,9 @@ use Symfony\Component\OptionsResolver\Options;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
 use Application\PortalBundle\Annotation\TagOptions;
 use Application\PortalBundle\Annotation\Tag;
+use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class ArticlesController extends AbstractController
 {
@@ -59,7 +59,7 @@ class ArticlesController extends AbstractController
      * @Tag(name="knowledgebase_expander", default_options={"style":"expander"}, esi=true)
      * @Tag(name="knowledgebase_list", default_options={"style":"list"}, esi=true)
      * @Tag(name="knowledgebase_comma_list", default_options={"style":"comma_list"}, esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache
      *
      * @TagOptions(
      *      defaults={
@@ -69,14 +69,16 @@ class ArticlesController extends AbstractController
      *      },
      *      allowed_values={
      *          "style": {"expander", "compact", "home", "list", "comma_list"}
+     *      },
+     *      attribute_expressions={
+     *          "category": "service('data.articles').getCategory(options['category'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function categoriesAction(TagRequest $tag_request, array $options)
+    public function categoriesAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {
-        $category = $this->getArticlesDataService()->getCategory($options['category']);
         $category_children = $this->getArticlesDataService()->getCategoryChildren($category);
 
         return $this->renderThemeView(
@@ -109,14 +111,16 @@ class ArticlesController extends AbstractController
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\ArticleCategory","int","string","null"}
+     *      },
+     *      attribute_expressions={
+     *          "category": "service('data.articles').getCategory(options['category'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function listAction(TagRequest $tag_request, array $options)
+    public function listAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {
-        $category = $this->getArticlesDataService()->getCategory($options['category']);
         $pager = $this->getArticlesDataService()->getArticlesPager($category, $options['page'], $options['count']);
 
         return $this->renderThemeView(
@@ -131,19 +135,20 @@ class ArticlesController extends AbstractController
 
     /**
      * @Tag(name="article", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache(content="article")
      *
      * @TagOptions(
      *      required={"article"},
      *      allowed_types={
      *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "article": "service('data.articles').getArticle(options['article'])"
      *      }
      * )
      */
-    public function articleAction(TagRequest $tag_request, array $options)
+    public function articleAction(TagRequest $tag_request, array $options, Article $article = null)
     {
-        $article = $this->getArticlesDataService()->getArticle($options['article']);
-
         return $this->renderThemeView(
             'Theme:Articles:Tag/article.html.twig',
             array(
@@ -161,13 +166,14 @@ class ArticlesController extends AbstractController
      *      defaults={"style":"link"},
      *      allowed_types={
      *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "article": "service('data.articles').getArticle(options['article'])"
      *      }
      * )
      */
-    public function articleSubscriptionAction(TagRequest $tag_request, array $options)
+    public function articleSubscriptionAction(TagRequest $tag_request, array $options, Article $article = null)
     {
-        $article = $this->getArticlesDataService()->getArticle($options['article']);
-
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
@@ -192,15 +198,16 @@ class ArticlesController extends AbstractController
      *      defaults={"category": null},
      *      allowed_types={
      *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "category": "service('data.articles').getCategory(options['category'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function categorySubscriptionAction(TagRequest $tag_request, array $options)
+    public function categorySubscriptionAction(TagRequest $tag_request, array $options, ArticleCategory $category = null)
     {
-        $category = $this->getArticlesDataService()->getCategory($options['category']);
-
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.kb_subscriptions', false)
@@ -226,14 +233,16 @@ class ArticlesController extends AbstractController
      *      },
      *      allowed_types={
      *          "article":{"Application\DeskPRO\Entity\Article","int","string","null"}
+     *      },
+     *      attribute_expressions={
+     *          "article": "service('data.articles').getArticle(options['article'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options)
+    public function commentsAction(TagRequest $tag_request, array $options, Article $article = null)
     {
-        $article = $this->getArticlesDataService()->getArticle($options['article']);
         $comments = $this->getArticlesDataService()->getArticleComments($article, $this->getUser());
 
         return $this->renderThemeView('Theme:Articles:Tag/comments.html.twig', array(
@@ -277,22 +286,25 @@ class ArticlesController extends AbstractController
 
     /**
      * @Tag(name="knowledgebase_breadcrumbs", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache
      *
      * @TagOptions(
      *      defaults={"category": null, "article": null},
      *      allowed_types={
      *          "category": {"Application\DeskPRO\Entity\ArticleCategory", "int", "string", "null"},
      *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"},
+     *      },
+     *      attribute_expressions={
+     *          "article": "service('data.articles').getArticle(options['article'])",
+     *          "category": "service('data.articles').getCategory(options['category'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options, Article $article = null, ArticleCategory $category = null)
     {
         $category = $this->getArticlesDataService()->getCategory($options['category']);
-        $article = $this->getArticlesDataService()->getArticle($options['article']);
 
         return $this->renderThemeView(
             'Theme:Articles:Tag/breadcrumbs.html.twig', array(
@@ -309,14 +321,16 @@ class ArticlesController extends AbstractController
      *      defaults={"article": null},
      *      allowed_types={
      *          "article": {"Application\DeskPRO\Entity\Article", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "article": "service('data.articles').getArticle(options['article'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_ARTICLES')")
      */
-    public function ratingsAction(TagRequest $tag_request, array $options)
+    public function ratingsAction(TagRequest $tag_request, array $options, Article $article = null)
     {
-        $article = $this->getArticlesDataService()->getArticle($options['article']);
         $rating = $this->getRatingsHelper()->getPersonRating($article, $this->getUser());
 
         return $this->renderThemeView(
