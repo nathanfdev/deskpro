@@ -44,13 +44,13 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class PortalController extends AbstractController
 {
     /**
      * @Tag(name="home", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache()
      */
     public function homeAction(TagRequest $tag_request)
     {
@@ -59,7 +59,7 @@ class PortalController extends AbstractController
 
     /**
      * @Tag(name="page_top", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache()
      */
     public function topBarAction(TagRequest $tag_request)
     {
@@ -78,7 +78,7 @@ class PortalController extends AbstractController
 
     /**
      * @Tag(name="page_search_box", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache()
      */
     public function topSearchAction(TagRequest $tag_request)
     {
@@ -87,7 +87,7 @@ class PortalController extends AbstractController
 
     /**
      * @Tag(name="page_tabs", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache()
      */
     public function topTabsAction(TagRequest $tag_request)
     {
@@ -106,7 +106,7 @@ class PortalController extends AbstractController
 
     /**
      * @Tag(name="sidebar", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache()
      */
     public function sidebarAction(TagRequest $tag_request)
     {

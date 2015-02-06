@@ -179,7 +179,7 @@ class NewsController extends AbstractController
      * Need to force a redirect here to support old permalinks!
      *
      * @Route("/news/view/{slug}", name="portal_news_view_LEGACY")
-     * @PageHttpCache()
+     * @PageHttpCache(content="post")
      */
     public function viewLEGACYAction(Request $request, $slug)
     {

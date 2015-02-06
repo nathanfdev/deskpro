@@ -38,7 +38,7 @@ namespace Application\PortalBundle\Controller;
 use Application\DeskPRO\Entity\Person;
 use Symfony\Component\HttpFoundation\Request;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Route;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Application\PortalBundle\HttpCache\Configuration\PageHttpCache;
 use Symfony\Component\Security\Core\Util\SecureRandom;
 use Symfony\Component\Security\Csrf\TokenGenerator\UriSafeTokenGenerator;
 
@@ -46,7 +46,7 @@ class PortalController extends AbstractController
 {
     /**
      * @Route("/", name="portal_index")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache()
      */
     public function indexAction(Request $request)
     {
@@ -55,7 +55,7 @@ class PortalController extends AbstractController
 
     /**
      * @Route("/login", name="portal_login")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache()
      */
     public function loginAction(Request $request)
     {
@@ -72,7 +72,7 @@ class PortalController extends AbstractController
 
     /**
      * @Route("/login/reset-password", name="portal_reset_password")
-     * @Cache(smaxage="10 minutes")
+     * @PageHttpCache()
      */
     public function passwordResetRequestAction(Request $request)
     {

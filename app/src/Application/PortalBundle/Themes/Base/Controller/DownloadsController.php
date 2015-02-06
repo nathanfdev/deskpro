@@ -126,7 +126,7 @@ class DownloadsController extends AbstractController
 
     /**
      * @Tag(name="download", esi=true)
-     * @TagHttpCache()
+     * @TagHttpCache(content="file")
      *
      * @TagOptions(
      *      defaults={"is_subscribed":false},

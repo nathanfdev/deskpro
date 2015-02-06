@@ -103,7 +103,7 @@ class FeedbackController extends AbstractController
 
     /**
      * @Tag(name="item", esi=true)
-     * @TagHttpCache()
+     * @TagHttpCache(content="item")
      *
      * @TagOptions(
      *      required={"item"},
