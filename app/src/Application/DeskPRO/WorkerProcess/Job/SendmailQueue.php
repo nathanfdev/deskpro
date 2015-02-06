@@ -33,8 +33,6 @@
  */
 
 namespace Application\DeskPRO\WorkerProcess\Job;
-use Application\DeskPRO\Monolog\Handler\OrbLoggerAdapterHandler;
-use Application\EmailBundle\Queue\QueueRunner;
 use Application\DeskPRO\App;
 use Monolog;
 
@@ -47,19 +45,8 @@ class SendmailQueue extends AbstractJob
 
     public function run()
     {
-        $container = App::getContainer();
-
-        $logger = new Monolog\Logger('sendmail_queue');
-        $logger->pushHandler(new OrbLoggerAdapterHandler($this->getLogger()));
-
         @ini_set('memory_limit', DP_MAX_MEMSIZE);
-        $runner = new QueueRunner(
-            $container->getDb(),
-            $container->getMailer(),
-            $container->get('email.source_mapper'),
-            $container->get('email.source_sender')
-        );
-        $runner->setLogger($logger);
+        $runner = App::getContainer()->get('email.queue_runner');
         $count_problems = $runner->detectProblems();
         $count = $runner->run();
         @ini_set('memory_limit', DP_SET_MEMSIZE);
