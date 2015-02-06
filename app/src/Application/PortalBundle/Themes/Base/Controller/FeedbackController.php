@@ -111,7 +111,7 @@ class FeedbackController extends AbstractController
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
      *      },
      *      attribute_expressions={
-     *          "item": "serice('data.feedback').getItem(options['item'])"
+     *          "item": "service('data.feedback').getItem(options['item'])"
      *      }
      * )
      */
@@ -185,7 +185,7 @@ class FeedbackController extends AbstractController
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
      *      },
      *      attribute_expressions={
-     *          "item": "serice('data.feedback').getItem(options['item'])"
+     *          "item": "service('data.feedback').getItem(options['item'])"
      *      }
      * )
      *
@@ -212,7 +212,7 @@ class FeedbackController extends AbstractController
      *          "item":{"Application\DeskPRO\Entity\Feedback","int","string","null"}
      *      },
      *      attribute_expressions={
-     *          "item": "serice('data.feedback').getItem(options['item'])"
+     *          "item": "service('data.feedback').getItem(options['item'])"
      *      }
      * )
      *
@@ -237,7 +237,7 @@ class FeedbackController extends AbstractController
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
      *      },
      *      attribute_expressions={
-     *          "item": "serice('data.feedback').getItem(options['item'])"
+     *          "item": "service('data.feedback').getItem(options['item'])"
      *      }
      * )
      *

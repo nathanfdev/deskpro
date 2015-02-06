@@ -43,9 +43,10 @@ use Application\DeskPRO\People\PersonGuest;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class ArticlesDataService
+class ArticlesDataService extends AbstractDataService
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -63,20 +64,38 @@ class ArticlesDataService
      * @param $max_per_page
      * @return Pagerfanta
      */
-    public function getArticlesPager($category, $page, $max_per_page)
+    public function getArticlesPager(ArticleCategory $category = null, $page, $max_per_page)
     {
-        // TODO: optimize this query
-        if ($category) {
-            $articles = new ArrayCollection($this->getArticlesRepo()->getNewest(25000, $category));
-        } else {
-            $articles = new ArrayCollection($this->getArticlesRepo()->getNewest(25000));
-        }
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($articles));
-        $pager->setMaxPerPage($max_per_page);
-        $pager->setCurrentPage($page);
+        $em = $this->em;
 
-        return $pager;
+        return $this->generateAndCache(
+            array(
+                'getArticlesPager',
+                $category,
+                $page,
+                $max_per_page
+            ),
+            function() use ($em, $category, $max_per_page, $page) {
+                $qb = $em->createQueryBuilder();
+
+                $qb->select('a')
+                    ->from('DeskPRO:Article', 'a')
+                    ->where('a.status = :status')->setParameter('status', Article::STATUS_PUBLISHED)
+                    ->orderBy('a.id', 'DESC');
+
+                if ($category) {
+                    $cat_ids = $category->getTreeIds(true);
+                    $qb->leftJoin('a.categories', 'c')
+                        ->andWhere('c.id IN (:cat_ids)')->setParameter('cat_ids', $cat_ids);
+                }
+
+                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                $pager->setMaxPerPage($max_per_page);
+                $pager->setCurrentPage($page);
+
+                return $pager;
+            }
+        );
     }
 
     /**
@@ -92,17 +111,27 @@ class ArticlesDataService
      */
     public function getCategoryChildren($category)
     {
-        if (!$category) { // get root categories
-            return $this->getArticleCategoriesRepo()->findBy(array('parent' => null));
-        }
+        $that = $this;
 
-        if (!$category instanceof ArticleCategory) { // if not already category, try to make it one
-            if (!$category = $this->getCategory($category)) {
-                throw new \InvalidArgumentException(sprintf('could not convert "%s" into an article category'));
+        return $this->generateAndCache(
+            array(
+                'getCategoryChildren',
+                $category
+            ),
+            function() use ($that, $category) {
+                if (!$category) { // get root categories
+                    return $that->getArticleCategoriesRepo()->findBy(array('parent' => null));
+                }
+
+                if (!$category instanceof ArticleCategory) { // if not already category, try to make it one
+                    if (!$category = $that->getCategory($category)) {
+                        throw new \InvalidArgumentException(sprintf('could not convert "%s" into an article category'));
+                    }
+                }
+
+                return $category->children;
             }
-        }
-
-        return $category->children;
+        );
     }
 
     /**
@@ -111,15 +140,25 @@ class ArticlesDataService
      */
     public function getArticle($article)
     {
-        if (!$article) { // we need some input
-            return null;
-        }
+        $that = $this;
 
-        if ($article instanceof Article) { // already have what you seek
-            return $article;
-        }
+        return $this->generateAndCache(
+            array(
+                'getArticle',
+                $article
+            ),
+            function() use ($that, $article) {
+                if (!$article) { // we need some input
+                    return null;
+                }
 
-        return $this->getArticlesRepo()->find($article);
+                if ($article instanceof Article) { // already have what you seek
+                    return $article;
+                }
+
+                return $that->getArticlesRepo()->find($article);
+            }
+        );
     }
 
     /**
@@ -132,22 +171,43 @@ class ArticlesDataService
      */
     public function getCategory($category)
     {
-        if (!$category) { // we need some input
-            return null;
-        }
+        $that = $this;
 
-        if ($category instanceof ArticleCategory) { // already have what you seek
-            return $category;
-        }
+        return $this->generateAndCache(
+            array(
+                'getCategory',
+                $category
+            ),
+            function () use ($that, $category) {
+                if (!$category) { // we need some input
+                    return null;
+                }
 
-        return $this->getArticleCategoriesRepo()->find($category);
+                if ($category instanceof ArticleCategory) { // already have what you seek
+                    return $category;
+                }
+
+                return $that->getArticleCategoriesRepo()->find($category);
+            }
+        );
     }
 
     public function getArticleComments($article, Person $person = null)
     {
-        $article = $this->getArticle($article);
+        $that = $this;
 
-        return $this->getArticleCommentRepo()->getDisplayComments($article, $person);
+        return $this->generateAndCache(
+            array(
+                'getArticleComments',
+                $article,
+                $person
+            ),
+            function() use ($that, $article, $person) {
+                $article = $that->getArticle($article);
+
+                return $that->getArticleCommentRepo()->getDisplayComments($article, $person);
+            }
+        );
     }
 
     /**

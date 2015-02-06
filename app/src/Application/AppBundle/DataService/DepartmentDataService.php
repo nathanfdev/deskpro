@@ -63,7 +63,10 @@ class DepartmentDataService extends AbstractDataService
         $em = $this->em;
 
         return $this->generateAndCache(
-            $person,
+            array(
+                'getAuthorizedDepartmentsForPersonInPortal',
+                $person
+            ),
             function() use ($person, $portal_permissions_manager, $em) {
                 $allowed_department_ids = $portal_permissions_manager->getAllowedDepartmentIds($person);
 

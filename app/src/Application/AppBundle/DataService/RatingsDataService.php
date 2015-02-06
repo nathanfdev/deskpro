@@ -58,17 +58,23 @@ class RatingsDataService extends AbstractDataService
     {
         $ratings_repo = $this->getRatingRepo();
 
-        return $this->generateAndCache($rating, function() use ($ratings_repo, $rating) {
-            if (!$rating) { // we need some input
-                return null;
-            }
+        return $this->generateAndCache(
+            array(
+                'getRating',
+                $rating
+            ),
+            function() use ($ratings_repo, $rating) {
+                if (!$rating) { // we need some input
+                    return null;
+                }
 
-            if ($rating instanceof Rating) { // already have what you seek
-                return $rating;
-            }
+                if ($rating instanceof Rating) { // already have what you seek
+                    return $rating;
+                }
 
-            return $ratings_repo->find($rating);
-        });
+                return $ratings_repo->find($rating);
+            }
+        );
     }
 
     /**

@@ -5,6 +5,6 @@
     <h1>{{ category.title }}</h1>
     {{ page.knowledgebase_category_subscription()|raw }}
     {{ page.knowledgebase()|raw }}
-    {{ page.knowledgebase_articles_simple()|raw }}
+    {{ page.knowledgebase_articles_simple({ show_category_link: false })|raw }}
     {{ page.knowledgebase_pager()|raw }}
 {% endblock inner_content %}

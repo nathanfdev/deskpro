@@ -73,6 +73,7 @@ class TicketsDataService extends AbstractDataService
 
         return $this->generateAndCache(
             array(
+                'getPager',
                 $person,
                 $filter,
                 $page,
@@ -170,5 +171,4 @@ class TicketsDataService extends AbstractDataService
     {
         return $this->em->getRepository('DeskPRO:Ticket');
     }
-
 }

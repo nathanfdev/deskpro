@@ -43,9 +43,10 @@ use Application\DeskPRO\Entity\Person;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\ORM\EntityManager;
 use Pagerfanta\Adapter\DoctrineCollectionAdapter;
+use Pagerfanta\Adapter\DoctrineORMAdapter;
 use Pagerfanta\Pagerfanta;
 
-class DownloadsDataService
+class DownloadsDataService extends AbstractDataService
 {
     /**
      * @var \Doctrine\ORM\EntityManager
@@ -65,19 +66,35 @@ class DownloadsDataService
      */
     public function getDownloadsPager(DownloadCategory $category = null, $page, $max_per_page)
     {
-        // TODO: optimize this query
-        if ($category) {
-            $dls = new ArrayCollection($this->getDownloadsRepo()->getNewest(2000, $category));
-        } else {
-            $dls = new ArrayCollection($this->getDownloadsRepo()->getNewest(2000, null));
-        }
+        $em = $this->em;
 
-        // TODO: make sure this collection adapter gets a collection that is EXTRA_LAZY!
-        $pager = new Pagerfanta(new DoctrineCollectionAdapter($dls));
-        $pager->setMaxPerPage($max_per_page);
-        $pager->setCurrentPage($page);
+        return $this->generateAndCache(
+            array(
+                'getDownloadsPager',
+                $category,
+                $page,
+                $max_per_page
+            ),
+            function () use ($em, $category, $max_per_page, $page) {
+                $qb = $em->createQueryBuilder();
 
-        return $pager;
+                $qb->select('d')
+                    ->from('DeskPRO:Download', 'd')
+                    ->where('d.status = :status')->setParameter('status', Download::STATUS_PUBLISHED)
+                    ->orderBy('d.id', 'DESC');
+
+                if ($category) {
+                    $qb->leftJoin('d.category', 'c')
+                        ->andWhere('c = :cat')->setParameter('cat', $category);
+                }
+
+                $pager = new Pagerfanta(new DoctrineORMAdapter($qb));
+                $pager->setMaxPerPage($max_per_page);
+                $pager->setCurrentPage($page);
+
+                return $pager;
+            }
+        );
     }
 
     /**
@@ -93,17 +110,26 @@ class DownloadsDataService
      */
     public function getCategoryChildren($category)
     {
-        if (!$category) { // get root categories
-            return $this->getDownloadCategoriesRepo()->findBy(array('parent' => null));
-        }
+        $that = $this;
+        return $this->generateAndCache(
+            array(
+                'getCategoryChildren',
+                $category
+            ),
+            function() use ($that, $category) {
+                if (!$category) { // get root categories
+                    return $that->getDownloadCategoriesRepo()->findBy(array('parent' => null));
+                }
 
-        if (!$category instanceof DownloadCategory) { // if not already category, try to make it one
-            if (!$category = $this->getCategory($category)) {
-                throw new \InvalidArgumentException(sprintf('could not convert "%s" into a download category'));
+                if (!$category instanceof DownloadCategory) { // if not already category, try to make it one
+                    if (!$category = $that->getCategory($category)) {
+                        throw new \InvalidArgumentException(sprintf('could not convert "%s" into a download category'));
+                    }
+                }
+
+                return $category->children;
             }
-        }
-
-        return $category->children;
+        );
     }
 
     /**
@@ -112,15 +138,25 @@ class DownloadsDataService
      */
     public function getDownload($download)
     {
-        if (!$download) { // we need some input
-            return null;
-        }
+        $that = $this;
 
-        if ($download instanceof Download) { // already have what you seek
-            return $download;
-        }
+        return $this->generateAndCache(
+            array(
+                'getDownload',
+                $download
+            ),
+            function() use ($that, $download) {
+                if (!$download) { // we need some input
+                    return null;
+                }
 
-        return $this->getDownloadsRepo()->find($download);
+                if ($download instanceof Download) { // already have what you seek
+                    return $download;
+                }
+
+                return $that->getDownloadsRepo()->find($download);
+            }
+        );
     }
 
     /**
@@ -133,22 +169,43 @@ class DownloadsDataService
      */
     public function getCategory($category)
     {
-        if (!$category) { // we need some input
-            return null;
-        }
+        $that = $this;
 
-        if ($category instanceof DownloadCategory) { // already have what you seek
-            return $category;
-        }
+        return $this->generateAndCache(
+            array(
+                'getCategory',
+                $category
+            ),
+            function() use ($that, $category) {
+                if (!$category) { // we need some input
+                    return null;
+                }
 
-        return $this->getDownloadCategoriesRepo()->find($category);
+                if ($category instanceof DownloadCategory) { // already have what you seek
+                    return $category;
+                }
+
+                return $that->getDownloadCategoriesRepo()->find($category);
+            }
+        );
     }
 
     public function getDownloadComments($file, Person $person = null)
     {
-        $file = $this->getDownload($file);
+        $that = $this;
 
-        return $this->getDownloadCommentRepo()->getDisplayComments($file, $person);
+        return $this->generateAndCache(
+            array(
+                'getDownloadComments',
+                $file,
+                $person
+            ),
+            function() use ($that, $file, $person) {
+                $file = $that->getDownload($file);
+
+                return $that->getDownloadCommentRepo()->getDisplayComments($file, $person);
+            }
+        );
     }
 
     /**
