@@ -37,9 +37,12 @@ namespace Application\FormBundle\Hierarchy;
 
 use Application\AppBundle\DataService\DepartmentDataService;
 use Application\AppBundle\DataService\FeedbackDataService;
+use Application\AppBundle\Helper\ArbitratyHasher;
 use Application\AppBundle\Hierarchy\Formatter\FlatListFormatter;
 use Application\AppBundle\Hierarchy\Formatter\ParentListFormatter;
 use Application\AuthBundle\Permissions\Portal\PortalPermissionsManager;
+use Application\DeskPRO\Cache\Adapter\SimpleArrayCache;
+use Application\DeskPRO\Cache\ConvenientCache;
 use Application\DeskPRO\Entity\CustomDefAbstract;
 use Application\DeskPRO\Entity\CustomDefPerson;
 use Application\DeskPRO\Entity\CustomDefTicket;
@@ -58,6 +61,16 @@ use Doctrine\ORM\EntityRepository;
 
 class HierarchyGenerator
 {
+    /**
+     * @var ArbitratyHasher
+     */
+    protected $hash_generator;
+
+    /**
+     * @var ConvenientCache
+     */
+    protected $cache;
+
     /**
      * @var \Doctrine\ORM\EntityManager
      */
@@ -82,145 +95,227 @@ class HierarchyGenerator
 
     public function generateForCustomFormField(CustomDefAbstract $field)
     {
-        $root_nodes = array();
-        foreach ($field->children as $field_child) {
-            // fields with a parent_id are dealt with below
-            if (!$field_child->getOption('parent_id')) {
-                $root_nodes[] = new HierarchyNode($field_child, 0, $field_child->display_order);
-            }
-        }
-
-        if ($expanded = $field->getOption('expanded')) {
-            $formatter = new ParentListFormatter('title');
-        } else {
-            $formatter = new FlatListFormatter('title');
-        }
-
-        $hierarchy = new Hierarchy($root_nodes, $formatter);
-        $hierarchy->markOnlyLeafSelections();
-
-        foreach ($field->children as $field_child) {
-            if ($parent_id = $field_child->getOption('parent_id')) {
-                if ($parent = $parent_node = $hierarchy->findNodeById($parent_id)) {
-                    $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1, $field_child->display_order));
+        return $this->generateAndCache(
+            array(
+                'generateForCustomFormField',
+                $field
+            ),
+            function () use ($field) {
+                $root_nodes = array();
+                foreach ($field->children as $field_child) {
+                    // fields with a parent_id are dealt with below
+                    if (!$field_child->getOption('parent_id')) {
+                        $root_nodes[] = new HierarchyNode($field_child, 0, $field_child->display_order);
+                    }
                 }
-            }
-        }
 
-        return $hierarchy;
+                if ($expanded = $field->getOption('expanded')) {
+                    $formatter = new ParentListFormatter('title');
+                } else {
+                    $formatter = new FlatListFormatter('title');
+                }
+
+                $hierarchy = new Hierarchy($root_nodes, $formatter);
+                $hierarchy->markOnlyLeafSelections();
+
+                foreach ($field->children as $field_child) {
+                    if ($parent_id = $field_child->getOption('parent_id')) {
+                        if ($parent = $parent_node = $hierarchy->findNodeById($parent_id)) {
+                            $parent->addChild(new HierarchyNode($field_child, $parent->getDepth() + 1, $field_child->display_order));
+                        }
+                    }
+                }
+
+                return $hierarchy;
+            }
+        );
     }
 
     public function generateTicketProductsHierarchy()
     {
-        $products = $this->em->getRepository('DeskPRO:Product')->findAll();
+        $em = $this->em;
 
-        $root_nodes = array();
-        foreach ($products as $product) {
-            if ($product->getParent()) {
-                continue;
+        return $this->generateAndCache(
+            array(
+                'generateTicketProductsHierarchy'
+            ),
+            function () use ($em) {
+                $products = $em->getRepository('DeskPRO:Product')->findAll();
+
+                $root_nodes = array();
+                foreach ($products as $product) {
+                    if ($product->getParent()) {
+                        continue;
+                    }
+                    $root_nodes[] = new HierarchyNode($product, 0, $product->display_order);
+                }
+
+                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+                $hierarchy->markOnlyLeafSelections();
+
+                $recursive = function (Product $prod, HierarchyNode $parent, $depth) use (&$recursive) {
+                    foreach ($prod->children as $child) {
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
+                        $recursive($child, $child_node, $depth + 1);
+                    }
+                };
+
+                foreach ($hierarchy as $root_node) {
+                    $recursive($root_node->getData(), $root_node, 1);
+                }
+
+                return $hierarchy;
             }
-            $root_nodes[] = new HierarchyNode($product, 0, $product->display_order);
-        }
-
-        $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
-        $hierarchy->markOnlyLeafSelections();
-
-        $recursive = function (Product $prod, HierarchyNode $parent, $depth) use (&$recursive) {
-            foreach ($prod->children as $child) {
-                $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
-                $recursive($child, $child_node, $depth + 1);
-            }
-        };
-
-        foreach ($hierarchy as $root_node) {
-            $recursive($root_node->getData(), $root_node, 1);
-        }
-
-        return $hierarchy;
+        );
     }
 
     public function generateTicketDepartmentsHierarchy(Person $person)
     {
-        $departments = $this->department_data_service->getAuthorizedDepartmentsForPersonInPortal($person);
+        $department_data_service = $this->department_data_service;
 
-        $root_nodes = array();
-        foreach ($departments as $department) {
-            $root_nodes[] = new HierarchyNode($department, 0, $department->display_order);
-        }
+        return $this->generateAndCache(
+            array(
+                'generateTicketDepartmentsHierarchy',
+                $person
+            ),
+            function () use ($department_data_service, $person) {
+                $departments = $department_data_service->getAuthorizedDepartmentsForPersonInPortal($person);
 
-        $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
-        $hierarchy->markOnlyLeafSelections();
+                $root_nodes = array();
+                foreach ($departments as $department) {
+                    $root_nodes[] = new HierarchyNode($department, 0, $department->display_order);
+                }
 
-        $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive) {
-            foreach ($dep->children as $child) {
-                $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
-                $recursive($child, $child_node, $depth + 1);
+                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+                $hierarchy->markOnlyLeafSelections();
+
+                $recursive = function (Department $dep, HierarchyNode $parent, $depth) use (&$recursive) {
+                    foreach ($dep->children as $child) {
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
+                        $recursive($child, $child_node, $depth + 1);
+                    }
+                };
+
+                foreach ($hierarchy as $root_node) {
+                    $recursive($root_node->getData(), $root_node, 1);
+                }
+
+                return $hierarchy;
             }
-        };
-
-        foreach ($hierarchy as $root_node) {
-            $recursive($root_node->getData(), $root_node, 1);
-        }
-
-        return $hierarchy;
+        );
     }
 
     public function generateTicketCategoriesHierarchy()
     {
-        $products = $this->em->getRepository('DeskPRO:TicketCategory')->findAll();
+        $em = $this->em;
 
-        $root_nodes = array();
-        foreach ($products as $product) {
-            if ($product->getParent()) {
-                continue;
+        return $this->generateAndCache(
+            array(
+                'generateTicketCategoriesHierarchy'
+            ),
+            function () use ($em) {
+                $products = $em->getRepository('DeskPRO:TicketCategory')->findAll();
+
+                $root_nodes = array();
+                foreach ($products as $product) {
+                    if ($product->getParent()) {
+                        continue;
+                    }
+                    $root_nodes[] = new HierarchyNode($product, 0, $product->display_order);
+                }
+
+                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+                $hierarchy->markOnlyLeafSelections();
+
+                $recursive = function (TicketCategory $prod, HierarchyNode $parent, $depth) use (&$recursive) {
+                    foreach ($prod->getChildren() as $child) {
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
+                        $recursive($child, $child_node, $depth + 1);
+                    }
+                };
+
+                foreach ($hierarchy as $root_node) {
+                    $recursive($root_node->getData(), $root_node, 1);
+                }
+
+                return $hierarchy;
             }
-            $root_nodes[] = new HierarchyNode($product, 0, $product->display_order);
-        }
-
-        $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
-        $hierarchy->markOnlyLeafSelections();
-
-        $recursive = function (TicketCategory $prod, HierarchyNode $parent, $depth) use (&$recursive) {
-            foreach ($prod->getChildren() as $child) {
-                $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->display_order));
-                $recursive($child, $child_node, $depth + 1);
-            }
-        };
-
-        foreach ($hierarchy as $root_node) {
-            $recursive($root_node->getData(), $root_node, 1);
-        }
-
-        return $hierarchy;
+        );
     }
 
     public function generateForFeedbackCategories(Person $person)
     {
-        $categories = $this->feedback_data_service->getFeedbackCategoriesForPerson($person);
+        $feedback_data_service = $this->feedback_data_service;
 
-        $root_nodes = array();
-        foreach ($categories as $category) {
-            if ($category->getParent()) {
-                continue;
+        return $this->generateAndCache(
+            array(
+                'generateForFeedbackCategories',
+                $person
+            ),
+            function () use ($feedback_data_service) {
+
+                $categories = $feedback_data_service->getFeedbackCategoriesForPerson($person);
+
+                $root_nodes = array();
+                foreach ($categories as $category) {
+                    if ($category->getParent()) {
+                        continue;
+                    }
+                    $root_nodes[] = new HierarchyNode($category, 0, $category->display_order);
+                }
+
+                $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
+                $hierarchy->markOnlyLeafSelections();
+
+                $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive) {
+                    foreach ($cat->getChildren() as $child) {
+                        $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->getDisplayOrder()));
+                        $recursive($child, $child_node, $depth + 1);
+                    }
+                };
+
+                foreach ($hierarchy as $root_node) {
+                    $recursive($root_node->getData(), $root_node, 1);
+                }
+
+                return $hierarchy;
             }
-            $root_nodes[] = new HierarchyNode($category, 0, $category->display_order);
+        );
+    }
+
+    /**
+     * @param mixed $params   the "ArbitraryHasher" input to create cache key for this callable
+     * @param mixed $callable doesn't need to be a callable, can be any default value, but usually is a callable
+     * @return mixed|null
+     */
+    protected function generateAndCache($params, $callable)
+    {
+        return $this->getCache()->get($this->generateHash($params), $callable);
+    }
+
+    /**
+     * @return ConvenientCache
+     */
+    protected function getCache()
+    {
+        if (null === $this->hash_generator) {
+            $this->cache = new ConvenientCache(new SimpleArrayCache());
         }
 
-        $hierarchy = new Hierarchy($root_nodes, new FlatListFormatter('title'));
-        $hierarchy->markOnlyLeafSelections();
+        return $this->cache;
+    }
 
-        $recursive = function (FeedbackCategory $cat, HierarchyNode $parent, $depth) use (&$recursive) {
-            foreach ($cat->getChildren() as $child) {
-                $parent->addChild($child_node = new HierarchyNode($child, $depth, $child->getDisplayOrder()));
-                $recursive($child, $child_node, $depth + 1);
-            }
-        };
-
-        foreach ($hierarchy as $root_node) {
-            $recursive($root_node->getData(), $root_node, 1);
+    /**
+     * @param mixed $input
+     * @return string
+     */
+    protected function generateHash($input)
+    {
+        if (null === $this->hash_generator) {
+            $this->hash_generator = new ArbitratyHasher();
         }
 
-        return $hierarchy;
+        return $this->hash_generator->generateHash($input);
     }
 }
  
