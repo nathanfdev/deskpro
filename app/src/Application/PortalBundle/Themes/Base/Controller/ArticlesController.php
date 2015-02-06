@@ -285,8 +285,7 @@ class ArticlesController extends AbstractController
     }
 
     /**
-     * @Tag(name="knowledgebase_breadcrumbs", esi=true)
-     * @TagHttpCache
+     * @Tag(name="knowledgebase_breadcrumbs")
      *
      * @TagOptions(
      *      defaults={"category": null, "article": null},

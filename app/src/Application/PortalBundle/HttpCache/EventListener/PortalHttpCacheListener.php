@@ -38,6 +38,7 @@ namespace Application\PortalBundle\HttpCache\EventListener;
 use Application\DeskPRO\Brand\BrandStack;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ContentAbstract;
+use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\NewSettings\SettingsResolver;
 use Application\PortalBundle\HttpCache\PortalCacheHelper;
@@ -210,7 +211,7 @@ class PortalHttpCacheListener implements EventSubscriberInterface
      */
     protected function generateLastModified(ContentAbstract $content)
     {
-        if ($content instanceof Article || $content instanceof News) {
+        if ($content instanceof Article || $content instanceof Download) {
             return $content->getDateUpdated() ?: $content->getDateCreated();
         } else {
             return $content->getDatePublished() ?: $content->getDateCreated();

@@ -46,7 +46,8 @@ use Pagerfanta\Pagerfanta;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
+use Zend\Feed\Reader\Extension\CreativeCommons\Feed;
 
 class FeedbackController extends AbstractController
 {
@@ -102,19 +103,20 @@ class FeedbackController extends AbstractController
 
     /**
      * @Tag(name="item", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache()
      *
      * @TagOptions(
      *      required={"item"},
      *      allowed_types={
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "item": "serice('data.feedback').getItem(options['item'])"
      *      }
      * )
      */
-    public function itemAction(TagRequest $tag_request, array $options)
+    public function itemAction(TagRequest $tag_request, array $options, Feedback $item = null)
     {
-        $item = $this->getFeedbackDataService()->getItem($options['item']);
-
         return $this->renderThemeView(
             'Theme:Feedback:Tag/item.html.twig',
             array(
@@ -175,22 +177,22 @@ class FeedbackController extends AbstractController
     }
 
     /**
-     * @Tag(name="feedback_breadcrumbs", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @Tag(name="feedback_breadcrumbs")
      *
      * @TagOptions(
      *      defaults={"item": null},
      *      allowed_types={
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "item": "serice('data.feedback').getItem(options['item'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options, Feedback $item = null)
     {
-        $item = $this->getFeedbackDataService()->getItem($options['item']);
-
         return $this->renderThemeView(
             'Theme:Feedback:Tag/breadcrumbs.html.twig',
             array(
@@ -208,14 +210,16 @@ class FeedbackController extends AbstractController
      *      },
      *      allowed_types={
      *          "item":{"Application\DeskPRO\Entity\Feedback","int","string","null"}
+     *      },
+     *      attribute_expressions={
+     *          "item": "serice('data.feedback').getItem(options['item'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options)
+    public function commentsAction(TagRequest $tag_request, array $options, Feedback $item = null)
     {
-        $item = $this->getFeedbackDataService()->getItem($options['item']);
         $comments = $this->getFeedbackDataService()->getItemComments($item, $this->getUser());
 
         return $this->renderThemeView('Theme:Feedback:Tag/comments.html.twig', array(
@@ -231,12 +235,15 @@ class FeedbackController extends AbstractController
      *      defaults={"item": null},
      *      allowed_types={
      *          "item": {"Application\DeskPRO\Entity\Feedback", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "item": "serice('data.feedback').getItem(options['item'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_FEEDBACK')")
      */
-    public function ratingsAction(TagRequest $tag_request, array $options)
+    public function ratingsAction(TagRequest $tag_request, array $options, Feedback $item = null)
     {
         $item = $this->getFeedbackDataService()->getItem($options['item']);
         $rating = $this->getRatingsHelper()->getPersonRating($item, $this->getUser());

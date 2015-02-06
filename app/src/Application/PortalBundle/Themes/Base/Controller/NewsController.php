@@ -38,6 +38,7 @@ namespace Application\PortalBundle\Themes\Base\Controller;
 use Application\AuthBundle\Voter\Portal\ContentSubscriptionsVoter;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Entity\NewsCategory;
+use Application\DeskPRO\EntityRepository\ArticleCategory;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
 use Application\PortalBundle\Annotation\Tag;
 use Application\PortalBundle\Annotation\TagOptions;
@@ -45,7 +46,7 @@ use Application\PortalBundle\Controller\AbstractController;
 use Application\PortalBundle\Request\TagRequest;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\ParamConverter;
 use Symfony\Component\HttpFoundation\Request;
-use Sensio\Bundle\FrameworkExtraBundle\Configuration\Cache;
+use Application\PortalBundle\HttpCache\Configuration\TagHttpCache;
 
 class NewsController extends AbstractController
 {
@@ -53,7 +54,7 @@ class NewsController extends AbstractController
      * @Tag(name="news", esi=true)
      * @Tag(name="news_list", default_options={"style":"list"}, esi=true)
      * @Tag(name="news_dropdown", default_options={"style":"dropdown"}, esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache()
      *
      * @TagOptions(
      *      defaults={
@@ -65,14 +66,16 @@ class NewsController extends AbstractController
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
+     *      },
+     *      attribute_expressions={
+     *          "category": "service('data.news').getCategory(options['category'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function categoriesAction(TagRequest $tag_request, array $options)
+    public function categoriesAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
-        $category = $this->getNewsDataService()->getCategory($options['category']);
         $category_children = $this->getNewsDataService()->getCategoryChildren($category);
 
         return $this->renderThemeView(
@@ -102,14 +105,16 @@ class NewsController extends AbstractController
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
+     *      },
+     *      attribute_expressions={
+     *          "category": "service('data.news').getCategory(options['category'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function listAction(TagRequest $tag_request, array $options)
+    public function listAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
-        $category = $this->getNewsDataService()->getCategory($options['category']);
         $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count']);
 
         return $this->renderThemeView(
@@ -124,21 +129,22 @@ class NewsController extends AbstractController
 
     /**
      * @Tag(name="post", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @TagHttpCache(content="post")
      *
      * @TagOptions(
      *      defaults={"is_subscribed":false},
      *      required={"post"},
      *      allowed_types={
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "post": "service('data.news').getPost(options['post'])"
      *      }
      * )
      * @Security("is_granted('USE_NEWS')")
      */
-    public function postAction(TagRequest $tag_request, array $options)
+    public function postAction(TagRequest $tag_request, array $options, News $post = null)
     {
-        $post = $this->getNewsDataService()->getPost($options['post']);
-
         return $this->renderThemeView(
             'Theme:News:Tag/post.html.twig',
             array(
@@ -156,15 +162,16 @@ class NewsController extends AbstractController
      *      defaults={"style":"link"},
      *      allowed_types={
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "post": "service('data.news').getPost(options['post'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function postSubscriptionAction(TagRequest $tag_request, array $options)
+    public function postSubscriptionAction(TagRequest $tag_request, array $options, News $post = null)
     {
-        $post = $this->getNewsDataService()->getPost($options['post']);
-
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
@@ -189,15 +196,16 @@ class NewsController extends AbstractController
      *      defaults={"category": null},
      *      allowed_types={
      *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "category": "service('data.news').getCategory(options['category'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function categorySubscriptionAction(TagRequest $tag_request, array $options)
+    public function categorySubscriptionAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
-        $category = $this->getNewsDataService()->getCategory($options['category']);
-
         $is_subscribed = false;
         if (
             $this->getBrandSetting('user.news_subscriptions', false)
@@ -223,14 +231,16 @@ class NewsController extends AbstractController
      *      },
      *      allowed_types={
      *          "post":{"Application\DeskPRO\Entity\News","int","string","null"}
+     *      },
+     *      attribute_expressions={
+     *          "post": "service('data.news').getPost(options['post'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function commentsAction(TagRequest $tag_request, array $options)
+    public function commentsAction(TagRequest $tag_request, array $options, News $post = null)
     {
-        $post = $this->getNewsDataService()->getPost($options['post']);
         $comments = $this->getNewsDataService()->getPostComments($post, $this->getUser());
 
         return $this->renderThemeView('Theme:News:Tag/comments.html.twig', array(
@@ -251,18 +261,20 @@ class NewsController extends AbstractController
      *      },
      *      allowed_types={
      *          "category":{"Application\DeskPRO\Entity\NewsCategory","int","string","null"}
+     *      },
+     *      attribute_expressions={
+     *          "category": "service('data.news').getCategory(options['category'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function pagerAction(TagRequest $tag_request, array $options)
+    public function pagerAction(TagRequest $tag_request, array $options, NewsCategory $category = null)
     {
         if (!$options['show_pagination']) {
             return new Response('');
         }
 
-        $category = $this->getNewsDataService()->getCategory($options['category']);
         $pager = $this->getNewsDataService()->getNewsPager($category, $options['page'], $options['count']);
 
         return $this->renderThemeView(
@@ -274,24 +286,24 @@ class NewsController extends AbstractController
     }
 
     /**
-     * @Tag(name="news_breadcrumbs", esi=true)
-     * @Cache(smaxage="10 minutes")
+     * @Tag(name="news_breadcrumbs")
      *
      * @TagOptions(
      *      defaults={"category": null, "post": null},
      *      allowed_types={
      *          "category": {"Application\DeskPRO\Entity\NewsCategory", "int", "string", "null"},
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "category": "service('data.news').getCategory(options['category'])",
+     *          "post": "service('data.news').getPost(options['post'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function breadcrumbsAction(TagRequest $tag_request, array $options)
+    public function breadcrumbsAction(TagRequest $tag_request, array $options, News $post = null, NewsCategory $category = null)
     {
-        $category = $this->getNewsDataService()->getCategory($options['category']);
-        $post = $this->getNewsDataService()->getPost($options['post']);
-
         return $this->renderThemeView(
             'Theme:News:Tag/breadcrumbs.html.twig',
             array(
@@ -308,14 +320,16 @@ class NewsController extends AbstractController
      *      defaults={"post": null},
      *      allowed_types={
      *          "post": {"Application\DeskPRO\Entity\News", "int", "string", "null"}
+     *      },
+     *      attribute_expressions={
+     *          "post": "service('data.news').getPost(options['post'])"
      *      }
      * )
      *
      * @Security("is_granted('USE_NEWS')")
      */
-    public function ratingsAction(TagRequest $tag_request, array $options)
+    public function ratingsAction(TagRequest $tag_request, array $options, News $post = null)
     {
-        $post = $this->getNewsDataService()->getPost($options['post']);
         $rating = $this->getRatingsHelper()->getPersonRating($post, $this->getUser());
 
         return $this->renderThemeView(
