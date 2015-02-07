@@ -65,6 +65,7 @@ class RawTransportFactory
         switch ($config->getType()) {
             case 'smtp':     $tr = $this->createSmtpTransport($config); break;
             case 'gmail':    $tr = $this->createGmailTransport($config); break;
+            case 'office365':$tr = $this->createOffice365Transport($config); break;
             case 'php_mail': $tr = $this->createPhpMailTransport($config); break;
             case 'exchange': $tr = $this->createExchangeTransport($config); break;
             default:
@@ -77,7 +78,7 @@ class RawTransportFactory
 
 
     /**
-     * @param  OutgoingAccount\SmtpConfig           $config
+     * @param OutgoingAccount\SmtpConfig $config
      * @return RawSmtpTransport
      */
     public function createSmtpTransport(OutgoingAccount\SmtpConfig $config)
@@ -105,8 +106,8 @@ class RawTransportFactory
 
 
     /**
-     * @param  OutgoingAccount\GmailConfig          $config
-     * @return RawSmtpTransport
+     * @param OutgoingAccount\GmailConfig $config
+     * @return \Swift_SmtpTransport
      */
     public function createGmailTransport(OutgoingAccount\GmailConfig $config)
     {
@@ -120,8 +121,23 @@ class RawTransportFactory
     }
 
     /**
-     * @param  OutgoingAccount\PhpMailConfig        $conifg
-     * @return RawSwiftmailerTransport
+     * @param OutgoingAccount\Office365Config $config
+     * @return \Swift_SmtpTransport
+     */
+    public function createOffice365Transport(OutgoingAccount\Office365Config $config)
+    {
+        $tr = \Swift_SmtpTransport::newInstance('smtp.office365.com', 587, 'tls');
+        $tr->setUsername($config->user);
+        $tr->setPassword($config->password);
+        $tr->setTimeout(120);
+        $tr->registerPlugin(new TransportLogger($this->logger));
+
+        return $tr;
+    }
+
+    /**
+     * @param OutgoingAccount\PhpMailConfig $conifg
+     * @return \Swift_MailTransport
      */
     public function createPhpMailTransport(OutgoingAccount\PhpMailConfig $conifg)
     {
@@ -133,7 +149,7 @@ class RawTransportFactory
     }
 
     /**
-     * @param  OutgoingAccount\ExchangeConfig           $config
+     * @param OutgoingAccount\ExchangeConfig $config
      * @return RawExchangeTransport
      */
     public function createExchangeTransport(OutgoingAccount\ExchangeConfig $config)

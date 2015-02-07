@@ -2,7 +2,7 @@
 {# Outgoing Account Details #}
 {##################################################################################################}
 
-<div class="form-group" ng-hide="form.incoming_type == 'gmail'">
+<div class="form-group" ng-hide="form.incoming_type == 'gmail' || form.incoming_type == 'office365'">
 	<div class="col-lg-3">
 		<h3>Outgoing Email *</h3>
 	</div>
@@ -22,6 +22,7 @@
 				<option value="php_mail">Send mail using PHP mail()</option>
 				<option value="smtp">SMTP</option>
 				<option value="gmail">GMail or Google Apps</option>
+				<option value="office365">Office365</option>
 				<option value="exchange">MS Exchange</option>
 			</select>
 		</div>
@@ -124,9 +125,36 @@
 			</div>
 		</div>
 
+		{##############}
+		{# Office 365 #}
+		{##############}
+
+		<div class="ng-hide" ng-show="form.outgoing_type == 'office365'">
+			<div class="inner-group">
+				<table width="100%" class="inner-form-table">
+					<tr>
+						<th width="100">Email Address</th>
+						<td>
+							<span ng-show="form.address">{{ ng_var('form.address') }}</span>
+							<span ng-hide="form.address">Enter your email address above</span>
+						</td>
+					</tr>
+					<tr>
+						<th>Password</th>
+						<td><input type="password" class="form-control" name="title" ng-model="form.out_office365_account.password" style="width: 50%;" /></td>
+					</tr>
+					<tr>
+						<th>&nbsp;</th>
+						<td>
+							<button class="btn btn-info" ng-click="TicketAccountsEdit.testOutgoingModal(); $event.preventDefault();"><i class="fa fa-bolt"></i> Test Account Settings</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
 
 		{############}
-		{# Exchange    #}
+		{# Exchange #}
 		{############}
 
 		<div class="ng-hide" ng-show="form.outgoing_type == 'exchange'">
@@ -134,7 +162,14 @@
 				<table width="100%" class="inner-form-table">
 					<tr>
 						<th width="75">Host</th>
-						<td><input type="text" class="form-control" name="title" ng-model="form.out_exchange_account.host" style="width: 50%;" placeholder="localhost" /></td>
+						<td>
+							https://<input type="text" class="form-control" name="host" ng-model="form.out_exchange_account.host" style="display: inline-block; width: 50%;" />
+							<br/>
+							<span class="help-block">
+								DeskPRO communicates with Exchange through <a href="http://msdn.microsoft.com/en-us/library/office/dd877045%28v=exchg.140%29.aspx" target="_blank">Exchange Web Services</a>. Make
+								sure EWS is configured and your firewall is not blocking connections.
+							</span>
+						</td>
 					</tr>
 					<tr>
 						<th>Username</th>

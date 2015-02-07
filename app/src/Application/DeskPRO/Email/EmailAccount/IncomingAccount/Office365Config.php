@@ -35,72 +35,63 @@
 namespace Application\DeskPRO\Email\EmailAccount\IncomingAccount;
 
 use Application\DeskPRO\Email\EmailAccount\AccountConfigInterface;
-use Application\DeskPRO\EmailGateway\FetcherStorage\FetcherStorageInterface;
-use Application\DeskPRO\EmailGateway\FetcherStorage\Pop3Storage;
+use Symfony\Component\Validator\Constraints;
+use Symfony\Component\Validator\Mapping\ClassMetadata as ValidatorClassMetadata;
 
-//TODO this is not actually used in the Runner
-class FetcherStorageFactory
+class Office365Config implements AccountConfigInterface
 {
     /**
-     * @param  AccountConfigInterface    $config
-     * @return FetcherStorageInterface
-     * @throws \InvalidArgumentException
+     * @var string
      */
-    public function createFetcherStorage(AccountConfigInterface $config)
+    public $user;
+
+    /**
+     * @var string
+     */
+    public $password;
+
+    /**
+     * {@inheritDoc}
+     */
+    public function serializeJsonArray()
     {
-        switch ($config->getType()) {
-            case 'pop3':  return $this->createPop3Fetcher($config);
-            case 'gmail': return $this->createGmailFetcherStorage($config);
-            case 'office365': return $this->createOffice365FetcherStorage($config);
-            default:
-                throw new \InvalidArgumentException("Unknown incoming account type: {$config->getType()}");
+        return array(
+            'user'        => $this->user,
+            'password'    => $this->password,
+        );
+    }
+
+
+    /**
+     * {@inheritDoc}
+     */
+    public static function unserializeJsonArray(array $data)
+    {
+        $obj = new self();
+        foreach ($data as $k => $v) {
+            $obj->$k = $v;
         }
-    }
 
-    /**
-     * @param  Pop3Config  $config
-     * @return Pop3Storage
-     */
-    public function createPop3FetcherStorage(Pop3Config $config)
-    {
-        return new Pop3Storage(
-            $config->host,
-            $config->port,
-            $config->user,
-            $config->password,
-            $config->secure_mode
-        );
+        return $obj;
     }
 
 
     /**
-     * @param  GmailConfig $config
-     * @return Pop3Storage
+     * {@inheritDoc}
      */
-    public function createGmailFetcherStorage(GmailConfig $config)
+    public function getType()
     {
-        return new Pop3Storage(
-            'pop.gmail.com',
-            995,
-            $config->user,
-            $config->password,
-            'ssl'
-        );
+        return 'office365';
     }
 
 
-    /**
-     * @param  Office365Config $config
-     * @return Pop3Storage
-     */
-    public function createOffice365FetcherStorage(Office365Config $config)
+    ############################################################################
+    # Validation Metadata
+    ############################################################################
+
+    public static function loadValidatorMetadata(ValidatorClassMetadata $metadata)
     {
-        return new Pop3Storage(
-            'outlook.office365.com',
-            995,
-            $config->user,
-            $config->password,
-            'ssl'
-        );
+        $metadata->addPropertyConstraint('user', new Constraints\NotBlank());
+        $metadata->addPropertyConstraint('password', new Constraints\NotBlank());
     }
 }

@@ -104,7 +104,11 @@ class OutgoingAccountTester
                     $this->_testSmtp($this->account_config);
                 } elseif ($this->account_config instanceof GmailConfig) {
                     $this->_testGmail($this->account_config);
+                } elseif ($this->account_config instanceof Office365Config) {
+                    $this->_testOffice365($this->account_config);
                 } elseif ($this->account_config instanceof PhpMailConfig) {
+                    $this->_testMail($this->account_config);
+                } elseif ($this->account_config instanceof ExchangeConfig) {
                     $this->_testMail($this->account_config);
                 } else {
                     $this->is_success = false;
@@ -199,6 +203,28 @@ class OutgoingAccountTester
             'host'        => 'smtp.gmail.com',
             'port'        => 465,
             'secure_mode' => 'ssl'
+        );
+        foreach ($data as $k => $v) {
+            $smtp->$k = $v;
+        }
+        $this->_testSmtp($smtp);
+    }
+
+    /**
+     * Test with office365
+     */
+    private function _testOffice365($config)
+    {
+        /** @var \Application\DeskPRO\Email\EmailAccount\OutgoingAccount\Office365Config $config */
+
+        $this->swift_arraylogger->add("Testing Office365Account");
+        $smtp = new SmtpConfig();
+        $data = array(
+            'user'        => $config->user,
+            'password'    => $config->password,
+            'host'        => 'smtp.office365.com',
+            'port'        => 587,
+            'secure_mode' => 'tls'
         );
         foreach ($data as $k => $v) {
             $smtp->$k = $v;
