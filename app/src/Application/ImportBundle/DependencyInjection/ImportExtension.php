@@ -56,10 +56,8 @@ class ImportExtension extends Extension
         $container->setDefinition('deskpro.import.os_ticket_reader_factory', $definition);
 
         $definition = new Definition('Application\ImportBundle\Reader\OsTicket\OsTicketReader');
-        $definition->setFactory(array(
-            new Reference('deskpro.import.os_ticket_reader_factory'),
-            'createReaderByDeskproConfig',
-        ));
+        $definition->setFactoryService('deskpro.import.os_ticket_reader_factory');
+        $definition->setFactoryMethod('createReaderByDeskproConfig');
         $container->setDefinition('deskpro.import.os_ticket_reader', $definition);
 
         // ZenDesk reader
@@ -67,10 +65,8 @@ class ImportExtension extends Extension
         $container->setDefinition('deskpro.import.zen_desk_reader_factory', $definition);
 
         $definition = new Definition('Application\ImportBundle\Reader\ZenDesk\ZenDeskReader');
-        $definition->setFactory(array(
-            new Reference('deskpro.import.zen_desk_reader_factory'),
-            'createReader',
-        ));
+        $definition->setFactoryService('deskpro.import.zen_desk_reader_factory');
+        $definition->setFactoryMethod('createReader');
         $container->setDefinition('deskpro.import.zen_desk_reader', $definition);
 
         // Import generator
@@ -79,10 +75,8 @@ class ImportExtension extends Extension
         $container->setDefinition('deskpro.import.generator_factory', $definition);
 
         $definition = new Definition('Application\ImportBundle\Generator\Generator');
-        $definition->setFactory(array(
-            new Reference('deskpro.import.generator_factory'),
-            'createGenerator',
-        ));
+        $definition->setFactoryService('deskpro.import.generator_factory');
+        $definition->setFactoryMethod('createGenerator');
         $container->setDefinition('deskpro.import.generator', $definition);
     }
 }
